@@ -3,7 +3,7 @@
 </div>
 <ul *ngIf="hasActivities; else nocontent" class="slds-timeline slds-p-vertical--small">
     <li *ngFor="let activity of activities; trackBy:trackByFn">
-        <activitytimeline-item-container [activity]="activity"></activitytimeline-item-container>
+        <activitytimeline-item-container [activity]="activity" [module]="module"></activitytimeline-item-container>
     </li>
 </ul>
 <ul class="slds-timeline" *ngIf="loading">

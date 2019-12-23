@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, OnInit} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {popup} from '../../services/popup.service';
@@ -18,7 +18,7 @@ import {toast} from '../../services/toast.service';
     templateUrl: './src/objectfields/templates/fieldrelate.html',
     providers: [popup]
 })
-export class fieldRelate extends fieldGeneric implements OnInit {
+export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
     private relateIdField: string = '';
     private relateNameField: string = '';
     private relateType: string = '';
@@ -39,13 +39,6 @@ export class fieldRelate extends fieldGeneric implements OnInit {
         super(model, view, language, metadata, router);
     }
 
-    public ngOnInit() {
-        const fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
-        this.relateIdField = fieldDefs.id_name;
-        this.relateNameField = this.fieldname;
-        this.relateType = fieldDefs.module;
-    }
-
     /**
      * returns if an icon shoudl be displayed
      */
@@ -61,6 +54,24 @@ export class fieldRelate extends fieldGeneric implements OnInit {
     }
 
     /**
+     * simple getter to determine if the field has a link, the view allows for links and if the user has ACL rights to navigate to thte the of the record
+     */
+    get link() {
+        try {
+            return this.view.displayLinks;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    public ngOnInit() {
+        const fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
+        this.relateIdField = fieldDefs.id_name;
+        this.relateNameField = this.fieldname;
+        this.relateType = fieldDefs.module;
+    }
+
+    /**
      * closes all dropdowns that might be oipen and clears the searchterm
      */
     private closePopups() {
@@ -69,7 +80,6 @@ export class fieldRelate extends fieldGeneric implements OnInit {
         }
         this.relateSearchOpen = false;
     }
-
 
     /**
      * resets the field on the  model
@@ -94,23 +104,11 @@ export class fieldRelate extends fieldGeneric implements OnInit {
         this.model.setField(this.relateIdField, '');
     }
 
-
     /**
      * open the recent items when the feld recievs the focus
      */
     private onFocus() {
         this.relateSearchOpen = true;
-    }
-
-    /**
-     * simple getter to determine if the field has a link, the view allows for links and if the user has ACL rights to navigate to thte the of the record
-     */
-    get link() {
-        try {
-            return this.view.displayLinks;
-        } catch (e) {
-            return false;
-        }
     }
 
     /**
@@ -171,13 +169,14 @@ export class fieldRelate extends fieldGeneric implements OnInit {
             selectModal.instance.module = this.relateType;
             selectModal.instance.modulefilter = this.fieldconfig.modulefilter;
             selectModal.instance.multiselect = false;
-            selectModal.instance.selectedItems.subscribe(items => {
-                if (items.length) {
-                    this.setRelated({id: items[0].id, text: items[0].summary_text, data: items[0]});
-                }
-            });
+            this.subscriptions.add(
+                selectModal.instance.selectedItems.subscribe(items => {
+                    if (items.length) {
+                        this.setRelated({id: items[0].id, text: items[0].summary_text, data: items[0]});
+                    }
+                })
+            );
             selectModal.instance.searchTerm = this.relateSearchTerm;
         });
     }
-
 }

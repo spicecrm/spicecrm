@@ -25,10 +25,8 @@ import /*embed*/ {CalendarSheetWeek} from "./components/calendarsheetweek";
 import /*embed*/ {CalendarSheetMonth} from "./components/calendarsheetmonth";
 import /*embed*/ {CalendarSheetSchedule} from "./components/calendarsheetschedule";
 import /*embed*/ {CalendarSheetEvent} from "./components/calendarsheetevent";
-import /*embed*/ {CalendarEventSummary} from "./components/calendareventsummary";
 import /*embed*/ {CalendarSheetDropTarget} from "./components/calendarsheetdroptarget";
 import /*embed*/ {CalendarMorePopover} from "./components/calendarmorepopover";
-import /*embed*/ {CalendarMorePopoverEvent} from "./components/calendarmorepopoverevent";
 import /*embed*/ {CalendarMoreButton} from "./components/calendarmorebutton";
 import /*embed*/ {CalendarAddCalendar} from "./components/calendaraddcalendar";
 import /*embed*/ {CalendarAddModulesModal} from "./components/calendaraddmodulesmodal";
@@ -59,10 +57,8 @@ import /*embed*/ {CalendarThreeDaysDashlet} from "./components/calendarthreedays
         CalendarSheetMonth,
         CalendarSheetSchedule,
         CalendarSheetEvent,
-        CalendarEventSummary,
         CalendarSheetDropTarget,
         CalendarMorePopover,
-        CalendarMorePopoverEvent,
         CalendarMoreButton,
         CalendarAddCalendar,
         CalendarAddModulesModal,

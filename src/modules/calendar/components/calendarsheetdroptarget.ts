@@ -35,7 +35,7 @@ export class CalendarSheetDropTarget {
 
     @HostListener('click')
     private addEvent() {
-        let date = this.day ? new moment(this.day.date) : new moment();
+        let date = this.day ? new moment(this.day.date) : this.calendar.calendarDate;
         date.hour(this.hour).minute(this.minutes).second(0);
         if (this.calendar.asPicker) {
             this.calendar.pickerDate$.emit(date);

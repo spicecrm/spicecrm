@@ -1,4 +1,4 @@
-<div class="slds-card slds-card_boundary slds-p-bottom--medium slds-m-bottom--medium">
+<div class="slds-card slds-card_boundary slds-p-bottom--medium slds-m-bottom--medium" [ngClass]="{'slds-hide': isHidden}">
     <div class="slds-card__header slds-grid slds-grid--vertical-align-center">
         <header class="slds-media slds-media--center slds-has-flexi-truncate">
             <system-icon module="KReports" [size]="'small'"></system-icon>
@@ -7,5 +7,5 @@
             </div>
         </header>
     </div>
-    <reporter-presentation-dashlet [componentconfig]="componentconfig" [parentModule]="model.module" [parentId]="model.id" [displayheader]="false" (dashletTitle)="dashletTitle = $event"></reporter-presentation-dashlet>
+    <reporter-presentation-dashlet [componentconfig]="componentconfig" [parentModule]="model.module" [parentId]="model.id" [displayheader]="false" (dashletTitle)="dashletTitle = $event" (noAccess)="noAccess($event)"></reporter-presentation-dashlet>
 </div>

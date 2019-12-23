@@ -2,7 +2,7 @@
  * @module GlobalComponents
  */
 import {Router} from "@angular/router";
-import {Component, ViewChild, ViewContainerRef, Renderer} from "@angular/core";
+import {Component, ViewChild, ViewContainerRef} from "@angular/core";
 import {loginService} from "../../services/login.service";
 import {session} from "../../services/session.service";
 import {popup} from "../../services/popup.service";
@@ -30,7 +30,6 @@ export class GlobaUserPanel {
     private compId: string = _.uniqueId();
 
     constructor(
-        private rendered: Renderer,
         private loginService: loginService,
         private session: session,
         private router: Router,

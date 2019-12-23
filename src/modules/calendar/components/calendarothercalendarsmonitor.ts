@@ -68,16 +68,19 @@ export class CalendarOtherCalendarsMonitor {
 
     set searchTerm(value) {
         clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => this.searchterm = value, 500);
-        if (value == "") {
-            return;
-        }
-        this.isLoading = true;
-        this.fts.searchByModules({ searchterm: this.searchterm, modules: ["Users"], size: 5, sortparams: {sortfield: "name"}})
-            .subscribe(res => {
-                this.filterResultsList(res.Users.hits.map(user => user = user._source));
-                this.isLoading = false;
-            }, err => this.isLoading = false);
+        if (!value || value.length == 0) return;
+
+        this.timeout = setTimeout(() => {
+            this.searchterm = value;
+            this.isLoading = true;
+            this.fts.searchByModules({ searchterm: this.searchterm, modules: ["Users"], size: 5, sortparams: {sortfield: "name"}})
+                .subscribe(res => {
+                    this.filterResultsList(res.Users.hits.map(user => user = user._source));
+                    this.isLoading = false;
+                }, err => this.isLoading = false);
+        }, 500);
+
+
     }
 
     private getRecent() {
