@@ -6,7 +6,7 @@ import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
-import {Router}   from '@angular/router';
+import {Router} from '@angular/router';
 import {backend} from "../../services/backend.service";
 import {fieldGeneric} from "./fieldgeneric";
 
@@ -14,11 +14,11 @@ import {fieldGeneric} from "./fieldgeneric";
     selector: 'field-output-templates',
     templateUrl: './src/objectfields/templates/fieldoutputtemplates.html'
 })
-export class FieldEnumOutputTemplates extends fieldGeneric implements OnInit{
+export class FieldEnumOutputTemplates extends fieldGeneric implements OnInit {
 
-    isLoaded: boolean = false;
-    items = [];
-    @Output('select') select$ = new EventEmitter();
+    private isLoaded: boolean = false;
+    private items = [];
+    @Output('select') private select$ = new EventEmitter();
     private _selected_item = null;
 
     constructor(
@@ -32,37 +32,34 @@ export class FieldEnumOutputTemplates extends fieldGeneric implements OnInit{
         super(model, view, language, metadata, router);
     }
 
-    get subjectField(){
+    get subjectField() {
         return this.fieldconfig.subject ? this.fieldconfig.subject : 'name';
     }
 
-    get bodyField(){
+    get bodyField() {
         return this.fieldconfig.body ? this.fieldconfig.body : 'description_html';
     }
 
-    get isDisabled(){
+    get isDisabled() {
         return !this.isLoaded || !this.items;
     }
 
-    get selected_item()
-    {
+    get selected_item() {
         return this._selected_item;
     }
 
-    set selected_item(val)
-    {
+    set selected_item(val) {
         this._selected_item = val;
         this.select$.emit(val);
         this.value = val.id;
     }
 
-    ngOnInit(){
-        //console.log(this.model.data, this.model.module);
+    public ngOnInit() {
         let params = {
             searchfields:
                 {
                     join: 'AND',
-                    conditions:[
+                    conditions: [
                         {field: 'module_name', operator: '=', value: this.model.module}
                     ]
                 }
@@ -72,15 +69,14 @@ export class FieldEnumOutputTemplates extends fieldGeneric implements OnInit{
             (data: any) => {
                 this.items = data;
 
-                if( !this.selected_item && this.value )
-                {
-                    for(let item of this.items)
-                    {
-                        if(this.value == item.id)
+                if (!this.selected_item && this.value) {
+                    for (let item of this.items) {
+                        if (this.value == item.id) {
                             this.selected_item = item;
+                        }
                     }
                 }
-
+                this.items.sort((a, b) => a.name > b.name ? 1 : -1);
             }
         );
 

@@ -86,6 +86,10 @@ export class ObjectActionOutputBeanButton {
 
     private openOutput() {
         if (this.templates.length > 0) {
+            // sort the templates
+            this.templates.sort((a, b) => a.name > b.name ? 1 : -1);
+
+            // open the modal
             this.modal.openModal('ObjectActionOutputBeanModal', true, this.viewContainerRef.injector).subscribe(outputModal => {
                 outputModal.instance.templates = this.templates;
                 outputModal.instance.modalTitle = this.modalTitle;

@@ -101,7 +101,7 @@ export class ACLObjectsManagerObjectFields {
         let currentFields = [];
         let fields = this.model.getFieldValue('fieldcontrols');
         for (let thisfield of fields) {
-            currentFields.push({name: thisfield.field});
+            currentFields.push({name: thisfield.field, id: thisfield.id});
         }
 
         this.modal.openModal('ACLTypesManagerTypesAddFields').subscribe(modalRef => {
@@ -111,10 +111,26 @@ export class ACLObjectsManagerObjectFields {
             // set showAll so also links and noin-db fields are shown
             modalRef.instance.showAll = true;
 
-            modalRef.instance.addfield.subscribe(field => {
-                if (field) {
+            modalRef.instance.addfields.subscribe(fields => {
+                if (fields) {
                     let currentfields = this.model.getFieldValue('fieldcontrols');
-                    currentfields.push({spiceaclobject_id: this.model.id, field: field, control: 1});
+
+                    let newFields = [];
+
+                    // check if fields are already in currentfields -> YES: let them like they are -> NO: add new field
+                    for (let sfield of fields) {
+                        let already_selected = false;
+                        for (let key in currentfields) {
+                            if(currentfields[key].field == sfield) {
+                                already_selected = true;
+                                newFields.push(currentfields[key]);
+                            }
+                        }
+                        if(!already_selected) {
+                            newFields.push({spiceaclobject_id: this.model.id, field: sfield, control: 1});
+                        }
+                    }
+                    currentfields = newFields;
                     this.model.setFieldValue('fieldcontrols', currentfields);
                 }
             });

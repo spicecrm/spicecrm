@@ -44,6 +44,11 @@ export class KnowledgeManagerAddModal implements AfterViewInit {
         return this.knowledgeService.documents;
     }
 
+    set selectedDoc(id) {
+        this.knowledgeService.selectedDoc = id;
+        this.knowledgeService.replaceState("/module/KnowledgeDocuments/" + id);
+    }
+
     get selectedDoc() {
         return this.knowledgeService.selectedDoc;
     }
@@ -64,11 +69,6 @@ export class KnowledgeManagerAddModal implements AfterViewInit {
                 this.responseSubject.next(res);
                 this.responseSubject.complete();
             });
-    }
-
-    private handleSelectedItemEvent(id) {
-        this.knowledgeService.selectedDoc = id;
-        this.knowledgeService.replaceState("/module/KnowledgeDocuments/" + id);
     }
 
     private confirmCopy() {

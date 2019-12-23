@@ -41,6 +41,9 @@ export class GlobalDockedComposer implements OnInit {
 
         // set the model to editing
         this.model.isEditing = true;
+
+        // set to global
+        this.model.isGlobal = true;
     }
 
     public ngOnInit() {

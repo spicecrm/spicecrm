@@ -35,6 +35,7 @@ declare var moment: any;
 export class Calendar implements AfterViewInit, OnDestroy {
     public usersCalendars: any[] = [];
     public otherCalendars: any[] = [];
+    public componentconfig: any = {};
     public googleIsVisible: boolean = true;
     @ViewChild('calendarcontainer', {read: ViewContainerRef, static: true}) private calendarContainer: ViewContainerRef;
     @ViewChild('calendarcontent', {read: ViewContainerRef, static: true}) private calendarcontent: ViewContainerRef;
@@ -66,6 +67,10 @@ export class Calendar implements AfterViewInit, OnDestroy {
             this.calendar.isMobileView = this.calendarContainer.element.nativeElement.getBoundingClientRect().width < 768;
         });
         this.touchStartListener = this.renderer.listen('document', 'touchstart', e => this.handleTouchStart(e));
+    }
+
+    get pickerDualMode() {
+        return this.componentconfig.pickerDualMode;
     }
 
     get isMobileView() {
@@ -101,6 +106,11 @@ export class Calendar implements AfterViewInit, OnDestroy {
         }
     }
 
+    get calendarContentStyle() {
+        return {height: `calc(100vh - ${this.calendarcontent.element.nativeElement.offsetTop +1}px)`
+        };
+    }
+
     get sidebarStyle() {
         return {
             'width': this.calendar.sidebarwidth + 'px',
@@ -134,14 +144,13 @@ export class Calendar implements AfterViewInit, OnDestroy {
         }
     }
 
-    private handleUntiDate(event) {
+    private handleUntilDate(event) {
         this.calendarHeader.scheduleUntilDate = event;
     }
 
     private setDateChanged(event) {
         this.calendarHeader.toggleClosed();
-        this.calendar.calendarDate = new moment(event);
-        this.calendar.refresh();
+        this.calendar.refresh(event);
     }
 
     private handleGoogleIsVisible(value) {
@@ -149,8 +158,7 @@ export class Calendar implements AfterViewInit, OnDestroy {
     }
 
     private gotToDayView(date) {
-        this.calendar.calendarDate = new moment(date);
-        this.calendar.refresh();
+        this.calendar.refresh(date);
         this.calendar.sheetType = 'Day';
     }
 

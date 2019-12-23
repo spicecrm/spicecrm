@@ -3,7 +3,7 @@
  */
 import {
     Component, AfterViewInit, OnInit,
-    OnDestroy, ViewChild, ViewContainerRef, Renderer, ElementRef
+    OnDestroy, ViewChild, ViewContainerRef, ElementRef
 } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
@@ -39,10 +39,10 @@ export class ReporterDetailPresentationStandardWS implements AfterViewInit, OnIn
     private isLoading: boolean = true;
 
 
-    constructor(private renderer: Renderer, private broadcast: broadcast, private metadata: metadata, private model: model, private backend: backend, private activatedRoute: ActivatedRoute, private navigation: navigation, private elementRef: ElementRef, private reporterconfig: reporterconfig) {
+    constructor(private broadcast: broadcast, private metadata: metadata, private model: model, private backend: backend, private activatedRoute: ActivatedRoute, private navigation: navigation, private elementRef: ElementRef, private reporterconfig: reporterconfig) {
         this.reporterconfig.refresh$.subscribe(event => {
             this.getPresentation();
-        })
+        });
     }
 
     private handleMessage(message: any) {
