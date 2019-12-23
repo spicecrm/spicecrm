@@ -45,6 +45,7 @@ import /*embed*/ {ReporterIntegrationTargetlistexportModal} from "./components/r
 import /*embed*/ {ReporterIntegrationCSVexportButton} from "./components/reporterintegrationcsvexportbutton";
 
 import /*embed*/ {ReporterIntegrationToolsButton} from "./components/reporterintegrationtoolsbutton";
+import /*embed*/ {ReporterNewButton} from "./components/reporternewbutton";
 
 /**
  * @ignore
@@ -58,7 +59,7 @@ declare var moment: any;
         ObjectFields,
         ObjectComponents,
         SystemComponents,
-        DirectivesModule
+        DirectivesModule,
     ],
     declarations: [
         ReporterDetailView,
@@ -93,9 +94,13 @@ declare var moment: any;
         ReporterIntegrationTargetlistexportModal,
         ReporterIntegrationCSVexportButton,
         ReporterIntegrationToolsButton,
+        ReporterNewButton,
     ],
     exports: [
-        ReporterFieldContainer
+        ReporterFieldContainer,
+        ReporterFilterItemEnum,
+        ReporterFilterItemText,
+        ReporterFilterItemDate,
     ]
 })
 export class ModuleReports {
