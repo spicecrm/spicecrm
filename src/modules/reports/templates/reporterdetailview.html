@@ -2,13 +2,13 @@
     <div class="slds-grid">
         <div class="slds-col slds-has-flexi-truncate">
             <div class="slds-media slds-no-space slds-grow">
-                <div class="slds-media__figure">
-                    <svg class="slds-icon slds-icon-standard-user" aria-hidden="true">
-                        <use xlink:href="./sldassets/icons/standard-sprite/svg/symbols.svg#report"></use>
-                    </svg>
+                <div class="slds-media__figure" (click)="goToModule()">
+                    <system-icon [module]="model.module"></system-icon>
                 </div>
                 <div class="slds-media__body">
-                    <p class="slds-text-title--caps slds-line-height--reset">Reports</p>
+                    <a (click)="goToModule()" href="javascript:void(0);" class="slds-text-title--caps slds-line-height--reset">
+                        {{language.getModuleName(model.module)}}
+                    </a>
                     <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
                         {{model.data.name}}</h1>
                 </div>
@@ -18,16 +18,30 @@
             <reporter-integration-export-button [integrationParams]="integrationParams" class="slds-m-right--x-small"></reporter-integration-export-button>
             <reporter-integration-tools-button [integrationParams]="integrationParams" class="slds-m-right--x-small"></reporter-integration-tools-button>
             <reporter-filter-button [whereConditions]="whereConditions" (filter)="toggleFilters($event)"></reporter-filter-button>
+            <div *ngIf="view.isEditMode()" class="slds-button-group" role="group">
+                <button class="slds-button slds-m-left--x-small slds-button--neutral" (click)="cancelEditing()">
+                    {{language.getLabel('LBL_CANCEL')}}
+                </button>
+                <button class="slds-button slds-m-horizontal--x-small slds-button--brand" (click)="save()">
+                    {{language.getLabel('LBL_SAVE')}}
+                </button>
+            </div>
+            <button *ngIf="!view.isEditMode() && view.isEditable" class="slds-button slds-m-horizontal--x-small slds-button--neutral" (click)="startEditing()">
+                {{language.getLabel('LBL_EDIT')}}
+            </button>
             <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-m-horizontal--x-small" [title]="language.getLabel('LBL_REFRESH')" (click)="refresh()">
                 <system-button-icon icon="refresh"></system-button-icon>
             </button>
         </div>
     </div>
 </div>
-<div *ngIf="hasVisualization" style="width:100%;height:400px;">
-    <reporter-detail-visualization></reporter-detail-visualization>
-</div>
-<div #presentationcontainer [ngStyle]="presentationStyle" tobottom>
-    <div #presentationview></div>
-</div>
-<reporter-filter-panel @displayfilter *ngIf="showFilters" class="slds-is-absolute" [ngStyle]="filterPanelStyle" [integrationparams]="integrationParams" (filtersaved)="filtersaved()"></reporter-filter-panel>
+<ng-container *ngIf="!view.isEditMode(); else reportsDesignerContainer">
+    <div *ngIf="hasVisualization" style="width:100%;height:400px;">
+        <reporter-detail-visualization></reporter-detail-visualization>
+    </div>
+    <div #presentationcontainer [ngStyle]="presentationStyle" tobottom>
+        <div #presentationview></div>
+    </div>
+    <reporter-filter-panel @displayfilter *ngIf="showFilters" class="slds-is-absolute" [ngStyle]="filterPanelStyle" [integrationparams]="integrationParams" (filtersaved)="filtersaved()"></reporter-filter-panel>
+</ng-container>
+<ng-template #reportsDesignerContainer></ng-template>
