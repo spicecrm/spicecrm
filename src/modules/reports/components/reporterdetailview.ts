@@ -7,9 +7,9 @@ import {
     OnInit,
     ViewChild,
     ViewContainerRef,
-    OnDestroy
+    OnDestroy, Injector, ComponentRef
 } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
@@ -19,11 +19,12 @@ import {broadcast} from '../../../services/broadcast.service';
 
 import {reporterconfig} from '../services/reporterconfig';
 import {animate, style, transition, trigger} from "@angular/animations";
+import {view} from "../../../services/view.service";
 
 @Component({
     selector: 'reporter-detilview',
     templateUrl: './src/modules/reports/templates/reporterdetailview.html',
-    providers: [model, reporterconfig],
+    providers: [view,model, reporterconfig],
     animations: [
         trigger('displayfilter', [
             transition(':enter', [
@@ -46,6 +47,7 @@ export class ReporterDetailView implements OnInit {
     }) private presentationcontainer: ViewContainerRef;
     @ViewChild('presentationview', {read: ViewContainerRef, static: true}) private presentationview: ViewContainerRef;
     @ViewChild('pageheader', {read: ViewContainerRef, static: true}) private pageheader: ViewContainerRef;
+    @ViewChild('reportsDesignerContainer', {read: ViewContainerRef, static: true}) private reportsDesignerContainer: ViewContainerRef;
 
 
     private routeSubscribe: any = {};
@@ -56,8 +58,19 @@ export class ReporterDetailView implements OnInit {
     private integrationParams: any = {};
 
     private showFilters: boolean = false;
+    private designerComponentRef: any;
 
-    constructor(private broadcast: broadcast, private language: language, private metadata: metadata, private model: model, private backend: backend, private activatedRoute: ActivatedRoute, private navigation: navigation, private reporterconfig: reporterconfig) {
+    constructor(private broadcast: broadcast,
+                private language: language,
+                private metadata: metadata,
+                private injector: Injector,
+                private model: model,
+                private backend: backend,
+                private activatedRoute: ActivatedRoute,
+                private navigation: navigation,
+                private router: Router,
+                private reporterconfig: reporterconfig,
+                private view: view) {
         /*
         this.routeSubscribe = this.activatedRoute.params.subscribe(params => {
             this.id = params.id;
@@ -116,6 +129,8 @@ export class ReporterDetailView implements OnInit {
                 this.integrationParams = JSON.parse(data.integration_params);
             }
         });
+
+        this.view.isEditable = this.metadata.checkModuleAcl(this.model.module, 'edit');
     }
 
     get presentationStyle() {
@@ -201,5 +216,33 @@ export class ReporterDetailView implements OnInit {
      */
     private refresh() {
         this.reporterconfig.refresh();
+    }
+
+    private startEditing() {
+        this.view.setEditMode();
+        this.model.startEdit();
+        this.metadata.addComponent('ReportsDesigner', this.reportsDesignerContainer, this.injector)
+            .subscribe(componentRef => this.designerComponentRef = componentRef);
+    }
+
+    private cancelEditing() {
+        this.view.setViewMode();
+        this.model.cancelEdit();
+        if (this.designerComponentRef) {
+            this.designerComponentRef.destroy();
+            this.designerComponentRef = null;
+        }
+    }
+
+    /*
+     * @toggle view mode
+     */
+    private save() {
+        this.model.save();
+        this.view.setViewMode();
+    }
+
+    private goToModule() {
+        this.router.navigate(['/module/' + this.model.module]);
     }
 }
