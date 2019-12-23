@@ -1,0 +1,70 @@
+<div class="slds-grid" tobottom>
+    <div class="slds-size--1-of-3 slds-border--right slds-grid--vertical" style="height: 100%;">
+        <reports-designer-tree></reports-designer-tree>
+    </div>
+    <div class="slds-size--2-of-3" style="height: 100%">
+        <div *ngIf="reportsDesignerService.currentPath; else makeSelectionTemplate" class="slds-tabs--default slds-p-top--xx-small">
+            <ul class="slds-tabs--default__nav" role="tablist">
+                <li (click)="setActiveTab('details')" [class.slds-active]="activeTab == 'details'" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
+                    <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
+                         <span class="slds-tabs__left-icon">
+                             <system-utility-icon icon="summarydetail" size="x-small"></system-utility-icon>
+                         </span>
+                        {{language.getLabel('LBL_DETAILS')}}
+                    </a>
+                </li>
+                <li (click)="setActiveTab('filter')" [class.slds-active]="activeTab == 'filter'" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
+                    <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
+                        <span class="slds-tabs__left-icon">
+                            <system-utility-icon icon="filterList" size="x-small"></system-utility-icon>
+                        </span>
+                        {{language.getLabel('LBL_FILTER')}}
+                    </a>
+                </li>
+                <li (click)="setActiveTab('manipulate')" [class.slds-active]="activeTab == 'manipulate'" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
+                    <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
+                        {{language.getLabel('LBL_MANIPULATE')}}
+                    </a>
+                </li>
+                <li [class.slds-active]="activeTab == 'present'" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
+                    <a class="slds-tabs--default__link slds-text-color--inverse-weak" href="javascript:void(0);" role="tab"  aria-selected="false">
+                        <span class="slds-tabs__left-icon">
+                            <system-utility-icon icon="screen" size="x-small" colorclass="slds-icon-text-light"></system-utility-icon>
+                        </span>
+                        {{language.getLabel('LBL_PRESENT')}}
+                    </a>
+                </li>
+                <li [class.slds-active]="activeTab == 'visualize'" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
+                    <a class="slds-tabs--default__link slds-text-color--inverse-weak" href="javascript:void(0);" role="tab"  aria-selected="false">
+                        <span class="slds-tabs__left-icon">
+                            <system-utility-icon icon="chart" size="x-small" colorclass="slds-icon-text-light"></system-utility-icon>
+                        </span>
+                        {{language.getLabel('LBL_VISUALIZE')}}
+                    </a>
+                </li>
+                <li [class.slds-active]="activeTab == 'integrate'" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
+                    <a class="slds-tabs--default__link slds-text-color--inverse-weak" href="javascript:void(0);" role="tab"  aria-selected="false">
+                        <span class="slds-tabs__left-icon">
+                            <system-utility-icon icon="settings" size="x-small" colorclass="slds-icon-text-light"></system-utility-icon>
+                        </span>
+                        {{language.getLabel('LBL_INTEGRATE')}}
+                    </a>
+                </li>
+                <li class="slds-text-title--caps slds-col--bump-left slds-p-vertical--x-small" role="presentation">
+                        <system-checkbox [(ngModel)]="reportsDesignerService.expertMode">{{language.getLabel('LBL_EXPERT_MODE')}}</system-checkbox>
+                </li>
+            </ul>
+            <div [ngSwitch]="activeTab" tobottom>
+                <reports-designer-details *ngSwitchCase="'details'"></reports-designer-details>
+                <reports-designer-filter *ngSwitchCase="'filter'"></reports-designer-filter>
+                <reports-designer-manipulate *ngSwitchCase="'manipulate'"></reports-designer-manipulate>
+                <reports-designer-present *ngSwitchCase="'present'"></reports-designer-present>
+                <reports-designer-visualize *ngSwitchCase="'visualize'"></reports-designer-visualize>
+                <reports-designer-integrate *ngSwitchCase="'integrate'"></reports-designer-integrate>
+            </div>
+        </div>
+        <ng-template #makeSelectionTemplate>
+            <div class="slds-p-around--small slds-align--absolute-center" tobottom>{{language.getLabel('LBL_MAKE_SELECTION')}}</div>
+        </ng-template>
+    </div>
+</div>
