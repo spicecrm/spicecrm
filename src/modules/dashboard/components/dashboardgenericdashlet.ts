@@ -23,7 +23,7 @@ export class DashboardGenericDashlet implements OnInit {
     private dashletLabel: string = undefined;
     private dashletFields: any[] = [];
     private dashletFieldSet: any = undefined;
-    private loadLimit: number = 20;
+    private loadLimit: number = 50;
 
     @ViewChild("tablecontainer", {read: ViewContainerRef, static: true}) private tablecontainer: ViewContainerRef;
     @ViewChild("headercontainer", {read: ViewContainerRef, static: true}) private headercontainer: ViewContainerRef;
@@ -127,7 +127,7 @@ export class DashboardGenericDashlet implements OnInit {
     }
 
     private loadMore() {
-        if (this.canLoadMore) {
+        if (this.canLoadMore && !this.loading) {
             this.loading = true;
             let params: any = this.params;
             params.offset = this.records.length;

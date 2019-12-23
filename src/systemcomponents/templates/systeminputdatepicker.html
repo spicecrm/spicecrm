@@ -13,21 +13,12 @@
         </div>
     </div>
     <div class="slds-shrink-none">
-        <div class="slds-select_container">
-            <select class="slds-select" [(ngModel)]="currentYear">
-                <option>2015</option>
-                <option>2016</option>
-                <option>2017</option>
-                <option>2018</option>
-                <option>2019</option>
-                <option>2020</option>
-            </select>
-        </div>
+        <system-select [selectList]="yearsList" [(selectedItem)]="currentYear" [emitInputValueOnEnterPress]="true"></system-select>
     </div>
 </div>
 <table aria-labelledby="month" aria-multiselectable="true" class="slds-datepicker__month slds-m-left--x-small" role="grid">
     <thead>
-        <tr id="weekdays">
+        <tr>
             <th scope="col"></th>
             <th *ngFor="let weekday of weekdays; let index = index" scope="col">
                 <abbr [title]="weekdayLong(index)">{{weekday}}</abbr>
@@ -41,8 +32,32 @@
                     {{week?.number}}
                 </abbr>
             </td>
-            <td *ngFor="let day of week?.days" role="gridcell" (click)="pickDate(day.day, day.month)" [ngClass]="{'slds-disabled-text': disabled(day.month, day.day), 'slds-is-today': isToday(day.day, day.month), 'slds-is-selected': isCurrent(day.day, day.month)}">
-                <span class="slds-day">{{day.day}}</span>
+            <td *ngFor="let day of week?.days" role="gridcell" (click)="pickDate(day)" [ngClass]="{'slds-disabled-text': disabled(day), 'slds-is-today': isToday(day), 'slds-is-selected': isCurrent(day)}">
+                <span class="slds-day">{{day.date()}}</span>
+            </td>
+        </tr>
+    </tbody>
+    <tbody *ngIf="dual">
+        <tr>
+            <td [attr.colspan]="weekdays.length +1" class="slds-theme--shade">
+                <div class="slds-grid slds-m-vertical--xx-small">
+                    <h2 class="slds-size--1-of-2">
+                        {{secondMonth}}
+                    </h2>
+                    <div>
+                        {{secondYearDisplay}}
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr *ngFor="let week of secondGrid">
+            <td role="gridcell" class="slds-theme--shade">
+                <abbr class="slds-p-horizontal--xx-small" [title]="language.getLabel('LBL_WEEK')+' '+week?.number">
+                    {{week?.number}}
+                </abbr>
+            </td>
+            <td *ngFor="let day of week?.days" role="gridcell" (click)="pickDate(day)" [ngClass]="{'slds-disabled-text': disabled(day), 'slds-is-today': isToday(day), 'slds-is-selected': isCurrent(day)}">
+                <span class="slds-day">{{day?.date()}}</span>
             </td>
         </tr>
     </tbody>

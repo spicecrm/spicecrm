@@ -27,17 +27,11 @@ declare var moment: any;
 
 export class CalendarSheetDay implements OnChanges {
 
-    @Output() public navigateweek: EventEmitter<any> = new EventEmitter<any>();
     @ViewChild('calendarsheet', {read: ViewContainerRef, static: true}) private calendarsheet: ViewContainerRef;
-    @ViewChild('multieventscontainer', {
-        read: ViewContainerRef,
-        static: true
-    }) private multiEventsContainer: ViewContainerRef;
-    @ViewChild('headercontainer', {read: ViewContainerRef, static: true}) private headerContainer: ViewContainerRef;
+    @Output() public navigateweek: EventEmitter<any> = new EventEmitter<any>();
     @Input() private setdate: any = {};
     @Input('userscalendars') private usersCalendars: any[] = [];
     @Input('googleisvisible') private googleIsVisible: boolean = true;
-    private sheetTopMargin: number = 0;
     private sheetDay: any = {};
     private sheetHours: any[] = [];
     private ownerEvents: any[] = [];
@@ -51,10 +45,12 @@ export class CalendarSheetDay implements OnChanges {
         this.buildHours();
     }
 
-    get sheetStyle() {
+    get multiEventStyle(): any {
         return {
-            'height': 'calc(100% - ' + this.headerContainer.element.nativeElement.clientHeight + 'px)',
-            'margin-top': '-1px'
+            height: this.calendar.multiEventHeight + "px",
+            width: '100%',
+            position: 'initial',
+            display: 'block'
         };
     }
 
@@ -264,27 +260,6 @@ export class CalendarSheetDay implements OnChanges {
             'border-bottom': event.resizing ? '1px dotted #fff' : 0
         };
 
-    }
-
-    /*
-    * @param index
-    * @return style
-    */
-    private getMultiEventStyle(index): any {
-        let multiEvents = this.multiEventsContainer.element.nativeElement.getBoundingClientRect();
-        return {
-            height: this.calendar.multiEventHeight + "px",
-            width: multiEvents.width + "px",
-            top: (multiEvents.top + (this.calendar.multiEventHeight * index)) + "px",
-            left: multiEvents.left + "px",
-        };
-    }
-
-    /*
-    * @return style
-    */
-    private getMultiEventsContainerStyle() {
-        return {height: this.allMultiEvents.length > 0 ? (this.calendar.multiEventHeight * this.allMultiEvents.length) + 'px' : this.calendar.multiEventHeight + 'px'};
     }
 
     /*

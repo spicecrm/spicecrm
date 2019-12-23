@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef,  Renderer} from '@angular/core';
+import {Component, ElementRef,  Renderer2} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -39,7 +39,7 @@ export class fieldSelectTree extends fieldGeneric {
         private backend: backend,
         private config: configurationService,
         private elementRef: ElementRef,
-        public renderer: Renderer
+        public renderer: Renderer2
     ) {
         super(model, view, language, metadata, router);
 
@@ -143,6 +143,6 @@ export class fieldSelectTree extends fieldGeneric {
     }
     public onFocus() {
         this.show_tree = true;
-        this.clickListener = this.renderer.listenGlobal('document', 'click', (event) => this.onClick(event));
+        this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
 }

@@ -64,10 +64,12 @@ export class fieldColorEnum  extends fieldGeneric {
 
     get getColor() {
         let colordef = '';
-        if (this.colors !== 'undefined') {
+        if (typeof this.colors != 'undefined') {
             colordef = this.colors[this.value];
-            if (colordef.substring(0, 1) != '#') {
-                colordef = '#' + colordef;
+            if(colordef) {
+                if (colordef.substring(0, 1) != '#') {
+                    colordef = '#' + colordef;
+                }
             }
             this.acolor['background-color'] = colordef;
         }

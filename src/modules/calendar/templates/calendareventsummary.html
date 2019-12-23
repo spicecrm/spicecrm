@@ -1,3 +1,0 @@
-<span *ngIf="model.module" modelPopOver class="slds-text-link--reset" [ngClass]="getTextClass()">{{model.data.summary_text}}</span>
-<span *ngIf="!model.module" [title]="model.data.summary_text" class="slds-text-link--reset" [ngClass]="getTextClass()">{{model.data.summary_text}}</span>
-<span *ngIf="isMulti && startHour && !isAbsence" [ngClass]="getTextClass()">, {{startHour}}</span>

@@ -5,11 +5,12 @@ import {
     Component,
     Input,
     AfterViewInit,
-    OnInit
+    OnInit,
+    Output,
+    EventEmitter
 } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {reporterconfig} from '../services/reporterconfig';
-
 
 @Component({
     selector: 'reporter-visualization-dashlet',
@@ -26,11 +27,17 @@ export class ReporterVisualizationDashlet implements OnInit, AfterViewInit {
     private hasVisualization: boolean = false;
     private vizData: any = {};
 
+    /**
+     * emit if a no access or not found error has been raised by the backend
+     * allows to hide the container for the report dashlet
+     */
+    @Output() private noAccess: EventEmitter<boolean> = new EventEmitter<boolean>();
+
     constructor(private model: model, private reporterconfig: reporterconfig) {
     }
 
     public ngOnInit() {
-        if(this.config) {
+        if (this.config) {
             this.componentconfig = this.config;
         }
     }
@@ -40,11 +47,17 @@ export class ReporterVisualizationDashlet implements OnInit, AfterViewInit {
             this.model.module = 'KReports';
             this.model.id = this.componentconfig.reportid;
 
-            this.model.getData().subscribe(data => {
-                if (data.visualization_params != '') {
-                    this.hasVisualization = true;
-                }
-            });
+            this.model.getData().subscribe(
+                data => {
+                    if (data.visualization_params != '') {
+                        this.hasVisualization = true;
+                    }
+                },
+                err => {
+                    if (err.status == '403' || err.status == '404') {
+                        this.noAccess.emit(true);
+                    }
+                });
         }
     }
 }

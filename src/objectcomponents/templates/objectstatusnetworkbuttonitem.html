@@ -1,4 +1,2 @@
-<span *ngIf="!item.status_component; else componentcontainer" class="slds-text-color_default">{{language.getLabel(item.action_label)}}</span>
-<ng-template #componentcontainer>
-    <system-dynamic-component [component]="item.status_component"></system-dynamic-component>
-</ng-template>
+<span *ngIf="!hasComponent" class="slds-text-color_default">{{language.getLabel(item.action_label)}}</span>
+<div #componentcontainer></div>

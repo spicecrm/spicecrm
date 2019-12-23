@@ -20,9 +20,11 @@ export class fieldEnum extends fieldGeneric {
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);
 
-        this.language.currentlanguage$.subscribe((language) => {
-            this.getOptions();
-        });
+        this.subscriptions.add(
+            this.language.currentlanguage$.subscribe((language) => {
+                this.getOptions();
+            })
+        );
     }
 
     public ngOnInit() {
@@ -45,5 +47,14 @@ export class fieldEnum extends fieldGeneric {
             });
         }
         this.options = retArray;
+        if (this.fieldconfig.sortdirection) {
+            switch (this.fieldconfig.sortdirection.toLowerCase()) {
+                case 'desc':
+                    this.options.sort((a,b) => a.display.toLowerCase() < b.display.toLowerCase() ? 1 : -1);
+                    break;
+                case 'asc':
+                    this.options.sort((a,b) => a.display.toLowerCase() > b.display.toLowerCase() ? 1 : -1);
+            }
+        }
     }
 }

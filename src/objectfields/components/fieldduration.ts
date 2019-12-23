@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, Renderer} from '@angular/core';
+import {Component, ElementRef, Renderer2} from '@angular/core';
 import {model} from '../../services/model.service';
 import {popup} from '../../services/popup.service';
 import {view} from '../../services/view.service';
@@ -37,7 +37,7 @@ export class fieldDuration extends fieldGeneric {
         return this.fieldconfig['field_hours'] ? this.fieldconfig['field_hours'] : 'duration_hours';
     }
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private popup: popup, private renderer: Renderer, private elementRef: ElementRef) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private popup: popup, private renderer: Renderer2, private elementRef: ElementRef) {
         super(model, view, language, metadata, router);
 
     }

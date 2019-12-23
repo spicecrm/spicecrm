@@ -64,6 +64,11 @@ export class ReporterIntegrationExportButton implements OnChanges, OnDestroy {
                             this.actionComponents.push(object);
                         })
                         break;
+                    case 'kplannerexport':
+                        this.metadata.addComponent('SalesPlanningReporterIntegrationExportButton', this.actionitems).subscribe(object => {
+                            this.actionComponents.push(object);
+                        })
+                        break;
                 }
             }
         }
@@ -89,6 +94,7 @@ export class ReporterIntegrationExportButton implements OnChanges, OnDestroy {
                     case 'kcsvexport':
                     case 'kexcelexport':
                     case 'kpdfexport':
+                    case 'kplannerexport':
                         return false;
                 }
             }

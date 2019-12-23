@@ -442,7 +442,8 @@ export class metadata {
         }
 
         retComponentSets.sort((a, b) => {
-            return a.name > b.name ? 1 : -1;
+            if ( !a.name ) return 1;
+            return a.name.localeCompare( b.name );
         });
 
         return retComponentSets;
@@ -668,6 +669,17 @@ export class metadata {
         } catch (e) {
             return null;
         }
+    }
+
+    /**
+     * Has a module a specific field?
+     *
+     * @param module the name of the module
+     * @param field the name of the field
+     * @return true or false
+     */
+    public hasField( module: string, field: string ): boolean {
+        return true && this.fieldDefs[module] && this.fieldDefs[module][field];
     }
 
     public getAppModules() {
@@ -1263,8 +1275,8 @@ export class metadata {
      * Lib Loading
      */
 
-    public loadLibs(...scripts: string[]): Observable<object> {
-        let observables: Array<Observable<object>> = [];
+    public loadLibs(...scripts: string[]): Observable<any> {
+        let observables: Array<Observable<any>> = [];
         scripts.forEach((script) => {
             observables.push(this.loadLib(script));
         });
@@ -1302,8 +1314,8 @@ export class metadata {
      * @param {string} name
      * @returns {Observable<object>}
      */
-    private loadLib(name: string): Observable<object> {
-        let sub = new Subject<object>();
+    private loadLib(name: string): Observable<any> {
+        let sub = new Subject<any>();
 
         // error if not found... (but how?)
         if (!this.scripts[name]) {

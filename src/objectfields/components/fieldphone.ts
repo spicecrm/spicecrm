@@ -16,20 +16,8 @@ import {Router} from '@angular/router';
 })
 export class fieldPhone extends fieldGeneric {
 
-    private invalid = false;
-    private mark: string;
-
     constructor(public model: model, public view: view, public l: language, public metadata: metadata, public router: Router, private backend: backend) {
         super(model, view, l, metadata, router);
-    }
-
-    private makeCall() {
-        if (this.model.data[this.fieldname] != '') {
-            // console.log('placing call to ' + this.value);
-            this.backend.postRequest('asterisk/outgoingcall', {}, {msisdn: this.value}).subscribe(result => {
-                console.log(result);
-            });
-        }
     }
 
 }

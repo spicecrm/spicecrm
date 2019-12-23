@@ -1148,7 +1148,6 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     position: sticky;
     top: 0px;
     z-index: 1;
-    border-top: 0;
     border-bottom: 1px solid #dddbda;
 }
 
@@ -1188,4 +1187,9 @@ ul.spice-taglist span.slds-badge {
 
 .slds-context-bar__item_tab {
     width: initial;
+}
+
+.slds-tree [role=treeitem][aria-selected=true] > .slds-tree__item {
+    background: #ecebea;
+    box-shadow: #CA1B21 4px 0 0 inset;
 }

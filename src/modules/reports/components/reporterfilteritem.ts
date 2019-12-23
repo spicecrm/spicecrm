@@ -53,6 +53,8 @@ export class ReporterFilterItem {
                 }
                 break;
             case 'date':
+            case 'datetime':
+            case 'datetimecombo':
                 switch (this.wherecondition.operator) {
                     case 'before':
                     case 'after':
