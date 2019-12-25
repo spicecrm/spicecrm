@@ -14,6 +14,9 @@ import {animate, style, transition, trigger} from "@angular/animations";
 
 declare var _: any;
 
+/**
+ * renders the filter panel for the list view
+ */
 @Component({
     selector: 'object-listview-filter-panel',
     templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanel.html',
@@ -21,6 +24,9 @@ declare var _: any;
 })
 export class ObjectListViewFilterPanel {
 
+    /**
+     * the default filter object
+     */
     private filter = {
         logicaloperator: 'and',
         groupscope: 'all',
@@ -28,18 +34,20 @@ export class ObjectListViewFilterPanel {
     };
 
     constructor(private elementRef: ElementRef, private listfilters: listfilters, private language: language, private metadata: metadata, private modellist: modellist, private model: model, private renderer: Renderer2) {
+        // subscribe to the list type selected to handle the filters set by the listtype
         this.modellist.listtype$.subscribe(newList => {
             this.setFilter();
         });
     }
 
-    get module() {
-        return this.modellist.module;
-    }
-
+    /**
+     * resets the filter data when the list is changed
+     */
     private setFilter() {
+        // create a shallow copy of the filter and use locally
         this.filter = {...this.modellist.getFilterDefs()};
-        // if no filter is set ... set it fresh
+
+        // if no filter is set ... set it clean and empty
         if (!this.filter || _.isEmpty(this.filter)) {
             this.filter = {
                 logicaloperator: 'and',
@@ -49,14 +57,22 @@ export class ObjectListViewFilterPanel {
         }
     }
 
+    /**
+     * checks if the filter objects has been changed
+     */
     get isChanged() {
-        return JSON.stringify(this.filter) != JSON.stringify(this.modellist.getFilterDefs());
+        return !_.isEqual(this.filter, this.modellist.getFilterDefs());
     }
 
+    /**
+     * saves the filter
+     */
     private save() {
-        this.modellist.updateListType({
-            filterdefs: JSON.stringify(this.filter)
-        });
+        if (this.isChanged) {
+            this.modellist.updateListType({
+                filterdefs: JSON.stringify(this.filter)
+            });
+        }
     }
 
     /**
@@ -66,14 +82,12 @@ export class ObjectListViewFilterPanel {
         this.filter.conditions = [];
     }
 
-    private getPanelStyle() {
-        let rect = this.elementRef.nativeElement.getBoundingClientRect();
-        return {
-            height: 'calc(100vh - ' + rect.top + 'px)'
-        };
-    }
-
-    private addExpression() {
+    /**
+     * adds a new filter expression
+     */
+    private addExpression(e) {
+        e.preventDefault();
+        e.stopPropagation();
         let expression = {
             field: '',
             operator: '',
