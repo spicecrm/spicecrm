@@ -169,7 +169,9 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
 
             // determine the operatorype and reset the operator
             this.determineOperatorType(field);
-            this.operator = '';
+
+            // set a default operator
+            this.operator = this.operators[this.operatortype][0].operator;
 
             // reset the fieldvalue
             this.filterexpression.filtervalue = '';
@@ -184,6 +186,8 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
         if (operator != this.filterexpression.operator) {
             this.filterexpression.operator = operator;
             this.filterexpression.filtervalue = '';
+
+
         }
     }
 
@@ -256,13 +260,17 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
         return retArray.filter(item => item.value.length > 0);
     }
 
+    /**
+     * load the fields and sort them
+     */
     public ngOnInit() {
         let fields = this.metadata.getModuleFields(this.module);
         for (let field in fields) {
             this.fields.push(fields[field]);
         }
 
-        this.fields.sort((a, b) => a.name > b.name ? 1 : -1);
+        // sort the fields
+        this.fields.sort((a, b) => this.language.getFieldDisplayName(this.module, a.name).toLowerCase() > this.language.getFieldDisplayName(this.module, b.name).toLowerCase() ? 1 : -1);
 
         // set the initial operatortype
         this.determineOperatorType(this.field);

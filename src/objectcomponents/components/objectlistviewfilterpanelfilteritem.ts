@@ -11,7 +11,7 @@ import {
     OnDestroy,
     Renderer2,
     EventEmitter,
-    Output
+    Output, AfterViewInit
 } from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 
@@ -42,7 +42,7 @@ import {SystemFilterBuilderFilterExpression} from "../../systemcomponents/compon
         ])
     ]
 })
-export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilterExpression implements OnInit, OnDestroy {
+export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilterExpression implements OnDestroy, AfterViewInit {
     @ViewChild('popover', {read: ViewContainerRef, static: true}) private popover: ViewContainerRef;
 
     /**
@@ -74,6 +74,16 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
         super(backend, language, metadata);
     }
 
+    /**
+     * a simple getter as helper to get the module from the modellist
+     */
+    get module() {
+        return this.modellist.module;
+    }
+
+    /**
+     * returns the operator label
+     */
     get operatorLabel() {
         if (this.operator) {
             return this.operators[this.operatortype].find(item => item.operator == this.operator).name;
@@ -82,25 +92,35 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
         }
     }
 
-    public ngOnInit() {
-        // set the module from the model
-        this.module = this.modellist.module;
+    public ngAfterViewInit() {
 
-        // run the super ngOnInit
-        super.ngOnInit();
-
+        // if we do not have a fieldvalue open the popover
+        if (!this.field || this.field == '') this.openPopover();
     }
 
+    /**
+     * ensure the clicklistener is destoryed if the component is desctored if we have an active listener
+     */
     public ngOnDestroy() {
         if (this.clickListener) {
             this.clickListener();
         }
     }
 
+    /**
+     * show the popover
+     */
     private onClick() {
+        this.openPopover();
+    }
+
+    /**
+     * opens the popover
+     */
+    private openPopover() {
         if (!this.showPopover) {
             this.showPopover = true;
-            this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
+            // this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event));
             return;
         }
     }
