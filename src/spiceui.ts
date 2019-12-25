@@ -197,6 +197,8 @@ if (/*@cc_on!@*/false || !!document.documentMode) {
     document.getElementById('loadermessage').innerHTML = 'Internet Explorer is not supported. Please use a supported Browser like Chrome, Safari, Edge, etc.';
 } else {
     document.getElementById('loadstatus').innerHTML = '...preparing..';
+    // ToDo: Prep for Angular 9 - ZoneEventCoalsecing - to be tried for reduced change detection cycles
+    // platformBrowserDynamic().bootstrapModule(SpiceUIModule, { ngZoneEventCoalescing: true });
     platformBrowserDynamic().bootstrapModule(SpiceUIModule);
 }
 
