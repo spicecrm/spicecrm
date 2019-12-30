@@ -24,8 +24,6 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
      */
     @Input() private filterexpression: any = {};
 
-    public fields: any[] = [];
-
     /**
      * the selected operator type .. this is determined by the field definitions
      */
@@ -41,35 +39,40 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             {
                 operator: 'equals',
                 name: 'LBL_EQUALS',
-                showvalue: true
+                value1: 'text'
             }, {
                 operator: 'starts',
                 name: 'LBL_STARTS',
-                showvalue: true
+                value1: 'text'
             }, {
                 operator: 'contains',
                 name: 'LBL_OP_CONTAINS',
-                showvalue: true
+                value1: 'text'
             }, {
                 operator: 'ncontains',
                 name: 'LBL_OP_NOTCONTAINS',
-                showvalue: true
+                value1: 'text'
             }, {
                 operator: 'greater',
                 name: 'LBL_OP_GREATER',
-                showvalue: true
+                value1: 'text'
             }, {
                 operator: 'gequal',
                 name: 'LBL_OP_GREATEREQUAL',
-                showvalue: true
+                value1: 'text'
             }, {
                 operator: 'less',
                 name: 'LBL_OP_LESS',
-                showvalue: true
+                value1: 'text'
             }, {
                 operator: 'lequal',
                 name: 'LBL_OP_LESSEQUAL',
-                showvalue: true
+                value1: 'text'
+            }, {
+                operator: 'between',
+                name: 'LBL_OP_BETWEEN',
+                value1: 'text',
+                value2: 'text'
             }
         ],
         date: [
@@ -104,25 +107,47 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             {
                 operator: 'ndaysago',
                 name: 'LBL_N_DAYS_AGO',
-                showvalue: true
+                value1: 'integer'
             },
             {
-                operator: 'inlessthandays',
+                operator: 'inlessthanndays',
                 name: 'LBL_IN_LESS_THAN_N_DAYS',
-                showvalue: true
+                value1: 'integer'
             },
             {
-                operator: 'inmorethandays',
+                operator: 'inlastndays',
+                name: 'LBL_IN_THE_LAST_N_DAYS',
+                value1: 'integer'
+            },
+            {
+                operator: 'inmorethanndays',
                 name: 'LBL_IN_MORE_THAN_N_DAYS',
-                showvalue: true
+                value1: 'integer'
             },
             {
                 operator: 'inndays',
                 name: 'LBL_IN_N_DAYS',
-                showvalue: true
+                value1: 'integer'
+            },
+            {
+                operator: 'thisday',
+                name: 'LBL_THIS_DAY'
             }, {
                 operator: 'empty',
                 name: 'LBL_OP_ISEMPTY'
+            }, {
+                operator: 'greater',
+                name: 'LBL_OP_AFTER',
+                value1: 'date'
+            }, {
+                operator: 'less',
+                name: 'LBL_OP_BEFORE',
+                value1: 'date'
+            }, {
+                operator: 'betweend',
+                name: 'LBL_OP_BETWEEN',
+                value1: 'date',
+                value2: 'date'
             }
         ],
         bool: [
@@ -139,11 +164,11 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             {
                 operator: 'equals',
                 name: 'LBL_EQUALS',
-                showvalue: true
+                value1: 'enum'
             }, {
                 operator: 'oneof',
                 name: 'LBL_ONEOF',
-                showvalue: true
+                value1: 'multienum'
             }, {
                 operator: 'empty',
                 name: 'LBL_OP_ISEMPTY'
@@ -159,10 +184,18 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
 
     }
 
+    /**
+     * simple getter for the field of the expression
+     */
     get field() {
         return this.filterexpression.field;
     }
 
+    /**
+     * sets the field and also triggers evaluation of the operator
+     *
+     * @param field
+     */
     set field(field) {
         if (field != this.filterexpression.field) {
             this.filterexpression.field = field;
@@ -178,32 +211,31 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
         }
     }
 
+    /**
+     * gets the operator
+     */
     get operator() {
         return this.filterexpression.operator;
     }
 
+    /**
+     * sets the operator and resets the selected values
+     *
+     * @param operator
+     */
     set operator(operator) {
         if (operator != this.filterexpression.operator) {
             this.filterexpression.operator = operator;
             this.filterexpression.filtervalue = '';
-
-
+            this.filterexpression.filtervalueto = '';
         }
     }
 
-    get enumValue() {
-        let val = this.filterexpression.filtervalue;
-        if (val && typeof val != 'string') {
-            return val;
-        }
-        return this.filterexpression.filtervalue = val.length > 1 ? val.split(',') : [val];
-    }
-
-    set enumValue(value) {
-        this.filterexpression.filtervalue = value.length > 1 ? value.join(',') : value.toString();
-
-    }
-
+    /**
+     * determine the operator type based on the field type
+     *
+     * @param field
+     */
     private determineOperatorType(field) {
         let fieldtype = this.metadata.getFieldDefs(this.module, field);
         if (!fieldtype) {
@@ -231,56 +263,27 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
     }
 
     /**
-     * determines based on teh operator definition if the value field should be shown or not to allow the user to enter a value
-     */
-    private showValueField() {
-
-        for (let thisOperator of this.operators[this.operatortype]) {
-            if (thisOperator.operator == this.filterexpression.operator) {
-                return thisOperator.showvalue;
-            }
-        }
-
-        // return this.operatortype == 'default' || (this.operatortype == 'enum' && this.filterexpression.operator != 'empty');
-    }
-
-    private enumDisabled() {
-        return this.operatortype == 'enum' && this.filterexpression.operator != 'equals';
-    }
-
-    private getFieldDisplayOptions() {
-        let retArray = [];
-        let options = this.language.getFieldDisplayOptions(this.module, this.field);
-        for (let optionVal in options) {
-            retArray.push({
-                value: optionVal,
-                display: options[optionVal]
-            });
-        }
-        return retArray.filter(item => item.value.length > 0);
-    }
-
-    /**
      * load the fields and sort them
      */
     public ngOnInit() {
-        let fields = this.metadata.getModuleFields(this.module);
-        for (let field in fields) {
-            this.fields.push(fields[field]);
-        }
-
-        // sort the fields
-        this.fields.sort((a, b) => this.language.getFieldDisplayName(this.module, a.name).toLowerCase() > this.language.getFieldDisplayName(this.module, b.name).toLowerCase() ? 1 : -1);
-
         // set the initial operatortype
         this.determineOperatorType(this.field);
     }
 
+    /**
+     * delete the filter expression
+     */
     private delete() {
         this.filterexpression.deleted = true;
         this.expressionDeleted.emit(true);
     }
 
+    /**
+     * trackby fn for the ngFor loop
+     *
+     * @param i
+     * @param item
+     */
     private trackByFn(i, item) {
         return item.value;
     }

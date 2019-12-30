@@ -76,6 +76,13 @@ export class ObjectListViewFilterPanel {
     }
 
     /**
+     * cancels the edit and resets the filöter to the current defined one
+     */
+    private cancel() {
+        this.filter = {...this.modellist.getFilterDefs()};
+    }
+
+    /**
      * remove all Filters
      */
     private removeAllFilters() {
@@ -104,4 +111,5 @@ export class ObjectListViewFilterPanel {
     private deleteItem(index) {
         this.filter.conditions.splice(index, 1);
     }
+
 }
