@@ -16,7 +16,7 @@
                                             <li role="presentation" class="slds-listbox__item" (click)="searchmodule = 'all'">
                                                 <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
                                                     <div class="slds-media__figure slds-listbox__option-icon">
-                                                        <system-utility-icon icon="check" size="x-smal" *ngIf="'all' == searchmodule"></system-utility-icon>
+                                                        <system-utility-icon icon="check" size="x-small" *ngIf="'all' == searchmodule"></system-utility-icon>
                                                     </div>
                                                     <div class="slds-media__body">
                                                         <div class="slds-truncate">{{language.getLabel('LBL_ALL')}}</div>
@@ -27,7 +27,7 @@
                                                 <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
                                                      role="option">
                                                     <div class="slds-media__figure slds-listbox__option-icon">
-                                                        <system-utility-icon  icon="check" size="x-smal" *ngIf="searchModule == searchmodule"></system-utility-icon>
+                                                        <system-utility-icon  icon="check" size="x-small" *ngIf="searchModule == _searchmodule"></system-utility-icon>
                                                     </div>
                                                     <div class="slds-media__body">
                                                         <div class="slds-truncate">{{language.getModuleName(searchModule)}}</div>
