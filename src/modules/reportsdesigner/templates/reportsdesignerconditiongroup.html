@@ -17,11 +17,11 @@
             </button>
         </div>
         <ul class="slds-m-vertical--x-small slds-p-horizontal--x-small">
-            <li *ngFor="let condition of group.conditions; let index = index" class="slds-expression__row_group slds-m-vertical--x-small" style="border: 1px dashed #ddd; padding: 1px">
+            <li *ngFor="let condition of group.conditions" class="slds-expression__row_group slds-m-vertical--x-small" style="border: 1px dashed #ddd; padding: 1px">
                 <div class="slds-grid slds-p-around--xx-small">
                     <reports-designer-condition [whereCondition]="condition" class="slds-grid slds-grid--vertical-align-center slds-grow"></reports-designer-condition>
                     <div>
-                        <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-m-left--xx-small" (click)="deleteCondition(index)">
+                        <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-m-left--xx-small" (click)="deleteCondition(condition.id)">
                             <system-button-icon icon="delete"></system-button-icon>
                         </button>
                         <system-utility-icon [icon]="expanded == condition.id ? 'up' : 'down'" (click)="toggleExpand(condition.id)" [colorclass]="reportsDesignerService.expertMode ? 'slds-icon-text-default' : 'slds-icon-text-light'"
