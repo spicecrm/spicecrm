@@ -12,6 +12,9 @@ import {reporterconfig} from "../../reports/services/reporterconfig";
 })
 export class ReportsDesignerCondition {
 
+    /*
+     * @input whereCondition: object
+     */
     @Input() private whereCondition: any = {};
     private whereConditionDiffer: KeyValueDiffer<string, any>;
     constructor(private language: language,
@@ -21,6 +24,9 @@ export class ReportsDesignerCondition {
 
     }
 
+    /*
+     * @return type: string
+     */
     get itemType() {
         let type = 'text';
 
@@ -53,24 +59,40 @@ export class ReportsDesignerCondition {
 
     }
 
+    /*
+     * @return showValue: boolean
+     */
     get showValue() {
         return this.reporterConfig.operatorCount[this.whereCondition.operator] > 0;
     }
 
+    /*
+     * @return showValueTo: boolean
+     */
     get showValueTo() {
         return this.reporterConfig.operatorCount[this.whereCondition.operator] > 1;
     }
 
+    /*
+     * @set whereConditionDiffer to detect object changes made by component children
+     */
     public ngOnInit() {
         this.whereConditionDiffer = this.differs.find(this.whereCondition).create();
     }
 
+    /*
+     * @setModelWhereConditions if the whereCondition key value changed
+     */
     public ngDoCheck() {
         if (this.whereConditionDiffer.diff(this.whereCondition)) {
             this.setModelWhereConditions();
         }
     }
 
+    /*
+     * @update whereConditions from this whereCondition
+     * @set model.whereconditions
+     */
     private setModelWhereConditions() {
         let whereConditions = this.model.getField('whereconditions');
         whereConditions = whereConditions && whereConditions.length > 0 ? JSON.parse(whereConditions) ? JSON.parse(whereConditions) : [] : [];
@@ -79,6 +101,9 @@ export class ReportsDesignerCondition {
         this.model.setField('whereconditions', JSON.stringify(whereConditions));
     }
 
+    /*
+     * @return operators: object[]
+     */
     private getOperators() {
         let retArray = [];
         let operators = this.reporterConfig.operatorTypes[this.reporterConfig.operatorAssignments[this.whereCondition.type]];
@@ -94,6 +119,9 @@ export class ReportsDesignerCondition {
         return retArray;
     }
 
+    /*
+     * @reset whereCondition
+     */
     private changeOperator() {
         this.whereCondition.value = '';
         this.whereCondition.valuekey = '';
