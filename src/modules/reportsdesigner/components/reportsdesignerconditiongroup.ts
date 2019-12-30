@@ -41,6 +41,27 @@ export class ReportsDesignerConditionGroup implements OnInit, OnDestroy {
     }
 
     /*
+     * @return group.type: string
+     */
+    get groupType() {
+        return this.group.type;
+    }
+
+    /*
+     * @param value: string
+     * @set group.type
+     * @set whereGroups
+     */
+    set groupType(value) {
+        this.group.type = value;
+        let whereGroups = this.whereGroups;
+        whereGroups.some(group => {
+            if (group.id == this.group.id) group.type = value;
+        });
+        this.whereGroups = whereGroups;
+    }
+
+    /*
      * @return wheregroups: object[]
      */
     get whereGroups() {
