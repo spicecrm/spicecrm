@@ -651,7 +651,7 @@ export class metadata {
      */
     public getFieldlabel(module, field) {
         try {
-            return this.fieldDefs[module][field].vname;
+            return this.fieldDefs[module][field].vname ? this.fieldDefs[module][field].vname : field;
         } catch (e) {
             return field;
         }
