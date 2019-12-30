@@ -22,14 +22,23 @@ export class ReportsDesignerTree implements AfterViewInit {
                 private reportsDesignerService: ReportsDesignerService) {
     }
 
+    /*
+    * @return dropLists: string[] = cdkDragList element id
+    */
     get dropLists() {
         return this.reportsDesignerService.dropLists;
     }
 
+    /*
+    * @return moduleFields: object[]
+    */
     get reportFields() {
         return this.reportsDesignerService.moduleFields;
     }
 
+    /*
+    * @return filteredReportFields: object[]
+    */
     get filteredReportFields() {
         return this.filterKey ? this.reportFields
             .filter(nodeFiled => {
@@ -38,6 +47,10 @@ export class ReportsDesignerTree implements AfterViewInit {
             }) : this.reportFields;
     }
 
+    /*
+    * @set treeCDKDragList
+    * @set currentPath
+    */
     public ngAfterViewInit() {
         this.reportsDesignerService.treeCDKDragList = this.dragList;
         this.reportsDesignerService.currentPath = this.model.getField('report_module');
@@ -45,6 +58,8 @@ export class ReportsDesignerTree implements AfterViewInit {
 
     /*
      * @param data
+     * @set currentPath
+     * @getModuleFields
      */
     private onItemSelection(data) {
         this.reportsDesignerService.currentPath = data.path;
@@ -53,7 +68,6 @@ export class ReportsDesignerTree implements AfterViewInit {
 
     /**
      * loads the fields for a given module
-     *
      * @param module the module
      */
     private getModuleFields(module) {
@@ -64,7 +78,10 @@ export class ReportsDesignerTree implements AfterViewInit {
     }
 
     /*
-    * @do something
+    * placeholder to keep space reserved for the dragged element in its origin
+    * @create dragPlaceHolderNode
+    * @set dragPlaceHolderNode
+    * @insertBefore tr in origin container
     */
     private dropExited(e) {
         let tr = document.createElement('tr');
@@ -81,7 +98,7 @@ export class ReportsDesignerTree implements AfterViewInit {
     }
 
     /*
-    * @do something
+    * @removePlaceHolderElement
     */
     private dropEntered(e) {
         this.reportsDesignerService.removePlaceHolderElement(e.container.element.nativeElement);

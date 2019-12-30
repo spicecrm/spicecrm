@@ -20,10 +20,16 @@ export class ReportsDesigner {
                 private reportsDesignerService: ReportsDesignerService) {
     }
 
+    /*
+    * force detect changes to prevent angular change detection error
+    */
     public ngAfterViewInit() {
         this.cdr.detectChanges();
     }
 
+    /*
+    * @set activeTab
+    */
     private setActiveTab(tab) {
         this.activeTab = tab;
     }
