@@ -2,8 +2,7 @@
     <li class="slds-item slds-hint-parent" (click)="onClick()">
         <div class="slds-filters__item slds-grid slds-grid--vertical-align-center">
             <a href="javascript:void(0);" class="slds-grow slds-has-blur-focus">
-                <p class="slds-text-body--small">{{language.getLabel('LBL_DISPLAY')}}</p>
-                <p>{{language.getLabel('LBL_' + filterValue.toUpperCase())}} {{language.getModuleName(modellist.module)}}</p>
+                <p class="slds-text-body--small">{{language.getLabel('LBL_DISPLAY')}}: {{language.getLabel('LBL_' + filterValue.toUpperCase())}}</p>
             </a>
         </div>
     </li>
@@ -17,21 +16,21 @@
                       <input type="radio" id="radioall" name="scope" value="all" [(ngModel)]="filterValue"/>
                       <label class="slds-radio__label" for="radioall">
                         <span class="slds-radio--faux"></span>
-                        <span class="slds-form-element__label">{{language.getLabel('LBL_ALL')}} {{language.getModuleName(modellist.module)}}</span>
+                        <span class="slds-form-element__label">{{language.getLabel('LBL_ALL')}}</span>
                       </label>
                     </span>
                     <span class="slds-radio">
                       <input type="radio" id="radioown" name="scope" value="own" [(ngModel)]="filterValue"/>
                       <label class="slds-radio__label" for="radioown">
                         <span class="slds-radio--faux"></span>
-                        <span class="slds-form-element__label">{{language.getLabel('LBL_OWN')}} {{language.getModuleName(modellist.module)}}</span>
+                        <span class="slds-form-element__label">{{language.getLabel('LBL_OWN')}}</span>
                       </label>
                     </span>
                     <span class="slds-radio">
                       <input type="radio" id="radiocre" name="scope" value="creator" [(ngModel)]="filterValue"/>
                       <label class="slds-radio__label" for="radiocre">
                         <span class="slds-radio--faux"></span>
-                        <span class="slds-form-element__label">{{language.getLabel('LBL_CREATOR')}} {{language.getModuleName(modellist.module)}}</span>
+                        <span class="slds-form-element__label">{{language.getLabel('LBL_CREATOR')}}</span>
                       </label>
                     </span>
                     </div>
