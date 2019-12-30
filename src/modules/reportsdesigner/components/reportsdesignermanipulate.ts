@@ -89,12 +89,24 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
             let field = dragEvent.item.data;
             let id = this.modelUtilities.generateGuid();
             let newItem = {
-                id: id,
                 fieldid: id,
+                path: `root:${this.reportsDesignerService.currentPath}::${field.id}`,
+                displaypath: this.reportsDesignerService.currentPath,
                 fieldname: field.name,
                 name: field.label,
-                path: this.reportsDesignerService.currentPath + '::' + id,
-                displaypath: this.reportsDesignerService.currentPath
+                display: 'yes',
+                sequence: listItems.length +1,
+                width: '100',
+                sort: '-',
+                sortpriority: '',
+                jointype: 'optional',
+                sqlfunction: '-',
+                summaryfunction: '',
+                groupby: 'no',
+                link: 'no',
+                fixedvalue: '',
+                formulasequence: '',
+                id: id
             };
 
             listItems.splice(dragEvent.currentIndex, 0, newItem);
@@ -117,15 +129,16 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
     }
 
     /*
-     * @param field: string
+     * @param fieldId: string
+     * @param fieldName: string
      * @param value: string
      * @set listItems
      */
-    private setFieldValue(field, value) {
+    private setFieldValue(fieldId, fieldName, value) {
         let listItems = this.listItems.slice();
         listItems.some(item => {
-            if (item.fieldid == field.fieldid) {
-                item[field] = value;
+            if (item.fieldid == fieldId) {
+                item[fieldName] = value;
             }
         });
         this.listItems = listItems;
