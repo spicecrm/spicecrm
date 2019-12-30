@@ -25,7 +25,7 @@
                             <system-button-icon icon="delete"></system-button-icon>
                         </button>
                         <system-utility-icon [icon]="expanded == condition.id ? 'up' : 'down'" (click)="toggleExpand(condition.id)" [colorclass]="reportsDesignerService.expertMode ? 'slds-icon-text-default' : 'slds-icon-text-light'"
-                                             size="x-small" class="slds-p-horizontal--small slds-p-vertical--xx-small" style="cursor: pointer"></system-utility-icon>
+                                             size="x-small" class="slds-p-horizontal--x-small slds-p-vertical--xx-small" style="cursor: pointer"></system-utility-icon>
                     </div>
                 </div>
                 <div *ngIf="expanded == condition.id && reportsDesignerService.expertMode" class="slds-grid slds-p-around--x-small" style="box-shadow: inset -1px 1px 6px 0 #aaa;">
