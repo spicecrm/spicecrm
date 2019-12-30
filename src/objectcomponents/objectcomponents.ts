@@ -87,14 +87,8 @@ import /*embed*/ {ObjectListViewAggregateItemRange} from './components/objectlis
 import /*embed*/ {ObjectListViewTagsAggregate} from './components/objectlistviewtagsaggregate';
 
 import /*embed*/ {ObjectListViewFilterPanel} from './components/objectlistviewfilterpanel';
-import /*embed*/ {ObjectListViewFilterPanelExportButton} from './components/objectlistviewfilterpanelexportbutton';
-import /*embed*/ {ObjectListViewFilterPanelExportTargetlist} from './components/objectlistviewfilterpanelexporttargetlist';
 import /*embed*/ {ObjectListViewFilterPanelFilterMyItems} from './components/objectlistviewfilterpanelfiltermyitems';
 import /*embed*/ {ObjectListViewFilterPanelFilterItem} from './components/objectlistviewfilterpanelfilteritem';
-import /*embed*/ {ObjectListViewFilterPanelFilterText} from './components/objectlistviewfilterpanelfiltertext';
-import /*embed*/ {ObjectListViewFilterPanelFilterEnum} from './components/objectlistviewfilterpanelfilterenum';
-import /*embed*/ {ObjectListViewFilterPanelFilterBool} from './components/objectlistviewfilterpanelfilterbool';
-import /*embed*/ {ObjectListViewFilterPanelFilterDate} from './components/objectlistviewfilterpanelfilterdate';
 
 import /*embed*/ {ObjectListViewSettings} from './components/objectlistviewsettings';
 import /*embed*/ {ObjectListViewSettingsAddlistModal} from './components/objectlistviewsettingsaddlistmodal';
@@ -264,14 +258,8 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectListViewAggregateItemRange,
         ObjectListViewTagsAggregate,
         ObjectListViewFilterPanel,
-        ObjectListViewFilterPanelExportButton,
-        ObjectListViewFilterPanelExportTargetlist,
         ObjectListViewFilterPanelFilterMyItems,
         ObjectListViewFilterPanelFilterItem,
-        ObjectListViewFilterPanelFilterText,
-        ObjectListViewFilterPanelFilterEnum,
-        ObjectListViewFilterPanelFilterBool,
-        ObjectListViewFilterPanelFilterDate,
         ObjectListViewSettings,
         ObjectListViewSettingsAddlistModal,
         ObjectListViewSettingsDeletelistModal,

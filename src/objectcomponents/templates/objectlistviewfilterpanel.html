@@ -10,8 +10,7 @@
                 <ng-template #unchanged>
                     <div class="slds-filters__header slds-grid slds-grid--align-spread slds-has-divider--bottom-space">
                         <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
-                        <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}
-                        </button>
+                        <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
                     </div>
                 </ng-template>
                 <object-listview-filter-panel-filter-myitems [(ngModel)]="filter.groupscope"></object-listview-filter-panel-filter-myitems>

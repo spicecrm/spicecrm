@@ -19,7 +19,9 @@ import {metadata} from '../../services/metadata.service';
 import {backend} from '../../services/backend.service';
 import {modellist} from '../../services/modellist.service';
 import {language} from '../../services/language.service';
+import {userpreferences} from '../../services/userpreferences.service';
 import {listfilters} from '../services/listfilters.service';
+
 
 import {SystemFilterBuilderFilterExpression} from "../../systemcomponents/components/systemfilterbuilderfilterexpression";
 
@@ -69,7 +71,8 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
         private listfilters: listfilters,
         private elementRef: ElementRef,
         private modellist: modellist,
-        private renderer: Renderer2
+        private renderer: Renderer2,
+        private userpreferences: userpreferences
     ) {
         super(backend, language, metadata);
     }
@@ -131,11 +134,18 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
         }, 250);
     }
 
-
+    /**
+     * closes the popover
+     */
     private closePopover() {
         this.showPopover = false;
     }
 
+    /**
+     * registers a listener top the click on the document and checks wehter the clock was in the popover or outside
+     *
+     * @param event
+     */
     private onDocumentClick(event: MouseEvent): void {
         if (this.showPopover) {
             if (!this.elementRef.nativeElement.contains(event.target)) {
@@ -145,6 +155,9 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
         }
     }
 
+    /**
+     * positions the popover properly
+     */
     private getPopoverStyle() {
         let rect = this.elementRef.nativeElement.getBoundingClientRect();
         let poprect = this.popover.element.nativeElement.getBoundingClientRect();
@@ -155,17 +168,49 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
         };
     }
 
-    /*
-     for the filter handling
+    /**
+     * display the name oif the field used for the filter resp the labe that it is a new filter
      */
-
     private getDisplayName() {
         return this.field ? this.language.getFieldDisplayName(this.modellist.module, this.field) : this.language.getLabel('LBL_NEW_FILTER');
     }
 
+    /**
+     * emits that the filter shopudl be deleted
+     */
     private deleteFilter() {
         this.deleteItem.emit(true);
     }
 
+    /**
+     * returns a proper formated value for the filter value field
+     *
+     * @param value
+     */
+    private interpretvalue(value) {
+        try {
+            let operator = this.operators[this.operatortype].find(item => item.operator == this.operator);
+            switch (operator.value1) {
+                case 'date':
+                    return this.userpreferences.formatDate(value);
+                    break;
+                case 'enum':
+                    return this.language.getFieldDisplayOptionValue(this.module, this.field, value);
+                    break;
+                case 'multienum':
+                    let retvalues = [];
+                    let values = value.split(',');
+                    for (let thisvalue of values) {
+                        retvalues.push(this.language.getFieldDisplayOptionValue(this.module, this.field, thisvalue));
+                    }
+                    return retvalues.join(', ');
+                    break;
+                default:
+                    return value;
+            }
+        } catch (e) {
+            return value;
+        }
+    }
 
 }
