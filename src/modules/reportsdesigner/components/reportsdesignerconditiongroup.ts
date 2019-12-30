@@ -250,12 +250,14 @@ export class ReportsDesignerConditionGroup implements OnInit, OnDestroy {
      * @set whereConditions
      */
     private addCondition(field) {
+        let guid = this.model.generateGuid();
         let condition = {
-            id: this.model.generateGuid(),
+            id: guid,
             groupid: this.group.id,
-            fieldid: field.fieldid,
+            unionid: this.group.id,
+            fieldid: guid,
             referencefieldid: '',
-            path: this.reportsDesignerService.currentPath + '::' + field.id,
+            path: `root:${this.reportsDesignerService.currentPath}::${field.id}`,
             displaypath: this.reportsDesignerService.currentPath,
             name: field.name,
             type: field.type,

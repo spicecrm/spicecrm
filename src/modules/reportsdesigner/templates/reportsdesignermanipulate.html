@@ -31,20 +31,20 @@
                     </td>
                     <td>
                         <div class="slds-form-element">
-                            <system-input-label [ngModel]="field.name" (ngModelChange)="setFieldValue('name', $event)"></system-input-label>
+                            <system-input-label [ngModel]="field.name" (ngModelChange)="setFieldValue(field.fieldid, 'name', $event)"></system-input-label>
                         </div>
                     </td>
                     <td>
                         <div class="slds-form-element">
                             <div class="slds-form-element__control">
-                                <input type="text" [ngModel]="field.fixedvalue" (ngModelChange)="setFieldValue('fixedvalue', $event)" class="slds-input">
+                                <input type="text" [ngModel]="field.fixedvalue" (ngModelChange)="setFieldValue(field.fieldid, 'fixedvalue', $event)" class="slds-input">
                             </div>
                         </div>
                     </td>
                     <td>
                         <div class="slds-form-element">
                             <div class="slds-form-element__control">
-                                <input type="text" [ngModel]="field.formulasequence" (ngModelChange)="setFieldValue('formulasequence', $event)" class="slds-input">
+                                <input type="text" [ngModel]="field.formulasequence" (ngModelChange)="setFieldValue(field.fieldid, 'formulasequence', $event)" class="slds-input">
                             </div>
                         </div>
                     </td>
@@ -66,7 +66,7 @@
                                     <label class="slds-form-element__label">{{language.getLabel('LBL_REQUIRED')}}</label>
                                     <div class="slds-form-element__control">
                                         <div class="slds-select_container">
-                                            <select class="slds-select" [ngModel]="field.jointype" (ngModelChange)="setFieldValue('jointype', $event)">
+                                            <select class="slds-select" [ngModel]="field.jointype" (ngModelChange)="setFieldValue(field.fieldid, 'jointype', $event)">
                                                 <option value="optional">{{language.getLabel('LBL_OPTIONAL')}}</option>
                                                 <option value="required">{{language.getLabel('LBL_REQUIRED')}}</option>
                                             </select>
@@ -78,7 +78,7 @@
                                         <label class="slds-form-element__label">{{language.getLabel('LBL_FUNCTION')}}</label>
                                         <div class="slds-form-element__control">
                                             <div class="slds-select_container">
-                                                <select class="slds-select" [ngModel]="field.sqlfunction" (ngModelChange)="setFieldValue('sqlfunction', $event)">
+                                                <select class="slds-select" [ngModel]="field.sqlfunction" (ngModelChange)="setFieldValue(field.fieldid, 'sqlfunction', $event)">
                                                     <option value="SUM">{{language.getLabel('LBL_SUM')}}</option>
                                                     <option value="COUNT">{{language.getLabel('LBL_COUNT')}}</option>
                                                     <option value="COUNT_DISTINCT">{{language.getLabel('LBL_COUNT_DISTINCT')}}</option>
@@ -95,7 +95,7 @@
                                     <div class="slds-form-element slds-size--1-of-2">
                                         <label class="slds-form-element__label">{{language.getLabel('LBL_CUSTOM_FUNCTION')}}</label>
                                         <div class="slds-form-element__control">
-                                            <input type="text" [ngModel]="field.customsqlfunction" (ngModelChange)="setFieldValue('customsqlfunction', $event)" class="slds-input">
+                                            <input type="text" [ngModel]="field.customsqlfunction" (ngModelChange)="setFieldValue(field.fieldid, 'customsqlfunction', $event)" class="slds-input">
                                         </div>
                                     </div>
                                 </div>
@@ -104,7 +104,7 @@
                                         <label class="slds-form-element__label">{{language.getLabel('LBL_GROUP_BY')}}</label>
                                         <div class="slds-form-element__control">
                                             <div class="slds-select_container">
-                                                <select class="slds-select" [ngModel]="field.groupby" (ngModelChange)="setFieldValue('groupby', $event)">
+                                                <select class="slds-select" [ngModel]="field.groupby" (ngModelChange)="setFieldValue(field.fieldid, 'groupby', $event)">
                                                     <option value="yes">{{language.getLabel('LBL_YES')}}</option>
                                                     <option value="no">{{language.getLabel('LBL_NO')}}</option>
                                                 </select>
@@ -114,7 +114,7 @@
                                     <div class="slds-form-element slds-size--1-of-2">
                                         <label class="slds-form-element__label">{{language.getLabel('LBL_GROUPING')}}</label>
                                         <div class="slds-form-element__control">
-                                            <input type="text" [ngModel]="field.grouping" (ngModelChange)="setFieldValue('grouping', $event)" class="slds-input">
+                                            <input type="text" [ngModel]="field.grouping" (ngModelChange)="setFieldValue(field.fieldid, 'grouping', $event)" class="slds-input">
                                         </div>
                                     </div>
                                 </div>
@@ -123,7 +123,7 @@
                                         <label class="slds-form-element__label">{{language.getLabel('LBL_VALUE_TYPE')}}</label>
                                         <div class="slds-form-element__control">
                                             <div class="slds-select_container">
-                                                <select class="slds-select" [ngModel]="field.valuetype" (ngModelChange)="setFieldValue('valuetype', $event)">
+                                                <select class="slds-select" [ngModel]="field.valuetype" (ngModelChange)="setFieldValue(field.fieldid, 'valuetype', $event)">
                                                     <option value="TOFSUM">{{language.getLabel('LBL_VALUE_TYPE_TOFSUM')}}</option>
                                                     <option value="POFSUM">{{language.getLabel('LBL_VALUE_TYPE_POFSUM')}}</option>
                                                     <option value="POFCOUNT">{{language.getLabel('LBL_VALUE_TYPE_POFCOUNT')}}</option>
@@ -139,7 +139,7 @@
                                     <div class="slds-form-element slds-size--1-of-2">
                                         <label class="slds-form-element__label">{{language.getLabel('LBL_STORE')}}</label>
                                         <div class="slds-form-element__control">
-                                            <input type="text" [ngModel]="field.assigntovalue" (ngModelChange)="setFieldValue('assigntovalue', $event)" class="slds-input">
+                                            <input type="text" [ngModel]="field.assigntovalue" (ngModelChange)="setFieldValue(field.fieldid, 'assigntovalue', $event)" class="slds-input">
                                         </div>
                                     </div>
                                 </div>
@@ -147,7 +147,7 @@
                                     <label class="slds-form-element__label">{{language.getLabel('LBL_FORMULA')}}</label>
                                     <div class="slds-form-element__control">
                                         <div class="slds-select_container">
-                                            <textarea class="slds-textarea" [ngModel]="field.formulavalue" (ngModelChange)="setFieldValue('formulavalue', $event)" style="height: 150px"></textarea>
+                                            <textarea class="slds-textarea" [ngModel]="field.formulavalue" (ngModelChange)="setFieldValue(field.fieldid, 'formulavalue', $event)" style="height: 150px"></textarea>
                                         </div>
                                     </div>
                                 </div>
