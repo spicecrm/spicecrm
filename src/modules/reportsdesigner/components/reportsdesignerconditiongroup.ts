@@ -19,8 +19,20 @@ declare var _;
 export class ReportsDesignerConditionGroup implements OnInit, OnDestroy {
 
     public expanded: number;
+
+    /*
+     * @input group: object
+     */
     @Input() private group: any;
+
+    /*
+     * @input canDelete: boolean
+     */
     @Input() private canDelete: boolean = false;
+
+    /*
+     * @output groupDeleted: EventEmitter<string> = groupId
+     */
     @Output() private groupDeleted: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(private language: language,
@@ -28,37 +40,67 @@ export class ReportsDesignerConditionGroup implements OnInit, OnDestroy {
                 private model: model) {
     }
 
+    /*
+     * @return wheregroups: object[]
+     */
     get whereGroups() {
         let groups = this.model.getField('wheregroups');
         return groups && groups.length > 0 ? JSON.parse(groups) ? JSON.parse(groups) : [] : [];
     }
 
+    /*
+     * @param value: object[]
+     * @set wheregroups
+     */
     set whereGroups(value) {
         this.model.setField('wheregroups', JSON.stringify(value));
     }
 
+    /*
+     * @return whereConditions: object[]
+     */
     get whereConditions() {
         let conditions = this.model.getField('whereconditions');
         return conditions && conditions.length > 0 ? JSON.parse(conditions) ? JSON.parse(conditions) : [] : [];
     }
 
+    /*
+     * @param value: object[]
+     * @set whereConditions
+     */
     set whereConditions(value) {
         this.model.setField('whereconditions', JSON.stringify(value));
     }
 
+    /*
+     * @loadWhereGroups
+     * @setDropLists
+     */
     public ngOnInit() {
         if (!this.group) this.loadWhereGroups();
         this.setDropLists();
     }
 
+    /*
+     * @reset dropLists
+     */
     public ngOnDestroy() {
         this.reportsDesignerService.dropLists = [];
     }
 
+    /*
+     * @set dropLists
+     */
     private setDropLists() {
         this.reportsDesignerService.dropLists = this.whereGroups.map(group => group.id).reverse();
     }
 
+    /*
+     * @set group
+     * @set group.children
+     * @set group.conditions
+     * @set whereGroups
+     */
     private loadWhereGroups() {
         if (this.whereGroups.length > 0) {
             this.group = this.whereGroups.find(group => group.id == 'root');
@@ -72,7 +114,7 @@ export class ReportsDesignerConditionGroup implements OnInit, OnDestroy {
                 id: 'root',
                 groupid: 'root',
                 unionid: 'root',
-                type: 'and',
+                type: 'AND',
                 parent: '-',
                 notexists: '',
                 conditions: [],
@@ -82,6 +124,11 @@ export class ReportsDesignerConditionGroup implements OnInit, OnDestroy {
         }
     }
 
+    /*
+     * @removePlaceHolderElement
+     * @moveItemInArray? item in group.conditions
+     * @addCondition?
+     */
     private onDrop(dragEvent: CdkDragDrop<any>) {
         this.reportsDesignerService.removePlaceHolderElement(dragEvent.previousContainer.element.nativeElement);
 
@@ -108,15 +155,27 @@ export class ReportsDesignerConditionGroup implements OnInit, OnDestroy {
         }
     }
 
+    /*
+     * @set expanded = conditionId | null
+     */
     private toggleExpand(conditionId) {
         if (!this.reportsDesignerService.expertMode) return;
         this.expanded = conditionId == this.expanded ? null : conditionId;
     }
 
+    /*
+     * @emit group.id by groupDeleted
+     */
     private emitSelfDeletion() {
         this.groupDeleted.emit(this.group.id);
     }
 
+    /*
+     * @define group
+     * @push group to group.children
+     * @set whereGroups
+     * @setDropLists
+     */
     private addGroup() {
         let guid = this.model.generateGuid();
         let group = {
@@ -136,6 +195,12 @@ export class ReportsDesignerConditionGroup implements OnInit, OnDestroy {
         this.setDropLists();
     }
 
+    /*
+     * @param groupId: string
+     * @set group.children
+     * @set whereGroups
+     * @cleanWhereConditions
+     */
     private deleteGroup(groupId) {
         this.group.children = this.group.children.filter(group => group.id != groupId);
         let groups = this.whereGroups;
@@ -145,6 +210,10 @@ export class ReportsDesignerConditionGroup implements OnInit, OnDestroy {
         this.cleanWhereConditions();
     }
 
+    /*
+     * @forEach whereConditions
+     * @deleteCondition if it does not have a parent
+     */
     private cleanWhereConditions() {
         this.whereConditions.forEach(condition => {
             if (!this.whereGroups.some(group => group.id == condition.groupid)) {
@@ -153,6 +222,12 @@ export class ReportsDesignerConditionGroup implements OnInit, OnDestroy {
         });
     }
 
+    /*
+     * @define condition
+     * @param field: object
+     * @push condition to group.conditions
+     * @set whereConditions
+     */
     private addCondition(field) {
         let condition = {
             id: this.model.generateGuid(),
@@ -179,6 +254,12 @@ export class ReportsDesignerConditionGroup implements OnInit, OnDestroy {
         this.whereConditions = conditions;
     }
 
+    /*
+     * @param id: string
+     * @filter whereConditions from id
+     * @set group.conditions
+     * @set whereConditions
+     */
     private deleteCondition(id) {
         let conditions = this.whereConditions;
         conditions = conditions.filter(condition => condition.id != id);
@@ -186,6 +267,13 @@ export class ReportsDesignerConditionGroup implements OnInit, OnDestroy {
         this.whereConditions = conditions;
     }
 
+    /*
+     * @param id: string
+     * @param key: string
+     * @param value: string
+     * @set condition[key] = value
+     * @set whereConditions
+     */
     private setConditionValue(id, key, value) {
         let conditions = this.whereConditions;
         conditions.some(condition => {

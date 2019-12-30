@@ -25,23 +25,39 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
                 private reportsDesignerService: ReportsDesignerService) {
     }
 
+    /*
+    * @return treeCDKDragList: cdkDragList
+    */
     get dragList() {
         return this.reportsDesignerService.treeCDKDragList;
     }
 
+    /*
+    * @param value: object
+    * @set model.listfields
+    */
     set listItems(value) {
         this.model.setField('listfields', JSON.stringify(value));
     }
 
+    /*
+    * @return listfields: object[]
+    */
     get listItems() {
         const fields = this.model.getField('listfields');
         return fields && fields.length > 0 ? JSON.parse(fields) : [];
     }
 
+    /*
+    * @set dropLists
+    */
     public ngAfterViewInit() {
         this.reportsDesignerService.dropLists = this.dropList;
     }
 
+    /*
+    * @rest dropLists
+    */
     public ngOnDestroy() {
         this.reportsDesignerService.dropLists = [];
     }
@@ -57,6 +73,12 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
         return item.id;
     }
 
+    /*
+    * @removePlaceHolderElement
+    * @moveItemInArray? item in listItems
+    * @splice listItems add newItem
+    * @set listItems
+    */
     private onDrop(dragEvent: CdkDragDrop<any>) {
         this.reportsDesignerService.removePlaceHolderElement(dragEvent.previousContainer.element.nativeElement);
         let listItems = this.listItems.slice();
@@ -81,8 +103,8 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
     }
 
     /*
-     * @delete the record with the given index
      * @param fieldId: string
+     * @delete the record with the given index
      */
     private deleteField(fieldId) {
         this.modal.confirmDeleteRecord().subscribe(response => {
@@ -94,6 +116,11 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
         });
     }
 
+    /*
+     * @param field: string
+     * @param value: string
+     * @set listItems
+     */
     private setFieldValue(field, value) {
         let listItems = this.listItems.slice();
         listItems.some(item => {
@@ -104,6 +131,10 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
         this.listItems = listItems;
     }
 
+    /*
+     * @param fieldId: string
+     * @set expandedItemId = fieldId | null
+     */
     private toggleExpand(fieldId) {
         if (!this.reportsDesignerService.expertMode) return;
         this.expandedItemId = fieldId == this.expandedItemId ? null : fieldId;
