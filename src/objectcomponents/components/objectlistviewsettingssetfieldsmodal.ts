@@ -37,6 +37,10 @@ export class ObjectListViewSettingsSetfieldsModal {
                 this.availableFields.push(listField.field);
             }
         }
+
+        // sort listfields by fielddefs
+        this.listFields.sort((a, b) => fielddefs.indexOf(a) > fielddefs.indexOf(b) ? 1 : -1)
+
         this.sortAvailableFields();
     }
 

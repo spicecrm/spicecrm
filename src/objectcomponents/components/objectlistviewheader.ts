@@ -29,7 +29,6 @@ import {animate, style, transition, trigger} from "@angular/animations";
 })
 export class ObjectListViewHeader implements OnDestroy {
     @Input() private parentconfig: any = [];
-    @Output() private headerevent = new EventEmitter<any>();
     private actionSet: any = {};
     private searchTimeOut: any;
     private panelButtonState: string = '';
@@ -70,11 +69,6 @@ export class ObjectListViewHeader implements OnDestroy {
             this.panelButtonState = state;
         }
 
-    }
-
-
-    private changeList(event) {
-        this.headerevent.emit({event: 'changelist', list: event});
     }
 
     private getPanelButtonClass(state) {

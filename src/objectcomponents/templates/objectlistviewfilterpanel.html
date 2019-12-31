@@ -14,6 +14,7 @@
                     </div>
                 </ng-template>
                 <object-listview-filter-panel-filter-myitems [(ngModel)]="filter.groupscope"></object-listview-filter-panel-filter-myitems>
+                <object-listview-filter-panel-filter-geo [(geography)]="geography"></object-listview-filter-panel-filter-geo>
                 <div class="slds-grid slds-p-around--xx-small">
                     <label class="slds-form-element__label">{{language.getLabel('LBL_MATCHING')}}</label>
                     <system-input-radio name="operator" value="and" [(ngModel)]="filter.logicaloperator">{{language.getLabel('LBL_ALL')}}</system-input-radio>

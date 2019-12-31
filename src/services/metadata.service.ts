@@ -816,6 +816,11 @@ export class metadata {
         }
     }
 
+    /**
+     * returns the module list types for a given module
+     *
+     * @param module
+     */
     public getModuleListTypes(module: string) {
         try {
             return this.moduleDefs[module].listtypes;
@@ -824,10 +829,22 @@ export class metadata {
         }
     }
 
+    /**
+     * adds a specific new module list type
+     *
+     * @param module
+     * @param listTypeData
+     */
     public addModuleListType(module: string, listTypeData: any) {
         this.moduleDefs[module].listtypes.push(listTypeData);
     }
 
+    /**
+     * updates the module list type
+     *
+     * @param module
+     * @param listTypeData
+     */
     public updateModuleListType(module: string, listTypeData: any) {
         this.moduleDefs[module].listtypes.some(listtype => {
             if (listtype.id == listTypeData.id) {
@@ -840,6 +857,7 @@ export class metadata {
             }
         });
     }
+
 
     public getFieldDefs(module: string, field: string) {
         try {
