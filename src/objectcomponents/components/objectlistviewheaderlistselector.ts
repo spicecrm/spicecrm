@@ -67,7 +67,7 @@ export class ObjectListViewHeaderListSelector implements OnInit{
 
     setListtype(component){
         this.currentList = component;
-        this.changelist.emit(component);
+        this.modellist.listcomponent = component;
     }
 
 }

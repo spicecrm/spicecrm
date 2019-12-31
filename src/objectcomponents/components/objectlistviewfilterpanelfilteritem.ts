@@ -21,9 +21,9 @@ import {modellist} from '../../services/modellist.service';
 import {language} from '../../services/language.service';
 import {userpreferences} from '../../services/userpreferences.service';
 import {listfilters} from '../services/listfilters.service';
-
-
 import {SystemFilterBuilderFilterExpression} from "../../systemcomponents/components/systemfilterbuilderfilterexpression";
+
+declare var _: any;
 
 /**
  * displays a filter item
@@ -62,6 +62,9 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
      */
     private excludedFieldtypes: string[] = ['link', 'relate', 'email'];
 
+    /**
+     * an emitter to indicate that the current item should be deleted by the user
+     */
     @Output() public deleteItem: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     constructor(
@@ -199,7 +202,7 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
                     break;
                 case 'multienum':
                     let retvalues = [];
-                    let values = value.split(',');
+                    let values = _.isArray(value) ? value : value.split(',');
                     for (let thisvalue of values) {
                         retvalues.push(this.language.getFieldDisplayOptionValue(this.module, this.field, thisvalue));
                     }

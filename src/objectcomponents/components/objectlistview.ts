@@ -121,6 +121,15 @@ export class ObjectListView implements OnInit, AfterViewInit {
     public ngAfterViewInit() {
         this.initialized = true;
         this.currentList = this.componentconfig.defaultlist;
+
+        this.modellist.listcomponent$.subscribe(listcomponent => {
+            this.userpreferences.setPreference('defaultlisttype', listcomponent, false, 'SpiceUI_' + this.modellist.module);
+
+            // set the current list and rebuild the container
+            this.currentList = listcomponent;
+            this.buildContainer(listcomponent);
+        })
+
         this.buildContainer();
     }
 
@@ -157,30 +166,4 @@ export class ObjectListView implements OnInit, AfterViewInit {
         }
     }
 
-    /**
-     * a getter for the style of the container to ensure that is rendered at full hieght with overflow hidden
-     *
-     * ToDo: check if not a specific toBottom compoennt would be better that is not scrollable
-     */
-    get containerStyle() {
-        let rect = this.container.element.nativeElement.getBoundingClientRect();
-        return {
-            'height': 'calc(100vh - ' + rect.top + 'px)',
-            'overflow-y': 'hidden'
-        };
-    }
-
-    /*
-     * tied to the oputput fromthe header to tolggle the event wnhn the list type changes
-     */
-    private handleHeaderEvent(event) {
-        if (event.event && event.event == 'changelist') {
-            // set preferences
-            this.userpreferences.setPreference('defaultlisttype', event.list, false, 'SpiceUI_' + this.modellist.module);
-
-            // set the current list and rebuild the container
-            this.currentList = event.list;
-            this.buildContainer(event.list);
-        }
-    }
 }
