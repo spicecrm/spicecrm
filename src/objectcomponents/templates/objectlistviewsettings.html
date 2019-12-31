@@ -18,11 +18,11 @@
                     <span class="slds-truncate">{{language.getLabel('LBL_EDIT')}}</span>
                 </a>
             </li>
-            <!--li class="slds-dropdown__item" role="presentation">
-                <a style="cursor: pointer" class="slds-button" role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('edit')" (click)="setfields()">
-                    <span class="slds-truncate">{{language.getLabel('LBL_SETFIELDS')}}</span>
+            <li class="slds-dropdown__item" role="presentation">
+                <a style="cursor: pointer" class="slds-button" role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('edit')" (click)="save()">
+                    <span class="slds-truncate">{{language.getLabel('LBL_SAVE')}}</span>
                 </a>
-            </li-->
+            </li>
             <li class="slds-dropdown__item" role="presentation">
                 <a style="cursor: pointer" class="slds-button" role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('delete')" (click)="delete()">
                     <span class="slds-truncate">{{language.getLabel('LBL_DELETE')}}</span>

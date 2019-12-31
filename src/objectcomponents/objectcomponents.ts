@@ -88,6 +88,7 @@ import /*embed*/ {ObjectListViewTagsAggregate} from './components/objectlistview
 
 import /*embed*/ {ObjectListViewFilterPanel} from './components/objectlistviewfilterpanel';
 import /*embed*/ {ObjectListViewFilterPanelFilterMyItems} from './components/objectlistviewfilterpanelfiltermyitems';
+import /*embed*/ {ObjectListViewFilterPanelFilterGeo} from './components/objectlistviewfilterpanelfiltergeo';
 import /*embed*/ {ObjectListViewFilterPanelFilterItem} from './components/objectlistviewfilterpanelfilteritem';
 
 import /*embed*/ {ObjectListViewSettings} from './components/objectlistviewsettings';
@@ -259,6 +260,7 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectListViewTagsAggregate,
         ObjectListViewFilterPanel,
         ObjectListViewFilterPanelFilterMyItems,
+        ObjectListViewFilterPanelFilterGeo,
         ObjectListViewFilterPanelFilterItem,
         ObjectListViewSettings,
         ObjectListViewSettingsAddlistModal,

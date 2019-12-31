@@ -1,7 +1,7 @@
 /**
  * @module services
  */
-import {Injectable, OnDestroy} from '@angular/core';
+import {EventEmitter, Injectable, OnDestroy} from '@angular/core';
 import {Observable, Subject, of, BehaviorSubject} from 'rxjs';
 import {backend} from './backend.service';
 import {userpreferences} from './userpreferences.service';
@@ -119,6 +119,9 @@ export class modellist implements OnDestroy {
      */
     public usecache: boolean = false;
 
+    /**
+     * the default lists any module has
+     */
     public standardLists: any[] = [
         {
             id: 'all',
@@ -144,8 +147,32 @@ export class modellist implements OnDestroy {
             }
         }
     ];
+
+    /**
+     * the availöable list types for the module
+     *
+     * ToDo ... decide if we need them here at all or just keep them on the metadata service where they belong
+     */
     public listTypes: any[] = [];
+
+    /**
+     * the current seletced list
+     */
     public currentList: any = {};
+
+    /**
+     * the listcomponent used to render the list
+     */
+    public _listcomponent: string;
+
+    /**
+     * an eventemitter for the listcompoonent
+     */
+    public listcomponent$: EventEmitter<any> = new EventEmitter<any>();
+
+    /**
+     * any other service that is subscribed .. to ensure we unsubscribe on destroy
+     */
     public serviceSubscriptions: any[] = [];
 
     constructor(
@@ -211,7 +238,8 @@ export class modellist implements OnDestroy {
         // get the custom listtypes
         this.listTypes = [];
         for (let listtype of this.metadata.getModuleListTypes(this.module)) {
-            this.addCustomListtype(listtype.id, listtype.name, listtype.basefilter, listtype.fielddefs, listtype.filterdefs, listtype.global);
+            this.listTypes.push(listtype);
+            // this.addCustomListtype(listtype.id, listtype.name, listtype.basefilter, listtype.fielddefs, listtype.filterdefs, listtype.global);
         }
 
         // check if we have preferences set for the user
@@ -221,6 +249,15 @@ export class modellist implements OnDestroy {
         } else {
             this.setListType('all', false);
         }
+    }
+
+    get listcomponent() {
+        return this._listcomponent;
+    }
+
+    set listcomponent(listcomponent) {
+        this._listcomponent = listcomponent;
+        this.listcomponent$.emit(listcomponent);
     }
 
     /**
@@ -318,6 +355,13 @@ export class modellist implements OnDestroy {
             }
             modulepreferences.lastlisttype = listType;
             this.userpreferences.setPreference(this.module, modulepreferences);
+        }
+
+        // set the aggregates
+        if (this.currentList.aggregates) {
+            this.selectedAggregates = JSON.parse(atob(this.currentList.aggregates));
+        } else {
+            this.selectedAggregates = [];
         }
 
         // emit the change
@@ -468,8 +512,16 @@ export class modellist implements OnDestroy {
      *
      * @param listParams
      */
-    public updateListType(listParams): Observable<boolean> {
+    public updateListType(listParams?): Observable<boolean> {
         let retSub = new Subject<boolean>();
+
+        if (!listParams) {
+            listParams = {};
+        }
+
+        // set the aggregates
+        listParams.aggregates = btoa(JSON.stringify(this.selectedAggregates));
+
         this.backend.postRequest(`spiceui/core/modules/${this.module}/listtypes/${this.currentList.id}`, {}, listParams).subscribe(listdata => {
             this.listTypes.some(item => {
                 if (item.id == this.currentList.id) {

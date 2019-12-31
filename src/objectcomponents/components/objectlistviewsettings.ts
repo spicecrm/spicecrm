@@ -4,6 +4,7 @@
 import {Component, ElementRef, Renderer2, Injector} from '@angular/core';
 import {modellist} from '../../services/modellist.service';
 import {modal} from '../../services/modal.service';
+import {toast} from '../../services/toast.service';
 import {language} from '../../services/language.service';
 import {ObjectListViewSettingsAddlistModal} from "./objectlistviewsettingsaddlistmodal";
 import {ObjectListViewSettingsSetfieldsModal} from "./objectlistviewsettingssetfieldsmodal";
@@ -23,8 +24,10 @@ export class ObjectListViewSettings {
         private modal: modal,
         private modellist: modellist,
         private renderer: Renderer2,
-        private injector: Injector
-    ) {}
+        private injector: Injector,
+        private toast: toast
+    ) {
+    }
 
     private toggleMenu() {
         this.showMenu = !this.showMenu;
@@ -59,6 +62,12 @@ export class ObjectListViewSettings {
         this.modal.openModal('ObjectListViewSettingsAddlistModal').subscribe(modalref => {
             modalref.instance.modellist = this.modellist;
             modalref.instance.modalmode = 'edit';
+        });
+    }
+
+    private save() {
+        this.modellist.updateListType({}).subscribe(saved => {
+            this.toast.sendToast('List Saved');
         });
     }
 

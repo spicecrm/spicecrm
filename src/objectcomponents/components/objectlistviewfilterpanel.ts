@@ -30,6 +30,7 @@ export class ObjectListViewFilterPanel {
     private filter = {
         logicaloperator: 'and',
         groupscope: 'all',
+        geography:{},
         conditions: []
     };
 
@@ -52,9 +53,26 @@ export class ObjectListViewFilterPanel {
             this.filter = {
                 logicaloperator: 'and',
                 groupscope: 'all',
+                geography:{},
                 conditions: []
             };
         }
+    }
+
+    /**
+     * simple getter and setter for the geography
+     */
+    get geography(){
+        return this.filter.geography ? this.filter.geography : {};
+    }
+
+    /**
+     * simple setter for the geography
+     *
+     * @param geography
+     */
+    set geography(geography){
+        this.filter.geography = geography;
     }
 
     /**
