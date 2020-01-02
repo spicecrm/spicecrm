@@ -18,7 +18,7 @@
     <div *ngIf="this.componentconfig.sumfield" class="slds-grid slds-border--bottom">
         <div *ngFor="let stage of stages" class="slds-col slds-p-horizontal--xx-small slds-m-top--x-small"
              [ngClass]="sizeClass">
-            <div class="slds-text-heading--medium slds-text-align--center slds-p-vertical--x-small">
+            <div class="slds-text-heading--medium slds-text-align--center slds-p-vertical--x-small" [ngClass]="{'slds-text-color--inverse-weak': modellist.isLoading}">
                 <spice-kanban-sumfield [value]="getStageSum(stage.stagedata)"></spice-kanban-sumfield>
             </div>
         </div>
