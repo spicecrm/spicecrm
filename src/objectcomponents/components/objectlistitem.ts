@@ -1,8 +1,8 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Input, OnInit} from '@angular/core';
-import {Router}   from '@angular/router';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
 import {modelutilities} from '../../services/modelutilities.service';
@@ -16,7 +16,8 @@ import {view} from '../../services/view.service';
     styles: [
         ':host /deep/ field-container global-button-icon {display:none;}',
         ':host:hover /deep/ field-container global-button-icon {display:inline;}',
-    ]
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ObjectListItem implements OnInit {
 
@@ -30,7 +31,7 @@ export class ObjectListItem implements OnInit {
     // input param to determine if theaction menu is shown for the model
     @Input() private showActionMenu: boolean = true;
 
-    constructor(private model: model, private modelutilities: modelutilities, private modellist: modellist, private view: view, private router: Router, private language: language) {
+    constructor(private model: model, private modelutilities: modelutilities, private modellist: modellist, private view: view, private router: Router, private language: language, private cdref: ChangeDetectorRef) {
         this.view.displayLabels = false;
     }
 
@@ -42,6 +43,9 @@ export class ObjectListItem implements OnInit {
 
         this.view.isEditable = this.inlineedit && this.model.checkAccess('edit');
         this.view.displayLinks = this.displaylinks;
+
+        // register that the check is run
+        this.model.data$.subscribe(data => this.cdref.detectChanges());
     }
 
     private navigateDetail() {
