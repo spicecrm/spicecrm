@@ -323,6 +323,10 @@ export class metadata {
                             if (factory.componentType.name === "SystemComponentMissing") {
                                 let componentRef = viewChild.createComponent(factory, undefined, injector);
                                 componentRef.instance.component = component;
+
+                                // make sure we mark the component for change detection
+                                componentRef.changeDetectorRef.markForCheck();
+
                                 retSubject.next(componentRef);
                                 retSubject.complete();
                                 return true;
@@ -345,6 +349,9 @@ export class metadata {
                         // add the info ybout the component being added
                         componentRef.instance.containerComponent = component;
 
+                        // make sure we mark the component for change detection
+                        componentRef.changeDetectorRef.markForCheck();
+
                         // add the component itself...
                         componentRef.instance.containerRef.subscribe(subref => {
                             // load by module...
@@ -365,10 +372,17 @@ export class metadata {
                                             }
 
                                             let selfComponentRef = subref.createComponent(cmp_factory);
+
+                                            // set self on the added component
                                             selfComponentRef.instance.self = componentRef;
+
+                                            // make sure we mark the component for change detection
+                                            selfComponentRef.changeDetectorRef.markForCheck();
+
                                             retSubject.next(selfComponentRef);
                                             retSubject.complete();
                                             componentRef.instance.loaded = true;
+
                                             return true;
                                         });
                                     });
