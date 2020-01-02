@@ -18,6 +18,7 @@ export class ReportsDesignerService {
     public operatorTypes: any = {};
     public operatorAssignments: any = {};
     public expertMode: boolean = false;
+    public expandedItemId: string = '';
 
     constructor(private configurationService: configurationService, private backend: backend) {
         let reporterConfig = this.configurationService.getData('reporterConfig');

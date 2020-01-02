@@ -65,24 +65,22 @@ export class ReportsDesignerConditionGroup implements OnInit, OnDestroy {
      * @return wheregroups: object[]
      */
     get whereGroups() {
-        let groups = this.model.getField('wheregroups');
-        return groups && groups.length > 0 ? JSON.parse(groups) ? JSON.parse(groups) : [] : [];
+        return this.model.getField('wheregroups');
     }
 
     /*
-     * @param value: object[]
+     * @param groups: object[]
      * @set wheregroups
      */
-    set whereGroups(value) {
-        this.model.setField('wheregroups', JSON.stringify(value));
+    set whereGroups(groups) {
+        this.model.setField('wheregroups', groups);
     }
 
     /*
      * @return whereConditions: object[]
      */
     get whereConditions() {
-        let conditions = this.model.getField('whereconditions');
-        return conditions && conditions.length > 0 ? JSON.parse(conditions) ? JSON.parse(conditions) : [] : [];
+        return this.model.getField('whereconditions');
     }
 
     /*
@@ -90,7 +88,7 @@ export class ReportsDesignerConditionGroup implements OnInit, OnDestroy {
      * @set whereConditions
      */
     set whereConditions(value) {
-        this.model.setField('whereconditions', JSON.stringify(value));
+        this.model.setField('whereconditions', value);
     }
 
     /*
@@ -123,7 +121,7 @@ export class ReportsDesignerConditionGroup implements OnInit, OnDestroy {
      * @set whereGroups
      */
     private loadWhereGroups() {
-        if (this.whereGroups.length > 0) {
+        if (this.whereGroups && this.whereGroups.length > 0) {
             this.group = this.whereGroups.find(group => group.id == 'root');
             if (this.group) {
                 this.group.children = [];
@@ -187,7 +185,7 @@ export class ReportsDesignerConditionGroup implements OnInit, OnDestroy {
     /*
      * @emit group.id by groupDeleted
      */
-    private emitSelfDeletion() {
+    private emitGroupSelfDeletion() {
         this.groupDeleted.emit(this.group.id);
     }
 
@@ -201,8 +199,8 @@ export class ReportsDesignerConditionGroup implements OnInit, OnDestroy {
         let guid = this.model.generateGuid();
         let group = {
             id: guid,
-            groupId: guid,
-            unionid: guid,
+            groupid: guid,
+            unionid: 'root',
             group: '',
             type: 'AND',
             parent: this.group.id,
@@ -210,9 +208,7 @@ export class ReportsDesignerConditionGroup implements OnInit, OnDestroy {
             children: []
         };
         this.group.children.push(group);
-        let groups = this.whereGroups;
-        groups.push(group);
-        this.whereGroups = groups;
+        this.whereGroups = [...this.whereGroups, group];
         this.setDropLists();
     }
 
@@ -224,10 +220,8 @@ export class ReportsDesignerConditionGroup implements OnInit, OnDestroy {
      */
     private deleteGroup(groupId) {
         this.group.children = this.group.children.filter(group => group.id != groupId);
-        let groups = this.whereGroups;
-        groups = groups.filter(group => group.id != groupId);
-        groups = groups.filter(group => group.parent == '-' || groups.some(g => group.parent == g.id));
-        this.whereGroups = groups;
+        this.whereGroups = this.whereGroups.filter(group => group.id != groupId);
+        this.whereGroups = this.whereGroups.filter(group => group.parent == '-' || this.whereGroups.some(g => group.parent == g.id));
         this.cleanWhereConditions();
     }
 
@@ -272,9 +266,7 @@ export class ReportsDesignerConditionGroup implements OnInit, OnDestroy {
             valuetokey: '',
         };
         this.group.conditions.push(condition);
-        let conditions = this.whereConditions;
-        conditions.push(condition);
-        this.whereConditions = conditions;
+        this.whereConditions = [...this.whereConditions, condition];
     }
 
     /*
@@ -284,24 +276,7 @@ export class ReportsDesignerConditionGroup implements OnInit, OnDestroy {
      * @set whereConditions
      */
     private deleteCondition(id) {
-        let conditions = this.whereConditions;
-        conditions = conditions.filter(condition => condition.id != id);
-        this.group.conditions = conditions;
-        this.whereConditions = conditions;
-    }
-
-    /*
-     * @param id: string
-     * @param key: string
-     * @param value: string
-     * @set condition[key] = value
-     * @set whereConditions
-     */
-    private setConditionValue(id, key, value) {
-        let conditions = this.whereConditions;
-        conditions.some(condition => {
-            if (condition.id == id) condition[key] = value;
-        });
-        this.whereConditions = conditions;
+        this.whereConditions = this.whereConditions.filter(condition => condition.id != id);
+        this.group.conditions = this.whereConditions.filter(condition => condition.groupid == this.group.id);
     }
 }

@@ -1,0 +1,50 @@
+<td class="slds-p-around--none">
+    <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
+</td>
+<td>
+    <div class="slds-truncate" [title]="listItem.displaypath">{{listItem.displaypath}}</div>
+</td>
+<td>
+    <div class="slds-form-element">
+        <system-input-label [(ngModel)]="listItem.name"></system-input-label>
+    </div>
+</td>
+<td>
+    <div class="slds-form-element">
+        <div class="slds-form-element__control">
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="listItem.sqlfunction">
+                    <option value="SUM">{{language.getLabel('LBL_SUM')}}</option>
+                    <option value="COUNT">{{language.getLabel('LBL_COUNT')}}</option>
+                    <option value="COUNT_DISTINCT">{{language.getLabel('LBL_COUNT_DISTINCT')}}</option>
+                    <option value="MAX">{{language.getLabel('LBL_MAXIMUM')}}</option>
+                    <option value="MIN">{{language.getLabel('LBL_MINIMUM')}}</option>
+                    <option value="AVG">{{language.getLabel('LBL_AVERAGE')}}</option>
+                    <option value="GROUP_CONCAT">{{language.getLabel('LBL_GROUP_CONCAT')}}</option>
+                    <option value="GROUP_CONASC">{{language.getLabel('LBL_GROUP_CONCAT')}} (ASC)</option>
+                    <option value="GROUP_CONDSC">{{language.getLabel('LBL_GROUP_CONCAT')}} (DESC)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</td>
+<td>
+    <div class="slds-form-element">
+        <system-checkbox [(ngModel)]="groupBy">&nbsp;</system-checkbox>
+    </div>
+</td>
+<td>
+    <div class="slds-form-element">
+        <system-checkbox [(ngModel)]="joinType">&nbsp;</system-checkbox>
+    </div>
+</td>
+<td class="slds-cell-shrink slds-text-align--center">
+    <button class="slds-button slds-button--icon" (click)="deleteField()">
+        <system-button-icon icon="delete"></system-button-icon>
+    </button>
+</td>
+<td class="slds-cell-shrink">
+    <system-utility-icon [icon]="reportsDesignerService.expandedItemId == listItem.fieldid ? 'up' : 'down'" (click)="toggleExpand()" [colorclass]="reportsDesignerService.expertMode ? 'slds-icon-text-default' : 'slds-icon-text-light'"
+                         size="x-small" class="slds-p-horizontal--small slds-p-vertical--xx-small" style="cursor: pointer"></system-utility-icon>
+</td>
+
