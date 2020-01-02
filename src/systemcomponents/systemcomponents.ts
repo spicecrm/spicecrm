@@ -117,6 +117,7 @@ import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/s
 import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
 import /*embed*/ {SystemInputMedia} from './components/systeminputmedia';
 import /*embed*/ {SystemInputTimezone} from './components/systeminputtimezone';
+import /*embed*/ {SystemInputBase64} from './components/systeminputbase64';
 
 import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
 import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem";
@@ -186,6 +187,7 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemInputTime,
         SystemInputCompanycodes,
         SystemInputBackendMethod,
+        SystemInputBase64,
         SystemLink,
         SystemLoaderProgress,
         SystemLoadingModal,
@@ -282,6 +284,7 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemInputTime,
         SystemInputCompanycodes,
         SystemInputBackendMethod,
+        SystemInputBase64,
         SystemLink,
         SystemLoaderProgress,
         SystemModal,
