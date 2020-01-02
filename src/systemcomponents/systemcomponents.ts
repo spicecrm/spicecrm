@@ -121,6 +121,7 @@ import /*embed*/ {SystemInputTimezone} from './components/systeminputtimezone';
 import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
 import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem";
 
+
 @NgModule({
     imports: [
         DirectivesModule,
@@ -231,7 +232,7 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemModuleTreeItem,
         SystemSelectUOM,
         SystemInputMedia,
-        SystemInputTimezone
+        SystemInputTimezone,
     ],
     entryComponents: [
         SystemDynamicRouteContainer
