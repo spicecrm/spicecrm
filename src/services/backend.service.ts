@@ -806,48 +806,6 @@ export class backend {
     }
 
     /*
-     handling of listtypes
-     */
-    public addListType(module, listdata): Observable<any[]> {
-        let responseSubject = new Subject<any[]>();
-
-        this.postRequest(
-            "spiceui/core/modules/" + module + "/listtypes",
-            {},
-            JSON.stringify(listdata)
-        ).subscribe((response) => {
-            responseSubject.next(response);
-            responseSubject.complete();
-        });
-        return responseSubject.asObservable();
-    }
-
-    public setListType(id, module, listdata): Observable<any[]> {
-        let responseSubject = new Subject<any[]>();
-
-        this.postRequest(
-            "spiceui/core/modules/" + module + "/listtypes/" + id,
-            {},
-            JSON.stringify(listdata)
-        ).subscribe((response) => {
-            responseSubject.next(response);
-            responseSubject.complete();
-        });
-        return responseSubject.asObservable();
-    }
-
-    public deleteListType(id: string): Observable<any> {
-        let responseSubject = new Subject<any>();
-
-        this.deleteRequest("spiceui/core/modules/" + module + "/listtypes/" + id)
-            .subscribe((res) => {
-                responseSubject.next(res);
-                responseSubject.complete();
-            });
-        return responseSubject.asObservable();
-    }
-
-    /*
      internal helper functions
      */
     private backend2spice(module: string, field: string, value: any) {

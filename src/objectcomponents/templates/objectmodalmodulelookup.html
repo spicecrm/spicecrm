@@ -11,10 +11,7 @@
                                              addclasses="slds-input__icon"></system-utility-icon>
                         <input type="text" id="lookup" class="slds-input" [(ngModel)]="searchTerm" [autocomplete]="autoCompleteKiller" (keyup)="triggerSearch($event)" [placeholder]="language.getModuleName(modellist.module)">
                     </div>
-                    <button class="slds-button slds-button--icon-border slds-m-left--x-small"
-                            [disabled]="aggregatesDisabled" (click)="toggleAggregates()">
-                        <system-button-icon icon="bucket"></system-button-icon>
-                    </button>
+                    <object-listview-aggregates-button></object-listview-aggregates-button>
                 </div>
                 <div class="slds-theme--shade slds-p-around--x-small slds-border--top">
                     <object-listview-header-details></object-listview-header-details>
@@ -55,8 +52,7 @@
                         <tbody system-table-stencils [columns]="listFields?.length" [select]="multiselect"
                                [tools]="true" [rows]="10" *ngIf="modellist.isLoading"></tbody>
                     </table>
-                    <div @animatepanel *ngIf="showAggregates" class="slds-is-absolute slds-scrollable--y"
-                         style="width: 320px; height: 100%; top:0px; right: 0px;"
+                    <div @animatepanel *ngIf="this.modellist.displayAggregates" class="slds-is-absolute slds-scrollable--y" style="width: 320px; height: 100%; top:0px; right: 0px;"
                          [modelProvider]="{module: modellist.module}">
                         <div class="slds-panel slds-grid slds-grid--vertical slds-nowrap slds-panel--filters">
                             <div class="slds-filters__body" tobottom>

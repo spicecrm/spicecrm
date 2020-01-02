@@ -197,6 +197,9 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
                 case 'date':
                     return this.userpreferences.formatDate(value);
                     break;
+                case 'integer':
+                    return this.userpreferences.formatMoney(parseInt(value, 10));
+                    break;
                 case 'enum':
                     return this.language.getFieldDisplayOptionValue(this.module, this.field, value);
                     break;
