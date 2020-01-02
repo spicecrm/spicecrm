@@ -95,7 +95,6 @@ import /*embed*/ {ObjectListViewFilterPanelFilterItem} from './components/object
 
 import /*embed*/ {ObjectListViewSettings} from './components/objectlistviewsettings';
 import /*embed*/ {ObjectListViewSettingsAddlistModal} from './components/objectlistviewsettingsaddlistmodal';
-import /*embed*/ {ObjectListViewSettingsDeletelistModal} from './components/objectlistviewsettingsdeletelistmodal';
 import /*embed*/ {ObjectListViewSettingsSetfieldsModal} from './components/objectlistviewsettingssetfieldsmodal';
 import /*embed*/ {ObjectRecordViewContainer} from './components/objectrecordviewcontainer';
 import /*embed*/ {ObjectRecordView} from './components/objectrecordview';
@@ -268,7 +267,6 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectListViewFilterPanelFilterItem,
         ObjectListViewSettings,
         ObjectListViewSettingsAddlistModal,
-        ObjectListViewSettingsDeletelistModal,
         ObjectListViewSettingsSetfieldsModal,
         ObjectActionEditButton,
         ObjectActionEditRelatedButton,

@@ -15,8 +15,6 @@ import {ObjectListViewSettingsSetfieldsModal} from "./objectlistviewsettingssetf
 
 })
 export class ObjectListViewSettings {
-    private showMenu: boolean = false;
-    private clickListener: any;
 
     constructor(
         private language: language,
@@ -27,24 +25,6 @@ export class ObjectListViewSettings {
         private injector: Injector,
         private toast: toast
     ) {
-    }
-
-    private toggleMenu() {
-        this.showMenu = !this.showMenu;
-
-        if (this.showMenu) {
-            this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
-        } else if (this.clickListener) {
-            this.clickListener();
-        }
-    }
-
-    public onClick(event: MouseEvent): void {
-        const clickedInside = this.elementRef.nativeElement.contains(event.target);
-        if (!clickedInside) {
-            this.showMenu = false;
-            this.clickListener();
-        }
     }
 
     private add() {

@@ -3,7 +3,7 @@
     <div #tablecontent tobottom (scroll)="onScroll($event)">
         <table class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal" [ngClass]="{'slds-table--bordered':!issmall}" role="grid">
             <tbody>
-                <tr object-list-item *ngFor="let listItem of modellist.listData.list" [listFields]="listFields" [listItem]="listItem" [inlineedit]="inlineedit" [rowselect]="rowselect" class="slds-hint-parent"></tr>
+                <tr object-list-item *ngFor="let listItem of modellist.listData.list; trackBy: trackbyfn" [listFields]="listFields" [listItem]="listItem" [inlineedit]="inlineedit" [rowselect]="rowselect" class="slds-hint-parent"></tr>
             </tbody>
             <tbody system-table-stencils [columns]="listFields?.length" [select]="rowselect" [tools]="true" [rows]="20" *ngIf="isloading"></tbody>
         </table>

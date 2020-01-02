@@ -12,16 +12,7 @@ import {model} from '../../services/model.service';
     selector: 'object-listview-header-list-selector',
     templateUrl: './src/objectcomponents/templates/objectlistviewheaderlistselector.html'
 })
-export class ObjectListViewHeaderListSelector implements OnDestroy {
-    /**
-     * boolean variable if the menu is opened
-     */
-    private showMenu: boolean = false;
-
-    /**
-     * the clicklistener when the menu is opened so clicks on teh document can be caught
-     */
-    private clickListener: any;
+export class ObjectListViewHeaderListSelector {
 
     /**
      * the componentconfig
@@ -64,39 +55,6 @@ export class ObjectListViewHeaderListSelector implements OnDestroy {
             this.modellist.listcomponent = defaultlist;
         }
 
-    }
-
-    /**
-     * check if the clicklistener is set and if yxes kill it
-     */
-    public ngOnDestroy(): void {
-        if (this.clickListener) {
-            this.clickListener();
-        }
-    }
-
-    /**
-     * triggers the menu to open or close
-     */
-    private toggleMenu() {
-        this.showMenu = !this.showMenu;
-        if (this.showMenu) {
-            this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
-        } else if (this.clickListener) {
-            this.clickListener();
-        }
-    }
-
-    /**
-     * handles the click event and deregisters the click handler
-     * @param event
-     */
-    public onClick(event: MouseEvent): void {
-        const clickedInside = this.elementRef.nativeElement.contains(event.target);
-        if (!clickedInside) {
-            this.showMenu = false;
-            this.clickListener();
-        }
     }
 
     /**
