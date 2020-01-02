@@ -783,7 +783,7 @@ export class modellist implements OnDestroy {
         if (this.buckets && this.buckets.bucketitems) {
             for (let bucketitem of this.buckets.bucketitems) {
                 bucketitem.count = 0;
-                bucketitem.value = 0;
+                // bucketitem.value = 0;
                 bucketitem.items = 0;
             }
         }
