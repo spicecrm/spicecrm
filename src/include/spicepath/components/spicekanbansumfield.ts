@@ -28,7 +28,6 @@ export class SpiceKanbanSumField implements OnChanges {
      * the internal held value
      */
     private _value: number = 0;
-    private _increment: number = 0;
 
     /**
      * the number to be displayed
@@ -40,53 +39,31 @@ export class SpiceKanbanSumField implements OnChanges {
      */
     public currencies: any[] = [];
 
-    private _timer: any;
-
     constructor(private userpreferences: userpreferences, private currency: currency, private cdref: ChangeDetectorRef) {
         this.currencies = this.currency.getCurrencies();
     }
 
-
+    /**
+     * register on changes to trigger the counter
+     *
+     * @param changes
+     */
     public ngOnChanges(changes: SimpleChanges): void {
-        let steps = 20;
-        let totaltime = 500;
-        this._increment = (parseFloat(this.value) - this._value) / steps;
+        const steps = 20;
+        const totaltime = 300;
+        const _increment = (parseFloat(this.value) - this._value) / steps;
         interval(totaltime / steps).pipe(take(steps)).subscribe(cx => {
-            this._value += this._increment;
-            this.cdref.detectChanges();
+            this._value += _increment;
 
-            if(cx == steps - 1) this._value == this.value;
+            // check if we are close enough then set the value to the same avoiding rounding errors
+            if (Math.abs(this._value - parseFloat(this.value)) < 1) {
+                this._value = parseFloat(this.value);
+            }
+
+            // trigger change detection
+            this.cdref.detectChanges();
         });
     }
-
-
-    /*
-    public ngOnChanges(changes: SimpleChanges): void {
-        this._increment = (parseFloat(this.value) - this._value) / 20;
-        this._timer = setInterval(() => {
-            if (this._increment < 0) {
-                if (this._value <= parseFloat(this.value)) {
-                    clearInterval(this._timer);
-                    this._value = parseFloat(this.value);
-                    this.cdref.detectChanges();
-                } else {
-                    this._value += this._increment;
-                    this.cdref.detectChanges();
-                }
-            } else {
-                if (this._value >= parseFloat(this.value)) {
-                    clearInterval(this._timer);
-                    this._value = parseFloat(this.value);
-                    this.cdref.detectChanges();
-                } else {
-                    this._value += this._increment;
-                    this.cdref.detectChanges();
-                }
-            }
-        }, 10);
-    }
-    */
-
 
     /**
      * returns the formatted value

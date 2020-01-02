@@ -154,7 +154,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
             let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
             let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
 
-            return item && item.value ? this.userpreferences.formatMoney(item.value, 0) : 0;
+            return item && item.value ? item.value : 0;
         } catch (e) {
             return 0;
         }
