@@ -1,14 +1,7 @@
 /**
  * @module ModuleReports
  */
-import {
-    Component,
-    AfterViewInit,
-    OnInit,
-    ViewChild,
-    ViewContainerRef,
-    OnDestroy, Injector, ComponentRef
-} from '@angular/core';
+import {Component, Injector, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
@@ -24,7 +17,7 @@ import {view} from "../../../services/view.service";
 @Component({
     selector: 'reporter-detilview',
     templateUrl: './src/modules/reports/templates/reporterdetailview.html',
-    providers: [view,model, reporterconfig],
+    providers: [view, model, reporterconfig],
     animations: [
         trigger('displayfilter', [
             transition(':enter', [
@@ -47,7 +40,6 @@ export class ReporterDetailView implements OnInit {
     }) private presentationcontainer: ViewContainerRef;
     @ViewChild('presentationview', {read: ViewContainerRef, static: true}) private presentationview: ViewContainerRef;
     @ViewChild('pageheader', {read: ViewContainerRef, static: true}) private pageheader: ViewContainerRef;
-    @ViewChild('reportsDesignerContainer', {read: ViewContainerRef, static: true}) private reportsDesignerContainer: ViewContainerRef;
 
 
     private routeSubscribe: any = {};
@@ -58,7 +50,6 @@ export class ReporterDetailView implements OnInit {
     private integrationParams: any = {};
 
     private showFilters: boolean = false;
-    private designerComponentRef: any;
 
     constructor(private broadcast: broadcast,
                 private language: language,
@@ -84,18 +75,37 @@ export class ReporterDetailView implements OnInit {
 
                 // load the where conditions
                 this.reporterconfig.resetUserFilters();
-                this.whereConditions = JSON.parse(data.whereconditions);
+                this.whereConditions = data.whereconditions;
 
                 // render the presentation
                 this.renderPresentation();
 
                 // handle plugins
                 if (data.integration_params != '')
-                    this.integrationParams = JSON.parse(data.integration_params);
+                    this.integrationParams = data.integration_params;
 
             });
         });
          */
+    }
+
+    get presentationStyle() {
+        if (this.presentationcontainer && this.presentationcontainer.element.nativeElement.getBoundingClientRect()) {
+            let rect = this.presentationcontainer.element.nativeElement.getBoundingClientRect();
+            return {
+                height: 'calc(100vh - ' + rect.top + 'px)',
+                overflow: 'hidden'
+            };
+        }
+    }
+
+    get filterPanelStyle() {
+        let rect = this.pageheader.element.nativeElement.getBoundingClientRect();
+        return {
+            right: '0px',
+            top: rect.bottom + 'px',
+            height: 'calc(100vh - ' + rect.bottom + 'px)'
+        };
     }
 
     public ngOnInit(): void {
@@ -111,7 +121,7 @@ export class ReporterDetailView implements OnInit {
         this.model.getData(true, 'detailview', true, true).subscribe(data => {
             this.navigation.setActiveModule(this.model.module, this.model.id, data.summary_text);
             if (data.visualization_params != '') {
-                let visualizationParams = JSON.parse(data.visualization_params);
+                let visualizationParams = data.visualization_params;
                 if (visualizationParams && visualizationParams.layout != '-') {
                     this.hasVisualization = true;
                 }
@@ -119,28 +129,18 @@ export class ReporterDetailView implements OnInit {
 
             // load the where conditions
             this.reporterconfig.resetUserFilters();
-            this.whereConditions = JSON.parse(data.whereconditions);
+            this.whereConditions = data.whereconditions;
 
             // render the presentation
             this.renderPresentation();
 
             // handle plugins
             if (data.integration_params != '') {
-                this.integrationParams = JSON.parse(data.integration_params);
+                this.integrationParams = data.integration_params;
             }
         });
 
         this.view.isEditable = this.metadata.checkModuleAcl(this.model.module, 'edit');
-    }
-
-    get presentationStyle() {
-        if (this.presentationcontainer && this.presentationcontainer.element.nativeElement.getBoundingClientRect()) {
-            let rect = this.presentationcontainer.element.nativeElement.getBoundingClientRect();
-            return {
-                height: 'calc(100vh - ' + rect.top + 'px)',
-                overflow: 'hidden'
-            };
-        }
     }
 
     private showPlugin(plugin) {
@@ -202,15 +202,6 @@ export class ReporterDetailView implements OnInit {
         this.showFilters = false;
     }
 
-    get filterPanelStyle() {
-        let rect = this.pageheader.element.nativeElement.getBoundingClientRect();
-        return {
-            right: '0px',
-            top: rect.bottom + 'px',
-            height: 'calc(100vh - ' + rect.bottom + 'px)'
-        };
-    }
-
     /**
      * trigger reload of the report
      */
@@ -219,27 +210,7 @@ export class ReporterDetailView implements OnInit {
     }
 
     private startEditing() {
-        this.view.setEditMode();
-        this.model.startEdit();
-        this.metadata.addComponent('ReportsDesigner', this.reportsDesignerContainer, this.injector)
-            .subscribe(componentRef => this.designerComponentRef = componentRef);
-    }
-
-    private cancelEditing() {
-        this.view.setViewMode();
-        this.model.cancelEdit();
-        if (this.designerComponentRef) {
-            this.designerComponentRef.destroy();
-            this.designerComponentRef = null;
-        }
-    }
-
-    /*
-     * @toggle view mode
-     */
-    private save() {
-        this.model.save();
-        this.view.setViewMode();
+        this.router.navigate(['/module/KReports/designer/' + this.model.id]);
     }
 
     private goToModule() {
