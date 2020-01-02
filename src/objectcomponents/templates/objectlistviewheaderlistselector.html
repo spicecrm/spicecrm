@@ -1,9 +1,9 @@
-<div class="slds-dropdown-trigger slds-dropdown-trigger--click slds-m-left--xx-small" aria-expanded="false" [ngClass]="{'slds-is-open': showMenu}">
-    <button class="slds-button slds-button--icon-more" aria-haspopup="true" title="Change view" [disabled]="disabled" (click)="toggleMenu()" style="height: 1.875rem;">
+<div class="slds-dropdown-trigger slds-dropdown-trigger--click slds-m-horizontal--xxx-small" aria-expanded="false" dropdowntrigger>
+    <button class="slds-button slds-button--icon-more" aria-haspopup="true" title="Change view" [disabled]="disabled">
         <system-button-icon [icon]="currentListIcon" size="small"></system-button-icon>
         <system-button-icon icon="down" size="x-small"></system-button-icon>
     </button>
-    <div class="slds-dropdown slds-dropdown--right slds-dropdown--small" (click)="toggleMenu()">
+    <div class="slds-dropdown slds-dropdown--right slds-dropdown--small">
         <ul class="slds-dropdown__list" role="menu">
             <li class="slds-dropdown__header" role="separator">
                 <span class="slds-text-title--caps">{{language.getLabel('LBL_DISPLAYAS')}}</span>

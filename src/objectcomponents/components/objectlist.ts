@@ -124,4 +124,14 @@ export class ObjectList implements OnDestroy {
             this.modellist.loadMoreList();
         }
     }
+
+    /**
+     * trackby function to opütimize performnce onm the for loop
+     *
+     * @param index
+     * @param item
+     */
+    protected trackbyfn(index, item) {
+        return item.id;
+    }
 }
