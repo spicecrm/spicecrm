@@ -1,8 +1,8 @@
 <div class="slds-tile slds-tile--board">
     <div class="slds-grid slds-grid--align-spread">
-        <h3 class="slds-truncate" (click)="goDetail()"><a href="javascript:void(0);">{{item.summary_text}}</a>
+        <h3 class="slds-truncate" (click)="goDetail()"><a href="javascript:void(0);">{{model.getField('summary_text')}}</a>
         </h3>
-        <object-action-menu [buttonsize]="'x-small'"></object-action-menu>
+        <object-action-menu buttonsize="x-small"></object-action-menu>
     </div>
     <div class="slds-tile__detail slds-text-body--small">
         <div class="slds-p-vertical--x-small">

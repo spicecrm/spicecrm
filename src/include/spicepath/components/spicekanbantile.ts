@@ -1,7 +1,16 @@
 /**
  * @module ModuleSpicePath
  */
-import {Component, Input, OnInit} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnChanges,
+    OnInit,
+    SimpleChanges
+} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
@@ -13,20 +22,23 @@ import {modellist} from '../../../services/modellist.service';
     providers: [model, view],
     host: {
         '[class]': "'slds-item'"
-    }
+    },
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpiceKanbanTile implements OnInit {
     @Input() private item: any = {};
     private componentconfig: any = {};
     private componentFields: any = {};
 
-    constructor(private modellist: modellist, private model: model, private view: view, private metadata: metadata) {
+    constructor(private modellist: modellist, private model: model, private view: view, private metadata: metadata, private changeDetectorRef: ChangeDetectorRef) {
         this.componentconfig = this.metadata.getComponentConfig('SpiceKanbanTile', this.modellist.module);
         this.componentFields = this.metadata.getFieldSetFields(this.componentconfig.fieldset);
 
         // display short labels
         this.view.labels = 'short';
         this.view.displayLabels = false;
+
+        // this.model.data$.subscribe(data => this.changeDetectorRef.detectChanges());
     }
 
     public ngOnInit() {
@@ -37,9 +49,15 @@ export class SpiceKanbanTile implements OnInit {
 
         // initialize the field statis
         this.model.initializeFieldsStati();
+
+        this.model.data$.subscribe(data => {
+            this.changeDetectorRef.detectChanges();
+        });
     }
 
     private goDetail() {
         this.model.goDetail();
     }
+
+
 }
