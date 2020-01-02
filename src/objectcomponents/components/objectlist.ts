@@ -8,35 +8,55 @@ import {language} from '../../services/language.service';
 import {layout} from '../../services/layout.service';
 import {modellist} from '../../services/modellist.service';
 
+/**
+ * renders the modellist
+ */
 @Component({
     selector: 'object-list',
     templateUrl: './src/objectcomponents/templates/objectlist.html'
 })
 export class ObjectList implements OnDestroy {
 
+    /**
+     * the element reference for the content of the view
+     */
     @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
 
+    /**
+     * all fields that are available
+     */
     private allFields: any[] = [];
+
+    /**
+     * the fields to be displayed
+     */
     private listFields: any[] = [];
-    private module: string = '';
+
+    /**
+     * the subscription to the modellist
+     */
     private modellistsubscribe: any = undefined;
+
+    /**
+     * the componentconfig
+     */
     public componentconfig: any = {};
 
+    /**
+     * returns the actionset from the config
+     */
     get actionset() {
         return this.componentconfig.actionset;
     }
 
-    get rowselect() {
-        return true;
-    }
-
+    /**
+     * returns if the listservic eis loading
+     */
     get isloading() {
         return this.modellist.isLoading;
     }
 
     constructor(private router: Router, private metadata: metadata, private modellist: modellist, private language: language, private layout: layout) {
-        // set the module
-        this.module = this.modellist.module;
 
         // load the list intiially
         this.setFieldDefs();
@@ -51,31 +71,53 @@ export class ObjectList implements OnDestroy {
         this.modellistsubscribe = this.modellist.listtype$.subscribe(newType => this.switchListtype());
     }
 
+    /**
+     * getter if the listconfig allows inline editing
+     */
     get inlineedit() {
         return this.componentconfig.inlineedit;
     }
 
+    /**
+     * a getter if the view is considered small
+     * to render the view properly
+     */
     get issmall() {
         return this.layout.screenwidth == 'small';
     }
 
+    /**
+     * returns the sortfield from the config
+     */
     get sortfield() {
         return this.componentconfig.sortfield;
     }
 
+    /**
+     * returns the sortdirection from the componentconfig
+     */
     get sortdirection() {
         return this.componentconfig.sortdirection ? this.componentconfig.sortdirection : 'ASC';
     }
 
+    /**
+     * unsubscribe from the modellist subscription
+     */
     public ngOnDestroy() {
         this.modellistsubscribe.unsubscribe();
     }
 
+    /**
+     * handle the listtype when this is switched and reload the listdefs and the listdata
+     */
     private switchListtype() {
         this.setFieldDefs();
         this.loadList();
     }
 
+    /**
+     * load the fieldddefs
+     */
     private setFieldDefs(): void {
         this.listFields = [];
 
@@ -98,11 +140,12 @@ export class ObjectList implements OnDestroy {
         }
     }
 
-
-    private navigateDetail(id) {
-        this.router.navigate(['/module/' + this.module + '/' + id]);
-    }
-
+    /**
+     * function to load the listdata. Checks on the listdata if the component is the same .. if yes .. no reload is needed
+     * this can happen when the list is loaded from the appdata service that cahces the previous list
+     *
+     * @param loadfromcache
+     */
     private loadList(loadfromcache: boolean = false) {
 
         if (this.modellist.listData.listcomponent != 'ObjectList') {
@@ -117,7 +160,11 @@ export class ObjectList implements OnDestroy {
         }
     }
 
-//
+    /**
+     * manages the scroll event for the infinited Scroll
+     *
+     * @param e
+     */
     private onScroll(e) {
         let element = this.tablecontent.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {

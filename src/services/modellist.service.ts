@@ -794,6 +794,11 @@ export class modellist implements OnDestroy {
         };
     }
 
+    /**
+     * returns the listtypes
+     *
+     * @param base set to ture to include the standrad listtypes 'all' & 'own'
+     */
     public getListTypes(base = true) {
         let listTypes: any[] = [];
 
