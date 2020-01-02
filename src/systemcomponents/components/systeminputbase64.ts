@@ -1,0 +1,71 @@
+/**
+ * @module SystemComponents
+ */
+import {Component, forwardRef, Input} from '@angular/core';
+import {NG_VALUE_ACCESSOR} from "@angular/forms";
+
+const ngValueAccessor = {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => SystemInputBase64),
+    multi: true
+};
+
+@Component({
+    selector: 'system-input-base64',
+    templateUrl: './src/systemcomponents/templates/systeminputbase64.html',
+    providers: [ngValueAccessor]
+})
+
+export class SystemInputBase64 {
+
+    @Input() private minHeight: number = 150;
+    @Input() private maxHeight: number = 500;
+    @Input() private disabled: boolean = false;
+
+    private onChange: (value: string) => void;
+    private onTouched: () => void;
+
+    private _value: string = '';
+
+    get value() {
+        try {
+            return decodeURIComponent(window.atob(this._value));
+        } catch (e) {
+            return '';
+        }
+    }
+
+    set value(val) {
+        this._value = window.btoa(val);
+        if (typeof this.onChange === 'function') {
+            this.onChange(this._value);
+        }
+    }
+
+    get textAreaStyle() {
+        return {
+            'min-height': this.minHeight + 'px',
+            'max-height': this.maxHeight + 'px'
+        };
+    }
+
+    /*
+    * ControlValueAccessor Interface
+    */
+    public registerOnChange(fn: any): void {
+        this.onChange = (val) => {
+            fn(val);
+        };
+    }
+
+    /*
+    * ControlValueAccessor Interface
+    */
+    public registerOnTouched(fn: any): void {
+        this.onTouched = fn;
+    }
+
+    public writeValue(value: any): void {
+        this._value = value;
+    }
+}
