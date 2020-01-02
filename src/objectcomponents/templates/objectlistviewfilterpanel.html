@@ -1,18 +1,14 @@
 <div class="slds-panel slds-grid slds-grid--vertical slds-nowrap slds-panel--filters" tobottom>
     <div class="slds-form--stacked slds-grow slds-scrollable--y slds-grid slds-grid--vertical">
         <div class="slds-filters">
-            <ng-container *ngIf="!isChanged; else unchanged">
-                <div  class="slds-filters__header slds-grid slds-has-divider--bottom-space">
-                    <h4 class="slds-align-middle slds-text-heading--small">{{language.getLabel('LBL_FILTER')}}</h4>
+            <div  class="slds-filters__header slds-grid slds-grid--align-spread slds-has-divider--bottom-space">
+                <h4 class="slds-align-middle slds-text-heading--small">{{language.getLabel('LBL_FILTER')}}</h4>
+                <div class="slds-button-group" [ngClass]="{'slds-hidden': !isChanged}">
+                    <button class="slds-button slds-button--icon slds-button_icon-border-filled" (click)="cancel()"><system-button-icon icon="close"></system-button-icon></button>
+                    <button class="slds-button slds-button--icon slds-button_icon-border-filled slds-button--brand" (click)="save()"><system-button-icon icon="check"></system-button-icon></button>
                 </div>
-            </ng-container>
+            </div>
             <div class="slds-p-around--xx-small">
-                <ng-template #unchanged>
-                    <div class="slds-filters__header slds-grid slds-grid--align-spread slds-has-divider--bottom-space">
-                        <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
-                        <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
-                    </div>
-                </ng-template>
                 <object-listview-filter-panel-filter-myitems [(ngModel)]="filter.groupscope"></object-listview-filter-panel-filter-myitems>
                 <object-listview-filter-panel-filter-geo [(geography)]="geography"></object-listview-filter-panel-filter-geo>
                 <div class="slds-grid slds-p-around--xx-small">

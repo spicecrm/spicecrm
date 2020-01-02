@@ -18,6 +18,8 @@ import {broadcast} from '../../../services/broadcast.service';
 import {configurationService} from '../../../services/configuration.service';
 import {userpreferences} from '../../../services/userpreferences.service';
 
+declare var _: any;
+
 @Component({
     selector: 'spice-kanban',
     templateUrl: './src/include/spicepath/templates/spicekanban.html'
@@ -50,6 +52,13 @@ export class SpiceKanban implements OnInit, OnDestroy {
         let confData = this.configuration.getData('spicebeanguides')[this.model.module];
         let stages = confData.stages;
 
+
+        let tilecomponentconfig = this.metadata.getComponentConfig('SpiceKanbanTile', this.modellist.module);
+        let tilecomponentFields = this.metadata.getFieldSetFields(this.componentconfig.fieldset);
+        for (let tilecomponentField of tilecomponentFields) {
+            this.requestedFields.push(tilecomponentField.field);
+        }
+
         let bucketitems = [];
         for (let stage of stages) {
             // if not in kanban continue
@@ -66,16 +75,14 @@ export class SpiceKanban implements OnInit, OnDestroy {
             });
         }
 
-        let tilecomponentconfig = this.metadata.getComponentConfig('SpiceKanbanTile', this.modellist.module);
-        let tilecomponentFields = this.metadata.getFieldSetFields(this.componentconfig.fieldset);
-        for (let tilecomponentField of tilecomponentFields) {
-            this.requestedFields.push(tilecomponentField.field);
-        }
+        if (_.isEmpty(this.modellist.buckets)) {
+            this.modellist.buckets = {
+                bucketfield: confData.statusfield,
+                buckettotal: this.componentconfig.sumfield,
+                bucketitems: bucketitems
+            }
 
-        this.modellist.buckets = {
-            bucketfield: confData.statusfield,
-            buckettotal: this.componentconfig.sumfield,
-            bucketitems: bucketitems
+            this.modellist.getListData();
         }
 
         // set limit to 10 .. since this is retrieved bper stage
@@ -109,8 +116,9 @@ export class SpiceKanban implements OnInit, OnDestroy {
 
 
     private switchListtype() {
-        let requestedFields = [];
-        this.modellist.getListData(this.requestedFields);
+        // let requestedFields = [];
+        // this.modellist.loadList(this.requestedFields);
+        // this.modellist.getListData(this.requestedFields);
     }
 
 
@@ -127,9 +135,13 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * @param stagedata
      */
     private getStageCount(stagedata) {
-        let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
-        let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
-        return item ? item.total : 0;
+        try {
+            let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
+            let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
+            return item ? item.total : 0;
+        } catch (e) {
+            return 0;
+        }
     }
 
     /**
@@ -138,10 +150,14 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * @param stagedata
      */
     private getStageSum(stagedata) {
-        let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
-        let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
+        try {
+            let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
+            let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
 
-        return item && item.value ? this.userpreferences.formatMoney(item.value, 0) : 0;
+            return item && item.value ? this.userpreferences.formatMoney(item.value, 0) : 0;
+        } catch (e) {
+            return 0;
+        }
     }
 
     /**

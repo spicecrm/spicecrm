@@ -6,7 +6,7 @@ import {language} from '../../services/language.service';
 import {modellist} from '../../services/modellist.service';
 
 /**
- * renders the header row for a list view table
+ * renders the header row for the list view
  */
 @Component({
     selector: 'object-listview-header-details',

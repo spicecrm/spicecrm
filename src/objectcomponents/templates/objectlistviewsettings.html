@@ -9,23 +9,23 @@
                 <span class="slds-text-title--caps">{{language.getLabel('LBL_SETTINGS')}}</span>
             </li>
             <li class="slds-dropdown__item" role="presentation">
-                <a style="cursor: pointer" class="slds-button" role="menuitem" (click)="add()">
-                    <span class="slds-truncate">{{language.getLabel('LBL_NEW')}}</span>
+                <a role="menuitem" (click)="add()">
+                    <span class="slds-truncate"><system-utility-icon class="slds-p-right--xx-small" icon="add" size="x-small"></system-utility-icon> {{language.getLabel('LBL_NEW')}}</span>
                 </a>
             </li>
             <li class="slds-dropdown__item" role="presentation">
-                <a style="cursor: pointer" class="slds-button" role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('edit')" (click)="edit()">
-                    <span class="slds-truncate">{{language.getLabel('LBL_EDIT')}}</span>
+                <a role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('edit')" (click)="edit()">
+                    <span class="slds-truncate"><system-utility-icon class="slds-p-right--xx-small" icon="edit" size="x-small"></system-utility-icon> {{language.getLabel('LBL_EDIT')}}</span>
                 </a>
             </li>
             <li class="slds-dropdown__item" role="presentation">
-                <a style="cursor: pointer" class="slds-button" role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('edit')" (click)="save()">
-                    <span class="slds-truncate">{{language.getLabel('LBL_SAVE')}}</span>
+                <a role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('edit')" (click)="save()">
+                    <span class="slds-truncate"><system-utility-icon class="slds-p-right--xx-small" icon="save" size="x-small"></system-utility-icon> {{language.getLabel('LBL_SAVE')}}</span>
                 </a>
             </li>
             <li class="slds-dropdown__item" role="presentation">
-                <a style="cursor: pointer" class="slds-button" role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('delete')" (click)="delete()">
-                    <span class="slds-truncate">{{language.getLabel('LBL_DELETE')}}</span>
+                <a  role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('delete')" (click)="delete()">
+                    <span class="slds-truncate"><system-utility-icon class="slds-p-right--xx-small" icon="delete" size="x-small"></system-utility-icon> {{language.getLabel('LBL_DELETE')}}</span>
                 </a>
             </li>
         </ul>

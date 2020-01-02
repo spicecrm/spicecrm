@@ -15,24 +15,15 @@
             <object-listview-header-details></object-listview-header-details>
         </div>
         <div class="slds-col slds-no-flex slds-grid slds-align-bottom">
-            <object-listview-settings class="slds-show--medium"></object-listview-settings>
-            <object-listview-header-list-selector [parentconfig]="parentconfig"></object-listview-header-list-selector>
-            <button class="slds-button slds-m-left--xx-small slds-button--icon-border" title="Refresh" (click)="modellist.reLoadList()">
+            <object-listview-settings></object-listview-settings>
+            <object-listview-header-list-selector></object-listview-header-list-selector>
+            <button class="slds-button slds-button--icon-border slds-m-horizontal--xxx-small" (click)="modellist.reLoadList()">
                 <system-button-icon [icon]="'refresh'"></system-button-icon>
             </button>
-            <div class="slds-button-group" role="group">
-                <button class="slds-button slds-button--icon-border" [disabled]="aggregatesDisabled()" [ngClass]="getPanelButtonClass('aggregates')" (click)="setPanelButton('aggregates')">
-                    <system-button-icon icon="bucket"></system-button-icon>
-                </button>
-                <button class="slds-button slds-button--icon-border" [disabled]="filterDisabled()" [ngClass]="getPanelButtonClass('filter')" (click)="setPanelButton('filter')">
-                    <system-button-icon icon="filterList"></system-button-icon>
-                </button>
-                <!--button class="slds-button slds-button--icon-border" [ngClass]="{'slds-is-selected': geoSet}" [disabled]="geoDisabled" (click)="openGeo()">
-                    <system-button-icon icon="world"></system-button-icon>
-                </button-->
-            </div>
+            <object-listview-aggregates-button></object-listview-aggregates-button>
+            <object-listview-filter-button></object-listview-filter-button>
         </div>
     </div>
 </div>
-<object-listview-filter-panel @animatepanel *ngIf="panelButtonState === 'filter'"></object-listview-filter-panel>
-<object-listview-aggregates-panel @animatepanel *ngIf="panelButtonState === 'aggregates'"></object-listview-aggregates-panel>
+<object-listview-filter-panel @animatepanel *ngIf="modellist.displayFilters"></object-listview-filter-panel>
+<object-listview-aggregates-panel @animatepanel *ngIf="modellist.displayAggregates"></object-listview-aggregates-panel>

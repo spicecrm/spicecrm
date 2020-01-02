@@ -30,7 +30,7 @@ export class ObjectListViewFilterPanel {
     private filter = {
         logicaloperator: 'and',
         groupscope: 'all',
-        geography:{},
+        geography: {},
         conditions: []
     };
 
@@ -53,7 +53,7 @@ export class ObjectListViewFilterPanel {
             this.filter = {
                 logicaloperator: 'and',
                 groupscope: 'all',
-                geography:{},
+                geography: {},
                 conditions: []
             };
         }
@@ -62,7 +62,7 @@ export class ObjectListViewFilterPanel {
     /**
      * simple getter and setter for the geography
      */
-    get geography(){
+    get geography() {
         return this.filter.geography ? this.filter.geography : {};
     }
 
@@ -71,7 +71,7 @@ export class ObjectListViewFilterPanel {
      *
      * @param geography
      */
-    set geography(geography){
+    set geography(geography) {
         this.filter.geography = geography;
     }
 
@@ -89,7 +89,10 @@ export class ObjectListViewFilterPanel {
         if (this.isChanged) {
             this.modellist.updateListType({
                 filterdefs: JSON.stringify(this.filter)
-            });
+            }, true);
+
+            // close the filter panel
+            this.modellist.displayFilters = false;
         }
     }
 
@@ -98,6 +101,9 @@ export class ObjectListViewFilterPanel {
      */
     private cancel() {
         this.filter = {...this.modellist.getFilterDefs()};
+
+        // close the filter panel
+        this.modellist.displayFilters = false;
     }
 
     /**

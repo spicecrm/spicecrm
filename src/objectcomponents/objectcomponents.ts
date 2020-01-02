@@ -79,6 +79,7 @@ import /*embed*/ {ObjectOptimisticLockingModal} from './components/objectoptimis
 import /*embed*/ {ObjectOptimisticLockingModalDataField} from "./components/objectoptimisticlockingmodaldatafield";
 import /*embed*/ {ObjectOptimisticLockingModalChange} from "./components/objectoptimisticlockingmodalchange";
 
+import /*embed*/ {ObjectListViewAggregatesButton} from './components/objectlistviewaggregatesbutton';
 import /*embed*/ {ObjectListViewAggregatesPanel} from './components/objectlistviewaggregatespanel';
 import /*embed*/ {ObjectListViewAggregate} from './components/objectlistviewaggregate';
 import /*embed*/ {ObjectListViewAggregateItem} from './components/objectlistviewaggregateitem';
@@ -86,6 +87,7 @@ import /*embed*/ {ObjectListViewAggregateItemTerm} from './components/objectlist
 import /*embed*/ {ObjectListViewAggregateItemRange} from './components/objectlistviewaggregateitemrange';
 import /*embed*/ {ObjectListViewTagsAggregate} from './components/objectlistviewtagsaggregate';
 
+import /*embed*/ {ObjectListViewFilterButton} from './components/objectlistviewfilterbutton';
 import /*embed*/ {ObjectListViewFilterPanel} from './components/objectlistviewfilterpanel';
 import /*embed*/ {ObjectListViewFilterPanelFilterMyItems} from './components/objectlistviewfilterpanelfiltermyitems';
 import /*embed*/ {ObjectListViewFilterPanelFilterGeo} from './components/objectlistviewfilterpanelfiltergeo';
@@ -252,12 +254,14 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectActionsetMenuContainer,
         ObjectActionsetMenuContainerEdit,
         ObjectActionsetMenuContainerDelete,
+        ObjectListViewAggregatesButton,
         ObjectListViewAggregatesPanel,
         ObjectListViewAggregate,
         ObjectListViewAggregateItem,
         ObjectListViewAggregateItemTerm,
         ObjectListViewAggregateItemRange,
         ObjectListViewTagsAggregate,
+        ObjectListViewFilterButton,
         ObjectListViewFilterPanel,
         ObjectListViewFilterPanelFilterMyItems,
         ObjectListViewFilterPanelFilterGeo,
@@ -401,6 +405,7 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectRelatedlistFiles,
         ObjectListTypes,
         ObjectListViewAggregate,
+        ObjectListViewAggregatesButton,
         ObjectListViewHeaderDetails,
         ObjectListHeaderSort,
         ObjectRelatedlistFiles,
