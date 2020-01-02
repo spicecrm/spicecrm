@@ -20,6 +20,7 @@ import /*embed*/ {SpicePathRelatedListTiles} from './components/spicepathrelated
 import /*embed*/ {SpicePathRelatedListTile} from './components/spicepathrelatedlisttile';
 
 import /*embed*/ {SpiceKanbanStagePipe} from "./components/spicekanbanstagepipe";
+import /*embed*/ {SpiceKanbanSumField} from "./components/spicekanbansumfield";
 import /*embed*/ {SpiceKanban} from "./components/spicekanban";
 import /*embed*/ {SpiceKanbanTile} from "./components/spicekanbantile";
 
@@ -40,6 +41,7 @@ import /*embed*/ {SpiceKanbanTile} from "./components/spicekanbantile";
         SpicePathRelatedListTiles,
         SpicePathRelatedListTile,
         SpiceKanbanStagePipe,
+        SpiceKanbanSumField,
         SpiceKanban,
         SpiceKanbanTile
     ]
