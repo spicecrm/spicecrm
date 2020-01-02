@@ -1,6 +1,6 @@
 <div class="slds-grid" style="height: 100%">
     <div cdkDropList #dropList="cdkDropList" [cdkDropListData]="listItems" [cdkDropListConnectedTo]="[dragList]" (cdkDropListDropped)="onDrop($event)" class="slds-size--1-of-1 slds-border--left" style="height: 100%">
-        <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover" id="reports-designer-manipulate-table">
+        <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover reports-designer-manipulate-table">
             <thead>
             <tr class="slds-text-title--caps slds-theme--shade">
                 <th class="slds-cell-shrink"></th>
@@ -11,151 +11,27 @@
                     <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
                 </th>
                 <th scope="col">
-                    <div class="slds-truncate">{{language.getLabel('LBL_FIXED_VALUE')}}</div>
+                    <div class="slds-truncate">{{language.getLabel('LBL_FUNCTION')}}</div>
                 </th>
                 <th scope="col">
-                    <div class="slds-truncate">{{language.getLabel('LBL_SEQUENCE')}}</div>
+                    <div class="slds-truncate">{{language.getLabel('LBL_GROUP_BY')}}</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate">{{language.getLabel('LBL_REQUIRED')}}</div>
                 </th>
                 <th class="slds-cell-shrink"></th>
                 <th class="slds-cell-shrink"></th>
             </tr>
             </thead>
             <tbody>
-            <ng-container *ngFor="let field of listItems; trackBy: trackByFn">
-                <tr cdkDrag [cdkDragDisabled]="field.fieldid == expandedItemId" [cdkDragData]="field" cdkDragBoundary="#reports-designer-manipulate-table" class="slds-border--bottom slds-drag--preview" style="cursor: pointer">
-                    <td class="slds-p-around--none">
-                        <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
-                    </td>
-                    <td>
-                        <div class="slds-truncate" [title]="field.displaypath">{{field.displaypath}}</div>
-                    </td>
-                    <td>
-                        <div class="slds-form-element">
-                            <system-input-label [ngModel]="field.name" (ngModelChange)="setFieldValue(field.fieldid, 'name', $event)"></system-input-label>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="slds-form-element">
-                            <div class="slds-form-element__control">
-                                <input type="text" [ngModel]="field.fixedvalue" (ngModelChange)="setFieldValue(field.fieldid, 'fixedvalue', $event)" class="slds-input">
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="slds-form-element">
-                            <div class="slds-form-element__control">
-                                <input type="text" [ngModel]="field.formulasequence" (ngModelChange)="setFieldValue(field.fieldid, 'formulasequence', $event)" class="slds-input">
-                            </div>
-                        </div>
-                    </td>
-                    <td class="slds-cell-shrink slds-text-align--center">
-                        <button class="slds-button slds-button--icon" (click)="deleteField(field.fieldid)">
-                            <system-button-icon icon="delete"></system-button-icon>
-                        </button>
-                    </td>
-                    <td class="slds-cell-shrink">
-                        <system-utility-icon [icon]="field.fieldid == expandedItemId ? 'up' : 'down'" (click)="toggleExpand(field.fieldid)" [colorclass]="reportsDesignerService.expertMode ? 'slds-icon-text-default' : 'slds-icon-text-light'"
-                                             size="x-small" class="slds-p-horizontal--small slds-p-vertical--xx-small" style="cursor: pointer"></system-utility-icon>
-                    </td>
-                </tr>
-                <tr *ngIf="field.fieldid == expandedItemId && reportsDesignerService.expertMode" class="slds-theme--shade" style="box-shadow: inset -1px 1px 6px 0 #aaa;">
-                    <td colspan="7">
-                        <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
-                            <div class="slds-form-element__control">
-                                <div class="slds-form-element">
-                                    <label class="slds-form-element__label">{{language.getLabel('LBL_REQUIRED')}}</label>
-                                    <div class="slds-form-element__control">
-                                        <div class="slds-select_container">
-                                            <select class="slds-select" [ngModel]="field.jointype" (ngModelChange)="setFieldValue(field.fieldid, 'jointype', $event)">
-                                                <option value="optional">{{language.getLabel('LBL_OPTIONAL')}}</option>
-                                                <option value="required">{{language.getLabel('LBL_REQUIRED')}}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="slds-grid">
-                                    <div class="slds-form-element slds-size--1-of-2">
-                                        <label class="slds-form-element__label">{{language.getLabel('LBL_FUNCTION')}}</label>
-                                        <div class="slds-form-element__control">
-                                            <div class="slds-select_container">
-                                                <select class="slds-select" [ngModel]="field.sqlfunction" (ngModelChange)="setFieldValue(field.fieldid, 'sqlfunction', $event)">
-                                                    <option value="SUM">{{language.getLabel('LBL_SUM')}}</option>
-                                                    <option value="COUNT">{{language.getLabel('LBL_COUNT')}}</option>
-                                                    <option value="COUNT_DISTINCT">{{language.getLabel('LBL_COUNT_DISTINCT')}}</option>
-                                                    <option value="MAX">{{language.getLabel('LBL_MAXIMUM')}}</option>
-                                                    <option value="MIN">{{language.getLabel('LBL_MINIMUM')}}</option>
-                                                    <option value="AVG">{{language.getLabel('LBL_AVERAGE')}}</option>
-                                                    <option value="GROUP_CONCAT">{{language.getLabel('LBL_GROUP_CONCAT')}}</option>
-                                                    <option value="GROUP_CONASC">{{language.getLabel('LBL_GROUP_CONCAT')}} (ASC)</option>
-                                                    <option value="GROUP_CONDSC">{{language.getLabel('LBL_GROUP_CONCAT')}} (DESC)</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="slds-form-element slds-size--1-of-2">
-                                        <label class="slds-form-element__label">{{language.getLabel('LBL_CUSTOM_FUNCTION')}}</label>
-                                        <div class="slds-form-element__control">
-                                            <input type="text" [ngModel]="field.customsqlfunction" (ngModelChange)="setFieldValue(field.fieldid, 'customsqlfunction', $event)" class="slds-input">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="slds-grid">
-                                    <div class="slds-form-element slds-size--1-of-2">
-                                        <label class="slds-form-element__label">{{language.getLabel('LBL_GROUP_BY')}}</label>
-                                        <div class="slds-form-element__control">
-                                            <div class="slds-select_container">
-                                                <select class="slds-select" [ngModel]="field.groupby" (ngModelChange)="setFieldValue(field.fieldid, 'groupby', $event)">
-                                                    <option value="yes">{{language.getLabel('LBL_YES')}}</option>
-                                                    <option value="no">{{language.getLabel('LBL_NO')}}</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="slds-form-element slds-size--1-of-2">
-                                        <label class="slds-form-element__label">{{language.getLabel('LBL_GROUPING')}}</label>
-                                        <div class="slds-form-element__control">
-                                            <input type="text" [ngModel]="field.grouping" (ngModelChange)="setFieldValue(field.fieldid, 'grouping', $event)" class="slds-input">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="slds-grid">
-                                    <div class="slds-form-element slds-size--1-of-2">
-                                        <label class="slds-form-element__label">{{language.getLabel('LBL_VALUE_TYPE')}}</label>
-                                        <div class="slds-form-element__control">
-                                            <div class="slds-select_container">
-                                                <select class="slds-select" [ngModel]="field.valuetype" (ngModelChange)="setFieldValue(field.fieldid, 'valuetype', $event)">
-                                                    <option value="TOFSUM">{{language.getLabel('LBL_VALUE_TYPE_TOFSUM')}}</option>
-                                                    <option value="POFSUM">{{language.getLabel('LBL_VALUE_TYPE_POFSUM')}}</option>
-                                                    <option value="POFCOUNT">{{language.getLabel('LBL_VALUE_TYPE_POFCOUNT')}}</option>
-                                                    <option value="POFAVG">{{language.getLabel('LBL_VALUE_TYPE_POFAVERAGE')}}</option>
-                                                    <option value="DOFSUM">{{language.getLabel('LBL_VALUE_TYPE_DOFSUM')}}</option>
-                                                    <option value="DOFCOUNT">{{language.getLabel('LBL_VALUE_TYPE_DOFCOUNT')}}</option>
-                                                    <option value="DOFAVG">{{language.getLabel('LBL_VALUE_TYPE_DOFAVERAGE')}}</option>
-                                                    <option value="C">{{language.getLabel('LBL_VALUE_TYPE_C')}}</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="slds-form-element slds-size--1-of-2">
-                                        <label class="slds-form-element__label">{{language.getLabel('LBL_STORE')}}</label>
-                                        <div class="slds-form-element__control">
-                                            <input type="text" [ngModel]="field.assigntovalue" (ngModelChange)="setFieldValue(field.fieldid, 'assigntovalue', $event)" class="slds-input">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="slds-form-element">
-                                    <label class="slds-form-element__label">{{language.getLabel('LBL_FORMULA')}}</label>
-                                    <div class="slds-form-element__control">
-                                        <div class="slds-select_container">
-                                            <textarea class="slds-textarea" [ngModel]="field.formulavalue" (ngModelChange)="setFieldValue(field.fieldid, 'formulavalue', $event)" style="height: 150px"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-                    </td>
-                </tr>
-            </ng-container>
+                <ng-container *ngFor="let listItem of listItems; trackBy: trackByFn">
+                    <tr reports-designer-manipulate-table-row
+                        [listItem]="listItem" (onDelete)="deleteField(listItem.fieldid)"
+                        cdkDrag [cdkDragData]="listItem" cdkDragBoundary=".reports-designer-manipulate-table"
+                        class="slds-border--bottom slds-drag--preview">
+                    </tr>
+                    <tr reports-designer-manipulate-table-row-expansion [listItem]="listItem" class="slds-theme--shade" style="box-shadow: inset -1px 1px 6px 0 #aaa"></tr>
+                </ng-container>
             </tbody>
         </table>
     </div>

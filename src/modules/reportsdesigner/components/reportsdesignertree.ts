@@ -49,11 +49,9 @@ export class ReportsDesignerTree implements AfterViewInit {
 
     /*
     * @set treeCDKDragList
-    * @set currentPath
     */
     public ngAfterViewInit() {
         this.reportsDesignerService.treeCDKDragList = this.dragList;
-        this.reportsDesignerService.currentPath = this.model.getField('report_module');
     }
 
     /*

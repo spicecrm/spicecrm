@@ -16,10 +16,9 @@ export class ReportsDesignerCondition {
      * @input whereCondition: object
      */
     @Input() private whereCondition: any = {};
-    private whereConditionDiffer: KeyValueDiffer<string, any>;
+
     constructor(private language: language,
                 private model: model,
-                private differs: KeyValueDiffers,
                 private reporterConfig: reporterconfig) {
 
     }
@@ -71,34 +70,6 @@ export class ReportsDesignerCondition {
      */
     get showValueTo() {
         return this.reporterConfig.operatorCount[this.whereCondition.operator] > 1;
-    }
-
-    /*
-     * @set whereConditionDiffer to detect object changes made by component children
-     */
-    public ngOnInit() {
-        this.whereConditionDiffer = this.differs.find(this.whereCondition).create();
-    }
-
-    /*
-     * @setModelWhereConditions if the whereCondition key value changed
-     */
-    public ngDoCheck() {
-        if (this.whereConditionDiffer.diff(this.whereCondition)) {
-            this.setModelWhereConditions();
-        }
-    }
-
-    /*
-     * @update whereConditions from this whereCondition
-     * @set model.whereconditions
-     */
-    private setModelWhereConditions() {
-        let whereConditions = this.model.getField('whereconditions');
-        whereConditions = whereConditions && whereConditions.length > 0 ? JSON.parse(whereConditions) ? JSON.parse(whereConditions) : [] : [];
-        let index = whereConditions.findIndex(condition => condition.id == this.whereCondition.id);
-        if (index > -1) whereConditions[index] = this.whereCondition;
-        this.model.setField('whereconditions', JSON.stringify(whereConditions));
     }
 
     /*
