@@ -18,14 +18,6 @@
             <reporter-integration-export-button [integrationParams]="integrationParams" class="slds-m-right--x-small"></reporter-integration-export-button>
             <reporter-integration-tools-button [integrationParams]="integrationParams" class="slds-m-right--x-small"></reporter-integration-tools-button>
             <reporter-filter-button [whereConditions]="whereConditions" (filter)="toggleFilters($event)"></reporter-filter-button>
-            <div *ngIf="view.isEditMode()" class="slds-button-group" role="group">
-                <button class="slds-button slds-m-left--x-small slds-button--neutral" (click)="cancelEditing()">
-                    {{language.getLabel('LBL_CANCEL')}}
-                </button>
-                <button class="slds-button slds-m-horizontal--x-small slds-button--brand" (click)="save()">
-                    {{language.getLabel('LBL_SAVE')}}
-                </button>
-            </div>
             <button *ngIf="!view.isEditMode() && view.isEditable" class="slds-button slds-m-horizontal--x-small slds-button--neutral" (click)="startEditing()">
                 {{language.getLabel('LBL_EDIT')}}
             </button>
@@ -35,13 +27,10 @@
         </div>
     </div>
 </div>
-<ng-container *ngIf="!view.isEditMode(); else reportsDesignerContainer">
-    <div *ngIf="hasVisualization" style="width:100%;height:400px;">
-        <reporter-detail-visualization></reporter-detail-visualization>
-    </div>
-    <div #presentationcontainer [ngStyle]="presentationStyle" tobottom>
-        <div #presentationview></div>
-    </div>
-    <reporter-filter-panel @displayfilter *ngIf="showFilters" class="slds-is-absolute" [ngStyle]="filterPanelStyle" [integrationparams]="integrationParams" (filtersaved)="filtersaved()"></reporter-filter-panel>
-</ng-container>
-<ng-template #reportsDesignerContainer></ng-template>
+<div *ngIf="hasVisualization" style="width:100%;height:400px;">
+    <reporter-detail-visualization></reporter-detail-visualization>
+</div>
+<div #presentationcontainer [ngStyle]="presentationStyle" tobottom>
+    <div #presentationview></div>
+</div>
+<reporter-filter-panel @displayfilter *ngIf="showFilters" class="slds-is-absolute" [ngStyle]="filterPanelStyle" [integrationparams]="integrationParams" (filtersaved)="filtersaved()"></reporter-filter-panel>

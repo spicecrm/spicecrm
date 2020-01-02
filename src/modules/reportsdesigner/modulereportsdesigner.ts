@@ -17,11 +17,14 @@ import /*embed*/ {ReportsDesigner} from "./components/reportsdesigner";
 import /*embed*/ {ReportsDesignerTree} from "./components/reportsdesignertree";
 import /*embed*/ {ReportsDesignerDetails} from "./components/reportsdesignerdetails";
 import /*embed*/ {ReportsDesignerManipulate} from "./components/reportsdesignermanipulate";
+import /*embed*/ {ReportsDesignerManipulateTableRow} from "./components/reportsdesignermanipulatetablerow";
+import /*embed*/ {ReportsDesignerManipulateTableRowExpansion} from "./components/reportsdesignermanipulatetablerowexpansion";
 import /*embed*/ {ReportsDesignerPresent} from "./components/reportsdesignerpresent";
 import /*embed*/ {ReportsDesignerVisualize} from "./components/reportsdesignervisualize";
 import /*embed*/ {ReportsDesignerIntegrate} from "./components/reportsdesignerintegrate";
 import /*embed*/ {ReportsDesignerFilter} from "./components/reportsdesignerfilter";
 import /*embed*/ {ReportsDesignerConditionGroup} from "./components/reportsdesignerconditiongroup";
+import /*embed*/ {ReportsDesignerConditionGroupExpansion} from "./components/reportsdesignerconditiongroupexpansion";
 import /*embed*/ {ReportsDesignerCondition} from "./components/reportsdesignercondition";
 
 @NgModule({
@@ -45,7 +48,10 @@ import /*embed*/ {ReportsDesignerCondition} from "./components/reportsdesignerco
         ReportsDesignerIntegrate,
         ReportsDesignerFilter,
         ReportsDesignerConditionGroup,
-        ReportsDesignerCondition
+        ReportsDesignerConditionGroupExpansion,
+        ReportsDesignerCondition,
+        ReportsDesignerManipulateTableRow,
+        ReportsDesignerManipulateTableRowExpansion
     ],
     exports: [
         ReportsDesigner

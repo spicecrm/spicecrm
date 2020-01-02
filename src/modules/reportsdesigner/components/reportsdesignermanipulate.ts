@@ -1,10 +1,10 @@
 /**
  * @module ModuleReportsDesigner
  */
-import {AfterViewInit, Component, OnDestroy, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Input, OnDestroy, ViewChild} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {ReportsDesignerService} from "../services/reportsdesigner.service";
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {modal} from "../../../services/modal.service";
 import {model} from "../../../services/model.service";
@@ -16,7 +16,6 @@ import {model} from "../../../services/model.service";
 export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
 
     @ViewChild('dropList', {static: false}) private dropList;
-    private expandedItemId: string = '';
 
     constructor(private language: language,
                 private modelUtilities: modelutilities,
@@ -26,26 +25,25 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
     }
 
     /*
+    * @set listfields
+    */
+    set listItems(value) {
+        this.model.setField('listfields', value);
+    }
+
+    /*
+    * @return listfields: any[]
+    */
+    get listItems() {
+        let items = this.model.getField('listfields');
+        return items && items.length ? items.sort((a,b) => +a.sequence > +b.sequence ? 1 : -1) : [];
+    }
+
+    /*
     * @return treeCDKDragList: cdkDragList
     */
     get dragList() {
         return this.reportsDesignerService.treeCDKDragList;
-    }
-
-    /*
-    * @param value: object
-    * @set model.listfields
-    */
-    set listItems(value) {
-        this.model.setField('listfields', JSON.stringify(value));
-    }
-
-    /*
-    * @return listfields: object[]
-    */
-    get listItems() {
-        const fields = this.model.getField('listfields');
-        return fields && fields.length > 0 ? JSON.parse(fields) : [];
     }
 
     /*
@@ -70,7 +68,7 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
     * @return index
     */
     private trackByFn(index, item) {
-        return item.id;
+        return item.fieldid;
     }
 
     /*
@@ -95,7 +93,7 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
                 fieldname: field.name,
                 name: field.label,
                 display: 'yes',
-                sequence: listItems.length +1,
+                sequence: listItems.length + 1,
                 width: '100',
                 sort: '-',
                 sortpriority: '',
@@ -111,6 +109,11 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
 
             listItems.splice(dragEvent.currentIndex, 0, newItem);
         }
+
+        listItems = listItems.map((item, index) => {
+            item.sequence = index;
+            return item;
+        });
         this.listItems = listItems;
     }
 
@@ -126,30 +129,5 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
                 this.listItems = listItems;
             }
         });
-    }
-
-    /*
-     * @param fieldId: string
-     * @param fieldName: string
-     * @param value: string
-     * @set listItems
-     */
-    private setFieldValue(fieldId, fieldName, value) {
-        let listItems = this.listItems.slice();
-        listItems.some(item => {
-            if (item.fieldid == fieldId) {
-                item[fieldName] = value;
-            }
-        });
-        this.listItems = listItems;
-    }
-
-    /*
-     * @param fieldId: string
-     * @set expandedItemId = fieldId | null
-     */
-    private toggleExpand(fieldId) {
-        if (!this.reportsDesignerService.expertMode) return;
-        this.expandedItemId = fieldId == this.expandedItemId ? null : fieldId;
     }
 }

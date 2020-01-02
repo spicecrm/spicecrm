@@ -14,19 +14,19 @@
             <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_AUTHORIZATION_CHECK')}}</legend>
             <div class="slds-form-element__control">
                 <label class="slds-form-element__label">{{language.getLabel('LBL_SHOW_DELETED')}}</label>
-                <system-checkbox [ngModel]="reportOptions.showDeleted" (ngModelChange)="setModelReportOptions('showDeleted', $event)">
+                <system-checkbox [(ngModel)]="reportOptions.showDeleted">
                     {{language.getLabel('LBL_SHOW_DELETED')}}
                 </system-checkbox>
             </div>
             <div class="slds-form-element__control">
                 <label class="slds-form-element__label">{{language.getLabel('LBL_AUTHORIZATION_CHECK')}}</label>
-                <system-input-radio name="reportOptionsAuthCheck" value="full" [ngModel]="reportOptions.authCheck" (ngModelChange)="setModelReportOptions('authCheck', $event)">
+                <system-input-radio name="reportOptionsAuthCheck" value="full" [(ngModel)]="reportOptions.authCheck">
                     {{language.getLabel('LBL_ON_ALL_NODES')}}
                 </system-input-radio>
-                <system-input-radio name="reportOptionsAuthCheck" value="top" [ngModel]="reportOptions.authCheck" (ngModelChange)="setModelReportOptions('authCheck', $event)">
+                <system-input-radio name="reportOptionsAuthCheck" value="top" [(ngModel)]="reportOptions.authCheck">
                     {{language.getLabel('LBL_TOP_NODE_ONLY')}}
                 </system-input-radio>
-                <system-input-radio name="reportOptionsAuthCheck" value="none" [ngModel]="reportOptions.authCheck" (ngModelChange)="setModelReportOptions('authCheck', $event)">
+                <system-input-radio name="reportOptionsAuthCheck" value="none" [(ngModel)]="reportOptions.authCheck">
                     {{language.getLabel('LBL_DISABLED')}}
                 </system-input-radio>
             </div>
@@ -35,10 +35,10 @@
             <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_COLLAPSABLE_PANELS')}}</legend>
             <div class="slds-form-element__control">
                 <label class="slds-form-element__label">{{language.getLabel('LBL_DYNAMIC_OPTIONS')}}</label>
-                <system-input-radio name="reportOptionsFolded" value="collapsed" [ngModel]="reportOptions.optionsFolded" (ngModelChange)="setModelReportOptions('optionsFolded', $event)">
+                <system-input-radio name="reportOptionsFolded" value="collapsed" [(ngModel)]="reportOptions.optionsFolded">
                     {{language.getLabel('LBL_COLLAPSED')}}
                 </system-input-radio>
-                <system-input-radio name="reportOptionsFolded" value="open" [ngModel]="reportOptions.optionsFolded" (ngModelChange)="setModelReportOptions('optionsFolded', $event)">
+                <system-input-radio name="reportOptionsFolded" value="open" [(ngModel)]="reportOptions.optionsFolded">
                     {{language.getLabel('LBL_OPEN')}}
                 </system-input-radio>
             </div>
@@ -46,7 +46,7 @@
         <fieldset class="slds-form-element slds-m-vertical--xxx-small slds-size--1-of-3">
             <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_DATA_UPDATE')}}</legend>
             <div class="slds-form-element__control">
-                <system-checkbox [ngModel]="reportOptions.updateOnRequest" (ngModelChange)="setModelReportOptions('updateOnRequest', $event)">
+                <system-checkbox [(ngModel)]="reportOptions.updateOnRequest">
                     {{language.getLabel('LBL_ON_USER_REQUEST')}}
                 </system-checkbox>
             </div>

@@ -1,0 +1,58 @@
+<div class="slds-grid slds-p-around--x-small" style="box-shadow: inset -1px 1px 6px 0 #aaa;">
+    <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small slds-size--1-of-1">
+        <div class="slds-form-element__control">
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label">{{language.getLabel('LBL_USER_EDITABLE')}}</label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="whereCondition.usereditable">
+                                <option value="yes">{{language.getLabel('LBL_YES')}}</option>
+                                <option value="no">{{language.getLabel('LBL_NO')}}</option>
+                                <option value="yfo">{{language.getLabel('LBL_VALUE_ONLY')}}</option>
+                                <option value="yo1">{{language.getLabel('LBL_REPORTS_ALLOW_EDIT_ON_OFF')}}</option>
+                                <option value="yo2">{{language.getLabel('LBL_REPORTS_ALLOW_EDIT_ON_ON')}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label">{{language.getLabel('LBL_GROUPING')}}</label>
+                    <div class="slds-form-element__control">
+                        <input type="text" [(ngModel)]="whereCondition.grouping" class="slds-input">
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label">{{language.getLabel('LBL_SEQUENCE')}}</label>
+                    <div class="slds-form-element__control">
+                        <input type="text" [(ngModel)]="whereCondition.sequence" class="slds-input">
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label">{{language.getLabel('LBL_CONTEXT')}}</label>
+                    <div class="slds-form-element__control">
+                        <input type="text" [(ngModel)]="whereCondition.context" class="slds-input">
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-1">
+                    <label class="slds-form-element__label">{{language.getLabel('LBL_REFERENCE')}}</label>
+                    <div class="slds-form-element__control">
+                        <input type="text" [(ngModel)]="whereCondition.reference" class="slds-input">
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-2 slds-grid slds-grid--vertical-align-center">
+                    <system-checkbox [(ngModel)]="joinType">{{language.getLabel('LBL_REQUIRED')}}</system-checkbox>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2 slds-grid slds-grid--vertical-align-center">
+                    <system-checkbox [(ngModel)]="dashletEditable">{{language.getLabel('LBL_DASHLET_EDITABLE')}}</system-checkbox>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>

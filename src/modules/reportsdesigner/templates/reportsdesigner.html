@@ -1,9 +1,36 @@
+<div class="slds-page-header">
+    <div class="slds-grid">
+        <div class="slds-col slds-has-flexi-truncate">
+            <div class="slds-media slds-no-space slds-grow">
+                <div class="slds-media__figure" (click)="goToModule()">
+                    <system-icon [module]="model.module"></system-icon>
+                </div>
+                <div class="slds-media__body">
+                    <a (click)="goToModule()" href="javascript:void(0);" class="slds-text-title--caps slds-line-height--reset">
+                        {{language.getModuleName(model.module)}}
+                    </a>
+                    <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
+                        {{model.getField('summary_text')}}
+                    </h1>
+                </div>
+            </div>
+        </div>
+        <div class="slds-align-top slds-col slds-grid slds-no-flex slds-p-top--x-small">
+            <button [disabled]="model.isLoading" class="slds-button slds-m-left--x-small slds-button--neutral" (click)="cancel()">
+                {{language.getLabel('LBL_CANCEL')}}
+            </button>
+            <button [disabled]="model.isLoading" class="slds-button slds-m-horizontal--x-small slds-button--brand" (click)="save()">
+                {{language.getLabel('LBL_SAVE')}}
+            </button>
+        </div>
+    </div>
+</div>
 <div class="slds-grid" tobottom>
     <div class="slds-size--1-of-3 slds-border--right slds-grid--vertical" style="height: 100%;">
         <reports-designer-tree></reports-designer-tree>
     </div>
     <div class="slds-size--2-of-3" style="height: 100%">
-        <div *ngIf="reportsDesignerService.currentPath; else makeSelectionTemplate" class="slds-tabs--default slds-p-top--xx-small">
+        <div *ngIf="!model.isLoading && reportsDesignerService.currentPath" class="slds-tabs--default">
             <ul class="slds-tabs--default__nav" role="tablist">
                 <li (click)="setActiveTab('details')" [class.slds-active]="activeTab == 'details'" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
                     <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
@@ -55,16 +82,22 @@
                 </li>
             </ul>
             <div [ngSwitch]="activeTab" tobottom>
-                <reports-designer-details *ngSwitchCase="'details'"></reports-designer-details>
-                <reports-designer-filter *ngSwitchCase="'filter'"></reports-designer-filter>
-                <reports-designer-manipulate *ngSwitchCase="'manipulate'"></reports-designer-manipulate>
-                <reports-designer-present *ngSwitchCase="'present'"></reports-designer-present>
-                <reports-designer-visualize *ngSwitchCase="'visualize'"></reports-designer-visualize>
-                <reports-designer-integrate *ngSwitchCase="'integrate'"></reports-designer-integrate>
+                <ng-container *ngIf="view.isEditMode()">
+                    <reports-designer-details *ngSwitchCase="'details'"></reports-designer-details>
+                    <reports-designer-filter *ngSwitchCase="'filter'"></reports-designer-filter>
+                    <reports-designer-manipulate *ngSwitchCase="'manipulate'"></reports-designer-manipulate>
+                    <reports-designer-present *ngSwitchCase="'present'"></reports-designer-present>
+                    <reports-designer-visualize *ngSwitchCase="'visualize'"></reports-designer-visualize>
+                    <reports-designer-integrate *ngSwitchCase="'integrate'"></reports-designer-integrate>
+                </ng-container>
             </div>
         </div>
-        <ng-template #makeSelectionTemplate>
-            <div class="slds-p-around--small slds-align--absolute-center" tobottom>{{language.getLabel('LBL_MAKE_SELECTION')}}</div>
-        </ng-template>
+        <div *ngIf="model.isLoading" class="slds-align--absolute-center" style="height: 100%">
+            <system-spinner></system-spinner>
+        </div>
+        <div *ngIf="!model.isLoading && !reportsDesignerService.currentPath" class="slds-p-around--small slds-align--absolute-center" style="height: 100%">
+            {{language.getLabel('LBL_MAKE_SELECTION')}}
+        </div>
     </div>
 </div>
+
