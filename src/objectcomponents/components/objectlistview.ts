@@ -2,7 +2,7 @@
  * @module ObjectComponents
  */
 
-import {AfterViewInit, Component, ViewChild, ViewContainerRef, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ViewChild, ViewContainerRef, OnInit, OnDestroy} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {modellist} from '../../services/modellist.service';
@@ -18,21 +18,12 @@ import {userpreferences} from '../../services/userpreferences.service';
     templateUrl: './src/objectcomponents/templates/objectlistview.html',
     providers: [modellist, model]
 })
-export class ObjectListView implements OnInit, AfterViewInit {
+export class ObjectListView implements AfterViewInit, OnDestroy {
+
     /**
      * an elament ref to the container to render the compoonentsets
      */
     @ViewChild('container', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
-
-    /**
-     * the name of the module
-     */
-    private moduleName: any = '';
-
-    /**
-     * indicates if the view has been initialized
-     */
-    private initialized: boolean = false;
 
     /**
      * holds references to the rendered components. if rerendering they need to be destoryed when the route changes
@@ -40,130 +31,59 @@ export class ObjectListView implements OnInit, AfterViewInit {
     private componentRefs: any = [];
 
     /**
-     * the componentconfig as passed in or initialized
+     * the subscription to the list view changes since the component is rendered here
      */
-    private componentconfig: any = {lists: []};
-
-    private currentList: string = '';
-    private currentListComponent: any = undefined;
+    private modellistSubscription: any;
 
     constructor(private navigation: navigation, private activatedRoute: ActivatedRoute, private metadata: metadata, private modellist: modellist, private model: model, private userpreferences: userpreferences) {
 
         // get the module from teh activated route
-        this.moduleName = this.activatedRoute.params['value']['module'];
-        this.model.module = this.moduleName;
+        this.model.module = this.activatedRoute.params['value']['module'];
 
         // set the navigation paradigm
-        this.navigation.setActiveModule(this.moduleName);
+        this.navigation.setActiveModule(this.model.module);
 
         // set the module and get the list
-        this.modellist.setModule(this.moduleName);
+        this.modellist.module = this.model.module;
 
         // set so the views use the cahced results
         this.modellist.usecache = true;
-
-        if (this.initialized) this.buildContainer();
     }
 
     /**
-     * @ignore
-     */
-    public ngOnInit() {
-        if (this.lists.length == 0) {
-            if (this.componentconfig && this.componentconfig.componentset) {
-                let items = this.metadata.getComponentSetObjects(this.componentconfig.componentset);
-                this.componentconfig.lists = [];
-                for (let item of items) {
-                    this.componentconfig.lists.push({
-                        component: item.component,
-                        icon: item.componentconfig.icon,
-                        label: item.componentconfig.name
-                    });
-                }
-                // set the first as default list
-                this.componentconfig.defaultlist = this.componentconfig.lists[0].component;
-            } else {
-                let componentconfig = this.metadata.getComponentConfig('ObjectListView', this.model.module);
-                let items = this.metadata.getComponentSetObjects(componentconfig.componentset);
-                this.componentconfig = {
-                    lists: []
-                };
-                for (let item of items) {
-                    this.componentconfig.lists.push({
-                        component: item.component,
-                        icon: item.componentconfig.icon,
-                        label: item.componentconfig.name
-                    });
-                }
-                // set the first as default list
-                // this.userpreferences.setPreference('defaultlisttype', event.list, true, this.modellist.module);
-                let preflist = this.userpreferences.getPreference('defaultlisttype', this.modellist.module);
-                if (preflist) {
-                    this.componentconfig.defaultlist = preflist;
-                } else {
-                    this.componentconfig.defaultlist = this.componentconfig.lists[0].component;
-                }
-            }
-        }
-    }
-
-    get lists() {
-        try {
-            return this.componentconfig.lists ? this.componentconfig.lists : [];
-        } catch (e) {
-            return [];
-        }
-    }
-
-    /**
-     * @ignore
+     * register the listener to the modellist service to
      */
     public ngAfterViewInit() {
-        this.initialized = true;
-        this.currentList = this.componentconfig.defaultlist;
+        this.modellistSubscription = this.modellist.listcomponent$.subscribe(listcomponent => {
+            if (listcomponent) {
+                // set the current list and rebuild the container
+                this.buildContainer(listcomponent);
+            }
+        });
+    }
 
-        this.modellist.listcomponent$.subscribe(listcomponent => {
-            this.userpreferences.setPreference('defaultlisttype', listcomponent, false, 'SpiceUI_' + this.modellist.module);
-
-            // set the current list and rebuild the container
-            this.currentList = listcomponent;
-            this.buildContainer(listcomponent);
-        })
-
-        this.buildContainer();
+    /**
+     * unsubscribe from the modellist service so this can b e closed and cleaned up properly
+     */
+    public ngOnDestroy(): void {
+        this.modellistSubscription.unsubscribe();
     }
 
     /**
      * renders a compoentnset in the container
      *
-     * @param forcelist set a dedicated list to be rendered
+     * @param component the component to be rendered
      */
-    private buildContainer(forcelist: string = '') {
+    private buildContainer(component) {
+        // clean the existing rendered components
         for (let component of this.componentRefs) {
             component.destroy();
         }
 
-        if (forcelist) {
-            this.metadata.addComponent(forcelist, this.container).subscribe(componentRef => {
-                this.componentRefs.push(componentRef);
-            });
-            return;
-        }
-        // get the list from teh preferences if set
-        let preflist = this.userpreferences.getPreference('defaultlisttype', 'SpiceUI_' + this.modellist.module);
-        if (preflist) {
-            this.metadata.addComponent(preflist, this.container).subscribe(componentRef => {
-                this.componentRefs.push(componentRef);
-            });
-            return;
-        }
-
-        // final resort
-        if (this.componentconfig.defaultlist) {
-            this.metadata.addComponent(this.currentList, this.container).subscribe(componentRef => {
-                this.componentRefs.push(componentRef);
-            });
-        }
+        // render the new component
+        this.metadata.addComponent(component, this.container).subscribe(componentRef => {
+            this.componentRefs.push(componentRef);
+        });
     }
 
 }

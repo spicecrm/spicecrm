@@ -28,16 +28,6 @@ export class ObjectListViewAggregatesPanel {
     }
 
     /**
-     * calculates the offset for the panel
-     */
-    private getPanelStyle() {
-        let rect = this.elementRef.nativeElement.getBoundingClientRect();
-        return {
-            height: 'calc(100vh - ' + rect.top + 'px)'
-        };
-    }
-
-    /**
      * a getter for the aggregates
      */
     private getAggregates() {

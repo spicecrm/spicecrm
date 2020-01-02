@@ -83,8 +83,10 @@ export class ObjectListViewSettings {
             return false;
         }
 
-        this.modal.openModal('ObjectListViewSettingsDeletelistModal', true, this.injector).subscribe(modalref => {
-            modalref.instance.modellist = this.modellist;
+        this.modal.prompt("confirm", this.language.getLabel('MSG_DELETE_RECORD', undefined, 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(answer => {
+            if (answer) {
+                this.modellist.deleteListType();
+            }
         });
     }
 

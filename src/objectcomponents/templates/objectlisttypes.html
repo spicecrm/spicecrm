@@ -11,7 +11,7 @@
             <li class="slds-dropdown__header" role="separator">
                 <span class="slds-text-title--caps">{{language.getLabel('LBL_LIST_TYPES')}}</span>
             </li>
-            <li class="slds-dropdown__item" [ngClass]="{'slds-is-selected': modellist.listtype === 'all'}" role="presentation" >
+            <li class="slds-dropdown__item" [ngClass]="{'slds-is-selected': modellist.listtype == 'all'}" role="presentation" >
                 <a href="javascript:void(0);" role="menuitemcheckbox" (click)="setListType('all')">
                       <span class="slds-truncate">
                           <system-utility-icon size="x-small" icon="check" addclasses="slds-icon slds-icon_selected slds-icon_x-small slds-icon-text-default slds-m-right_x-small"></system-utility-icon>
@@ -19,7 +19,7 @@
                       </span>
                 </a>
             </li>
-            <li class="slds-dropdown__item" [ngClass]="{'slds-is-selected': modellist.listtype === 'owner'}" role="presentation" >
+            <li class="slds-dropdown__item" [ngClass]="{'slds-is-selected': modellist.listtype == 'owner'}" role="presentation" >
                 <a href="javascript:void(0);" role="menuitemcheckbox" (click)="setListType('owner')">
                       <span class="slds-truncate">
                           <system-utility-icon size="x-small" icon="check" addclasses="slds-icon slds-icon_selected slds-icon_x-small slds-icon-text-default slds-m-right_x-small"></system-utility-icon>
@@ -27,7 +27,7 @@
                       </span>
                 </a>
             </li>
-            <li *ngFor="let listtype of listtypes" class="slds-dropdown__item" [ngClass]="{'slds-is-selected': listtype.id === modellist.listtype}" role="presentation" >
+            <li *ngFor="let listtype of modellist.listTypes" class="slds-dropdown__item" [ngClass]="{'slds-is-selected': listtype.id == modellist.listtype}" role="presentation" >
                 <a href="javascript:void(0);" role="menuitemcheckbox" (click)="setListType(listtype.id)">
                   <span class="slds-truncate">
                       <system-utility-icon size="x-small" icon="check" addclasses="slds-icon slds-icon_selected slds-icon_x-small slds-icon-text-default slds-m-right_x-small"></system-utility-icon>

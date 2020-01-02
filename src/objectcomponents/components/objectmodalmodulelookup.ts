@@ -47,11 +47,6 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     public modulefilter: string = '';
 
     /**
-     * a trigger to show the aggregates üpanel
-     */
-    private showAggregates: boolean = false;
-
-    /**
      * a guid to kill the autocomplete
      */
     private autoCompleteKiller: string;
@@ -85,7 +80,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     public ngOnInit() {
 
         // this.model.module = this.module;
-        this.modellist.setModule(this.module);
+        this.modellist.module = this.module;
         this.modellist.modulefilter = this.modulefilter;
 
         for (let displayField of this.displayFields) {
@@ -209,17 +204,6 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
 
     private onModalEscX() {
         this.closePopup();
-    }
-
-    /**
-     * check if the modellist has aggregates
-     */
-    get aggregatesDisabled() {
-        return !(this.modellist.aggregatesEnabled());
-    }
-
-    private toggleAggregates() {
-        this.showAggregates = !this.showAggregates;
     }
 
     /**

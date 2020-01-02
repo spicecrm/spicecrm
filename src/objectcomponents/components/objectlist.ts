@@ -104,15 +104,19 @@ export class ObjectList implements OnDestroy {
     }
 
     private loadList(loadfromcache: boolean = false) {
-        let requestedFields = [];
-        for (let entry of this.allFields) {
-            requestedFields.push(entry.field);
+
+        if (this.modellist.listData.listcomponent != 'ObjectList') {
+            let requestedFields = [];
+            for (let entry of this.allFields) {
+                requestedFields.push(entry.field);
+            }
+            if (this.sortfield) {
+                this.modellist.setSortField(this.sortfield, this.sortdirection, false);
+            }
+            this.modellist.getListData(requestedFields, loadfromcache);
         }
-        if(this.sortfield){
-            this.modellist.setSortField(this.sortfield, this.sortdirection, false);
-        }
-        this.modellist.getListData(requestedFields, loadfromcache);
     }
+
 //
     private onScroll(e) {
         let element = this.tablecontent.element.nativeElement;

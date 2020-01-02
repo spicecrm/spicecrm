@@ -75,6 +75,34 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
                 value2: 'text'
             }
         ],
+        numeric: [
+            {
+                operator: 'equals',
+                name: 'LBL_EQUALS',
+                value1: 'integer'
+            }, {
+                operator: 'greater',
+                name: 'LBL_OP_GREATER',
+                value1: 'integer'
+            }, {
+                operator: 'gequal',
+                name: 'LBL_OP_GREATEREQUAL',
+                value1: 'integer'
+            }, {
+                operator: 'less',
+                name: 'LBL_OP_LESS',
+                value1: 'integer'
+            }, {
+                operator: 'lequal',
+                name: 'LBL_OP_LESSEQUAL',
+                value1: 'integer'
+            }, {
+                operator: 'between',
+                name: 'LBL_OP_BETWEEN',
+                value1: 'integer',
+                value2: 'integer'
+            }
+        ],
         date: [
             {
                 operator: 'today',
@@ -255,6 +283,11 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             case 'enum':
             case 'multienum':
                 this.operatortype = 'enum';
+                break;
+            case 'int':
+            case 'double':
+            case 'currency':
+                this.operatortype = 'numeric';
                 break;
             default:
                 this.operatortype = 'default';

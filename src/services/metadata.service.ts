@@ -858,7 +858,26 @@ export class metadata {
         });
     }
 
+    /**
+     * deletes the module listtype from the metadata
+     *
+     * @param module
+     * @param listtype
+     */
+    public deleteModuleListType(module: string, listtype: string){
+        let typeIndex = this.moduleDefs[module].listtypes.findIndex(ltype => ltype.id == listtype);
+        if(typeIndex >= 0){
+            this.moduleDefs[module].listtypes.splice(typeIndex, 1);
+        }
+        return this.moduleDefs[module].listtypes;
+    }
 
+
+    /**
+     * returns the field defs for a given module
+     * @param module
+     * @param field
+     */
     public getFieldDefs(module: string, field: string) {
         try {
             return this.fieldDefs[module][field];
@@ -867,6 +886,11 @@ export class metadata {
         }
     }
 
+    /**
+     * returns if a modulöe is status managed by a status network defined
+     *
+     * @param module
+     */
     public checkStatusManaged(module: string) {
         for (let field in this.fieldDefs[module]) {
             if (this.getFieldDefs(module, field).options && this.fieldStatusNetworks[this.getFieldDefs(module, field).options]) {
