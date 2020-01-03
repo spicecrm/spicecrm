@@ -51,15 +51,11 @@
                 </div>
                 <div class="slds-form-element">
                     <label class="slds-form-element__label">{{language.getLabel('LBL_CUSTOM_FUNCTION')}}</label>
-                    <div class="slds-form-element__control">
-                        <textarea class="slds-textarea" [(ngModel)]="listItem.customsqlfunction" style="height: 150px"></textarea>
-                    </div>
+                    <system-input-base64 [(ngModel)]="listItem.customsqlfunction"></system-input-base64>
                 </div>
                 <div class="slds-form-element">
                     <label class="slds-form-element__label">{{language.getLabel('LBL_FORMULA')}}</label>
-                    <div class="slds-form-element__control">
-                        <textarea class="slds-textarea" [(ngModel)]="listItem.formulavalue" style="height: 150px"></textarea>
-                    </div>
+                    <system-input-base64 [(ngModel)]="listItem.formulavalue"></system-input-base64>
                 </div>
             </div>
         </fieldset>
