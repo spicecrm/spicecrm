@@ -5,7 +5,7 @@
                 <label class="slds-form-element__label">{{language.getLabel('LBL_GROUP_OPERATOR')}}</label>
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="groupType">
+                        <select class="slds-select" [(ngModel)]="group.type">
                             <option value="AND">{{language.getLabel('LBL_AND')}}</option>
                             <option value="OR">{{language.getLabel('LBL_OR')}}</option>
                         </select>
@@ -31,7 +31,7 @@
                 {{language.getLabel('MSG_DROP_FIELD_HERE')}}
             </li>
             <ng-container *ngFor="let childGroup of group.children">
-                <reports-designer-condition-group [group]="childGroup" [canDelete]="true" (groupDeleted)="deleteGroup($event)"></reports-designer-condition-group>
+                <reports-designer-condition-group [group]="childGroup" [canDelete]="true" (treeChange)="handleTreeChange($event)"></reports-designer-condition-group>
             </ng-container>
         </ul>
         <div class="slds-expression__buttons">
@@ -39,7 +39,7 @@
                 <system-button-icon icon="add" class="slds-m-right--xx-small"></system-button-icon>
                 {{language.getLabel('LBL_ADD_GROUP')}}
             </button>
-            <button *ngIf="canDelete" (click)="emitGroupSelfDeletion()" class="slds-button slds-button_neutral slds-m-left--xx-small">
+            <button *ngIf="canDelete" (click)="deleteGroup()" class="slds-button slds-button_neutral slds-m-left--xx-small">
                 <system-button-icon icon="delete" class="slds-m-right--xx-small"></system-button-icon>
                 {{language.getLabel('LBL_DELETE_GROUP')}}
             </button>
