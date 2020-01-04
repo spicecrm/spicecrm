@@ -8,7 +8,7 @@ import {model} from '../../../services/model.service';
 import {configurationService} from '../../../services/configuration.service';
 
 
-@Pipe({name: 'spicekanbanstagepipe'})
+@Pipe({name: 'spicekanbanstagepipe', pure: false})
 export class SpiceKanbanStagePipe {
     constructor(private configuration: configurationService, private model: model) {
     }
