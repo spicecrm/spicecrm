@@ -32,6 +32,11 @@ export class SystemInputRadio implements ControlValueAccessor {
     @Input() private value: any;
 
     /**
+     * the value to be set
+     */
+    @Input() private disabled: boolean = false;
+
+    /**
      * for the control accessor
      */
     private onChange: (value: string) => void;
