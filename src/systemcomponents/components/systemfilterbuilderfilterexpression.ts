@@ -73,6 +73,12 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
                 name: 'LBL_OP_BETWEEN',
                 value1: 'text',
                 value2: 'text'
+            }, {
+                operator: 'empty',
+                name: 'LBL_OP_EMPTY'
+            }, {
+                operator: 'notempty',
+                name: 'LBL_OP_NOTEMPTY'
             }
         ],
         numeric: [
@@ -176,6 +182,12 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
                 name: 'LBL_OP_BETWEEN',
                 value1: 'date',
                 value2: 'date'
+            }, {
+                operator: 'empty',
+                name: 'LBL_OP_ISEMPTY'
+            }, {
+                operator: 'notempty',
+                name: 'LBL_OP_NOTEMPTY'
             }
         ],
         bool: [
@@ -200,6 +212,9 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             }, {
                 operator: 'empty',
                 name: 'LBL_OP_ISEMPTY'
+            }, {
+                operator: 'notempty',
+                name: 'LBL_OP_NOTEMPTY'
             }
         ]
     }
