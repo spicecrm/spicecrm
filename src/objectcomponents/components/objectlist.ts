@@ -156,7 +156,7 @@ export class ObjectList implements OnDestroy {
             if (this.sortfield) {
                 this.modellist.setSortField(this.sortfield, this.sortdirection, false);
             }
-            this.modellist.getListData(requestedFields, loadfromcache);
+            this.modellist.getListData(requestedFields);
         }
     }
 

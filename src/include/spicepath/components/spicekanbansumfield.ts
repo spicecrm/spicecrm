@@ -2,32 +2,21 @@
  * @module ModuleSpicePath
  */
 import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
     Component,
-    Inject,
-    Input,
-    OnChanges,
-    SimpleChanges
+    Input
 } from '@angular/core';
 import {currency} from '../../../services/currency.service';
-import {userpreferences} from '../../../services/userpreferences.service';
-import {interval} from "rxjs";
-import {take} from "rxjs/operators";
 
 declare var _: any;
 
+/**
+ * displays the kanban SUM
+ */
 @Component({
     selector: 'spice-kanban-sumfield',
-    templateUrl: './src/include/spicepath/templates/spicekanbansumfield.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    templateUrl: './src/include/spicepath/templates/spicekanbansumfield.html'
 })
-export class SpiceKanbanSumField implements OnChanges {
-
-    /**
-     * the internal held value
-     */
-    private _value: number = 0;
+export class SpiceKanbanSumField {
 
     /**
      * the number to be displayed
@@ -39,37 +28,8 @@ export class SpiceKanbanSumField implements OnChanges {
      */
     public currencies: any[] = [];
 
-    constructor(private userpreferences: userpreferences, private currency: currency, private cdref: ChangeDetectorRef) {
+    constructor(private currency: currency) {
         this.currencies = this.currency.getCurrencies();
-    }
-
-    /**
-     * register on changes to trigger the counter
-     *
-     * @param changes
-     */
-    public ngOnChanges(changes: SimpleChanges): void {
-        const steps = 20;
-        const totaltime = 300;
-        const _increment = (parseFloat(this.value) - this._value) / steps;
-        interval(totaltime / steps).pipe(take(steps)).subscribe(cx => {
-            this._value += _increment;
-
-            // check if we are close enough then set the value to the same avoiding rounding errors
-            if (Math.abs(this._value - parseFloat(this.value)) < 1) {
-                this._value = parseFloat(this.value);
-            }
-
-            // trigger change detection
-            this.cdref.detectChanges();
-        });
-    }
-
-    /**
-     * returns the formatted value
-     */
-    get displayvalue() {
-        return this.userpreferences.formatMoney(this._value, 0);
     }
 
     /**
