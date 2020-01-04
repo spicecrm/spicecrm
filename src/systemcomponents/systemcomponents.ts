@@ -81,6 +81,7 @@ import /*embed*/ {SystemModalHeaderRight} from "./components/systemmodalheaderri
 import /*embed*/ {SystemModalHeader} from "./components/systemmodalheader";
 import /*embed*/ {SystemModalWrapper} from "./components/systemmodalwrapper";
 import /*embed*/ {SystemModal} from "./components/systemmodal";
+import /*embed*/ {SystemNumberSpinner} from "./components/systemnumberspinner";
 import /*embed*/ {SystemObjectPreviewModal} from "./components/systemobjectpreviewmodal";
 import /*embed*/ {SystemProgressRing} from "./components/systemprogressring";
 import /*embed*/ {SystemProgressBar} from "./components/systemprogressbar";
@@ -206,6 +207,7 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemModalWrapper,
         SystemModuleCustomPipe,
         SystemModuleGlobalPipe,
+        SystemNumberSpinner,
         SystemObjectPreviewModal,
         SystemInputModuleFilter,
         SystemFilterBuilder,
@@ -308,6 +310,7 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemModalHeader,
         SystemModalHeaderRight,
         SystemModalWrapper,
+        SystemNumberSpinner,
         SystemProgressRing,
         SystemProgressBar,
         SystemPrompt,
