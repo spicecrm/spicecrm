@@ -161,7 +161,7 @@ export class DropdownTriggerDirective implements OnDestroy, AfterViewChecked {
         this.renderer.setStyle(this.dropdownElement, 'left', Math.abs(triggerRect.right - dropdownRect.width) + 'px');
 
         // make sure we detect changes in case we are on a push strategy
-        this.cdRef.detectChanges();
+        this.cdRef.markForCheck();
     }
 
     /*
@@ -179,7 +179,7 @@ export class DropdownTriggerDirective implements OnDestroy, AfterViewChecked {
             this.clickListener();
 
             // make sure we detect changes in case we are on a push strategy
-            this.cdRef.detectChanges();
+            this.cdRef.markForCheck();
         }
     }
 }
