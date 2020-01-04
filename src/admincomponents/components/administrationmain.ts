@@ -46,8 +46,10 @@ export class AdministrationMain implements AfterViewInit {
      * render the default home screen after view init
      */
     public ngAfterViewInit(): void {
+        setTimeout(() => {
         this.administration.admincomponent$.subscribe(admincomponent => {
             this.openContent(admincomponent);
+        });
         });
     }
 
