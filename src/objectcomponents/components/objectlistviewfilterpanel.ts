@@ -83,6 +83,13 @@ export class ObjectListViewFilterPanel {
     }
 
     /**
+     * checks if the user is allowed to edit
+     */
+    get canEdit() {
+        return this.modellist.checkAccess('edit');
+    }
+
+    /**
      * saves the filter
      */
     private save() {

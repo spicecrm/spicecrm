@@ -248,6 +248,9 @@ export class modellist implements OnDestroy {
                 } else {
                     this.setListType('all', false);
                 }
+            } else {
+                // reload quite if we did retrive from cache
+                this.reLoadList(true);
             }
         }
     }
@@ -272,22 +275,41 @@ export class modellist implements OnDestroy {
 
         switch (message.messagetype) {
             case 'model.delete':
-                for (let itemIndex in this.listData.list) {
-                    if (this.listData.list[itemIndex].id === message.messagedata.id) {
-                        this.listData.list.splice(itemIndex, 1);
-                        this.listData.totalcount--;
+                let deletedItemIndex = this.listData.list.findIndex(item => item.id == message.messagedata.id);
+                if (deletedItemIndex >= 0) {
+                    this.listData.list.splice(deletedItemIndex, 1);
+                    this.listData.totalcount--;
+
+                    // analyse if we need to update the buckets
+                    if (this.bucketfield) {
+                        this.removeItemFromBucket(message.messagedata.data[this.bucketfield],this.bucketamountfield ? message.messagedata.data[this.bucketamountfield] : undefined);
                     }
                 }
                 break;
             case 'model.save':
                 let eventHandled = false;
-                for (let itemIndex in this.listData.list) {
-                    if (this.listData.list[itemIndex].id === message.messagedata.id) {
-                        this.listData.list[itemIndex] = message.messagedata.data;
-                        eventHandled = true;
+                let savedItemIndex = this.listData.list.findIndex(item => item.id == message.messagedata.id);
+                if (savedItemIndex >= 0) {
+                    this.listData.list[savedItemIndex] = message.messagedata.data;
+
+                    // analyse if we need to update the buckets
+                    if (this.bucketfield) {
+                        if (message.messagedata.changed[this.bucketfield]) {
+                            // update the bucket and if an amount is set snd in also the changed amount
+                            this.updateBuckets(
+                                message.messagedata.backupdata[this.bucketfield],
+                                message.messagedata.data[this.bucketfield],
+                                this.bucketamountfield ? message.messagedata.backupdata[this.bucketamountfield] : undefined,
+                                this.bucketamountfield ? message.messagedata.data[this.bucketamountfield] : undefined
+                            );
+                        } else if (this.bucketamountfield && message.messagedata.changed[this.bucketamountfield]) {
+                            // just update the amount field
+                            let bucket = this.buckets.bucketitems.find(bucket => bucket.bucket == message.messagedata.data[this.bucketfield]);
+                            bucket.value += message.messagedata.data[this.bucketamountfield] - message.messagedata.backupdata[this.bucketamountfield];
+                        }
                     }
-                }
-                if (!eventHandled) {
+
+                } else {
                     this.reLoadList();
                 }
                 break;
@@ -579,7 +601,7 @@ export class modellist implements OnDestroy {
         try {
             return this.getListTypes().find(lt => lt.id == (listType ? listType : this.currentList.id)).name;
         } catch (e) {
-            return listType ? listType : this.currentList.id
+            return listType ? listType : this.currentList.id;
         }
     }
 
@@ -731,7 +753,7 @@ export class modellist implements OnDestroy {
      * @param fields
      * @param checkSession
      */
-    public getListData(fields?: any[], checkSession: boolean = false): Observable<boolean> {
+    public getListData(fields?: any[]): Observable<boolean> {
         this.resetListData();
 
         // check if we have fields defined or use the last fields
@@ -741,14 +763,7 @@ export class modellist implements OnDestroy {
             this.lastFields = fields;
         }
 
-        // check if we have a sortfield or shoudl set one
-        /*
-        if (!this.sortfield) {
-            this.sortfield = fields.length > 0 ? fields[0] : 'id';
-        }
-        */
-
-        return this.loadList(fields, checkSession);
+        return this.loadList(fields);
     }
 
     /**
@@ -771,8 +786,8 @@ export class modellist implements OnDestroy {
     /**
      * reloads the last loaded list
      */
-    public reLoadList() {
-        return this.loadList(this.lastFields);
+    public reLoadList(quiet: boolean = false) {
+        return this.loadList(this.lastFields, quiet);
     }
 
     /**
@@ -959,15 +974,21 @@ export class modellist implements OnDestroy {
      * @param fields
      * @param checksession
      */
-    public loadList(fields: any[], checksession: boolean = false): Observable<boolean> {
+    public loadList(fields: any[], quiet: boolean = false): Observable<boolean> {
         let retSub = new Subject<boolean>();
-        this.resetListData();
+        if (!quiet) {
+            this.resetListData();
 
-        // check if we have data in teh session
-        // if (checksession && this.getFromSession()) return of(true);
-
-        // set the service to loading state
-        this.isLoading = true;
+            // set the service to loading state
+            this.isLoading = true;
+        } else {
+            // just reset the bucket items if we have any
+            if (this.buckets && this.buckets.bucketitems) {
+                for (let bucketitem of this.buckets.bucketitems) {
+                    bucketitem.items = 0;
+                }
+            }
+        }
 
         // set the aggregates
         let aggregates = {};
@@ -1047,6 +1068,11 @@ export class modellist implements OnDestroy {
     }
 
 
+    /**
+     * doanloads a list
+     *
+     * @param fields
+     */
     public exportList(fields?: any[]): Observable<boolean> {
 
         let retSub = new Subject<boolean>();
@@ -1063,20 +1089,6 @@ export class modellist implements OnDestroy {
                 }
             );
         } else {
-            /*
-            if (this.currentList.type == 'all' || this.currentList.type == 'owner') {
-                let aggregates = {};
-                aggregates[this.module] = this.selectedAggregates;
-                this.fts.export(this.searchTerm, this.module, fields ? fields : this.lastFields, aggregates, {
-                    sortfield: this.sortfield,
-                    sortdirection: this.sortdirection.toLowerCase()
-                }, this.currentList.type == 'owner' ? true : false).subscribe(res => {
-                    // console.log(res);
-                    retSub.next(res);
-                    retSub.complete();
-                });
-            } else {
-             */
             this.backend.getLinkToDownload(
                 '/module/' + this.module + '/export',
                 'POST',
@@ -1094,5 +1106,62 @@ export class modellist implements OnDestroy {
             );
         }
         return retSub.asObservable();
+    }
+
+    /**
+     * a simple getter for the bucketfield
+     */
+    get bucketfield() {
+        return this.buckets.bucketfield;
+    }
+
+    /**
+     * a simple getter for the bucketfield
+     */
+    get bucketamountfield() {
+        return this.buckets.buckettotal;
+    }
+
+    /**
+     * update the buckets
+     *
+     * @param from the from status
+     * @param to the to status
+     * @param valuefrom optionala from value, added in the safesubscribe method to get the old value from the backupdata so the update is done properly
+     */
+    private updateBuckets(from, to, valuefrom?, valueto?) {
+        // reduce from buckets
+        let frombucket = this.buckets.bucketitems.find(bucket => bucket.bucket == from);
+        frombucket.items--;
+        frombucket.total--;
+
+        // add to the bucket
+        let tobucket = this.buckets.bucketitems.find(bucket => bucket.bucket == to);
+        tobucket.items++;
+        tobucket.total++;
+
+        // if we have a total field update that one as well
+        if (this.bucketamountfield && valuefrom && valueto) {
+            frombucket.value -= valuefrom;
+            tobucket.value += valueto;
+        }
+    }
+
+    /**
+     * removes one item from a bucket and recues the total by the value
+     *
+     * @param from
+     * @param value
+     */
+    private removeItemFromBucket(from, value?){
+        // reduce from buckets
+        let frombucket = this.buckets.bucketitems.find(bucket => bucket.bucket == from);
+        frombucket.items--;
+        frombucket.total--;
+
+        // if we have a total field update that one as well
+        if (this.bucketamountfield && value) {
+            frombucket.value -= value;
+        }
     }
 }

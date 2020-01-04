@@ -82,7 +82,7 @@ export class ObjectListItem implements OnInit, OnDestroy {
         this.view.displayLinks = this.displaylinks;
 
         // register that the check is run
-        this.model.data$.subscribe(data => this.cdref.detectChanges());
+        this.modelSubscription = this.model.data$.subscribe(data => this.cdref.detectChanges());
     }
 
     /**

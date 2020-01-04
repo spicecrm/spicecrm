@@ -7,7 +7,8 @@ import {
     ViewChild,
     ViewContainerRef,
     OnDestroy,
-    OnInit
+    OnInit,
+    Input
 } from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
@@ -17,6 +18,7 @@ import {modellist} from '../../../services/modellist.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {configurationService} from '../../../services/configuration.service';
 import {userpreferences} from '../../../services/userpreferences.service';
+import {CdkDragDrop} from "@angular/cdk/drag-drop";
 
 declare var _: any;
 
@@ -30,6 +32,9 @@ export class SpiceKanban implements OnInit, OnDestroy {
     private componentconfig: any = {};
     private modellistsubscribe: any = undefined;
     private requestedFields: string[] = [];
+
+    private confdata: any;
+
     private stages: any[] = [];
 
     /**
@@ -49,8 +54,8 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * load ths stage data and build the buckts we are searching for to build the kanban board
      */
     public ngOnInit() {
-        let confData = this.configuration.getData('spicebeanguides')[this.model.module];
-        let stages = confData.stages;
+        this.confdata = this.configuration.getData('spicebeanguides')[this.model.module];
+        let stages = this.confdata.stages;
 
 
         let tilecomponentconfig = this.metadata.getComponentConfig('SpiceKanbanTile', this.modellist.module);
@@ -77,7 +82,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
 
         if (_.isEmpty(this.modellist.buckets)) {
             this.modellist.buckets = {
-                bucketfield: confData.statusfield,
+                bucketfield: this.confdata.statusfield,
                 buckettotal: this.componentconfig.sumfield,
                 bucketitems: bucketitems
             }
@@ -102,6 +107,17 @@ export class SpiceKanban implements OnInit, OnDestroy {
 
         // reset buckets
         this.modellist.buckets = {};
+    }
+
+
+    /**
+     * trackby function to opütimize performnce onm the for loop
+     *
+     * @param index
+     * @param item
+     */
+    protected trackbyfn(index, item) {
+        return item.id;
     }
 
     /**
@@ -236,5 +252,32 @@ export class SpiceKanban implements OnInit, OnDestroy {
             }
         });
         return currencySymbol;
+    }
+
+    /**
+     * handels the drop
+     * ToDo: Check if we can find a nicer way then attaching the drop infor to the item
+     *
+     * @param event
+     */
+    private handleDrop(event: CdkDragDrop<any>) {
+        if (event.item.data[this.confdata.statusfield] != event.container.data.stage) {
+            // a little bit of an ugly hack to get the drop information to the item so the item can handle the moel upadet
+            event.item.data._KanbanDrop = {
+                from: event.item.data[this.confdata.statusfield],
+                to: event.container.data.stage
+            };
+
+            event.item.data[this.confdata.statusfield] = event.container.data.stage;
+        }
+    }
+
+    /**
+     * returns if the user is allowed to edit and can edit this opportunity
+     *
+     * @param item
+     */
+    private allowDrag(item) {
+        return item.acl.edit;
     }
 }

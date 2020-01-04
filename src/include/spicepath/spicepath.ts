@@ -4,6 +4,7 @@
 import {CommonModule} from "@angular/common";
 import {NgModule} from "@angular/core";
 import {FormsModule} from "@angular/forms";
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 import {VersionManagerService} from "../../services/versionmanager.service";
 import {DirectivesModule} from "../../directives/directives";
@@ -33,6 +34,7 @@ import /*embed*/ {SpiceKanbanTile} from "./components/spicekanbantile";
         ObjectComponents,
         SystemComponents,
         DirectivesModule,
+        DragDropModule
     ],
     declarations: [
         SpicePathTrack,
