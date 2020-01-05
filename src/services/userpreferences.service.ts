@@ -265,10 +265,11 @@ export class userpreferences {
      * @param d
      */
     public formatDate(d) {
-        if(moment.isMoment(d)){
+        if (moment.isMoment(d)) {
             return d.format(this.getDateFormat());
         }
-        return moment(d).format(this.getDateFormat());
+        let datem = moment(d);
+        return datem.isValid() ? datem.format(this.getDateFormat()) : d;
     }
 
     /**
@@ -277,7 +278,7 @@ export class userpreferences {
      * @param d
      */
     public formatDateTime(d) {
-        if(moment.isMoment(d)){
+        if (moment.isMoment(d)) {
             return d.format(this.getDateFormat()) + ' ' + d.format(this.getTimeFormat());
         }
         return moment.utc(d).format(this.getDateFormat()) + ' ' + moment.utc(d).format(this.getTimeFormat());
