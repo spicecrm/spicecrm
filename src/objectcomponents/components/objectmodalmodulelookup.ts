@@ -3,16 +3,20 @@
  */
 import {Component, OnInit, EventEmitter, Output, ViewChild, ViewContainerRef, OnDestroy} from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
+import {model} from '../../services/model.service';
 import {modellist} from '../../services/modellist.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {animate, style, transition, trigger} from "@angular/animations";
 
+/**
+ * provides a lookup modal with a modellist and the option to select a model
+ */
 @Component({
     selector: 'object-modal-module-lookup',
     templateUrl: './src/objectcomponents/templates/objectmodalmodulelookup.html',
-    providers: [view, modellist],
+    providers: [view, modellist, model],
     styles: [
         '::ng-deep table.singleselect tr:hover td { cursor: pointer; }',
     ],
@@ -35,8 +39,6 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
     @ViewChild('headercontent', {read: ViewContainerRef, static: true}) private headercontent: ViewContainerRef;
 
-    public displayFields: any[] = [];
-    public listFields: string[] = [];
     public allSelected: boolean = false;
     public searchTerm: string = '';
     public searchTermOld: string = '';
@@ -56,10 +58,11 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     @Output() private selectedItems: EventEmitter<any> = new EventEmitter<any>();
     @Output() private usedSearchTerm: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities) {
+    constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, private model: model) {
         // subscribe to changes of the listtype
         this.modellistsubscribe = this.modellist.listtype$.subscribe(newType => this.switchListtype());
 
+        // set a random id so no autocomplete is triggered on the field
         this.autoCompleteKiller = this.modelutilities.generateGuid();
     }
 
@@ -75,6 +78,19 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     }
 
     /**
+     * a getter that builds teh request fields from the listfields from the modellistservice
+     */
+    get requestfields() {
+        let requestfields = [];
+        for (let listfield of this.modellist.listfields) {
+            if (requestfields.indexOf(listfield.field) != -1) {
+                requestfields.push(listfield.field);
+            }
+        }
+        return requestfields;
+    }
+
+    /**
      * loads the modellist and sets the various paramaters
      */
     public ngOnInit() {
@@ -83,18 +99,19 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
         this.modellist.module = this.module;
         this.modellist.modulefilter = this.modulefilter;
 
-        for (let displayField of this.displayFields) {
-            this.listFields.push(displayField.field);
-        }
-        // load the display fields
-        this.setFieldDefs();
-
-        // load the list
-        this.modellist.getListData(this.listFields);
+        // set hte module on the model
+        this.model.module = this.module;
 
         // if we have a searchterm .. start the search
         if (this.searchTerm != '') {
             this.doSearch();
+        } else {
+            this.searchTerm = this.modellist.searchTerm;
+            this.searchTermOld = this.modellist.searchTerm;
+            // load the list if the view of the cached entry is different
+            if (this.modellist.listData.listcomponent != 'ObjectList') {
+                this.modellist.getListData(this.requestfields);
+            }
         }
     }
 
@@ -109,27 +126,8 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
      * handle the change of listtype
      */
     private switchListtype() {
-        this.setFieldDefs();
         if (this.modellist.module) {
             this.modellist.reLoadList();
-        }
-    }
-
-    /**
-     * manage the display fields
-     */
-    private setFieldDefs(): void {
-        this.displayFields = [];
-
-        // check if we have fielddefs
-        let fielddefs = this.modellist.getFieldDefs();
-        // load all fields
-        let componentconfig = this.metadata.getComponentConfig('ObjectList', this.modellist.module);
-        let allFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
-        for (let listField of allFields) {
-            if ((fielddefs.length > 0 && fielddefs.indexOf(listField.field) >= 0) || (fielddefs.length === 0 && listField.fieldconfig.default !== false)) {
-                this.displayFields.push(listField);
-            }
         }
     }
 
@@ -139,7 +137,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     private doSearch() {
         this.searchTermOld = this.searchTerm;
         this.modellist.searchTerm = this.searchTerm;
-        this.modellist.getListData(this.listFields);
+        this.modellist.getListData(this.requestfields);
     }
 
     /**

@@ -17,7 +17,6 @@ import {Subscription} from "rxjs";
 export class ObjectActionSelectButton implements OnInit, OnDestroy {
 
     public actionconfig: any = {};
-    public parent: any = {};
     public disabled: boolean = true;
     private subscriptions: Subscription = new Subscription();
 

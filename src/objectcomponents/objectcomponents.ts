@@ -396,6 +396,7 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectRecordDetails,
         ObjectRecordDetailsFooter,
         ObjectEditModalDialogContainer,
+        ObjectListHeader,
         ObjectListHeaderActionMenu,
         ObjectRecordMessagesBadge,
         ObjectRelatedlistFiles,
