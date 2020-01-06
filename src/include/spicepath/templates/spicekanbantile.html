@@ -1,8 +1,12 @@
 <div class="slds-tile slds-box--border slds-theme--default">
     <div class="slds-p-around--x-small" spiceOverlayLoadingSpinner [isLoading]="isSaving">
         <div class="slds-grid slds-grid--align-spread">
-            <h3 class="slds-truncate" (click)="goDetail()"><a href="javascript:void(0);">{{model.getField('summary_text')}}</a>
-            </h3>
+            <ng-container *ngIf="headerFieldset; else noheaderfieldset">
+                <object-record-fieldset-horizontal-list [fieldset]="headerFieldset"></object-record-fieldset-horizontal-list>
+            </ng-container>
+            <ng-template #noheaderfieldset>
+                <h3 class="slds-truncate" (click)="goDetail()"><a href="javascript:void(0);">{{model.getField('summary_text')}}</a></h3>
+            </ng-template>
             <object-action-menu buttonsize="x-small"></object-action-menu>
         </div>
         <div class="slds-tile__detail slds-text-body--small">

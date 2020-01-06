@@ -122,7 +122,16 @@ export class SpiceKanbanTile implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * returns the headerfieldset if one is set
+     */
+    get headerFieldset() {
+        return this.componentconfig.headerfieldset;
+    }
 
+    /**
+     * subscribe to the model save event. This is required since the change detection is set to push strategy and so we need to react to changes in the component
+     */
     private subscribeToSave() {
         this.modelSubscription = this.model.saved$.subscribe(changeddata => {
 
