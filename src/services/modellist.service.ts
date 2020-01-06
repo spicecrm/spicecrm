@@ -187,6 +187,16 @@ export class modellist implements OnDestroy {
      */
     private reloadTimeOut: any;
 
+    /**
+     * holds the listfields .. supports the regular list service where fields can be selected
+     */
+    public _listfields: any[] = [];
+
+    /**
+     * an emitter when the listfields have been updated
+     */
+    public listfield$: EventEmitter<any> = new EventEmitter<any>();
+
     constructor(
         private broadcast: broadcast,
         private backend: backend,
@@ -262,6 +272,7 @@ export class modellist implements OnDestroy {
         return this.currentList.id;
     }
 
+
     /**
      * handles model updates
      *
@@ -282,7 +293,7 @@ export class modellist implements OnDestroy {
 
                     // analyse if we need to update the buckets
                     if (this.bucketfield) {
-                        this.removeItemFromBucket(message.messagedata.data[this.bucketfield],this.bucketamountfield ? message.messagedata.data[this.bucketamountfield] : undefined);
+                        this.removeItemFromBucket(message.messagedata.data[this.bucketfield], this.bucketamountfield ? message.messagedata.data[this.bucketamountfield] : undefined);
                     }
                 }
                 break;
@@ -457,6 +468,9 @@ export class modellist implements OnDestroy {
             }
         }
 
+        // determine the listfields
+        this.determineListFields();
+
         // set the user preferences
         if (setPreference) {
             let modulepreferences = this.userpreferences.getPreference(this.module);
@@ -495,12 +509,91 @@ export class modellist implements OnDestroy {
         this.getListData();
     }
 
-    /*
-    public checkFilterChange(listType): boolean {
-        return (listType.basefilter !== this.currentList.basefilter || listType.filterdefs !== this.currentList.filterdefs);
-    }
-     */
 
+    /**
+     * build the listfields based on the listtype
+     */
+    private determineListFields() {
+        this._listfields = [];
+
+        // check if we have fielddefs
+        let fielddefs = this.getFieldDefs();
+
+        // load all fields
+        let componentconfig = this.metadata.getComponentConfig('ObjectList', this.module);
+        let allFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
+        for (let listField of allFields) {
+            // check if we have the field in the defs
+            let fielddef = fielddefs ? fielddefs.find(fd => fd.id == listField.id) : undefined;
+            if (fielddefs && fielddef) {
+                this._listfields.push({
+                    id: listField.id,
+                    field: listField.field,
+                    fieldconfig: listField.fieldconfig,
+                    sort: fielddef.sort,
+                    width: fielddef.width
+                });
+            } else if (!fielddefs && listField.fieldconfig.default !== false) {
+                this._listfields.push({
+                    id: listField.id,
+                    field: listField.field,
+                    fieldconfig: listField.fieldconfig
+                });
+            }
+        }
+
+        // sort listfields by fielddefs if we have them
+        if (fielddefs) {
+            this._listfields.sort((a, b) => fielddefs.findIndex(ai => ai.id == a.id) > fielddefs.findIndex(bi => bi.id == b.id) ? 1 : -1);
+        }
+    }
+
+
+    /**
+     * get the defined listfields
+     */
+    get listfields() {
+        return this._listfields;
+    }
+
+
+    /**
+     * sets the defined listfields
+     *
+     * @param listfields
+     */
+    set listfields(listfields) {
+        // set the listfields internally
+        this._listfields = listfields;
+
+        // check if we have an field in the sortarray that is no longer in the fieldlist
+        /*
+        if (this.sortArray.length > 0) {
+            let i = 0;
+            for (let i = 0; i++; i < this.sortArray.length) {
+                if (!this._listfields.find(listfield => listfield.id == this.sortArray[i].sortfield)) {
+                    this.sortArray.splice(i, 1);
+                }
+            }
+        }
+        */
+
+        for (let i in this.sortArray) {
+            if (!this._listfields.find(listfield => listfield.field == this.sortArray[i].sortfield)) {
+                this.sortArray.splice(parseInt(i, 10), 1);
+            }
+        }
+
+        // emit the change so all components are aware and can react
+        this.listfield$.emit(this._listfields);
+    }
+
+
+    /**
+     * check if the current lst can be deleted
+     *
+     * ToDo: check if still needed
+     */
     public canDelete(): boolean {
         try {
             return this.currentList != 'all' && this.currentList != 'owner';
@@ -586,8 +679,12 @@ export class modellist implements OnDestroy {
             this.searchTerm = listData.searchterm;
             this.searchAggregates = listData.searchaggregates;
             this.selectedAggregates = listData.selectedaggregates;
-            this.sortArray = listData.sortarray,
-                this.buckets = listData.buckets;
+            this.sortArray = listData.sortarray;
+            this.buckets = listData.buckets;
+
+            // determine the list fields
+            this.determineListFields();
+
             return true;
         } else {
             return false;
@@ -613,7 +710,7 @@ export class modellist implements OnDestroy {
         try {
             return JSON.parse(atob(this.currentList.fielddefs));
         } catch (e) {
-            return [];
+            return undefined;
         }
     }
 
@@ -687,6 +784,16 @@ export class modellist implements OnDestroy {
 
         // set the sort data
         listParams.sortfields = btoa(JSON.stringify(this.sortArray));
+
+        // set the listfields
+        let fielddefs = [];
+        for (let listfield of this.listfields) {
+            fielddefs.push({
+                id: listfield.id,
+                width: listfield.width
+            });
+        }
+        listParams.fielddefs = btoa(JSON.stringify(fielddefs));
 
         // post to the backend
         this.backend.postRequest(`spiceui/core/modules/${this.module}/listtypes/${this.currentList.id}`, {}, listParams).subscribe(listdata => {
@@ -1153,7 +1260,7 @@ export class modellist implements OnDestroy {
      * @param from
      * @param value
      */
-    private removeItemFromBucket(from, value?){
+    private removeItemFromBucket(from, value?) {
         // reduce from buckets
         let frombucket = this.buckets.bucketitems.find(bucket => bucket.bucket == from);
         frombucket.items--;

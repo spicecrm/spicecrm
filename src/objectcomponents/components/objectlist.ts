@@ -1,12 +1,14 @@
 /**
  * @module ObjectComponents
  */
-import {Component, ViewChild, ViewContainerRef, OnDestroy} from '@angular/core';
+import {Component, ViewChild, ViewContainerRef, OnDestroy, ViewChildren, QueryList} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {layout} from '../../services/layout.service';
 import {modellist} from '../../services/modellist.service';
+import {ObjectActionContainerItem} from "./objectactioncontaineritem";
+import {SystemResizeDirective} from "../../directives/directives/systemresize";
 
 /**
  * renders the modellist
@@ -26,11 +28,6 @@ export class ObjectList implements OnDestroy {
      * all fields that are available
      */
     private allFields: any[] = [];
-
-    /**
-     * the fields to be displayed
-     */
-    private listFields: any[] = [];
 
     /**
      * the subscription to the modellist
@@ -57,9 +54,6 @@ export class ObjectList implements OnDestroy {
     }
 
     constructor(private router: Router, private metadata: metadata, private modellist: modellist, private language: language, private layout: layout) {
-
-        // load the list intiially
-        this.setFieldDefs();
 
         // set the limit for the loading
         this.modellist.loadlimit = 50;
@@ -111,33 +105,7 @@ export class ObjectList implements OnDestroy {
      * handle the listtype when this is switched and reload the listdefs and the listdata
      */
     private switchListtype() {
-        this.setFieldDefs();
         this.loadList();
-    }
-
-    /**
-     * load the fieldddefs
-     */
-    private setFieldDefs(): void {
-        this.listFields = [];
-
-        // check if we have fielddefs
-        let fielddefs = this.modellist.getFieldDefs();
-        // load all fields
-        this.componentconfig = this.metadata.getComponentConfig('ObjectList', this.modellist.module);
-        this.allFields = this.metadata.getFieldSetFields(this.componentconfig.fieldset);
-        for (let listField of this.allFields) {
-            if ((fielddefs.length > 0 && fielddefs.indexOf(listField.field) >= 0) || (fielddefs.length === 0 && listField.fieldconfig.default !== false)) {
-                this.listFields.push(listField);
-            }
-        }
-
-        // sort the fields properly
-        if (fielddefs.length > 0) {
-            this.listFields.sort((a, b) => {
-                return fielddefs.indexOf(a.field) - fielddefs.indexOf(b.field);
-            });
-        }
     }
 
     /**
@@ -151,7 +119,9 @@ export class ObjectList implements OnDestroy {
         if (this.modellist.listData.listcomponent != 'ObjectList') {
             let requestedFields = [];
             for (let entry of this.allFields) {
-                requestedFields.push(entry.field);
+                if (requestedFields.indexOf(entry.field) == -1) {
+                    requestedFields.push(entry.field);
+                }
             }
             if (this.sortfield) {
                 this.modellist.setSortField(this.sortfield, this.sortdirection, false);
