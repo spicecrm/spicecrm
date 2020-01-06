@@ -9,6 +9,9 @@ import {modellist} from '../../services/modellist.service';
 
 declare var _: any;
 
+/**
+ * a modal that allows the user to choose from fields for the listview
+ */
 @Component({
     selector: 'object-listview-settings-setfields-modal',
     templateUrl: './src/objectcomponents/templates/objectlistviewsettingssetfieldsmodal.html'
@@ -87,15 +90,15 @@ export class ObjectListViewSettingsSetfieldsModal {
     /**
      * check if we can save (at least one fields needs to be selected
      */
-    private canSave(): boolean {
+    private canSet(): boolean {
         return this.listFields.length > 0;
     }
 
     /**
      * save the fieldsettings
      */
-    private save(): void {
-        if (this.canSave()) {
+    private set(): void {
+        if (this.canSet()) {
             this.modellist.listfields = this.listFields;
             this.close();
             // this.modellist.updateListType({fielddefs: btoa(JSON.stringify(this.listFields))}).subscribe(ret => this.close());
@@ -159,7 +162,7 @@ export class ObjectListViewSettingsSetfieldsModal {
                             return true;
                         }
                     });
-                })
+                });
                 this.selectedAvailableFields = [];
                 break;
             case 'list':
