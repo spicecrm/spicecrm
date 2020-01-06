@@ -26,8 +26,8 @@
         <button class="slds-button slds-button--neutral" (click)="close()">
             {{language.getLabel('LBL_CANCEL')}}
         </button>
-        <button class="slds-button slds-button--brand" [disabled]="!canSave()" (click)="save()">
-            {{language.getLabel('LBL_SAVE')}}
+        <button class="slds-button slds-button--brand" [disabled]="!canSet()" (click)="set()">
+            {{language.getLabel('LBL_SET')}}
         </button>
     </system-modal-footer>
 </system-modal>
