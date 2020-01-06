@@ -7,75 +7,106 @@ import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {modellist} from '../../services/modellist.service';
 
+declare var _: any;
+
 @Component({
     selector: 'object-listview-settings-setfields-modal',
     templateUrl: './src/objectcomponents/templates/objectlistviewsettingssetfieldsmodal.html'
 })
 export class ObjectListViewSettingsSetfieldsModal {
 
+    /**
+     * reference to self to be able to close the modal
+     */
+    private self: any = {};
+
+    /**
+     * the listfields that are currently selected
+     * cloned from the modellist service
+     */
     private listFields: any[] = [];
+
+    /**
+     * the remaining available fields
+     */
     private availableFields: any[] = [];
 
+    /**
+     * the list fo selected fields
+     */
     private selectedAvailableFields: any[] = [];
     private selectedListFields: any[] = [];
 
-    private self: any = {};
-
-
+    /**
+     * load the modal and initlaize the fields from the modellist vs the ones available
+     *
+     * @param metadata
+     * @param language
+     * @param modellist
+     */
     constructor(private metadata: metadata, private language: language, private modellist: modellist) {
 
-        // check if we have fielddefs
-        let fielddefs = this.modellist.getFieldDefs();
+        // get the listfields from the service
+        this.listFields = _.clone(this.modellist.listfields);
 
         // get the default fields
         let componentconfig = this.metadata.getComponentConfig('ObjectList', this.modellist.module);
         let listFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
         for (let listField of listFields) {
-            if ((fielddefs.length > 0 && fielddefs.indexOf(listField.field) >= 0) || (fielddefs.length == 0 && listField.fieldconfig.default !== false)) {
-                this.listFields.push(listField.field);
-            } else {
-                this.availableFields.push(listField.field);
+            if(!this.listFields.find(field => field.id == listField.id)) {
+                this.availableFields.push({
+                    id: listField.id,
+                    field: listField.field,
+                    fieldconfig:listField.fieldconfig
+                });
             }
         }
 
-        // sort listfields by fielddefs
-        this.listFields.sort((a, b) => fielddefs.indexOf(a) > fielddefs.indexOf(b) ? 1 : -1)
-
-        this.sortAvailableFields();
+        // sort the availabel fields if we have any
+        if (this.availableFields.length > 0) {
+            this.sortAvailableFields();
+        }
     }
 
     /**
-     * dos ome checks fi the field can be exported
-     *
-     * no links, .. check on other fields tbd.
-     *
-     * @param field the fieldmetadata
+     * sorts the available fields
      */
-    private canDisplay(field) {
-        return field.type != 'link';
-    }
-
-
     private sortAvailableFields() {
         this.availableFields = this.availableFields.sort((a, b) => {
-            return this.language.getFieldDisplayName(this.modellist.module, a).toLowerCase() > this.language.getFieldDisplayName(this.modellist.module, b).toLowerCase() ? 1 : -1;
+            return this.language.getFieldDisplayName(this.modellist.module, a.field, a.fieldconfig).toLowerCase() > this.language.getFieldDisplayName(this.modellist.module, b.field, b.fieldconfig).toLowerCase() ? 1 : -1;
         });
     }
 
+    /**
+     * close the modal
+     */
     private close(): void {
         this.self.destroy();
     }
 
+    /**
+     * check if we can save (at least one fields needs to be selected
+     */
     private canSave(): boolean {
         return this.listFields.length > 0;
     }
 
+    /**
+     * save the fieldsettings
+     */
     private save(): void {
         if (this.canSave()) {
-            this.modellist.updateListType({fielddefs: btoa(JSON.stringify(this.listFields))}).subscribe(ret => this.close());
+            this.modellist.listfields = this.listFields;
+            this.close();
+            // this.modellist.updateListType({fielddefs: btoa(JSON.stringify(this.listFields))}).subscribe(ret => this.close());
         }
     }
 
+    /**
+     * for the drop of the field
+     *
+     * @param event
+     */
     private onFieldDrop(event) {
         let previousItem = event.previousContainer.data.splice(event.previousIndex, 1);
         event.container.data.splice(event.currentIndex, 0, previousItem[0]);
@@ -84,13 +115,13 @@ export class ObjectListViewSettingsSetfieldsModal {
     /*
      select the field whenc lciked int he container
      */
-    private selectField(container, field) {
+    private selectField(container, fieldid) {
         switch (container) {
             case 'available':
-                this.selectedAvailableFields = [field];
+                this.selectedAvailableFields = [fieldid];
                 break;
             case 'list':
-                this.selectedListFields = [field];
+                this.selectedListFields = [fieldid];
                 break;
         }
     }

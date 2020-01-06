@@ -34,10 +34,6 @@ export class ObjectListItem implements OnInit, OnDestroy {
      */
     @Input() private rowselectdisabled: boolean = false;
 
-    /**
-     * the listfields to be displayed
-     */
-    @Input() private listFields: any[] = [];
 
     /**
      * the item
@@ -61,12 +57,20 @@ export class ObjectListItem implements OnInit, OnDestroy {
     @Input() private showActionMenu: boolean = true;
 
     /**
-     * a subscription to the data$ of the model
+     * an array of subscriptions
      */
-    private modelSubscription: any;
+    private subscriptions: any[] = [];
+
 
     constructor(private model: model, private modelutilities: modelutilities, private modellist: modellist, private view: view, private router: Router, private language: language, private cdref: ChangeDetectorRef) {
         this.view.displayLabels = false;
+    }
+
+    /**
+     * getter for the listfields
+     */
+    get listFields() {
+        return this.modellist.listfields;
     }
 
     /**
@@ -82,14 +86,19 @@ export class ObjectListItem implements OnInit, OnDestroy {
         this.view.displayLinks = this.displaylinks;
 
         // register that the check is run
-        this.modelSubscription = this.model.data$.subscribe(data => this.cdref.detectChanges());
+        this.subscriptions.push(this.model.data$.subscribe(data => this.cdref.detectChanges()));
+
+        // register to listfield changes
+        this.subscriptions.push(this.modellist.listfield$.subscribe(data => this.cdref.detectChanges()));
     }
 
     /**
-     * unsubscribe from the model data when the component is destroyed
+     * unsubscribe from any subscription we have
      */
     public ngOnDestroy(): void {
-        if(this.modelSubscription) this.modelSubscription.unsubscribe();
+        for(let subscription of this.subscriptions){
+            subscription.unsubscribe();
+        }
     }
 
     private navigateDetail() {

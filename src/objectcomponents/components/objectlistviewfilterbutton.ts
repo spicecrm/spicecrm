@@ -9,7 +9,6 @@ import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
 import {modellist} from '../../services/modellist.service';
-import {listfilters} from '../services/listfilters.service';
 import {animate, style, transition, trigger} from "@angular/animations";
 
 declare var _: any;

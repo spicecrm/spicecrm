@@ -20,7 +20,6 @@ import {backend} from '../../services/backend.service';
 import {modellist} from '../../services/modellist.service';
 import {language} from '../../services/language.service';
 import {userpreferences} from '../../services/userpreferences.service';
-import {listfilters} from '../services/listfilters.service';
 import {SystemFilterBuilderFilterExpression} from "../../systemcomponents/components/systemfilterbuilderfilterexpression";
 
 declare var _: any;
@@ -71,7 +70,6 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
         public backend: backend,
         public language: language,
         public metadata: metadata,
-        private listfilters: listfilters,
         private elementRef: ElementRef,
         private modellist: modellist,
         private renderer: Renderer2,

@@ -1,21 +1,15 @@
-<table style="margin-bottom: 0px; width: calc(100% - 15px);" class="slds-table slds-table--bordered slds-table--fixed-layout  slds-show--medium" role="grid">
-    <thead>
-    <tr class="slds-text-title--caps">
-        <th class="slds-cell-shrink" scope="col">
-            <object-list-header-actionmenu [actionset]="actionset"></object-list-header-actionmenu>
-        </th>
-        <th *ngFor="let item of listfields" scope="col">
-            <ng-container *ngIf="isSortable(item); else nosort">
-                <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" (click)="setSortField(item)">
-                    <field-label class="slds-truncate" addclasses="slds-truncate" [fieldname]="item.field" [fieldconfig]="item.fieldconfig"></field-label>
-                    <object-list-header-sort [field]="item"></object-list-header-sort>
-                </a>
-            </ng-container>
-            <ng-template #nosort>
-                <field-label [fieldname]="item.field" [fieldconfig]="item.fieldconfig" addclasses="slds-truncate slds-p-vertical--xx-small slds-p-horizontal--x-small"></field-label>
-            </ng-template>
-        </th>
-        <th class="slds-cell-shrink" scope="col"></th>
-    </tr>
-    </thead>
-</table>
+<th *ngIf="showSelectColumn" class="slds-cell-shrink" scope="col">
+    <object-list-header-actionmenu [actionset]="actionset"></object-list-header-actionmenu>
+</th>
+<th *ngFor="let item of listfields" scope="col" class="slds-resizable" (systemresize)="onresize($event)" [resizeid]="item.id" [width]="columnWidth(item.id)">
+    <ng-container *ngIf="isSortable(item); else nosort">
+        <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" (click)="setSortField(item)">
+            <field-label class="slds-truncate" addclasses="slds-truncate" [fieldname]="item.field" [fieldconfig]="item.fieldconfig"></field-label>
+            <object-list-header-sort [field]="item"></object-list-header-sort>
+        </a>
+    </ng-container>
+    <ng-template #nosort>
+        <field-label [fieldname]="item.field" [fieldconfig]="item.fieldconfig" addclasses="slds-truncate slds-p-vertical--xx-small slds-p-horizontal--x-small"></field-label>
+    </ng-template>
+</th>
+<th *ngIf="showRowActionMenu" class="slds-cell-shrink" scope="col"></th>
