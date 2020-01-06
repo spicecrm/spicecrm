@@ -121,5 +121,8 @@ export class SystemFilterBuilderFilterExpressionValue implements ControlValueAcc
         }
     }
 
+    get relatedmodule() {
+        return this.metadata.getFieldDefs(this.module, this.field).module;
+    }
 
 }
