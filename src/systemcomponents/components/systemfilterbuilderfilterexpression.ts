@@ -216,6 +216,13 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
                 operator: 'notempty',
                 name: 'LBL_OP_NOTEMPTY'
             }
+        ],
+        relate: [
+            {
+                operator: 'equalr',
+                name: 'LBL_EQUALS',
+                value1: 'relate'
+            }
         ]
     }
 
@@ -303,6 +310,9 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             case 'double':
             case 'currency':
                 this.operatortype = 'numeric';
+                break;
+            case 'relate':
+                this.operatortype = 'relate';
                 break;
             default:
                 this.operatortype = 'default';
