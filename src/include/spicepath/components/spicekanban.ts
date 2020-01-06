@@ -22,19 +22,42 @@ import {CdkDragDrop} from "@angular/cdk/drag-drop";
 
 declare var _: any;
 
+/**
+ * the kanban board
+ */
 @Component({
     selector: 'spice-kanban',
     templateUrl: './src/include/spicepath/templates/spicekanban.html'
 })
 export class SpiceKanban implements OnInit, OnDestroy {
+    /**
+     * reference to the kanban container
+     */
     @ViewChild('kanbanContainer', {read: ViewContainerRef, static: true}) private kanbanContainer: ViewContainerRef;
 
+    /**
+     * the component config
+     */
     private componentconfig: any = {};
+
+    /**
+     * subscription to the modellist for type changes
+     */
     private modellistsubscribe: any = undefined;
+
+    /**
+     * for the requested fields
+     */
     private requestedFields: string[] = [];
 
+    /**
+     * holds the config data for the beanguides
+     */
     private confdata: any;
 
+    /**
+     * holds the info on the stages to be displayed
+     */
     private stages: any[] = [];
 
     /**
@@ -56,7 +79,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
     public ngOnInit() {
         this.confdata = this.configuration.getData('spicebeanguides')[this.model.module];
         let stages = this.confdata.stages;
-
 
         let tilecomponentconfig = this.metadata.getComponentConfig('SpiceKanbanTile', this.modellist.module);
         let tilecomponentFields = this.metadata.getFieldSetFields(this.componentconfig.fieldset);
