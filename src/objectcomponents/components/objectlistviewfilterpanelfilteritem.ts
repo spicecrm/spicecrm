@@ -201,6 +201,12 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
                 case 'enum':
                     return this.language.getFieldDisplayOptionValue(this.module, this.field, value);
                     break;
+                case 'relate':
+                    if(!value) return '';
+                    let valueitems = value.split('::');
+                    if(valueitems.length < 2) return value;
+                    return valueitems[1];
+                    break;
                 case 'multienum':
                     let retvalues = [];
                     let values = _.isArray(value) ? value : value.split(',');

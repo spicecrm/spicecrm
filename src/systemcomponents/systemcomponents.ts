@@ -68,6 +68,7 @@ import /*embed*/ {SystemInputModule} from "./components/systeminputmodule";
 import /*embed*/ {SystemInputModuleFilter} from "./components/systeminputmodulefilter";
 import /*embed*/ {SystemInputModuleField} from "./components/systeminputmodulefield";
 import /*embed*/ {SystemInputRadio} from "./components/systeminputradio";
+import /*embed*/ {SystemInputRelate} from "./components/systeminputrelate";
 import /*embed*/ {SystemInputTags} from "./components/systeminputtags";
 import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
 import /*embed*/ {SystemInputCompanycodes} from "./components/systeminputcompanycodes";
@@ -193,6 +194,7 @@ import /*embed*/ {SystemTrendIndicator} from "./components/systemtrendindicator"
         SystemInputModuleField,
         SystemInputNumber,
         SystemInputRadio,
+        SystemInputRelate,
         SystemInputTags,
         SystemInputTime,
         SystemInputCompanycodes,
@@ -300,6 +302,7 @@ import /*embed*/ {SystemTrendIndicator} from "./components/systemtrendindicator"
         SystemInputModuleField,
         SystemInputNumber,
         SystemInputRadio,
+        SystemInputRelate,
         SystemInputTags,
         SystemInputTime,
         SystemInputCompanycodes,
