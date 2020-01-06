@@ -109,6 +109,12 @@ export class SpiceKanban implements OnInit, OnDestroy {
         this.modellist.buckets = {};
     }
 
+    /**
+     * reads draganddrop from the config and returns it
+     */
+    get draganddropenabled() {
+        return this.componentconfig.draganddrop ? true : false;
+    }
 
     /**
      * trackby function to opütimize performnce onm the for loop
@@ -278,6 +284,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * @param item
      */
     private allowDrag(item) {
-        return item.acl.edit;
+        return this.draganddropenabled && item.acl.edit;
     }
 }
