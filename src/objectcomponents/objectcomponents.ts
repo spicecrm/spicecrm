@@ -18,8 +18,6 @@ import {metadata, aclCheck} from '../services/metadata.service';
 import {canNavigateAway} from '../services/navigation.service';
 import {VersionManagerService} from '../services/versionmanager.service';
 
-import /*embed*/ {listfilters} from './services/listfilters.service';
-
 import /*embed*/ {ObjectKeyValuesPipe} from "./pipes/objectkeyvalue.pipe";
 import /*embed*/ {ObjectFieldFilterPipe} from "./pipes/objectfieldfilter.pipe";
 

@@ -9,7 +9,6 @@ import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
 import {modellist} from '../../services/modellist.service';
-import {listfilters} from '../services/listfilters.service';
 import {animate, style, transition, trigger} from "@angular/animations";
 
 declare var _: any;
@@ -19,8 +18,7 @@ declare var _: any;
  */
 @Component({
     selector: 'object-listview-filter-panel',
-    templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanel.html',
-    providers: [listfilters]
+    templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanel.html'
 })
 export class ObjectListViewFilterPanel {
 
@@ -34,7 +32,7 @@ export class ObjectListViewFilterPanel {
         conditions: []
     };
 
-    constructor(private elementRef: ElementRef, private listfilters: listfilters, private language: language, private metadata: metadata, private modellist: modellist, private model: model, private renderer: Renderer2) {
+    constructor(private elementRef: ElementRef, private language: language, private metadata: metadata, private modellist: modellist, private model: model, private renderer: Renderer2) {
         // subscribe to the list type selected to handle the filters set by the listtype
         this.modellist.listtype$.subscribe(newList => {
             this.setFilter();

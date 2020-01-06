@@ -8,7 +8,6 @@ import {
 import {metadata} from '../../services/metadata.service';
 import {modellist} from '../../services/modellist.service';
 import {language} from '../../services/language.service';
-import {listfilters} from '../services/listfilters.service';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 

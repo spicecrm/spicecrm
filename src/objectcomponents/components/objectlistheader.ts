@@ -1,33 +1,45 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, ElementRef, QueryList, ViewChildren} from '@angular/core';
 import {language} from '../../services/language.service';
 import {modellist} from '../../services/modellist.service';
 import {view} from '../../services/view.service';
+import {SystemResizeDirective} from "../../directives/directives/systemresize";
 
 /**
  * renders the header row for a list view table
  */
 @Component({
-    selector: 'object-list-header',
+    selector: '[object-list-header]',
     templateUrl: './src/objectcomponents/templates/objectlistheader.html',
     providers: [view]
 })
 export class ObjectListHeader {
-    /**
-     * an array of fields to be displayed passed in from the fieldset and the filter applied
-     */
-    @Input() private listfields: any[] = [];
+
+    @ViewChildren(SystemResizeDirective) private resizeElements: QueryList<SystemResizeDirective>;
 
     /**
      * an action set ot be applied to the list actions
      */
     @Input() private actionset: string = '';
 
-    constructor(private modellist: modellist, private language: language, private view: view) {
+    /**
+     * show the select column as first column
+     */
+    @Input() private showSelectColumn: boolean = true;
 
+    /**
+     * display the row action menu or hide the column
+     */
+    @Input() private showRowActionMenu: boolean = true;
+
+    constructor(private modellist: modellist, private language: language, private view: view, private elementRef: ElementRef) {
         this.view.labels = 'short';
+    }
+
+    get listfields() {
+        return this.modellist.listfields;
     }
 
     /**
@@ -37,6 +49,14 @@ export class ObjectListHeader {
         return this.modellist.module;
     }
 
+    /**
+     * return the column width if set
+     * @param columnId
+     */
+    private columnWidth(columnId?) {
+        let listfield = this.listfields.find(lf => lf.id == columnId);
+        return listfield.width ? listfield.width + '%' : (100 / this.listfields.length) + '%';
+    }
 
     /**
      * returns if a given fielsd is set sortable in teh fieldconfig
@@ -59,6 +79,21 @@ export class ObjectListHeader {
     private setSortField(field): void {
         if (this.isSortable(field)) {
             this.modellist.setSortField(field.field);
+        }
+    }
+
+    private onresize(e) {
+        let elementWidths = {}
+        let totalwidth = 0;
+
+        this.resizeElements.forEach(element => {
+            let elementWidth = element.getElementWidth();
+            totalwidth += elementWidth;
+            elementWidths[element.resizeid] = element.getElementWidth();
+        });
+
+        for (let listfield of this.listfields) {
+            listfield.width = Math.round((elementWidths[listfield.id] / totalwidth) * 100);
         }
     }
 }

@@ -1211,3 +1211,17 @@ ul.spice-taglist span.slds-badge {
     background: #ecebea;
     box-shadow: #CA1B21 4px 0 0 inset;
 }
+
+/* for the sticky table header*/
+.slds-table--header-fixed thead th{
+    position: sticky;
+    top: 0px;
+    z-index: 50;
+    border-bottom: 1px solid #dddbda;
+}
+
+.slds-table th.slds-resizable{
+    overflow: hidden;
+    resize: horizontal;
+    min-width: 75px;
+}
