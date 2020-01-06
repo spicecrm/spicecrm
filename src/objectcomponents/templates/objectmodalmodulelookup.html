@@ -10,6 +10,9 @@
                         <system-utility-icon icon="search" size="x-small" addclasses="slds-input__icon"></system-utility-icon>
                         <input type="text" id="lookup" class="slds-input" [(ngModel)]="searchTerm" [autocomplete]="autoCompleteKiller" (keyup)="triggerSearch($event)" [placeholder]="language.getModuleName(modellist.module)">
                     </div>
+                    <button class="slds-button slds-button--neutral slds-button--icon-border slds-m-horizontal--xxx-small" (click)="modellist.reLoadList()">
+                        <system-button-icon [icon]="'refresh'"></system-button-icon>
+                    </button>
                     <object-listview-aggregates-button></object-listview-aggregates-button>
                 </div>
                 <div class="slds-theme--shade slds-p-around--x-small slds-border--top">
@@ -20,7 +23,7 @@
                 <div class="slds-scrollable--y slds-height_full" #tablecontent (scroll)="onScroll($event)" >
                     <table class="slds-table slds-table--fixed-layout slds-table--bordered slds-table--header-fixed" [ngClass]="{'slds-no-row-hover':multiselect,'singleselect':!multiselect}" role="listbox">
                         <thead>
-                            <tr object-list-header [modelProvider]="{module: modellist.module}" [showSelectColumn]="multiselect" [showRowActionMenu]="false"></tr>
+                            <tr object-list-header [showSelectColumn]="multiselect" [showRowActionMenu]="false"></tr>
                         </thead>
                         <tbody>
                             <tr object-list-item *ngFor="let listItem of modellist.listData.list" [listItem]="listItem" [showActionMenu]="false" [rowselect]="multiselect" [displaylinks]="false" class="slds-hint-parent slds-p-horizontal--x-small" (click)="clickRow($event, listItem)"></tr>
