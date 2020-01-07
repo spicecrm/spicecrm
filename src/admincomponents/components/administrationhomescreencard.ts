@@ -22,14 +22,4 @@ export class AdministrationHomeScreenCard {
     ) {
     }
 
-
-    /**
-     * emit nav changes to main screen
-     *
-     * @param item
-     */
-    private openContent(block, item) {
-        this.administration.navigateto(block, item);
-    }
-
 }

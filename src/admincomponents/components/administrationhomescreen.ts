@@ -23,13 +23,4 @@ export class AdministrationHomeScreen {
     }
 
 
-    /**
-     * emit nav changes to main screen
-     *
-     * @param item
-     */
-    private openContent(block, item) {
-        this.administration.navigateto(block, item);
-    }
-
 }
