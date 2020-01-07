@@ -23,11 +23,11 @@
             </div>
         </div>
     </div>
-    <div tobottom #kanbanContainer class="slds-scrollable--y" (scroll)="onScroll($event)">
+    <div tobottom #kanbanContainer class="slds-scrollable--y kanbancontainer" (scroll)="onScroll($event)">
         <div class="slds-grid" cdkDropListGroup>
             <div *ngFor="let stage of stages" class="slds-col slds-p-horizontal--xx-small slds-m-top--x-small" [ngClass]="sizeClass" (cdkDropListDropped)="handleDrop($event)" cdkDropList [cdkDropListData]="stage">
                     <!--li spice-kanban-tile *ngFor="let item of getStageItems(stage.stage)" draggable="true" [item]="item" class="slds-item"></li-->
-                <div *ngFor="let item of this.modellist.listData.list|spicekanbanstagepipe:stage.stage;trackBy:trackbyfn" cdkDrag [cdkDragDisabled]="!allowDrag(item)" [cdkDragData]="item" class=" slds-m-vertical--xx-small slds-kanban-drag--preview ">
+                <div *ngFor="let item of this.modellist.listData.list|spicekanbanstagepipe:stage.stage;trackBy:trackbyfn" cdkDrag cdkDragBoundary=".kanbancontainer" [cdkDragDisabled]="!allowDrag(item)" [cdkDragData]="item" class=" slds-m-vertical--xx-small slds-kanban-drag--preview ">
                     <spice-kanban-tile  [item]="item"></spice-kanban-tile>
                 </div>
             </div>
