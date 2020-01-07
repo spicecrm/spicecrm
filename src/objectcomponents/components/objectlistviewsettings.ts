@@ -28,8 +28,7 @@ export class ObjectListViewSettings {
     }
 
     private add() {
-        this.modal.openModal('ObjectListViewSettingsAddlistModal').subscribe(modalref => {
-            modalref.instance.modellist = this.modellist;
+        this.modal.openModal('ObjectListViewSettingsAddlistModal', true, this.injector).subscribe(modalref => {
             modalref.instance.modalmode = 'add';
         });
     }
@@ -39,8 +38,7 @@ export class ObjectListViewSettings {
             return false;
         }
 
-        this.modal.openModal('ObjectListViewSettingsAddlistModal').subscribe(modalref => {
-            modalref.instance.modellist = this.modellist;
+        this.modal.openModal('ObjectListViewSettingsAddlistModal', true, this.injector).subscribe(modalref => {
             modalref.instance.modalmode = 'edit';
         });
     }

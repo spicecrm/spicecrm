@@ -55,6 +55,9 @@ export class ObjectList implements OnDestroy {
 
     constructor(private router: Router, private metadata: metadata, private modellist: modellist, private language: language, private layout: layout) {
 
+        // get the confih
+        this.componentconfig = this.metadata.getComponentConfig('ObjectList', this.modellist.module);
+
         // set the limit for the loading
         this.modellist.loadlimit = 50;
 
