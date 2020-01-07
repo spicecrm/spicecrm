@@ -28,7 +28,6 @@ import {helper} from "./services/helper.service";
 import {loginService, loginCheck} from "./services/login.service";
 import {session} from "./services/session.service";
 import {metadata, aclCheck} from "./services/metadata.service";
-import {appdata} from "./services/appdata.service";
 import {MathExpressionCompilerService} from "./services/mathexpressioncompiler";
 import {language} from "./services/language.service";
 import {recent} from "./services/recent.service";
@@ -136,7 +135,6 @@ export class SpiceUI {
         canNavigateAway,
         session,
         metadata,
-        appdata,
         aclCheck,
         loginCheck,
         helper,

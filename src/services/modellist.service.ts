@@ -9,7 +9,7 @@ import {language} from './language.service';
 import {metadata} from "./metadata.service";
 import {broadcast} from "./broadcast.service";
 import {session} from "./session.service";
-import {appdata} from "./appdata.service";
+import {configurationService} from "./configuration.service";
 import {toast} from "./toast.service";
 
 /**
@@ -205,7 +205,7 @@ export class modellist implements OnDestroy {
         private language: language,
         private userpreferences: userpreferences,
         private session: session,
-        private appdata: appdata,
+        private configuration: configurationService,
         private toast: toast
     ) {
 
@@ -253,8 +253,8 @@ export class modellist implements OnDestroy {
             if (!this.getFromSession()) {
                 // try to get a default list type
                 let modulepreferences = this.userpreferences.getPreference(module);
-                if (modulepreferences && modulepreferences.lastlisttype) {
-                    this.setListType(modulepreferences.lastlisttype);
+                if (modulepreferences && modulepreferences.lastlisttype && this.listtypeexists(modulepreferences.lastlisttype)) {
+                    this.setListType(modulepreferences.lastlisttype, false);
                 } else {
                     this.setListType('all', false);
                 }
@@ -449,6 +449,15 @@ export class modellist implements OnDestroy {
     }
 
     /**
+     * checks if the listtype exists
+     *
+     * @param listType
+     */
+    private listtypeexists(listType: string) {
+        return this.getListTypes().find(lt => lt.id == listType) ? true : false;
+    }
+
+    /**
      * sets the listtype and also sets it to the preferences
      *
      * @param listType
@@ -632,7 +641,7 @@ export class modellist implements OnDestroy {
         if (!this.usecache) return false;
 
         // set to the session
-        this.appdata.setAppData('lastlist_' + this.module, {
+        this.configuration.setData('lastlist_' + this.module, {
             module: this.module,
             listtype: this.listtype,
             listcomponent: this.listcomponent,
@@ -643,19 +652,6 @@ export class modellist implements OnDestroy {
             selectedaggregates: this.selectedAggregates,
             buckets: this.buckets
         });
-        /*
-        this.session.setSessionData('lastlist_' + this.module, {
-            module: this.module,
-            listtype: this.listtype,
-            listcomponent: this.listcomponent,
-            listdata: this.listData,
-            sortarray: this.sortArray,
-            searchterm: this.searchTerm,
-            searchaggregates: this.searchAggregates,
-            selectedaggregates: this.selectedAggregates,
-            buckets: this.buckets
-        }, false);
-        */
     }
 
     /**
@@ -663,7 +659,7 @@ export class modellist implements OnDestroy {
      */
     public getFromSession() {
         // let listData = this.session.getSessionData('lastlist_' + this.module, false);
-        let listData = this.appdata.getAppData('lastlist_' + this.module);
+        let listData = this.configuration.getData('lastlist_' + this.module);
         if (listData) {
             // set the module and load the list types
             this._module = listData.module;
@@ -703,7 +699,7 @@ export class modellist implements OnDestroy {
     }
 
     public getGlobal(): boolean {
-        return this.currentList.global;
+        return this.currentList.global == '1' ? true : false;
     }
 
     public getFieldDefs(): any[] {
@@ -1057,7 +1053,7 @@ export class modellist implements OnDestroy {
             return false;
         }
 
-        if (this.currentList.global) {
+        if (this.getGlobal()) {
             switch (action) {
                 case 'delete':
                     return this.canDelete() && this.session.authData.admin;
