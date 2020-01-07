@@ -4,7 +4,7 @@
     <article class="slds-tile slds-media slds-media_center slds-card__tile slds-hint-parent"
              (click)="openContent(adminNavigationBlock, item)">
         <div *ngIf="item.groupicon" class="slds-media__figure">
-            <system-icon sprite ="{{item.groupicon.includes('custom') ? 'custom' : 'standard'}}" icon ="{{item.groupicon}}" size="large" >
+            <system-icon icon ="{{item.groupicon}}" size="large" >
             </system-icon>
         </div>
         <div class="slds-media__body">
