@@ -94,6 +94,13 @@ export class AdministrationMenu {
      * @param item
      */
     private openContent(block, item) {
+        // already loaded?
+        if (this.administration.opened_itemid == item.id) {
+            return true;
+        }
+
+        this.administration.opened_itemid = item.id;
+
         this.administration.navigateto(block, item);
     }
 
