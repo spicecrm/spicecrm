@@ -35,6 +35,10 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * reference to the kanban container
      */
     @ViewChild('kanbanContainer', {read: ViewContainerRef, static: true}) private kanbanContainer: ViewContainerRef;
+
+    /**
+     * reference to the utility bar if one is rendered
+     */
     @ViewChild('kanbanUtilityBar', {read: ViewContainerRef, static: false}) private kanbanUtilityBar: ViewContainerRef;
 
     /**
@@ -61,8 +65,11 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * holds the info on the stages to be displayed
      */
     private stages: any[] = [];
-    private hiddenstages: any[] = [];
 
+    /**
+     * hidden statges that are rendered in teh utility bar
+     */
+    private hiddenstages: any[] = [];
 
     /**
      * holds an array of currencies
