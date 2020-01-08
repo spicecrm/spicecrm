@@ -17,7 +17,7 @@ export class administration implements OnDestroy {
     public adminNavigation: any[] = [];
 
     /**
-     * the current slected item
+     * the current selected item
      */
     public opened_itemid: any = {};
 
@@ -93,6 +93,7 @@ export class administration implements OnDestroy {
      * navigate to the home screen for the admin section
      */
     public navigateHome() {
+        this.opened_itemid = null;
         this.admincomponent = {
             component: 'AdministrationHomeScreen',
             componentconfig: {}
@@ -108,13 +109,6 @@ export class administration implements OnDestroy {
      * @param item
      */
     public navigateto(block, item) {
-
-        // already loaded?
-        if (this.opened_itemid == item.id) {
-            return true;
-        }
-
-        this.opened_itemid = item.id;
 
 
         let adminItem: any = {};

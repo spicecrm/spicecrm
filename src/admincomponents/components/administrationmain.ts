@@ -28,7 +28,7 @@ export class AdministrationMain implements AfterViewInit {
     }) private admincontentcontainer: ViewContainerRef;
 
     /**
-     * the currently opened and rendere Object
+     * the currently opened and renders Object
      */
     private admincontentObject: any = null;
 
@@ -46,7 +46,6 @@ export class AdministrationMain implements AfterViewInit {
      * render the default home screen after view init
      */
     public ngAfterViewInit(): void {
-
         this.administration.admincomponent$.subscribe(admincomponent => {
             this.openContent(admincomponent);
         });
@@ -69,6 +68,7 @@ export class AdministrationMain implements AfterViewInit {
             admObject.instance.componentconfig = admincomponent.componentconfig;
             this.admincontentObject = admObject;
         });
+
 
     }
 }
