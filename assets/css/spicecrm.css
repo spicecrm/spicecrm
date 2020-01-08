@@ -735,8 +735,6 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
 .slds-path__nav .slds-is-complete:hover,
 .slds-path__nav .slds-is-complete:hover:after,
 .slds-path__nav .slds-is-complete:hover:before,
-.slds-path__nav .slds-is-complete:first-child:after,
-.slds-path__nav .slds-is-complete:first-child:before,
 .slds-tabs--path .slds-is-complete:hover,
 .slds-tabs--path .slds-is-active:hover + .slds-tabs--path__item.slds-is-current:before,
 .slds-tabs--path__item:hover + .slds-is-complete:before, .slds-tabs--path__item:hover + .slds-is-current:before {
