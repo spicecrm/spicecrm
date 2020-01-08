@@ -27,13 +27,15 @@ declare var _: any;
  */
 @Component({
     selector: 'spice-kanban',
-    templateUrl: './src/include/spicepath/templates/spicekanban.html'
+    templateUrl: './src/include/spicepath/templates/spicekanban.html',
+    providers: [model]
 })
 export class SpiceKanban implements OnInit, OnDestroy {
     /**
      * reference to the kanban container
      */
     @ViewChild('kanbanContainer', {read: ViewContainerRef, static: true}) private kanbanContainer: ViewContainerRef;
+    @ViewChild('kanbanUtilityBar', {read: ViewContainerRef, static: false}) private kanbanUtilityBar: ViewContainerRef;
 
     /**
      * the component config
@@ -59,6 +61,8 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * holds the info on the stages to be displayed
      */
     private stages: any[] = [];
+    private hiddenstages: any[] = [];
+
 
     /**
      * holds an array of currencies
@@ -67,7 +71,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
 
     constructor(private broadcast: broadcast, private model: model, private modellist: modellist, private configuration: configurationService, private metadata: metadata, private userpreferences: userpreferences, private language: language, private currency: currency) {
 
-        this.componentconfig = this.metadata.getComponentConfig('SpiceKanban', this.model.module);
+        this.componentconfig = this.metadata.getComponentConfig('SpiceKanban', this.modellist.module);
 
         this.currencies = this.currency.getCurrencies();
 
@@ -77,7 +81,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * load ths stage data and build the buckts we are searching for to build the kanban board
      */
     public ngOnInit() {
-        this.confdata = this.configuration.getData('spicebeanguides')[this.model.module];
+        this.confdata = this.configuration.getData('spicebeanguides')[this.modellist.module];
         let stages = this.confdata.stages;
 
         let tilecomponentconfig = this.metadata.getComponentConfig('SpiceKanbanTile', this.modellist.module);
@@ -89,10 +93,11 @@ export class SpiceKanban implements OnInit, OnDestroy {
         let bucketitems = [];
         for (let stage of stages) {
             // if not in kanban continue
-            if (stage.stagedata.not_in_kanban == '1') continue;
-
-            // push to stages
-            this.stages.push(stage);
+            if (stage.stagedata.not_in_kanban == '1') {
+                this.hiddenstages.push(stage);
+            } else {
+                this.stages.push(stage);
+            }
 
             // push the bucket item
             bucketitems.push({
@@ -107,7 +112,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
                 bucketfield: this.confdata.statusfield,
                 buckettotal: this.componentconfig.sumfield,
                 bucketitems: bucketitems
-            }
+            };
 
             this.modellist.getListData();
         }
@@ -301,11 +306,51 @@ export class SpiceKanban implements OnInit, OnDestroy {
     }
 
     /**
+     * handels the drop on a hidden container
+     *
+     * @param event
+     */
+    private handleHiddenDrop(event: CdkDragDrop<any>) {
+        if (event.item.data[this.confdata.statusfield] != event.container.data.stage) {
+
+            // initialize the model
+            this.model.module = this.modellist.module;
+            this.model.initialize();
+            this.model.id = event.item.data.id;
+            this.model.data = this.model.utils.backendModel2spice(this.modellist.module, _.clone(event.item.data));
+
+            // initialize the field statis
+            this.model.initializeFieldsStati();
+
+            // start the edit and set the new stage
+            this.model.startEdit();
+            this.model.setField(this.confdata.statusfield, event.container.data.stage);
+
+            //
+            if (this.model.validate()) {
+                this.model.save();
+            } else {
+                this.model.edit();
+            }
+
+        }
+    }
+
+    /**
      * returns if the user is allowed to edit and can edit this opportunity
      *
      * @param item
      */
     private allowDrag(item) {
         return this.draganddropenabled && item.acl.edit;
+    }
+
+    get containerStyle(){
+        if(this.kanbanUtilityBar){
+            let rect = this.kanbanUtilityBar.element.nativeElement.getBoundingClientRect();
+            return {'margin-bottom': rect.height +'px'};
+        } else {
+            return {};
+        }
     }
 }
