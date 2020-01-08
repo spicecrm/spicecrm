@@ -18,7 +18,7 @@ declare var _: any;
     selector: "spice-path-track",
     templateUrl: "./src/include/spicepath/templates/spicepathtrack.html",
 })
-export class SpicePathTrack {
+export class SpicePathTrack implements OnInit{
 
     /**
      * holds the current active stage if the user clicks on another stage
@@ -37,6 +37,10 @@ export class SpicePathTrack {
     @Output() private activeStage$: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(private configuration: configurationService, private model: model, private language: language) {
+
+    }
+
+    public ngOnInit(): void {
         this.model.data$.subscribe(data => {
             this.buildstages();
 
