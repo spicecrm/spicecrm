@@ -53,6 +53,10 @@ import /*embed*/ {SystemIllustrationNoData} from "./components/systemillustratio
 import /*embed*/ {SystemIllustrationNoRecords} from "./components/systemillustrationnorecords";
 import /*embed*/ {SystemIllustrationNoTask} from "./components/systemillustrationnotask";
 import /*embed*/ {SystemImagePreviewModal} from "./components/systemimagepreviewmodal";
+import /*embed*/ {SystemInputText} from "./components/systeminputtext";
+import /*embed*/ {SystemInputEnum} from "./components/systeminputenum";
+import /*embed*/ {SystemInputMultiEnum} from "./components/systeminputmultienum";
+import /*embed*/ {SystemInputInteger} from "./components/systeminputinteger";
 import /*embed*/ {SystemInputActionset} from "./components/systeminputactionset";
 import /*embed*/ {SystemInputComponentset} from "./components/systeminputcomponentset";
 import /*embed*/ {SystemInputDatePicker} from "./components/systeminputdatepicker";
@@ -64,6 +68,7 @@ import /*embed*/ {SystemInputModule} from "./components/systeminputmodule";
 import /*embed*/ {SystemInputModuleFilter} from "./components/systeminputmodulefilter";
 import /*embed*/ {SystemInputModuleField} from "./components/systeminputmodulefield";
 import /*embed*/ {SystemInputRadio} from "./components/systeminputradio";
+import /*embed*/ {SystemInputRelate} from "./components/systeminputrelate";
 import /*embed*/ {SystemInputTags} from "./components/systeminputtags";
 import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
 import /*embed*/ {SystemInputCompanycodes} from "./components/systeminputcompanycodes";
@@ -77,6 +82,7 @@ import /*embed*/ {SystemModalHeaderRight} from "./components/systemmodalheaderri
 import /*embed*/ {SystemModalHeader} from "./components/systemmodalheader";
 import /*embed*/ {SystemModalWrapper} from "./components/systemmodalwrapper";
 import /*embed*/ {SystemModal} from "./components/systemmodal";
+import /*embed*/ {SystemNumberSpinner} from "./components/systemnumberspinner";
 import /*embed*/ {SystemObjectPreviewModal} from "./components/systemobjectpreviewmodal";
 import /*embed*/ {SystemProgressRing} from "./components/systemprogressring";
 import /*embed*/ {SystemProgressBar} from "./components/systemprogressbar";
@@ -112,6 +118,9 @@ import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguag
 import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
 
 import /*embed*/ {SystemFilterBuilder} from "./components/systemfilterbuilder";
+import /*embed*/ {SystemFilterBuilderFilterExpressionFields} from "./components/systemfilterbuilderfilterexpressionfields";
+import /*embed*/ {SystemFilterBuilderFilterExpressionValue} from "./components/systemfilterbuilderfilterexpressionvalue";
+import /*embed*/ {SystemFilterBuilderFilterExpressionValues} from "./components/systemfilterbuilderfilterexpressionvalues";
 import /*embed*/ {SystemFilterBuilderFilterExpression} from "./components/systemfilterbuilderfilterexpression";
 import /*embed*/ {SystemFilterBuilderFilterExpressionGroup} from "./components/systemfilterbuilderfilterexpressiongroup";
 import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
@@ -121,7 +130,7 @@ import /*embed*/ {SystemInputBase64} from './components/systeminputbase64';
 
 import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
 import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem";
-
+import /*embed*/ {SystemTrendIndicator} from "./components/systemtrendindicator";
 
 @NgModule({
     imports: [
@@ -161,8 +170,6 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemDynamicComponent,
         SystemDynamicRouteContainer,
         SystemDynamicRouteInterceptor,
-        SystemFilterBuilderFilterExpression,
-        SystemFilterBuilderFilterExpressionGroup,
         SystemGooglePlacesAutocomplete,
         SystemGooglePlacesSearch,
         SystemIcon,
@@ -172,6 +179,10 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemIllustrationNoRecords,
         SystemIllustrationNoTask,
         SystemImagePreviewModal,
+        SystemInputText,
+        SystemInputInteger,
+        SystemInputEnum,
+        SystemInputMultiEnum,
         SystemInputActionset,
         SystemInputComponentset,
         SystemInputDate,
@@ -184,6 +195,7 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemInputModuleField,
         SystemInputNumber,
         SystemInputRadio,
+        SystemInputRelate,
         SystemInputTags,
         SystemInputTime,
         SystemInputCompanycodes,
@@ -200,11 +212,15 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemModalWrapper,
         SystemModuleCustomPipe,
         SystemModuleGlobalPipe,
+        SystemNumberSpinner,
         SystemObjectPreviewModal,
         SystemInputModuleFilter,
         SystemFilterBuilder,
         SystemFilterBuilderFilterExpressionGroup,
         SystemFilterBuilderFilterExpression,
+        SystemFilterBuilderFilterExpressionFields,
+        SystemFilterBuilderFilterExpressionValues,
+        SystemFilterBuilderFilterExpressionValue,
         SystemPopover,
         SystemProgressRing,
         SystemProgressBar,
@@ -235,6 +251,7 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemSelectUOM,
         SystemInputMedia,
         SystemInputTimezone,
+        SystemTrendIndicator
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -260,6 +277,8 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemCustomIcon,
         SystemDynamicComponent,
         SystemFilterBuilderFilterExpression,
+        SystemFilterBuilderFilterExpressionFields,
+        SystemFilterBuilderFilterExpressionValues,
         SystemFilterBuilderFilterExpressionGroup,
         SystemGooglePlacesAutocomplete,
         SystemGooglePlacesSearch,
@@ -269,6 +288,10 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
         SystemIllustrationNoTask,
+        SystemInputText,
+        SystemInputInteger,
+        SystemInputEnum,
+        SystemInputMultiEnum,
         SystemInputActionset,
         SystemInputComponentset,
         SystemInputDate,
@@ -281,6 +304,7 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemInputModuleField,
         SystemInputNumber,
         SystemInputRadio,
+        SystemInputRelate,
         SystemInputTags,
         SystemInputTime,
         SystemInputCompanycodes,
@@ -294,6 +318,7 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemModalHeader,
         SystemModalHeaderRight,
         SystemModalWrapper,
+        SystemNumberSpinner,
         SystemProgressRing,
         SystemProgressBar,
         SystemPrompt,
@@ -323,7 +348,8 @@ import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem"
         SystemSelectUOM,
         SystemModuleTree,
         SystemModuleTreeItem,
-        SystemInputTimezone
+        SystemInputTimezone,
+        SystemTrendIndicator
     ]
 })
 export class SystemComponents {

@@ -99,6 +99,14 @@ export class session {
     }
 
     /**
+     * removes an item from the session
+     *
+     * @param key
+     */
+    public clearSessionData(key){
+        sessionStorage.removeItem(key);
+    }
+    /**
      * returves the stored object
      *
      * @param key the key of the data object to be retrieved

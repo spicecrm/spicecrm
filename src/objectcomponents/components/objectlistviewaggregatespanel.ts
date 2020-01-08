@@ -22,20 +22,9 @@ export class ObjectListViewAggregatesPanel {
         private elementRef: ElementRef,
         private language: language,
         private metadata: metadata,
-        private modellist: modellist,
-        private model: model
+        private modellist: modellist
     ) {
 
-    }
-
-    /**
-     * calculates the offset for the panel
-     */
-    private getPanelStyle() {
-        let rect = this.elementRef.nativeElement.getBoundingClientRect();
-        return {
-            height: 'calc(100vh - ' + rect.top + 'px)'
-        };
     }
 
     /**
@@ -56,7 +45,7 @@ export class ObjectListViewAggregatesPanel {
      * returns true if the aggregtaes have a tag element
      */
     get hasTags(): boolean {
-        return this.metadata.checkTagging(this.model.module);
+        return this.metadata.checkTagging(this.modellist.module);
     }
 
     get tagsaggregate(): any[] {
