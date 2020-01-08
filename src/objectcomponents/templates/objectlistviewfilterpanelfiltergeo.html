@@ -1,0 +1,9 @@
+<ol *ngIf="geoEnabled" class="slds-list--vertical slds-list--vertical-space slds-p-vertical--x-small">
+    <li class="slds-item slds-hint-parent slds-text-link--reset" (click)="onClick()">
+        <div class="slds-filters__item slds-grid">
+            <system-button-icon class="slds-p-right--x-small" icon="world"></system-button-icon>
+            <p class="slds-text-body--small slds-p-vertical--xxx-small"> {{this.geodata}} </p>
+        </div>
+    </li>
+</ol>
+

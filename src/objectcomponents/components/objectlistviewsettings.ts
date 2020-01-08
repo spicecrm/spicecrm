@@ -1,9 +1,10 @@
 /**
  * @module ObjectComponents
  */
-import {Component, ElementRef, Renderer2} from '@angular/core';
+import {Component, ElementRef, Renderer2, Injector} from '@angular/core';
 import {modellist} from '../../services/modellist.service';
 import {modal} from '../../services/modal.service';
+import {toast} from '../../services/toast.service';
 import {language} from '../../services/language.service';
 import {ObjectListViewSettingsAddlistModal} from "./objectlistviewsettingsaddlistmodal";
 import {ObjectListViewSettingsSetfieldsModal} from "./objectlistviewsettingssetfieldsmodal";
@@ -14,38 +15,20 @@ import {ObjectListViewSettingsSetfieldsModal} from "./objectlistviewsettingssetf
 
 })
 export class ObjectListViewSettings {
-    private showMenu: boolean = false;
-    private clickListener: any;
 
     constructor(
         private language: language,
         private elementRef: ElementRef,
         private modal: modal,
         private modellist: modellist,
-        private renderer: Renderer2
-    ) {}
-
-    private toggleMenu() {
-        this.showMenu = !this.showMenu;
-
-        if (this.showMenu) {
-            this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
-        } else if (this.clickListener) {
-            this.clickListener();
-        }
-    }
-
-    public onClick(event: MouseEvent): void {
-        const clickedInside = this.elementRef.nativeElement.contains(event.target);
-        if (!clickedInside) {
-            this.showMenu = false;
-            this.clickListener();
-        }
+        private renderer: Renderer2,
+        private injector: Injector,
+        private toast: toast
+    ) {
     }
 
     private add() {
-        this.modal.openModal('ObjectListViewSettingsAddlistModal').subscribe(modalref => {
-            modalref.instance.modellist = this.modellist;
+        this.modal.openModal('ObjectListViewSettingsAddlistModal', true, this.injector).subscribe(modalref => {
             modalref.instance.modalmode = 'add';
         });
     }
@@ -55,9 +38,14 @@ export class ObjectListViewSettings {
             return false;
         }
 
-        this.modal.openModal('ObjectListViewSettingsAddlistModal').subscribe(modalref => {
-            modalref.instance.modellist = this.modellist;
+        this.modal.openModal('ObjectListViewSettingsAddlistModal', true, this.injector).subscribe(modalref => {
             modalref.instance.modalmode = 'edit';
+        });
+    }
+
+    private save() {
+        this.modellist.updateListType({}).subscribe(saved => {
+            this.toast.sendToast('List Saved');
         });
     }
 
@@ -65,10 +53,7 @@ export class ObjectListViewSettings {
         if (!this.modellist.checkAccess('edit')) {
             return false;
         }
-
-        this.modal.openModal('ObjectListViewSettingsSetfieldsModal').subscribe(modalref => {
-            modalref.instance.modellist = this.modellist;
-        });
+        this.modal.openModal('ObjectListViewSettingsSetfieldsModal', true, this.injector);
     }
 
     private delete() {
@@ -76,8 +61,10 @@ export class ObjectListViewSettings {
             return false;
         }
 
-        this.modal.openModal('ObjectListViewSettingsDeletelistModal').subscribe(modalref => {
-            modalref.instance.modellist = this.modellist;
+        this.modal.prompt("confirm", this.language.getLabel('MSG_DELETE_RECORD', undefined, 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(answer => {
+            if (answer) {
+                this.modellist.deleteListType();
+            }
         });
     }
 

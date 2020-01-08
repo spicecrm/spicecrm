@@ -96,7 +96,7 @@ export class ProductUOMConversions implements OnInit {
     private getUomUnits() {
         let fields = ['id', 'label', 'dimensions'];
         let params = {limit: -1};
-        this.backend.getList('UOMUnits', 'name', 'ASC', fields, params)
+        this.backend.getList('UOMUnits', [{sortfield:'name', dortdirection: 'ASC'}], fields, params)
             .subscribe((res: any) => {
                 if (res && res.list) {
                     this.uomUnits = res.list;

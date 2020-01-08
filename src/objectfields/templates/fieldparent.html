@@ -55,7 +55,7 @@
                     </div>
                     <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
                         <field-lookup-recent *ngIf="parentSearchOpen && parentSearchTerm === ''" [module]="parentType" (selectedObject)="setParent($event)"></field-lookup-recent>
-                        <field-lookup-search *ngIf="parentSearchOpen && parentSearchTerm !== ''" [module]="parentType" (selectedObject)="setParent($event)" (searchWithModal)="searchWithModal()" [fieldid]="fieldid" [searchterm]="parentSearchTerm"></field-lookup-search>
+                        <field-lookup-search *ngIf="parentSearchOpen && parentSearchTerm !== ''" [module]="parentType" (selectedObject)="setParent($event)" (searchWithModal)="searchWithModal()" [searchterm]="parentSearchTerm"></field-lookup-search>
                     </div>
                 </div>
             </div>

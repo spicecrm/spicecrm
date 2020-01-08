@@ -10,7 +10,7 @@ import {backend} from '../../../services/backend.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {toast} from "../../../services/toast.service";
-import {AppDataService} from "../../../services/appdata.service";
+
 
 
 @Component({
