@@ -32,8 +32,9 @@ export class SalesDocsItemsAddProduct extends ObjectModalModuleLookup {
 
     @Output() public additem: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(public language: language, public modellist: modellist, public metadata: metadata, public model: model, public modelutilities: modelutilities) {
-        super(language, modellist, metadata, modelutilities);
+
+    constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, public model: model) {
+        super(language, modellist, metadata, modelutilities, model);
 
         // set module to Products
         this.module = 'Products';

@@ -14,6 +14,7 @@ import {
 
 import {modelutilities} from '../../../services/modelutilities.service';
 import {modellist} from '../../../services/modellist.service';
+import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
 import {metadata} from '../../../services/metadata.service';
@@ -31,8 +32,8 @@ export class SalesDocsItemsAddProductGroup extends ObjectModalModuleLookup {
 
     @Output() private additem: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities) {
-        super(language, modellist, metadata, modelutilities);
+    constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, public model: model) {
+        super(language, modellist, metadata, modelutilities, model);
 
         // set module to Products
         this.module = 'ProductGroups';

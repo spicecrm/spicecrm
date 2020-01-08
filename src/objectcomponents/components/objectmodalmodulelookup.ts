@@ -58,7 +58,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     @Output() private selectedItems: EventEmitter<any> = new EventEmitter<any>();
     @Output() private usedSearchTerm: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, private model: model) {
+    constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, public model: model) {
         // subscribe to changes of the listtype
         this.modellistsubscribe = this.modellist.listtype$.subscribe(newType => this.switchListtype());
 
