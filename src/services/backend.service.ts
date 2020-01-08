@@ -4,9 +4,9 @@
  * @module services
  */
 import {Injectable} from '@angular/core';
-import { HttpClient, HttpEventType, HttpHeaders, HttpParams } from "@angular/common/http";
+import {HttpClient, HttpEventType, HttpHeaders, HttpParams} from "@angular/common/http";
 import {DomSanitizer} from '@angular/platform-browser';
-import { Subject, Observable, BehaviorSubject } from 'rxjs';
+import {Subject, Observable, BehaviorSubject} from 'rxjs';
 import {Router} from '@angular/router';
 
 import {configurationService} from './configuration.service';
@@ -206,7 +206,7 @@ export class backend {
      *
      * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
      */
-    public postRequestWithProgress(route: string = "", params: any = {}, body: any = {}, httpErrorReport = true, progress: BehaviorSubject<number> = null ): Observable<any> {
+    public postRequestWithProgress(route: string = "", params: any = {}, body: any = {}, httpErrorReport = true, progress: BehaviorSubject<number> = null): Observable<any> {
         let responseSubject = new Subject<any>();
 
         this.resetTimeOut();
@@ -219,13 +219,18 @@ export class backend {
         }
 
         let reportProgress = progress !== null;
-        if ( reportProgress ) progress.next(0);
-        this.http.post( this.configurationService.getBackendUrl() + "/" + encodeURI(route), body, { headers: headers, observe: 'events', params: this.prepareParams(params), reportProgress: !!progress }).subscribe(
+        if (reportProgress) progress.next(0);
+        this.http.post(this.configurationService.getBackendUrl() + "/" + encodeURI(route), body, {
+            headers: headers,
+            observe: 'events',
+            params: this.prepareParams(params),
+            reportProgress: !!progress
+        }).subscribe(
             event => {
-                if ( event.type === HttpEventType.UploadProgress ) {
-                    progress.next( 100 * event.loaded / event.total );
-                } else if ( event.type === HttpEventType.Response ) {
-                    responseSubject.next( event.body );
+                if (event.type === HttpEventType.UploadProgress) {
+                    progress.next(100 * event.loaded / event.total);
+                } else if (event.type === HttpEventType.Response) {
+                    responseSubject.next(event.body);
                     responseSubject.complete();
                 }
             },
@@ -274,9 +279,9 @@ export class backend {
             err => {
                 this.handleError(err, route, 'POST', {getParams: params, body: body});
                 let blobReader = new FileReader();
-                blobReader.readAsText( err.error );
+                blobReader.readAsText(err.error);
                 blobReader.onloadend = (e) => {
-                    responseSubject.error( JSON.parse( blobReader.result.toString() ));
+                    responseSubject.error(JSON.parse(blobReader.result.toString()));
                 };
             }
         );
@@ -346,16 +351,16 @@ export class backend {
      *
      * @return The string defining the character set.
      */
-    private getCharsetOfResponse( response: any ): string {
-        if ( !response.headers ) return null;
+    private getCharsetOfResponse(response: any): string {
+        if (!response.headers) return null;
         response.headers.lazyInit();
         let dummy = response.headers.headers.get('content-type');
-        if ( !dummy ) return null;
+        if (!dummy) return null;
         dummy = dummy[0];
         dummy = dummy.split(';');
-        if ( !dummy[1] ) return null;
+        if (!dummy[1]) return null;
         dummy = dummy[1].split('=');
-        if ( !dummy[1] ) return null;
+        if (!dummy[1]) return null;
         return dummy[1];
     }
 
@@ -387,7 +392,7 @@ export class backend {
                 let a = document.createElement("a");
                 document.body.appendChild(a);
                 a.href = downloadUrl;
-                if(file_type) a.type = file_type;
+                if (file_type) a.type = file_type;
                 a.download = file_name;
                 // start download
                 a.click();
@@ -705,8 +710,7 @@ export class backend {
      */
     public getList(
         module: string,
-        sortfield: string,
-        sortdirection: string,
+        sortfields: any[] = [],
         fields: any[] = [],
         params: any = {},
     ): Observable<any[]> {
@@ -723,9 +727,8 @@ export class backend {
             reqparams.listid = params.listid;
         }
 
-        if (sortfield && sortdirection) {
-            reqparams.sortfield = sortfield;
-            reqparams.sortdirection = sortdirection;
+        if (sortfields.length > 0) {
+            reqparams.sortfields = sortfields;
         }
 
         if (fields && fields.length > 0) {
@@ -758,7 +761,7 @@ export class backend {
 
     public save(module: string, id: string, cdata: any, progress: BehaviorSubject<number> = null): Observable<any[]> {
         let responseSubject = new Subject<any[]>();
-        this.postRequestWithProgress("module/" + module + "/" + id, {}, this.modelutilities.spiceModel2backend(module, cdata), null, progress )
+        this.postRequestWithProgress("module/" + module + "/" + id, {}, this.modelutilities.spiceModel2backend(module, cdata), null, progress)
             .subscribe(
                 (response: any) => {
                     responseSubject.next(this.modelutilities.backendModel2spice(module, response));
@@ -797,48 +800,6 @@ export class backend {
         this.getRequest("modules/Trackers/recent", params)
             .subscribe((response) => {
                 responseSubject.next(response);
-                responseSubject.complete();
-            });
-        return responseSubject.asObservable();
-    }
-
-    /*
-     handling of listtypes
-     */
-    public addListType(module, listdata): Observable<any[]> {
-        let responseSubject = new Subject<any[]>();
-
-        this.postRequest(
-            "spiceui/core/modules/" + module + "/listtypes",
-            {},
-            JSON.stringify(listdata)
-        ).subscribe((response) => {
-            responseSubject.next(response);
-            responseSubject.complete();
-        });
-        return responseSubject.asObservable();
-    }
-
-    public setListType(id, module, listdata): Observable<any[]> {
-        let responseSubject = new Subject<any[]>();
-
-        this.postRequest(
-            "spiceui/core/modules/" + module + "/listtypes/" + id,
-            {},
-            JSON.stringify(listdata)
-        ).subscribe((response) => {
-            responseSubject.next(response);
-            responseSubject.complete();
-        });
-        return responseSubject.asObservable();
-    }
-
-    public deleteListType(id: string): Observable<any> {
-        let responseSubject = new Subject<any>();
-
-        this.deleteRequest("spiceui/core/modules/" + module + "/listtypes/" + id)
-            .subscribe((res) => {
-                responseSubject.next(res);
                 responseSubject.complete();
             });
         return responseSubject.asObservable();

@@ -22,7 +22,7 @@ export class TasksManager {
         this.navigation.setActiveModule('Tasks');
 
         this.model.module = 'Tasks';
-        this.modellist.setModule('Tasks');
+        this.modellist.module = 'Tasks';
 
 
     }
