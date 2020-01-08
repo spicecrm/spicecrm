@@ -1215,14 +1215,14 @@ export class modellist implements OnDestroy {
      * a simple getter for the bucketfield
      */
     get bucketfield() {
-        return this.buckets.bucketfield;
+        return this.buckets ? this.buckets.bucketfield : '';
     }
 
     /**
      * a simple getter for the bucketfield
      */
     get bucketamountfield() {
-        return this.buckets.buckettotal;
+        return this.buckets ? this.buckets.buckettotal : '';
     }
 
     /**
