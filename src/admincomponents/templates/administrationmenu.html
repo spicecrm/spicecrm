@@ -21,7 +21,7 @@
             <ul>
                 <li *ngFor="let item of getNavigationItems(adminNavigationBlock)">
                     <a href="javascript:void(0);" class="slds-navigation-list--vertical__action slds-text-link--reset" (click)="openContent(adminNavigationBlock, item)" [ngClass]="{'slds-theme_inverse': item.id == administration.opened_itemid}">
-                        {{item.name}}
+                        {{language.getLabel(item.admin_label)}}
                     </a>
                 </li>
             </ul>
