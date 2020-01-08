@@ -33,6 +33,4 @@ export class AdministrationHomeScreenCardItem {
         this.administration.navigateto(block, item);
     }
 
-
-
 }
