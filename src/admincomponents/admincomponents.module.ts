@@ -53,7 +53,6 @@ import /*embed*/ { AdministrationSchedulerRunButton } from './components/adminis
 import /*embed*/ { AdministrationSchedulerScheduleButton } from './components/administrationschedulerschedulebutton';
 
 import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryManagerItem, AdministrationDictionaryManagerItemField } from './components/administrationdictionarymanager';
-import /*embed*/ {VersionControllerComponent} from "./components/versioncontroller";
 
 
 @NgModule({
@@ -86,7 +85,6 @@ import /*embed*/ {VersionControllerComponent} from "./components/versioncontroll
         AdministrationSysTrashcanManager,
         AdministrationSysTrashcanRecover,
         AdministrationDictRepair,
-        VersionControllerComponent,
         AdministrationConfigEditor,
         AdministrationSchedulerJobsEnum,
         AdministrationSchedulerJobLog,
