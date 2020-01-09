@@ -8,12 +8,15 @@ import {language} from '../../services/language.service';
 import {administration} from "../services/administration.service";
 
 @Component({
-    selector: 'administration-card-item',
+    selector: '[administration-card-item]',
     templateUrl: './src/admincomponents/templates/administrationhomescreencarditem.html'
 })
 
 export class AdministrationHomeScreenCardItem {
-    @Input() public adminNavigationBlock;
+
+    @Input() public adminNavigationItem: any = {};
+    @Input() public adminNavigationBlock: string = '';
+
     constructor(
         private router: Router,
         private metadata: metadata,
@@ -22,15 +25,20 @@ export class AdministrationHomeScreenCardItem {
     ) {
     }
 
-
-
     /**
      * emit nav changes to main screen
      *
      * @param item
      */
-    private openContent(block, item) {
-        this.administration.navigateto(block, item);
+    private openContent() {
+        this.administration.navigateto(this.adminNavigationItem.id);
+    }
+
+    /**
+     * returns the icon
+     */
+    get icon() {
+        return this.adminNavigationItem.icon ? this.adminNavigationItem.icon : 'empty';
     }
 
 }

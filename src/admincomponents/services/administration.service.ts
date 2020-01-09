@@ -4,8 +4,8 @@
 import {Injectable, OnDestroy} from '@angular/core';
 
 import {backend} from '../../services/backend.service';
-import {metadata} from '../../services/metadata.service';
 import {broadcast} from '../../services/broadcast.service';
+import {language} from '../../services/language.service';
 import {BehaviorSubject} from "rxjs";
 
 @Injectable()
@@ -39,10 +39,15 @@ export class administration implements OnDestroy {
      */
     public admincomponent$: BehaviorSubject<any>;
 
+    /**
+     * a filter string to be applied to the content
+     */
+    public itemfilter: string = '';
+
     constructor(
         private backend: backend,
-        private metadata: metadata,
         private broadcast: broadcast,
+        private language: language
     ) {
         // initialize the beh subject
         this.admincomponent$ = new BehaviorSubject<any>(this.admincomponent);
@@ -108,46 +113,68 @@ export class administration implements OnDestroy {
      * @param block
      * @param item
      */
-    public navigateto(block, item) {
+    public navigateto(itemid) {
 
-
-        let adminItem: any = {};
-
-        if (!this.adminNavigation[block]) {
-            return false;
-        }
-
-        // ToDo change to find
-        this.adminNavigation[block].some(blockAction => {
-                if (blockAction.id == item.id) {
-                    adminItem = blockAction;
+        let adminaction;
+        this.adminNavigation.some(block => {
+                adminaction = block.groupcomponents.find(comp => comp.id == itemid);
+                if (adminaction) {
                     return true;
                 }
             }
         );
 
-        if (adminItem.component) {
-            this.admincomponent = adminItem;
+        if (adminaction.component) {
+            this.admincomponent = adminaction;
             this.admincomponent$.next(this.admincomponent);
+            this.opened_itemid = itemid;
         }
     }
 
 
-
-    public getNavigationBlocks(filter?: string) {
-        let blocks = [];
-        for (let block in this.adminNavigation) {
-            blocks.push(block);
+    /**
+     * returns the filtered navigation
+     */
+    get navigationGroups() {
+        // check if we have a filter .. if not just return the complete tree
+        if (this.itemfilter == '') {
+            return this.adminNavigation;
         }
-        return blocks.sort();
+
+        // filter the tree
+        let groups = [];
+        for (let group of this.adminNavigation) {
+            // check if the group mnatches .. if yes return the complete group
+            if (
+                (group.label && this.language.getLabel(group.label).toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0) ||
+                (group.label && this.language.getLabel(group.label, '', 'long').toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0)
+            ) {
+                groups.push(group);
+            } else {
+                // search if we find any component that matches
+                let filteredcompopnents = [];
+                for (let groupcomponent of group.groupcomponents) {
+                    if (
+                        groupcomponent.adminaction.toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0 ||
+                        (groupcomponent.admin_label && this.language.getLabel(groupcomponent.admin_label).toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0) ||
+                        (groupcomponent.admin_label && this.language.getLabel(groupcomponent.admin_label, '', 'long').toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0)
+                    ) {
+                        filteredcompopnents.push(groupcomponent);
+                    }
+                }
+                // if we did find at least one component ... add the group with the filtered components
+                if (filteredcompopnents.length > 0) {
+                    groups.push({
+                        id: group.id,
+                        name: group.name,
+                        label: group.label,
+                        groupcomponents: filteredcompopnents
+                    });
+                }
+            }
+        }
+
+        return groups;
     }
 
-
-    public getNavigationItems(block) {
-        let items = [];
-        for (let item of this.adminNavigation[block]) {
-            items.push(item);
-        }
-        return items;
-    }
 }
