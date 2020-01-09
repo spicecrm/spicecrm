@@ -1,7 +1,7 @@
 /**
  * @module AdminComponentsModule
  */
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
@@ -13,6 +13,8 @@ import {administration} from "../services/administration.service";
 })
 
 export class AdministrationHomeScreenCard {
+
+    @Input() private adminNavigationBlock: any;
 
     constructor(
         private router: Router,
