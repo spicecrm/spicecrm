@@ -11,7 +11,7 @@ import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
-import {AppDataService} from "../../../services/appdata.service";
+
 
 
 @Component({
@@ -22,7 +22,7 @@ export class WorkflowManagerDetailTaskDecisions{
 
     @Input() tasks : any = {};
 
-    constructor(private appdata: AppDataService, private backend: backend, private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
+    constructor( private backend: backend, private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
         console.log(this.model.data.decisions);
     }
 
