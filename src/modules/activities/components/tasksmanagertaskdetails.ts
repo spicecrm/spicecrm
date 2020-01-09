@@ -19,7 +19,9 @@ import {language} from '../../../services/language.service';
 import {broadcast} from '../../../services/broadcast.service';
 
 /**
- * displays a task in teh task manager view
+ * displays a task in the task manager view
+ *
+ * ToDo: change to fieldset in the header
  */
 @Component({
     selector: 'tasks-manager-task-details',
@@ -109,7 +111,7 @@ export class TasksManagerTaskDetails implements OnChanges, OnDestroy {
 
     get canEdit() {
         try {
-            return this.model.data.acl.edit;
+            return this.model.checkAccess('edit');
         } catch (e) {
             return false;
         }
@@ -119,5 +121,4 @@ export class TasksManagerTaskDetails implements OnChanges, OnDestroy {
         this.model.data.status = 'Completed';
         this.model.save();
     }
-
 }
