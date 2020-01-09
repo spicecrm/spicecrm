@@ -58,7 +58,7 @@ export class SystemIcon {
     }
 
     private getSprite() {
-        if(this.icon.indexOf(":") > 0) {
+        if(this.icon && this.icon.indexOf(":") > 0) {
             return this.icon.split(":")[0];
         }
 
