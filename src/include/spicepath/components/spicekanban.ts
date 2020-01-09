@@ -340,6 +340,8 @@ export class SpiceKanban implements OnInit, OnDestroy {
                 this.model.edit();
             }
 
+            // udate the item data
+            event.item.data[this.confdata.statusfield] = event.container.data.stage;
         }
     }
 
@@ -352,10 +354,13 @@ export class SpiceKanban implements OnInit, OnDestroy {
         return this.draganddropenabled && item.acl.edit;
     }
 
-    get containerStyle(){
-        if(this.kanbanUtilityBar){
+    /**
+     * adds a bottom margin if the utility bar is shown
+     */
+    get containerStyle() {
+        if (this.kanbanUtilityBar) {
             let rect = this.kanbanUtilityBar.element.nativeElement.getBoundingClientRect();
-            return {'margin-bottom': rect.height +'px'};
+            return {'margin-bottom': rect.height + 'px'};
         } else {
             return {};
         }
