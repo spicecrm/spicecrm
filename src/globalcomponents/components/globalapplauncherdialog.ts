@@ -86,7 +86,6 @@ export class GlobalAppLauncherDialog {
         menuItems.sort((a, b) => {
             return this.language.getModuleName(a) > this.language.getModuleName(b) ? 1 : -1;
         });
-
         return menuItems;
     }
 
