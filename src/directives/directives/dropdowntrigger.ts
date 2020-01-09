@@ -9,7 +9,8 @@ import {
     HostListener,
     Input,
     OnDestroy,
-    Renderer2
+    Renderer2,
+    ChangeDetectorRef
 } from '@angular/core';
 import {footer} from "../../services/footer.service";
 
@@ -42,7 +43,8 @@ export class DropdownTriggerDirective implements OnDestroy, AfterViewChecked {
     constructor(
         private renderer: Renderer2,
         private elementRef: ElementRef,
-        private footer: footer
+        private footer: footer,
+        private cdRef: ChangeDetectorRef
     ) {
 
     }
@@ -157,6 +159,9 @@ export class DropdownTriggerDirective implements OnDestroy, AfterViewChecked {
         this.previousTriggerRect = triggerRect;
         this.renderer.setStyle(this.dropdownElement, 'top', window.innerHeight - triggerRect.bottom < 100 ? Math.abs(triggerRect.bottom - dropdownRect.height) + 'px' : triggerRect.bottom + 'px');
         this.renderer.setStyle(this.dropdownElement, 'left', Math.abs(triggerRect.right - dropdownRect.width) + 'px');
+
+        // make sure we detect changes in case we are on a push strategy
+        this.cdRef.markForCheck();
     }
 
     /*
@@ -172,6 +177,9 @@ export class DropdownTriggerDirective implements OnDestroy, AfterViewChecked {
             // append dropdown element to it's origin
             this.renderer.appendChild(this.elementRef.nativeElement, this.dropdownElement);
             this.clickListener();
+
+            // make sure we detect changes in case we are on a push strategy
+            this.cdRef.markForCheck();
         }
     }
 }

@@ -13,7 +13,8 @@ import {language} from '../../services/language.service';
     providers: [model, view]
 })
 export class fieldLookupSearchItem {
-    @Input() private hit: any = {};
+    @Input() private item: any = {};
+    @Input() private module: string;
 
     private mainfieldsetfields: any[];
     private subfieldsetfields: any[];
@@ -23,17 +24,13 @@ export class fieldLookupSearchItem {
     }
 
     public ngOnInit() {
-        this.model.module = this.hit._type;
-        this.model.id = this.hit._id;
+        this.model.module = this.module;
+        this.model.id = this.item.id;
+        this.model.data = this.model.utils.backendModel2spice(this.module, this.item);
 
         // get the fieldconfig
         let componentconfig = this.metadata.getComponentConfig('GlobalHeaderSearchResultsItem', this.model.module);
         if (componentconfig && componentconfig.mainfieldset) this.mainfieldsetfields = this.metadata.getFieldSetItems(componentconfig.mainfieldset);
         if (componentconfig && componentconfig.subfieldset) this.subfieldsetfields = this.metadata.getFieldSetItems(componentconfig.subfieldset);
-
-        for (let field in this.hit._source) {
-            this.model.data[field] = this.hit._source[field];
-        }
     }
-
 }

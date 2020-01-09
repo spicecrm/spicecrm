@@ -1,38 +1,37 @@
-<div class="slds-media__body slds-dropdown-trigger slds-dropdown-trigger--click" [ngClass]="{'slds-is-open': showMenu}">
-    <button class="slds-button slds-type-focus slds-m-right--small slds-grid slds-truncate" aria-haspopup="true"
-            (click)="toggleTypes()" >
-        <div class="slds-grid slds-grid--vertical-align-center slds-truncate">
-            <h1 class="slds-page-header__title slds-truncate slds-show--medium">{{modellist.getListTypeName()}}</h1>
-            <system-button-icon icon="down"></system-button-icon>
-        </div>
-    </button>
+<div class="slds-media__body slds-dropdown-trigger slds-dropdown-trigger--click" dropdowntriggersimple>
+    <div class="slds-grid slds-grid--vertical-align-center slds-truncate slds-p-right--small">
+        <h1 class="slds-page-header__title slds-show--medium slds-p-right--xx-small">{{modellist.getListTypeName()}}</h1>
+        <system-utility-icon icon="down" size="x-small"></system-utility-icon>
+    </div>
     <div class="slds-dropdown slds-dropdown--left slds-dropdown--medium">
         <ul class="slds-dropdown__list" role="menu">
-            <li class="slds-dropdown__header" role="separator">
+            <li class="slds-dropdown__header slds-has-divider--bottom" role="separator">
                 <span class="slds-text-title--caps">{{language.getLabel('LBL_LIST_TYPES')}}</span>
             </li>
-            <li class="slds-dropdown__item" [ngClass]="{'slds-is-selected': modellist.listtype === 'all'}" role="presentation" >
-                <a href="javascript:void(0);" role="menuitemcheckbox" (click)="setListType('all')">
-                      <span class="slds-truncate">
-                          <system-utility-icon size="x-small" icon="check" addclasses="slds-icon slds-icon_selected slds-icon_x-small slds-icon-text-default slds-m-right_x-small"></system-utility-icon>
-                          {{language.getModuleCombinedLabel('LBL_ALL', modellist.module)}}
-                      </span>
-                </a>
-            </li>
-            <li class="slds-dropdown__item" [ngClass]="{'slds-is-selected': modellist.listtype === 'owner'}" role="presentation" >
-                <a href="javascript:void(0);" role="menuitemcheckbox" (click)="setListType('owner')">
-                      <span class="slds-truncate">
-                          <system-utility-icon size="x-small" icon="check" addclasses="slds-icon slds-icon_selected slds-icon_x-small slds-icon-text-default slds-m-right_x-small"></system-utility-icon>
-                          {{language.getModuleCombinedLabel('LBL_MY', modellist.module)}}
-                      </span>
-                </a>
-            </li>
-            <li *ngFor="let listtype of listtypes" class="slds-dropdown__item" [ngClass]="{'slds-is-selected': listtype.id === modellist.listtype}" role="presentation" >
-                <a href="javascript:void(0);" role="menuitemcheckbox" (click)="setListType(listtype.id)">
+            <li class="slds-dropdown__item" [ngClass]="{'slds-is-selected': modellist.listtype == 'all'}" role="presentation" (click)="setListType('all')">
+                <a href="javascript:void(0);" role="menuitemcheckbox">
                   <span class="slds-truncate">
                       <system-utility-icon size="x-small" icon="check" addclasses="slds-icon slds-icon_selected slds-icon_x-small slds-icon-text-default slds-m-right_x-small"></system-utility-icon>
-                        {{listtype.name}}
+                      {{language.getModuleCombinedLabel('LBL_ALL', modellist.module)}}
                   </span>
+                </a>
+            </li>
+            <li class="slds-dropdown__item slds-has-divider--bottom" [ngClass]="{'slds-is-selected': modellist.listtype == 'owner'}" role="presentation" (click)="setListType('owner')">
+                <a href="javascript:void(0);" role="menuitemcheckbox">
+                  <span class="slds-truncate">
+                      <system-utility-icon size="x-small" icon="check"
+                                           addclasses="slds-icon slds-icon_selected slds-icon_x-small slds-icon-text-default slds-m-right_x-small"></system-utility-icon>
+                      {{language.getModuleCombinedLabel('LBL_MY', modellist.module)}}
+                  </span>
+                </a>
+            </li>
+            <li *ngFor="let listtype of listtypes" class="slds-dropdown__item" [ngClass]="{'slds-is-selected': listtype.id == modellist.listtype}" role="presentation" (click)="setListType(listtype.id)">
+                <a href="javascript:void(0);" role="menuitemcheckbox">
+                  <span class="slds-truncate">
+                      <system-utility-icon size="x-small" icon="check" addclasses="slds-icon slds-icon_selected slds-icon_x-small slds-icon-text-default slds-m-right_x-small"></system-utility-icon>
+                      {{listtype.name}}
+                  </span>
+                    <system-utility-icon [icon]="getListtypeIcon(listtype)" size="x-small"></system-utility-icon>
                 </a>
             </li>
         </ul>
