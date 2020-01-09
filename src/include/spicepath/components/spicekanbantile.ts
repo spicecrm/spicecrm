@@ -1,26 +1,61 @@
 /**
  * @module ModuleSpicePath
  */
-import {Component, Input, OnInit} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnChanges, OnDestroy,
+    OnInit, SimpleChanges
+} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {modellist} from '../../../services/modellist.service';
 
+declare var _: any;
+
+/**
+ * renders a KANBAN Tile in the kanban view
+ */
 @Component({
-    selector: '[spice-kanban-tile]',
+    selector: 'spice-kanban-tile',
     templateUrl: './src/include/spicepath/templates/spicekanbantile.html',
     providers: [model, view],
     host: {
         '[class]': "'slds-item'"
-    }
+    },
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SpiceKanbanTile implements OnInit {
+export class SpiceKanbanTile implements OnInit, OnDestroy {
+    /**
+     * the item
+     */
     @Input() private item: any = {};
+
+    /**
+     * the componentconfig
+     */
     private componentconfig: any = {};
+
+    /**
+     * the fields to be displayed in the tile
+     */
     private componentFields: any = {};
 
-    constructor(private modellist: modellist, private model: model, private view: view, private metadata: metadata) {
+    /**
+     * the subscription to the model to keep and kill on destroy
+     */
+    private modelSubscription: any;
+
+    /**
+     * inidcates that the model is saving
+     */
+    private isSaving: boolean = false;
+
+    constructor(private modellist: modellist, private model: model, private view: view, private metadata: metadata, private changeDetectorRef: ChangeDetectorRef) {
         this.componentconfig = this.metadata.getComponentConfig('SpiceKanbanTile', this.modellist.module);
         this.componentFields = this.metadata.getFieldSetFields(this.componentconfig.fieldset);
 
@@ -29,17 +64,96 @@ export class SpiceKanbanTile implements OnInit {
         this.view.displayLabels = false;
     }
 
+    /**
+     * initialize and subscribe to the model changes since we have an onPush startegy
+     */
     public ngOnInit() {
         // initialize the model
         this.model.module = this.modellist.module;
         this.model.id = this.item.id;
-        this.model.data = this.model.utils.backendModel2spice(this.modellist.module, this.item);
+        this.model.data = this.model.utils.backendModel2spice(this.modellist.module, _.clone(this.item));
 
         // initialize the field statis
         this.model.initializeFieldsStati();
+
+        // handle drop from anopther kanban stage
+        if (this.item._KanbanDrop) {
+            this.isSaving = true;
+
+            // set the stage field back, start edit and set it now so it is picked up as dirty
+            this.model.setField(this.modellist.bucketfield, this.item._KanbanDrop.from);
+            this.model.startEdit();
+            this.model.setField(this.modellist.bucketfield, this.item._KanbanDrop.to);
+
+            // validate and if validation is OK save, otherwise popup the edit modal
+            if (this.model.validate()) {
+                this.model.save().subscribe(result => {
+                        // set saving to false
+                        this.isSaving = false;
+
+                        // remove the drop information
+                        delete this.item._KanbanDrop;
+
+                        // subscribe to the save event from now on
+                        this.subscribeToSave();
+                    }
+                );
+            } else {
+                this.isSaving = false;
+
+                // call teh edit modal and wait for the user action (might
+                this.model.edit().subscribe(action => {
+
+                    // if action is false (user cancelled or did anything else but save move the item back to the original bucket
+                    if (action === false) {
+                        this.item[this.modellist.bucketfield] = this.item._KanbanDrop.from;
+                    }
+
+                    // remove the drop information
+                    delete this.item._KanbanDrop;
+                });
+
+                // subscribe to the save handler
+                this.subscribeToSave();
+            }
+        } else {
+            // subscribe to the save handler
+            this.subscribeToSave();
+        }
     }
 
+    /**
+     * returns the headerfieldset if one is set
+     */
+    get headerFieldset() {
+        return this.componentconfig.headerfieldset;
+    }
+
+    /**
+     * subscribe to the model save event. This is required since the change detection is set to push strategy and so we need to react to changes in the component
+     */
+    private subscribeToSave() {
+        this.modelSubscription = this.model.saved$.subscribe(changeddata => {
+
+            // detect changes
+            this.changeDetectorRef.detectChanges();
+        });
+    }
+
+    /**
+     * unsubscribe from the model so all subscriptions are cancelled
+     */
+    public ngOnDestroy(): void {
+        if (this.modelSubscription) this.modelSubscription.unsubscribe();
+    }
+
+
+    /**
+     * navigate to the detial of the record
+     */
     private goDetail() {
         this.model.goDetail();
     }
+
+
 }

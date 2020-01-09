@@ -6,8 +6,7 @@
                     <a class="slds-tabs--path__link" aria-selected="false" role="tab" href="javascript:void(0);"
                        aria-live="assertive">
                     <span class="slds-tabs--path__stage">
-                      <system-icon [icon]="'check'" [size]="'x-small'" [sprite]="'utility'"
-                                   [addclasses]="'spicecrm-processicon'"></system-icon>
+                      <system-utility-icon icon="check" size="x-small"></system-utility-icon>
                     </span>
                         <span class="slds-tabs--path__title">{{getStageLabel(stage.stagedata)}} ({{getStageCount(stage.stagedata)}})</span>
                     </a>
@@ -15,23 +14,38 @@
             </ng-container>
         </ul>
     </div>
-    <div *ngIf="this.componentconfig.sum" class="slds-grid" style="border-bottom: 1px solid #d8dde6;">
-        <div *ngFor="let stage of stages" class="slds-col slds-p-horizontal--xx-small slds-m-top--x-small"
-             [ngClass]="sizeClass">
-            <div *ngIf="showSum" class="slds-text-heading--medium slds-text-align--center slds-p-vertical--x-small">
-                {{getCurrencySymbol()}}{{getStageSum(stage.stagedata)}}
+    <div *ngIf="this.componentconfig.sumfield" class="slds-grid slds-border--bottom">
+        <div *ngFor="let stage of stages" class="slds-col slds-p-horizontal--xx-small slds-m-top--x-small" [ngClass]="sizeClass">
+            <div class="slds-text-heading--medium slds-text-align--center slds-p-vertical--x-small" [ngClass]="{'slds-text-color--inverse-weak': modellist.isLoading}">
+                <spice-kanban-sumfield [value]="getStageSum(stage.stagedata)"></spice-kanban-sumfield>
             </div>
         </div>
     </div>
-    <div tobottom #kanbanContainer class="slds-scrollable--y" (scroll)="onScroll()">
+    <div tobottom #kanbanContainer class="slds-scrollable--y kanbancontainer" (scroll)="onScroll($event)" cdkDropListGroup [ngStyle]="containerStyle">
         <div class="slds-grid">
-            <div *ngFor="let stage of stages" class="slds-col slds-p-horizontal--xx-small slds-m-top--x-small" [ngClass]="sizeClass" >
-                <ul class="slds-has-dividers--around-space slds-m-top--x-small">
-                    <!--li spice-kanban-tile *ngFor="let item of getStageItems(stage.stage)" draggable="true" [item]="item" class="slds-item"></li-->
-                    <li spice-kanban-tile *ngFor="let item of this.modellist.listData.list|spicekanbanstagepipe:stage.stage" draggable="true" [item]="item" class="slds-item"></li>
-                </ul>
+            <div *ngFor="let stage of stages" class="slds-col slds-p-horizontal--xx-small slds-m-top--x-small" [ngClass]="sizeClass" (cdkDropListDropped)="handleDrop($event)" cdkDropList [cdkDropListData]="stage">
+                <!--li spice-kanban-tile *ngFor="let item of getStageItems(stage.stage)" draggable="true" [item]="item" class="slds-item"></li-->
+                <div *ngFor="let item of this.modellist.listData.list|spicekanbanstagepipe:stage.stage;trackBy:trackbyfn"
+                     cdkDrag [cdkDragDisabled]="!allowDrag(item)"
+                     [cdkDragData]="item" class=" slds-m-vertical--xx-small slds-kanban-drag--preview ">
+                    <spice-kanban-tile [item]="item"></spice-kanban-tile>
+                </div>
             </div>
         </div>
         <system-spinner *ngIf="modellist.isLoading"></system-spinner>
+        <div *ngIf="hiddenstages.length > 0" class="slds-utility-bar_container" aria-label="Utility Bar">
+            <div #kanbanUtilityBar class="slds-utility-bar">
+                <div class="slds-grid slds-size--1-of-1 slds-grid--align-spread">
+                    <div></div>
+                    <div class="slds-utility-bar__item slds-p-horizontal--x-small">
+                        <div *ngFor="let stage of hiddenstages" class="slds-box--border slds-m-around--xx-small slds-align--absolute-center slds-theme--info" (cdkDropListDropped)="handleHiddenDrop($event)" cdkDropList [cdkDropListData]="stage">
+                            <div class="slds-p-horizontal--medium slds-p-vertical--xx-small">
+                                {{getStageLabel(stage.stagedata)}} ({{getStageCount(stage.stagedata)}}) <spice-kanban-sumfield *ngIf="this.componentconfig.sumfield" [value]="getStageSum(stage.stagedata)"></spice-kanban-sumfield>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
