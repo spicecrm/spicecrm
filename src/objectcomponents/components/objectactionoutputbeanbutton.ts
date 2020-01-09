@@ -43,34 +43,15 @@ export class ObjectActionOutputBeanButton {
             outPutTemplates = {};
             this.modal.openModal('SystemLoadingModal', false).subscribe(waitingModal => {
                 waitingModal.instance.messagelabel = 'Loading Templates';
-                let params = {
-                    limit: '-99',
-                    fields: ['id', 'name', 'language'],
-                    searchfields:
-                        {
-                            join: 'AND',
-                            conditions: [
-                                {field: 'module_name', operator: '=', value: this.model.module}
-                            ]
-                        }
-                };
-
-                this.backend.getRequest('module/OutputTemplates', params).subscribe(
+                this.backend.getRequest('module/OutputTemplates/formodule/'+this.model.module, {}).subscribe(
                     (data: any) => {
+                        // kill the watign modal
                         waitingModal.instance.self.destroy();
+                        // set the templates
+                        this.configuration.setData('OutputTemplates', data);
 
-                        let list = data.list;
-                        for (let template of list) {
-                            this.templates.push({
-                                id: template.id,
-                                name: template.name,
-                                language: template.language,
-                            });
-                        }
-
-                        // write back to the config service for faster load the next time
-                        outPutTemplates[this.model.module] = this.templates;
-                        this.configuration.setData('OutputTemplates', outPutTemplates)
+                        // set the templates internally
+                        this.templates = data;
 
                         // open the output
                         this.openOutput();
