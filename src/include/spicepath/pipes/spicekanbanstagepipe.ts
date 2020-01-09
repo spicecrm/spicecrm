@@ -17,7 +17,7 @@ export class SpiceKanbanStagePipe {
         let retValues = [];
         let stageData = this.getStageData(stage);
         for (let value of values) {
-            if (value[stageData.statusfield] && value[stageData.statusfield].indexOf(stage) == 0) {
+            if (value[stageData.statusfield] && value[stageData.statusfield] == stage) {
                 retValues.push(value);
             }
         }
