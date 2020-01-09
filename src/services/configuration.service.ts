@@ -115,8 +115,15 @@ export class configurationService {
      */
     private handleLogout(message) {
         if (message.messagetype == 'logout') {
-            this.appdata = {};
+            this.reset();
         }
+    }
+
+    /**
+     * resets the complete app data object
+     */
+    public reset() {
+        this.appdata = {};
     }
 
     public setSiteData(data) {
