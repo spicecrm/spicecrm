@@ -1,10 +1,10 @@
-<td *ngIf="rowselect" role="gridcell" class="slds-cell-shrink slds-show--medium">
+<td *ngIf="rowselect" role="gridcell" class="slds-cell-shrink slds-show--medium" style="min-width: 1rem">
     <label class="slds-checkbox">
         <input type="checkbox" [disabled]="rowselectdisabled" [(ngModel)]="listItem.selected"/>
         <span class="slds-checkbox--faux"></span>
     </label>
 </td>
-<td *ngFor="let item of listFields" scope="row" [attr.data-label]="language.getFieldDisplayName(model.module, item.field)">
+<td style="min-width: 2rem" *ngFor="let item of listFields" scope="row" [attr.data-label]="language.getFieldDisplayName(model.module, item.field)">
     <field-container [field]="item.field" [fieldconfig]="item.fieldconfig" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
 </td>
 <td *ngIf="showActionMenu" role="gridcell" class="slds-cell-shrink">

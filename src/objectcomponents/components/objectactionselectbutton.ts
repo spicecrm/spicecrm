@@ -17,7 +17,6 @@ import {Subscription} from "rxjs";
 export class ObjectActionSelectButton implements OnInit, OnDestroy {
 
     public actionconfig: any = {};
-    public parent: any = {};
     public disabled: boolean = true;
     private subscriptions: Subscription = new Subscription();
 
@@ -44,29 +43,14 @@ export class ObjectActionSelectButton implements OnInit, OnDestroy {
     * @call addSelectedItems
     */
     public execute() {
-        if (this.actionconfig.searchConditions) {
-            this.modal.openModal('ObjectModalModuleDBLookup').subscribe(selectModal => {
-                selectModal.instance.searchConditions = this.actionconfig.searchConditions;
-                selectModal.instance.module = this.model.module;
-                selectModal.instance.multiselect = true;
-                this.subscriptions.add(
-                    selectModal.instance.selectedItems.subscribe(items => {
-                        this.addSelectedItems(items);
-                    })
-                );
+        this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
+            selectModal.instance.module = this.model.module;
+            selectModal.instance.multiselect = true;
+            selectModal.instance.modulefilter = this.actionconfig.modulefilter;
+            selectModal.instance.selectedItems.subscribe(items => {
+                this.addSelectedItems(items);
             });
-        } else {
-            this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
-                selectModal.instance.module = this.model.module;
-                selectModal.instance.multiselect = true;
-                selectModal.instance.modulefilter = this.actionconfig.modulefilter;
-                this.subscriptions.add(
-                    selectModal.instance.selectedItems.subscribe(items => {
-                        this.addSelectedItems(items);
-                    })
-                );
-            });
-        }
+        });
     }
 
     /*

@@ -76,6 +76,6 @@ export class ActivityTimelineContainer implements OnInit {
      * @param item
      */
     private trackByFn(index, item) {
-        return item.data.id;
+        return item.id;
     }
 }
