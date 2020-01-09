@@ -8,7 +8,6 @@ import {language} from '../../services/language.service';
 import {administration} from "../services/administration.service";
 
 @Component({
-
     templateUrl: './src/admincomponents/templates/administrationhomescreen.html'
 })
 
