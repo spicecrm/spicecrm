@@ -1,5 +1,5 @@
-<div class="slds-grid" style="height: 100%">
-    <div cdkDropList #dropList="cdkDropList" [cdkDropListData]="listItems" [cdkDropListConnectedTo]="[dragList]" (cdkDropListDropped)="onDrop($event)" class="slds-size--1-of-1 slds-border--left" style="height: 100%">
+<div [class.slds-hide]="reportsDesignerService.activeModule.unionid != 'root'" class="slds-grid" style="height: 100%">
+    <div cdkDropList #dropList="cdkDropList" [cdkDropListData]="listItems" [cdkDropListConnectedTo]="[dragList]" (cdkDropListDropped)="onDrop($event)" class="slds-size--1-of-1" style="height: 100%">
         <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover reports-designer-manipulate-table">
             <thead>
             <tr class="slds-text-title--caps slds-theme--shade">
@@ -36,3 +36,4 @@
         </table>
     </div>
 </div>
+<reports-designer-manipulate-union *ngIf="reportsDesignerService.activeModule.unionid != 'root'" [module]="reportsDesignerService.activeModule"></reports-designer-manipulate-union>

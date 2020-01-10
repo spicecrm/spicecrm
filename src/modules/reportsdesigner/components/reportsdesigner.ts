@@ -54,6 +54,7 @@ export class ReportsDesigner {
     * @model.getData
     * @openSelectModuleModal
     * @set currentPath
+    * @set activeModule
     */
     private subscribeToActivatedRoute() {
         this.activatedRoute.params.subscribe(params => {
@@ -69,6 +70,7 @@ export class ReportsDesigner {
                             this.activeTab = 'details';
                         } else {
                             this.reportsDesignerService.currentPath = this.model.getField('report_module');
+                            this.reportsDesignerService.activeModule = {unionid: 'root', module: res.report_module};
                         }
                     });
             }
@@ -106,7 +108,7 @@ export class ReportsDesigner {
      */
     private save() {
         if (this.model.validate()) {
-            this.model.save()
+            this.model.save(true)
                 .subscribe(() => {
                     this.view.setViewMode();
                     this.router.navigate(['/module/KReports/' + this.model.id]);
@@ -119,6 +121,8 @@ export class ReportsDesigner {
      * @pass modules
      * @set report_module
      * @set currentPath
+     * @set activeTab
+     * @set activeModule
      */
     private openSelectModuleModal() {
         let modules = this.metadata.getModules();
@@ -133,9 +137,57 @@ export class ReportsDesigner {
                     this.model.setField('report_module', modules[index]);
                     this.reportsDesignerService.currentPath = modules[index];
                     this.activeTab = 'details';
+                    this.reportsDesignerService.activeModule = {unionid: 'root', module: modules[index]};
                 } else {
                     this.cancel();
                 }
             });
+    }
+
+    /*
+     * @cleanWhereGroups
+     * @cleanUnionListFields
+     */
+    private handleUnionDelete(unionId) {
+        this.cleanWhereGroups(unionId);
+        this.cleanUnionListFields(unionId);
+    }
+
+    /*
+     * @param unionId: string
+     * @filter whereGroups from deleted groups
+     * @set wheregroups
+     */
+    private cleanWhereGroups(unionId) {
+        let whereGroups = this.model.getField('wheregroups');
+        if (whereGroups && whereGroups.length) {
+            whereGroups = whereGroups.filter(group => group.unionid != unionId);
+            this.model.setField('wheregroups', whereGroups);
+            this.cleanWhereConditions(whereGroups);
+        }
+    }
+
+    /*
+     * @param whereGroups: object[]
+     * @filter whereConditions from deleted conditions
+     * @set whereconditions
+     */
+    private cleanWhereConditions(whereGroups) {
+        let whereConditions = this.model.getField('whereconditions');
+        if (!whereConditions || !whereConditions.length) return;
+        whereConditions = whereConditions.filter(condition => whereGroups.some(group => group.id == condition.groupid));
+        this.model.setField('whereconditions', whereConditions);
+    }
+
+    /*
+     * @param unionId: string
+     * @filter unionListFields from deleted fields
+     * @set unionlistfields
+     */
+    private cleanUnionListFields(unionId) {
+        let unionListFields = this.model.getField('unionlistfields');
+        if (!unionListFields || !unionListFields.length) return;
+        unionListFields = unionListFields.filter(field => field.joinid != unionId);
+        this.model.setField('unionlistfields', unionListFields);
     }
 }

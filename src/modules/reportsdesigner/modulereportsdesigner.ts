@@ -17,7 +17,9 @@ import /*embed*/ {ReportsDesigner} from "./components/reportsdesigner";
 import /*embed*/ {ReportsDesignerTree} from "./components/reportsdesignertree";
 import /*embed*/ {ReportsDesignerDetails} from "./components/reportsdesignerdetails";
 import /*embed*/ {ReportsDesignerManipulate} from "./components/reportsdesignermanipulate";
+import /*embed*/ {ReportsDesignerManipulateUnion} from "./components/reportsdesignermanipulateunion";
 import /*embed*/ {ReportsDesignerManipulateTableRow} from "./components/reportsdesignermanipulatetablerow";
+import /*embed*/ {ReportsDesignerManipulateUnionTableRow} from "./components/reportsdesignermanipulateuniontablerow";
 import /*embed*/ {ReportsDesignerManipulateTableRowExpansion} from "./components/reportsdesignermanipulatetablerowexpansion";
 import /*embed*/ {ReportsDesignerPresent} from "./components/reportsdesignerpresent";
 import /*embed*/ {ReportsDesignerVisualize} from "./components/reportsdesignervisualize";
@@ -43,6 +45,7 @@ import /*embed*/ {ReportsDesignerCondition} from "./components/reportsdesignerco
         ReportsDesignerTree,
         ReportsDesignerDetails,
         ReportsDesignerManipulate,
+        ReportsDesignerManipulateUnion,
         ReportsDesignerPresent,
         ReportsDesignerVisualize,
         ReportsDesignerIntegrate,
@@ -51,6 +54,7 @@ import /*embed*/ {ReportsDesignerCondition} from "./components/reportsdesignerco
         ReportsDesignerConditionGroupExpansion,
         ReportsDesignerCondition,
         ReportsDesignerManipulateTableRow,
+        ReportsDesignerManipulateUnionTableRow,
         ReportsDesignerManipulateTableRowExpansion
     ],
     exports: [
