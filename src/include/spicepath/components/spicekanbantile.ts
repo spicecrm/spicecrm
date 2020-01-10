@@ -50,10 +50,6 @@ export class SpiceKanbanTile implements OnInit, OnDestroy {
      */
     private modelSubscription: any;
 
-    /**
-     * inidcates that the model is saving
-     */
-    private isSaving: boolean = false;
 
     constructor(private modellist: modellist, private model: model, private view: view, private metadata: metadata, private changeDetectorRef: ChangeDetectorRef) {
         this.componentconfig = this.metadata.getComponentConfig('SpiceKanbanTile', this.modellist.module);
@@ -78,8 +74,6 @@ export class SpiceKanbanTile implements OnInit, OnDestroy {
 
         // handle drop from anopther kanban stage
         if (this.item._KanbanDrop) {
-            this.isSaving = true;
-
             // set the stage field back, start edit and set it now so it is picked up as dirty
             this.model.setField(this.modellist.bucketfield, this.item._KanbanDrop.from);
             this.model.startEdit();
@@ -88,9 +82,6 @@ export class SpiceKanbanTile implements OnInit, OnDestroy {
             // validate and if validation is OK save, otherwise popup the edit modal
             if (this.model.validate()) {
                 this.model.save().subscribe(result => {
-                        // set saving to false
-                        this.isSaving = false;
-
                         // remove the drop information
                         delete this.item._KanbanDrop;
 
@@ -99,8 +90,6 @@ export class SpiceKanbanTile implements OnInit, OnDestroy {
                     }
                 );
             } else {
-                this.isSaving = false;
-
                 // call teh edit modal and wait for the user action (might
                 this.model.edit().subscribe(action => {
 
