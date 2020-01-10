@@ -1,5 +1,5 @@
 <div class="slds-radio slds-truncate">
-      <input type="radio" [id]="id" [name]="name" [checked]="checked" (change)="setChecked($event)"/>
+      <input type="radio" [id]="id" [name]="name" [checked]="checked" [disabled]="disabled" (change)="setChecked($event)"/>
       <label class="slds-radio__label" [attr.for]="id">
         <span class="slds-radio_faux"></span>
         <span class="slds-form-element__label"><ng-content></ng-content></span>

@@ -1,0 +1,7 @@
+<div class="slds-form-element">
+    <div class="slds-select_container">
+        <select #focus class="slds-select " [(ngModel)]="value">
+            <option *ngFor="let o of options" [value]="o.value">{{o.display}}</option>
+        </select>
+    </div>
+</div>

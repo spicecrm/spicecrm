@@ -86,7 +86,9 @@ export class ObjectEditModal implements OnInit {
     ) {
         this.view.isEditable = true;
         this.view.setEditMode();
-        this.model.isEditing = true;
+
+        // start editing
+        this.model.startEdit();
 
         this.action$ = this.actionSubject.asObservable();
     }
@@ -151,35 +153,6 @@ export class ObjectEditModal implements OnInit {
         this.self.destroy();
     }
 
-    /**
-     * saves the data and if not done before does a duplicate check before saving
-     *
-     * @param goDetail if set to true the system will naviaget to the detail fo teh record after saving
-     */
-
-    /*
-    private save(goDetail: boolean = false) {
-        if (this.preventGoingToRecord) goDetail = false;
-        if (this.model.validate()) {
-            if (this.model.isNew && this.doDuplicateCheck && !this.showDuplicatesTable && this.duplicateCheckEnabled) {
-                this.model.duplicateCheck(true).subscribe(dupdata => {
-                    if (dupdata.length > 0) {
-                        this.model.duplicates = dupdata;
-                        this.modalContent.element.nativeElement.scrollTop = 0;
-                        this.showDuplicatesTable = true;
-                    } else {
-                        this.saveModel(goDetail);
-                    }
-                });
-            } else {
-                this.saveModel(goDetail);
-            }
-        } else {
-            console.warn(this.model.messages);
-        }
-    }
-
-     */
 
     /**
      * returns if the duplicate check iss enabled for the module. Used for the visiblity of he duplicates button in the view
@@ -187,78 +160,5 @@ export class ObjectEditModal implements OnInit {
     get duplicateCheckEnabled() {
         return this.metadata.getModuleDuplicatecheck(this.model.module);
     }
-
-    /**
-     * save the model but without duplicate check
-     *
-     * @param goDetail if set to true the system will naviaget to the detail fo teh record after saving
-     */
-    /*
-    private saveModel(goDetail: boolean = false) {
-        this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
-            modalRef.instance.messagelabel = 'LBL_SAVING_DATA';
-            this.model.save(true).subscribe(status => {
-                    this.model.isEditing = false;
-                    if (status) {
-                        // emit that we saved;
-                        this.actionSubject.next(this.model.data);
-                        this.actionSubject.complete();
-
-                        /// if go Deail go to record)
-                        if (goDetail) {
-                            this.model.goDetail();
-                        }
-
-                        // destroy the component
-                        this.self.destroy();
-                    }
-                    modalRef.instance.self.destroy();
-                },
-                error => {
-                    modalRef.instance.self.destroy();
-                });
-        });
-    }
-    */
-
-    /*
-    private saveToRelated(related_module: string) {
-        if (!this.model.validate()) {
-            return false;
-        }
-
-        this.model.save().subscribe(
-            status => {
-                let parent = this.model.clone(); // has to be BEFORE closeModal()!
-                this.closeModal();
-
-                this.model.reset();
-                this.model.module = related_module;
-
-                this.model.initialize(parent);
-                this.model.data.acl = {edit: true}; // bwuäh...
-                this.model.isNew = true;
-                this.model.edit();
-            }
-        );
-    }
-
-    private saveAndGoToRelated(related_module: string, related_id) {
-        if (!this.model.validate()) {
-            return false;
-        }
-
-        this.model.save().subscribe(status => {
-            this.closeModal();
-            this.router.navigate(['/module/' + related_module + '/' + related_id]);
-        });
-    }
-    */
-
-    /*
-    private setModule(module) {
-        this.model.module = module;
-    }
-    */
 
 }

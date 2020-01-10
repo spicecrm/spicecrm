@@ -66,7 +66,7 @@ export class ObjectActionModalSaveButton {
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
             modalRef.instance.messagelabel = 'LBL_SAVING_DATA';
             this.model.save(true).subscribe(status => {
-                    this.model.isEditing = false;
+                    this.model.endEdit();
                     if (status) {
                         /// if go Deail go to record)
                         if (this.actionconfig.gorelated) {

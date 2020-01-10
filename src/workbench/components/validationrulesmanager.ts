@@ -9,7 +9,7 @@ import {backend} from '../../services/backend.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {toast} from "../../services/toast.service";
-import {AppDataService} from "../../services/appdata.service";
+
 
 @Component({
     templateUrl: './src/workbench/templates/validationrulesmanager.html',
@@ -25,7 +25,6 @@ export class ValidationRulesManager
     current_tab = 'details';
 
     constructor(
-        private appdata: AppDataService,
         private backend: backend,
         private metadata: metadata,
         private language: language,

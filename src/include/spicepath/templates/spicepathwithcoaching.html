@@ -1,12 +1,13 @@
 <div class="slds-path slds-path_has-coaching slds-p-around--small">
     <div class="slds-grid slds-path__scroller-container">
-        <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-path__trigger" aria-expanded="false" [@coachingicon]="coachingVisible ? 'open': 'closed'" (click)="toggleCoaching()">
+        <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-path__trigger" aria-expanded="false" style="box-shadow: none; border-radius: 20px;" [@coachingicon]="coachingVisible ? 'open': 'closed'" (click)="toggleCoaching()">
             <system-button-icon icon="chevronright"></system-button-icon>
         </button>
         <spice-path-track class="slds-grow" (activeStage$)="setActiveStage($event)" ></spice-path-track>
     </div>
     <div @displaycoaching *ngIf="coachingVisible" class="slds-grid slds-grid--align-spread slds-gutters_direct-xx-small slds-p-top--medium slds-p-horizontal--xxx-small">
         <div class="slds-col slds-size--1-of-2">
+            <ng-container *ngIf="checks.length > 0;else nochecks">
             <h2 class="slds-text-title--caps slds-p-bottom--small">{{language.getLabel('LBL_CHECKS')}}</h2>
             <dl class="slds-dl--horizontal">
                 <ng-container *ngFor="let check of checks">
@@ -16,6 +17,10 @@
                     <dd class="slds-coach__value slds-dl--horizontal__detail">{{check.label ? language.getLabel(check.label) : check.name}}</dd>
                 </ng-container>
             </dl>
+            </ng-container>
+            <ng-template #nochecks>
+                <div class="slds-height_full slds-align--absolute-center">{{language.getLabel('LBL_NO_CHECKS_DEFINED')}}</div>
+            </ng-template>
         </div>
         <div class="slds-col slds-size--1-of-2">
                 <h2 class="slds-text-title--caps slds-p-bottom--small slds-has-divider--bottom">{{language.getLabel('LBL_DETAILS')}}</h2>
