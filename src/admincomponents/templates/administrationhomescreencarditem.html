@@ -1,14 +1,16 @@
-<article class="slds-tile slds-media slds-card__tile slds-hint-parent">
-    <div class="slds-media__figure">
-        <system-icon [icon]="icon" size="large">
-        </system-icon>
-    </div>
-    <div class="slds-media__body">
-        <div class="slds-grid slds-grid_align-spread">
-            <h3 class="slds-tile__title slds-text-heading_small">
-                <a  (click)="openContent()" href="javascript:void(0);" class="slds-text-link_reset">{{language.getLabel(adminNavigationItem.admin_label)}}</a>
-                <p class="slds-text-body_small ">{{language.getLabel(adminNavigationItem.admin_label, '', 'long')}}</p>
-            </h3>
+<a class="slds-text-link_reset" href="javascript:void(0);" (click)="openContent()">
+    <article class="slds-tile slds-media slds-card__tile slds-hint-parent">
+        <div class="slds-media__figure">
+            <system-icon [icon]="icon" size="large">
+            </system-icon>
         </div>
-    </div>
-</article>
+        <div class="slds-media__body">
+            <div class="slds-grid slds-grid_align-spread">
+                <h3 class="slds-tile__title slds-text-heading_small">
+                    <p>{{language.getLabel(adminNavigationItem.admin_label)}}</p>
+                    <p class="slds-text-body_small ">{{language.getLabel(adminNavigationItem.admin_label, '', 'long')}}</p>
+                </h3>
+            </div>
+        </div>
+    </article>
+</a>
