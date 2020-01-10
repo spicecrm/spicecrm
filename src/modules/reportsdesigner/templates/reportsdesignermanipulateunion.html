@@ -1,0 +1,37 @@
+<div class="slds-grid" style="height: 100%">
+    <div class="slds-size--1-of-1 slds-border--left" style="height: 100%">
+        <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover reports-designer-manipulate-table">
+            <thead>
+            <tr class="slds-text-title--caps slds-theme--shade">
+                <th class="slds-cell-shrink"></th>
+                <th scope="col">
+                    <div class="slds-truncate">{{language.getLabel('LBL_PATH')}}</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate">{{language.getLabel('LBL_UNION_FIELD_PATH')}}</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate">{{language.getLabel('LBL_UNION_PATH')}}</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate">{{language.getLabel('LBL_UNION_FIELD_NAME')}}</div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate">{{language.getLabel('LBL_FIXED_VALUE')}}</div>
+                </th>
+                <th class="slds-cell-shrink"></th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr reports-designer-manipulate-union-table-row *ngFor="let listItem of listItems; trackBy: trackByFn"
+                    [listItem]="listItem" (onDelete)="deleteField(listItem.fieldid)" (cdkDropListEntered)="onDropEntered($event)"
+                    cdkDropList #dropList="cdkDropList" [id]="listItem.fieldid" [cdkDropListData]="listItem" [cdkDropListConnectedTo]="[dragList]"
+                    (cdkDropListDropped)="onDrop($event)" cdkDropListSortingDisabled class="slds-border--bottom slds-drag--preview spice-reports-designer-union-list" style="height: 41px">
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
