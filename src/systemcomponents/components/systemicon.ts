@@ -13,7 +13,7 @@ export class SystemIcon {
     @Input() private icon: string = "";
     @Input() private size: string = "";
     @Input() private sprite: string = "standard";
-    @Input() private addclasses: string = ""
+    @Input() private addclasses: string = "";
     @Input() private divClass = "slds-media__figure";
 
 
@@ -46,12 +46,11 @@ export class SystemIcon {
 
     private getIcon() {
         if(this.icon) {
-            return this.icon;
+            return this.icon.indexOf(":") > 0 ? this.icon.split(":")[1] : this.icon;
         }
 
         if(this.module && this.metadata.getModuleIcon(this.module) ) {
             let moduleIcon = this.metadata.getModuleIcon(this.module);
-
             return moduleIcon.indexOf(":") > 0 ? moduleIcon.split(":")[1] : moduleIcon;
         }
 
@@ -59,6 +58,10 @@ export class SystemIcon {
     }
 
     private getSprite() {
+        if(this.icon && this.icon.indexOf(":") > 0) {
+            return this.icon.split(":")[0];
+        }
+
         if(this.module && this.metadata.getModuleIcon(this.module) && this.metadata.getModuleIcon(this.module).indexOf(":") > 0) {
             return this.metadata.getModuleIcon(this.module).split(":")[0];
         } else {

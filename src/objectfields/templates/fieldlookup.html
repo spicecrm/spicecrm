@@ -43,7 +43,7 @@
                 </div>
                 <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
                     <field-lookup-recent *ngIf="lookupSearchOpen && lookupSearchTerm === ''" [module]="lookuplinks[lookupType].module" (selectedObject)="addItem($event)"></field-lookup-recent>
-                    <field-lookup-search *ngIf="lookupSearchOpen && lookupSearchTerm !== ''" [module]="lookuplinks[lookupType].module" (selectedObject)="addItem($event)" (searchWithModal)="searchWithModal()" [fieldid]="fieldid" [searchterm]="lookupSearchTerm"></field-lookup-search>
+                    <field-lookup-search *ngIf="lookupSearchOpen && lookupSearchTerm !== ''" [module]="lookuplinks[lookupType].module" (selectedObject)="addItem($event)" (searchWithModal)="searchWithModal()" [searchterm]="lookupSearchTerm"></field-lookup-search>
                 </div>
             </div>
         </div>

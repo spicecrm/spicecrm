@@ -8,6 +8,7 @@ import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {loader} from '../../services/loader.service';
 import {toast} from "../../services/toast.service";
+import {configurationService} from "../../services/configuration.service";
 import {ɵResourceLoaderImpl} from "@angular/platform-browser-dynamic";
 
 @Component({
@@ -22,6 +23,7 @@ export class GlobalHeaderReload {
                  private router: Router,
                  private language: language,
                  private loader: loader,
+                 private configuration: configurationService,
                  private toast: toast,) {
 
     }
