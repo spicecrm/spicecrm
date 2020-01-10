@@ -1,9 +1,10 @@
 /**
  * @module ModuleReportsDesigner
  */
-import {Component, OnDestroy} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy} from '@angular/core';
 import {ReportsDesignerService} from "../services/reportsdesigner.service";
 import {model} from "../../../services/model.service";
+import {Subscription} from "rxjs";
 
 declare var _;
 
@@ -11,18 +12,14 @@ declare var _;
     selector: 'reports-designer-filter',
     templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerfilter.html'
 })
-export class ReportsDesignerFilter implements OnDestroy {
+export class ReportsDesignerFilter implements OnChanges, OnDestroy {
 
-    private rootGroup: any = {
-        id: 'root',
-        groupid: 'root',
-        unionid: 'root',
-        type: 'AND',
-        parent: '-',
-        notexists: '',
-        conditions: [],
-        children: []
-    };
+    /*
+    * @input module: {module: string, unionid: string}
+    */
+    @Input() private module: any = {};
+    private rootGroup: any = {};
+    private subscription: Subscription = new Subscription();
 
     constructor(private reportsDesignerService: ReportsDesignerService, private model: model) {
     }
@@ -60,8 +57,9 @@ export class ReportsDesignerFilter implements OnDestroy {
 
     /*
      * @loadWhereGroups
+     * @setDropLists
      */
-    public ngOnInit() {
+    public ngOnChanges() {
         this.loadWhereGroups();
         this.setDropLists();
     }
@@ -71,10 +69,55 @@ export class ReportsDesignerFilter implements OnDestroy {
      */
     public ngOnDestroy() {
         this.reportsDesignerService.dropLists = [];
+        this.subscription.unsubscribe();
     }
 
     /*
-     * @cleanWhereGroups dropLists
+     * @param parent: string = '-'
+     * @param id: string = model.generateGuid()
+     * @return group: object
+     */
+    protected generateGroup(parent = '-', id = this.model.generateGuid()) {
+        return {
+            id: id,
+            groupid: id,
+            unionid: this.module.unionid,
+            type: 'AND',
+            parent: parent,
+            conditions: [],
+            children: []
+        };
+    }
+
+    /*
+     * @reset rootGroup
+     * @set rootGroup from existing
+     * @buildTree
+     * @set whereGroups
+     */
+    private loadWhereGroups() {
+        this.rootGroup = {};
+
+        const existingRootGroup = this.whereGroups && this.whereGroups.length && this.whereGroups
+            .find(group => this.module.unionid == group.unionid && group.parent == '-');
+
+        if (existingRootGroup) {
+            this.rootGroup = {...existingRootGroup};
+            this.setGroupConditions(this.rootGroup);
+        } else {
+            this.rootGroup = this.generateGroup('-', this.module.unionid);
+            this.whereGroups = this.whereGroups && this.whereGroups.length ?
+                [...this.whereGroups, {...this.rootGroup}] : [{...this.rootGroup}];
+        }
+        this.buildTree();
+    }
+
+    /*
+     * @param obj: object
+     * @set whereGroups
+     * @cleanGroup
+     * @buildTree
+     * @setDropLists
      */
     private handleTreeChange(obj) {
         switch (obj.action) {
@@ -84,18 +127,7 @@ export class ReportsDesignerFilter implements OnDestroy {
                 this.buildTree();
                 break;
             case 'addGroup':
-                let guid = this.model.generateGuid();
-                let group = {
-                    id: guid,
-                    groupid: guid,
-                    unionid: 'root',
-                    group: '',
-                    type: 'AND',
-                    parent: obj.id,
-                    conditions: [],
-                    children: []
-                };
-                this.whereGroups = [...this.whereGroups, group];
+                this.whereGroups = [...this.whereGroups, this.generateGroup(obj.id)];
                 this.buildTree();
         }
         this.setDropLists();
@@ -111,25 +143,6 @@ export class ReportsDesignerFilter implements OnDestroy {
      */
     private setDropLists() {
         this.reportsDesignerService.dropLists = this.whereGroups.map(group => group.id).reverse();
-    }
-
-    /*
-     * @set rootGroup
-     * @set rootGroup.conditions
-     * @reset rootGroup.children
-     * @buildGroupsTree
-     * @set whereGroups
-     */
-    private loadWhereGroups() {
-        if (this.whereGroups && this.whereGroups.length > 0) {
-            this.rootGroup = this.whereGroups.find(group => group.id == 'root');
-            if (this.rootGroup) {
-                this.setGroupConditions(this.rootGroup);
-                this.buildTree();
-            }
-        } else {
-            this.whereGroups = [this.rootGroup];
-        }
     }
 
     /*
@@ -160,9 +173,9 @@ export class ReportsDesignerFilter implements OnDestroy {
     }
 
     /*
-      * @markDeletedGroupChildren
-      * @filter whereGroups from deleted
-      */
+    * @markDeletedGroupChildren
+    * @filter whereGroups from deleted
+    */
     private cleanGroup(parentId) {
         this.markDeletedGroupChildren(parentId);
         this.whereGroups = this.whereGroups.filter(group => !group.deleted);

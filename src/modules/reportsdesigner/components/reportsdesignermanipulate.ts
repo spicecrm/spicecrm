@@ -50,7 +50,7 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
     * @set dropLists
     */
     public ngAfterViewInit() {
-        this.reportsDesignerService.dropLists = this.dropList;
+        this.reportsDesignerService.dropLists = [this.dropList];
     }
 
     /*
@@ -85,28 +85,7 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
             moveItemInArray(listItems, dragEvent.previousIndex, dragEvent.currentIndex);
         } else {
             let field = dragEvent.item.data;
-            let id = this.modelUtilities.generateGuid();
-            let newItem = {
-                fieldid: id,
-                path: `root:${this.reportsDesignerService.currentPath}::${field.id}`,
-                displaypath: this.reportsDesignerService.currentPath,
-                fieldname: field.name,
-                name: field.label,
-                display: 'yes',
-                sequence: listItems.length + 1,
-                width: '100',
-                sort: '-',
-                sortpriority: '',
-                jointype: 'optional',
-                sqlfunction: '-',
-                summaryfunction: '',
-                groupby: 'no',
-                link: 'no',
-                fixedvalue: '',
-                formulasequence: '',
-                id: id
-            };
-
+            let newItem = this.generateNewItem(field, listItems.length + 1);
             listItems.splice(dragEvent.currentIndex, 0, newItem);
         }
 
@@ -115,6 +94,34 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
             return item;
         });
         this.listItems = listItems;
+    }
+
+    /*
+     * @param field: object
+     * @return newItem: object
+     */
+    private generateNewItem(field, sequence) {
+        let id = this.modelUtilities.generateGuid();
+        return {
+            fieldid: id,
+            path: `${this.reportsDesignerService.currentPath}::${field.id}`,
+            displaypath: this.reportsDesignerService.currentPath,
+            fieldname: field.name,
+            name: field.label,
+            display: 'yes',
+            sequence: sequence,
+            width: '100',
+            sort: '-',
+            sortpriority: '',
+            jointype: 'optional',
+            sqlfunction: '-',
+            summaryfunction: '',
+            groupby: 'no',
+            link: 'no',
+            fixedvalue: '',
+            formulasequence: '',
+            id: id
+        };
     }
 
     /*
@@ -127,6 +134,8 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
                 let listItems = this.listItems.slice();
                 listItems = listItems.filter(field => field.fieldid != fieldId);
                 this.listItems = listItems;
+                let unionListItems = this.model.getField('unionlistfields');
+                if (!unionListItems || !unionListItems.length) return;
             }
         });
     }

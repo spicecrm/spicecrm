@@ -110,7 +110,7 @@ export class ReportsDesignerConditionGroup {
             unionid: this.group.id,
             fieldid: guid,
             referencefieldid: '',
-            path: `root:${this.reportsDesignerService.currentPath}::${field.id}`,
+            path: `${this.reportsDesignerService.currentPath}::${field.id}`,
             displaypath: this.reportsDesignerService.currentPath,
             name: field.name,
             type: field.type,

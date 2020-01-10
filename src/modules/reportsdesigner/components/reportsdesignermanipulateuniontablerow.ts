@@ -1,0 +1,32 @@
+/**
+ * @module ModuleReportsDesigner
+ */
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {language} from "../../../services/language.service";
+
+@Component({
+    selector: '[reports-designer-manipulate-union-table-row]',
+    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignermanipulateuniontablerow.html'
+})
+export class ReportsDesignerManipulateUnionTableRow {
+
+    /*
+    * @input listItem: any
+    */
+    @Input() private listItem: any = {};
+    /*
+    * @output onDelete: EventEmitter<void>
+    */
+    @Output() private onDelete: EventEmitter<void> = new EventEmitter<void>();
+
+    constructor(private language: language) {
+    }
+
+    /*
+     * @param fieldId: string
+     * @delete the record with the given index
+     */
+    private deleteField() {
+        this.onDelete.emit();
+    }
+}
