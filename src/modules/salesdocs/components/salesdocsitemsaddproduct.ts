@@ -22,7 +22,7 @@ import {modelutilities} from "../../../services/modelutilities.service";
 
 @Component({
     templateUrl: './src/objectcomponents/templates/objectmodalmodulelookup.html',
-    providers: [view, modellist],
+    providers: [view, modellist, model],
     styles: [
         '::ng-deep table.singleselect tr:hover td { cursor: pointer; }',
         '::ng-deep field-generic-display > div { padding-left: 0 !important; padding-right: 0 !important; }'
