@@ -1,29 +1,44 @@
 /**
  * @module ObjectComponents
  */
-import {Component, OnInit, EventEmitter, Output, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, OnInit, EventEmitter, Output, ViewChild, ViewContainerRef, OnDestroy} from '@angular/core';
+import {modelutilities} from '../../services/modelutilities.service';
 import {model} from '../../services/model.service';
 import {modellist} from '../../services/modellist.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
+import {animate, style, transition, trigger} from "@angular/animations";
 
+/**
+ * provides a lookup modal with a modellist and the option to select a model
+ */
 @Component({
     selector: 'object-modal-module-lookup',
     templateUrl: './src/objectcomponents/templates/objectmodalmodulelookup.html',
-    providers: [view, modellist],
+    providers: [view, modellist, model],
     styles: [
         '::ng-deep table.singleselect tr:hover td { cursor: pointer; }',
-        '::ng-deep field-generic-display > div { padding-left: 0 !important; padding-right: 0 !important; }'
+    ],
+    animations: [
+        trigger('animatepanel', [
+            transition(':enter', [
+                style({right: '-320px', overflow: 'hidden'}),
+                animate('.5s', style({right: '0px'})),
+                style({overflow: 'unset'})
+            ]),
+            transition(':leave', [
+                style({overflow: 'hidden'}),
+                animate('.5s', style({right: '-320px'}))
+            ])
+        ])
     ]
 })
-export class ObjectModalModuleLookup implements OnInit {
+export class ObjectModalModuleLookup implements OnInit, OnDestroy {
 
     @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
-    @ViewChild('modalcontent', {read: ViewContainerRef, static: true}) private modalcontent: ViewContainerRef;
+    @ViewChild('headercontent', {read: ViewContainerRef, static: true}) private headercontent: ViewContainerRef;
 
-    public displayFields: any[] = [];
-    public listFields: string[] = [];
     public allSelected: boolean = false;
     public searchTerm: string = '';
     public searchTermOld: string = '';
@@ -33,62 +48,103 @@ export class ObjectModalModuleLookup implements OnInit {
     public module: string = '';
     public modulefilter: string = '';
 
+    /**
+     * a guid to kill the autocomplete
+     */
+    private autoCompleteKiller: string;
+
+    private modellistsubscribe: any;
+
     @Output() private selectedItems: EventEmitter<any> = new EventEmitter<any>();
     @Output() private usedSearchTerm: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(public language: language, public modellist: modellist, public metadata: metadata) {
+    constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, public model: model) {
+        // subscribe to changes of the listtype
+        this.modellistsubscribe = this.modellist.listtype$.subscribe(newType => this.switchListtype());
+
+        // set a random id so no autocomplete is triggered on the field
+        this.autoCompleteKiller = this.modelutilities.generateGuid();
     }
 
-
-    get checkbox() {
-        return this.allSelected
-    }
-
-    set checkbox(value) {
-        this.allSelected = value;
-        if (value) {
-            this.modellist.setAllSelected();
-        } else {
-            this.modellist.setAllUnselected();
-        }
-    }
-
+    /**
+     * get the style for the content so the table can scroll with fixed header
+     */
     private contentStyle() {
-        let contentRect = this.tablecontent.element.nativeElement.getBoundingClientRect();
-        let modalRect = this.modalcontent.element.nativeElement.getBoundingClientRect();
+        let headerRect = this.headercontent.element.nativeElement.getBoundingClientRect();
 
         return {
-            height: modalRect.height - (contentRect.top - modalRect.top)
+            height: `calc(100% - ${headerRect.height}px)`
         };
     }
 
+    /**
+     * a getter that builds teh request fields from the listfields from the modellistservice
+     */
+    get requestfields() {
+        let requestfields = [];
+        for (let listfield of this.modellist.listfields) {
+            if (requestfields.indexOf(listfield.field) != -1) {
+                requestfields.push(listfield.field);
+            }
+        }
+        return requestfields;
+    }
+
+    /**
+     * loads the modellist and sets the various paramaters
+     */
     public ngOnInit() {
-        let componentconfig = this.metadata.getComponentConfig('ObjectList', this.module);
-        this.displayFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
 
         // this.model.module = this.module;
-        this.modellist.setModule(this.module);
+        this.modellist.module = this.module;
         this.modellist.modulefilter = this.modulefilter;
 
-        for (let displayField of this.displayFields) {
-            this.listFields.push(displayField.field);
-        }
-
-        // load the list
-        this.modellist.getListData(this.listFields);
+        // set hte module on the model
+        this.model.module = this.module;
 
         // if we have a searchterm .. start the search
         if (this.searchTerm != '') {
             this.doSearch();
+        } else {
+            this.searchTerm = this.modellist.searchTerm;
+            this.searchTermOld = this.modellist.searchTerm;
+            // load the list if the view of the cached entry is different
+            if (this.modellist.listData.listcomponent != 'ObjectList') {
+                this.modellist.getListData(this.requestfields);
+            }
         }
     }
 
+    /**
+     * unsubscribe from teh list type change
+     */
+    public ngOnDestroy(): void {
+        if (this.modellistsubscribe) this.modellistsubscribe.unsubscribe();
+    }
+
+    /**
+     * handle the change of listtype
+     */
+    private switchListtype() {
+        if (this.modellist.module) {
+            this.modellist.reLoadList();
+        }
+    }
+
+    /**
+     * tigger the search
+     */
     private doSearch() {
         this.searchTermOld = this.searchTerm;
         this.modellist.searchTerm = this.searchTerm;
-        this.modellist.getListData(this.listFields);
+        this.modellist.getListData(this.requestfields);
     }
 
+    /**
+     * trigger the search immediate or with a delay
+     *
+     * @param _e
+     */
     private triggerSearch(_e) {
         if (this.searchTerm === this.searchTermOld) return;
         // handle the key pressed
@@ -106,6 +162,10 @@ export class ObjectModalModuleLookup implements OnInit {
         }
     }
 
+    /**
+     * scroll event handler for the infinite scrolling in the window
+     * @param e
+     */
     private onScroll(e) {
         let element = this.tablecontent.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
@@ -113,12 +173,16 @@ export class ObjectModalModuleLookup implements OnInit {
         }
     }
 
+    /**
+     * closes the popup
+     */
     private closePopup() {
         this.usedSearchTerm.emit(this.searchTerm);
         this.self.destroy();
     }
 
-    private getSelectedCount() {
+
+    get selectedCount() {
         return this.modellist.getSelectedCount();
     }
 
@@ -140,4 +204,42 @@ export class ObjectModalModuleLookup implements OnInit {
         this.closePopup();
     }
 
+    /**
+     * a getter for the aggregates
+     */
+    private getAggregates() {
+        let aggArray = [];
+        for (let aggregate in this.modellist.searchAggregates) {
+            if (aggregate != 'tags' && this.modellist.searchAggregates.hasOwnProperty(aggregate)) {
+                aggArray.push(this.modellist.searchAggregates[aggregate]);
+            }
+        }
+
+        return aggArray;
+    }
+
+
+    /**
+     * returns if a given fielsd is set sortable in teh fieldconfig
+     *
+     * @param field the field from the fieldset
+     */
+    private isSortable(field): boolean {
+        if (field.fieldconfig.sortable === true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * sets the field as sort parameter
+     *
+     * @param field the field from the fieldset
+     */
+    private setSortField(field): void {
+        if (this.isSortable(field)) {
+            this.modellist.setSortField(field.field);
+        }
+    }
 }

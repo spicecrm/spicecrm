@@ -1,15 +1,15 @@
-<table *ngIf="!noAccess;else noaccess" class="slds-table slds-max-medium-table_stacked-horizontal" [ngClass]="{'slds-table--bordered':!isSmall, 'slds-no-row-hover':nowDragging}">
+<table *ngIf="!noAccess;else noaccess" class="slds-table slds-table--fixed-layout slds-table--header-fixed slds-max-medium-table_stacked-horizontal" [ngClass]="{'slds-table--bordered':!isSmall, 'slds-no-row-hover':nowDragging}">
     <thead>
         <tr class="slds-text-title--caps">
             <th *ngIf="isSequenced" class="slds-cell-shrink" scope="col"></th>
             <ng-container *ngIf="isSequenced">
-                <th *ngFor="let item of listfields" scope="col">
-                    <span class="slds-truncate">{{language.getFieldDisplayName(module, item.field, item.fieldconfig, 'short')}}</span>
+                <th *ngFor="let item of listfields" class="slds-resizable" scope="col">
+                    <span class="slds-th__action slds-truncate">{{language.getFieldDisplayName(module, item.field, item.fieldconfig, 'short')}}</span>
                 </th>
             </ng-container>
             <ng-container *ngIf="!isSequenced">
-                <th *ngFor="let item of listfields" class="slds-is-sortable" scope="col">
-                    <a href="javascript:void(0);" class="slds-text-link--reset" (click)="setSortField(item)">
+                <th *ngFor="let item of listfields" class=" slds-is-sortable slds-resizable" scope="col">
+                    <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" (click)="setSortField(item)">
                         <span class="slds-truncate">{{language.getFieldDisplayName(module, item.field, item.fieldconfig, 'short')}}</span>
                         <system-utility-icon *ngIf="isSortable(item)" [icon]="getSortIcon(item)"  [size]="'xx-small'"></system-utility-icon>
                     </a>

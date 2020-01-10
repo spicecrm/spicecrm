@@ -36,7 +36,7 @@ export class SystemFilterBuilderFilterExpressionGroup implements OnChanges {
         this.expressions = [];
         for (let conditon of this.filtergroup.conditions) {
             if (conditon.logicaloperator) {
-                this.groups.push((conditon));
+                this.groups.push(conditon);
             } else {
                 this.expressions.push(conditon);
             }
@@ -71,7 +71,7 @@ export class SystemFilterBuilderFilterExpressionGroup implements OnChanges {
         this.expressionChanged.emit(true);
     }
 
-    private filterchanged(){
+    private filterchanged() {
         this.cleanDeleted();
         this.expressionChanged.emit(true);
     }
