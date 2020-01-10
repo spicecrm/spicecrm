@@ -69,7 +69,7 @@ export class SalesDocsItemsAddProductVariant implements AfterViewInit {
                         uom_id: productvariant.object.getField('base_uom_id'),
                         amount_net_per_uom: productvariant.object.getField('std_price'),
                         purchase_price: productvariant.object.getField('purchase_price')
-                    }
+                    };
 
                     this.additem.emit(itemData);
 
@@ -79,8 +79,7 @@ export class SalesDocsItemsAddProductVariant implements AfterViewInit {
                     // destroy the modal
                     this.self.destroy();
                 });
-            })
-
+            });
         }
     }
 }
