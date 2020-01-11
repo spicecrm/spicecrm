@@ -15,23 +15,23 @@ import {model} from "../../services/model.service";
 })
 export class MailboxManagerAddDialog {
     // @Output()
-    closedialog: EventEmitter<any> = new EventEmitter<any>();
-    @Input() mailboxes: Array<any>;
+    private closedialog: EventEmitter<any> = new EventEmitter<any>();
+    @Input() private mailboxes: any[];
 
-    mailbox_name: string = '';
-    self: any = null;
-    saving: boolean = false;
+    private mailbox_name: string = '';
+    private self: any = null;
+    private saving: boolean = false;
 
     constructor(private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities, private model: model) {
 
     }
 
-    closeDialog() {
+    private closeDialog() {
         this.closedialog.emit(false);
         this.self.destroy();
     }
 
-    add() {
+    private add() {
         this.model.module = 'Mailboxes';
         this.model.id = this.modelutilities.generateGuid();
         this.model.data.name = this.mailbox_name;
@@ -42,7 +42,7 @@ export class MailboxManagerAddDialog {
         });
     }
 
-    getComponents() {
+    private getComponents() {
         return this.metadata.getSystemComponents();
     }
 }
