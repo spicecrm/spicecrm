@@ -1,5 +1,5 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
-<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fieldbooldisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
     <system-checkbox disabled [(ngModel)]="value"></system-checkbox>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
