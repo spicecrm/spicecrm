@@ -13,20 +13,40 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class MailboxManagerHeader implements OnInit {
 
-    private mailboxselection: string;
+    /**
+     * the selected mailbox
+     */
+    private _mailbox: string;
 
+    /**
+     * indicates that emaisl are being fetched in the background
+     */
+    private isFetching: boolean = false;
+
+    /**
+     * a getter for the openness
+     */
     get emailopenness() {
         return this.mailboxesEmails.emailopenness == "" ? 'all' : this.mailboxesEmails.emailopenness;
     }
 
+    /**
+     * a setter for the openness that also triggers the relaod
+     *
+     * @param val
+     */
     set emailopenness(val) {
         this.mailboxesEmails.emailopenness = val == 'all' ? "" : val;
         this.mailboxesEmails.loadMessages();
     }
 
+    /**
+     * general if the buttons on top are enabled
+     */
     get buttonenabled() {
-        return this.mailboxesEmails.activeMailBox && !this.mailboxesEmails.isLoading ? true : false;
+        return this.mailboxesEmails.activeMailBox && !this.mailboxesEmails.isLoading && !this.isFetching ? true : false;
     }
+
 
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -37,20 +57,27 @@ export class MailboxManagerHeader implements OnInit {
 
         // load default settings for the openness selection and the unread only flag
         let componentconfig = this.metadata.getComponentConfig('MailboxManagerHeader');
+
+        // set the default open setting
         this.emailopenness = componentconfig.selectionstatus ? componentconfig.selectionstatus : '';
+
+        // set teh default unread status
         this.mailboxesEmails.unreadonly = componentconfig.unreadonly ? componentconfig.unreadonly : false;
     }
 
+    /**
+     * initialize
+     */
     public ngOnInit() {
         let routeSubscribe = this.activatedRoute.params.subscribe(
             (params) => {
-                this.mailboxselection = params['id'];
+                this.mailbox = params.id;
 
                 // catch an event from mailboxesEmails service once the mailboxes are actually loaded
                 this.mailboxesEmails.mailboxesLoaded$.subscribe(
                     (loaded) => {
                         if (loaded === true) {
-                            this.selectMailbox();
+                            this.mailbox = params.id;
                         }
                     }
                 );
@@ -58,22 +85,48 @@ export class MailboxManagerHeader implements OnInit {
         );
     }
 
-    private selectMailbox() {
-        this.mailboxesEmails.activeMailBox = {};
-        for (let mailbox of this.mailboxesEmails.mailboxes) {
-            if (mailbox.id === this.mailboxselection) {
-                this.mailboxesEmails.activeMailBox = mailbox;
-            }
-        }
-        this.mailboxesEmails.loadMessages();
+    /**
+     * a simple getter for the mailbox
+     */
+    get mailbox() {
+        return this._mailbox;
     }
 
+    /**
+     * a setter for the mailbox that also trigers the reload
+     *
+     * @param mailbox
+     */
+    set mailbox(mailbox) {
+        this._mailbox = mailbox;
+        if (mailbox) {
+            this.mailboxesEmails.activeMailBox = this.mailboxesEmails.mailboxes.find(mb => mb.id == mailbox);
+            this.mailboxesEmails.loadMessages();
+        } else {
+            this.mailboxesEmails.activeMailBox = {};
+        }
+    }
+
+    /**
+     * reloads the emails list
+     */
     private reloadList() {
         this.mailboxesEmails.loadMessages();
     }
 
+    /**
+     * fetches emails in teh backend
+     */
     private fetchEmails() {
-        this.mailboxesEmails.fetchEmails();
+        this.isFetching = true;
+        this.mailboxesEmails.fetchEmails().subscribe(
+            success => {
+                this.isFetching = false;
+            },
+            error => {
+                this.isFetching = false;
+            }
+        );
     }
 
 }

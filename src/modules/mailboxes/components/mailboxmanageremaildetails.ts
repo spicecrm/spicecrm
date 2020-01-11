@@ -2,13 +2,11 @@
  * @module ModuleMailboxes
  */
 import {
-    AfterViewInit,
     Component,
-    ElementRef,
+    OnDestroy,
     ViewChild,
     ViewContainerRef
 } from "@angular/core";
-import {DomSanitizer} from "@angular/platform-browser";
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
 import {metadata} from "../../../services/metadata.service";
@@ -17,43 +15,68 @@ import {backend} from "../../../services/backend.service";
 import {mailboxesEmails} from "../services/mailboxesemail.service";
 import {toast} from "../../../services/toast.service";
 
+/**
+ * renders the details panel for an emailor textmessage in teh mailbox manager
+ */
 @Component({
     providers: [model, view],
     selector: "mailbox-manager-email-details",
     templateUrl: "./src/modules/mailboxes/templates/mailboxmanageremaildetails.html",
 })
-export class MailboxmanagerEmailDetails implements AfterViewInit {
+export class MailboxmanagerEmailDetails implements OnDestroy {
 
-    private containerComponents: any[] = [];
-    private fieldset: string = '';
-    private fieldsetitems: any[];
-
+    /**
+     * the reference to the content container
+     */
     @ViewChild("detailscontent", {read: ViewContainerRef, static: true}) private detailscontent: ViewContainerRef;
+
+    /**
+     * the components rendered in the container
+     */
+    private containerComponents: any[] = [];
+
+    /**
+     * the fieldset for further details
+     */
+    private fieldset: string = '';
+
+    /**
+     * keep the subscription and unsubscribe when the component is destroyed
+     */
+    private mailboxSubscription: any;
 
     constructor(
         private language: language,
         private metadata: metadata,
         private model: model,
-        public sanitizer: DomSanitizer,
         private mailboxesEmails: mailboxesEmails,
-        private elementref: ElementRef,
         private backend: backend,
         private toast: toast,
         private view: view,
     ) {
-        this.mailboxesEmails.activeMessage$.subscribe(email => {
+        // subscribe to the event when a message is selected
+        this.mailboxSubscription = this.mailboxesEmails.activeMessage$.subscribe(email => {
             this.loadEmail(email);
         });
 
+        /**
+         * no labels in teh view
+         */
         this.view.displayLabels = false;
     }
 
-    get containerStyle() {
-        return {
-            height: 'calc(100vh - ' + this.elementref.nativeElement.offsetTop + 'px)'
-        };
+    /**
+     * unsubscribe from teh service
+     */
+    public ngOnDestroy(): void {
+        this.mailboxSubscription.unsubscribe();
     }
 
+    /**
+     * load the email
+     *
+     * @param email
+     */
     private loadEmail(email) {
 
         // set the module to the model
@@ -87,10 +110,9 @@ export class MailboxmanagerEmailDetails implements AfterViewInit {
         });
     }
 
-    public ngAfterViewInit() {
-        // this.buildContainer();
-    }
-
+    /**
+     * destroy the container
+     */
     private destroyContainer() {
         for (let containerComponent of this.containerComponents) {
             containerComponent.destroy();
@@ -107,6 +129,9 @@ export class MailboxmanagerEmailDetails implements AfterViewInit {
         }
     }
 
+    /**
+     * builds the container, destroying all prev components and then rendering the new ones
+     */
     private buildContainer() {
 
         this.destroyContainer();
@@ -116,45 +141,32 @@ export class MailboxmanagerEmailDetails implements AfterViewInit {
         let viewComponentSet = componentconfig.componentset;
         for (let component of this.metadata.getComponentSetObjects(viewComponentSet)) {
             this.metadata.addComponent(component.component, this.detailscontent).subscribe(componentRef => {
-                componentRef.instance["componentconfig"] = component.componentconfig ? component.componentconfig : {};
+                componentRef.instance.componentconfig = component.componentconfig ? component.componentconfig : {};
                 this.containerComponents.push(componentRef);
             });
         }
 
         // load the fieldset
         this.fieldset = componentconfig.fieldset;
-        if (this.fieldset) {
-            this.fieldsetitems = this.metadata.getFieldSetFields(this.fieldset);
-        }
-
     }
 
-    get sanitizedEmailHtml() {
-        return this.sanitizer.bypassSecurityTrustHtml(this.model.data.body);
-    }
-
-    get nameStyle() {
-        let styles = {};
-
-        if (this.isCompleted) {
-            styles["text-decoration"] = "line-through";
-        }
-
-        return styles;
-    }
-
+    /**
+     * indicates if closed by the user
+     */
     get isUserClosed() {
         return this.model.getField('openness') == 'user_closed';
     }
 
+    /**
+     * set if read
+     */
     get isRead() {
         return this.model.getField('status') == 'read';
     }
 
-    get isCompleted() {
-        return this.model.data.emailopenness === "user_closed";
-    }
-
+    /**
+     * returns the actionset for the mailbox
+     */
     get actionSet() {
         if (this.mailboxesEmails.activeMailBox.actionset) {
             return this.mailboxesEmails.activeMailBox.actionset;
@@ -163,18 +175,31 @@ export class MailboxmanagerEmailDetails implements AfterViewInit {
         }
     }
 
+    /**
+     * set the email to closed
+     */
     private completeMail() {
         this.setOpenness('user_closed');
     }
 
+    /**
+     * marks the email as unread
+     */
     private markUnread() {
         this.setStatus('unread');
     }
 
+    /**
+     * reopens a closed email
+     */
     private reopen() {
         this.setOpenness('open');
     }
 
+    /**
+     * set a specific status to the email
+     * @param status
+     */
     public setStatus(status) {
         // set the model
         this.model.setField('status', status);
@@ -190,6 +215,11 @@ export class MailboxmanagerEmailDetails implements AfterViewInit {
         );
     }
 
+    /**
+     * set a specific openness value
+     *
+     * @param openness
+     */
     public setOpenness(openness) {
         // set the model
         this.model.setField("openness", openness);
