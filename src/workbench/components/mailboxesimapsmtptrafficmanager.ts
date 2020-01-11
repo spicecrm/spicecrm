@@ -1,43 +1,36 @@
 /**
  * @module WorkbenchModule
  */
-import {Component, OnInit, ViewContainerRef} from "@angular/core";
+import {Component, Injector} from "@angular/core";
 import {Subject, Observable} from "rxjs";
 import {backend} from "../../services/backend.service";
-import {footer} from "../../services/footer.service";
 import {language} from "../../services/language.service";
-import {metadata} from "../../services/metadata.service";
 import {modal} from "../../services/modal.service";
 import {model} from "../../services/model.service";
 import {toast} from "../../services/toast.service";
 import {view} from "../../services/view.service";
-import {MailboxesIMAPSMTPSelectFoldersModal} from "./mailboxesimapsmtpselectfoldersmodal";
 
+/**
+ * renders the config dialog for the IMAP/SMTP Transfer
+ */
 @Component({
     selector: "mailboxes-imap-smtp-traffic-manager",
     templateUrl: "./src/workbench/templates/mailboxesimapsmtptrafficmanager.html",
 })
-export class MailboxesImapSmtpTrafficManager implements OnInit {
-    private mailboxes: any[] = [];
-    private validConnection: boolean = false;
+export class MailboxesImapSmtpTrafficManager {
 
     constructor(
         private backend: backend,
-        private footer: footer,
         private language: language,
-        public metadata: metadata,
         private model: model,
         private modal: modal,
         private toast: toast,
         private view: view,
-        private ViewContainerRef: ViewContainerRef
+        private injector: Injector
     ) {
-
-    }
-
-    public ngOnInit() {
-        if (this.model.data.settings.length === 0) {
-            this.model.data.settings = {
+        let settings = this.model.getField('settings')
+        if (!settings || (settings && settings.length == 0)) {
+            this.model.setField('settings', {
                 imap_inbox_dir: "",
                 imap_pop3_display_name: "",
                 imap_pop3_encryption: "",
@@ -56,90 +49,70 @@ export class MailboxesImapSmtpTrafficManager implements OnInit {
                 smtp_verify_peer: "",
                 smtp_verify_peer_name: "",
                 reply_to: "",
-            };
+            });
         }
     }
 
-    private handleModelChange(data) {
-        this.validConnection = false;
-        this.mailboxes = [];
-    }
-
+    /**
+     * simple getter to get if the Mailbox allos Inbound and thus renders the IMAP sectio
+     */
     get isInbound() {
         return this.model.getFieldValue('inbound_comm') ? true : false;
     }
 
+    /**
+     * simple getter to render if the mailbox handles outbound messages and thus renders the SMTP section
+     */
     get isOutbound() {
         return this.model.getFieldValue('outbound_comm') != 'no' ? true : false;
     }
 
+    /**
+     * retirves the mailbox folders from the backend via the connection
+     */
     private getMailboxes(): Observable<any> {
-        let responseSubject = new Subject<any[]>();
-
-        this.backend.getRequest("mailboxes/imap/getmailboxfolders", {mailbox_id: this.model.data.id})
+        let responseSubject = new Subject<any>();
+        let modelData = this.model.utils.spiceModel2backend('Mailboxes', this.model.data);
+        this.backend.postRequest("mailboxes/imap/getmailboxfolders",{}, {data: modelData})
             .subscribe((response: any) => {
                 if (response.result === true) {
-                    this.mailboxes = response.mailboxes;
+                    responseSubject.next(response);
+                } else {
+                    responseSubject.next(false);
                 }
-                responseSubject.next(response);
+
                 responseSubject.complete();
             });
 
         return responseSubject.asObservable();
     }
 
+    /**
+     * opens the modal for the seldection of the IMAP folders
+     */
     private displayFoldersModal() {
+        let waitingmodal = this.modal.await('loading folders');
         this.getMailboxes().subscribe(
             (response) => {
-
-                this.modal.openModal("MailboxesIMAPSMTPSelectFoldersModal", true, this.ViewContainerRef.injector).subscribe(
-                    (cmp) => {
-                        cmp.instance.setModel(this.model);
-                        cmp.instance.setMailboxes(this.mailboxes);
-                    },
-                    (error) => {
-                        this.toast.sendToast(error);
-                    }
-                );
+                waitingmodal.emit(true);
+                if (response !== false) {
+                    this.modal.openModal("MailboxesIMAPSMTPSelectFoldersModal", true, this.injector).subscribe(
+                        (cmp) => {
+                            cmp.instance.setMailboxes(response.mailboxes);
+                        },
+                        (error) => {
+                            this.toast.sendToast(error);
+                        }
+                    );
+                }
             }
         );
     }
 
+    /**
+     * test the onnection via the backend
+     */
     public testConnection() {
-
-        this.modal.openModal("MailboxesmanagerTestIMAPModal", true, this.ViewContainerRef.injector).subscribe(testmodal => {
-            testmodal.instance.isvalid.subscribe(validconnection => {
-                this.validConnection = validconnection;
-            });
-        });
-
-        /*this.modal.openModal("SystemLoadingModal", false ).subscribe(modalRef => {
-
-            modalRef.instance.messagelabel = "LBL_TESTING_CONNECTION";
-
-            this.model.save();
-
-            this.backend.getRequest("mailboxes/test", {mailbox_id: this.model.data.id}).subscribe(
-                (response: any) => {
-                    if (response.imap.result === true) {
-                        this.core = true;
-                    } else {
-                        this.validConnection = false;
-                    }
-
-                    if (response.imap.errors && response.imap.errors.length > 0) {
-                        this.toast.sendToast(response.imap.errors);
-                    } else if (response.smtp.errors && response.smtp.errors.length > 0) {
-                        this.toast.sendToast(response.smtp.errors);
-                    }
-
-                    modalRef.instance.self.destroy();
-                },
-                (err: any) => {
-                    this.toast.sendToast("Connection Error #3864");
-                    modalRef.instance.self.destroy();
-                });
-        });
-        */
+        this.modal.openModal("MailboxesmanagerTestIMAPModal", true, this.injector);
     }
 }
