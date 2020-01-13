@@ -112,9 +112,10 @@ export class ReportsDesignerTree implements AfterViewInit {
                 if (modules[index]) {
                     let unionModules = this.model.getField('union_modules');
                     if (!unionModules || !unionModules.length) unionModules = [];
-                    let newItem = {unionid: this.model.generateGuid(), module: modules[index]};
+                    let newItem = {unionid: this.reportsDesignerService.generateGuid(), module: modules[index]};
                     unionModules.push(newItem);
                     this.model.setField('union_modules', unionModules);
+                    this.initializeUnionListFields(newItem.unionid);
                     this.setActiveModule(newItem);
                 }
             });
@@ -142,7 +143,37 @@ export class ReportsDesignerTree implements AfterViewInit {
 
     /**
      * loads the fields for a given module
+     * @param unionId: string
+     */
+    private initializeUnionListFields(unionId) {
+        let unionListFields = this.model.getField('unionlistfields');
+        const listFields = this.model.getField('listfields');
+        const newUnionListFields = listFields.slice().map(field => {
+            field =  {
+                fieldid: field.fieldid,
+                joinid: unionId,
+                path: field.path,
+                displaypath: '',
+                unionfieldpath: '',
+                unionfielddisplaypath: '',
+                unionfieldname: '',
+                unionfielddisplayname: '',
+                name: field.name,
+                fixedvalue: '',
+                id: field.fieldid
+            };
+            return field;
+        });
+        unionListFields = [...unionListFields, ...newUnionListFields];
+        this.model.setField('unionlistfields', unionListFields);
+        this.loadCurrentUnionListFields(unionId);
+    }
+
+    /**
+     * loads the fields for a given module
      * @param module the module
+     * @set isLoadingModuleFields
+     * @set moduleFields
      */
     private getModuleFields(module) {
         this.reportsDesignerService.moduleFields = [];
@@ -185,9 +216,25 @@ export class ReportsDesignerTree implements AfterViewInit {
     * @set currentModule
     */
     private setActiveModule(selectedModule?) {
-        this.reportsDesignerService.activeModule = selectedModule ?
-            selectedModule : {unionid: 'root', module: this.model.getField('report_module')};
+        if (selectedModule) {
+            this.reportsDesignerService.activeModule = selectedModule;
+            this.loadCurrentUnionListFields(selectedModule.unionId);
+        } else {
+            this.reportsDesignerService.activeModule = {unionid: 'root', module: this.model.getField('report_module')};
+        }
+
         this.reportsDesignerService.moduleFields = [];
+    }
+
+    /*
+    * @param unionId
+    * @filter unionlistfields by unionId
+    * @set currentUnionListFields
+    */
+    private loadCurrentUnionListFields(unionId) {
+        let unionListFields = this.model.getField('unionlistfields');
+        unionListFields = !!unionListFields && unionListFields.length ? unionListFields : [];
+        this.reportsDesignerService.currentUnionListFields = unionListFields.filter(field => field.joinid == unionId);
     }
 
     /*

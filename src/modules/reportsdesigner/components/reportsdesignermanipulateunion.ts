@@ -31,6 +31,13 @@ export class ReportsDesignerManipulateUnion implements OnChanges, OnDestroy {
     }
 
     /*
+    * @return unionlistfields: object[]
+    */
+    get unionListFields() {
+        return this.reportsDesignerService.currentUnionListFields;
+    }
+
+    /*
     * @return treeCDKDragList: cdkDragList
     */
     get dragList() {
@@ -42,8 +49,7 @@ export class ReportsDesignerManipulateUnion implements OnChanges, OnDestroy {
     * @set listItems
     */
     public ngOnChanges() {
-        this.loadListItems();
-        this.reportsDesignerService.dropLists = [...this.reportsDesignerService.dropLists, ...this.listItems.map(item => item.fieldid)];
+        this.reportsDesignerService.dropLists = [...this.reportsDesignerService.dropLists, ...this.unionListFields.map(item => item.fieldid)];
     }
 
     /*
@@ -73,62 +79,40 @@ export class ReportsDesignerManipulateUnion implements OnChanges, OnDestroy {
         this.reportsDesignerService.removePlaceHolderElement(dragEvent.previousContainer.element.nativeElement);
 
         if (dragEvent.previousContainer !== dragEvent.container) {
-            let dragField = dragEvent.item.data;
-            let newItem = this.generateNewItem(dragField, dragEvent.container.data);
-            let unionFields = this.model.getField('unionlistfields');
-            if (!unionFields || !unionFields.length) unionFields = [];
-            unionFields.push(newItem);
-            this.model.setField('unionlistfields', unionFields);
-            this.listItems = this.listItems.map(item => {
-                if (item.fieldid == newItem.fieldid) item = newItem;
-                return item;
-            });
-
+            this.linkUnionField(dragEvent.container.data, dragEvent.item.data);
         }
     }
 
     /*
-     * @set listItems
+     * @set unionField link key values
+     * @param unionField: object
+     * @param dragField: object
+     * @set unionfieldname
+     * @set unionfielddisplayname
+     * @set unionfielddisplaypath
+     * @set unionfieldpath
+     * @set displaypath
+     * @set joinid
      */
-    private loadListItems() {
-        let listFields = this.model.getField('listfields');
-        let unionFields = this.model.getField('unionlistfields');
-        if (listFields && listFields.length) {
-            if (unionFields && unionFields.length) {
-                unionFields = unionFields.filter(field => field.joinid == this.module.unionid);
-                listFields = listFields.map(listField => {
-                    unionFields.some(unionField => {
-                        if (unionField.fieldid == listField.fieldid) {
-                            listField = unionField;
-                            return true;
-                        }
-                    });
-                    if (!listField.unionfielddisplayname) listField.unionfielddisplayname = listField.unionfieldname;
-                    return listField;
-                });
-            }
-            this.listItems = listFields;
-        }
+    private linkUnionField(unionField, dragField) {
+        unionField.unionfieldname = dragField.fieldname;
+        unionField.unionfielddisplayname = dragField.label;
+        unionField.unionfielddisplaypath = this.reportsDesignerService.currentPath;
+        unionField.unionfieldpath = `unionroot::union-${this.module.unionid}:${this.reportsDesignerService.currentPath}::${dragField.id}`;
+        unionField.displaypath = this.reportsDesignerService.currentPath;
+        unionField.joinid = this.module.unionid;
     }
 
     /*
-     * @param field: object
-     * @return newItem: object
+     * @reset unionField union key values
      */
-    private generateNewItem(dragField, sourceField) {
-        return {
-            fieldid: sourceField.fieldid,
-            joinid: this.module.unionid,
-            path: sourceField.path,
-            displaypath: this.reportsDesignerService.currentPath,
-            unionfieldpath: `unionroot::union-${this.module.unionid}:${this.reportsDesignerService.currentPath}::${dragField.id}`,
-            unionfielddisplaypath: this.reportsDesignerService.currentPath,
-            unionfieldname: dragField.fieldname,
-            unionfielddisplayname: dragField.label,
-            name: sourceField.name,
-            fixedvalue: '',
-            id: sourceField.fieldid
-        };
+    protected unlinkUnionField(unionField) {
+        unionField.unionfieldname = '';
+        unionField.unionfielddisplayname = '';
+        unionField.unionfielddisplaypath = '';
+        unionField.unionfieldpath = '';
+        unionField.displaypath = '';
+        unionField.joinid = '';
     }
 
     /*
@@ -139,15 +123,12 @@ export class ReportsDesignerManipulateUnion implements OnChanges, OnDestroy {
         this.modal.confirm(this.language.getLabel('LBL_UNLINK'), this.language.getLabel('LBL_UNLINK'))
             .subscribe(response => {
                 if (response) {
-                    this.listItems = this.listItems.map(item => {
-                        if (item.fieldid == fieldId) {
-                            item = this.model.getField('listfields').find(field => field.fieldid == fieldId);
+                    this.unionListFields.some(field => {
+                        if (field.fieldid == fieldId) {
+                            this.unlinkUnionField(field);
+                            return true;
                         }
-                        return item;
                     });
-                    let unionFields = this.model.getField('unionlistfields');
-                    unionFields = unionFields.filter(field => !(field.fieldid == fieldId && field.joinid == this.module.unionid));
-                    this.model.setField('unionlistfields', unionFields);
                 }
             });
     }
