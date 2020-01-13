@@ -74,10 +74,10 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
 
     /*
      * @param parent: string = '-'
-     * @param id: string = model.generateGuid()
+     * @param id: string = guid
      * @return group: object
      */
-    protected generateGroup(parent = '-', id = this.model.generateGuid()) {
+    protected generateGroup(parent = '-', id = this.reportsDesignerService.generateGuid()) {
         return {
             id: id,
             groupid: id,

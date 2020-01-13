@@ -103,7 +103,7 @@ export class ReportsDesignerConditionGroup {
      * @set whereConditions
      */
     private addCondition(field) {
-        let guid = this.model.generateGuid();
+        let guid = this.reportsDesignerService.generateGuid();
         let condition = {
             id: guid,
             groupid: this.group.id,

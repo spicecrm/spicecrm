@@ -101,7 +101,7 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
      * @return newItem: object
      */
     private generateNewItem(field, sequence) {
-        let id = this.modelUtilities.generateGuid();
+        let id = this.reportsDesignerService.generateGuid();
         return {
             fieldid: id,
             path: `${this.reportsDesignerService.currentPath}::${field.id}`,
