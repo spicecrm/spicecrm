@@ -1,9 +1,9 @@
 /**
  * @module WorkbenchModule
  */
-import {Component, ViewChild, ViewContainerRef,EventEmitter} from "@angular/core";
+import {Component, ViewChild, ViewContainerRef, EventEmitter} from "@angular/core";
 import {backend} from "../../services/backend.service";
-import {footer} from "../../services/footer.service";
+import {session} from "../../services/session.service";
 import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
 import {model} from "../../services/model.service";
@@ -28,8 +28,10 @@ export class MailboxesmanagerTestIMAPModal {
     constructor(
         private backend: backend,
         private language: language,
-        private model: model
+        private model: model,
+        private session: session,
     ) {
+        this.testemailaddress = this.session.authData.email;
     }
 
     get isInbound() {
@@ -37,15 +39,22 @@ export class MailboxesmanagerTestIMAPModal {
     }
 
     get isOutbound() {
-        return this.model.getFieldValue('outbound_comm') != 'no' ? true : false;
+        let outbound = this.model.getFieldValue('outbound_comm');
+        return outbound && outbound != 'no' ? true : false;
     }
 
     public testConnection() {
         this.testing = true;
-        this.backend.getRequest("mailboxes/test", {mailbox_id: this.model.data.id, test_email: this.testemailaddress}).subscribe(
+
+        let modelData = this.model.utils.spiceModel2backend('Mailboxes', this.model.data);
+
+        this.backend.postRequest("mailboxes/test",{}, {
+            data: modelData,
+            test_email: this.testemailaddress
+        }).subscribe(
             (response: any) => {
                 this.validConnection = true;
-                if(this.isInbound) {
+                if (this.isInbound) {
                     if (response.imap.result !== true) {
                         this.validConnection = false;
                     }
@@ -57,7 +66,7 @@ export class MailboxesmanagerTestIMAPModal {
                     }
                 }
 
-                if(this.isOutbound) {
+                if (this.isOutbound) {
                     if (response.smtp.errors && response.smtp.errors.length > 0) {
                         this.smtpStatus = false;
                         this.validConnection = false;
@@ -83,11 +92,11 @@ export class MailboxesmanagerTestIMAPModal {
         this.self.destroy();
     }
 
-    get imapIcon(){
+    get imapIcon() {
         return this.imapStatus ? "check" : "close";
     }
 
-    get smtpIcon(){
+    get smtpIcon() {
         return this.smtpStatus ? "check" : "close";
     }
 }

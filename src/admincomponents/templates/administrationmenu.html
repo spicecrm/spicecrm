@@ -1,30 +1,30 @@
-<div class="slds-grid" [ngStyle]="getContainerStyle()">
-    <div class="slds-grid slds-grid--vertical slds-navigation-list--vertical slds-navigation-list--vertical-inverse slds-border--right" style="height:100%;width: 250px;">
-        <div class="slds-p-horizontal--xx-small slds-p-vertical--small slds-border--bottom">
-            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right slds-input-has-icon_group-right slds-m-vertical--xx-small">
-                <input type="text" class="slds-input" [placeholder]="language.getLabel('LBL_SEARCH')" [(ngModel)]="itemfilter" />
-                <system-utility-icon *ngIf="itemfilter == ''" [icon]="'search'" [addclasses]="'slds-input__icon slds-input__icon--left'"></system-utility-icon>
-                <div *ngIf="itemfilter != ''" class="slds-input__icon-group slds-input__icon-group_right" style="margin-top: initial;">
-                    <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon"  (click)="itemfilter = ''" tabindex="-1">
-                        <system-button-icon [icon]="'clear'"></system-button-icon>
-                    </button>
-                </div>
+<div class="slds-grid slds-grid--vertical slds-navigation-list--vertical slds-navigation-list--vertical-inverse slds-border--right">
+    <div class="slds-p-horizontal--xx-small slds-p-vertical--small slds-border--bottom slds-grid slds-grid--vertical-align-center">
+        <div class="slds-p-horizontal--x-small">
+            <button class="slds-button slds-button_icon"  (click)="administration.navigateHome()" tabindex="-1">
+                <system-button-icon icon="home"></system-button-icon>
+            </button>
+        </div>
+        <div class="slds-grow slds-form-element__control slds-input-has-icon slds-input-has-icon_right slds-input-has-icon_group-right slds-m-vertical--xx-small">
+            <input type="text" class="slds-input" [placeholder]="language.getLabel('LBL_SEARCH')" [(ngModel)]="administration.itemfilter" />
+            <system-utility-icon *ngIf="administration.itemfilter == ''" [icon]="'search'" [addclasses]="'slds-input__icon slds-input__icon--left'"></system-utility-icon>
+            <div *ngIf="administration.itemfilter != ''" class="slds-input__icon-group slds-input__icon-group_right" style="margin-top: initial;">
+                <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon"  (click)="administration.itemfilter = ''" tabindex="-1">
+                    <system-button-icon [icon]="'clear'"></system-button-icon>
+                </button>
             </div>
         </div>
-        <div tobottom>
-            <ng-container  *ngFor="let adminNavigationBlock of getNavigationBlocks()" >
-                <h2 class="slds-text-title--caps slds-p-around--medium">{{adminNavigationBlock}}</h2>
-                <ul>
-                    <li *ngFor="let item of getNavigationItems(adminNavigationBlock)">
-                        <a href="javascript:void(0);" class="slds-navigation-list--vertical__action slds-text-link--reset" (click)="openContent(adminNavigationBlock, item)" [ngClass]="{'slds-theme_inverse': item.id == opened_itemid}">
-                            {{item.name}}
-                        </a>
-                    </li>
-                </ul>
-            </ng-container>
-        </div>
     </div>
-    <div style="width:100%; height: 100%;" class="slds-scrollable" >
-        <div #admincontentcontainer></div>
+    <div tobottom>
+        <ng-container  *ngFor="let adminNavigationBlock of administration.navigationGroups; trackBy: trackbyfn" >
+            <h2 class="slds-text-title--caps slds-p-around--medium">{{language.getLabel(adminNavigationBlock.label)}}</h2>
+            <ul>
+                <li *ngFor="let item of adminNavigationBlock.groupcomponents; trackBy: trackbyfn" [title]="language.getLabel(item.admin_label, '', 'long')">
+                    <a href="javascript:void(0);" class="slds-navigation-list--vertical__action slds-p-vertical--xxx-small slds-text-link--reset" (click)="openContent(item.id)" [ngClass]="{'slds-theme_inverse': item.id == administration.opened_itemid}">
+                        <div class="slds-grid slds-grid--vertical-align-center"><system-icon [icon]="item.icon?item.icon:'empty'" size="x-small"></system-icon> {{item.admin_label ? language.getLabel(item.admin_label) : item.name}}</div>
+                    </a>
+                </li>
+            </ul>
+        </ng-container>
     </div>
 </div>

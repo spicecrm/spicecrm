@@ -1,0 +1,8 @@
+<ng-container [ngSwitch]="valueType">
+    <system-input-integer *ngSwitchCase="'integer'"  [(ngModel)]="value"></system-input-integer>
+    <system-input-date *ngSwitchCase="'date'"  [(ngModel)]="value"></system-input-date>
+    <system-input-enum *ngSwitchCase="'enum'" [module]="module" [field]="field" [(ngModel)]="value"></system-input-enum>
+    <system-input-multienum *ngSwitchCase="'multienum'" [module]="module" [field]="field" [(ngModel)]="value"></system-input-multienum>
+    <system-input-relate *ngSwitchCase="'relate'" [module]="relatedmodule" [(ngModel)]="value"></system-input-relate>
+    <system-input-text *ngSwitchDefault [(ngModel)]="value"></system-input-text>
+</ng-container>

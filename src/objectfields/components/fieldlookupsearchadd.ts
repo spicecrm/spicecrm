@@ -13,7 +13,7 @@ import { language } from '../../services/language.service';
 export class fieldLookupSearchAdd implements OnInit {
 
     @Input() private module = '';
-    @Input() private fieldid = '';
+    @Input() private parent: any;
     @Output('added') private added$ = new EventEmitter();
 
     constructor( public model: model, public language: language ) { }
@@ -23,7 +23,7 @@ export class fieldLookupSearchAdd implements OnInit {
     }
 
     private addParent() {
-        this.model.addModel( this.fieldid, null, null, true ).subscribe( (ret) => {
+        this.model.addModel( '', this.parent, null, true ).subscribe( (ret) => {
             this.added$.emit({ id: ret.id, text: ret.summary_text, data: ret });
         });
     }

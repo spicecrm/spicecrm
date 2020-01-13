@@ -9,6 +9,11 @@ import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 
 import {Subject} from 'rxjs';
+
+/**
+ * @deprecated
+ * ToDo: this needs to be rewqorked quite significant
+ */
 @Component({
     templateUrl: './src/workbench/templates/componentconfigmanager.html'
 })

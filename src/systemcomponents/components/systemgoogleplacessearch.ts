@@ -31,19 +31,61 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
     }
 })
 export class SystemGooglePlacesSearch implements ControlValueAccessor {
+
+    /**
+     * the inputfield itself, reguired for the focus
+     */
     @ViewChild('inputfield', {read: ViewContainerRef, static: true}) public inputfield: ViewContainerRef;
+
+    /**
+     * the event emitter that senbds out the address details
+     */
     @Output() private details: EventEmitter<any> = new EventEmitter<any>();
 
+    /**
+     * for the ValueAccessor
+     */
     private onChange: (value: string) => void;
     private onTouched: () => void;
 
+    /**
+     * set to enabled: set in the construcutor if an api key is present
+     */
     private isenabled: boolean = false;
+
+    /**
+     * the serachterm completed
+     */
     private autocompletesearchterm: string = '';
+
+    /**
+     * a timeoput for the field toi wait until the user did finish typing
+     */
     private autocompleteTimeout: any = undefined;
+
+    /**
+     * the sresults array from the search
+     */
     private autocompleteResults: any[] = [];
+
+    /**
+     * a listener for the dropdown with the results. enables to close the dropdown when clicked outside
+     */
     private autocompleteClickListener: any = undefined;
+
+    /**
+     * boolean helper to display the dropwodn
+     */
     private displayAutocompleteResults: boolean = false;
+
+    /**
+     * indicates that a serach is running
+     */
     private isSearching: boolean = false;
+
+    /**
+     * the bias to search by
+     */
     private locationbias: string = 'ipbias ';
 
     constructor(private language: language, private backend: backend, private configuration: configurationService, private elementref: ElementRef, private renderer: Renderer2) {
@@ -64,6 +106,9 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
         };
     }
 
+    /**
+     * set the focus
+     */
     public focus() {
         setTimeout(() => {
             if (!this.inputfield.element.nativeElement.tabIndex) this.inputfield.element.nativeElement.tabIndex = '-1';
@@ -71,10 +116,18 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
         });
     }
 
+    /**
+     * simple ghetter for the sarchterm
+     */
     get searchterm() {
         return this.autocompletesearchterm;
     }
 
+    /**
+     * a setter for the sarchterm bound by the model. Sets the timeout function to trigger the google places search
+     *
+     * @param value
+     */
     set searchterm(value) {
         this.autocompletesearchterm = value;
         // this.onChange(value);
@@ -88,6 +141,9 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
         }
     }
 
+    /**
+     * displays a placeholder if the field is enabled
+     */
     get placeholder() {
         if (this.isenabled) {
             return this.language.getLabel('LBL_SEARCH');
@@ -103,17 +159,27 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
         this.onChange(this.autocompletesearchterm);
     }
 
+    /**
+     * opens the search results again if theer are any and the fields gets the focus again
+     */
     private onSearchFocus() {
         if (this.autocompletesearchterm.length > 1 && this.autocompleteResults.length > 0) {
             this.openSearchResults();
         }
     }
 
+    /**
+     * opens the search results
+     */
     private openSearchResults() {
         this.displayAutocompleteResults = true;
         this.autocompleteClickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
     }
 
+    /**
+     * the click handler registered when the search results are opened
+     * @param event
+     */
     public onClick(event: MouseEvent): void {
         const clickedInside = this.elementref.nativeElement.contains(event.target);
         if (!clickedInside) {
@@ -121,6 +187,9 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
         }
     }
 
+    /**
+     * clsoes the search results dialog and destruicts the click listener
+     */
     private closeSearchResutls() {
         if (this.autocompleteClickListener) {
             this.autocompleteClickListener();
@@ -129,6 +198,9 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
         this.autocompleteResults = [];
     }
 
+    /**
+     * starts the serach when the length is longer than 3 digits
+     */
     private doAutocomplete() {
         if (this.autocompletesearchterm.length > 3) {
             this.isSearching = true;
@@ -150,12 +222,18 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
         }
     }
 
+    /**
+     * takes the clicked place and gets all the details
+     *
+     * @param placedetails
+     */
     private getDetails(placedetails) {
         this.displayAutocompleteResults = false;
         this.autocompleteResults = []
 
         // set the value and emit to the model
         this.autocompletesearchterm = placedetails.name;
+        let formattedAddress = placedetails.formatted_address;
         this.onChange(placedetails.name);
 
         this.isSearching = true;
@@ -172,8 +250,10 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
                         longitude: parseFloat(res.address.location.lng)
                     },
                     formatted_phone_number: res.formatted_phone_number,
+                    formatted_address: res.formatted_address,
                     international_phone_number: res.international_phone_number,
                     website: res.website,
+                    name: res.name
                 });
                 this.isSearching = false;
             },
@@ -182,7 +262,11 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
             });
     }
 
-    // for the valueaccessor
+    /**
+     * for the valueaccessor
+     *
+     * @param fn
+     */
     public registerOnChange(fn: any): void {
         this.onChange = fn;
     }

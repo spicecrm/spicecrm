@@ -1,39 +1,18 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Directive, OnInit, ViewChild} from '@angular/core';
+import {Component, Directive, OnDestroy, OnInit, ViewChild, SkipSelf} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
-import {relatedmodels} from "../../services/relatedmodels.service";
-
-
-/**
- * a helper component used in ObjectActionNewCopyRuleBeanButton
- *
- * does nothing but provide a model
- */
-@Directive({
-    selector: "object-action-edit-related-button-helper",
-    providers: [model]
-})
-export class ObjectActionEditRelatedButtonHelper {
-    constructor(public model: model) {
-    }
-}
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'object-action-edit-related-button',
-    templateUrl: './src/objectcomponents/templates/objectactioneditrelatedbutton.html'
+    templateUrl: './src/objectcomponents/templates/objectactioneditrelatedbutton.html',
+    providers: [model]
 })
-export class ObjectActionEditRelatedButton implements OnInit {
-
-    /**
-     * this is a helper so we have a subcomponent that can provide a new model
-     *
-     * this model is detected via teh component and then addressed
-     */
-    @ViewChild(ObjectActionEditRelatedButtonHelper, {static: true}) private child;
+export class ObjectActionEditRelatedButton implements OnInit, OnDestroy {
 
     public disabled: boolean = true;
 
@@ -42,42 +21,68 @@ export class ObjectActionEditRelatedButton implements OnInit {
      */
     public actionconfig: any = {};
 
+    /**
+     * this is a helper so we have a subcomponent that can provide a new model
+     *
+     * this model is detected via teh component and then addressed
+     */
+    private subscriptions: Subscription = new Subscription();
+
     constructor(
         private language: language,
         private metadata: metadata,
-        private model: model,
+        @SkipSelf() private parent: model,
+        private model: model
     ) {
 
     }
 
     public ngOnInit() {
-        this.handleDisabled(this.model.isEditing ? 'edit' : 'display');
-        this.model.mode$.subscribe(mode => {
-            this.handleDisabled(mode);
-        });
+        this.handleDisabled(this.parent.isEditing ? 'edit' : 'display');
 
-        this.model.data$.subscribe(data => {
-            this.handleDisabled(this.model.isEditing ? 'edit' : 'display');
-        });
+        // handleDisabled on on model.mode changes
+        this.subscriptions.add(
+            this.parent.mode$.subscribe(mode => {
+                this.handleDisabled(mode);
+            })
+        );
+
+        // handleDisabled on on model.data changes
+        this.subscriptions.add(
+            this.parent.data$.subscribe(data => {
+                // Set the module of the new model and open a modal with copy rules
+                this.model.module = this.actionconfig.module;
+                this.model.id = this.parent.getFieldValue(this.actionconfig.parent_field);
+                // this.model.getData(false);
+
+                this.handleDisabled(this.parent.isEditing ? 'edit' : 'display');
+            })
+        );
+    }
+
+    get hidden() {
+        return this.model.id ? false : true;
     }
 
     public execute() {
-
-        // Set the module of the new model and open a modal with copy rules
-        this.child.model.module = this.actionconfig.module;
-        this.child.model.id = this.model.getFieldValue(this.actionconfig.parent_field);
-        this.child.model.getData(false);
-
-        this.child.model.edit();
+        this.model.edit(true);
     }
 
-    private handleDisabled(mode) {
-        if (this.model.data.acl && !this.model.checkAccess('edit')) {
+    /*
+    * @unsubscribe subscriptions
+    */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
+    }
 
+    /*
+    * @set disabled
+    */
+    private handleDisabled(mode) {
+        if (this.parent.data.acl && !this.parent.checkAccess('edit')) {
             this.disabled = true;
             return;
         }
-        this.disabled = mode == 'edit' ? true : false;
+        this.disabled = mode == 'edit';
     }
-
 }
