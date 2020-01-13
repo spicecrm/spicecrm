@@ -19,7 +19,11 @@
             <div class="slds-form-element">
                 <label class="slds-form-element__label">{{language.getLabel('LBL_CONTENT')}}:</label>
                 <div class="slds-form-element__control">
-                    <textarea placeholder="Placeholder Text" class="slds-textarea" formControlName="html"  rows="5"></textarea>
+
+                    <textarea placeholder="Placeholder Text" class="slds-textarea" formControlName="html"  rows="5">
+                        <!-- trova un modo per uploadare sto coso -->
+                    <system-richtext-editor></system-richtext-editor>
+                    </textarea>
                 </div>
             </div>
         </form>

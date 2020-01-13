@@ -11,6 +11,7 @@ import {Router} from "@angular/router";
 import {backend} from '../../../services/backend.service';
 import {toast} from "../../../services/toast.service";
 import {FormGroup, FormControl} from '@angular/forms';
+import {fieldHtmlEditor} from "../../../objectfields/components/fieldhtmleditor";
 
 @Component({
     selector: 'send-mailing-modal',
