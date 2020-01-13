@@ -5,6 +5,7 @@ import {ChangeDetectorRef, EventEmitter, Injectable} from '@angular/core';
 import {CdkDropList} from "@angular/cdk/drag-drop";
 import {configurationService} from "../../../services/configuration.service";
 import {backend} from "../../../services/backend.service";
+import {modelutilities} from "../../../services/modelutilities.service";
 
 
 @Injectable()
@@ -13,6 +14,7 @@ export class ReportsDesignerService {
     public treeCDKDragList: CdkDropList;
     public _currentPath: string;
     public _moduleFields: any[] = [];
+    public currentUnionListFields: any[] = [];
     public activeModule: any = {};
     public dragPlaceHolderNode: Node;
     public operatorCount: any = {};
@@ -21,7 +23,10 @@ export class ReportsDesignerService {
     public expertMode: boolean = false;
     public expandedItemId: string = '';
 
-    constructor(private configurationService: configurationService, private backend: backend, private cdr: ChangeDetectorRef) {
+    constructor(private configurationService: configurationService,
+                private backend: backend,
+                private cdr: ChangeDetectorRef,
+                private modelUtils: modelutilities) {
         this.loadReporterConfig();
     }
 
@@ -92,6 +97,13 @@ export class ReportsDesignerService {
             containerElement.removeChild(this.dragPlaceHolderNode);
             this.dragPlaceHolderNode = undefined;
         }
+    }
+
+    /*
+    * @return guid: string
+    */
+    public generateGuid() {
+        return 'k' + this.modelUtils.generateGuid().replace('-', '');
     }
 
 }
