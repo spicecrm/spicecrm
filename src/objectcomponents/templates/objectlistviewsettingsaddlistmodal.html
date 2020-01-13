@@ -10,16 +10,9 @@
                     <input class="slds-input" type="text" [(ngModel)]="listname" autofocus/>
                 </div>
             </div>
-            <div class="slds-form-element">
+            <div *ngIf="isadmin" class="slds-form-element">
                 <div class="slds-form-element__control">
-                    <system-checkbox [(ngModel)]="globallist" [disabled]="!session.authData.admin">{{language.getLabel('LBL_GLOBALVISIBLE')}}</system-checkbox>
-                    <!--span class="slds-checkbox">
-                      <input type="checkbox" name="options" id="visibleglobal" [(ngModel)]="globallist"/>
-                      <label class="slds-checkbox__label" for="visibleglobal">
-                        <span class="slds-checkbox--faux"></span>
-                        <span class="slds-form-element__label">{{language.getLabel('LBL_GLOBALVISIBLE')}}</span>
-                      </label>
-                    </span-->
+                    <system-checkbox [(ngModel)]="globallist">{{language.getLabel('LBL_GLOBALVISIBLE')}}</system-checkbox>
                 </div>
             </div>
         </div>

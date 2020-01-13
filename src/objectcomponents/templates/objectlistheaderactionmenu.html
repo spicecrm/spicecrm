@@ -1,4 +1,4 @@
-<div dropdowntrigger class="slds-dropdown-trigger slds-dropdown-trigger--click">
+<div dropdowntriggersimple class="slds-dropdown-trigger slds-dropdown-trigger--click">
     <button class="slds-button  slds-button--icon" title="settings">
         <system-button-icon [icon]="'down'"></system-button-icon>
     </button>
@@ -11,7 +11,13 @@
                         <object-action-container-item class="slds-truncate" [ngClass]="{'slds-disabled-text': isDisabled(actionitem.id)}" [actionitem]="actionitem" (actionemitter)="emitaction($event)"></object-action-container-item>
                     </a>
                 </li>
+                <li class="slds-has-divider--bottom-space"></li>
             </ng-container>
+            <li class="slds-dropdown__item" role="presentation" (click)="chooseFields()">
+                <a href="javascript:void(0);" role="menuitem" tabindex="-1">
+                    <span [ngClass]="{'slds-disabled-text': !canChooseFields}">{{language.getLabel('LBL_SETFIELDS')}}</span>
+                </a>
+            </li>
         </ul>
     </div>
 </div>

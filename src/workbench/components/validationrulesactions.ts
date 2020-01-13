@@ -9,7 +9,6 @@ import {
 import {modelutilities} from '../../services/modelutilities.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
-import {AppDataService} from "../../services/appdata.service";
 
 @Component({
     selector: 'validationrules-actions',
@@ -33,7 +32,6 @@ export class ValidationRulesActions implements OnInit
     fieldname_options:any[] = [];
 
     constructor(
-        private appdata: AppDataService,
         private metadata: metadata,
         private language: language,
         private utils: modelutilities,

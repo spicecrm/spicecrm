@@ -34,7 +34,7 @@ export class fieldGeneric implements OnInit, OnDestroy {
     /**
      * additonal classes top be added when the field is displayed
      */
-    @Input() public fielddisplayclass: any = {};
+    @Input() public fielddisplayclass: string = '';
 
     /**
      * a unique id that is issued in the constructor

@@ -4,7 +4,6 @@
 import {
     Component,
     Input,
-    ElementRef,
     OnInit
 } from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
@@ -21,43 +20,64 @@ import {mailboxesEmails} from "../services/mailboxesemail.service";
 })
 export class MailboxManagerTextMessage implements OnInit {
 
+    /**
+     * the textmessage
+     */
     @Input() private message: any = {};
-    private componentFields: any[] = [];
+
+    /**
+     * the fieldset for the additonal fields
+     */
+    private fieldset: string;
 
     constructor(
         private metadata: metadata,
         private language: language,
         private mailboxesEmails: mailboxesEmails,
-        private elementref: ElementRef,
         private view: view,
         private model: model,
         private modelutilities: modelutilities,
     ) {
+        // nolinks
         this.view.displayLinks = false;
+
+        // no labels
+        this.view.displayLabels = false;
+
+        // get the module conf
+        this.fieldset = this.metadata.getComponentConfig("MailboxManagerTextMessage").fieldset;
     }
 
+    /**
+     * initilizes the model
+     */
     public ngOnInit() {
         this.model.module = "TextMessages";
         this.model.id = this.message.id;
         this.model.data = this.modelutilities.backendModel2spice("TextMessages", this.message);
+    }
 
-        // get the module conf
-        let fieldset = this.metadata.getComponentConfig("MailboxManagerTextMessage").fieldset;
-        if (fieldset) {
-            this.componentFields = this.metadata.getFieldSetItems(fieldset);
+    /**
+     * when an textmessage is selected
+     *
+     * @param e
+     */
+    private selectTextmessage(message) {
+        if (!this.mailboxesEmails.activeMessage || message.id != this.mailboxesEmails.activeMessage.id) {
+            this.mailboxesEmails.activeMessage = message;
         }
     }
 
-    private selectMail(e) {
-        if (!this.mailboxesEmails.activeMessage || e.id != this.mailboxesEmails.activeMessage.id) {
-            this.mailboxesEmails.activeMessage = e;
-        }
-    }
-
+    /**
+     * helper to get the selected message and highlight accordingly
+     */
     get isSelected() {
         return this.mailboxesEmails.activeMessage && this.mailboxesEmails.activeMessage.id == this.model.id;
     }
 
+    /**
+     * style the name
+     */
     get nameStyle() {
         let style = {};
         if (this.message.status === 'unread') {
@@ -71,5 +91,4 @@ export class MailboxManagerTextMessage implements OnInit {
         }
         return style;
     }
-
 }
