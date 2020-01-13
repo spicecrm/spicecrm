@@ -21,8 +21,8 @@ import {toast} from '../../services/toast.service';
 
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -38,41 +38,43 @@ export class AdministrationSysTrashcanRecover implements OnInit {
     recovering: boolean = false;
     recovered: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-
     constructor(private metadata: metadata, private backend: backend, private language: language, private toast: toast) {
     }
 
-    ngOnInit() {
-        this.backend.getRequest('/systrashcan/related/'+this.record.transactionid+'/'+this.record.recordid).subscribe(related => {
-            this.relatedRecords = related;
+    public ngOnInit() {
+        this.backend.getRequest('systrashcan/related/' + this.record.transactionid + '/' + this.record.recordid).subscribe(related => {
+                this.relatedRecords = related;
 
-            if(this.relatedRecords.length > 0)
-                this.recoverrelated = true;
+                if (this.relatedRecords.length > 0) {
+                    this.recoverrelated = true;
+                }
 
-            this.loading = false;
-        });
+                this.loading = false;
+            },
+            error => {
+                this.loading = false;
+            });
     }
 
-    close(){
+    private close() {
         this.recovered.emit(false);
         this.self.destroy();
     }
 
-    getModule(singular){
+    private getModule(singular) {
         return this.metadata.getModuleFromSingular(singular)
     }
 
-    get recorverDisabled(){
+    get recorverDisabled() {
         return this.relatedRecords.length == 0
     }
 
-    doRecover(){
+    private doRecover() {
         this.recovering = true;
-        this.backend.postRequest('/systrashcan/recover/'+this.record.id, {recoverrelated: this.recoverrelated}).subscribe(result => {
-            this.toast.sendToast('record '+ this.record.recordname +' recovered')
+        this.backend.postRequest('systrashcan/recover/' + this.record.id, {recoverrelated: this.recoverrelated}).subscribe(result => {
+            this.toast.sendToast('record ' + this.record.recordname + ' recovered')
             this.recovered.emit(true);
             this.self.destroy();
-        })
+        });
     }
-
 }
