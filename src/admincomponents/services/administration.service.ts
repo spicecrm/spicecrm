@@ -1,0 +1,180 @@
+/**
+ * @module AdminComponentsModule
+ */
+import {Injectable, OnDestroy} from '@angular/core';
+
+import {backend} from '../../services/backend.service';
+import {broadcast} from '../../services/broadcast.service';
+import {language} from '../../services/language.service';
+import {BehaviorSubject} from "rxjs";
+
+@Injectable()
+export class administration implements OnDestroy {
+
+    /**
+     *  the navoigation items
+     */
+    public adminNavigation: any[] = [];
+
+    /**
+     * the current selected item
+     */
+    public opened_itemid: any = {};
+
+    /**
+     * the subscription to the broadfast service for laoder changes
+     */
+    private broadcastsubscription: any;
+
+    /**
+     * the current admin
+     */
+    private admincomponent: any = {
+        component: 'AdministrationHomeScreen',
+        componentconfig: {}
+    }
+
+    /**
+     * the behaviour subject for component changes
+     */
+    public admincomponent$: BehaviorSubject<any>;
+
+    /**
+     * a filter string to be applied to the content
+     */
+    public itemfilter: string = '';
+
+    constructor(
+        private backend: backend,
+        private broadcast: broadcast,
+        private language: language
+    ) {
+        // initialize the beh subject
+        this.admincomponent$ = new BehaviorSubject<any>(this.admincomponent);
+
+        // load the navigation
+        this.loadNavigation();
+
+        // subscribe to broadcast
+        this.broadcastsubscription = this.broadcast.message$.subscribe(message => {
+            this.handleMessage(message);
+        });
+    }
+
+    /**
+     * make sure we unsubscribe when service is destroyed
+     */
+    public ngOnDestroy(): void {
+        this.broadcastsubscription.unsubscribe();
+    }
+
+
+    /**
+     * handle reload of loader to reload also admin menu since new items may have been added
+     *
+     * @param message
+     */
+    private handleMessage(message) {
+        switch (message.messagetype) {
+            case 'loader.reloaded':
+                this.loadNavigation();
+                break;
+        }
+    }
+
+    /**
+     * loads nav items for the admin from the backend
+     */
+    private loadNavigation() {
+        this.backend.getRequest('spiceui/admin/navigation').subscribe(
+            nav => {
+                this.adminNavigation = nav;
+            }
+        );
+
+    }
+
+    /**
+     * navigate to the home screen for the admin section
+     */
+    public navigateHome() {
+        this.opened_itemid = null;
+        this.admincomponent = {
+            component: 'AdministrationHomeScreen',
+            componentconfig: {}
+        };
+        this.admincomponent$.next(this.admincomponent);
+    }
+
+
+    /**
+     * navigate to a block and item
+     *
+     * @param block
+     * @param item
+     */
+    public navigateto(itemid) {
+
+        let adminaction;
+        this.adminNavigation.some(block => {
+                adminaction = block.groupcomponents.find(comp => comp.id == itemid);
+                if (adminaction) {
+                    return true;
+                }
+            }
+        );
+
+        if (adminaction.component) {
+            this.admincomponent = adminaction;
+            this.admincomponent$.next(this.admincomponent);
+            this.opened_itemid = itemid;
+        }
+    }
+
+
+    /**
+     * returns the filtered navigation
+     */
+    get navigationGroups() {
+        // check if we have a filter .. if not just return the complete tree
+        if (this.itemfilter == '') {
+            return this.adminNavigation;
+        }
+
+        // filter the tree
+        let groups = [];
+        for (let group of this.adminNavigation) {
+            // check if the group mnatches .. if yes return the complete group
+            if (
+                (group.label && this.language.getLabel(group.label).toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0) ||
+                (group.label && this.language.getLabel(group.label, '', 'long').toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0)
+            ) {
+                groups.push(group);
+            } else {
+                // search if we find any component that matches
+                let filteredcompopnents = [];
+                for (let groupcomponent of group.groupcomponents) {
+                    if (
+                        groupcomponent.adminaction.toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0 ||
+                        (groupcomponent.admin_label && this.language.getLabel(groupcomponent.admin_label).toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0) ||
+                        (groupcomponent.admin_label && this.language.getLabel(groupcomponent.admin_label, '', 'long').toLowerCase().indexOf(this.itemfilter.toLowerCase()) >= 0)
+                    ) {
+                        filteredcompopnents.push(groupcomponent);
+                    }
+                }
+                // if we did find at least one component ... add the group with the filtered components
+                if (filteredcompopnents.length > 0) {
+                    groups.push({
+                        id: group.id,
+                        name: group.name,
+                        label: group.label,
+                        groupcomponents: filteredcompopnents
+                    });
+                }
+            }
+        }
+
+        return groups;
+    }
+
+}

@@ -1,26 +1,24 @@
-<div class="slds-p-horizontal--medium slds-p-vertical--small">
-    <h1>{{language.getLabel('LBL_TWILLIO')}}</h1>
-    <div class="slds-grid slds-p-vertical--xx-small">
-        <div class="slds-form-element slds-size--1-of-3 slds-p-right--xx-small">
-            <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_ACCOUNT_SID')}}</label>
-            <input type="text" [disabled]="!view.isEditMode()"
-                   [(ngModel)]="model.data.settings.account_sid"
-                   class="slds-input ng-pristine ng-valid"/>
+<div class="slds-m-vertical--xx-small slds-box--border">
+    <div class="slds-p-around--x-small">
+        <h1>{{language.getLabel('LBL_TWILLIO')}}</h1>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-3 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_ACCOUNT_SID')}}</label>
+                <system-input-password [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.account_sid"></system-input-password>
+            </div>
+            <div class="slds-form-element slds-size--1-of-3 slds-p-left--xx-small">
+                <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_AUTH_TOKEN')}}</label>
+                <system-input-password [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.auth_token"></system-input-password>
+            </div>
+            <div class="slds-form-element slds-size--1-of-3 slds-p-left--xx-small">
+                <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_PHONE_NUMBER_FROM')}}</label>
+                <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.phone_number_from" class="slds-input"/>
+            </div>
         </div>
-        <div class="slds-form-element slds-size--1-of-3 slds-p-left--xx-small">
-            <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_AUTH_TOKEN')}}</label>
-            <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.auth_token"
-                   class="slds-input ng-pristine ng-valid"/>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()" [disabled]="!view.isEditMode()">
+                {{language.getLabel('LBL_SEND_TEST_SMS')}}
+            </button>
         </div>
-        <div class="slds-form-element slds-size--1-of-3 slds-p-left--xx-small">
-            <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_PHONE_NUMBER_FROM')}}</label>
-            <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.phone_number_from"
-                   class="slds-input ng-pristine ng-valid"/>
-        </div>
-    </div>
-    <div class="slds-grid slds-p-vertical--xx-small">
-        <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()" [disabled]="valid_connection">
-            {{language.getLabel('LBL_SEND_TEST_EMAIL')}}
-        </button>
     </div>
 </div>

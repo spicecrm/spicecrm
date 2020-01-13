@@ -15,7 +15,6 @@ export class ObjectActionSaveButton {
 
     @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
-    public parent: any = {};
     public module: string = '';
 
     private saving: boolean = false;

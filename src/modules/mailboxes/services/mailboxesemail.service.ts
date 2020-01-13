@@ -3,58 +3,129 @@
  */
 import {Injectable, EventEmitter, Output} from '@angular/core';
 import {backend} from '../../../services/backend.service';
-import {modelutilities} from '../../../services/modelutilities.service';
 
 import {Subject, Observable} from 'rxjs';
 
-
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Injectable()
 export class mailboxesEmails {
 
-    @Output('mailboxesLoaded') mailboxesLoaded$: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output('mailboxesLoaded') public mailboxesLoaded$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+    /**
+     * the default limit for the emails to be loaded at once
+     */
     private limit = 30;
 
+    /**
+     * the list of mailboxes
+     */
     public mailboxes: any[] = [];
+
+    /**
+     * the list of emails
+     */
     public emails: any[] = [];
 
+    /**
+     * the total number of emails
+     */
+    public totalcount: number = 0;
+
+    /**
+     * the source of the query
+     */
+    public source: string = 'fts';
+
+    /**
+     * the active mailbox object
+     */
     private _activeMailBox: any;
+
+    /**
+     * eht active email object
+     */
     private _activeMessage: any;
+
+    /**
+     * an event emitter when the active email selected is changed
+     */
     public activeMessage$: EventEmitter<any> = new EventEmitter<any>();
-    public unreadonly: boolean = true;
-    public openonly: boolean = true;
+
+    /**
+     * bound to the checkbox for unread only
+     */
+    public _unreadonly: boolean = true;
+
+    /**
+     * a boolean indicator that the emails are loading
+     */
     public isLoading: boolean = false;
+
+    /**
+     * the value for the "openness" of an email
+     */
     public emailopenness: string = "";
-    public allLoaded: boolean = false;
 
     constructor(
-        private backend: backend,
-        private modelutilities: modelutilities,
+        private backend: backend
     ) {
+        // load the mailboxes
         this.getMailboxes();
     }
 
+    /**
+     * gets the active message so this can be highlighted properly
+     */
     get activeMessage() {
         return this._activeMessage;
     }
 
+    /**
+     * setter when a message is selected also emits the message so the other view can react
+     * @param email
+     */
     set activeMessage(email) {
         this._activeMessage = email;
         this.activeMessage$.emit(email);
     }
 
+    /**
+     * getter for the selcted mailbox
+     */
     get activeMailBox() {
         return this._activeMailBox;
     }
 
+    /**
+     * setter for the active inbox
+     * @param mailbox
+     */
     set activeMailBox(mailbox) {
         this._activeMailBox = mailbox;
-        this.allLoaded = false;
+        this.emails = [];
+        this.totalcount = 0;
+    }
+
+    /**
+     * getter for unread only
+     */
+    get unreadonly() {
+        return this._unreadonly;
+    }
+
+    /**
+     * setter for unread only that also loads the list fresh
+     *
+     * @param value
+     */
+    set unreadonly(value) {
+        this._unreadonly = value;
+        this.loadMessages();
     }
 
     private getMailboxes() {
@@ -76,8 +147,11 @@ export class mailboxesEmails {
 
     }
 
+    /**
+     * fetches new emails on the backend
+     */
     public fetchEmails() {
-        let responseSubject = new Subject<boolean>();
+        let responseSubject = new Subject<any>();
 
         this.backend.getRequest("/modules/Mailboxes/" + this.activeMailBox.id + "/fetchemails").subscribe(
             // todo a spinner or sth similar while waiting for the response
@@ -85,17 +159,84 @@ export class mailboxesEmails {
                 if (response.new_mail_count > 0) {
                     this.loadMessages();
                 }
-                responseSubject.next(response);
+                responseSubject.next({status: 'success', newmailcount: response.new_mail_count});
                 responseSubject.complete();
             },
+            error => {
+                responseSubject.error({status: 'error', error});
+                responseSubject.complete();
+            }
         );
+        return responseSubject.asObservable();
     }
 
+    /**
+     * generates the filters for the query
+     */
+    private generateFilters() {
+        let filter = {
+            logicaloperator: 'and',
+            groupscope: 'all',
+            conditions: [{
+                field: "mailbox_id",
+                filtervalue: this.activeMailBox.id,
+                operator: "equals"
+            }]
+        };
+        if (this.activeMailBox.type == 'sms') {
+            filter.conditions.push({
+                field: "direction",
+                filtervalue: 'i',
+                operator: "equals"
+            });
+        } else {
+            filter.conditions.push({
+                field: "type",
+                filtervalue: "inbound",
+                operator: "equals"
+            });
+
+            if (this.emailopenness) {
+                filter.conditions.push({
+                    field: "openness",
+                    filtervalue: this.emailopenness,
+                    operator: "equals"
+                });
+            }
+            if (this.unreadonly) {
+                filter.conditions.push({
+                    field: "status",
+                    filtervalue: "unread",
+                    operator: "equals"
+                });
+            }
+        }
+        return filter;
+    }
+
+    /**
+     * returns the endpoint depending if we look for Textmessages or for Emails
+     */
+    get endpoint() {
+        return this.activeMailBox.type == 'sms' ? 'module/TextMessages' : 'module/Emails';
+    }
+
+    /**
+     * returns an array of requested fields depending if we look for Textmessages or for Emails
+     */
+    get requestFields() {
+        return this.activeMailBox.type == 'sms' ? ["name", "id", "msisdn_e164", "date_sent", "description"] : ["name", "id", "from_addr_name", "date_sent", "status", "openness", "sentiment", "magnitude"];
+    }
+
+    /**
+     * loads the messages
+     */
     public loadMessages() {
-        if (!this.activeMailBox) {
+        if (!this.activeMailBox || (this.activeMailBox && !this.activeMailBox.id)) {
             return false;
         }
 
+        // set no message selected
         this.activeMessage = undefined;
 
         // reset the emails
@@ -107,119 +248,70 @@ export class mailboxesEmails {
         ];
 
         let parameters = {
-            searchfields: {},
-            sortdirection: "DESC",
-            sortfield: "date_sent",
-            fields: '',
+            filter: this.generateFilters(),
+            sortfields: [{
+                sortdirection: "DESC",
+                sortfield: "date_sent"
+            }],
+            fields: JSON.stringify(this.requestFields),
+            limit: this.limit
         };
-
-        if (this.activeMailBox.type == 'sms') {
-            krestRoute = 'module/TextMessages';
-            conditions.push({
-                field: "direction",
-                value: 'i',
-                operator: "="
-            });
-
-            parameters.fields = JSON.stringify(["name", "id", "msisdn_e164", "date_sent", "description"]);
-        } else {
-            conditions.push({
-                field: "type",
-                value: "inbound",
-                operator: "="
-            });
-
-            if (this.emailopenness) {
-                conditions.push({
-                    field: "openness",
-                    value: this.emailopenness,
-                    operator: "="
-                });
-            }
-            if (this.unreadonly) {
-                conditions.push({
-                    field: "status",
-                    value: "unread",
-                    operator: "="
-                });
-            }
-
-            parameters.fields = JSON.stringify(["name", "id", "from_addr_name", "date_sent", "status", "openness",
-                    "sentiment", "magnitude"]);
-        }
-
-        parameters.searchfields =
-            JSON.stringify({
-                conditions: conditions,
-                join: "and",
-            });
-
 
         this.isLoading = true;
 
-        this.backend.getRequest(krestRoute, parameters).subscribe((res: any) => {
+        this.backend.getRequest(this.endpoint, parameters).subscribe((res: any) => {
+            // set the emails
             this.emails = res.list;
+
+            // set the source
+            this.source = res.source;
+
+            // set the totalcount
+            this.totalcount = res.totalcount;
+
             // this.loadedMailbox = this.activeMailBox.id;
             this.isLoading = false;
         });
     }
 
+    /**
+     * load more
+     */
     public loadMore() {
-        this.isLoading = true;
-        let parameters = {};
-        if (this.unreadonly) {
-            parameters = {
-                fields: JSON.stringify(["name", "id", "from_addr_name", "date_sent", "status", "openness",
-                "sentiment", "magnitude"]),
-                limit: this.limit,
-                offset: this.emails.length,
-                searchfields: JSON.stringify({
-                        conditions: [
-                            {
-                                field: "mailbox_id",
-                                operator: "=",
-                                value: this.activeMailBox.id,
-                            },
-                            {field: "status", value: "user_closed", operator: "!="},
-                            {field: "type", value: "inbound", operator: "="}
-                        ],
-                        join: "and",
-                    }
-                ),
-                sortdirection: "DESC",
-                sortfield: "date_sent",
-            };
-        } else {
-            parameters = {
-                fields: JSON.stringify(["name", "id", "from_addr_name", "date_sent", "status", "openness"]),
-                limit: this.limit,
-                offset: this.emails.length,
-                searchfields: JSON.stringify({
-                    conditions: [
-                        {
-                            field: "mailbox_id",
-                            value: this.activeMailBox.id,
-                            operator: "="
-                        },
-                        {field: "type", value: "inbound", operator: "="}
-                    ],
-                    join: "and",
-                }),
-                sortdirection: "DESC",
-                sortfield: "date_sent",
-            };
+        // check if we can load more
+        // not if we are loading or if the count of emails exceeds the totalcount
+        if (this.isLoading || this.emails.length >= this.totalcount) {
+            return false;
         }
 
+        // set to laoding
+        this.isLoading = true;
 
-        this.backend.getRequest("module/Emails", parameters).subscribe((res: any) => {
+        // build paramaters
+        let parameters = {
+            fields: JSON.stringify(this.requestFields),
+            filter: this.generateFilters(),
+            limit: this.limit,
+            start: this.emails.length,
+            sortfields: [{
+                sortdirection: "DESC",
+                sortfield: "date_sent"
+            }]
+        };
+
+        // make the backend request
+        this.backend.getRequest(this.endpoint, parameters).subscribe((res: any) => {
             if (res.list.length > 0) {
-                for (let mail of res.list) {
-                    this.emails.push(mail);
-                }
-            } else {
-                this.allLoaded = true;
-            }
 
+                // add the emails
+                this.emails = this.emails.concat(res.list)
+
+                // set the source
+                this.source = res.source;
+
+                // set the totalcount
+                this.totalcount = res.totalcount;
+            }
             this.isLoading = false;
         });
     }
