@@ -1,4 +1,6 @@
-<div #taskscontent (scroll)="onScroll()" class="slds-scrollable--y" style="height: 100%;">
+<div (tobottom)="handleScroll()">
     <tasks-manager-task *ngFor="let task of modellist.listData.list" [task]="task" [focus]="focus" (taskselected)="selectTask($event)" [ngClass]="{'slds-theme_shade': focus == task.id }"></tasks-manager-task>
-    <system-spinner *ngIf="modellist.isLoading"></system-spinner>
+    <div *ngIf="modellist.isLoading" class="slds-p-around--medium slds-align--absolute-center">
+        <system-spinner ></system-spinner>
+    </div>
 </div>

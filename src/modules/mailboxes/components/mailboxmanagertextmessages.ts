@@ -5,6 +5,9 @@ import {Component, ElementRef} from "@angular/core";
 import {language} from "../../../services/language.service";
 import {mailboxesEmails} from "../services/mailboxesemail.service";
 
+/**
+ * the list of textmessages in the mailbox manager
+ */
 @Component({
     selector: 'mailbox-manager-textmessages',
     templateUrl: './src/modules/mailboxes/templates/mailboxmanagertextmessages.html',
@@ -12,24 +15,23 @@ import {mailboxesEmails} from "../services/mailboxesemail.service";
 export class MailboxManagerTextMessages {
 
     constructor(
-        private language: language,
-        private mailboxesEmails: mailboxesEmails,
-        private elementref: ElementRef,
+        private mailboxesEmails: mailboxesEmails
     ) {}
 
-    get containerStyle() {
-        return {
-            height: 'calc(100vh - ' + this.elementref.nativeElement.offsetTop + 'px)',
-        };
+    /**
+     * trackby function to opütimize performnce onm the for loop
+     *
+     * @param index
+     * @param item
+     */
+    protected trackbyfn(index, item) {
+        return item.id;
     }
 
-    private onScroll(e) {
-        if (this.mailboxesEmails.allLoaded === false) {
-            let element = this.elementref.nativeElement;
-            if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight
-                && !this.mailboxesEmails.isLoading) {
-                this.mailboxesEmails.loadMore();
-            }
-        }
+    /**
+     * loadmore triggered by the tobottom Directive
+     */
+    private loadmore() {
+        this.mailboxesEmails.loadMore();
     }
 }

@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component,  EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
@@ -13,9 +13,8 @@ import {view} from "../../services/view.service";
 })
 export class ObjectActionSaveButton {
 
-    @Output() public  actionemitter: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
-    public parent: any = {};
     public module: string = '';
 
     private saving: boolean = false;
@@ -24,14 +23,23 @@ export class ObjectActionSaveButton {
 
     }
 
+    /*
+    * @return boolean
+    */
     get hidden() {
         return !this.model.isEditing;
     }
 
+    /*
+    * @set saving
+    * @emit 'save' by actionemitter
+    * @call model.endEdit
+    * @setViewMode
+    */
     public execute() {
-        if(this.saving) return;
+        if (this.saving) return;
 
-        if(this.model.validate()) {
+        if (this.model.validate()) {
             this.saving = true;
             this.model.save(true).subscribe(saved => {
                 this.actionemitter.emit('save');
@@ -40,5 +48,4 @@ export class ObjectActionSaveButton {
             });
         }
     }
-
 }
