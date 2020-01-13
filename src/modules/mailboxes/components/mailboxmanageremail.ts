@@ -4,7 +4,6 @@
 import {
     Component,
     Input,
-    ElementRef,
     OnInit
 } from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
@@ -21,45 +20,63 @@ import {mailboxesEmails} from "../services/mailboxesemail.service";
 })
 export class MailboxManagerEmail implements OnInit {
 
+    /**
+     * the email record
+     */
     @Input() private email: any = {};
-    private componentFields: Array<any> = [];
+
+    /**
+     * the fieldset for the additonal fields
+     */
+    private fieldset: string;
 
     constructor(
         private metadata: metadata,
         private language: language,
         private mailboxesEmails: mailboxesEmails,
-        private elementref: ElementRef,
         private view: view,
         private model: model,
-        private modelutilities: modelutilities,
+        private modelutilities: modelutilities
     ) {
+        // no links
         this.view.displayLinks = false;
 
+        // no label
         this.view.displayLabels = false;
+
+        // get the module conf
+        this.fieldset = this.metadata.getComponentConfig("MailboxManagerEmail").fieldset;
     }
 
+    /**
+     * intiializes and sets the model
+     */
     public ngOnInit() {
         this.model.module = "Emails";
         this.model.id = this.email.id;
         this.model.data = this.modelutilities.backendModel2spice("Emails", this.email);
-
-        // get the module conf
-        let fieldset = this.metadata.getComponentConfig("MailboxManagerEmail").fieldset;
-        if (fieldset) {
-            this.componentFields = this.metadata.getFieldSetItems(fieldset);
-        }
     }
 
+    /**
+     * emits when an email is selected
+     * @param e
+     */
     private selectMail(e) {
         if (!this.mailboxesEmails.activeMessage || e.id != this.mailboxesEmails.activeMessage.id) {
             this.mailboxesEmails.activeMessage = e;
         }
     }
 
+    /**
+     * a getter to highlight the selected email
+     */
     get isSelected() {
         return this.mailboxesEmails.activeMessage && this.mailboxesEmails.activeMessage.id == this.model.id;
     }
 
+    /**
+     * get the styles for the email subject field
+     */
     get nameStyle() {
         let style = {};
         if (this.email.status === 'unread') {
@@ -73,5 +90,4 @@ export class MailboxManagerEmail implements OnInit {
         }
         return style;
     }
-
 }

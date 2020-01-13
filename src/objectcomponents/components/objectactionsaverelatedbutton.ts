@@ -16,7 +16,6 @@ export class ObjectActionSaveRelatedButton {
 
     @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
-    public parent: any = {};
     public module: string = '';
 
     private saving: boolean = false;
@@ -25,19 +24,32 @@ export class ObjectActionSaveRelatedButton {
 
     }
 
+    /*
+    * @return boolean
+    */
     get hidden() {
         return !this.view.isEditMode();
     }
 
+    /*
+    * @set saving
+    * @emit boolean by actionemitter
+    * @setViewMode
+    * @call relatedmodels.setItem
+    * @call model.endEdit
+    * @setEditMode
+    */
     public execute() {
         if (this.saving) return;
         if (this.model.validate()) {
             this.saving = true;
             // get changed Data
             let changedData: any = this.model.getDirtyFields();
+
             // in any case update date modified and set the id for the PUT
             changedData.date_modified = this.model.getField('date_modified');
             changedData.id = this.model.id;
+
             // save related model
             this.actionemitter.emit(true);
 

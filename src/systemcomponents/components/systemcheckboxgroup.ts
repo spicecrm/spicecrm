@@ -26,8 +26,7 @@ declare var _;
         }
     ]
 })
-export class SystemCheckboxGroup implements ControlValueAccessor
-{
+export class SystemCheckboxGroup implements ControlValueAccessor {
     private onChange: (m: any) => void;
     private onTouched: (m: any) => void;
     public model$ = new EventEmitter();
@@ -57,8 +56,7 @@ export class SystemCheckboxGroup implements ControlValueAccessor
         this.onTouched = fn;
     }
 
-    public toggleValue(value: any)
-    {
+    public toggleValue(value: any) {
         if (this.contains(value)) {
             this.remove(value);
         } else {
@@ -71,15 +69,12 @@ export class SystemCheckboxGroup implements ControlValueAccessor
      * @param value any if value is an array, each element inside has to be set to be true
      * @returns {boolean}
      */
-    public contains(value: any): boolean
-    {
+    public contains(value: any): boolean {
         if (this._model instanceof Array) {
             // if value is an array, check if each member is represented
-            if(value instanceof Array)
-            {
-                for(let subvalue of value)
-                {
-                    if(this._model.indexOf(subvalue) == -1){
+            if (value instanceof Array) {
+                for (let subvalue of value) {
+                    if (this._model.indexOf(subvalue) == -1) {
                         return false;
                     }
                 }
@@ -98,33 +93,23 @@ export class SystemCheckboxGroup implements ControlValueAccessor
      *
      * @param value any if it is an array, each element inside will be added
      */
-    public add(value: any)
-    {
+    public add(value: any) {
         if (!(this._model instanceof Array)) {
             this._model = [];
         }
 
-        if(value instanceof Array)
-        {
-            for(let subvalue of value)
-            {
-                if(!this.contains(subvalue))
-                {
+        if (value instanceof Array) {
+            for (let subvalue of value) {
+                if (!this.contains(subvalue)) {
                     this._model.push(subvalue);
                 }
             }
         } else {
-            if(!this.contains(value)) {
+            if (!this.contains(value)) {
                 this._model.push(value);
             }
         }
-/*
-        if (this._model instanceof Array) {
-            this._model.push(value);
-        } else {
-            this._model = [value];
-        }
-*/
+
         this.model$.emit(this._model);
         this.onChange(this._model);
     }
@@ -133,14 +118,11 @@ export class SystemCheckboxGroup implements ControlValueAccessor
      *
      * @param value any if it is an array, each element inside will be removed
      */
-    public remove(value: any)
-    {
-        if(value instanceof Array) {
-            for(let subvalue of value)
-            {
+    public remove(value: any) {
+        if (value instanceof Array) {
+            for (let subvalue of value) {
                 let idx = this._model.indexOf(subvalue);
-                if(idx >= 0)
-                {
+                if (idx >= 0) {
                     this._model.splice(idx, 1);
                 }
             }
@@ -159,24 +141,28 @@ export class SystemCheckboxGroup implements ControlValueAccessor
 @Component({
     selector: 'system-checkbox-group-checkbox',
     template: `
-        <span class="slds-checkbox">
-            <input type="checkbox" id="checkbox-group-checkbox-{{id}}" [attr.aria-labelledby]="'checkbox-group-checkbox-button-label-'+id+' check-group-header'" [disabled]="disabled" [checked]="checked" (click)="toggle()" />
-            <label class="slds-checkbox__label" for="checkbox-group-checkbox-{{id}}" id="checkbox-group-checkbox-button-label-{{id}}">
+        <span class="slds-checkbox slds-truncate">
+            <input type="checkbox" id="checkbox-group-checkbox-{{id}}"
+                   [attr.aria-labelledby]="'checkbox-group-checkbox-button-label-'+id+' check-group-header'"
+                   [disabled]="disabled" [checked]="checked" (click)="toggle()"/>
+            <label class="slds-checkbox__label" for="checkbox-group-checkbox-{{id}}"
+                   id="checkbox-group-checkbox-button-label-{{id}}">
                 <span class="slds-checkbox_faux"></span>
                 <span class="slds-form-element__label"><ng-content></ng-content></span>
             </label>
         </span>`
 })
-export class SystemCheckboxGroupCheckbox implements OnChanges
-{
+export class SystemCheckboxGroupCheckbox implements OnChanges {
     public id = _.uniqueId();  // needed to use inside the template for html ids... without, the click events will get confused...
     @Input() public value: any;
     @Input() public disabled = false;
     private _checked = false;
-    get checked(): boolean{  return this._checked;    }
+    get checked(): boolean {
+        return this._checked;
+    }
+
     @Input()
-    set checked(val: boolean)
-    {
+    set checked(val: boolean) {
         this._checked = val;
     }
 
@@ -190,20 +176,16 @@ export class SystemCheckboxGroupCheckbox implements OnChanges
         );
     }
 
-    private toggle()
-    {
+    private toggle() {
         this.checked = !this.checked;
-        if(this.checked){
+        if (this.checked) {
             this.grp.add(this.value);
         } else {
             this.grp.remove(this.value);
         }
-        //this.grp.toggleValue(this.value);
-        //console.log(this.checked, this.value);
     }
 
-    public ngOnChanges()
-    {
+    public ngOnChanges() {
         this._checked = this.grp.contains(this.value);
     }
 }

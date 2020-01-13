@@ -1,38 +1,29 @@
 /**
  * @module ModuleMailboxes
  */
-import {Component, Input, ViewChild, ViewContainerRef} from "@angular/core";
-import {backend} from "../../../services/backend.service";
-import {language} from "../../../services/language.service";
+import {Component} from "@angular/core";
 import {navigation} from "../../../services/navigation.service";
 import {mailboxesEmails} from "../services/mailboxesemail.service";
 
+/**
+ * the mailbox manager allowing users to browse throut mailboxes
+ */
 @Component({
     providers: [mailboxesEmails],
     selector: 'mailbox-manager',
     templateUrl: './src/modules/mailboxes/templates/mailboxmanager.html',
 })
 export class MailboxManager {
-    @ViewChild('mailboxdetail', {read: ViewContainerRef, static: true}) private mailboxdetail: ViewContainerRef;
-
-    @Input() private email: any = {};
-
-    private loadedMailbox: string;
-    private start: number = 0;
-    private limit: number = 25;
-
-    private emailList: any[] = [];
-    private selectedEmail: any;
-
     constructor(
         private navigation: navigation,
-        private backend: backend,
-        private language: language,
         private mailboxesEmails: mailboxesEmails,
     ) {
         this.navigation.setActiveModule('Mailboxes');
     }
 
+    /**
+     * determines if emails are listed or SMS
+     */
     get isEmailMailbox() {
         if (this.mailboxesEmails.activeMailBox && this.mailboxesEmails.activeMailBox.type=='email') {
             return true;

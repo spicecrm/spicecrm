@@ -5,7 +5,6 @@ import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
-import {fts} from '../../../services/fts.service';
 import {modal} from '../../../services/modal.service';
 import {territories} from '../../../services/territories.service';
 
@@ -24,7 +23,7 @@ export class fieldTerritoryRecent {
      */
     @Output() private selectedTerritory: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private metadata: metadata, public model: model, public fts: fts, public language: language, private modal: modal, private territories: territories) {
+    constructor(private metadata: metadata, public model: model, public language: language, private modal: modal, private territories: territories) {
         this.recentterritories = this.territories.getRecentTerritories(this.model.module, 50, this.model.isNew ? 'create': 'edit');
     }
 

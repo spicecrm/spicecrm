@@ -1,24 +1,19 @@
 /**
  * @module ObjectFields
  */
-import {
-    Component,
-    Input,
-    OnInit,
-    ViewChild,
-    ViewContainerRef
-} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {Router} from '@angular/router';
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'field-generic',
     templateUrl: './src/objectfields/templates/fieldgeneric.html'
 })
-export class fieldGeneric implements OnInit {
+export class fieldGeneric implements OnInit, OnDestroy {
     /**
      * identifies the focus element. If the field is set to edit mode a specific field can be set to be focused
      *
@@ -39,7 +34,7 @@ export class fieldGeneric implements OnInit {
     /**
      * additonal classes top be added when the field is displayed
      */
-    @Input() public fielddisplayclass: any = {};
+    @Input() public fielddisplayclass: string = '';
 
     /**
      * a unique id that is issued in the constructor
@@ -51,15 +46,7 @@ export class fieldGeneric implements OnInit {
      */
     public fieldlength: number = 999;
 
-    /**
-     * the field defs from teh metadata
-     */
-    private _field_defs;
-
-    /**
-     * additonal css classes uised internally for e.g. error handling
-     */
-    private _css_classes: any[string] = [];
+    public subscriptions: Subscription = new Subscription();
 
     constructor(
         public model: model,
@@ -70,18 +57,46 @@ export class fieldGeneric implements OnInit {
     ) {
         this.fieldid = this.model.generateGuid();
 
-        this.view.mode$.subscribe(mode => {
-            if (mode == 'edit' && this.view.editfieldid && this.view.editfieldid == this.fieldid) {
-                this.setFocus();
-            }
-        });
+        this.subscriptions.add(
+            this.view.mode$.subscribe(mode => {
+                if (mode == 'edit' && this.view.editfieldid && this.view.editfieldid == this.fieldid) {
+                    this.setFocus();
+                }
+            })
+        );
     }
 
-    public ngOnInit() {
-        let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
-        if (fieldDefs && fieldDefs.len) {
-            this.fieldlength = fieldDefs.len;
+    /**
+     * the field defs from teh metadata
+     */
+    private _field_defs;
+
+    /**
+     * gets the field defs from the metadata service
+     */
+    get field_defs() {
+        if (!this._field_defs) {
+            this._field_defs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
         }
+        return this._field_defs;
+    }
+
+    /**
+     * additonal css classes uised internally for e.g. error handling
+     */
+    private _css_classes: any[string] = [];
+
+    /**
+     * a getter to return the additonal css classes
+     */
+    get css_classes() {
+        if (this.getStati().invalid) {
+            this.addCssClass('slds-has-error');
+        } else {
+            this.removeCssClass('slds-has-error');
+        }
+
+        return this._css_classes;
     }
 
     /**
@@ -121,27 +136,11 @@ export class fieldGeneric implements OnInit {
         return this.view.displayLabels && this.fieldconfig.hidelabel !== true;
     }
 
-    /**
-     * a getter to return the additonal css classes
-     */
-    get css_classes() {
-        if (this.getStati().invalid) {
-            this.addCssClass('slds-has-error');
-        } else {
-            this.removeCssClass('slds-has-error');
+    public ngOnInit() {
+        let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
+        if (fieldDefs && fieldDefs.len) {
+            this.fieldlength = fieldDefs.len;
         }
-
-        return this._css_classes;
-    }
-
-    /**
-     * gets the field defs from the metadata service
-     */
-    get field_defs() {
-        if (!this._field_defs) {
-            this._field_defs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
-        }
-        return this._field_defs;
     }
 
     /**
@@ -184,11 +183,7 @@ export class fieldGeneric implements OnInit {
      * a simple helper to check if we are in the edit mode or in display mode
      */
     public isEditMode() {
-        if (this.view.isEditMode() && this.isEditable()) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.view.isEditMode() && this.isEditable();
     }
 
     /**
@@ -228,11 +223,7 @@ export class fieldGeneric implements OnInit {
 
 
     public hasFieldErrors(field: string = this.fieldname): boolean {
-        if (this.getStati(field).invalid || this.errors) {
-            return true;
-        } else {
-            return false;
-        }
+        return !!(this.getStati(field).invalid || this.errors);
     }
 
     /**
@@ -279,5 +270,12 @@ export class fieldGeneric implements OnInit {
      */
     public clearFieldError(): boolean {
         return this.model.resetFieldMessages(this.fieldname, 'error', this.fieldid);
+    }
+
+    /*
+    * @unsubscribe subscriptions
+    */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
     }
 }
