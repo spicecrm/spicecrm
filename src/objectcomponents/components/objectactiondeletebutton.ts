@@ -23,7 +23,16 @@ export class ObjectActionDeleteButton implements AfterViewInit, OnDestroy {
      * defines if the delete ooptionis disabled. By defualt it is but this is checked on model load and model changes and set accordingly to ACL Rules there
      */
     public disabled: boolean = true;
+
+    /**
+     * holds the subscriptions
+     */
     private subscriptions: Subscription = new Subscription();
+
+    /**
+     * holds the action config
+     */
+    public actionconfig: any = {};
 
     constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private helper: helper, private injector: Injector) {
 
@@ -72,7 +81,6 @@ export class ObjectActionDeleteButton implements AfterViewInit, OnDestroy {
     * @delete if answer is true
     */
     public execute() {
-
         this.helper.confirm(this.language.getLabel('MSG_DELETE_RECORD'), this.language.getLabel('MSG_DELETE_RECORD', 'long'))
             .subscribe(answer => {
                 if (answer) {
@@ -88,8 +96,18 @@ export class ObjectActionDeleteButton implements AfterViewInit, OnDestroy {
     private delete() {
         window.console.log(this.injector);
         this.model.delete().subscribe(status => {
-            this.router.navigate(['/module/' + this.model.module]);
+            this.completeAction();
         });
+    }
+
+    /**
+     * completes and redirects to the list except other set in the config
+     */
+    private completeAction(){
+        if(this.actionconfig.noredirectoncomplete == true) return;
+
+        // reditrect to the list
+        this.router.navigate(['/module/' + this.model.module]);
     }
 
     /*
