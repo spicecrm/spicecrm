@@ -1,13 +1,12 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {session} from '../../../services/session.service';
 import {metadata} from '../../../services/metadata.service';
 import {userpreferences} from '../../../services/userpreferences.service';
-import {activitiyTimeLineService} from "../../../services/activitiytimeline.service";
 
 declare var moment: any;
 declare var _: any;
@@ -15,7 +14,8 @@ declare var _: any;
 @Component({
     selector: 'activitytimeline-item',
     templateUrl: './src/modules/activities/templates/activitytimelineitem.html',
-    providers: [model, view]
+    providers: [model, view],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ActivityTimelineItem implements OnInit {
     @Input() private activity: any = {};

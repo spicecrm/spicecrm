@@ -18,7 +18,6 @@ export class ObjectActionRemoveButton implements AfterViewInit, OnDestroy {
 
     @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
-    public parent: any = {};
     public module: string = '';
     /**
      * defines if the delete ooptionis disabled. By defualt it is but this is checked on model load and model changes and set accordingly to ACL Rules there

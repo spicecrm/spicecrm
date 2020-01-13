@@ -3,10 +3,10 @@
         <div class="slds-lookup__item-action slds-media" role="option" (mousedown)="searchWithModal.emit()">
               <system-icon [icon]="'search'" [sprite]="'utility'" [size]="'x-small'" [addclasses]="'slds-m-vertical--xxx-small slds-m-horizontal--xx-small'"></system-icon>
               <div class="slds-media__body">
-                  <div class="slds-lookup__result-text"><i>{{searchTerm}}</i> in {{language.getModuleName(module)}}</div>
+                  <div class="slds-lookup__result-text"><i>{{searchTerm}}</i> in {{language.getModuleName(module)}} {{modellist.listData.list.length}}</div>
               </div>
         </div>
     </li>
-    <li field-lookup-search-item *ngFor="let searchItem of getSearchResults()" [hit]="searchItem" (mousedown)="setParent(searchItem._id, searchItem._source.summary_text, searchItem._source)"></li>
-    <li *ngIf="canAdd" field-lookup-search-add role="presentation" [module]="module" [fieldid]="fieldid" (added)="recordAdded($event)"></li>
+    <li field-lookup-search-item *ngFor="let searchItem of modellist.listData.list" [module]="module" [item]="searchItem" (mousedown)="setItem(searchItem)"></li>
+    <li *ngIf="canAdd" field-lookup-search-add role="presentation" [module]="module" [parent]="model" (added)="recordAdded($event)"></li>
 </ul>

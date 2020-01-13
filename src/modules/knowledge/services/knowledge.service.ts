@@ -117,7 +117,7 @@ export class KnowledgeService {
 
     public getBooks() {
         this.isBookLoading = true;
-        this.backend.getList("KnowledgeBooks", "name", "DESC", ["name", "id", "html"], {limit: -1})
+        this.backend.getList("KnowledgeBooks", [{sortfield:"name", sortdirection:"DESC"}], ["name", "id", "html"], {limit: -1})
             .subscribe((books: any) => {
                 this.books = books && books.list ? books.list : [];
                 this.isBookLoading = false;
