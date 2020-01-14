@@ -52,8 +52,8 @@ export class SendMailingModal {
         );
     }
 
-    private renderTemplate(value) {
-        this.selectedTemplate = value;
+    private renderTemplate(id) {
+        this.selectedTemplate = id;
         window.console.log( this.selectedTemplate);
         this.backend.getRequest(`EmailTemplates/parse/${this.selectedTemplate}/${this.model.module}/${this.model.id}`).subscribe(
             response => {
@@ -61,6 +61,7 @@ export class SendMailingModal {
             }
         );
     }
+
     private onSubmit() {
         this.backend.postRequest(`CleverReach/${this.model.module}/${this.model.id}/sendMailing`, null, this.mailing.value).subscribe(
             response => {

@@ -3,7 +3,7 @@
         <h1>{{language.getLabel('LBL_CREATE_MAILING')}} in {{language.getLabel('LBL_CLEVERREACH')}}</h1>
     </system-modal-header>
     <system-modal-content>
-        <form class="slds-form" [formGroup]="mailing" (ngSubmit)="onSubmit()">
+        <form class="slds-form" [formGroup]="mailing">
             <div class="slds-form-element">
                 <label class="slds-form-element__label">{{language.getLabel('LBL_NAME')}}:</label>
                 <div class="slds-form-element__control">
