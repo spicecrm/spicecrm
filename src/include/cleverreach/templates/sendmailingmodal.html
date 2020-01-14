@@ -13,17 +13,21 @@
             <div class="slds-form-element">
                 <label class="slds-form-element__label">{{language.getLabel('LBL_SUBJECT')}}:</label>
                 <div class="slds-form-element__control">
-                    <input type="text" placeholder="Placeholder Text" class="slds-input" formControlName="subject">
+                    <input type="text" placeholder="Placeholder Textssss" class="slds-input" formControlName="subject">
+                </div>
+            </div>
+            <div class="slds-form-element">
+                <label class="slds-form-element__label">{{language.getLabel('LBL_TEMPLATES')}}:</label>
+                <div class="slds-form-element__control">
+                    <select class="slds-select" (change)="renderTemplate($event.target.value)">
+                        <option *ngFor="let item of templates" [value]="item.id">{{item.name}}</option>
+                    </select>
                 </div>
             </div>
             <div class="slds-form-element">
                 <label class="slds-form-element__label">{{language.getLabel('LBL_CONTENT')}}:</label>
                 <div class="slds-form-element__control">
-
-                    <textarea placeholder="Placeholder Text" class="slds-textarea" formControlName="html"  rows="5">
-                        <!-- trova un modo per uploadare sto coso -->
-                    <system-richtext-editor></system-richtext-editor>
-                    </textarea>
+                    <system-richtext-editor formControlName="html"></system-richtext-editor>
                 </div>
             </div>
         </form>
