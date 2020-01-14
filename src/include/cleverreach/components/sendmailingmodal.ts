@@ -44,6 +44,10 @@ export class SendMailingModal {
         this.loadTemplates();
     }
 
+    /**
+     * loads all templates from backend
+     */
+
     private loadTemplates() {
         this.backend.getRequest(`EmailTemplates/${this.model.module}`).subscribe(
             response => {
@@ -51,6 +55,14 @@ export class SendMailingModal {
             }
         );
     }
+
+    /**
+     *the change event triggers the change of value for selected item
+     *
+     * the selected template is then parsed
+     *
+     * the html formcontrol value is the parsed html body of the response
+     */
 
     private renderTemplate(id) {
         this.selectedTemplate = id;
@@ -61,6 +73,13 @@ export class SendMailingModal {
             }
         );
     }
+
+    /**
+     * post request creates a mailing with the values of the formgroup
+     *
+     * the response is the mailing id
+     *
+     */
 
     private onSubmit() {
         this.backend.postRequest(`CleverReach/${this.model.module}/${this.model.id}/sendMailing`, null, this.mailing.value).subscribe(
