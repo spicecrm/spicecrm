@@ -43,7 +43,7 @@ export class CreateMailingButton {
      */
 
     public execute() {
-        this.modal.openModal('SendMailingModal', true, this.injector);
+        this.modal.openModal('CreateMailingModal', true, this.injector);
     }
 
 }
