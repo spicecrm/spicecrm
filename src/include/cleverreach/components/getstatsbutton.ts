@@ -1,4 +1,4 @@
-import {Component, OnInit, Injector} from '@angular/core';
+import {Component} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
@@ -26,14 +26,17 @@ export class GetStatsButton {
         private toast: toast
     ) {
     }
+    /**
+     *  until the get request is completed, the modal loads,
+     *  when completed it emits either true or false
+     */
 
     public execute() {
-        let stopper = this.modal.await('Loading')
+        let stopper = this.modal.await('Loading');
         this.backend.getRequest(`/CleverReach/CampaignTasks/${this.model.id}/report`)
             .subscribe(response => {
                     this.toast.sendToast(this.language.getLabel('LBL_COMPLETED'));
                     this.report = response;
-                    // window.console.log(this.report);
                     stopper.emit(true);
                 },
                 (error) => {

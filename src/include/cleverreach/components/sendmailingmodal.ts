@@ -2,7 +2,7 @@
  * @module CleverReachModule
  */
 
-import {Component, OnInit, Injector} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
@@ -16,7 +16,7 @@ import {FormGroup, FormControl} from '@angular/forms';
     selector: 'send-mailing-modal',
     templateUrl: './src/include/cleverreach/templates/sendmailingmodal.html'
 })
-export class SendMailingModal {
+export class SendMailingModal implements OnInit {
 
     private self: any = {};
     private module: string = '';
@@ -37,8 +37,11 @@ export class SendMailingModal {
         private modal: modal,
         private toast: toast
     ) {
-
     }
+
+    /**
+     * After the app has initialized, loadTemplates() is fired
+     */
 
     public ngOnInit() {
         this.loadTemplates();
@@ -66,7 +69,6 @@ export class SendMailingModal {
 
     private renderTemplate(id) {
         this.selectedTemplate = id;
-        window.console.log( this.selectedTemplate);
         this.backend.getRequest(`EmailTemplates/parse/${this.selectedTemplate}/${this.model.module}/${this.model.id}`).subscribe(
             response => {
                 this.mailing.patchValue({html: response.body_html});

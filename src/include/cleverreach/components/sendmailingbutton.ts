@@ -1,4 +1,4 @@
-import {Component, OnInit, Injector} from '@angular/core';
+import {Component, Injector} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
@@ -27,13 +27,20 @@ export class SendMailingButton {
         });
     }
 
+    /**
+     * turns disable attribute to true if there is a mailing ID already
+     */
+
     public disableButton() {
         if (this.model.data.mailing_id) {
             this.disabled = true;
-            window.console.log(this.disabled);
             return;
         }
     }
+
+    /**
+     * opens the modal component with the injector token
+     */
 
     public execute() {
         this.modal.openModal('SendMailingModal', true, this.injector);

@@ -1,4 +1,4 @@
-import {Component, OnInit, Injector} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
@@ -32,6 +32,10 @@ export class MailingStatsPanel implements OnInit {
 
     }
 
+    /**
+     * reloads mailing activity from backend
+     */
+
     public reloadData() {
         this.isLoading = true;
         this.backend.getRequest(`/CleverReach/CampaignTasks/${this.model.id}/stats`)
@@ -62,6 +66,10 @@ export class MailingStatsPanel implements OnInit {
     //             this.isLoading = false;
     //         });
     // }
+
+    /**
+     * loads mailing activity from backend when the application first starts
+     */
 
     public ngOnInit(): void {
         this.backend.getRequest(`/CleverReach/CampaignTasks/${this.model.id}/stats`)
