@@ -13,10 +13,9 @@ import {toast} from "../../../services/toast.service";
 import {FormGroup, FormControl} from '@angular/forms';
 
 @Component({
-    selector: 'send-mailing-modal',
-    templateUrl: './src/include/cleverreach/templates/sendmailingmodal.html'
+    templateUrl: './src/include/cleverreach/templates/createmailingmodal.html'
 })
-export class SendMailingModal implements OnInit {
+export class CreateMailingModal implements OnInit {
 
     private self: any = {};
     private module: string = '';

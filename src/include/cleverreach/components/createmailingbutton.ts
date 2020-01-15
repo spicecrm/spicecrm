@@ -9,10 +9,9 @@ import {modal} from '../../../services/modal.service';
  */
 
 @Component({
-    selector: 'send-mailing-button',
-    templateUrl: './src/include/cleverreach/templates/sendmailingbutton.html',
+    templateUrl: './src/include/cleverreach/templates/createmailingbutton.html',
 })
-export class SendMailingButton {
+export class CreateMailingButton {
 
     private disabled: boolean = false;
 

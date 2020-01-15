@@ -15,8 +15,8 @@ import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
 import {ProspectListsToCleverReachButton} from "./components/prospectliststocleverreachbutton";
 import {ProspectListsToCleverReachModal} from "./components/prospectliststocleverreachmodal";
-import {SendMailingButton} from "./components/sendmailingbutton";
-import {SendMailingModal} from "./components/sendmailingmodal";
+import {CreateMailingButton} from "./components/createmailingbutton";
+import {CreateMailingModal} from "./components/createmailingmodal";
 
 import {GetStatsButton} from "./components/getstatsbutton";
 import {MailingStatsPanel} from "./components/mailingstatspanel";
@@ -35,8 +35,8 @@ import {MailingStatsPanel} from "./components/mailingstatspanel";
     declarations: [
         ProspectListsToCleverReachButton,
         ProspectListsToCleverReachModal,
-        SendMailingButton,
-        SendMailingModal,
+        CreateMailingButton,
+        CreateMailingModal,
         GetStatsButton,
         MailingStatsPanel
     ]
