@@ -7,6 +7,7 @@ import {modal} from '../../../services/modal.service';
 /**
  * creates mailing
  */
+
 @Component({
     selector: 'send-mailing-button',
     templateUrl: './src/include/cleverreach/templates/sendmailingbutton.html',
