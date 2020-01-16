@@ -9,7 +9,6 @@ import {backend} from '../../services/backend.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {toast} from "../../services/toast.service";
-import {AppDataService} from "../../services/appdata.service";
 import {configurationService} from "../../services/configuration.service";
 
 import { modal } from '../../services/modal.service';
@@ -31,7 +30,6 @@ export class SelectTreeComponent {
     trees = [];
 
     constructor(
-        private appdata: AppDataService,
         private backend: backend,
         private metadata: metadata,
         private language: language,

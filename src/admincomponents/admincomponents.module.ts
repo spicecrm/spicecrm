@@ -14,7 +14,9 @@ import {SystemComponents} from '../systemcomponents/systemcomponents';
 import /*embed*/ {administrationconfigurator} from './services/administrationconfigurator.service';
 import /*embed*/ {ftsconfiguration} from './services/ftsconfiguration.service';
 import /*embed*/ {dictionary} from './services/dictionary.service';
+import /*embed*/ {administration} from './services/administration.service';
 
+import /*embed*/ { AdministrationMain } from './components/administrationmain';
 import /*embed*/ { AdministrationMenu } from './components/administrationmenu';
 import /*embed*/ { AdministrationMenuRouteItem } from './components/administrationmenurouteitem';
 import /*embed*/ { AdministrationConfigurator } from './components/administrationconfigurator';
@@ -22,6 +24,7 @@ import /*embed*/ { AdministrationConfiguratorItem } from './components/administr
 import /*embed*/ { AdministrationConfiguratorItemRole } from './components/administrationconfiguratoritemrole';
 import /*embed*/ { AdministrationQuotaManager } from './components/administrationquotamanager';
 import /*embed*/ { AdministrationQuotaManagerField } from './components/administrationquotamanagerfield';
+
 
 import /*embed*/ { AdministrationFTSManager } from './components/administrationftsmanager';
 import /*embed*/ { AdministrationFTSManagerFields } from './components/administrationftsmanagerfields';
@@ -31,6 +34,9 @@ import /*embed*/ { AdministrationFTSManagerModuleAdd } from './components/admini
 import /*embed*/ { AdministrationFTSManagerFieldsAdd } from './components/administrationftsmanagerfieldsadd';
 import /*embed*/ { AdministrationFTSStats } from './components/administrationftsstats';
 import /*embed*/ { AdministrationFtsManagerIndexModal } from './components/administrationftsmanagerindexmodal';
+import /*embed*/ {AdministrationHomeScreen} from "./components/administrationhomescreen";
+import /*embed*/ {AdministrationHomeScreenCard} from "./components/administrationhomescreencard";
+import /*embed*/ {AdministrationHomeScreenCardItem} from "./components/administrationhomescreencarditem";
 
 import /*embed*/ { AdministrationSystemStats } from './components/administrationsystemstats';
 
@@ -47,14 +53,7 @@ import /*embed*/ { AdministrationSchedulerRunButton } from './components/adminis
 import /*embed*/ { AdministrationSchedulerScheduleButton } from './components/administrationschedulerschedulebutton';
 
 import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryManagerItem, AdministrationDictionaryManagerItemField } from './components/administrationdictionarymanager';
-import /*embed*/ {VersionControllerComponent} from "./components/versioncontroller";
 
-
-@Component({
-    selector: 'administration-main',
-    template: '<div administration-menu></div>'
-})
-export class AdministrationMain {}
 
 @NgModule({
     imports: [
@@ -86,14 +85,16 @@ export class AdministrationMain {}
         AdministrationSysTrashcanManager,
         AdministrationSysTrashcanRecover,
         AdministrationDictRepair,
-        VersionControllerComponent,
         AdministrationConfigEditor,
         AdministrationSchedulerJobsEnum,
         AdministrationSchedulerJobLog,
         AdministrationSchedulerRunButton,
         AdministrationSchedulerScheduleButton,
         AdministrationSystemStats,
-        AdministrationFtsManagerIndexModal
+        AdministrationFtsManagerIndexModal,
+        AdministrationHomeScreen,
+        AdministrationHomeScreenCard,
+        AdministrationHomeScreenCardItem
     ],
     entryComponents: [
         AdministrationMain,

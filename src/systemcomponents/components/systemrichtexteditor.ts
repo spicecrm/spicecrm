@@ -248,6 +248,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                         uploadComponentRef.instance.answer.subscribe(uploadimage => {
                             if (uploadimage) {
                                 this.focusEditor();
+                                this.editorService.restoreSelection();
                                 this.editorService.insertImage('https://cdn.spicecrm.io/' + uploadimage);
                             }
                             this.modalOpen = false;
@@ -256,6 +257,7 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                 } else {
                     if (image.id) {
                         this.focusEditor();
+                        this.editorService.restoreSelection();
                         this.editorService.insertImage('https://cdn.spicecrm.io/' + image.id);
                     }
                     this.modalOpen = false;

@@ -323,6 +323,10 @@ export class metadata {
                             if (factory.componentType.name === "SystemComponentMissing") {
                                 let componentRef = viewChild.createComponent(factory, undefined, injector);
                                 componentRef.instance.component = component;
+
+                                // make sure we mark the component for change detection
+                                componentRef.changeDetectorRef.markForCheck();
+
                                 retSubject.next(componentRef);
                                 retSubject.complete();
                                 return true;
@@ -345,6 +349,9 @@ export class metadata {
                         // add the info ybout the component being added
                         componentRef.instance.containerComponent = component;
 
+                        // make sure we mark the component for change detection
+                        componentRef.changeDetectorRef.markForCheck();
+
                         // add the component itself...
                         componentRef.instance.containerRef.subscribe(subref => {
                             // load by module...
@@ -365,10 +372,17 @@ export class metadata {
                                             }
 
                                             let selfComponentRef = subref.createComponent(cmp_factory);
+
+                                            // set self on the added component
                                             selfComponentRef.instance.self = componentRef;
+
+                                            // make sure we mark the component for change detection
+                                            selfComponentRef.changeDetectorRef.markForCheck();
+
                                             retSubject.next(selfComponentRef);
                                             retSubject.complete();
                                             componentRef.instance.loaded = true;
+
                                             return true;
                                         });
                                     });
@@ -651,7 +665,7 @@ export class metadata {
      */
     public getFieldlabel(module, field) {
         try {
-            return this.fieldDefs[module][field].vname;
+            return this.fieldDefs[module][field].vname ? this.fieldDefs[module][field].vname : field;
         } catch (e) {
             return field;
         }
@@ -816,6 +830,11 @@ export class metadata {
         }
     }
 
+    /**
+     * returns the module list types for a given module
+     *
+     * @param module
+     */
     public getModuleListTypes(module: string) {
         try {
             return this.moduleDefs[module].listtypes;
@@ -824,10 +843,22 @@ export class metadata {
         }
     }
 
+    /**
+     * adds a specific new module list type
+     *
+     * @param module
+     * @param listTypeData
+     */
     public addModuleListType(module: string, listTypeData: any) {
         this.moduleDefs[module].listtypes.push(listTypeData);
     }
 
+    /**
+     * updates the module list type
+     *
+     * @param module
+     * @param listTypeData
+     */
     public updateModuleListType(module: string, listTypeData: any) {
         this.moduleDefs[module].listtypes.some(listtype => {
             if (listtype.id == listTypeData.id) {
@@ -841,6 +872,26 @@ export class metadata {
         });
     }
 
+    /**
+     * deletes the module listtype from the metadata
+     *
+     * @param module
+     * @param listtype
+     */
+    public deleteModuleListType(module: string, listtype: string){
+        let typeIndex = this.moduleDefs[module].listtypes.findIndex(ltype => ltype.id == listtype);
+        if(typeIndex >= 0){
+            this.moduleDefs[module].listtypes.splice(typeIndex, 1);
+        }
+        return this.moduleDefs[module].listtypes;
+    }
+
+
+    /**
+     * returns the field defs for a given module
+     * @param module
+     * @param field
+     */
     public getFieldDefs(module: string, field: string) {
         try {
             return this.fieldDefs[module][field];
@@ -849,6 +900,11 @@ export class metadata {
         }
     }
 
+    /**
+     * returns if a modulöe is status managed by a status network defined
+     *
+     * @param module
+     */
     public checkStatusManaged(module: string) {
         for (let field in this.fieldDefs[module]) {
             if (this.getFieldDefs(module, field).options && this.fieldStatusNetworks[this.getFieldDefs(module, field).options]) {
