@@ -15,7 +15,7 @@ import {view} from '../../../services/view.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {toast} from "../../../services/toast.service";
-import {AppDataService} from "../../../services/appdata.service";
+
 
 
 @Component({
@@ -33,8 +33,7 @@ export class WorkflowManagerDetail implements OnChanges {
 
     private fieldset: string = '';
 
-    constructor(private appdata: AppDataService,
-                private backend: backend,
+    constructor(                private backend: backend,
                 private metadata: metadata,
                 private model: model,
                 private view: view,

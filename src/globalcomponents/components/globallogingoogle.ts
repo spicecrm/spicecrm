@@ -65,7 +65,7 @@ export class GlobalLoginGoogle {
     public googleInit() {
         if (this.configuration.data.backendextensions.hasOwnProperty("google_oauth") &&
             this.configuration.data.backendextensions.google_oauth.config != null) {
-            this.visible = true;
+
             this.libloader.loadFromSource(["https://apis.google.com/js/api.js", "https://apis.google.com/js/platform.js"]).subscribe(
                 success => {
                     // load the google API
@@ -79,6 +79,8 @@ export class GlobalLoginGoogle {
                             cookiepolicy: "single_host_origin",
                             scope: this.scope
                         });
+
+                        this.visible = true;
 
                         this.disabled = false;
                     });

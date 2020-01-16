@@ -18,13 +18,11 @@ import {metadata, aclCheck} from '../services/metadata.service';
 import {canNavigateAway} from '../services/navigation.service';
 import {VersionManagerService} from '../services/versionmanager.service';
 
-import /*embed*/ {listfilters} from './services/listfilters.service';
-
-
 import /*embed*/ {ObjectKeyValuesPipe} from "./pipes/objectkeyvalue.pipe";
 import /*embed*/ {ObjectFieldFilterPipe} from "./pipes/objectfieldfilter.pipe";
 
 import /*embed*/ {ObjectListViewHeader} from './components/objectlistviewheader';
+import /*embed*/ {ObjectListViewHeaderDetails} from './components/objectlistviewheaderdetails';
 import /*embed*/ {ObjectListViewHeaderListSelector} from './components/objectlistviewheaderlistselector';
 import /*embed*/ {ObjectList} from './components/objectlist';
 import /*embed*/ {ObjectListViewContainer} from './components/objectlistviewcontainer';
@@ -32,6 +30,7 @@ import /*embed*/ {ObjectListView} from './components/objectlistview';
 import /*embed*/ {ObjectActionContainerItem} from './components/objectactioncontaineritem';
 import /*embed*/ {ObjectActionContainer} from './components/objectactioncontainer';
 import /*embed*/ {ObjectListHeader} from './components/objectlistheader';
+import /*embed*/ {ObjectListHeaderSort} from './components/objectlistheadersort';
 import /*embed*/ {ObjectListHeaderActionMenu} from './components/objectlistheaderactionmenu';
 import /*embed*/ {ObjectListHeaderActionsExportCSVButton} from './components/objectlistheaderactionsexportcsvbutton';
 import /*embed*/ {ObjectListHeaderActionsExportCSVSelectFields} from './components/objectlistheaderactionsexportcsvselectfields';
@@ -50,7 +49,7 @@ import /*embed*/ {ObjectActionsetMenuContainerDelete} from './components/objecta
 import /*embed*/ {ObjectListTypes} from './components/objectlisttypes';
 
 import /*embed*/ {ObjectActionEditButton} from './components/objectactioneditbutton';
-import /*embed*/ {ObjectActionEditRelatedButton, ObjectActionEditRelatedButtonHelper} from "./components/objectactioneditrelatedbutton";
+import /*embed*/ {ObjectActionEditRelatedButton} from "./components/objectactioneditrelatedbutton";
 import /*embed*/ {ObjectActionDeleteButton} from './components/objectactiondeletebutton';
 import /*embed*/ {ObjectActionAuditlogButton} from './components/objectactionauditlogbutton';
 import /*embed*/ {ObjectActionOpenButton} from './components/objectactionopenbutton';
@@ -78,6 +77,7 @@ import /*embed*/ {ObjectOptimisticLockingModal} from './components/objectoptimis
 import /*embed*/ {ObjectOptimisticLockingModalDataField} from "./components/objectoptimisticlockingmodaldatafield";
 import /*embed*/ {ObjectOptimisticLockingModalChange} from "./components/objectoptimisticlockingmodalchange";
 
+import /*embed*/ {ObjectListViewAggregatesButton} from './components/objectlistviewaggregatesbutton';
 import /*embed*/ {ObjectListViewAggregatesPanel} from './components/objectlistviewaggregatespanel';
 import /*embed*/ {ObjectListViewAggregate} from './components/objectlistviewaggregate';
 import /*embed*/ {ObjectListViewAggregateItem} from './components/objectlistviewaggregateitem';
@@ -85,19 +85,14 @@ import /*embed*/ {ObjectListViewAggregateItemTerm} from './components/objectlist
 import /*embed*/ {ObjectListViewAggregateItemRange} from './components/objectlistviewaggregateitemrange';
 import /*embed*/ {ObjectListViewTagsAggregate} from './components/objectlistviewtagsaggregate';
 
+import /*embed*/ {ObjectListViewFilterButton} from './components/objectlistviewfilterbutton';
 import /*embed*/ {ObjectListViewFilterPanel} from './components/objectlistviewfilterpanel';
-import /*embed*/ {ObjectListViewFilterPanelExportButton} from './components/objectlistviewfilterpanelexportbutton';
-import /*embed*/ {ObjectListViewFilterPanelExportTargetlist} from './components/objectlistviewfilterpanelexporttargetlist';
 import /*embed*/ {ObjectListViewFilterPanelFilterMyItems} from './components/objectlistviewfilterpanelfiltermyitems';
+import /*embed*/ {ObjectListViewFilterPanelFilterGeo} from './components/objectlistviewfilterpanelfiltergeo';
 import /*embed*/ {ObjectListViewFilterPanelFilterItem} from './components/objectlistviewfilterpanelfilteritem';
-import /*embed*/ {ObjectListViewFilterPanelFilterText} from './components/objectlistviewfilterpanelfiltertext';
-import /*embed*/ {ObjectListViewFilterPanelFilterEnum} from './components/objectlistviewfilterpanelfilterenum';
-import /*embed*/ {ObjectListViewFilterPanelFilterBool} from './components/objectlistviewfilterpanelfilterbool';
-import /*embed*/ {ObjectListViewFilterPanelFilterDate} from './components/objectlistviewfilterpanelfilterdate';
 
 import /*embed*/ {ObjectListViewSettings} from './components/objectlistviewsettings';
 import /*embed*/ {ObjectListViewSettingsAddlistModal} from './components/objectlistviewsettingsaddlistmodal';
-import /*embed*/ {ObjectListViewSettingsDeletelistModal} from './components/objectlistviewsettingsdeletelistmodal';
 import /*embed*/ {ObjectListViewSettingsSetfieldsModal} from './components/objectlistviewsettingssetfieldsmodal';
 import /*embed*/ {ObjectRecordViewContainer} from './components/objectrecordviewcontainer';
 import /*embed*/ {ObjectRecordView} from './components/objectrecordview';
@@ -134,8 +129,8 @@ import /*embed*/ {ObjectRelatedListSequencedItem} from './components/objectrelat
 
 import /*embed*/ {ObjectFileActionMenu} from './components/objectfileactionmenu';
 
-import /*embed*/ {ObjectStatusNetworkButton} from './components/objectstatusnetworkbutton';
 import /*embed*/ {ObjectStatusNetworkButtonItem} from './components/objectstatusnetworkbuttonitem';
+import /*embed*/ {ObjectStatusNetworkButton} from './components/objectstatusnetworkbutton';
 
 import /*embed*/ {ObjectRecordFieldset} from './components/objectrecordfieldset';
 import /*embed*/ {ObjectRecordFieldsetField} from './components/objectrecordfieldsetfield';
@@ -169,7 +164,6 @@ import /*embed*/ {ObjectAddress} from './components/objectaddress';
 import /*embed*/ {ObjectGDPRModal} from './components/objectgdprmodal';
 
 import /*embed*/ {ObjectRowItemComponent} from "./components/objectrowitem";
-import /*embed*/ {ObjectModalModuleDBLookup} from "./components/objectmodalmoduledblookup";
 import /*embed*/ {ObjectActionOutputBeanModal} from "./components/objectactionoutputbeanmodal";
 import /*embed*/ {ObjectActionOutputBeanButton} from "./components/objectactionoutputbeanbutton";
 import /*embed*/ {ObjectActionVCardButton} from "./components/objectactionvcardbutton";
@@ -235,9 +229,11 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectListView,
         ObjectListTypes,
         ObjectListViewHeader,
+        ObjectListViewHeaderDetails,
         ObjectListViewHeaderListSelector,
         ObjectList,
         ObjectListHeader,
+        ObjectListHeaderSort,
         ObjectActionContainer,
         ObjectActionContainerItem,
         ObjectListHeaderActionMenu,
@@ -255,27 +251,22 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectActionsetMenuContainer,
         ObjectActionsetMenuContainerEdit,
         ObjectActionsetMenuContainerDelete,
+        ObjectListViewAggregatesButton,
         ObjectListViewAggregatesPanel,
         ObjectListViewAggregate,
         ObjectListViewAggregateItem,
         ObjectListViewAggregateItemTerm,
         ObjectListViewAggregateItemRange,
         ObjectListViewTagsAggregate,
+        ObjectListViewFilterButton,
         ObjectListViewFilterPanel,
-        ObjectListViewFilterPanelExportButton,
-        ObjectListViewFilterPanelExportTargetlist,
         ObjectListViewFilterPanelFilterMyItems,
+        ObjectListViewFilterPanelFilterGeo,
         ObjectListViewFilterPanelFilterItem,
-        ObjectListViewFilterPanelFilterText,
-        ObjectListViewFilterPanelFilterEnum,
-        ObjectListViewFilterPanelFilterBool,
-        ObjectListViewFilterPanelFilterDate,
         ObjectListViewSettings,
         ObjectListViewSettingsAddlistModal,
-        ObjectListViewSettingsDeletelistModal,
         ObjectListViewSettingsSetfieldsModal,
         ObjectActionEditButton,
-        ObjectActionEditRelatedButtonHelper,
         ObjectActionEditRelatedButton,
         ObjectActionSaveButton,
         ObjectActionSaveRelatedButton,
@@ -362,7 +353,6 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectRecordFieldsetHorizontalList,
         ObjectRecordFieldsetContainer,
         ObjectRowItemComponent,
-        ObjectModalModuleDBLookup,
         ObjectActionOutputBeanModal,
         ObjectActionOutputBeanButton,
         ObjectActionVCardButton,
@@ -406,15 +396,20 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectRecordDetails,
         ObjectRecordDetailsFooter,
         ObjectEditModalDialogContainer,
+        ObjectListHeader,
         ObjectListHeaderActionMenu,
         ObjectRecordMessagesBadge,
+        ObjectRelatedlistFiles,
+        ObjectListTypes,
+        ObjectListViewAggregate,
+        ObjectListViewAggregatesButton,
+        ObjectListViewHeaderDetails,
+        ObjectListHeaderSort,
         ObjectRelatedlistFiles,
         ObjectKeyValuesPipe
     ]
 })
 export class ObjectComponents {
-    readonly version = '1.0';
-    readonly build_date = '/*build_date*/';
 
     constructor(
         public metadata: metadata,

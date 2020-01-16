@@ -4,8 +4,8 @@
         <div class="slds-form-element__control" style="min-width:250px;">
             <div class="slds-select_container">
                 <select class="slds-select" [(ngModel)]="selected_mailbox">
-                    <option value="" disabled></option>
-                    <option *ngFor="let mailbox of this.mailboxes"
+                    <option value="">--</option>
+                    <option *ngFor="let mailbox of modellist.listData.list"
                             [value]="mailbox.id">{{mailbox.name}}
                     </option>
                 </select>
@@ -13,109 +13,9 @@
         </div>
     </div>
     <div class="slds-form-element slds-col--bump-left">
-        <div class="slds-button-group" role="group">
-            <button type="button" class="slds-button slds-button--neutral" (click)="addMailbox()">{{language.getLabel('LBL_ADD')}}</button>
-        </div>
+       <object-action-container [actionset]="headeractionset"></object-action-container>
     </div>
 </div>
-<ng-container *ngIf="selected_mailbox">
-    <system-section titlelabel="LBL_MAIN_DATA">
-        <div class="slds-p-horizontal--medium slds-p-vertical--small">
-            <div class="slds-form--compound slds-p-vertical--x-small">
-                <field-container [fieldname]="'name'"></field-container>
-            </div>
-            <div class="slds-form--compound slds-p-vertical--x-small">
-                <field-container [fieldname]="'description'"></field-container>
-            </div>
-            <div class="slds-form--compound slds-p-vertical--x-small">
-                <field-container [fieldname]="'transport'"></field-container>
-            </div>
-            <div class="slds-grid slds-p-vertical--x-small">
-                <div class="slds-form-element slds-size--1-of-3">
-                    <field-container [fieldname]="'inbound_comm'"></field-container>
-                </div>
-                <div class="slds-form-element slds-size--1-of-3">
-                    <field-container [fieldname]="'outbound_comm'"></field-container>
-                </div>
-                <div class="slds-form-element slds-size--1-of-3">
-                    <field-container [fieldname]="'catch_all_address'"></field-container>
-                </div>
-            </div>
-            <div class="slds-grid slds-p-vertical--x-small">
-                <div class="slds-form-element slds-size--1-of-2">
-                    <field-container [fieldname]="'active'"></field-container>
-                </div>
-                <div class="slds-form-element slds-size--1-of-2">
-                    <field-container [fieldname]="'hidden'"></field-container>
-                </div>
-            </div>
-            <div class="slds-grid">
-                <div class="slds-button-group slds-col--bump-left" role="group">
-                    <button type="button" class="slds-button slds-button--neutral" [disabled]="model.data.is_default" (click)="setAsDefault()">{{language.getLabel('LBL_SET_DEFAULT')}} </button>
-                    <button type="button" class="slds-button slds-button--neutral" [disabled]="model.data.is_default" (click)="deleteMailbox()">{{language.getLabel('LBL_DELETE')}}</button>
-                    <button type="button" class="slds-button slds-button--brand" (click)="saveChanges()">{{language.getLabel('LBL_SAVE')}}</button>
-                </div>
-            </div>
-        </div>
-    </system-section>
-   <!-- <system-section *ngIf="model.data.transport" titlelabel="LBL_TRANSPORT">
-        <div class="slds-p-vertical&#45;&#45;x-small">
-            <mailboxes-imap-smtp-traffic-manager
-                    *ngIf="model.data.transport == 'imap'"></mailboxes-imap-smtp-traffic-manager>
-            <mailboxes-mailgun-traffic-manager
-                    *ngIf="model.data.transport == 'mailgun'"></mailboxes-mailgun-traffic-manager>
-            <mailboxes-sendgrid-traffic-manager
-                    *ngIf="model.data.transport == 'sendgrid'"></mailboxes-sendgrid-traffic-manager>
-            <mailboxes-twillio-traffic-manager
-                    *ngIf="model.data.transport == 'twillio'"></mailboxes-twillio-traffic-manager>
-            <mailboxes-a1-traffic-manager
-                    *ngIf="model.data.transport == 'a1'"></mailboxes-a1-traffic-manager>
-        </div>
-    </system-section>-->
-    <system-section titlelabel="LBL_EMAIL" [expanded]="false">
-        <div class="slds-grid slds-p-horizontal--medium slds-p-vertical--small">
-            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
-                <field-container [fieldname]="'mailbox_header'"></field-container>
-            </div>
-            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
-                <field-container [fieldname]="'mailbox_footer'"></field-container>
-            </div>
-        </div>
-        <div class="slds-p-horizontal--medium slds-p-vertical--x-small">
-            <div class="slds-form-element slds-m-vertical--xxx-small">
-                <label class="slds-form-element__label">Stylesheet</label>
-                <div class="slds-form-element__control">
-                    <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="model.data.stylesheet">
-                            <option></option>
-                            <option *ngFor="let stylesheet of getStylesheets()" [value]="stylesheet.id">
-                                {{stylesheet.name}}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </system-section>
-    <system-section titlelabel="LBL_PROCESSING" [expanded]="true">
-        <div class="slds-p-horizontal--medium slds-p-vertical--small">
-            <div class="slds-form-element slds-m-vertical--xxx-small">
-                <label class="slds-form-element__label">Actionset</label>
-                <div class="slds-form-element__control">
-                    <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="model.data.actionset">
-                            <option></option>
-                            <option *ngFor="let actionset of getActionSets()" [value]="actionset.id">
-                                {{actionset.name}}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <mailboxes-processors></mailboxes-processors>
-        </div>
-    </system-section>
-    <div class="slds-p-around--small">
-        <div #relatecontainer></div>
-    </div>
-</ng-container>
+<div tobottom class="slds-p-horizontal--small">
+    <div #viewcontainer></div>
+</div>

@@ -24,7 +24,7 @@ export class QuestionnaireResults implements OnInit {
     }
 
     private loadQuestionSetsWithResults(): void {
-        this.backend.getRequest('module/Questionnaires/results/' + this.model.module + '/' + this.model.id ).subscribe((data: any) => {
+        this.backend.getRequest('module/QuestionnaireParticipations/byReference/' + this.model.module + '/' + this.model.id + '/results').subscribe((data: any) => {
             this.isLoading = false;
             if ( data.participation === false ) {
                 this.noParticipation = true;

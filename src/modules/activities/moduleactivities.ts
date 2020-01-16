@@ -13,9 +13,7 @@ import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
 
-import /*embed*/ {TasksManager} from './components/tasksmanager';
 import /*embed*/ {TasksManagerView} from './components/tasksmanagerview';
-import /*embed*/ {TasksManagerHeader} from './components/tasksmanagerheader';
 import /*embed*/ {TasksManagerTasks} from './components/tasksmanagertasks';
 import /*embed*/ {TasksManagerTask} from './components/tasksmanagertask';
 import /*embed*/ {TasksManagerTaskDetails} from './components/tasksmanagertaskdetails';
@@ -60,9 +58,7 @@ import /*embed*/ {ActivityTimelineSummaryAggregates} from './components/activity
         DirectivesModule
     ],
     declarations: [
-        TasksManager,
         TasksManagerView,
-        TasksManagerHeader,
         TasksManagerTasks,
         TasksManagerTask,
         TasksManagerTaskDetails,

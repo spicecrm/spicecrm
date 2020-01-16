@@ -1,7 +1,12 @@
 <div *ngIf="node" class="slds-grid slds-grid--vertical" style="height: inherit">
     <div [class.slds-border--bottom]="!data || isLoading" class="slds-grid slds-p-vertical--xx-small" style="min-height: 30px">
-        <div class="slds-grow slds-p-horizontal--medium slds-scrollable--x slds-text-heading--small slds-align-middle">
-            <span>{{nodeName}}</span>
+        <div class="slds-grow slds-p-horizontal--medium slds-scrollable--x slds-text-heading--small slds-align-middle slds-grid slds-grid--vertical-align-center">
+            <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
+                <li *ngFor="let nodeCrumb of displayNodeCrumbs" class="slds-breadcrumb__item">
+                    <div *ngIf="nodeCrumb.linkid" modelPopOver [module]="nodeCrumb.linkmodule" [id]="nodeCrumb.linkid" class="slds-p-horizontal--x-small">{{nodeCrumb.displayname}}</div>
+                    <div *ngIf="!nodeCrumb.linkid" class="slds-p-horizontal--x-small">{{nodeCrumb.displayname}}</div>
+                </li>
+            </ol>
             <button (click)="viewNote()" [disabled]="isLoading || !nodeInfo" class="slds-button slds-m-left--x-small">
                 <system-button-icon icon="note" size="medium" [addclasses]="isLoading || !nodeInfo?.notice || nodeInfo?.notice?.length == 0 ? 'slds-icon-text-light' : ''"></system-button-icon>
             </button>
