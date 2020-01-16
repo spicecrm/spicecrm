@@ -10,7 +10,7 @@ import {backend} from '../../../services/backend.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {toast} from "../../../services/toast.service";
-
+import {Router}   from '@angular/router';
 
 
 @Component({
@@ -20,10 +20,11 @@ export class WorkflowManager {
     private _current_module: string;
     private _current_workflow: string;
     private _current_workflow_data: any = {};
+    public self: any = {};
 
     private workflowdefinitions: any[] = [];
 
-    constructor(private backend: backend, private metadata: metadata, private language: language, private utils: modelutilities, private toast: toast) {}
+    constructor(private backend: backend, private metadata: metadata, private language: language, private utils: modelutilities, private toast: toast, private router: Router) {}
 
     get modules() {
         return this.metadata.getModules().sort();
@@ -104,6 +105,9 @@ export class WorkflowManager {
         );
     }
 
+    private cancel() {
+            this.self.destroy();
+    }
 
     private addWorkflow() {
         let newGuid = this.utils.generateGuid();

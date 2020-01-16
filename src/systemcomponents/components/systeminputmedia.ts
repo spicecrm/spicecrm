@@ -72,6 +72,8 @@ export class SystemInputMedia implements OnChanges, OnDestroy, AfterViewChecked 
     @Input() private fileformat: string;
     @Input() private mediatype: number;
 
+    // @Input() private allowImport = true;
+
     @Output() public mediaChange: EventEmitter<mediaData> = new EventEmitter<mediaData>();
 
     @ViewChild('fileselector', { static: false }) private fileSelector: ElementRef;
@@ -279,7 +281,7 @@ export class SystemInputMedia implements OnChanges, OnDestroy, AfterViewChecked 
                 this.mediaMetaData.originalHeight = this.cropper.getImageData().naturalHeight;
                 this.calcTargetSize();
                 if ( this.isDirty ) this.emitChange();
-                this.cropper.zoomTo(1);
+                // this.cropper.zoomTo(1);
             }
         });
 
