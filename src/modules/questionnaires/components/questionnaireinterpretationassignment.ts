@@ -44,7 +44,7 @@ export class QuestionnaireInterpretationAssignment implements OnInit {
 
     public ngOnInit(): void {
 
-        this.backend.getRequest( 'module/Questionnaires/questionnaireid_of_instance/' + this.reference_id ).subscribe(( data: any ) => {
+        this.backend.getRequest( 'module/QuestionnaireParticipations/byReference/SUPConsultingOrderItems/' + this.reference_id + '/questionnaireId').subscribe(( data: any ) => {
             this.questionnaireId = data.questionnaireId;
             this.backend.getRequest( 'module/Questionnaires/' + this.questionnaireId + '/related/questionnaireinterpretations', {limit: 999} ).subscribe(( data: any ) => {
                 for( let interpretation in data ) {
@@ -95,7 +95,7 @@ export class QuestionnaireInterpretationAssignment implements OnInit {
     }
 
     private complementWithSuggestion(): void {
-        this.backend.getRequest( 'module/Questionnaires/interpretations_of_instance_suggested/' + this.reference_id ).subscribe(( data: any ) => {
+        this.backend.getRequest( 'module/QuestionnaireParticipations/byReference/'+this.reference_module+'/'+this.reference_id+'/interpretationsSuggested').subscribe(( data: any ) => {
             this.suggestedInterpretations = data;
             if ( this.suggestedInterpretations.length === 0 ) {
                 this.toast.sendToast( 'Keine passenden Interpretationen gefunden.', 'warning', '', true );

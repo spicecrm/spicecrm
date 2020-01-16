@@ -16,6 +16,7 @@ export class QuestionnaireEvaluation implements OnInit {
 
     @Input() public parentdata: any = {};
     @Input() public reference_id = '';
+    @Input() public reference_type = '';
     @Input() public noAnimation = false;
     @Input() public usagePrint = false;
     @Input() public set individualHeight( val: number ) {
@@ -34,7 +35,7 @@ export class QuestionnaireEvaluation implements OnInit {
 
     public ngOnInit(): void {
 
-        this.backend.getRequest( 'module/Questionnaires/evaluation/' + this.reference_id ).subscribe((data: any) => {
+        this.backend.getRequest( 'module/QuestionnaireParticipations/byReference/'+this.reference_type+'/'+this.reference_id+'/evaluation').subscribe((data: any) => {
 
             if ( data.participated === false ) {
                 this.noParticipationYet = true;
