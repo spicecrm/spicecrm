@@ -1,16 +1,6 @@
-<div class="slds-box--border">
-    <system-section *ngIf="model.data.transport" titlelabel="LBL_TRANSPORT">
-        <div class="slds-p-vertical--x-small">
-            <mailboxes-imap-smtp-traffic-manager
-                    *ngIf="model.data.transport == 'imap'"></mailboxes-imap-smtp-traffic-manager>
-            <mailboxes-mailgun-traffic-manager
-                    *ngIf="model.data.transport == 'mailgun'"></mailboxes-mailgun-traffic-manager>
-            <mailboxes-sendgrid-traffic-manager
-                    *ngIf="model.data.transport == 'sendgrid'"></mailboxes-sendgrid-traffic-manager>
-            <mailboxes-twillio-traffic-manager
-                    *ngIf="model.data.transport == 'twillio'"></mailboxes-twillio-traffic-manager>
-            <mailboxes-a1-traffic-manager
-                    *ngIf="model.data.transport == 'a1'"></mailboxes-a1-traffic-manager>
-        </div>
-    </system-section>
-</div>
+<system-section titlelabel="LBL_TRANSPORT">
+    <div class="slds-p-around--x-small">
+        <field-container field="transport"></field-container>
+        <system-dynamic-component *ngIf="transportcomponent" [component]="transportcomponent"></system-dynamic-component>
+    </div>
+</system-section>
