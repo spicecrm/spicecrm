@@ -1,7 +1,7 @@
 /**
  * @module WorkbenchModule
  */
-import { Component, ViewChild, ElementRef, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, Input, Output, EventEmitter, OnInit, AfterViewChecked } from '@angular/core';
 import { backend } from '../../services/backend.service';
 import { metadata } from '../../services/metadata.service';
 import { language } from '../../services/language.service';
@@ -25,7 +25,7 @@ declare var moment: any;
         'a.notClickable:hover { text-decoration: none; }'
     ]
 })
-export class CRMLogViewerList implements OnInit {
+export class CRMLogViewerList implements OnInit, AfterViewChecked {
 
     @Input() private filter = { level: '', processId: '', userId: '', text: '', transactionId: '' };
     @Input() private period = { type: '', begin: { year: '', month: '', day: '', hour: '' }, end: { year: '', month: '', day: '', hour: '' }, duration: '' };
@@ -58,7 +58,7 @@ export class CRMLogViewerList implements OnInit {
     private isLoaded = false;
     private isBuildingLocalTextfilter = false;
 
-    @ViewChild('tbody', {static: true}) private tbody: ElementRef; // Reference to the tbody dom element of the data table.
+    @ViewChild('tbody', {static: false}) private tbody: ElementRef; // Reference to the tbody dom element of the data table.
 
     constructor( private backend: backend, private metadata: metadata, private lang: language, private prefs: userpreferences, private modalservice: modal, private toast: toast ) {
 
@@ -156,7 +156,7 @@ export class CRMLogViewerList implements OnInit {
 
     // After the angular-rendering we check for every line / table row, if the log text is truncated by the browser (because it wouldn´t fit into column) or not.
     // The trick to detect truncation: When scrollWidth > clientWidth.
-    private ngAfterViewChecked() {
+    public ngAfterViewChecked() {
         let htmlTableRows;
         if ( this.tbody && this.tbody.nativeElement ) {
             htmlTableRows = this.tbody.nativeElement.childNodes;
