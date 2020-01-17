@@ -60,6 +60,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="slds-grid slds-grid_vertical-align-center slds-m-top--x-small">
+                    <div class="slds-form-element slds-size--1-of-1">
+                        <label class="slds-form-element__label">{{language.getLabel('LBL_FUNCTION')}}</label>
+                        <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_FIELD_FUNCTION')"></system-icon-help-text>
+                        <div class="slds-form-element__control">
+                            <system-input-backend-method [(ngModel)]="fieldDetails.function"></system-input-backend-method>
+                        </div>
+                    </div>
+                </div>
             </fieldset>
             <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small slds-p-right--x-small">
                 <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_AGGREGATE')}}</legend>
@@ -84,7 +93,6 @@
                     <div class="slds-form-element" *ngIf="fieldDetails.aggregate">
                         <label class="slds-form-element__label">{{language.getLabel('LBL_PARAMETERS')}}</label>
                         <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_AGGREGATE_PARAMS')"></system-icon-help-text>
-
                         <div class="slds-form-element__control">
                             <textarea class="slds-textarea" [(ngModel)]="aggregateaddparams"></textarea>
                         </div>
