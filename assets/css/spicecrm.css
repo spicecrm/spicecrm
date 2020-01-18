@@ -637,6 +637,11 @@ field-generic-display .slds-button--icon {
     color: #5B5B5B;
 }
 
+/* add a white border at the bootom of the active tab li */
+.slds-tabs--scoped__item.slds-active{
+    border-bottom: 1px solid white;
+}
+
 .slds-button.slds-active {
     color: #CA1B21;
 }
