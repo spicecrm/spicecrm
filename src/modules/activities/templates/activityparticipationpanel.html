@@ -1,7 +1,7 @@
 <div class="slds-size--1-of-1 slds-scrollable--y">
 <table class="slds-table slds-table_bordered">
     <thead>
-        <tr class="slds-line-height_reset" activity-participation-panel-header [editmode]="editmode" [fieldset]="fieldset"></tr>
+        <tr class="slds-line-height_reset" activity-participation-panel-header [fieldset]="fieldset"></tr>
     </thead>
     <tbody>
         <tr activity-participation-panel-participant *ngFor="let participant of participants;trackBy:participantid" [participant]="participant" [editmode]="editmode" [fieldset]="fieldset" (remove)="removeParticipant(participant)"></tr>

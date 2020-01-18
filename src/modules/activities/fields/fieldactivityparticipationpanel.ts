@@ -52,6 +52,11 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
     private participants: any[] = [];
 
     /**
+     * set to never dispolay the assigned user in the table
+     */
+    private displayAssignedUser: true;
+
+    /**
      * the fieldset for the table
      */
     private fieldset: string;
@@ -89,10 +94,6 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
         } else {
             this.fieldset = this.fieldconfig.fieldset;
         }
-    }
-
-    get displayAssignedUser() {
-        return false;
     }
 
     /**
