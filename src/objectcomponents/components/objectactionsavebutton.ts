@@ -42,9 +42,9 @@ export class ObjectActionSaveButton {
         if (this.model.validate()) {
             this.saving = true;
             this.model.save(true).subscribe(saved => {
-                this.actionemitter.emit('save');
                 this.model.endEdit();
                 this.view.setViewMode();
+                this.actionemitter.emit('save');
             });
         }
     }
