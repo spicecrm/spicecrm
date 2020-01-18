@@ -11,11 +11,13 @@ import {broadcast} from '../../../services/broadcast.service';
 import {modal} from '../../../services/modal.service';
 import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 
+/**
+ * renders a status field for the participation status
+ */
 @Component({
     templateUrl: './src/modules/activities/templates/fieldactivityparticipationstatus.html'
 })
 export class fieldActivityParticipationStatus extends fieldGeneric implements OnInit {
-
 
     constructor(public model: model,
                 public view: view,
@@ -31,6 +33,9 @@ export class fieldActivityParticipationStatus extends fieldGeneric implements On
 
     }
 
+    /**
+     * get the participation icon
+     */
     get participationicon() {
         switch (this.value) {
             case 'accept':
