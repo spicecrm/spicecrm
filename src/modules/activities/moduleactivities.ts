@@ -27,9 +27,15 @@ import /*embed*/ {ActivityCloseCreateModal} from "./components/activityclosecrea
 
 import /*embed*/ {ActivitiesPopoverAddBar} from "./components/activitiespopoveraddbar";
 import /*embed*/ {ActivitiesPopoverAddBarButton} from "./components/activitiespopoveraddbarbutton";
-import /*embed*/ {fieldActivitiesAddActions} from "./components/fieldactivitiesaddactions";
-import /*embed*/ {fieldActivitiesAddActionsButton} from "./components/fieldactivitiesaddactionsbutton";
-import /*embed*/ {fieldActivitiesTaskWithCloseCheckbox} from "./components/fieldactivitiestaskwithclosecheckbox";
+import /*embed*/ {fieldActivitiesAddActions} from "./fields/fieldactivitiesaddactions";
+import /*embed*/ {fieldActivitiesAddActionsButton} from "./fields/fieldactivitiesaddactionsbutton";
+import /*embed*/ {fieldActivitiesTaskWithCloseCheckbox} from "./fields/fieldactivitiestaskwithclosecheckbox";
+
+import /*embed*/ {ActivityParticipationPanel} from "./components/activityparticipationpanel";
+import /*embed*/ {fieldActivityParticipationPanel} from "./fields/fieldactivityparticipationpanel";
+import /*embed*/ {ActivityParticipationPanelHeader} from "./components/activityparticipationpanelheader";
+import /*embed*/ {ActivityParticipationPanelParticipant} from "./components/activityparticipationpanelparticipant";
+import /*embed*/ {fieldActivityParticipationStatus} from "./fields/fieldactivityparticipationstatus";
 
 import /*embed*/ {ActivityTimeline} from './components/activitytimeline';
 import /*embed*/ {ActivityTimelineFilter} from "./components/activitytimelinefilter";
@@ -73,6 +79,11 @@ import /*embed*/ {ActivityTimelineSummaryAggregates} from './components/activity
         fieldActivitiesAddActions,
         fieldActivitiesAddActionsButton,
         fieldActivitiesTaskWithCloseCheckbox,
+        fieldActivityParticipationPanel,
+        ActivityParticipationPanel,
+        ActivityParticipationPanelHeader,
+        ActivityParticipationPanelParticipant,
+        fieldActivityParticipationStatus,
         ActivityTimeline,
         ActivityTimelineFilter,
         ActivityTimelineContainer,
