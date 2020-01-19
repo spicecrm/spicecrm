@@ -653,7 +653,10 @@ field-generic-display .slds-button--icon {
 }
 
 .slds-button.slds-button--brand,
-.slds-button.slds-button--icon-inverse {
+.slds-button.slds-button--icon-inverse,
+.slds-button.slds-button--brand:active:not([disabled]),
+.slds-button.slds-button--brand:hover:not([disabled]),
+.slds-button.slds-button--brand:focus:not([disabled]){
     color: #fff;
 }
 
