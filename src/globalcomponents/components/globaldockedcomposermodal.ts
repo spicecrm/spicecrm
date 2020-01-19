@@ -27,7 +27,6 @@ export class GlobalDockedComposerModal implements OnInit {
     @ViewChild('containercontent', {read: ViewContainerRef, static: true}) private containercontent: ViewContainerRef;
 
     private self: any = {};
-    private isClosed: boolean = false;
 
     constructor(private metadata: metadata, private dockedComposer: dockedComposer, private language: language, public model: model, private view: view) {
         this.view.isEditable = true;
