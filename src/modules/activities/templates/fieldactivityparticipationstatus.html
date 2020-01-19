@@ -1,1 +1,2 @@
-<system-utility-icon [icon]="participationicon" size="xx-small"></system-utility-icon>
+<!--span *ngIf="showButton">button</span><system-utility-icon [icon]="participationicon" size="xx-small"></system-utility-icon-->
+<activity-participation-status [model]="model" [(ngModel)]="value" [parent]="model.parentmodel"></activity-participation-status>

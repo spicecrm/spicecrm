@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, SkipSelf} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {metadata} from '../../../services/metadata.service';
@@ -46,7 +46,7 @@ export class ActivityParticipationPanelParticipant implements OnInit {
      */
     @Output() private remove: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private model: model, private metadata: metadata, private view: view) {
+    constructor(private model: model, @SkipSelf() private parent: model, private metadata: metadata, private view: view) {
     }
 
     /**
@@ -56,6 +56,7 @@ export class ActivityParticipationPanelParticipant implements OnInit {
         this.model.module = this.participant.module;
         this.model.id = this.participant.id;
         this.model.data = this.model.utils.backendModel2spice(this.module, this.participant.data);
+        this.model.parentmodel = this.parent;
 
         // get the fields for the fieldset
         this.fieldsetfields = this.metadata.getFieldSetFields(this.fieldset);
