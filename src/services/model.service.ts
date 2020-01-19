@@ -198,12 +198,23 @@ export class model implements OnDestroy {
     public duplicates: any[] = [];
 
     /**
+     * can be set if the model is in teh context of a parent and thus allows to pass a parent model through the dom
+     */
+    public parentmodel: model;
+
+    /**
      * the coiunt for the toal duplicates found
      */
     public duplicatecount: number = 0;
 
+    /**
+     * ToDo add documentation on how to use this
+     */
     private modelRegisterId: number;
 
+    /**
+     * ToDo: add documentation how to use this
+     */
     public savingProgress: BehaviorSubject<number> = new BehaviorSubject(1);
 
     constructor(

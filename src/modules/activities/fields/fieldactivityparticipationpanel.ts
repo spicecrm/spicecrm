@@ -1,21 +1,20 @@
 /**
- * @module ObjectFields
+ * @module ModuleActivities
  */
 import {Component, ElementRef, Renderer2, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {model} from '../../services/model.service';
-import {view} from '../../services/view.service';
-import {language} from '../../services/language.service';
-import {metadata} from '../../services/metadata.service';
-import {broadcast} from '../../services/broadcast.service';
-import {fieldGeneric} from './fieldgeneric';
-import {modal} from '../../services/modal.service';
+import {model} from '../../../services/model.service';
+import {view} from '../../../services/view.service';
+import {language} from '../../../services/language.service';
+import {metadata} from '../../../services/metadata.service';
+import {broadcast} from '../../../services/broadcast.service';
+import {modal} from '../../../services/modal.service';
+import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 
 @Component({
-    selector: 'field-lookup',
-    templateUrl: './src/objectfields/templates/fieldlookup.html'
+    templateUrl: './src/modules/activities/templates/fieldactivityparticipationpanel.html'
 })
-export class fieldLookup extends fieldGeneric implements OnInit {
+export class fieldActivityParticipationPanel extends fieldGeneric implements OnInit {
 
     /**
      * listens to the click
@@ -48,9 +47,19 @@ export class fieldLookup extends fieldGeneric implements OnInit {
     private lookupSearchTerm: string = '';
 
     /**
-     * the pills to be displayed. Loaded initially and then handled by the field itself
+     * the participants to be displayed. Loaded initially and then handled by the field itself
      */
-    private pills: any[] = [];
+    private participants: any[] = [];
+
+    /**
+     * set to never dispolay the assigned user in the table
+     */
+    private displayAssignedUser: true;
+
+    /**
+     * the fieldset for the table
+     */
+    private fieldset: string;
 
     constructor(public model: model,
                 public view: view,
@@ -61,26 +70,30 @@ export class fieldLookup extends fieldGeneric implements OnInit {
                 public elementRef: ElementRef,
                 public renderer: Renderer2,
                 public modal: modal) {
+
         super(model, view, language, metadata, router);
+
+        // build the lookup links
+        this.lookuplinks = this.getLookuplinks();
 
         // subscriber to the broadcast when new model is added from the model
         this.broadcast.message$.subscribe((message) => this.handleMessage(message));
 
-        // subscribe to model $data and build the pills .. replacing the setter
+        // subscribe to model $data and build the participants .. replacing the setter
         this.model.data$.subscribe(modelData => {
-            this.setPills();
+            this.setParticipants();
         });
     }
 
     /**
-     * load the links
+     * load the links and the table fieldset
      */
     public ngOnInit() {
-        this.lookuplinks = this.getLookuplinks();
-    }
-
-    get displayAssignedUser() {
-        return this.fieldconfig.displayassigneduser;
+        if(!this.fieldconfig.fieldset){
+            this.fieldset = this.metadata.getComponentConfig('fieldActivityParticipationPanel').fieldset;
+        } else {
+            this.fieldset = this.fieldconfig.fieldset;
+        }
     }
 
     /**
@@ -91,27 +104,12 @@ export class fieldLookup extends fieldGeneric implements OnInit {
     }
 
     /**
-     * is only needed when no definition by this.fieldconfig.lookuplinks
-     */
-    private getLookupmodules(): string[] {
-        let modules: string[];
-        if (this.fieldconfig.lookupmodules) modules = this.fieldconfig.lookupmodules.replace(/\s/g, '').split(',');
-        if (!modules) modules = ['Contacts', 'Users'];  // default, when no modules (and no links) are defined in this.fieldconfig.lookuplinks
-        return modules;
-    }
-
-    /**
      * loads the links from the config
      *
      * fallback to the metadata
      */
     private getLookuplinks(): any[] {
-        let linknames: string[];
-        if (this.fieldconfig.lookuplinks) linknames = this.fieldconfig.lookuplinks.replace(/\s/g, '').split(',');
-        if (!linknames) {  // fallback
-            linknames = [];
-            for (let module of this.getLookupmodules()) linknames.push(module.toLowerCase());
-        }
+        let linknames: string[] = ['contacts', 'users'];
         let links = [];
         for (let linkname of linknames) {
             links.push({name: linkname, module: this.metadata.getFieldDefs(this.model.module, linkname).module});
@@ -120,9 +118,9 @@ export class fieldLookup extends fieldGeneric implements OnInit {
     }
 
     /**
-     * initially loads the pills .. also listens to model chanmges (noit fired bny the field
+     * initially loads the participants .. also listens to model chanmges (noit fired bny the field
      */
-    private setPills() {
+    private setParticipants() {
         for (let lookuplink of this.lookuplinks) {
             if (this.model.data[lookuplink.name] && this.model.data[lookuplink.name].beans) {
                 //  if (this.model.data[lookupModule.toLowerCase()] && this.model.data[lookupModule.toLowerCase()].beans) {
@@ -135,13 +133,13 @@ export class fieldLookup extends fieldGeneric implements OnInit {
                     }
 
                     // check if we have the record already
-                    let index = this.pills.findIndex(pill => pill.id == bean.id);
+                    let index = this.participants.findIndex(participant => participant.id == bean.id);
                     if (index < 0) {
-                        // push to the pills
-                        this.pills.push({
+                        // push to the participants
+                        this.participants.push({
                             module: lookuplink.module,
                             id: bean.id,
-                            summary_text: bean.summary_text,
+                            data: bean,
                             link: lookuplink.name
                         });
                     }
@@ -158,16 +156,13 @@ export class fieldLookup extends fieldGeneric implements OnInit {
     private addItem(item) {
         if (!this.model.data[this.lookuplinks[this.lookupType].name]) this.model.data[this.lookuplinks[this.lookupType].name] = {beans: {}};
 
-        this.model.data[this.lookuplinks[this.lookupType].name].beans[item.id] = {
-            id: item.id,
-            summary_text: item.text
-        };
+        this.model.data[this.lookuplinks[this.lookupType].name].beans[item.id] = item.data;
 
         // close the lookup
         this.lookupSearchOpen = false;
 
-        // set the pills
-        this.setPills();
+        // set the participants
+        this.setParticipants();
     }
 
     /**
@@ -233,17 +228,17 @@ export class fieldLookup extends fieldGeneric implements OnInit {
     }
 
     /**
-     * removes on of the pills linked
+     * removes on of the participants linked
      * @param item the pill item
      */
-    private removeItem(item) {
-        if (!this.model.data[item.link].beans_relations_to_delete) this.model.data[item.link].beans_relations_to_delete = {};
-        this.model.data[item.link].beans_relations_to_delete[item.id] = item;
-        delete (this.model.data[item.link].beans[item.id]);
+    private removeItem(participant) {
+        if (!this.model.data[participant.link].beans_relations_to_delete) this.model.data[participant.link].beans_relations_to_delete = {};
+        this.model.data[participant.link].beans_relations_to_delete[participant.id] = participant;
+        delete (this.model.data[participant.link].beans[participant.id]);
 
         // remove th pill
-        let index = this.pills.findIndex(pill => pill.id == item.id);
-        this.pills.splice(index, 1);
+        let index = this.participants.findIndex(pill => pill.id == participant.id);
+        this.participants.splice(index, 1);
     }
 
     /**
@@ -281,13 +276,5 @@ export class fieldLookup extends fieldGeneric implements OnInit {
         });
     }
 
-    /**
-     * trackby function for the pills to imporve rendering and performance
-     *
-     * @param pill
-     */
-    private pillid(pill) {
-        return pill.id;
-    }
 
 }
