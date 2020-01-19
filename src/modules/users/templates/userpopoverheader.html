@@ -1,7 +1,7 @@
 <header class="slds-media slds-media_center slds-m-bottom_small slds-p-vertical--x-small">
     <div class="slds-p-right--medium">
         <span *ngIf="!userimage"  class="slds-icon_container slds-icon-standard-empty slds-icon_container--circle" style="width:40px;height:40px;">
-            <system-icon [sprite]="'action'" [icon]="'user'" [size]="'small'"></system-icon>
+            <system-utility-icon  icon="user" size="small" addclasses="slds-icon" colorclass=""></system-utility-icon>
         </span>
         <img style="height: 40px; width: 40px" *ngIf="userimage" [src]="userimage"/>
     </div>

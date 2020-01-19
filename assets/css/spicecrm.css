@@ -637,7 +637,18 @@ field-generic-display .slds-button--icon {
     color: #5B5B5B;
 }
 
+/* add a white border at the bootom of the active tab li */
+.slds-tabs--scoped__item.slds-active{
+    border-bottom: 1px solid white;
+}
+
 .slds-button.slds-active {
+    color: #CA1B21;
+}
+
+.slds-button:active:not([disabled]),
+.slds-button:hover:not([disabled]),
+.slds-button:focus:not([disabled]) {
     color: #CA1B21;
 }
 
@@ -647,6 +658,25 @@ field-generic-display .slds-button--icon {
 }
 
 .slds-button_outline-brand {
+    border-color: #CA1B21;
+}
+
+.slds-button--icon-border.slds-is-selected,
+.slds-button--icon-container.slds-is-selected,
+.slds-button_icon-border-filled.slds-is-selected,
+.slds-button_icon-border.slds-is-selected,
+.slds-button_icon-container.slds-is-selected,
+.slds-button--icon-border.slds-is-selected:focus,
+.slds-button--icon-border.slds-is-selected:hover:not([disabled]),
+.slds-button--icon-container.slds-is-selected:focus,
+.slds-button--icon-container.slds-is-selected:hover:not([disabled]),
+.slds-button_icon-border-filled.slds-is-selected:focus,
+.slds-button_icon-border-filled.slds-is-selected:hover:not([disabled]),
+.slds-button_icon-border.slds-is-selected:focus,
+.slds-button_icon-border.slds-is-selected:hover:not([disabled]),
+.slds-button_icon-container.slds-is-selected:focus,
+.slds-button_icon-container.slds-is-selected:hover:not([disabled]) {
+    background-color: #CA1B21;
     border-color: #CA1B21;
 }
 
