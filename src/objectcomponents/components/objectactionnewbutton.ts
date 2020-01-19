@@ -15,7 +15,7 @@ export class ObjectActionNewButton implements OnInit {
 
     public disabled: boolean = true;
 
-    constructor(public language: language, public metadata: metadata, public model: model, @SkipSelf() private parentmodel: model) {
+    constructor(public language: language, public metadata: metadata, public model: model, @SkipSelf() public parentmodel: model) {
 
     }
 
