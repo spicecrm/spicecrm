@@ -980,6 +980,18 @@ export class metadata {
     }
 
     /**
+     get module by component
+     */
+    public getSystemModuleByComponent(comp) {
+        for (let component in this.componentDirectory) {
+            if(component == comp) {
+                return this.componentDirectory[component].module;
+            }
+        }
+        return null;
+    }
+
+    /**
      get components from Repository
      */
     public getSystemComponents(module?) {
@@ -1067,7 +1079,7 @@ export class metadata {
         let retActionSets: any[] = [];
 
         for (let actionset in this.actionSets) {
-            if (module !== "" && (this.actionSets[actionset].module !== module && this.actionSets[actionset].module !== "*")) {
+            if (module !== "" && (this.actionSets[actionset].module !== module)) {
                 continue;
             }
 
@@ -1075,7 +1087,9 @@ export class metadata {
                 id: actionset,
                 name: this.actionSets[actionset].name,
                 module: this.actionSets[actionset].module,
-                type: this.actionSets[actionset].type
+                type: this.actionSets[actionset].type,
+                package: this.actionSets[actionset].package,
+                actions: this.actionSets[actionset].actions
             });
         }
 
@@ -1104,6 +1118,23 @@ export class metadata {
         this.actionSets[actionset_id].package = params.package;
     }
 
+
+    public setActionSet(actionset_id, params) {
+        this.actionSets[actionset_id] = {
+            id: actionset_id,
+            module: params.module,
+            name:  params.name,
+            package: params.package,
+            version: params.version,
+            actions: params.actions,
+            type: params.type
+        };
+    }
+
+    public setActionSetItems(actionset_id, actions) {
+        this.actionSets[actionset_id].actions = actions;
+    }
+
     public addActionset(id, module, name, type = "custom", items = []) {
         this.actionSets[id] = {
             items: items,
@@ -1111,6 +1142,10 @@ export class metadata {
             name: name,
             type: type
         };
+    }
+
+    public removeActionset(id) {
+        delete this.actionSets[id];
     }
 
     public removeActionsetItem(parent, item) {
@@ -1136,9 +1171,9 @@ export class metadata {
     }
 
     /**
-     * returns the name of a fieldset
+     * returns the name of a actionset
      *
-     * @param fieldset the id of the fieldset
+     * @param actionset the id of the actionset
      */
     public getActionsetName(actionset) {
         try {
