@@ -13,17 +13,18 @@ import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: 'reports-designer',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesigner.html',
     providers: [
         ReportsDesignerService,
         reporterconfig,
         view,
         model
-    ]
+    ],
+    templateUrl: './src/modules/reportsdesigner/templates/reportsdesigner.html'
 })
 export class ReportsDesigner {
 
     private activeTab: string = 'manipulate';
+    protected currentUnionListFields: any[] = [];
 
     constructor(private language: language,
                 private cdr: ChangeDetectorRef,
@@ -151,6 +152,14 @@ export class ReportsDesigner {
     private handleUnionDelete(unionId) {
         this.cleanWhereGroups(unionId);
         this.cleanUnionListFields(unionId);
+    }
+
+    /*
+     * @param fields: object[]
+     * @set currentUnionListFields
+     */
+    private handleUnionAdd(fields) {
+        this.currentUnionListFields = fields;
     }
 
     /*

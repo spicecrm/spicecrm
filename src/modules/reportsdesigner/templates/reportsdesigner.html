@@ -27,7 +27,7 @@
 </div>
 <div class="slds-grid" tobottom>
     <div class="slds-size--1-of-3 slds-border--right slds-grid--vertical" style="height: 100%;">
-        <reports-designer-tree (onUnionDelete)="handleUnionDelete($event)"></reports-designer-tree>
+        <reports-designer-tree (onUnionDelete)="handleUnionDelete($event)" (onUnionAdd)="handleUnionAdd($event)"></reports-designer-tree>
     </div>
     <div class="slds-size--2-of-3" style="height: 100%">
         <div *ngIf="!model.isLoading && reportsDesignerService.currentPath" class="slds-tabs--default">
@@ -85,7 +85,14 @@
                 <ng-container *ngIf="view.isEditMode()">
                     <reports-designer-details *ngSwitchCase="'details'"></reports-designer-details>
                     <reports-designer-filter *ngSwitchCase="'filter'" [module]="reportsDesignerService.activeModule"></reports-designer-filter>
-                    <reports-designer-manipulate *ngSwitchCase="'manipulate'"></reports-designer-manipulate>
+                    <ng-container *ngSwitchCase="'manipulate'">
+                        <reports-designer-manipulate [class.slds-hide]="reportsDesignerService.activeModule.unionid != 'root'"></reports-designer-manipulate>
+                        <reports-designer-manipulate-union
+                                [class.slds-hide]="reportsDesignerService.activeModule.unionid == 'root'"
+                                [module]="reportsDesignerService.activeModule"
+                                [currentUnionListFields]="currentUnionListFields">
+                        </reports-designer-manipulate-union>
+                    </ng-container>
                     <reports-designer-present *ngSwitchCase="'present'"></reports-designer-present>
                     <reports-designer-visualize *ngSwitchCase="'visualize'"></reports-designer-visualize>
                     <reports-designer-integrate *ngSwitchCase="'integrate'"></reports-designer-integrate>

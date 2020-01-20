@@ -20,9 +20,13 @@ export class ReportsDesignerTree implements AfterViewInit {
     private filterKey: string = '';
     private isLoadingModuleFields: boolean = false;
     /*
-    * @output onUnionDelete: string = unionId
-    */
+     * @output onUnionDelete: EventEmitter<string> = unionId
+     */
     @Output() private onUnionDelete: EventEmitter<string> = new EventEmitter<string>();
+    /*
+     * @output onUnionAdd: object[] = currentUnionFields
+     */
+    @Output() private onUnionAdd: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(private language: language,
                 private backend: backend,
@@ -33,45 +37,45 @@ export class ReportsDesignerTree implements AfterViewInit {
     }
 
     /*
-    * @return module: object
-    */
+     * @return module: object
+     */
     get canAdd() {
         const listFields = this.model.getField('listfields');
         return listFields && listFields.length && listFields.length > 0;
     }
 
     /*
-    * @return module: object
-    */
+     * @return module: object
+     */
     get activeModule() {
         return this.reportsDesignerService.activeModule;
     }
 
     /*
-    * @return modules: any[]
-    */
+     * @return modules: any[]
+     */
     get unionModules() {
         const modules = this.model.getField('union_modules');
         return modules && modules.length ? modules : [];
     }
 
     /*
-    * @return dropLists: string[] = cdkDragList element id
-    */
+     * @return dropLists: string[] = cdkDragList element id
+     */
     get dropLists() {
         return this.reportsDesignerService.dropLists;
     }
 
     /*
-    * @return moduleFields: object[]
-    */
+     * @return moduleFields: object[]
+     */
     get reportFields() {
         return this.reportsDesignerService.moduleFields;
     }
 
     /*
-    * @return filteredReportFields: object[]
-    */
+     * @return filteredReportFields: object[]
+     */
     get filteredReportFields() {
         return this.filterKey ? this.reportFields
             .filter(nodeFiled => {
@@ -81,9 +85,9 @@ export class ReportsDesignerTree implements AfterViewInit {
     }
 
     /*
-    * @set treeCDKDragList
-    * @set availableModules
-    */
+     * @set treeCDKDragList
+     * @set availableModules
+     */
     public ngAfterViewInit() {
         this.reportsDesignerService.treeCDKDragList = this.dragList;
     }
@@ -134,42 +138,48 @@ export class ReportsDesignerTree implements AfterViewInit {
                 unionModules = unionModules.filter(module => module.unionid != id);
                 this.model.setField('union_modules', unionModules);
                 const selectedModule = unionModules.length > 0 ?
-                    unionModules[unionModules.length - 1] : {unionid: 'root', module: this.model.getField('report_module')};
+                    unionModules[unionModules.length - 1] : {
+                        unionid: 'root',
+                        module: this.model.getField('report_module')
+                    };
                 this.setActiveModule(selectedModule);
                 this.onUnionDelete.emit(id);
             }
         });
     }
 
-    /**
+    /*
      * loads the fields for a given module
      * @param unionId: string
      */
     private initializeUnionListFields(unionId) {
-        let unionListFields = this.model.getField('unionlistfields');
+        const unionListFields = this.model.getField('unionlistfields');
         const listFields = this.model.getField('listfields');
-        const newUnionListFields = listFields.slice().map(field => {
-            field =  {
-                fieldid: field.fieldid,
-                joinid: unionId,
-                path: field.path,
-                displaypath: '',
-                unionfieldpath: '',
-                unionfielddisplaypath: '',
-                unionfieldname: '',
-                unionfielddisplayname: '',
-                name: field.name,
-                fixedvalue: '',
-                id: field.fieldid
-            };
-            return field;
-        });
-        unionListFields = [...unionListFields, ...newUnionListFields];
-        this.model.setField('unionlistfields', unionListFields);
-        this.loadCurrentUnionListFields(unionId);
+        let newUnionListFields = listFields
+            .slice()
+            .map(field => {
+                field = {
+                    fieldid: field.fieldid,
+                    joinid: unionId,
+                    path: field.path,
+                    displaypath: '',
+                    unionfieldpath: '',
+                    unionfielddisplaypath: '',
+                    unionfieldname: '',
+                    unionfielddisplayname: '',
+                    name: field.name,
+                    fixedvalue: '',
+                    id: field.fieldid
+                };
+                return field;
+            });
+        if (!!unionListFields && unionListFields.length && unionListFields.length > 0) {
+            newUnionListFields = [...unionListFields, ...newUnionListFields];
+        }
+        this.model.setField('unionlistfields', newUnionListFields);
     }
 
-    /**
+    /*
      * loads the fields for a given module
      * @param module the module
      * @set isLoadingModuleFields
@@ -186,11 +196,11 @@ export class ReportsDesignerTree implements AfterViewInit {
     }
 
     /*
-    * placeholder to keep space reserved for the dragged element in its origin
-    * @create dragPlaceHolderNode
-    * @set dragPlaceHolderNode
-    * @insertBefore tr in origin container
-    */
+     * placeholder to keep space reserved for the dragged element in its origin
+     * @create dragPlaceHolderNode
+     * @set dragPlaceHolderNode
+     * @insertBefore tr in origin container
+     */
     private dropExited(e) {
         let tr = document.createElement('tr');
         let td = document.createElement('td');
@@ -206,19 +216,19 @@ export class ReportsDesignerTree implements AfterViewInit {
     }
 
     /*
-    * @removePlaceHolderElement
-    */
+     * @removePlaceHolderElement
+     */
     private dropEntered(e) {
         this.reportsDesignerService.removePlaceHolderElement(e.container.element.nativeElement);
     }
 
     /*
-    * @set currentModule
-    */
+     * @set currentModule
+     */
     private setActiveModule(selectedModule?) {
         if (selectedModule) {
             this.reportsDesignerService.activeModule = selectedModule;
-            this.loadCurrentUnionListFields(selectedModule.unionId);
+            this.setCurrentUnionListFields(selectedModule.unionid);
         } else {
             this.reportsDesignerService.activeModule = {unionid: 'root', module: this.model.getField('report_module')};
         }
@@ -227,23 +237,23 @@ export class ReportsDesignerTree implements AfterViewInit {
     }
 
     /*
-    * @param unionId
-    * @filter unionlistfields by unionId
-    * @set currentUnionListFields
-    */
-    private loadCurrentUnionListFields(unionId) {
+     * @param unionId
+     * @filter unionlistfields by unionId
+     * @set currentUnionListFields
+     */
+    private setCurrentUnionListFields(unionId) {
         let unionListFields = this.model.getField('unionlistfields');
         unionListFields = !!unionListFields && unionListFields.length ? unionListFields : [];
-        this.reportsDesignerService.currentUnionListFields = unionListFields.filter(field => field.joinid == unionId);
+        this.onUnionAdd.emit(unionListFields.filter(field => field.joinid == unionId));
     }
 
     /*
-    * A function that defines how to track changes for items in the iterable (ngForOf).
-    * https://angular.io/api/common/NgForOf#properties
-    * @param index
-    * @param item
-    * @return index
-    */
+     * A function that defines how to track changes for items in the iterable (ngForOf).
+     * https://angular.io/api/common/NgForOf#properties
+     * @param index
+     * @param item
+     * @return index
+     */
     private trackByFn(index, item) {
         return item.id;
     }

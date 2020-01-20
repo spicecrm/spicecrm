@@ -36,7 +36,7 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
     */
     get listItems() {
         let items = this.model.getField('listfields');
-        return items && items.length ? items.sort((a,b) => +a.sequence > +b.sequence ? 1 : -1) : [];
+        return items && items.length ? items.sort((a, b) => +a.sequence > +b.sequence ? 1 : -1) : [];
     }
 
     /*
@@ -87,6 +87,7 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
             let field = dragEvent.item.data;
             let newItem = this.generateNewItem(field, listItems.length + 1);
             listItems.splice(dragEvent.currentIndex, 0, newItem);
+            this.addListItemToUnionFields(newItem);
         }
 
         listItems = listItems.map((item, index) => {
@@ -94,6 +95,56 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
             return item;
         });
         this.listItems = listItems;
+    }
+
+    /*
+    * @param listItem
+    * @load unionModules
+    * @load unionListFields
+    * @define newItem
+    * @push newItem to unionListFields
+    * @set unionlistfields
+    */
+    private addListItemToUnionFields(listItem) {
+        const unionModules = this.model.getField('union_modules');
+        if (!unionModules || !unionModules.length || unionModules.length == 0) return;
+
+        let unionListFields = this.model.getField('unionlistfields');
+        if (!unionListFields || !unionListFields.length || unionListFields.length == 0) {
+            unionListFields = [];
+        }
+
+        unionModules.forEach(unionModule => {
+            let newItem = {
+                fieldid: listItem.fieldid,
+                joinid: unionModule.unionid,
+                path: listItem.path,
+                displaypath: '',
+                unionfieldpath: '',
+                unionfielddisplaypath: '',
+                unionfieldname: '',
+                unionfielddisplayname: '',
+                name: listItem.name,
+                fixedvalue: '',
+                id: listItem.fieldid
+            };
+            unionListFields.push(newItem);
+        });
+        this.model.setField('unionlistfields', unionListFields);
+    }
+
+    /*
+    * @param fieldId
+    * @load unionListFields
+    * @filter unionListFields from deleted item
+    * @set unionlistfields
+    */
+    private deleteListItemToUnionFields(fieldId) {
+        let unionListFields = this.model.getField('unionlistfields');
+        if (!unionListFields || !unionListFields.length || unionListFields.length == 0) return;
+
+        unionListFields = unionListFields.filter(field => field.fieldid != fieldId);
+        this.model.setField('unionlistfields', unionListFields);
     }
 
     /*
@@ -134,8 +185,7 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
                 let listItems = this.listItems.slice();
                 listItems = listItems.filter(field => field.fieldid != fieldId);
                 this.listItems = listItems;
-                let unionListItems = this.model.getField('unionlistfields');
-                if (!unionListItems || !unionListItems.length) return;
+                this.deleteListItemToUnionFields(fieldId);
             }
         });
     }
