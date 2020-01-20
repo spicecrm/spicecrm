@@ -68,8 +68,8 @@ export class fieldLookup extends fieldGeneric implements OnInit {
 
         // subscribe to model $data and build the pills .. replacing the setter
         this.model.data$.subscribe(modelData => {
-            this.setPills()
-        })
+            this.setPills();
+        });
     }
 
     /**

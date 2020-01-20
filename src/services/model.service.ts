@@ -97,6 +97,11 @@ export class model implements OnDestroy {
     public data$: BehaviorSubject<any>;
 
     /**
+     * indicates wheter the model is currently saving
+     */
+    public isSaving: boolean = false;
+
+    /**
      * a simple event emitter that emits whenever the model is saved
      * this is used in views that also shoudl update when the model is saved. The pure data$ does not do that since data$ emils all data changes
      * the emitter emits  the changed data and the backupdate (a shallow copy thereof) in an object
@@ -193,12 +198,23 @@ export class model implements OnDestroy {
     public duplicates: any[] = [];
 
     /**
+     * can be set if the model is in teh context of a parent and thus allows to pass a parent model through the dom
+     */
+    public parentmodel: model;
+
+    /**
      * the coiunt for the toal duplicates found
      */
     public duplicatecount: number = 0;
 
+    /**
+     * ToDo add documentation on how to use this
+     */
     private modelRegisterId: number;
 
+    /**
+     * ToDo: add documentation how to use this
+     */
     public savingProgress: BehaviorSubject<number> = new BehaviorSubject(1);
 
     constructor(
@@ -835,6 +851,9 @@ export class model implements OnDestroy {
     public save(notify: boolean = false): Observable<boolean> {
         let responseSubject = new Subject<boolean>();
 
+        // set to saving
+        this.isSaving = true;
+
         // Clean strings of leading and ending white spaces:
         for (let property in this.data) {
             if (_.isString(this.data[property])) this.data[property] = this.data[property].trim();
@@ -886,6 +905,9 @@ export class model implements OnDestroy {
                     // emit the observable
                     responseSubject.next(true);
                     responseSubject.complete();
+
+                    // saving is done
+                    this.isSaving = false;
                 },
                 error => {
                     // console.log(error);
@@ -902,6 +924,9 @@ export class model implements OnDestroy {
                             responseSubject.error(true);
                             responseSubject.complete();
                     }
+
+                    // indicvate end of save process
+                    this.isSaving = false;
                 });
         return responseSubject.asObservable();
     }

@@ -1,34 +1,34 @@
 /**
  * @module ObjectComponents
  */
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, SkipSelf} from "@angular/core";
 import {metadata} from "../../services/metadata.service";
 import {model} from "../../services/model.service";
 import {language} from "../../services/language.service";
 
 @Component({
     selector: "object-action-new-button",
-    templateUrl: "./src/objectcomponents/templates/objectactionnewbutton.html"
+    templateUrl: "./src/objectcomponents/templates/objectactionnewbutton.html",
+    providers: [model]
 })
 export class ObjectActionNewButton implements OnInit {
 
-    public parent: any = {};
-    public module: string = "";
     public disabled: boolean = true;
 
-    constructor(public language: language, public metadata: metadata, public model: model) {
+    constructor(public language: language, public metadata: metadata, public model: model, @SkipSelf() public parentmodel: model) {
 
     }
 
     public execute() {
         // make sure we have no idea so a new on gets issues
-        this.model.id = "";
-        this.model.addModel("", this.parent);
+        this.model.module = this.parentmodel.module;
+        this.model.id = undefined;
+        this.model.initialize();
+        this.model.addModel("", this.parentmodel);
     }
 
     public ngOnInit() {
-        this.model.module = this.module ? this.module : this.model.module;
-        if (this.model.module && this.metadata.checkModuleAcl(this.model.module, "create")) {
+        if (this.parentmodel.module && this.metadata.checkModuleAcl(this.parentmodel.module, "create")) {
             this.disabled = false;
         }
     }
