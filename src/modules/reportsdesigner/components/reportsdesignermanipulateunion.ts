@@ -17,24 +17,20 @@ import {model} from "../../../services/model.service";
 export class ReportsDesignerManipulateUnion implements OnChanges, OnDestroy {
 
     @ViewChild('dropList', {static: false}) private dropList;
-    private listItems: any[] = [];
     /*
     * @input module: {module: string, unionid: string}
     */
     @Input() private module: any = {};
+    /*
+    * @input currentUnionListFields: object[]
+    */
+    @Input() protected currentUnionListFields: any[] = [];
 
     constructor(private language: language,
                 private modelUtilities: modelutilities,
                 private modal: modal,
                 private model: model,
                 private reportsDesignerService: ReportsDesignerService) {
-    }
-
-    /*
-    * @return unionlistfields: object[]
-    */
-    get unionListFields() {
-        return this.reportsDesignerService.currentUnionListFields;
     }
 
     /*
@@ -49,7 +45,7 @@ export class ReportsDesignerManipulateUnion implements OnChanges, OnDestroy {
     * @set listItems
     */
     public ngOnChanges() {
-        this.reportsDesignerService.dropLists = [...this.reportsDesignerService.dropLists, ...this.unionListFields.map(item => item.fieldid)];
+        this.reportsDesignerService.dropLists = [...this.reportsDesignerService.dropLists, ...this.currentUnionListFields.map(item => item.fieldid)];
     }
 
     /*
@@ -95,10 +91,12 @@ export class ReportsDesignerManipulateUnion implements OnChanges, OnDestroy {
      * @set joinid
      */
     private linkUnionField(unionField, dragField) {
+        const rootPath = this.reportsDesignerService.currentPath.indexOf('link') < 0 ? 'unionroot::' : '';
+        const unionPath = this.reportsDesignerService.currentPath.replace('root:' , '');
         unionField.unionfieldname = dragField.fieldname;
         unionField.unionfielddisplayname = dragField.label;
         unionField.unionfielddisplaypath = this.reportsDesignerService.currentPath;
-        unionField.unionfieldpath = `unionroot::union-${this.module.unionid}:${this.reportsDesignerService.currentPath}::${dragField.id}`;
+        unionField.unionfieldpath = `${rootPath}union${this.module.unionid}:${unionPath}::${dragField.id}`;
         unionField.displaypath = this.reportsDesignerService.currentPath;
         unionField.joinid = this.module.unionid;
     }
@@ -106,26 +104,25 @@ export class ReportsDesignerManipulateUnion implements OnChanges, OnDestroy {
     /*
      * @reset unionField union key values
      */
-    protected unlinkUnionField(unionField) {
+    protected resetUnionField(unionField) {
         unionField.unionfieldname = '';
         unionField.unionfielddisplayname = '';
         unionField.unionfielddisplaypath = '';
         unionField.unionfieldpath = '';
         unionField.displaypath = '';
-        unionField.joinid = '';
     }
 
     /*
      * @param fieldId: string
      * @delete the record with the given index
      */
-    private deleteField(fieldId) {
+    private unlinkField(fieldId) {
         this.modal.confirm(this.language.getLabel('LBL_UNLINK'), this.language.getLabel('LBL_UNLINK'))
             .subscribe(response => {
                 if (response) {
-                    this.unionListFields.some(field => {
+                    this.currentUnionListFields.some(field => {
                         if (field.fieldid == fieldId) {
-                            this.unlinkUnionField(field);
+                            this.resetUnionField(field);
                             return true;
                         }
                     });
