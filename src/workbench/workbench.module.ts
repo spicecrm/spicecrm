@@ -12,6 +12,7 @@ import {VersionManagerService} from "../services/versionmanager.service";
 import {SystemComponents} from "../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../directives/directives";
 import {ObjectFields} from "../objectfields/objectfields";
+import {ObjectComponents} from "../objectcomponents/objectcomponents";
 import {GlobalComponents} from "../globalcomponents/globalcomponents";
 
 // COMPONENTs
@@ -47,6 +48,7 @@ import /*embed*/ {LanguageTranslationsManager} from "./components/languagetransl
 import /*embed*/ {LanguageLabelManagerComponent,SortPipe} from "./components/languagelabelmanager";
 import /*embed*/ {LanguageLabelModal} from "./components/languagelabelmodal";
 import /*embed*/ {MailboxesManager} from "./components/mailboxesmanager";
+import /*embed*/ {MailboxesTransportsEnum} from "./components/mailboxestransportsenum";
 import /*embed*/ {MailboxesmanagerTestModal} from "./components/mailboxesmanagertestmodal";
 import /*embed*/ {MailboxesmanagerTestIMAPModal} from "./components/mailboxesmanagertestimapmodal";
 import /*embed*/ {MailboxesMailgunTrafficManager} from "./components/mailboxesmailguntrafficmanager";
@@ -109,6 +111,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         SystemComponents,
         DirectivesModule,
         ObjectFields,
+        ObjectComponents,
         GlobalComponents
     ],
     declarations: [
@@ -153,6 +156,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         LanguageLabelModal,
         ComponentConfigManagerComponentDetails,
         MailboxesManager,
+        MailboxesTransportsEnum,
         LanguageLabelModal,
         MailboxManagerAddDialog,
         MailboxesmanagerTestModal,

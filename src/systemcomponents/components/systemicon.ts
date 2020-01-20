@@ -36,6 +36,7 @@ export class SystemIcon {
     private getIconClass() {
         switch (this.sprite) {
             case "standard":
+            case "action":
             case "custom":
                 return "slds-icon" + (this.size ? " slds-icon--" + this.size : "") + " slds-icon-" + this.getSprite() + "-" + this.getIcon().replace(/_/g, "-") + " " + this.addclasses;
             default:
@@ -58,7 +59,7 @@ export class SystemIcon {
     }
 
     private getSprite() {
-        if(this.icon.indexOf(":") > 0) {
+        if(this.icon && this.icon.indexOf(":") > 0) {
             return this.icon.split(":")[0];
         }
 

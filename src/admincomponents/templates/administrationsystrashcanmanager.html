@@ -1,12 +1,7 @@
 <div class="slds-page-header">
     <div class="slds-media">
-        <div class="slds-media__figure">
-      <span class="slds-icon_container slds-icon-action-recall">
-        <svg class="slds-icon slds-page-header__icon" aria-hidden="true">
-          <use xmlns:xlink="http://www.w3.org/1999/xlink"
-               xlink:href="./sldassets/icons/action-sprite/svg/symbols.svg#recall"/>
-        </svg>
-      </span>
+        <div class="slds-p-horizontal--x-small">
+            <system-action-icon icon="recall"></system-action-icon>
         </div>
         <div class="slds-media__body">
             <h1 class="slds-page-header__title slds-truncate slds-align-middle">Record Recovery</h1>
@@ -16,31 +11,26 @@
         </div>
     </div>
 </div>
-<div>
-    <div>
-        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
-            <thead>
+<div tobottom>
+    <table class="slds-table slds-table_bordered slds-table--header-fixed slds-table_cell-buffer">
+        <thead>
             <tr class="slds-text-title_caps">
                 <th scope="col" colspan="2">
-                    <div class="slds-truncate" title="Opportunity Name">Object</div>
+                    <div class="slds-truncate">{{language.getLabel('LBL_OBJECT')}}</div>
                 </th>
                 <th scope="col">
-                    <div class="slds-truncate" title="Account Name">Name</div>
+                    <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
                 </th>
                 <th scope="col">
-                    <div class="slds-truncate" title="Close Date">deleted date</div>
+                    <div class="slds-truncate">{{language.getLabel('LBL_DATE_DELETED')}}</div>
                 </th>
                 <th scope="col">
-                    <div class="slds-truncate" title="Stage">deleted by</div>
+                    <div class="slds-truncate">{{language.getLabel('LBL_DELETED_BY')}}</div>
                 </th>
-                <th scope="col" style="width: 3.25rem;">
-                    <div class="slds-th__action">
-                        <span class="slds-assistive-text">Actions</span>
-                    </div>
-                </th>
+                <th scope="col" class="slds-cell-shrink"></th>
             </tr>
-            </thead>
-            <tbody>
+        </thead>
+        <tbody>
             <tr *ngFor="let record of records">
                 <td role="gridcell" class="slds-cell-shrink">
                     <system-icon [module]="getModule(record.recordmodule)" size="small"></system-icon>
@@ -58,17 +48,15 @@
                     <div class="slds-truncate">{{record.user_name}}</div>
                 </td>
                 <td role="gridcell">
-                    <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small"
-                            (click)="recoverRecord(record)">
+                    <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small"  (click)="recoverRecord(record)">
                         <system-button-icon [icon]="'undelete'"></system-button-icon>
                     </button>
                 </td>
             </tr>
-            </tbody>
-            <tbody system-table-stencils [columns]="5" [select]="false" [tools]="true" [rows]="5" *ngIf="loading"></tbody>
-        </table>
-        <div *ngIf="!loading && records.length == 0" class="slds-p-around--medium slds-align--absolute-center">
-            <h2 class="slds-text-heading--small">no records found</h2>
-        </div>
+        </tbody>
+        <tbody system-table-stencils [columns]="5" [select]="false" [tools]="true" [rows]="5" *ngIf="loading"></tbody>
+    </table>
+    <div *ngIf="!loading && records.length == 0" class="slds-p-around--medium slds-align--absolute-center">
+        <h2 class="slds-text-heading--small">{{language.getLabel('LBL_NO_RECORDS_FOUND')}}</h2>
     </div>
 </div>

@@ -62,7 +62,8 @@
                             <td><a (click)="valuesNotClickable || valueClicked$.emit({type:'uid',value:line.uid})" [ngClass]="{notClickable:valuesNotClickable}">{{getUsername(line.uid)}}</a></td>
                             <td><a (click)="valuesNotClickable || valueClicked$.emit({type:'lev',value:line.lev})" [ngClass]="{notClickable:valuesNotClickable}">{{line.lev}}</a></td>
                             <td [ngClass]="{expanded:line.expand,collapsed:!line.expand}">
-                                <div class="slds-text-font_monospace" [ngClass]="{'slds-truncate':!line.expand}">{{line.txt}}</div></td>
+                                <div class="slds-text-font_monospace" [ngClass]="{'slds-truncate':!line.expand}">{{line.txt}}</div>
+                            </td>
                             <td class="slds-p-left--none" style="border-left:0">
                                 <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="line.expand=true" >
                                     <system-button-icon [icon]="'threedots'" [size]="'small'"></system-button-icon>
