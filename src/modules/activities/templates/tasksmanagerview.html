@@ -1,4 +1,11 @@
-<div class="slds-grid" style="height: 100%;">
-    <tasks-manager-tasks class="slds-size--1-of-2" (taskselected)="taskSelected($event)"></tasks-manager-tasks>
-    <tasks-manager-task-details class="slds-size--1-of-2" [focusid]="focus"></tasks-manager-task-details>
+<div class="slds-grid slds-height_full">
+    <ng-container *ngIf="modellist.isLoading || modellist.listData.totalcount > 0; else noitems">
+        <tasks-manager-tasks class="slds-size--1-of-2" (taskselected)="taskSelected($event)"></tasks-manager-tasks>
+        <tasks-manager-task-details class="slds-size--1-of-2" [focusid]="focus"></tasks-manager-task-details>
+    </ng-container>
+    <ng-template #noitems>
+        <div class="slds-height_full slds-align--absolute-center">
+            <system-illustration-no-task></system-illustration-no-task>
+        </div>
+    </ng-template>
 </div>

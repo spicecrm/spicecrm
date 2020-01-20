@@ -16,7 +16,7 @@
                   </span>
                 </a>
             </li>
-            <li class="slds-dropdown__item slds-has-divider--bottom" [ngClass]="{'slds-is-selected': modellist.listtype == 'owner'}" role="presentation" (click)="setListType('owner')">
+            <li class="slds-dropdown__item " [ngClass]="{'slds-is-selected': modellist.listtype == 'owner', 'slds-has-divider--bottom': listtypes.length > 0}" role="presentation" (click)="setListType('owner')">
                 <a href="javascript:void(0);" role="menuitemcheckbox">
                   <span class="slds-truncate">
                       <system-utility-icon size="x-small" icon="check"
