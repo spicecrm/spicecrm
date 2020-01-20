@@ -1,6 +1,6 @@
 <td>
-    <system-utility-icon *ngIf="listItem.joinid" icon="linked" size="x-small" colorclass="slds-icon-text-success"></system-utility-icon>
-    <system-utility-icon *ngIf="!listItem.joinid" icon="unlinked" size="x-small" colorclass="slds-icon-text-light"></system-utility-icon>
+    <system-utility-icon *ngIf="isLinked" icon="linked" size="x-small" colorclass="slds-icon-text-success"></system-utility-icon>
+    <system-utility-icon *ngIf="!isLinked" icon="unlinked" size="x-small" colorclass="slds-icon-text-light"></system-utility-icon>
 </td>
 <td>
     <div class="slds-truncate" [title]="listItem.path">
@@ -34,7 +34,7 @@
     </div>
 </td>
 <td class="slds-cell-shrink slds-text-align--center" data-cdk-drag-placholder-container>
-    <button *ngIf="listItem.joinid" class="slds-button slds-button--icon" (click)="deleteField()">
+    <button *ngIf="listItem.joinid" class="slds-button slds-button--icon" (click)="unlinkField()">
         <system-button-icon icon="remove_link"></system-button-icon>
     </button>
 </td>

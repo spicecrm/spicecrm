@@ -17,16 +17,19 @@ export class ReportsDesignerManipulateUnionTableRow {
     /*
     * @output onDelete: EventEmitter<void>
     */
-    @Output() private onDelete: EventEmitter<void> = new EventEmitter<void>();
+    @Output() private onUnlink: EventEmitter<void> = new EventEmitter<void>();
 
     constructor(private language: language) {
     }
 
+    get isLinked() {
+        return !!this.listItem.unionfieldpath && this.listItem.unionfieldpath.length > 0;
+    }
     /*
      * @param fieldId: string
      * @delete the record with the given index
      */
-    private deleteField() {
-        this.onDelete.emit();
+    private unlinkField() {
+        this.onUnlink.emit();
     }
 }
