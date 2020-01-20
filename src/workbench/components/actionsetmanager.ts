@@ -28,16 +28,25 @@ export class ActionsetManager {
 
     private change_request_required: boolean = false;
 
-    private sysModules: Array<any> = [];
+    private sysModules: any = [];
     private currentModule: string = '*';
-    private currentActionSet: string = '';
-    private currentActionSetItems: Array<any> = [];
-    private selectedItem: any = {
-        type: '',
-        actionset: '',
+    private currentActionSet: any = {
         id: '',
-        isViewMode: false
+        module: '',
+        name: '',
+        package: '',
+        type: '',
+        actions: [],
+        isnew: false
     };
+
+    private actionSetBackup = "";
+
+    // private currentActionSetItems: Array<any> = [];
+    private selectedItem: any = null;
+
+    private selectedItemID = "";
+
     private showActionSetDetails: boolean = false;
 
     constructor(private backend: backend,
@@ -53,65 +62,27 @@ export class ActionsetManager {
 
         this.backend.getRequest('spiceui/admin/modules').subscribe(modules => {
             this.sysModules = modules;
-
-            // iniutialize the metadata service
-            // this.metadata.loadActionSets(new Subject<any>(), true);
-            // this.metadata.loadActionDefs(new Subject<any>(), true);
-            // this.metadata.loadComponents(new Subject<any>(), true);
         });
         this.checkMode();
     }
 
-
-    get currentActionSetName() {
-        return this.metadata.getActionSet(this.currentActionSet).name;
-    }
-
-    set currentActionSetName(newName) {
-        this.metadata.setActionset(this.currentActionSet, {name: newName, package: this.currentActionSetPackage});
-    }
-
-    get currentActionSetPackage() {
-        return this.metadata.getActionSet(this.currentActionSet).package;
-    }
-
-    set currentActionSetPackage(newPackage) {
-        this.metadata.setActionset(this.currentActionSet, {name: this.currentActionSetName, package: newPackage});
-    }
-
-    get showDetailIcon() {
-        return this.showActionSetDetails ? 'chevronup' : 'chevrondown';
-    }
-
-    private toggleDetail() {
-        this.showActionSetDetails = !this.showActionSetDetails;
-    }
-
-    get actionSetType() {
-        if (this.currentActionSet) {
-            return this.metadata.getActionSet(this.currentActionSet).type;
-        } else {
-            return '';
-        }
-    }
-
-    private getActionSets(type = undefined) {
+    // get all actionsets for the current module and type(global, custom)
+    private getActionSets(type = null) {
+        let retArray = [];
         if (!type) {
-            return this.metadata.getActionSets(this.currentModule);
+            retArray = this.metadata.getActionSets(this.currentModule);
         } else {
-            let retArray = [];
             let actionsets = this.metadata.getActionSets(this.currentModule);
-
             for (let actionset of actionsets) {
                 if (actionset.type == type) {
                     retArray.push(actionset);
                 }
             }
-
-            return retArray;
         }
+        return retArray;
     }
 
+    // check edit mode
     private checkMode() {
         this.edit_mode = this.configurationService.getCapabilityConfig('core').edit_mode;
         this.change_request_required = this.configurationService.getCapabilityConfig('systemdeployment').change_request_required ? true : false;
@@ -155,7 +126,7 @@ export class ActionsetManager {
     }
 
     private setCustomMode() {
-        if (this.actionSetType == "custom") {
+        if (this.currentActionSet.type == "custom") {
             this.view.setEditMode();
         } else {
             this.view.setViewMode();
@@ -166,435 +137,299 @@ export class ActionsetManager {
         this.view.setEditMode();
     }
 
-
-    private loadCurrentActionset() {
-        this.selectedItem = {
-            type: '',
-            actionset: '',
-            id: ''
-        };
-        this.checkMode();
-        this.currentActionSetItems = [];
-        this.addActionSetItems(this.currentActionSet, 0, this.actionSetType);
+    get checkForChanges() {
+        return this.checkForChangesFunction();
     }
 
-    private addItem(parent = '') {
-        this.modalservice.openModal('ActionsetManagerAddDialog').subscribe(modal => {
-            modal.instance.metadata = this.metadata;
-            modal.instance.module = this.currentModule;
-            modal.instance.actionsettype = this.actionSetType;
-            modal.instance.edit_mode = this.edit_mode;
-            modal.instance.parent = parent ? parent : this.currentActionSet;
-            modal.instance.closedialog.subscribe(added => {
-                if (added) {
-                    this.loadCurrentActionset();
-                }
-            });
-        });
-    }
-
-    private unlinkItem(item) {
-        if (this.metadata.removeActionsetItem(item.actionset, item.item)) {
-            this.selectedItem = {
-                type: '',
-                actionset: '',
-                id: ''
-            };
-            this.loadCurrentActionset();
+    private checkForChangesFunction() {
+        if(this.currentActionSet.id != "") {
+            return JSON.stringify(this.currentActionSet) == this.actionSetBackup ? false: true;
+        } else {
+            return false;
         }
     }
 
-    private editActionset() {
-        this.modalservice.openModal('ActionsetManagerEditDialog').subscribe(modal => {
-            modal.instance.actionset = this.currentActionSet;
-            modal.instance.edit_mode = this.edit_mode;
-            modal.instance.closedialog.subscribe(update => {
-                if (update !== false) {
-                    if (this.currentActionSet != '') {
-                        this.metadata.setActionset(this.currentActionSet, {name: update.name, type: update.type});
-                    } else {
-                        let actionsetid = this.modelutilities.generateGuid();
-                        this.metadata.addActionset(actionsetid, this.currentModule, update.name, update.type);
-                        this.currentActionSet = actionsetid;
+    private selectCurrentActionset() {
+        let newID = this.currentActionSet.id;
+        if(this.actionSetBackup != "") {
+            // set it back to the old id .. for the dirty-field check
+            this.currentActionSet.id = JSON.parse(this.actionSetBackup).id;
+            JSON.stringify(this.actionSetBackup);
+            if(this.checkForChangesFunction()) {
+                this.modal.confirm(  'LBL_ALL_CHANGES_WOULD_BE_DELETED.', 'LBL_ARE_YOU_SURE' ).subscribe( ( answer ) => {
+                    if(answer) {
+                        this.deleteChanges();
+                        this.loadCurrentActionset(newID);
                     }
-                    this.checkMode();
+                });
+            } else {
+                this.loadCurrentActionset(newID);
+            }
+        } else {
+            this.loadCurrentActionset(newID);
+        }
+    }
+
+    private loadCurrentActionset(newID) {
+        this.selectedItem = null;
+        this.checkMode();
+        this.currentActionSet = this.metadata.getActionSet(newID);
+        this.actionSetBackup = JSON.stringify({...this.currentActionSet});
+        // this.addActionSetItems(this.currentActionSet.id, this.currentActionSet.type);
+        if(this.currentActionSet) {
+            if (this.currentActionSet.actions) {
+                if (this.currentActionSet.actions.length > 0) {
+                    this.selectItem(this.currentActionSet.actions[0]);
+                }
+            }
+        }
+    }
+
+
+
+    private addActionsetItem() {
+        let currentActionSetItem = {
+            // actionset: this.currentActionSet,
+            action: "NEW",
+            component: null,
+            id: this.modelutilities.generateGuid(),
+            sequence: this.currentActionSet.actions.length,
+            singlebutton: false,
+            package: this.currentActionSet.package,
+            version: this.currentActionSet.version,
+            actionconfig: {},
+            parentScope: this.currentActionSet.type
+        };
+        this.currentActionSet.actions.push(currentActionSetItem);
+
+        this.metadata.setActionSetItems(this.currentActionSet.id, this.currentActionSet.actions);
+        this.selectItem(currentActionSetItem);
+    }
+    private deleteItem(item) {
+        this.modal.confirm( 'LBL_ARE_YOU_SURE', 'LBL_REMOVE_ITEM' ).subscribe( ( answer ) => {
+            if(answer) {
+                this.currentActionSet.actions.splice(
+                    this.currentActionSet.actions.map(e => {
+                        return e.id;
+                    }).indexOf(item.id), 1);
+            }
+        });
+    }
+
+    private addActionset() {
+        this.modalservice.openModal('ActionsetManagerAddDialog').subscribe(modal => {
+
+            modal.instance.sysModules = this.sysModules;
+            modal.instance.actionsetModule = this.currentModule;
+            modal.instance.mode = 'add';
+            modal.instance.edit_mode = this.edit_mode;
+            modal.instance.actionsetName="";
+
+            modal.instance.closedialog.subscribe(added => {
+                if (added) {
+                    let newId =  this.modelutilities.generateGuid();
+                    this.currentActionSet.actions = [];
+                    this.metadata.setActionSet(newId, {
+                        module: added.module,
+                        name: added.name,
+                        type: added.type,
+                        actions: this.currentActionSet.actions
+                    });
+
+                    this.reset();
+                    this.currentModule = added.module;
+
+                    this.currentActionSet.id = newId;
+                    this.currentActionSet.module = added.module;
+                    this.currentActionSet.name = added.name;
+                    this.currentActionSet.type = added.type;
+                    this.currentActionSet.actions = [];
+                    this.currentActionSet.package = '';
+                    this.currentActionSet.isnew = true;
                 }
             });
         });
     }
 
-
-    private addActionset() {
-        this.currentActionSet = '';
-        this.currentActionSetItems = [];
-        this.editActionset();
+    private selectModule() {
+        let newModule = this.currentActionSet.module;
+        if(this.actionSetBackup != "") {
+            // set it back to the old id .. for the dirty-field check
+            this.currentActionSet.module = JSON.parse(this.actionSetBackup).module;
+            JSON.stringify(this.actionSetBackup);
+            if(this.checkForChangesFunction()) {
+                this.modal.confirm(  'LBL_ALL_CHANGES_WOULD_BE_DELETED.', 'LBL_ARE_YOU_SURE' ).subscribe( ( answer ) => {
+                    if(answer) {
+                        this.deleteChanges();
+                        this.currentActionSet.module = newModule;
+                    }
+                });
+            } else {
+                this.currentActionSet.module = newModule;
+            }
+        } else {
+            this.currentActionSet.module = newModule;
+        }
     }
 
     private reset() {
-        this.currentActionSet = '';
-        this.currentActionSetItems = [];
-        this.selectedItem = {
+        this.currentActionSet = {
+            id: '',
+            module: '',
+            name: '',
+            package: '',
             type: '',
-            actionset: '',
-            id: ''
+            actions: []
         };
-    }
-
-    private addActionSetItems(actionSet, level = 0, parentScope = "global") {
-        let actionsetItems = this.metadata.getActionSetItems(actionSet);
-
-        // for(let [index, actionsetItem] of actionsetItems){
-        actionsetItems.forEach((actionsetItem, index) => {
-
-            let customModeGlobalField = false;
-            if (this.edit_mode == "custom" && !this.crNoneActive) {
-                if (parentScope == "global") {
-                    customModeGlobalField = true;
-                }
-            } else if (this.edit_mode == "none" || this.crNoneActive) {
-                customModeGlobalField = true;
-            }
-
-            if (actionsetItem.field) {
-                let currentActionSetItem = {
-                    level: level + 1,
-                    type: 'field',
-                    actionset: actionSet,
-                    id: actionsetItem.id,
-                    name: actionsetItem.field,
-                    index: index,
-                    count: actionsetItems.length,
-                    item: actionsetItem,
-                    parentScope: parentScope,
-                    customModeGlobalField: customModeGlobalField
-                };
-                this.currentActionSetItems.push(currentActionSetItem);
-
-            } else if (actionsetItem.actionset) {
-
-                let customModeGlobalField = false;
-                if (this.edit_mode == "custom" && !this.crNoneActive) {
-                    let item = this.metadata.getActionSet(actionsetItem.actionset);
-                    if (item) {
-                        if (item.type == "global") {
-                            customModeGlobalField = true;
-                        }
-                    }
-                } else if (this.edit_mode == "none" || this.crNoneActive) {
-                    customModeGlobalField = true;
-                }
-                // getDisplayType(currentActionSetItem) == 'global'
-                // this.metadata.getActionset(actionsetItem.actionset).type
-
-                let currentActionSetItem = {
-                    level: level + 1,
-                    type: 'actionset',
-                    actionset: actionSet,
-                    id: actionsetItem.id,
-                    name: this.metadata.getActionsetName(actionsetItem.actionset),
-                    index: index,
-                    count: actionsetItems.length,
-                    item: actionsetItem,
-                    parentScope: parentScope,
-                    customModeGlobalField: customModeGlobalField
-                };
-                this.currentActionSetItems.push(currentActionSetItem);
-
-                this.addActionSetItems(actionsetItem.actionset, level + 1, this.getDisplayType(currentActionSetItem));
-            }
-        });
+        this.selectedItem = null;
+        this.selectedItemID = "";
     }
 
     private getDisplayName(item) {
-        if (item.type == 'field') {
-            return item.item.field;
-        }
-
-        if (item.type == 'actionset') {
-            return this.metadata.getActionsetName(item.item.actionset);
-        }
-    }
-
-    private getDisplayType(item) {
-        if (item.type == 'actionset') {
-            let ditem = this.metadata.getActionSet(item.item.actionset);
-            if (ditem) {
-                return ditem.type;
-            }
-        }
-        return;
+        let name = item.action ? item.action: item.component;
+        return item.actionconfig.label ? name + " (" + this.language.getLabel(item.actionconfig.label) + ")":  name;
     }
 
     private isSelected(id) {
         return id == this.selectedItem.id;
     }
 
-    private selectItem(currentActionSetItem, scope) {
-        this.selectedItem = {
-            type: currentActionSetItem.type,
-            actionset: currentActionSetItem.actionset,
-            id: currentActionSetItem.id,
-            isViewMode: currentActionSetItem.customModeGlobalField
-        };
-    }
-
-    private moveDown(item) {
-        let actionsetItems = this.metadata.getActionSetItems(item.actionset);
-
-        // get the current ind ex in the array
-        let currentIndex = 0;
-        actionsetItems.some((someitem, someindex) => {
-            if (someitem.id == item.id) {
-                currentIndex = someindex;
-                return true;
+    private selectItem(currentActionSetItem) {
+        this.selectedItemID = currentActionSetItem.id;
+        for (let item of this.currentActionSet.actions) {
+            if(item.id == currentActionSetItem.id) {
+                this.selectedItem = item;
             }
-        });
-        if (currentIndex < actionsetItems.length - 1) {
-            // shuffle
-            let currentItem = actionsetItems.splice(currentIndex, 1);
-            actionsetItems.splice(currentIndex + 1, 0, currentItem[0]);
-
-            // renumber
-            let i = 0;
-            for (let item of actionsetItems) {
-                item.sequence = i;
-                i++;
-            }
-
-            // reload
-            this.loadCurrentActionset();
         }
     }
 
-    private moveUp(item) {
-        let actionsetItems = this.metadata.getActionSetItems(item.actionset);
-
-        // get the current ind ex in the array
+    // move items up and down
+    private move(item, direction) {
+        // get the current sequence in the array
         let currentIndex = 0;
-        actionsetItems.some((someitem, someindex) => {
+        this.currentActionSet.actions.some((someitem, someindex) => {
             if (someitem.id == item.id) {
                 currentIndex = someindex;
                 return true;
             }
         });
 
-        if (currentIndex > 0) {
-            // shuffle
-            let currentItem = actionsetItems.splice(currentIndex, 1);
-            actionsetItems.splice(currentIndex - 1, 0, currentItem[0]);
+        let possible = false;
+        let tosplice = currentIndex - 1;
 
-            // renumber
-            let i = 0;
-            for (let item of actionsetItems) {
-                item.sequence = i;
-                i++;
-            }
-
-            // reload
-            this.loadCurrentActionset();
-        }
-    }
-
-    private allowEdit() {
-        return this.currentActionSet != '';
-    }
-
-    // Find table
-    private findTable(type) {
-
-        let tablescope;
-
-        if (type == "global") {
-            tablescope = {
-                actionsetTable: "sysuiactionsets",
-                itemsTable: "sysuiactionsetsitems"
-            };
+        if(direction == "up") {
+            possible = currentIndex > 0;
+            tosplice = currentIndex - 1;
         } else {
-            tablescope = {
-                actionsetTable: "sysuicustomactionsets",
-                itemsTable: "sysuicustomactionsetsitems"
-            };
+            possible = currentIndex < this.currentActionSet.actions.length;
+            tosplice = currentIndex + 1;
         }
-        return tablescope;
+
+        if (possible) {
+            // shuffle
+            let currentItem = this.currentActionSet.actions.splice(currentIndex, 1);
+            this.currentActionSet.actions.splice(tosplice, 0, currentItem[0]);
+
+            // renumber
+            let i = 0;
+            for (let item of this.currentActionSet.actions) {
+                item.sequence = i;
+                i++;
+            }
+        }
     }
 
-    //
-    // private copy(currentActionset = this.currentActionSet, customizeItem = null) {
-    //     this.modalservice.openModal('FieldsetManagerCopyDialog').subscribe(modal => {
-    //
-    //         modal.instance.fieldset = currentActionset;
-    //         modal.instance.sysModules = this.sysModules;
-    //         modal.instance.metaFieldSets = this.metadata.getAllFieldsets();
-    //
-    //         modal.instance.edit_mode = this.edit_mode;
-    //
-    //         modal.instance.closedialog.subscribe(update => {
-    //
-    //             this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
-    //
-    //                 let fieldset = {...update.fieldset};
-    //
-    //                 let module = update.module;
-    //                 let type = update.type;
-    //                 let name = update.name;
-    //
-    //                 if (module == "*") {
-    //                     module = 'global';
-    //                 }
-    //
-    //
-    //                 let checkParams = {
-    //                     'module': module,
-    //                     'type': type,
-    //                     'name': name
-    //                 };
-    //
-    //                 // check if component exists
-    //                 this.backend.getRequest('spiceui/core/fieldsetalreadyexists', checkParams).subscribe(
-    //                     data => {
-    //                         if (data == false) {
-    //
-    //                             let tablescope = this.findTable(type);
-    //
-    //                             fieldset.module = module;
-    //                             if (module == "global") {
-    //                                 fieldset.module = '*';
-    //                             }
-    //                             fieldset.name = name;
-    //
-    //                             let newid = this.modelutilities.generateGuid(); // generate id
-    //                             fieldset.id = newid;
-    //
-    //                             let save_items: any = [];
-    //
-    //                             for (let item of fieldset.items) {
-    //                                 let copied_item = {...item};
-    //                                 copied_item.fieldconfig = {...item.fieldconfig};
-    //
-    //                                 copied_item.id = this.modelutilities.generateGuid(); // item generate id
-    //                                 copied_item.fieldset_id = newid;
-    //                                 save_items.push(copied_item);
-    //                             }
-    //
-    //
-    //                             delete fieldset.items;
-    //                             delete fieldset.type;
-    //
-    //
-    //                             this.backend.postRequest('configurator/' + tablescope.fieldsetTable + '/' + fieldset.id, null, fieldset).subscribe(
-    //                                 (success) => {
-    //                                     let savecounter = 0;
-    //
-    //                                     fieldset.items = save_items;
-    //                                     fieldset.type = type;
-    //
-    //                                     for (let save_item of save_items) {
-    //                                         this.backend.postRequest('configurator/' + tablescope.itemsTable + '/' + save_item.id, null, save_item).subscribe(
-    //                                             (success) => {
-    //                                                 savecounter++;
-    //                                                 if (savecounter == save_items.length) {
-    //                                                     if (customizeItem) {
-    //                                                         customizeItem.item.fieldset = fieldset.id;
-    //                                                         let parenttablescope = this.findTable(customizeItem.parentScope);
-    //
-    //                                                         this.backend.postRequest('configurator/' + parenttablescope.itemsTable + '/' + customizeItem.id, null, customizeItem.item).subscribe(
-    //                                                             (success) => {
-    //                                                                 loadingModalRef.instance.self.destroy();
-    //                                                                 this.toast.sendToast('saved!');
-    //                                                                 this.metadata.addFieldset(fieldset.id, fieldset.module, fieldset.name, type, save_items);
-    //                                                             },
-    //                                                             (error) => {
-    //                                                                 loadingModalRef.instance.self.destroy();
-    //                                                                 this.toast.sendAlert('saving link failed!, ' + save_item.id);
-    //                                                                 console.error(error);
-    //                                                             }
-    //                                                         );
-    //
-    //                                                     } else {
-    //                                                         loadingModalRef.instance.self.destroy();
-    //                                                         this.toast.sendToast('saved!');
-    //                                                         this.currentModule = fieldset.module;
-    //                                                         this.metadata.addFieldset(fieldset.id, fieldset.module, fieldset.name, type, save_items);
-    //                                                         this.currentFieldSet = fieldset.id;
-    //
-    //                                                         this.currentFieldSetItems = save_items;
-    //                                                         this.selectedItem = {};
-    //                                                         this.currentFieldSetName = fieldset.name;
-    //                                                         this.loadCurrentFieldset();
-    //                                                     }
-    //                                                 }
-    //                                             },
-    //                                             (error) => {
-    //                                                 loadingModalRef.instance.self.destroy();
-    //                                                 this.toast.sendAlert('saving failed!, ' + save_item.id);
-    //                                                 console.error(error);
-    //                                             }
-    //                                         );
-    //                                     }
-    //                                 },
-    //                                 (error) => {
-    //                                     loadingModalRef.instance.self.destroy();
-    //                                     this.toast.sendAlert('saving failed!');
-    //                                     console.error(error);
-    //                                 }
-    //                             );
-    //                         } else {
-    //                             loadingModalRef.instance.self.destroy();
-    //                             this.toast.sendAlert('Fieldset already exists!');
-    //                         }
-    //                     });
-    //             });
-    //         });
-    //     });
-    // }
 
+    private deleteChanges() {
+        if(this.currentActionSet.isnew) {
+            this.metadata.removeActionset(this.currentActionSet.id);
+            this.reset();
+            this.actionSetBackup = "";
+        } else {
+            this.currentActionSet = {...JSON.parse(this.actionSetBackup)};
+            this.metadata.setActionSet(this.currentActionSet.id, this.currentActionSet);
+            // this.currentActionSet = this.metadata.getActionSet(this.currentActionSet.id);
+            if(this.currentActionSet.actions.length > 0) {
+                this.selectItem(this.currentActionSet.actions[0]);
+            }
+        }
+    }
 
     private saveChanges() {
+
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
-            this.backend.getRequest('spiceui/core/actionsets').subscribe((res: any) => {
 
+            let addedActionsets: any = {};
+            let changedActionsets: any = {};
+            let deletedActionsets: any = {};
 
-                let rawActionsets = this.metadata.getRawActionSets();
-                let addedActionsets: any = {};
-                let changedActionsets: any = {};
-                let deletedActionsets: any = {};
+            if(this.currentActionSet.isnew) {
+                addedActionsets[this.currentActionSet.id] = this.currentActionSet;
+            }
+            if(!this.currentActionSet.isnew) {
+                changedActionsets[this.currentActionSet.id] = this.currentActionSet;
+            }
 
-                for (let actionset in rawActionsets) {
-                    if (!res.actionsets[actionset]) {
-                        addedActionsets[actionset] = rawActionsets[actionset];
-                        continue;
-                    }
+            let postData = {
+                add: addedActionsets,
+                update: changedActionsets,
+                delete: deletedActionsets
+            };
 
-                    if (JSON.stringify(rawActionsets[actionset]) !== JSON.stringify(res.actionsets[actionset])) {
-                        changedActionsets[actionset] = rawActionsets[actionset];
-                    }
-
-                    delete (res.actionsets[actionset]);
-                }
-
-                deletedActionsets = res.actionsets;
-
-
-                let postData = {
-                    add: addedActionsets,
-                    update: changedActionsets,
-                    delete: deletedActionsets
-                };
-
-                this.backend.postRequest('spiceui/core/actionsets', {}, postData).subscribe((res: any) => {
+            this.backend.postRequest('spiceui/core/actionsets', {}, postData).subscribe((res: any) => {
+                if(res) {
                     this.broadcast.broadcastMessage('metadata.updateactionsets', postData);
                     loadingModalRef.instance.self.destroy();
                     this.toast.sendToast('changes saved');
-                });
+                    this.loadCurrentActionset(this.currentActionSet.id);
+                } else {
+                    loadingModalRef.instance.self.destroy();
+                    this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+                }
             });
+
         });
     }
 
-    get getAllowCopyButton() {
-        if (!this.currentActionSet) {
-            return false;
-        } else {
-            return this.allowBarButtons;
-        }
+    private copy() {
+        this.modalservice.openModal('ActionsetManagerAddDialog').subscribe(modal => {
+
+            modal.instance.sysModules = this.sysModules;
+            modal.instance.actionsetModule = this.currentModule;
+            modal.instance.mode = "copy";
+            modal.instance.edit_mode = this.edit_mode;
+            modal.instance.actionsetName = (' ' + this.currentActionSet.name).slice(1);
+
+            modal.instance.closedialog.subscribe(added => {
+                if (added) {
+                    let newId =  this.modelutilities.generateGuid();
+                    // this.metadata.addActionset(newId, added.module, added.name, added.type, []);
+
+                    let actions = JSON.parse(JSON.stringify(this.currentActionSet.actions));
+                    this.metadata.setActionSet(newId, {
+                        module: added.module,
+                        name: added.name,
+                        type: added.type,
+                        actions: actions
+                    });
+
+                    // generate new ids for every action
+                    for (let action of actions) {
+                        action.id = this.modelutilities.generateGuid();
+                    }
+
+                    this.reset();
+                    this.currentModule = added.module;
+
+                    this.currentActionSet.id = newId;
+                    this.currentActionSet.module = added.module;
+                    this.currentActionSet.name = added.name;
+                    this.currentActionSet.type = added.type;
+                    this.currentActionSet.actions = actions;
+                    // this.currentActionSet.package = this.currentActionSet.package;
+                    this.currentActionSet.isnew = true;
+                }
+            });
+        });
     }
 }
