@@ -23,7 +23,6 @@ export class ReportsDesignerManipulateTableRow {
     * @output onDelete: EventEmitter<void>
     */
     @Output() private onDelete: EventEmitter<void> = new EventEmitter<void>();
-    private expanded: boolean = false;
 
     constructor(private language: language,
                 private modelUtilities: modelutilities,
@@ -33,6 +32,32 @@ export class ReportsDesignerManipulateTableRow {
     }
 
     /*
+     * @param value: string
+     * @set name
+     */
+    set name(value) {
+        this.listItem.name = value;
+        let unionListFields = this.model.getField('unionlistfields');
+        if (!unionListFields || !unionListFields.length || unionListFields.length == 0) return;
+
+        unionListFields.forEach(field => {
+           if (field.fieldid == this.listItem.fieldid) {
+               field.name = value;
+               return true;
+           }
+        });
+        this.model.setField('unionlistfields', unionListFields);
+    }
+
+    /*
+     * @return name: string
+     */
+    get name() {
+        return this.listItem.name;
+    }
+
+    /*
+     * @param value: boolean
      * @set jointype = 'yes' | 'no'
      */
     set groupBy(value) {
@@ -47,6 +72,7 @@ export class ReportsDesignerManipulateTableRow {
     }
 
     /*
+     * @param value boolean
      * @set jointype = 'required' | 'optional'
      */
     set joinType(value) {
@@ -60,6 +86,9 @@ export class ReportsDesignerManipulateTableRow {
         return this.listItem.jointype == 'required';
     }
 
+    get displayPath() {
+        return !!this.listItem.displaypath && this.listItem.displaypath.length > 0 ? this.listItem.displaypath : 'FIXED';
+    }
     /*
      * @param fieldId: string
      * @delete the record with the given index

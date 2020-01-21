@@ -151,14 +151,14 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
      * @param field: object
      * @return newItem: object
      */
-    private generateNewItem(field, sequence) {
+    private generateNewItem(field = null, sequence) {
         let id = this.reportsDesignerService.generateGuid();
         return {
             fieldid: id,
-            path: `${this.reportsDesignerService.currentPath}::${field.id}`,
-            displaypath: this.reportsDesignerService.currentPath,
-            fieldname: field.name,
-            name: field.label,
+            path: field ? `${this.reportsDesignerService.currentPath}::${field.id}` : '',
+            displaypath: field ? this.reportsDesignerService.currentPath : '',
+            fieldname: field ? field.name : '',
+            name: field ? field.label : 'new fixed field',
             display: 'yes',
             sequence: sequence,
             width: '100',
@@ -188,5 +188,21 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
                 this.deleteListItemToUnionFields(fieldId);
             }
         });
+    }
+
+    /*
+     * @generate newFixedField
+     * @push newFixedField to listItems
+     * @set set listItems
+     * @addListItemToUnionFields
+     * @set expandedItemId
+     */
+    public addFixed() {
+        let listItems = this.listItems.slice();
+        const newFixedField = this.generateNewItem(null, listItems.length +1);
+        listItems.push(newFixedField);
+        this.listItems = listItems;
+        this.addListItemToUnionFields(newFixedField);
+        this.reportsDesignerService.expandedItemId = newFixedField.fieldid;
     }
 }
