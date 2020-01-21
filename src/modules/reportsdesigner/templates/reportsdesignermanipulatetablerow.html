@@ -2,11 +2,13 @@
     <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
 </td>
 <td>
-    <div class="slds-truncate" [title]="listItem.displaypath">{{listItem.displaypath}}</div>
+    <div class="slds-truncate" [title]="displayPath">
+        {{displayPath}}
+    </div>
 </td>
 <td>
     <div class="slds-form-element">
-        <system-input-label [(ngModel)]="listItem.name"></system-input-label>
+        <system-input-label [(ngModel)]="name"></system-input-label>
     </div>
 </td>
 <td>
@@ -14,6 +16,7 @@
         <div class="slds-form-element__control">
             <div class="slds-select_container">
                 <select class="slds-select" [(ngModel)]="listItem.sqlfunction">
+                    <option></option>
                     <option value="SUM">{{language.getLabel('LBL_SUM')}}</option>
                     <option value="COUNT">{{language.getLabel('LBL_COUNT')}}</option>
                     <option value="COUNT_DISTINCT">{{language.getLabel('LBL_COUNT_DISTINCT')}}</option>
@@ -44,7 +47,8 @@
     </button>
 </td>
 <td class="slds-cell-shrink">
-    <system-utility-icon [icon]="reportsDesignerService.expandedItemId == listItem.fieldid ? 'up' : 'down'" (click)="toggleExpand()" [colorclass]="reportsDesignerService.expertMode ? 'slds-icon-text-default' : 'slds-icon-text-light'"
+    <system-utility-icon [icon]="reportsDesignerService.expandedItemId == listItem.fieldid ? 'up' : 'down'" (click)="toggleExpand()"
+                         [colorclass]="reportsDesignerService.expertMode ? 'slds-icon-text-default' : 'slds-icon-text-light'"
                          size="x-small" class="slds-p-horizontal--small slds-p-vertical--xx-small" style="cursor: pointer"></system-utility-icon>
 </td>
 
