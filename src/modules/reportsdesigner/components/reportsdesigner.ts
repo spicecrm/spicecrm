@@ -1,7 +1,7 @@
 /**
  * @module ModuleReportsDesigner
  */
-import {ChangeDetectorRef, Component} from '@angular/core';
+import {ChangeDetectorRef, Component, ViewChild} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {ReportsDesignerService} from "../services/reportsdesigner.service";
 import {reporterconfig} from "../../reports/services/reporterconfig";
@@ -10,6 +10,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
 import {metadata} from "../../../services/metadata.service";
+import {ReportsDesignerManipulate} from "./reportsdesignermanipulate";
 
 @Component({
     selector: 'reports-designer',
@@ -19,10 +20,11 @@ import {metadata} from "../../../services/metadata.service";
         view,
         model
     ],
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesigner.html'
+    templateUrl: './src/modules/reportsdesigner/templates/reportsdesigner.html',
 })
 export class ReportsDesigner {
 
+    @ViewChild(ReportsDesignerManipulate, {static: false}) private manipulateComponent;
     private activeTab: string = 'manipulate';
     protected currentUnionListFields: any[] = [];
 
@@ -198,5 +200,14 @@ export class ReportsDesigner {
         if (!unionListFields || !unionListFields.length) return;
         unionListFields = unionListFields.filter(field => field.joinid != unionId);
         this.model.setField('unionlistfields', unionListFields);
+    }
+
+    /*
+     * @call child.addFixed
+     */
+    private addFixed() {
+        if (this.reportsDesignerService.expertMode) {
+            this.manipulateComponent.addFixed();
+        }
     }
 }

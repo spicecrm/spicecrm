@@ -6,7 +6,7 @@
                     <div class="slds-form-element slds-size--1-of-2">
                         <label class="slds-form-element__label">{{language.getLabel('LBL_FIXED_VALUE')}}</label>
                         <div class="slds-form-element__control">
-                            <input type="text" [(ngModel)]="listItem.fixedvalue" class="slds-input">
+                            <input type="text" [(ngModel)]="listItem.fixedvalue" class="slds-input" tabindex="1" autofocus>
                         </div>
                     </div>
                     <div class="slds-form-element slds-size--1-of-2">
@@ -22,6 +22,7 @@
                         <div class="slds-form-element__control">
                             <div class="slds-select_container">
                                 <select class="slds-select" [(ngModel)]="listItem.valuetype">
+                                    <option></option>
                                     <option value="TOFSUM">{{language.getLabel('LBL_VALUE_TYPE_TOFSUM')}}</option>
                                     <option value="POFSUM">{{language.getLabel('LBL_VALUE_TYPE_POFSUM')}}</option>
                                     <option value="POFCOUNT">{{language.getLabel('LBL_VALUE_TYPE_POFCOUNT')}}</option>

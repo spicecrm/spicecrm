@@ -103,7 +103,7 @@ export class ReportsDesignerService {
     * @return guid: string
     */
     public generateGuid() {
-        return 'k' + this.modelUtils.generateGuid().replace('-', '');
+        return 'k' + this.modelUtils.generateGuid().replace(/-/g, '');
     }
 
 }
