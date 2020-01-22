@@ -13,6 +13,8 @@ import {session} from "./session.service";
 import {broadcast} from "./broadcast.service";
 import {configurationService} from "./configuration.service";
 import {Router, Route, CanActivate} from "@angular/router";
+import {loginCheck} from "./login.service";
+import {canNavigateAway} from "./navigation.service";
 
 // for the dynamic routes
 // import {loginCheck} from "../services/login.service";
@@ -174,6 +176,7 @@ export class metadata {
         }
     }
 
+    /*
     private addRoute(path: string, component: string) {
         let module = this.componentDirectory[component].module;
 
@@ -189,6 +192,7 @@ export class metadata {
                             this.router.config.push({
                                 path: path,
                                 component: factory.componentType,
+                                canActivate: [aclCheck]
                             });
                             return true;
                         }
@@ -196,6 +200,7 @@ export class metadata {
                 });
             });
     }
+    */
 
     /*
     * dynamically add routes from this.routes with a route container hat will handle the dynamic routes
@@ -213,6 +218,7 @@ export class metadata {
                                 this.router.config.unshift({
                                     path: route.path,
                                     component: factory.componentType,
+                                    canActivate: [aclCheck]
                                 });
                             }
                             return true;
