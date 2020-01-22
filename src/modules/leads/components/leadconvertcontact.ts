@@ -34,6 +34,8 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
     }
 
     ngOnInit() {
+        console.log(this.model.data);
+
         this.lead.data$.subscribe(data => {
 
             this.model.data.degree1 = data.degree1;
@@ -45,6 +47,14 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
             this.model.data.title = data.title;
             this.model.data.department = data.department;
             this.model.data.email1 = data.email1;
+            // SPICE-276 form is now using multiple e-mail address field type
+            if( data.emailaddresses) {
+                for (let item of this.model.data.emailaddresses) {
+                    item.email_address = data.email1;
+                }
+            }
+
+            // this.model.data.emailaddresses = data.emailaddresses;
             this.model.data.phone_work = data.phone_work;
             this.model.data.phone_mobile = data.phone_mobile;
             this.model.data.phone_fax = data.phone_fax;
