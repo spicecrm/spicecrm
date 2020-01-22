@@ -1,3 +1,3 @@
 <div *ngIf="modules.length > 0" class="slds-button-group" role="group">
-    <button field-activities-addactions-button *ngFor="let module of modules" class="slds-button slds-button_icon slds-button_icon-border" [title]="this.language.getModuleCombinedLabel('LBL_ADD', module)" [module]="module" [parent]="model" ></button>
+    <button field-activities-addactions-button style="height: 24px; width:24px;" *ngFor="let module of modules" class="slds-button slds-button_icon slds-button_icon-border" [title]="this.language.getModuleCombinedLabel('LBL_ADD', module)" [module]="module" [parent]="model" ></button>
 </div>
