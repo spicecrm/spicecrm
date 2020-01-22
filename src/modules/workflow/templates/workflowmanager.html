@@ -45,7 +45,7 @@
     </div>
 </div>
 <div *ngIf="current_workflow" tobottom>
-    <workflow-manager-detail  [modeldata]="_current_workflow_data"></workflow-manager-detail>
+    <workflow-manager-detail [modeldata]="_current_workflow_data"></workflow-manager-detail>
     <div *ngIf="current_module" class="slds-form-element slds-grid slds-grid--align-center slds-theme--default slds-p-around--x-small">
         <div class="slds-button-group" role="group">
             <button type="button" class="slds-button slds-button--neutral" [disabled]="!current_workflow" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
