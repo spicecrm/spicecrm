@@ -28,7 +28,7 @@ export class calendar implements OnDestroy {
     public usersCalendars$: EventEmitter<any> = new EventEmitter<any>();
     public addingEvent$: EventEmitter<any> = new EventEmitter<any>();
     public pickerDate$: EventEmitter<any> = new EventEmitter<any>();
-    public color$: EventEmitter<any> = new EventEmitter<any>();
+    public otherCalendarsColor$: EventEmitter<any> = new EventEmitter<any>();
     public eventDrop$: EventEmitter<any> = new EventEmitter<any>();
     public modules: any[] = [];
     public usersCalendars: any[] = [];
@@ -188,7 +188,7 @@ export class calendar implements OnDestroy {
                     return events
                         .filter(e => usersObject[e.data.assigned_user_id] && usersObject[e.data.assigned_user_id].visible)
                         .map(event => {
-                            event.color = usersObject[event.data.assigned_user_id].color;
+                            event.otherColor = usersObject[event.data.assigned_user_id].color;
                             return event;
                         });
                 })
@@ -404,7 +404,7 @@ export class calendar implements OnDestroy {
             if (calendar.id == id) {
                 calendar.color = color;
                 this.setUserCalendars(this.usersCalendars);
-                this.color$.emit({id: id, color: color});
+                this.otherCalendarsColor$.emit({id: id, color: color});
                 return true;
             }
         });
