@@ -73,7 +73,7 @@ export class CalendarOtherCalendarsMonitor {
         this.timeout = setTimeout(() => {
             this.searchterm = value;
             this.isLoading = true;
-            this.fts.searchByModules({ searchterm: this.searchterm, modules: ["Users"], size: 5, sortparams: {sortfield: "name"}})
+            this.fts.searchByModules({ searchterm: this.searchterm, modules: ["Users"], size: 5, sortparams: {sortfield: "full_name", sortdirection: "asc"}})
                 .subscribe(res => {
                     this.filterResultsList(res.Users.hits.map(user => user = user._source));
                     this.isLoading = false;
