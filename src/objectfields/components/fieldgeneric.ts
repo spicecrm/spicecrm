@@ -46,6 +46,9 @@ export class fieldGeneric implements OnInit, OnDestroy {
      */
     public fieldlength: number = 999;
 
+    /**
+     * holds any subscription a field might have
+     */
     public subscriptions: Subscription = new Subscription();
 
     constructor(
