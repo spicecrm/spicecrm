@@ -222,6 +222,12 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
                 operator: 'equalr',
                 name: 'LBL_EQUALS',
                 value1: 'relate'
+            }, {
+                operator: 'emptyr',
+                name: 'LBL_OP_ISEMPTY'
+            }, {
+                operator: 'notemptyr',
+                name: 'LBL_OP_NOTEMPTY'
             }
         ]
     }
