@@ -16,9 +16,14 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
  * renders a status field for the participation status
  */
 @Component({
-    templateUrl: './src/modules/activities/templates/fieldactivityparticipationstatus.html'
+    templateUrl: './src/modules/activities/templates/fieldactivitycurrentuserparticipationstatus.html'
 })
-export class fieldActivityParticipationStatus extends fieldGeneric implements OnInit {
+export class fieldActivityCurrentUserParticipationStatus extends fieldGeneric implements OnInit {
+
+    /**
+     * holds the participationrecord
+     */
+    private partcipationRecord: any = undefined
 
     constructor(public model: model,
                 public view: view,
@@ -33,14 +38,35 @@ export class fieldActivityParticipationStatus extends fieldGeneric implements On
 
         super(model, view, language, metadata, router);
 
+        // subscribe to model $data and build the participants .. replacing the setter
+        this.subscriptions.add(this.model.data$.subscribe(modelData => {
+            this.setParticipation();
+        }));
+
     }
 
     get disabled() {
-        if ( this.model.module == 'Users' && this.model.getField('id') == this.session.authData.userId && this.model.parentmodel && this.model.parentmodel.getField('status') == 'Planned') {
+        if (this.partcipationRecord && !this.isEditMode() && this.model.getField('status') == 'Planned') {
             return false;
         }
-
         return true;
+    }
+
+    get value() {
+        return this.partcipationRecord ? this.partcipationRecord.activity_accept_status : 'none';
+    }
+
+    set value(newValue) {
+        this.partcipationRecord.activity_accept_status = newValue;
+    }
+
+    private setParticipation() {
+        this.partcipationRecord = undefined;
+        for (let beanid in this.model.data.users.beans) {
+            if (this.model.data.users.beans[beanid].id == this.session.authData.userId) {
+                this.partcipationRecord = this.model.data.users.beans[beanid];
+            }
+        }
     }
 
 }
