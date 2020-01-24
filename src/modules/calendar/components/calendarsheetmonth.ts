@@ -23,13 +23,9 @@ import {backend} from '../../../services/backend.service';
 import {calendar} from '../services/calendar.service';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
-/**
-* @ignore
-*/
-declare var _: any;
 
 @Component({
     selector: 'calendar-sheet-month',
@@ -108,6 +104,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     private endDate() {
         return new moment(this.startDate()).endOf('month');
     }
+
     private getSheetDays(): any[] {
         let sheetDays = [];
         let i = 0;
@@ -131,10 +128,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         this.calendar.loadEvents(this.startDate(), this.endDate())
             .subscribe(events => {
                 if (events.length > 0) {
-                    events.forEach(event => {
-                        event.start = this.resetTime(event.start);
-                        event.end = this.resetTime(event.end);
-                    });
                     this.ownerEvents = events;
                     this.arrangeEvents();
                 }
@@ -151,11 +144,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         this.calendar.loadGoogleEvents(this.startDate(), this.endDate())
             .subscribe(events => {
                 if (events.length > 0) {
-                    events = events.map(event => {
-                        event.start = this.resetTime(event.start);
-                        event.end = this.resetTime(event.end);
-                        return event;
-                    });
                     this.googleEvents = events;
                     this.arrangeEvents();
                 }
@@ -173,18 +161,11 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             .subscribe(events => {
                 if (events.length > 0) {
                     events.forEach(event => {
-                        event.start = this.resetTime(event.start);
-                        event.end = this.resetTime(event.end);
                         this.userEvents.push(event);
                         this.arrangeEvents();
                     });
                 }
             });
-    }
-
-    private resetTime(event) {
-        event = moment(event.hour(0).minute(0).second(0)).format('YYYY-MM-DD HH:mm:ss');
-        return moment(event);
     }
 
     private arrangeEvents() {
@@ -209,14 +190,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                         }
                     }
                     day.items = day.items.filter(event => (event.hasOwnProperty("visible") && event.visible) || !event.hasOwnProperty("visible"));
-                    day.items.sort((a, b) => {
-                        if (a.start.isBefore(b.start)) {
-                            return -1;
-                        } else if (a.start.diff(a.end, 'days') < b.start.diff(b.end, 'days')) {
-                            return -1;
-                        }
-                        return 0;
-                    });
+                    day.items.sort((a, b) => a.start.isSame(b.start, 'day') && (a.start.isAfter(b.start, 'hour') || (a.start.isSame(b.start, 'hour') && a.start.isAfter(b.start, 'minute'))) ? 1 : -1);
                 }
             }
             this.allEvents.forEach(event => {
@@ -328,7 +302,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 eDays++;
                 startI = startI == null ? dIndex : startI;
                 endI = dIndex;
-                eventI = eventI == null ? day.items.indexOf(event) : eventI;
+                if (!eventI) eventI = day.items.indexOf(event);
                 visible = eventI >= this.maxEventsPerBox ? "none" : visible;
             }
         });
@@ -350,8 +324,8 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             'border-radius': '50%',
             'line-height': '1rem',
             'text-align': 'center',
-            'width': '1rem',
-            'height': '1rem',
+            'width': '1.1rem',
+            'height': '1.1rem',
             'display': 'block',
             'color': isToday ? '#fff' : 'inherit',
             'background-color': isToday ? this.calendar.todayColor : 'inherit',
