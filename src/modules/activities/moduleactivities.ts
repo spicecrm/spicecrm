@@ -37,7 +37,7 @@ import /*embed*/ {ActivityParticipationPanelHeader} from "./components/activityp
 import /*embed*/ {ActivityParticipationPanelParticipant} from "./components/activityparticipationpanelparticipant";
 import /*embed*/ {ActivityParticipationStatus} from "./components/activityparticipationstatus";
 import /*embed*/ {fieldActivityParticipationStatus} from "./fields/fieldactivityparticipationstatus";
-import /*embed*/ {fieldActivityCurrentUserParticipationStatus} from "./fields/fieldActivityCurrentUserParticipationStatus";
+import /*embed*/ {fieldActivityCurrentUserParticipationStatus} from "./fields/fieldactivitycurrentuserparticipationstatus";
 
 import /*embed*/ {ActivityTimeline} from './components/activitytimeline';
 import /*embed*/ {ActivityTimelineFilter} from "./components/activitytimelinefilter";
