@@ -1,7 +1,7 @@
 /**
  * @module ModuleActivities
  */
-import {Component, ElementRef, Renderer2, OnInit} from '@angular/core';
+import {Component, ElementRef, Renderer2, OnInit, OnDestroy} from '@angular/core';
 import {Router} from '@angular/router';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
@@ -10,6 +10,7 @@ import {metadata} from '../../../services/metadata.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {modal} from '../../../services/modal.service';
 import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
+import {Subscription} from "rxjs";
 
 @Component({
     templateUrl: './src/modules/activities/templates/fieldactivityparticipationpanel.html'
@@ -77,19 +78,19 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
         this.lookuplinks = this.getLookuplinks();
 
         // subscriber to the broadcast when new model is added from the model
-        this.broadcast.message$.subscribe((message) => this.handleMessage(message));
+        this.subscriptions.add(this.broadcast.message$.subscribe((message) => this.handleMessage(message)));
 
         // subscribe to model $data and build the participants .. replacing the setter
-        this.model.data$.subscribe(modelData => {
+        this.subscriptions.add(this.model.data$.subscribe(modelData => {
             this.setParticipants();
-        });
+        }));
     }
 
     /**
      * load the links and the table fieldset
      */
     public ngOnInit() {
-        if(!this.fieldconfig.fieldset){
+        if (!this.fieldconfig.fieldset) {
             this.fieldset = this.metadata.getComponentConfig('fieldActivityParticipationPanel').fieldset;
         } else {
             this.fieldset = this.fieldconfig.fieldset;
