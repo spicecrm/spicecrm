@@ -14,6 +14,8 @@ import /*embed*/ {CampaignTaskExportButton} from "./components/campaigntaskexpor
 
 import /*embed*/ {CampaignSendMailButton} from './components/campaignsendmailbutton';
 import /*embed*/ {CampaignSendTestMailButton} from './components/campaignsendtestmailbutton';
+import /*embed*/ {CampaignExportButton} from './components/campaignexportbutton';
+import /*embed*/ {CampaignExportModal} from './components/campaignexportmodal';
 
 @NgModule({
     imports: [
@@ -27,7 +29,9 @@ import /*embed*/ {CampaignSendTestMailButton} from './components/campaignsendtes
         CampaignTaskActivateButton,
         CampaignTaskExportButton,
         CampaignSendMailButton,
-        CampaignSendTestMailButton
+        CampaignSendTestMailButton,
+        CampaignExportButton,
+        CampaignExportModal
     ]
 })
 export class ModuleCampaigns {}
