@@ -15,12 +15,15 @@ export class ObjectActionSaveButton {
 
     @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
-    public module: string = '';
-
-    private saving: boolean = false;
-
     constructor(private language: language, private metadata: metadata, private model: model, private view: view) {
 
+    }
+
+    /**
+     * disable the button when the model is saving
+     */
+    get disabled() {
+        return this.model.isSaving;
     }
 
     /*
@@ -37,10 +40,9 @@ export class ObjectActionSaveButton {
     * @setViewMode
     */
     public execute() {
-        if (this.saving) return;
+        if (this.model.isSaving) return;
 
         if (this.model.validate()) {
-            this.saving = true;
             this.model.save(true).subscribe(saved => {
                 this.model.endEdit();
                 this.view.setViewMode();
