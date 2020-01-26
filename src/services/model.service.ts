@@ -1142,6 +1142,11 @@ export class model implements OnDestroy {
      */
     private copyValue(toField, value) {
         let fieldDef = this.metadata.getFieldDefs(this.module, toField);
+
+        // if not found just set the field attribute
+        if(!fieldDef) this.setField(toField, value);
+
+        // handle links
         switch (fieldDef.type) {
             case 'link':
                 if (_.isObject(value) && value.beans) {
@@ -1149,10 +1154,10 @@ export class model implements OnDestroy {
                     for (let relid in value.beans) {
                         newLink.beans[this.utils.generateGuid()] = {...value.beans[relid]};
                     }
-                    this.setFieldValue(toField, newLink);
+                    this.setField(toField, newLink);
                 }
             default:
-                this.setFieldValue(toField, value);
+                this.setField(toField, value);
                 break;
         }
     }
