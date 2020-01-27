@@ -35,7 +35,7 @@ export class SystemModuleTree implements AfterViewInit {
      * emit the root path
      */
     public ngAfterViewInit(): void {
-        this.itemSelected.emit({path: 'root::' + this.module, module: this.module});
+        this.itemSelected.emit({path: 'root:' + this.module, module: this.module});
     }
 
     private emitSelected(data) {
