@@ -78,9 +78,6 @@
                     </a>
                 </li>
                 <li class="slds-grid slds-grid--vertical-align-center slds-text-title--caps slds-col--bump-left slds-p-vertical--x-small" role="presentation">
-                    <button *ngIf="activeTab == 'manipulate'" (click)="addFixed()" [disabled]="!reportsDesignerService.expertMode" class="slds-button slds-button_neutral slds-m-right--small slds-p-horizontal--x-small slds-text-title--caps" style="height: 100%; line-height: 22px">
-                        {{language.getLabel('LBL_ADD_FIXED')}}
-                    </button>
                     <system-checkbox [(ngModel)]="reportsDesignerService.expertMode">{{language.getLabel('LBL_EXPERT_MODE')}}</system-checkbox>
                 </li>
             </ul>
