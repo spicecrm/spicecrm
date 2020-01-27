@@ -1,21 +1,24 @@
-<div class="slds-m-around--xxx-small slds-p-horizontal--xx-small" [class.slds-p-vertical--xx-small]="event.saving" [ngStyle]="eventStyle" [draggable]="isDraggable">
-    <ng-container *ngIf="!event.saving; else saving">
-        <div class="slds-grid slds-grid--align-spread" style="height: 100%;">
-            <div class="slds-truncate" style="height: inherit; width: 100%">
-                <object-record-fieldset-horizontal-list *ngIf="headerFieldset; else summaryContainer" [ngClass]="textClass" [fieldset]="headerFieldset"></object-record-fieldset-horizontal-list>
-                <ng-template #summaryContainer>
-                    <span modelPopOver class="slds-text-link--reset" [ngClass]="textClass">{{model.data.summary_text}}</span>
-                    <span *ngIf="event.isMulti && startHour && !isAbsence" [ngClass]="textClass">, {{startHour}}</span>
-                </ng-template>
-                <object-record-fieldset-horizontal-list *ngIf="subFieldset && !event.isMulti" [ngClass]="textClass" [fieldset]="subFieldset"></object-record-fieldset-horizontal-list>
-            </div>
-            <object-action-menu *ngIf="canEdit" [buttonsize]="'xx-small'"></object-action-menu>
-        </div>
-        <div *ngIf="!event.isMulti && !isMonthSheet && canEdit" draggable="false" class="slds-is-absolute" style="bottom: 0; left: calc(50% - 8px);cursor: ns-resize;" (mousedown)="onMouseDown($event)">
-            <system-utility-icon colorclass="slds-icon-text-white" icon="threedots" size="x-small"></system-utility-icon>
-        </div>
-    </ng-container>
-    <ng-template #saving>
-        <system-spinner inverse="true" style="opacity: 0.5;"></system-spinner>
-    </ng-template>
+<div class="slds-grid slds-m-around--xxx-small" [class.slds-p-vertical--xx-small]="event.saving" [ngStyle]="eventStyle" [draggable]="isDraggable">
+    <abbr *ngIf="event.otherColor" [style.background-color]="event.otherColor" [title]="event.data.assigned_user_name" style="height: calc(100% - 2px); width: 8px; border-radius: 2px; margin: 1px; box-shadow: #4b4b4b 1px 0 1px 0;"></abbr>
+    <div [style.width]="event.otherColor ? 'calc(100% - 8px)' : '100%'">
+        <ng-container *ngIf="!event.saving; else saving">
+                <div class="slds-grid slds-grid--align-spread slds-p-horizontal--xx-small" style="height: 100%;">
+                    <div class="slds-truncate" style="height: inherit; width: 100%">
+                        <object-record-fieldset-horizontal-list *ngIf="headerFieldset; else summaryContainer" [ngClass]="textClass" [fieldset]="headerFieldset"></object-record-fieldset-horizontal-list>
+                        <ng-template #summaryContainer>
+                            <span modelPopOver class="slds-text-link--reset" [ngClass]="textClass">{{model.data.summary_text}}</span>
+                            <span *ngIf="event.isMulti && startHour && !isAbsence" [ngClass]="textClass">, {{startHour}}</span>
+                        </ng-template>
+                        <object-record-fieldset-horizontal-list *ngIf="subFieldset && !event.isMulti" [ngClass]="textClass" [fieldset]="subFieldset"></object-record-fieldset-horizontal-list>
+                    </div>
+                    <object-action-menu *ngIf="canEdit" [buttonsize]="'xx-small'"></object-action-menu>
+                </div>
+                <div *ngIf="!event.isMulti && !isMonthSheet && canEdit" draggable="false" class="slds-is-absolute" style="bottom: 0; left: calc(50% - 8px);cursor: ns-resize;" (mousedown)="onMouseDown($event)">
+                    <system-utility-icon colorclass="slds-icon-text-white" icon="threedots" size="x-small"></system-utility-icon>
+                </div>
+        </ng-container>
+        <ng-template #saving>
+            <system-spinner inverse="true" style="opacity: 0.5;"></system-spinner>
+        </ng-template>
+    </div>
 </div>

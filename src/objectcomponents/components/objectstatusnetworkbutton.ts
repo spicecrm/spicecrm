@@ -9,6 +9,9 @@ import {modal} from '../../services/modal.service';
 import {language} from '../../services/language.service';
 import {ObjectStatusNetworkButtonItem} from "./objectstatusnetworkbuttonitem";
 
+/**
+ * a button to represent the ttaus network supporting moving items from one state to the next
+ */
 @Component({
     selector: 'object-status-network-button',
     templateUrl: './src/objectcomponents/templates/objectstatusnetworkbutton.html'
@@ -16,28 +19,41 @@ import {ObjectStatusNetworkButtonItem} from "./objectstatusnetworkbuttonitem";
 export class ObjectStatusNetworkButton implements OnInit {
 
     /**
-     * reference to the container item where the indivvidual components can be rendered into dynamically
+     * a selector for the child items
      */
     @ViewChildren(ObjectStatusNetworkButtonItem) private buttonitemlist: QueryList<ObjectStatusNetworkButtonItem>;
 
-    private isOpen: boolean = false;
+    /**
+     * the field that is status managed
+     */
     private statusField: string = '';
+
+    /**
+     * the status network as retrieved from the config
+     */
     private statusNetwork: any[] = [];
-    private prmiaryStatus: any = {};
-    private secondaryStatuses: any[] = [];
 
     constructor(private language: language, private metadata: metadata, private model: model, private modal: modal, private router: Router, private renderer: Renderer2, private elementRef: ElementRef) {
 
     }
 
+    /**
+     * a getter to disable while editing or fi the user is not allowed to edit
+     */
     get isDisabled() {
         return this.model.isEditing || !this.model.checkAccess('edit');
     }
 
+    /**
+     * cheks if the bean is managed at all
+     */
     get isManaged() {
         return this.statusField != '' && this.primaryItem !== false && !this.isDisabled;
     }
 
+    /**
+     * returns the primary status item
+     */
     get primaryItem() {
         for (let statusnetworkitem of this.statusNetwork) {
             if (statusnetworkitem.status_from == this.model.getField(this.statusField)) {
@@ -48,6 +64,9 @@ export class ObjectStatusNetworkButton implements OnInit {
         return false;
     }
 
+    /**
+     * a getter for all secoindray status items
+     */
     get secondaryItems() {
         let retArray = [];
         let firstHit = false;
@@ -64,6 +83,9 @@ export class ObjectStatusNetworkButton implements OnInit {
         return retArray;
     }
 
+    /**
+     * loads the status network
+     */
     public ngOnInit() {
         let statusmanaged = this.metadata.checkStatusManaged(this.model.module);
         if (statusmanaged != false) {
@@ -72,6 +94,11 @@ export class ObjectStatusNetworkButton implements OnInit {
         }
     }
 
+    /**
+     * propagates the clisk to the item. This is handled on the LI level to enable a rpopr UX to allow clicking on the list and not the action item component
+     *
+     * @param actionid
+     */
     private propagateclick(actionid) {
         this.buttonitemlist.some(actionitem => {
             if (actionitem.id == actionid) {

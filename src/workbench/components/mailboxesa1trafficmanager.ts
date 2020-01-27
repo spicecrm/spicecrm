@@ -26,9 +26,7 @@ export class MailboxesA1TrafficManager implements OnInit {
         private view: view,
         private ViewContainerRef: ViewContainerRef
     ) {
-        this.model.module = "Mailboxes";
-        this.view.isEditable = true;
-        this.view.setEditMode();
+
     }
 
     public ngOnInit() {
