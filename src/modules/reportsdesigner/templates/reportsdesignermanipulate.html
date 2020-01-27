@@ -1,5 +1,10 @@
-<div class="slds-grid" style="height: 100%">
-    <div cdkDropList #dropList="cdkDropList" [cdkDropListData]="listItems" [cdkDropListConnectedTo]="[dragList]" (cdkDropListDropped)="onDrop($event)" class="slds-size--1-of-1" style="height: 100%">
+<div class="slds-grid slds-grid--vertical" style="height: 100%">
+    <div class="slds-border--bottom slds-p-around--x-small">
+        <button (click)="addFixed()" [disabled]="!reportsDesignerService.expertMode" class="slds-button slds-button_neutral slds-m-right--small slds-p-horizontal--x-small slds-text-title--caps" style="height: 100%; line-height: 22px">
+            {{language.getLabel('LBL_ADD_FIXED')}}
+        </button>
+    </div>
+    <div cdkDropList #dropList="cdkDropList" [cdkDropListData]="listItems" [cdkDropListConnectedTo]="[dragList]" (cdkDropListDropped)="onDrop($event)" class="slds-grow slds-scrollable--y" style="height: 100%">
         <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover reports-designer-manipulate-table">
             <thead>
             <tr class="slds-text-title--caps slds-theme--shade">
