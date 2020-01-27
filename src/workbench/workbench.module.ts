@@ -12,6 +12,7 @@ import {VersionManagerService} from "../services/versionmanager.service";
 import {SystemComponents} from "../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../directives/directives";
 import {ObjectFields} from "../objectfields/objectfields";
+import {ObjectComponents} from "../objectcomponents/objectcomponents";
 import {GlobalComponents} from "../globalcomponents/globalcomponents";
 
 // COMPONENTs
@@ -29,6 +30,10 @@ import /*embed*/ {FieldsetManagerFieldDetails} from "./components/fieldsetmanage
 import /*embed*/ {FieldsetManagerAddDialog} from "./components/fieldsetmanageradddialog";
 import /*embed*/ {FieldsetManagerEditDialog} from "./components/fieldsetmanagereditdialog";
 
+import /*embed*/ {ActionsetManager} from "./components/actionsetmanager";
+import /*embed*/ {ActionsetManagerActionDetails} from "./components/actionsetmanageractiondetails";
+import /*embed*/ {ActionsetManagerAddDialog} from "./components/actionsetmanageradddialog";
+
 import /*embed*/ {ComponentsetManager} from "./components/componentsetmanager";
 import /*embed*/ {ComponentsetManagerComponentsetDetails} from "./components/componentsetmanagercomponentsetdetails";
 
@@ -43,6 +48,7 @@ import /*embed*/ {LanguageTranslationsManager} from "./components/languagetransl
 import /*embed*/ {LanguageLabelManagerComponent,SortPipe} from "./components/languagelabelmanager";
 import /*embed*/ {LanguageLabelModal} from "./components/languagelabelmodal";
 import /*embed*/ {MailboxesManager} from "./components/mailboxesmanager";
+import /*embed*/ {MailboxesTransportsEnum} from "./components/mailboxestransportsenum";
 import /*embed*/ {MailboxesmanagerTestModal} from "./components/mailboxesmanagertestmodal";
 import /*embed*/ {MailboxesmanagerTestIMAPModal} from "./components/mailboxesmanagertestimapmodal";
 import /*embed*/ {MailboxesMailgunTrafficManager} from "./components/mailboxesmailguntrafficmanager";
@@ -105,6 +111,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         SystemComponents,
         DirectivesModule,
         ObjectFields,
+        ObjectComponents,
         GlobalComponents
     ],
     declarations: [
@@ -120,6 +127,9 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         FieldsetManagerAddDialog,
         FieldsetManagerEditDialog,
         FieldsetManagerCopyDialog,
+        ActionsetManager,
+        ActionsetManagerActionDetails,
+        ActionsetManagerAddDialog,
         ComponentsetManager,
         ComponentsetManagerComponentsetDetails,
         WorkbenchHeader,
@@ -146,6 +156,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         LanguageLabelModal,
         ComponentConfigManagerComponentDetails,
         MailboxesManager,
+        MailboxesTransportsEnum,
         LanguageLabelModal,
         MailboxManagerAddDialog,
         MailboxesmanagerTestModal,

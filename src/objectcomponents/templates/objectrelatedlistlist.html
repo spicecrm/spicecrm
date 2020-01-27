@@ -1,7 +1,7 @@
 <object-related-card [componentconfig]="componentconfig">
     <ng-container *ngIf="aclAccess; else noaccess">
         <div class="slds-border--top">
-            <object-relatedlist-table [listfields]="listfields" [editable]="editable" [editcomponentset]="editcomponentset" [listitemactionset]="listitemactionset"></object-relatedlist-table>
+            <object-relatedlist-table [listfields]="listfields" [editable]="editable" [editcomponentset]="editcomponentset" [sequencefield]="componentconfig.sequencefield" [listitemactionset]="listitemactionset"></object-relatedlist-table>
         </div>
     </ng-container>
     <ng-template #noaccess>

@@ -198,12 +198,23 @@ export class model implements OnDestroy {
     public duplicates: any[] = [];
 
     /**
+     * can be set if the model is in teh context of a parent and thus allows to pass a parent model through the dom
+     */
+    public parentmodel: model;
+
+    /**
      * the coiunt for the toal duplicates found
      */
     public duplicatecount: number = 0;
 
+    /**
+     * ToDo add documentation on how to use this
+     */
     private modelRegisterId: number;
 
+    /**
+     * ToDo: add documentation how to use this
+     */
     public savingProgress: BehaviorSubject<number> = new BehaviorSubject(1);
 
     constructor(
@@ -712,17 +723,24 @@ export class model implements OnDestroy {
      * set the model to the edit mode
      *
      * @param withbackup create backup data so dirty fields can be evaluated. Defaults to true. Shoudl ony be set to false in specific cases
+     * @param silent prevents the model to be set to editing
      */
-    public startEdit(withbackup: boolean = true) {
+    public startEdit(withbackup: boolean = true, silent: boolean = false) {
         // if the model is already editing .. simply return
-        if(this.isEditing) return;
+        if (this.isEditing) return;
 
         // shift to backend format .. no objects like date embedded
         if (withbackup && !this.duplicate) {
             this.backupData = {...this.data};
         }
-        this.isEditing = true;
-        this.mode$.emit('edit');
+
+        /**
+         *  do not set to editing if silent is set
+         */
+        if (!silent) {
+            this.isEditing = true;
+            this.mode$.emit('edit');
+        }
 
         // add the model as editing to the navigation service so we can stop the user from navigating away
         this.navigation.addModelEditing(this.module, this.id, this.getFieldValue('summary_text'));
@@ -924,7 +942,11 @@ export class model implements OnDestroy {
         let responseSubject = new Subject<boolean>();
         this.backend.delete(this.module, this.id)
             .subscribe(res => {
-                this.broadcast.broadcastMessage("model.delete", {id: this.id, module: this.module, data: _.clone(this.data)});
+                this.broadcast.broadcastMessage("model.delete", {
+                    id: this.id,
+                    module: this.module,
+                    data: _.clone(this.data)
+                });
                 responseSubject.next(true);
                 responseSubject.complete();
             });
@@ -1120,6 +1142,11 @@ export class model implements OnDestroy {
      */
     private copyValue(toField, value) {
         let fieldDef = this.metadata.getFieldDefs(this.module, toField);
+
+        // if not found just set the field attribute
+        if(!fieldDef) this.setField(toField, value);
+
+        // handle links
         switch (fieldDef.type) {
             case 'link':
                 if (_.isObject(value) && value.beans) {
@@ -1127,10 +1154,10 @@ export class model implements OnDestroy {
                     for (let relid in value.beans) {
                         newLink.beans[this.utils.generateGuid()] = {...value.beans[relid]};
                     }
-                    this.setFieldValue(toField, newLink);
+                    this.setField(toField, newLink);
                 }
             default:
-                this.setFieldValue(toField, value);
+                this.setField(toField, value);
                 break;
         }
     }

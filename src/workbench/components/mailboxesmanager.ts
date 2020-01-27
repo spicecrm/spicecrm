@@ -6,25 +6,30 @@ import {backend} from "../../services/backend.service";
 import {footer} from "../../services/footer.service";
 import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
+import {modellist} from "../../services/modellist.service";
 import {model} from "../../services/model.service";
 import {modelutilities} from "../../services/modelutilities.service";
 import {toast} from "../../services/toast.service";
 import {view} from "../../services/view.service";
+import {configurationService} from "../../services/configuration.service";
 
 @Component({
-    providers: [model, view],
+    providers: [modellist, model, view],
     selector: "mailboxes-manager",
     templateUrl: "./src/workbench/templates/mailboxesmanager.html",
 })
 export class MailboxesManager {
 
-    @ViewChild("relatecontainer", {read: ViewContainerRef, static: true}) private relatecontainer: ViewContainerRef;
-    private relatecontainerElement: any = undefined;
+    @ViewChild("viewcontainer", {read: ViewContainerRef, static: true}) private viewcontainer: ViewContainerRef;
 
-    public mailboxes: any[];
     private _selected_mailbox;
 
+    private renderedview: any[] = [];
+
+    private headeractionset: string;
+
     constructor(
+        private modellist: modellist,
         private backend: backend,
         private footer: footer,
         private language: language,
@@ -34,16 +39,25 @@ export class MailboxesManager {
         private modelutilities: modelutilities,
         private toast: toast,
         private view: view,
+        private configuration: configurationService
     ) {
+        this.modellist.module = 'Mailboxes';
+
         this.model.module = "Mailboxes";
         this.view.isEditable = true;
-        this.view.setEditMode();
-        this.backend.all("Mailboxes").subscribe(
-            (res) => {
-                this.mailboxes = res;
-            },
-        );
+
+        // get the transports
+        if (!this.configuration.getData('mailboxtransports')) {
+            this.configuration.setData('mailboxtransports', []);
+            this.backend.getRequest('/mailboxes/transports').subscribe(transports => {
+                this.configuration.setData('mailboxtransports', transports);
+            });
+        }
+
+        let componentconfig = this.metadata.getComponentConfig('MailboxesManager', 'Mailboxes');
+        this.headeractionset = componentconfig.actionset;
     }
+
 
     public getActionSets() {
         return this.metadata.getActionSets(this.model.module);
@@ -58,26 +72,43 @@ export class MailboxesManager {
     }
 
     set selected_mailbox(mailbox) {
-        if (mailbox && mailbox.length > 0) {
-            for (let entry of this.mailboxes) {
-                if (entry.id == mailbox) {
-                    this._selected_mailbox = mailbox;
-                    this.model.data = entry;
-                    this.model.id = mailbox;
+        let thismailbox = this.modellist.listData.list.find(mb => mb.id == mailbox)
+        if (thismailbox) {
+            // set the current mailbox and go load the model
+            this._selected_mailbox = mailbox;
+            this.model.id = mailbox;
+            this.model.getData();
 
-                    // add resp rerender the user subpanel
-                    this.addUserSubpanel();
-                }
-            }
-        } else if (mailbox === undefined) {
+            // render new
+            this.cleanView();
+            this.renderedview = [];
+            this.metadata.addComponent('ObjectRecordDetails', this.viewcontainer).subscribe(component => {
+                this.renderedview.push(component);
+            });
+            this.metadata.addComponent('ObjectRelateContainer', this.viewcontainer).subscribe(component => {
+                this.renderedview.push(component);
+            });
+        } else {
+            this.cleanView();
             this._selected_mailbox = null;
-            this.model.data = {};
             this.model.id = "";
-            this.deleteUserSubpanel();
+            this.model.initialize();
         }
     }
 
+    /**
+     * cleans the current view
+     */
+    private cleanView() {
+        // destroy what we have rendered thus far
+        for (let thisview of this.renderedview) {
+            thisview.destroy();
+        }
+
+    }
+
     private addMailbox() {
+        /*
         this.metadata.addComponent("MailboxManagerAddDialog", this.footer.footercontainer).subscribe(
             (comp) => {
                 comp.instance.closedialog.subscribe(
@@ -85,9 +116,12 @@ export class MailboxesManager {
                         if (data) {
                             this.mailboxes.push(data);
                             this.selected_mailbox = data.id;
+                            this.view.setEditMode('name');
                         }
                     });
             });
+
+         */
     }
 
     private reset() {
@@ -97,6 +131,7 @@ export class MailboxesManager {
     }
 
     private deleteMailbox() {
+        /*
         let this_index = 0;
         let sel_index = -1;
         for (let mailbox of this.mailboxes) {
@@ -112,30 +147,8 @@ export class MailboxesManager {
             this.selected_mailbox = undefined;
             console.log(this.selected_mailbox);
         });
-    }
 
-    private saveChanges() {
-        this.model.save(true);
-    }
-
-    private addUserSubpanel() {
-        if (this.relatecontainerElement) {
-            this.relatecontainerElement.destroy();
-        }
-
-        if (!this.relatecontainer) {
-            return;
-        }
-        this.metadata.addComponent(
-            "ObjectRelateContainer",
-            this.relatecontainer,
-        ).subscribe((userSubpanel) => {
-            this.relatecontainerElement = userSubpanel;
-        });
-    }
-
-    private deleteUserSubpanel() {
-        this.relatecontainerElement.destroy();
+         */
     }
 
     private setAsDefault() {

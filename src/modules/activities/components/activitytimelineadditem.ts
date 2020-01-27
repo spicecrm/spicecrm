@@ -47,7 +47,7 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
      *
      * indicator if the panel is expanded or not
      */
-    private isExpanded: boolean = false;
+    public isExpanded: boolean = false;
 
     /**
      * @ignore
@@ -56,7 +56,7 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
      */
     private parentSubscription: any;
 
-    constructor(private metadata: metadata, private activitiyTimeLineService: activitiyTimeLineService, private model: model, private view: view, private language: language, private modal: modal, private dockedComposer: dockedComposer, private ViewContainerRef: ViewContainerRef) {
+    constructor(public metadata: metadata, public activitiyTimeLineService: activitiyTimeLineService, public model: model, public view: view, public language: language, public modal: modal, public dockedComposer: dockedComposer, public ViewContainerRef: ViewContainerRef) {
     }
 
     /**

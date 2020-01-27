@@ -1,0 +1,11 @@
+<div class="slds-button-group" role="group">
+    <button class="slds-button slds-button-icon slds-button_icon-border-filled" (click)="accept()" style="height: 22px; width:22px;" [disabled]="disabled" [ngClass]="{'slds-is-selected': status == 'accept'}">
+        <system-button-icon icon="check" size="xx-small"></system-button-icon>
+    </button>
+    <button class="slds-button slds-button-icon slds-button_icon-border-filled" (click)="tentative()" style="height: 22px; width:22px;" [disabled]="disabled" [ngClass]="{'slds-is-selected': status == 'tentative'}">
+        <system-button-icon icon="question_mark"></system-button-icon>
+    </button>
+    <button class="slds-button slds-button-icon slds-button_icon-border-filled" (click)="decline()" style="height: 22px; width:22px;" [disabled]="disabled" [ngClass]="{'slds-is-selected': status == 'decline'}">
+        <system-button-icon icon="error"></system-button-icon>
+    </button>
+</div>

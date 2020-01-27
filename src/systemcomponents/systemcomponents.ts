@@ -67,6 +67,8 @@ import /*embed*/ {SystemInputLabel} from "./components/systeminputlabel";
 import /*embed*/ {SystemInputModule} from "./components/systeminputmodule";
 import /*embed*/ {SystemInputModuleFilter} from "./components/systeminputmodulefilter";
 import /*embed*/ {SystemInputModuleField} from "./components/systeminputmodulefield";
+import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
+import /*embed*/ {SystemInputPassword} from "./components/systeminputpassword";
 import /*embed*/ {SystemInputRadio} from "./components/systeminputradio";
 import /*embed*/ {SystemInputRelate} from "./components/systeminputrelate";
 import /*embed*/ {SystemInputTags} from "./components/systeminputtags";
@@ -115,7 +117,7 @@ import /*embed*/ {PackageLoaderPackages} from "./components/packageloaderpackage
 import /*embed*/ {PackageLoaderPackage} from "./components/packageloaderpackage";
 import /*embed*/ {PackageLoaderLanguages} from "./components/packageloaderlanguages";
 import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguage";
-import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
+
 
 import /*embed*/ {SystemFilterBuilder} from "./components/systemfilterbuilder";
 import /*embed*/ {SystemFilterBuilderFilterExpressionFields} from "./components/systemfilterbuilderfilterexpressionfields";
@@ -194,6 +196,7 @@ import /*embed*/ {SystemTrendIndicator} from "./components/systemtrendindicator"
         SystemInputModuleFilter,
         SystemInputModuleField,
         SystemInputNumber,
+        SystemInputPassword,
         SystemInputRadio,
         SystemInputRelate,
         SystemInputTags,
@@ -303,6 +306,7 @@ import /*embed*/ {SystemTrendIndicator} from "./components/systemtrendindicator"
         SystemInputModuleFilter,
         SystemInputModuleField,
         SystemInputNumber,
+        SystemInputPassword,
         SystemInputRadio,
         SystemInputRelate,
         SystemInputTags,
