@@ -30,7 +30,7 @@
         <reports-designer-tree (onUnionDelete)="handleUnionDelete($event)" (onUnionAdd)="handleUnionAdd($event)"></reports-designer-tree>
     </div>
     <div class="slds-size--2-of-3" style="height: 100%">
-        <div *ngIf="!model.isLoading && reportsDesignerService.currentPath" class="slds-tabs--default">
+        <div *ngIf="!model.isLoading && !!reportsDesignerService.activeModule?.module" class="slds-tabs--default">
             <ul class="slds-tabs--default__nav" role="tablist">
                 <li (click)="setActiveTab('details')" [class.slds-active]="activeTab == 'details'" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
                     <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
@@ -85,7 +85,7 @@
                 </li>
             </ul>
             <div [ngSwitch]="activeTab" tobottom>
-                <ng-container *ngIf="view.isEditMode()">
+                <ng-container *ngIf="reportsDesignerService.activeModule?.unionid">
                     <reports-designer-details *ngSwitchCase="'details'"></reports-designer-details>
                     <reports-designer-filter *ngSwitchCase="'filter'" [module]="reportsDesignerService.activeModule"></reports-designer-filter>
                     <ng-container *ngSwitchCase="'manipulate'">
@@ -105,7 +105,7 @@
         <div *ngIf="model.isLoading" class="slds-align--absolute-center" style="height: 100%">
             <system-spinner></system-spinner>
         </div>
-        <div *ngIf="!model.isLoading && !reportsDesignerService.currentPath" class="slds-p-around--small slds-align--absolute-center" style="height: 100%">
+        <div *ngIf="!model.isLoading && !reportsDesignerService.activeModule?.module" class="slds-p-around--small slds-align--absolute-center" style="height: 100%">
             {{language.getLabel('LBL_MAKE_SELECTION')}}
         </div>
     </div>
