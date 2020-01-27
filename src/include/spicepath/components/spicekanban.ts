@@ -32,11 +32,6 @@ declare var _: any;
 })
 export class SpiceKanban implements OnInit, OnDestroy {
     /**
-     * reference to the kanban container
-     */
-    @ViewChild('kanbanContainer', {read: ViewContainerRef, static: true}) private kanbanContainer: ViewContainerRef;
-
-    /**
      * reference to the utility bar if one is rendered
      */
     @ViewChild('kanbanUtilityBar', {read: ViewContainerRef, static: false}) private kanbanUtilityBar: ViewContainerRef;
@@ -81,7 +76,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
         this.componentconfig = this.metadata.getComponentConfig('SpiceKanban', this.modellist.module);
 
         this.currencies = this.currency.getCurrencies();
-
     }
 
     /**
@@ -242,26 +236,39 @@ export class SpiceKanban implements OnInit, OnDestroy {
     }
 
     /**
-     * react to the scroll event and if possible reload the list
-     *
-     * @param e
+     * returns ture if there are any visible items for the displayed stages
      */
-    private onScroll(e) {
-        let element = this.kanbanContainer.element.nativeElement;
-        if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
-
-            // check if there are still buckets that have potentially more items
-            let loadmore = false;
+    get hasVisibleItems() {
+        let visible = false;
+        if (this.modellist.buckets) {
             for (let bucket of this.modellist.buckets.bucketitems) {
-                if (bucket.total > bucket.items) {
-                    loadmore = true;
+                if (this.stages.findIndex(st => st.stage == bucket.bucket) >= 0 && bucket.items > 0) {
+                    visible = true;
                     break;
                 }
             }
+        }
+        return visible;
+    }
 
-            if (loadmore) {
-                this.modellist.loadMoreList();
+    /**
+     * checks if there are more records to load
+     */
+    private loadmore() {
+        // no further load if we are loading already
+        if (this.modellist.isLoading) return false;
+
+        // check if there are still buckets that have potentially more items
+        let loadmore = false;
+        for (let bucket of this.modellist.buckets.bucketitems) {
+            if (this.stages.findIndex(st => st.stage == bucket.bucket) >= 0 && bucket.total > bucket.items) {
+                loadmore = true;
+                break;
             }
+        }
+
+        if (loadmore) {
+            this.modellist.loadMoreList();
         }
     }
 

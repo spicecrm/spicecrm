@@ -21,6 +21,15 @@ export class AdministrationMenu {
 
     }
 
+    /**
+     * trackby function to opütimize performnce onm the for loop
+     *
+     * @param index
+     * @param item
+     */
+    protected trackbyfn(index, item) {
+        return item.id;
+    }
 
     /**
      * emit nav changes to main screen

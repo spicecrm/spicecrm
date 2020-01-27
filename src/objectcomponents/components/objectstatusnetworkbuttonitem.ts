@@ -16,7 +16,9 @@ import {model} from '../../services/model.service';
 import {modal} from '../../services/modal.service';
 import {metadata} from '../../services/metadata.service';
 
-
+/**
+ * the container for the item in the list. Can be seleted by the angular selector and also handle the click on the element and propagate the click to the actionable function on the item
+ */
 @Component({
     selector: 'object-status-network-button-item',
     templateUrl: './src/objectcomponents/templates/objectstatusnetworkbuttonitem.html'
@@ -88,6 +90,7 @@ export class ObjectStatusNetworkButtonItem implements AfterViewInit {
 
     /**
      * executes the change on the embedded component or on the item itself
+     * executes the model editing in silent mode
      *
      * @param statusfield
      */
@@ -95,7 +98,7 @@ export class ObjectStatusNetworkButtonItem implements AfterViewInit {
         if(this.actioncomponent && this.actioncomponent.execute){
             this.actioncomponent.execute();
         } else {
-            this.model.startEdit();
+            this.model.startEdit(true, true);
             this.model.setField(statusfield, this.item.status_to);
             if (this.model.validate()) {
                 this.model.save();

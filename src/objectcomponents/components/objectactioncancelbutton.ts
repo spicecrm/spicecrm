@@ -20,14 +20,28 @@ import {view} from "../../services/view.service";
 })
 export class ObjectActionCancelButton {
 
-    @Output() public  actionemitter: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private helper: helper, private view: view, @Optional()private modalwindow: modalwindow) {}
+    constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private helper: helper, private view: view, @Optional() private modalwindow: modalwindow) {
+    }
 
+    /**
+     * disable when the model is saving
+     */
+    get disabled() {
+        return this.model.isSaving;
+    }
+
+    /**
+     * hide the button if we are not in edit mode
+     */
     get hidden() {
         return !this.model.isEditing;
     }
 
+    /**
+     * cancel and destroy the modal if we have one
+     */
     public execute() {
         this.model.cancelEdit();
         this.view.setViewMode();
@@ -36,6 +50,6 @@ export class ObjectActionCancelButton {
         this.actionemitter.emit('cancel');
 
         // close the modal window if we have one
-        if(this.modalwindow) this.modalwindow.self.destroy();
+        if (this.modalwindow) this.modalwindow.self.destroy();
     }
 }
