@@ -24,7 +24,6 @@ import {ReportsDesignerManipulate} from "./reportsdesignermanipulate";
 })
 export class ReportsDesigner {
 
-    @ViewChild(ReportsDesignerManipulate, {static: false}) private manipulateComponent;
     private activeTab: string = 'manipulate';
     protected currentUnionListFields: any[] = [];
 
@@ -202,14 +201,5 @@ export class ReportsDesigner {
         if (!unionListFields || !unionListFields.length) return;
         unionListFields = unionListFields.filter(field => field.joinid != unionId);
         this.model.setField('unionlistfields', unionListFields);
-    }
-
-    /*
-     * @call child.addFixed
-     */
-    private addFixed() {
-        if (this.reportsDesignerService.expertMode) {
-            this.manipulateComponent.addFixed();
-        }
     }
 }
