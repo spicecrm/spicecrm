@@ -1,7 +1,7 @@
 /**
  * @module ModuleReportsDesigner
  */
-import {AfterViewInit, Component, Input, OnDestroy, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, ViewChild} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {ReportsDesignerService} from "../services/reportsdesigner.service";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
@@ -155,8 +155,8 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
         let id = this.reportsDesignerService.generateGuid();
         return {
             fieldid: id,
-            path: field ? `${this.reportsDesignerService.currentPath}::${field.id}` : '',
-            displaypath: field ? this.reportsDesignerService.currentPath : '',
+            path: field ? `${this.reportsDesignerService.getCurrentPath()}::${field.id}` : '',
+            displaypath: field ? this.reportsDesignerService.getCurrentPath() : '',
             fieldname: field ? field.name : '',
             name: field ? field.label : 'new fixed field',
             display: 'yes',
@@ -199,7 +199,7 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
      */
     public addFixed() {
         let listItems = this.listItems.slice();
-        const newFixedField = this.generateNewItem(null, listItems.length +1);
+        const newFixedField = this.generateNewItem(null, listItems.length + 1);
         listItems.push(newFixedField);
         this.listItems = listItems;
         this.addListItemToUnionFields(newFixedField);
