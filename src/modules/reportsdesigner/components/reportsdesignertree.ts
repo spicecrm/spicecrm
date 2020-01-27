@@ -1,7 +1,7 @@
 /**
  * @module ModuleReportsDesigner
  */
-import {AfterViewInit, Component, EventEmitter, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Output, ViewChild} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {ReportsDesignerService} from "../services/reportsdesigner.service";
 import {backend} from "../../../services/backend.service";
@@ -13,12 +13,13 @@ import {modal} from "../../../services/modal.service";
     selector: 'reports-designer-tree',
     templateUrl: './src/modules/reportsdesigner/templates/reportsdesignertree.html'
 })
-export class ReportsDesignerTree implements AfterViewInit {
+export class ReportsDesignerTree {
 
     protected modules: any[] = [];
-    @ViewChild('dragList', {static: false}) private dragList;
     private filterKey: string = '';
     private isLoadingModuleFields: boolean = false;
+    private reportModuleFields: any = {};
+
     /*
      * @output onUnionDelete: EventEmitter<string> = unionId
      */
@@ -33,6 +34,7 @@ export class ReportsDesignerTree implements AfterViewInit {
                 private model: model,
                 private modal: modal,
                 private metadata: metadata,
+                private cdr: ChangeDetectorRef,
                 private reportsDesignerService: ReportsDesignerService) {
     }
 
@@ -52,6 +54,13 @@ export class ReportsDesignerTree implements AfterViewInit {
     }
 
     /*
+     * @return module: object
+     */
+    get allModules() {
+        return [{module: this.model.getField('report_module'), unionid: 'root'}, ...this.unionModules];
+    }
+
+    /*
      * @return modules: any[]
      */
     get unionModules() {
@@ -67,39 +76,24 @@ export class ReportsDesignerTree implements AfterViewInit {
     }
 
     /*
-     * @return moduleFields: object[]
+     * @param data
+     * @set currentPath
+     * @getModuleFields
      */
-    get reportFields() {
-        return this.reportsDesignerService.moduleFields;
+    private onItemSelection(data, rootModule) {
+        this.reportsDesignerService.setCurrentPath(rootModule, data.path);
+        this.getModuleFields(data.module, rootModule);
     }
 
     /*
      * @return filteredReportFields: object[]
      */
-    get filteredReportFields() {
-        return this.filterKey ? this.reportFields
+    private getFilteredReportFields(reportFields) {
+        return !this.filterKey ? reportFields : reportFields
             .filter(nodeFiled => {
                 return nodeFiled.name.toLowerCase().includes(this.filterKey.toLowerCase()) ||
                     (nodeFiled.label && nodeFiled.label.toLowerCase().includes(this.filterKey.toLowerCase()));
-            }) : this.reportFields;
-    }
-
-    /*
-     * @set treeCDKDragList
-     * @set availableModules
-     */
-    public ngAfterViewInit() {
-        this.reportsDesignerService.treeCDKDragList = this.dragList;
-    }
-
-    /*
-     * @param data
-     * @set currentPath
-     * @getModuleFields
-     */
-    private onItemSelection(data) {
-        this.reportsDesignerService.currentPath = data.path;
-        this.getModuleFields(data.module);
+            });
     }
 
     /*
@@ -181,16 +175,19 @@ export class ReportsDesignerTree implements AfterViewInit {
 
     /*
      * loads the fields for a given module
-     * @param module the module
+     * @param forModule: string
+     * @param rootModule: object
      * @set isLoadingModuleFields
-     * @set moduleFields
+     * @set treeCDKDragList
+     * @set reportModuleFields[rootModule]
      */
-    private getModuleFields(module) {
-        this.reportsDesignerService.moduleFields = [];
+    private getModuleFields(forModule, rootModule) {
+        this.reportModuleFields[rootModule] = [];
         this.isLoadingModuleFields = true;
-        this.backend.getRequest('/dictionary/browser/' + module + '/fields')
+        this.cdr.detectChanges();
+        this.backend.getRequest('/dictionary/browser/' + forModule + '/fields')
             .subscribe(items => {
-                this.reportsDesignerService.moduleFields = items;
+                this.reportModuleFields[rootModule] = items;
                 this.isLoadingModuleFields = false;
             });
     }
@@ -225,15 +222,13 @@ export class ReportsDesignerTree implements AfterViewInit {
     /*
      * @set currentModule
      */
-    private setActiveModule(selectedModule?) {
-        if (selectedModule) {
-            this.reportsDesignerService.activeModule = selectedModule;
-            this.setCurrentUnionListFields(selectedModule.unionid);
-        } else {
-            this.reportsDesignerService.activeModule = {unionid: 'root', module: this.model.getField('report_module')};
+    private setActiveModule(selectedModule) {
+        this.reportsDesignerService.activeModule = selectedModule;
+        if (!this.reportsDesignerService.getCurrentPath(selectedModule.module)) {
+            this.reportsDesignerService.setCurrentPath(selectedModule.module, selectedModule.module);
         }
-
-        this.reportsDesignerService.moduleFields = [];
+        this.reportsDesignerService.treeCDKDragList = selectedModule.unionid == 'root' ? this.reportsDesignerService.rootModuleDragListId : selectedModule.unionid;
+        this.setCurrentUnionListFields(selectedModule.unionid);
     }
 
     /*
@@ -255,6 +250,6 @@ export class ReportsDesignerTree implements AfterViewInit {
      * @return index
      */
     private trackByFn(index, item) {
-        return item.id;
+        return index;
     }
 }

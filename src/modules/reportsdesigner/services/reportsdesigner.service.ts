@@ -11,10 +11,8 @@ import {modelutilities} from "../../../services/modelutilities.service";
 @Injectable()
 export class ReportsDesignerService {
     public dropLists: CdkDropList[] = [];
-    public treeCDKDragList: CdkDropList;
-    public _currentPath: string;
-    public _moduleFields: any[] = [];
-    public currentUnionListFields: any[] = [];
+    public treeCDKDragList: CdkDropList | string;
+    public currentPath: any = {};
     public activeModule: any = {};
     public dragPlaceHolderNode: Node;
     public operatorCount: any = {};
@@ -22,6 +20,7 @@ export class ReportsDesignerService {
     public operatorAssignments: any = {};
     public expertMode: boolean = false;
     public expandedItemId: string = '';
+    public rootModuleDragListId: string = 'reportsDesignerTreeDragListRoot';
 
     constructor(private configurationService: configurationService,
                 private backend: backend,
@@ -31,33 +30,18 @@ export class ReportsDesignerService {
     }
 
     /*
-    * @set _currentPath
+    * @param module: string
+    * @param value: string
+    * @set currentPath
     */
-    set currentPath(value) {
-        this._currentPath = value;
-        this.cdr.detectChanges();
+    public setCurrentPath(module, value) {
+        return this.currentPath[module] = value;
     }
-
     /*
-    * @return _currentPath: string
+    * @return currentPath[module]: string
     */
-    get currentPath() {
-        return this._currentPath;
-    }
-
-    /*
-    * @set _moduleFields
-    */
-    set moduleFields(value) {
-        this._moduleFields = value;
-        this.cdr.detectChanges();
-    }
-
-    /*
-    * @return _moduleFields: any[]
-    */
-    get moduleFields() {
-        return this._moduleFields;
+    public getCurrentPath(module?) {
+        return module ? this.currentPath[module] : this.activeModule ? this.currentPath[this.activeModule.module] : undefined;
     }
 
     /*

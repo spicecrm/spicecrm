@@ -91,13 +91,13 @@ export class ReportsDesignerManipulateUnion implements OnChanges, OnDestroy {
      * @set joinid
      */
     private linkUnionField(unionField, dragField) {
-        const rootPath = this.reportsDesignerService.currentPath.indexOf('link') < 0 ? 'unionroot::' : '';
-        const unionPath = this.reportsDesignerService.currentPath.replace('root:' , '');
+        const rootPath = this.reportsDesignerService.getCurrentPath().indexOf('link') < 0 ? 'unionroot::' : '';
+        const unionPath = this.reportsDesignerService.getCurrentPath().replace('root:' , '');
         unionField.unionfieldname = dragField.fieldname;
         unionField.unionfielddisplayname = dragField.label;
-        unionField.unionfielddisplaypath = this.reportsDesignerService.currentPath;
+        unionField.unionfielddisplaypath = this.reportsDesignerService.getCurrentPath();
         unionField.unionfieldpath = `${rootPath}union${this.module.unionid}:${unionPath}::${dragField.id}`;
-        unionField.displaypath = this.reportsDesignerService.currentPath;
+        unionField.displaypath = this.reportsDesignerService.getCurrentPath();
         unionField.joinid = this.module.unionid;
     }
 

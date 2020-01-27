@@ -72,7 +72,9 @@ export class ReportsDesigner {
                             this.openSelectModuleModal();
                             this.activeTab = 'details';
                         } else {
-                            this.reportsDesignerService.currentPath = this.model.getField('report_module');
+                            const module = this.model.getField('report_module');
+                            this.reportsDesignerService.setCurrentPath(module, module);
+                            this.reportsDesignerService.treeCDKDragList = this.reportsDesignerService.rootModuleDragListId;
                             this.reportsDesignerService.activeModule = {unionid: 'root', module: res.report_module};
                         }
                     });
@@ -138,7 +140,7 @@ export class ReportsDesigner {
                 if (modules[index]) {
                     this.model.initialize();
                     this.model.setField('report_module', modules[index]);
-                    this.reportsDesignerService.currentPath = modules[index];
+                    this.reportsDesignerService.setCurrentPath(modules[index], modules[index]);
                     this.activeTab = 'details';
                     this.reportsDesignerService.activeModule = {unionid: 'root', module: modules[index]};
                 } else {
