@@ -8,7 +8,11 @@ import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
 import {view} from "../../../services/view.service";
 
-
+/**
+ * renders a close dialog in case the SLA was not met and prompts the user to specifiy the reason why the SLA was not met.
+ * The deviation reason needs to be visible in the fieldset
+ * additonal fields might be added
+ */
 @Component({
     templateUrl: './src/modules/servicecomponents/templates/serviceticketclosemodal.html',
     providers: [view]
@@ -41,15 +45,23 @@ export class ServiceTicketCloseModal {
         this.fieldset = componentconfig.fieldset;
     }
 
+    /**
+     * closes the modal
+     */
     private close() {
         this.self.destroy();
     }
 
-
+    /**
+     * cheks if the deviation reason for the sla is set
+     */
     get canSave() {
         return this.model.getField('sladeviation_reason').length > 0;
     }
 
+    /**
+     * set the status and closes the modal
+     */
     private setStatus() {
         if(!this.canSave) return;
 
