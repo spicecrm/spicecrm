@@ -1,0 +1,26 @@
+<div class="slds-m-vertical--xx-small slds-box--border">
+    <div class="slds-p-around--x-small">
+        <h1>{{language.getLabel('LBL_EWS')}}</h1>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-1">
+                <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_HOST')}}</label>
+                <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.ews_host" class="slds-input"/>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_USER_NAME')}}</label>
+                <input type="text" [(ngModel)]="model.data.settings.ews_username" class="slds-input" [disabled]="!view.isEditMode()"/>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_PASSWORD')}}</label>
+                <system-input-password  [(ngModel)]="model.data.settings.ews_paddword" [disabled]="!view.isEditMode()"></system-input-password>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()" [disabled]="!view.isEditMode()">
+                {{language.getLabel('LBL_TEST_CONNECTION')}}
+            </button>
+        </div>
+    </div>
+</div>
