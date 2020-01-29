@@ -1,4 +1,4 @@
-<div class="slds-grid slds-grid--vertical" style="height: 100%">
+<div class="slds-grid slds-grid--vertical" tobottomnoscroll>
     <div class="slds-border--bottom slds-p-around--small slds-grid">
         <div class="slds-form-element slds-grid slds-grid--vertical-align-center">
             <label class="slds-form-element__label">
@@ -27,7 +27,7 @@
             </div>
         </div>
     </div>
-    <div style="height: 100%">
+    <div class="slds-grow slds-scrollable--y">
         <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover reports-designer-manipulate-table">
             <thead>
             <tr class="slds-text-title--caps slds-theme--shade">
@@ -42,7 +42,7 @@
                         {{language.getLabel('LBL_DISPLAY')}}
                     </div>
                 </th>
-                <th scope="col" class="slds-resizable slds-cell-shrink">
+                <th scope="col" class="slds-resizable slds-cell-shrink" style="padding-left: 5px">
                     <div class="slds-truncate" [title]="language.getLabel('LBL_LINK')">
                         {{language.getLabel('LBL_LINK')}}
                     </div>
