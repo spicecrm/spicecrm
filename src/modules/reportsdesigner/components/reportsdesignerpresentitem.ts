@@ -13,7 +13,7 @@ import {model} from "../../../services/model.service";
 })
 export class ReportsDesignerPresentItem implements AfterViewInit {
 
-    /*
+    /**
     * @input component: string
     */
     @Input() private component: string = '';
@@ -23,14 +23,14 @@ export class ReportsDesignerPresentItem implements AfterViewInit {
     constructor(private language: language, private metadata: metadata, private model: model) {
     }
 
-    /*
+    /**
     * @render view
     */
     public ngAfterViewInit() {
         this.render();
     }
 
-    /*
+    /**
     * @addComponent
     * @set componentRef
     */
@@ -39,7 +39,7 @@ export class ReportsDesignerPresentItem implements AfterViewInit {
             .subscribe(componentRef => this.componentRef = componentRef);
     }
 
-    /*
+    /**
     * @destroy componentRef
     */
     public ngOnDestroy() {

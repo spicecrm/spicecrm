@@ -18,16 +18,16 @@ import {ReportsDesignerService} from "../services/reportsdesigner.service";
 })
 export class ReportsDesignerConditionGroup {
 
-    /*
-     * @input group: object
+    /**
+    * @input group: object
      */
     @Input() private group: any;
-    /*
-     * @input canDelete: boolean
+    /**
+    * @input canDelete: boolean
      */
     @Input() private canDelete: boolean = false;
-    /*
-     * @output groupDeleted: EventEmitter<string> = groupId
+    /**
+    * @output groupDeleted: EventEmitter<string> = groupId
      */
     @Output() private treeChange: EventEmitter<any> = new EventEmitter<any>();
     private expanded: number;
@@ -37,23 +37,23 @@ export class ReportsDesignerConditionGroup {
                 private model: model) {
     }
 
-    /*
-     * @return whereConditions: object[]
+    /**
+    * @return whereConditions: object[]
      */
     get whereConditions() {
         return this.model.getField('whereconditions');
     }
 
-    /*
-     * @param value: object[]
+    /**
+    * @param value: object[]
      * @set whereConditions
      */
     set whereConditions(value) {
         this.model.setField('whereconditions', value);
     }
 
-    /*
-     * @removePlaceHolderElement
+    /**
+    * @removePlaceHolderElement
      * @moveItemInArray? item in group.conditions
      * @addCondition?
      */
@@ -67,37 +67,37 @@ export class ReportsDesignerConditionGroup {
         }
     }
 
-    /*
-     * @emit object = {action: string, id: string} by treeChange
+    /**
+    * @emit object = {action: string, id: string} by treeChange
      */
     private addGroup() {
         this.treeChange.emit({action: 'addGroup', id: this.group.id});
     }
 
-    /*
-     * @emit object = {action: string, id: string} by treeChange
+    /**
+    * @emit object = {action: string, id: string} by treeChange
      */
     private deleteGroup() {
         this.treeChange.emit({action: 'deleteGroup', id: this.group.id});
     }
 
-    /*
-     * @emit obj: object by treeChange
+    /**
+    * @emit obj: object by treeChange
      */
     private handleTreeChange(obj) {
         this.treeChange.emit(obj);
     }
 
-    /*
-     * @set expanded = conditionId | null
+    /**
+    * @set expanded = conditionId | null
      */
     private toggleExpand(conditionId) {
         if (!this.reportsDesignerService.expertMode) return;
         this.expanded = conditionId == this.expanded ? null : conditionId;
     }
 
-    /*
-     * @define condition
+    /**
+    * @define condition
      * @param field: object
      * @push condition to group.conditions
      * @set whereConditions
@@ -128,8 +128,8 @@ export class ReportsDesignerConditionGroup {
         this.whereConditions = this.whereConditions ? [...this.whereConditions, condition] : [condition];
     }
 
-    /*
-     * @param id: string
+    /**
+    * @param id: string
      * @filter whereConditions from deleted
      * @set group.conditions
      */

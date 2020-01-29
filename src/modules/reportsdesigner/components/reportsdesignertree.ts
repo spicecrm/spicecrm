@@ -20,12 +20,12 @@ export class ReportsDesignerTree {
     private isLoadingModuleFields: boolean = false;
     private reportModuleFields: any = {};
 
-    /*
-     * @output onUnionDelete: EventEmitter<string> = unionId
+    /**
+    * @output onUnionDelete: EventEmitter<string> = unionId
      */
     @Output() private onUnionDelete: EventEmitter<string> = new EventEmitter<string>();
-    /*
-     * @output onUnionAdd: object[] = currentUnionFields
+    /**
+    * @output onUnionAdd: object[] = currentUnionFields
      */
     @Output() private onUnionAdd: EventEmitter<string> = new EventEmitter<string>();
 
@@ -38,45 +38,45 @@ export class ReportsDesignerTree {
                 private reportsDesignerService: ReportsDesignerService) {
     }
 
-    /*
-     * @return module: object
+    /**
+    * @return module: object
      */
     get canAdd() {
         const listFields = this.model.getField('listfields');
         return listFields && listFields.length && listFields.length > 0;
     }
 
-    /*
-     * @return module: object
+    /**
+    * @return module: object
      */
     get activeModule() {
         return this.reportsDesignerService.activeModule;
     }
 
-    /*
-     * @return module: object
+    /**
+    * @return module: object
      */
     get allModules() {
         return [{module: this.model.getField('report_module'), unionid: 'root'}, ...this.unionModules];
     }
 
-    /*
-     * @return modules: any[]
+    /**
+    * @return modules: any[]
      */
     get unionModules() {
         const modules = this.model.getField('union_modules');
         return modules && modules.length ? modules : [];
     }
 
-    /*
-     * @return dropLists: string[] = cdkDragList element id
+    /**
+    * @return dropLists: string[] = cdkDragList element id
      */
     get dropLists() {
         return this.reportsDesignerService.dropLists;
     }
 
-    /*
-     * @param data
+    /**
+    * @param data
      * @set currentPath
      * @getModuleFields
      */
@@ -85,8 +85,8 @@ export class ReportsDesignerTree {
         this.getModuleFields(data.module, rootModule);
     }
 
-    /*
-     * @return filteredReportFields: object[]
+    /**
+    * @return filteredReportFields: object[]
      */
     private getFilteredReportFields(reportFields) {
         return !this.filterKey ? reportFields : reportFields
@@ -96,8 +96,8 @@ export class ReportsDesignerTree {
             });
     }
 
-    /*
-     * @push module: object to union_modules
+    /**
+    * @push module: object to union_modules
      * @set union_modules
      */
     private addUnionModule() {
@@ -119,8 +119,8 @@ export class ReportsDesignerTree {
             });
     }
 
-    /*
-     * @filter union_modules from deleted
+    /**
+    * @filter union_modules from deleted
      * @set union_modules
      * @setActiveModule
      * @emit unionId by onUnionDelete
@@ -142,8 +142,8 @@ export class ReportsDesignerTree {
         });
     }
 
-    /*
-     * loads the fields for a given module
+    /**
+    * loads the fields for a given module
      * @param unionId: string
      */
     private initializeUnionListFields(unionId) {
@@ -173,8 +173,8 @@ export class ReportsDesignerTree {
         this.model.setField('unionlistfields', newUnionListFields);
     }
 
-    /*
-     * loads the fields for a given module
+    /**
+    * loads the fields for a given module
      * @param forModule: string
      * @param rootModule: object
      * @set isLoadingModuleFields
@@ -192,8 +192,8 @@ export class ReportsDesignerTree {
             });
     }
 
-    /*
-     * placeholder to keep space reserved for the dragged element in its origin
+    /**
+    * placeholder to keep space reserved for the dragged element in its origin
      * @create dragPlaceHolderNode
      * @set dragPlaceHolderNode
      * @insertBefore tr in origin container
@@ -212,15 +212,15 @@ export class ReportsDesignerTree {
         }
     }
 
-    /*
-     * @removePlaceHolderElement
+    /**
+    * @removePlaceHolderElement
      */
     private dropEntered(e) {
         this.reportsDesignerService.removePlaceHolderElement(e.container.element.nativeElement);
     }
 
-    /*
-     * @set currentModule
+    /**
+    * @set currentModule
      */
     private setActiveModule(selectedModule) {
         this.reportsDesignerService.activeModule = selectedModule;
@@ -231,8 +231,8 @@ export class ReportsDesignerTree {
         this.setCurrentUnionListFields(selectedModule.unionid);
     }
 
-    /*
-     * @param unionId
+    /**
+    * @param unionId
      * @filter unionlistfields by unionId
      * @set currentUnionListFields
      */
@@ -242,8 +242,8 @@ export class ReportsDesignerTree {
         this.onUnionAdd.emit(unionListFields.filter(field => field.joinid == unionId));
     }
 
-    /*
-     * A function that defines how to track changes for items in the iterable (ngForOf).
+    /**
+    * A function that defines how to track changes for items in the iterable (ngForOf).
      * https://angular.io/api/common/NgForOf#properties
      * @param index
      * @param item

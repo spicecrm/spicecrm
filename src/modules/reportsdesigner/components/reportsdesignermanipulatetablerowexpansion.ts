@@ -15,7 +15,7 @@ import {model} from "../../../services/model.service";
 })
 export class ReportsDesignerManipulateTableRowExpansion {
 
-    /*
+    /**
     * @input listItem: any
     */
     @Input() private listItem: any = {};
