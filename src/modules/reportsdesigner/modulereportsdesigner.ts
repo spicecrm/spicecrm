@@ -22,6 +22,8 @@ import /*embed*/ {ReportsDesignerManipulateTableRow} from "./components/reportsd
 import /*embed*/ {ReportsDesignerManipulateUnionTableRow} from "./components/reportsdesignermanipulateuniontablerow";
 import /*embed*/ {ReportsDesignerManipulateTableRowExpansion} from "./components/reportsdesignermanipulatetablerowexpansion";
 import /*embed*/ {ReportsDesignerPresent} from "./components/reportsdesignerpresent";
+import /*embed*/ {ReportsDesignerPresentItem} from "./components/reportsdesignerpresentitem";
+import /*embed*/ {ReportsDesignerPresentItemStandard} from "./components/reportsdesignerpresentitemstandard";
 import /*embed*/ {ReportsDesignerVisualize} from "./components/reportsdesignervisualize";
 import /*embed*/ {ReportsDesignerIntegrate} from "./components/reportsdesignerintegrate";
 import /*embed*/ {ReportsDesignerFilter} from "./components/reportsdesignerfilter";
@@ -47,6 +49,8 @@ import /*embed*/ {ReportsDesignerCondition} from "./components/reportsdesignerco
         ReportsDesignerManipulate,
         ReportsDesignerManipulateUnion,
         ReportsDesignerPresent,
+        ReportsDesignerPresentItem,
+        ReportsDesignerPresentItemStandard,
         ReportsDesignerVisualize,
         ReportsDesignerIntegrate,
         ReportsDesignerFilter,

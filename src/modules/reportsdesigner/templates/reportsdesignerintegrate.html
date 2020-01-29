@@ -1,1 +1,21 @@
-ReportsDesignerIntegrate
+<div class="slds-grid" style="height: 100%">
+    <div class="slds-size--1-of-3 slds-border--right slds-scrollable--y">
+        <div *ngFor="let item of items" (click)="setSelectedItemId(item.id)" [class.slds-theme--shade]="item.id == selectedItemId" class="slds-grid slds-p-around--x-small slds-size--1-of-1 slds-border--bottom" >
+            <div class="slds-truncate slds-grow" style="cursor: pointer">
+                {{language.getLabel(item.name)}}
+            </div>
+            <div class="slds-form-element">
+                <label class="slds-checkbox_toggle slds-grid">
+                    <span class="slds-form-element__label slds-m-bottom_none"></span>
+                    <input type="checkbox">
+                    <span class="slds-checkbox_faux_container" aria-live="assertive">
+                        <span class="slds-checkbox_faux" style="cursor: initial"></span>
+                    </span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="slds-size--2-of-3 slds-scrollable--y">
+
+    </div>
+</div>

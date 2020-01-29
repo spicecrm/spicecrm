@@ -1,1 +1,21 @@
-ReportsDesignerPresent
+<div style="height: 100%">
+    <div class="slds-border--bottom slds-p-around--xx-small slds-page-header" style="border-radius: 0">
+        <div class="slds-form-element slds-grid slds-grid--vertical-align-center">
+            <label class="slds-form-element__label slds-text-heading--label">
+                {{language.getLabel('LBL_PLUGIN')}}
+            </label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="selectedItemId">
+                        <option *ngFor="let item of items" [value]="item.id">{{item.name}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-scrollable--y">
+        <div *ngFor="let item of items">
+            <reports-designer-present-item *ngIf="selectedItemId == item.id && !!item.component" [component]="item.component"></reports-designer-present-item>
+        </div>
+    </div>
+</div>

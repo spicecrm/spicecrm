@@ -736,6 +736,21 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     background-color: #CA1B21;
 }
 
+.slds-checkbox_toggle [type="checkbox"]:checked:focus + .slds-checkbox_faux,
+.slds-checkbox_toggle [type="checkbox"]:checked:focus + .slds-checkbox--faux,
+.slds-checkbox_toggle [type="checkbox"]:checked:focus ~ .slds-checkbox_faux,
+.slds-checkbox_toggle [type="checkbox"]:checked:focus ~ .slds-checkbox--faux,
+.slds-checkbox_toggle [type="checkbox"]:checked:focus + .slds-checkbox_faux_container .slds-checkbox_faux,
+.slds-checkbox_toggle [type="checkbox"]:checked:focus + .slds-checkbox--faux_container .slds-checkbox--faux,
+.slds-checkbox--toggle [type="checkbox"]:checked:focus + .slds-checkbox_faux,
+.slds-checkbox--toggle [type="checkbox"]:checked:focus + .slds-checkbox--faux,
+.slds-checkbox--toggle [type="checkbox"]:checked:focus ~ .slds-checkbox_faux,
+.slds-checkbox--toggle [type="checkbox"]:checked:focus ~ .slds-checkbox--faux,
+.slds-checkbox--toggle [type="checkbox"]:checked:focus + .slds-checkbox_faux_container .slds-checkbox_faux,
+.slds-checkbox--toggle [type="checkbox"]:checked:focus + .slds-checkbox--faux_container .slds-checkbox--faux{
+    background-color: #CA1B21;
+}
+
 /* for the progress indicator */
 .slds-path__nav .slds-is-active,
 .slds-path__nav .slds-is-active:after,
