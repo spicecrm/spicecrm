@@ -6,6 +6,8 @@ import {language} from "../../services/language.service";
 import {modal} from "../../services/modal.service";
 import {model} from "../../services/model.service";
 import {view} from "../../services/view.service";
+import {backend} from "../../services/backend.service";
+import {Observable, Subject} from "rxjs";
 
 /**
  * renders the config component for the mailgun transport handler
@@ -21,17 +23,15 @@ export class MailboxesEWSTrafficManager {
         private injector: Injector,
         private model: model,
         private modal: modal,
-        private view: view
+        private view: view,
+        private backend: backend
     ) {
-        let settings = this.model.getField('settings')
+        let settings = this.model.getField('settings');
         if (!settings || (settings && settings.length == 0)) {
             this.model.data.settings = {
-                api_key: "",
-                domain: "",
-                imap_pop3_display_name: "",
-                imap_pop3_username: "",
-                reply_to: "",
-                region: "",
+                ews_host: "",
+                ews_username: "",
+                ews_password: ""
             };
         }
     }
@@ -41,5 +41,49 @@ export class MailboxesEWSTrafficManager {
      */
     public testConnection() {
         this.modal.openModal("MailboxesmanagerTestModal", true, this.injector);
+    }
+
+    /**
+     * retirves the mailbox folders from the backend via the connection
+     */
+    private getMailboxes(): Observable<any> {
+        let responseSubject = new Subject<any>();
+        let modelData = this.model.utils.spiceModel2backend('Mailboxes', this.model.data);
+        this.backend.postRequest("mailboxes/ews/getmailboxfolders",{}, {data: modelData})
+            .subscribe((response: any) => {
+                if (response.result === true) {
+                    responseSubject.next(response);
+                } else {
+                    responseSubject.next(false);
+                }
+
+                responseSubject.complete();
+            });
+
+        return responseSubject.asObservable();
+    }
+
+    /**
+     * opens the modal for the seldection of the IMAP folders
+     */
+    private displayFoldersModal() {
+        let waitingmodal = this.modal.await('loading folders');
+        this.getMailboxes().subscribe(
+            (response) => {
+                waitingmodal.emit(true);
+                if (response !== false) {
+                    /*
+                    this.modal.openModal("MailboxesIMAPSMTPSelectFoldersModal", true, this.injector).subscribe(
+                        (cmp) => {
+                            cmp.instance.setMailboxes(response.mailboxes);
+                        },
+                        (error) => {
+                            this.toast.sendToast(error);
+                        }
+                    );
+                     */
+                }
+            }
+        );
     }
 }
