@@ -1,0 +1,15 @@
+<system-collapsable-tab *ngIf="!hidden" title="LBL_EMAIL">
+   <div class="slds-p-around--x-small">
+       <div class="slds-grid">
+           <field-container field="email_subject" class="slds-grow"></field-container>
+           <div class="slds-align-bottom slds-col--bump-left slds-m-left--small slds-p-bottom--xx-small">
+               <button *ngIf="view.isEditMode()" (click)="copyFromTemplate()" class="slds-button slds-button--neutral">
+                   <system-button-icon icon="copy" position="left"></system-button-icon>
+                   {{language.getLabel('LBL_COPY_FROM_TEMPLATE')}}
+               </button>
+           </div>
+       </div>
+       <field-container field="email_body" [fieldconfig]="{fieldtype: 'richtext', asiframe:true, height: '250px'}"></field-container>
+       <field-container field="email_stylesheet_id" [fieldconfig]="{fieldtype: 'stylesheetid'}"></field-container>
+   </div>
+</system-collapsable-tab>
