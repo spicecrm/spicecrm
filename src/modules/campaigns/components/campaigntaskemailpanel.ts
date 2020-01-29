@@ -8,7 +8,7 @@ import {language} from '../../../services/language.service';
 import {view} from "../../../services/view.service";
 
 @Component({
-    selector: 'campaign-export-button',
+    selector: 'campaign-task-email-panel',
     templateUrl: './src/modules/campaigns/templates/campaigntaskemailpanel.html'
 })
 export class CampaignTaskEmailPanel {
