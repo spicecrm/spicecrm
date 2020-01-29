@@ -10,11 +10,11 @@ import {language} from "../../../services/language.service";
 })
 export class ReportsDesignerManipulateUnionTableRow {
 
-    /*
+    /**
     * @input listItem: any
     */
     @Input() private listItem: any = {};
-    /*
+    /**
     * @output onDelete: EventEmitter<void>
     */
     @Output() private onUnlink: EventEmitter<void> = new EventEmitter<void>();
@@ -30,8 +30,8 @@ export class ReportsDesignerManipulateUnionTableRow {
         return !!this.listItem.unionfieldpath && this.listItem.unionfieldpath.length > 0;
     }
 
-    /*
-     * @param fieldId: string
+    /**
+    * @param fieldId: string
      * @delete the record with the given index
      */
     private unlinkField() {

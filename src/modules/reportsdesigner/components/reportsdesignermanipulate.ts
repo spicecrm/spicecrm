@@ -24,43 +24,44 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
                 private reportsDesignerService: ReportsDesignerService) {
     }
 
-    /*
+    /**
     * @set listfields
     */
     set listItems(value) {
         this.model.setField('listfields', value);
     }
 
-    /*
+    /**
     * @return listfields: any[]
     */
     get listItems() {
         let items = this.model.getField('listfields');
-        return items && items.length ? items.sort((a, b) => +a.sequence > +b.sequence ? 1 : -1) : [];
+        return items && items.length ? items
+            .sort((a, b) => !isNaN(parseInt(a.sequence, 10)) && !isNaN(parseInt(b.sequence, 10)) ? +a.sequence > +b.sequence ? 1 : -1 : 0) : [];
     }
 
-    /*
+    /**
     * @return treeCDKDragList: cdkDragList
     */
     get dragList() {
         return this.reportsDesignerService.treeCDKDragList;
     }
 
-    /*
+    /**
     * @set dropLists
     */
     public ngAfterViewInit() {
         this.reportsDesignerService.dropLists = [this.dropList];
     }
 
-    /*
+    /**
     * @rest dropLists
     */
     public ngOnDestroy() {
         this.reportsDesignerService.dropLists = [];
     }
 
-    /*
+    /**
     * A function that defines how to track changes for items in the iterable (ngForOf).
     * https://angular.io/api/common/NgForOf#properties
     * @param index
@@ -71,7 +72,7 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
         return item.fieldid;
     }
 
-    /*
+    /**
     * @removePlaceHolderElement
     * @moveItemInArray? item in listItems
     * @splice listItems add newItem
@@ -97,7 +98,7 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
         this.listItems = listItems;
     }
 
-    /*
+    /**
     * @param listItem
     * @load unionModules
     * @load unionListFields
@@ -133,7 +134,7 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
         this.model.setField('unionlistfields', unionListFields);
     }
 
-    /*
+    /**
     * @param fieldId
     * @load unionListFields
     * @filter unionListFields from deleted item
@@ -147,8 +148,8 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
         this.model.setField('unionlistfields', unionListFields);
     }
 
-    /*
-     * @param field: object
+    /**
+    * @param field: object
      * @return newItem: object
      */
     private generateNewItem(field = null, sequence) {
@@ -175,8 +176,8 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
         };
     }
 
-    /*
-     * @param fieldId: string
+    /**
+    * @param fieldId: string
      * @delete the record with the given index
      */
     private deleteField(fieldId) {
@@ -190,8 +191,8 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
         });
     }
 
-    /*
-     * @generate newFixedField
+    /**
+    * @generate newFixedField
      * @push newFixedField to listItems
      * @set set listItems
      * @addListItemToUnionFields

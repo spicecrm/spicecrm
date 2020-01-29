@@ -17,14 +17,14 @@ export class ReportsDesignerPresent {
     constructor(private language: language, private metadata: metadata, private model: model) {
     }
 
-    /*
+    /**
     * @return listtype: string
     */
     get selectedItemId() {
         return this.model.getField('listtype');
     }
 
-    /*
+    /**
     * @param value: string
     * @setField listtype
     */
@@ -34,7 +34,7 @@ export class ReportsDesignerPresent {
 
     }
 
-    /*
+    /**
     * @loadItems
     */
     public ngOnInit() {
@@ -42,7 +42,7 @@ export class ReportsDesignerPresent {
         this.loadItems();
     }
 
-    /*
+    /**
     * @set items from metadata.getComponentSetObjects
     */
     private loadItems() {
@@ -58,11 +58,11 @@ export class ReportsDesignerPresent {
                     component: item.componentconfig.component,
                     sequence: item.sequence
                 }))
-                .sort((a, b) => +a.sequence > +b.sequence ? 1 : -1);
+                .sort((a, b) => !isNaN(parseInt(a.sequence, 10)) && !isNaN(parseInt(b.sequence, 10)) ? +a.sequence > +b.sequence ? 1 : -1 : 0);
         }
     }
 
-    /*
+    /**
     * @define presentationParams
     * @set presentationParams.plugin
     * @setField presentation_params

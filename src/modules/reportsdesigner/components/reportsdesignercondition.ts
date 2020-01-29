@@ -12,8 +12,8 @@ import {reporterconfig} from "../../reports/services/reporterconfig";
 })
 export class ReportsDesignerCondition {
 
-    /*
-     * @input whereCondition: object
+    /**
+    * @input whereCondition: object
      */
     @Input() private whereCondition: any = {};
 
@@ -23,8 +23,8 @@ export class ReportsDesignerCondition {
 
     }
 
-    /*
-     * @return type: string
+    /**
+    * @return type: string
      */
     get itemType() {
         let type = 'text';
@@ -58,22 +58,22 @@ export class ReportsDesignerCondition {
 
     }
 
-    /*
-     * @return showValue: boolean
+    /**
+    * @return showValue: boolean
      */
     get showValue() {
         return this.reporterConfig.operatorCount[this.whereCondition.operator] > 0;
     }
 
-    /*
-     * @return showValueTo: boolean
+    /**
+    * @return showValueTo: boolean
      */
     get showValueTo() {
         return this.reporterConfig.operatorCount[this.whereCondition.operator] > 1;
     }
 
-    /*
-     * @return operators: object[]
+    /**
+    * @return operators: object[]
      */
     private getOperators() {
         let retArray = [];
@@ -90,8 +90,8 @@ export class ReportsDesignerCondition {
         return retArray;
     }
 
-    /*
-     * @reset whereCondition
+    /**
+    * @reset whereCondition
      */
     private changeOperator() {
         this.whereCondition.value = '';
@@ -100,7 +100,7 @@ export class ReportsDesignerCondition {
         this.whereCondition.valuetokey = '';
     }
 
-    /*
+    /**
     * A function that defines how to track changes for items in the iterable (ngForOf).
     * https://angular.io/api/common/NgForOf#properties
     * @param index

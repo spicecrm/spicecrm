@@ -17,11 +17,11 @@ import {model} from "../../../services/model.service";
 export class ReportsDesignerManipulateUnion implements OnChanges, OnDestroy {
 
     @ViewChild('dropList', {static: false}) private dropList;
-    /*
+    /**
     * @input module: {module: string, unionid: string}
     */
     @Input() private module: any = {};
-    /*
+    /**
     * @input currentUnionListFields: object[]
     */
     @Input() protected currentUnionListFields: any[] = [];
@@ -33,14 +33,14 @@ export class ReportsDesignerManipulateUnion implements OnChanges, OnDestroy {
                 private reportsDesignerService: ReportsDesignerService) {
     }
 
-    /*
+    /**
     * @return treeCDKDragList: cdkDragList
     */
     get dragList() {
         return this.reportsDesignerService.treeCDKDragList;
     }
 
-    /*
+    /**
     * @set dropLists
     * @set listItems
     */
@@ -48,14 +48,14 @@ export class ReportsDesignerManipulateUnion implements OnChanges, OnDestroy {
         this.reportsDesignerService.dropLists = [...this.reportsDesignerService.dropLists, ...this.currentUnionListFields.map(item => item.fieldid)];
     }
 
-    /*
+    /**
     * @filter dropLists from this union row dropLists
     */
     public ngOnDestroy() {
         this.reportsDesignerService.dropLists = this.reportsDesignerService.dropLists.filter(list => typeof list != 'string');
     }
 
-    /*
+    /**
     * A function that defines how to track changes for items in the iterable (ngForOf).
     * https://angular.io/api/common/NgForOf#properties
     * @param index
@@ -66,7 +66,7 @@ export class ReportsDesignerManipulateUnion implements OnChanges, OnDestroy {
         return item.fieldid;
     }
 
-    /*
+    /**
     * @removePlaceHolderElement
     * @splice listItems add newItem
     * @set listItems
@@ -79,8 +79,8 @@ export class ReportsDesignerManipulateUnion implements OnChanges, OnDestroy {
         }
     }
 
-    /*
-     * @set unionField link key values
+    /**
+    * @set unionField link key values
      * @param unionField: object
      * @param dragField: object
      * @set unionfieldname
@@ -101,8 +101,8 @@ export class ReportsDesignerManipulateUnion implements OnChanges, OnDestroy {
         unionField.joinid = this.module.unionid;
     }
 
-    /*
-     * @reset unionField union key values
+    /**
+    * @reset unionField union key values
      */
     protected resetUnionField(unionField) {
         unionField.unionfieldname = '';
@@ -112,8 +112,8 @@ export class ReportsDesignerManipulateUnion implements OnChanges, OnDestroy {
         unionField.displaypath = '';
     }
 
-    /*
-     * @param fieldId: string
+    /**
+    * @param fieldId: string
      * @delete the record with the given index
      */
     private unlinkField(fieldId) {
@@ -130,8 +130,8 @@ export class ReportsDesignerManipulateUnion implements OnChanges, OnDestroy {
             });
     }
 
-    /*
-     * @param dragEvent: CDKDragDrop
+    /**
+    * @param dragEvent: CDKDragDrop
      * move the placeholder element inside its container to prevent overflow
      */
     private onDropEntered(dragEvent) {

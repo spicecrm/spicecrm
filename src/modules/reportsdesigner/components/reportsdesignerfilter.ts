@@ -14,7 +14,7 @@ declare var _;
 })
 export class ReportsDesignerFilter implements OnChanges, OnDestroy {
 
-    /*
+    /**
     * @input module: {module: string, unionid: string}
     */
     @Input() private module: any = {};
@@ -24,30 +24,30 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
     constructor(private reportsDesignerService: ReportsDesignerService, private model: model) {
     }
 
-    /*
-     * @return whereConditions: object[]
+    /**
+    * @return whereConditions: object[]
      */
     get whereConditions() {
         return this.model.getField('whereconditions');
     }
 
-    /*
-     * @param value: object[]
+    /**
+    * @param value: object[]
      * @set whereConditions
      */
     set whereConditions(value) {
         this.model.setField('whereconditions', value);
     }
 
-    /*
-     * @return wheregroups: object[]
+    /**
+    * @return wheregroups: object[]
      */
     get whereGroups() {
         return this.model.getField('wheregroups');
     }
 
-    /*
-     * @param groups: object[]
+    /**
+    * @param groups: object[]
      * @set wheregroups
      */
     set whereGroups(groups) {
@@ -55,8 +55,8 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
         this.model.setField('wheregroups', groups);
     }
 
-    /*
-     * @loadWhereGroups
+    /**
+    * @loadWhereGroups
      * @setDropLists
      */
     public ngOnChanges() {
@@ -64,16 +64,16 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
         this.setDropLists();
     }
 
-    /*
-     * @reset dropLists
+    /**
+    * @reset dropLists
      */
     public ngOnDestroy() {
         this.reportsDesignerService.dropLists = [];
         this.subscription.unsubscribe();
     }
 
-    /*
-     * @param parent: string = '-'
+    /**
+    * @param parent: string = '-'
      * @param id: string = guid
      * @return group: object
      */
@@ -89,8 +89,8 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
         };
     }
 
-    /*
-     * @reset rootGroup
+    /**
+    * @reset rootGroup
      * @set rootGroup from existing
      * @buildTree
      * @set whereGroups
@@ -112,8 +112,8 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
         this.buildTree();
     }
 
-    /*
-     * @param obj: object
+    /**
+    * @param obj: object
      * @set whereGroups
      * @cleanGroup
      * @buildTree
@@ -138,15 +138,15 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
         this.addGroupChildren(this.rootGroup);
     }
 
-    /*
-     * @set dropLists
+    /**
+    * @set dropLists
      */
     private setDropLists() {
         this.reportsDesignerService.dropLists = this.whereGroups.map(group => group.id).reverse();
     }
 
-    /*
-     * @param group
+    /**
+    * @param group
      * @set group.conditions from whereConditions
      */
     private setGroupConditions(group) {
@@ -154,7 +154,7 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
             .filter(condition => condition.groupid == group.id) : [];
     }
 
-    /*
+    /**
     * recursive method to push a group to the parent.children array and retrieve the group conditions
     * @param parent: object
     * @push group Item to parent.children array
@@ -172,7 +172,7 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
         }
     }
 
-    /*
+    /**
     * @markDeletedGroupChildren
     * @filter whereGroups from deleted
     */
@@ -182,7 +182,7 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
         this.cleanWhereConditions();
     }
 
-    /*
+    /**
     * recursive method to mark the children of the deleted group as deleted.
     * @param parentId: string
     * @call markDeletedGroupChildren
@@ -197,8 +197,8 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
         }
     }
 
-    /*
-     * @filter whereConditions by condition.groupid
+    /**
+    * @filter whereConditions by condition.groupid
      */
     private cleanWhereConditions() {
         if (!this.whereConditions) return;
