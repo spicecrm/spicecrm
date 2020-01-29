@@ -20,8 +20,13 @@ export class ReportsDesignerPresentItemStandard implements OnInit {
      */
     get listFields() {
         return this.model.getField('listfields')
-            .sort((a, b) => !isNaN(parseInt(a.sortpriority, 10)) && !isNaN(parseInt(b.sortpriority, 10)) ?
-                +a.sortpriority < +b.sortpriority : +a.sequence < +b.sequence ? -1 : 1);
+            .sort((a, b) => {
+                 if (!isNaN(parseInt(a.sortpriority, 10)) && !isNaN(parseInt(b.sortpriority, 10))) {
+                     return +a.sortpriority > +b.sortpriority ? 1 : -1;
+                 } else {
+                     +a.sequence > +b.sequence ? 1 : -1;
+                 }
+            });
     }
 
     /**
