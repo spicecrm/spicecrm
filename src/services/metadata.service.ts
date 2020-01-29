@@ -13,6 +13,8 @@ import {session} from "./session.service";
 import {broadcast} from "./broadcast.service";
 import {configurationService} from "./configuration.service";
 import {Router, Route, CanActivate} from "@angular/router";
+import {loginCheck} from "./login.service";
+import {canNavigateAway} from "./navigation.service";
 
 // for the dynamic routes
 // import {loginCheck} from "../services/login.service";
@@ -174,6 +176,7 @@ export class metadata {
         }
     }
 
+    /*
     private addRoute(path: string, component: string) {
         let module = this.componentDirectory[component].module;
 
@@ -189,6 +192,7 @@ export class metadata {
                             this.router.config.push({
                                 path: path,
                                 component: factory.componentType,
+                                canActivate: [aclCheck]
                             });
                             return true;
                         }
@@ -196,6 +200,7 @@ export class metadata {
                 });
             });
     }
+    */
 
     /*
     * dynamically add routes from this.routes with a route container hat will handle the dynamic routes
@@ -213,6 +218,7 @@ export class metadata {
                                 this.router.config.unshift({
                                     path: route.path,
                                     component: factory.componentType,
+                                    canActivate: [aclCheck]
                                 });
                             }
                             return true;
@@ -980,6 +986,18 @@ export class metadata {
     }
 
     /**
+     get module by component
+     */
+    public getSystemModuleByComponent(comp) {
+        for (let component in this.componentDirectory) {
+            if(component == comp) {
+                return this.componentDirectory[component].module;
+            }
+        }
+        return null;
+    }
+
+    /**
      get components from Repository
      */
     public getSystemComponents(module?) {
@@ -1056,6 +1074,10 @@ export class metadata {
         return this.getComponentConfig(component, module);
     }
 
+    public getRawActionSets() {
+        return this.actionSets;
+    }
+
     /*
      * get the action set
      */
@@ -1063,7 +1085,7 @@ export class metadata {
         let retActionSets: any[] = [];
 
         for (let actionset in this.actionSets) {
-            if (module !== "" && (this.actionSets[actionset].module !== module && this.actionSets[actionset].module !== "*")) {
+            if (module !== "" && (this.actionSets[actionset].module !== module)) {
                 continue;
             }
 
@@ -1071,7 +1093,9 @@ export class metadata {
                 id: actionset,
                 name: this.actionSets[actionset].name,
                 module: this.actionSets[actionset].module,
-                type: this.actionSets[actionset].type
+                type: this.actionSets[actionset].type,
+                package: this.actionSets[actionset].package,
+                actions: this.actionSets[actionset].actions
             });
         }
 
@@ -1091,6 +1115,77 @@ export class metadata {
             return this.actionSets[actionset].actions;
         } catch (e) {
             return [];
+        }
+    }
+
+
+    public setActionset(actionset_id, params) {
+        this.actionSets[actionset_id].name = params.name;
+        this.actionSets[actionset_id].package = params.package;
+    }
+
+
+    public setActionSet(actionset_id, params) {
+        this.actionSets[actionset_id] = {
+            id: actionset_id,
+            module: params.module,
+            name:  params.name,
+            package: params.package,
+            version: params.version,
+            actions: params.actions,
+            type: params.type
+        };
+    }
+
+    public setActionSetItems(actionset_id, actions) {
+        this.actionSets[actionset_id].actions = actions;
+    }
+
+    public addActionset(id, module, name, type = "custom", items = []) {
+        this.actionSets[id] = {
+            items: items,
+            module: module,
+            name: name,
+            type: type
+        };
+    }
+
+    public removeActionset(id) {
+        delete this.actionSets[id];
+    }
+
+    public removeActionsetItem(parent, item) {
+        let remIndex = false;
+        this.actionSets[parent].items.some((curitem, curindex) => {
+            if (curitem.id == item.id) {
+                remIndex = curindex;
+                return true;
+            }
+        });
+
+        if (remIndex !== false) {
+            this.actionSets[parent].items.splice(remIndex, 1);
+            let i = 0;
+            for (let thisitem of this.actionSets[parent].items) {
+                thisitem.sequence = i;
+                i++;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * returns the name of a actionset
+     *
+     * @param actionset the id of the actionset
+     */
+    public getActionsetName(actionset) {
+        try {
+            return this.actionSets[actionset].name;
+        } catch (e) {
+            return "";
         }
     }
 
