@@ -1,4 +1,4 @@
-<div style="height: 100%">
+<div style="height: 100%" class="slds-grid slds-grid--vertical">
     <div class="slds-border--bottom slds-p-around--xx-small slds-page-header" style="border-radius: 0">
         <div class="slds-form-element slds-grid slds-grid--vertical-align-center">
             <label class="slds-form-element__label slds-text-heading--label">
@@ -13,7 +13,7 @@
             </div>
         </div>
     </div>
-    <div class="slds-scrollable--y">
+    <div class="slds-scrollable--y slds-grow">
         <div *ngFor="let item of items">
             <reports-designer-present-item *ngIf="selectedItemId == item.id && !!item.component" [component]="item.component"></reports-designer-present-item>
         </div>
