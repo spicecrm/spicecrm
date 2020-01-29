@@ -134,6 +134,8 @@ import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
 import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem";
 import /*embed*/ {SystemTrendIndicator} from "./components/systemtrendindicator";
 
+import /*embed*/ {SystemSlider} from "./components/systemslider";
+
 @NgModule({
     imports: [
         DirectivesModule,
@@ -254,7 +256,8 @@ import /*embed*/ {SystemTrendIndicator} from "./components/systemtrendindicator"
         SystemSelectUOM,
         SystemInputMedia,
         SystemInputTimezone,
-        SystemTrendIndicator
+        SystemTrendIndicator,
+        SystemSlider
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -353,7 +356,8 @@ import /*embed*/ {SystemTrendIndicator} from "./components/systemtrendindicator"
         SystemModuleTree,
         SystemModuleTreeItem,
         SystemInputTimezone,
-        SystemTrendIndicator
+        SystemTrendIndicator,
+        SystemSlider
     ]
 })
 export class SystemComponents {

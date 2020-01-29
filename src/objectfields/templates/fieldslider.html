@@ -1,0 +1,10 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+    <div class="slds-text-align_right">
+        {{value}}
+    </div>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-grid slds-grid--align-spread slds-p-around--xx-small" [ngClass]="getFieldClass()">
+    <input class="slds-input slds-text-align_right" type="number" [min]="min" [max]="max" [(ngModel)]="value" />
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>
