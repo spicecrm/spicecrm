@@ -19,8 +19,8 @@ export class ReportsDesignerDetails implements OnInit {
         if (!this.model.getField('reportoptions')) this.model.setField('reportoptions', {});
     }
 
-    /*
-     * @return reportoptions: object[]
+    /**
+    * @return reportoptions: object[]
      */
     get reportOptions() {
         return this.model.getField('reportoptions');

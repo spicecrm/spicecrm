@@ -15,29 +15,30 @@ export class ReportsDesignerPresentItemStandard implements OnInit {
     constructor(private language: language, private model: model) {
     }
 
-    /*
-     * @return listfields: object[]
+    /**
+    * @return listfields: object[]
      */
     get listFields() {
         return this.model.getField('listfields')
-            .sort((a, b) => !!a.sortpriority && !!b.sortpriority ? +a.sortpriority < +b.sortpriority : +a.sequence < +b.sequence ? -1 : 1);
+            .sort((a, b) => !isNaN(parseInt(a.sortpriority, 10)) && !isNaN(parseInt(b.sortpriority, 10)) ?
+                +a.sortpriority < +b.sortpriority : +a.sequence < +b.sequence ? -1 : 1);
     }
 
-    /*
-     * @return standardViewProperties: object
+    /**
+    * @return standardViewProperties: object
      */
     get standardViewProperties() {
         return this.model.getField('presentation_params').pluginData.standardViewProperties;
     }
 
-    /*
-     * @initializePluginData
+    /**
+    * @initializePluginData
      */
     public ngOnInit() {
         this.initializePluginData();
     }
 
-    /*
+    /**
     * @set standardViewProperties
     * @setField presentation_params
     */
@@ -52,28 +53,28 @@ export class ReportsDesignerPresentItemStandard implements OnInit {
         }
     }
 
-    /*
-     * @set field.link: string
+    /**
+    * @set field.link: string
      */
     protected setFieldLink(field, value) {
         field.link = value ? 'yes' : 'no';
     }
 
-    /*
-     * @moveItemInArray item in group.conditions
+    /**
+    * @moveItemInArray item in group.conditions
      * @set listfield.sortpriority
      * @set listfields
      */
     private onDrop(dragEvent: CdkDragDrop<any>) {
         moveItemInArray(dragEvent.container.data, dragEvent.previousIndex, dragEvent.currentIndex);
-        dragEvent.container.data.map((item, index) => {
+        dragEvent.container.data = dragEvent.container.data.map((item, index) => {
             item.sortpriority = index;
             return item;
         });
-        this.model.setField('listfields', dragEvent.container.data.slice());
+        this.model.setField('listfields', dragEvent.container.data);
     }
 
-    /*
+    /**
     * A function that defines how to track changes for items in the iterable (ngForOf).
     * https://angular.io/api/common/NgForOf#properties
     * @param index

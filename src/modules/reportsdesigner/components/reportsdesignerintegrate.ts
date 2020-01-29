@@ -18,14 +18,14 @@ export class ReportsDesignerIntegrate {
     constructor(private language: language, private metadata: metadata) {
     }
 
-    /*
+    /**
     * @loadItems
     */
     public ngOnInit() {
         this.loadItems();
     }
 
-    /*
+    /**
     * @set items from metadata.getComponentSetObjects
     */
     private loadItems() {
@@ -35,11 +35,11 @@ export class ReportsDesignerIntegrate {
             this.items = items
                 .filter(item => !!item.componentconfig)
                 .map(item => ({...item.componentconfig, id: item.id, sequence: item.sequence}))
-                .sort((a, b) => +a.sequence > +b.sequence ? 1 : -1);
+                .sort((a, b) => !isNaN(parseInt(a.sequence, 10)) && !isNaN(parseInt(b.sequence, 10)) ? +a.sequence > +b.sequence ? 1 : -1 : 0);
         }
     }
 
-    /*
+    /**
     * @param itemId: string
     * @set selectedItemId
     */

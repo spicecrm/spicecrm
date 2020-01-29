@@ -15,11 +15,11 @@ import {model} from "../../../services/model.service";
 })
 export class ReportsDesignerManipulateTableRow {
 
-    /*
+    /**
     * @input listItem: any
     */
     @Input() private listItem: any = {};
-    /*
+    /**
     * @output onDelete: EventEmitter<void>
     */
     @Output() private onDelete: EventEmitter<void> = new EventEmitter<void>();
@@ -31,8 +31,8 @@ export class ReportsDesignerManipulateTableRow {
                 private reportsDesignerService: ReportsDesignerService) {
     }
 
-    /*
-     * @param value: string
+    /**
+    * @param value: string
      * @set name
      */
     set name(value) {
@@ -49,38 +49,38 @@ export class ReportsDesignerManipulateTableRow {
         this.model.setField('unionlistfields', unionListFields);
     }
 
-    /*
-     * @return name: string
+    /**
+    * @return name: string
      */
     get name() {
         return this.listItem.name;
     }
 
-    /*
-     * @param value: boolean
+    /**
+    * @param value: boolean
      * @set jointype = 'yes' | 'no'
      */
     set groupBy(value) {
         this.listItem.groupby = value ? 'yes' : 'no';
     }
 
-    /*
-     * @return jointype: boolean
+    /**
+    * @return jointype: boolean
      */
     get groupBy() {
         return this.listItem.groupby == 'yes';
     }
 
-    /*
-     * @param value boolean
+    /**
+    * @param value boolean
      * @set jointype = 'required' | 'optional'
      */
     set joinType(value) {
         this.listItem.jointype = value ? 'required' : 'optional';
     }
 
-    /*
-     * @return jointype: boolean
+    /**
+    * @return jointype: boolean
      */
     get joinType() {
         return this.listItem.jointype == 'required';
@@ -89,16 +89,16 @@ export class ReportsDesignerManipulateTableRow {
     get displayPath() {
         return !!this.listItem.displaypath && this.listItem.displaypath.length > 0 ? this.listItem.displaypath : 'FIXED';
     }
-    /*
-     * @param fieldId: string
+    /**
+    * @param fieldId: string
      * @delete the record with the given index
      */
     private deleteField() {
         this.onDelete.emit();
     }
 
-    /*
-     * @set expandedItemId = fieldId | ''
+    /**
+    * @set expandedItemId = fieldId | ''
      */
     private toggleExpand() {
         if (!this.reportsDesignerService.expertMode) return;

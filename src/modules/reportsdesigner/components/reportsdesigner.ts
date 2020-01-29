@@ -40,7 +40,7 @@ export class ReportsDesigner {
         this.subscribeToActivatedRoute();
     }
 
-    /*
+    /**
     * force detect changes to prevent angular change detection error
     * @setEditMode
     */
@@ -50,7 +50,7 @@ export class ReportsDesigner {
         this.cdr.detectChanges();
     }
 
-    /*
+    /**
     * @model.initialize
     * @set model.id
     * @model.getData
@@ -81,7 +81,7 @@ export class ReportsDesigner {
         });
     }
 
-    /*
+    /**
     * @set activeTab
     */
     private setActiveTab(tab) {
@@ -89,14 +89,14 @@ export class ReportsDesigner {
         this.activeTab = tab;
     }
 
-    /*
+    /**
     * @navigate to listView
     */
     private goToModule() {
         this.router.navigate(['/module/KReports']);
     }
 
-    /*
+    /**
     * @navigate to Record in view mode or to list view
     */
     private cancel() {
@@ -105,8 +105,8 @@ export class ReportsDesigner {
         this.router.navigate(['/module/KReports/' + (this.model.isNew ? '' : this.model.id)]);
     }
 
-    /*
-     * @model.save
+    /**
+    * @model.save
      * @set view mode
      * @navigate to Record in view mode or to list view
      */
@@ -120,8 +120,8 @@ export class ReportsDesigner {
         }
     }
 
-    /*
-     * @prompt modules list
+    /**
+    * @prompt modules list
      * @pass modules
      * @set report_module
      * @set currentPath
@@ -148,8 +148,8 @@ export class ReportsDesigner {
             });
     }
 
-    /*
-     * @cleanWhereGroups
+    /**
+    * @cleanWhereGroups
      * @cleanUnionListFields
      */
     private handleUnionDelete(unionId) {
@@ -157,16 +157,16 @@ export class ReportsDesigner {
         this.cleanUnionListFields(unionId);
     }
 
-    /*
-     * @param fields: object[]
+    /**
+    * @param fields: object[]
      * @set currentUnionListFields
      */
     private handleUnionAdd(fields) {
         this.currentUnionListFields = fields;
     }
 
-    /*
-     * @param unionId: string
+    /**
+    * @param unionId: string
      * @filter whereGroups from deleted groups
      * @set wheregroups
      */
@@ -179,8 +179,8 @@ export class ReportsDesigner {
         }
     }
 
-    /*
-     * @param whereGroups: object[]
+    /**
+    * @param whereGroups: object[]
      * @filter whereConditions from deleted conditions
      * @set whereconditions
      */
@@ -191,8 +191,8 @@ export class ReportsDesigner {
         this.model.setField('whereconditions', whereConditions);
     }
 
-    /*
-     * @param unionId: string
+    /**
+    * @param unionId: string
      * @filter unionListFields from deleted fields
      * @set unionlistfields
      */
