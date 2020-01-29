@@ -43,20 +43,4 @@ export class fieldActivityParticipationStatus extends fieldGeneric implements On
         return true;
     }
 
-    /**
-     * get the participation icon
-     */
-    get participationicon() {
-        switch (this.value) {
-            case 'accept':
-                return 'check';
-            case 'decline':
-                return 'error';
-            case 'tentative':
-                return 'question_mark';
-            default:
-                return 'dash';
-        }
-    }
-
 }
