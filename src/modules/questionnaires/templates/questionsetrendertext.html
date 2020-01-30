@@ -6,12 +6,19 @@
                 <media-file-image *ngIf="question.image_id" [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="imageWidthQuestion"></media-file-image>
             </div>
             <div class="slds-p-top--x-small">
-                <input type="text" style="width:100%;" *ngIf="previewMode" class="slds-input">
-                <input type="text" style="width:100%;" class="slds-input"
+                <!-- <input type="text" style="width:100%;" *ngIf="previewMode" class="slds-input"> -->
+                <textarea *ngIf="previewMode" class="slds-scrollable--y slds-textarea"></textarea>
+                <!-- <input type="text" style="width:100%;" class="slds-input"
                        *ngIf="!previewMode" [(ngModel)]="answers[question.id].optionlessAnswerValue"
                        (focus)="onTextFocus(question.id)"
                        (change)="onTextChange(question.id)"
-                       [attr.disabled]="questionsMeta[question.id].tempReadonly || noEdit ? '':null">
+                       [attr.disabled]="questionsMeta[question.id].tempReadonly || noEdit ? '':null"> -->
+                <textarea class="slds-scrollable--y slds-textarea"
+                          *ngIf="!previewMode"
+                          [(ngModel)]="answers[question.id].optionlessAnswerValue"
+                          (focus)="onTextFocus(question.id)"
+                          (change)="onTextChange(question.id)"
+                          [attr.disabled]="questionsMeta[question.id].tempReadonly || noEdit ? '':null"></textarea>
             </div>
         </div>
     </ng-container>
