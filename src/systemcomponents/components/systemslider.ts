@@ -4,8 +4,6 @@
 import {
     Component, EventEmitter, forwardRef, Input, OnInit, Output
 } from '@angular/core';
-import {backend} from '../../services/backend.service';
-import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
@@ -28,13 +26,16 @@ export class SystemSlider implements ControlValueAccessor {
     private onChange: (value: string) => void;
     private onTouched: () => void;
 
+    @Input() private _max: string;
+    @Input() private _min: string;
+    @Input() private _step: string;
+    @Input() private disabled: boolean = false;
+
+
     private _value: string;
 
 
-    constructor(
-    ) {
-
-    }
+    constructor( private language: language) {}
 
     get value() {
         return this._value;
@@ -45,6 +46,18 @@ export class SystemSlider implements ControlValueAccessor {
             this._value = value;
             this.onChange(value);
         }
+    }
+
+    get max() {
+        return this._max;
+    }
+
+    get min() {
+        return this._min;
+    }
+
+    get step() {
+        return this._step;
     }
 
     /**
