@@ -259,7 +259,7 @@ declare var _: any;
         fieldLookupSearch,
         fieldLookupSearchAdd,
         fieldTags,
-        fieldSlider
+
     ]
 })
 export class ObjectFields {
