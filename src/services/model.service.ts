@@ -189,6 +189,10 @@ export class model implements OnDestroy {
      */
     public duplicate: boolean = false;
     /**
+     * Holds the ID of the template model, in case the model is a duplicate.
+     */
+    public templateId: string = null;
+    /**
      * inidctaes thata duplicate check is ongoing
      */
     public duplicateChecking: boolean = false;
@@ -879,7 +883,7 @@ export class model implements OnDestroy {
             changedData = this.data;
         }
 
-        this.backend.save(this.module, this.id, changedData, this.savingProgress)
+        this.backend.save(this.module, this.id, changedData, this.savingProgress, this.templateId )
             .subscribe(
                 res => {
                     this.data = res;
