@@ -63,6 +63,7 @@ export class ObjectActionDuplicateButton implements OnInit {
 
         // set as duplicate
         this.model.duplicate = true;
+        this.model.templateId = this.parent.id;
 
         this.model.edit();
     }
