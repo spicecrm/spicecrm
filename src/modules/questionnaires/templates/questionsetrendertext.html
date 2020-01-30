@@ -1,19 +1,17 @@
 <ng-container *ngIf="!sequenced">
     <ng-container *ngFor="let question of questions;let i = index">
         <div *ngIf="!hideFinishedQuestions || !questionsMeta[question.id].finished" class="slds-box slds-m-bottom--medium questionset-render-question">
-            <div class="slds-grid slds-grid--vertical-align-center">
-                <div>
-                    <h3 *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-text-heading_medium" [class.slds-m-bottom_xx-small]="question.image_id">{{question.name}}</h3>
-                    <media-file-image *ngIf="question.image_id" [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="imageWidthQuestion"></media-file-image>
-                </div>
-                <div class="slds-col slds-p-left--large">
-                    <input type="text" class="slds-p-horizontal--xx-small" style="width:100%;" *ngIf="previewMode" class="slds-input">
-                    <input type="text" class="slds-p-horizontal--xx-small" style="width:100%;" class="slds-input"
-                           *ngIf="!previewMode" [(ngModel)]="answers[question.id].optionlessAnswerValue"
-                           (focus)="onTextFocus(question.id)"
-                           (change)="onTextChange(question.id)"
-                           [attr.disabled]="questionsMeta[question.id].tempReadonly || noEdit ? '':null">
-                </div>
+            <div>
+                <h3 *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-text-heading_medium" [class.slds-m-bottom_xx-small]="question.image_id">{{question.name}}</h3>
+                <media-file-image *ngIf="question.image_id" [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="imageWidthQuestion"></media-file-image>
+            </div>
+            <div class="slds-p-top--x-small">
+                <input type="text" style="width:100%;" *ngIf="previewMode" class="slds-input">
+                <input type="text" style="width:100%;" class="slds-input"
+                       *ngIf="!previewMode" [(ngModel)]="answers[question.id].optionlessAnswerValue"
+                       (focus)="onTextFocus(question.id)"
+                       (change)="onTextChange(question.id)"
+                       [attr.disabled]="questionsMeta[question.id].tempReadonly || noEdit ? '':null">
             </div>
         </div>
     </ng-container>
