@@ -14,7 +14,6 @@ import {Router} from '@angular/router';
     templateUrl: './src/objectfields/templates/fieldslider.html'
 })
 export class fieldSlider extends fieldGeneric {
-
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);
     }
@@ -25,6 +24,14 @@ export class fieldSlider extends fieldGeneric {
 
     get max() {
         return 100;
+    }
+
+    get step() {
+        return this.max/4;
+    }
+
+    get disabled() {
+        return !this.view.isEditMode();
     }
 
 }
