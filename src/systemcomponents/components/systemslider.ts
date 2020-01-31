@@ -2,9 +2,8 @@
  * @module SystemComponents
  */
 import {
-    Component, EventEmitter, forwardRef, Input, OnInit, Output
+    Component, forwardRef, Input,
 } from '@angular/core';
-import {language} from '../../services/language.service';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 @Component({
@@ -35,7 +34,8 @@ export class SystemSlider implements ControlValueAccessor {
     private _value: string;
 
 
-    constructor( private language: language) {}
+    constructor() {
+    }
 
     get value() {
         return this._value;
@@ -88,5 +88,12 @@ export class SystemSlider implements ControlValueAccessor {
     public writeValue(value: any): void {
         this._value = value;
     }
+    /**
+    * disable the element
+    * @param isDisabled The disabled status to set on the element
+    */
 
+    public setDisabledState(isDisabled: boolean): void {
+        this.disabled = isDisabled;
+    }
 }
