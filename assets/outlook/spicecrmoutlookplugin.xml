@@ -8,7 +8,7 @@
 
     <!-- Begin Basic Settings: Add-in metadata, used for all versions of Office unless override provided. -->
     <!-- IMPORTANT! Id must be unique for your add-in, if you reuse this manifest ensure that you change this id to a new GUID. -->
-    <Id>7b063bfc-5997-48e6-bc71-0e03ab15962e</Id>
+    <Id>7b063bfc-5997-48e6-bc71-0e03ab15962f</Id>
 
     <!--Version. Updates from the store only get triggered if there is a version change. -->
     <Version>1.0.0.0</Version>
@@ -111,6 +111,31 @@
                             </Group>
                         </OfficeTab>
                     </ExtensionPoint>
+                    <ExtensionPoint xsi:type="AppointmentOrganizerCommandSurface">
+                        <!-- Use the default tab of the ExtensionPoint or create your own with <CustomTab id="myTab"> -->
+                        <OfficeTab id="TabDefault">
+                            <!-- Up to 6 Groups added per Tab -->
+                            <Group id="appointmentOrganizeroup">
+                                <Label resid="groupLabel"/>
+                                <Control xsi:type="Button" id="crmAppointmentButton">
+                                    <Label resid="CRMAppointmentCreateLabel"/>
+                                    <Supertip>
+                                        <Title resid="paneReadSuperTipTitle"/>
+                                        <Description resid="paneReadSuperTipDescription"/>
+                                    </Supertip>
+                                    <Icon>
+                                        <bt:Image size="16" resid="icon16"/>
+                                        <bt:Image size="32" resid="icon32"/>
+                                        <bt:Image size="80" resid="icon80"/>
+                                    </Icon>
+                                    <Action xsi:type="ShowTaskpane">
+                                        <SourceLocation resid="crmURL"/>
+                                    </Action>
+                                </Control>
+                                <!-- Go to http://aka.ms/ButtonCommands to learn how to add more Controls: ExecuteFunction and Menu -->
+                            </Group>
+                        </OfficeTab>
+                    </ExtensionPoint>
                     <!-- Go to http://aka.ms/ExtensionPointsCommands to learn how to add more Extension Points: MessageRead, AppointmentOrganizer, AppointmentAttendee -->
                 </DesktopFormFactor>
             </Host>
@@ -134,6 +159,7 @@
                 <bt:String id="paneReadButtonLabel" DefaultValue="Archive Email"/>
                 <bt:String id="CRMButtonLabel" DefaultValue="Contact Details"/>
                 <bt:String id="paneReadSuperTipTitle" DefaultValue="SpiceCRM"/>
+                <bt:String id="CRMAppointmentCreateLabel" DefaultValue="link to CRM"/>
             </bt:ShortStrings>
             <bt:LongStrings>
                 <bt:String id="paneReadSuperTipDescription"
@@ -197,6 +223,31 @@
                                 </Group>
                             </OfficeTab>
                         </ExtensionPoint>
+                        <ExtensionPoint xsi:type="AppointmentOrganizerCommandSurface">
+                            <!-- Use the default tab of the ExtensionPoint or create your own with <CustomTab id="myTab"> -->
+                            <OfficeTab id="TabDefault">
+                                <!-- Up to 6 Groups added per Tab -->
+                                <Group id="appointmentOrganizeroup">
+                                    <Label resid="groupLabel"/>
+                                    <Control xsi:type="Button" id="crmAppointmentButton">
+                                        <Label resid="CRMAppointmentCreateLabel"/>
+                                        <Supertip>
+                                            <Title resid="paneReadSuperTipTitle"/>
+                                            <Description resid="paneReadSuperTipDescription"/>
+                                        </Supertip>
+                                        <Icon>
+                                            <bt:Image size="16" resid="icon16"/>
+                                            <bt:Image size="32" resid="icon32"/>
+                                            <bt:Image size="80" resid="icon80"/>
+                                        </Icon>
+                                        <Action xsi:type="ShowTaskpane">
+                                            <SourceLocation resid="crmURL"/>
+                                        </Action>
+                                    </Control>
+                                    <!-- Go to http://aka.ms/ButtonCommands to learn how to add more Controls: ExecuteFunction and Menu -->
+                                </Group>
+                            </OfficeTab>
+                        </ExtensionPoint>
                         <!-- Go to http://aka.ms/ExtensionPointsCommands to learn how to add more Extension Points: MessageRead, AppointmentOrganizer, AppointmentAttendee -->
                     </DesktopFormFactor>
                     <MobileFormFactor>
@@ -242,7 +293,6 @@
                                         <SourceLocation resid="crmURL"/>
                                     </Action>
                                 </Control>
-
                             </Group>
                         </ExtensionPoint>
                     </MobileFormFactor>
@@ -264,8 +314,9 @@
                     <bt:String id="groupLabel" DefaultValue="SpiceCRM"/>
                     <bt:String id="customTabLabel" DefaultValue="SpiceCRM"/>
                     <bt:String id="paneReadButtonLabel" DefaultValue="Archive Email"/>
-                    <bt:String id="CRMButtonLabel" DefaultValue="Contact Details"/>
+                    <bt:String id="CRMButtonLabel" DefaultValue="Contact Details in CRM"/>
                     <bt:String id="paneReadSuperTipTitle" DefaultValue="SpiceCRM"/>
+                    <bt:String id="CRMAppointmentCreateLabel" DefaultValue="link to CRM"/>
                 </bt:ShortStrings>
                 <bt:LongStrings>
                     <bt:String id="paneReadSuperTipDescription"
