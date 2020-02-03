@@ -3,6 +3,7 @@
  */
 import {Component} from '@angular/core';
 import {model} from '../../../services/model.service';
+import {modal} from '../../../services/modal.service';
 import {toast} from '../../../services/toast.service';
 import {language} from '../../../services/language.service';
 import {backend} from "../../../services/backend.service";
@@ -16,7 +17,7 @@ export class CampaignSendTestMailButton {
     private sending: boolean = false;
     public disabled: boolean = true;
 
-    constructor(private language: language, private model: model, private backend: backend, private toast: toast) {
+    constructor(private language: language, private model: model, private modal: modal, private backend: backend, private toast: toast) {
         this.model.mode$.subscribe(mode => {
             this.handleDisabled();
         });
@@ -26,13 +27,28 @@ export class CampaignSendTestMailButton {
         });
     }
 
+    /**
+     * renders a modal and sends the test emails
+     */
     public execute() {
+        let await = this.modal.await('LBL_SENDING');
         if (!this.sending) {
             this.sending = true;
-            this.backend.postRequest('module/CampaignTasks/' + this.model.id + '/sendtestmail').subscribe((results: any) => {
-                this.sending = false;
-                this.toast.sendToast('Mails sent');
-            });
+            this.backend.postRequest('module/CampaignTasks/' + this.model.id + '/sendtestmail').subscribe(
+                (results: any) => {
+                    this.sending = false;
+                    await.emit(true);
+                    if(results.status == 'success'){
+                        this.toast.sendToast('Mails sent');
+                    } else {
+                        this.toast.sendToast(results.msg, 'error');
+                    }
+                },
+                error => {
+                    await.emit(true);
+                    this.sending = false;
+                    this.toast.sendToast('ERROR');
+                });
         }
     }
 
@@ -65,17 +81,19 @@ export class CampaignSendTestMailButton {
             return;
         }
 
-        // mailrelais is set
+        // mailbox is set
         if (!this.model.data.mailbox_id) {
             this.disabled = true;
             return;
         }
 
         // template is set is set
+        /*
         if (!this.model.data.email_template_id) {
             this.disabled = true;
             return;
         }
+        */
 
         // not if editing
         this.disabled = this.model.isEditing ? true : false;
