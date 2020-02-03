@@ -7,6 +7,7 @@ import {model} from '../../../services/model.service';
 import {session} from '../../../services/session.service';
 import {backend} from '../../../services/backend.service';
 import {toast} from '../../../services/toast.service';
+import {view} from '../../../services/view.service';
 
 /**
  * renders a panel with the participating users and contacts in the activity
@@ -20,8 +21,7 @@ import {toast} from '../../../services/toast.service';
             useExisting: forwardRef(() => ActivityParticipationStatus),
             multi: true
         }
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    ]
 })
 export class ActivityParticipationStatus implements ControlValueAccessor {
 
@@ -55,7 +55,7 @@ export class ActivityParticipationStatus implements ControlValueAccessor {
      */
     private updating: boolean = false;
 
-    constructor(private session: session, private cdRef: ChangeDetectorRef, private backend: backend, private toast: toast) {
+    constructor(private view: view, private session: session, private cdRef: ChangeDetectorRef, private backend: backend, private toast: toast) {
     }
 
     /**
@@ -64,7 +64,7 @@ export class ActivityParticipationStatus implements ControlValueAccessor {
      */
     get disabled() {
         // check if it is the curent user and the status still allows changing the attendance
-        if (!this.updating && this.model.module == 'Users' && this.model.getField('id') == this.session.authData.userId && this.parent && this.parent.getField('status') == 'Planned') {
+        if (!this.view.isEditMode() && !this.updating && this.model.module == 'Users' && this.model.id == this.session.authData.userId && this.parent && this.parent.getField('status') == 'Planned') {
             return false;
         }
 
