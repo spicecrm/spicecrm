@@ -68,9 +68,9 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
                 private userpreferences: userpreferences,
                 private metadata: metadata,
                 private renderer: Renderer2) {
-        this.subscriptions.push(this.calendar.color$.subscribe(res => {
+        this.subscriptions.push(this.calendar.otherCalendarsColor$.subscribe(res => {
             if (this.event.data.assigned_user_id && res.id == this.event.data.assigned_user_id) {
-                this.color = res.color;
+                this.event.otherColor = res.color;
             }
         }));
 
@@ -275,7 +275,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         this.color = this.event.hasOwnProperty('color') ? this.event.color : this.calendar.eventColor;
 
         let colorConditions = this.configuration.getData('calendarcolorconditions');
-        if (!colorConditions || this.owner != this.event.data.assigned_user_id) return;
+        if (!colorConditions) return;
 
         // filter and sort the conditions
         colorConditions = colorConditions.filter(item => item.module == this.model.module).sort((a, b) => {
@@ -300,7 +300,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     * @param color
     * @return boolean
     */
-    private isDarkColor(color) {
+    protected isDarkColor(color) {
         let c = color.indexOf('#') > -1 ? color.substring(1) : color;
         let rgb = parseInt(c, 16);   // convert rrggbb to decimal
         // tslint:disable-next-line:no-bitwise
