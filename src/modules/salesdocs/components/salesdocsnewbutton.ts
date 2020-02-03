@@ -27,7 +27,7 @@ export class SalesdocsNewButton extends ObjectActionNewButton implements OnInit 
         let componentConfig = this.metadata.getComponentConfig('SalesdocsNewButton', this.model.module);
 
         this.model.id = "";
-        this.model.initialize();
+        this.model.initialize(this.parentmodel);
         this.modal.openModal(componentConfig.modalcomponent ? componentConfig.modalcomponent : 'SalesDocsAddBasics', true, this.injector);
     }
 

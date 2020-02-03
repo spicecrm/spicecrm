@@ -240,10 +240,12 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     get hasVisibleItems() {
         let visible = false;
-        for (let bucket of this.modellist.buckets.bucketitems) {
-            if (this.stages.findIndex(st => st.stage == bucket.bucket) >= 0 && bucket.items > 0) {
-                visible = true;
-                break;
+        if (this.modellist.buckets) {
+            for (let bucket of this.modellist.buckets.bucketitems) {
+                if (this.stages.findIndex(st => st.stage == bucket.bucket) >= 0 && bucket.items > 0) {
+                    visible = true;
+                    break;
+                }
             }
         }
         return visible;
@@ -254,7 +256,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     private loadmore() {
         // no further load if we are loading already
-        if(this.modellist.isLoading) return false;
+        if (this.modellist.isLoading) return false;
 
         // check if there are still buckets that have potentially more items
         let loadmore = false;
