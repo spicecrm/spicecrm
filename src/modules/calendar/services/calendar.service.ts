@@ -11,6 +11,7 @@ import {broadcast} from "../../../services/broadcast.service";
 import {modal} from "../../../services/modal.service";
 import {language} from "../../../services/language.service";
 import {map, take} from "rxjs/operators";
+import {CdkDragEnd} from "@angular/cdk/drag-drop";
 
 
 /**
@@ -53,7 +54,7 @@ export class calendar implements OnDestroy {
     public isMobileView: boolean = false;
     public isDashlet: boolean = false;
     public isLoading: boolean = false;
-    public sheettype: string = 'Week';
+    public sheettype: 'Day' | 'Three_Days' | 'Week' | 'Month' | 'Schedule'  = 'Week';
     public timeZone: any;
     public duration: any = {
         Day: 'd',
@@ -85,11 +86,17 @@ export class calendar implements OnDestroy {
         this.broadcastSubscriber();
     }
 
+    /**
+     * @param value: 'Day' | 'Three_Days' | 'Week' | 'Month' | 'Schedule'
+     */
     set sheetType(value) {
         this.sheettype = value;
         this.session.setSessionData('sheetType', value);
     }
 
+    /**
+     * @return sheettype: 'Day' | 'Three_Days' | 'Week' | 'Month' | 'Schedule'
+     */
     get sheetType() {
         return this.sheettype;
     }
@@ -679,5 +686,29 @@ export class calendar implements OnDestroy {
 
     private triggerSheetReload(date?) {
         this.calendarDate = moment(date ? date : this.calendardate);
+    }
+
+    /**
+     * Check in which target is the corner of the dragging element and pass the target values to drop method
+     * @param dragEvent: CdkDragEnd
+     * @param dropTargets: CalendarSheetDropTarget
+     * @call dragEvent.onDrop and pass the dropTarget: {day: moment, hour: number, minutes: number}
+     * @call source.reset
+     */
+    public onEventDrop(dragEvent: CdkDragEnd, dropTargets) {
+        dropTargets.some(target => {
+            const targetRect = target.elementRef.nativeElement.getBoundingClientRect();
+            const sourceRect = dragEvent.source.element.nativeElement.getBoundingClientRect();
+
+            if (sourceRect.top >= targetRect.top && sourceRect.top <= targetRect.bottom && sourceRect.left >= targetRect.left && sourceRect.left <= targetRect.right) {
+                dragEvent.source.data.onDrop({
+                     day: target.day,
+                     hour: target.hour,
+                     minutes: target.minutes
+                    });
+                return true;
+            }
+        });
+        dragEvent.source.reset();
     }
 }
