@@ -2,46 +2,53 @@
  * @module ModuleCalendar
  */
 import {
-    AfterViewInit,
-    ChangeDetectorRef,
     Component,
-    ElementRef,
     EventEmitter,
     Input,
     OnChanges,
-    Output,
+    Output, QueryList,
     SimpleChanges,
-    ViewChild,
+    ViewChild, ViewChildren,
     ViewContainerRef
 } from '@angular/core';
 import {language} from '../../../services/language.service';
-import {broadcast} from '../../../services/broadcast.service';
-import {navigation} from '../../../services/navigation.service';
 import {calendar} from '../services/calendar.service';
-import {backend} from "../../../services/backend.service";
+import {CdkDragEnd} from "@angular/cdk/drag-drop";
+import {CalendarSheetDropTarget} from "./calendarsheetdroptarget";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
     selector: 'calendar-sheet-week',
-    templateUrl: './src/modules/calendar/templates/calendarsheetweek.html'
+    templateUrl: './src/modules/calendar/templates/calendarsheetweek.html',
 })
 export class CalendarSheetWeek implements OnChanges {
 
-    @Output() public navigateday: EventEmitter<any> = new EventEmitter<any>();
     public sheetDays: any[] = [];
-    @ViewChild('calendarsheet', {read: ViewContainerRef, static: true}) private calendarsheet: ViewContainerRef;
-    @ViewChild('headercontainer', {read: ViewContainerRef, static: true}) private headerContainer: ViewContainerRef;
+    protected sheetHours: any[] = [];
+    @ViewChildren(CalendarSheetDropTarget) private dropTargets: QueryList<CalendarSheetDropTarget>;
+    @ViewChild('sheetContainer', {read: ViewContainerRef, static: true}) private sheetContainer: ViewContainerRef;
     @ViewChild('scrollcontainer', {read: ViewContainerRef, static: true}) private scrollContainer: ViewContainerRef;
+    /**
+     * @Input setdate: moment
+     */
     @Input() private setdate: any = {};
+    /**
+     * @Input usersCalendars: {id: string, name: string, visible: boolean, color: string}
+     */
     @Input('userscalendars') private usersCalendars: any[] = [];
+    /**
+     * @Input googleIsVisible: boolean
+     */
     @Input('googleisvisible') private googleIsVisible: boolean = true;
-    @Input('calendarcontent') private calendarContent: any = undefined;
-    private sheetHours: any[] = [];
-    private sheetTopMargin: number = 0;
+    /**
+     * @output navigateday: EventEmitter<moment>
+     */
+    @Output() private navigateday: EventEmitter<any> = new EventEmitter<any>();
+
     private ownerEvents: any[] = [];
     private ownerMultiEvents: any[] = [];
     private userEvents: any[] = [];
@@ -50,46 +57,80 @@ export class CalendarSheetWeek implements OnChanges {
     private googleMultiEvents: any[] = [];
 
     constructor(private language: language,
-                private broadcast: broadcast,
-                private navigation: navigation,
-                private elementRef: ElementRef,
-                private cdr: ChangeDetectorRef,
-                private backend: backend,
                 private calendar: calendar) {
         this.buildHours();
         this.sheetDays = this.buildSheetDays();
     }
 
-    get sheetTimeWidth() {
-        return this.calendar.sheetTimeWidth;
-    }
-
+    /**
+     * @return moment.timeZone
+     */
     get offset() {
         return moment.tz(this.calendar.timeZone).format('z Z');
     }
 
+    /**
+     * @return sheetTimeWidth: number
+     */
+    get sheetTimeWidth() {
+        return this.calendar.sheetTimeWidth;
+    }
+
+    /**
+     * @return allEvents: [ownerEvents, userEvents, googleEvents]
+     */
     get allEvents() {
         return this.calendar.arrangeEvents(this.ownerEvents.concat(this.userEvents, this.googleEvents));
     }
 
+    /**
+     * @return allEvents: [ownerMultiEvents, userMultiEvents, googleMultiEvents]
+     */
     get allMultiEvents() {
         return this.ownerMultiEvents.concat(this.userMultiEvents, this.googleMultiEvents);
     }
 
+    /**
+     * @return startDate: moment
+     */
     get startDate() {
         return new moment(this.setdate).day(this.calendar.weekStartDay).hour(this.calendar.startHour).minute(0).second(0);
     }
 
+    /**
+     * @return endDate: moment
+     */
     get endDate() {
         return new moment(this.startDate).add(moment.duration((this.calendar.weekDaysCount - 1), 'd')).hour(this.calendar.endHour);
     }
 
+    /**
+     * @return width: string
+     */
+    get dayWidthStyle() {
+        return {width: `calc(100% / ${this.calendar.weekDaysCount})`};
+    }
+
+    /**
+     * @return width: string
+     */
+    get daysContainerWidthStyle() {
+        let scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
+        let sheetWidth = this.sheetContainer.element.nativeElement.clientWidth - scrollOffset;
+        return (sheetWidth - this.sheetTimeWidth) + 'px';
+    }
+
+    /**
+     * @set sheetDays from buildSheetDays
+     * @call getEvents
+     * @call getUsersEvents
+     * @call getGoogleEvents
+     */
     public ngOnChanges(changes: SimpleChanges) {
         this.sheetDays = this.buildSheetDays();
         if (changes.setdate) {
             this.getEvents();
         }
-
         if (changes.usersCalendars || changes.setdate) {
             this.getUsersEvents();
         }
@@ -98,55 +139,47 @@ export class CalendarSheetWeek implements OnChanges {
         }
     }
 
-    get timeColStyle() {
-        return {
-            width: this.sheetTimeWidth + 'px'
-        };
-    }
-
-    get hourHeightStyle() {
-        return {height: this.calendar.sheetHourHeight + 'px'};
-    }
-
-    get dayWidthStyle() {
-        return {width: `calc(100% / ${this.calendar.weekDaysCount})`};
-    }
-
-    /*
-    * @param index
-    * @param item
-    * @return item.id
-    */
+    /**
+     * A function that defines how to track changes for items in the iterable (ngForOf).
+     * https://angular.io/api/common/NgForOf#properties
+     * @param index
+     * @param item
+     * @return item.id
+     */
     private trackByItemFn(index, item) {
         return item.id;
     }
 
-    /*
-    * @param index
-    * @param item
-    * @return index
-    */
+    /**
+     * A function that defines how to track changes for items in the iterable (ngForOf).
+     * https://angular.io/api/common/NgForOf#properties
+     * @param index
+     * @param item
+     * @return index
+     */
     private trackByIndexFn(index, item) {
         return index;
     }
 
-    /*
-    * @return void
-    */
+    /**
+     * @sort allMultiEvents
+     */
     private arrangeMultiEvents() {
-        this.sheetDays.forEach(day => day.items = []);
+
+        this.sheetDays.forEach(day => day.events = []);
+
         for (let event of this.allMultiEvents) {
             for (let day of this.sheetDays) {
                 for (let eventDay = moment(event.start); eventDay.diff(event.end) <= 0; eventDay.add(1, 'days')) {
-                    if (eventDay.date() == day.date.date() && !day.items.some(itemsEvent => itemsEvent.id == event.id)) {
-                        day.items.push(event);
+                    if (eventDay.date() == day.date.date() && !day.events.some(itemsEvent => itemsEvent.id == event.id)) {
+                        day.events.push(event);
                     }
                 }
             }
         }
         this.sheetDays.forEach(day => {
-            day.items = day.items.filter(event => (event.hasOwnProperty("visible") && event.visible) || !event.hasOwnProperty("visible"));
-            day.items.sort((a, b) => {
+            day.events = day.events.filter(event => (event.hasOwnProperty("visible") && event.visible) || !event.hasOwnProperty("visible"));
+            day.events.sort((a, b) => {
                 if (a.start.isBefore(b.start)) {
                     return -1;
                 } else if (a.start.diff(a.end, 'days') < b.start.diff(b.end, 'days')) {
@@ -158,11 +191,11 @@ export class CalendarSheetWeek implements OnChanges {
         this.allMultiEvents.forEach(event => {
             let itemIdx = null;
             this.sheetDays.forEach(day => {
-                day.items.forEach((item, idx) => {
+                day.events.forEach((item, idx) => {
                     if (item.id == event.id) {
                         if (itemIdx != null && event.end.diff(event.start, 'days') > 0) {
-                            day.items.splice(idx, 1);
-                            day.items.splice(itemIdx, 0, event);
+                            day.events.splice(idx, 1);
+                            day.events.splice(itemIdx, 0, event);
                         } else {
                             itemIdx = idx;
                         }
@@ -172,12 +205,13 @@ export class CalendarSheetWeek implements OnChanges {
         });
     }
 
-    /*
-    * @param events
-    * @return events
-    */
+    /**
+     * @set event.start with corrected day start hour
+     * @set event.end with corrected day end hour
+     * @return events
+     */
     private correctHours(events) {
-        events.forEach(event => {
+        events.map(event => {
             if (!event.isMulti) {
                 let endInRange = event.end.hour() > this.calendar.startHour && event.start.hour() < this.calendar.startHour;
                 let startInRange = event.start.hour() < this.calendar.endHour && event.end.hour() > this.calendar.endHour;
@@ -192,9 +226,14 @@ export class CalendarSheetWeek implements OnChanges {
         return events;
     }
 
-    /*
-    * @return void
-    */
+    /**
+     * @reset ownerEvents
+     * @reset ownerMultiEvents
+     * @call arrangeMultiEvents
+     * @call loadEvents
+     * @set ownerEvents
+     * @set ownerMultiEvents
+     */
     private getEvents() {
         this.ownerEvents = [];
         this.ownerMultiEvents = [];
@@ -212,9 +251,14 @@ export class CalendarSheetWeek implements OnChanges {
             });
     }
 
-    /*
-    * @return void
-    */
+    /**
+     * @reset googleEvents
+     * @reset googleMultiEvents
+     * @call arrangeMultiEvents
+     * @call loadEvents
+     * @set googleEvents
+     * @set googleMultiEvents
+     */
     private getGoogleEvents() {
         this.googleEvents = [];
         this.googleMultiEvents = [];
@@ -235,9 +279,14 @@ export class CalendarSheetWeek implements OnChanges {
             });
     }
 
-    /*
-    * @return void
-    */
+    /**
+     * @reset userEvents
+     * @reset userMultiEvents
+     * @call arrangeMultiEvents
+     * @call loadEvents
+     * @set userEvents
+     * @set userMultiEvents
+     */
     private getUsersEvents() {
         this.userEvents = [];
         this.userMultiEvents = [];
@@ -264,17 +313,18 @@ export class CalendarSheetWeek implements OnChanges {
 
     }
 
-    /*
-    * filter the out of range events
-    * @return void
-    */
-    private filterEvents(events, type?) {
+    /**
+     * @filter the out of range events or the absence events
+     * @return events: object[]
+     */
+    private filterEvents(events) {
         return events.filter(event => event.end.hour() > this.calendar.startHour || event.start.hour() < this.calendar.endHour || ('absence' == event.type));
     }
 
-    /*
-    * @return sheetDays
-    */
+    /**
+     * @build sheetDays
+     * @return sheetDays
+     */
     private buildSheetDays() {
         let sheetDays = [];
         let d = 0;
@@ -290,62 +340,58 @@ export class CalendarSheetWeek implements OnChanges {
         return sheetDays;
     }
 
-    /*
-    * @param date
-    * @return style
-    */
+    /**
+     * @param date: moment
+     * @return color: string
+     */
     private isTodayStyle(date) {
         let today = new moment();
         let isToday = today.year() === date.year() && today.month() === date.month() && today.date() == date.date();
-        return {
-            color: isToday ? this.calendar.todayColor : 'inherit'
-        };
+        return isToday ? this.calendar.todayColor : 'inherit';
     }
 
-    /*
-    * @param event
-    * @return style
-    */
+    /**
+     * @param event: object
+     * @return style: object
+     */
     private getEventStyle(event) {
-        let startday = this.calendar.weekStartDay == 1 && event.start.day() == 0 ? 6 : event.start.day() - this.calendar.weekStartDay;
-        let startminutes = (event.start.hour() - this.calendar.startHour) * 60 + event.start.minute();
-        let endminutes = (event.end.hour() - this.calendar.startHour) * 60 + event.end.minute();
-        let scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
-        let sheetWidth = this.calendarContent.clientWidth - this.calendar.sidebarWidth - scrollOffset;
-        let itemWidth = ((sheetWidth - this.sheetTimeWidth) / this.calendar.weekDaysCount) / (event.maxOverlay > 0 ? event.maxOverlay : 1);
-        let left = this.sheetTimeWidth + ((sheetWidth - this.sheetTimeWidth) / this.calendar.weekDaysCount * startday) + (itemWidth * event.displayIndex);
-        let top = this.calendar.sheetHourHeight / 60 * startminutes;
-        let height = this.calendar.sheetHourHeight / 60 * (endminutes - startminutes);
+        const startday = this.calendar.weekStartDay == 1 && event.start.day() == 0 ? 6 : event.start.day() - this.calendar.weekStartDay;
+        const startminutes = (event.start.hour() - this.calendar.startHour) * 60 + event.start.minute();
+        const endminutes = (event.end.hour() - this.calendar.startHour) * 60 + event.end.minute();
+        const scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
+        const sheetWidth = this.sheetContainer.element.nativeElement.clientWidth - scrollOffset;
+        const itemWidth = ((sheetWidth - this.sheetTimeWidth) / this.calendar.weekDaysCount) / (event.maxOverlay > 0 ? event.maxOverlay : 1);
+        const left = this.sheetTimeWidth + ((sheetWidth - this.sheetTimeWidth) / this.calendar.weekDaysCount * startday) + (itemWidth * event.displayIndex);
+        const top = this.calendar.sheetHourHeight / 60 * startminutes;
+        const height = this.calendar.sheetHourHeight / 60 * (endminutes - startminutes);
 
         return {
-            'left': left + 'px',
-            'width': itemWidth + 'px',
-            'top': top + 'px',
-            'height': height + 'px',
-            'z-index': event.resizing ? 20 : 15,
-            'border-bottom': event.resizing ? '1px dotted #fff' : 0
+            left: left + 'px',
+            width: itemWidth + 'px',
+            top: top + 'px',
+            height: height + 'px'
         };
     }
 
-    /*
-    * @param event
-    * @return style
-    */
+    /**
+     * @param event: object
+     * @return style: object
+     */
     private getMultiEventStyle(event): any {
         let eventI = null;
-        let scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
-        let sheetWidth = this.calendarContent.clientWidth - this.calendar.sidebarWidth - scrollOffset;
-        let multiEventsContainerWidth = (sheetWidth - this.sheetTimeWidth) / this.calendar.weekDaysCount;
-        let startDate = new moment(this.setdate).day(this.calendar.weekStartDay).hour(0).minute(0).second(0);
-        let endDate = new moment(startDate).add(moment.duration(this.calendar.weekDaysCount, 'd'));
-        let startDateDifference = ((+event.start.diff(startDate, 'days') > 0) ? +event.start.diff(startDate, 'days') : 0);
-        let endDateDifference = (+event.end.diff(endDate, 'days') > 0) ? 0 : Math.abs(+event.end.diff(endDate, 'days'));
-        let left = startDateDifference * multiEventsContainerWidth;
-        let width = (this.calendar.weekDaysCount - (startDateDifference + endDateDifference)) * multiEventsContainerWidth;
+        const scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
+        const sheetWidth = this.sheetContainer.element.nativeElement.clientWidth - scrollOffset;
+        const multiEventsContainerWidth = (sheetWidth - this.sheetTimeWidth) / this.calendar.weekDaysCount;
+        const startDate = new moment(this.setdate).day(this.calendar.weekStartDay).hour(0).minute(0).second(0);
+        const endDate = new moment(startDate).add(moment.duration(this.calendar.weekDaysCount, 'd'));
+        const startDateDifference = ((+event.start.diff(startDate, 'days') > 0) ? +event.start.diff(startDate, 'days') : 0);
+        const endDateDifference = (+event.end.diff(endDate, 'days') > 0) ? 0 : Math.abs(+event.end.diff(endDate, 'days'));
+        const left = startDateDifference * multiEventsContainerWidth;
+        const width = (this.calendar.weekDaysCount - (startDateDifference + endDateDifference)) * multiEventsContainerWidth;
 
         this.sheetDays.some(day => {
-            if (day.items.indexOf(event) > -1) {
-                eventI = day.items.indexOf(event);
+            if (day.events.indexOf(event) > -1) {
+                eventI = day.events.indexOf(event);
                 return true;
             }
         });
@@ -357,29 +403,20 @@ export class CalendarSheetWeek implements OnChanges {
         };
     }
 
-    /*
-    * @param format
-    * @param date
-    * @return date format
-    */
+    /**
+     * @param format
+     * @param date
+     * @return formattedDate: string
+     */
     private displayDate(format, date) {
         return date.format(format);
     }
 
-    /*
-    * @return style
-    */
-    private getDaysContainerStyle() {
-        let scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
-        let sheetWidth = this.calendarContent.clientWidth - this.calendar.sidebarWidth - scrollOffset;
-        return {
-            width: (sheetWidth - this.sheetTimeWidth) + 'px'
-        };
-    }
-
-    /*
-    * @return void
-    */
+    /**
+     * @reset sheetHours
+     * @build sheetHours
+     * @set sheetHours
+     */
     private buildHours() {
         this.sheetHours = [];
         let i = this.calendar.startHour;
@@ -389,23 +426,19 @@ export class CalendarSheetWeek implements OnChanges {
         }
     }
 
-    /*
-    * @return style
-    */
-    private getSheetStyle() {
-        return {
-            'height': (this.calendarContent.getBoundingClientRect().height - this.headerContainer.element.nativeElement.getBoundingClientRect().height) + 'px',
-            'margin-top': '-1px'
-        };
+    /**
+     * @param dayOfWeek: number
+     * @emit day by navigateday
+     */
+    private gotoDay(dayOfWeek) {
+        this.navigateday.emit(moment(this.setdate).day(dayOfWeek));
     }
 
-    /*
-    * @param dow day
-    * @return void
+    /**
+    * @param dragEvent: CdkDragEnd
+    * @call calendar.onEventDrop and pass the dropTargets reference for this sheet
     */
-    private gotoDay(dow) {
-        let navigateDate = moment(this.setdate);
-        navigateDate.day(dow);
-        this.navigateday.emit(navigateDate);
+    private onEventDrop(dragEvent: CdkDragEnd) {
+       this.calendar.onEventDrop(dragEvent, this.dropTargets);
     }
 }
