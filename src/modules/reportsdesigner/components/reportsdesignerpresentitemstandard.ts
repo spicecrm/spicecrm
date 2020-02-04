@@ -8,85 +8,57 @@ import {model} from "../../../services/model.service";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
 @Component({
+    selector: 'reports-designer-present-item-standard',
     templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerpresentitemstandard.html'
 })
 export class ReportsDesignerPresentItemStandard implements OnInit {
 
-    constructor(private language: language, private model: model) {
+    public propertiesFieldName: string = 'standardViewProperties';
+
+    constructor(public language: language, public model: model) {
     }
 
     /**
-    * @return listfields: object[]
+     * @return listfields: object[]
      */
     get listFields() {
         return this.model.getField('listfields')
             .sort((a, b) => {
-                 if (!isNaN(parseInt(a.sortpriority, 10)) && !isNaN(parseInt(b.sortpriority, 10))) {
-                     return +a.sortpriority > +b.sortpriority ? 1 : -1;
-                 } else {
-                     +a.sequence > +b.sequence ? 1 : -1;
-                 }
+                if (!isNaN(parseInt(a.sortpriority, 10)) && !isNaN(parseInt(b.sortpriority, 10))) {
+                    return +a.sortpriority > +b.sortpriority ? 1 : -1;
+                } else {
+                    return +a.sequence > +b.sequence ? 1 : -1;
+                }
             });
     }
 
     /**
     * @return standardViewProperties: object
      */
-    get standardViewProperties() {
-        return this.model.getField('presentation_params').pluginData.standardViewProperties;
+    get properties() {
+        return this.model.getField('presentation_params').pluginData[this.propertiesFieldName];
     }
 
     /**
     * @initializePluginData
      */
     public ngOnInit() {
-        this.initializePluginData();
+        const properties = {
+            processCount: 'Synchronous',
+            listEntries: 25
+        };
+        this.initializePluginData(properties);
     }
 
     /**
     * @set standardViewProperties
     * @setField presentation_params
     */
-    private initializePluginData() {
+    public initializePluginData(value: object) {
         const presentationParams = this.model.getField('presentation_params');
-        if (!presentationParams.pluginData.standardViewProperties) {
-            presentationParams.pluginData.standardViewProperties = {
-                processCount: 'Synchronous',
-                listEntries: 25
-            };
+        if (!presentationParams.pluginData[this.propertiesFieldName]) {
+            presentationParams.pluginData[this.propertiesFieldName] = value;
             this.model.setField('presentation_params', presentationParams);
         }
-    }
-
-    /**
-    * @set field.link: string
-     */
-    protected setFieldLink(field, value) {
-        field.link = value ? 'yes' : 'no';
-    }
-
-    /**
-    * @moveItemInArray item in group.conditions
-     * @set listfield.sortpriority
-     * @set listfields
-     */
-    private onDrop(dragEvent: CdkDragDrop<any>) {
-        moveItemInArray(dragEvent.container.data, dragEvent.previousIndex, dragEvent.currentIndex);
-        dragEvent.container.data = dragEvent.container.data.map((item, index) => {
-            item.sortpriority = index;
-            return item;
-        });
-        this.model.setField('listfields', dragEvent.container.data);
-    }
-
-    /**
-    * A function that defines how to track changes for items in the iterable (ngForOf).
-    * https://angular.io/api/common/NgForOf#properties
-    * @param index
-    * @param item
-    * @return index
-    */
-    private trackByFn(index, item) {
-        return item.fieldid;
     }
 }

@@ -23,7 +23,13 @@ import /*embed*/ {ReportsDesignerManipulateUnionTableRow} from "./components/rep
 import /*embed*/ {ReportsDesignerManipulateTableRowExpansion} from "./components/reportsdesignermanipulatetablerowexpansion";
 import /*embed*/ {ReportsDesignerPresent} from "./components/reportsdesignerpresent";
 import /*embed*/ {ReportsDesignerPresentItem} from "./components/reportsdesignerpresentitem";
+import /*embed*/ {ReportsDesignerPresentItemTable} from "./components/reportsdesignerpresentitemtable";
 import /*embed*/ {ReportsDesignerPresentItemStandard} from "./components/reportsdesignerpresentitemstandard";
+import /*embed*/ {ReportsDesignerPresentItemStandardWithSummary} from "./components/reportsdesignerpresentitemstandardwithsummary";
+import /*embed*/ {ReportsDesignerPresentItemStandardWithPreview} from "./components/reportsdesignerpresentitemstandardwithpreview";
+import /*embed*/ {ReportsDesignerPresentItemTreeView} from "./components/reportsdesignerpresentitemtreeview";
+import /*embed*/ {ReportsDesignerPresentItemGrouped} from "./components/reportsdesignerpresentitemgrouped";
+import /*embed*/ {ReportsDesignerPresentItemPivot} from "./components/reportsdesignerpresentitempivot";
 import /*embed*/ {ReportsDesignerVisualize} from "./components/reportsdesignervisualize";
 import /*embed*/ {ReportsDesignerIntegrate} from "./components/reportsdesignerintegrate";
 import /*embed*/ {ReportsDesignerFilter} from "./components/reportsdesignerfilter";
@@ -50,7 +56,13 @@ import /*embed*/ {ReportsDesignerCondition} from "./components/reportsdesignerco
         ReportsDesignerManipulateUnion,
         ReportsDesignerPresent,
         ReportsDesignerPresentItem,
+        ReportsDesignerPresentItemTable,
         ReportsDesignerPresentItemStandard,
+        ReportsDesignerPresentItemStandardWithSummary,
+        ReportsDesignerPresentItemStandardWithPreview,
+        ReportsDesignerPresentItemTreeView,
+        ReportsDesignerPresentItemGrouped,
+        ReportsDesignerPresentItemPivot,
         ReportsDesignerVisualize,
         ReportsDesignerIntegrate,
         ReportsDesignerFilter,
