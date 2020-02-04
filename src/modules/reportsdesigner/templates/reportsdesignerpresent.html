@@ -14,7 +14,7 @@
         </div>
     </div>
     <div class="slds-scrollable--y slds-grow">
-        <div *ngFor="let item of items">
+        <div *ngFor="let item of items; trackBy: trackByFn">
             <reports-designer-present-item *ngIf="selectedItemId == item.id && !!item.component" [component]="item.component"></reports-designer-present-item>
         </div>
     </div>

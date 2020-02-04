@@ -25,9 +25,9 @@ export class ReportsDesignerPresent {
     }
 
     /**
-    * @param value: string
-    * @setField listtype
-    */
+     * set listtype field and initialize the presentation params
+     * @param value: string
+     */
     set selectedItemId(value) {
         this.model.setField('listtype', value);
         this.initializePresentationParams(value);
@@ -35,17 +35,17 @@ export class ReportsDesignerPresent {
     }
 
     /**
-    * @loadItems
+    * initialize the persentation params and call loadPlugins
     */
     public ngOnInit() {
         this.initializePresentationParams();
-        this.loadItems();
+        this.loadPlugins();
     }
 
     /**
-    * @set items from metadata.getComponentSetObjects
+    * load plugins from component set
     */
-    private loadItems() {
+    private loadPlugins() {
         const conf = this.metadata.getComponentConfig('ReportsDesignerPresent', 'KReports');
         if (conf.componentset && conf.componentset.length > 0) {
             const items = this.metadata.getComponentSetObjects(conf.componentset);
@@ -63,10 +63,9 @@ export class ReportsDesignerPresent {
     }
 
     /**
-    * @define presentationParams
-    * @set presentationParams.plugin
-    * @setField presentation_params
-    */
+     * set the initial presentation params data
+     * @param plugin?: string
+     */
     private initializePresentationParams(plugin?) {
         let presentationParams = this.model.getField('presentation_params');
         if (!presentationParams || !presentationParams.plugin) {
@@ -74,12 +73,23 @@ export class ReportsDesignerPresent {
                 plugin: 'standard',
                 pluginData: {}
             };
-        } else if (presentationParams.plugin != plugin) {
+        } else if (!!plugin && presentationParams.plugin != plugin) {
             presentationParams = {
                 plugin: plugin,
                 pluginData: {}
             };
         }
         this.model.setField('presentation_params', presentationParams);
+    }
+
+    /**
+     * A function that defines how to track changes for items in the iterable (ngForOf).
+     * https://angular.io/api/common/NgForOf#properties
+     * @param index
+     * @param item
+     * @return index
+     */
+    protected trackByFn(index, item) {
+        return item.id;
     }
 }

@@ -6,10 +6,25 @@
             </label>
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
-                    <select class="slds-select" [(ngModel)]="properties.processCount">
+                    <select class="slds-select" [(ngModel)]="pluginData.processCount">
                         <option value="Synchronous">{{language.getLabel('LBL_SYNCHRONOUS')}}</option>
                         <option value="Asynchronous">{{language.getLabel('LBL_ASYNCHRONOUS')}}</option>
                         <option value="None">{{language.getLabel('LBL_NONE')}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-m-left--x-small">
+            <label class="slds-form-element__label">
+                {{language.getLabel('LBL_PREVIEW_FOR')}}
+            </label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="pluginData.previewId">
+                        <option></option>
+                        <option *ngFor="let listField of listFields" [value]="listField.fieldid">
+                            {{language.getLabel(listField.name)}}
+                        </option>
                     </select>
                 </div>
             </div>
@@ -21,7 +36,7 @@
             <div class="slds-form-element__control">
                 <div class="slds-form-element">
                     <div class="slds-form-element__control">
-                        <input type="text" [(ngModel)]="properties.listEntries" class="slds-input">
+                        <input type="text" [(ngModel)]="pluginData.listEntries" class="slds-input">
                     </div>
                 </div>
             </div>
