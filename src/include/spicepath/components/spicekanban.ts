@@ -104,19 +104,24 @@ export class SpiceKanban implements OnInit, OnDestroy {
             bucketitems.push({
                 bucket: stage.stagedata.secondary_stage ? stage.stagedata.stage + ' ' + stage.stagedata.secondary_stage : stage.stage,
                 value: 0,
+                ratio:0,
                 items: 0
             });
+
         }
 
         if (_.isEmpty(this.modellist.buckets)) {
+
             this.modellist.buckets = {
                 bucketfield: this.confdata.statusfield,
                 buckettotal: this.componentconfig.sumfield,
+                bucketratio: this.componentconfig.ratio,
                 bucketitems: bucketitems
             };
 
             this.modellist.getListData();
         }
+
 
         // set limit to 10 .. since this is retrieved bper stage
         this.modellist.loadlimit = 25;
@@ -145,6 +150,13 @@ export class SpiceKanban implements OnInit, OnDestroy {
     }
 
     /**
+     * return currencysymbol config
+     */
+    get togglesymbol() {
+        return this.componentconfig.currencysymbol ? true : false;
+    }
+
+    /**
      * trackby function to opütimize performnce onm the for loop
      *
      * @param index
@@ -159,7 +171,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      *
      * @param stage the stage
      */
-    private getStageData(stage): any {
+    public getStageData(stage): any {
         let stagedata = this.stages.find(thisStage => stage == thisStage.stage);
         return stagedata.stagedata;
     }
@@ -203,12 +215,15 @@ export class SpiceKanban implements OnInit, OnDestroy {
         try {
             let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
             let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
-
             return item && item.value ? item.value : 0;
         } catch (e) {
             return 0;
         }
     }
+    //
+    // private getRatio(stagedata) {
+    //     window.console.log(this.modellist.buckets);
+    // }
 
     /**
      * get all items for a stage
@@ -289,16 +304,19 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * helper to get the currency symbol
      */
     private getCurrencySymbol(): string {
-        let currencySymbol: string;
-        let currencyid = -99;
+        if(this.togglesymbol) {
+            let currencySymbol: string;
+            let currencyid = -99;
 
-        this.currencies.some(currency => {
-            if (currency.id == currencyid) {
-                currencySymbol = currency.symbol;
-                return true;
-            }
-        });
-        return currencySymbol;
+            this.currencies.some(currency => {
+                if (currency.id == currencyid) {
+                    currencySymbol = currency.symbol;
+                    return true;
+                }
+            });
+            return currencySymbol;
+        }
+
     }
 
     /**
