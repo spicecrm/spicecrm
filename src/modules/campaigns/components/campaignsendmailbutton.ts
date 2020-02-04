@@ -76,10 +76,12 @@ export class CampaignSendMailButton {
         }
 
         // template is set is set
+        /*
         if (!this.model.data.email_template_id) {
             this.disabled = true;
             return;
         }
+        */
 
         // not if editing
         this.disabled = this.model.isEditing ? true : false;

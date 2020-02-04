@@ -3,6 +3,7 @@
  */
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
+import {FormsModule}   from "@angular/forms";
 
 import {ObjectFields}      from '../../objectfields/objectfields';
 import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
@@ -21,6 +22,7 @@ import /*embed*/ {CampaignTaskEmailPanel} from './components/campaigntaskemailpa
 @NgModule({
     imports: [
         CommonModule,
+        FormsModule,
         ObjectFields,
         GlobalComponents,
         ObjectComponents,

@@ -759,9 +759,9 @@ export class backend {
         return responseSubject.asObservable();
     }
 
-    public save(module: string, id: string, cdata: any, progress: BehaviorSubject<number> = null): Observable<any[]> {
+    public save(module: string, id: string, cdata: any, progress: BehaviorSubject<number> = null, templateId: string = null ): Observable<any[]> {
         let responseSubject = new Subject<any[]>();
-        this.postRequestWithProgress("module/" + module + "/" + id, {}, this.modelutilities.spiceModel2backend(module, cdata), null, progress)
+        this.postRequestWithProgress("module/" + module + "/" + id, { templateId: templateId }, this.modelutilities.spiceModel2backend(module, cdata), null, progress )
             .subscribe(
                 (response: any) => {
                     responseSubject.next(this.modelutilities.backendModel2spice(module, response));
