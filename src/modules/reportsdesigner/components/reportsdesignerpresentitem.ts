@@ -3,9 +3,7 @@
  */
 import {AfterViewInit, Component, Input, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from "../../../services/language.service";
-import {ReportsDesignerService} from "../services/reportsdesigner.service";
 import {metadata} from "../../../services/metadata.service";
-import {model} from "../../../services/model.service";
 
 @Component({
     selector: 'reports-designer-present-item',
@@ -14,35 +12,34 @@ import {model} from "../../../services/model.service";
 export class ReportsDesignerPresentItem implements AfterViewInit {
 
     /**
-    * @input component: string
-    */
+     * @input component: string
+     */
     @Input() private component: string = '';
     @ViewChild('itemContainer', {static: true, read: ViewContainerRef}) private itemContainer: ViewContainerRef;
     private componentRef: any;
 
-    constructor(private language: language, private metadata: metadata, private model: model) {
+    constructor(private language: language, private metadata: metadata) {
     }
 
     /**
-    * @render view
-    */
+     * call render view
+     */
     public ngAfterViewInit() {
         this.render();
     }
 
     /**
-    * @addComponent
-    * @set componentRef
-    */
-    private render() {
-        this.metadata.addComponent(this.component, this.itemContainer)
-            .subscribe(componentRef => this.componentRef = componentRef);
+     * destroy component reference
+     */
+    public ngOnDestroy() {
+        if (this.componentRef) this.componentRef.destroy();
     }
 
     /**
-    * @destroy componentRef
-    */
-    public ngOnDestroy() {
-        if (this.componentRef) this.componentRef.destroy();
+     * render the component in the container
+     */
+    private render() {
+        this.metadata.addComponent(this.component, this.itemContainer)
+            .subscribe(componentRef => this.componentRef = componentRef);
     }
 }

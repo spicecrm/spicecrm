@@ -1,0 +1,141 @@
+<table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover reports-designer-manipulate-table">
+    <thead>
+    <tr class="slds-text-title--caps slds-theme--shade">
+        <th class="slds-cell-shrink"></th>
+        <th scope="col" class="slds-resizable">
+            <div class="slds-truncate" [title]="language.getLabel('LBL_NAME')">
+                {{language.getLabel('LBL_NAME')}}
+            </div>
+        </th>
+        <th scope="col" class="slds-resizable">
+            <div class="slds-truncate" [title]="language.getLabel('LBL_DISPLAY')">
+                {{language.getLabel('LBL_DISPLAY')}}
+            </div>
+        </th>
+        <th scope="col" class="slds-resizable slds-cell-shrink" style="padding-left: 5px">
+            <div class="slds-truncate" [title]="language.getLabel('LBL_LINK')">
+                {{language.getLabel('LBL_LINK')}}
+            </div>
+        </th>
+        <th scope="col" class="slds-resizable">
+            <div class="slds-truncate" [title]="language.getLabel('LBL_SORT')">
+                {{language.getLabel('LBL_SORT')}}
+            </div>
+        </th>
+        <th scope="col" class="slds-resizable">
+            <div class="slds-truncate" [title]="language.getLabel('LBL_WIDTH')">
+                {{language.getLabel('LBL_WIDTH')}}
+            </div>
+        </th>
+        <th scope="col" class="slds-resizable">
+            <div class="slds-truncate" [title]="language.getLabel('LBL_OVERRIDE_TYPE')">
+                {{language.getLabel('LBL_OVERRIDE_TYPE')}}
+            </div>
+        </th>
+        <th scope="col" class="slds-resizable">
+            <div class="slds-truncate" [title]="language.getLabel('LBL_OVERRIDE_ALIGNMENT')">
+                {{language.getLabel('LBL_OVERRIDE_ALIGNMENT')}}
+            </div>
+        </th>
+        <th scope="col" class="slds-resizable">
+            <div class="slds-truncate" [title]="language.getLabel('LBL_COMPONENT')">
+                {{language.getLabel('LBL_COMPONENT')}}
+            </div>
+        </th>
+    </tr>
+    </thead>
+    <tbody *ngIf="listFields" cdkDropList [cdkDropListData]="listFields" (cdkDropListDropped)="onDrop($event)" class="slds-grow slds-scrollable--y">
+        <ng-container *ngFor="let listField of listFields; trackBy: trackByFn">
+            <tr cdkDrag [cdkDragData]="listField" class="slds-border--bottom slds-drag--preview">
+                <td class="slds-p-around--none">
+                    <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
+                </td>
+                <td>
+                    <div class="slds-form-element">
+                        {{language.getLabel(listField.name)}}
+                    </div>
+                </td>
+                <td>
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="listField.display">
+                                    <option value="yes">{{language.getLabel('LBL_YES')}}</option>
+                                    <option value="no">{{language.getLabel('LBL_NO')}}</option>
+                                    <option value="hid">{{language.getLabel('LBL_HIDDEN')}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="slds-cell-shrink">
+                        <system-checkbox [ngModel]="listField.link == 'yes'" (ngModelChange)="setFieldLink(listField, $event)">&nbsp;</system-checkbox>
+                    </div>
+                </td>
+                <td>
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="listField.sort">
+                                    <option value="asc">{{language.getLabel('LBL_ASCENDING')}}</option>
+                                    <option value="desc">{{language.getLabel('LBL_DESCENDING')}}</option>
+                                    <option value="sortable">{{language.getLabel('LBL_SORTABLE')}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <input type="text" [(ngModel)]="listField.width" class="slds-input">
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="listField.overridetype">
+                                    <option value="none">{{language.getLabel('LBL_NONE')}}</option>
+                                    <option value="currency">{{language.getLabel('LBL_CURRENCY')}}</option>
+                                    <option value="currencyint">{{language.getLabel('LBL_CURRENCY_INTEGER')}}</option>
+                                    <option value="percentage">{{language.getLabel('LBL_PERCENTAGE')}}</option>
+                                    <option value="number">{{language.getLabel('LBL_NUMBER')}}</option>
+                                    <option value="int">{{language.getLabel('LBL_INTEGER')}}</option>
+                                    <option value="float">{{language.getLabel('LBL_FLOAT')}}</option>
+                                    <option value="date">{{language.getLabel('LBL_DATE')}}</option>
+                                    <option value="datetime">{{language.getLabel('LBL_DATE_TIME')}}</option>
+                                    <option value="datetutc">{{language.getLabel('LBL_DATE_TO_UTC')}}</option>
+                                    <option value="bool">{{language.getLabel('LBL_BOOLEAN')}}</option>
+                                    <option value="text">{{language.getLabel('LBL_TEXT')}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="listField.overridealignment">
+                                    <option value="left">{{language.getLabel('LBL_LEFT_ALIGN')}}</option>
+                                    <option value="right">{{language.getLabel('LBL_RIGHT_ALIGN')}}</option>
+                                    <option value="center">{{language.getLabel('LBL_CENTER_ALIGN')}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <input type="text" [(ngModel)]="listField.component" class="slds-input">
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </ng-container>
+    </tbody>
+</table>
