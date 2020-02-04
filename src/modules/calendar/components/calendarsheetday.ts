@@ -7,13 +7,15 @@ import {
     EventEmitter,
     Input,
     OnChanges,
-    Output,
+    Output, QueryList,
     SimpleChanges,
-    ViewChild,
+    ViewChild, ViewChildren,
     ViewContainerRef
 } from '@angular/core';
 import {language} from '../../../services/language.service';
 import {calendar} from '../services/calendar.service';
+import {CdkDragEnd} from "@angular/cdk/drag-drop";
+import {CalendarSheetDropTarget} from "./calendarsheetdroptarget";
 
 /**
  * @ignore
@@ -27,13 +29,32 @@ declare var moment: any;
 
 export class CalendarSheetDay implements OnChanges {
 
+    @ViewChildren(CalendarSheetDropTarget) private dropTargets: QueryList<CalendarSheetDropTarget>;
     @ViewChild('calendarsheet', {read: ViewContainerRef, static: true}) private calendarsheet: ViewContainerRef;
-    @Output() public navigateweek: EventEmitter<any> = new EventEmitter<any>();
+
+    /**
+     * @Input setdate: moment
+     */
     @Input() private setdate: any = {};
+    /**
+     * @Input usersCalendars: {id: string, name: string, visible: boolean, color: string}
+     */
     @Input('userscalendars') private usersCalendars: any[] = [];
+    /**
+     * @Input googleIsVisible: boolean
+     */
     @Input('googleisvisible') private googleIsVisible: boolean = true;
+    /**
+     * @Input calendarcontent: ViewContainerRef
+     */
+    @Input('calendarcontent') private calendarContentContainer: any;
+    /**
+     * @output navigateweek: EventEmitter<moment>
+     */
+    @Output() public navigateweek: EventEmitter<any> = new EventEmitter<any>();
+
     private sheetDay: any = {};
-    private sheetHours: any[] = [];
+    protected sheetHours: any[] = [];
     private ownerEvents: any[] = [];
     private ownerMultiEvents: any[] = [];
     private userEvents: any[] = [];
@@ -248,16 +269,14 @@ export class CalendarSheetDay implements OnChanges {
     */
     private getEventStyle(event): any {
         // get the day of the week
-        let startminutes = (event.start.hour() - this.calendar.startHour) * 60 + event.start.minute();
-        let endminutes = (event.end.hour() - this.calendar.startHour) * 60 + event.end.minute();
-        let itemWidth = ((this.calendarsheet.element.nativeElement.clientWidth - this.sheetTimeWidth)) / (event.maxOverlay > 0 ? event.maxOverlay : 1);
+        const startMinutes = (event.start.hour() - this.calendar.startHour) * 60 + event.start.minute();
+        const endMinutes = (event.end.hour() - this.calendar.startHour) * 60 + event.end.minute();
+        const itemWidth = ((this.calendarsheet.element.nativeElement.clientWidth - this.sheetTimeWidth)) / (event.maxOverlay > 0 ? event.maxOverlay : 1);
         return {
-            'left': (this.sheetTimeWidth + (itemWidth * event.displayIndex)) + 'px',
-            'width': itemWidth + 'px',
-            'top': (((this.calendar.sheetHourHeight / 60 * startminutes)) -1) + 'px',
-            'height': (this.calendar.sheetHourHeight / 60 * (endminutes - startminutes)) + 'px',
-            'z-index': event.resizing ? 20 : 15,
-            'border-bottom': event.resizing ? '1px dotted #fff' : 0
+            left: (this.sheetTimeWidth + (itemWidth * event.displayIndex)) + 'px',
+            width: itemWidth + 'px',
+            top: (((this.calendar.sheetHourHeight / 60 * startMinutes)) -1) + 'px',
+            height: (this.calendar.sheetHourHeight / 60 * (endMinutes - startMinutes)) + 'px',
         };
 
     }
@@ -290,5 +309,13 @@ export class CalendarSheetDay implements OnChanges {
         return {
             color: isToday ? this.calendar.todayColor : 'inherit'
         };
+    }
+
+    /**
+     * @param dragEvent: CdkDragEnd
+     * @call calendar.onEventDrop and pass the dropTargets reference for this sheet
+     */
+    private onEventDrop(dragEvent: CdkDragEnd) {
+        this.calendar.onEventDrop(dragEvent, this.dropTargets);
     }
 }
