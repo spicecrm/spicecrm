@@ -24,7 +24,6 @@ declare var _: any;
 export class CalendarScheduleDashlet {
 
     public scheduleUntilDate: any = {};
-    @ViewChild('calendarcontent', {read: ViewContainerRef, static: true}) private calendarcontent: ViewContainerRef;
     @ViewChild('headercontainer', {read: ViewContainerRef, static: true}) private headerContainer: ViewContainerRef;
 
     constructor(private language: language,
@@ -33,20 +32,30 @@ export class CalendarScheduleDashlet {
                 private renderer: Renderer2,
                 private calendar: calendar) {
         this.calendar.isDashlet = true;
+        this.calendar.sheetType = 'Schedule';
         this.scheduleUntilDate = new moment().minute(0).second(0).add(1, "M");
     }
 
+    /**
+     * @return calendarDate: moment
+     */
     get calendarDate() {
         return this.calendar.calendarDate;
     }
 
+    /**
+     * @return style: object height and width of the calendar content
+     */
     get contentStyle() {
         return {
-            height: `calc(100% - ${this.headerContainer.element.nativeElement.offsetHeight}px)`,
+            height: this.headerContainer ? `calc(100% - ${this.headerContainer.element.nativeElement.offsetHeight}px)` : '100px',
             width: '100%'
         };
     }
 
+    /**
+     * @return title: string
+     */
     get title() {
         return new moment(this.calendarDate).format("MMM D, YYYY") + ' - ' + this.scheduleUntilDate.format("MMM D, YYYY");
     }
