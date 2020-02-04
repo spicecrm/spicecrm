@@ -10,12 +10,12 @@
             </div>
             <div [style.min-height.px]="calendar.multiEventHeight" class="slds-text-align--center slds-border--top slds-p-around--xxx-small slds-text-body--small">
                 <ng-container *ngFor="let event of allMultiEvents; trackBy: trackByItemFn">
-                    <calendar-sheet-event [ngStyle]="multiEventStyle" [event]="event"></calendar-sheet-event>
+                    <calendar-sheet-event [ngStyle]="multiEventStyle" [event]="event" class="spice-calendar-event"></calendar-sheet-event>
                 </ng-container>
             </div>
         </div>
     </div>
-    <div #calendarsheet class="slds-scrollable--y slds-is-relative slds-grow">
+    <div #calendarsheet class="slds-scrollable--y slds-is-relative slds-grow calendar-event-drag-boundary">
         <ng-container>
             <div *ngFor="let sheetHour of sheetHours; let index = index; trackBy: trackByIndexFn" class="slds-grid">
                 <div [ngStyle]="timeColStyle">
@@ -23,17 +23,17 @@
                 </div>
                 <div class="slds-border--left slds-border--bottom slds-grow" [ngStyle]="hourHeightStyle">
                     <div style="height: 50%" class="slds-grid slds-grid--vertical">
-                        <calendar-sheet-drop-target [hour]="sheetHour" [hourPart]="0" style="display: block; width: 100%; height: 50%"></calendar-sheet-drop-target>
-                        <calendar-sheet-drop-target [hour]="sheetHour" [hourPart]="1" style="display: block; width: 100%; height: 50%"></calendar-sheet-drop-target>
+                        <calendar-sheet-drop-target [hour]="sheetHour" [hourPart]="0" class="spice-calendar-drop-target"></calendar-sheet-drop-target>
+                        <calendar-sheet-drop-target [hour]="sheetHour" [hourPart]="1" class="spice-calendar-drop-target"></calendar-sheet-drop-target>
                     </div>
                     <div class="slds-border--top slds-grid slds-grid--vertical" style="height: 50%">
-                        <calendar-sheet-drop-target [hour]="sheetHour" [hourPart]="2" style="display: block; width: 100%; height: 50%"></calendar-sheet-drop-target>
-                        <calendar-sheet-drop-target [hour]="sheetHour" [hourPart]="3" style="display: block; width: 100%; height: 50%"></calendar-sheet-drop-target>
+                        <calendar-sheet-drop-target [hour]="sheetHour" [hourPart]="2" class="spice-calendar-drop-target"></calendar-sheet-drop-target>
+                        <calendar-sheet-drop-target [hour]="sheetHour" [hourPart]="3" class="spice-calendar-drop-target"></calendar-sheet-drop-target>
                     </div>
                 </div>
             </div>
             <ng-container *ngFor="let event of allEvents; trackBy: trackByItemFn">
-                <calendar-sheet-event [ngStyle]="getEventStyle(event)" [event]="event"></calendar-sheet-event>
+                <calendar-sheet-event [ngStyle]="getEventStyle(event)" (eventDrop)="onEventDrop($event)" [event]="event" class="spice-calendar-event"></calendar-sheet-event>
             </ng-container>
         </ng-container>
     </div>
