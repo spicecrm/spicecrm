@@ -1,5 +1,5 @@
 /**
- * @module ObjectComponents
+ * @module ModuleActivities
  */
 import {Component, Injector, Input, OnDestroy, OnInit} from '@angular/core';
 import {language} from '../../../services/language.service';
@@ -26,22 +26,26 @@ import {navigation} from "../../../services/navigation.service";
 declare var moment;
 
 @Component({
-    selector: 'activitytimeline',
     templateUrl: './src/modules/activities/templates/activitytimeline.html',
     providers: [activitiyTimeLineService, modelattachments]
 })
 export class ActivityTimeline implements OnInit, OnDestroy {
 
-    public displayAddContainer: boolean = false;
-    @Input() private parentModule: string = '';
-    @Input() private parentId: string = '';
+    /**
+     * the componentconfig
+     */
     private componentconfig: any = {};
+
     private uploadData: any = {
         fileName: '',
         fileIcon: {},
         uploading: false,
         progress: undefined
     };
+
+    /**
+     * the aggregates to be displayed
+     */
     private displayaggregates = {
         Activities: false,
         History: false
@@ -94,26 +98,40 @@ export class ActivityTimeline implements OnInit, OnDestroy {
     }
 
     public ngOnInit() {
-        this.parentModule = this.model.module;
-        this.parentId = this.model.id;
-
         this.activitiyTimeLineService.parent = this.model;
 
-        if (!this.componentconfig.hideaddcontainer) {
-            this.displayAddContainer = true;
-        }
 
         if (this.componentconfig.usefts) this.activitiyTimeLineService.usefts = true;
         if (this.componentconfig.defaultentries) this.activitiyTimeLineService.defaultLimit = this.componentconfig.defaultentries;
 
     }
 
+    /**
+     * indicates if the add container is shown
+     */
+    get displayAddContainer() {
+        return !this.componentconfig.hideaddcontainer;
+    }
+
+    /**
+     * indicates if the add container is shown
+     */
+    get displayActivitiesContainer() {
+        return !this.componentconfig.hideactivitiescontainer;
+    }
+
+    /**
+     * stops the subscription
+     */
     public ngOnDestroy() {
         this.activitiyTimeLineService.stopSubscriptions();
     }
 
+    /**
+     * reloads the activities stream
+     */
     public reload() {
-        this.activitiyTimeLineService.getTimeLineData('Activities');
+        if(this.displayActivitiesContainer) this.activitiyTimeLineService.getTimeLineData('Activities');
         this.activitiyTimeLineService.getTimeLineData('History');
     }
 
