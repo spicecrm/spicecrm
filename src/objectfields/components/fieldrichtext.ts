@@ -39,7 +39,6 @@ export class fieldRichText extends fieldGeneric {
 
     private fullValue: string = '';
 
-
     @ViewChild('printframe', {read: ViewContainerRef, static: true}) private printframe: ViewContainerRef;
 
     constructor(public model: model,
@@ -65,6 +64,9 @@ export class fieldRichText extends fieldGeneric {
         return this.sanitized.bypassSecurityTrustHtml(this.value);
     }
 
+    /**
+     * getter for the stylesheet id from the fiels
+     */
     get stylesheetId(): string {
         if (!_.isEmpty(this.model.data[this.stylesheetField])) {
             return this.model.data[this.stylesheetField];
@@ -72,10 +74,22 @@ export class fieldRichText extends fieldGeneric {
         return this.stylesheetId = this.stylesheetToUse;
     }
 
+    /**
+     * setter for the stylesheet id
+     *
+     * @param id
+     */
     set stylesheetId(id: string) {
         if (id) {
             this.model.setField(this.stylesheetField, id);
         }
+    }
+
+    /**
+     * simple getter to return if the editor mode shoudl be simple or extended
+     */
+    get extendedmode() {
+        return this.fieldconfig.simplemode ? false : true;
     }
 
     /**
@@ -128,6 +142,11 @@ export class fieldRichText extends fieldGeneric {
     }
 
     private modelChangesSubscriber() {
+
+        this.subscriptions.add(this.model.saved$.subscribe(saved => this.setHtmlValue()));
+        this.subscriptions.add(this.model.data$.subscribe(saved => this.setHtmlValue()));
+
+        /*
         this.broadcast.message$.subscribe(msg => {
             switch (msg.messagetype) {
                 case 'model.save':
@@ -135,6 +154,7 @@ export class fieldRichText extends fieldGeneric {
                     this.setHtmlValue();
             }
         });
+        */
     }
 
     private setStylesheetField() {
