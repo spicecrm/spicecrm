@@ -1,5 +1,5 @@
 /**
- * @module ObjectComponents
+ * @module ModuleActivities
  */
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {model} from '../../../services/model.service';

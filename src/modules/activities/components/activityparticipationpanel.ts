@@ -1,5 +1,5 @@
 /**
- * @module ObjectComponents
+ * @module ModuleActivities
  */
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {model} from '../../../services/model.service';
