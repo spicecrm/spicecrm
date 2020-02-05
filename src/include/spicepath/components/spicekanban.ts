@@ -104,7 +104,8 @@ export class SpiceKanban implements OnInit, OnDestroy {
             bucketitems.push({
                 bucket: stage.stagedata.secondary_stage ? stage.stagedata.stage + ' ' + stage.stagedata.secondary_stage : stage.stage,
                 value: 0,
-                ratio:0,
+                second_value: 0,
+                ratio: 0,
                 items: 0
             });
 
@@ -220,10 +221,18 @@ export class SpiceKanban implements OnInit, OnDestroy {
             return 0;
         }
     }
-    //
-    // private getRatio(stagedata) {
-    //     window.console.log(this.modellist.buckets);
-    // }
+
+    // calculate this from the model instead 
+    private getRatio(stagedata) {
+        try {
+            let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
+            this.getStageItems(stage);
+
+        } catch (e) {
+            return 0;
+        }
+    }
+
 
     /**
      * get all items for a stage
