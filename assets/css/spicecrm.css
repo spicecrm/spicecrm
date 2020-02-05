@@ -1220,6 +1220,35 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     transition: 500ms;
 }
 
+.spice-free-drag-preview.cdk-drag-dragging {
+    opacity: 0.7;
+    z-index: 9999;
+    box-shadow: 4px 4px 5px 0;
+}
+
+.spice-free-drag-preview.cdk-drag-dragging:before {
+    content: ' ';
+    border-top: 2px solid #CA1B21;
+    border-left: 2px solid #CA1B21;
+    width: 10px;
+    height: 10px;
+    margin: -3px;
+}
+
+.spice-calendar-event {
+    padding-bottom: .125rem;
+    position: absolute;
+    display: block;
+}
+
+.spice-calendar-event-has-dark-color {
+    color: #fff;
+}
+
+.spice-calendar-event-has-dark-color:hover {
+    color: #eee;
+}
+
 .slds-utility-bar__item .cdk-drag-placeholder {
     display: none;
 }
@@ -1296,3 +1325,21 @@ ul.spice-taglist span.slds-badge {
     min-width: 75px;
 }
 
+.spice-calendar-drop-target {
+    display: block;
+    width: 100%;
+    height: 50%;
+}
+
+.spice-calendar-drop-target div {
+    cursor: initial;
+    visibility: hidden;
+    opacity: 0
+}
+.spice-calendar-drop-target:hover div {
+    cursor: pointer;
+    visibility: visible;
+    opacity: 1;
+    background-color: #f3f2f2;
+    text-align: center;
+}

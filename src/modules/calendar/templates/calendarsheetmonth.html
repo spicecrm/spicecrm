@@ -13,7 +13,7 @@
                         <a href="javascript:void(0);" class="slds-text-link--reset" (click)="gotoDay(sheetDay)" [ngStyle]="isTodayStyle(sheetDay.day, sheetDay.month)">{{sheetDay.day}}</a>
                     </div>
                     <div class="slds-grid slds-grid--align-center slds-is-absolute" style="bottom: 0;width: 100%" [style.height]="offsetHeight + 'px'">
-                        <calendar-more-button *ngIf="sheetDay.items.length > 0 && sheetDay.items.length > maxEventsPerBox" [sheetday]="sheetDay" [moreevents]="sheetDay.items" [ismobileview]="calendar.isMobileView"></calendar-more-button>
+                        <calendar-more-button *ngIf="sheetDay.events.length > 0 && sheetDay.events.length > maxEventsPerBox" [sheetday]="sheetDay" [moreevents]="sheetDay.events" [ismobileview]="calendar.isMobileView"></calendar-more-button>
                     </div>
                 </div>
                 <div *ngIf="notLastWeek(i)" class="slds-is-absolute slds-border--bottom slds-size--1-of-1" [ngStyle]="getWeekDividerStyle(i)"></div>
@@ -23,7 +23,7 @@
             </ng-container>
             <ng-container *ngFor="let event of allEvents; trackBy: trackByFn">
                 <ng-container *ngFor="let week of event.weeksI; trackBy: trackByFnDate">
-                    <calendar-sheet-event [event]="event" [ismonthsheet]="true" style="padding: 1px 0" [ngStyle]="getEventStyle(event, week)"></calendar-sheet-event>
+                    <calendar-sheet-event [event]="event" style="padding: 1px 0" [ngStyle]="getEventStyle(event, week)" class="spice-calendar-event"></calendar-sheet-event>
                 </ng-container>
             </ng-container>
         </ng-container>
