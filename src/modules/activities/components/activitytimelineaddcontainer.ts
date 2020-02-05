@@ -1,5 +1,5 @@
 /**
- * @module ObjectComponents
+ * @module ModuleActivities
  */
 import {
     AfterViewInit,
@@ -38,6 +38,7 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
             this.handleOverflow();
         });
     }
+
 
     public ngOnInit() {
         let config = this.metadata.getComponentConfig('ActivityTimelineAddContainer', this.model.module);
