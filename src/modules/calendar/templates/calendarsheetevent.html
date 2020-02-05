@@ -1,4 +1,6 @@
-<div class="slds-grid slds-m-around--xxx-small" [class.slds-p-vertical--xx-small]="event.saving" [ngStyle]="eventStyle" [draggable]="isDraggable">
+<div (click)="onClick()" cdkDrag [cdkDragData]="this" [cdkDragLockAxis]="lockAxis" (cdkDragEnded)="emitDrop($event)" (cdkDragStarted)="onDragStart()"
+     [cdkDragDisabled]="!isDraggable" [class.slds-p-vertical--xx-small]="event.saving" [style.background-color]="this.color"
+     cdkDragBoundary=".calendar-event-drag-boundary" class="slds-grid slds-m-around--xxx-small spice-free-drag-preview" style="height: 100%;border-radius: 2px;">
     <abbr *ngIf="event.otherColor" [style.background-color]="event.otherColor" [title]="event.data.assigned_user_name" style="height: calc(100% - 2px); width: 8px; border-radius: 2px; margin: 1px; box-shadow: #4b4b4b 1px 0 1px 0;"></abbr>
     <div [style.width]="event.otherColor ? 'calc(100% - 8px)' : '100%'">
         <ng-container *ngIf="!event.saving; else saving">
@@ -13,7 +15,7 @@
                     </div>
                     <object-action-menu *ngIf="canEdit" [buttonsize]="'xx-small'"></object-action-menu>
                 </div>
-                <div *ngIf="!event.isMulti && !isMonthSheet && canEdit" draggable="false" class="slds-is-absolute" style="bottom: 0; left: calc(50% - 8px);cursor: ns-resize;" (mousedown)="onMouseDown($event)">
+                <div *ngIf="!event.isMulti && calendar.sheetType != 'Month'&& canEdit" draggable="false" class="slds-is-absolute" style="bottom: 0; left: calc(50% - 8px);cursor: ns-resize;" (mousedown)="onMouseDown($event)">
                     <system-utility-icon colorclass="slds-icon-text-white" icon="threedots" size="x-small"></system-utility-icon>
                 </div>
         </ng-container>
