@@ -4,6 +4,7 @@
 import {CommonModule} from "@angular/common";
 import {NgModule} from "@angular/core";
 import {FormsModule}   from "@angular/forms";
+import {DragDropModule} from "@angular/cdk/drag-drop";
 
 import {userpreferences} from "../../services/userpreferences.service";
 
@@ -17,8 +18,8 @@ import {DirectivesModule} from "../../directives/directives";
 
 import /*embed*/ { calendar } from "./services/calendar.service";
 
-import /*embed*/ {CalendarHeader} from "./components/calendarheader";
 import /*embed*/ {Calendar} from "./components/calendar";
+import /*embed*/ {CalendarHeader} from "./components/calendarheader";
 import /*embed*/ {CalendarSheetDay} from "./components/calendarsheetday";
 import /*embed*/ {CalendarSheetThreeDays} from "./components/calendarsheetthreedays";
 import /*embed*/ {CalendarSheetWeek} from "./components/calendarsheetweek";
@@ -45,7 +46,8 @@ import /*embed*/ {CalendarThreeDaysDashlet} from "./components/calendarthreedays
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        DirectivesModule
+        DirectivesModule,
+        DragDropModule
     ],
 
     declarations: [
