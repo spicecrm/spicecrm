@@ -18,7 +18,19 @@ declare const window: any;
 })
 export class fieldText extends fieldGeneric implements OnInit {
 
+    /**
+     * sets if speech recognition is turned on
+     */
     private speechRecognition = false;
+
+    /**
+     * if the user resizes manually
+     */
+    private fixedHeight: number;
+
+    /**
+     * reference to the text area
+     */
     @ViewChild('textField', {read: ViewContainerRef, static: false}) private textField: ViewContainerRef;
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private modalservice: modal) {
@@ -32,11 +44,27 @@ export class fieldText extends fieldGeneric implements OnInit {
         }
     }
 
-    private getTextAreaStyle() {
-        let styleObj = {};
+    private resize(event) {
+        this.fixedHeight = event.height;
+    }
 
-        if (this.fieldconfig.minheight) styleObj['min-height'] = this.fieldconfig.minheight;
-        if (this.fieldconfig.maxheight) styleObj['max-height'] = this.fieldconfig.maxheight;
+    private getTextAreaStyle() {
+
+        // get min and max height and set default values
+        let minheight = this.fieldconfig.minheight ? this.fieldconfig.minheight.replace('px', '') : 38;
+        let maxheight = this.fieldconfig.maxheight ? this.fieldconfig.maxheight.replace('px', '') : 300;
+
+        // generate a style object
+        let styleObj = {
+            'min-height': minheight + 'px',
+            'max-height': maxheight + 'px',
+            'height': this.fixedHeight ? this.fixedHeight + 'px' : minheight + 'px'
+        };
+
+        // check the scroll height and determine auto height
+        if (!this.fixedHeight && this.textField && this.fieldconfig.maxheight) {
+            styleObj.height = (this.textField.element.nativeElement.scrollHeight + 2 < this.fieldconfig.maxheight ? this.textField.element.nativeElement.scrollHeight + 2 : this.fieldconfig.maxheight) + 'px';
+        }
 
         return styleObj;
     }
