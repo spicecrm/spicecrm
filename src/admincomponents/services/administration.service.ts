@@ -12,6 +12,11 @@ import {BehaviorSubject} from "rxjs";
 export class administration implements OnDestroy {
 
     /**
+     * indicates that we are loading
+     */
+    public loading: boolean = false;
+
+    /**
      *  the navoigation items
      */
     public adminNavigation: any[] = [];
@@ -25,6 +30,8 @@ export class administration implements OnDestroy {
      * the subscription to the broadfast service for laoder changes
      */
     private broadcastsubscription: any;
+
+
 
     /**
      * the current admin
@@ -86,9 +93,11 @@ export class administration implements OnDestroy {
      * loads nav items for the admin from the backend
      */
     private loadNavigation() {
+        this.loading = true;
         this.backend.getRequest('spiceui/admin/navigation').subscribe(
             nav => {
                 this.adminNavigation = nav;
+                this.loading = false;
             }
         );
 
