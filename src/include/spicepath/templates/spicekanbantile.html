@@ -1,5 +1,5 @@
 <div class="slds-tile slds-box--border slds-theme--default">
-    <div class="slds-p-around--x-small" spiceOverlayLoadingSpinner [isLoading]="model.isSaving">
+    <div class="slds-p-around--x-small" [overlayLoadingSpinner]="model.isSaving">
         <div class="slds-grid slds-grid--align-spread">
             <ng-container *ngIf="headerFieldset; else noheaderfieldset">
                 <object-record-fieldset-horizontal-list [fieldset]="headerFieldset"></object-record-fieldset-horizontal-list>

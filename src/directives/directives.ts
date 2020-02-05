@@ -23,7 +23,7 @@ import /*embed*/ {ToBottomNoScrollDirective} from "./directives/tobottomnoscroll
 import /*embed*/ {TrimInputDirective} from './directives/triminput';
 import /*embed*/ {ViewProviderDirective} from './directives/viewprovider';
 import /*embed*/ {SpiceDropFileArea} from './directives/spicedropfilearea';
-import /*embed*/ {SpiceOverlayLoadingSpinner} from './directives/spiceoverlayloadingspinner';
+import /*embed*/ {OverlayLoadingSpinner} from './directives/overlayloadingspinner';
 import /*embed*/ {SystemResizeDirective} from './directives/systemresize';
 
 /**
@@ -48,7 +48,7 @@ import /*embed*/ {SystemResizeDirective} from './directives/systemresize';
         TrimInputDirective,
         ViewProviderDirective,
         SpiceDropFileArea,
-        SpiceOverlayLoadingSpinner,
+        OverlayLoadingSpinner,
         SystemResizeDirective
     ],
     exports: [
@@ -66,7 +66,7 @@ import /*embed*/ {SystemResizeDirective} from './directives/systemresize';
         TrimInputDirective,
         ViewProviderDirective,
         SpiceDropFileArea,
-        SpiceOverlayLoadingSpinner,
+        OverlayLoadingSpinner,
         SystemResizeDirective
     ]
 })

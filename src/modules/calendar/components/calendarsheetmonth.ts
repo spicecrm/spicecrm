@@ -170,7 +170,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
     private arrangeEvents() {
         for (let w = 0; w < this.currentGrid.length; w++) {
-            this.currentGrid[w].forEach(day => day.items = []);
+            this.currentGrid[w].forEach(day => day.events = []);
             for (let event of this.allEvents) {
                 if (!event.hasOwnProperty("weeksI")) {
                     event.weeksI = [];
@@ -181,26 +181,26 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                     for (let eventDay = moment(event.start); eventDay.diff(event.end) <= 0; eventDay.add(1, 'days')) {
                         if (eventDay.date() == day.day && day.month == eventDay.month()) {
 
-                            if (!day.items.some(itemsEvent => itemsEvent.id == event.id)) {
-                                day.items.push(event);
+                            if (!day.events.some(itemsEvent => itemsEvent.id == event.id)) {
+                                day.events.push(event);
                             }
                             if (event.weeksI.indexOf(w) == -1) {
                                 event.weeksI.push(w);
                             }
                         }
                     }
-                    day.items = day.items.filter(event => (event.hasOwnProperty("visible") && event.visible) || !event.hasOwnProperty("visible"));
-                    day.items.sort((a, b) => a.start.isSame(b.start, 'day') && (a.start.isAfter(b.start, 'hour') || (a.start.isSame(b.start, 'hour') && a.start.isAfter(b.start, 'minute'))) ? 1 : -1);
+                    day.events = day.events.filter(event => (event.hasOwnProperty("visible") && event.visible) || !event.hasOwnProperty("visible"));
+                    day.events.sort((a, b) => a.start.isSame(b.start, 'day') && (a.start.isAfter(b.start, 'hour') || (a.start.isSame(b.start, 'hour') && a.start.isAfter(b.start, 'minute'))) ? 1 : -1);
                 }
             }
             this.allEvents.forEach(event => {
                 let itemIdx = null;
                 this.currentGrid[w].forEach(day => {
-                    day.items.forEach((item, idx) => {
+                    day.events.forEach((item, idx) => {
                         if (item.id == event.id) {
                             if (itemIdx != null && event.end.diff(event.start, 'days') > 0) {
-                                day.items.splice(idx, 1);
-                                day.items.splice(itemIdx, 0, event);
+                                day.events.splice(idx, 1);
+                                day.events.splice(itemIdx, 0, event);
                             } else {
                                 itemIdx = idx;
                             }
@@ -298,11 +298,11 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         let sheetContainer = this.calendarsheet.element.nativeElement;
 
         this.currentGrid[weekI].forEach((day, dIndex) => {
-            if (day.items.indexOf(event) > -1) {
+            if (day.events.indexOf(event) > -1) {
                 eDays++;
                 startI = startI == null ? dIndex : startI;
                 endI = dIndex;
-                if (!eventI) eventI = day.items.indexOf(event);
+                if (!eventI) eventI = day.events.indexOf(event);
                 visible = eventI >= this.maxEventsPerBox ? "none" : visible;
             }
         });
