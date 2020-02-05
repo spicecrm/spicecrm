@@ -26,12 +26,4 @@ export class fieldSlider extends fieldGeneric {
         return 100;
     }
 
-    get step() {
-        return this.max/4;
-    }
-
-    get disabled() {
-        return !this.view.isEditMode();
-    }
-
 }
