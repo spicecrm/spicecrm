@@ -19,8 +19,14 @@
             <div class="slds-text-heading--medium slds-text-align--center slds-p-vertical--x-small" [ngClass]="{'slds-text-color--inverse-weak': modellist.isLoading}">
                 {{getCurrencySymbol()}}<spice-kanban-sumfield [value]="getStageSum(stage.stagedata)"></spice-kanban-sumfield>
             </div>
+            <div *ngIf="this.componentconfig.ratio" class="slds-text-heading--x-small slds-text-color--inverse-weak slds-text-align--right slds-p-vertical--x-small">
+                <span>stage complexity rate: </span><spice-kanban-sumfield [value]="getRatio(stage.stagedata)"></spice-kanban-sumfield>
+            </div>
+
         </div>
+
     </div>
+
 
     <div (tobottom)="loadmore()" class="slds-scrollable--y kanbancontainer" cdkDropListGroup [ngStyle]="containerStyle">
         <div class="slds-grid">
