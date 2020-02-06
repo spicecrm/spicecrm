@@ -177,9 +177,9 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
     }
 
     /**
+    * delete the record with the given index
     * @param fieldId: string
-     * @delete the record with the given index
-     */
+    */
     private deleteField(fieldId) {
         this.modal.confirmDeleteRecord().subscribe(response => {
             if (response) {
