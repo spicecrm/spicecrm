@@ -29,7 +29,7 @@ export class language {
     public languagedata: any = {};
 
     /**
-     * the current language e.g. 'en_US'
+     * the current language e.g. 'en_us'
      */
     private _currentlanguage: string = '';
 
@@ -53,6 +53,9 @@ export class language {
      * @param language the language to set the srvice to
      */
     set currentlanguage(language) {
+        if(typeof language !== 'string' || language === null) {
+            language = this.getDefaultLanguage();
+        }
         this._currentlanguage = language;
 
         this.cookie.setValue('spiceuilanguage', language);
