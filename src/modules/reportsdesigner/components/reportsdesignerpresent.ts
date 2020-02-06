@@ -12,7 +12,7 @@ import {model} from "../../../services/model.service";
 })
 export class ReportsDesignerPresent {
 
-    protected items: any[] = [];
+    protected plugins: any[] = [];
 
     constructor(private language: language, private metadata: metadata, private model: model) {
     }
@@ -50,7 +50,7 @@ export class ReportsDesignerPresent {
         if (conf.componentset && conf.componentset.length > 0) {
             const items = this.metadata.getComponentSetObjects(conf.componentset);
             if (!items || items.length == 0) return;
-            this.items = items
+            this.plugins = items
                 .filter(item => !!item.componentconfig)
                 .map(item => ({
                     name: this.language.getLabel(item.componentconfig.name),

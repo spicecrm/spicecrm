@@ -5,6 +5,7 @@ import {Component} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {ReportsDesignerService} from "../services/reportsdesigner.service";
 import {metadata} from "../../../services/metadata.service";
+import {model} from "../../../services/model.service";
 
 @Component({
     selector: 'reports-designer-integrate',
@@ -12,29 +13,56 @@ import {metadata} from "../../../services/metadata.service";
 })
 export class ReportsDesignerIntegrate {
 
-    protected items: any[] = [];
+    protected plugins: any[] = [];
     private selectedItemId: string = '';
 
-    constructor(private language: language, private metadata: metadata) {
+    constructor(private language: language, private metadata: metadata, private model: model) {
     }
 
     /**
-    * @loadItems
+     * @return activePlugins: object
+     */
+    get activePlugins() {
+        return this.model.getField('integration_params').activePlugins;
+    }
+
+    /**
+    * load plugins from component set and initialize the integration params
     */
     public ngOnInit() {
-        this.loadItems();
+        this.loadPlugins();
+        this.initializeIntegrationParams();
+    }
+
+    /**
+     * set the initial integration params data
+     * @param plugin?: string
+     */
+    private initializeIntegrationParams(plugin?) {
+        let integrationParams = this.model.getField('integration_params');
+        if (!integrationParams) integrationParams = {};
+        if (!integrationParams.activePlugins) {
+            integrationParams.activePlugins = {};
+            this.model.setField('integration_params', integrationParams);
+        }
     }
 
     /**
     * @set items from metadata.getComponentSetObjects
     */
-    private loadItems() {
-        const conf = this.metadata.getComponentConfig('ReportsDesignerPresent', 'KReports');
+    private loadPlugins() {
+        const conf = this.metadata.getComponentConfig('ReportsDesignerIntegrate', 'KReports');
         if (conf.componentset && conf.componentset.length > 0) {
             const items = this.metadata.getComponentSetObjects(conf.componentset);
-            this.items = items
+            if (!items || items.length == 0) return;
+            this.plugins = items
                 .filter(item => !!item.componentconfig)
-                .map(item => ({...item.componentconfig, id: item.id, sequence: item.sequence}))
+                .map(item => ({
+                    name: this.language.getLabel(item.componentconfig.name),
+                    id: item.componentconfig.plugin,
+                    component: item.componentconfig.component,
+                    sequence: item.sequence
+                }))
                 .sort((a, b) => !isNaN(parseInt(a.sequence, 10)) && !isNaN(parseInt(b.sequence, 10)) ? +a.sequence > +b.sequence ? 1 : -1 : 0);
         }
     }
@@ -45,5 +73,27 @@ export class ReportsDesignerIntegrate {
     */
     private setSelectedItemId(itemId) {
         this.selectedItemId = itemId;
+    }
+
+    /**
+     * A function that defines how to track changes for items in the iterable (ngForOf).
+     * https://angular.io/api/common/NgForOf#properties
+     * @param index
+     * @param item
+     * @return index
+     */
+    protected trackByFn(index, item) {
+        return item.id;
+    }
+
+    /**
+     * set activePlugins in integration params
+     * @param plugin: string
+     * @param bool: boolean
+     */
+    private setActivePlugins(plugin, bool) {
+        const integrationParams = this.model.getField('integration_params');
+        integrationParams.activePlugins[plugin] = bool ? 1 : 0;
+        this.model.setField('integration_params', integrationParams);
     }
 }
