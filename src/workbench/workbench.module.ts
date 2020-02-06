@@ -56,6 +56,7 @@ import /*embed*/ {MailboxesSendgridTrafficManager} from "./components/mailboxess
 import /*embed*/ {MailboxesTwillioTrafficManager} from "./components/mailboxestwilliotrafficmanager";
 import /*embed*/ {MailboxesA1TrafficManager} from "./components/mailboxesa1trafficmanager";
 import /*embed*/ {MailboxesEWSTrafficManager} from "./components/mailboxesewstrafficmanager";
+import /*embed*/ {MailboxesEWSSelectFoldersModal} from "./components/mailboxesewsselectfoldersmodal";
 import /*embed*/ {MailboxManagerAddDialog} from "./components/mailboxmanageradddialog";
 import /*embed*/ {MailboxesIMAPSMTPSelectFoldersModal} from "./components/mailboxesimapsmtpselectfoldersmodal";
 import /*embed*/ {ServiceCategoryManagerComponent} from "./components/servicecategorymanager";
@@ -163,12 +164,13 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         MailboxesmanagerTestModal,
         MailboxesmanagerTestIMAPModal,
         MailboxesImapSmtpTrafficManager,
+        MailboxesIMAPSMTPSelectFoldersModal,
         MailboxesMailgunTrafficManager,
         MailboxesSendgridTrafficManager,
         MailboxesTwillioTrafficManager,
         MailboxesA1TrafficManager,
         MailboxesEWSTrafficManager,
-        MailboxesIMAPSMTPSelectFoldersModal,
+        MailboxesEWSSelectFoldersModal,
         MailboxesTransportManager,
         SortPipe,
         ServiceCategoryManagerComponent,
