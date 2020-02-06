@@ -69,10 +69,10 @@
                         {{language.getLabel('LBL_VISUALIZE')}}
                     </a>
                 </li>
-                <li [class.slds-active]="activeTab == 'integrate'" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
-                    <a class="slds-tabs--default__link slds-text-color--inverse-weak" href="javascript:void(0);" role="tab"  aria-selected="false">
+                <li (click)="setActiveTab('integrate')" [class.slds-active]="activeTab == 'integrate'" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
+                    <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
                         <span class="slds-tabs__left-icon">
-                            <system-utility-icon icon="settings" size="x-small" colorclass="slds-icon-text-light"></system-utility-icon>
+                            <system-utility-icon icon="settings" size="x-small"></system-utility-icon>
                         </span>
                         {{language.getLabel('LBL_INTEGRATE')}}
                     </a>

@@ -1,0 +1,74 @@
+<div class="slds-p-around--x-small">
+    <fieldset class="slds-form-element slds-form-element_compound slds-m-bottom--medium">
+        <legend class="slds-form-element__legend slds-form-element__label slds-text-title--caps">{{language.getLabel('LBL_PUBLISH_AS_DASHLET')}}</legend>
+        <div class="slds-form-element__control slds-p-left--small slds-p-top--small">
+            <div class="slds-form-element__row">
+                <div class="slds-form-element slds-size--1-of-1">
+                    <system-checkbox [ngModel]="getCheckboxValue('dashletPresentation')" (ngModelChange)="setValue('dashletPresentation', $event)">
+                        {{language.getLabel('LBL_PRESENTATION')}}
+                    </system-checkbox>
+                </div>
+            </div>
+            <div class="slds-form-element__row">
+                <div class="slds-form-element slds-size--1-of-2">
+                    <system-checkbox [ngModel]="getCheckboxValue('dashletVisualization')" (ngModelChange)="setValue('dashletVisualization', $event)">
+                        {{language.getLabel('LBL_VISUALISATION')}}
+                    </system-checkbox>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="slds-form-element slds-form-element_compound slds-m-top--small slds-has-divider--top-space">
+        <legend class="slds-form-element__legend slds-form-element__label slds-text-title--caps">{{language.getLabel('LBL_PUBLISH_AS_SUBPANEL')}}</legend>
+        <div class="slds-form-element__control slds-p-left--small slds-p-top--small">
+            <div class="slds-form-element__row">
+                <div class="slds-form-element slds-size--1-of-1">
+                    <label class="slds-form-element__label">
+                        {{language.getLabel('LBL_MODULE')}}
+                    </label>
+                    <system-select [selectList]="modules" [(selectedItem)]="pluginSubpanelModule"></system-select>
+                </div>
+            </div>
+            <div class="slds-form-element__row">
+                <div class="slds-form-element slds-size--1-of-1">
+                    <label class="slds-form-element__label">
+                        {{language.getLabel('LBL_TAB')}}
+                    </label>
+                    <div class="slds-select_container slds-grow slds-m-horizontal--xx-small">
+                        <select class="slds-select" [(ngModel)]="properties.subpanelTab">
+                            <option></option>
+                            <option value="LBL_TABGROUP_SALES">{{language.getLabel('LBL_SALES')}}</option>
+                            <option value="LBL_TABGROUP_MARKETING">{{language.getLabel('LBL_MARKETING')}}</option>
+                            <option value="LBL_TABGROUP_SUPPORT">{{language.getLabel('LBL_SUPPORT')}}</option>
+                            <option value="LBL_TABGROUP_ACTIVITIES">{{language.getLabel('LBL_ACTIVITIES')}}</option>
+                            <option value="LBL_TABGROUP_COLLABORATION">{{language.getLabel('LBL_COLLABORATION')}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element__row">
+                <div class="slds-form-element slds-size--1-of-1">
+                    <label class="slds-form-element__label">
+                        {{language.getLabel('LBL_SEQUENCE')}}
+                    </label>
+                    <input type="number" [(ngModel)]="properties.subpanelSequence" class="slds-input">
+                </div>
+            </div>
+            <div class="slds-form-element__row slds-m-top--small">
+                <div class="slds-form-element slds-size--1-of-1">
+                    <system-checkbox [ngModel]="getCheckboxValue('subpanelPresentation')" (ngModelChange)="setValue('subpanelPresentation', $event)">
+                        {{language.getLabel('LBL_PRESENTATION')}}
+                    </system-checkbox>
+                </div>
+            </div>
+            <div class="slds-form-element__row">
+                <div class="slds-form-element slds-size--1-of-2">
+                    <system-checkbox [ngModel]="getCheckboxValue('subpanelVisualization')" (ngModelChange)="setValue('subpanelVisualization', $event)">
+                        {{language.getLabel('LBL_VISUALISATION')}}
+                    </system-checkbox>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>
+

@@ -32,6 +32,11 @@ import /*embed*/ {ReportsDesignerPresentItemGrouped} from "./components/reportsd
 import /*embed*/ {ReportsDesignerPresentItemPivot} from "./components/reportsdesignerpresentitempivot";
 import /*embed*/ {ReportsDesignerVisualize} from "./components/reportsdesignervisualize";
 import /*embed*/ {ReportsDesignerIntegrate} from "./components/reportsdesignerintegrate";
+import /*embed*/ {ReportsDesignerIntegrateItem} from "./components/reportsdesignerintegrateitem";
+import /*embed*/ {ReportsDesignerIntegrateItemTargetList} from "./components/reportsdesignerintegrateitemtargetlist";
+import /*embed*/ {ReportsDesignerIntegrateItemPublish} from "./components/reportsdesignerintegrateitempublish";
+import /*embed*/ {ReportsDesignerIntegrateItemSchedule} from "./components/reportsdesignerintegrateitemschedule";
+import /*embed*/ {ReportsDesignerIntegrateItemDrilldown} from "./components/reportsdesignerintegrateitemdrilldown";
 import /*embed*/ {ReportsDesignerFilter} from "./components/reportsdesignerfilter";
 import /*embed*/ {ReportsDesignerConditionGroup} from "./components/reportsdesignerconditiongroup";
 import /*embed*/ {ReportsDesignerConditionGroupExpansion} from "./components/reportsdesignerconditiongroupexpansion";
@@ -65,6 +70,11 @@ import /*embed*/ {ReportsDesignerCondition} from "./components/reportsdesignerco
         ReportsDesignerPresentItemPivot,
         ReportsDesignerVisualize,
         ReportsDesignerIntegrate,
+        ReportsDesignerIntegrateItem,
+        ReportsDesignerIntegrateItemTargetList,
+        ReportsDesignerIntegrateItemPublish,
+        ReportsDesignerIntegrateItemSchedule,
+        ReportsDesignerIntegrateItemDrilldown,
         ReportsDesignerFilter,
         ReportsDesignerConditionGroup,
         ReportsDesignerConditionGroupExpansion,
