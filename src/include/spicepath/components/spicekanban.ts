@@ -71,10 +71,11 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     public currencies: any[] = [];
 
+    public rate: number;
+
     constructor(private broadcast: broadcast, private model: model, private modellist: modellist, private configuration: configurationService, private metadata: metadata, private userpreferences: userpreferences, private language: language, private currency: currency) {
 
         this.componentconfig = this.metadata.getComponentConfig('SpiceKanban', this.modellist.module);
-
         this.currencies = this.currency.getCurrencies();
     }
 
@@ -121,6 +122,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
             };
 
             this.modellist.getListData();
+
         }
 
 
@@ -217,21 +219,46 @@ export class SpiceKanban implements OnInit, OnDestroy {
             let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
             let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
             return item && item.value ? item.value : 0;
+
         } catch (e) {
             return 0;
         }
     }
 
-    // calculate this from the model instead 
+    /**
+     * get stage ratio from the bucket property
+     *
+     * @param stagedata
+     */
     private getRatio(stagedata) {
         try {
             let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
-            this.getStageItems(stage);
-
+            let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
+            return item && item.ratio ? item.ratio : 0;
         } catch (e) {
             return 0;
         }
     }
+
+    /**
+     * overall rate for two sums
+     *
+     */
+
+    private overallRate() {
+        let sumfield1: any[] = [];
+        let sumfield2: any[] = [];
+        for (let bucketitem of this.modellist.buckets.bucketitems) {
+            if(bucketitem.bucket != 3) {
+                sumfield1.push(bucketitem.value);
+                sumfield2.push(bucketitem.second_value);
+            }
+
+        }
+        this.rate = sumfield1.reduce((previous, current) => previous + current, 0) / sumfield2.reduce((previous, current) => previous + current, 0);
+        return this.rate.toFixed(1);
+    }
+
 
 
     /**
