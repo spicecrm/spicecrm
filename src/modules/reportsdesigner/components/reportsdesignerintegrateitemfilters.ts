@@ -43,6 +43,7 @@ export class ReportsDesignerIntegrateItemFilters {
     private loadSaveFilters() {
         this.isLoading = true;
         this.backend.getRequest(`KReporter/${this.model.id}/savedfilter`).subscribe(filters => {
+            this.isLoading = false;
             if (!filters) return;
 
             this.savedFilters = filters.map(filter => {
@@ -50,7 +51,6 @@ export class ReportsDesignerIntegrateItemFilters {
                 filter.is_global = !!+filter.is_global;
                 return filter;
             });
-            this.isLoading = false;
         });
     }
 
@@ -104,6 +104,6 @@ export class ReportsDesignerIntegrateItemFilters {
     * @return index
     */
     private trackByFn(index, item) {
-        return item.id;
+        return item.savedfilter_id;
     }
 }

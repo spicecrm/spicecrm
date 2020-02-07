@@ -16,8 +16,13 @@
         </div>
     </div>
     <div class="slds-size--2-of-3 slds-scrollable--y" style="height: 100%">
-        <div *ngFor="let item of plugins; trackBy: trackByFn">
+        <ng-container *ngFor="let item of plugins; trackBy: trackByFn">
             <reports-designer-integrate-item *ngIf="selectedItemId == item.id && !!item.component" [component]="item.component"></reports-designer-integrate-item>
-        </div>
+            <div *ngIf="selectedItemId == item.id && !item.component" class="slds-grid slds-grid--vertical-align-center slds-grid--align-center" style="height: 100%">
+                <system-illustration-no-data>
+                    {{language.getLabel('LBL_NO_CONFIGURATION_NEEDED')}}
+                </system-illustration-no-data>
+            </div>
+        </ng-container>
     </div>
 </div>
