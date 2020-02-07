@@ -1,0 +1,122 @@
+<div class="slds-grid slds-grid--vertical" tobottomnoscroll [overlayLoadingSpinner]="isLoading">
+    <div class="slds-grow slds-scrollable--y">
+        <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover">
+            <thead>
+            <tr class="slds-text-title--caps slds-theme--shade">
+                <th scope="col">
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_NAME')">
+                        {{language.getLabel('LBL_NAME')}}
+                    </div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_ASSIGNED_TO')">
+                        {{language.getLabel('LBL_ASSIGNED_TO')}}
+                    </div>
+                </th>
+                <th scope="col" style="padding-left: 5px">
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_GLOBAL')">
+                        {{language.getLabel('LBL_GLOBAL')}}
+                    </div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_STATUS')">
+                        {{language.getLabel('LBL_STATUS')}}
+                    </div>
+                </th>
+                <th scope="col" class="slds-cell-shrink"></th>
+                <th scope="col" class="slds-cell-shrink"></th>
+            </tr>
+            </thead>
+            <tbody *ngIf="savedFilters">
+                <ng-container *ngFor="let filter of savedFilters; trackBy: trackByFn">
+                    <tr class="slds-border--bottom">
+                        <td>
+                            <div [title]="filter.name" class="slds-truncate">
+                                {{filter.name}}
+                            </div>
+                        </td>
+                        <td>
+                            <div [title]="filter.assigned_user_name" class="slds-truncate">
+                                {{filter.assigned_user_name}}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate">
+                                <system-checkbox [ngModel]="filter.is_global" [disabled]="true"></system-checkbox>
+                            </div>
+                        </td>
+                        <td [title]="language.getLabel('LBL_ACTIVE')">
+                            <system-utility-icon icon="record" size="x-small" colorclass="slds-icon-text-success"></system-utility-icon>
+                        </td>
+                        <td>
+                            <button class="slds-button slds-button--icon" (click)="deleteFilter(filter.savedfilter_id)">
+                                <system-button-icon icon="delete"></system-button-icon>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="slds-button slds-button--icon" (click)="toggleExpansion(filter.savedfilter_id)">
+                                <system-button-icon [icon]="expandedId == filter.savedfilter_id ? 'up' : 'down'"></system-button-icon>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="expandedId == filter.savedfilter_id" class="slds-theme--shade" style="box-shadow: inset -1px 1px 6px 0 #aaa">
+                        <td colspan="6" style="padding: .5rem;">
+                            <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover slds-theme--shade">
+                                <thead>
+                                <tr class="slds-text-title--caps">
+                                    <th scope="col">
+                                        <div class="slds-truncate" [title]="language.getLabel('LBL_NAME')">
+                                            {{language.getLabel('LBL_NAME')}}
+                                        </div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" [title]="language.getLabel('LBL_OPERATOR')">
+                                            {{language.getLabel('LBL_OPERATOR')}}
+                                        </div>
+                                    </th>
+                                    <th scope="col" style="padding-left: 5px">
+                                        <div class="slds-truncate" [title]="language.getLabel('LBL_EQUALS')">
+                                            {{language.getLabel('LBL_EQUALS')}}
+                                        </div>
+                                    </th>
+                                    <th scope="col" style="padding-left: 5px">
+                                        <div class="slds-truncate" [title]="language.getLabel('LBL_TO')">
+                                            {{language.getLabel('LBL_TO')}}
+                                        </div>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody *ngIf="filter.selectedfilters?.length > 0">
+                                    <tr *ngFor="let filterDef of filter.selectedfilters">
+                                        <td>
+                                            <div [title]="filterDef.fieldName" class="slds-truncate">
+                                                {{filterDef.fieldName}}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div [title]="filterDef.operator" class="slds-truncate">
+                                                {{filterDef.operator}}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div [title]="filterDef.value" class="slds-truncate">
+                                                {{(filterDef.value)}}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div [title]="filterDef.valueto" class="slds-truncate">
+                                                {{filterDef.valueto}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
