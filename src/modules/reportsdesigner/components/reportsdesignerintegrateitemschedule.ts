@@ -8,7 +8,7 @@ import {ReportsDesignerService} from "../services/reportsdesigner.service";
 import {modal} from "../../../services/modal.service";
 
 @Component({
-    selector: 'reports-designer-integrate-schedule',
+    selector: 'reports-designer-integrate-item-schedule',
     templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerintegrateitemschedule.html'
 })
 export class ReportsDesignerIntegrateItemSchedule {
