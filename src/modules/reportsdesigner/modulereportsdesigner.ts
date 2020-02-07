@@ -38,6 +38,7 @@ import /*embed*/ {ReportsDesignerIntegrateItemPublish} from "./components/report
 import /*embed*/ {ReportsDesignerIntegrateItemSchedule} from "./components/reportsdesignerintegrateitemschedule";
 import /*embed*/ {ReportsDesignerIntegrateItemDrilldown} from "./components/reportsdesignerintegrateitemdrilldown";
 import /*embed*/ {ReportsDesignerIntegrateItemFilters} from "./components/reportsdesignerintegrateitemfilters";
+import /*embed*/ {ReportsDesignerIntegrateItemSnapshots} from "./components/reportsdesignerintegrateitemsnapshots";
 import /*embed*/ {ReportsDesignerFilter} from "./components/reportsdesignerfilter";
 import /*embed*/ {ReportsDesignerConditionGroup} from "./components/reportsdesignerconditiongroup";
 import /*embed*/ {ReportsDesignerConditionGroupExpansion} from "./components/reportsdesignerconditiongroupexpansion";
@@ -77,6 +78,7 @@ import /*embed*/ {ReportsDesignerCondition} from "./components/reportsdesignerco
         ReportsDesignerIntegrateItemSchedule,
         ReportsDesignerIntegrateItemDrilldown,
         ReportsDesignerIntegrateItemFilters,
+        ReportsDesignerIntegrateItemSnapshots,
         ReportsDesignerFilter,
         ReportsDesignerConditionGroup,
         ReportsDesignerConditionGroupExpansion,
