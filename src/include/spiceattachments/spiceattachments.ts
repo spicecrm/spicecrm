@@ -1,0 +1,42 @@
+/**
+ * @module ModuleSpiceNotes
+ */
+import {CommonModule} from "@angular/common";
+import {NgModule} from "@angular/core";
+import {FormsModule} from "@angular/forms";
+
+import {DirectivesModule} from "../../directives/directives";
+
+import {ObjectFields} from "../../objectfields/objectfields";
+import {GlobalComponents} from "../../globalcomponents/globalcomponents";
+import {ObjectComponents} from "../../objectcomponents/objectcomponents";
+import {SystemComponents} from "../../systemcomponents/systemcomponents";
+import /*embed*/ {SpiceAttachmentsPanel} from "./components/spiceattachmentspanel";
+import /*embed*/ {SpiceAttachmentsList} from "./components/spiceattachmentslist";
+import /*embed*/ {SpiceAttachmentsPopupList} from "./components/spiceattachmentspopuplist";
+import /*embed*/ {SpiceAttachmentFile} from "./components/spiceattachmentfile";
+import /*embed*/ {SpiceAttachmentsCount} from "./components/spiceattachmentscount";
+import /*embed*/ {fieldSpiceAttachmentsCount} from "./fields/fieldspiceattachmentscount";
+
+@NgModule({
+    imports: [
+        CommonModule,
+        FormsModule,
+        ObjectFields,
+        GlobalComponents,
+        ObjectComponents,
+        SystemComponents,
+        DirectivesModule,
+    ],
+    declarations: [
+        SpiceAttachmentsPanel,
+        SpiceAttachmentFile,
+        SpiceAttachmentsList,
+        SpiceAttachmentsPopupList,
+        SpiceAttachmentsCount,
+        fieldSpiceAttachmentsCount
+    ]
+})
+export class ModuleSpiceAttachments {
+
+}
