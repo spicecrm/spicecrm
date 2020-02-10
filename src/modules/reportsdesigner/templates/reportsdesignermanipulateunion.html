@@ -40,8 +40,8 @@
             <tbody>
                 <tr reports-designer-manipulate-union-table-row *ngFor="let field of currentUnionListFields; trackBy: trackByFn"
                     [listItem]="field" (onUnlink)="unlinkField(field.fieldid)" (cdkDropListEntered)="onDropEntered($event)"
-                    cdkDropList #dropList="cdkDropList" [id]="field.fieldid" [cdkDropListData]="field" [cdkDropListConnectedTo]="[dragList]"
-                    (cdkDropListDropped)="onDrop($event)" cdkDropListSortingDisabled class="slds-border--bottom slds-drag--preview spice-reports-designer-union-list" style="height: 41px">
+                    cdkDropList [id]="field.fieldid" [cdkDropListData]="field" (cdkDropListDropped)="onDrop($event)"
+                    cdkDropListSortingDisabled class="slds-border--bottom slds-drag--preview spice-reports-designer-union-list" style="height: 41px">
                 </tr>
             </tbody>
         </table>

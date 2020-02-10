@@ -27,7 +27,7 @@
                 </div>
                 <reports-designer-condition-group-expansion *ngIf="expanded == condition.id && reportsDesignerService.expertMode" [whereCondition]="condition"></reports-designer-condition-group-expansion>
             </li>
-            <li cdkDropList [id]="group.id" [cdkDropListConnectedTo]="[reportsDesignerService.treeCDKDragList]" (cdkDropListDropped)="onDrop($event)" class="slds-align--absolute-center slds-text-color--inverse-weak" style="min-height: 30px; border: 1px dashed #ddd">
+            <li cdkDropList [id]="group.id" (cdkDropListDropped)="onDrop($event)" class="slds-align--absolute-center slds-text-color--inverse-weak" style="min-height: 30px; border: 1px dashed #ddd">
                 {{language.getLabel('MSG_DROP_FIELD_HERE')}}
             </li>
             <ng-container *ngFor="let childGroup of group.children">

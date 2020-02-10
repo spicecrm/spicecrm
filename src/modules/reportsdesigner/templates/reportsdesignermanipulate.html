@@ -4,7 +4,7 @@
             {{language.getLabel('LBL_ADD_FIXED')}}
         </button>
     </div>
-    <div cdkDropList #dropList="cdkDropList" [cdkDropListData]="listItems" [cdkDropListConnectedTo]="[dragList]" (cdkDropListDropped)="onDrop($event)" class="slds-grow slds-scrollable--y" style="height: 100%">
+    <div cdkDropList [cdkDropListData]="listItems" (cdkDropListDropped)="onDrop($event)" class="slds-grow slds-scrollable--y" style="height: 100%">
         <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover reports-designer-manipulate-table">
             <thead>
             <tr class="slds-text-title--caps slds-theme--shade">

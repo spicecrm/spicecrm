@@ -57,18 +57,15 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
 
     /**
     * @loadWhereGroups
-     * @setDropLists
      */
     public ngOnChanges() {
         this.loadWhereGroups();
-        this.setDropLists();
     }
 
     /**
-    * @reset dropLists
-     */
+    * unsubscribe from subscription
+    */
     public ngOnDestroy() {
-        this.reportsDesignerService.dropLists = [];
         this.subscription.unsubscribe();
     }
 
@@ -117,7 +114,6 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
      * @set whereGroups
      * @cleanGroup
      * @buildTree
-     * @setDropLists
      */
     private handleTreeChange(obj) {
         switch (obj.action) {
@@ -130,19 +126,11 @@ export class ReportsDesignerFilter implements OnChanges, OnDestroy {
                 this.whereGroups = [...this.whereGroups, this.generateGroup(obj.id)];
                 this.buildTree();
         }
-        this.setDropLists();
     }
 
     private buildTree() {
         this.rootGroup.children = [];
         this.addGroupChildren(this.rootGroup);
-    }
-
-    /**
-    * @set dropLists
-     */
-    private setDropLists() {
-        this.reportsDesignerService.dropLists = this.whereGroups.map(group => group.id).reverse();
     }
 
     /**
