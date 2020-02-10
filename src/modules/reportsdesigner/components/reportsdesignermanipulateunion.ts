@@ -14,9 +14,8 @@ import {model} from "../../../services/model.service";
     templateUrl: './src/modules/reportsdesigner/templates/reportsdesignermanipulateunion.html',
     styles: ['.cdk-drop-list-dragging {background-color: #ddd !important}']
 })
-export class ReportsDesignerManipulateUnion implements OnChanges, OnDestroy {
+export class ReportsDesignerManipulateUnion {
 
-    @ViewChild('dropList', {static: false}) private dropList;
     /**
     * @input module: {module: string, unionid: string}
     */
@@ -38,21 +37,6 @@ export class ReportsDesignerManipulateUnion implements OnChanges, OnDestroy {
     */
     get dragList() {
         return this.reportsDesignerService.treeCDKDragList;
-    }
-
-    /**
-    * @set dropLists
-    * @set listItems
-    */
-    public ngOnChanges() {
-        this.reportsDesignerService.dropLists = [...this.reportsDesignerService.dropLists, ...this.currentUnionListFields.map(item => item.fieldid)];
-    }
-
-    /**
-    * @filter dropLists from this union row dropLists
-    */
-    public ngOnDestroy() {
-        this.reportsDesignerService.dropLists = this.reportsDesignerService.dropLists.filter(list => typeof list != 'string');
     }
 
     /**

@@ -13,9 +13,7 @@ import {model} from "../../../services/model.service";
     selector: 'reports-designer-manipulate',
     templateUrl: './src/modules/reportsdesigner/templates/reportsdesignermanipulate.html'
 })
-export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
-
-    @ViewChild('dropList', {static: false}) private dropList;
+export class ReportsDesignerManipulate {
 
     constructor(private language: language,
                 private modelUtilities: modelutilities,
@@ -45,20 +43,6 @@ export class ReportsDesignerManipulate implements AfterViewInit, OnDestroy {
     */
     get dragList() {
         return this.reportsDesignerService.treeCDKDragList;
-    }
-
-    /**
-    * @set dropLists
-    */
-    public ngAfterViewInit() {
-        this.reportsDesignerService.dropLists = [this.dropList];
-    }
-
-    /**
-    * @rest dropLists
-    */
-    public ngOnDestroy() {
-        this.reportsDesignerService.dropLists = [];
     }
 
     /**

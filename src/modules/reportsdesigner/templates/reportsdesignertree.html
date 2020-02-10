@@ -49,7 +49,7 @@
            </tr>
            </thead>
            <tbody *ngFor="let module of allModules; trackBy: trackByFn" [class.slds-hide]="isLoadingModuleFields || activeModule.unionid != module.unionid"
-                  cdkDropList [id]="module.unionid" (cdkDropListExited)="dropExited($event)" (cdkDropListEntered)="dropEntered($event)" cdkDropListSortingDisabled [cdkDropListData]="reportModuleFields[module.module]" [cdkDropListConnectedTo]="dropLists">
+                  cdkDropList [id]="module.unionid" (cdkDropListExited)="dropExited($event)" (cdkDropListEntered)="dropEntered($event)" cdkDropListSortingDisabled [cdkDropListData]="reportModuleFields[module.module]">
            <tr cdkDrag [cdkDragData]="reportField" *ngFor="let reportField of getFilteredReportFields(reportModuleFields[module.module]); trackBy: trackByFn" class="slds-hint-parent slds-drag--preview">
                <td class="slds-p-around--none slds-cell-shrink">
                    <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>

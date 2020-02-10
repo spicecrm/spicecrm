@@ -69,13 +69,6 @@ export class ReportsDesignerTree {
     }
 
     /**
-    * @return dropLists: string[] = cdkDragList element id
-     */
-    get dropLists() {
-        return this.reportsDesignerService.dropLists;
-    }
-
-    /**
     * @param data
      * @set currentPath
      * @getModuleFields
@@ -178,7 +171,6 @@ export class ReportsDesignerTree {
      * @param forModule: string
      * @param rootModule: object
      * @set isLoadingModuleFields
-     * @set treeCDKDragList
      * @set reportModuleFields[rootModule]
      */
     private getModuleFields(forModule, rootModule) {
@@ -227,7 +219,6 @@ export class ReportsDesignerTree {
         if (!this.reportsDesignerService.getCurrentPath(selectedModule.module)) {
             this.reportsDesignerService.setCurrentPath(selectedModule.module, selectedModule.module);
         }
-        this.reportsDesignerService.treeCDKDragList = selectedModule.unionid == 'root' ? this.reportsDesignerService.rootModuleDragListId : selectedModule.unionid;
         this.setCurrentUnionListFields(selectedModule.unionid);
     }
 
