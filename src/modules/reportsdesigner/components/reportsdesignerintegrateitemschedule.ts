@@ -6,6 +6,7 @@ import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
 import {ReportsDesignerService} from "../services/reportsdesigner.service";
 import {modal} from "../../../services/modal.service";
+import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: 'reports-designer-integrate-item-schedule',
@@ -13,9 +14,12 @@ import {modal} from "../../../services/modal.service";
 })
 export class ReportsDesignerIntegrateItemSchedule {
 
+    protected dLists: any[] = [];
+
     constructor(private language: language,
                 private model: model,
                 private modal: modal,
+                private backend: backend,
                 private reportsDesignerService: ReportsDesignerService) {
     }
 
@@ -28,6 +32,7 @@ export class ReportsDesignerIntegrateItemSchedule {
      */
     public ngOnInit() {
         this.initializeProperties();
+        this.loadDLists();
     }
 
     /**
@@ -39,6 +44,15 @@ export class ReportsDesignerIntegrateItemSchedule {
             integrationParams.kscheduling = [];
             this.model.setField('integration_params', integrationParams);
         }
+    }
+
+    /**
+     * load dLists from backend
+     */
+    private loadDLists() {
+        this.backend.getRequest('KReporter/dlistmanager/dlists').subscribe(dLists => {
+            if (!!dLists) this.dLists = dLists;
+        });
     }
 
     /**
