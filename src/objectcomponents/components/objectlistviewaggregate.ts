@@ -42,7 +42,6 @@ export class ObjectListViewAggregate {
 
             nameItems.push(this.language.getFieldDisplayName(this.aggregate.fielddetails.module, this.aggregate.fielddetails.field));
         }
-        window.console.log(this.aggregate.fielddetails.module);
         return nameItems;
     }
 }
