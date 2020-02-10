@@ -31,7 +31,9 @@ export class MailboxesEWSTrafficManager {
             this.model.data.settings = {
                 ews_host: "",
                 ews_username: "",
-                ews_password: ""
+                ews_password: "",
+                ews_email: "",
+                ews_folder: ""
             };
         }
     }
@@ -49,7 +51,7 @@ export class MailboxesEWSTrafficManager {
     private getMailboxes(): Observable<any> {
         let responseSubject = new Subject<any>();
         let modelData = this.model.utils.spiceModel2backend('Mailboxes', this.model.data);
-        this.backend.postRequest("mailboxes/ews/getmailboxfolders",{}, {data: modelData})
+        this.backend.postRequest("mailboxes/ews/getmailboxfolders", {}, {data: modelData})
             .subscribe((response: any) => {
                 if (response.result === true) {
                     responseSubject.next(response);
@@ -72,18 +74,21 @@ export class MailboxesEWSTrafficManager {
             (response) => {
                 waitingmodal.emit(true);
                 if (response !== false) {
-                    /*
-                    this.modal.openModal("MailboxesIMAPSMTPSelectFoldersModal", true, this.injector).subscribe(
+                    this.modal.openModal("MailboxesEWSSelectFoldersModal", true, this.injector).subscribe(
                         (cmp) => {
                             cmp.instance.setMailboxes(response.mailboxes);
-                        },
-                        (error) => {
-                            this.toast.sendToast(error);
                         }
                     );
-                     */
+
                 }
+            },
+            error => {
+                waitingmodal.emit(true);
             }
         );
+    }
+
+    get foldername() {
+        return this.model.data.settings.ews_folder ? this.model.data.settings.ews_folder.name : '';
     }
 }

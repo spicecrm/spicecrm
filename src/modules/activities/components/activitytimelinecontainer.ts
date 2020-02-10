@@ -1,5 +1,5 @@
 /**
- * @module ObjectComponents
+ * @module ModuleActivities
  */
 import {OnInit, Component, Input} from '@angular/core';
 import {language} from '../../../services/language.service';

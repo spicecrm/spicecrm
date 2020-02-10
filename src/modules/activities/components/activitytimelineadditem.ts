@@ -1,5 +1,5 @@
 /**
- * @module ObjectComponents
+ * @module ModuleActivities
  */
 import {AfterViewInit, Component, OnDestroy, OnInit, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
