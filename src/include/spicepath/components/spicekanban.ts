@@ -60,7 +60,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * holds the info on the stages to be displayed
      */
     private stages: any[] = [];
-
+    private opfields: any[] = [];
     /**
      * hidden statges that are rendered in teh utility bar
      */
@@ -71,7 +71,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     public currencies: any[] = [];
 
-    public rate: number;
 
     constructor(private broadcast: broadcast, private model: model, private modellist: modellist, private configuration: configurationService, private metadata: metadata, private userpreferences: userpreferences, private language: language, private currency: currency) {
 
@@ -105,19 +104,37 @@ export class SpiceKanban implements OnInit, OnDestroy {
             bucketitems.push({
                 bucket: stage.stagedata.secondary_stage ? stage.stagedata.stage + ' ' + stage.stagedata.secondary_stage : stage.stage,
                 value: 0,
-                second_value: 0,
-                ratio: 0,
                 items: 0
             });
 
         }
 
+
+
+        let configs = this.componentconfig.sumfield.split(",");
+        for (let config of configs) {
+            // catch whitespace
+            config = config.trim();
+            if(config.includes(":")) {
+                this.opfields.push({
+                    name: config.substr(0, config.indexOf(':')),
+                    function: config.substr(config.indexOf(':') + 1),
+                });
+            } else {
+                this.opfields.push({
+                    name: config,
+                    function: "sum",
+                });
+            }
+
+        }
+
+
         if (_.isEmpty(this.modellist.buckets)) {
 
             this.modellist.buckets = {
                 bucketfield: this.confdata.statusfield,
-                buckettotal: this.componentconfig.sumfield, // [{field: 'amount', function: 'sum'}, {field: 'probabilty', function: 'avg'}]
-                bucketratio: this.componentconfig.ratio,
+                buckettotal: this.opfields, // [{field: 'amount', function: 'sum'}, {field: 'probabilty', function: 'avg'}]
                 bucketitems: bucketitems
             };
 
@@ -145,18 +162,12 @@ export class SpiceKanban implements OnInit, OnDestroy {
         this.modellist.buckets = {};
     }
 
+
     /**
      * reads draganddrop from the config and returns it
      */
     get draganddropenabled() {
         return this.componentconfig.draganddrop ? true : false;
-    }
-
-    /**
-     * return currencysymbol config
-     */
-    get togglesymbol() {
-        return this.componentconfig.currencysymbol ? true : false;
     }
 
     /**
@@ -199,8 +210,10 @@ export class SpiceKanban implements OnInit, OnDestroy {
      *
      * @param stagedata
      */
+
     private getStageCount(stagedata) {
         try {
+
             let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
             let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
             return item ? item.total : 0;
@@ -213,13 +226,19 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * get the sum for the stage bucket
      *
      * @param stagedata
+     * @param aggregatetype
      */
-    private getStageSum(stagedata) {
+    private getStageSum(stagedata, aggregatetype, aggregatefield) {
         try {
+            window.console.log(aggregatefield);
             let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
             let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
-            return item && item.value ? item.value : 0;
+            // for (let i of item.value) {
+            //     if(aggregatetype == i.aggtype) {
+            //
+            //     }
 
+            // return item && item.value ? item.value : 0;
         } catch (e) {
             return 0;
         }
@@ -239,26 +258,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
             return 0;
         }
     }
-
-    /**
-     * overall rate for two sums
-     *
-     */
-
-    private overallRate() {
-        let sumfield1: any[] = [];
-        let sumfield2: any[] = [];
-        for (let bucketitem of this.modellist.buckets.bucketitems) {
-            if(bucketitem.bucket != 3) {
-                sumfield1.push(bucketitem.value);
-                sumfield2.push(bucketitem.second_value);
-            }
-
-        }
-        this.rate = sumfield1.reduce((previous, current) => previous + current, 0) / sumfield2.reduce((previous, current) => previous + current, 0);
-        return this.rate.toFixed(1);
-    }
-
 
 
     /**
@@ -340,7 +339,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * helper to get the currency symbol
      */
     private getCurrencySymbol(): string {
-        if(this.togglesymbol) {
             let currencySymbol: string;
             let currencyid = -99;
 
@@ -351,8 +349,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
                 }
             });
             return currencySymbol;
-        }
-
     }
 
     /**
