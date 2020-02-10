@@ -116,7 +116,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
 
             this.modellist.buckets = {
                 bucketfield: this.confdata.statusfield,
-                buckettotal: this.componentconfig.sumfield,
+                buckettotal: this.componentconfig.sumfield, // [{field: 'amount', function: 'sum'}, {field: 'probabilty', function: 'avg'}]
                 bucketratio: this.componentconfig.ratio,
                 bucketitems: bucketitems
             };
