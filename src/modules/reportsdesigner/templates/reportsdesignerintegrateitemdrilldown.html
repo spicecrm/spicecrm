@@ -119,7 +119,7 @@
                                                     <div class="slds-select_container">
                                                         <select class="slds-select" [(ngModel)]="mappingDataItem.mappedid">
                                                             <option></option>
-                                                            <option *ngFor="let field of listFields" [value]="field.fieldid">{{language.getLabel(field.name)}}</option>
+                                                            <option *ngFor="let field of listFields; trackBy: trackByFn" [value]="field.fieldid">{{language.getLabel(field.name)}}</option>
                                                         </select>
                                                     </div>
                                                 </div>

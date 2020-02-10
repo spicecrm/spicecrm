@@ -69,7 +69,8 @@ export class ReportsDesignerTree {
     }
 
     /**
-    * @param data
+    * @param data: object
+    * @param rootModule: string
      * @set currentPath
      * @getModuleFields
      */
