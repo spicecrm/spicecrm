@@ -61,4 +61,15 @@ export class ReportsDesignerPresentItemStandard implements OnInit {
             this.model.setField('presentation_params', presentationParams);
         }
     }
+
+    /*
+    * A function that defines how to track changes for items in the iterable (ngForOf).
+    * https://angular.io/api/common/NgForOf#properties
+    * @param index
+    * @param item
+    * @return index
+    */
+    protected trackByFn(index, item) {
+        return item.fieldid;
+    }
 }

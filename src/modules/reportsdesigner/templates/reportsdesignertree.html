@@ -1,8 +1,8 @@
 <div class="slds-border--bottom" style="height: 50%">
     <div class="slds-tabs--default slds-grid slds-grid--vertical" style="height: 100%">
         <div class="slds-grid">
-            <ul class="slds-tabs--default__nav slds-scrollable--x slds-grow spice-horizontal-scrollbar-position-top" role="tablist">
-                <li *ngFor="let module of allModules" (click)="setActiveModule(module)" [class.slds-active]="module.unionid == activeModule.unionid"
+            <ul class="slds-tabs--default__nav slds-scrollable--x slds-grow" role="tablist">
+                <li *ngFor="let module of allModules; trackBy: trackByFn" (click)="setActiveModule(module)" [class.slds-active]="module.unionid == activeModule.unionid"
                     class="slds-tabs--default__item slds-grid slds-grid_vertical-align-center" role="presentation">
                     <a class="slds-tabs--default__link slds-grid" href="javascript:void(0);" role="tab" aria-selected="false">
                         <system-icon [module]="module.module" size="small" divClass="slds-m-right--x-small"></system-icon>

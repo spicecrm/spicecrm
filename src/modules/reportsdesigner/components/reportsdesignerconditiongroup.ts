@@ -139,4 +139,16 @@ export class ReportsDesignerConditionGroup {
             .filter(condition => condition.groupid == id);
         this.whereConditions = this.whereConditions.filter(condition => condition.id != id);
     }
+
+
+    /**
+     * A function that defines how to track changes for items in the iterable (ngForOf).
+     * https://angular.io/api/common/NgForOf#properties
+     * @param index
+     * @param item
+     * @return index
+     */
+    private trackByFn(index, item) {
+        return item.id;
+    }
 }
