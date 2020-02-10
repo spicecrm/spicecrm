@@ -17,10 +17,18 @@
                 <system-input-password  [(ngModel)]="model.data.settings.ews_password" [disabled]="!view.isEditMode()"></system-input-password>
             </div>
         </div>
-        <div class="slds-grid slds-p-vertical--small">
-            <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="displayFoldersModal()" [disabled]="!view.isEditMode()">{{language.getLabel('LBL_EWS_SELECT_FOLDERS')}}</button>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_MAILBOX_EMAIL')}}</label>
+                <input type="text" [(ngModel)]="model.data.settings.ews_email" class="slds-input" [disabled]="!view.isEditMode()"/>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_MAILBOX_FOLDER')}}</label>
+                <input type="text" [ngModel]="foldername" class="slds-input" disabled/>
+            </div>
         </div>
         <div class="slds-grid slds-p-vertical--xx-small">
+            <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="displayFoldersModal()" [disabled]="!view.isEditMode()">{{language.getLabel('LBL_EWS_SELECT_FOLDERS')}}</button>
             <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()" [disabled]="!view.isEditMode()">
                 {{language.getLabel('LBL_TEST_CONNECTION')}}
             </button>

@@ -1,0 +1,16 @@
+<div class="slds-box slds-m-around--xx-small" spiceDropFileArea (filesDrop)="fileDrop($event)">
+    <div>
+        <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
+            <spice-attachment-file *ngFor="let file of modelattachments.files" [file]="file" class="slds-media slds-size--1-of-1 spicecrm-card-size"></spice-attachment-file>
+        </div>
+        <div *ngIf="modelattachments.loading" class="slds-p-around--large slds-align--absolute-center">
+            <system-spinner></system-spinner>
+        </div>
+    </div>
+    <div *ngIf="editing" class="slds-grid slds-grid--align-end">
+        <div class="slds-no-flex slds-button-group" role="group">
+            <button *ngIf="!componentconfig.disableupload" class="slds-button slds-button--neutral" (click)="selectFile()">{{language.getLabel('LBL_UPLOAD')}}</button>
+        </div>
+        <input #fileupload style="display:none" type="file" multiple (change)="uploadFile()"/>
+    </div>
+</div>

@@ -1,5 +1,5 @@
 /**
- * @module ObjectComponents
+ * @module ModuleSpiceNotes
  */
 import {
     Component, OnInit, Input, NgZone, Output, EventEmitter
