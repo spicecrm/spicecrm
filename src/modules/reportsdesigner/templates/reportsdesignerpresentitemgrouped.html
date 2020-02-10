@@ -8,7 +8,7 @@
                 <div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="properties.groupById">
                         <option></option>
-                        <option *ngFor="let listField of listFields" [value]="listField.fieldid">
+                        <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
                             {{language.getLabel(listField.name)}}
                         </option>
                     </select>

@@ -14,7 +14,7 @@
             </div>
         </div>
         <ul class="slds-m-vertical--x-small slds-p-horizontal--x-small">
-            <li *ngFor="let condition of group.conditions" class="slds-expression__row_group slds-m-vertical--x-small" style="border: 1px dashed #ddd; padding: 1px">
+            <li *ngFor="let condition of group.conditions; trackBy: trackByFn" class="slds-expression__row_group slds-m-vertical--x-small" style="border: 1px dashed #ddd; padding: 1px">
                 <div class="slds-grid slds-p-around--xx-small">
                     <reports-designer-condition [whereCondition]="condition" class="slds-grid slds-grid--vertical-align-center slds-grow"></reports-designer-condition>
                     <div>
@@ -30,7 +30,7 @@
             <li cdkDropList [id]="group.id" (cdkDropListDropped)="onDrop($event)" class="slds-align--absolute-center slds-text-color--inverse-weak" style="min-height: 30px; border: 1px dashed #ddd">
                 {{language.getLabel('MSG_DROP_FIELD_HERE')}}
             </li>
-            <ng-container *ngFor="let childGroup of group.children">
+            <ng-container *ngFor="let childGroup of group.children; trackBy: trackByFn">
                 <reports-designer-condition-group [group]="childGroup" [canDelete]="true" (treeChange)="handleTreeChange($event)"></reports-designer-condition-group>
             </ng-container>
         </ul>

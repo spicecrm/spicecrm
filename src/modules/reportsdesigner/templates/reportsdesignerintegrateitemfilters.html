@@ -87,7 +87,7 @@
                                 </tr>
                                 </thead>
                                 <tbody *ngIf="filter.selectedfilters?.length > 0">
-                                    <tr *ngFor="let filterDef of filter.selectedfilters">
+                                    <tr *ngFor="let filterDef of filter.selectedfilters; trackBy: trackByFnFilterDef">
                                         <td>
                                             <div [title]="filterDef.fieldName" class="slds-truncate">
                                                 {{filterDef.fieldName}}
