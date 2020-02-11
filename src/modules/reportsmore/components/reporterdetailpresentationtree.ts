@@ -149,7 +149,7 @@ export class ReporterDetailPresentationTree implements AfterViewInit, OnInit {
 
         // if not laoded - load it
         if (index < 0 || !this.reportRecords[index].loaded) {
-            this.backend.postRequest('KReporter/Tree/' + this.model.id + '/node/' + btoa(node)).subscribe(reportData => {
+            this.backend.postRequest('KReporter/Tree/' + this.model.id + '/node/' + encodeURI(btoa(node))).subscribe(reportData => {
                 let newRecords = [];
 
                 // if we found the record mark as loaded and expanded
