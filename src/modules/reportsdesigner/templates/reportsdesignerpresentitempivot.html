@@ -1,3 +1,283 @@
-<div tobottomnoscroll class="slds-grid slds-grid--align-center slds-grid--vertical-align-center">
-    <system-illustration-no-data>{{language.getLabel('LBL_NO_DATA')}}</system-illustration-no-data>
+<div class="slds-grid slds-grid--vertical" tobottomnoscroll>
+    <div class="slds-border--bottom slds-p-around--small slds-grid slds-grid--align-end">
+        <system-checkbox [(ngModel)]="advancedOptions.showEmpty" class="slds-m-horizontal--xx-small">
+            {{language.getLabel('LBL_SHOW_EMPTY_COLUMNS')}}
+        </system-checkbox>
+        <system-checkbox [(ngModel)]="advancedOptions.showSum">
+            {{language.getLabel('LBL_SHOW_SUM')}}
+        </system-checkbox>
+        <system-checkbox [(ngModel)]="advancedOptions.sortValues" class="slds-m-horizontal--xx-small">
+            {{language.getLabel('LBL_SORT_COLUMNS')}}
+        </system-checkbox>
+        <system-checkbox [(ngModel)]="advancedOptions.showTotal" class="slds-m-horizontal--xx-small">
+            {{language.getLabel('LBL_SHOW_TOTALS')}}
+        </system-checkbox>
+        <system-checkbox [(ngModel)]="advancedOptions.adjustwidth" class="slds-m-horizontal--xx-small">
+            {{language.getLabel('LBL_ADJUST_COLUMN_WIDTH')}}
+        </system-checkbox>
+    </div>
+    <div class="slds-grid slds-grow reports-designer-present-item-pivot-drop-list-group" cdkDropListGroup>
+        <div class="slds-size--1-of-2 slds-scrollable--y slds-border--right" style="height: 100%">
+            <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover reports-designer-manipulate-table">
+                <thead>
+                <tr class="slds-text-title--caps slds-theme--shade">
+                    <th class="slds-cell-shrink"></th>
+                    <th scope="col" class="slds-resizable">
+                        <div class="slds-truncate" [title]="language.getLabel('LBL_PATH')">
+                            {{language.getLabel('LBL_PATH')}}
+                        </div>
+                    </th>
+                    <th scope="col" class="slds-resizable">
+                        <div class="slds-truncate" [title]="language.getLabel('LBL_NAME')">
+                            {{language.getLabel('LBL_NAME')}}
+                        </div>
+                    </th>
+                    <th scope="col" class="slds-resizable">
+                        <div class="slds-truncate" [title]="language.getLabel('LBL_FUNCTION')">
+                            {{language.getLabel('LBL_FUNCTION')}}
+                        </div>
+                    </th>
+                    <th scope="col" class="slds-resizable">
+                        <div class="slds-truncate" [title]="language.getLabel('LBL_SORT')">
+                            {{language.getLabel('LBL_SORT')}}
+                        </div>
+                    </th>
+                    <th scope="col" class="slds-resizable">
+                        <div class="slds-truncate" [title]="language.getLabel('LBL_OVERRIDE_TYPE')">
+                            {{language.getLabel('LBL_OVERRIDE_TYPE')}}
+                        </div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody *ngIf="listFields" cdkDropList [cdkDropListData]="listFields" (cdkDropListEntered)="dropEnteredDragList($event)" (cdkDropListExited)="dropExited($event)" class="slds-grow slds-scrollable--y">
+                <ng-container *ngFor="let listField of listFields; trackBy: trackByFn">
+                    <tr cdkDrag [cdkDragData]="listField" cdkDragBoundary=".reports-designer-present-item-pivot-drop-list-group" class="slds-border--bottom slds-drag--preview">
+                        <td class="slds-p-around--none">
+                            <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
+                        </td>
+                        <td [title]="listField.path">
+                            <div class="slds-truncate">
+                                {{listField.path}}
+                            </div>
+                        </td>
+                        <td [title]="listField.name">
+                            <div class="slds-truncate">
+                                {{language.getLabel(listField.name)}}
+                            </div>
+                        </td>
+                        <td [title]="listField.sqlfunction">
+                            <div class="slds-truncate">
+                                {{listField.sqlfunction}}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <select class="slds-select" [(ngModel)]="listField.sort">
+                                            <option value="asc">{{language.getLabel('LBL_ASCENDING')}}</option>
+                                            <option value="desc">{{language.getLabel('LBL_DESCENDING')}}</option>
+                                            <option value="sortable">{{language.getLabel('LBL_SORTABLE')}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <select class="slds-select" [(ngModel)]="listField.overridetype">
+                                            <option value="none">{{language.getLabel('LBL_NONE')}}</option>
+                                            <option value="currency">{{language.getLabel('LBL_CURRENCY')}}</option>
+                                            <option value="currencyint">{{language.getLabel('LBL_CURRENCY_INTEGER')}}</option>
+                                            <option value="percentage">{{language.getLabel('LBL_PERCENTAGE')}}</option>
+                                            <option value="number">{{language.getLabel('LBL_NUMBER')}}</option>
+                                            <option value="int">{{language.getLabel('LBL_INTEGER')}}</option>
+                                            <option value="float">{{language.getLabel('LBL_FLOAT')}}</option>
+                                            <option value="date">{{language.getLabel('LBL_DATE')}}</option>
+                                            <option value="datetime">{{language.getLabel('LBL_DATE_TIME')}}</option>
+                                            <option value="datetutc">{{language.getLabel('LBL_DATE_TO_UTC')}}</option>
+                                            <option value="bool">{{language.getLabel('LBL_BOOLEAN')}}</option>
+                                            <option value="text">{{language.getLabel('LBL_TEXT')}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-container>
+                </tbody>
+            </table>
+        </div>
+        <div class="slds-size--1-of-2 slds-grid slds-grid--vertical slds-p-horizontal--x-small" style="height: 100%">
+            <div style="max-height: calc(100% / 3);">
+                <system-collapsable-tab [title]="'LBL_ROWS'">
+                    <div class="slds-scrollable--y">
+                        <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover reports-designer-manipulate-table">
+                            <thead>
+                            <tr class="slds-text-title--caps slds-theme--shade">
+                                <th class="slds-cell-shrink"></th>
+                                <th scope="col">
+                                    <div class="slds-truncate" [title]="language.getLabel('LBL_NAME')">
+                                        {{language.getLabel('LBL_NAME')}}
+                                    </div>
+                                </th>
+                                <th class="slds-cell-shrink"></th>
+                            </tr>
+                            </thead>
+                            <tbody *ngIf="pivotRows" cdkDropList [cdkDropListData]="pivotRows" (cdkDropListDropped)="onDrop($event)"
+                                   class="slds-grow slds-scrollable--y reports-designer-present-item-pivot-drop-list-pivot-columns reports-designer-table-adjust-drag-placeholder">
+                                <ng-container *ngFor="let pivotRow of pivotRows; trackBy: trackByFn">
+                                    <tr cdkDrag [cdkDragData]="pivotRow" cdkDragBoundary=".reports-designer-present-item-pivot-drop-list-pivot-columns" class="slds-border--bottom slds-drag--preview">
+                                        <td class="slds-p-around--none">
+                                            <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
+                                        </td>
+                                        <td>
+                                            <div class="slds-form-element">
+                                                {{language.getLabel(pivotRow.name)}}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button class="slds-button slds-button--icon" (click)="deleteItem('rowData', pivotRow.id)">
+                                                <system-button-icon icon="delete"></system-button-icon>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                                <tr *ngIf="pivotRows.length == 0" style="height: 80px"><td colspan="3">&nbsp;</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </system-collapsable-tab>
+            </div>
+            <div style="max-height: calc(100% / 3);">
+                <system-collapsable-tab [title]="'LBL_COLUMNS'">
+                    <div class="slds-scrollable--y">
+                        <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover reports-designer-manipulate-table">
+                            <thead>
+                            <tr class="slds-text-title--caps slds-theme--shade">
+                                <th class="slds-cell-shrink"></th>
+                                <th scope="col">
+                                    <div class="slds-truncate" [title]="language.getLabel('LBL_NAME')">
+                                        {{language.getLabel('LBL_NAME')}}
+                                    </div>
+                                </th>
+                                <th class="slds-cell-shrink"></th>
+                            </tr>
+                            </thead>
+                            <tbody *ngIf="pivotColumns" cdkDropList [cdkDropListData]="pivotColumns" (cdkDropListDropped)="onDrop($event)"
+                                   class="slds-grow slds-scrollable--y reports-designer-present-item-pivot-drop-list-pivot-columns reports-designer-table-adjust-drag-placeholder">
+                                <ng-container *ngFor="let pivotColumn of pivotColumns; trackBy: trackByFn">
+                                    <tr cdkDrag [cdkDragData]="pivotColumn" cdkDragBoundary=".reports-designer-present-item-pivot-drop-list-pivot-columns" class="slds-border--bottom slds-drag--preview">
+                                        <td class="slds-p-around--none">
+                                            <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
+                                        </td>
+                                        <td>
+                                            <div class="slds-form-element">
+                                                {{language.getLabel(pivotColumn.name)}}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button class="slds-button slds-button--icon" (click)="deleteItem('columnData', pivotColumn.id)">
+                                                <system-button-icon icon="delete"></system-button-icon>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                                <tr *ngIf="pivotColumns.length == 0" style="height: 80px"><td colspan="3">&nbsp;</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </system-collapsable-tab>
+            </div>
+            <div style="max-height: calc(100% / 3);">
+                <system-collapsable-tab [title]="'LBL_VALUES'">
+                    <div class="slds-scrollable--y">
+                        <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover reports-designer-manipulate-table">
+                            <thead>
+                            <tr class="slds-text-title--caps slds-theme--shade">
+                                <th class="slds-cell-shrink"></th>
+                                <th scope="col">
+                                    <div class="slds-truncate" [title]="language.getLabel('LBL_NAME')">
+                                        {{language.getLabel('LBL_NAME')}}
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" [title]="language.getLabel('LBL_FUNCTION')">
+                                        {{language.getLabel('LBL_FUNCTION')}}
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" [title]="language.getLabel('LBL_RENDER_AS')">
+                                        {{language.getLabel('LBL_RENDER_AS')}}
+                                    </div>
+                                </th>
+                                <th class="slds-cell-shrink"></th>
+                            </tr>
+                            </thead>
+                            <tbody *ngIf="pivotValues" cdkDropList [cdkDropListData]="pivotValues" (cdkDropListDropped)="onDrop($event)"
+                                   class="slds-grow slds-scrollable--y reports-designer-present-item-pivot-drop-list-pivot-values reports-designer-table-adjust-drag-placeholder">
+                                <ng-container *ngFor="let pivotValue of pivotValues; trackBy: trackByFn">
+                                    <tr cdkDrag [cdkDragData]="pivotValue" cdkDragBoundary=".reports-designer-present-item-pivot-drop-list-pivot-values" class="slds-border--bottom slds-drag--preview">
+                                        <td class="slds-p-around--none">
+                                            <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
+                                        </td>
+                                        <td>
+                                            <div class="slds-form-element">
+                                                {{language.getLabel(pivotValue.name)}}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-form-element">
+                                                <div class="slds-form-element__control">
+                                                    <div class="slds-select_container">
+                                                        <select class="slds-select" [(ngModel)]="pivotValue.pivotfunction">
+                                                            <option></option>
+                                                            <option value="SUM">{{language.getLabel('LBL_SUM')}}</option>
+                                                            <option value="COUNT">{{language.getLabel('LBL_COUNT')}}</option>
+                                                            <option value="MAX">{{language.getLabel('LBL_MAXIMUM')}}</option>
+                                                            <option value="MIN">{{language.getLabel('LBL_MINIMUM')}}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-form-element">
+                                                <div class="slds-form-element__control">
+                                                    <div class="slds-select_container">
+                                                        <select class="slds-select" [(ngModel)]="pivotValue.pivotrenderer">
+                                                            <option value="none">{{language.getLabel('LBL_NONE')}}</option>
+                                                            <option value="currency">{{language.getLabel('LBL_CURRENCY')}}</option>
+                                                            <option value="currencyint">{{language.getLabel('LBL_CURRENCY_INTEGER')}}</option>
+                                                            <option value="percentage">{{language.getLabel('LBL_PERCENTAGE')}}</option>
+                                                            <option value="number">{{language.getLabel('LBL_NUMBER')}}</option>
+                                                            <option value="int">{{language.getLabel('LBL_INTEGER')}}</option>
+                                                            <option value="float">{{language.getLabel('LBL_FLOAT')}}</option>
+                                                            <option value="date">{{language.getLabel('LBL_DATE')}}</option>
+                                                            <option value="datetime">{{language.getLabel('LBL_DATE_TIME')}}</option>
+                                                            <option value="datetutc">{{language.getLabel('LBL_DATE_TO_UTC')}}</option>
+                                                            <option value="bool">{{language.getLabel('LBL_BOOLEAN')}}</option>
+                                                            <option value="text">{{language.getLabel('LBL_TEXT')}}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button class="slds-button slds-button--icon" (click)="deleteItem('valueData', pivotValue.id)">
+                                                <system-button-icon icon="delete"></system-button-icon>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                                <tr *ngIf="pivotValues.length == 0" style="height: 80px"><td colspan="5">&nbsp;</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </system-collapsable-tab>
+            </div>
+        </div>
+    </div>
 </div>
