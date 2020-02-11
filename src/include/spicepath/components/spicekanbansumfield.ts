@@ -22,12 +22,13 @@ export class SpiceKanbanSumField {
      * the number to be displayed
      */
     @Input() private value: any;
+    @Input() private title: string;
 
     /**
      * holds an array of currencies
      */
     public currencies: any[] = [];
-
+    private loadLabel: boolean = false;
     constructor(private currency: currency) {
         this.currencies = this.currency.getCurrencies();
     }
