@@ -71,10 +71,10 @@ export class ReporterDetailPresentationTree implements AfterViewInit, OnInit {
         switch (field.type) {
             case 'currency':
             case 'currencyint':
-                classes.push('slds-grid--align-end')
+                classes.push('slds-grid--align-end');
                 break;
             case 'enum':
-                classes.push('slds-grid--align-center')
+                classes.push('slds-grid--align-center');
                 break;
         }
 
