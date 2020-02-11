@@ -18,11 +18,6 @@
                         {{language.getLabel('LBL_GLOBAL')}}
                     </div>
                 </th>
-                <th scope="col">
-                    <div class="slds-truncate" [title]="language.getLabel('LBL_STATUS')">
-                        {{language.getLabel('LBL_STATUS')}}
-                    </div>
-                </th>
                 <th scope="col" class="slds-cell-shrink"></th>
                 <th scope="col" class="slds-cell-shrink"></th>
             </tr>
@@ -44,9 +39,6 @@
                             <div class="slds-truncate">
                                 <system-checkbox [ngModel]="filter.is_global" [disabled]="true"></system-checkbox>
                             </div>
-                        </td>
-                        <td [title]="language.getLabel('LBL_ACTIVE')">
-                            <system-utility-icon icon="record" size="x-small" colorclass="slds-icon-text-success"></system-utility-icon>
                         </td>
                         <td>
                             <button class="slds-button slds-button--icon" (click)="deleteFilter(filter.savedfilter_id)">
