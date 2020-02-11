@@ -191,11 +191,11 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             }, {
                 operator: 'lastndays',
                 name: 'LBL_OP_LASTNDAYS',
-                showvalue: true
+                value1: 'integer'
             }, {
                 operator: 'lastnmonths',
                 name: 'LBL_OP_LASTNMONTHS',
-                showvalue: true
+                value1: 'integer'
             }
         ],
         bool: [
