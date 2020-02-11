@@ -188,6 +188,14 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             }, {
                 operator: 'notempty',
                 name: 'LBL_OP_NOTEMPTY'
+            }, {
+                operator: 'lastndays',
+                name: 'LBL_OP_LASTNDAYS',
+                showvalue: true
+            }, {
+                operator: 'lastnmonths',
+                name: 'LBL_OP_LASTNMONTHS',
+                showvalue: true
             }
         ],
         bool: [
