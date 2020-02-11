@@ -60,6 +60,9 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * holds the info on the stages to be displayed
      */
     private stages: any[] = [];
+    /**
+     * collects all of the fields and their operation type
+     */
     private opfields: any[] = [];
     /**
      * hidden statges that are rendered in teh utility bar
@@ -71,6 +74,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     public currencies: any[] = [];
 
+    private loadLabel: boolean = false;
 
     constructor(private broadcast: broadcast, private model: model, private modellist: modellist, private configuration: configurationService, private metadata: metadata, private userpreferences: userpreferences, private language: language, private currency: currency) {
 
@@ -103,19 +107,18 @@ export class SpiceKanban implements OnInit, OnDestroy {
             // push the bucket item
             bucketitems.push({
                 bucket: stage.stagedata.secondary_stage ? stage.stagedata.stage + ' ' + stage.stagedata.secondary_stage : stage.stage,
-                value: 0,
+                values: [],
                 items: 0
             });
 
         }
 
 
-
         let configs = this.componentconfig.sumfield.split(",");
         for (let config of configs) {
             // catch whitespace
             config = config.trim();
-            if(config.includes(":")) {
+            if (config.includes(":")) {
                 this.opfields.push({
                     name: config.substr(0, config.indexOf(':')),
                     function: config.substr(config.indexOf(':') + 1),
@@ -160,6 +163,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
 
         // reset buckets
         this.modellist.buckets = {};
+
     }
 
 
@@ -213,7 +217,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
 
     private getStageCount(stagedata) {
         try {
-
             let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
             let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
             return item ? item.total : 0;
@@ -226,39 +229,22 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * get the sum for the stage bucket
      *
      * @param stagedata
-     * @param aggregatetype
+     * @param aggregatefield
      */
-    private getStageSum(stagedata, aggregatetype, aggregatefield) {
+    private getStageSum(stagedata, aggregatefield) {
         try {
-            window.console.log(aggregatefield);
+            let aggname = "_bucket_agg_" + aggregatefield.name;
             let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
             let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
-            // for (let i of item.value) {
-            //     if(aggregatetype == i.aggtype) {
-            //
-            //     }
-
-            // return item && item.value ? item.value : 0;
+            for (let i of item.values) {
+                if (aggname == i.aggtype) {
+                    return i && i.value ? i.value : 0;
+                }
+            }
         } catch (e) {
             return 0;
         }
     }
-
-    /**
-     * get stage ratio from the bucket property
-     *
-     * @param stagedata
-     */
-    private getRatio(stagedata) {
-        try {
-            let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
-            let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
-            return item && item.ratio ? item.ratio : 0;
-        } catch (e) {
-            return 0;
-        }
-    }
-
 
     /**
      * get all items for a stage
@@ -339,16 +325,16 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * helper to get the currency symbol
      */
     private getCurrencySymbol(): string {
-            let currencySymbol: string;
-            let currencyid = -99;
+        let currencySymbol: string;
+        let currencyid = -99;
 
-            this.currencies.some(currency => {
-                if (currency.id == currencyid) {
-                    currencySymbol = currency.symbol;
-                    return true;
-                }
-            });
-            return currencySymbol;
+        this.currencies.some(currency => {
+            if (currency.id == currencyid) {
+                currencySymbol = currency.symbol;
+                return true;
+            }
+        });
+        return currencySymbol;
     }
 
     /**
@@ -422,4 +408,16 @@ export class SpiceKanban implements OnInit, OnDestroy {
             return {};
         }
     }
+
+    /**
+     * returns the name for the stage to be displayed
+     *
+     * @param aggregatefield
+     */
+    private getTitle(aggregatefield) {
+        let prefix = "LBL_";
+        return this.language.getLabel(prefix + aggregatefield.name.toUpperCase());
+
+    }
+
 }
