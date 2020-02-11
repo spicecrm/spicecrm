@@ -317,4 +317,15 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit {
     private getFieldWidth(fieldid) {
         return Math.round(this.fieldsData[fieldid].width / this.totalWidth * 100) + '%';
     }
+
+    /**
+     * A function that defines how to track changes for items in the iterable (ngForOf).
+     * https://angular.io/api/common/NgForOf#properties
+     * @param index
+     * @param item
+     * @return index
+     */
+    protected trackByFn(index, item) {
+        return item.id;
+    }
 }

@@ -18,7 +18,7 @@
         <div #tablecontent class="slds-scrollable--y" [ngStyle]="getContainerStyle()">
             <table class="slds-table slds-table_col-bordered slds-table_bordered slds-table--fixed-layout">
                 <tbody>
-                    <tr *ngFor="let rowValue of rowValues">
+                    <tr *ngFor="let rowValue of rowValues; trackBy: trackByFn">
                         <td class=" slds-truncate" scope="row" width="10%">
                             {{rowValue}}
                         </td>
