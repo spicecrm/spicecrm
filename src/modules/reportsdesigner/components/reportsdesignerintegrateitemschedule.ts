@@ -15,6 +15,7 @@ import {backend} from "../../../services/backend.service";
 export class ReportsDesignerIntegrateItemSchedule {
 
     protected dLists: any[] = [];
+    private expandedId: string = '';
 
     constructor(private language: language,
                 private model: model,
@@ -108,5 +109,13 @@ export class ReportsDesignerIntegrateItemSchedule {
     */
     private trackByFn(index, item) {
         return item.id;
+    }
+
+    /**
+     * toggle expansion
+     * @param scheduleId: object
+     */
+    private toggleExpandSchedule(scheduleId) {
+        this.expandedId = this.expandedId == scheduleId ? '' : scheduleId;
     }
 }
