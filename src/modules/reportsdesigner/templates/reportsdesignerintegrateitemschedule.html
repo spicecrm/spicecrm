@@ -38,26 +38,7 @@
                         {{language.getLabel('LBL_ACTION')}}
                     </div>
                 </th>
-                <th scope="col">
-                    <div class="slds-truncate" [title]="language.getLabel('LBL_SEND_TO')">
-                        {{language.getLabel('LBL_SEND_TO')}}
-                    </div>
-                </th>
-                <th scope="col">
-                    <div class="slds-truncate" [title]="language.getLabel('LBL_SEND_TO_LIST')">
-                        {{language.getLabel('LBL_SEND_TO_LIST')}}
-                    </div>
-                </th>
-                <th scope="col">
-                    <div class="slds-truncate" [title]="language.getLabel('LBL_SAVE_TO')">
-                        {{language.getLabel('LBL_SAVE_TO')}}
-                    </div>
-                </th>
-                <th scope="col">
-                    <div class="slds-truncate" [title]="language.getLabel('LBL_SAVE_TO_ACTION')">
-                        {{language.getLabel('LBL_SAVE_TO_ACTION')}}
-                    </div>
-                </th>
+                <th scope="col" class="slds-cell-shrink"></th>
                 <th scope="col" class="slds-cell-shrink"></th>
             </tr>
             </thead>
@@ -116,50 +97,65 @@
                         </div>
                     </td>
                     <td>
-                        <div class="slds-form-element">
-                            <div class="slds-form-element__control">
-                                <input type="text" [(ngModel)]="schedule.schedulersendto" class="slds-input">
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="slds-form-element">
-                            <div class="slds-form-element__control">
-                                <div class="slds-select_container">
-                                    <select class="slds-select" [(ngModel)]="schedule.schedulersendlist">
-                                        <option></option>
-                                        <option *ngFor="let dList of dLists" [value]="dList.id">
-                                            {{dList.name}}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="slds-form-element">
-                            <div class="slds-form-element__control">
-                                <input type="text" [(ngModel)]="schedule.schedulersaveto" class="slds-input">
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="slds-form-element">
-                            <div class="slds-form-element__control">
-                                <div class="slds-select_container">
-                                    <select class="slds-select" [(ngModel)]="schedule.schedulersavetoaction">
-                                        <option value="DONOTHING"></option>
-                                        <option value="ADD">{{language.getLabel('LBL_ADD')}}</option>
-                                        <option value="REPLACE">{{language.getLabel('LBL_UPDATE')}}</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
                         <button class="slds-button slds-button--icon" (click)="deleteSchedule(schedule.id)">
                             <system-button-icon icon="delete"></system-button-icon>
                         </button>
+                    </td>
+                    <td>
+                        <button (click)="toggleExpandSchedule(schedule.id)" [style.transform]="expandedId == schedule.id ? 'rotate(180deg)' : 'none'" [title]="language.getLabel('LBL_MAPPING')" class="slds-button slds-button--icon">
+                            <system-button-icon icon="down"></system-button-icon>
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngIf="expandedId == schedule.id" class="slds-theme--shade" style="box-shadow: inset -1px 1px 6px 0 #aaa">
+                    <td colspan="8" style="padding: .5rem;">
+                        <div class="slds-grid">
+                            <div class="slds-form-element slds-size--1-of-4 slds-p-horizontal--xxx-small">
+                                <label class="slds-form-element__label">
+                                    {{language.getLabel('LBL_SEND_TO')}}
+                                </label>
+                                <div class="slds-form-element__control">
+                                    <input type="text" [(ngModel)]="schedule.schedulersendto" class="slds-input">
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-size--1-of-4 slds-p-horizontal--xxx-small">
+                                <label class="slds-form-element__label">
+                                    {{language.getLabel('LBL_SEND_TO_LIST')}}
+                                </label>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <select class="slds-select" [(ngModel)]="schedule.schedulersendlist">
+                                            <option></option>
+                                            <option *ngFor="let dList of dLists" [value]="dList.id">
+                                                {{dList.name}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-size--1-of-4 slds-p-horizontal--xxx-small">
+                                <label class="slds-form-element__label">
+                                    {{language.getLabel('LBL_SAVE_TO')}}
+                                </label>
+                                <div class="slds-form-element__control">
+                                    <input type="text" [(ngModel)]="schedule.schedulersaveto" class="slds-input">
+                                </div>
+                            </div>
+                            <div class="slds-form-element slds-size--1-of-4 slds-p-horizontal--xxx-small">
+                                <div class="slds-form-element__control">
+                                    <label class="slds-form-element__label">
+                                        {{language.getLabel('LBL_SAVE_TO_ACTION')}}
+                                    </label>
+                                    <div class="slds-select_container">
+                                        <select class="slds-select" [(ngModel)]="schedule.schedulersavetoaction">
+                                            <option value="DONOTHING"></option>
+                                            <option value="ADD">{{language.getLabel('LBL_ADD')}}</option>
+                                            <option value="REPLACE">{{language.getLabel('LBL_UPDATE')}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             </ng-container>
