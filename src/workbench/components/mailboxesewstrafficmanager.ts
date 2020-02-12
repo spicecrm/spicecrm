@@ -33,7 +33,9 @@ export class MailboxesEWSTrafficManager {
                 ews_username: "",
                 ews_password: "",
                 ews_email: "",
-                ews_folder: ""
+                ews_folder: "",
+                ews_subscriptionid: "",
+                ews_push: false
             };
         }
     }
