@@ -126,9 +126,9 @@
                                 <th class="slds-cell-shrink"></th>
                             </tr>
                             </thead>
-                            <tbody *ngIf="pivotRow" cdkDropList [cdkDropListData]="pivotRow" (cdkDropListDropped)="onDrop($event)"
+                            <tbody cdkDropList [cdkDropListData]="pivotRow" (cdkDropListDropped)="onDrop($event)"
                                    class="slds-grow slds-scrollable--y reports-designer-present-item-pivot-drop-list-pivot-columns reports-designer-table-adjust-drag-placeholder">
-                                <tr cdkDrag [cdkDragData]="pivotRow" cdkDragBoundary=".reports-designer-present-item-pivot-drop-list-pivot-columns" class="slds-border--bottom slds-drag--preview">
+                                <tr *ngIf="!!pivotRow" cdkDrag [cdkDragData]="pivotRow" cdkDragBoundary=".reports-designer-present-item-pivot-drop-list-pivot-columns" class="slds-border--bottom slds-drag--preview">
                                     <td class="slds-p-around--none">
                                         <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
                                     </td>
@@ -143,7 +143,7 @@
                                         </button>
                                     </td>
                                 </tr>
-                                <tr *ngIf="pivotRow.length == 0" style="height: 80px"><td colspan="3">&nbsp;</td></tr>
+                                <tr *ngIf="!pivotRow" style="height: 80px"><td colspan="3">&nbsp;</td></tr>
                             </tbody>
                         </table>
                     </div>
