@@ -19,7 +19,7 @@
             <div class="slds-text-heading--medium slds-p-vertical--x-small" [ngClass]="{'slds-text-color--inverse-weak': modellist.isLoading}">
                 <ul class="slds-list_horizontal slds-has-dividers_right slds-align_absolute-center">
                     <li *ngFor="let op of opfields" class="slds-item">
-                        <spice-kanban-sumfield [title]="getTitle(op)" [value]="getStageSum(stage.stagedata, op)"></spice-kanban-sumfield>
+                        {{getCurrencySymbol()}}<spice-kanban-sumfield [title]="getTitle(op)" [value]="getStageSum(stage.stagedata, op)"></spice-kanban-sumfield>
                     </li>
                 </ul>
             </div>
