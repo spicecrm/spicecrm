@@ -1,4 +1,1 @@
-<system-number-spinner style="cursor: default;" (mouseenter)="loadLabel = true" (mouseleave)="loadLabel = false" [value]="value"></system-number-spinner>
-<div *ngIf="loadLabel" class="slds-popover slds-popover_tooltip slds-nubbin_bottom-right slds-rise-from-ground slds-is-absolute" role="tooltip" style="bottom: 25px; right: -17px; width: 150px; height: auto;">
-    <div class="slds-popover__body slds-scrollable_y slds-align_absolute-center">{{title}}</div>
-</div>
+<system-number-spinner style="cursor: default;" [title]= "title" [value]="displayValue"></system-number-spinner>

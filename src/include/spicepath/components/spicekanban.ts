@@ -233,7 +233,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     private getStageSum(stagedata, aggregatefield) {
         try {
-            let value = 0;
             let aggname = "_bucket_agg_" + aggregatefield.name;
             let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
             let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
@@ -327,6 +326,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * helper to get the currency symbol
      */
     private getCurrencySymbol(): string {
+ 
         let currencySymbol: string;
         let currencyid = -99;
 
@@ -347,7 +347,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     private handleDrop(event: CdkDragDrop<any>) {
         if (event.item.data[this.confdata.statusfield] != event.container.data.stage) {
-            window.console.log(event);
             // a little bit of an ugly hack to get the drop information to the item so the item can handle the moel upadet
             event.item.data._KanbanDrop = {
                 from: event.item.data[this.confdata.statusfield],
