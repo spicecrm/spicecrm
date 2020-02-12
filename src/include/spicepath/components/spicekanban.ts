@@ -107,13 +107,13 @@ export class SpiceKanban implements OnInit, OnDestroy {
             // push the bucket item
             bucketitems.push({
                 bucket: stage.stagedata.secondary_stage ? stage.stagedata.stage + ' ' + stage.stagedata.secondary_stage : stage.stage,
-                values: [],
+                values: {},
                 items: 0
             });
 
         }
 
-
+        // builds the operation fields array
         let configs = this.componentconfig.sumfield.split(",");
         for (let config of configs) {
             // catch whitespace
@@ -233,12 +233,14 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     private getStageSum(stagedata, aggregatefield) {
         try {
+            let value = 0;
             let aggname = "_bucket_agg_" + aggregatefield.name;
             let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
             let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
-            for (let i of item.values) {
-                if (aggname == i.aggtype) {
-                    return i && i.value ? i.value : 0;
+            for(let prop in item.values) {
+                let value = item.values[prop];
+                if(prop == aggname) {
+                    return item.values ? value : 0;
                 }
             }
         } catch (e) {
@@ -345,12 +347,12 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     private handleDrop(event: CdkDragDrop<any>) {
         if (event.item.data[this.confdata.statusfield] != event.container.data.stage) {
+            window.console.log(event);
             // a little bit of an ugly hack to get the drop information to the item so the item can handle the moel upadet
             event.item.data._KanbanDrop = {
                 from: event.item.data[this.confdata.statusfield],
                 to: event.container.data.stage
             };
-
             event.item.data[this.confdata.statusfield] = event.container.data.stage;
         }
     }
@@ -362,7 +364,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     private handleHiddenDrop(event: CdkDragDrop<any>) {
         if (event.item.data[this.confdata.statusfield] != event.container.data.stage) {
-
             // initialize the model
             this.model.module = this.modellist.module;
             this.model.initialize();
@@ -410,12 +411,12 @@ export class SpiceKanban implements OnInit, OnDestroy {
     }
 
     /**
-     * returns the name for the stage to be displayed
+     * returns the label of the spicekanbansumfield
      *
      * @param aggregatefield
      */
     private getTitle(aggregatefield) {
-        let prefix = "LBL_";
+        const prefix = "LBL_";
         return this.language.getLabel(prefix + aggregatefield.name.toUpperCase());
 
     }
