@@ -18,8 +18,8 @@
         <div *ngFor="let stage of stages" class="slds-col slds-p-horizontal--xx-small slds-m-top--x-small" [ngClass]="sizeClass">
             <div class="slds-text-heading--medium slds-p-vertical--x-small" [ngClass]="{'slds-text-color--inverse-weak': modellist.isLoading}">
                 <ul class="slds-list_horizontal slds-has-dividers_right slds-align_absolute-center">
-                    <li *ngFor="let op of opfields" class="slds-item">
-                        {{getCurrencySymbol()}}<spice-kanban-sumfield [title]="getTitle(op)" [value]="getStageSum(stage.stagedata, op)"></spice-kanban-sumfield>
+                    <li *ngFor="let opfield of opfields" class="slds-item">
+                        <spice-kanban-sumfield [symbol]="getCurrencySymbol(opfield)" [title]="getTitle(opfield)" [value]="getStageSum(stage.stagedata, opfield)"></spice-kanban-sumfield>
                     </li>
                 </ul>
             </div>
@@ -49,9 +49,11 @@
                         <div *ngFor="let stage of hiddenstages" class="slds-box--border slds-m-around--xx-small slds-align--absolute-center slds-theme--info" (cdkDropListDropped)="handleHiddenDrop($event)" cdkDropList [cdkDropListData]="stage">
                             <div class="slds-p-horizontal--medium slds-p-vertical--xx-small">
                                 {{getStageLabel(stage.stagedata)}} ({{getStageCount(stage.stagedata)}})
-                                <li *ngFor="let op of opfields" class="slds-item">
-                                    <spice-kanban-sumfield [title]="getTitle(op)" [value]="getStageSum(stage.stagedata, op)"></spice-kanban-sumfield>
+                                <ul class="slds-list_horizontal slds-has-dividers_right slds-align_absolute-center">
+                                <li *ngFor="let opfield of opfields" class="slds-item">
+                                    <spice-kanban-sumfield [title]="getTitle(opfield)" [value]="getStageSum(stage.stagedata, opfield)"></spice-kanban-sumfield>
                                 </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
