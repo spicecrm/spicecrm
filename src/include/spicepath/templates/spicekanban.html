@@ -20,11 +20,8 @@
                 <ul class="slds-list_horizontal slds-has-dividers_right slds-align_absolute-center">
                     <li *ngFor="let op of opfields" class="slds-item">
                         <spice-kanban-sumfield [title]="getTitle(op)" [value]="getStageSum(stage.stagedata, op)"></spice-kanban-sumfield>
-
                     </li>
-
                 </ul>
-
             </div>
         </div>
 
@@ -52,8 +49,9 @@
                         <div *ngFor="let stage of hiddenstages" class="slds-box--border slds-m-around--xx-small slds-align--absolute-center slds-theme--info" (cdkDropListDropped)="handleHiddenDrop($event)" cdkDropList [cdkDropListData]="stage">
                             <div class="slds-p-horizontal--medium slds-p-vertical--xx-small">
                                 {{getStageLabel(stage.stagedata)}} ({{getStageCount(stage.stagedata)}})
-                                        <spice-kanban-sumfield [value]="getStageSum(stage.stagedata)"></spice-kanban-sumfield>
-
+                                <li *ngFor="let op of opfields" class="slds-item">
+                                    <spice-kanban-sumfield [title]="getTitle(op)" [value]="getStageSum(stage.stagedata, op)"></spice-kanban-sumfield>
+                                </li>
                             </div>
                         </div>
                     </div>
