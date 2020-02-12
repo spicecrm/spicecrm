@@ -5,6 +5,7 @@ import {Component} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
+import {ReportsDesignerService} from "../services/reportsdesigner.service";
 
 @Component({
     selector: 'reports-designer-present',
@@ -14,7 +15,7 @@ export class ReportsDesignerPresent {
 
     protected plugins: any[] = [];
 
-    constructor(private language: language, private metadata: metadata, private model: model) {
+    constructor(private language: language, private metadata: metadata, private model: model, private reportsDesignerService: ReportsDesignerService) {
     }
 
     /**
@@ -35,31 +36,11 @@ export class ReportsDesignerPresent {
     }
 
     /**
-    * initialize the persentation params and call loadPlugins
+    * initialize the presentation params and call loadPlugins
     */
     public ngOnInit() {
         this.initializePresentationParams();
-        this.loadPlugins();
-    }
-
-    /**
-    * load plugins from component set
-    */
-    private loadPlugins() {
-        const conf = this.metadata.getComponentConfig('ReportsDesignerPresent', 'KReports');
-        if (conf.componentset && conf.componentset.length > 0) {
-            const items = this.metadata.getComponentSetObjects(conf.componentset);
-            if (!items || items.length == 0) return;
-            this.plugins = items
-                .filter(item => !!item.componentconfig)
-                .map(item => ({
-                    name: this.language.getLabel(item.componentconfig.name),
-                    id: item.componentconfig.plugin,
-                    component: item.componentconfig.component,
-                    sequence: item.sequence
-                }))
-                .sort((a, b) => !isNaN(parseInt(a.sequence, 10)) && !isNaN(parseInt(b.sequence, 10)) ? +a.sequence > +b.sequence ? 1 : -1 : 0);
-        }
+        this.plugins = this.reportsDesignerService.loadPlugins('ReportsDesignerPresent');
     }
 
     /**

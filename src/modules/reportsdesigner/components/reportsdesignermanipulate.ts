@@ -25,17 +25,15 @@ export class ReportsDesignerManipulate {
     /**
     * @set listfields
     */
-    set listItems(value) {
-        this.model.setField('listfields', value);
+    set listFields(value) {
+        this.reportsDesignerService.listFields = value;
     }
 
     /**
     * @return listfields: any[]
     */
-    get listItems() {
-        let items = this.model.getField('listfields');
-        return items && items.length ? items
-            .sort((a, b) => !isNaN(parseInt(a.sequence, 10)) && !isNaN(parseInt(b.sequence, 10)) ? +a.sequence > +b.sequence ? 1 : -1 : 0) : [];
+    get listFields() {
+        return this.reportsDesignerService.listFields;
     }
 
     /**
@@ -58,28 +56,27 @@ export class ReportsDesignerManipulate {
 
     /**
     * @removePlaceHolderElement
-    * @moveItemInArray? item in listItems
-    * @splice listItems add newItem
-    * @set listItems
+    * @moveItemInArray? item in listFields
+    * @splice listFields add newItem
+    * @set listFields
     */
     private onDrop(dragEvent: CdkDragDrop<any>) {
         this.reportsDesignerService.removePlaceHolderElement(dragEvent.previousContainer.element.nativeElement);
-        let listItems = this.listItems.slice();
 
         if (dragEvent.previousContainer === dragEvent.container) {
-            moveItemInArray(listItems, dragEvent.previousIndex, dragEvent.currentIndex);
+            moveItemInArray(dragEvent.container.data, dragEvent.previousIndex, dragEvent.currentIndex);
         } else {
             let field = dragEvent.item.data;
-            let newItem = this.generateNewItem(field, listItems.length + 1);
-            listItems.splice(dragEvent.currentIndex, 0, newItem);
+            let newItem = this.generateNewItem(field, dragEvent.container.data.length + 1);
+            dragEvent.container.data.splice(dragEvent.currentIndex, 0, newItem);
             this.addListItemToUnionFields(newItem);
         }
 
-        listItems = listItems.map((item, index) => {
+        dragEvent.container.data = dragEvent.container.data.map((item, index) => {
             item.sequence = index;
             return item;
         });
-        this.listItems = listItems;
+        this.listFields = dragEvent.container.data;
     }
 
     /**
@@ -167,9 +164,9 @@ export class ReportsDesignerManipulate {
     private deleteField(fieldId) {
         this.modal.confirmDeleteRecord().subscribe(response => {
             if (response) {
-                let listItems = this.listItems.slice();
-                listItems = listItems.filter(field => field.fieldid != fieldId);
-                this.listItems = listItems;
+                let listFields = this.listFields.slice();
+                listFields = listFields.filter(field => field.fieldid != fieldId);
+                this.listFields = listFields;
                 this.deleteListItemToUnionFields(fieldId);
             }
         });
@@ -177,16 +174,16 @@ export class ReportsDesignerManipulate {
 
     /**
     * @generate newFixedField
-     * @push newFixedField to listItems
-     * @set set listItems
+     * @push newFixedField to listFields
+     * @set set listFields
      * @addListItemToUnionFields
      * @set expandedItemId
      */
     public addFixed() {
-        let listItems = this.listItems.slice();
-        const newFixedField = this.generateNewItem(null, listItems.length + 1);
-        listItems.push(newFixedField);
-        this.listItems = listItems;
+        let listFields = this.listFields.slice();
+        const newFixedField = this.generateNewItem(null, listFields.length + 1);
+        listFields.push(newFixedField);
+        this.listFields = listFields;
         this.addListItemToUnionFields(newFixedField);
         this.reportsDesignerService.expandedItemId = newFixedField.fieldid;
     }

@@ -30,8 +30,15 @@ export class ReportsDesignerPresentItemPivot {
     /**
      * @return pivot: object
      */
-    get pivotRows() {
+    get pivotRow() {
         return this.model.getField('presentation_params').pluginData.rowData;
+    }
+
+    /**
+     * @return pivot: object
+     */
+    get pivotRowName() {
+        return !!this.pivotRow && this.pivotRow.length > 0 ? this.language.getLabel(this.listFields.find(field => field.fieldid == this.pivotRow).name) : '';
     }
 
     /**
@@ -52,14 +59,7 @@ export class ReportsDesignerPresentItemPivot {
      * @return listfields: object[]
      */
     get listFields() {
-        return this.model.getField('listfields')
-            .sort((a, b) => {
-                if (!isNaN(parseInt(a.sortpriority, 10)) && !isNaN(parseInt(b.sortpriority, 10))) {
-                    return +a.sortpriority > +b.sortpriority ? 1 : -1;
-                } else {
-                    return +a.sequence > +b.sequence ? 1 : -1;
-                }
-            });
+        return this.reportsDesignerService.listFields;
     }
 
     public ngOnInit() {
@@ -81,9 +81,7 @@ export class ReportsDesignerPresentItemPivot {
             presentationParams.pluginData.valueData = [];
         }
         if (!presentationParams.pluginData.rowData) {
-            presentationParams.pluginData.rowData = [];
-        } else if (typeof presentationParams.pluginData.rowData == 'string') {
-            presentationParams.pluginData.rowData = [];
+            presentationParams.pluginData.rowData = '';
         }
 
         this.model.setField('presentation_params', presentationParams);
@@ -99,11 +97,16 @@ export class ReportsDesignerPresentItemPivot {
         if (dragEvent.previousContainer === dragEvent.container) {
             moveItemInArray(dragEvent.container.data, dragEvent.previousIndex, dragEvent.currentIndex);
         } else {
-            dragEvent.container.data.push({
-                id: dragEvent.item.data.id,
-                fieldid: dragEvent.item.data.fieldid,
-                name: dragEvent.item.data.name,
-            });
+            if (typeof dragEvent.container.data == 'string') {
+                dragEvent.container.data = dragEvent.item.data.fieldid;
+            } else {
+                dragEvent.container.data.push({
+                    id: dragEvent.item.data.id,
+                    fieldid: dragEvent.item.data.fieldid,
+                    name: dragEvent.item.data.name,
+                });
+            }
+
         }
     }
 
@@ -149,7 +152,11 @@ export class ReportsDesignerPresentItemPivot {
      */
     private deleteItem(arrayName, id) {
         const presentationParams = this.model.getField('presentation_params');
-        presentationParams.pluginData[arrayName] = presentationParams.pluginData[arrayName].filter(item => item.id != id);
+        if (typeof presentationParams.pluginData[arrayName] == 'string') {
+            presentationParams.pluginData[arrayName] = '';
+        } else {
+            presentationParams.pluginData[arrayName] = presentationParams.pluginData[arrayName].filter(item => item.id != id);
+        }
         this.model.setField('presentationParams', presentationParams);
     }
 }

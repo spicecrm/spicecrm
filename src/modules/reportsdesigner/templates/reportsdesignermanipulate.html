@@ -4,7 +4,7 @@
             {{language.getLabel('LBL_ADD_FIXED')}}
         </button>
     </div>
-    <div cdkDropList [cdkDropListData]="listItems" (cdkDropListDropped)="onDrop($event)" class="slds-grow slds-scrollable--y" style="height: 100%">
+    <div cdkDropList [cdkDropListData]="listFields" (cdkDropListDropped)="onDrop($event)" class="slds-grow slds-scrollable--y" style="height: 100%">
         <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover reports-designer-manipulate-table">
             <thead>
             <tr class="slds-text-title--caps slds-theme--shade">
@@ -39,7 +39,7 @@
             </tr>
             </thead>
             <tbody>
-                <ng-container *ngFor="let listItem of listItems; trackBy: trackByFn">
+                <ng-container *ngFor="let listItem of listFields; trackBy: trackByFn">
                     <tr reports-designer-manipulate-table-row
                         [listItem]="listItem" (onDelete)="deleteField(listItem.fieldid)"
                         cdkDrag [cdkDragData]="listItem" cdkDragBoundary=".reports-designer-manipulate-table"

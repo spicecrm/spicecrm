@@ -126,26 +126,24 @@
                                 <th class="slds-cell-shrink"></th>
                             </tr>
                             </thead>
-                            <tbody *ngIf="pivotRows" cdkDropList [cdkDropListData]="pivotRows" (cdkDropListDropped)="onDrop($event)"
+                            <tbody *ngIf="pivotRow" cdkDropList [cdkDropListData]="pivotRow" (cdkDropListDropped)="onDrop($event)"
                                    class="slds-grow slds-scrollable--y reports-designer-present-item-pivot-drop-list-pivot-columns reports-designer-table-adjust-drag-placeholder">
-                                <ng-container *ngFor="let pivotRow of pivotRows; trackBy: trackByFn">
-                                    <tr cdkDrag [cdkDragData]="pivotRow" cdkDragBoundary=".reports-designer-present-item-pivot-drop-list-pivot-columns" class="slds-border--bottom slds-drag--preview">
-                                        <td class="slds-p-around--none">
-                                            <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
-                                        </td>
-                                        <td>
-                                            <div class="slds-form-element">
-                                                {{language.getLabel(pivotRow.name)}}
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <button class="slds-button slds-button--icon" (click)="deleteItem('rowData', pivotRow.id)">
-                                                <system-button-icon icon="delete"></system-button-icon>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </ng-container>
-                                <tr *ngIf="pivotRows.length == 0" style="height: 80px"><td colspan="3">&nbsp;</td></tr>
+                                <tr cdkDrag [cdkDragData]="pivotRow" cdkDragBoundary=".reports-designer-present-item-pivot-drop-list-pivot-columns" class="slds-border--bottom slds-drag--preview">
+                                    <td class="slds-p-around--none">
+                                        <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
+                                    </td>
+                                    <td>
+                                        <div class="slds-form-element">
+                                            {{pivotRowName}}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="slds-button slds-button--icon" (click)="deleteItem('rowData', pivotRow)">
+                                            <system-button-icon icon="delete"></system-button-icon>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="pivotRow.length == 0" style="height: 80px"><td colspan="3">&nbsp;</td></tr>
                             </tbody>
                         </table>
                     </div>

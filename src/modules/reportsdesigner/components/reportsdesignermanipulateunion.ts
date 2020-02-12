@@ -51,9 +51,7 @@ export class ReportsDesignerManipulateUnion {
     }
 
     /**
-    * @removePlaceHolderElement
-    * @splice listItems add newItem
-    * @set listItems
+    * link union field and remove PlaceHolderElement
     */
     private onDrop(dragEvent: CdkDragDrop<any>) {
         this.reportsDesignerService.removePlaceHolderElement(dragEvent.previousContainer.element.nativeElement);
