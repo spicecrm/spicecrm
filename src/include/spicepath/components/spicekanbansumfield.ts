@@ -6,6 +6,7 @@ import {
     Input
 } from '@angular/core';
 import {currency} from '../../../services/currency.service';
+import {model} from '../../../services/model.service';
 
 declare var _: any;
 
@@ -28,10 +29,17 @@ export class SpiceKanbanSumField {
      * holds an array of currencies
      */
     public currencies: any[] = [];
-    private loadLabel: boolean = false;
-    constructor(private currency: currency) {
+    constructor(private currency: currency, private model: model) {
         this.currencies = this.currency.getCurrencies();
     }
+
+    /**
+     * checks if value is NAN .. and in this case returns 0 waiting for the value to be set
+     */
+    get displayValue() {
+         return !this.value || isNaN(this.value) ? 0 : this.value;
+    }
+
 
     /**
      * helper to get the currency symbol
