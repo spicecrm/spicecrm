@@ -9,6 +9,6 @@
     <iframe *ngIf="asiframe" [src]="sanitizedValue" style="resize: vertical;" [ngStyle]="heightStyle" width="100%" frameborder="0" seamless="true" sandbox></iframe>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
-    <system-richtext-editor [(ngModel)]="value" (save$)="save($event)"></system-richtext-editor>
+    <system-richtext-editor [(ngModel)]="value" (save$)="save($event)" [extendedmode]="extendedmode"></system-richtext-editor>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>
