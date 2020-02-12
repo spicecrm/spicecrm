@@ -14,7 +14,7 @@ import {ReportsDesignerPresentItemStandard} from "./reportsdesignerpresentitemst
 })
 export class ReportsDesignerPresentItemStandardWithSummary extends ReportsDesignerPresentItemStandard {
 
-    constructor(public language: language, public model: model) {
-        super(language, model);
+    constructor(public language: language, public model: model, public reportsDesignerService: ReportsDesignerService) {
+        super(language, model, reportsDesignerService);
     }
 }

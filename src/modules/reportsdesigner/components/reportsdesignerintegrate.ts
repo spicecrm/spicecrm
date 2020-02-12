@@ -16,7 +16,7 @@ export class ReportsDesignerIntegrate {
     protected plugins: any[] = [];
     private selectedItemId: string = '';
 
-    constructor(private language: language, private metadata: metadata, private model: model) {
+    constructor(private language: language, private metadata: metadata, private model: model, private reportsDesignerService: ReportsDesignerService) {
     }
 
     /**
@@ -30,7 +30,7 @@ export class ReportsDesignerIntegrate {
     * load plugins from component set and initialize the integration params
     */
     public ngOnInit() {
-        this.loadPlugins();
+        this.plugins = this.reportsDesignerService.loadPlugins('ReportsDesignerIntegrate');
         this.initializeIntegrationParams();
     }
 
@@ -44,26 +44,6 @@ export class ReportsDesignerIntegrate {
         if (!integrationParams.activePlugins) {
             integrationParams.activePlugins = {};
             this.model.setField('integration_params', integrationParams);
-        }
-    }
-
-    /**
-    * @set items from metadata.getComponentSetObjects
-    */
-    private loadPlugins() {
-        const conf = this.metadata.getComponentConfig('ReportsDesignerIntegrate', 'KReports');
-        if (conf.componentset && conf.componentset.length > 0) {
-            const items = this.metadata.getComponentSetObjects(conf.componentset);
-            if (!items || items.length == 0) return;
-            this.plugins = items
-                .filter(item => !!item.componentconfig)
-                .map(item => ({
-                    name: this.language.getLabel(item.componentconfig.name),
-                    id: item.componentconfig.plugin,
-                    component: item.componentconfig.component,
-                    sequence: item.sequence
-                }))
-                .sort((a, b) => !isNaN(parseInt(a.sequence, 10)) && !isNaN(parseInt(b.sequence, 10)) ? +a.sequence > +b.sequence ? 1 : -1 : 0);
         }
     }
 

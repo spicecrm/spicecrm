@@ -5,7 +5,6 @@ import {Component, OnInit} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {ReportsDesignerService} from "../services/reportsdesigner.service";
 import {model} from "../../../services/model.service";
-import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {ReportsDesignerPresentItemStandard} from "./reportsdesignerpresentitemstandard";
 
 @Component({
@@ -15,8 +14,8 @@ export class ReportsDesignerPresentItemGrouped extends ReportsDesignerPresentIte
 
     public propertiesFieldName: string = 'groupedViewProperties';
 
-    constructor(public language: language, public model: model) {
-        super(language, model);
+    constructor(public language: language, public model: model, public reportsDesignerService: ReportsDesignerService) {
+        super(language, model, reportsDesignerService);
     }
 
     public ngOnInit() {

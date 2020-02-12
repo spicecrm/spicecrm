@@ -5,6 +5,7 @@ import {Component} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
 import {ReportsDesignerPresentItemStandard} from "./reportsdesignerpresentitemstandard";
+import {ReportsDesignerService} from "../services/reportsdesigner.service";
 
 @Component({
     selector: 'reports-designer-present-item-standard-with-preview',
@@ -12,8 +13,8 @@ import {ReportsDesignerPresentItemStandard} from "./reportsdesignerpresentitemst
 })
 export class ReportsDesignerPresentItemStandardWithPreview extends ReportsDesignerPresentItemStandard {
 
-    constructor(public language: language, public model: model) {
-        super(language, model);
+    constructor(public language: language, public model: model, public reportsDesignerService: ReportsDesignerService) {
+        super(language, model, reportsDesignerService);
     }
 
     /**

@@ -4,8 +4,8 @@
 import {Component} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
-import {ReportsDesignerPresentItemStandard} from "./reportsdesignerpresentitemstandard";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import {ReportsDesignerService} from "../services/reportsdesigner.service";
 
 @Component({
     selector: 'reports-designer-present-item-table',
@@ -13,21 +13,14 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 })
 export class ReportsDesignerPresentItemTable {
 
-    constructor(public language: language, public model: model) {
+    constructor(public language: language, public model: model, private reportsDesignerService: ReportsDesignerService) {
     }
 
     /**
      * @return listfields: object[]
      */
     get listFields() {
-        return this.model.getField('listfields')
-            .sort((a, b) => {
-                if (!isNaN(parseInt(a.sortpriority, 10)) && !isNaN(parseInt(b.sortpriority, 10))) {
-                    return +a.sortpriority > +b.sortpriority ? 1 : -1;
-                } else {
-                    return +a.sequence > +b.sequence ? 1 : -1;
-                }
-            });
+        return this.reportsDesignerService.listFields;
     }
 
     /**

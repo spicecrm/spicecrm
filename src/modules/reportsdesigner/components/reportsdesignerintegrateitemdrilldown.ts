@@ -27,14 +27,7 @@ export class ReportsDesignerIntegrateItemDrilldown {
      * @return listfields: object[]
      */
     get listFields() {
-        return this.model.getField('listfields')
-            .sort((a, b) => {
-                if (!isNaN(parseInt(a.sortpriority, 10)) && !isNaN(parseInt(b.sortpriority, 10))) {
-                    return +a.sortpriority > +b.sortpriority ? 1 : -1;
-                } else {
-                    return +a.sequence > +b.sequence ? 1 : -1;
-                }
-            });
+        return this.reportsDesignerService.listFields;
     }
 
     get drilldowns() {
