@@ -53,18 +53,18 @@
                         {{language.getLabel('LBL_MANIPULATE')}}
                     </a>
                 </li>
-                <li (click)="setActiveTab('present')" [class.slds-active]="activeTab == 'present'" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
+                <li (click)="setActiveTab('present')" [class.slds-active]="activeTab == 'present'" [class.slds-text-color--inverse-weak]="reportsDesignerService.listFields.length == 0" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
                     <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
                         <span class="slds-tabs__left-icon">
-                            <system-utility-icon icon="screen" size="x-small"></system-utility-icon>
+                            <system-utility-icon icon="screen" size="x-small" [colorclass]="reportsDesignerService.listFields.length == 0 ? 'slds-icon-text-light' : 'slds-icon-text-default'"></system-utility-icon>
                         </span>
                         {{language.getLabel('LBL_PRESENT')}}
                     </a>
                 </li>
-                <li [class.slds-active]="activeTab == 'visualize'" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
-                    <a class="slds-tabs--default__link slds-text-color--inverse-weak" href="javascript:void(0);" role="tab"  aria-selected="false">
+                <li (click)="setActiveTab('visualize')" [class.slds-active]="activeTab == 'visualize'" [class.slds-text-color--inverse-weak]="reportsDesignerService.listFields.length == 0" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
+                    <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
                         <span class="slds-tabs__left-icon">
-                            <system-utility-icon icon="chart" size="x-small" colorclass="slds-icon-text-light"></system-utility-icon>
+                            <system-utility-icon icon="chart" size="x-small" [colorclass]="reportsDesignerService.listFields.length == 0 ? 'slds-icon-text-light' : 'slds-icon-text-default'"></system-utility-icon>
                         </span>
                         {{language.getLabel('LBL_VISUALIZE')}}
                     </a>
@@ -87,10 +87,9 @@
                     <reports-designer-filter *ngSwitchCase="'filter'" [module]="reportsDesignerService.activeModule"></reports-designer-filter>
                     <ng-container *ngSwitchCase="'manipulate'">
                         <reports-designer-manipulate [class.slds-hide]="reportsDesignerService.activeModule.unionid != 'root'"></reports-designer-manipulate>
-                        <reports-designer-manipulate-union
-                                [class.slds-hide]="reportsDesignerService.activeModule.unionid == 'root'"
-                                [module]="reportsDesignerService.activeModule"
-                                [currentUnionListFields]="currentUnionListFields">
+                        <reports-designer-manipulate-union [class.slds-hide]="reportsDesignerService.activeModule.unionid == 'root'"
+                                                           [module]="reportsDesignerService.activeModule"
+                                                           [currentUnionListFields]="currentUnionListFields">
                         </reports-designer-manipulate-union>
                     </ng-container>
                     <reports-designer-present *ngSwitchCase="'present'"></reports-designer-present>

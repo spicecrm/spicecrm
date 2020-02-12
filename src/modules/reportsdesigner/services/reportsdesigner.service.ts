@@ -6,11 +6,13 @@ import {CdkDropList} from "@angular/cdk/drag-drop";
 import {configurationService} from "../../../services/configuration.service";
 import {backend} from "../../../services/backend.service";
 import {modelutilities} from "../../../services/modelutilities.service";
+import {model} from "../../../services/model.service";
+import {metadata} from "../../../services/metadata.service";
+import {language} from "../../../services/language.service";
 
 
 @Injectable()
 export class ReportsDesignerService {
-    public dropLists: CdkDropList[] = [];
     public treeCDKDragList: CdkDropList | string;
     public currentPath: any = {};
     public activeModule: any = {};
@@ -20,13 +22,52 @@ export class ReportsDesignerService {
     public operatorAssignments: any = {};
     public expertMode: boolean = false;
     public expandedItemId: string = '';
-    public rootModuleDragListId: string = 'reportsDesignerTreeDragListRoot';
 
     constructor(private configurationService: configurationService,
                 private backend: backend,
                 private cdr: ChangeDetectorRef,
+                private model: model,
+                private language: language,
+                private metadata: metadata,
                 private modelUtils: modelutilities) {
         this.loadReporterConfig();
+    }
+
+    /**
+     * @return object[]
+     */
+    get listFields() {
+        return this.model.getField('listfields');
+    }
+
+    /**
+     * set the model listfields
+     * @param value: object[]
+     */
+    set listFields(value) {
+        this.model.setField('listfields', value);
+    }
+
+    /**
+     * load plugins from component set
+     * @input forComponent: string
+     * @return plugins: object[]
+     */
+    public loadPlugins(forComponent) {
+        const conf = this.metadata.getComponentConfig(forComponent, 'KReports');
+        if (conf.componentset && conf.componentset.length > 0) {
+            const items = this.metadata.getComponentSetObjects(conf.componentset);
+            if (!items || items.length == 0) return;
+            return items
+                .filter(item => !!item.componentconfig)
+                .map(item => ({
+                    name: this.language.getLabel(item.componentconfig.name),
+                    id: item.componentconfig.plugin,
+                    component: item.componentconfig.component,
+                    sequence: item.sequence
+                }))
+                .sort((a, b) => !isNaN(parseInt(a.sequence, 10)) && !isNaN(parseInt(b.sequence, 10)) ? +a.sequence > +b.sequence ? 1 : -1 : 0);
+        }
     }
 
     /*

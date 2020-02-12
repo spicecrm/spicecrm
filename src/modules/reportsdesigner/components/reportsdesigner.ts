@@ -24,7 +24,7 @@ import {ReportsDesignerManipulate} from "./reportsdesignermanipulate";
 })
 export class ReportsDesigner {
 
-    private activeTab: string = 'manipulate';
+    private activeTab: 'details' | 'filter' | 'manipulate' | 'present' | 'visualize' | 'integrate' = 'manipulate';
     protected currentUnionListFields: any[] = [];
 
     constructor(private language: language,
@@ -73,9 +73,9 @@ export class ReportsDesigner {
                         } else {
                             const module = this.model.getField('report_module');
                             this.reportsDesignerService.setCurrentPath(module, module);
-                            this.reportsDesignerService.treeCDKDragList = this.reportsDesignerService.rootModuleDragListId;
                             this.reportsDesignerService.activeModule = {unionid: 'root', module: res.report_module};
                         }
+                        if (!res.listfields) this.model.setField('listfields', []);
                     });
             }
         });
@@ -85,7 +85,7 @@ export class ReportsDesigner {
     * @set activeTab
     */
     private setActiveTab(tab) {
-        if (this.activeTab == 'details' && !this.model.validate()) return;
+        if ((this.activeTab == 'details' && !this.model.validate()) || ((tab == 'present' || tab == 'visualize') && this.reportsDesignerService.listFields.length == 0)) return;
         this.activeTab = tab;
     }
 
@@ -138,7 +138,7 @@ export class ReportsDesigner {
             .subscribe(index => {
                 if (modules[index]) {
                     this.model.initialize();
-                    this.model.setField('report_module', modules[index]);
+                    this.setInitialValues(modules[index]);
                     this.reportsDesignerService.setCurrentPath(modules[index], modules[index]);
                     this.activeTab = 'details';
                     this.reportsDesignerService.activeModule = {unionid: 'root', module: modules[index]};
@@ -146,6 +146,27 @@ export class ReportsDesigner {
                     this.cancel();
                 }
             });
+    }
+
+    /**
+     * set the initial values for the report
+     * @param reportModule: string
+     */
+    protected setInitialValues(reportModule) {
+        this.model.setFields({
+            report_module: reportModule,
+            listfields: [],
+            listtype: 'standard',
+            presentation_params: {
+                plugin: 'standard',
+                pluginData: {
+                    standardViewProperties:{
+                        processCount:'Synchronous',
+                        listEntries:25
+                    }
+                }
+            }
+        });
     }
 
     /**

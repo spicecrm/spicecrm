@@ -15,21 +15,14 @@ export class ReportsDesignerPresentItemStandard implements OnInit {
 
     public propertiesFieldName: string = 'standardViewProperties';
 
-    constructor(public language: language, public model: model) {
+    constructor(public language: language, public model: model, public reportsDesignerService: ReportsDesignerService) {
     }
 
     /**
      * @return listfields: object[]
      */
     get listFields() {
-        return this.model.getField('listfields')
-            .sort((a, b) => {
-                if (!isNaN(parseInt(a.sortpriority, 10)) && !isNaN(parseInt(b.sortpriority, 10))) {
-                    return +a.sortpriority > +b.sortpriority ? 1 : -1;
-                } else {
-                    return +a.sequence > +b.sequence ? 1 : -1;
-                }
-            });
+        return this.reportsDesignerService.listFields;
     }
 
     /**
