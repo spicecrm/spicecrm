@@ -10,10 +10,10 @@
         </ul>
         <ul class="slds-button-group-list">
             <li >
-                <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="zoomin()" [disabled]="!mediaBase64"><system-button-icon icon="zoomin"></system-button-icon></button>
+                <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="zoomIn()" [disabled]="!mediaBase64"><system-button-icon icon="zoomin"></system-button-icon></button>
             </li>
             <li >
-                <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="zoomout()" [disabled]="!mediaBase64"><system-button-icon icon="zoomout"></system-button-icon></button>
+                <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="zoomOut()" [disabled]="!mediaBase64"><system-button-icon icon="zoomout"></system-button-icon></button>
             </li>
         </ul>
         <ul  class="slds-button-group-list">
@@ -66,9 +66,9 @@
         </div>
     </div>
     <div #bottomtoolbar role="toolbar" class="slds-rich-text-editor__toolbar slds-shrink-none slds-rich-text-editor__toolbar_bottom">
-        <div *ngIf="mediaMetaData.fileformat">{{this.mediaMetaData.fileformat.toUpperCase()}}</div>
+        <div *ngIf="imageMetaData.fileformat">{{this.imageMetaData.fileformat.toUpperCase()}}</div>
         <div *ngIf="mediaBase64" class="slds-grid slds-grid--align-spread">
-            <div>{{mediaMetaData.originalWidth}} &times; {{mediaMetaData.originalHeight}} px<span *ngIf="isResized"> &#8594; {{mediaMetaData.width}} &times; {{mediaMetaData.height}} px</span></div>
+            <div>{{imageMetaData.originalWidth}} &times; {{imageMetaData.originalHeight}} px<span *ngIf="isResized"> &#8594; {{imageMetaData.width}} &times; {{imageMetaData.height}} px</span></div>
         </div>
         <div *ngIf="!mediaBase64">please select, or past an imnage file</div>
     </div>
