@@ -1,5 +1,5 @@
 /**
- * @module ModuleWorkflow
+ * @module ModuleSpiceNotes
  */
 import {
     Component, OnDestroy

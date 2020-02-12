@@ -71,10 +71,10 @@ export class ReporterDetailPresentationTree implements AfterViewInit, OnInit {
         switch (field.type) {
             case 'currency':
             case 'currencyint':
-                classes.push('slds-grid--align-end')
+                classes.push('slds-grid--align-end');
                 break;
             case 'enum':
-                classes.push('slds-grid--align-center')
+                classes.push('slds-grid--align-center');
                 break;
         }
 
@@ -149,7 +149,7 @@ export class ReporterDetailPresentationTree implements AfterViewInit, OnInit {
 
         // if not laoded - load it
         if (index < 0 || !this.reportRecords[index].loaded) {
-            this.backend.postRequest('KReporter/Tree/' + this.model.id + '/node/' + btoa(node)).subscribe(reportData => {
+            this.backend.postRequest('KReporter/Tree/' + this.model.id + '/node/' + encodeURIComponent(btoa(node))).subscribe(reportData => {
                 let newRecords = [];
 
                 // if we found the record mark as loaded and expanded
