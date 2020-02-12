@@ -1,11 +1,8 @@
-<div class="slds-popover slds-popover_large slds-popover--panel slds-is-fixed" style="transition: .5s;" [ngStyle]="popoverStyle" [ngClass]="getNubbinClass()" role="dialog" (mouseenter)="onMouseOver()" (mouseleave)="onMouseOut()">
+<div class="slds-popover slds-popover_large slds-is-fixed" style="transition: .5s;" [ngStyle]="popoverStyle" [ngClass]="getNubbinClass()" role="dialog" (mouseenter)="onMouseOver()" (mouseleave)="onMouseOut()">
     <button class="slds-button slds-button_icon slds-button_icon slds-button_icon-small slds-float_right slds-popover__close" (click)="closePopover(true)">
         <system-button-icon icon="close"></system-button-icon>
     </button>
     <div #popover>
-        <!--div class="slds-popover__header">
-            header
-        </div-->
         <div #popoverbody class="slds-popover__body  slds-scrollable--y" [ngStyle]="popoverBodyStyle">
             <system-componentset [componentset]="componentset"></system-componentset>
         </div>

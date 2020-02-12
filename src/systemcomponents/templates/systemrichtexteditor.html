@@ -4,7 +4,7 @@
         <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-m-right--xx-small" tabindex="-1" [title]="language.getLabel('LBL_SAVE')" (click)="save$.emit(_html)">
             <system-button-icon icon="save"></system-button-icon>
         </button>
-        <ul class="slds-button-group-list">
+        <ul *ngIf="extendedmode" class="slds-button-group-list">
             <li>
                 <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_UNDO')" (click)="executeCommand('undo')">
                     <system-button-icon icon="undo"></system-button-icon>
@@ -52,7 +52,7 @@
                 </div>
             </div>
         </div-->
-        <div class="slds-grid slds-rich-text-editor__spacing-wrapper" role="group">
+        <div *ngIf="extendedmode"  class="slds-grid slds-rich-text-editor__spacing-wrapper" role="group">
             <div class="slds-rich-text-editor__select">
                 <div class="slds-form-element">
                     <div class="slds-form-element__control">
@@ -142,7 +142,7 @@
                 </button>
             </li>
         </ul>
-        <ul class="slds-button-group-list">
+        <ul *ngIf="extendedmode"  class="slds-button-group-list">
             <li>
                 <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_NEW_IMAGE')" (click)="executeCommand('openMediaFilePicker')">
                     <system-button-icon icon="image"></system-button-icon>
@@ -176,7 +176,7 @@
                 </button>
             </li>
         </ul>
-        <ul class="slds-button-group-list">
+        <ul *ngIf="extendedmode"  class="slds-button-group-list">
             <li>
                 <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_SOURCE_EDITOR')" (click)="executeCommand('openSourceEditor')">
                     <system-button-icon icon="insert_tag_field"></system-button-icon>

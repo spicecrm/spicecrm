@@ -84,8 +84,7 @@ export class SystemPopOverDirective implements OnDestroy {
         this.metadata.addComponent('SystemPopover', this.footer.footercontainer, this._popoverSettings.injector).subscribe(
             popover => {
                 popover.instance.parentElementRef = this.elementRef;
-                popover.componentset = this._popoverSettings.componentset;
-                popover.component = this._popoverSettings.component;
+                popover.instance.componentset = this._popoverSettings.componentset;
 
                 this.popoverCmp = popover.instance;
             }

@@ -35,7 +35,28 @@ export class modelattachments {
     ) {
     }
 
-    public getAttachments() {
+    /**
+     * returns the count of the attachments
+     */
+    public getCount(): Observable<any>{
+        let retSubject = new Subject();
+        this.backend.getRequest("module/" + this.module + "/" + this.id + "/attachment/count").subscribe(
+            response => {
+                // set the count
+                this.count = response.count;
+                retSubject.next(this.count);
+                retSubject.complete();
+            });
+
+        return retSubject.asObservable();
+    }
+
+    /**
+     * loads the attachments
+     */
+    public getAttachments(): Observable<any> {
+        let retSubject = new Subject();
+
         this.resetData();
         this.loading = true;
         this.backend.getRequest("module/" + this.module + "/" + this.id + "/attachment/ui").subscribe(
@@ -44,12 +65,26 @@ export class modelattachments {
                     response[attId].date = new moment(response[attId].date);
                     this.files.push(response[attId]);
                 }
+
+                // set the count
+                this.count = this.files.length;
+
                 this.loading = false;
                 // this.files = response;
+
+                // close the subject
+                retSubject.next(this.files);
+                retSubject.complete();
             },
             error => {
                 this.loading = false;
+
+                // close the subject
+                retSubject.error(error);
+                retSubject.complete();
             });
+
+        return retSubject.asObservable();
     }
 
     public humanFileSize(filesize) {

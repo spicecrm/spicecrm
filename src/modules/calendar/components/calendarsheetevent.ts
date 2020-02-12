@@ -112,7 +112,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
      * @return canEdit: boolean
      */
     get canEdit() {
-        return this.owner == this.event.data.assigned_user_id && this.calendar.sheetType != 'Schedule' &&
+        return (this.model.data.acl && this.model.checkAccess('edit')) && this.calendar.sheetType != 'Schedule' &&
             (this.event.type == 'event' || this.event.type == 'absence') && !this.calendar.asPicker && !this.calendar.isMobileView && !this.calendar.isDashlet;
     }
 
