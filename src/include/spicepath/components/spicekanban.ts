@@ -322,21 +322,24 @@ export class SpiceKanban implements OnInit, OnDestroy {
         }
     }
 
+
     /**
      * helper to get the currency symbol
+     * @param aggregatefield
      */
-    private getCurrencySymbol(): string {
- 
-        let currencySymbol: string;
-        let currencyid = -99;
+    private getCurrencySymbol(aggregatefield): string {
+        if (this.metadata.getFieldType(this.modellist.module, aggregatefield.name) == 'currency') {
+            let currencySymbol: string;
+            let currencyid = -99;
+            this.currencies.some(currency => {
+                if (currency.id == currencyid) {
+                    currencySymbol = currency.symbol;
+                    return true;
+                }
+            });
+            return currencySymbol;
+        }
 
-        this.currencies.some(currency => {
-            if (currency.id == currencyid) {
-                currencySymbol = currency.symbol;
-                return true;
-            }
-        });
-        return currencySymbol;
     }
 
     /**
