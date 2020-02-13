@@ -32,7 +32,8 @@ import /*embed*/ {ReportsDesignerPresentItemGrouped} from "./components/reportsd
 import /*embed*/ {ReportsDesignerPresentItemPivot} from "./components/reportsdesignerpresentitempivot";
 import /*embed*/ {ReportsDesignerVisualize} from "./components/reportsdesignervisualize";
 import /*embed*/ {ReportsDesignerVisualizeItem} from "./components/reportsdesignervisualizeitem";
-import /*embed*/ {ReportsDesignerVisualizationItemGoogleCharts} from "./components/reportsdesignervisualizationitemgooglecharts";
+import /*embed*/ {ReportsDesignerVisualizeItemChartTypePanel} from "./components/reportsdesignervisualizeitemcharttypepanel";
+import /*embed*/ {ReportsDesignerVisualizeItemGoogleCharts} from "./components/reportsdesignervisualizeitemgooglecharts";
 import /*embed*/ {ReportsDesignerIntegrate} from "./components/reportsdesignerintegrate";
 import /*embed*/ {ReportsDesignerIntegrateItem} from "./components/reportsdesignerintegrateitem";
 import /*embed*/ {ReportsDesignerIntegrateItemTargetList} from "./components/reportsdesignerintegrateitemtargetlist";
@@ -74,7 +75,8 @@ import /*embed*/ {ReportsDesignerCondition} from "./components/reportsdesignerco
         ReportsDesignerPresentItemPivot,
         ReportsDesignerVisualize,
         ReportsDesignerVisualizeItem,
-        ReportsDesignerVisualizationItemGoogleCharts,
+        ReportsDesignerVisualizeItemChartTypePanel,
+        ReportsDesignerVisualizeItemGoogleCharts,
         ReportsDesignerIntegrate,
         ReportsDesignerIntegrateItem,
         ReportsDesignerIntegrateItemTargetList,

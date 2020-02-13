@@ -102,6 +102,6 @@ export class ReportsDesignerManipulateTableRow {
      */
     private toggleExpand() {
         if (!this.reportsDesignerService.expertMode) return;
-        this.reportsDesignerService.expandedItemId = this.reportsDesignerService.expandedItemId == this.listItem.fieldid ? '' : this.listItem.fieldid;
+        this.reportsDesignerService.manipulateExpandedItemId = this.reportsDesignerService.manipulateExpandedItemId == this.listItem.fieldid ? '' : this.listItem.fieldid;
     }
 }

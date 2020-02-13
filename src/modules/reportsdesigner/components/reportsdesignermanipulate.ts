@@ -185,6 +185,6 @@ export class ReportsDesignerManipulate {
         listFields.push(newFixedField);
         this.listFields = listFields;
         this.addListItemToUnionFields(newFixedField);
-        this.reportsDesignerService.expandedItemId = newFixedField.fieldid;
+        this.reportsDesignerService.manipulateExpandedItemId = newFixedField.fieldid;
     }
 }
