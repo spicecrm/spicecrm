@@ -31,6 +31,8 @@ import /*embed*/ {ReportsDesignerPresentItemTreeView} from "./components/reports
 import /*embed*/ {ReportsDesignerPresentItemGrouped} from "./components/reportsdesignerpresentitemgrouped";
 import /*embed*/ {ReportsDesignerPresentItemPivot} from "./components/reportsdesignerpresentitempivot";
 import /*embed*/ {ReportsDesignerVisualize} from "./components/reportsdesignervisualize";
+import /*embed*/ {ReportsDesignerVisualizeItem} from "./components/reportsdesignervisualizeitem";
+import /*embed*/ {ReportsDesignerVisualizationItemGoogleCharts} from "./components/reportsdesignervisualizationitemgooglecharts";
 import /*embed*/ {ReportsDesignerIntegrate} from "./components/reportsdesignerintegrate";
 import /*embed*/ {ReportsDesignerIntegrateItem} from "./components/reportsdesignerintegrateitem";
 import /*embed*/ {ReportsDesignerIntegrateItemTargetList} from "./components/reportsdesignerintegrateitemtargetlist";
@@ -71,6 +73,8 @@ import /*embed*/ {ReportsDesignerCondition} from "./components/reportsdesignerco
         ReportsDesignerPresentItemGrouped,
         ReportsDesignerPresentItemPivot,
         ReportsDesignerVisualize,
+        ReportsDesignerVisualizeItem,
+        ReportsDesignerVisualizationItemGoogleCharts,
         ReportsDesignerIntegrate,
         ReportsDesignerIntegrateItem,
         ReportsDesignerIntegrateItemTargetList,

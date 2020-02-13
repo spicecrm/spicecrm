@@ -1358,3 +1358,47 @@ ul.spice-taglist span.slds-badge {
     background-color: #f3f2f2;
     text-align: center;
 }
+
+.slds-radio--button [type=radio]:checked+.slds-radio--button__label,
+.slds-radio--button [type=radio]:checked+.slds-radio--faux,
+.slds-radio--button [type=radio]:checked+.slds-radio_button__label,
+.slds-radio--button [type=radio]:checked+.slds-radio_faux,
+.slds-radio--button [type=radio]:checked~.slds-radio--faux,
+.slds-radio--button [type=radio]:checked~.slds-radio_faux,
+.slds-radio_button [type=radio]:checked+.slds-radio--button__label,
+.slds-radio_button [type=radio]:checked+.slds-radio--faux,
+.slds-radio_button [type=radio]:checked+.slds-radio_button__label,
+.slds-radio_button [type=radio]:checked+.slds-radio_faux,
+.slds-radio_button [type=radio]:checked~.slds-radio--faux,
+.slds-radio_button [type=radio]:checked~.slds-radio_faux {
+    background-color: #CA1B21;
+}
+
+
+
+.slds-radio--button [type=radio]:checked + .slds-radio--button__label:focus,
+.slds-radio--button [type=radio]:checked + .slds-radio--button__label:hover,
+.slds-radio--button [type=radio]:checked + .slds-radio--faux:focus,
+.slds-radio--button [type=radio]:checked + .slds-radio--faux:hover,
+.slds-radio--button [type=radio]:checked + .slds-radio_button__label:focus,
+.slds-radio--button [type=radio]:checked + .slds-radio_button__label:hover,
+.slds-radio--button [type=radio]:checked + .slds-radio_faux:focus,
+.slds-radio--button [type=radio]:checked + .slds-radio_faux:hover,
+.slds-radio--button [type=radio]:checked ~ .slds-radio--faux:focus,
+.slds-radio--button [type=radio]:checked ~ .slds-radio--faux:hover,
+.slds-radio--button [type=radio]:checked ~ .slds-radio_faux:focus,
+.slds-radio--button [type=radio]:checked ~ .slds-radio_faux:hover,
+.slds-radio_button [type=radio]:checked + .slds-radio--button__label:focus,
+.slds-radio_button [type=radio]:checked + .slds-radio--button__label:hover,
+.slds-radio_button [type=radio]:checked + .slds-radio--faux:focus,
+.slds-radio_button [type=radio]:checked + .slds-radio--faux:hover,
+.slds-radio_button [type=radio]:checked + .slds-radio_button__label:focus,
+.slds-radio_button [type=radio]:checked + .slds-radio_button__label:hover,
+.slds-radio_button [type=radio]:checked + .slds-radio_faux:focus,
+.slds-radio_button [type=radio]:checked + .slds-radio_faux:hover,
+.slds-radio_button [type=radio]:checked ~ .slds-radio--faux:focus,
+.slds-radio_button [type=radio]:checked ~ .slds-radio--faux:hover,
+.slds-radio_button [type=radio]:checked ~ .slds-radio_faux:focus,
+.slds-radio_button [type=radio]:checked ~ .slds-radio_faux:hover {
+    background-color: #b5181e;
+}
