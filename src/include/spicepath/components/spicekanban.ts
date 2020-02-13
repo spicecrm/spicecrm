@@ -63,7 +63,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
     /**
      * collects all of the fields and their operation type
      */
-    private opfields: any[] = [];
+    private sumfields: any[] = [];
     /**
      * hidden statges that are rendered in teh utility bar
      */
@@ -113,18 +113,18 @@ export class SpiceKanban implements OnInit, OnDestroy {
 
         }
 
-        // builds the operation fields array
+        // builds the sumfields array
         let configs = this.componentconfig.sumfield.split(",");
         for (let config of configs) {
             // catch whitespace
             config = config.trim();
             if (config.includes(":")) {
-                this.opfields.push({
+                this.sumfields.push({
                     name: config.substr(0, config.indexOf(':')),
                     function: config.substr(config.indexOf(':') + 1),
                 });
             } else {
-                this.opfields.push({
+                this.sumfields.push({
                     name: config,
                     function: "sum",
                 });
@@ -137,7 +137,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
 
             this.modellist.buckets = {
                 bucketfield: this.confdata.statusfield,
-                buckettotal: this.opfields, // [{field: 'amount', function: 'sum'}, {field: 'probabilty', function: 'avg'}]
+                buckettotal: this.sumfields, // [{field: 'amount', function: 'sum'}, {field: 'probabilty', function: 'avg'}]
                 bucketitems: bucketitems
             };
 
@@ -418,8 +418,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * @param aggregatefield
      */
     private getTitle(aggregatefield) {
-        const prefix = "LBL_";
-        return this.language.getLabel(prefix + aggregatefield.name.toUpperCase());
+        return this.language.getLabel("LBL_" + aggregatefield.name.toUpperCase());
 
     }
 
