@@ -6,6 +6,7 @@ import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
+import {configurationService} from '../../services/configuration.service';
 import {Router} from '@angular/router';
 import {backend} from "../../services/backend.service";
 import {fieldGeneric} from "./fieldgeneric";
@@ -16,10 +17,16 @@ import {fieldGeneric} from "./fieldgeneric";
 })
 export class FieldEnumOutputTemplates extends fieldGeneric implements OnInit {
 
+    /**
+     * set to true if the templates are loaded
+     */
     private isLoaded: boolean = false;
+
+    /**
+     * the templates loaded and presernted in the enum
+     */
     private items = [];
-    @Output('select') private select$ = new EventEmitter();
-    private _selected_item = null;
+
 
     constructor(
         public model: model,
@@ -28,59 +35,45 @@ export class FieldEnumOutputTemplates extends fieldGeneric implements OnInit {
         public metadata: metadata,
         public router: Router,
         private backend: backend,
+        private configuration: configurationService
     ) {
         super(model, view, language, metadata, router);
     }
 
-    get subjectField() {
-        return this.fieldconfig.subject ? this.fieldconfig.subject : 'name';
-    }
-
-    get bodyField() {
-        return this.fieldconfig.body ? this.fieldconfig.body : 'description_html';
-    }
-
+    /**
+     * disable the field if it is not loaded or no items have been found
+     */
     get isDisabled() {
         return !this.isLoaded || !this.items;
     }
 
+    /**
+     * returns the template matching the id
+     */
     get selected_item() {
-        return this._selected_item;
+        return this.items.find(item => item.id == this.value);
     }
 
-    set selected_item(val) {
-        this._selected_item = val;
-        this.select$.emit(val);
-        this.value = val.id;
-    }
-
+    /**
+     * loads the output templates either from the configuration service if they are loaded already or from the backend
+     */
     public ngOnInit() {
-        let params = {
-            searchfields:
-                {
-                    join: 'AND',
-                    conditions: [
-                        {field: 'module_name', operator: '=', value: this.model.module}
-                    ]
+        let outPutTemplates = this.configuration.getData('OutputTemplates');
+        if (outPutTemplates && outPutTemplates[this.model.module]) {
+            this.items = outPutTemplates[this.model.module];
+            this.isLoaded = true;
+        } else {
+            this.backend.getRequest('module/OutputTemplates/formodule/' + this.model.module, {}).subscribe(
+                (data: any) => {
+                    // set the templates
+                    this.configuration.setData('OutputTemplates', data);
+
+                    // set the templates internally
+                    this.items = data;
+
+                    this.isLoaded = true;
                 }
-        };
-
-        this.backend.all('OutputTemplates', params).subscribe(
-            (data: any) => {
-                this.items = data;
-
-                if (!this.selected_item && this.value) {
-                    for (let item of this.items) {
-                        if (this.value == item.id) {
-                            this.selected_item = item;
-                        }
-                    }
-                }
-                this.items.sort((a, b) => a.name > b.name ? 1 : -1);
-            }
-        );
-
-        this.isLoaded = true;
+            );
+        }
     }
-
 }
