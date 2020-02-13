@@ -21,7 +21,9 @@ export class ReportsDesignerService {
     public operatorTypes: any = {};
     public operatorAssignments: any = {};
     public expertMode: boolean = false;
-    public expandedItemId: string = '';
+    public manipulateExpandedItemId: string = '';
+    public visualizeActiveLayoutItem: string = '';
+    public visualizeColorTheme: any[] = [];
 
     constructor(private configurationService: configurationService,
                 private backend: backend,
@@ -100,6 +102,19 @@ export class ReportsDesignerService {
         } else {
             this.setConfigs(reporterConfig);
         }
+    }
+
+    /**
+     * load report color themes from backend
+     */
+    public loadVisualizationColors() {
+        this.backend.getRequest(`KReporter/core/vizcolors`).subscribe(res => {
+            if (!res) return;
+            this.visualizeColorTheme = res.map(item => {
+                item.colors = item.colors.split('*');
+                return item;
+            });
+        });
     }
 
     /*

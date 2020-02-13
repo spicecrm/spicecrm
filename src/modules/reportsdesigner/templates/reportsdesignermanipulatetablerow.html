@@ -47,7 +47,7 @@
     </button>
 </td>
 <td class="slds-cell-shrink">
-    <system-utility-icon [icon]="reportsDesignerService.expandedItemId == listItem.fieldid ? 'up' : 'down'" (click)="toggleExpand()"
+    <system-utility-icon [icon]="reportsDesignerService.manipulateExpandedItemId == listItem.fieldid ? 'up' : 'down'" (click)="toggleExpand()"
                          [colorclass]="reportsDesignerService.expertMode ? 'slds-icon-text-default' : 'slds-icon-text-light'"
                          size="x-small" class="slds-p-horizontal--small slds-p-vertical--xx-small" style="cursor: pointer"></system-utility-icon>
 </td>

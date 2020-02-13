@@ -28,13 +28,14 @@
         </div>
         <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-m-left--x-small">
             <label class="slds-form-element__label slds-text-heading--label">
-                {{language.getLabel('LBL_ITEM')}}
+                {{language.getLabel('LBL_ITEMS')}}
             </label>
             <div class="slds-form-element__control">
                 <div class="slds-radio_button-group">
                     <span *ngFor="let radioButtonItem of radioButtonItems" class="slds-button slds-radio_button">
                         <input type="radio" name="layoutActiveItem" [value]="radioButtonItem" [(ngModel)]="activeLayoutItem"
-                               [disabled]="selectedLayout.itemsCount == 0 || radioButtonItem > selectedLayout.itemsCount" [id]="'ReportsDesignerVisualizationlayoutActiveItem' + radioButtonItem">
+                               [disabled]="selectedLayout.itemsCount == 0 || radioButtonItem > selectedLayout.itemsCount"
+                               [id]="'ReportsDesignerVisualizationlayoutActiveItem' + radioButtonItem">
                         <label class="slds-radio_button__label" [for]="'ReportsDesignerVisualizationlayoutActiveItem' + radioButtonItem">
                             <span class="slds-radio_faux">{{radioButtonItem}}</span>
                         </label>
@@ -48,7 +49,7 @@
             </label>
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
-                    <select class="slds-select" [(ngModel)]="selectedItemId" [disabled]="selectedLayout.itemsCount == 0">
+                    <select class="slds-select" [(ngModel)]="selectedPluginId" [disabled]="selectedLayout.itemsCount == 0">
                         <option *ngFor="let item of plugins" [value]="item.id">{{item.name}}</option>
                     </select>
                 </div>
@@ -57,7 +58,7 @@
     </div>
     <div class="slds-scrollable--y slds-grow">
         <div *ngFor="let item of plugins; trackBy: trackByFn">
-            <reports-designer-visualize-item *ngIf="selectedItemId == item.id && !!item.component" [component]="item.component"></reports-designer-visualize-item>
+            <reports-designer-visualize-item *ngIf="selectedPluginId == item.id && !!item.component" [component]="item.component"></reports-designer-visualize-item>
         </div>
     </div>
 </div>
