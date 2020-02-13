@@ -1,0 +1,10 @@
+<system-modal size="large">
+    <system-modal-header (close)="close()">{{language.getLabel(titlelabel)}}</system-modal-header>
+    <system-modal-content>
+        <object-record-fieldset [fieldset]="fieldset" direction="vertical"></object-record-fieldset>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button [disabled]="isDisabled" class="slds-button slds-button--brand" (click)="sendEmail()">{{language.getLabel('LBL_SEND')}}</button>
+    </system-modal-footer>
+</system-modal>
