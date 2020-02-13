@@ -14,11 +14,8 @@ import {model} from "../../../services/model.service";
 export class ReportsDesignerVisualize {
 
     protected plugins: any[] = [];
-    private _selectedItemId: string = '';
-    private _selectedLayout: any;
-    protected radioButtonItems: string[] = ['1','2','3','4','5'];
-    private activeLayoutItem: string;
-
+    protected radioButtonItems: string[] = ['1', '2', '3', '4', '5'];
+    protected visualizeColors: any[] = [];
     protected layoutOptions: any = [
         {value: '-', itemsCount: 0},
         {value: '1x1', itemsCount: 1},
@@ -34,22 +31,19 @@ export class ReportsDesignerVisualize {
         {value: '2x1x4', itemsCount: 5},
     ];
 
-    constructor(private language: language, private metadata: metadata, private reportsDesignerService: ReportsDesignerService, private model: model) {
+    constructor(private language: language,
+                private metadata: metadata,
+                private reportsDesignerService: ReportsDesignerService,
+                private model: model) {
     }
 
-    /**
-     * set the layout and define its items
-     * @param chartHeight: number
-     */
-    set chartHeight(chartHeight) {
-        this.model.getField('visualization_params').chartheight = chartHeight;
-    }
+    private _selectedLayout: any;
 
     /**
-     * @return chartHeight: number
+     * @return selectedLayout: string
      */
-    get chartHeight() {
-        return this.model.getField('visualization_params').chartheight;
+    get selectedLayout() {
+        return this._selectedLayout;
     }
 
     /**
@@ -63,34 +57,77 @@ export class ReportsDesignerVisualize {
     }
 
     /**
-     * @return selectedLayout: string
+     * @return item: string
      */
-    get selectedLayout() {
-        return this._selectedLayout;
+    get activeLayoutItem() {
+        return this.reportsDesignerService.visualizeActiveLayoutItem;
+    }
+
+    /**
+     * set the layout and define its items
+     * @param item: string
+     */
+    set activeLayoutItem(item) {
+        this.reportsDesignerService.visualizeActiveLayoutItem = item;
+        if (!this.visualizationParams[item]) this.visualizationParams[item] = {};
+    }
+
+    /**
+     * @return chartHeight: number
+     */
+    get chartHeight() {
+        return this.model.getField('visualization_params').chartheight;
+    }
+
+    /**
+     * set the layout and define its items
+     * @param chartHeight: number
+     */
+    set chartHeight(chartHeight) {
+        this.model.getField('visualization_params').chartheight = chartHeight;
     }
 
     /**
      * @return selectedItemId: string
      */
-    get selectedItemId() {
-        return this._selectedItemId;
+    get selectedPluginId() {
+        return this.visualizationParams[this.activeLayoutItem].plugin;
     }
 
     /**
      * set selected item id and initialize the visualization params
      * @param value: string
      */
-    set selectedItemId(value) {
-        this._selectedItemId = value;
+    set selectedPluginId(value) {
+        this.visualizationParams[this.activeLayoutItem].plugin = value;
+    }
 
+    /**
+     * @return integrationParams: object
+     */
+    get visualizationParams() {
+        return this.model.getField('visualization_params');
     }
 
     /**
      * initialize the visualization params and call loadPlugins
+     * call loadVisualizationColors from service
      */
     public ngOnInit() {
         this.initializeVisualizationParams();
+        this.reportsDesignerService.loadVisualizationColors();
         this.plugins = this.reportsDesignerService.loadPlugins('ReportsDesignerVisualize');
+    }
+
+    /**
+     * A function that defines how to track changes for items in the iterable (ngForOf).
+     * https://angular.io/api/common/NgForOf#properties
+     * @param index
+     * @param item
+     * @return index
+     */
+    protected trackByFn(index, item) {
+        return item.id;
     }
 
     /**
@@ -104,19 +141,11 @@ export class ReportsDesignerVisualize {
         if (!visualizationParams.layout) {
             visualizationParams.layout = '-';
         }
+        if (!visualizationParams.chartheight) {
+            visualizationParams.chartheight = 400;
+        }
         this._selectedLayout = this.layoutOptions.find(option => option.value == visualizationParams.layout);
         this.activeLayoutItem = '1';
         this.model.setField('visualization_params', visualizationParams);
-    }
-
-    /**
-     * A function that defines how to track changes for items in the iterable (ngForOf).
-     * https://angular.io/api/common/NgForOf#properties
-     * @param index
-     * @param item
-     * @return index
-     */
-    protected trackByFn(index, item) {
-        return item.id;
     }
 }

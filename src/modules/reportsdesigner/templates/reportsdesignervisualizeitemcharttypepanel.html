@@ -1,0 +1,68 @@
+<system-collapsable-tab [title]="'LBL_CHART_TYPE'">
+    <div class="slds-p-around--x-small">
+        <div class="slds-grid">
+            <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-size--1-of-2 slds-p-horizontal--x-small">
+                <label class="slds-form-element__label slds-text-heading--label">
+                    {{language.getLabel('LBL_DIMENSIONS')}}
+                </label>
+                <div class="slds-form-element__control slds-grow">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="properties.dims">
+                            <option *ngFor="let dimensionsOption of dimensionsOptions; trackBy: trackByFnValue" [value]="dimensionsOption.value">
+                                {{dimensionsOption.name}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-size--1-of-2 slds-p-horizontal--x-small">
+                <label class="slds-form-element__label slds-text-heading--label">
+                    {{language.getLabel('LBL_TYPE')}}
+                </label>
+                <div class="slds-form-element__control slds-grow">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="properties.type">
+                            <option *ngFor="let typeOption of typeOptionsFiltered; trackBy: trackByFnValue" [value]="typeOption.value">
+                                {{typeOption.name}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid slds-m-top--x-small">
+            <div class="slds-form-element slds-grid slds-grid--vertical-align-center  slds-size--1-of-2 slds-p-horizontal--x-small">
+                <label class="slds-form-element__label slds-text-heading--label">
+                    {{language.getLabel('LBL_COLORS')}}
+                </label>
+                <div class="slds-form-element__control slds-grow">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="properties.colors">
+                            <option *ngFor="let colorOption of colorOptions; trackBy: trackByFnIndex" [value]="colorOption.id">
+                                {{colorOption.name}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid slds-grid--vertical-align-center slds-size--1-of-2 slds-p-horizontal--x-small">
+                <label class="slds-form-element__label slds-text-heading--label">
+                    {{language.getLabel('LBL_PREVIEW')}}
+                </label>
+                <div class="slds-color-picker slds-color-picker_swatches-only slds-grid slds-grid--vertical-align-center slds-grow">
+                    <div class="slds-color-picker__selector">
+                        <ul class="slds-color-picker__swatches" role="menu">
+                            <li *ngFor="let color of themeColors; trackBy: trackByFnIndex" class="slds-color-picker__swatch" role="presentation">
+                                <span class="slds-color-picker__swatch-trigger slds-is-selected" role="menuitem">
+                                    <span class="slds-swatch" [style.background-color]="color">
+                                        <span class="slds-assistive-text">{{color}}</span>
+                                    </span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</system-collapsable-tab>
