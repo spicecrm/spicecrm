@@ -330,12 +330,12 @@ export class modellist implements OnDestroy {
                                 message.messagedata.data[this.bucketfield],
                                 bucketamountfields
                             );
-                        } else if (this.bucketamountfield ) {
+                        } else if (this.bucketamountfield) {
                             // just update the amount fields
                             let bucket = this.buckets.bucketitems.find(bucket => bucket.bucket == message.messagedata.data[this.bucketfield]);
                             for (let bucketamountfield of this.bucketamountfield) {
-                                if(message.messagedata.changed[bucketamountfield.name]){
-                                    bucket.values['_bucket_agg_'+bucketamountfield.name] += message.messagedata.data[bucketamountfield.name] - message.messagedata.backupdata[bucketamountfield.name];
+                                if (message.messagedata.changed[bucketamountfield.name]) {
+                                    bucket.values['_bucket_agg_' + bucketamountfield.name] += message.messagedata.data[bucketamountfield.name] - message.messagedata.backupdata[bucketamountfield.name];
                                 }
                             }
 
@@ -1257,20 +1257,25 @@ export class modellist implements OnDestroy {
     // private updateBuckets(from, to, valuefrom?, valueto?) {
     private updateBuckets(from, to, bucketamountfields = []) {
         // reduce from buckets
-        let frombucket = this.buckets.bucketitems.find(bucket => bucket.bucket == from);
-        frombucket.items--;
-        frombucket.total--;
+            let frombucket = this.buckets.bucketitems.find(bucket => bucket.bucket == from);
+            frombucket.items--;
+            frombucket.total--;
 
-        // add to the bucket
-        let tobucket = this.buckets.bucketitems.find(bucket => bucket.bucket == to);
-        tobucket.items++;
-        tobucket.total++;
+            // add to the bucket
+            let tobucket = this.buckets.bucketitems.find(bucket => bucket.bucket == to);
+            tobucket.items++;
+            tobucket.total++;
 
+            for (let bucket of this.buckets.buckettotal) {
+            for (let bucketamountfield of bucketamountfields) {
+                if (bucket.function == "sum" && bucket.name == bucketamountfield.fieldname) {
+                    frombucket.values['_bucket_agg_' + bucketamountfield.fieldname] -= bucketamountfield.valuefrom;
+                    tobucket.values['_bucket_agg_' + bucketamountfield.fieldname] += bucketamountfield.valueto;
+                }
+            }
 
-        for (let bucketamountfield of bucketamountfields) {
-            frombucket.values['_bucket_agg_' + bucketamountfield.fieldname] -= bucketamountfield.valuefrom;
-            tobucket.values['_bucket_agg_' + bucketamountfield.fieldname] += bucketamountfield.valueto;
         }
+
     }
 
     /**

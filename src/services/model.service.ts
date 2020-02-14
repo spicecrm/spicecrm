@@ -898,14 +898,20 @@ export class model implements OnDestroy {
                         backupdata: {...this.backupData}
                     });
 
+                    // saving is done
+                    this.isSaving = false;
+
                     // if notification is on send a toast
                     if (notify) {
                         this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");
                     }
 
+
+
                     // emit the save$
                     // redetermin the dirty fields since the backend call might have changed also additonal fields
                     this.saved$.emit({changed: this.getDirtyFields(), backupdata: {...this.backupData}});
+
 
                     // end the edit process
                     this.endEdit();
@@ -917,8 +923,6 @@ export class model implements OnDestroy {
                     responseSubject.next(true);
                     responseSubject.complete();
 
-                    // saving is done
-                    this.isSaving = false;
                 },
                 error => {
                     // console.log(error);
