@@ -10,7 +10,7 @@ import {modal} from '../../../services/modal.service';
 import {backend} from '../../../services/backend.service';
 import {session} from '../../../services/session.service';
 import {dockedComposer} from '../../../services/dockedcomposer.service';
-import {activitiyTimeLineService} from '../../../services/activitiytimeline.service';
+import {activitiytimeline} from '../../../services/activitiytimeline.service';
 import {ActivityTimelineAddItem} from "./activitytimelineadditem";
 
 @Component({
@@ -26,8 +26,8 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
     private formFieldSet: string = '';
     private isInitialized: boolean = false;
 
-    constructor(public metadata: metadata, public elementRef: ElementRef, renderer: Renderer2, public activitiyTimeLineService: activitiyTimeLineService, public model: model, public view: view, public language: language, public modal: modal, public dockedComposer: dockedComposer, public ViewContainerRef: ViewContainerRef, public backend: backend, private session: session) {
-        super(metadata, activitiyTimeLineService, model, view, language, modal, dockedComposer, ViewContainerRef);
+    constructor(public metadata: metadata, public elementRef: ElementRef, renderer: Renderer2, public activitiytimeline: activitiytimeline, public model: model, public view: view, public language: language, public modal: modal, public dockedComposer: dockedComposer, public ViewContainerRef: ViewContainerRef, public backend: backend, private session: session) {
+        super(metadata, activitiytimeline, model, view, language, modal, dockedComposer, ViewContainerRef);
     }
 
     public get firstFormField() {
@@ -49,9 +49,9 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
         this.model.initializeModel();
 
         // set the parent data
-        this.model.data.parent_type = this.activitiyTimeLineService.parent.module;
-        this.model.data.parent_id = this.activitiyTimeLineService.parent.id;
-        this.model.data.parent_name = this.activitiyTimeLineService.parent.data.summary_text;
+        this.model.data.parent_type = this.activitiytimeline.parent.module;
+        this.model.data.parent_id = this.activitiytimeline.parent.id;
+        this.model.data.parent_name = this.activitiytimeline.parent.data.summary_text;
 
         this.model.data.type = 'out';
         this.model.data.status = 'created';
@@ -62,7 +62,7 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
     }
 
     private subscribeParent() {
-        this.activitiyTimeLineService.parent.data$.subscribe(data => {
+        this.activitiytimeline.parent.data$.subscribe(data => {
             if (this.model.data.recipient_addresses.length == 0) {
                 this.determineToAddr();
             }
@@ -102,11 +102,11 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
 
     private determineToAddr() {
         // see if we have an email from the parent
-        if (this.activitiyTimeLineService.parent.data.email1) {
+        if (this.activitiytimeline.parent.data.email1) {
             this.model.data.recipient_addresses = [{
-                parent_type: this.activitiyTimeLineService.parent.module,
-                parent_id: this.activitiyTimeLineService.parent.id,
-                email_address: this.activitiyTimeLineService.parent.data.email1,
+                parent_type: this.activitiytimeline.parent.module,
+                parent_id: this.activitiytimeline.parent.id,
+                email_address: this.activitiytimeline.parent.data.email1,
                 id: this.model.generateGuid(),
                 address_type: 'to'
             }];
