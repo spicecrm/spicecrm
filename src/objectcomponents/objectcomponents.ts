@@ -393,6 +393,7 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectRelatedCard,
         ObjectRelatedCardHeader,
         ObjectRelatedCardFooter,
+        ObjectRelatedCardTile,
         ObjectRecordDetails,
         ObjectRecordDetailsFooter,
         ObjectEditModalDialogContainer,
