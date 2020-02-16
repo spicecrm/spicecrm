@@ -1,0 +1,10 @@
+<system-modal>
+    <system-modal-header (close)="close()">Add Image</system-modal-header>
+    <system-modal-content margin="xx-small">
+        <system-input-media [(ngModel)]="filecontent"></system-input-media>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button class="slds-button slds-button--brand" [disabled]="!filecontent" (click)="add()">{{language.getLabel('LBL_ADD')}}</button>
+    </system-modal-footer>
+</system-modal>
