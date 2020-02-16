@@ -1,0 +1,16 @@
+<div class="slds-tabs_scoped">
+    <ul class="slds-tabs_scoped__nav" role="tablist">
+        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': scope == 'open'}" [title]="language.getLabel('LBL_OPEN_SERVICETICKETS')" role="presentation">
+            <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="scope = 'open'">{{language.getLabel('LBL_OPEN_SERVICETICKETS')}} ({{opencount}})</a>
+        </li>
+        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': scope == 'closed'}" [title]="language.getLabel('LBL_CLOSED_SERVICETICKETS')" role="presentation">
+            <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab"  (click)="scope = 'closed'">{{language.getLabel('LBL_CLOSED_SERVICETICKETS')}} ({{closedcount}})</a>
+        </li>
+    </ul>
+    <div class="slds-tabs_scoped__content slds-p-around_none" [ngClass]="{'slds-hide': scope != 'open'}" role="tabpanel">
+        <service-ticket-related-tickets-tiles [modulefilter]="filteropen" [fieldset]="fieldset" (count)="opencount = $event"></service-ticket-related-tickets-tiles>
+    </div>
+    <div class="slds-tabs_scoped__content slds-p-around_none" [ngClass]="{'slds-hide': scope != 'closed'}" role="tabpanel">
+        <service-ticket-related-tickets-tiles [modulefilter]="filterclosed" [fieldset]="fieldset" (count)="closedcount = $event"></service-ticket-related-tickets-tiles>
+    </div>
+</div>
