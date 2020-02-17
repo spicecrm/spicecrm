@@ -47,6 +47,11 @@
                     </tr>
                     <tr reports-designer-manipulate-table-row-expansion [listItem]="listItem" class="slds-theme--shade" style="box-shadow: inset -1px 1px 6px 0 #aaa"></tr>
                 </ng-container>
+                <tr *ngIf="listFields?.length == 0">
+                    <td colspan="6" class="slds-text-align_center" style="padding: 1rem;">
+                        {{language.getLabel('MSG_DROP_FIELD_HERE')}}
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
