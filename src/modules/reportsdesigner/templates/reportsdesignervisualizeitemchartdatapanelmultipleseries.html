@@ -26,7 +26,7 @@
                     </th>
                 </tr>
                 </thead>
-                <tbody cdkDropList cdkDropListSortingDisabled [cdkDropListData]="listFields">
+                <tbody cdkDropList cdkDropListSortingDisabled [cdkDropListData]="listFields" (cdkDropListEntered)="dropEnteredDragList($event)" (cdkDropListExited)="dropExited($event)">
                 <tr *ngFor="let listField of listFields; trackBy: trackByFn" cdkDrag [cdkDragData]="listField" class="slds-border--bottom slds-drag--preview" style="height: 41px">
                     <td class="slds-p-around--none">
                         <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>

@@ -133,7 +133,7 @@ export class ReportsDesignerService {
     * @reset dragPlaceHolderNode
     */
     public removePlaceHolderElement(containerElement) {
-        if (this.dragPlaceHolderNode) {
+        if (this.dragPlaceHolderNode && containerElement.contains(this.dragPlaceHolderNode)) {
             containerElement.removeChild(this.dragPlaceHolderNode);
             this.dragPlaceHolderNode = undefined;
         }
