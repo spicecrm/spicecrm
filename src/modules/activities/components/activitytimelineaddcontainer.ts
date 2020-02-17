@@ -15,7 +15,7 @@ import {
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
-import {activitiyTimeLineService} from '../../../services/activitiytimeline.service';
+import {activitiytimeline} from '../../../services/activitiytimeline.service';
 
 @Component({
     selector: 'activitytimeline-add-container',
@@ -33,7 +33,7 @@ export class ActivityTimelineAddContainer implements OnInit, AfterViewInit, OnDe
     private moreOpen: boolean = false;
     private moreModules: string[] = [];
 
-    constructor(private model: model, private language: language, private activitiyTimeLineService: activitiyTimeLineService, private metadata: metadata, private elementRef: ElementRef, private renderer: Renderer2) {
+    constructor(private model: model, private language: language, private activitiytimeline: activitiytimeline, private metadata: metadata, private elementRef: ElementRef, private renderer: Renderer2) {
         this.resizeListener = this.renderer.listen('window', 'resize', e => {
             this.handleOverflow();
         });

@@ -41,6 +41,10 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
         return this.fieldconfig.body ? this.fieldconfig.body : 'body';
     }
 
+    get addtocurrentquote() {
+        return this.fieldconfig.addtocurrentquote == true ? true : false;
+    }
+
 
     get isDisabled() {
         return !this.model.getFieldValue('parent_type') || this.model.getFieldValue('parent_type') == '' || !this.isLoaded ? true : false || this.availableTemplates.length == 0;
@@ -72,8 +76,6 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
             this.availableTemplates = data.list;
             this.isLoaded = true;
         });
-
-
     }
 
     /**
@@ -89,11 +91,22 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
                     if (!this.model.data[this.subjectField]) {
                         this.model.setField(this.subjectField, data.subject);
                     }
-                    this.model.setField(this.bodyField, data.body_html);
+                    // Check if element with class "spicecrm_quote" should kept on the bottom (it is for the email-reply)
+                    if(this.addtocurrentquote) {
+
+                        // create a new document to manage the current html string (body)
+                        let virtualDocument = document.implementation.createHTMLDocument("Virtual Document");
+                        virtualDocument.documentElement.innerHTML = this.model.getFieldValue(this.bodyField);
+                        let selectedEle = virtualDocument.querySelectorAll(".spicecrm_quote");
+
+                        // keep the html with the class "spicecrm_quote" and set the template
+                        this.model.setField(this.bodyField, data.body_html + selectedEle[0].outerHTML);
+                    } else {
+                        this.model.setField(this.bodyField, data.body_html);
+                    }
                     modalRef.instance.self.destroy();
                 });
-            })
+            });
         }
-
     }
 }

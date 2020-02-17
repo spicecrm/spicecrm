@@ -7,10 +7,12 @@
             <system-spinner></system-spinner>
         </div>
     </div>
-    <div *ngIf="editing" class="slds-grid slds-grid--align-end">
-        <div class="slds-no-flex slds-button-group" role="group">
-            <button *ngIf="!componentconfig.disableupload" class="slds-button slds-button--neutral" (click)="selectFile()">{{language.getLabel('LBL_UPLOAD')}}</button>
-        </div>
+    <div *ngIf="editing" class="slds-grid slds-grid--align-center slds-grid--vertical-align-center slds-gutters_direct-xx-small">
+        <div class="slds-col">{{language.getLabel('LBL_DROP_FILES')}}</div>
+        <div class="slds-col">{{language.getLabel('LBL_OR')}}</div>
+        <button *ngIf="!componentconfig.disableupload" class="slds-col slds-button slds-button--neutral" (click)="selectFile()">{{language.getLabel('LBL_UPLOAD_FILES')}}</button>
+        <div class="slds-col">{{language.getLabel('LBL_OR')}}</div>
+        <button *ngIf="!componentconfig.disableupload" class="slds-col slds-button slds-button--neutral" (click)="addImage()">{{language.getLabel('LBL_ADD_IMAGE')}}</button>
         <input #fileupload style="display:none" type="file" multiple (change)="uploadFile()"/>
     </div>
 </div>
