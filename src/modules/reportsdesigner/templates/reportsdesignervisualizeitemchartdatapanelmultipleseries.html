@@ -1,0 +1,149 @@
+<div class="slds-grid slds-grid--vertical slds-p-around--xxx-small" style="height: 100%">
+    <div *ngIf="properties.dims == '21N'" class="slds-form-element slds-grid slds-grid--vertical-align-center slds-p-vertical--x-small slds-p-left--medium slds-p-right--x-small slds-size--1-of-2">
+        <label class="slds-form-element__label slds-text-heading--label">
+            {{language.getLabel('LBL_DIMENSION')}} 1
+        </label>
+        <div class="slds-form-element__control slds-grow">
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="properties.dimensions.dimension1">
+                    <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
+                        {{language.getLabel(listField.name)}}
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div cdkDropListGroup class="slds-border--bottom slds-border--left slds-border--right slds-border--top slds-grid slds-grow" style="min-height: 100px">
+        <div class="slds-size--1-of-4 slds-scrollable--y slds-border--right" style="height: 100%">
+            <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover">
+                <thead>
+                <tr class="slds-text-title--caps slds-theme--shade">
+                    <th scope="col" class="slds-cell-shrink"></th>
+                    <th scope="col">
+                        <div class="slds-truncate" [title]="language.getLabel('LBL_FIELDS')">
+                            {{language.getLabel('LBL_FIELDS')}}
+                        </div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody cdkDropList cdkDropListSortingDisabled [cdkDropListData]="listFields">
+                <tr *ngFor="let listField of listFields; trackBy: trackByFn" cdkDrag [cdkDragData]="listField" class="slds-border--bottom slds-drag--preview" style="height: 41px">
+                    <td class="slds-p-around--none">
+                        <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
+                    </td>
+                    <td>
+                        <div [title]="listField.name" class="slds-truncate">
+                            {{language.getLabel(listField.name)}}
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div cdkDropList [cdkDropListData]="properties.dataseries" (cdkDropListDropped)="onDrop($event)" class="slds-scrollable--y slds-size--3-of-4" style="height: inherit">
+            <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover">
+                <thead>
+                    <tr class="slds-text-title--caps slds-theme--shade">
+                        <th scope="col">
+                            <div class="slds-truncate" [title]="language.getLabel('LBL_NAME')">
+                                {{language.getLabel('LBL_NAME')}}
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" [title]="language.getLabel('LBL_FUNCTION')">
+                                {{language.getLabel('LBL_FUNCTION')}}
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" [title]="language.getLabel('LBL_AXIS')">
+                                {{language.getLabel('LBL_AXIS')}}
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" [title]="language.getLabel('LBL_RENDER_AS')">
+                                {{language.getLabel('LBL_RENDER_AS')}}
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" [title]="language.getLabel('LBL_COLOR')">
+                                {{language.getLabel('LBL_COLOR')}}
+                            </div>
+                        </th>
+                        <th scope="col" class="slds-cell-shrink"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let dataSeriesItem of properties.dataseries; trackBy: trackByFn" cdkDrag cdkDragDisabled class="slds-border--bottom">
+                        <td>
+                            <div [title]="dataSeriesItem.name" class="slds-truncate">
+                                {{language.getLabel(dataSeriesItem.name)}}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <select class="slds-select" [(ngModel)]="dataSeriesItem.chartfunction">
+                                            <option value="-">-</option>
+                                            <option value="SUM">{{language.getLabel('LBL_SUM')}}</option>
+                                            <option value="AVG">{{language.getLabel('LBL_AVERAGE')}}</option>
+                                            <option value="CUMSUM">{{language.getLabel('LBL_SUM_CUMULATED')}}</option>
+                                            <option value="COUNT">{{language.getLabel('LBL_COUNT')}}</option>
+                                            <option value="MAX">{{language.getLabel('LBL_MAXIMUM')}}</option>
+                                            <option value="MIN">{{language.getLabel('LBL_MINIMUM')}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <!--suppress JSDeprecatedSymbols -->
+                                        <select class="slds-select" [(ngModel)]="dataSeriesItem.axis">
+                                            <option value="-">-</option>
+                                            <option value="P">{{language.getLabel('LBL_PRIMARY')}}</option>
+                                            <option value="S">{{language.getLabel('LBL_SECONDARY')}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <select class="slds-select" [(ngModel)]="dataSeriesItem.renderer">
+                                            <option value="-">-</option>
+                                            <option value="bars">{{language.getLabel('LBL_BAR')}}</option>
+                                            <option value="line">{{language.getLabel('LBL_LINE')}}</option>
+                                            <option value="area">{{language.getLabel('LBL_AREA')}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <input type="text" [(ngModel)]="dataSeriesItem.color" class="slds-input">
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="slds-button slds-button--icon" (click)="deleteSeries(dataSeriesItem.fieldid)">
+                                <system-button-icon icon="delete"></system-button-icon>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="properties.dataseries?.length == 0">
+                        <td colspan="6" class="slds-text-align_center" style="padding: 1rem;">
+                            {{language.getLabel('MSG_DROP_FIELD_HERE')}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

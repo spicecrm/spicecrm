@@ -17,7 +17,7 @@
         </system-checkbox>
     </div>
     <div class="slds-grid slds-grow reports-designer-present-item-pivot-drop-list-group" cdkDropListGroup>
-        <div class="slds-size--1-of-2 slds-scrollable--y slds-border--right" style="height: 100%">
+        <div *ngIf="listFields" cdkDropList [cdkDropListData]="listFields" (cdkDropListEntered)="dropEnteredDragList($event)" (cdkDropListExited)="dropExited($event)" class="slds-size--1-of-2 slds-scrollable--y slds-border--right" style="height: 100%">
             <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover reports-designer-manipulate-table">
                 <thead>
                 <tr class="slds-text-title--caps slds-theme--shade">
@@ -49,7 +49,7 @@
                     </th>
                 </tr>
                 </thead>
-                <tbody *ngIf="listFields" cdkDropList [cdkDropListData]="listFields" (cdkDropListEntered)="dropEnteredDragList($event)" (cdkDropListExited)="dropExited($event)" class="slds-grow slds-scrollable--y">
+                <tbody class="slds-grow slds-scrollable--y">
                 <ng-container *ngFor="let listField of listFields; trackBy: trackByFn">
                     <tr cdkDrag [cdkDragData]="listField" cdkDragBoundary=".reports-designer-present-item-pivot-drop-list-group" class="slds-border--bottom slds-drag--preview">
                         <td class="slds-p-around--none">
@@ -112,9 +112,9 @@
         </div>
         <div class="slds-size--1-of-2 slds-grid slds-grid--vertical slds-p-horizontal--x-small" style="height: 100%">
             <div style="max-height: calc(100% / 3);">
-                <system-collapsable-tab [title]="'LBL_ROWS'">
-                    <div class="slds-scrollable--y">
-                        <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover reports-designer-manipulate-table">
+                <system-collapsable-tab [title]="'LBL_ROWS'" class="spice-collapsible-tab-grow">
+                    <div cdkDropList [cdkDropListData]="pivotRow" (cdkDropListDropped)="onDrop($event)" class="slds-scrollable--y" style="height: 100%">
+                        <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover">
                             <thead>
                             <tr class="slds-text-title--caps slds-theme--shade">
                                 <th class="slds-cell-shrink"></th>
@@ -126,8 +126,7 @@
                                 <th class="slds-cell-shrink"></th>
                             </tr>
                             </thead>
-                            <tbody cdkDropList [cdkDropListData]="pivotRow" (cdkDropListDropped)="onDrop($event)"
-                                   class="slds-grow slds-scrollable--y reports-designer-present-item-pivot-drop-list-pivot-columns reports-designer-table-adjust-drag-placeholder">
+                            <tbody class="slds-scrollable--y reports-designer-present-item-pivot-drop-list-pivot-columns reports-designer-table-adjust-drag-placeholder">
                                 <tr *ngIf="!!pivotRow" cdkDrag [cdkDragData]="pivotRow" cdkDragBoundary=".reports-designer-present-item-pivot-drop-list-pivot-columns" class="slds-border--bottom slds-drag--preview">
                                     <td class="slds-p-around--none">
                                         <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
@@ -143,15 +142,14 @@
                                         </button>
                                     </td>
                                 </tr>
-                                <tr *ngIf="!pivotRow" style="height: 80px"><td colspan="3">&nbsp;</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </system-collapsable-tab>
             </div>
             <div style="max-height: calc(100% / 3);">
-                <system-collapsable-tab [title]="'LBL_COLUMNS'">
-                    <div class="slds-scrollable--y">
+                <system-collapsable-tab [title]="'LBL_COLUMNS'" class="spice-collapsible-tab-grow">
+                    <div *ngIf="pivotColumns" cdkDropList [cdkDropListData]="pivotColumns" (cdkDropListDropped)="onDrop($event)" class="slds-scrollable--y" style="height: 100%">
                         <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover reports-designer-manipulate-table">
                             <thead>
                             <tr class="slds-text-title--caps slds-theme--shade">
@@ -164,8 +162,7 @@
                                 <th class="slds-cell-shrink"></th>
                             </tr>
                             </thead>
-                            <tbody *ngIf="pivotColumns" cdkDropList [cdkDropListData]="pivotColumns" (cdkDropListDropped)="onDrop($event)"
-                                   class="slds-grow slds-scrollable--y reports-designer-present-item-pivot-drop-list-pivot-columns reports-designer-table-adjust-drag-placeholder">
+                            <tbody class="reports-designer-present-item-pivot-drop-list-pivot-columns reports-designer-table-adjust-drag-placeholder">
                                 <ng-container *ngFor="let pivotColumn of pivotColumns; trackBy: trackByFn">
                                     <tr cdkDrag [cdkDragData]="pivotColumn" cdkDragBoundary=".reports-designer-present-item-pivot-drop-list-pivot-columns" class="slds-border--bottom slds-drag--preview">
                                         <td class="slds-p-around--none">
@@ -183,15 +180,14 @@
                                         </td>
                                     </tr>
                                 </ng-container>
-                                <tr *ngIf="pivotColumns.length == 0" style="height: 80px"><td colspan="3">&nbsp;</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </system-collapsable-tab>
             </div>
             <div style="max-height: calc(100% / 3);">
-                <system-collapsable-tab [title]="'LBL_VALUES'">
-                    <div class="slds-scrollable--y">
+                <system-collapsable-tab [title]="'LBL_VALUES'" class="spice-collapsible-tab-grow">
+                    <div *ngIf="pivotValues" cdkDropList [cdkDropListData]="pivotValues" (cdkDropListDropped)="onDrop($event)" class="slds-scrollable--y" style="height: 100%">
                         <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover reports-designer-manipulate-table">
                             <thead>
                             <tr class="slds-text-title--caps slds-theme--shade">
@@ -214,8 +210,7 @@
                                 <th class="slds-cell-shrink"></th>
                             </tr>
                             </thead>
-                            <tbody *ngIf="pivotValues" cdkDropList [cdkDropListData]="pivotValues" (cdkDropListDropped)="onDrop($event)"
-                                   class="slds-grow slds-scrollable--y reports-designer-present-item-pivot-drop-list-pivot-values reports-designer-table-adjust-drag-placeholder">
+                            <tbody class="reports-designer-present-item-pivot-drop-list-pivot-values reports-designer-table-adjust-drag-placeholder">
                                 <ng-container *ngFor="let pivotValue of pivotValues; trackBy: trackByFn">
                                     <tr cdkDrag [cdkDragData]="pivotValue" cdkDragBoundary=".reports-designer-present-item-pivot-drop-list-pivot-values" class="slds-border--bottom slds-drag--preview">
                                         <td class="slds-p-around--none">
@@ -270,7 +265,6 @@
                                         </td>
                                     </tr>
                                 </ng-container>
-                                <tr *ngIf="pivotValues.length == 0" style="height: 80px"><td colspan="5">&nbsp;</td></tr>
                             </tbody>
                         </table>
                     </div>

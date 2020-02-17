@@ -15,15 +15,11 @@
             </div>
         </div>
         <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-m-left--x-small">
-            <label class="slds-form-element__label">
+            <label class="slds-form-element__label slds-text-heading--label">
                 {{language.getLabel('LBL_HEIGHT')}}
             </label>
             <div class="slds-form-element__control">
-                <div class="slds-form-element">
-                    <div class="slds-form-element__control">
-                        <input type="text" size="5" [(ngModel)]="chartHeight" class="slds-input">
-                    </div>
-                </div>
+                <input type="text" size="5" [(ngModel)]="chartHeight" class="slds-input">
             </div>
         </div>
         <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-m-left--x-small">
@@ -56,9 +52,12 @@
             </div>
         </div>
     </div>
-    <div class="slds-scrollable--y slds-grow">
+    <div class="slds-scrollable--y slds-grow" style="min-height: 0">
         <div *ngFor="let item of plugins; trackBy: trackByFn">
-            <reports-designer-visualize-item *ngIf="selectedPluginId == item.id && !!item.component" [component]="item.component"></reports-designer-visualize-item>
+            <reports-designer-visualize-item *ngIf="selectedLayout.itemsCount > 0 && selectedPluginId == item.id && !!item.component" [component]="item.component"></reports-designer-visualize-item>
+        </div>
+        <div *ngIf="selectedLayout.itemsCount == 0 || !selectedPluginId" class="slds-align--absolute-center" style="height: 100%">
+            {{language.getLabel('LBL_MAKE_SELECTION')}}
         </div>
     </div>
 </div>
