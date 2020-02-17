@@ -28,6 +28,18 @@
             </div>
         </div>
         <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_PUSH')}}</label>
+                <div>
+                    <system-checkbox [(ngModel)]="model.data.settings.ews_push"></system-checkbox>
+                </div>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <label class="slds-truncate slds-form-element__label">{{language.getLabel('LBL_SUBSCRIPTION')}}</label>
+                <input type="text" [(ngModel)]="model.data.settings.ews_subscriptionid" class="slds-input" disabled/>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
             <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="displayFoldersModal()" [disabled]="!view.isEditMode()">{{language.getLabel('LBL_EWS_SELECT_FOLDERS')}}</button>
             <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()" [disabled]="!view.isEditMode()">
                 {{language.getLabel('LBL_TEST_CONNECTION')}}

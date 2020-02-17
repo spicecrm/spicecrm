@@ -1,60 +1,75 @@
-<div #area_metadata class="slds-p-horizontal--xx-small">
-    <div *ngIf="!mediaBase64">&nbsp;</div><!-- mediaMetaData.mimetype -->
-    <div *ngIf="mediaBase64" class="slds-grid slds-grid--align-spread"><!-- mediaMetaData.mimetype -->
-        <div *ngIf="mediaMetaData.fileformat">{{this.mediaMetaData.fileformat.toUpperCase()}}</div>
-        <div>{{mediaMetaData.originalWidth}} &times; {{mediaMetaData.originalHeight}} px<span *ngIf="isResized"> &#8594; {{mediaMetaData.width}} &times; {{mediaMetaData.height}} px</span></div>
-    </div>
-</div>
-<div #area_media [ngStyle]="{height:areaMediaHeight}" style="position:relative">
-
-    <div (drop)="onDrop($event)" (dragover)="onDragOver($event)" (dragleave)="onDragLeave()" style="height:100%">
-        <div style="height:100%;width:100%;display:table">
-            <div class="slds-file-selector__dropzone" [ngClass]="{'slds-has-drag-over':isDragOver}" style="display:table-cell;vertical-align:middle;position: absolute;top:0;bottom:0;right:0;left:0">
-                <div class="chessbg" style="height:100%;">
-                    <img #imgelement *ngIf="mediaBase64" [src]="mediaBase64" (load)="imageLoaded($event)" style="max-height:100%"/>
-                </div>
-            </div>
+<div class="slds-rich-text-editor slds-grid slds-grid_vertical slds-nowrap" [ngClass]="{height: componentHeight}">
+    <div #toolbar role="toolbar" class="slds-rich-text-editor__toolbar slds-shrink-none">
+        <ul class="slds-button-group-list">
+            <li >
+                <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="removeImage()" [disabled]="!mediaBase64"><system-button-icon icon="delete"></system-button-icon></button>
+            </li>
+            <li *ngIf="allowEditing">
+                <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="removeModifications()" [disabled]="!cropper || !isEdited" title="{{language.getLabel('LBL_REMOVE_MODIFICATIONS')}}"><system-button-icon icon="undo"></system-button-icon></button>
+            </li>
+        </ul>
+        <ul class="slds-button-group-list">
+            <li >
+                <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="zoomIn()" [disabled]="!mediaBase64"><system-button-icon icon="zoomin"></system-button-icon></button>
+            </li>
+            <li >
+                <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="zoomOut()" [disabled]="!mediaBase64"><system-button-icon icon="zoomout"></system-button-icon></button>
+            </li>
+        </ul>
+        <ul  class="slds-button-group-list">
+            <li>
+                <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="setMoveMode()" [disabled]="!cropper"><system-button-icon icon="move"></system-button-icon></button>
+            </li>
+            <li>
+                <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="setCropMode()" [disabled]="!cropper"><system-button-icon icon="drag"></system-button-icon></button>
+            </li>
+            <li>
+                <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="removeCropping()" [disabled]="!cropper || !isCropped" title="{{language.getLabel('LBL_REMOVE_CROPPING')}}"><system-button-icon icon="clear"></system-button-icon></button>
+            </li>
+        </ul>
+        <ul class="slds-button-group-list">
+            <li>
+                <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="rotate(-90)" [disabled]="!canRotate" title="{{language.getLabel('LBL_ROTATE_TO_LEFT')}}"><system-button-custom-icon icon="rotateleft" size="medium"></system-button-custom-icon></button>
+            </li>
+            <li>
+                <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="rotate(+90)" [disabled]="!canRotate" title="{{language.getLabel('LBL_ROTATE_TO_RIGHT')}}"><system-button-custom-icon icon="rotateright" size="medium"></system-button-custom-icon></button>
+            </li>
+            <li>
+                <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="mirrorX()" [disabled]="!canMirror" title="{{language.getLabel('LBL_MIRROR_HORIZONTALLY')}}"><system-button-custom-icon icon="mirrorhorizontal" size="medium"></system-button-custom-icon></button>
+            </li>
+            <li>
+                <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="mirrorY()" [disabled]="!canMirror" title="{{language.getLabel('LBL_MIRROR_VERTICALLY')}}"><system-button-custom-icon icon="mirrorvertical" size="medium"></system-button-custom-icon></button>
+            </li>
+        </ul>
+        <div *ngIf="allowResizing" class="slds-grid slds-grid--vertical-align-center slds-has-divider--left">
+            <system-checkbox [(ngModel)]="doResize" [disabled]="!canResize">{{language.getLabel('LBL_DOWNSIZE_TO_MAX')}}</system-checkbox>
+            <system-input-number onlyField="true" [(ngModel)]="maxWidthInput" precision="0" min="1" placeholder="{{language.getLabel('LBL_WIDTH')}} " [disabled]="!doResize || !canResize" size="5" (change)="maxWidthChanged()"></system-input-number>
+            <div class="slds-p-left--xxx-small">px</div>
+            <div class="slds-p-horizontal--x-small">x</div>
+            <system-input-number onlyField="true" [(ngModel)]="maxHeightInput" precision="0" min="1" placeholder="{{language.getLabel('LBL_HEIGHT')}} " [disabled]="!doResize || !canResize" size="5" (change)="maxHeightChanged()"></system-input-number>
+            <div class="slds-p-left--xxx-small">px</div>
         </div>
     </div>
-
-    <system-spinner *ngIf="isLoading" style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%);"></system-spinner>
-
-</div>
-<div #area_controls style="position:absolute;left:0;bottom:0;right:0">
-    <div class="slds-grid slds-grid--vertical-align-end slds-grid--align-spread">
-        <div>
-            <button class="slds-button slds-button--neutral" (click)="triggerFileSelectionDialog()">{{lang.getLabel('LBL_SELECT_FILE')}}&nbsp;&hellip;</button>
-        </div>
-        <div *ngIf="allowCropping" class="slds-m-left--x-small">
-            <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="removeCropping()" [disabled]="!cropper || !isCropped" title="{{lang.getLabel('LBL_REMOVE_CROPPING')}}">RC<!--system-button-custom-icon icon="removecropping" size="medium"></system-button-icon--></button>
-        </div>
-        <div *ngIf="allowEditing" class="slds-m-left--x-small">
-            <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="removeModifications()" [disabled]="!cropper || !isEdited" title="{{lang.getLabel('LBL_REMOVE_MODIFICATIONS')}}">RM<!--system-button-custom-icon icon="removemodifications" size="medium"></system-button-icon--></button>
-        </div>
-        <div *ngIf="allowRotating" class="slds-m-left--x-small">
-            <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="rotate(-90)" [disabled]="!canRotate" title="{{lang.getLabel('LBL_ROTATE_TO_LEFT')}}"><system-button-custom-icon icon="rotateleft" size="medium"></system-button-custom-icon></button>
-            <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="rotate(+90)" [disabled]="!canRotate" title="{{lang.getLabel('LBL_ROTATE_TO_RIGHT')}}"><system-button-custom-icon icon="rotateright" size="medium"></system-button-custom-icon></button>
-        </div>
-        <div *ngIf="allowMirroring" class="slds-m-left--x-small">
-            <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="mirrorX()" [disabled]="!canMirror" title="{{lang.getLabel('LBL_MIRROR_HORIZONTALLY')}}"><system-button-custom-icon icon="mirrorhorizontal" size="medium"></system-button-custom-icon></button>
-            <button class="slds-button x-slds-button--icon slds-button--icon-border slds-button--neutral x-slds-button--icon-border-filled" (click)="mirrorY()" [disabled]="!canMirror" title="{{lang.getLabel('LBL_MIRROR_VERTICALLY')}}"><system-button-custom-icon icon="mirrorvertical" size="medium"></system-button-custom-icon></button>
-        </div>
-        <div *ngIf="allowResizing" class="slds-m-left--x-small slds-grid slds-grid--vertical-align-end">
-            <div class="slds-form-element">
-                <div class="slds-form-element__control">
-                    <div class="slds-checkbox">
-                        <input type="checkbox" name="options" id="{{componentId}}_cbDoResize" [(ngModel)]="doResize" (change)="calcTargetSize()" [disabled]="!canResize"/>
-                        <label class="slds-checkbox__label" for="{{componentId}}_cbDoResize">
-                            <span class="slds-checkbox_faux"></span>
-                            <span class="slds-form-element__label">{{lang.getLabel('LBL_DOWNSIZE_TO_MAX')}}</span>
-                        </label>
+    <div [ngStyle]="{height:cropperHeight}">
+        <div class="slds-height_full" spiceDropFileArea (filesDrop)="onDrop($event)" [overlayLoadingSpinner]="isLoading" >
+            <img #imgelement *ngIf="mediaBase64, else uploadbutton" [src]="mediaBase64" (load)="imageLoaded($event)"/>
+            <ng-template #uploadbutton>
+                <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+                    <div class="slds-grid slds-grid--vertical-align-center">
+                        <div>{{language.getLabel('LBL_PASTE')}}</div>
+                        <div class="slds-p-horizontal--x-small">{{language.getLabel('LBL_OR')}}</div>
+                        <button class="slds-button slds-button--neutral" (click)="triggerFileSelectionDialog()">{{language.getLabel('LBL_SELECT_FILE')}}</button>
+                        <input #fileselector style="display:none" type="file" accept="image/*" (change)="fileSelectionChange()"/>
                     </div>
                 </div>
-                <div class="slds-form-element__control slds-p-top--xxx-small">
-                    <system-input-number onlyField="true" [(ngModel)]="maxWidthInput" precision="0" min="1" placeholder="{{lang.getLabel('LBL_WIDTH')}} " [disabled]="!doResize || !canResize" size="5" (change)="maxWidthChanged()"></system-input-number>&nbsp;&times;&nbsp;<system-input-number onlyField="true" [(ngModel)]="maxHeightInput" precision="0" min="1" placeholder="{{lang.getLabel('LBL_HEIGHT')}} " [disabled]="!doResize || !canResize" size="5" (change)="maxHeightChanged()"></system-input-number>
-                </div>
-            </div>
+            </ng-template>
         </div>
     </div>
+    <div #bottomtoolbar role="toolbar" class="slds-rich-text-editor__toolbar slds-shrink-none slds-rich-text-editor__toolbar_bottom">
+        <div *ngIf="imageMetaData.fileformat">{{this.imageMetaData.fileformat.toUpperCase()}}</div>
+        <div *ngIf="mediaBase64" class="slds-grid slds-grid--align-spread">
+            <div>{{imageMetaData.originalWidth}} &times; {{imageMetaData.originalHeight}} px<span *ngIf="isResized"> &#8594; {{imageMetaData.width}} &times; {{imageMetaData.height}} px</span></div>
+        </div>
+        <div *ngIf="!mediaBase64">please select, or past an imnage file</div>
+    </div>
 </div>
-<input #fileselector style="display:none" type="file" accept="image/*" (change)="fileSelectionChange()"/><!-- accept="video/mp4"-->

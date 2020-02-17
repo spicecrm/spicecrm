@@ -3,14 +3,13 @@
  */
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {FormsModule}   from '@angular/forms';
-import {metadata} from '../../services/metadata.service';
+import {FormsModule} from '@angular/forms';
 
-import {ObjectFields}      from '../../objectfields/objectfields';
-import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
-import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
-import {SystemComponents}      from '../../systemcomponents/systemcomponents';
-import {VersionManagerService} from "../../services/versionmanager.service";
+import {ObjectFields} from '../../objectfields/objectfields';
+import {GlobalComponents} from '../../globalcomponents/globalcomponents';
+import {DirectivesModule} from '../../directives/directives';
+import {ObjectComponents} from '../../objectcomponents/objectcomponents';
+import {SystemComponents} from '../../systemcomponents/systemcomponents';
 
 import /*embed*/ {SignServiceOrderModalButtonComponent} from "./components/signserviceordermodalbutton";
 import /*embed*/ {SignServiceOrderModalComponent} from "./components/signserviceordermodal";
@@ -29,6 +28,13 @@ import /*embed*/ {ServiceTicketSLAIndicator} from "./components/serviceticketsla
 import /*embed*/ {ServiceRequestFeedbackButton} from "./components/servicerequestfeedbackbutton";
 import /*embed*/ {ServiceTicketCloseButton} from "./components/serviceticketclosebutton";
 import /*embed*/ {ServiceTicketCloseModal} from "./components/serviceticketclosemodal";
+import /*embed*/ {ServiceTicketView} from "./components/serviceticketview";
+import /*embed*/ {ServiceTicketDetail} from "./components/serviceticketdetail";
+import /*embed*/ {ServiceTicketContactDetail} from "./components/serviceticketcontactdetail";
+import /*embed*/ {ServiceTicketAccountDetail} from "./components/serviceticketaccountdetail";
+import /*embed*/ {ServiceActivitiyTimelineAddServiceNote} from "./components/serviceactivitiytimelineaddservicenote";
+import /*embed*/ {ServiceTicketRelatedTickets} from "./components/serviceticketrelatedtickets";
+import /*embed*/ {ServiceTicketRelatedTicketsTiles} from "./components/serviceticketrelatedticketstiles";
 
 
 @NgModule({
@@ -37,6 +43,7 @@ import /*embed*/ {ServiceTicketCloseModal} from "./components/serviceticketclose
         FormsModule,
         ObjectFields,
         GlobalComponents,
+        DirectivesModule,
         ObjectComponents,
         SystemComponents,
     ],
@@ -57,17 +64,15 @@ import /*embed*/ {ServiceTicketCloseModal} from "./components/serviceticketclose
         ServiceTicketSLAIndicator,
         ServiceRequestFeedbackButton,
         ServiceTicketCloseButton,
-        ServiceTicketCloseModal
-        ]
-    })
+        ServiceTicketCloseModal,
+        ServiceTicketView,
+        ServiceTicketDetail,
+        ServiceTicketContactDetail,
+        ServiceTicketAccountDetail,
+        ServiceActivitiyTimelineAddServiceNote,
+        ServiceTicketRelatedTickets,
+        ServiceTicketRelatedTicketsTiles
+    ]
+})
 export class ServiceComponentsModule {
-    readonly version = '1.0';
-    readonly build_date = '/*build_date*/';
-
-    constructor(
-        public metadata: metadata,
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
-    }
 }

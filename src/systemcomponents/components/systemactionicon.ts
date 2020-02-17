@@ -9,9 +9,9 @@ import {metadata} from '../../services/metadata.service';
     templateUrl: './src/systemcomponents/templates/systemactionicon.html'
 })
 export class SystemActionIcon {
-    @Input() icon: string = '';
-    @Input() size: string = 'small';
-    @Input() title: string = undefined;
+    @Input() private icon: string = '';
+    @Input() private size: ''|'large'|'small'|'x-small'|'xx-small' = '';
+    @Input() private title: string = undefined;
 
     constructor(private metadata: metadata) {}
 

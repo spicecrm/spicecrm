@@ -97,13 +97,14 @@ export class SystemModuleTreeItem {
     private loadItems() {
         this.isLoading = true;
         this.backend.getRequest('/dictionary/browser/' + this.module + '/nodes').subscribe(items => {
-            this.nodeitems = items
-                .map(item => {
-                    item.displayname = this.language.getLabel(item.label);
-                    item.nodeId = this.modelUtilities.generateGuid();
-                    return item;
-                })
-                .sort((a, b) => !!a.displayname && !!b.displayname ? a.displayname.toLowerCase() > b.displayname.toLowerCase() ? 1 : -1 : 0);
+            if (items) {
+                this.nodeitems = items
+                    .map(item => {
+                        item.displayname = !!item.label ? this.language.getLabel(item.label) : this.language.getModuleName(item.module);
+                        return item;
+                    })
+                    .sort((a, b) => !!a.displayname && !!b.displayname ? a.displayname > b.displayname ? 1 : -1 : 0);
+            }
 
             this.isLoading = false;
             this.isLoaded = true;

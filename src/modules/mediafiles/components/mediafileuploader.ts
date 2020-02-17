@@ -1,21 +1,21 @@
 /**
  * @module ModuleMediaFiles
  */
-import { Component, ViewChild } from '@angular/core';
-import { mediafiles } from '../../../services/mediafiles.service';
-import { backend } from '../../../services/backend.service';
-import { language } from '../../../services/language.service';
-import { Subject, Observable } from 'rxjs';
-import { toast } from "../../../services/toast.service";
-import { model } from '../../../services/model.service';
-import { view } from '../../../services/view.service';
-import { metadata } from '../../../services/metadata.service';
-import { SystemInputMedia } from '../../../systemcomponents/components/systeminputmedia';
+import {Component, ViewChild} from '@angular/core';
+import {mediafiles} from '../../../services/mediafiles.service';
+import {backend} from '../../../services/backend.service';
+import {language} from '../../../services/language.service';
+import {Subject, Observable} from 'rxjs';
+import {toast} from "../../../services/toast.service";
+import {model} from '../../../services/model.service';
+import {view} from '../../../services/view.service';
+import {metadata} from '../../../services/metadata.service';
+import {SystemInputMedia} from '../../../systemcomponents/components/systeminputmedia';
 
 @Component({
     selector: 'media-file-uploader',
     templateUrl: './src/modules/mediafiles/templates/mediafileuploader.html',
-    providers: [ mediafiles, model, view ],
+    providers: [mediafiles, model, view],
     styles: [
         ':host {height: 100%;}',
         ':host >>> div.uploadbar {margin-left:-16px;margin-right:-16px;margin-top:16px;margin-bottom:-16px;width:calc(100% + 32px);height:8px;}',
@@ -28,21 +28,21 @@ export class MediaFileUploader {
     private theProgress: number = 0;
     private noMetaData: boolean = false;
 
-    private answer: Observable<boolean|string> = null;
-    private answerSubject: Subject<boolean|string> = null;
+    private answer: Observable<boolean | string> = null;
+    private answerSubject: Subject<boolean | string> = null;
 
     private self: any;
 
     private isSaving = false;
     private isEditing = true;
     private tagsEditing = true;
-    @ViewChild(SystemInputMedia, { static: false }) public inputMedia;
+    @ViewChild(SystemInputMedia, {static: false}) public inputMedia;
 
     private mediaMetaData;
 
     private fieldsetId: string;
 
-    constructor( private mediafiles: mediafiles, private metadata: metadata, private backend: backend, private lang: language, private toast: toast, public model: model, public view: view ) {
+    constructor(private mediafiles: mediafiles, private metadata: metadata, private backend: backend, private lang: language, private toast: toast, public model: model, public view: view) {
 
         this.answerSubject = new Subject<boolean>();
         this.answer = this.answerSubject.asObservable();
@@ -51,19 +51,19 @@ export class MediaFileUploader {
         this.model.id = this.model.generateGuid();
         this.model.initialize();
 
-        this.model.setField('id', this.model.id );
+        this.model.setField('id', this.model.id);
 
         this.view.isEditable = true;
         this.view.setEditMode();
 
-        let componentConfig = this.metadata.getComponentConfig('MediaFileUploader','MediaFiles');
+        let componentConfig = this.metadata.getComponentConfig('MediaFileUploader', 'MediaFiles');
         this.fieldsetId = componentConfig.fieldset;
 
     }
 
     private cancel(): void {
         this.model.cancelEdit();
-        this.answerSubject.next( false );
+        this.answerSubject.next(false);
         this.answerSubject.complete();
         this.self.destroy();
     }
@@ -72,31 +72,48 @@ export class MediaFileUploader {
         return this.mediaMetaData && !this.isSaving;
     }
 
-    private mediaChanged( data ) {
-        this.mediaMetaData = data.metaData;
-        if ( !this.model.getField('name' )) this.model.setField('name', this.mediaMetaData.filename.replace(/\.[^\.]+$/, '' ).replace(/_/, ' '));
+    /**
+     * simple getter to get the image
+     */
+    get image() {
+        return this.model.getField('file');
     }
 
+    /**
+     * setter to set the image data (base64) and the metadata
+     * @param imageData
+     */
+    set image(imageData) {
+        this.model.setField('file', imageData);
+        this.mediaMetaData = this.inputMedia.mediaMetaData;
+
+        if (!this.model.getField('name')) {
+            this.model.setField('name', this.mediaMetaData.filename.replace(/\.[^\.]+$/, '').replace(/_/, ' '));
+        }
+
+        this.model.setField('mediatype', this.mediaMetaData.mediatype);
+        this.model.setField('filetype', this.mediaMetaData.fileformat);
+    }
+
+
     private save(): void {
-        if ( !this.canSave ) return;
+        if (!this.canSave) return;
         this.isSaving = true;
-        this.model.setField('file', this.inputMedia.getImage() );
-        this.model.setField('mediatype', this.mediaMetaData.mediatype );
-        this.model.setField('filetype', this.mediaMetaData.fileformat );
-        this.model.savingProgress.subscribe( progress => this.theProgress = progress );
-        if ( this.model.validate() ) {
+
+        this.model.savingProgress.subscribe(progress => this.theProgress = progress);
+        if (this.model.validate()) {
             this.view.setViewMode();
             this.isEditing = false;
-            this.model.save().subscribe( () => {
-                this.answerSubject.next( this.model.id );
+            this.model.save().subscribe(() => {
+                this.answerSubject.next(this.model.id);
                 this.answerSubject.complete();
-                window.setTimeout( () => this.self.destroy(), 2000 );
-            } );
+                window.setTimeout(() => this.self.destroy(), 2000);
+            });
         } else this.isSaving = false;
     }
 
-    public set tagsAsString( value ) {
-        this.model.setField('tags', value );
+    public set tagsAsString(value) {
+        this.model.setField('tags', value);
     }
 
     public get tagsAsString() {
@@ -104,7 +121,7 @@ export class MediaFileUploader {
     }
 
     public onModalEscX() {
-        if ( !this.isSaving ) this.cancel();
+        if (!this.isSaving) this.cancel();
         return false;
     }
 
