@@ -1,0 +1,6 @@
+<system-collapsable-tab [title]="'LBL_CHART_DATA'" class="spice-collapsible-tab-grow">
+    <reports-designer-visualize-item-chart-data-panel-single-series *ngIf="properties.dims.indexOf('N') == -1; else seriesValuesContainer" [properties]="properties"></reports-designer-visualize-item-chart-data-panel-single-series>
+    <ng-template #seriesValuesContainer>
+        <reports-designer-visualize-item-chart-data-panel-multiple-series [properties]="properties"></reports-designer-visualize-item-chart-data-panel-multiple-series>
+    </ng-template>
+</system-collapsable-tab>

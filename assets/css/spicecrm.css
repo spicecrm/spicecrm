@@ -1402,3 +1402,26 @@ ul.spice-taglist span.slds-badge {
 .slds-radio_button [type=radio]:checked ~ .slds-radio_faux:hover {
     background-color: #b5181e;
 }
+
+.spice-collapsible-tab-grow {
+    display: block;
+    height: 100%;
+}
+
+.spice-collapsible-tab-grow > div.slds-section {
+    height: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    margin: 0;
+}
+
+.spice-collapsible-tab-grow > div.slds-section > :nth-child(2) {
+    -webkit-box-flex: 1;
+    flex-grow: 1;
+    min-height: 0;
+}

@@ -15,7 +15,6 @@ export class ReportsDesignerVisualize {
 
     protected plugins: any[] = [];
     protected radioButtonItems: string[] = ['1', '2', '3', '4', '5'];
-    protected visualizeColors: any[] = [];
     protected layoutOptions: any = [
         {value: '-', itemsCount: 0},
         {value: '1x1', itemsCount: 1},
@@ -53,7 +52,14 @@ export class ReportsDesignerVisualize {
     set selectedLayout(layout) {
         this.model.getField('visualization_params').layout = layout.value;
         this._selectedLayout = layout;
-        if (!this._selectedLayout) this.activeLayoutItem = undefined;
+        this.activeLayoutItem = this._selectedLayout.itemsCount > 0 ? '1' : undefined;
+    }
+
+    /**
+     * @return integrationParams: object
+     */
+    get visualizationParams() {
+        return this.model.getField('visualization_params');
     }
 
     /**
@@ -64,27 +70,12 @@ export class ReportsDesignerVisualize {
     }
 
     /**
-     * set the layout and define its items
+     * set the active layout item and initialize it if it is not defined yet
      * @param item: string
      */
     set activeLayoutItem(item) {
         this.reportsDesignerService.visualizeActiveLayoutItem = item;
         if (!this.visualizationParams[item]) this.visualizationParams[item] = {};
-    }
-
-    /**
-     * @return chartHeight: number
-     */
-    get chartHeight() {
-        return this.model.getField('visualization_params').chartheight;
-    }
-
-    /**
-     * set the layout and define its items
-     * @param chartHeight: number
-     */
-    set chartHeight(chartHeight) {
-        this.model.getField('visualization_params').chartheight = chartHeight;
     }
 
     /**
@@ -103,10 +94,18 @@ export class ReportsDesignerVisualize {
     }
 
     /**
-     * @return integrationParams: object
+     * @return chartHeight: number
      */
-    get visualizationParams() {
-        return this.model.getField('visualization_params');
+    get chartHeight() {
+        return this.model.getField('visualization_params').chartheight;
+    }
+
+    /**
+     * set the layout and define its items
+     * @param chartHeight: number
+     */
+    set chartHeight(chartHeight) {
+        this.model.getField('visualization_params').chartheight = chartHeight;
     }
 
     /**

@@ -33,7 +33,11 @@ import /*embed*/ {ReportsDesignerPresentItemPivot} from "./components/reportsdes
 import /*embed*/ {ReportsDesignerVisualize} from "./components/reportsdesignervisualize";
 import /*embed*/ {ReportsDesignerVisualizeItem} from "./components/reportsdesignervisualizeitem";
 import /*embed*/ {ReportsDesignerVisualizeItemChartTypePanel} from "./components/reportsdesignervisualizeitemcharttypepanel";
+import /*embed*/ {ReportsDesignerVisualizeItemChartDataPanel} from "./components/reportsdesignervisualizeitemchartdatapanel";
+import /*embed*/ {ReportsDesignerVisualizeItemChartDataPanelSingleSeries} from "./components/reportsdesignervisualizeitemchartdatapanelsingleseries";
+import /*embed*/ {ReportsDesignerVisualizeItemChartDataPanelMultipleSeries} from "./components/reportsdesignervisualizeitemchartdatapanelmultipleseries";
 import /*embed*/ {ReportsDesignerVisualizeItemGoogleCharts} from "./components/reportsdesignervisualizeitemgooglecharts";
+import /*embed*/ {ReportsDesignerVisualizeItemHighCharts} from "./components/reportsdesignervisualizeitemhighcharts";
 import /*embed*/ {ReportsDesignerIntegrate} from "./components/reportsdesignerintegrate";
 import /*embed*/ {ReportsDesignerIntegrateItem} from "./components/reportsdesignerintegrateitem";
 import /*embed*/ {ReportsDesignerIntegrateItemTargetList} from "./components/reportsdesignerintegrateitemtargetlist";
@@ -76,7 +80,11 @@ import /*embed*/ {ReportsDesignerCondition} from "./components/reportsdesignerco
         ReportsDesignerVisualize,
         ReportsDesignerVisualizeItem,
         ReportsDesignerVisualizeItemChartTypePanel,
+        ReportsDesignerVisualizeItemChartDataPanel,
+        ReportsDesignerVisualizeItemChartDataPanelSingleSeries,
+        ReportsDesignerVisualizeItemChartDataPanelMultipleSeries,
         ReportsDesignerVisualizeItemGoogleCharts,
+        ReportsDesignerVisualizeItemHighCharts,
         ReportsDesignerIntegrate,
         ReportsDesignerIntegrateItem,
         ReportsDesignerIntegrateItemTargetList,
