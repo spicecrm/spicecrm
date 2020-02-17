@@ -15,30 +15,84 @@ export class ReportsDesignerVisualizeItemGoogleCharts implements OnInit {
     protected dimensionsOptions: any[] = [
         {
             value: '111',
-            name: `${this.language.getLabel('LBL_ONE_DIMENSIONAL')} (${this.language.getLabel('LBL_SERIES')})`
+            name: `1 ${this.language.getLabel('LBL_DIMENSIONAL')} (${this.language.getLabel('LBL_SERIES')})`
         }, {
             value: '10N',
-            name: `${this.language.getLabel('LBL_ONE_DIMENSIONAL')} (${this.language.getLabel('LBL_VALUES')})`
+            name: `1 ${this.language.getLabel('LBL_DIMENSIONAL')} (${this.language.getLabel('LBL_VALUES')})`
 
         }, {
             value: '221',
-            name: `${this.language.getLabel('LBL_TWO_DIMENSIONAL')} (${this.language.getLabel('LBL_SERIES')})`
+            name: `2 ${this.language.getLabel('LBL_DIMENSIONAL')} (${this.language.getLabel('LBL_SERIES')})`
 
         }, {
             value: '21N',
-            name: `${this.language.getLabel('LBL_TWO_DIMENSIONAL')} (${this.language.getLabel('LBL_VALUES')})`
+            name: `2 ${this.language.getLabel('LBL_DIMENSIONAL')} (${this.language.getLabel('LBL_VALUES')})`
 
         }, {
             value: '220',
-            name: `${this.language.getLabel('LBL_TWO_DIMENSIONAL')} (${this.language.getLabel('LBL_NO_VALUES')})`
+            name: `2 ${this.language.getLabel('LBL_DIMENSIONAL')} (${this.language.getLabel('LBL_NO_VALUES')})`
 
         }, {
             value: '331',
-            name: `${this.language.getLabel('LBL_THREE_DIMENSIONAL')} (${this.language.getLabel('LBL_SERIES')})`
+            name: `3 ${this.language.getLabel('LBL_DIMENSIONAL')} (${this.language.getLabel('LBL_SERIES')})`
         }];
+
+    protected typeOptions = [{
+        dimensions: ['111', '10N', '221', '21N'],
+        value: 'Area',
+        name: this.language.getLabel('LBL_AREA_CHART')
+    }, {
+        dimensions: ['111', '10N', '221', '21N'],
+        value: 'SteppedArea',
+        name: this.language.getLabel('LBL_STEPPED_AREA_CHART')
+    }, {
+        dimensions: ['221', '331'],
+        value: 'Bubble',
+        name: this.language.getLabel('LBL_BUBBLE_CHART')
+    }, {
+        dimensions: ['221'],
+        value: 'Sankey',
+        name: this.language.getLabel('LBL_SANKEY_CHART')
+    }, {
+        dimensions: ['111', '10N', '221', '21N'],
+        value: 'Bar',
+        name: this.language.getLabel('LBL_BAR_CHART')
+    }, {
+        dimensions: ['111', '10N', '221', '21N'],
+        value: 'Column',
+        name: this.language.getLabel('LBL_COLUMN_CHART')
+    }, {
+        dimensions: ['111', '10N', '221', '21N'],
+        value: 'Line',
+        name: this.language.getLabel('LBL_LINE_CHART')
+    }, {
+        dimensions: ['220'],
+        value: 'Scatter',
+        name: this.language.getLabel('LBL_SCATTER_CHART')
+    }, {
+        dimensions: ['111', '10N'],
+        value: 'Pie',
+        name: this.language.getLabel('LBL_PIE_CHART')
+    }, {
+        dimensions: ['111', '10N'],
+        value: 'Donut',
+        name: this.language.getLabel('LBL_DONUT_CHART')
+    }, {
+        dimensions: ['10N', '21N'],
+        value: 'Combo',
+        name: this.language.getLabel('LBL_COMBO_CHART')
+    }];
+
 
     constructor(private language: language, private model: model, private reportsDesignerService: ReportsDesignerService) {
 
+    }
+
+    /**
+     * @return properties: object
+     */
+    get properties() {
+        return this.model.getField('visualization_params')[this.reportsDesignerService.visualizeActiveLayoutItem];
     }
 
     public ngOnInit() {
@@ -49,7 +103,7 @@ export class ReportsDesignerVisualizeItemGoogleCharts implements OnInit {
      * set the initial plugin properties data
      */
     private initializeProperties() {
-        if (this.properties.googlecharts) return;
+        if (this.properties.googlecharts && this.properties.googlecharts.uid) return;
         this.properties.googlecharts = {
             uid: this.reportsDesignerService.generateGuid(),
             title: '',
@@ -69,10 +123,11 @@ export class ReportsDesignerVisualizeItemGoogleCharts implements OnInit {
     }
 
     /**
-     * @return properties: object
+     * set the properties option
+     * @param name: string
+     * @param bool: boolean
      */
-    get properties() {
-        return this.model.getField('visualization_params')[this.reportsDesignerService.visualizeActiveLayoutItem];
+    private setPropertiesOption(name, bool) {
+        this.properties.googlecharts.options[name] = bool ? 'on' : 'off';
     }
-
 }
