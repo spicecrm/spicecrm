@@ -6,7 +6,6 @@ import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
 import {ReportsDesignerService} from "../services/reportsdesigner.service";
 import {ReportsDesignerVisualizeItemChartDataPanel} from "./reportsdesignervisualizeitemchartdatapanel";
-import {CdkDragExit} from "@angular/cdk/drag-drop";
 
 @Component({
     selector: 'reports-designer-visualize-item-chart-data-panel-multiple-series',
@@ -21,27 +20,10 @@ export class ReportsDesignerVisualizeItemChartDataPanelMultipleSeries extends Re
         super(language, model, reportsDesignerService);
     }
 
-    /**
-     * append a placeholder to the dom keep space reserved for the dragged element in its origin
-     * @param e: CdkDragExit
-     */
-    private dropExited(e: CdkDragExit) {
-        this.reportsDesignerService.dragPlaceHolderNode = e.item.getRootElement().cloneNode(true);
-        this.renderer.setStyle(this.reportsDesignerService.dragPlaceHolderNode, 'display', 'table-row');
-        let index = e.container.data.findIndex(item => item.id == e.item.data.id);
-        if (index > -1) {
-            e.container.element.nativeElement.insertBefore(
-                this.reportsDesignerService.dragPlaceHolderNode,
-                e.container.element.nativeElement.children[index]
+    get availableListFields() {
+        return !this.properties.dataseries || this.properties.dataseries.length == 0 ? this.listFields :
+            this.listFields.filter(field => !this.properties.dataseries
+                .some(series => series.fieldid === field.fieldid)
             );
-        }
-    }
-
-    /**
-     * remove PlaceHolder Element
-     * @param e: CdkDragEnter
-     */
-    private dropEnteredDragList(e) {
-        this.reportsDesignerService.removePlaceHolderElement(e.container.element.nativeElement);
     }
 }
