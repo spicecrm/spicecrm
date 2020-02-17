@@ -430,7 +430,7 @@ export class relatedmodels implements OnDestroy {
     /**
      * helper method to reset the items
      */
-    private resetData() {
+    public resetData() {
         this.items = [];
     }
 

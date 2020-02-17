@@ -2,10 +2,7 @@
 
     <ng-container *ngIf="isEditMode()">
         <system-spinner *ngIf="isLoadingOriginal" size="large" class="spice-vertically-centered"></system-spinner>
-        <system-input-media *ngIf="!isLoadingOriginal"
-                acceptMedia="{image:true}"
-                [image]="imageUrlOriginal" [mediatype]="mediatype" [fileformat]="fileformat" (mediaChange)="mediaChange($event)"
-                style="height:100%">
+        <system-input-media *ngIf="!isLoadingOriginal" [(ngModel)]="imageUrlOriginal" [fileformat]="fileformat" (mediaChange)="mediaChange($event)" style="height:100%">
         </system-input-media>
     </ng-container>
 
