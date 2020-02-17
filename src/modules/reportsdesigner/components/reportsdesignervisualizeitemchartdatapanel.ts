@@ -62,10 +62,13 @@ export class ReportsDesignerVisualizeItemChartDataPanel implements OnChanges {
     }
 
     /**
-     * push dropped item to dataseries array
+     * remove the placeholder element and push dropped item to dataseries array
      * @param event: CdkDragDrop
      */
     public onDrop(event: CdkDragDrop<any>) {
+
+        this.reportsDesignerService.removePlaceHolderElement(event.previousContainer.element.nativeElement);
+
         this.properties.dataseries.push({
             id: this.reportsDesignerService.generateGuid(),
             fieldid: event.item.data.fieldid,
