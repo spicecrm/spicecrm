@@ -17,7 +17,7 @@
         </system-checkbox>
     </div>
     <div class="slds-grid slds-grow reports-designer-present-item-pivot-drop-list-group" cdkDropListGroup>
-        <div *ngIf="listFields" cdkDropList [cdkDropListData]="listFields" (cdkDropListEntered)="dropEnteredDragList($event)" (cdkDropListExited)="dropExited($event)" class="slds-size--1-of-2 slds-scrollable--y slds-border--right" style="height: 100%">
+        <div *ngIf="availableListFields" cdkDropList [cdkDropListData]="availableListFields" class="slds-size--1-of-2 slds-scrollable--y slds-border--right" style="height: 100%">
             <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover reports-designer-manipulate-table">
                 <thead>
                 <tr class="slds-text-title--caps slds-theme--shade">
@@ -50,68 +50,73 @@
                 </tr>
                 </thead>
                 <tbody class="slds-grow slds-scrollable--y">
-                <ng-container *ngFor="let listField of listFields; trackBy: trackByFn">
-                    <tr cdkDrag [cdkDragData]="listField" cdkDragBoundary=".reports-designer-present-item-pivot-drop-list-group" class="slds-border--bottom slds-drag--preview">
-                        <td class="slds-p-around--none">
-                            <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
-                        </td>
-                        <td [title]="listField.path">
-                            <div class="slds-truncate">
-                                {{listField.path}}
-                            </div>
-                        </td>
-                        <td [title]="listField.name">
-                            <div class="slds-truncate">
-                                {{language.getLabel(listField.name)}}
-                            </div>
-                        </td>
-                        <td [title]="listField.sqlfunction">
-                            <div class="slds-truncate">
-                                {{listField.sqlfunction}}
-                            </div>
-                        </td>
-                        <td>
-                            <div class="slds-form-element">
-                                <div class="slds-form-element__control">
-                                    <div class="slds-select_container">
-                                        <select class="slds-select" [(ngModel)]="listField.sort">
-                                            <option value="asc">{{language.getLabel('LBL_ASCENDING')}}</option>
-                                            <option value="desc">{{language.getLabel('LBL_DESCENDING')}}</option>
-                                            <option value="sortable">{{language.getLabel('LBL_SORTABLE')}}</option>
-                                        </select>
+                    <ng-container *ngFor="let listField of availableListFields; trackBy: trackByFn">
+                        <tr cdkDrag [cdkDragData]="listField" cdkDragBoundary=".reports-designer-present-item-pivot-drop-list-group" class="slds-border--bottom slds-drag--preview">
+                            <td class="slds-p-around--none">
+                                <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
+                            </td>
+                            <td [title]="listField.path">
+                                <div class="slds-truncate">
+                                    {{listField.path}}
+                                </div>
+                            </td>
+                            <td [title]="listField.name">
+                                <div class="slds-truncate">
+                                    {{language.getLabel(listField.name)}}
+                                </div>
+                            </td>
+                            <td [title]="listField.sqlfunction">
+                                <div class="slds-truncate">
+                                    {{listField.sqlfunction}}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="slds-form-element">
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-select_container">
+                                            <select class="slds-select" [(ngModel)]="listField.sort">
+                                                <option value="asc">{{language.getLabel('LBL_ASCENDING')}}</option>
+                                                <option value="desc">{{language.getLabel('LBL_DESCENDING')}}</option>
+                                                <option value="sortable">{{language.getLabel('LBL_SORTABLE')}}</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="slds-form-element">
-                                <div class="slds-form-element__control">
-                                    <div class="slds-select_container">
-                                        <select class="slds-select" [(ngModel)]="listField.overridetype">
-                                            <option value="none">{{language.getLabel('LBL_NONE')}}</option>
-                                            <option value="currency">{{language.getLabel('LBL_CURRENCY')}}</option>
-                                            <option value="currencyint">{{language.getLabel('LBL_CURRENCY_INTEGER')}}</option>
-                                            <option value="percentage">{{language.getLabel('LBL_PERCENTAGE')}}</option>
-                                            <option value="number">{{language.getLabel('LBL_NUMBER')}}</option>
-                                            <option value="int">{{language.getLabel('LBL_INTEGER')}}</option>
-                                            <option value="float">{{language.getLabel('LBL_FLOAT')}}</option>
-                                            <option value="date">{{language.getLabel('LBL_DATE')}}</option>
-                                            <option value="datetime">{{language.getLabel('LBL_DATE_TIME')}}</option>
-                                            <option value="datetutc">{{language.getLabel('LBL_DATE_TO_UTC')}}</option>
-                                            <option value="bool">{{language.getLabel('LBL_BOOLEAN')}}</option>
-                                            <option value="text">{{language.getLabel('LBL_TEXT')}}</option>
-                                        </select>
+                            </td>
+                            <td>
+                                <div class="slds-form-element">
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-select_container">
+                                            <select class="slds-select" [(ngModel)]="listField.overridetype">
+                                                <option value="none">{{language.getLabel('LBL_NONE')}}</option>
+                                                <option value="currency">{{language.getLabel('LBL_CURRENCY')}}</option>
+                                                <option value="currencyint">{{language.getLabel('LBL_CURRENCY_INTEGER')}}</option>
+                                                <option value="percentage">{{language.getLabel('LBL_PERCENTAGE')}}</option>
+                                                <option value="number">{{language.getLabel('LBL_NUMBER')}}</option>
+                                                <option value="int">{{language.getLabel('LBL_INTEGER')}}</option>
+                                                <option value="float">{{language.getLabel('LBL_FLOAT')}}</option>
+                                                <option value="date">{{language.getLabel('LBL_DATE')}}</option>
+                                                <option value="datetime">{{language.getLabel('LBL_DATE_TIME')}}</option>
+                                                <option value="datetutc">{{language.getLabel('LBL_DATE_TO_UTC')}}</option>
+                                                <option value="bool">{{language.getLabel('LBL_BOOLEAN')}}</option>
+                                                <option value="text">{{language.getLabel('LBL_TEXT')}}</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </td>
+                        </tr>
+                    </ng-container>
+                    <tr *ngIf="availableListFields?.length == 0">
+                        <td colspan="6" class="slds-text-align_center" style="padding: 1rem;">
+                            {{language.getLabel('MSG_NO_RECORDS_FOUND')}}
                         </td>
                     </tr>
-                </ng-container>
                 </tbody>
             </table>
         </div>
         <div class="slds-size--1-of-2 slds-grid slds-grid--vertical slds-p-horizontal--x-small" style="height: 100%">
-            <div style="max-height: calc(100% / 3);">
+            <div style="height: calc(100% / 3);">
                 <system-collapsable-tab [title]="'LBL_ROWS'" class="spice-collapsible-tab-grow">
                     <div cdkDropList [cdkDropListData]="pivotRow" (cdkDropListDropped)="onDrop($event)" class="slds-scrollable--y" style="height: 100%">
                         <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover">
@@ -147,7 +152,7 @@
                     </div>
                 </system-collapsable-tab>
             </div>
-            <div style="max-height: calc(100% / 3);">
+            <div style="height: calc(100% / 3);">
                 <system-collapsable-tab [title]="'LBL_COLUMNS'" class="spice-collapsible-tab-grow">
                     <div *ngIf="pivotColumns" cdkDropList [cdkDropListData]="pivotColumns" (cdkDropListDropped)="onDrop($event)" class="slds-scrollable--y" style="height: 100%">
                         <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover reports-designer-manipulate-table">
@@ -185,7 +190,7 @@
                     </div>
                 </system-collapsable-tab>
             </div>
-            <div style="max-height: calc(100% / 3);">
+            <div style="height: calc(100% / 3);">
                 <system-collapsable-tab [title]="'LBL_VALUES'" class="spice-collapsible-tab-grow">
                     <div *ngIf="pivotValues" cdkDropList [cdkDropListData]="pivotValues" (cdkDropListDropped)="onDrop($event)" class="slds-scrollable--y" style="height: 100%">
                         <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover reports-designer-manipulate-table">
