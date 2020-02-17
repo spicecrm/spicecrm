@@ -40,6 +40,7 @@ import /*embed*/ {fieldActivityParticipationStatus} from "./fields/fieldactivity
 import /*embed*/ {fieldActivityCurrentUserParticipationStatus} from "./fields/fieldactivitycurrentuserparticipationstatus";
 
 import /*embed*/ {ActivityTimeline} from './components/activitytimeline';
+import /*embed*/ {ActivityTimelineTabbed} from './components/activitytimelinetabbed';
 import /*embed*/ {ActivityTimelineDropZoneWrapper} from './components/activitytimelinedropzonewrapper';
 import /*embed*/ {ActivityTimelineFilter} from "./components/activitytimelinefilter";
 import /*embed*/ {ActivityTimelineContainer} from './components/activitytimelinecontainer';
@@ -90,6 +91,7 @@ import /*embed*/ {ActivityTimelineSummaryAggregates} from './components/activity
         fieldActivityParticipationStatus,
         fieldActivityCurrentUserParticipationStatus,
         ActivityTimeline,
+        ActivityTimelineTabbed,
         ActivityTimelineDropZoneWrapper,
         ActivityTimelineFilter,
         ActivityTimelineContainer,

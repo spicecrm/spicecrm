@@ -18,15 +18,15 @@ import {DirectivesModule} from "../../directives/directives";
 
 import /*embed*/ { calendar } from "./services/calendar.service";
 
-import /*embed*/ {Calendar} from "./components/calendar";
 import /*embed*/ {CalendarHeader} from "./components/calendarheader";
+import /*embed*/ {CalendarSheetDropTarget} from "./components/calendarsheetdroptarget";
+import /*embed*/ {Calendar} from "./components/calendar";
 import /*embed*/ {CalendarSheetDay} from "./components/calendarsheetday";
 import /*embed*/ {CalendarSheetThreeDays} from "./components/calendarsheetthreedays";
 import /*embed*/ {CalendarSheetWeek} from "./components/calendarsheetweek";
 import /*embed*/ {CalendarSheetMonth} from "./components/calendarsheetmonth";
 import /*embed*/ {CalendarSheetSchedule} from "./components/calendarsheetschedule";
 import /*embed*/ {CalendarSheetEvent} from "./components/calendarsheetevent";
-import /*embed*/ {CalendarSheetDropTarget} from "./components/calendarsheetdroptarget";
 import /*embed*/ {CalendarMorePopover} from "./components/calendarmorepopover";
 import /*embed*/ {CalendarMoreButton} from "./components/calendarmorebutton";
 import /*embed*/ {CalendarAddCalendar} from "./components/calendaraddcalendar";

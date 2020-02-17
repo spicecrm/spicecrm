@@ -4,10 +4,11 @@
 import {Component, Injector, OnDestroy, OnInit} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
-import {activitiyTimeLineService} from '../../../services/activitiytimeline.service';
+import {activitiytimeline} from '../../../services/activitiytimeline.service';
 import {modelattachments} from "../../../services/modelattachments.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {metadata} from "../../../services/metadata.service";
+import {Router} from "@angular/router";
 
 /**
  * @ignore
@@ -16,7 +17,7 @@ declare var moment;
 
 @Component({
     templateUrl: './src/modules/activities/templates/activitytimeline.html',
-    providers: [activitiyTimeLineService, modelattachments]
+    providers: [activitiytimeline]
 })
 export class ActivityTimeline implements OnInit, OnDestroy {
 
@@ -33,20 +34,29 @@ export class ActivityTimeline implements OnInit, OnDestroy {
         History: false
     };
 
-    constructor(private model: model,
-                private language: language,
-                private activitiyTimeLineService: activitiyTimeLineService,
+    constructor(public model: model,
+                public router: Router,
+                public language: language,
+                public activitiytimeline: activitiytimeline,
                 public metadata: metadata,
                 public utils: modelutilities,
                 public injector: Injector) {
+    }
 
+    /**
+     * @ignore
+     */
+    public ngOnInit() {
+        this.activitiytimeline.parent = this.model;
+        if (this.componentconfig.usefts) this.activitiytimeline.usefts = true;
+        if (this.componentconfig.defaultentries) this.activitiytimeline.defaultLimit = this.componentconfig.defaultentries;
     }
 
     /**
      * getter for the searchterm
      */
     get ftsSearchTerm() {
-        return this.activitiyTimeLineService.filters.searchterm;
+        return this.activitiytimeline.filters.searchterm;
     }
 
     /**
@@ -55,8 +65,8 @@ export class ActivityTimeline implements OnInit, OnDestroy {
      * @param searchterm the searchterm
      */
     set ftsSearchTerm(searchterm) {
-        this.activitiyTimeLineService.filters.searchterm = searchterm;
-        this.activitiyTimeLineService.reload();
+        this.activitiytimeline.filters.searchterm = searchterm;
+        this.activitiytimeline.reload();
     }
 
     /**
@@ -73,31 +83,34 @@ export class ActivityTimeline implements OnInit, OnDestroy {
         return !this.componentconfig.hideactivitiescontainer;
     }
 
-    public ngOnInit() {
-        this.activitiyTimeLineService.parent = this.model;
-
-
-        if (this.componentconfig.usefts) this.activitiyTimeLineService.usefts = true;
-        if (this.componentconfig.defaultentries) this.activitiyTimeLineService.defaultLimit = this.componentconfig.defaultentries;
-
-    }
-
     /**
      * stops the subscription
      */
     public ngOnDestroy() {
-        this.activitiyTimeLineService.stopSubscriptions();
+        this.activitiytimeline.stopSubscriptions();
     }
 
     /**
      * reloads the activities stream
      */
     public reload() {
-        if (this.displayActivitiesContainer) this.activitiyTimeLineService.getTimeLineData('Activities');
-        this.activitiyTimeLineService.getTimeLineData('History');
+        if (this.displayActivitiesContainer) this.activitiytimeline.getTimeLineData('Activities');
+        this.activitiytimeline.getTimeLineData('History');
     }
 
+    /**
+     * loads more items
+     *
+     * @param module
+     */
     public loadMore(module) {
-        this.activitiyTimeLineService.getMoreTimeLineData(module, 5);
+        this.activitiytimeline.getMoreTimeLineData(module, this.componentconfig.defaultentries)
+    }
+
+    /**
+     * toggles the open and closed state on the timeline service
+     */
+    private toggleOpen() {
+        this.activitiytimeline.openness = !this.activitiytimeline.openness;
     }
 }

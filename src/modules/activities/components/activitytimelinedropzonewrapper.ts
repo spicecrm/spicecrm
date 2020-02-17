@@ -8,13 +8,13 @@ import {helper} from "../../../services/helper.service";
 import {configurationService} from "../../../services/configuration.service";
 import {Observable, Subject} from "rxjs";
 import {model} from "../../../services/model.service";
-import {activitiyTimeLineService} from "../../../services/activitiytimeline.service";
+import {activitiytimeline} from "../../../services/activitiytimeline.service";
 import {session} from "../../../services/session.service";
 
 @Component({
     selector: 'activity-timeline-drop-zone-wrapper',
     templateUrl: './src/modules/activities/templates/activitytimelinedropzonewrapper.html',
-    providers: [model]
+    viewProviders: [model]
 })
 export class ActivityTimelineDropZoneWrapper {
 
@@ -28,7 +28,7 @@ export class ActivityTimelineDropZoneWrapper {
     constructor(private language: language,
                 private toast: toast,
                 private configurationService: configurationService,
-                private activitiyTimeLineService: activitiyTimeLineService,
+                private activitiytimeline: activitiytimeline,
                 private noteModel: model,
                 @SkipSelf() private model: model,
                 private session: session,
@@ -90,7 +90,7 @@ export class ActivityTimelineDropZoneWrapper {
                     this.toast.sendToast(this.language.getLabel('ERR_UPLOAD_FAILED'), 'error');
                 },
                 () => {
-                    this.activitiyTimeLineService.getTimeLineData('History');
+                    this.activitiytimeline.getTimeLineData('History');
                     this.uploadData.uploading = false;
                 }
             );
@@ -227,7 +227,7 @@ export class ActivityTimelineDropZoneWrapper {
     private addNewNote(files, currentIndex = 0) {
         this.noteModel.reset();
         this.noteModel.module = 'Notes';
-        this.noteModel.initialize(this.activitiyTimeLineService.parent);
+        this.noteModel.initialize(this.activitiytimeline.parent);
         this.noteModel.startEdit(false);
         this.noteModel.setField('name', files[currentIndex].name);
         this.noteModel.setField('filename', files[currentIndex].name);
@@ -246,7 +246,7 @@ export class ActivityTimelineDropZoneWrapper {
                     },
                     () => {
                         if ((currentIndex + 1) >= files.length) {
-                            this.activitiyTimeLineService.getTimeLineData('History');
+                            this.activitiytimeline.getTimeLineData('History');
                             this.uploadData.uploading = false;
                         } else {
                             this.addNewNote(files, currentIndex + 1);

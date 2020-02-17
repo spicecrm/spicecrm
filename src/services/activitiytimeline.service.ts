@@ -16,6 +16,7 @@ import {metadata} from './metadata.service';
 import {modelutilities} from './modelutilities.service';
 import {backend} from './backend.service';
 import {broadcast} from './broadcast.service';
+import {BehaviorSubject, Observable, Subject, of} from "rxjs";
 
 /**
  * defines the type for the modules
@@ -24,7 +25,7 @@ export type activityTimeLineModules = 'Activities' | 'History';
 export type activityTimelineOwnerfilter = '' | 'assigned' | 'created';
 
 @Injectable()
-export class activitiyTimeLineService {
+export class activitiytimeline {
 
     /**
      * a model object of the parent record the activities are linked to
@@ -96,12 +97,14 @@ export class activitiyTimeLineService {
     public activities: any = {
         Activities: {
             loading: false,
+            loadingmore: false,
             list: [],
             totalcount: 0,
             aggregates: []
         },
         History: {
             loading: false,
+            loadingmore: false,
             list: [],
             totalcount: 0,
             aggregates: []
@@ -113,8 +116,40 @@ export class activitiyTimeLineService {
      */
     public usefts: boolean = false;
 
+    /**
+     * a general setting for openness on the activities
+     * allows toggle all open or close
+     */
+    public _openness: boolean = false;
+
+    /**
+     * an openness emitter any activity can subscribe to and then toggle its open states
+     * emits true to open or close the activities
+     */
+    public openness$: BehaviorSubject<boolean>;
+
     constructor(private metadata: metadata, private backend: backend, private modelutilities: modelutilities, private configurationService: configurationService, private session: session, private broadcast: broadcast) {
         this.serviceSubscriptions.push(this.broadcast.message$.subscribe(message => this.handleMessage(message)));
+
+        // create the behavious Subject
+        this.openness$ = new BehaviorSubject<boolean>(this._openness);
+    }
+
+    /**
+     * get the openness state
+     */
+    get openness() {
+        return this._openness;
+    }
+
+    /**
+     * set the openness state and emit the value
+     *
+     * @param value
+     */
+    set openness(value: boolean) {
+        this._openness = value;
+        this.openness$.next(value);
     }
 
     get filterObjects(): any[] {
@@ -167,8 +202,8 @@ export class activitiyTimeLineService {
                     // in case of fts do a simple reload .. no guessing on status etc
                     if (this.usefts) {
                         // let moduledefs = this.metadata.getModuleDefs(message.messagedata.module);
-                        if(this.metadata.getModuleDefs(message.messagedata.module).ftsactivities.Activities) this.getTimeLineData('Activities', true);
-                        if(this.metadata.getModuleDefs(message.messagedata.module).ftsactivities.History) this.getTimeLineData('History', true);
+                        if (this.metadata.getModuleDefs(message.messagedata.module).ftsactivities.Activities) this.getTimeLineData('Activities', true);
+                        if (this.metadata.getModuleDefs(message.messagedata.module).ftsactivities.History) this.getTimeLineData('History', true);
                     } else {
                         // legacy handling from the database
                         // decide if the bean is in activities or History
@@ -278,7 +313,7 @@ export class activitiyTimeLineService {
     ) {
 
         if (!silent) {
-            this.resetListData(module);
+
             this.activities[module].loading = true;
         }
 
@@ -290,16 +325,32 @@ export class activitiyTimeLineService {
             searchterm: this.filters.searchterm
         };
 
+
+        this.backend.postRequest('module/' + module + '/fts/' + this.parent.module + '/' + this.parent.id, {}, params).subscribe(
+            (response: any) => {
+                if (response) {
+                    this.resetListData(module);
+                    for (let item of response.items) {
+                        item.data = this.modelutilities.backendModel2spice(item.module, item.data);
+                    }
+                    this.activities[module].list = response.items;
+                    this.activities[module].totalcount = parseInt(response.totalcount, 10);
+                    this.activities[module].aggregates = response.aggregates ? response.aggregates : [];
+                }
+                this.activities[module].loading = false;
+            },
+            error => {
+                this.activities[module].loading = false;
+            }
+        );
+        /*
         if (this.usefts) {
             this.backend.postRequest('module/' + module + '/fts/' + this.parent.module + '/' + this.parent.id, {}, params)
                 .subscribe((response: any) => {
                     if (response) {
+                        this.resetListData(module);
                         for (let item of response.items) {
                             item.data = this.modelutilities.backendModel2spice(item.module, item.data);
-                            /*for(let fieldName in item.data){
-                                item[fieldName] = this.modelutilities.backend2spice(item.module, fieldName, item.data[fieldName]);
-                            }
-                            */
                         }
                         this.activities[module].list = response.items;
                         this.activities[module].totalcount = parseInt(response.totalcount, 10);
@@ -311,12 +362,9 @@ export class activitiyTimeLineService {
             this.backend.getRequest('module/' + module + '/' + this.parent.module + '/' + this.parent.id, params)
                 .subscribe((response: any) => {
                     if (response) {
+                        this.resetListData(module);
                         for (let item of response.items) {
                             item.data = this.modelutilities.backendModel2spice(item.module, item.data);
-                            /*for(let fieldName in item.data){
-                                item[fieldName] = this.modelutilities.backend2spice(item.module, fieldName, item.data[fieldName]);
-                            }
-                            */
                         }
                         this.activities[module].list = response.items;
                         this.activities[module].totalcount = parseInt(response.count, 10);
@@ -327,6 +375,7 @@ export class activitiyTimeLineService {
                     this.activities[module].loading = false;
                 });
         }
+         */
     }
 
     /**
@@ -335,19 +384,52 @@ export class activitiyTimeLineService {
      * @param module the module to load the data for
      * @param addCount the number of additonal entries
      */
-    public getMoreTimeLineData(module: activityTimeLineModules, addCount = 5) {
-        if (!this.canLoadMore(module) || this.activities[module].loading) return;
+    public getMoreTimeLineData(module: activityTimeLineModules, addCount?): Observable<boolean> {
+
+        // if we ae laoding more or cannot load more return a resolved observable
+        if (!this.canLoadMore(module) || this.activities[module].loading) {
+            return of(true);
+        }
+
+        let retSubject = new Subject<boolean>();
 
         let params = {
             start: this.activities[module].list.length,
-            limit: addCount,
+            limit: addCount ? addCount : this.defaultLimit,
             objects: JSON.stringify(this.filters.objectfilters),
             own: this.filters.own,
             searchterm: this.filters.searchterm
         };
 
-        this.activities[module].loading = true;
+        this.activities[module].loadingmore = true;
 
+        // run the request and resolve the
+        this.backend.postRequest('module/' + module + '/fts/' + this.parent.module + '/' + this.parent.id, {}, params).subscribe(
+            (response: any) => {
+                for (let item of response.items) {
+                    // transform the data
+                    item.data = this.modelutilities.backendModel2spice(item.module, item.data);
+
+                    // add it
+                    this.activities[module].list.push(item);
+                }
+
+                this.activities[module].loadingmore = false;
+
+                retSubject.next(true);
+                retSubject.complete();
+            },
+            error => {
+                this.activities[module].loadingmore = false;
+
+                retSubject.error(error);
+                retSubject.complete();
+            }
+        );
+
+        return retSubject.asObservable();
+
+        /*
         if (this.usefts) {
             this.backend.postRequest('module/' + module + '/fts/' + this.parent.module + '/' + this.parent.id, {}, params)
                 .subscribe((response: any) => {
@@ -375,6 +457,7 @@ export class activitiyTimeLineService {
                     this.activities[module].loading = false;
                 });
         }
+         */
     }
 
     /**
@@ -384,6 +467,7 @@ export class activitiyTimeLineService {
     private resetListData(module: activityTimeLineModules) {
         this.activities[module] = {
             loading: false,
+            loadingmore: false,
             list: [],
             totalcount: 0
             // aggregates: []
@@ -398,7 +482,7 @@ export class activitiyTimeLineService {
      * @param module the module to handle this for
      */
     public canLoadMore(module: activityTimeLineModules) {
-        return this.activities[module].totalcount > this.activities[module].list.length;
+        return this.activities[module].totalcount > this.activities[module].list.length && !this.activities[module].loadingmore;
     }
 
     /**

@@ -22,7 +22,8 @@ export class ContactPortalDetails implements OnInit {
         aclRole: '',
         portalRole: '',
         password: '',
-        name: ''
+        name: '',
+        setDateTimePrefsWithSystemDefaults: true
     };
 
     private pwdGuideline: string = "";
@@ -53,6 +54,7 @@ export class ContactPortalDetails implements OnInit {
                 this.user.id = userdata.user.id;
                 this.user.aclRole = userdata.user.aclRole;
                 this.user.portalRole = userdata.user.portalRole;
+                this.user.setDateTimePrefsWithSystemDefaults = false;
             }
 
             if ( !this.user.id ) {
@@ -131,7 +133,8 @@ export class ContactPortalDetails implements OnInit {
                 aclRole: this.user.aclRole,
                 portalRole: this.user.portalRole,
                 username: this.user.name,
-                password: this.user.password
+                password: this.user.password,
+                setDateTimePrefsWithSystemDefaults: this.user.setDateTimePrefsWithSystemDefaults
             };
             this.toast.clearToast( this.lastToast );
             this.backend.postRequest( "portal/" + this.model.id + "/portalaccess/" + ( this.isNewUser ? 'create':'update' ), {}, body ).subscribe( ( response: any ) => {
