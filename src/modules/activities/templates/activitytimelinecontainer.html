@@ -1,12 +1,12 @@
 <div *ngIf="displayaggregates && hasAggregates" class="slds-p-vertical--x-small slds-m-top--x-small">
     <activity-timeline-aggregates [module]="module" labellength="short"></activity-timeline-aggregates>
 </div>
-<ul *ngIf="hasActivities; else nocontent" class="slds-timeline slds-p-vertical--small">
+<ul *ngIf="hasActivities; else nocontent" [ngClass]="{'slds-hide': loading}" class="slds-timeline slds-p-vertical--small">
     <li *ngFor="let activity of activities; trackBy:trackByFn">
         <activitytimeline-item-container [activity]="activity" [module]="module"></activitytimeline-item-container>
     </li>
 </ul>
-<ul class="slds-timeline" *ngIf="loading">
+<ul class="slds-timeline" *ngIf="loading || loadingmore">
     <li>
         <activitytimeline-stencil></activitytimeline-stencil>
     </li>
@@ -17,6 +17,9 @@
         <activitytimeline-stencil></activitytimeline-stencil>
     </li>
 </ul>
+<!-- displays if no records are found-->
 <ng-template #nocontent>
-    <system-illustration-no-records *ngIf="!loading">{{language.getLabel('LBL_NO_ENTRIES')}}</system-illustration-no-records>
+    <div class="slds-p-vertical--medium">
+        <system-illustration-no-records *ngIf="!loading">{{language.getLabel('LBL_NO_ENTRIES')}}</system-illustration-no-records>
+    </div>
 </ng-template>
