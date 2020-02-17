@@ -32,6 +32,32 @@ export class ReportsDesignerVisualizeItemChartDataPanel implements OnChanges {
         this.initializeDataSeries();
     }
 
+    /**
+     * remove the placeholder element and push dropped item to dataseries array
+     * @param event: CdkDragDrop
+     */
+    public onDrop(event: CdkDragDrop<any>) {
+
+        this.properties.dataseries.push({
+            id: this.reportsDesignerService.generateGuid(),
+            fieldid: event.item.data.fieldid,
+            name: event.item.data.name,
+            chartfunction: '-',
+            meaning: 'value',
+            axis: '',
+            renderer: '',
+            color: ''
+        });
+    }
+
+    /**
+     * delete item from dataseries array
+     * @param fieldId
+     */
+    public deleteSeries(fieldId) {
+        this.properties.dataseries = this.properties.dataseries.filter(item => item.fieldid != fieldId);
+    }
+
     /*
     * A function that defines how to track changes for items in the iterable (ngForOf).
     * https://angular.io/api/common/NgForOf#properties
@@ -59,33 +85,5 @@ export class ReportsDesignerVisualizeItemChartDataPanel implements OnChanges {
         } else {
             this.properties.dataseries = [];
         }
-    }
-
-    /**
-     * remove the placeholder element and push dropped item to dataseries array
-     * @param event: CdkDragDrop
-     */
-    public onDrop(event: CdkDragDrop<any>) {
-
-        this.reportsDesignerService.removePlaceHolderElement(event.previousContainer.element.nativeElement);
-
-        this.properties.dataseries.push({
-            id: this.reportsDesignerService.generateGuid(),
-            fieldid: event.item.data.fieldid,
-            name: event.item.data.name,
-            chartfunction: '-',
-            meaning: 'value',
-            axis: '',
-            renderer: '',
-            color: ''
-        });
-    }
-
-    /**
-     * delete item from dataseries array
-     * @param fieldId
-     */
-    public deleteSeries(fieldId) {
-        this.properties.dataseries = this.properties.dataseries.filter(item => item.fieldid != fieldId);
     }
 }
