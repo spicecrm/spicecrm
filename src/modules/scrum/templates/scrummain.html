@@ -1,8 +1,8 @@
-<div tobottomnoscroll class="slds-grid">
-    <div class="slds-large-size--4-of-8 slds-medium-size--3-of-6">
-        <scrumtree></scrumtree>
+<div tobottomnoscroll class="slds-grid slds-p-around_xx-small">
+    <div class="slds-large-size--4-of-8 slds-medium-size--3-of-6 slds-p-left_medium">
+        <scrumtree (selectedobject)="selectComponent($event)"></scrumtree>
     </div>
     <div class="slds-grow" tobottom>
-        <div>detail part</div>
+        <scrumtree-detail [focusid]="focus"></scrumtree-detail>
     </div>
 </div>
