@@ -1,6 +1,3 @@
-<div class="slds-tree__item">
-    <button class="slds-button slds-button_icon slds-m-right_x-small" aria-hidden="true" title="Expand">
-        <system-button-icon [icon]="'chevronright'"></system-button-icon>
-    </button>
-    <span class="slds-has-flexi-truncate"><span class="slds-tree__item-label slds-truncate">{{epic.name}}</span></span>
+<div class="slds-tree__item" [ngClass]="{'slds-is-selected': focus == userstory.id}">
+    <span class="slds-has-flexi-truncate"><span class="slds-tree__item-label slds-truncate">{{userstory.name}}</span></span>
 </div>
