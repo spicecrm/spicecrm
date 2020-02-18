@@ -1,0 +1,10 @@
+<div class="slds-tree__item" [ngClass]="{'slds-is-selected': focus == epic.id}">
+    <button class="slds-button slds-button-icon slds-m-right_x-small" (click)="toggleExpand()">
+        <system-button-icon [icon]="chevron"></system-button-icon>
+    </button>
+    <span class="slds-has-flexi-truncate"><span class="slds-tree__item-label slds-truncate">{{epic.name}}</span></span>
+</div>
+<ul role="group" *ngIf="expanded">
+    <li *ngFor="let userstory of loadRelatedUserStories()" scrum-tree-item [userstory]="userstory" aria-level="3" role="treeitem"></li>
+</ul>
+

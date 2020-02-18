@@ -6,28 +6,32 @@ import {
     Input,
     Output,
     EventEmitter,
-    OnInit
+    OnInit, OnChanges
 } from '@angular/core';
 
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
+import {scrum} from '../services/scrum.service';
 
 @Component({
-    selector: 'scrumtree-node',
+    selector: 'scrum-tree-node',
     templateUrl: './src/modules/scrum/templates/scrumtreenode.html',
-    providers: [model]
+    providers: [model, scrum]
 })
 export class ScrumTreeNode implements OnInit {
+    // @Output() private selectedobject: EventEmitter<string> = new EventEmitter<string>();
+
+    private selectedobject: string;
 
     @Input() private theme: any = {};
 
     @Input() private focus: string = '';
 
     private epics: any[] = [];
-    private hidden: boolean = true;
+    private expanded: boolean = false;
 
-    constructor(private language: language, private metadata: metadata, private model: model) {
+    constructor(private scrum: scrum, private language: language, private metadata: metadata, private model: model) {
     }
 
     public ngOnInit() {
@@ -35,12 +39,25 @@ export class ScrumTreeNode implements OnInit {
         this.model.initialize();
         this.model.id = this.theme.id;
         this.model.data = this.theme;
+        this.scrum.currentid.subscribe(selectedObjID => this.selectedobject = selectedObjID);
     }
 
     private loadRelatedEpics() {
-        this.hidden = false;
         this.epics = this.model.getRelatedRecords('scrumepics');
         return this.epics;
+    }
+
+    private selectComponent(id) {
+        this.focus = id;
+        this.scrum.selectedID(id);
+    }
+
+    get chevron() {
+        return this.expanded ? 'chevrondown' : 'chevronright';
+    }
+
+    private toggleExpand() {
+        this.expanded = !this.expanded;
     }
 
 }
