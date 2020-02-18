@@ -6,7 +6,7 @@ import {
     ElementRef,
     EventEmitter,
     Input,
-    OnChanges,
+    OnChanges, OnDestroy,
     Output,
     SimpleChanges,
     ViewChild,
@@ -18,6 +18,7 @@ import {navigation} from '../../../services/navigation.service';
 import {session} from '../../../services/session.service';
 import {backend} from '../../../services/backend.service';
 import {calendar} from '../services/calendar.service';
+import {Subscription} from "rxjs";
 
 /**
 * @ignore
@@ -32,7 +33,7 @@ declare var _: any;
     selector: 'calendar-sheet-schedule',
     templateUrl: './src/modules/calendar/templates/calendarsheetschedule.html'
 })
-export class CalendarSheetSchedule implements OnChanges {
+export class CalendarSheetSchedule implements OnChanges, OnDestroy {
 
     @Output() public navigateday: EventEmitter<any> = new EventEmitter<any>();
     @Output() public untildate$: EventEmitter<any> = new EventEmitter<any>();
@@ -45,6 +46,7 @@ export class CalendarSheetSchedule implements OnChanges {
     private userEvents: any[] = [];
     private googleEvents: any[] = [];
     private untilDate: any = {};
+    private subscription: Subscription = new Subscription();
 
     constructor(private language: language,
                 private broadcast: broadcast,
@@ -54,6 +56,15 @@ export class CalendarSheetSchedule implements OnChanges {
                 private session: session,
                 private calendar: calendar) {
         this.untilDate = new moment().hour(0).minute(0).second(0).add(1, "M");
+
+        this.subscription.add(this.calendar.userCalendarVisibility$.subscribe(calendar => {
+                this.getUserEvents(calendar);
+            })
+        );
+        this.subscription.add(this.calendar.usersCalendarsLoad$.subscribe(() => {
+                this.getUsersEvents();
+            })
+        );
     }
 
     get allEvents() {
@@ -79,14 +90,17 @@ export class CalendarSheetSchedule implements OnChanges {
         if (changes.setdate) {
             this.setUntilDate();
             this.getEvents();
-        }
-
-        if (changes.usersCalendars || changes.setdate) {
-            this.getUsersEvents();
+            if (this.calendar.usersCalendarsLoaded) {
+                this.getUsersEvents();
+            }
         }
         if (changes.googleIsVisible || changes.setdate) {
             this.getGoogleEvents();
         }
+    }
+
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     private trackByFn(index, item) {
@@ -169,6 +183,23 @@ export class CalendarSheetSchedule implements OnChanges {
             .subscribe(events => {
                 this.googleEvents = events;
                 this.allEvents = this.allevents.slice();
+            });
+    }
+
+    private getUserEvents(calendar) {
+        this.userEvents = this.userEvents.filter(event => event.data.assigned_user_id != calendar.id);
+        this.allEvents = this.allevents.slice();
+
+        if (this.calendar.isMobileView || !calendar.visible) {
+            return;
+        }
+
+        this.calendar.loadUserEvents(this.startDate, this.untilDate, calendar.id)
+            .subscribe(events => {
+                if (events.length > 0) {
+                    this.userEvents = [...this.userEvents, ...events];
+                    this.allEvents = this.allevents.slice();
+                }
             });
     }
 
