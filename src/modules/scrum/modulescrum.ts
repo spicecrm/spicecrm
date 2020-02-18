@@ -16,6 +16,8 @@ import /*embed*/ {ScrumTree} from "./components/scrumtree";
 import /*embed*/ {ScrumTreeNode} from "./components/scrumtreenode";
 import /*embed*/ {ScrumTreeDetail} from "./components/scrumtreedetail";
 import /*embed*/ {ScrumTreeItem} from "./components/scrumtreeitem";
+import /*embed*/ {ScrumTreeBranch} from "./components/scrumtreebranch";
+import /*embed*/ {scrum} from "./services/scrum.service";
 
 
 @NgModule({
@@ -31,9 +33,11 @@ import /*embed*/ {ScrumTreeItem} from "./components/scrumtreeitem";
         ScrumMain,
         ScrumTree,
         ScrumTreeNode,
-        ScrumTreeDetail,
-        ScrumTreeItem
-    ]
+        ScrumTreeBranch,
+        ScrumTreeItem,
+        ScrumTreeDetail
+    ],
+    providers: [scrum]
 })
 export class ModuleScrum {
     public readonly version = '1.0';

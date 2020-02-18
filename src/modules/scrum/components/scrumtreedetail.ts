@@ -16,28 +16,27 @@ import {metadata} from '../../../services/metadata.service';
 import {modellist} from '../../../services/modellist.service';
 import {language} from '../../../services/language.service';
 import {broadcast} from '../../../services/broadcast.service';
+import {scrum} from '../services/scrum.service';
 
 @Component({
-    selector: 'scrumtree-detail',
+    selector: 'scrum-tree-detail',
     templateUrl: './src/modules/scrum/templates/scrumtreedetail.html',
     providers: [model, view]
 })
 export class ScrumTreeDetail implements OnChanges, OnDestroy {
 
-    @ViewChild('detailscontent', {read: ViewContainerRef, static: true}) private detailscontent: ViewContainerRef;
+    @ViewChild('scrumdetailcontainer', {read: ViewContainerRef, static: true}) private scrumdetailcontainer: ViewContainerRef;
 
     @Input() private focusid: string = '';
 
     private viewComponent: any = null;
     private modelSubscription: any = null;
 
-    constructor(private modellist: modellist, private view: view, private language: language, private elementRef: ElementRef, private metadata: metadata, private model: model, private broadcast: broadcast) {
+    constructor(private scrum: scrum, private modellist: modellist, private view: view, private language: language, private elementRef: ElementRef, private metadata: metadata, private model: model, private broadcast: broadcast) {
         this.model.module = this.modellist.module;
         this.modelSubscription = this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         });
-
-        // this.view.displayLabels = false;
     }
 
     private handleMessage(message: any) {
@@ -57,7 +56,7 @@ export class ScrumTreeDetail implements OnChanges, OnDestroy {
     public ngOnChanges() {
         if (this.focusid) {
             if (!this.viewComponent) {
-                this.metadata.addComponent('ObjectRecordDetails', this.detailscontent).subscribe(component => {
+                this.metadata.addComponent('ObjectRecordDetails', this.scrumdetailcontainer).subscribe(component => {
                     this.viewComponent = component;
                 });
             }

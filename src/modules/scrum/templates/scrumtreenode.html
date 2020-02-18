@@ -1,9 +1,9 @@
-<div class="slds-tree__item">
-    <button (click)="loadRelatedEpics()" class="slds-button slds-button-icon slds-m-right_x-small" title="Expand">
-        <system-button-icon [icon]="'chevronright'"></system-button-icon>
+<div class="slds-tree__item" [ngClass]="{'slds-is-selected': focus == theme.id}">
+    <button class="slds-button slds-button-icon slds-m-right_x-small" (click)="toggleExpand()">
+        <system-button-icon [icon]="chevron"></system-button-icon>
     </button>
     <span class="slds-has-flexi-truncate"><span class="slds-tree__item-label slds-truncate">{{theme.name}}</span></span>
 </div>
-<ul *ngFor="let epic of loadRelatedEpics()">
-    <li aria-level="2"><scrum-tree-item [epic]="epic"></scrum-tree-item></li>
+<ul role="group" *ngIf="expanded">
+    <li *ngFor="let epic of loadRelatedEpics()" scrum-tree-branch [epic]="epic" [focus]="focus" aria-level="2" role="treeitem"></li>
 </ul>
