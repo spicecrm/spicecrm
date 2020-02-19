@@ -10,7 +10,7 @@ import {modellist} from "../../../services/modellist.service";
 import {scrumtree} from '../services/scrum.service';
 
 @Component({
-    selector: '[scrum-tree-story]',
+    selector: '[scrum-tree-userstory]',
     templateUrl: './src/modules/scrum/templates/scrumtreeuserstory.html',
     providers: [model],
     host:{
