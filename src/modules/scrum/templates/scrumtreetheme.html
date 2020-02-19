@@ -1,0 +1,9 @@
+<div class="slds-tree__item" [ngClass]="{'slds-is-selected': theme.id == scrum.selectedObject.id}">
+    <button class="slds-button slds-button-icon slds-m-right_x-small" (click)="toggleExpand()">
+        <system-button-icon icon="chevronright"></system-button-icon>
+    </button>
+    <span class="slds-tree__item-label slds-truncate">{{theme.name}}</span>
+</div>
+<ul role="group">
+    <li *ngFor="let epic of epics.items" scrum-tree-epic [epic]="epic" aria-level="2" role="treeitem"></li>
+</ul>

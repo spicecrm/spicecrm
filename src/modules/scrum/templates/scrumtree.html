@@ -1,8 +1,6 @@
 <div class="slds-tree_container">
     <ul class="slds-tree" role="tree">
-       <li *ngFor="let listItem of modellist.listData.list; trackBy: trackbyfn" role="treeitem" aria-level="1" (click)="selectComponent(listItem.id)" >
-           <scrum-tree-node [focus]="focus" [theme]="listItem"></scrum-tree-node>
-       </li>
-<!--        <li *ngFor="let listItem of modellist.listData.list; trackBy: trackbyfn" [focus]="focus" [theme]="listItem" scrum-tree-node role="treeitem" aria-level="1" (click)="selectComponent(listItem.id)"></li>-->
+       <li *ngFor="let listItem of modellist.listData.list; trackBy: trackbyfn" role="treeitem" aria-level="1"  scrum-tree-theme [theme]="listItem"></li>
     </ul>
 </div>
+
