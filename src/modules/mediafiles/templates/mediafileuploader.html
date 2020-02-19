@@ -2,12 +2,12 @@
     <system-modal-header (close)="cancel()">
         {{lang.getLabel('LBL_NEW_IMAGE')}}
     </system-modal-header>
-    <system-modal-content style="height:100%">
+    <system-modal-content><!-- grow="true" -->
 
-        <div class="slds-grid" style="height:100%">
+        <div class="slds-grid">
 
             <div class="slds-box slds-box_x-small slds-size--1-of-2" [ngClass]="{'slds-size--1-of-1':noMetaData,'slds-size--1-of-2':!noMetaData}">
-                <system-input-media acceptMedia="{image:true}" [(ngModel)]="image" style="height:100%"></system-input-media>
+                <system-input-media [(ngModel)]="image" class="slds-height_full"></system-input-media>
             </div>
 
             <div *ngIf="!noMetaData" class="slds-p-left--medium slds-size--1-of-2">
