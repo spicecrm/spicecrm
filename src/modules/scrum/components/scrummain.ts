@@ -1,41 +1,41 @@
 /**
  * @module ModuleScrum
  */
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {modellist} from '../../../services/modellist.service';
 import {model} from "../../../services/model.service";
-import {scrum} from "../services/scrum.service";
+import {scrumtree} from "../services/scrum.service";
 
 @Component({
     selector: 'scrum-main',
     templateUrl: './src/modules/scrum/templates/scrummain.html',
-    providers: [scrum]
+    providers: [scrumtree]
 })
-export class ScrumMain implements OnInit, OnDestroy {
+export class ScrumMain implements OnDestroy {
 
+    /**
+     * modellist service subscription instance
+     */
     private modellistsubscribe: any = {};
 
-    private focus: string = null;
-
-    constructor(private scrum: scrum, private metadata: metadata, private modellist: modellist, private model: model) {
+    constructor(private scrum: scrumtree, private metadata: metadata, private modellist: modellist, private model: model) {
+        // subscribe to modellist
         this.modellistsubscribe = this.modellist.listtype$.subscribe(newType => this.loadList());
         this.loadList();
     }
 
-    public ngOnInit(): void {
-        this.scrum.currentid.subscribe(selectedObjID => this.focus = selectedObjID);
-    }
-
+    /**
+     * load the list data
+     */
     private loadList() {
-        this.focus = null;
         // this.modellist.setSortField('sequence', 'ASC', false);
         this.modellist.getListData();
     }
 
-    private selectComponent(id) {
-        this.focus = id;
-    }
+    /**
+     * unsubscribe from modellist service
+     */
     public ngOnDestroy() {
         this.modellistsubscribe.unsubscribe();
     }
