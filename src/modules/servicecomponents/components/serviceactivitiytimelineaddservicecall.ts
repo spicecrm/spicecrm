@@ -7,7 +7,7 @@ import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
 import {view} from '../../../services/view.service';
-import {activitiyTimeLineService} from '../../../services/activitiytimeline.service';
+import {activitiytimeline} from '../../../services/activitiytimeline.service';
 
 
 
@@ -30,7 +30,7 @@ export class ServiceActivitiyTimelineAddServiceCall implements OnInit {
         return this.formFields.filter((item, index) => index > 0)
     }
 
-    constructor(private metadata: metadata, private activitiyTimeLineService: activitiyTimeLineService, private model: model, private view: view, private language: language, private modal: modal, private ViewContainerRef: ViewContainerRef) {}
+    constructor(private metadata: metadata, private activitiytimeline: activitiytimeline, private model: model, private view: view, private language: language, private modal: modal, private ViewContainerRef: ViewContainerRef) {}
 
     ngOnInit() {
         // initialize the model
@@ -38,7 +38,7 @@ export class ServiceActivitiyTimelineAddServiceCall implements OnInit {
 
         // subscribe to the parent models data Observable
         // name is not necessarily loaded
-        this.activitiyTimeLineService.parent.data$.subscribe(data => {
+        this.activitiytimeline.parent.data$.subscribe(data => {
             // if we still have the same model .. update
             if (data.id = this.model.data.parent_id)
                 this.model.data.parent_name = data.summary_text;
@@ -56,7 +56,7 @@ export class ServiceActivitiyTimelineAddServiceCall implements OnInit {
 
     initializeCall(){
         this.model.module = 'ServiceCalls';
-        this.model.initializeModel(this.activitiyTimeLineService.parent);
+        this.model.initializeModel(this.activitiytimeline.parent);
 
     }
 

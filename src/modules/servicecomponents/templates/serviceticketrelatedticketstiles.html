@@ -1,0 +1,10 @@
+<ng-container *ngIf="relatedmodels.items.length > 0; else norecords">
+    <div *ngFor="let relateditem of relatedmodels.items" class="slds-p-around--xx-small slds-small-size--1-of-1">
+        <div class="slds-box slds-box--x-small slds-media slds-card__tile slds-m-around--none" object-related-card-tile [fieldset]="fieldset" [data]="relateditem" module="ServiceTickets"></div>
+    </div>
+</ng-container>
+<ng-template #norecords>
+    <div class="slds-p-around--medium slds-align--absolute-center">
+        <system-illustration-no-records>{{language.getLabel('MSG_NO_RECORDS_FOUND')}}</system-illustration-no-records>
+    </div>
+</ng-template>

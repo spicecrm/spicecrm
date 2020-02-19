@@ -1,5 +1,5 @@
 <h3 *ngIf="showHeader" class="slds-text-heading_small slds-theme_shade slds-p-around--x-small">{{header}}</h3>
-<div class="slds-m-vertical--small slds-is-relative" [ngStyle]="getBoxStyle()">
+<div class="slds-is-relative" [ngStyle]="getBoxStyle()">
     <system-componentset [componentset]="componentSet"></system-componentset>
     <object-record-details-footer></object-record-details-footer>
 </div>

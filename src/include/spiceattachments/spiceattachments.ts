@@ -15,6 +15,7 @@ import /*embed*/ {SpiceAttachmentsPanel} from "./components/spiceattachmentspane
 import /*embed*/ {SpiceAttachmentsList} from "./components/spiceattachmentslist";
 import /*embed*/ {SpiceAttachmentsPopupList} from "./components/spiceattachmentspopuplist";
 import /*embed*/ {SpiceAttachmentFile} from "./components/spiceattachmentfile";
+import /*embed*/ {SpiceAttachmentAddImageModal} from "./components/spiceattachmentaddimagemodal";
 import /*embed*/ {SpiceAttachmentsCount} from "./components/spiceattachmentscount";
 import /*embed*/ {fieldSpiceAttachmentsCount} from "./fields/fieldspiceattachmentscount";
 
@@ -31,6 +32,7 @@ import /*embed*/ {fieldSpiceAttachmentsCount} from "./fields/fieldspiceattachmen
     declarations: [
         SpiceAttachmentsPanel,
         SpiceAttachmentFile,
+        SpiceAttachmentAddImageModal,
         SpiceAttachmentsList,
         SpiceAttachmentsPopupList,
         SpiceAttachmentsCount,
