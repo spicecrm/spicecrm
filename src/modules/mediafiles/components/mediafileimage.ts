@@ -100,6 +100,9 @@ export class MediaFileImage implements OnChanges {
         }
     }
 
+    /**
+     * Get the netto height of the parent element, less the border width and the padding.
+     */
     private getWidthOfParent() {
         return Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).width.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).paddingLeft.replace( /px$/, '' ))
@@ -107,10 +110,17 @@ export class MediaFileImage implements OnChanges {
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).borderLeftWidth.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).borderRightWidth.replace( /px$/, '' ));
     }
+
+    /**
+     * Determine the width of the image. Depending on the width of the parent.
+     */
     private determineWidthOfImage() {
         return Math.round( this.getWidthOfParent() );
     }
 
+    /**
+     * Get the netto height of the parent element, less the border width and the padding.
+     */
     private getHeightOfParent() {
         return Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).height.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).paddingTop.replace( /px$/, '' ))
@@ -118,6 +128,10 @@ export class MediaFileImage implements OnChanges {
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).borderTopWidth.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).borderBottomWidth.replace( /px$/, '' ));
     }
+
+    /**
+     * Determine the height of the image. Depending on the height of the parent.
+     */
     private determineHeightOfImage() {
         return Math.round( this.getHeightOfParent() );
     }
