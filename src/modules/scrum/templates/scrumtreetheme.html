@@ -1,9 +1,10 @@
-<div class="slds-tree__item" [ngClass]="{'slds-is-selected': theme.id == scrum.selectedObject.id}">
+<div class="slds-tree__item" [ngClass]="{'slds-is-selected': theme.id == scrum.selectedObject.id}" style="align-items: center">
     <button class="slds-button slds-button-icon slds-m-right_x-small" (click)="toggleExpand()">
         <system-button-icon icon="chevronright"></system-button-icon>
     </button>
-    <span class="slds-tree__item-label slds-truncate">{{theme.name}}</span>
+    <span class="slds-has-flexi-truncate"> <span class="slds-tree__item-label slds-truncate">{{theme.name}}</span></span>
 </div>
+<system-spinner class="slds-p-around--xx-small" *ngIf="epics.isloading"></system-spinner>
 <ul role="group">
     <li *ngFor="let epic of epics.items" scrum-tree-epic [epic]="epic" aria-level="2" role="treeitem"></li>
 </ul>
