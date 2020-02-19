@@ -27,11 +27,11 @@ declare var _: any;
 @Injectable()
 export class calendar implements OnDestroy {
 
-    public usersCalendars$: EventEmitter<any> = new EventEmitter<any>();
+    public usersCalendarsLoad$: EventEmitter<any> = new EventEmitter<any>();
+    public userCalendarVisibility$: EventEmitter<any> = new EventEmitter<any>();
     public addingEvent$: EventEmitter<any> = new EventEmitter<any>();
     public pickerDate$: EventEmitter<any> = new EventEmitter<any>();
     public otherCalendarsColor$: EventEmitter<any> = new EventEmitter<any>();
-    public eventDrop$: EventEmitter<any> = new EventEmitter<any>();
 
     public modules: any[] = [];
     public usersCalendars: any[] = [];
@@ -56,6 +56,7 @@ export class calendar implements OnDestroy {
     public isMobileView: boolean = false;
     public isDashlet: boolean = false;
     public isLoading: boolean = false;
+    public usersCalendarsLoaded: boolean = false;
     public sheettype: 'Day' | 'Three_Days' | 'Week' | 'Month' | 'Schedule' = 'Week';
     public timeZone: any;
     public duration: any = {
@@ -211,22 +212,43 @@ export class calendar implements OnDestroy {
     }
 
     /**
+     * load other user events from backend and manipulate them before return
+     * @param startDate: moment
+     * @param endDate: moment
+     * @param userId: string
+     * @return observable of events
+     */
+    public loadUserEvents(startDate, endDate, userId) {
+
+        return this.loadEvents(startDate, endDate, this.owner, [userId], true)
+            .pipe(
+                map(events => {
+                    return events.map(event => {
+                        event.otherColor = this.usersCalendars.find(calendar => calendar.id == userId).color;
+                        return event;
+                    });
+                })
+            );
+    }
+
+    /**
      * load other users events from backend and manipulate them before return
      * @param startDate: moment
      * @param endDate: moment
      * @return observable of events
      */
     public loadUsersEvents(startDate, endDate) {
-        let usersObject = _.object(this.usersCalendars.map(c => c.id), this.usersCalendars);
-        return this.loadEvents(startDate, endDate, this.owner, this.usersCalendars.map(c => c.id))
+        const visibleUserCalendars = this.usersCalendars.filter(c => !!c.visible);
+        const visibleUserIds = visibleUserCalendars.map(c => c.id);
+        const calendarsObject = _.object(visibleUserIds, visibleUserCalendars);
+
+        return this.loadEvents(startDate, endDate, this.owner, visibleUserIds)
             .pipe(
-                map((events: any) => {
-                    return events
-                        .filter(e => usersObject[e.data.assigned_user_id] && usersObject[e.data.assigned_user_id].visible)
-                        .map(event => {
-                            event.otherColor = usersObject[event.data.assigned_user_id].color;
-                            return event;
-                        });
+                map(events => {
+                    return events.map(event => {
+                        event.otherColor = calendarsObject[event.data.assigned_user_id].color;
+                        return event;
+                    });
                 })
             );
     }
@@ -237,11 +259,12 @@ export class calendar implements OnDestroy {
      * @param end: moment
      * @param calendar: object
      * @param users: string[]
+     * @param forceReload: boolean
      * @return events asObservable
      */
-    public loadEvents(start, end, calendar = this.owner, users = []) {
+    public loadEvents(start, end, calendar = this.owner, users = [], forceReload?) {
         let userId = users.length > 0 ? 'users' : calendar;
-        if (this.doReload(start, end, userId)) {
+        if (forceReload || this.doReload(start, end, userId)) {
             this.isLoading = true;
             this.cdr.detectChanges();
             let responseSubject = new Subject<any[]>();
@@ -417,6 +440,21 @@ export class calendar implements OnDestroy {
     }
 
     /**
+     * toggle user calendar visibility
+     * @param id
+     */
+    public toggleUserCalendarVisibility(id) {
+        this.usersCalendars.some(calendar => {
+            if (calendar.id == id) {
+                calendar.visible = !calendar.visible;
+                this.userCalendarVisibility$.emit(calendar);
+                this.setUserCalendars(this.usersCalendars.slice());
+                return true;
+            }
+        });
+    }
+
+    /**
      * save the user calendar changes to the user preferences and emit the changes
      * @param calendars
      * @param save boolean
@@ -430,7 +468,6 @@ export class calendar implements OnDestroy {
         if (save) {
             this.userPreferences.setPreference("Users", this.usersCalendars, true, "Calendar");
         }
-        this.usersCalendars$.emit(this.usersCalendars);
     }
 
     /**
@@ -733,6 +770,10 @@ export class calendar implements OnDestroy {
             .subscribe(calendars => {
                 this.setUserCalendars(calendars.Users, false);
                 this.setOtherCalendars(calendars.Other, false);
+                if (calendars.Users && calendars.Users.length > 0) {
+                    this.usersCalendarsLoaded = true;
+                    this.usersCalendarsLoad$.emit();
+                }
             });
         if (this.session.authData.googleToken) {
             this.loggedByGoogle = true;
