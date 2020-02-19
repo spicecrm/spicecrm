@@ -1,40 +1,47 @@
 /**
  * @module ModuleScrum
  */
-import {Injectable, OnDestroy, Output, EventEmitter} from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import {broadcast} from '../../../services/broadcast.service';
-import {model} from "../../../services/model.service";
-import {metadata} from "../../../services/metadata.service";
+import {Injectable, EventEmitter} from '@angular/core';
+
+interface scrumobject {
+    id: string;
+    type: ''|'ScrumThemes'|'ScrumEpics'|'ScrumUserStories';
+}
 
 @Injectable()
+export class scrumtree {
 
-export class scrum implements OnDestroy{
-    private broadcastsubscription: any;
-    private selectedobj: string = '';
-    public selectedobj$: BehaviorSubject<string>;
-    public currentid: any;
-    constructor(private broadcast: broadcast, private metadata: metadata, private model: model) {
-        this.selectedobj$ = new BehaviorSubject<string>(this.selectedobj);
-        this.broadcastsubscription = this.broadcast.message$.subscribe(message => {
-            this.handleMessage(message);
-        });
+    /**
+     * the currently selected Object with type and ID
+     */
+    private _selectedObject: scrumobject;
+
+    /**
+     * emits whenever an object is loaded
+     */
+    public selectedObject$: EventEmitter<scrumobject> = new EventEmitter<scrumobject>();
+
+    constructor() {
+        this._selectedObject = {id: undefined, type: ''};
     }
 
-    public handleMessage(message) {
-
+    /**
+     * getter for the object
+     */
+    get selectedObject() {
+        return this._selectedObject;
     }
 
-    public selectedID(id: string) {
-        this.selectedobj$.next(id);
+    /**
+     * sets the current object and also emits the change
+     *
+     * @param selectedObject
+     */
+    set selectedObject(selectedObject: scrumobject){
+        this._selectedObject = selectedObject;
+
+        this.selectedObject$.emit(this._selectedObject);
     }
 
-/*    get currentID() {
-        return this.currentid = this.selectedobj$.asObservable();
-    }*/
-
-    public ngOnDestroy(): void {
-        this.broadcastsubscription.unsubscribe();
-    }
 
 }
