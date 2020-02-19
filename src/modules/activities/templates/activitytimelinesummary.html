@@ -14,7 +14,6 @@
             </ol>
         </nav>
         <div class="slds-col slds-align-bottom slds-p-top--xxx-small">
-            <!--p class="slds-text-body--small">Sub Header</p-->
             <activity-timeline-summary-aggregates module="History"></activity-timeline-summary-aggregates>
         </div>
     </div>
@@ -36,16 +35,13 @@
 </div>
 <div class="slds-grid" >
     <div #listContainer tobottom class="slds-size--1-of-1 slds-medium-size--1-of-3 slds-border--right slds-scrollable" (scroll)="onScroll($event)">
-        <!--div class="slds-border--bottom slds-p-vertical--small slds-grid">
-            <activity-timeline-filter class="slds-col--bump-left slds-p-horizontal--xxx-small"></activity-timeline-filter>
-        </div-->
-        <ul class="slds-timeline">
+        <ul class="slds-timeline" [ngClass]="{'slds-hide': activitiytimeline.activities.History.loading}">
             <li class="slds-p-around--x-small" *ngFor="let activity of activities" (click)="setActivitiy(activity)" [ngClass]="{'slds-theme--default slds-border--bottom slds-border--top' : activity.id == activityid}">
                 <activitytimeline-item-container [activity]="activity"></activitytimeline-item-container>
             </li>
         </ul>
         <!-- stencils when loading -->
-        <ul class="slds-timeline" *ngIf="activitiyTimeLineService.activities.History.loading">
+        <ul class="slds-timeline" *ngIf="activitiytimeline.activities.History.loading">
             <li class="slds-p-around--x-small">
                 <activitytimeline-stencil></activitytimeline-stencil>
             </li>

@@ -2,7 +2,18 @@
  * @module ModuleSpiceAttachments
  */
 import {
-    Component, OnInit, Input, NgZone, Output, EventEmitter, ViewChild, ViewContainerRef, Renderer2
+    Component,
+    OnInit,
+    Input,
+    NgZone,
+    Output,
+    EventEmitter,
+    ViewChild,
+    ViewContainerRef,
+    Renderer2,
+    Injector,
+    Optional,
+    SkipSelf
 } from '@angular/core';
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
@@ -32,6 +43,11 @@ export class SpiceAttachmentsPanel {
     @ViewChild("fileupload", {read: ViewContainerRef, static: false}) private fileupload: ViewContainerRef;
 
     /**
+     * emits when the attachments are loaded
+     */
+    @Output() private attachmentsLoaded: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    /**
      * @ignore
      *
      * passed in component config
@@ -41,6 +57,7 @@ export class SpiceAttachmentsPanel {
     /**
      * contructor sets the module and id for the laoder
      * @param modelattachments
+     * @param parentmodelattachments
      * @param language
      * @param model
      * @param renderer
@@ -48,9 +65,16 @@ export class SpiceAttachmentsPanel {
      * @param metadata
      * @param modalservice
      */
-    constructor(private modelattachments: modelattachments, private language: language, private model: model, private renderer: Renderer2, private toast: toast, private metadata: metadata, private modalservice: modal) {
-        this.modelattachments.module = this.model.module;
-        this.modelattachments.id = this.model.id;
+    constructor(private _modelattachments: modelattachments, @Optional() @SkipSelf() private parentmodelattachments: modelattachments, private language: language, private modal: modal, private model: model, private renderer: Renderer2, private toast: toast, private metadata: metadata, private modalservice: modal, private injector: Injector) {
+        this._modelattachments.module = this.model.module;
+        this._modelattachments.id = this.model.id;
+    }
+
+    /**
+     * returns the proper modelattachments instance .. wither from the component or provided by the parent
+     */
+    get modelattachments(): modelattachments {
+        return this.parentmodelattachments && this.parentmodelattachments.module == this.model.module && this.parentmodelattachments.id == this.model.id ? this.parentmodelattachments : this._modelattachments;
     }
 
     /**
@@ -64,7 +88,9 @@ export class SpiceAttachmentsPanel {
      * initializes the model attachments service and loads the attachments
      */
     private loadFiles() {
-        this.modelattachments.getAttachments();
+        this.modelattachments.getAttachments().subscribe(loaded => {
+            this.attachmentsLoaded.emit(true);
+        });
     }
 
     /**
@@ -151,6 +177,13 @@ export class SpiceAttachmentsPanel {
      */
     private doupload(files) {
         this.modelattachments.uploadAttachmentsBase64(files);
+    }
+
+    /**
+     * opens the add Image modal
+     */
+    private addImage() {
+        this.modal.openModal('SpiceAttachmentAddImageModal', true, this.injector);
     }
 
 }

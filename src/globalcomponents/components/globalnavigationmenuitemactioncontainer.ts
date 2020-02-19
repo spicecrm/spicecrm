@@ -9,7 +9,7 @@ import {
     AfterViewInit,
     ViewChild,
     ViewContainerRef,
-    NgZone
+    NgZone, ChangeDetectorRef
 } from "@angular/core";
 import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
@@ -62,7 +62,7 @@ export class GlobalNavigationMenuItemActionContainer implements AfterViewInit {
      */
     private stableSub: any;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private ngZone: NgZone) {
+    constructor(private language: language, private metadata: metadata, private model: model, private ngZone: NgZone, private cdr: ChangeDetectorRef) {
     }
 
     get id() {
@@ -97,6 +97,9 @@ export class GlobalNavigationMenuItemActionContainer implements AfterViewInit {
 
             // add the componentn and handle visibility
             this.componentref = componentref;
+            // use ChangeDetectorRef.detectChanges to force the app to detect the changes
+            // this prevents angular change detection error "ExpressionChangedAfterItHasBeenCheckedError"
+            this.cdr.detectChanges();
         });
 
 
