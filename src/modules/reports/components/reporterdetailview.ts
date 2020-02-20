@@ -122,7 +122,7 @@ export class ReporterDetailView implements OnInit {
             this.navigation.setActiveModule(this.model.module, this.model.id, data.summary_text);
             if (data.visualization_params != '') {
                 let visualizationParams = data.visualization_params;
-                if (visualizationParams && visualizationParams.layout != '-') {
+                if (visualizationParams && visualizationParams.layout && visualizationParams.layout != '-') {
                     this.hasVisualization = true;
                 }
             }
