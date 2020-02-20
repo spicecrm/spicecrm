@@ -45,7 +45,7 @@ export class ScrumTreeDetail implements OnChanges, OnDestroy {
     }
 
     /**
-     * reacts on ch<nges and if required destroy the view, reloads it and also load the model
+     * reacts on changes and if required destroy the view, reloads it and also load the model
      */
     public ngOnChanges() {
 
@@ -56,8 +56,9 @@ export class ScrumTreeDetail implements OnChanges, OnDestroy {
 
             let config = this.metadata.getComponentConfig('ScrumTreeDetail', this.model.module);
             this.componentset = config.componentset;
+
             /*
-            this.destroyContainer();
+
 
             if (this.focusid) {
                 if (!this.viewComponent) {
@@ -76,10 +77,9 @@ export class ScrumTreeDetail implements OnChanges, OnDestroy {
 
     }
 
-    private destroyContainer(){
-        if (this.viewComponent) {
-            this.viewComponent.destroy();
-            this.viewComponent = null;
+    private destroyContainer() {
+        if (this.componentset) {
+            this.componentset = null;
         }
     }
 

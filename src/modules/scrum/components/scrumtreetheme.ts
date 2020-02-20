@@ -1,13 +1,14 @@
 /**
  * @module ModuleScrum
  */
-import {Component, Input} from '@angular/core';
+import {Component, Input, Injector, SkipSelf} from '@angular/core';
 
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {scrumtree} from '../services/scrum.service';
 import {relatedmodels} from "../../../services/relatedmodels.service";
+import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: '[scrum-tree-theme]',
@@ -30,16 +31,17 @@ export class ScrumTreeTheme {
      */
     @Input() private theme: any = {};
 
+    private disabled: boolean = true;
     /**
      * a check to toggle expansion
      */
     private expanded: boolean = false;
 
-    constructor(private scrum: scrumtree, private language: language, private metadata: metadata, private model: model, private epics: relatedmodels) {
+    constructor(@SkipSelf() private themes: model, private scrum: scrumtree, private language: language, private metadata: metadata, private model: model, private epics: relatedmodels, private modal: modal, private injector: Injector) {
     }
 
     /**
-     * initialize the model and the related module
+     * initialize the parent model and the related model and module
      */
     public ngOnInit() {
         this.model.module = 'ScrumThemes';
@@ -50,6 +52,13 @@ export class ScrumTreeTheme {
         this.epics.module = this.model.module;
         this.epics.id = this.model.id;
         this.epics.relatedModule = 'ScrumEpics';
+
+        // parent model
+        this.themes.data = this.theme;
+        this.model.module = this.epics.relatedModule;
+        if (this.model.module && this.metadata.checkModuleAcl(this.model.module, "create")) {
+            this.disabled = false;
+        }
     }
 
     /**
@@ -78,6 +87,22 @@ export class ScrumTreeTheme {
             this.loadRelatedEpics();
         }
         this.expanded = !this.expanded;
+    }
+
+    /**
+     * creates a new related epic
+     */
+    private newRelatedEpic() {
+        if (!this.themes.data.id) {
+            this.themes.data.id = this.themes.id;
+        }
+        this.model.id = "";
+
+        this.model.addModel( "", this.themes).subscribe(newRecord => {
+            if (newRecord != false) {
+                this.epics.addItems([newRecord]);
+            }
+        });
     }
 
 }
