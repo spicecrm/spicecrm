@@ -6,9 +6,9 @@
             <system-button-icon [icon]="'image'"></system-button-icon>
         </button>
 
-        <button #buttonToEnlargement *ngIf="!fieldIsEmpty" class="slds-button slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-container" (click)="openEnlarged()" style="padding:0">
-            <img *ngIf="imageUrl" [src]="imageUrl" class="imgInButton" style="border-radius: 0.25rem 0 0 0.25rem; padding: 1px 0 1px 1px; height: calc(2rem - 2px); width: calc(2rem - 1px)"><span style="display:inline-block" class="slds-text-align_center">
-                <system-button-icon [icon]="'threedots'" style="display: block; width: calc(2rem - 2px); height: calc(2rem - 4px)"></system-button-icon>
+        <button #buttonToEnlargement *ngIf="!fieldIsEmpty" class="slds-button slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-container" (click)="openEnlarged()" style="width:4rem">
+            <img *ngIf="imageUrl" [src]="imageUrl" class="imgInButton" style="border-radius: 0.25rem 0 0 0.25rem; padding: 1px 0 1px 1px; height: calc(2rem - 2px); width: calc(2rem - 1px)"><span class="slds-text-align_center">
+                <system-button-icon [icon]="'threedots'" style="width: calc(2rem - 2px)"></system-button-icon>
             </span>
         </button>
 
