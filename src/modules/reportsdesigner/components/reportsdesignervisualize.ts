@@ -59,7 +59,8 @@ export class ReportsDesignerVisualize {
      * @return integrationParams: object
      */
     get visualizationParams() {
-        return this.model.getField('visualization_params');
+        let vizParams = this.model.getField('visualization_params');
+        return  vizParams ? vizParams : {};
     }
 
     /**
@@ -82,7 +83,7 @@ export class ReportsDesignerVisualize {
      * @return selectedItemId: string
      */
     get selectedPluginId() {
-        return this.visualizationParams[this.activeLayoutItem].plugin;
+        return this.visualizationParams[this.activeLayoutItem]?.plugin;
     }
 
     /**
