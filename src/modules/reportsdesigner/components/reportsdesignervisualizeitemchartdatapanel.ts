@@ -80,7 +80,7 @@ export class ReportsDesignerVisualizeItemChartDataPanel implements OnChanges {
                 chartfunction: '-',
                 meaning: 'value',
                 axis: 'P',
-                renderer: 'bars'
+                renderer: ''
             }];
         } else {
             this.properties.dataseries = [];
