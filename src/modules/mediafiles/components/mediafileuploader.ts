@@ -18,7 +18,7 @@ import {SystemInputMedia} from '../../../systemcomponents/components/systeminput
     providers: [mediafiles, model, view]
 })
 export class MediaFileUploader {
-// private i7: any = {};
+
     /**
      * The upload progress in percent.
      */
