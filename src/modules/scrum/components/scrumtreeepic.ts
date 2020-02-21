@@ -7,6 +7,7 @@ import {metadata} from "../../../services/metadata.service";
 import {modellist} from "../../../services/modellist.service";
 import {scrumtree} from '../services/scrum.service';
 import {relatedmodels} from "../../../services/relatedmodels.service";
+import {language} from "../../../services/language.service";
 
 @Component({
     selector: '[scrum-tree-epic]',
@@ -37,10 +38,10 @@ export class ScrumTreeEpic implements OnInit {
     @Input() private epic: any = {};
 
 
-    constructor(@SkipSelf() private epics: model, private metadata: metadata, private model: model, private modellist: modellist, private scrum: scrumtree, private userstories: relatedmodels) {}
+    constructor(@SkipSelf() private epics: model, private language: language, private metadata: metadata, private model: model, private modellist: modellist, private scrum: scrumtree, private userstories: relatedmodels) {}
 
     /**
-     * initialize the model and the related module
+     * initialize the model, the parent and the related module
      */
     public ngOnInit() {
         this.model.module = 'ScrumEpics';
@@ -106,6 +107,13 @@ export class ScrumTreeEpic implements OnInit {
                 this.userstories.addItems([newRecord]);
             }
         });
+    }
+
+    /**
+     * getter for the title attribute
+     */
+    get title() {
+        return this.language.getLabel('LBL_ADD_USERSTORY');
     }
 
 }
