@@ -1343,3 +1343,24 @@ ul.spice-taglist span.slds-badge {
     background-color: #f3f2f2;
     text-align: center;
 }
+
+/* Vertical button groups */
+.spice-button-group-vertical .slds-button:first-child:not(:last-child) {
+    border-radius: 0.25rem 0.25rem 0 0;
+}
+.spice-button-group-vertical .slds-button:last-child:not(:first-child) {
+    border-radius: 0 0 0.25rem 0.25rem;
+}
+.spice-button-group-vertical .slds-button:not(:first-child):not(:last-child) {
+    border-radius: 0;
+}
+.spice-button-group-vertical .slds-button {
+    margin-bottom: -1px;
+    display: block;
+}
+.spice-button-group-vertical .slds-button:last-child {
+    margin-bottom: 0;
+}
+.spice-button-group-vertical .slds-button+.slds-button {
+    margin-left: 0;
+}

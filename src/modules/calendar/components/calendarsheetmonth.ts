@@ -21,6 +21,7 @@ import {broadcast} from '../../../services/broadcast.service';
 import {navigation} from '../../../services/navigation.service';
 import {backend} from '../../../services/backend.service';
 import {calendar} from '../services/calendar.service';
+import {Subscription} from "rxjs";
 
 /**
  * @ignore
@@ -36,13 +37,14 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     @Output() public navigateday: EventEmitter<any> = new EventEmitter<any>();
     @ViewChild('calendarsheet', {read: ViewContainerRef, static: true}) private calendarsheet: ViewContainerRef;
     @Input() private setdate: any = {};
-    @Input('userscalendars') private usersCalendars: any[] = [];
     @Input('googleisvisible') private googleIsVisible: boolean = true;
     private currentGrid: any[] = [];
     private offsetHeight: number = 20;
     private ownerEvents: any[] = [];
     private userEvents: any[] = [];
     private googleEvents: any[] = [];
+    private subscription: Subscription = new Subscription();
+
 
     constructor(private language: language,
                 private broadcast: broadcast,
@@ -52,6 +54,14 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 private renderer: Renderer2,
                 private cdr: ChangeDetectorRef,
                 private calendar: calendar) {
+        this.subscription.add(this.calendar.userCalendarVisibility$.subscribe(calendar => {
+                this.getUserEvents(calendar);
+            })
+        );
+        this.subscription.add(this.calendar.usersCalendarsLoad$.subscribe(() => {
+                this.getUsersEvents();
+            })
+        );
     }
 
     get allEvents() {
@@ -75,10 +85,9 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         this.buildGrid();
         if (changes.setdate) {
             this.getEvents();
-        }
-
-        if (changes.usersCalendars || changes.setdate) {
-            this.getUsersEvents();
+            if (this.calendar.usersCalendarsLoaded) {
+                this.getUsersEvents();
+            }
         }
         if (changes.googleIsVisible || changes.setdate) {
             this.getGoogleEvents();
@@ -87,6 +96,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
     public ngOnDestroy() {
         this.cdr.detach();
+        this.subscription.unsubscribe();
     }
 
     private trackByFn(index, item) {
@@ -150,6 +160,22 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             });
     }
 
+    private getUserEvents(calendar) {
+        this.userEvents = this.userEvents.filter(event => event.data.assigned_user_id != calendar.id);
+        this.arrangeEvents();
+        if (this.calendar.isMobileView || !calendar.visible) {
+            return;
+        }
+
+        this.calendar.loadUserEvents(this.startDate(), this.endDate(), calendar.id)
+            .subscribe(events => {
+                if (events.length > 0) {
+                    this.userEvents = [...this.userEvents, ...events];
+                    this.arrangeEvents();
+                }
+            });
+    }
+
     private getUsersEvents() {
         this.userEvents = [];
         this.arrangeEvents();
@@ -160,10 +186,8 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         this.calendar.loadUsersEvents(this.startDate(), this.endDate())
             .subscribe(events => {
                 if (events.length > 0) {
-                    events.forEach(event => {
-                        this.userEvents.push(event);
-                        this.arrangeEvents();
-                    });
+                    this.userEvents = [...this.userEvents, ...events];
+                    this.arrangeEvents();
                 }
             });
     }
