@@ -31,6 +31,9 @@ export class ScrumTreeTheme {
      */
     @Input() private theme: any = {};
 
+    /**
+     * property for permission
+     */
     private disabled: boolean = true;
     /**
      * a check to toggle expansion
@@ -41,7 +44,7 @@ export class ScrumTreeTheme {
     }
 
     /**
-     * initialize the parent model and the related model and module
+     * initialize the model, the parent and the related module
      */
     public ngOnInit() {
         this.model.module = 'ScrumThemes';
@@ -105,4 +108,11 @@ export class ScrumTreeTheme {
         });
     }
 
+
+    /**
+     * getter for the title attribute
+     */
+    get title() {
+        return this.language.getLabel('LBL_ADD_EPIC');
+    }
 }
