@@ -90,7 +90,7 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
      * cancels the subscription on the parent
      */
     public ngOnDestroy(): void {
-        if(this.parentSubscription) this.parentSubscription.unsubscribe();
+        if (this.parentSubscription) this.parentSubscription.unsubscribe();
     }
 
     /**
@@ -105,6 +105,13 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
      */
     get actionset() {
         return this.componentconfig.actionset;
+    }
+
+    /**
+     * returns if attachments are allowed. Then displays the attachment panel
+     */
+    get allowattachments() {
+        return this.componentconfig.allowattachments === true ? true : false;
     }
 
     /**

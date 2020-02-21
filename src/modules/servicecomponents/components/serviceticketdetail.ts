@@ -8,6 +8,8 @@ import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 
+declare var _: any;
+
 /**
  * renders a summary panel on the service ticket
  */
