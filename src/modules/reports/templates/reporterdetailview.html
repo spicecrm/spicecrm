@@ -27,10 +27,10 @@
         </div>
     </div>
 </div>
-<div *ngIf="hasVisualization" style="width:100%;height:400px;">
+<div *ngIf="hasVisualization" class="slds-size--1-of-1" [ngStyle]="visualizationStyle">
     <reporter-detail-visualization></reporter-detail-visualization>
 </div>
-<div #presentationcontainer [ngStyle]="presentationStyle" tobottom>
+<div #presentationcontainer tobottomnoscroll>
     <div #presentationview></div>
 </div>
 <reporter-filter-panel @displayfilter *ngIf="showFilters" class="slds-is-absolute" [ngStyle]="filterPanelStyle" [integrationparams]="integrationParams" (filtersaved)="filtersaved()"></reporter-filter-panel>
