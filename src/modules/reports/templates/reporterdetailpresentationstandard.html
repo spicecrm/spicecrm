@@ -1,41 +1,35 @@
 <div class="slds-height_full">
-    <table #tableheader class="slds-table slds-table_bordered slds-table--fixed-layout">
-        <thead>
-        <tr class="slds-text-title--caps">
-            <th *ngFor="let field of getFields()" [ngClass]="displayClasses(field)" scope="col" [width]="getFieldWidth(field.fieldid)" (click)="toggleSearch(field)">
-                <a *ngIf="isSortable(field); else notsortable" href="javascript:void(0);" class="slds-th__action slds-text-link--reset slds-grid"  [ngClass]="displayClasses(field)">
-                    <div class="slds-truncate slds-p-vertical--xx-small">{{language.getLabel(field.name)}}</div>
-                    <system-utility-icon [icon]="getSortIcon(field.fieldid)" addclasses="slds-is-sortable__icon" size="x-small"></system-utility-icon>
-                </a>
-                <ng-template #notsortable>
-                    <span>{{language.getLabel(field.name)}}</span>
-                </ng-template>
-            </th>
-        </tr>
-        </thead>
-    </table>
-    <div #tablecontent class="slds-scrollable--y" [ngStyle]="getContainerStyle()" (scroll)="onScroll($event)">
-        <div *ngIf="isLoading" class="slds-align--absolute-center" style="height: 100%;">
-            <system-spinner></system-spinner>
-        </div>
-        <table *ngIf="!isLoading"
-               class="slds-table slds-table_col-bordered slds-table_bordered slds-table--fixed-layout">
+    <div class="slds-scrollable--y" [ngStyle]="getContainerStyle()" [overlayLoadingSpinner]="isLoading">
+        <table class="slds-table slds-table_bordered slds-table--fixed-layout slds-table--header-fixed">
+            <thead>
+                <tr class="slds-text-title--caps">
+                    <th *ngFor="let field of getFields()" [ngClass]="displayClasses(field)" scope="col" class="slds-resizable" [width]="getFieldWidth(field.fieldid)" (systemresize)="onresize()" [resizeid]="field.fieldid">
+                        <a *ngIf="isSortable(field); else notsortable" href="javascript:void(0);" class="slds-th__action slds-text-link--reset slds-grid" (click)="toggleSort(field)" [ngClass]="displayClasses(field)">
+                            <div class="slds-truncate slds-p-vertical--xx-small">{{language.getLabel(field.name)}}</div>
+                            <system-utility-icon [icon]="getSortIcon(field.fieldid)" addclasses="slds-is-sortable__icon" size="x-small"></system-utility-icon>
+                        </a>
+                        <ng-template #notsortable>
+                            <div class="slds-th__action">{{language.getLabel(field.name)}}</div>
+                        </ng-template>
+                    </th>
+                </tr>
+            </thead>
             <tbody>
-            <tr *ngFor="let record of getRecords()" style="vertical-align: top;">
-                <td scope="row" *ngFor="let field of getFields()" [width]="getFieldWidth(field.fieldid)">
-                    <reporter-field-container [field]="field" [record]="record"></reporter-field-container>
-                </td>
-            </tr>
+                <tr *ngFor="let record of getRecords()" style="vertical-align: top;">
+                    <td scope="row" *ngFor="let field of getFields()">
+                        <reporter-field-container [field]="field" [record]="record"></reporter-field-container>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
     <div #tablefooter>
-        <div *ngIf="showFooter" class="slds-p-vertical--x-small slds-grid slds-grid_vertical-align-center slds-grid_align-spread">
+        <div *ngIf="showFooter"
+             class="slds-p-vertical--x-small slds-grid slds-grid_vertical-align-center slds-grid_align-spread">
             <div class="slds-p-horizontal--medium">
                 {{displayRecords}} of {{totalRecords}}
             </div>
             <div class="slds-p-horizontal--medium">
-
                 <button class="slds-button slds-button_icon" (click)="firstPage()" [disabled]="prevDisbaled">
                     <system-custom-icon icon="chevrondoubleleft" size="x-small"></system-custom-icon>
                 </button>
@@ -47,6 +41,9 @@
                 </button>
                 <button class="slds-button slds-button_icon" (click)="lastPage()" [disabled]="nextDisabled">
                     <system-custom-icon icon="chevrondoubleright" size="x-small"></system-custom-icon>
+                </button>
+                <button class="slds-button slds-button_icon" *ngIf="canSave" (click)="saveLayout()" [title]="language.getLabel('LBL_SAVE_LAYOUT')">
+                    <system-button-icon icon="save" ></system-button-icon>
                 </button>
             </div>
         </div>
