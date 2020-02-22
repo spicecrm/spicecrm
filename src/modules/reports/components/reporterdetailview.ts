@@ -42,10 +42,20 @@ export class ReporterDetailView implements OnInit {
     @ViewChild('pageheader', {read: ViewContainerRef, static: true}) private pageheader: ViewContainerRef;
 
 
-    private routeSubscribe: any = {};
     private vizData: any = {};
     private presComponent: any = undefined;
+
+    /**
+     * set to true if the report should show the visualization
+     */
     private hasVisualization: boolean = false;
+
+    /**
+     * the height of the visualization container
+     */
+    private visualizationHeight: number = 0;
+
+
     private whereConditions: any = {};
     private integrationParams: any = {};
 
@@ -108,6 +118,15 @@ export class ReporterDetailView implements OnInit {
         };
     }
 
+    /**
+     * returns the style to be set with ngStyle on the vis container
+     */
+    get visualizationStyle() {
+        return {
+            height: this.visualizationHeight + 'px'
+        };
+    }
+
     public ngOnInit(): void {
 
         // set theenavigation paradigm
@@ -124,6 +143,7 @@ export class ReporterDetailView implements OnInit {
                 let visualizationParams = data.visualization_params;
                 if (visualizationParams && visualizationParams.layout && visualizationParams.layout != '-') {
                     this.hasVisualization = true;
+                    this.visualizationHeight = data.visualization_params.chartheight ? data.visualization_params.chartheight : 300;
                 }
             }
 

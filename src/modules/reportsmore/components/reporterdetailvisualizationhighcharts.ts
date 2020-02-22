@@ -5,7 +5,7 @@ import {
     Component, AfterViewInit,
     OnDestroy, ElementRef
 } from '@angular/core';
-import {ActivatedRoute}   from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {libloader} from '../../../services/libloader.service';
 import {model} from '../../../services/model.service';
@@ -44,7 +44,7 @@ export class ReporterDetailVisualizationHighcharts implements AfterViewInit {
         private libloader: libloader
     ) {
         // don't use the vizdata.uid in case the same report is rendered multiple times...
-        this.chart_element_id = 'high-charts-'+this.utils.generateGuid();
+        this.chart_element_id = 'high-charts-' + this.utils.generateGuid();
     }
 
     public ngAfterViewInit() {
@@ -58,12 +58,15 @@ export class ReporterDetailVisualizationHighcharts implements AfterViewInit {
                 if (Highcharts.chart) {
 
                     let hasData = false;
-                    for(let series of this.vizdata.data.series){
-                        if(series.data) {
+                    for (let series of this.vizdata.data.series) {
+                        // translate the name as this might be a label
+                        series.name = this.language.getLabel(series.name);
+
+                        if (series.data) {
                             hasData = true;
                         }
                     }
-                    if(hasData) {
+                    if (hasData) {
                         this.chart = Highcharts.chart(this.chart_element_id, this.vizdata.data);
                     } else {
                         this.noData = true;
@@ -72,7 +75,7 @@ export class ReporterDetailVisualizationHighcharts implements AfterViewInit {
             });
     }
 
-    get reportName(){
+    get reportName() {
         return this.model.getFieldValue('name');
     }
 

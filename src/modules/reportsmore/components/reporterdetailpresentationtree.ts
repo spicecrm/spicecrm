@@ -7,8 +7,10 @@ import {
 import {model} from '../../../services/model.service';
 import {backend} from '../../../services/backend.service';
 import {language} from '../../../services/language.service';
+import {toast} from '../../../services/toast.service';
 
 import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
+import {ReporterDetailPresentationStandard} from "../../reports/components/reporterdetailpresentationstandard";
 
 /**
  * renders the standard view for a report which is a simple column based view
@@ -17,20 +19,12 @@ import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
     selector: 'reporter-detail-presentation-tree',
     templateUrl: './src/modules/reportsmore/templates/reporterdetailpresentationtree.html'
 })
-export class ReporterDetailPresentationTree implements AfterViewInit, OnInit {
+export class ReporterDetailPresentationTree extends ReporterDetailPresentationStandard {
 
-    @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
-    @ViewChild('tableheader', {read: ViewContainerRef, static: true}) private tableheader: ViewContainerRef;
-    @ViewChild('tablefooter', {read: ViewContainerRef, static: true}) private tablefooter: ViewContainerRef;
-
-    private presParams: any = {};
-    private presData: any = {};
+    /**
+     * the field to be displayed
+     */
     private fields: any[] = [];
-    private fieldsData: any = {};
-    private totalWidth: number = 0;
-
-
-    private isLoading: boolean = true;
 
     /**
      * the array of fields to be displayed for the report
@@ -48,45 +42,13 @@ export class ReporterDetailPresentationTree implements AfterViewInit, OnInit {
      */
     private groupFields: any[] = [];
 
-    constructor(private language: language, private model: model, private backend: backend, private reporterconfig: reporterconfig) {
-        this.reporterconfig.refresh$.subscribe(event => {
-            this.getPresentation();
-        });
+    constructor(public language: language, public model: model, public backend: backend, public reporterconfig: reporterconfig, public toast: toast) {
+        super(language, model, backend, reporterconfig, toast);
+
+        // no footer
+        this.showFooter = false;
     }
 
-
-    public ngOnInit() {
-        this.presParams = this.model.getField('presentation_params');
-    }
-
-    public ngAfterViewInit() {
-        this.getPresentation();
-    }
-
-    private displayClasses(field) {
-        let classes = [];
-
-        if (field.sortable) classes.push('slds-is-sortable');
-
-        switch (field.type) {
-            case 'currency':
-            case 'currencyint':
-                classes.push('slds-grid--align-end');
-                break;
-            case 'enum':
-                classes.push('slds-grid--align-center');
-                break;
-        }
-
-        return classes.join(' ');
-    }
-
-    private getContainerStyle(): any {
-        let recth = this.tableheader.element.nativeElement.getBoundingClientRect();
-        return {
-            height: 'calc(100% - ' + recth.height + 'px)'
-        };
-    }
 
     /**
      * returns the name of the grouped fields in the tree we can expand on
@@ -106,7 +68,10 @@ export class ReporterDetailPresentationTree implements AfterViewInit, OnInit {
         return this.fields[this.groupFields.length - 1];
     }
 
-    private getPresentation() {
+    /**
+     * overwite the getPOresentation Method
+     */
+    public getPresentation() {
         this.isLoading = true;
 
         this.backend.getRequest('KReporter/Tree/' + this.model.id + '/columns', {}).subscribe((columns: any) => {
@@ -137,6 +102,11 @@ export class ReporterDetailPresentationTree implements AfterViewInit, OnInit {
         });
     }
 
+    /**
+     * function to get the node when the node is expanded
+     *
+     * @param node
+     */
     private getNode(node) {
         let depth = 0;
         if (node != 'root') {
@@ -192,27 +162,6 @@ export class ReporterDetailPresentationTree implements AfterViewInit, OnInit {
             }
         }
 
-    }
-
-    private getFields() {
-        try {
-            return this.presData.reportmetadata.fields.filter(field => field.display == 'yes');
-        } catch (e) {
-            return [];
-        }
-    }
-
-    private getRecords() {
-        try {
-            return this.presData.records;
-        } catch (e) {
-            return [];
-        }
-    }
-
-    private getFieldWidth(fieldid) {
-
-        return Math.round(this.fieldsData[fieldid].width / this.totalWidth * 100) + '%';
     }
 
 }

@@ -2,14 +2,14 @@
  * @module ModuleReportsMore
  */
 import {
-    Component, AfterViewInit, OnInit, ViewChild, ViewContainerRef
+    Component
 } from '@angular/core';
-import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {backend} from '../../../services/backend.service';
 import {language} from '../../../services/language.service';
-
+import {toast} from '../../../services/toast.service';
 import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
+import {ReporterDetailPresentationStandard} from "../../reports/components/reporterdetailpresentationstandard";
 
 /**
  * renders the standard view for a report which is a simple column based view
@@ -18,37 +18,51 @@ import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
     selector: 'reporter-detail-presentation-grouped',
     templateUrl: './src/modules/reportsmore/templates/reporterdetailpresentationgrouped.html'
 })
-export class ReporterDetailPresentationGrouped implements AfterViewInit, OnInit {
+export class ReporterDetailPresentationGrouped extends ReporterDetailPresentationStandard {
 
-    @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
-    @ViewChild('tableheader', {read: ViewContainerRef, static: true}) private tableheader: ViewContainerRef;
-    @ViewChild('tablesummary', {read: ViewContainerRef, static: false}) private tablesummary: ViewContainerRef;
-    @ViewChild('tablefooter', {read: ViewContainerRef, static: true}) private tablefooter: ViewContainerRef;
 
-    private presParams: any = {};
-    private presData: any = {};
-    private fieldsData: any = {};
-    private totalWidth: number = 0;
-    private showFooter: boolean = true;
-    private currentPage: number = 1;
-    private isLoading: boolean = true;
-
+    /**
+     * the id of the field the reports i grouped by
+     */
     private _groupById: string = '';
+
+    /**
+     * the values for the group by caluse
+     */
     private groupByValues: any[] = [];
+
+    /**
+     * the total record
+     */
     private totalRecord: {};
+
+    /**
+     * the reporter fields for the select for the group ba clause
+     */
     private reportFields: any[] = [];
+
+    /**
+     * indicates if the report has a summary
+     */
     private hasSummary: boolean = false;
 
-    constructor(private metadata: metadata, private model: model, private backend: backend, private reporterconfig: reporterconfig, private language: language) {
-        this.reporterconfig.refresh$.subscribe(event => {
-            this.getPresentation();
-        });
+
+    constructor(public language: language, public model: model, public backend: backend, public reporterconfig: reporterconfig, public toast: toast) {
+        super(language, model, backend, reporterconfig, toast);
     }
 
+    /**
+     * simple gettr for the group by id
+     */
     get groupById() {
         return this._groupById;
     }
 
+    /**
+     * setter for the group by that also triggers rebuilding of the total values
+     *
+     * @param value
+     */
     set groupById(value) {
         if (value != this._groupById) {
             this._groupById = value;
@@ -58,6 +72,9 @@ export class ReporterDetailPresentationGrouped implements AfterViewInit, OnInit 
         }
     }
 
+    /**
+     * rebuilds the groups
+     */
     private rebuildGroups() {
         // determine values
         this.groupByValues = [];
@@ -72,122 +89,39 @@ export class ReporterDetailPresentationGrouped implements AfterViewInit, OnInit 
                 value: groupByValue,
                 expanded: true,
                 count: groupByValues[groupByValue],
-                totalRecord: this.buildSummary(this.getRecords(groupByValue))
+                totalRecord: this.buildSummary(this.getGroupedRecords(groupByValue))
             });
         }
     }
 
-    public ngOnInit() {
-        this.presParams = this.model.getField('presentation_params');
+    /**
+     * postprocess the presentation data
+     */
+    public processPresData() {
+        // check if we have a summary to be displayed
+        let fields = this.presData.metaData.gridColumns.filter(column => column.summaryType);
+        this.hasSummary = fields.length > 0;
 
-    }
-
-    public ngAfterViewInit() {
-        this.getPresentation();
-    }
-
-    private displayClasses(field) {
-        let classes = [];
-
-        if (field.sortable) classes.push('slds-is-sortable');
-
-        switch (field.type) {
-            case 'currency':
-            case 'currencyint':
-                classes.push('slds-grid--align-end')
-                break;
-            case 'enum':
-                classes.push('slds-grid--align-center')
-                break;
-        }
-
-        return classes.join(' ');
-    }
+        // set the group by id if it is not set already
+        if (!this._groupById) this._groupById = this.presData.reportmetadata.presentation_params.pluginData.groupedViewProperties.groupById;
 
 
-    // todo : fix this for scrolling with a fixed table header
-    private getContainerStyle(): any {
-        // the header element
-        let recth = this.tableheader.element.nativeElement.getBoundingClientRect();
+        // rebuild the grouped sums and count
+        this.rebuildGroups();
 
-        // only if the report has a summary .. other wise returna simple element with property height is 0
-        let rects = this.hasSummary ? this.tablesummary.element.nativeElement.getBoundingClientRect() : {height: 0};
+        this.totalRecord = this.buildSummary(this.presData.records);
 
-        // the footer element
-        let rectf = this.tablefooter.element.nativeElement.getBoundingClientRect();
+        // buid the fields for the group by select
+        this.reportFields = [];
+        for (let field of this.presData.reportmetadata.fields) {
+            this.fieldsData[field.fieldid] = field;
+            this.totalWidth += field.width;
 
-        return {
-            height: 'calc(100% - ' + (rects.height + recth.height + rectf.height) + 'px)'
-        };
-    }
-
-    get totalRecords() {
-        return this.presData.count;
-    }
-
-    private getPresentation() {
-        this.isLoading = true;
-
-        // build wherecondition
-        let whereConditions: any[] = [];
-        for (let userFilter of this.reporterconfig.userFilters) {
-            whereConditions.push({
-                fieldid: userFilter.fieldid,
-                operator: userFilter.operator,
-                value: userFilter.value,
-                valuekey: userFilter.valuekey,
-                valueto: userFilter.valueto,
-                valuetokey: userFilter.valuetokey
+            // set the reporter fields for the select
+            this.reportFields.push({
+                fieldid: field.fieldid,
+                name: field.name,
             });
-        }
-
-        this.backend.getRequest('KReporter/' + this.model.id + '/presentation', {
-            whereConditions: JSON.stringify(whereConditions),
-            parentbeanId: this.model.getField('parentBeanId'),
-            parentbeanModule: this.model.getField('parentBeanModule')
-        }).subscribe((presData: any) => {
-
-            // get field width
-            this.totalWidth = 0;
-            this.reportFields = [];
-            for (let field of presData.reportmetadata.fields) {
-                this.fieldsData[field.fieldid] = field;
-                this.totalWidth += field.width;
-
-                // set teh reporter fields for the select
-                this.reportFields.push({
-                    fieldid: field.fieldid,
-                    name: field.name,
-                });
-            }
-
-            // set the pres data
-            this.presData = presData;
-
-            // check if we have a summary to be displayed
-            let fields = this.presData.metaData.gridColumns.filter(column => column.summaryType);
-            this.hasSummary = fields.length > 0;
-
-            // set the group by id if it is not set already
-            if (!this._groupById) this._groupById = presData.reportmetadata.presentation_params.pluginData.groupedViewProperties.groupById;
-
-
-
-
-            // rebuild the grouped sums and count
-            this.rebuildGroups();
-
-            this.totalRecord = this.buildSummary(this.presData.records);
-
-            this.isLoading = false;
-        });
-    }
-
-    private getFields() {
-        try {
-            return this.presData.reportmetadata.fields.filter(field => field.display == 'yes');
-        } catch (e) {
-            return [];
         }
     }
 
@@ -226,22 +160,6 @@ export class ReporterDetailPresentationGrouped implements AfterViewInit, OnInit 
         return retRecord;
     }
 
-    /**
-     * a helper function to determine the sort icon based on the set sort criteria
-     */
-    private getSortIcon(fieldid): string {
-        return 'arrowdown';
-        //    return 'arrowup';
-    }
-
-    private getRecords(groupvalue): any[] {
-        try {
-            return this.presData.records.filter(record => record[this._groupById] == groupvalue);
-        } catch (e) {
-            return [];
-        }
-    }
-
     private getRecordTotals() {
         try {
             return this.presData.recordtotal;
@@ -250,8 +168,14 @@ export class ReporterDetailPresentationGrouped implements AfterViewInit, OnInit 
         }
     }
 
-    private getFieldWidth(fieldid) {
-        return Math.round(this.fieldsData[fieldid].width / this.totalWidth * 100) + '%';
+
+    public getGroupedRecords(groupvalue): any[] {
+        try {
+            return this.presData.records.filter(record => record[this._groupById] == groupvalue);
+        } catch (e) {
+            return [];
+        }
     }
+
 
 }

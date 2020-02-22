@@ -1286,6 +1286,15 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     border: 0;
 }
 
+/* sticky headers */
+.spice-table_footer-fixed tfoot,
+.spice-table_footer-fixed tfoot td {
+    position: sticky;
+    bottom: 0px;
+    z-index: 1;
+    border-top: 1px solid #dddbda;
+}
+
 .slds-sub-tabs__item.slds-active, .slds-sub-tabs__item.slds-is-open {
     background: rgba(155, 155, 155, .1) !important;
 }

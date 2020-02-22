@@ -1,28 +1,21 @@
 <div class="slds-height_full">
-    <table #tableheader class="slds-table slds-table_bordered slds-table--fixed-layout slds-border--top">
-        <thead>
-        <tr class="slds-text-title--caps slds-table--col-bordered">
-            <th *ngFor="let field of getFields()" scope="col" [width]="getFieldWidth(field.fieldid)">
-                <a  href="javascript:void(0);" class="slds-th__action slds-text-link--reset slds-grid"  [ngClass]="displayClasses(field)">
-                    <div class="slds-truncate slds-p-vertical--xx-small">{{language.getLabel(field.name)}}</div>
-                    <system-utility-icon [icon]="getSortIcon(field.fieldid)" addclasses="slds-is-sortable__icon" size="x-small"></system-utility-icon>
-                </a>
-            </th>
-        </tr>
-        </thead>
-    </table>
-    <div #tablecontent class="slds-scrollable--y" [ngStyle]="getContainerStyle()">
-        <div *ngIf="isLoading" class="slds-align--absolute-center" style="height: 100%;">
-            <system-spinner></system-spinner>
-        </div>
-        <ng-container *ngFor="let groupByValue of groupByValues">
-            <table *ngIf="!isLoading"  class="slds-table slds-table_col-bordered slds-table_bordered slds-table--fixed-layout slds-m-bottom--medium">
-                <thead>
-                    <tr>
-                        <th *ngFor="let field of getFields()" scope="col" [width]="getFieldWidth(field.fieldid)" class="slds-p-around_none"></th>
-                    </tr>
-                </thead>
-                <tbody>
+    <div class="slds-scrollable--y" [ngStyle]="getContainerStyle()" [overlayLoadingSpinner]="isLoading">
+        <table class="slds-table slds-table_bordered slds-table--fixed-layout slds-table--header-fixed spice-table_footer-fixed">
+            <thead>
+            <tr class="slds-text-title--caps">
+                <th *ngFor="let field of getFields()" [ngClass]="displayClasses(field)" scope="col" class="slds-resizable" [width]="getFieldWidth(field.fieldid)" (click)="toggleSort(field)" (systemresize)="onresize()" [resizeid]="field.fieldid">
+                    <a *ngIf="isSortable(field); else notsortable" href="javascript:void(0);" class="slds-th__action slds-text-link--reset slds-grid " [ngClass]="displayClasses(field)">
+                        <div class="slds-truncate slds-p-vertical--xx-small">{{language.getLabel(field.name)}}</div>
+                        <system-utility-icon [icon]="getSortIcon(field.fieldid)" addclasses="slds-is-sortable__icon" size="x-small"></system-utility-icon>
+                    </a>
+                    <ng-template #notsortable>
+                        <div class="slds-th__action">{{language.getLabel(field.name)}}</div>
+                    </ng-template>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let groupByValue of groupByValues">
                     <tr>
                         <td [attr.colspan]="getFields().length" class="slds-theme--shade slds-text-title_bold">
                             <div class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center">
@@ -48,20 +41,18 @@
                             <reporter-field-container [field]="field" [record]="groupByValue.totalRecord"></reporter-field-container>
                         </td>
                     </tr>
-                </tbody>
-            </table>
-        </ng-container>
+                </ng-container>
+            </tbody>
+            <tfoot>
+                <tr class="slds-theme--info">
+                    <td scope="row" *ngFor="let field of getFields()"  class="slds-text-title_bold slds-theme--info">
+                        <reporter-field-container [field]="field" [record]="getRecordTotals()"></reporter-field-container>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
     </div>
-    <table #tablesummary class="slds-table slds-table_bordered slds-table--fixed-layout slds-no-row-hover" [ngClass]="{'slds-hide': !hasSummary}">
-        <tbody>
-        <tr class="slds-theme--info">
-            <td scope="row" *ngFor="let field of getFields()" [width]="getFieldWidth(field.fieldid)"  class="slds-text-title_bold">
-                <reporter-field-container [field]="field" [record]="getRecordTotals()"></reporter-field-container>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <div #tablefooter>
+    <div #tablefooter class="slds-border--top">
         <div class="slds-p-vertical--x-small slds-grid slds-grid_vertical-align-center slds-grid_align-spread">
             <div class="slds-grid slds-grid_vertical-align-center slds-p-left--x-small">
                 <label class="slds-form-element__label">{{language.getLabel('LBL_GROUPDBY')}}</label>
@@ -75,8 +66,11 @@
                     </div>
                 </div>
             </div>
-            <div class="slds-p-horizontal--medium">
-                {{totalRecords}}
+            <div class="slds-p-horizontal--medium slds-grid slds-grid--vertical-align-center">
+                <div class="slds-p-horizontal--xx-small">{{totalRecords}} {{language.getLabel('LBL_RECORDS')}}</div>
+                <button class="slds-button slds-button_icon" *ngIf="canSave" (click)="saveLayout()" [title]="language.getLabel('LBL_SAVE_LAYOUT')">
+                    <system-button-icon icon="save" ></system-button-icon>
+                </button>
             </div>
         </div>
     </div>

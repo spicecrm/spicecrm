@@ -20,7 +20,11 @@ export class ReportsDesignerService {
     public operatorCount: any = {};
     public operatorTypes: any = {};
     public operatorAssignments: any = {};
-    public expertMode: boolean = false;
+
+    /**
+     * sets the reporter into expert mode. set tor true bx default
+     */
+    public expertMode: boolean = true;
     public manipulateExpandedItemId: string = '';
     public visualizeActiveLayoutItem: string = '';
     public visualizeColorTheme: any[] = [];
