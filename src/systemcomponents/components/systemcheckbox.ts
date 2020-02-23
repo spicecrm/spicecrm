@@ -25,8 +25,11 @@ declare var _;
     ]
 })
 export class SystemCheckbox implements ControlValueAccessor {
+
     private id = _.uniqueId();  // needed to use inside the template for html ids... without, the click events will get confused...
+
     private _value: any = "1"; // the value used for the "value" attribute of the checkbox itself
+
     get value() {
         return this._value;
     }
@@ -53,6 +56,12 @@ export class SystemCheckbox implements ControlValueAccessor {
     get checked(): boolean {
         return this._checked;
     }
+
+    /**
+     * set to true to render the checkbox without the NGContent. This is useful if you want to display the checkbox without any tzext and the adjacent elements are messing up the layout
+     * ToDo: check if we can assess if ngcontent has been ppassed in ..
+     */
+    @Input() private hidelabel: boolean = false;
 
     @Input()
     set checked(val: boolean) {

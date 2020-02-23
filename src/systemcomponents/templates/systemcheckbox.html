@@ -2,6 +2,6 @@
     <input type="checkbox" id="checkbox-{{id}}" [attr.aria-labelledby]="'checkbox-button-label-'+id+' check-group-header'" (click)="click()" [disabled]="disabled" [checked]="checked" [value]="value" [(ngModel)]="model_value" />
     <label class="slds-checkbox__label" for="checkbox-{{id}}" id="checkbox-button-label-{{id}}">
         <span class="slds-checkbox_faux"></span>
-        <span class="slds-form-element__label slds-p-horizontal--xx-small"><ng-content></ng-content></span>
+        <span *ngIf="!hidelabel" class="slds-form-element__label slds-p-horizontal--xx-small"><ng-content></ng-content></span>
     </label>
 </span>
