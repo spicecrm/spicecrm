@@ -50,6 +50,9 @@
                 </li>
                 <li (click)="setActiveTab('manipulate')" [class.slds-active]="activeTab == 'manipulate'" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
                     <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
+                        <span class="slds-tabs__left-icon">
+                            <system-utility-icon icon="database" size="x-small"></system-utility-icon>
+                        </span>
                         {{language.getLabel('LBL_MANIPULATE')}}
                     </a>
                 </li>
