@@ -14,16 +14,18 @@
                 </div>
             </div>
         </div>
-        <div class="slds-col slds-no-flex slds-grid slds-align-top">
+        <div class="slds-col slds-no-flex slds-grid slds-align-top slds-button-group">
             <reporter-integration-export-button [integrationParams]="integrationParams" class="slds-m-right--x-small"></reporter-integration-export-button>
             <reporter-integration-tools-button [integrationParams]="integrationParams" class="slds-m-right--x-small"></reporter-integration-tools-button>
             <reporter-filter-button [whereConditions]="whereConditions" (filter)="toggleFilters($event)"></reporter-filter-button>
-            <button *ngIf="!view.isEditMode() && view.isEditable" class="slds-button slds-m-horizontal--x-small slds-button--neutral" (click)="startEditing()">
-                {{language.getLabel('LBL_EDIT')}}
-            </button>
-            <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-m-horizontal--x-small" [title]="language.getLabel('LBL_REFRESH')" (click)="refresh()">
-                <system-button-icon icon="refresh"></system-button-icon>
-            </button>
+            <div class="slds-button-group slds-m-horizontal--x-small">
+                <button *ngIf="!view.isEditMode() && view.isEditable" class="slds-button slds-button--neutral" (click)="startEditing()">
+                    {{language.getLabel('LBL_EDIT')}}
+                </button>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" [title]="language.getLabel('LBL_REFRESH')" (click)="refresh()">
+                    <system-button-icon icon="refresh"></system-button-icon>
+                </button>
+            </div>
         </div>
     </div>
 </div>

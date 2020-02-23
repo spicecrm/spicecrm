@@ -1,8 +1,8 @@
 <ng-container *ngIf="reportsDesignerService.manipulateExpandedItemId == this.listItem.fieldid && reportsDesignerService.expertMode">
-    <td colspan="8">
+    <td colspan="7">
         <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
             <div class="slds-form-element__control">
-                <div class="slds-grid">
+                <div class="slds-form-element slds-grid">
                     <div class="slds-form-element slds-size--1-of-2">
                         <label class="slds-form-element__label">{{language.getLabel('LBL_FIXED_VALUE')}}</label>
                         <div class="slds-form-element__control">
@@ -12,11 +12,11 @@
                     <div class="slds-form-element slds-size--1-of-2">
                         <label class="slds-form-element__label">{{language.getLabel('LBL_GROUPING')}}</label>
                         <div class="slds-form-element__control">
-                            <input type="text" [(ngModel)]="listItem.grouping" class="slds-input">
+                            <input disabled type="text" [(ngModel)]="listItem.grouping" class="slds-input">
                         </div>
                     </div>
                 </div>
-                <div class="slds-grid">
+                <div class="slds-form-element slds-grid">
                     <div class="slds-form-element slds-size--1-of-2">
                         <label class="slds-form-element__label">{{language.getLabel('LBL_VALUE_TYPE')}}</label>
                         <div class="slds-form-element__control">
@@ -35,14 +35,18 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="slds-form-element slds-m-top--x-small slds-has-divider--top">
+                    <label class="slds-form-element__label">{{language.getLabel('LBL_CUSTOM_FUNCTION')}}</label>
+                    <system-input-base64 [(ngModel)]="listItem.customsqlfunction"></system-input-base64>
+                </div>
+                <div class="slds-grid slds-has-divider--top">
                     <div class="slds-form-element slds-size--1-of-2">
                         <label class="slds-form-element__label">{{language.getLabel('LBL_STORE')}}</label>
                         <div class="slds-form-element__control">
                             <input type="text" [(ngModel)]="listItem.assigntovalue" class="slds-input">
                         </div>
                     </div>
-                </div>
-                <div class="slds-grid">
                     <div class="slds-form-element slds-size--1-of-2">
                         <label class="slds-form-element__label">{{language.getLabel('LBL_SEQUENCE')}}</label>
                         <div class="slds-form-element__control">
@@ -51,12 +55,22 @@
                     </div>
                 </div>
                 <div class="slds-form-element">
-                    <label class="slds-form-element__label">{{language.getLabel('LBL_CUSTOM_FUNCTION')}}</label>
-                    <system-input-base64 [(ngModel)]="listItem.customsqlfunction"></system-input-base64>
-                </div>
-                <div class="slds-form-element">
                     <label class="slds-form-element__label">{{language.getLabel('LBL_FORMULA')}}</label>
                     <system-input-base64 [(ngModel)]="listItem.formulavalue"></system-input-base64>
+                </div>
+                <div class="slds-grid slds-has-divider--top">
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <label class="slds-form-element__label">{{language.getLabel('LBL_PATH')}}</label>
+                        <div class="slds-form-element__control">
+                            <input type="text" disabled [(ngModel)]="listItem.path" class="slds-input" tabindex="1" autofocus>
+                        </div>
+                    </div>
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <label class="slds-form-element__label">{{language.getLabel('LBL_ID')}}</label>
+                        <div class="slds-form-element__control">
+                            <input disabled type="text" [(ngModel)]="listItem.fieldid" class="slds-input">
+                        </div>
+                    </div>
                 </div>
             </div>
         </fieldset>

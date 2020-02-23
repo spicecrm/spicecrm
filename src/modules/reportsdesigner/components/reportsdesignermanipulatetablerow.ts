@@ -104,4 +104,11 @@ export class ReportsDesignerManipulateTableRow {
         if (!this.reportsDesignerService.expertMode) return;
         this.reportsDesignerService.manipulateExpandedItemId = this.reportsDesignerService.manipulateExpandedItemId == this.listItem.fieldid ? '' : this.listItem.fieldid;
     }
+
+    /**
+     * disable the required checkbox if we are on a root elemet
+     */
+    get requiredEnabled(){
+        return this.listItem.path.split('::').length > 2;
+    }
 }
