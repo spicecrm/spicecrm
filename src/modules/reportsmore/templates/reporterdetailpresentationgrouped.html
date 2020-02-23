@@ -68,6 +68,9 @@
             </div>
             <div class="slds-p-horizontal--medium slds-grid slds-grid--vertical-align-center">
                 <div class="slds-p-horizontal--xx-small">{{totalRecords}} {{language.getLabel('LBL_RECORDS')}}</div>
+                <button class="slds-button slds-button_icon" (click)="selectFields()" [title]="language.getLabel('LBL_CHOOSE_FIELDS')">
+                    <system-button-icon icon="settings" ></system-button-icon>
+                </button>
                 <button class="slds-button slds-button_icon" *ngIf="canSave" (click)="saveLayout()" [title]="language.getLabel('LBL_SAVE_LAYOUT')">
                     <system-button-icon icon="save" ></system-button-icon>
                 </button>

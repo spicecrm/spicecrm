@@ -2,14 +2,15 @@
  * @module ModuleReportsMore
  */
 import {
-    Component
+    Component, Injector
 } from '@angular/core';
 import {model} from '../../../services/model.service';
+import {modal} from '../../../services/modal.service';
 import {backend} from '../../../services/backend.service';
 import {language} from '../../../services/language.service';
 import {toast} from '../../../services/toast.service';
 import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
-import {ReporterDetailPresentationStandard} from "../../reports/components/reporterdetailpresentationstandard";
+import {ReporterDetailPresentationStandard} from "../../../modules/reports/components/reporterdetailpresentationstandard";
 
 /**
  * renders the standard view for a report which is a simple column based view
@@ -47,8 +48,8 @@ export class ReporterDetailPresentationGrouped extends ReporterDetailPresentatio
     private hasSummary: boolean = false;
 
 
-    constructor(public language: language, public model: model, public backend: backend, public reporterconfig: reporterconfig, public toast: toast) {
-        super(language, model, backend, reporterconfig, toast);
+    constructor(public language: language, public model: model, public modal: modal, public injector: Injector, public backend: backend, public reporterconfig: reporterconfig, public toast: toast) {
+        super(language, model, modal, injector, backend, reporterconfig, toast);
     }
 
     /**
