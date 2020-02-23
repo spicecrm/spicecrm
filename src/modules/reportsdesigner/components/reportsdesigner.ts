@@ -4,7 +4,7 @@
 import {ChangeDetectorRef, Component, ViewChild} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {ReportsDesignerService} from "../services/reportsdesigner.service";
-import {reporterconfig} from "../../reports/services/reporterconfig";
+import {reporterconfig} from "../../../modules/reports/services/reporterconfig";
 import {view} from "../../../services/view.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {model} from "../../../services/model.service";

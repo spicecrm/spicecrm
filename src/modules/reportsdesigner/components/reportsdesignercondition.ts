@@ -4,7 +4,7 @@
 import {Component, Input, KeyValueDiffer, KeyValueDiffers} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {model} from "../../../services/model.service";
-import {reporterconfig} from "../../reports/services/reporterconfig";
+import {reporterconfig} from "../../../modules/reports/services/reporterconfig";
 
 @Component({
     selector: 'reports-designer-condition',

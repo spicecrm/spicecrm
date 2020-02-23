@@ -8,6 +8,7 @@ import {ObjectFields} from '../../objectfields/objectfields';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 import /*embed*/ {reporterconfig} from './services/reporterconfig';
 
@@ -20,6 +21,7 @@ import /*embed*/ {ReporterFilterItemText} from "./components/reporterfilteritemt
 import /*embed*/ {ReporterFilterItemEnum} from "./components/reporterfilteritemenum";
 import /*embed*/ {ReporterFilterItemDate} from "./components/reporterfilteritemdate";
 import /*embed*/ {ReporterDetailPresentationStandard} from "./components/reporterdetailpresentationstandard";
+import /*embed*/ {ReporterDetailSelectFieldsModal} from "./components/reporterdetailselectfieldsmodal";
 import /*embed*/ {ReporterDetailVisualization} from "./components/reporterdetailvisualization";
 import /*embed*/ {ReporterDetailVisualizationGooglecharts} from "./components/reporterdetailvisualizationgooglecharts";
 import /*embed*/ {ReporterVisualizationDashlet} from "./components/reportervisualizationdashlet";
@@ -60,6 +62,7 @@ declare var moment: any;
         ObjectComponents,
         SystemComponents,
         DirectivesModule,
+        DragDropModule
     ],
     declarations: [
         ReporterDetailView,
@@ -71,6 +74,7 @@ declare var moment: any;
         ReporterFilterItemEnum,
         ReporterFilterItemDate,
         ReporterDetailPresentationStandard,
+        ReporterDetailSelectFieldsModal,
         ReporterDetailVisualization,
         ReporterDetailVisualizationGooglecharts,
         ReporterVisualizationDashlet,

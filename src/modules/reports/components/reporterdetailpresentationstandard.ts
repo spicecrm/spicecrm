@@ -2,10 +2,11 @@
  * @module ModuleReports
  */
 import {
-    Component, AfterViewInit, OnInit, ViewChild, ViewContainerRef, ViewChildren, QueryList
+    Component, AfterViewInit, OnInit, ViewChild, ViewContainerRef, ViewChildren, QueryList, Injector
 } from '@angular/core';
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
+import {modal} from '../../../services/modal.service';
 import {toast} from '../../../services/toast.service';
 import {backend} from '../../../services/backend.service';
 import {reporterconfig} from '../services/reporterconfig';
@@ -57,7 +58,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
         sortDirection: ''
     }
 
-    constructor(public language: language, public model: model, public backend: backend, public reporterconfig: reporterconfig, public toast: toast) {
+    constructor(public language: language, public model: model, public modal: modal, public injector: Injector, public backend: backend, public reporterconfig: reporterconfig, public toast: toast) {
         this.reporterconfig.refresh$.subscribe(event => {
             this.getPresentation();
         });
@@ -292,12 +293,12 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     private saveLayout() {
         if (this.model.checkAccess('edit')) {
             let layoutdata = [];
-            for (let field of this.model.getField('listfields')) {
+            for (let field of this.model.getField('listfields').filter(field => field.display != 'hidden')) {
                 layoutdata.push({
                     dataIndex: field.fieldid,
                     width: this.fieldsData[field.fieldid].width,
-                    sequence: parseInt(field.sequence, 10),
-                    isHidden: field.display == 'yes' ? false : true
+                    sequence: parseInt(this.fieldsData[field.fieldid].sequence, 10),
+                    isHidden: this.fieldsData[field.fieldid].display == 'yes' ? false : true
                 });
             }
             this.backend.postRequest('KReporter/core/savelayout/' + this.model.id, {}, {layout: layoutdata}).subscribe(result => {
@@ -369,5 +370,14 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
     private lastPage() {
         this.currentPage = Math.ceil(this.totalRecords / this.listEntries);
         this.getPresentation();
+    }
+
+    /**
+     * opens the select fields modal
+     */
+    private selectFields() {
+        this.modal.openModal('ReporterDetailSelectFieldsModal', true, this.injector). subscribe(modalref => {
+            modalref.instance.presentationFields = this.presData.reportmetadata.fields;
+        });
     }
 }
