@@ -31,24 +31,22 @@
         </div>
     </div>
 </td>
-<td>
-    <div class="slds-form-element">
-        <system-checkbox [(ngModel)]="groupBy">&nbsp;</system-checkbox>
+<td >
+    <div class="slds-align--absolute-center">
+        <system-checkbox [(ngModel)]="groupBy" [hidelabel]="true"></system-checkbox>
     </div>
 </td>
 <td>
-    <div class="slds-form-element">
-        <system-checkbox [(ngModel)]="joinType">&nbsp;</system-checkbox>
+    <div *ngIf="requiredEnabled" class="slds-align--absolute-center">
+        <system-checkbox [(ngModel)]="joinType" [hidelabel]="true"></system-checkbox>
     </div>
 </td>
-<td class="slds-cell-shrink slds-text-align--center">
+<td class="slds-cell-shrink">
     <button class="slds-button slds-button--icon" (click)="deleteField()">
         <system-button-icon icon="delete"></system-button-icon>
     </button>
-</td>
-<td class="slds-cell-shrink">
     <system-utility-icon [icon]="reportsDesignerService.manipulateExpandedItemId == listItem.fieldid ? 'up' : 'down'" (click)="toggleExpand()"
                          [colorclass]="reportsDesignerService.expertMode ? 'slds-icon-text-default' : 'slds-icon-text-light'"
-                         size="x-small" class="slds-p-horizontal--small slds-p-vertical--xx-small" style="cursor: pointer"></system-utility-icon>
+                         size="x-small" class="slds-p-horizontal--xx-small slds-p-vertical--xx-small" style="cursor: pointer"></system-utility-icon>
 </td>
 

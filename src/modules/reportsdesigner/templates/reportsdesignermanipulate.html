@@ -24,17 +24,12 @@
                         {{language.getLabel('LBL_FUNCTION')}}
                     </div>
                 </th>
-                <th scope="col" class="slds-resizable">
-                    <div class="slds-truncate">
-                        {{language.getLabel('LBL_GROUP_BY')}}
-                    </div>
+                <th scope="col" class="slds-text-align--center slds-cell-shrink">
+                    <system-utility-icon icon="summary" size="x-small" [title]="language.getLabel('LBL_GROUP_BY')"></system-utility-icon>
                 </th>
-                <th scope="col" class="slds-resizable">
-                    <div class="slds-truncate">
-                        {{language.getLabel('LBL_REQUIRED')}}
-                    </div>
+                <th scope="col" class="slds-text-align--center slds-cell-shrink">
+                    <system-utility-icon icon="link" size="x-small" [title]="language.getLabel('LBL_REQUIRED')"></system-utility-icon>
                 </th>
-                <th class="slds-cell-shrink"></th>
                 <th class="slds-cell-shrink"></th>
             </tr>
             </thead>
@@ -45,11 +40,11 @@
                         cdkDrag [cdkDragData]="listItem" cdkDragBoundary=".reports-designer-manipulate-table"
                         class="slds-border--bottom slds-drag--preview">
                     </tr>
-                    <tr reports-designer-manipulate-table-row-expansion [listItem]="listItem" class="slds-theme--shade" style="box-shadow: inset -1px 1px 6px 0 #aaa"></tr>
+                    <tr reports-designer-manipulate-table-row-expansion [listItem]="listItem" class="slds-theme--shade slds-box_border"></tr>
                 </ng-container>
                 <tr *ngIf="listFields?.length == 0">
-                    <td colspan="6" class="slds-text-align_center" style="padding: 1rem;">
-                        {{language.getLabel('MSG_DROP_FIELD_HERE')}}
+                    <td colspan="7" >
+                        <div class="slds-align--absolute-center slds-p-around--large">{{language.getLabel('MSG_DROP_FIELD_HERE')}}</div>
                     </td>
                 </tr>
             </tbody>
