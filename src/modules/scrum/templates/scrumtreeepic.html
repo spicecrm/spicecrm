@@ -1,15 +1,14 @@
 <div class="slds-tree__item" [ngClass]="{'slds-is-selected': epic.id == scrum.selectedObject.id}" style="align-items: center">
     <button class="slds-button slds-button-icon slds-m-right_x-small" (click)="toggleExpand()">
-        <system-button-icon icon="chevronright"></system-button-icon>
+        <system-button-icon [icon]="userstories.isloading ? 'spinner' : 'chevronright'"></system-button-icon>
     </button>
     <span class="slds-has-flexi-truncate"><span class="slds-tree__item-label slds-truncate">{{epic.name}}</span></span>
     <button title="{{title}}" class="slds-button slds-button-icon slds-m-left_x-small" (click)="newRelatedUserStory()">
         <system-button-icon icon="add"></system-button-icon>
     </button>
-
 </div>
 <system-spinner class="slds-p-around--xx-small" *ngIf="userstories.isloading"></system-spinner>
-<ul role="group">
+<ul role="group" *ngIf="userstories.items.length > 0">
     <li *ngFor="let userstory of userstories.items" scrum-tree-userstory [userstory]="userstory" aria-level="3" role="treeitem"></li>
 </ul>
 
