@@ -52,7 +52,7 @@ export class ProductUOMConversions implements OnInit {
     }
 
     get editable() {
-        return this.view.isEditable;
+        return this.model.checkAccess('edit') && this.view.isEditable;
     }
 
     public ngOnInit() {
