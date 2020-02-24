@@ -1,6 +1,6 @@
 <div class="slds-tree__item" [ngClass]="{'slds-is-selected': theme.id == scrum.selectedObject.id}" style="align-items: center">
     <button class="slds-button slds-button-icon slds-m-right_x-small" (click)="toggleExpand()">
-        <system-button-icon icon="chevronright"></system-button-icon>
+        <system-button-icon [icon]="epics.isloading ? 'spinner' : 'chevronright'"></system-button-icon>
     </button>
     <span class="slds-has-flexi-truncate"> <span class="slds-tree__item-label slds-truncate">{{theme.name}}</span></span>
     <button title="{{title}}" class="slds-button slds-button-icon slds-m-left_x-small" (click)="newRelatedEpic()">
@@ -8,6 +8,6 @@
     </button>
 </div>
 <system-spinner class="slds-p-around--xx-small" *ngIf="epics.isloading"></system-spinner>
-<ul role="group">
+<ul role="group" *ngIf="epics.items.length > 0">
     <li *ngFor="let epic of epics.items" scrum-tree-epic [epic]="epic" aria-level="2" role="treeitem"></li>
 </ul>
