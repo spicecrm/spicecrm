@@ -38,7 +38,7 @@ export class ScrumTreeEpic implements OnInit {
     @Input() private epic: any = {};
 
 
-    constructor(@SkipSelf() private epics: model, private language: language, private metadata: metadata, private model: model, private modellist: modellist, private scrum: scrumtree, private userstories: relatedmodels) {}
+    constructor(private language: language, private metadata: metadata, private model: model, private modellist: modellist, private scrum: scrumtree, private userstories: relatedmodels) {}
 
     /**
      * initialize the model, the parent and the related module
@@ -48,14 +48,11 @@ export class ScrumTreeEpic implements OnInit {
         this.model.initialize();
         this.model.id = this.epic.id;
         this.model.data = this.epic;
+        // this.model.data = this.model.utils.backendModel2spice('ScrumEpics', this.epic);
 
         this.userstories.module = this.model.module;
         this.userstories.id = this.model.id;
         this.userstories.relatedModule = 'ScrumUserStories';
-
-        // parent model
-        this.epics.data = this.epic;
-        this.model.module = this.userstories.relatedModule;
 
         if (this.model.module && this.metadata.checkModuleAcl(this.model.module, "create")) {
             this.disabled = false;
@@ -66,6 +63,7 @@ export class ScrumTreeEpic implements OnInit {
      * load the related user stories
      */
     private loadRelatedUserStories() {
+        this.userstories.sort.sortfield = 'sequence';
         this.userstories.loaditems = -99;
         this.userstories.getData().subscribe(loaded => {
             this.userstoriesloaded = true;
@@ -93,21 +91,6 @@ export class ScrumTreeEpic implements OnInit {
         this.scrum.selectedObject = {id: this.epic.id, type: 'ScrumEpics'};
     }
 
-    /**
-     * creates a new related user story
-     */
-    private newRelatedUserStory() {
-        if (!this.epics.data.id) {
-            this.epics.data.id = this.epics.id;
-        }
-        this.model.id = "";
-
-        this.model.addModel( "", this.epics).subscribe(newRecord => {
-            if (newRecord != false) {
-                this.userstories.addItems([newRecord]);
-            }
-        });
-    }
 
     /**
      * getter for the title attribute

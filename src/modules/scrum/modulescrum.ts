@@ -13,6 +13,7 @@ import {VersionManagerService} from "../../services/versionmanager.service";
 
 import /*embed*/ {ScrumMain} from "./components/scrummain";
 import /*embed*/ {ScrumTree} from "./components/scrumtree";
+import /*embed*/ {ScrumTreeAddItem} from "./components/scrumtreeadditem";
 import /*embed*/ {ScrumTreeTheme} from "./components/scrumtreetheme";
 import /*embed*/ {ScrumTreeDetail} from "./components/scrumtreedetail";
 import /*embed*/ {ScrumTreeUserStory} from "./components/scrumtreeuserstory";
@@ -32,6 +33,7 @@ import /*embed*/ {scrumtree} from "./services/scrum.service";
     declarations: [
         ScrumMain,
         ScrumTree,
+        ScrumTreeAddItem,
         ScrumTreeTheme,
         ScrumTreeEpic,
         ScrumTreeUserStory,
