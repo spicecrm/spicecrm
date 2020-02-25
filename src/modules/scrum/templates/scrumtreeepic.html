@@ -3,9 +3,7 @@
         <system-button-icon [icon]="userstories.isloading ? 'spinner' : 'chevronright'"></system-button-icon>
     </button>
     <span class="slds-has-flexi-truncate"><span class="slds-tree__item-label slds-truncate">{{epic.name}}</span></span>
-    <button title="{{title}}" class="slds-button slds-button-icon slds-m-left_x-small" (click)="newRelatedUserStory()">
-        <system-button-icon icon="add"></system-button-icon>
-    </button>
+    <scrum-tree-additem module="ScrumUserStories"></scrum-tree-additem>
 </div>
 <system-spinner class="slds-p-around--xx-small" *ngIf="userstories.isloading"></system-spinner>
 <ul role="group" *ngIf="userstories.items.length > 0">

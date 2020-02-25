@@ -8,7 +8,6 @@ import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {scrumtree} from '../services/scrum.service';
 import {relatedmodels} from "../../../services/relatedmodels.service";
-import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: '[scrum-tree-theme]',
@@ -40,7 +39,7 @@ export class ScrumTreeTheme {
      */
     private expanded: boolean = false;
 
-    constructor(@SkipSelf() private themes: model, private scrum: scrumtree, private language: language, private metadata: metadata, private model: model, private epics: relatedmodels, private modal: modal, private injector: Injector) {
+    constructor(private scrum: scrumtree, private language: language, private metadata: metadata, private model: model, private epics: relatedmodels, private injector: Injector) {
     }
 
     /**
@@ -56,9 +55,6 @@ export class ScrumTreeTheme {
         this.epics.id = this.model.id;
         this.epics.relatedModule = 'ScrumEpics';
 
-        // parent model
-        this.themes.data = this.theme;
-        this.model.module = this.epics.relatedModule;
         if (this.model.module && this.metadata.checkModuleAcl(this.model.module, "create")) {
             this.disabled = false;
         }
@@ -72,9 +68,10 @@ export class ScrumTreeTheme {
     }
 
     /**
-     * load all of the related scrum epics
+     * load all of the related scrum epics sorted by sequence
      */
     private loadRelatedEpics() {
+        this.epics.sort.sortfield = 'sequence';
         this.epics.loaditems = -99;
         this.epics.getData().subscribe(loaded => {
             this.epicsloaded = true;
@@ -93,21 +90,12 @@ export class ScrumTreeTheme {
     }
 
     /**
-     * creates a new related epic
+     * getter for the has_epics value
      */
-    private newRelatedEpic() {
-        if (!this.themes.data.id) {
-            this.themes.data.id = this.themes.id;
-        }
-        this.model.id = "";
 
-        this.model.addModel( "", this.themes).subscribe(newRecord => {
-            if (newRecord != false) {
-                this.epics.addItems([newRecord]);
-            }
-        });
+    get has_epics() {
+        return this.model.getField('has_epics');
     }
-
 
     /**
      * getter for the title attribute
