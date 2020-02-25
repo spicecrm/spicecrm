@@ -29,7 +29,6 @@ export class ScrumMain implements OnDestroy {
      * load the list data
      */
     private loadList() {
-        this.modellist.setSortField('sequence', 'ASC', false);
         this.modellist.getListData();
     }
 
