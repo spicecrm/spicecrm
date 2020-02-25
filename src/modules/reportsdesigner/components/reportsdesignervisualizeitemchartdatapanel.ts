@@ -73,6 +73,9 @@ export class ReportsDesignerVisualizeItemChartDataPanel implements OnChanges {
      * initialize the plugin dataseries
      */
     private initializeDataSeries() {
+        if (this.properties.dataseries && this.properties.dataseries.length > 0) return;
+
+        // check if single series or multiple
         if (this.properties.dims[2] == '1') {
             this.properties.dataseries = [{
                 fieldid: '',
