@@ -42,11 +42,11 @@
             </li>
         </ul>
         <div *ngIf="allowResizing" class="slds-grid slds-grid--vertical-align-center slds-col--bump-left">
-            <system-checkbox [(ngModel)]="doResize" [disabled]="!canResize">{{language.getLabel('LBL_DOWNSIZE_TO_MAX')}}</system-checkbox>
-            <system-input-number onlyField="true" [(ngModel)]="maxWidthInput" precision="0" min="1" placeholder="{{language.getLabel('LBL_WIDTH')}} " [disabled]="!doResize || !canResize" size="5" (change)="maxWidthChanged()"></system-input-number>
+            <system-checkbox [(ngModel)]="doResizeByUser" [disabled]="!canResize">{{language.getLabel('LBL_DOWNSIZE_TO_MAX')}}</system-checkbox>
+            <system-input-number onlyField="true" [(ngModel)]="maxWidthInput" precision="0" min="1" placeholder="{{language.getLabel('LBL_WIDTH')}} " [disabled]="!doResizeByUser || !canResize" size="5" (change)="maxWidthChanged()"></system-input-number>
             <div class="slds-p-left--xxx-small">px</div>
             <div class="slds-p-horizontal--x-small">x</div>
-            <system-input-number onlyField="true" [(ngModel)]="maxHeightInput" precision="0" min="1" placeholder="{{language.getLabel('LBL_HEIGHT')}} " [disabled]="!doResize || !canResize" size="5" (change)="maxHeightChanged()"></system-input-number>
+            <system-input-number onlyField="true" [(ngModel)]="maxHeightInput" precision="0" min="1" placeholder="{{language.getLabel('LBL_HEIGHT')}} " [disabled]="!doResizeByUser || !canResize" size="5" (change)="maxHeightChanged()"></system-input-number>
             <div class="slds-p-left--xxx-small">px</div>
         </div>
     </div>
