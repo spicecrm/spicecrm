@@ -17,12 +17,16 @@
             <li *ngFor="let condition of group.conditions; trackBy: trackByFn" class="slds-expression__row_group slds-m-vertical--x-small" style="border: 1px dashed #ddd; padding: 1px">
                 <div class="slds-grid slds-p-around--xx-small">
                     <reports-designer-condition [whereCondition]="condition" class="slds-grid slds-grid--vertical-align-center slds-grow"></reports-designer-condition>
-                    <div>
+                    <div class="slds-grid slds-grid--vertical-align-start">
                         <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-m-left--xx-small" (click)="deleteCondition(condition.id)">
                             <system-button-icon icon="delete"></system-button-icon>
                         </button>
-                        <system-utility-icon [icon]="expanded == condition.id ? 'up' : 'down'" (click)="toggleExpand(condition.id)" [colorclass]="reportsDesignerService.expertMode ? 'slds-icon-text-default' : 'slds-icon-text-light'"
-                                             size="x-small" class="slds-p-horizontal--x-small slds-p-vertical--xx-small" style="cursor: pointer"></system-utility-icon>
+                        <button class="slds-button slds-button_icon slds-m-left--xx-small slds-p-vertical--x-small slds-p-horizontal--xx-small" (click)="toggleExpand(condition.id)">
+                            <system-utility-icon icon="down" size="x-small" [colorclass]="reportsDesignerService.expertMode ? 'slds-icon-text-default' : 'slds-icon-text-light'"
+                                                 [style.transform]="expanded == condition.id ? 'rotate(180deg)' : 'none'">
+                            </system-utility-icon>
+                        </button>
+
                     </div>
                 </div>
                 <reports-designer-condition-group-expansion *ngIf="expanded == condition.id && reportsDesignerService.expertMode" [whereCondition]="condition"></reports-designer-condition-group-expansion>

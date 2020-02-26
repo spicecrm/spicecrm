@@ -33,18 +33,4 @@ export class ReportsDesignerConditionGroupExpansion {
     get joinType() {
         return this.whereCondition.jointype == 'required';
     }
-
-    /**
-    * @set jointype = 'yes' | 'no'
-     */
-    set dashletEditable(value) {
-        this.whereCondition.dashleteditable = value ? 'yes' : 'no';
-    }
-
-    /**
-    * @return jointype: boolean
-     */
-    get dashletEditable() {
-        return this.whereCondition.dashleteditable == 'yes';
-    }
 }
