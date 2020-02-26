@@ -1,7 +1,7 @@
 /**
  * @module ModuleScrum
  */
-import {Component, Input, Injector, SkipSelf} from '@angular/core';
+import {Component, Input, Injector, SkipSelf, OnChanges} from '@angular/core';
 
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
@@ -39,6 +39,8 @@ export class ScrumTreeTheme {
      */
     private expanded: boolean = false;
 
+    private has_epics: boolean;
+
     constructor(private scrum: scrumtree, private language: language, private metadata: metadata, private model: model, private epics: relatedmodels, private injector: Injector) {
     }
 
@@ -58,7 +60,11 @@ export class ScrumTreeTheme {
         if (this.model.module && this.metadata.checkModuleAcl(this.model.module, "create")) {
             this.disabled = false;
         }
+
+        this.has_epics = this.model.getField('has_epics');
     }
+
+
 
     /**
      * send the id and the type of the selected object
@@ -76,8 +82,9 @@ export class ScrumTreeTheme {
         this.epics.getData().subscribe(loaded => {
             this.epicsloaded = true;
         });
-
     }
+
+
 
     /**
      * expand if the epics are loaded
@@ -90,11 +97,13 @@ export class ScrumTreeTheme {
     }
 
     /**
-     * getter for the has_epics value
+     * set has_epics to true
+     * reload the epics
+     * @param event
      */
-
-    get has_epics() {
-        return this.model.getField('has_epics');
+    private loadChanges(event) {
+        this.has_epics = true;
+        this.loadRelatedEpics();
     }
 
     /**

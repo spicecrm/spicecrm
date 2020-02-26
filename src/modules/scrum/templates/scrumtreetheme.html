@@ -1,9 +1,9 @@
 <div class="slds-tree__item" [ngClass]="{'slds-is-selected': theme.id == scrum.selectedObject.id}" style="align-items: center">
-    <button class="slds-button slds-button-icon slds-m-right_x-small" (click)="toggleExpand()">
-        <system-button-icon [icon]="epics.isloading && has_epics ? 'spinner' : 'chevronright'"></system-button-icon>
+    <button [disabled]="!has_epics" [ngClass]="{'slds-hidden': !has_epics}" class="slds-button slds-button-icon slds-m-right_x-small" (click)="toggleExpand()">
+        <system-button-icon [icon]="epics.isloading ? 'spinner' : 'chevronright'"></system-button-icon>
     </button>
     <span class="slds-has-flexi-truncate"> <span class="slds-tree__item-label slds-truncate">{{theme.name}}</span></span>
-    <scrum-tree-additem module="ScrumEpics"></scrum-tree-additem>
+    <scrum-tree-additem [title]="title" (newitem)="loadChanges($event)" module="ScrumEpics"></scrum-tree-additem>
 </div>
 <system-spinner class="slds-p-around--xx-small" *ngIf="epics.isloading && has_epics"></system-spinner>
 <ul role="group" *ngIf="epics.items.length > 0">
