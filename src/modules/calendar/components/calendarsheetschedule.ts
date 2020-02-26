@@ -57,7 +57,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
                 private calendar: calendar) {
         this.untilDate = new moment().hour(0).minute(0).second(0).add(1, "M");
 
-        this.subscription.add(this.calendar.userCalendarVisibility$.subscribe(calendar => {
+        this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
                 this.getUserEvents(calendar);
             })
         );
