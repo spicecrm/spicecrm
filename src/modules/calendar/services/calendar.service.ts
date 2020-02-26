@@ -28,7 +28,7 @@ declare var _: any;
 export class calendar implements OnDestroy {
 
     public usersCalendarsLoad$: EventEmitter<any> = new EventEmitter<any>();
-    public userCalendarVisibility$: EventEmitter<any> = new EventEmitter<any>();
+    public userCalendarChange$: EventEmitter<any> = new EventEmitter<any>();
     public addingEvent$: EventEmitter<any> = new EventEmitter<any>();
     public pickerDate$: EventEmitter<any> = new EventEmitter<any>();
     public otherCalendarsColor$: EventEmitter<any> = new EventEmitter<any>();
@@ -422,12 +422,19 @@ export class calendar implements OnDestroy {
         }
         let usersCalendars = this.usersCalendars;
         let color = '#' + this.colorPalette[Math.floor(this.colorPalette.length * Math.random())];
-
-        usersCalendars.push({id: id, name: name, visible: true, color: color});
+        const newCalendar = {
+            id: id,
+            name: name,
+            visible: true,
+            color: color
+        };
+        usersCalendars.push(newCalendar);
+        this.userCalendarChange$.emit(newCalendar);
         this.setUserCalendars(usersCalendars.slice());
     }
 
     /**
+     * find the calendar to be removed and emit the calendar with visible false to reload the calendar events
      * remove user calendar from usersCalendars and save the changes
      * @param id: string
      */
@@ -435,6 +442,10 @@ export class calendar implements OnDestroy {
         if (this.isMobileView || this.isDashlet) {
             return;
         }
+        const calendar = this.usersCalendars.find(calendar => calendar.id == id);
+        calendar.visible = false;
+        this.userCalendarChange$.emit(calendar);
+
         let usersCalendars = this.usersCalendars.filter(calendar => calendar.id != id);
         this.setUserCalendars(usersCalendars);
     }
@@ -447,7 +458,7 @@ export class calendar implements OnDestroy {
         this.usersCalendars.some(calendar => {
             if (calendar.id == id) {
                 calendar.visible = !calendar.visible;
-                this.userCalendarVisibility$.emit(calendar);
+                this.userCalendarChange$.emit(calendar);
                 this.setUserCalendars(this.usersCalendars.slice());
                 return true;
             }
