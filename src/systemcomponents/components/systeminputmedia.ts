@@ -142,10 +142,65 @@ export class SystemInputMedia implements OnDestroy {
      */
     private fileFromBrowser: File = null;
 
+    /**
+     * Maximal image width set by the user. The value from the input field (string).
+     */
     private maxWidthInput = '';
+
+    /**
+     * Maximal image height set by the user. The value from the input field (string).
+     */
     private maxHeightInput = '';
-    private maxWidth: number = null;
-    private maxHeight: number = null;
+
+    /**
+     * Maximal image width set by the user.
+     */
+    private _maxWidthByUser: number = null;
+
+    /**
+     * Maximal image height set by the user.
+     */
+    private _maxHeightByUser: number = null;
+
+    /**
+     * Maximal allowed (by system) pixel width.
+     */
+    public _maxWidthBySystem: number = null;
+
+    /**
+     * Simple getter.
+     */
+    public get maxWidthBySystem(): number {
+        return this._maxWidthBySystem;
+    }
+
+    /**
+     * Setter for maximal allowed (by system) pixel width.
+     */
+    @Input('maxWidth') public set maxWidthBySystem( value ) {
+        this._maxWidthBySystem = value;
+        this.calcTargetSize();
+    }
+
+    /**
+     * Maximal allowed (by system) pixel height.
+     */
+    public _maxHeightBySystem: number = null;
+
+    /**
+     * Simple getter.
+     */
+    public get maxHeightBySystem(): number {
+        return this._maxHeightBySystem;
+    }
+
+    /**
+     * Setter for maximal allowed (by system) pixel height.
+     */
+    @Input('maxHeight') public set maxHeightBySystem( value ) {
+        this._maxHeightBySystem = value;
+        this.calcTargetSize();
+    }
 
     /**
      * Is the current image cropped?
@@ -165,7 +220,7 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * The internal value for the resize checkbox.
      */
-    private _doResize = false;
+    private _doResizeByUser = false;
 
     /**
      * Loading indicator. Used for pasting from clipboard.
@@ -577,9 +632,10 @@ export class SystemInputMedia implements OnDestroy {
      * Handler if the user has changed the maximal height of the image.
      */
     private maxHeightChanged(): void {
-        let val: number;
-        val = parseInt(this.maxHeightInput, 10);
-        this.maxHeight = isNaN(val) ? null : val;
+        let val: number|string;
+        val = this.maxHeightInput.split( this.userprefs.toUse.num_grp_sep ).join('');
+        val = parseInt( val, 10 );
+        this._maxHeightByUser = isNaN(val) ? null : val;
         this.calcTargetSize();
         this.emitChange();
     }
@@ -588,42 +644,74 @@ export class SystemInputMedia implements OnDestroy {
      * Handler if the user has changed the maximal width of the image.
      */
     private maxWidthChanged(): void {
-        let val: number;
-        val = parseInt(this.maxWidthInput, 10);
-        this.maxWidth = isNaN(val) ? null : val;
+        let val: number|string;
+        val = this.maxWidthInput.split( this.userprefs.toUse.num_grp_sep ).join('');
+        val = parseInt( val, 10 );
+        this._maxWidthByUser = isNaN(val) ? null : val;
         this.calcTargetSize();
         this.emitChange();
     }
 
     /**
+     * Effective value of maximal pixel height.
+     */
+    private get maxHeight() {
+        if ( this.maxHeightBySystem && this.maxHeightByUser ) return this.maxHeightBySystem < this.maxHeightByUser ? this.maxHeightBySystem : this.maxHeightByUser;
+        return this.maxHeightBySystem ? this.maxHeightBySystem : this.maxHeightByUser ? this.maxHeightByUser : null;
+    }
+
+    /**
+     * Effective value of maximal pixel width.
+     */
+    private get maxWidth() {
+        if ( this.maxWidthBySystem && this.maxWidthByUser ) return this.maxWidthBySystem < this.maxWidthByUser ? this.maxWidthBySystem : this.maxWidthByUser;
+        return this.maxWidthBySystem ? this.maxWidthBySystem : this.maxWidthByUser ? this.maxWidthByUser : null;
+    }
+
+    /**
      * Gets the internal status for the resize checkbox.
      */
-    get doResize() {
-        return this._doResize;
+    get doResizeByUser() {
+        return this._doResizeByUser;
     }
 
     /**
      * Sets the internal status for the resize checkbox and recalculates the target size.
      * @param value
      */
-    set doResize(value) {
-        this._doResize = value;
+    set doResizeByUser( value) {
+        this._doResizeByUser = value;
         this.calcTargetSize();
+    }
+
+    /**
+     * Getter for maximal width when set by the user.
+     */
+    get maxWidthByUser() {
+        return this.doResizeByUser ? this._maxWidthByUser : undefined;
+    }
+
+    /**
+     * Getter for maximal height when set by the user.
+     */
+    get maxHeightByUser() {
+        return this.doResizeByUser ? this._maxHeightByUser : undefined;
     }
 
     /**
      * Calculates the size of the target image. Is to be written to object "metaData".
      */
     private calcTargetSize(): void {
+        if ( !this.cropper ) return;
         let ratio = 1, height;
         let width = this.cropper.getData(true).width;
         if (width === 0) {
             width = this.cropper.getImageData().naturalWidth;
             height = this.cropper.getImageData().naturalHeight;
         } else height = this.cropper.getData(true).height;
-        if (this.doResize && (this.maxWidth && width > this.maxWidth || this.maxHeight && height > this.maxHeight)) {
+        if ( this.maxWidth && width > this.maxWidth || this.maxHeight && height > this.maxHeight ) {
             if (this.maxWidth && !this.maxHeight) ratio = this.maxWidth / width;
-            else if (this.maxHeight && !this.maxWidth) ratio = this.maxHeight / height;
+            else if ( this.maxHeight && !this.maxWidth ) ratio = this.maxHeight / height;
             else ratio = this.maxWidth / width < this.maxHeight / height ? this.maxWidth / width : this.maxHeight / height;
             this.mediaMetaData.width = Math.floor(width * ratio);
             this.mediaMetaData.height = Math.floor(height * ratio);
@@ -720,7 +808,8 @@ export class SystemInputMedia implements OnDestroy {
     }
 
     private emitChange() {
-        this.onChange( this.mediaMetaData.fileformat+'|'+this.getImage() );
+        if ( this.mediaMetaData.fileformat ) this.onChange( this.mediaMetaData.fileformat+'|'+this.getImage() );
+        else this.onChange(null);
     }
 
     /**
@@ -784,6 +873,7 @@ export class SystemInputMedia implements OnDestroy {
             let positionOfDelimiter = value.indexOf('|');
             this.mediaMetaData.fileformat = value.substring( 0, positionOfDelimiter );
             this.mediaBase64 = this.sanitizer.bypassSecurityTrustResourceUrl('data:image/' + this.mediaMetaData.fileformat + ';base64,'+value.substring( positionOfDelimiter + 1 ));
+            this.calcTargetSize();
         }
         this.resetModificationStati();
         this.isImported = false;
