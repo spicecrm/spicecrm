@@ -15,11 +15,15 @@ import {language} from '../../../services/language.service';
 export class ScrumTreeAddItem {
 
     @Input() private title: string = '';
+
     /**
      * input for the module
      */
     @Input() private module: string = '';
 
+    /**
+     * emitter for the new item
+     */
     @Output() private newitem: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(@SkipSelf() private parent: model,  private language: language, private model: model) {
