@@ -30,6 +30,8 @@ export class ScrumTreeEpic implements OnInit {
      */
     private expanded: boolean = false;
 
+    private has_stories: boolean;
+
     private disabled: boolean = true;
 
     /**
@@ -41,7 +43,7 @@ export class ScrumTreeEpic implements OnInit {
     constructor(private language: language, private metadata: metadata, private model: model, private modellist: modellist, private scrum: scrumtree, private userstories: relatedmodels) {}
 
     /**
-     * initialize the model, the parent and the related module
+     * initialize the model and the related module
      */
     public ngOnInit() {
         this.model.module = 'ScrumEpics';
@@ -57,6 +59,8 @@ export class ScrumTreeEpic implements OnInit {
         if (this.model.module && this.metadata.checkModuleAcl(this.model.module, "create")) {
             this.disabled = false;
         }
+
+        this.has_stories = this.model.getField('has_stories');
     }
 
     /**
@@ -91,6 +95,15 @@ export class ScrumTreeEpic implements OnInit {
         this.scrum.selectedObject = {id: this.epic.id, type: 'ScrumEpics'};
     }
 
+    /**
+     * set has_stories to true
+     * reload the user stories
+     * @param event
+     */
+    private loadChanges(event) {
+        this.has_stories = true;
+        this.loadRelatedUserStories();
+    }
 
     /**
      * getter for the title attribute

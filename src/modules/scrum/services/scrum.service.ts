@@ -21,6 +21,7 @@ export class scrumtree {
      */
     public selectedObject$: EventEmitter<scrumobject> = new EventEmitter<scrumobject>();
 
+
     constructor() {
         this._selectedObject = {id: undefined, type: ''};
     }
@@ -37,11 +38,13 @@ export class scrumtree {
      *
      * @param selectedObject
      */
-    set selectedObject(selectedObject: scrumobject){
+    set selectedObject(selectedObject: scrumobject) {
         this._selectedObject = selectedObject;
 
         this.selectedObject$.emit(this._selectedObject);
     }
+
+
 
 
 }
