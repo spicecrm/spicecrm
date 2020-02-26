@@ -114,21 +114,24 @@ export class SpiceKanban implements OnInit, OnDestroy {
         }
 
         // builds the sumfields array
-        let configs = this.componentconfig.sumfield.split(",");
-        for (let config of configs) {
-            // catch whitespace
-            config = config.trim();
-            if (config.includes(":")) {
-                this.sumfields.push({
-                    name: config.substr(0, config.indexOf(':')),
-                    function: config.substr(config.indexOf(':') + 1),
-                });
-            } else {
-                this.sumfields.push({
-                    name: config,
-                    function: "sum",
-                });
-            }
+        if(this.componentconfig.sumfield) {
+            let configs = this.componentconfig.sumfield.split(",");
+            for (let config of configs) {
+                // catch whitespace
+                config = config.trim();
+                if (config.includes(":")) {
+                    this.sumfields.push({
+                        name: config.substr(0, config.indexOf(':')),
+                        function: config.substr(config.indexOf(':') + 1),
+                    });
+                } else {
+                    this.sumfields.push({
+                        name: config,
+                        function: "sum",
+                    });
+                }
+        }
+
 
         }
 
