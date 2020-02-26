@@ -1,16 +1,10 @@
 /**
  * @module ModuleReports
  */
-import {
-    Component,
-    Input,
-    OnInit
-} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {metadata} from '../../../services/metadata.service';
 import {backend} from '../../../services/backend.service';
-
-import {reporterconfig} from '../services/reporterconfig';
 
 @Component({
     selector: 'reporter-filter-item-enum',
@@ -25,11 +19,41 @@ export class ReporterFilterItemEnum implements OnInit {
     private moduleName: string;
 
     private enumOptions: any[] = [];
+    private valueArray: any = [];
 
-    constructor(private metadata: metadata, private language: language, private backend: backend, private reporterconfig: reporterconfig) {
-        this.language.currentlanguage$.subscribe((language) => {
+    constructor(private metadata: metadata, private language: language, private backend: backend) {
+        this.language.currentlanguage$.subscribe(() => {
             this.getEnumOptions();
         });
+    }
+
+    get isDisabled() {
+        return this.enumOptions.length == 0;
+    }
+
+    get isMultiSelect() {
+        let isMulti = false;
+        switch (this.wherecondition.operator) {
+            case 'oneof':
+            case 'oneofnot':
+            case 'oneofnotornull':
+                isMulti = true;
+                break;
+        }
+        return isMulti;
+    }
+
+    get value() {
+        return this.valueArray;
+    }
+
+    set value(value) {
+        if (this.isMultiSelect) {
+            this.valueArray = value;
+            value = value.join(',');
+        }
+        this.wherecondition[this.field] = value;
+        this.wherecondition[this.field + 'key'] = this.wherecondition[this.field];
     }
 
     public ngOnInit() {
@@ -55,7 +79,12 @@ export class ReporterFilterItemEnum implements OnInit {
 
         // get the enum options
         this.getEnumOptions();
+        this.initializeValueArray();
+    }
 
+    private initializeValueArray() {
+        const value = this.wherecondition[this.field + 'key'] ? this.wherecondition[this.field + 'key'] : this.wherecondition[this.field];
+        this.valueArray = value.length > 2 ? this.isMultiSelect ? value.split(',') : [value] : [];
     }
 
     private getEnumOptions() {
@@ -67,30 +96,5 @@ export class ReporterFilterItemEnum implements OnInit {
                 this.enumOptions = options;
             });
         }
-    }
-
-    get isDisabled() {
-        return this.enumOptions.length == 0;
-    }
-
-    get isMultiselect() {
-        let isMulti = false;
-        switch (this.wherecondition.operator) {
-            case 'oneof':
-            case 'oneofnot':
-            case 'oneofnotornull':
-                isMulti = true;
-                break;
-        }
-        return isMulti;
-    }
-
-    get value() {
-        return this.wherecondition[this.field + 'key'] ? this.wherecondition[this.field + 'key'] : this.wherecondition[this.field];
-    }
-
-    set value(value) {
-        this.wherecondition[this.field + 'key'] = value;
-        this.wherecondition[this.field] = value;
     }
 }
