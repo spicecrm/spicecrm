@@ -54,7 +54,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 private renderer: Renderer2,
                 private cdr: ChangeDetectorRef,
                 private calendar: calendar) {
-        this.subscription.add(this.calendar.userCalendarVisibility$.subscribe(calendar => {
+        this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
                 this.getUserEvents(calendar);
             })
         );

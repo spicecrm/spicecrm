@@ -67,7 +67,7 @@ export class CalendarSheetDay implements OnChanges, OnDestroy {
     constructor(private language: language, private calendar: calendar) {
         this.buildHours();
 
-        this.subscription.add(this.calendar.userCalendarVisibility$.subscribe(calendar => {
+        this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
                 this.getUserEvents(calendar);
             })
         );
