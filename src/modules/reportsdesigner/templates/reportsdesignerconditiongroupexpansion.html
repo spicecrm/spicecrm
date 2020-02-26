@@ -19,7 +19,7 @@
                 <div class="slds-form-element slds-size--1-of-2">
                     <label class="slds-form-element__label">{{language.getLabel('LBL_GROUPING')}}</label>
                     <div class="slds-form-element__control">
-                        <input type="text" [(ngModel)]="whereCondition.grouping" class="slds-input">
+                        <input type="text" [(ngModel)]="whereCondition.grouping" class="slds-input" [disabled]="true">
                     </div>
                 </div>
             </div>
@@ -43,14 +43,6 @@
                     <div class="slds-form-element__control">
                         <input type="text" [(ngModel)]="whereCondition.reference" class="slds-input">
                     </div>
-                </div>
-            </div>
-            <div class="slds-grid slds-m-top--x-small">
-                <div class="slds-form-element slds-size--1-of-2 slds-grid slds-grid--vertical-align-center">
-                    <system-checkbox [(ngModel)]="joinType">{{language.getLabel('LBL_REQUIRED')}}</system-checkbox>
-                </div>
-                <div class="slds-form-element slds-size--1-of-2 slds-grid slds-grid--vertical-align-center">
-                    <system-checkbox [(ngModel)]="dashletEditable">{{language.getLabel('LBL_DASHLET_EDITABLE')}}</system-checkbox>
                 </div>
             </div>
         </div>
