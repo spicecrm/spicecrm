@@ -16,6 +16,11 @@ export class ReportsDesignerIntegrateItemPublish {
     constructor(private language: language, private model: model, private metadata: metadata, private modal: modal) {
     }
 
+    get canClearModule() {
+        const whereConditions = this.model.getField('whereconditions');
+        return !whereConditions || !whereConditions.some(condition => condition.operator == 'parent_assign');
+    }
+
     /**
      * set the subpanelModule in plugin properties
      * @param value: object
@@ -100,6 +105,7 @@ export class ReportsDesignerIntegrateItemPublish {
     }
 
     private clearModule() {
+        if (!this.canClearModule) return;
         this.properties.subpanelModule = '';
     }
 }
