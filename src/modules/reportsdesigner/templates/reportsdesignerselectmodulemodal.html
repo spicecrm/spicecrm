@@ -1,7 +1,9 @@
 <system-modal>
-    <system-modal-header (close)="close()" module="KReports"></system-modal-header>
+    <system-modal-header (close)="close()" module="KReports">
+        {{language.getModuleName('KReports', true)}}
+    </system-modal-header>
     <system-modal-content margin="xx-small" [grow]="true">
-        <system-collapsable-tab tabtitle="LBL_NAME" [collapsible]="false">
+        <system-collapsable-tab *ngIf="showNameField" tabtitle="LBL_NAME" [collapsible]="false">
             <div class="slds-form-element slds-p-around--x-small">
                 <div class="slds-form-element__control">
                     <input spiceuiautofocus type="text" class="slds-input" [(ngModel)]="reportName">
@@ -37,7 +39,7 @@
         <button class="slds-button slds-button--neutral" (click)="close()">
             {{language.getLabel('LBL_CANCEL')}}
         </button>
-        <button class="slds-button slds-button--neutral" (click)="confirm()" [disabled]="disabled">
+        <button *ngIf="showNameField" class="slds-button slds-button--neutral" (click)="confirm()">
             {{language.getLabel('LBL_NEXT')}}
         </button>
     </system-modal-footer>

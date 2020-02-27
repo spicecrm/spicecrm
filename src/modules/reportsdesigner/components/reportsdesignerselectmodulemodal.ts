@@ -12,6 +12,7 @@ import {metadata} from "../../../services/metadata.service";
 })
 export class ReportsDesignerSelectModuleModal {
 
+    public showNameField: boolean = false;
     protected moduleList: any[] = [];
     protected filteredModuleList: any[] = [];
     private subject: Subject<any> = new Subject<any>();
@@ -74,6 +75,9 @@ export class ReportsDesignerSelectModuleModal {
      */
     private setSelectedModule(module) {
         this.selectedModule = module;
+        if (!this.showNameField) {
+            this.confirm();
+        }
     }
 
     /**
@@ -89,8 +93,6 @@ export class ReportsDesignerSelectModuleModal {
      * submit values and close the modal
      */
     private confirm() {
-        if (this.disabled) return;
-
         this.subject.next({
             name: this.reportName,
             module: this.selectedModule

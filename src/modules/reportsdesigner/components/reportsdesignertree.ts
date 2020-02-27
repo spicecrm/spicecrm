@@ -95,21 +95,19 @@ export class ReportsDesignerTree {
      * @set union_modules
      */
     private addUnionModule() {
-        const modules = this.metadata.getModules();
-        if (!modules) return;
-        modules.sort();
-        this.modal
-            .prompt('input', this.language.getLabel('LBL_SELECT_A_MODULE'), this.language.getLabel('LBL_MODULE'), null, null, modules)
-            .subscribe(index => {
-                if (modules[index]) {
-                    let unionModules = this.model.getField('union_modules');
-                    if (!unionModules || !unionModules.length) unionModules = [];
-                    let newItem = {unionid: this.reportsDesignerService.generateGuid(), module: modules[index]};
-                    unionModules.push(newItem);
-                    this.model.setField('union_modules', unionModules);
-                    this.initializeUnionListFields(newItem.unionid);
-                    this.setActiveModule(newItem);
-                }
+        this.modal.openModal('ReportsDesignerSelectModuleModal')
+            .subscribe(modalRef => {
+                modalRef.instance.response.subscribe(response => {
+                    if (response) {
+                        let unionModules = this.model.getField('union_modules');
+                        if (!unionModules || !unionModules.length) unionModules = [];
+                        let newItem = {unionid: this.reportsDesignerService.generateGuid(), module: response.module};
+                        unionModules.push(newItem);
+                        this.model.setField('union_modules', unionModules);
+                        this.initializeUnionListFields(newItem.unionid);
+                        this.setActiveModule(newItem);
+                    }
+                });
             });
     }
 
