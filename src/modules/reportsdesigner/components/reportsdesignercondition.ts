@@ -97,6 +97,15 @@ export class ReportsDesignerCondition {
             });
         }
 
+        // push parent_assign operation option if the publish as related in module is set
+        const integrationParams = this.model.getField('integration_params');
+        if (!!integrationParams && integrationParams.kpublishing && !!integrationParams.kpublishing.subpanelModule) {
+            retArray.push({
+                value: 'parent_assign',
+                display: this.language.getLabel('LBL_ASSIGN_FROM_PARENT')
+            });
+        }
+
         retArray.sort((a, b) => a.display > b.display ? 1 : -1);
 
         return retArray;

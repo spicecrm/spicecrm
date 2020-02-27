@@ -40,20 +40,20 @@
                         {{language.getLabel('LBL_DETAILS')}}
                     </a>
                 </li>
-                <li (click)="setActiveTab('filter')" [class.slds-active]="activeTab == 'filter'" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
-                    <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
-                        <span class="slds-tabs__left-icon">
-                            <system-utility-icon icon="filterList" size="x-small"></system-utility-icon>
-                        </span>
-                        {{language.getLabel('LBL_FILTER')}}
-                    </a>
-                </li>
                 <li (click)="setActiveTab('manipulate')" [class.slds-active]="activeTab == 'manipulate'" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
                     <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
                         <span class="slds-tabs__left-icon">
                             <system-utility-icon icon="database" size="x-small"></system-utility-icon>
                         </span>
                         {{language.getLabel('LBL_MANIPULATE')}}
+                    </a>
+                </li>
+                <li (click)="setActiveTab('filter')" [class.slds-active]="activeTab == 'filter'" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
+                    <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
+                        <span class="slds-tabs__left-icon">
+                            <system-utility-icon icon="filterList" size="x-small"></system-utility-icon>
+                        </span>
+                        {{language.getLabel('LBL_FILTER')}}
                     </a>
                 </li>
                 <li (click)="setActiveTab('present')" [class.slds-active]="activeTab == 'present'" [class.slds-text-color--inverse-weak]="reportsDesignerService.listFields.length == 0" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
@@ -87,7 +87,6 @@
             <div [ngSwitch]="activeTab" tobottom>
                 <ng-container *ngIf="reportsDesignerService.activeModule?.unionid">
                     <reports-designer-details *ngSwitchCase="'details'"></reports-designer-details>
-                    <reports-designer-filter *ngSwitchCase="'filter'" [module]="reportsDesignerService.activeModule"></reports-designer-filter>
                     <ng-container *ngSwitchCase="'manipulate'">
                         <reports-designer-manipulate [class.slds-hide]="reportsDesignerService.activeModule.unionid != 'root'"></reports-designer-manipulate>
                         <reports-designer-manipulate-union [class.slds-hide]="reportsDesignerService.activeModule.unionid == 'root'"
@@ -95,6 +94,7 @@
                                                            [currentUnionListFields]="currentUnionListFields">
                         </reports-designer-manipulate-union>
                     </ng-container>
+                    <reports-designer-filter *ngSwitchCase="'filter'" [module]="reportsDesignerService.activeModule"></reports-designer-filter>
                     <reports-designer-present *ngSwitchCase="'present'"></reports-designer-present>
                     <reports-designer-visualize *ngSwitchCase="'visualize'"></reports-designer-visualize>
                     <reports-designer-integrate *ngSwitchCase="'integrate'"></reports-designer-integrate>
