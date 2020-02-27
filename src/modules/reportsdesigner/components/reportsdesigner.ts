@@ -1,16 +1,15 @@
 /**
  * @module ModuleReportsDesigner
  */
-import {ChangeDetectorRef, Component, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {ReportsDesignerService} from "../services/reportsdesigner.service";
-import {reporterconfig} from "../../../modules/reports/services/reporterconfig";
+import {reporterconfig} from "../../reports/services/reporterconfig";
 import {view} from "../../../services/view.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
 import {metadata} from "../../../services/metadata.service";
-import {ReportsDesignerManipulate} from "./reportsdesignermanipulate";
 
 @Component({
     selector: 'reports-designer',
@@ -24,8 +23,8 @@ import {ReportsDesignerManipulate} from "./reportsdesignermanipulate";
 })
 export class ReportsDesigner {
 
-    private activeTab: 'details' | 'filter' | 'manipulate' | 'present' | 'visualize' | 'integrate' = 'manipulate';
     protected currentUnionListFields: any[] = [];
+    private activeTab: 'details' | 'filter' | 'manipulate' | 'present' | 'visualize' | 'integrate' = 'manipulate';
 
     constructor(private language: language,
                 private cdr: ChangeDetectorRef,
@@ -41,9 +40,9 @@ export class ReportsDesigner {
     }
 
     /**
-    * force detect changes to prevent angular change detection error
-    * @setEditMode
-    */
+     * force detect changes to prevent angular change detection error
+     * @setEditMode
+     */
     public ngAfterViewInit() {
         this.view.setEditMode();
         this.view.isEditable = true;
@@ -51,13 +50,34 @@ export class ReportsDesigner {
     }
 
     /**
-    * @model.initialize
-    * @set model.id
-    * @model.getData
-    * @openSelectModuleModal
-    * @set currentPath
-    * @set activeModule
-    */
+     * set the initial values for the report
+     * @param reportModule: string
+     */
+    protected setInitialValues(reportModule) {
+        this.model.setFields({
+            report_module: reportModule,
+            listfields: [],
+            listtype: 'standard',
+            presentation_params: {
+                plugin: 'standard',
+                pluginData: {
+                    standardViewProperties: {
+                        processCount: 'Synchronous',
+                        listEntries: 25
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * @model.initialize
+     * @set model.id
+     * @model.getData
+     * @openSelectModuleModal
+     * @set currentPath
+     * @set activeModule
+     */
     private subscribeToActivatedRoute() {
         this.activatedRoute.params.subscribe(params => {
             if (!params.id || params.id.length == 0) return;
@@ -82,23 +102,23 @@ export class ReportsDesigner {
     }
 
     /**
-    * @set activeTab
-    */
+     * @set activeTab
+     */
     private setActiveTab(tab) {
         if ((this.activeTab == 'details' && !this.model.validate()) || ((tab == 'present' || tab == 'visualize') && this.reportsDesignerService.listFields.length == 0)) return;
         this.activeTab = tab;
     }
 
     /**
-    * @navigate to listView
-    */
+     * @navigate to listView
+     */
     private goToModule() {
         this.router.navigate(['/module/KReports']);
     }
 
     /**
-    * @navigate to Record in view mode or to list view
-    */
+     * @navigate to Record in view mode or to list view
+     */
     private cancel() {
         this.model.cancelEdit();
         this.view.setViewMode();
@@ -106,7 +126,7 @@ export class ReportsDesigner {
     }
 
     /**
-    * @model.save
+     * @model.save
      * @set view mode
      * @navigate to Record in view mode or to list view
      */
@@ -121,7 +141,7 @@ export class ReportsDesigner {
     }
 
     /**
-    * @prompt modules list
+     * @prompt modules list
      * @pass modules
      * @set report_module
      * @set currentPath
@@ -149,28 +169,7 @@ export class ReportsDesigner {
     }
 
     /**
-     * set the initial values for the report
-     * @param reportModule: string
-     */
-    protected setInitialValues(reportModule) {
-        this.model.setFields({
-            report_module: reportModule,
-            listfields: [],
-            listtype: 'standard',
-            presentation_params: {
-                plugin: 'standard',
-                pluginData: {
-                    standardViewProperties:{
-                        processCount:'Synchronous',
-                        listEntries:25
-                    }
-                }
-            }
-        });
-    }
-
-    /**
-    * @cleanWhereGroups
+     * @cleanWhereGroups
      * @cleanUnionListFields
      */
     private handleUnionDelete(unionId) {
@@ -179,7 +178,7 @@ export class ReportsDesigner {
     }
 
     /**
-    * @param fields: object[]
+     * @param fields: object[]
      * @set currentUnionListFields
      */
     private handleUnionAdd(fields) {
@@ -187,7 +186,7 @@ export class ReportsDesigner {
     }
 
     /**
-    * @param unionId: string
+     * @param unionId: string
      * @filter whereGroups from deleted groups
      * @set wheregroups
      */
@@ -201,7 +200,7 @@ export class ReportsDesigner {
     }
 
     /**
-    * @param whereGroups: object[]
+     * @param whereGroups: object[]
      * @filter whereConditions from deleted conditions
      * @set whereconditions
      */
@@ -213,7 +212,7 @@ export class ReportsDesigner {
     }
 
     /**
-    * @param unionId: string
+     * @param unionId: string
      * @filter unionListFields from deleted fields
      * @set unionlistfields
      */
