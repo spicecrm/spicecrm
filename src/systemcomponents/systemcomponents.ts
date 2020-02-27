@@ -133,6 +133,9 @@ import /*embed*/ {SystemInputBase64} from './components/systeminputbase64';
 import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
 import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem";
 import /*embed*/ {SystemTrendIndicator} from "./components/systemtrendindicator";
+import /*embed*/ {SystemImageModal} from './components/systemimagemodal';
+
+import /*embed*/ {SystemSlider} from "./components/systemslider";
 
 @NgModule({
     imports: [
@@ -254,7 +257,10 @@ import /*embed*/ {SystemTrendIndicator} from "./components/systemtrendindicator"
         SystemSelectUOM,
         SystemInputMedia,
         SystemInputTimezone,
-        SystemTrendIndicator
+        SystemTrendIndicator,
+        SystemSlider
+        SystemTrendIndicator,
+        SystemImageModal
     ],
     entryComponents: [
         SystemDynamicRouteContainer
@@ -353,7 +359,10 @@ import /*embed*/ {SystemTrendIndicator} from "./components/systemtrendindicator"
         SystemModuleTree,
         SystemModuleTreeItem,
         SystemInputTimezone,
-        SystemTrendIndicator
+        SystemTrendIndicator,
+        SystemSlider
+        SystemTrendIndicator,
+        SystemImageModal
     ]
 })
 export class SystemComponents {
