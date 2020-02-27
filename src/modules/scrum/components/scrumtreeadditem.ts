@@ -1,0 +1,47 @@
+/**
+ * @module ModuleScrum
+ */
+import {Component, Input, SkipSelf, EventEmitter, Output, OnChanges} from '@angular/core';
+
+import {model} from '../../../services/model.service';
+import {language} from '../../../services/language.service';
+
+
+@Component({
+    selector: 'scrum-tree-additem',
+    templateUrl: './src/modules/scrum/templates/scrumtreeadditem.html',
+    providers: [model],
+})
+export class ScrumTreeAddItem {
+
+    @Input() private title: string = '';
+
+    /**
+     * input for the module
+     */
+    @Input() private module: string = '';
+
+    /**
+     * emitter of the new item
+     */
+    @Output() private newitem: EventEmitter<any> = new EventEmitter<any>();
+
+    constructor(@SkipSelf() private parent: model,  private language: language, private model: model) {
+    }
+
+
+    /**
+     * add child-item to parent, subscribe to model observable and emit change
+     */
+    private addItem() {
+        this.model.module = this.module;
+        this.model.addModel('', this.parent).subscribe(
+            item => {
+                this.newitem.emit(item);
+            }
+        );
+    }
+
+
+
+}

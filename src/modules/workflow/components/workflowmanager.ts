@@ -109,6 +109,7 @@ export class WorkflowManager {
             this.self.destroy();
     }
 
+
     private addWorkflow() {
         let newGuid = this.utils.generateGuid();
         this.workflowdefinitions.push({
