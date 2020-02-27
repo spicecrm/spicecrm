@@ -130,6 +130,7 @@ export class ReportsDesignerCondition {
         this.whereCondition.valuekey = '';
         this.whereCondition.valueto = '';
         this.whereCondition.valuetokey = '';
+        this.whereCondition.referencefieldid = '';
     }
 
     /**
