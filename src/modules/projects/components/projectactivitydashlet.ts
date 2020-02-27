@@ -55,7 +55,6 @@ export class ProjectActivityDashlet implements OnInit {
         private toast: toast,
         private modellist: modellist
     ) {
-        console.log('constructir');
         this.view.displayLabels = false;
         this.model.module = "ProjectActivities";
 
