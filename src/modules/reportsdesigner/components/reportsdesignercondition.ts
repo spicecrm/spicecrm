@@ -52,6 +52,18 @@ export class ReportsDesignerCondition {
                         break;
                 }
                 break;
+            default:
+                switch (this.whereCondition.operator) {
+                    case 'equals':
+                    case 'notequal':
+                    case 'oneof':
+                    case 'oneofnot':
+                    case 'oneofnotornull':
+                        if (this.whereCondition.type.indexOf('user_id') > -1 || this.whereCondition.type.indexOf('user_name') > -1 ) {
+                            type = 'user';
+                        }
+                        break;
+                }
         }
 
         return type;
