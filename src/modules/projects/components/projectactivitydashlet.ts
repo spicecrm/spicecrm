@@ -73,7 +73,7 @@ export class ProjectActivityDashlet implements OnInit {
         this.modellist.loadlimit = this.limit;
         this.modellist.module = this.module;
         if(!this.modellist.currentList.sortfields) {
-            this.modellist.currentList.sortfields = btoa('{"sortfield": "' + this.sortfield + '", "sortdirection": "' + this.sortdirection + '"}');
+            this.modellist.currentList.sortfields = btoa('{"sortfield": "date_entered", "sortdirection": "DESC"}');
         }
 
         // load the list and initialize from session data if this is set
@@ -262,7 +262,7 @@ export class ProjectActivityDashlet implements OnInit {
      * @param loadfromcache
      */
     private loadRecentActivities() {
-        this.modellist.setListType('owner', false, [{sortfield: this.sortfield, sortdirection: this.sortdirection}]);
+        this.modellist.setListType('owner', false, [{sortfield: "date_entered", sortdirection: "DESC"}]);
     }
 
     private reset() {
