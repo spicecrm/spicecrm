@@ -7,7 +7,7 @@
             <input type="text" [ngModel]="whereCondition.name" [disabled]="true" class="slds-input">
         </div>
     </div>
-    <div class="slds-form-element slds-p-horizontal--xx-small slds-grid slds-size--1-of-2">
+    <div class="slds-form-element slds-p-horizontal--xx-small slds-grid slds-grid--vertical-align-center slds-size--1-of-2">
         <label class="slds-form-element__label slds-grid slds-grid--vertical-align-center slds-m-left--xx-small">
             {{language.getLabel('LBL_OPERATOR')}}
         </label>
@@ -30,6 +30,7 @@
             <reporter-filter-item-enum *ngSwitchCase="'enum'" [field]="'value'" [wherecondition]="whereCondition"></reporter-filter-item-enum>
             <reporter-filter-item-date *ngSwitchCase="'date'" [field]="'valuekey'" [wherecondition]="whereCondition"></reporter-filter-item-date>
             <reporter-filter-item-text *ngSwitchCase="'text'"  [field]="'value'" [wherecondition]="whereCondition"></reporter-filter-item-text>
+            <reporter-filter-item-user *ngSwitchCase="'user'" [whereCondition]="whereCondition"></reporter-filter-item-user>
         </div>
         <div *ngIf="showValueTo" class="slds-size--1-of-2 slds-p-left--xxx-small" [ngSwitch]="itemType">
             <reporter-filter-item-enum *ngSwitchCase="'enum'" [field]="'valueto'" [wherecondition]="whereCondition"></reporter-filter-item-enum>

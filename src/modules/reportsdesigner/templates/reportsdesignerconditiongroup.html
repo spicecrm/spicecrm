@@ -17,7 +17,7 @@
             <li *ngFor="let condition of group.conditions; trackBy: trackByFn" class="slds-expression__row_group slds-m-vertical--x-small" style="border: 1px dashed #ddd; padding: 1px">
                 <div class="slds-grid slds-p-around--xx-small">
                     <reports-designer-condition [whereCondition]="condition" class="slds-grid slds-grid--vertical-align-center slds-grow"></reports-designer-condition>
-                    <div class="slds-grid slds-grid--vertical-align-start">
+                    <div class="slds-grid slds-grid--vertical-align-center">
                         <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-m-left--xx-small" (click)="deleteCondition(condition.id)">
                             <system-button-icon icon="delete"></system-button-icon>
                         </button>
