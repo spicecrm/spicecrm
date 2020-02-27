@@ -48,7 +48,7 @@
             <field-label fieldname="name"></field-label>
             <field-container fieldname="name"></field-container>
         </div>
-    </div>
+    </div>l
     <div class="slds-grid slds-m-top--small slds-grid_vertical-align-start">
         <div class="slds-m-left--xx-small  slds-size--2-of-5">
             <field-label fieldname="activity_start"></field-label>
@@ -67,12 +67,30 @@
         </div>
     </div>
     <!-- last 5 entries here... -->
-    <div *ngIf="recent_project_activities.length > 0" class="slds-m-top--small slds-grid_vertical-align-start">
-        <object-table fieldset_id="cd58c77c-899e-8ed9-dd64-539c9b8dfbad" [objects]="recent_project_activities" module="{{model.module}}"></object-table>
-        <footer>
-            <div class="slds-text-align_center">
+<!--    <div *ngIf="recent_project_activities.length > 0" class="slds-m-top&#45;&#45;small slds-grid_vertical-align-start">-->
+<!--        <object-table fieldset_id="{{fieldset}}" [objects]="recent_project_activities" module="{{model.module}}"></object-table>-->
+<!--        <footer>-->
+<!--            <div class="slds-text-align_center">-->
+<!--                <a href="javascript:void(0);" (click)="model.goModule()">View All</a>-->
+<!--            </div>-->
+<!--        </footer>-->
+<!--    </div>-->
+    <!-- last n entries here... -->
+        <div class="slds-select_container">
+            <table class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal slds-table--header-fixed" [ngClass]="" role="grid">
+                <thead>
+                <tr class="slds-text-title--caps" object-list-header [showSelectColumn]="false"></tr>
+                </thead>
+                <tbody>
+                <tr object-list-item *ngFor="let listItem of modellist.listData.list; trackBy: trackbyfn"  [listItem]="listItem"  [rowselect]="false" class="slds-hint-parent"></tr>
+                </tbody>
+                <tbody system-table-stencils [columns]="modellist.listfields.length" [select]="false" [tools]="false" [rows]="limit" *ngIf="isloading"></tbody>
+            </table>
+            <div *ngIf="!modellist.isLoading && modellist.listData.totalcount > 0" class="slds-text-align_center">
                 <a href="javascript:void(0);" (click)="model.goModule()">View All</a>
             </div>
-        </footer>
-    </div>
+            <div *ngIf="!modellist.isLoading && modellist.listData.totalcount == 0" class="slds-align--absolute-center" style="height: calc(100% - 35px)">
+                <system-illustration-no-records>{{language.getLabel('MSG_NO_RECORDS_FOUND')}}</system-illustration-no-records>
+            </div>
+        </div>
 </div>
