@@ -363,7 +363,7 @@ export class modellist implements OnDestroy {
         this.listcomponent$.next(listcomponent);
 
         // set it to the preferences when we are on a general list
-        if (this.currentList.id == 'all' || this.currentList.id == 'own') {
+        if (this.currentList.id == 'all' || this.currentList.id == 'owner') {
             this.userpreferences.setPreference('defaultlisttype', listcomponent, false, 'SpiceUI_' + this.module);
         }
     }
@@ -463,7 +463,7 @@ export class modellist implements OnDestroy {
      * @param listType
      * @param setPreference
      */
-    public setListType(listType: string, setPreference = true): void {
+    public setListType(listType: string, setPreference = true, sortArray=[]): void {
 
         // close filters and aggegarts if they are being displayed
         this.displayAggregates = false;
@@ -500,7 +500,7 @@ export class modellist implements OnDestroy {
         if (this.currentList.sortfields) {
             this.sortArray = JSON.parse(atob(this.currentList.sortfields));
         } else {
-            this.sortArray = [];
+            this.sortArray = sortArray;
         }
 
         // set the listtype
@@ -915,7 +915,7 @@ export class modellist implements OnDestroy {
     /**
      * returns the listtypes
      *
-     * @param base set to ture to include the standrad listtypes 'all' & 'own'
+     * @param base set to ture to include the standrad listtypes 'all' & 'owner'
      */
     public getListTypes(base = true) {
         let listTypes: any[] = [];
@@ -1049,7 +1049,7 @@ export class modellist implements OnDestroy {
      */
     public checkAccess(action: 'edit' | 'delete') {
         // no
-        if ((action == 'edit' || action == 'delete') && (this.currentList.id == 'all' || this.currentList.id == 'own')) {
+        if ((action == 'edit' || action == 'delete') && (this.currentList.id == 'all' || this.currentList.id == 'owner')) {
             return false;
         }
 
