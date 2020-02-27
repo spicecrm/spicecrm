@@ -35,8 +35,10 @@ export class ReportsDesignerConditionGroupExpansion implements OnInit {
         if (!visualizationParams) return;
         for (let key in visualizationParams) {
             if (visualizationParams.hasOwnProperty(key)) {
-                if (!!visualizationParams[key].googlecharts && !!visualizationParams[key].googlecharts.context &&
-                    !!this.whereCondition.context && this.whereCondition.context == visualizationParams[key].googlecharts.context) {
+                if ((!!visualizationParams[key].googlecharts && !!visualizationParams[key].googlecharts.context &&
+                    !!this.whereCondition.context && this.whereCondition.context == visualizationParams[key].googlecharts.context) ||
+                    (!!visualizationParams[key].highcharts && !!visualizationParams[key].highcharts.context &&
+                        !!this.whereCondition.context && this.whereCondition.context == visualizationParams[key].highcharts.context)) {
                     this.contextUsed = true;
                     break;
                 }
