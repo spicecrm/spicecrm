@@ -7,10 +7,7 @@ import {mediafiles} from '../../../services/mediafiles.service';
 @Component({
     selector: 'media-file-image',
     templateUrl: './src/modules/mediafiles/templates/mediafileimage.html',
-    providers: [ mediafiles ],
-    styles: [
-        'img.withFrameHeight { position:absolute; top:0; left:0; bottom:0; right:0; margin:auto; }'
-    ]
+    providers: [ mediafiles ]
 })
 export class MediaFileImage implements OnChanges {
 
@@ -76,9 +73,15 @@ export class MediaFileImage implements OnChanges {
      */
     @Input() public frameSize: number = null;
 
-    @Input() public displayInline: boolean = false;
+    /**
+     * Display the image tag inline or as block.
+     */
+    @Input() public displayInline = false;
 
-    @Input() public title: string = '';
+    /**
+     * Title for the image tag.
+     */
+    @Input() public title = '';
 
     /**
      * Alternate text of the image.
@@ -122,7 +125,7 @@ export class MediaFileImage implements OnChanges {
             this.variantStatic = this.variant;
         }
 
-        if( this.variantStatic === 'mw' || this.variantStatic === 'mwh' ) {
+        if ( this.variantStatic === 'mw' || this.variantStatic === 'mwh' ) {
 
             // Set the CSS width and CSS height for the image tag:
             if ( this.width != null ) this.dimensions.width = this.width;
@@ -150,11 +153,11 @@ export class MediaFileImage implements OnChanges {
     }
 
     /**
-     * Retrieve and show the image or thumbnail.
+     * Retrieve and show the image/thumbnail.
      */
     private showImage(): void {
         let sizes4variant;
-        switch( this.variantStatic ) {
+        switch ( this.variantStatic ) {
             case 'mw':
                 sizes4variant = this.frameWidth;
                 break;
@@ -186,6 +189,20 @@ export class MediaFileImage implements OnChanges {
             case 'center': return {'margin-left':'auto','margin-right':'auto'};
             default: return {};
         }
+    }
+
+    /**
+     * Get the CSS style for the image tag.
+     */
+    get styleImg() {
+        let style: any = { ...this.dimensions };
+        // When the frame has a specific height, center the image tag inside the frame vertically:
+        if ( this.withFrameHeight ) {
+            style.position = 'absolute';
+            style.top = style.left = style.bottom = style.right = 0;
+            style.margin = 'auto';
+        }
+        return style;
     }
 
     /**
