@@ -134,9 +134,7 @@ export class ReportsDesignerConditionGroup {
      * @set group.conditions
      */
     private deleteCondition(id) {
-        this.group.conditions = this.group.conditions
-            .filter(condition => condition.id != id)
-            .filter(condition => condition.groupid == id);
+        this.group.conditions = this.group.conditions.filter(condition => condition.id != id);
         this.whereConditions = this.whereConditions.filter(condition => condition.id != id);
     }
 
