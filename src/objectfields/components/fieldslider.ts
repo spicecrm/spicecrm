@@ -10,11 +10,10 @@ import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 
 @Component({
-    selector: 'field-number',
-    templateUrl: './src/objectfields/templates/fieldnumber.html'
+    selector: 'field-slider',
+    templateUrl: './src/objectfields/templates/fieldslider.html'
 })
-export class fieldNumber extends fieldGeneric {
-
+export class fieldSlider extends fieldGeneric {
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);
     }
@@ -24,7 +23,7 @@ export class fieldNumber extends fieldGeneric {
     }
 
     get max() {
-        return 120;
+        return 100;
     }
 
 }

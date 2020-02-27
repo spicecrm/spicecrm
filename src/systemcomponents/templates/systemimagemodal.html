@@ -1,0 +1,16 @@
+<system-modal size="large">
+
+    <system-modal-header (close)="cancel()">
+        {{title}}
+    </system-modal-header>
+
+    <system-modal-content>
+        <system-input-media [(ngModel)]="imageData" [maxWidth]="maxWidth" [maxHeight]="maxHeight" class="slds-height_full"></system-input-media>
+    </system-modal-content>
+
+    <system-modal-footer>
+        <button class="slds-button slds-button--brand" (click)="save()" [disabled]="!canSave">{{language.getLabel('LBL_SAVE')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
+    </system-modal-footer>
+
+</system-modal>
