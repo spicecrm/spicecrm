@@ -241,7 +241,7 @@ declare var _: any;
         fieldRelatedDetailsContainer,
         fieldPhone,
         fieldActionset,
-        fieldImage
+        fieldImage,
         fieldActionset,
         fieldSlider
     ],
