@@ -40,11 +40,7 @@ export class scrumtree {
      */
     set selectedObject(selectedObject: scrumobject) {
         this._selectedObject = selectedObject;
-
         this.selectedObject$.emit(this._selectedObject);
     }
-
-
-
 
 }

@@ -2,7 +2,7 @@
  * @module ModuleScrum
  */
 import {
-    Component, OnInit, Input
+    Component, OnInit, Input, OnDestroy
 } from '@angular/core';
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
@@ -17,7 +17,7 @@ import {scrumtree} from '../services/scrum.service';
         '(click)': "selectUserStory($event)",
     }
 })
-export class ScrumTreeUserStory implements OnInit {
+export class ScrumTreeUserStory implements OnInit, OnDestroy {
     @Input() private userstory: any = {};
 
     constructor(private metadata: metadata, private model: model, private modellist: modellist, private scrum: scrumtree) {}
@@ -40,6 +40,12 @@ export class ScrumTreeUserStory implements OnInit {
     private selectUserStory(e) {
         e.stopPropagation();
         this.scrum.selectedObject = {id: this.userstory.id, type: 'ScrumUserStories'};
+    }
+
+    public ngOnDestroy(): void {
+        if (this.scrum.selectedObject.id == this.userstory.id && this.scrum.selectedObject.type == 'ScrumUserStories') {
+            this.scrum.selectedObject = {id: undefined, type: ''};
+        }
     }
 
 }

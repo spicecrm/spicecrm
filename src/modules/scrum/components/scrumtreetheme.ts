@@ -1,10 +1,11 @@
 /**
  * @module ModuleScrum
  */
-import {Component, Input, Injector, SkipSelf, OnChanges} from '@angular/core';
+import {Component, Input, OnDestroy} from '@angular/core';
 
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
+import {modellist} from "../../../services/modellist.service";
 import {language} from '../../../services/language.service';
 import {scrumtree} from '../services/scrum.service';
 import {relatedmodels} from "../../../services/relatedmodels.service";
@@ -13,12 +14,12 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
     selector: '[scrum-tree-theme]',
     templateUrl: './src/modules/scrum/templates/scrumtreetheme.html',
     providers: [model, relatedmodels],
-    host:{
+    host: {
         '(click)': "selectTheme()",
         "[attr.aria-expanded]": "expanded"
     }
 })
-export class ScrumTreeTheme {
+export class ScrumTreeTheme implements OnDestroy {
 
     /**
      * inidcates if the epics are laoded for this node
@@ -39,13 +40,16 @@ export class ScrumTreeTheme {
      */
     private expanded: boolean = false;
 
+    /**
+     * a check to hide and disable the expansion button
+     */
     private has_epics: boolean;
 
-    constructor(private scrum: scrumtree, private language: language, private metadata: metadata, private model: model, private epics: relatedmodels, private injector: Injector) {
+    constructor(private scrum: scrumtree, private language: language, private modellist: modellist, private metadata: metadata, private model: model, private epics: relatedmodels) {
     }
 
     /**
-     * initialize the model, the parent and the related module
+     * initialize the model and the related module
      */
     public ngOnInit() {
         this.model.module = 'ScrumThemes';
@@ -64,7 +68,14 @@ export class ScrumTreeTheme {
         this.has_epics = this.model.getField('has_epics');
     }
 
-
+    /**
+     * then the component is destroyed
+     */
+    public ngOnDestroy(): void {
+        if (this.scrum.selectedObject.id == this.theme.id && this.scrum.selectedObject.type == 'ScrumThemes') {
+            this.scrum.selectedObject = {id: undefined, type: ''};
+        }
+    }
 
     /**
      * send the id and the type of the selected object
@@ -84,13 +95,11 @@ export class ScrumTreeTheme {
         });
     }
 
-
-
     /**
      * expand if the epics are loaded
      */
     private toggleExpand() {
-        if(!this.epicsloaded) {
+        if (!this.epicsloaded) {
             this.loadRelatedEpics();
         }
         this.expanded = !this.expanded;

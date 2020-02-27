@@ -1,7 +1,7 @@
 /**
  * @module ModuleScrum
  */
-import {Component, Output, EventEmitter, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {modellist} from '../../../services/modellist.service';
 import {model} from '../../../services/model.service';
@@ -11,7 +11,7 @@ import {scrumtree} from '../services/scrum.service';
     selector: 'scrumtree',
     templateUrl: './src/modules/scrum/templates/scrumtree.html'
 })
-export class ScrumTree  {
+export class ScrumTree {
 
     constructor(private scrum: scrumtree, private model: model, private metadata: metadata, private modellist: modellist) {
 
@@ -22,4 +22,5 @@ export class ScrumTree  {
     protected trackbyfn(index, item) {
         return item.id;
     }
+
 }
