@@ -22,7 +22,7 @@ export class ScrumTreeAddItem {
     @Input() private module: string = '';
 
     /**
-     * emitter for the new item
+     * emitter of the new item
      */
     @Output() private newitem: EventEmitter<any> = new EventEmitter<any>();
 
@@ -31,7 +31,7 @@ export class ScrumTreeAddItem {
 
 
     /**
-     * add child-item to parent, subscribe to model and emit change
+     * add child-item to parent, subscribe to model observable and emit change
      */
     private addItem() {
         this.model.module = this.module;
