@@ -12,6 +12,8 @@ import {ReportsDesignerService} from "../services/reportsdesigner.service";
 })
 export class ReportsDesignerVisualizeItemHighCharts implements OnInit {
 
+    protected contextOptions: any[] = [];
+
     protected typeOptions = [
         {
             dimensions: ['111','10N','221','21N'],
@@ -188,6 +190,10 @@ export class ReportsDesignerVisualizeItemHighCharts implements OnInit {
      * set the initial plugin properties data
      */
     private initializeProperties() {
+        this.contextOptions = this.model.getField('whereconditions')
+            .filter(condition => !!condition.context)
+            .map(condition => condition.context);
+
         if (this.properties.highcharts && this.properties.highcharts.uid) return;
         this.properties.highcharts = {
             uid: this.reportsDesignerService.generateGuid(),
