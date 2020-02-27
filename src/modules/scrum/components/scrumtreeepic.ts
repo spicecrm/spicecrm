@@ -1,7 +1,7 @@
 /**
  * @module ModuleScrum
  */
-import {Component, OnInit, Input, SkipSelf} from '@angular/core';
+import {Component, OnInit, Input, SkipSelf, OnDestroy} from '@angular/core';
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 import {modellist} from "../../../services/modellist.service";
@@ -18,7 +18,7 @@ import {language} from "../../../services/language.service";
         "[attr.aria-expanded]": "expanded"
     }
 })
-export class ScrumTreeEpic implements OnInit {
+export class ScrumTreeEpic implements OnInit, OnDestroy {
 
     /**
      * inidcates if the userstories are laoded
@@ -30,8 +30,14 @@ export class ScrumTreeEpic implements OnInit {
      */
     private expanded: boolean = false;
 
+    /**
+     * a check to hide and disable the expansion button
+     */
     private has_stories: boolean;
 
+    /**
+     * acl
+     */
     private disabled: boolean = true;
 
     /**
@@ -74,6 +80,11 @@ export class ScrumTreeEpic implements OnInit {
         });
     }
 
+    public ngOnDestroy(): void {
+        if (this.scrum.selectedObject.id == this.epic.id && this.scrum.selectedObject.type == 'ScrumEpics') {
+            this.scrum.selectedObject = {id: undefined, type: ''};
+        }
+    }
 
     /**
      * expand if the user stories are loaded

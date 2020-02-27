@@ -1,27 +1,20 @@
 /**
  * @module ModuleScrum
  */
-import {Component, OnDestroy} from '@angular/core';
+import {Component, EventEmitter, OnChanges, OnDestroy, Output} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {modellist} from '../../../services/modellist.service';
-import {model} from "../../../services/model.service";
 import {scrumtree} from "../services/scrum.service";
+import {language} from "../../../services/language.service";
 
 @Component({
     selector: 'scrum-main',
     templateUrl: './src/modules/scrum/templates/scrummain.html',
     providers: [scrumtree]
 })
-export class ScrumMain implements OnDestroy {
+export class ScrumMain {
 
-    /**
-     * modellist service subscription instance
-     */
-    private modellistsubscribe: any = {};
-
-    constructor(private scrum: scrumtree, private metadata: metadata, private modellist: modellist, private model: model) {
-        // subscribe to modellist
-        this.modellistsubscribe = this.modellist.listtype$.subscribe(newType => this.loadList());
+    constructor(private scrum: scrumtree, private metadata: metadata, private modellist: modellist, private language: language) {
         this.loadList();
     }
 
@@ -32,11 +25,8 @@ export class ScrumMain implements OnDestroy {
         this.modellist.getListData();
     }
 
-    /**
-     * unsubscribe from modellist service
-     */
-    public ngOnDestroy() {
-        this.modellistsubscribe.unsubscribe();
+    get text() {
+        return this.language.getLabel('LBL_SELECT_THEME');
     }
 }
 
