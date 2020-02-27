@@ -117,9 +117,11 @@ import /*embed*/ {fieldRelatedDetailsContainer} from './components/fieldrelatedd
 import /*embed*/ {fieldPhone} from "./components/fieldphone";
 import /*embed*/ {fieldActionset} from "./components/fieldactionset";
 import /*embed*/ {fieldSlider} from "./components/fieldslider";
+import /*embed*/ {fieldImage} from './components/fieldimage';
+
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _: any;
 
 /**
@@ -238,6 +240,8 @@ declare var _: any;
         fieldRelatedDetails,
         fieldRelatedDetailsContainer,
         fieldPhone,
+        fieldActionset,
+        fieldImage
         fieldActionset,
         fieldSlider
     ],
