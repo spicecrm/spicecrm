@@ -1434,3 +1434,9 @@ ul.spice-taglist span.slds-badge {
     flex-grow: 1;
     min-height: 0;
 }
+
+.spice-box-is-selected {
+    background-color: #e6e5e5;
+    box-shadow: 0 0 1px #777;
+    border-radius: .2rem;
+}

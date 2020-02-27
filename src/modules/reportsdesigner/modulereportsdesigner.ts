@@ -9,7 +9,7 @@ import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
 import {DragDropModule} from '@angular/cdk/drag-drop';
-import {ModuleReports} from "../../modules/reports/modulereports";
+import {ModuleReports} from "../reports/modulereports";
 
 import /*embed*/ {ReportsDesignerService} from './services/reportsdesigner.service';
 
@@ -50,6 +50,7 @@ import /*embed*/ {ReportsDesignerFilter} from "./components/reportsdesignerfilte
 import /*embed*/ {ReportsDesignerConditionGroup} from "./components/reportsdesignerconditiongroup";
 import /*embed*/ {ReportsDesignerConditionGroupExpansion} from "./components/reportsdesignerconditiongroupexpansion";
 import /*embed*/ {ReportsDesignerCondition} from "./components/reportsdesignercondition";
+import /*embed*/ {ReportsDesignerSelectModuleModal} from "./components/reportsdesignerselectmodulemodal";
 
 @NgModule({
     imports: [
@@ -99,7 +100,8 @@ import /*embed*/ {ReportsDesignerCondition} from "./components/reportsdesignerco
         ReportsDesignerCondition,
         ReportsDesignerManipulateTableRow,
         ReportsDesignerManipulateUnionTableRow,
-        ReportsDesignerManipulateTableRowExpansion
+        ReportsDesignerManipulateTableRowExpansion,
+        ReportsDesignerSelectModuleModal
     ],
     exports: [
         ReportsDesigner

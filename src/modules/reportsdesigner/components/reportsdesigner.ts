@@ -51,11 +51,12 @@ export class ReportsDesigner {
 
     /**
      * set the initial values for the report
-     * @param reportModule: string
+     * @param data: object
      */
-    protected setInitialValues(reportModule) {
+    protected setInitialValues(data) {
         this.model.setFields({
-            report_module: reportModule,
+            name: data.name,
+            report_module: data.module,
             listfields: [],
             listtype: 'standard',
             presentation_params: {
@@ -153,18 +154,19 @@ export class ReportsDesigner {
         if (!modules) return;
 
         modules.sort();
-        this.modal
-            .prompt('input', this.language.getLabel('LBL_SELECT_A_MODULE'), this.language.getLabel('LBL_MODULE'), null, null, modules)
-            .subscribe(index => {
-                if (modules[index]) {
-                    this.model.initialize();
-                    this.setInitialValues(modules[index]);
-                    this.reportsDesignerService.setCurrentPath(modules[index], modules[index]);
-                    this.activeTab = 'details';
-                    this.reportsDesignerService.activeModule = {unionid: 'root', module: modules[index]};
-                } else {
-                    this.cancel();
-                }
+        this.modal.openModal('ReportsDesignerSelectModuleModal')
+            .subscribe(modalRef => {
+                modalRef.instance.response.subscribe(response => {
+                    if (response) {
+                        this.model.initialize();
+                        this.setInitialValues(response);
+                        this.reportsDesignerService.setCurrentPath(response.module, response.module);
+                        this.activeTab = 'details';
+                        this.reportsDesignerService.activeModule = {unionid: 'root', module: response.module};
+                    } else {
+                        this.cancel();
+                    }
+                });
             });
     }
 
