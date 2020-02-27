@@ -150,12 +150,9 @@ export class ReportsDesigner {
      * @set activeModule
      */
     private openSelectModuleModal() {
-        let modules = this.metadata.getModules();
-        if (!modules) return;
-
-        modules.sort();
         this.modal.openModal('ReportsDesignerSelectModuleModal')
             .subscribe(modalRef => {
+                modalRef.instance.showNameField = true;
                 modalRef.instance.response.subscribe(response => {
                     if (response) {
                         this.model.initialize();
