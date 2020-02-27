@@ -258,7 +258,7 @@ import /*embed*/ {SystemSlider} from "./components/systemslider";
         SystemInputMedia,
         SystemInputTimezone,
         SystemTrendIndicator,
-        SystemSlider
+        SystemSlider,
         SystemTrendIndicator,
         SystemImageModal
     ],
@@ -360,7 +360,7 @@ import /*embed*/ {SystemSlider} from "./components/systemslider";
         SystemModuleTreeItem,
         SystemInputTimezone,
         SystemTrendIndicator,
-        SystemSlider
+        SystemSlider,
         SystemTrendIndicator,
         SystemImageModal
     ]
