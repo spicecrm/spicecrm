@@ -57,12 +57,6 @@ export class ReportsDesignerSelectModuleModal {
      */
     private loadModuleList() {
         this.moduleList = this.metadata.getModules()
-            .filter(module => {
-                const moduleData = this.metadata.getModuleDefs(module);
-                return !!moduleData.visible && (!moduleData.visibleaclaction ||
-                    (!!moduleData.visibleaclaction && this.metadata.checkModuleAcl(module, moduleData.visibleaclaction))) &&
-                    this.metadata.checkModuleAcl(module, 'list') && !!this.language.getModuleName(module);
-            })
             .map(module => ({name: module, display: this.language.getModuleName(module)}))
             .sort();
 
