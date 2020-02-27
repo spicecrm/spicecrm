@@ -33,7 +33,7 @@
                 <div class="slds-form-element slds-size--1-of-2">
                     <label class="slds-form-element__label">{{language.getLabel('LBL_CONTEXT')}}</label>
                     <div class="slds-form-element__control">
-                        <input type="text" [(ngModel)]="whereCondition.context" class="slds-input">
+                        <input type="text" [(ngModel)]="whereCondition.context" class="slds-input" [disabled]="contextUsed">
                     </div>
                 </div>
             </div>
