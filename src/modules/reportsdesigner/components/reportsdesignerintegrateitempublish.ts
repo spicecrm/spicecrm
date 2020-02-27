@@ -5,6 +5,7 @@ import {AfterViewInit, Component, Input, SkipSelf, ViewChild, ViewContainerRef} 
 import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
+import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: 'reports-designer-integrate-item-target-list',
@@ -12,7 +13,7 @@ import {model} from "../../../services/model.service";
 })
 export class ReportsDesignerIntegrateItemPublish {
 
-    constructor(private language: language, private model: model, private metadata: metadata) {
+    constructor(private language: language, private model: model, private metadata: metadata, private modal: modal) {
     }
 
     /**
@@ -85,5 +86,20 @@ export class ReportsDesignerIntegrateItemPublish {
      */
     private getCheckboxValue(field) {
         return this.properties[field] == 'on';
+    }
+
+    private searchModule() {
+        this.modal.openModal('ReportsDesignerSelectModuleModal')
+            .subscribe(modalRef => {
+                modalRef.instance.response.subscribe(response => {
+                    if (response) {
+                        this.properties.subpanelModule = response.module;
+                    }
+                });
+            });
+    }
+
+    private clearModule() {
+        this.properties.subpanelModule = '';
     }
 }
