@@ -38,8 +38,8 @@
                                         <span class="slds-pill__label">
                                             {{language.getModuleName(properties.subpanelModule)}}
                                         </span>
-                                        <button class="slds-button slds-button--icon slds-pill__remove" (click)="clearModule()">
-                                            <system-button-icon [icon]="'close'"></system-button-icon>
+                                        <button class="slds-button slds-button--icon slds-pill__remove" (click)="clearModule()" [disabled]="!canClearModule">
+                                            <system-button-icon icon="close"></system-button-icon>
                                         </button>
                                     </span>
                                     </div>

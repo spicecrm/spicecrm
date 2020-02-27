@@ -158,7 +158,6 @@ export class ReportsDesigner {
                         this.model.initialize();
                         this.setInitialValues(response);
                         this.reportsDesignerService.setCurrentPath(response.module, response.module);
-                        this.activeTab = 'details';
                         this.reportsDesignerService.activeModule = {unionid: 'root', module: response.module};
                     } else {
                         this.cancel();
