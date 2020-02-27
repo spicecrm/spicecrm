@@ -45,7 +45,14 @@
                                 {{language.getLabel('LBL_CONTEXT')}}
                             </label>
                             <div class="slds-form-element__control slds-grow">
-                                <input type="text" size="5" [(ngModel)]="properties.highcharts.context" class="slds-input">
+                                <div class="slds-select_container">
+                                    <select class="slds-select" [(ngModel)]="properties.highcharts.context">
+                                        <option></option>
+                                        <option *ngFor="let contextOption of contextOptions" [value]="contextOption">
+                                            {{contextOption}}
+                                        </option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
