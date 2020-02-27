@@ -41,7 +41,7 @@
                 <div class="slds-form-element slds-size--1-of-1">
                     <label class="slds-form-element__label">{{language.getLabel('LBL_REFERENCE')}}</label>
                     <div class="slds-form-element__control">
-                        <input type="text" [(ngModel)]="whereCondition.reference" class="slds-input">
+                        <input type="text" [(ngModel)]="whereCondition.reference" class="slds-input" [disabled]="referenceDisabled">
                     </div>
                 </div>
             </div>

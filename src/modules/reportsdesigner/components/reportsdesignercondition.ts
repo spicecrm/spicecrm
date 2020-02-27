@@ -66,6 +66,8 @@ export class ReportsDesignerCondition {
                 }
         }
 
+        if (this.whereCondition.operator == 'reference') type = 'reference';
+
         return type;
 
     }
@@ -74,7 +76,7 @@ export class ReportsDesignerCondition {
     * @return showValue: boolean
      */
     get showValue() {
-        return this.reporterConfig.operatorCount[this.whereCondition.operator] > 0;
+        return this.whereCondition.operator == 'reference' || this.reporterConfig.operatorCount[this.whereCondition.operator] > 0;
     }
 
     /**
@@ -97,12 +99,21 @@ export class ReportsDesignerCondition {
             });
         }
 
-        // push parent_assign operation option if the publish as related in module is set
+        // push parent_assign operator if the publish as related in module is set
         const integrationParams = this.model.getField('integration_params');
         if (!!integrationParams && integrationParams.kpublishing && !!integrationParams.kpublishing.subpanelModule) {
             retArray.push({
                 value: 'parent_assign',
                 display: this.language.getLabel('LBL_ASSIGN_FROM_PARENT')
+            });
+        }
+
+        // push reference operator if other condition has reference value
+        const whereConditions = this.model.getField('whereconditions');
+        if (whereConditions.some(condition => condition.type == this.whereCondition.type && !!condition.reference)) {
+            retArray.push({
+                value: 'reference',
+                display: this.language.getLabel('LBL_REFERENCE')
             });
         }
 
