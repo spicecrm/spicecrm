@@ -12,6 +12,8 @@ import {ReportsDesignerService} from "../services/reportsdesigner.service";
 })
 export class ReportsDesignerVisualizeItemGoogleCharts implements OnInit {
 
+    protected contextOptions: any[] = [];
+
     protected dimensionsOptions: any[] = [
         {
             value: '111',
@@ -100,9 +102,13 @@ export class ReportsDesignerVisualizeItemGoogleCharts implements OnInit {
     }
 
     /**
-     * set the initial plugin properties data
+     * set the initial plugin properties data and load the context options
      */
     private initializeProperties() {
+        this.contextOptions = this.model.getField('whereconditions')
+            .filter(condition => !!condition.context)
+            .map(condition => condition.context);
+
         if (this.properties.googlecharts && this.properties.googlecharts.uid) return;
         this.properties.googlecharts = {
             uid: this.reportsDesignerService.generateGuid(),
