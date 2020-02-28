@@ -118,7 +118,6 @@ import /*embed*/ {PackageLoaderPackage} from "./components/packageloaderpackage"
 import /*embed*/ {PackageLoaderLanguages} from "./components/packageloaderlanguages";
 import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguage";
 
-
 import /*embed*/ {SystemFilterBuilder} from "./components/systemfilterbuilder";
 import /*embed*/ {SystemFilterBuilderFilterExpressionFields} from "./components/systemfilterbuilderfilterexpressionfields";
 import /*embed*/ {SystemFilterBuilderFilterExpressionValue} from "./components/systemfilterbuilderfilterexpressionvalue";
@@ -134,7 +133,6 @@ import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
 import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem";
 import /*embed*/ {SystemTrendIndicator} from "./components/systemtrendindicator";
 import /*embed*/ {SystemImageModal} from './components/systemimagemodal';
-
 import /*embed*/ {SystemSlider} from "./components/systemslider";
 
 @NgModule({
@@ -258,7 +256,7 @@ import /*embed*/ {SystemSlider} from "./components/systemslider";
         SystemInputMedia,
         SystemInputTimezone,
         SystemTrendIndicator,
-        SystemSlider
+        SystemSlider,
         SystemTrendIndicator,
         SystemImageModal
     ],
@@ -360,7 +358,7 @@ import /*embed*/ {SystemSlider} from "./components/systemslider";
         SystemModuleTreeItem,
         SystemInputTimezone,
         SystemTrendIndicator,
-        SystemSlider
+        SystemSlider,
         SystemTrendIndicator,
         SystemImageModal
     ]
