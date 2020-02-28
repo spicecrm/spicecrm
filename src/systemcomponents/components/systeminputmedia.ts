@@ -472,10 +472,10 @@ export class SystemInputMedia implements OnDestroy {
     }
 
     /**
-     * Handler in case a file has been dropped extern (image field)
+     * Handler in case a file has been dropped externally (image field)
      */
     @Input('droppedFiles') public set onDropExtern( droppedFiles ) {
-        this.onDrop( droppedFiles );
+        if ( droppedFiles ) this.onDrop( droppedFiles );
     }
 
     /**
