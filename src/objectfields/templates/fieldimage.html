@@ -1,1 +1,33 @@
-<div>missing template</div>
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<div [ngClass]="fielddisplayclass" class="slds-is-relative slds-box--border slds-align_absolute-center" [ngStyle]="style">
+
+    <img *ngIf="!fieldIsEmpty" [src]="imageUrl" style="max-height:100%;padding:0.25rem">
+
+    <ng-container *ngIf="!model.isLoading">
+
+        <ng-container *ngIf="isEditMode()">
+
+            <button *ngIf="fieldIsEmpty" class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled slds-align--absolute-center slds-m-around--medium" [disabled]="!isEditMode()" (click)="editImage()">
+                <system-button-icon [icon]="'image'"></system-button-icon>
+            </button>
+
+            <div *ngIf="!fieldIsEmpty" class="slds-is-absolute spice-button-group-vertical slds-is-absolute" style="bottom:0.5rem;right:0.5rem;">
+                <button class="slds-button slds-button_icon-container slds-button_icon-border-filled slds-button--icon-small" (click)="editImage()">
+                    <system-button-icon [icon]="'edit'"></system-button-icon>
+                </button>
+                <button class="slds-button slds-button_icon-container slds-button_icon-border-filled slds-button--icon-small" title="Delete" (click)="deleteImage()" >
+                    <system-button-icon [icon]="'delete'"></system-button-icon>
+                </button>
+            </div>
+
+        </ng-container>
+
+        <ng-container *ngIf="!isEditMode()">
+            <button class="slds-button slds-button_icon slds-is-absolute" style="bottom:0.75rem;right:0.75rem;background-color:#fff;box-shadow:0px 0px 2px 3px rgba(255,255,255,1)" (click)="setEditMode()">
+                <system-button-icon [icon]="'edit'"></system-button-icon>
+            </button>
+        </ng-container>
+
+    </ng-container>
+
+</div>
