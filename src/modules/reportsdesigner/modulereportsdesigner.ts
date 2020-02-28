@@ -25,11 +25,6 @@ import /*embed*/ {ReportsDesignerPresent} from "./components/reportsdesignerpres
 import /*embed*/ {ReportsDesignerPresentItem} from "./components/reportsdesignerpresentitem";
 import /*embed*/ {ReportsDesignerPresentItemTable} from "./components/reportsdesignerpresentitemtable";
 import /*embed*/ {ReportsDesignerPresentItemStandard} from "./components/reportsdesignerpresentitemstandard";
-import /*embed*/ {ReportsDesignerPresentItemStandardWithSummary} from "./components/reportsdesignerpresentitemstandardwithsummary";
-import /*embed*/ {ReportsDesignerPresentItemStandardWithPreview} from "./components/reportsdesignerpresentitemstandardwithpreview";
-import /*embed*/ {ReportsDesignerPresentItemTreeView} from "./components/reportsdesignerpresentitemtreeview";
-import /*embed*/ {ReportsDesignerPresentItemGrouped} from "./components/reportsdesignerpresentitemgrouped";
-import /*embed*/ {ReportsDesignerPresentItemPivot} from "./components/reportsdesignerpresentitempivot";
 import /*embed*/ {ReportsDesignerVisualize} from "./components/reportsdesignervisualize";
 import /*embed*/ {ReportsDesignerVisualizeItem} from "./components/reportsdesignervisualizeitem";
 import /*embed*/ {ReportsDesignerVisualizeItemChartTypePanel} from "./components/reportsdesignervisualizeitemcharttypepanel";
@@ -37,16 +32,9 @@ import /*embed*/ {ReportsDesignerVisualizeItemChartDataPanel} from "./components
 import /*embed*/ {ReportsDesignerVisualizeItemChartDataPanelSingleSeries} from "./components/reportsdesignervisualizeitemchartdatapanelsingleseries";
 import /*embed*/ {ReportsDesignerVisualizeItemChartDataPanelMultipleSeries} from "./components/reportsdesignervisualizeitemchartdatapanelmultipleseries";
 import /*embed*/ {ReportsDesignerVisualizeItemGoogleCharts} from "./components/reportsdesignervisualizeitemgooglecharts";
-import /*embed*/ {ReportsDesignerVisualizeItemGoogleMaps} from "./components/reportsdesignervisualizeitemgooglemaps";
-import /*embed*/ {ReportsDesignerVisualizeItemHighCharts} from "./components/reportsdesignervisualizeitemhighcharts";
 import /*embed*/ {ReportsDesignerIntegrate} from "./components/reportsdesignerintegrate";
 import /*embed*/ {ReportsDesignerIntegrateItem} from "./components/reportsdesignerintegrateitem";
 import /*embed*/ {ReportsDesignerIntegrateItemTargetList} from "./components/reportsdesignerintegrateitemtargetlist";
-import /*embed*/ {ReportsDesignerIntegrateItemPublish} from "./components/reportsdesignerintegrateitempublish";
-import /*embed*/ {ReportsDesignerIntegrateItemSchedule} from "./components/reportsdesignerintegrateitemschedule";
-import /*embed*/ {ReportsDesignerIntegrateItemDrilldown} from "./components/reportsdesignerintegrateitemdrilldown";
-import /*embed*/ {ReportsDesignerIntegrateItemFilters} from "./components/reportsdesignerintegrateitemfilters";
-import /*embed*/ {ReportsDesignerIntegrateItemSnapshots} from "./components/reportsdesignerintegrateitemsnapshots";
 import /*embed*/ {ReportsDesignerFilter} from "./components/reportsdesignerfilter";
 import /*embed*/ {ReportsDesignerConditionGroup} from "./components/reportsdesignerconditiongroup";
 import /*embed*/ {ReportsDesignerConditionGroupExpansion} from "./components/reportsdesignerconditiongroupexpansion";
@@ -74,11 +62,6 @@ import /*embed*/ {ReportsDesignerSelectModuleModal} from "./components/reportsde
         ReportsDesignerPresentItem,
         ReportsDesignerPresentItemTable,
         ReportsDesignerPresentItemStandard,
-        ReportsDesignerPresentItemStandardWithSummary,
-        ReportsDesignerPresentItemStandardWithPreview,
-        ReportsDesignerPresentItemTreeView,
-        ReportsDesignerPresentItemGrouped,
-        ReportsDesignerPresentItemPivot,
         ReportsDesignerVisualize,
         ReportsDesignerVisualizeItem,
         ReportsDesignerVisualizeItemChartTypePanel,
@@ -86,16 +69,9 @@ import /*embed*/ {ReportsDesignerSelectModuleModal} from "./components/reportsde
         ReportsDesignerVisualizeItemChartDataPanelSingleSeries,
         ReportsDesignerVisualizeItemChartDataPanelMultipleSeries,
         ReportsDesignerVisualizeItemGoogleCharts,
-        ReportsDesignerVisualizeItemGoogleMaps,
-        ReportsDesignerVisualizeItemHighCharts,
         ReportsDesignerIntegrate,
         ReportsDesignerIntegrateItem,
         ReportsDesignerIntegrateItemTargetList,
-        ReportsDesignerIntegrateItemPublish,
-        ReportsDesignerIntegrateItemSchedule,
-        ReportsDesignerIntegrateItemDrilldown,
-        ReportsDesignerIntegrateItemFilters,
-        ReportsDesignerIntegrateItemSnapshots,
         ReportsDesignerFilter,
         ReportsDesignerConditionGroup,
         ReportsDesignerConditionGroupExpansion,
