@@ -56,8 +56,8 @@ export class ScrumTreeEpic implements OnInit, OnDestroy {
         this.model.initialize();
         this.model.id = this.epic.id;
         this.model.data = this.epic;
-        // this.model.data = this.model.utils.backendModel2spice('ScrumEpics', this.epic);
 
+        // related module
         this.userstories.module = this.model.module;
         this.userstories.id = this.model.id;
         this.userstories.relatedModule = 'ScrumUserStories';
@@ -80,6 +80,9 @@ export class ScrumTreeEpic implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * unset selectedObject on destroy
+     */
     public ngOnDestroy(): void {
         if (this.scrum.selectedObject.id == this.epic.id && this.scrum.selectedObject.type == 'ScrumEpics') {
             this.scrum.selectedObject = {id: undefined, type: ''};

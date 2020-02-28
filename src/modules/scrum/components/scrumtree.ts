@@ -2,9 +2,7 @@
  * @module ModuleScrum
  */
 import {Component} from '@angular/core';
-import {metadata} from '../../../services/metadata.service';
 import {modellist} from '../../../services/modellist.service';
-import {model} from '../../../services/model.service';
 import {scrum} from '../services/scrum.service';
 
 @Component({
@@ -13,7 +11,7 @@ import {scrum} from '../services/scrum.service';
 })
 export class ScrumTree {
 
-    constructor(private scrum: scrum, private model: model, private metadata: metadata, private modellist: modellist) {
+    constructor(private scrum: scrum, private modellist: modellist) {
 
     }
     /**
