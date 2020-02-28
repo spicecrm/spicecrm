@@ -4,6 +4,14 @@
         <field-container field="assigned_user_name" class="slds-size--1-of-2 slds-p-horizontal--xx-small"></field-container>
     </div>
     <div class="slds-grid">
+        <div class="slds-size--1-of-2">
+            <field-container field="report_status"></field-container>
+        </div>
+        <div class="slds-size--1-of-2 slds-p-horizontal--xx-small">
+            <field-container field="report_type"></field-container>
+        </div>
+    </div>
+    <div class="slds-grid">
         <div class="slds-form-element slds-size--1-of-2">
             <label class="slds-form-element__label">
                 {{language.getLabel('LBL_CATEGORY')}}
@@ -21,7 +29,7 @@
         </div>
         <field-container field="category_priority" [fieldconfig]="{label: 'LBL_PRIORITY'}" class="slds-size--1-of-2"></field-container>
     </div>
-    <field-container field="description" class="slds-size--1-of-2"></field-container>
+    <field-container field="description"></field-container>
     <div class="slds-text-heading_label slds-form-element__label">{{language.getLabel('LBL_OPTIONS')}}</div>
     <div class="slds-grid">
         <fieldset class="slds-form-element slds-m-vertical--xxx-small slds-size--1-of-3">
