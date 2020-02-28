@@ -6,7 +6,7 @@ import {
     Component,
     EventEmitter,
     Input,
-    OnChanges,
+    OnChanges, OnDestroy,
     Output, QueryList,
     SimpleChanges,
     ViewChild, ViewChildren,
@@ -16,6 +16,7 @@ import {language} from '../../../services/language.service';
 import {calendar} from '../services/calendar.service';
 import {CdkDragEnd} from "@angular/cdk/drag-drop";
 import {CalendarSheetDropTarget} from "./calendarsheetdroptarget";
+import {Subscription} from "rxjs";
 
 /**
  * @ignore
@@ -27,7 +28,7 @@ declare var moment: any;
     templateUrl: './src/modules/calendar/templates/calendarsheetday.html'
 })
 
-export class CalendarSheetDay implements OnChanges {
+export class CalendarSheetDay implements OnChanges, OnDestroy {
 
     @ViewChildren(CalendarSheetDropTarget) private dropTargets: QueryList<CalendarSheetDropTarget>;
     @ViewChild('calendarsheet', {read: ViewContainerRef, static: true}) private calendarsheet: ViewContainerRef;
@@ -61,9 +62,19 @@ export class CalendarSheetDay implements OnChanges {
     private userMultiEvents: any[] = [];
     private googleEvents: any[] = [];
     private googleMultiEvents: any[] = [];
+    private subscription: Subscription = new Subscription();
 
     constructor(private language: language, private calendar: calendar) {
         this.buildHours();
+
+        this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
+                this.getUserEvents(calendar);
+            })
+        );
+        this.subscription.add(this.calendar.usersCalendarsLoad$.subscribe(() => {
+                this.getUsersEvents();
+            })
+        );
     }
 
     get multiEventStyle(): any {
@@ -123,13 +134,17 @@ export class CalendarSheetDay implements OnChanges {
         if (changes.setdate) {
             this.sheetDay = {date: changes.setdate.currentValue};
             this.getEvents();
-        }
-        if (changes.usersCalendars || changes.setdate) {
-            this.getUsersEvents();
+            if (this.calendar.usersCalendarsLoaded) {
+                this.getUsersEvents();
+            }
         }
         if (changes.googleIsVisible || changes.setdate) {
             this.getGoogleEvents();
         }
+    }
+
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     get timeColStyle() {
@@ -212,6 +227,33 @@ export class CalendarSheetDay implements OnChanges {
                     events = this.filterEvents(events);
                     this.googleEvents = events.filter(event => !event.isMulti);
                     this.googleMultiEvents = events.filter(event => event.isMulti);
+                }
+            });
+    }
+
+    /*
+    * @return void
+    */
+    private getUserEvents(calendar) {
+        this.userEvents = this.userEvents.filter(event => event.data.assigned_user_id != calendar.id);
+        this.userMultiEvents = this.userMultiEvents.filter(event => event.data.assigned_user_id != calendar.id);
+
+        if (this.calendar.isMobileView || !calendar.visible) {
+            return;
+        }
+
+        this.calendar.loadUserEvents(this.startDate, this.endDate, calendar.id)
+            .subscribe(events => {
+                if (events.length > 0) {
+                    events = this.correctHours(events);
+                    events = this.filterEvents(events);
+                    events.forEach(event => {
+                        if (!event.isMulti) {
+                            this.userEvents.push(event);
+                        } else {
+                            this.userMultiEvents.push(event);
+                        }
+                    });
                 }
             });
     }

@@ -293,7 +293,15 @@ export class modellist implements OnDestroy {
 
                     // analyse if we need to update the buckets
                     if (this.bucketfield) {
-                        this.removeItemFromBucket(message.messagedata.data[this.bucketfield], this.bucketamountfield ? message.messagedata.data[this.bucketamountfield] : undefined);
+                        let bucketamountfields = [];
+                        for (let bucketamountfield of this.bucketamountfield) {
+                            bucketamountfields.push({
+                                fieldname: bucketamountfield.name,
+                                value: message.messagedata.data[bucketamountfield.name],
+                            });
+                        }
+
+                        this.removeItemFromBucket(message.messagedata.data[this.bucketfield], bucketamountfields);
                     }
                 }
                 break;
@@ -307,16 +315,30 @@ export class modellist implements OnDestroy {
                     if (this.bucketfield) {
                         if (message.messagedata.changed[this.bucketfield]) {
                             // update the bucket and if an amount is set snd in also the changed amount
+
+                            let bucketamountfields = [];
+                            for (let bucketamountfield of this.bucketamountfield) {
+                                bucketamountfields.push({
+                                    fieldname: bucketamountfield.name,
+                                    valuefrom: message.messagedata.backupdata[bucketamountfield.name],
+                                    valueto: message.messagedata.data[bucketamountfield.name],
+                                });
+                            }
+
                             this.updateBuckets(
                                 message.messagedata.backupdata[this.bucketfield],
                                 message.messagedata.data[this.bucketfield],
-                                this.bucketamountfield ? message.messagedata.backupdata[this.bucketamountfield] : undefined,
-                                this.bucketamountfield ? message.messagedata.data[this.bucketamountfield] : undefined
+                                bucketamountfields
                             );
-                        } else if (this.bucketamountfield && message.messagedata.changed[this.bucketamountfield]) {
-                            // just update the amount field
+                        } else if (this.bucketamountfield) {
+                            // just update the amount fields
                             let bucket = this.buckets.bucketitems.find(bucket => bucket.bucket == message.messagedata.data[this.bucketfield]);
-                            bucket.value += message.messagedata.data[this.bucketamountfield] - message.messagedata.backupdata[this.bucketamountfield];
+                            for (let bucketamountfield of this.bucketamountfield) {
+                                if (message.messagedata.changed[bucketamountfield.name]) {
+                                    bucket.values['_bucket_agg_' + bucketamountfield.name] += message.messagedata.data[bucketamountfield.name] - message.messagedata.backupdata[bucketamountfield.name];
+                                }
+                            }
+
                         }
                     }
 
@@ -363,7 +385,7 @@ export class modellist implements OnDestroy {
         this.listcomponent$.next(listcomponent);
 
         // set it to the preferences when we are on a general list
-        if (this.currentList.id == 'all' || this.currentList.id == 'own') {
+        if (this.currentList.id == 'all' || this.currentList.id == 'owner') {
             this.userpreferences.setPreference('defaultlisttype', listcomponent, false, 'SpiceUI_' + this.module);
         }
     }
@@ -463,7 +485,7 @@ export class modellist implements OnDestroy {
      * @param listType
      * @param setPreference
      */
-    public setListType(listType: string, setPreference = true): void {
+    public setListType(listType: string, setPreference = true, sortArray=[]): void {
 
         // close filters and aggegarts if they are being displayed
         this.displayAggregates = false;
@@ -500,7 +522,7 @@ export class modellist implements OnDestroy {
         if (this.currentList.sortfields) {
             this.sortArray = JSON.parse(atob(this.currentList.sortfields));
         } else {
-            this.sortArray = [];
+            this.sortArray = sortArray;
         }
 
         // set the listtype
@@ -915,7 +937,7 @@ export class modellist implements OnDestroy {
     /**
      * returns the listtypes
      *
-     * @param base set to ture to include the standrad listtypes 'all' & 'own'
+     * @param base set to ture to include the standrad listtypes 'all' & 'owner'
      */
     public getListTypes(base = true) {
         let listTypes: any[] = [];
@@ -1049,7 +1071,7 @@ export class modellist implements OnDestroy {
      */
     public checkAccess(action: 'edit' | 'delete') {
         // no
-        if ((action == 'edit' || action == 'delete') && (this.currentList.id == 'all' || this.currentList.id == 'own')) {
+        if ((action == 'edit' || action == 'delete') && (this.currentList.id == 'all' || this.currentList.id == 'owner')) {
             return false;
         }
 
@@ -1232,22 +1254,28 @@ export class modellist implements OnDestroy {
      * @param to the to status
      * @param valuefrom optionala from value, added in the safesubscribe method to get the old value from the backupdata so the update is done properly
      */
-    private updateBuckets(from, to, valuefrom?, valueto?) {
+    // private updateBuckets(from, to, valuefrom?, valueto?) {
+    private updateBuckets(from, to, bucketamountfields = []) {
         // reduce from buckets
-        let frombucket = this.buckets.bucketitems.find(bucket => bucket.bucket == from);
-        frombucket.items--;
-        frombucket.total--;
+            let frombucket = this.buckets.bucketitems.find(bucket => bucket.bucket == from);
+            frombucket.items--;
+            frombucket.total--;
 
-        // add to the bucket
-        let tobucket = this.buckets.bucketitems.find(bucket => bucket.bucket == to);
-        tobucket.items++;
-        tobucket.total++;
+            // add to the bucket
+            let tobucket = this.buckets.bucketitems.find(bucket => bucket.bucket == to);
+            tobucket.items++;
+            tobucket.total++;
 
-        // if we have a total field update that one as well
-        if (this.bucketamountfield && valuefrom && valueto) {
-            frombucket.value -= valuefrom;
-            tobucket.value += valueto;
+            for (let bucket of this.buckets.buckettotal) {
+            for (let bucketamountfield of bucketamountfields) {
+                if (bucket.function == "sum" && bucket.name == bucketamountfield.fieldname) {
+                    frombucket.values['_bucket_agg_' + bucketamountfield.fieldname] -= bucketamountfield.valuefrom;
+                    tobucket.values['_bucket_agg_' + bucketamountfield.fieldname] += bucketamountfield.valueto;
+                }
+            }
+
         }
+
     }
 
     /**
@@ -1256,15 +1284,15 @@ export class modellist implements OnDestroy {
      * @param from
      * @param value
      */
-    private removeItemFromBucket(from, value?) {
+    private removeItemFromBucket(from, bucketamountfields = []) {
         // reduce from buckets
         let frombucket = this.buckets.bucketitems.find(bucket => bucket.bucket == from);
         frombucket.items--;
         frombucket.total--;
 
         // if we have a total field update that one as well
-        if (this.bucketamountfield && value) {
-            frombucket.value -= value;
+        for (let bucketamountfield of bucketamountfields) {
+            frombucket.values['_bucket_agg_' + bucketamountfield.fieldname] -= bucketamountfield.value;
         }
     }
 }

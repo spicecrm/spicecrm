@@ -33,7 +33,6 @@ declare var moment: any;
 })
 
 export class Calendar implements AfterViewInit, OnDestroy {
-    public usersCalendars: any[] = [];
     public otherCalendars: any[] = [];
     public componentconfig: any = {};
     public googleIsVisible: boolean = true;
@@ -58,8 +57,6 @@ export class Calendar implements AfterViewInit, OnDestroy {
                 private injector: Injector,
                 private calendar: calendar) {
         this.navigation.setActiveModule('Calendar');
-        let usersSubscriber = this.calendar.usersCalendars$.subscribe(res => this.usersCalendars = res);
-        this.subscriptions.add(usersSubscriber);
         let addingEventSubscriber = this.calendar.addingEvent$.subscribe(res => this.addEvent(res));
         this.subscriptions.add(addingEventSubscriber);
 
