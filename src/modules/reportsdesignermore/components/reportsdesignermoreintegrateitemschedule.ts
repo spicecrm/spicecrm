@@ -1,18 +1,18 @@
 /**
- * @module ModuleReportsDesigner
+ * @module ModuleReportsDesignerMore
  */
 import {Component} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
-import {ReportsDesignerService} from "../services/reportsdesigner.service";
 import {modal} from "../../../services/modal.service";
 import {backend} from "../../../services/backend.service";
+import {ReportsDesignerService} from "../../reportsdesigner/services/reportsdesigner.service";
 
 @Component({
-    selector: 'reports-designer-integrate-item-schedule',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerintegrateitemschedule.html'
+    selector: 'reports-designer-more-integrate-item-schedule',
+    templateUrl: './src/modules/reportsdesignermore/templates/reportsdesignermoreintegrateitemschedule.html'
 })
-export class ReportsDesignerIntegrateItemSchedule {
+export class ReportsDesignerMoreIntegrateItemSchedule {
 
     protected dLists: any[] = [];
     private expandedId: string = '';

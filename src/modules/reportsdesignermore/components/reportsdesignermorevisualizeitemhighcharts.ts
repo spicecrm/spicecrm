@@ -1,16 +1,16 @@
 /**
- * @module ModuleReportsDesigner
+ * @module ModuleReportsDesignerMore
  */
 import {Component, OnInit} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
-import {ReportsDesignerService} from "../services/reportsdesigner.service";
+import {ReportsDesignerService} from "../../reportsdesigner/services/reportsdesigner.service";
 
 @Component({
-    selector: 'reports-designer-visualize-item-high-charts',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignervisualizeitemhighcharts.html'
+    selector: 'reports-designer-more-visualize-item-high-charts',
+    templateUrl: './src/modules/reportsdesignermore/templates/reportsdesignermorevisualizeitemhighcharts.html'
 })
-export class ReportsDesignerVisualizeItemHighCharts implements OnInit {
+export class ReportsDesignerMoreVisualizeItemHighCharts implements OnInit {
 
     protected contextOptions: any[] = [];
 

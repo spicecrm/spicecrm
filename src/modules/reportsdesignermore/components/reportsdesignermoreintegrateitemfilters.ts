@@ -1,5 +1,5 @@
 /**
- * @module ModuleReportsDesigner
+ * @module ModuleReportsDesignerMore
  */
 import {Component} from '@angular/core';
 import {language} from '../../../services/language.service';
@@ -8,10 +8,10 @@ import {modal} from "../../../services/modal.service";
 import {backend} from "../../../services/backend.service";
 
 @Component({
-    selector: 'reports-designer-integrate-item-filters',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerintegrateitemfilters.html'
+    selector: 'reports-designer-more-integrate-item-filters',
+    templateUrl: './src/modules/reportsdesignermore/templates/reportsdesignermoreintegrateitemfilters.html'
 })
-export class ReportsDesignerIntegrateItemFilters {
+export class ReportsDesignerMoreIntegrateItemFilters {
 
     private expandedId: string = '';
     protected savedFilters: any[];

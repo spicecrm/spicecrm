@@ -1,17 +1,17 @@
 /**
- * @module ModuleReportsDesigner
+ * @module ModuleReportsDesignerMore
  */
-import {AfterViewInit, Component, Input, SkipSelf, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
 
 @Component({
-    selector: 'reports-designer-integrate-item-target-list',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerintegrateitempublish.html',
+    selector: 'reports-designer-more-integrate-item-target-list',
+    templateUrl: './src/modules/reportsdesignermore/templates/reportsdesignermoreintegrateitempublish.html',
 })
-export class ReportsDesignerIntegrateItemPublish {
+export class ReportsDesignerMoreIntegrateItemPublish {
 
     constructor(private language: language, private model: model, private metadata: metadata, private modal: modal) {
     }
@@ -22,18 +22,18 @@ export class ReportsDesignerIntegrateItemPublish {
     }
 
     /**
+     * @return subPanelModule: object
+     */
+    get pluginSubpanelModule() {
+        return {id: this.properties.subpanelModule, name: this.properties.subpanelModule};
+    }
+
+    /**
      * set the subpanelModule in plugin properties
      * @param value: object
      */
     set pluginSubpanelModule(value) {
         this.properties.subpanelModule = value.name;
-    }
-
-    /**
-     * @return subPanelModule: object
-     */
-    get pluginSubpanelModule() {
-        return {id: this.properties.subpanelModule, name: this.properties.subpanelModule};
     }
 
     /**

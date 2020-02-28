@@ -1,18 +1,18 @@
 /**
- * @module ModuleReportsDesigner
+ * @module ModuleReportsDesignerMore
  */
 import {Component, SkipSelf} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
-import {ReportsDesignerService} from '../services/reportsdesigner.service';
 import {modal} from '../../../services/modal.service';
+import {ReportsDesignerService} from "../../reportsdesigner/services/reportsdesigner.service";
 
 @Component({
-    selector: 'reports-designer-integrate-drill',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerintegrateitemdrilldown.html',
+    selector: 'reports-designer-more-integrate-item-drilldown',
+    templateUrl: './src/modules/reportsdesignermore/templates/reportsdesignermoreintegrateitemdrilldown.html',
     providers: [model]
 })
-export class ReportsDesignerIntegrateItemDrilldown {
+export class ReportsDesignerMoreIntegrateItemDrilldown {
 
     private expandedId: string = '';
 

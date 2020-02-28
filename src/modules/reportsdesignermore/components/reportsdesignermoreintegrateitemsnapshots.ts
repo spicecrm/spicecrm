@@ -1,5 +1,5 @@
 /**
- * @module ModuleReportsDesigner
+ * @module ModuleReportsDesignerMore
  */
 import {Component} from '@angular/core';
 import {language} from '../../../services/language.service';
@@ -8,10 +8,10 @@ import {modal} from "../../../services/modal.service";
 import {backend} from "../../../services/backend.service";
 
 @Component({
-    selector: 'reports-designer-integrate-item-snapshots',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerintegrateitemsnapshots.html'
+    selector: 'reports-designer-more-integrate-item-snapshots',
+    templateUrl: './src/modules/reportsdesignermore/templates/reportsdesignermoreintegrateitemsnapshots.html'
 })
-export class ReportsDesignerIntegrateItemSnapshots {
+export class ReportsDesignerMoreIntegrateItemSnapshots {
 
     protected snapshots: any[];
     protected isLoading: boolean = false;

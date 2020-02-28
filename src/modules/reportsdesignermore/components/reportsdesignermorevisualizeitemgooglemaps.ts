@@ -1,17 +1,17 @@
 /**
- * @module ModuleReportsDesigner
+ * @module ModuleReportsDesignerMore
  */
 import {Component, OnInit} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
-import {ReportsDesignerService} from '../services/reportsdesigner.service';
 import {modal} from "../../../services/modal.service";
+import {ReportsDesignerService} from "../../reportsdesigner/services/reportsdesigner.service";
 
 @Component({
-    selector: 'reports-designer-visualize-item-google-maps',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignervisualizeitemgooglemaps.html'
+    selector: 'reports-designer-more-visualize-item-google-maps',
+    templateUrl: './src/modules/reportsdesignermore/templates/reportsdesignermorevisualizeitemgooglemaps.html'
 })
-export class ReportsDesignerVisualizeItemGoogleMaps implements OnInit {
+export class ReportsDesignerMoreVisualizeItemGoogleMaps implements OnInit {
 
     constructor(private language: language,
                 private model: model,

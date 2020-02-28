@@ -1,17 +1,17 @@
 /**
- * @module ModuleReportsDesigner
+ * @module ModuleReportsDesignerMore
  */
 import {Component} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
-import {ReportsDesignerPresentItemStandard} from "./reportsdesignerpresentitemstandard";
-import {ReportsDesignerService} from "../services/reportsdesigner.service";
+import {ReportsDesignerPresentItemStandard} from "../../reportsdesigner/components/reportsdesignerpresentitemstandard";
+import {ReportsDesignerService} from "../../reportsdesigner/services/reportsdesigner.service";
 
 @Component({
-    selector: 'reports-designer-present-item-tree-view',
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerpresentitemtreeview.html'
+    selector: 'reports-designer-more-present-item-tree-view',
+    templateUrl: './src/modules/reportsdesignermore/templates/reportsdesignermorepresentitemtreeview.html'
 })
-export class ReportsDesignerPresentItemTreeView extends ReportsDesignerPresentItemStandard {
+export class ReportsDesignerMorePresentItemTreeView extends ReportsDesignerPresentItemStandard {
 
     constructor(public language: language, public model: model, public reportsDesignerService: ReportsDesignerService) {
         super(language, model, reportsDesignerService);

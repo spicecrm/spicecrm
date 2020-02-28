@@ -1,16 +1,17 @@
 /**
- * @module ModuleReportsDesigner
+ * @module ModuleReportsDesignerMore
  */
 import {Component, OnInit} from '@angular/core';
 import {language} from "../../../services/language.service";
-import {ReportsDesignerService} from "../services/reportsdesigner.service";
 import {model} from "../../../services/model.service";
-import {ReportsDesignerPresentItemStandard} from "./reportsdesignerpresentitemstandard";
+import {ReportsDesignerPresentItemStandard} from "../../reportsdesigner/components/reportsdesignerpresentitemstandard";
+import {ReportsDesignerService} from "../../reportsdesigner/services/reportsdesigner.service";
 
 @Component({
-    templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerpresentitemgrouped.html'
+    selector: 'reports-designer-more-present-item-grouped',
+    templateUrl: './src/modules/reportsdesignermore/templates/reportsdesignermorepresentitemgrouped.html'
 })
-export class ReportsDesignerPresentItemGrouped extends ReportsDesignerPresentItemStandard {
+export class ReportsDesignerMorePresentItemGrouped extends ReportsDesignerPresentItemStandard {
 
     public propertiesFieldName: string = 'groupedViewProperties';
 
