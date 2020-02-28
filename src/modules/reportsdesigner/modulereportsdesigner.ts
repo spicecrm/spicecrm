@@ -37,6 +37,7 @@ import /*embed*/ {ReportsDesignerVisualizeItemChartDataPanel} from "./components
 import /*embed*/ {ReportsDesignerVisualizeItemChartDataPanelSingleSeries} from "./components/reportsdesignervisualizeitemchartdatapanelsingleseries";
 import /*embed*/ {ReportsDesignerVisualizeItemChartDataPanelMultipleSeries} from "./components/reportsdesignervisualizeitemchartdatapanelmultipleseries";
 import /*embed*/ {ReportsDesignerVisualizeItemGoogleCharts} from "./components/reportsdesignervisualizeitemgooglecharts";
+import /*embed*/ {ReportsDesignerVisualizeItemGoogleMaps} from "./components/reportsdesignervisualizeitemgooglemaps";
 import /*embed*/ {ReportsDesignerVisualizeItemHighCharts} from "./components/reportsdesignervisualizeitemhighcharts";
 import /*embed*/ {ReportsDesignerIntegrate} from "./components/reportsdesignerintegrate";
 import /*embed*/ {ReportsDesignerIntegrateItem} from "./components/reportsdesignerintegrateitem";
@@ -85,6 +86,7 @@ import /*embed*/ {ReportsDesignerSelectModuleModal} from "./components/reportsde
         ReportsDesignerVisualizeItemChartDataPanelSingleSeries,
         ReportsDesignerVisualizeItemChartDataPanelMultipleSeries,
         ReportsDesignerVisualizeItemGoogleCharts,
+        ReportsDesignerVisualizeItemGoogleMaps,
         ReportsDesignerVisualizeItemHighCharts,
         ReportsDesignerIntegrate,
         ReportsDesignerIntegrateItem,
