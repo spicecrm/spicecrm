@@ -7,7 +7,7 @@ import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
 import {modellist} from "../../../services/modellist.service";
 import {language} from '../../../services/language.service';
-import {scrumtree} from '../services/scrum.service';
+import {scrum} from '../services/scrum.service';
 import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
@@ -45,7 +45,7 @@ export class ScrumTreeTheme implements OnDestroy {
      */
     private has_epics: boolean;
 
-    constructor(private scrum: scrumtree, private language: language, private modellist: modellist, private metadata: metadata, private model: model, private epics: relatedmodels) {
+    constructor(private scrum: scrum, private language: language, private modellist: modellist, private metadata: metadata, private model: model, private epics: relatedmodels) {
     }
 
     /**

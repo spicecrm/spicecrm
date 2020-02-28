@@ -11,15 +11,15 @@ import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
 import {VersionManagerService} from "../../services/versionmanager.service";
 
-import /*embed*/ {ScrumMain} from "./components/scrummain";
-import /*embed*/ {ScrumTree} from "./components/scrumtree";
+import /*embed*/ {scrum} from "./services/scrum.service";
+
 import /*embed*/ {ScrumTreeAddItem} from "./components/scrumtreeadditem";
 import /*embed*/ {ScrumTreeTheme} from "./components/scrumtreetheme";
 import /*embed*/ {ScrumTreeDetail} from "./components/scrumtreedetail";
 import /*embed*/ {ScrumTreeUserStory} from "./components/scrumtreeuserstory";
 import /*embed*/ {ScrumTreeEpic} from "./components/scrumtreeepic";
-import /*embed*/ {scrumtree} from "./services/scrum.service";
-
+import /*embed*/ {ScrumMain} from "./components/scrummain";
+import /*embed*/ {ScrumTree} from "./components/scrumtree";
 
 @NgModule({
     imports: [
@@ -39,7 +39,7 @@ import /*embed*/ {scrumtree} from "./services/scrum.service";
         ScrumTreeUserStory,
         ScrumTreeDetail
     ],
-    providers: [scrumtree]
+    providers: [scrum]
 })
 export class ModuleScrum {
     public readonly version = '1.0';

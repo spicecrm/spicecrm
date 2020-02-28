@@ -1,7 +1,7 @@
 <div [overlayLoadingSpinner]="modellist.isLoading" tobottomnoscroll class="slds-grid">
     <div class="slds-border--right slds-theme_shade" style="min-width: 250px;" tobottom>
         <!--div *ngIf="modellist.isLoading" tobottomnoscroll class="slds-align_absolute-center"><system-spinner></system-spinner></div-->
-        <scrumtree role="tree"></scrumtree>
+        <scrum-tree role="tree"></scrum-tree>
     </div>
     <div class="slds-grow" tobottom>
         <div class="slds-align_absolute-center" tobottomnoscroll *ngIf="!scrum.selectedObject.id && !modellist.isLoading"><system-illustration-no-data>{{text}}</system-illustration-no-data></div>
