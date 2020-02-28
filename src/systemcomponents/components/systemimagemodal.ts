@@ -27,6 +27,11 @@ export class SystemImageModal {
     @Input() public maxHeight: number = null;
 
     /**
+     * Extern dropped file(s).
+     */
+    @Input() public droppedFiles: FileList = null;
+
+    /**
      * The data of the image (base64, leaded by the file format, delimited by '|').
      */
     private imageData: string = null;
