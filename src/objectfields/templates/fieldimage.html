@@ -1,5 +1,5 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
-<div [ngClass]="fielddisplayclass" class="slds-is-relative slds-box--border slds-align_absolute-center" [ngStyle]="style">
+<div [ngClass]="fielddisplayclass" class="slds-is-relative slds-box--border slds-align_absolute-center" [ngStyle]="style" spiceDropFileArea (filesDrop)="onDrop($event)">
 
     <img *ngIf="!fieldIsEmpty" [src]="imageUrl" style="max-height:100%;padding:0.25rem">
 

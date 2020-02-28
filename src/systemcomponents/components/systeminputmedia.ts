@@ -464,11 +464,18 @@ export class SystemInputMedia implements OnDestroy {
 
     /**
      * The Handler when a file has been dropped.
-     * @param event
+     * @param droppedFiles
      */
-    private onDrop(event): void {
-        this.fileFromBrowser = event[0];
+    private onDrop( droppedFiles ): void {
+        this.fileFromBrowser = droppedFiles[0];
         this.fileSelectedOrDropped();
+    }
+
+    /**
+     * Handler in case a file has been dropped extern (image field)
+     */
+    @Input('droppedFiles') public set onDropExtern( droppedFiles ) {
+        this.onDrop( droppedFiles );
     }
 
     /**
