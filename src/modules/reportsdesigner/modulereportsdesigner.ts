@@ -82,7 +82,10 @@ import /*embed*/ {ReportsDesignerSelectModuleModal} from "./components/reportsde
         ReportsDesignerSelectModuleModal
     ],
     exports: [
-        ReportsDesigner
+        ReportsDesigner,
+        ReportsDesignerPresentItemTable,
+        ReportsDesignerVisualizeItemChartTypePanel,
+        ReportsDesignerVisualizeItemChartDataPanel
     ],
     providers: [
         ReportsDesignerService
