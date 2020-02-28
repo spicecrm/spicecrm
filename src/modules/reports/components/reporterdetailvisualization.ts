@@ -74,6 +74,9 @@ export class ReporterDetailVisualization implements AfterViewInit {
                 case 'googlecharts':
                     visComponent = 'ReporterDetailVisualizationGooglecharts';
                     break;
+                case 'googlemaps':
+                    visComponent = 'ReporterDetailVisualizationGoogleMaps';
+                    break;
             }
             if (visComponent != '') {
                 this.metadata.addComponent(visComponent, this.vizcontainer).subscribe(componentRef => {
