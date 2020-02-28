@@ -5,7 +5,7 @@ import {Component, ViewChild, ViewContainerRef, Input, OnChanges, OnDestroy, Hos
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {metadata} from '../../../services/metadata.service';
-import {scrumtree} from '../services/scrum.service';
+import {scrum} from '../services/scrum.service';
 import {Subscription} from "rxjs";
 import {modellist} from "../../../services/modellist.service";
 
@@ -28,7 +28,7 @@ export class ScrumTreeDetail implements OnChanges {
      */
     private componentset: string;
 
-    constructor(private scrum: scrumtree, private metadata: metadata, private model: model, private modellist: modellist) {
+    constructor(private scrum: scrum, private metadata: metadata, private model: model, private modellist: modellist) {
 
     }
 
