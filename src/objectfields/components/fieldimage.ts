@@ -60,7 +60,6 @@ export class fieldImage extends fieldGeneric implements OnInit, AfterViewInit {
     public ngAfterViewInit() {
         // Calculate the height of the field:
         if ( this.fieldconfig.height ) this.height = 'calc(' + this.fieldconfig.height + ' - 2px - 0.5rem )';
-        console.log(this.model.fields);
     }
 
     /**
@@ -89,7 +88,7 @@ export class fieldImage extends fieldGeneric implements OnInit, AfterViewInit {
     /**
      * Import an image or edit the existing image.
      */
-    private editImage(): void {
+    private editImage( droppedFiles: FileList = null ): void {
         this.modalservice.openModal('SystemImageModal').subscribe( modalRef => {
 
             if ( this.field_defs.maxWidth ) modalRef.instance.maxWidth = this.field_defs.maxHeight;
@@ -106,7 +105,19 @@ export class fieldImage extends fieldGeneric implements OnInit, AfterViewInit {
                     this.value = imageData;
                 }
             });
+
+            if ( droppedFiles ) modalRef.instance.droppedFiles = droppedFiles;
+
         });
+    }
+
+    /**
+     * The Handler when a file has been dropped.
+     * @param dropEvent
+     */
+    private onDrop( droppedFiles ): void {
+        this.view.setEditMode();
+        this.editImage( droppedFiles );
     }
 
 }
