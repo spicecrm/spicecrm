@@ -1,8 +1,7 @@
 /**
  * @module ModuleScrum
  */
-import {Component, EventEmitter, OnChanges, OnDestroy, Output} from '@angular/core';
-import {metadata} from '../../../services/metadata.service';
+import {Component} from '@angular/core';
 import {modellist} from '../../../services/modellist.service';
 import {scrum} from "../services/scrum.service";
 import {language} from "../../../services/language.service";
@@ -14,7 +13,7 @@ import {language} from "../../../services/language.service";
 })
 export class ScrumMain {
 
-    constructor(private scrum: scrum, private metadata: metadata, private modellist: modellist, private language: language) {
+    constructor(private scrum: scrum, private modellist: modellist, private language: language) {
         this.loadList();
     }
 
@@ -25,6 +24,9 @@ export class ScrumMain {
         this.modellist.getListData();
     }
 
+    /**
+     * getter for the text
+     */
     get text() {
         return this.language.getLabel('LBL_SELECT_THEME');
     }

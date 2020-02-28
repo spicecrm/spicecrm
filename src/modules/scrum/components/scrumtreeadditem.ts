@@ -1,10 +1,10 @@
 /**
  * @module ModuleScrum
  */
-import {Component, Input, SkipSelf, EventEmitter, Output, OnChanges} from '@angular/core';
+import {Component, Input, SkipSelf, EventEmitter, Output} from '@angular/core';
 
 import {model} from '../../../services/model.service';
-import {language} from '../../../services/language.service';
+
 
 
 @Component({
@@ -26,7 +26,7 @@ export class ScrumTreeAddItem {
      */
     @Output() private newitem: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(@SkipSelf() private parent: model,  private language: language, private model: model) {
+    constructor(@SkipSelf() private parent: model, private model: model) {
     }
 
 

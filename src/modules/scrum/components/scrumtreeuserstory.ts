@@ -42,6 +42,9 @@ export class ScrumTreeUserStory implements OnInit, OnDestroy {
         this.scrum.selectedObject = {id: this.userstory.id, type: 'ScrumUserStories'};
     }
 
+    /**
+     * unset selectedObject on destroy
+     */
     public ngOnDestroy(): void {
         if (this.scrum.selectedObject.id == this.userstory.id && this.scrum.selectedObject.type == 'ScrumUserStories') {
             this.scrum.selectedObject = {id: undefined, type: ''};

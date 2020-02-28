@@ -1,13 +1,11 @@
 /**
  * @module ModuleScrum
  */
-import {Component, ViewChild, ViewContainerRef, Input, OnChanges, OnDestroy, HostListener} from '@angular/core';
+import {Component, Input, OnChanges} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {metadata} from '../../../services/metadata.service';
 import {scrum} from '../services/scrum.service';
-import {Subscription} from "rxjs";
-import {modellist} from "../../../services/modellist.service";
 
 @Component({
     selector: 'scrum-tree-detail',
@@ -28,7 +26,7 @@ export class ScrumTreeDetail implements OnChanges {
      */
     private componentset: string;
 
-    constructor(private scrum: scrum, private metadata: metadata, private model: model, private modellist: modellist) {
+    constructor(private scrum: scrum, private metadata: metadata, private model: model) {
 
     }
 
@@ -50,6 +48,9 @@ export class ScrumTreeDetail implements OnChanges {
 
     }
 
+    /**
+     * destroy the componentset and reset the model
+     */
     private destroyContainer() {
         if (this.componentset) {
             this.componentset = null;

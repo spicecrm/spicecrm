@@ -69,6 +69,7 @@ export class ScrumTreeTheme implements OnDestroy {
     }
 
     /**
+     * unset the selected object
      * then the component is destroyed
      */
     public ngOnDestroy(): void {
