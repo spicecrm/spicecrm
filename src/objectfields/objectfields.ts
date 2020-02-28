@@ -116,10 +116,12 @@ import /*embed*/ {fieldRelatedDetails} from './components/fieldrelateddetails';
 import /*embed*/ {fieldRelatedDetailsContainer} from './components/fieldrelateddetailscontainer';
 import /*embed*/ {fieldPhone} from "./components/fieldphone";
 import /*embed*/ {fieldActionset} from "./components/fieldactionset";
+import /*embed*/ {fieldSlider} from "./components/fieldslider";
+import /*embed*/ {fieldImage} from './components/fieldimage';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _: any;
 
 /**
@@ -238,7 +240,10 @@ declare var _: any;
         fieldRelatedDetails,
         fieldRelatedDetailsContainer,
         fieldPhone,
-        fieldActionset
+        fieldActionset,
+        fieldImage,
+        fieldActionset,
+        fieldSlider
     ],
     exports: [
         fieldSet,
@@ -257,7 +262,8 @@ declare var _: any;
         fieldLookupRecent,
         fieldLookupSearch,
         fieldLookupSearchAdd,
-        fieldTags
+        fieldTags,
+
     ]
 })
 export class ObjectFields {

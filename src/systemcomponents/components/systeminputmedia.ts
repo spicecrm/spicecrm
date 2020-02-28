@@ -30,7 +30,10 @@ declare var Cropper: any;
  */
 declare var _: any;
 
-interface imageMetaData {
+/**
+ * The meta data of the image.
+ */
+interface mediaMetaData {
     mimetype: string;
     fileformat: string;
     filename: string;
@@ -56,13 +59,13 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * for the value accessor
      */
-    private onChange: (value: string) => void;
+    private onChange: (value: any) => void;
     private onTouched: () => void;
 
     /**
      * the height of the complete component in px
      */
-    @Input() private componentHeight: any = '500';
+    @Input() private componentHeight = 500;
 
     /**
      * Should image modifications (mirroring, resizing, rotating, cropping, ...) be allowed? Default is true.
@@ -95,7 +98,7 @@ export class SystemInputMedia implements OnDestroy {
     @Input() private allowMirroring = true;
 
     /**
-     * The format of the image file (jpg, png, ...)
+     * The format (jpg, png, ...) of the image file when provided from outside.
      */
     @Input() private fileformat: string;
 
@@ -139,10 +142,65 @@ export class SystemInputMedia implements OnDestroy {
      */
     private fileFromBrowser: File = null;
 
+    /**
+     * Maximal image width set by the user. The value from the input field (string).
+     */
     private maxWidthInput = '';
+
+    /**
+     * Maximal image height set by the user. The value from the input field (string).
+     */
     private maxHeightInput = '';
-    private maxWidth: number = null;
-    private maxHeight: number = null;
+
+    /**
+     * Maximal image width set by the user.
+     */
+    private _maxWidthByUser: number = null;
+
+    /**
+     * Maximal image height set by the user.
+     */
+    private _maxHeightByUser: number = null;
+
+    /**
+     * Maximal allowed (by system) pixel width.
+     */
+    public _maxWidthBySystem: number = null;
+
+    /**
+     * Simple getter.
+     */
+    public get maxWidthBySystem(): number {
+        return this._maxWidthBySystem;
+    }
+
+    /**
+     * Setter for maximal allowed (by system) pixel width.
+     */
+    @Input('maxWidth') public set maxWidthBySystem( value ) {
+        this._maxWidthBySystem = value;
+        this.calcTargetSize();
+    }
+
+    /**
+     * Maximal allowed (by system) pixel height.
+     */
+    public _maxHeightBySystem: number = null;
+
+    /**
+     * Simple getter.
+     */
+    public get maxHeightBySystem(): number {
+        return this._maxHeightBySystem;
+    }
+
+    /**
+     * Setter for maximal allowed (by system) pixel height.
+     */
+    @Input('maxHeight') public set maxHeightBySystem( value ) {
+        this._maxHeightBySystem = value;
+        this.calcTargetSize();
+    }
 
     /**
      * Is the current image cropped?
@@ -152,17 +210,17 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * Is the current image imported? From clipboard or from file system.
      */
-    private isImported = false;
+    public isImported = false;
 
     /**
      * Holds the metadata of the image.
      */
-    public imageMetaData: imageMetaData;
+    public mediaMetaData: mediaMetaData;
 
     /**
      * The internal value for the resize checkbox.
      */
-    private _doResize = false;
+    private _doResizeByUser = false;
 
     /**
      * Loading indicator. Used for pasting from clipboard.
@@ -212,7 +270,7 @@ export class SystemInputMedia implements OnDestroy {
         private libloader: libloader
     ) {
 
-        this.resetImageMetaData();
+        this.resetMediaMetaData();
 
         // Start listening to the clipboard for an pasted image.
         this.unlistenPasteEvent = this.renderer.listen('window', 'paste', (e: ClipboardEvent) => {
@@ -261,12 +319,12 @@ export class SystemInputMedia implements OnDestroy {
                             }
                             this.mediaBase64 = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(data.body));
                             this.cd.detectChanges();
-                            this.resetImageMetaData();
+                            this.resetMediaMetaData();
                             this.resetModificationStati();
                             this.isImported = true;
-                            this.imageMetaData.fileformat = type.toString();
-                            this.imageMetaData.filename = url.substring(url.lastIndexOf('/') + 1);
-                            this.imageMetaData.mimetype = data.body.type;
+                            this.mediaMetaData.fileformat = type.toString();
+                            this.mediaMetaData.filename = url.substring(url.lastIndexOf('/') + 1);
+                            this.mediaMetaData.mimetype = data.body.type;
                         }, err => {
                             this.isLoading = false;
                         });
@@ -282,8 +340,8 @@ export class SystemInputMedia implements OnDestroy {
                     this.showFiletypeError(type);
                     return;
                 }
-                this.imageMetaData.fileformat = type.toString();
-                this.imageMetaData.mimetype = blob.type;
+                this.mediaMetaData.fileformat = type.toString();
+                this.mediaMetaData.mimetype = blob.type;
                 this.resetModificationStati();
                 this.isImported = true;
                 this.mediaBase64 = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
@@ -296,7 +354,7 @@ export class SystemInputMedia implements OnDestroy {
     /*
     public ngOnChanges(): void {
         if (this.mediaBase64 !== null) {
-            this.imageMetaData.fileformat = this.fileformat;
+            this.metaData.fileformat = this.fileformat;
             this.resetModificationStati();
             this.isImported = false;
         }
@@ -306,8 +364,8 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * Resets the image meta data.
      */
-    private resetImageMetaData() {
-        this.imageMetaData = {
+    private resetMediaMetaData() {
+        this.mediaMetaData = {
             mimetype: null,
             fileformat: null,
             filename: null,
@@ -365,8 +423,8 @@ export class SystemInputMedia implements OnDestroy {
 
         image.addEventListener('ready', () => {
             if (this.cropper) {
-                this.imageMetaData.originalWidth = this.cropper.getImageData().naturalWidth;
-                this.imageMetaData.originalHeight = this.cropper.getImageData().naturalHeight;
+                this.mediaMetaData.originalWidth = this.cropper.getImageData().naturalWidth;
+                this.mediaMetaData.originalHeight = this.cropper.getImageData().naturalHeight;
                 this.calcTargetSize();
                 if (this.isDirty) this.emitChange();
                 // this.cropper.zoomTo(1);
@@ -406,11 +464,18 @@ export class SystemInputMedia implements OnDestroy {
 
     /**
      * The Handler when a file has been dropped.
-     * @param event
+     * @param droppedFiles
      */
-    private onDrop(event): void {
-        this.fileFromBrowser = event[0];
+    private onDrop( droppedFiles ): void {
+        this.fileFromBrowser = droppedFiles[0];
         this.fileSelectedOrDropped();
+    }
+
+    /**
+     * Handler in case a file has been dropped externally (image field)
+     */
+    @Input('droppedFiles') public set onDropExtern( droppedFiles ) {
+        if ( droppedFiles ) this.onDrop( droppedFiles );
     }
 
     /**
@@ -470,10 +535,10 @@ export class SystemInputMedia implements OnDestroy {
             this.fileFromBrowser = null;
             return;
         }
-        this.resetImageMetaData();
-        this.imageMetaData.fileformat = type;
-        this.imageMetaData.filename = this.fileFromBrowser.name;
-        this.imageMetaData.mimetype = this.fileFromBrowser.type;
+        this.resetMediaMetaData();
+        this.mediaMetaData.fileformat = type;
+        this.mediaMetaData.filename = this.fileFromBrowser.name;
+        this.mediaMetaData.mimetype = this.fileFromBrowser.type;
         this.getMediaFromFileSystem();
     }
 
@@ -489,7 +554,7 @@ export class SystemInputMedia implements OnDestroy {
      * removes the image, resets the base64 string and destroys the cropper instance
      */
     private removeImage(): void {
-        this.resetImageMetaData();
+        this.resetMediaMetaData();
 
         // if we have A CROPPER DESTROY IT AND SET TO UNDEFINED
         if (this.cropper) {
@@ -505,7 +570,7 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * The parent component want the image (rotated, mirrored, cropped, resized, ...)
      */
-    public getImage(): SafeResourceUrl {
+    public getImage(): string {
 
         // no cropper no image return null
         if (!this.cropper) return null;
@@ -514,14 +579,14 @@ export class SystemInputMedia implements OnDestroy {
         let image;
         if (this.isEdited || this.isResized) {
             image = this.cropper.getCroppedCanvas({
-                maxHeight: this.imageMetaData.height,
-                maxWidth: this.imageMetaData.width,
+                maxHeight: this.mediaMetaData.height,
+                maxWidth: this.mediaMetaData.width,
                 imageSmoothingEnabled: true,
                 imageSmoothingQuality: 'high'
-            }) // height: this.imageMetaData.height, width:this.imageMetaData.width,
-                .toDataURL('image/' + this.imageMetaData.fileformat, this.imageMetaData.fileformat === 'jpeg' ? this.jpegCompressionLevel : undefined);
+            }) // height: this.metaData.height, width:this.metaData.width,
+                .toDataURL('image/' + this.mediaMetaData.fileformat, this.mediaMetaData.fileformat === 'jpeg' ? this.jpegCompressionLevel : undefined);
         } else image = this.mediaBase64.toString();
-        return image; // .substring(image.indexOf('base64,') + 7);
+        return image.substring(image.indexOf('base64,') + 7);
     }
 
     /**
@@ -570,23 +635,14 @@ export class SystemInputMedia implements OnDestroy {
         return this.allowRotating && this.cropper;
     }
 
-    /*
-    private get width(): number {
-        return this.cropper.getData(true).width;
-    }
-
-    private get height(): number {
-        return this.cropper.getData(true).height;
-    }
-    */
-
     /**
      * Handler if the user has changed the maximal height of the image.
      */
     private maxHeightChanged(): void {
-        let val: number;
-        val = parseInt(this.maxHeightInput, 10);
-        this.maxHeight = isNaN(val) ? null : val;
+        let val: number|string;
+        val = this.maxHeightInput.split( this.userprefs.toUse.num_grp_sep ).join('');
+        val = parseInt( val, 10 );
+        this._maxHeightByUser = isNaN(val) ? null : val;
         this.calcTargetSize();
         this.emitChange();
     }
@@ -595,48 +651,80 @@ export class SystemInputMedia implements OnDestroy {
      * Handler if the user has changed the maximal width of the image.
      */
     private maxWidthChanged(): void {
-        let val: number;
-        val = parseInt(this.maxWidthInput, 10);
-        this.maxWidth = isNaN(val) ? null : val;
+        let val: number|string;
+        val = this.maxWidthInput.split( this.userprefs.toUse.num_grp_sep ).join('');
+        val = parseInt( val, 10 );
+        this._maxWidthByUser = isNaN(val) ? null : val;
         this.calcTargetSize();
         this.emitChange();
     }
 
     /**
+     * Effective value of maximal pixel height.
+     */
+    private get maxHeight() {
+        if ( this.maxHeightBySystem && this.maxHeightByUser ) return this.maxHeightBySystem < this.maxHeightByUser ? this.maxHeightBySystem : this.maxHeightByUser;
+        return this.maxHeightBySystem ? this.maxHeightBySystem : this.maxHeightByUser ? this.maxHeightByUser : null;
+    }
+
+    /**
+     * Effective value of maximal pixel width.
+     */
+    private get maxWidth() {
+        if ( this.maxWidthBySystem && this.maxWidthByUser ) return this.maxWidthBySystem < this.maxWidthByUser ? this.maxWidthBySystem : this.maxWidthByUser;
+        return this.maxWidthBySystem ? this.maxWidthBySystem : this.maxWidthByUser ? this.maxWidthByUser : null;
+    }
+
+    /**
      * Gets the internal status for the resize checkbox.
      */
-    get doResize() {
-        return this._doResize;
+    get doResizeByUser() {
+        return this._doResizeByUser;
     }
 
     /**
      * Sets the internal status for the resize checkbox and recalculates the target size.
      * @param value
      */
-    set doResize(value) {
-        this._doResize = value;
+    set doResizeByUser( value) {
+        this._doResizeByUser = value;
         this.calcTargetSize();
     }
 
     /**
-     * Calculates the size of the target image. Is to be written to object "imageMetaData".
+     * Getter for maximal width when set by the user.
+     */
+    get maxWidthByUser() {
+        return this.doResizeByUser ? this._maxWidthByUser : undefined;
+    }
+
+    /**
+     * Getter for maximal height when set by the user.
+     */
+    get maxHeightByUser() {
+        return this.doResizeByUser ? this._maxHeightByUser : undefined;
+    }
+
+    /**
+     * Calculates the size of the target image. Is to be written to object "metaData".
      */
     private calcTargetSize(): void {
+        if ( !this.cropper ) return;
         let ratio = 1, height;
         let width = this.cropper.getData(true).width;
         if (width === 0) {
             width = this.cropper.getImageData().naturalWidth;
             height = this.cropper.getImageData().naturalHeight;
         } else height = this.cropper.getData(true).height;
-        if (this.doResize && (this.maxWidth && width > this.maxWidth || this.maxHeight && height > this.maxHeight)) {
+        if ( this.maxWidth && width > this.maxWidth || this.maxHeight && height > this.maxHeight ) {
             if (this.maxWidth && !this.maxHeight) ratio = this.maxWidth / width;
-            else if (this.maxHeight && !this.maxWidth) ratio = this.maxHeight / height;
+            else if ( this.maxHeight && !this.maxWidth ) ratio = this.maxHeight / height;
             else ratio = this.maxWidth / width < this.maxHeight / height ? this.maxWidth / width : this.maxHeight / height;
-            this.imageMetaData.width = Math.floor(width * ratio);
-            this.imageMetaData.height = Math.floor(height * ratio);
+            this.mediaMetaData.width = Math.floor(width * ratio);
+            this.mediaMetaData.height = Math.floor(height * ratio);
         } else {
-            this.imageMetaData.width = width;
-            this.imageMetaData.height = height;
+            this.mediaMetaData.width = width;
+            this.mediaMetaData.height = height;
         }
     }
 
@@ -709,7 +797,7 @@ export class SystemInputMedia implements OnDestroy {
      * Is the image resized?
      */
     private get isResized(): boolean {
-        return this.imageMetaData.width !== this.imageMetaData.originalWidth || this.imageMetaData.height !== this.imageMetaData.originalHeight;
+        return this.mediaMetaData.width !== this.mediaMetaData.originalWidth || this.mediaMetaData.height !== this.mediaMetaData.originalHeight;
     }
 
     /**
@@ -722,22 +810,13 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * Is the image dirty? That means edited, resized or imported.
      */
-    private get isDirty(): boolean {
+    public get isDirty(): boolean {
         return this.isEdited || this.isImported || this.isResized;
     }
 
     private emitChange() {
-        let im = this.getImage();
-        this.onChange(im.toString());
-
-        /*
-        this.mediaChange.emit({
-            metaData: this.imageMetaData,
-            image: this.isDirty ? im : null,
-            isDirty: this.isDirty,
-            isImported: this.isImported
-        });
-        */
+        if ( this.mediaMetaData.fileformat ) this.onChange( this.mediaMetaData.fileformat+'|'+this.getImage() );
+        else this.onChange(null);
     }
 
     /**
@@ -795,16 +874,16 @@ export class SystemInputMedia implements OnDestroy {
      *
      * @param value
      */
-    public writeValue(value: any): void {
-        if (value && value != '') {
-            this.mediaBase64 = this.sanitizer.bypassSecurityTrustResourceUrl(value);
+    public writeValue( value: string ): void {
+        if ( value && value != '' ) {
+            // The image comes in the format 'filetype|base64filedata', like 'jpeg|/9j/4AAQSkZJRgABA...'
+            let positionOfDelimiter = value.indexOf('|');
+            this.mediaMetaData.fileformat = value.substring( 0, positionOfDelimiter );
+            this.mediaBase64 = this.sanitizer.bypassSecurityTrustResourceUrl('data:image/' + this.mediaMetaData.fileformat + ';base64,'+value.substring( positionOfDelimiter + 1 ));
+            this.calcTargetSize();
         }
-        // toDo check if thsi is still needed
-        if (this.mediaBase64 !== null) {
-            this.imageMetaData.fileformat = this.fileformat;
-            this.resetModificationStati();
-            this.isImported = false;
-        }
+        this.resetModificationStati();
+        this.isImported = false;
     }
 
 }

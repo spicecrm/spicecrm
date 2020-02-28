@@ -78,7 +78,7 @@ export class relatedmodels implements OnDestroy {
     /**
      * inidcates if the servic eis currently retrieving data from teh backend
      */
-    public isloading = true;
+    public isloading = false;
 
     /**
      * inidcates if the servic eis currently retrieving data from teh backend

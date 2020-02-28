@@ -1,0 +1,10 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+    <div class="slds-text-align_right">
+        {{value}}
+    </div>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
+    <system-slider [_min]="min" [_max]="max" [(ngModel)]="value"></system-slider>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>
