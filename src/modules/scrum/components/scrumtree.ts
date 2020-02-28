@@ -5,15 +5,15 @@ import {Component} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {modellist} from '../../../services/modellist.service';
 import {model} from '../../../services/model.service';
-import {scrumtree} from '../services/scrum.service';
+import {scrum} from '../services/scrum.service';
 
 @Component({
-    selector: 'scrumtree',
+    selector: 'scrum-tree',
     templateUrl: './src/modules/scrum/templates/scrumtree.html'
 })
 export class ScrumTree {
 
-    constructor(private scrum: scrumtree, private model: model, private metadata: metadata, private modellist: modellist) {
+    constructor(private scrum: scrum, private model: model, private metadata: metadata, private modellist: modellist) {
 
     }
     /**

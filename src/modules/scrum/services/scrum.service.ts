@@ -9,7 +9,7 @@ interface scrumobject {
 }
 
 @Injectable()
-export class scrumtree {
+export class scrum {
 
     /**
      * the currently selected Object with type and ID

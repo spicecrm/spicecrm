@@ -7,7 +7,7 @@ import {
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 import {modellist} from "../../../services/modellist.service";
-import {scrumtree} from '../services/scrum.service';
+import {scrum} from '../services/scrum.service';
 
 @Component({
     selector: '[scrum-tree-userstory]',
@@ -20,7 +20,7 @@ import {scrumtree} from '../services/scrum.service';
 export class ScrumTreeUserStory implements OnInit, OnDestroy {
     @Input() private userstory: any = {};
 
-    constructor(private metadata: metadata, private model: model, private modellist: modellist, private scrum: scrumtree) {}
+    constructor(private metadata: metadata, private model: model, private modellist: modellist, private scrum: scrum) {}
 
     /**
      * initialize model

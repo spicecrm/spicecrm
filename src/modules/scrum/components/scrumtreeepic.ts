@@ -5,7 +5,7 @@ import {Component, OnInit, Input, SkipSelf, OnDestroy} from '@angular/core';
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 import {modellist} from "../../../services/modellist.service";
-import {scrumtree} from '../services/scrum.service';
+import {scrum} from '../services/scrum.service';
 import {relatedmodels} from "../../../services/relatedmodels.service";
 import {language} from "../../../services/language.service";
 
@@ -46,7 +46,7 @@ export class ScrumTreeEpic implements OnInit, OnDestroy {
     @Input() private epic: any = {};
 
 
-    constructor(private language: language, private metadata: metadata, private model: model, private modellist: modellist, private scrum: scrumtree, private userstories: relatedmodels) {}
+    constructor(private language: language, private metadata: metadata, private model: model, private modellist: modellist, private scrum: scrum, private userstories: relatedmodels) {}
 
     /**
      * initialize the model and the related module
