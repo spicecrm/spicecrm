@@ -2,22 +2,23 @@
  * @module ModuleProjects
  */
 import {Component, OnInit} from "@angular/core";
+import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
-import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
+import {modellist} from '../../../services/modellist.service';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
     selector: "project-activity-dashlet",
     templateUrl: "./src/modules/projects/templates/projectactivitydashlet.html",
-    providers: [model, view]
+    providers: [model, view, modellist]
 })
 export class ProjectActivityDashlet implements OnInit {
     private _wbss: any = [];
@@ -26,7 +27,24 @@ export class ProjectActivityDashlet implements OnInit {
     private show_wbs_results = false;
     private activityminutes: number = 15;
     private activitiyhours: number = 0;
-    private recent_project_activities = [];
+    // private recent_project_activities: any = [];
+    private module: string = 'ProjectActivities';
+
+    /**
+     * the subscription to the modellist
+     */
+    private modellistsubscribe: any = undefined;
+
+    /**
+     * the componentconfig
+     */
+    public componentconfig: any = {};
+
+
+    /**
+     * all fields that are available
+     */
+    // private allFields: any[] = [];
 
     constructor(
         private language: language,
@@ -35,6 +53,7 @@ export class ProjectActivityDashlet implements OnInit {
         private view: view,
         private backend: backend,
         private toast: toast,
+        private modellist: modellist
     ) {
         this.view.displayLabels = false;
         this.model.module = "ProjectActivities";
@@ -46,16 +65,77 @@ export class ProjectActivityDashlet implements OnInit {
         this.view.setEditMode();
 
         this.model.data$.subscribe(modeldata => {this.modelchanged(modeldata);});
+
+        // get the config
+        this.componentconfig = this.metadata.getComponentConfig('ProjectActivityDashlet');
+
+        // set modellist config
+        this.modellist.loadlimit = this.limit;
+        this.modellist.module = this.module;
+        if(!this.modellist.currentList.sortfields) {
+            this.modellist.currentList.sortfields = btoa('{"sortfield": "date_entered", "sortdirection": "DESC"}');
+        }
+
+        // load the list and initialize from session data if this is set
+        // this.loadRecentActivities();
     }
 
     public ngOnInit() {
-        // load the last activities entered
-        this.loadRecentActivities();
-
-
+        // load wbss
         this.backend.getRequest("projectwbs/my/wbss").subscribe(wbss => {
             this._wbss = wbss;
+
+            // load the last activities entered
+            this.loadRecentActivities();
         });
+    }
+
+
+    /**
+     * returns the sortfield from the config
+     */
+    get sortfield() {
+        if(this.componentconfig.sortfield) {
+            return this.componentconfig.sortfield;
+        }
+        return '';
+    }
+
+    /**
+     * returns the sortdirection from the componentconfig
+     */
+    get sortdirection() {
+        if(this.componentconfig.sortdirection !== undefined) {
+            return this.componentconfig.sortdirection ;
+        }
+        return '';
+    }
+
+    /**
+     * returns the limit from the componentconfig
+     */
+    get limit() {
+        if(this.componentconfig.limit !== undefined) {
+            return this.componentconfig.limit;
+        }
+        return 5;
+    }
+
+    /**
+     * returns if the listservic eis loading
+     */
+    get isloading() {
+        return this.modellist.isLoading;
+    }
+
+    /**
+     * trackby function to optimize performance on the for loop
+     *
+     * @param index
+     * @param item
+     */
+    protected trackbyfn(index, item) {
+        return item.id;
     }
 
     set wbs_search_term(val) {
@@ -82,7 +162,7 @@ export class ProjectActivityDashlet implements OnInit {
     }
 
     private modelchanged(data) {
-        if (this.activityminutes != data.duration_minutes || this.activitiyhours != data.duration_hours){
+        if (this.activityminutes != data.duration_minutes || this.activitiyhours != data.duration_hours) {
             // set the new values
             this.activityminutes = data.duration_minutes;
             this.activitiyhours = data.duration_hours;
@@ -92,10 +172,11 @@ export class ProjectActivityDashlet implements OnInit {
             this.model.data.activity_end.add(this.activityminutes, "m");
             this.model.data.activity_end.add(this.activitiyhours, "h");
 
-        } else if ( Math.round(moment.duration(data.activity_end.diff(data.activity_start)).asMinutes()) != (this.activitiyhours * 60 + this.activityminutes)){
+        } else if ( Math.round(moment.duration(data.activity_end.diff(data.activity_start)).asMinutes()) != (this.activitiyhours * 60 + this.activityminutes)) {
             // set end date to start date (without setting the time...)
-            if(!this.model.data.activity_start)
+            if(!this.model.data.activity_start) {
                 return false;
+            }
 
             this.model.data.activity_end
                 .year(this.model.data.activity_start.get("year"))
@@ -156,20 +237,32 @@ export class ProjectActivityDashlet implements OnInit {
         });
     }
 
-    private loadRecentActivities(cnt = 5) {
-        this.backend.all(
-            this.model.module,
-            {
-                limit: cnt,
-                listid: "owner",
-                sortfield: "date_entered",
-                sortdirection: "desc",
-            }
-        ).subscribe(
-            (res) => {
-                this.recent_project_activities = res;
-            }
-        );
+    // private loadRecentActivities() {
+    //
+    //     this.backend.getRequest(
+    //         'module/' + this.model.module,
+    //         {
+    //             limit: this.limit,
+    //             listid: "owner",
+    //             sortfield: this.sortfield,
+    //             sortdirection: this.sortdirection
+    //         }
+    //     ).subscribe(
+    //         (res) => {
+    //             this.recent_project_activities = res.list;
+    //         }
+    //     );
+    //
+    // }
+    
+    /**
+     * function to load the listdata. Checks on the listdata if the component is the same .. if yes .. no reload is needed
+     * this can happen when the list is loaded from the appdata service that cahces the previous list
+     *
+     * @param loadfromcache
+     */
+    private loadRecentActivities() {
+        this.modellist.setListType('owner', false, [{sortfield: "date_entered", sortdirection: "DESC"}]);
     }
 
     private reset() {

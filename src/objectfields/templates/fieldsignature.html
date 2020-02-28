@@ -1,7 +1,7 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <div *ngIf="!isEditMode()">
     <!-- showing signature (as image) here... (base64 encoded) -->
-    <div style="position: relative; width: 400px;">
+    <div [ngStyle]="{width: signature_width+'px'}" class="slds-float_left">
         <img *ngIf="value" [src]="src">
         <div style="position: absolute; top: 1px; right: 1px;">
             <button *ngIf="isEditable()" class="slds-button slds-button--icon" (click)="setEditMode()">
@@ -14,7 +14,7 @@
 <div [ngClass]="{'slds-hide': !isEditMode()}">
     <!-- showing canvas drawing for signature here... !-->
     <div [ngStyle]="{width: signature_width+'px'}">
-        <div style="position: relative;">
+        <div class="slds-float_left">
             <canvas #canvas [width]="signature_width" [height]="signature_height" style="border: 1px solid;" (mouseup)="convert()" (touchend)="convert()"></canvas>
             <div style="position: absolute; bottom: 3px; right: 3px;">
                 <button class="slds-button slds-button--icon" (click)="undo()" title="undo">
