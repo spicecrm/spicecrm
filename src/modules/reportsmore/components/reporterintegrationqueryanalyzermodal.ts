@@ -117,7 +117,17 @@ export class ReporterIntegrationQueryanalyzerModal implements OnInit {
      * copy the SQL to clipboard
      */
     private copy2clipboard() {
-        navigator.clipboard.writeText(this.mainquery).then(success => {
+        let query = this.formattedquery;
+
+        if (this.translateTableNames) {
+            for (let tablename in this.tabledictionary) {
+
+                let rx = new RegExp(tablename, 'g');
+                query = query.replace(rx, this.tabledictionary[tablename]);
+            }
+        }
+
+        navigator.clipboard.writeText(query).then(success => {
             this.toast.sendToast(this.language.getLabel('LBL_COPIED_TO_CLIPBOARD'), "info");
         });
     }
@@ -136,7 +146,7 @@ export class ReporterIntegrationQueryanalyzerModal implements OnInit {
         this.mainquery = this.mainquery.replace(/  +/g, ' ');
 
         // fnd the matchs and
-        let matches = this.mainquery.match(/FROM\s[a-z]*\s[a-z]*/gm).concat(this.mainquery.match(/JOIN\s*[a-z]*\s[a-z]*/gm));
+        let matches = this.mainquery.match(/FROM\s*[a-z_]*\s[a-z]*/gm).concat(this.mainquery.match(/JOIN\s*[a-z_]*\s[a-z]*/gm));
         for (let match of matches) {
             let clausArray = match.split(' ');
             if (clausArray.length == 3) {
