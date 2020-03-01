@@ -1,7 +1,7 @@
 /**
  * @module ModuleReportsDesigner
  */
-import {AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Output, ViewChild, Injector} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {ReportsDesignerService} from "../services/reportsdesigner.service";
 import {backend} from "../../../services/backend.service";
@@ -35,6 +35,7 @@ export class ReportsDesignerTree {
                 private modal: modal,
                 private metadata: metadata,
                 private cdr: ChangeDetectorRef,
+                private injector: Injector,
                 private reportsDesignerService: ReportsDesignerService) {
     }
 
@@ -95,7 +96,7 @@ export class ReportsDesignerTree {
      * @set union_modules
      */
     private addUnionModule() {
-        this.modal.openModal('ReportsDesignerSelectModuleModal')
+        this.modal.openModal('ReportsDesignerSelectModuleModal', true, this.injector)
             .subscribe(modalRef => {
                 modalRef.instance.response.subscribe(response => {
                     if (response) {

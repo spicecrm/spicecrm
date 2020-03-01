@@ -1,7 +1,7 @@
 /**
  * @module ModuleReportsDesigner
  */
-import {ChangeDetectorRef, Component} from '@angular/core';
+import {ChangeDetectorRef, Component, Injector} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {ReportsDesignerService} from "../services/reportsdesigner.service";
 import {reporterconfig} from "../../reports/services/reporterconfig";
@@ -34,6 +34,7 @@ export class ReportsDesigner {
                 private modal: modal,
                 private metadata: metadata,
                 private activatedRoute: ActivatedRoute,
+                private injector: Injector,
                 private reportsDesignerService: ReportsDesignerService) {
         this.model.module = 'KReports';
         this.subscribeToActivatedRoute();
@@ -55,7 +56,6 @@ export class ReportsDesigner {
      */
     protected setInitialValues(data) {
         this.model.setFields({
-            name: data.name,
             report_module: data.module,
             listfields: [],
             listtype: 'standard',
@@ -150,12 +150,12 @@ export class ReportsDesigner {
      * @set activeModule
      */
     private openSelectModuleModal() {
-        this.modal.openModal('ReportsDesignerSelectModuleModal')
+        this.model.initialize();
+        this.modal.openModal('ReportsDesignerSelectModuleModal', true, this.injector)
             .subscribe(modalRef => {
-                modalRef.instance.showNameField = true;
+                modalRef.instance.createmode = true;
                 modalRef.instance.response.subscribe(response => {
                     if (response) {
-                        this.model.initialize();
                         this.setInitialValues(response);
                         this.reportsDesignerService.setCurrentPath(response.module, response.module);
                         this.reportsDesignerService.activeModule = {unionid: 'root', module: response.module};
