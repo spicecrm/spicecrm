@@ -35,9 +35,21 @@ export class ReporterIntegrationQueryanalyzerModal implements OnInit {
     private formattedquery: string = '';
 
     /**
+     * the formatte query
+     */
+    private highlightedquery: string = '';
+
+    /**
      * indicates that the data is not yet loaded
      */
     private loading: boolean = true;
+
+    /**
+     * matching the retunrs tbales from the quirked query to real names
+     */
+    private tabledictionary: any = {};
+
+    private translateTableNames: boolean = false;
 
     constructor(private language: language, private backend: backend, private sanitizer: DomSanitizer, private reporterconfig: reporterconfig, private model: model, private toast: toast) {
     }
@@ -65,7 +77,10 @@ export class ReporterIntegrationQueryanalyzerModal implements OnInit {
         this.backend.postRequest('KReporter/plugins/action/kqueryanalizer/get_sql', {}, postBody).subscribe(sql => {
                 this.mainquery = sql.main;
                 this.formattedquery = sql.formatted;
+                this.highlightedquery = sql.highlighted;
                 this.loading = false;
+
+                this.extractTableNames();
             },
             error => {
                 this.loading = false;
@@ -76,7 +91,19 @@ export class ReporterIntegrationQueryanalyzerModal implements OnInit {
      * a getter for the formatted query, domSanitized
      */
     get queryformatted() {
-        return this.sanitizer.bypassSecurityTrustHtml(this.formattedquery);
+        if (this.highlightedquery != '') {
+            let query = this.highlightedquery;
+
+            if (this.translateTableNames) {
+                for (let tablename in this.tabledictionary) {
+
+                    let rx = new RegExp(tablename, 'g');
+                    query = query.replace(rx, this.tabledictionary[tablename]);
+                }
+            }
+
+            return this.sanitizer.bypassSecurityTrustHtml(query);
+        }
     }
 
     /**
@@ -93,5 +120,32 @@ export class ReporterIntegrationQueryanalyzerModal implements OnInit {
         navigator.clipboard.writeText(this.mainquery).then(success => {
             this.toast.sendToast(this.language.getLabel('LBL_COPIED_TO_CLIPBOARD'), "info");
         });
+    }
+
+    /**
+     * builds the table dictionary
+     */
+    private extractTableNames() {
+        // reset the current mapping
+        this.tabledictionary = {};
+
+        // remove all double whitepaces
+        this.mainquery = this.mainquery.replace(/  +/g, ' ');
+
+        let fromClauses = this.mainquery.match(/FROM\s[a-z]*\s[a-z]*/gm);
+        for (let match of fromClauses) {
+            let clausArray = match.split(' ');
+            if (clausArray.length == 3) {
+                this.tabledictionary[clausArray[2]] = clausArray[1];
+            }
+        }
+
+        let joinClauses = this.mainquery.match(/JOIN\s*[a-z]*\s[a-z]*/gm);
+        for (let match of joinClauses) {
+            let clausArray = match.split(' ');
+            if (clausArray.length == 3) {
+                this.tabledictionary[clausArray[2]] = clausArray[1];
+            }
+        }
     }
 }
