@@ -2,7 +2,7 @@
  * @module ModuleReports
  */
 import {
-    Component, AfterViewInit, OnInit, ViewChild, ViewContainerRef, ViewChildren, QueryList, Injector
+    Component, AfterViewInit, OnInit, ViewChild, ViewContainerRef, ViewChildren, QueryList, Injector, OnDestroy
 } from '@angular/core';
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
@@ -11,6 +11,7 @@ import {toast} from '../../../services/toast.service';
 import {backend} from '../../../services/backend.service';
 import {reporterconfig} from '../services/reporterconfig';
 import {SystemResizeDirective} from "../../../directives/directives/systemresize";
+import {Subscription} from "rxjs";
 
 /**
  * renders the standard view for a report which is a simple column based view
@@ -19,7 +20,7 @@ import {SystemResizeDirective} from "../../../directives/directives/systemresize
     selector: 'reporter-detail-presentation-standard',
     templateUrl: './src/modules/reports/templates/reporterdetailpresentationstandard.html'
 })
-export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit {
+export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit, OnDestroy {
 
     /**
      * reference to the footer. this is needed to set the height of the element for the view
@@ -48,6 +49,9 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
 
     private currentPage: number = 1;
 
+    /**
+     * indicates that the view is loading
+     */
     public isLoading: boolean = true;
 
     /**
@@ -58,10 +62,16 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
         sortDirection: ''
     }
 
+    /**
+     * holds any subscription
+     */
+    private subscriptions = new Subscription();
+
     constructor(public language: language, public model: model, public modal: modal, public injector: Injector, public backend: backend, public reporterconfig: reporterconfig, public toast: toast) {
-        this.reporterconfig.refresh$.subscribe(event => {
-            this.getPresentation();
-        });
+        this.subscriptions.add(this.reporterconfig.refresh$.subscribe(event => {
+                this.getPresentation();
+            })
+        );
     }
 
 
@@ -73,6 +83,12 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
         this.getPresentation();
     }
 
+    /**
+     * unsubscribe from any subscriptions
+     */
+    public ngOnDestroy(): void {
+        this.subscriptions.unsubscribe();
+    }
 
     /**
      * returns if a field is sortable
@@ -376,7 +392,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
      * opens the select fields modal
      */
     private selectFields() {
-        this.modal.openModal('ReporterDetailSelectFieldsModal', true, this.injector). subscribe(modalref => {
+        this.modal.openModal('ReporterDetailSelectFieldsModal', true, this.injector).subscribe(modalref => {
             modalref.instance.presentationFields = this.presData.reportmetadata.fields;
         });
     }

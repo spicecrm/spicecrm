@@ -219,7 +219,7 @@ export class ReporterDetailView implements OnInit {
     /**
      * when the filters are saved .. hide the panel
      */
-    private filtersaved() {
+    private filterapplied() {
         this.showFilters = false;
     }
 
