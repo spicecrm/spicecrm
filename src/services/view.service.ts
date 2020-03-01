@@ -41,6 +41,13 @@ export class view {
     public editfieldid: string = '';
 
     /**
+     * the edit field Name that is passed in when the edit mode is set
+     *
+     * the field can query that to gain focus
+     */
+    public editfieldname: string = '';
+
+    /**
      * defines the default label length for the view
      */
     public labels: 'default' | 'long' | 'short' = 'default';
