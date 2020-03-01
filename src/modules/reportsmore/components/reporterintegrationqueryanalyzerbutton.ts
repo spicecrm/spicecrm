@@ -1,39 +1,26 @@
 /**
  * @module ModuleReportsMore
  */
-import {Component} from '@angular/core';
-import {metadata} from '../../../services/metadata.service';
-import {model} from '../../../services/model.service';
+import {Component, Injector} from '@angular/core';
 import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
 
-import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
-
+/**
+ * renders the query analyzer button
+ */
 @Component({
     selector: 'reporter-integration-queryanalyzer-button',
     templateUrl: './src/modules/reportsmore/templates/reporterintegrationqueryanalyzerbutton.html'
 })
 export class ReporterIntegrationQueryanalyzerButton {
 
-    constructor(private language: language, private metadata: metadata, private model: model, private modal: modal, private reporterconfig: reporterconfig) {
+    constructor(private language: language, private modal: modal, private injector: Injector) {
     }
 
+    /**
+     * opens the modal
+     */
     private showModal() {
-
-        let whereConditions: any[] = [];
-        for (let userFilter of this.reporterconfig.userFilters) {
-            whereConditions.push({
-                fieldid: userFilter.fieldid,
-                operator: userFilter.operator,
-                value: userFilter.value,
-                valuekey: userFilter.valuekey,
-                valueto: userFilter.valueto,
-                valuetokey: userFilter.valuetokey
-            })
-        }
-        this.modal.openModal('ReporterIntegrationQueryanalyzerModal').subscribe(popup => {
-            popup.instance.model = this.model;
-            popup.instance.whereConditions = whereConditions;
-        })
+        this.modal.openModal('ReporterIntegrationQueryanalyzerModal', true, this.injector);
     }
 }
