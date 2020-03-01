@@ -74,7 +74,7 @@ export class ReporterIntegrationQueryanalyzerModal implements OnInit {
             record: this.model.id,
             whereOverride: JSON.stringify(whereConditions)
         }
-        this.backend.postRequest('KReporter/plugins/action/kqueryanalizer/get_sql', {}, postBody).subscribe(sql => {
+        this.backend.postRequest('KReporter/plugins/kqueryanalizer/get_sql', {}, postBody).subscribe(sql => {
                 this.mainquery = sql.main;
                 this.formattedquery = sql.formatted;
                 this.highlightedquery = sql.highlighted;
@@ -126,25 +126,27 @@ export class ReporterIntegrationQueryanalyzerModal implements OnInit {
      * builds the table dictionary
      */
     private extractTableNames() {
+        // kes a counter for the tables to have the tables numbered if the occur multiple times
+        let tablecounter = {};
+
         // reset the current mapping
         this.tabledictionary = {};
 
         // remove all double whitepaces
         this.mainquery = this.mainquery.replace(/  +/g, ' ');
 
-        let fromClauses = this.mainquery.match(/FROM\s[a-z]*\s[a-z]*/gm);
-        for (let match of fromClauses) {
+        // fnd the matchs and
+        let matches = this.mainquery.match(/FROM\s[a-z]*\s[a-z]*/gm).concat(this.mainquery.match(/JOIN\s*[a-z]*\s[a-z]*/gm));
+        for (let match of matches) {
             let clausArray = match.split(' ');
             if (clausArray.length == 3) {
-                this.tabledictionary[clausArray[2]] = clausArray[1];
-            }
-        }
-
-        let joinClauses = this.mainquery.match(/JOIN\s*[a-z]*\s[a-z]*/gm);
-        for (let match of joinClauses) {
-            let clausArray = match.split(' ');
-            if (clausArray.length == 3) {
-                this.tabledictionary[clausArray[2]] = clausArray[1];
+                let tablename = clausArray[1];
+                if (tablecounter[tablename] != undefined) {
+                    tablecounter[tablename]++;
+                } else {
+                    tablecounter[tablename] = 0;
+                }
+                this.tabledictionary[clausArray[2]] = tablename + tablecounter[tablename];
             }
         }
     }
