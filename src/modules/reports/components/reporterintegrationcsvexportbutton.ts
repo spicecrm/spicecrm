@@ -1,42 +1,63 @@
 /**
  * @module ModuleReports
  */
-import { Component, ViewChild, ViewContainerRef } from '@angular/core';
-import { metadata } from '../../../services/metadata.service';
-import { model } from '../../../services/model.service';
-import { footer } from '../../../services/footer.service';
-import { language } from '../../../services/language.service';
-import { backend } from '../../../services/backend.service';
+import {Component, ViewChild, ViewContainerRef} from '@angular/core';
+import {metadata} from '../../../services/metadata.service';
+import {model} from '../../../services/model.service';
+import {modal} from '../../../services/modal.service';
+import {toast} from '../../../services/toast.service';
+import {footer} from '../../../services/footer.service';
+import {language} from '../../../services/language.service';
+import {backend} from '../../../services/backend.service';
 
-import  {reporterconfig} from '../services/reporterconfig';
+import {reporterconfig} from '../services/reporterconfig';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
+/**
+ * renmders a button to export as CSV
+ */
 @Component({
     selector: 'reporter-integration-csvexport-button',
     templateUrl: './src/modules/reports/templates/reporterintegrationcsvexportbutton.html'
 })
 export class ReporterIntegrationCSVexportButton {
 
+    /**
+     * a getter to check if the user is allowed to export
+     */
     @ViewChild('downloadlink', {read: ViewContainerRef, static: true}) private downloadlink: ViewContainerRef;
 
+    /**
+     * the url for the download
+     */
     private loadUrl: any = undefined;
+
+    /**
+     * the filename for the download link
+     */
     private fileName: string = undefined;
 
-    constructor( private language: language, private metadata: metadata, private backend: backend,  private model: model, private footer: footer, private reporterconfig: reporterconfig) {
+    constructor(private language: language, private metadata: metadata, private backend: backend, private model: model, private modal: modal, private footer: footer, private reporterconfig: reporterconfig, private toast: toast) {
     }
 
+    /**
+     * a getter to check if the user cna export
+     */
     get canExport() {
         return this.model.checkAccess('export');
     }
 
-    private exportCSV(){
+    /**
+     * the export trigger
+     */
+    private exportCSV() {
         // build wherecondition
         let whereConditions: any[] = [];
-        for(let userFilter of this.reporterconfig.userFilters){
+        for (let userFilter of this.reporterconfig.userFilters) {
             whereConditions.push({
                 fieldid: userFilter.fieldid,
                 operator: userFilter.operator,
@@ -44,15 +65,27 @@ export class ReporterIntegrationCSVexportButton {
                 valuekey: userFilter.valuekey,
                 valueto: userFilter.valueto,
                 valuetokey: userFilter.valuetokey
-            })
+            });
         }
 
-        this.fileName = this.model.data.name.replace(' ', '_') + '_' + moment().format('YYYY_MM_DD_HH_mm_ss')+'.csv';
+        // generate a filename
+        this.fileName = this.model.data.name.replace(' ', '_') + '_' + moment().format('YYYY_MM_DD_HH_mm_ss') + '.csv';
 
-        this.backend.getDownloadPostRequestFile('KReporter/plugins/action/kcsvexport/export', {record: this.model.id, dynamicoptions: JSON.stringify(whereConditions)}).subscribe(url => {
-            this.downloadlink.element.nativeElement.href = url;
-            this.downloadlink.element.nativeElement.click();
-        });
+        // render the loading modal and trigger the download
+        let awaitpromise = this.modal.await(this.language.getLabel('LBL_LOADING'));
+        this.backend.getDownloadPostRequestFile('KReporter/plugins/action/kcsvexport/export', {
+            record: this.model.id,
+            dynamicoptions: JSON.stringify(whereConditions)
+        }).subscribe(
+            url => {
+                this.downloadlink.element.nativeElement.href = url;
+                this.downloadlink.element.nativeElement.click();
+                awaitpromise.emit(true);
+            },
+            error => {
+                awaitpromise.emit(true);
+                this.toast.sendToast('Error Loading File', "error");
+            });
 
     }
 }
