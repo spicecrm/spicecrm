@@ -1,7 +1,7 @@
 /**
  * @module ModuleReportsMore
  */
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ChangeDetectorRef} from '@angular/core';
 import {DomSanitizer} from "@angular/platform-browser";
 import {model} from '../../../services/model.service';
 import {backend} from '../../../services/backend.service';
@@ -15,7 +15,8 @@ import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
  */
 @Component({
     selector: 'reporter-integration-queryanalyzer-modal',
-    templateUrl: './src/modules/reportsmore/templates/reporterintegrationqueryanalyzermodal.html'
+    templateUrl: './src/modules/reportsmore/templates/reporterintegrationqueryanalyzermodal.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterIntegrationQueryanalyzerModal implements OnInit {
 
@@ -49,9 +50,9 @@ export class ReporterIntegrationQueryanalyzerModal implements OnInit {
      */
     private tabledictionary: any = {};
 
-    private translateTableNames: boolean = false;
+    private _translateTableNames: boolean = false;
 
-    constructor(private language: language, private backend: backend, private sanitizer: DomSanitizer, private reporterconfig: reporterconfig, private model: model, private toast: toast) {
+    constructor(private language: language, private backend: backend, private sanitizer: DomSanitizer, private reporterconfig: reporterconfig, private model: model, private toast: toast, private cdRef: ChangeDetectorRef) {
     }
 
     /**
@@ -81,9 +82,13 @@ export class ReporterIntegrationQueryanalyzerModal implements OnInit {
                 this.loading = false;
 
                 this.extractTableNames();
+
+                this.cdRef.detectChanges();
             },
             error => {
                 this.loading = false;
+
+                this.cdRef.detectChanges();
             });
     }
 
@@ -104,6 +109,15 @@ export class ReporterIntegrationQueryanalyzerModal implements OnInit {
 
             return this.sanitizer.bypassSecurityTrustHtml(query);
         }
+    }
+
+    get translateTableNames() {
+        return this._translateTableNames;
+    }
+
+    set translateTableNames(value) {
+        this._translateTableNames = value;
+        this.cdRef.detectChanges();
     }
 
     /**
