@@ -35,4 +35,4 @@
 <div #presentationcontainer tobottomnoscroll>
     <div #presentationview></div>
 </div>
-<reporter-filter-panel @displayfilter *ngIf="showFilters" class="slds-is-absolute" [ngStyle]="filterPanelStyle" [integrationparams]="integrationParams" (filtersaved)="filtersaved()"></reporter-filter-panel>
+<reporter-filter-panel @displayfilter *ngIf="showFilters" class="slds-is-absolute" [ngStyle]="filterPanelStyle" [integrationparams]="integrationParams" (filterapplied)="filterapplied()"></reporter-filter-panel>
