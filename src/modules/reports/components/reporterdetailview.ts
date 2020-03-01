@@ -112,9 +112,10 @@ export class ReporterDetailView implements OnInit {
     get filterPanelStyle() {
         let rect = this.pageheader.element.nativeElement.getBoundingClientRect();
         return {
-            right: '0px',
-            top: rect.bottom + 'px',
-            height: 'calc(100vh - ' + rect.bottom + 'px)'
+            'right': '0px',
+            'top': rect.bottom + 'px',
+            'height': 'calc(100vh - ' + rect.bottom + 'px)',
+            'z-index': 100
         };
     }
 
