@@ -13,13 +13,23 @@ import {language} from '../../../services/language.service';
 import {reporterconfig} from '../services/reporterconfig';
 import {animate, style, transition, trigger} from "@angular/animations";
 
+/**
+ * renders a panel with the dynamic filters for a report
+ */
 @Component({
     selector: 'reporter-filter-panel',
     templateUrl: './src/modules/reports/templates/reporterfilterpanel.html'
 })
 export class ReporterFilterPanel {
 
-    @Output() private filtersaved: EventEmitter<any> = new EventEmitter<any>();
+    /**
+     * an event emitter that emits when the filter is applied
+     */
+    @Output() private filterapplied: EventEmitter<any> = new EventEmitter<any>();
+
+    /**
+     * the integration params
+     */
     @Input() private integrationparams: any = {};
 
     constructor(private model: model, private language: language, private reporterconfig: reporterconfig) {
@@ -30,12 +40,17 @@ export class ReporterFilterPanel {
         return this.reporterconfig.userFilters;
     }
 
-    private saveFilter() {
-        this.filtersaved.emit(true);
+    /**
+     * when the filter is to be applied
+     */
+    private applyFilter() {
+        this.filterapplied.emit(true);
         this.reporterconfig.refresh();
     }
 
-
+    /**
+     * checks if the plugin to save filters is enabled for the report
+     */
     get displaySavedFilters() {
 
         if (this.integrationparams.activePlugins) {

@@ -2,7 +2,7 @@
  * @module ModuleReports
  */
 import {
-    Component, Input, AfterViewInit, ViewChild, ViewContainerRef
+    Component, Input, AfterViewInit, ViewChild, ViewContainerRef, OnDestroy
 } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
@@ -11,31 +11,70 @@ import {backend} from '../../../services/backend.service';
 import {navigation} from '../../../services/navigation.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {reporterconfig} from '../services/reporterconfig';
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'reporter-detail-visualization',
     templateUrl: './src/modules/reports/templates/reporterdetailvisualization.html'
 })
-export class ReporterDetailVisualization implements AfterViewInit {
+export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
     @ViewChild('vizcontainer', {read: ViewContainerRef, static: true}) private vizcontainer: ViewContainerRef;
 
+    /**
+     * the parentmodule so if we are in the context that can be filtered properly
+     */
     @Input() private parentModule: string = '';
+
+    /**
+     * the id of the parent reord also used to render in teh context
+     */
     @Input() private parentId: string = '';
 
+    /**
+     * when the comonent is loading
+     */
     private loading: boolean = true;
+
+    /**
+     * the vizualizationdata
+     */
     private vizData: any = {};
-    private chartComponent: any;
+
+    /**
+     * the rendered chartcomponent
+     */
+    private chartComponent: any[] = [];
+
+    /**
+     * holds the subscriptions for thsi component
+     */
+    private subscriptions = new Subscription();
 
     constructor(private reporterconfig: reporterconfig, private metadata: metadata, private model: model, private backend: backend, private activatedRoute: ActivatedRoute, private navigation: navigation) {
-        this.reporterconfig.refresh$.subscribe(event => {
-            this.getVisualization();
-        });
+        this.subscriptions.add(
+            this.reporterconfig.refresh$.subscribe(event => {
+                this.getVisualization();
+            })
+        );
     }
 
+    /**
+     * load the visualization
+     */
     public ngAfterViewInit() {
         this.getVisualization();
     }
 
+    /**
+     * unsubscribe from the service and other subscriptions
+     */
+    public ngOnDestroy(): void {
+        this.subscriptions.unsubscribe();
+    }
+
+    /**
+     * gets the visualization for the report
+     */
     private getVisualization() {
         let params: any = {};
         if (this.parentModule && this.parentId) {
@@ -64,6 +103,11 @@ export class ReporterDetailVisualization implements AfterViewInit {
         });
     }
 
+    /**
+     * renders the visualization
+     *
+     * ToDo: remove the hardcoded components and keep this more flexibile in line with the architecture we are having
+     */
     private renderVisualization() {
         for (let visualization of this.vizData) {
             let visComponent = '';
@@ -80,7 +124,7 @@ export class ReporterDetailVisualization implements AfterViewInit {
             }
             if (visComponent != '') {
                 this.metadata.addComponent(visComponent, this.vizcontainer).subscribe(componentRef => {
-                    this.chartComponent = componentRef;
+                    this.chartComponent.push(componentRef);
                     componentRef.instance.vizdata = visualization;
                 });
             }
