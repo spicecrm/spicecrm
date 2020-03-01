@@ -1,7 +1,8 @@
 <div class="slds-p-around--x-small">
-    <div class="slds-grid">
+    <!--div class="slds-grid">
         <field-container field="name" class="slds-size--1-of-2"></field-container>
-        <field-container field="assigned_user_name" class="slds-size--1-of-2 slds-p-horizontal--xx-small"></field-container>
+        <field-container field="assigned_user_name"
+                         class="slds-size--1-of-2 slds-p-horizontal--xx-small"></field-container>
     </div>
     <div class="slds-grid">
         <div class="slds-size--1-of-2">
@@ -27,51 +28,38 @@
                 </div>
             </div>
         </div>
-        <field-container field="category_priority" [fieldconfig]="{label: 'LBL_PRIORITY'}" class="slds-size--1-of-2"></field-container>
+        <field-container field="category_priority" [fieldconfig]="{label: 'LBL_PRIORITY'}"
+                         class="slds-size--1-of-2"></field-container>
     </div>
-    <field-container field="description"></field-container>
-    <div class="slds-text-heading_label slds-form-element__label">{{language.getLabel('LBL_OPTIONS')}}</div>
-    <div class="slds-grid">
-        <fieldset class="slds-form-element slds-m-vertical--xxx-small slds-size--1-of-3">
-            <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_AUTHORIZATION_CHECK')}}</legend>
-            <div class="slds-form-element__control">
-                <label class="slds-form-element__label">{{language.getLabel('LBL_SHOW_DELETED')}}</label>
-                <system-checkbox [(ngModel)]="reportOptions.showDeleted">
-                    {{language.getLabel('LBL_SHOW_DELETED')}}
-                </system-checkbox>
-            </div>
-            <div class="slds-form-element__control">
-                <label class="slds-form-element__label">{{language.getLabel('LBL_AUTHORIZATION_CHECK')}}</label>
-                <system-input-radio name="reportOptionsAuthCheck" value="full" [(ngModel)]="reportOptions.authCheck">
-                    {{language.getLabel('LBL_ON_ALL_NODES')}}
-                </system-input-radio>
-                <system-input-radio name="reportOptionsAuthCheck" value="top" [(ngModel)]="reportOptions.authCheck">
-                    {{language.getLabel('LBL_TOP_NODE_ONLY')}}
-                </system-input-radio>
-                <system-input-radio name="reportOptionsAuthCheck" value="none" [(ngModel)]="reportOptions.authCheck">
-                    {{language.getLabel('LBL_DISABLED')}}
-                </system-input-radio>
-            </div>
-        </fieldset>
-        <fieldset class="slds-form-element slds-m-vertical--xxx-small slds-size--1-of-3">
-            <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_COLLAPSABLE_PANELS')}}</legend>
-            <div class="slds-form-element__control">
-                <label class="slds-form-element__label">{{language.getLabel('LBL_DYNAMIC_OPTIONS')}}</label>
-                <system-input-radio name="reportOptionsFolded" value="collapsed" [(ngModel)]="reportOptions.optionsFolded">
-                    {{language.getLabel('LBL_COLLAPSED')}}
-                </system-input-radio>
-                <system-input-radio name="reportOptionsFolded" value="open" [(ngModel)]="reportOptions.optionsFolded">
-                    {{language.getLabel('LBL_OPEN')}}
-                </system-input-radio>
-            </div>
-        </fieldset>
-        <fieldset class="slds-form-element slds-m-vertical--xxx-small slds-size--1-of-3">
-            <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_DATA_UPDATE')}}</legend>
-            <div class="slds-form-element__control">
-                <system-checkbox [(ngModel)]="reportOptions.updateOnRequest">
-                    {{language.getLabel('LBL_ON_USER_REQUEST')}}
-                </system-checkbox>
-            </div>
-        </fieldset>
-    </div>
+    <field-container field="description"></field-container-->
+    <system-collapsable-tab [collapsible]="false" tabtitle="LBL_DETAILS">
+        <object-record-fieldset [fieldset]="fieldset" direction="vertical"></object-record-fieldset>
+    </system-collapsable-tab>
+    <system-collapsable-tab [collapsible]="false" tabtitle="LBL_OPTIONS">
+        <div class="slds-grid">
+            <fieldset class="slds-form-element slds-m-vertical--xxx-small slds-size--1-of-2">
+                <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_SHOW_DELETED')}}</legend>
+                <div class="slds-form-element__control">
+                    <system-checkbox [(ngModel)]="reportOptions.showDeleted">
+                        {{language.getLabel('LBL_SHOW_DELETED')}}
+                    </system-checkbox>
+                </div>
+            </fieldset>
+            <fieldset class="slds-form-element slds-m-vertical--xxx-small slds-size--1-of-2">
+                <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_AUTHORIZATION_CHECK')}}</legend>
+                <div class="slds-form-element__control">
+                    <system-input-radio name="reportOptionsAuthCheck" value="full" [(ngModel)]="reportOptions.authCheck">
+                        {{language.getLabel('LBL_ON_ALL_NODES')}}
+                    </system-input-radio>
+                    <system-input-radio name="reportOptionsAuthCheck" value="top" [(ngModel)]="reportOptions.authCheck">
+                        {{language.getLabel('LBL_TOP_NODE_ONLY')}}
+                    </system-input-radio>
+                    <system-input-radio name="reportOptionsAuthCheck" value="none" [(ngModel)]="reportOptions.authCheck">
+                        {{language.getLabel('LBL_DISABLED')}}
+                    </system-input-radio>
+                </div>
+            </fieldset>
+        </div>
+    </system-collapsable-tab>
+    <system-dynamic-component component="ObjectRecordAdministrationTab" [componentconfig]="{name: 'LBL_ADMIN_DATA'}"></system-dynamic-component>
 </div>

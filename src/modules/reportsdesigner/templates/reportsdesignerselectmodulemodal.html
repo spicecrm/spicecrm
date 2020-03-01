@@ -3,12 +3,8 @@
         {{language.getModuleName('KReports', true)}}
     </system-modal-header>
     <system-modal-content margin="xx-small" [grow]="true">
-        <system-collapsable-tab *ngIf="showNameField" tabtitle="LBL_NAME" [collapsible]="false">
-            <div class="slds-form-element slds-p-around--x-small">
-                <div class="slds-form-element__control">
-                    <input spiceuiautofocus type="text" class="slds-input" [(ngModel)]="reportName">
-                </div>
-            </div>
+        <system-collapsable-tab *ngIf="createmode" tabtitle="LBL_DETAILS" [collapsible]="false">
+            <object-record-fieldset [fieldset]="fieldset" direction="vertical"></object-record-fieldset>
         </system-collapsable-tab>
         <system-collapsable-tab tabtitle="LBL_MODULE" [collapsible]="false">
             <div class="slds-p-around--x-small">
@@ -21,7 +17,7 @@
                     </div>
                 </div>
                 <ul class="slds-grid slds-grid--pull-padded slds-p-around--xx-small slds-wrap">
-                    <li *ngFor="let module of filteredModuleList; trackBy: trackByFn" [class.spice-box-is-selected]="module.name == selectedModule" class="slds-p-around--small slds-size--xx-small" (click)="setSelectedModule(module.name)">
+                    <li *ngFor="let module of filteredModuleList; trackBy: trackByFn" [class.spice-box-is-selected]="module.name == selectedModule" class="slds-p-around--small slds-size--xx-small" (click)="setSelectedModule(module.name)" (dblclick)="confirm(module.name)">
                         <div class="slds-app-launcher__tile-figure slds-app-launcher__tile-figure--small slds-text-link_reset">
                             <system-icon [module]="module.name" size="large"></system-icon>
                         </div>
@@ -39,7 +35,7 @@
         <button class="slds-button slds-button--neutral" (click)="close()">
             {{language.getLabel('LBL_CANCEL')}}
         </button>
-        <button *ngIf="showNameField" class="slds-button slds-button--neutral" (click)="confirm()">
+        <button *ngIf="createmode" [disabled]="!canCreate" class="slds-button slds-button--neutral" (click)="confirm()">
             {{language.getLabel('LBL_NEXT')}}
         </button>
     </system-modal-footer>
