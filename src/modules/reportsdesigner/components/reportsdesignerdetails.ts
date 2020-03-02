@@ -10,7 +10,7 @@ import {backend} from "../../../services/backend.service";
 
 
 /**
- * renders teh details panel in teh report designer
+ * renders the details panel in the report designer
  */
 @Component({
     selector: 'reports-designer-details',
