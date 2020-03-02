@@ -19,11 +19,6 @@ import {backend} from "../../../services/backend.service";
 export class ReportsDesignerDetails implements OnInit {
 
     /**
-     * the categories
-     */
-    protected categories: any[] = [];
-
-    /**
      * the fieldset
      */
     private fieldset: string;
@@ -41,17 +36,8 @@ export class ReportsDesignerDetails implements OnInit {
         if (!this.model.getField('reportoptions')) {
             this.model.setField('reportoptions', {});
         }
-        this.loadCategories();
     }
 
-    /**
-     * load reports categories from backend
-     */
-    private loadCategories() {
-        this.backend.getRequest('KReporter/categoriesmanager/categories').subscribe(categories => {
-            if (!!categories) this.categories = categories;
-        });
-    }
 
     /**
     * @return reportoptions: object[]
