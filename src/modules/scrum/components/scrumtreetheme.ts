@@ -9,7 +9,6 @@ import {modellist} from "../../../services/modellist.service";
 import {language} from '../../../services/language.service';
 import {scrum} from '../services/scrum.service';
 import {relatedmodels} from "../../../services/relatedmodels.service";
-import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 import {backend} from "../../../services/backend.service";
 
 @Component({
