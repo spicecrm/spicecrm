@@ -3,6 +3,7 @@
  */
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
+import {DragDropModule} from "@angular/cdk/drag-drop";
 
 import {ObjectFields} from '../../objectfields/objectfields';
 import {GlobalComponents} from '../../globalcomponents/globalcomponents';
@@ -29,6 +30,7 @@ import /*embed*/ {ScrumTree} from "./components/scrumtree";
         ObjectComponents,
         SystemComponents,
         DirectivesModule,
+        DragDropModule
     ],
     declarations: [
         ScrumMain,
