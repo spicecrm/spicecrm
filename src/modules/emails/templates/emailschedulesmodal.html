@@ -1,0 +1,16 @@
+<system-modal  title="LBL_EMAIL">
+    <system-modal-content>
+    <div class="slds-p-around--x-small">
+        <field-container field="mailbox_id" [fieldconfig]="{fieldtype: 'mailboxes', scope: 'outboundmass'}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spicecrm-fieldminheight"></field-container>
+        <div class="slds-grid">
+            <field-container field="email_subject" class="slds-grow"  fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spicecrm-fieldminheight"></field-container>
+        </div>
+        <field-container field="email_body" [fieldconfig]="{fieldtype: 'richtext', asiframe:true, 'simplemode': true, height: '250px'}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spicecrm-fieldminheight"></field-container>
+        <field-container field="email_stylesheet_id" [fieldconfig]="{fieldtype: 'stylesheetid'}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spicecrm-fieldminheight"></field-container>
+    </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+    </system-modal-footer>
+</system-modal>
+<
