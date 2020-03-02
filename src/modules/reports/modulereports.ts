@@ -43,6 +43,7 @@ import /*embed*/ {ReporterFieldEnum} from "./components/reporterfieldenum";
 import /*embed*/ {ReporterFieldDate} from "./components/reporterfielddate";
 import /*embed*/ {ReporterFieldDateTime} from "./components/reporterfielddatetime";
 import /*embed*/ {ReporterFieldColor} from "./components/reporterfieldcolor";
+import /*embed*/ {FieldReportCategory} from "./fields/fieldreportcategory";
 
 import /*embed*/ {ReporterIntegrationExportButton} from "./components/reporterintegrationexportbutton";
 import /*embed*/ {ReporterIntegrationTargetlistexportButton} from "./components/reporterintegrationtargetlistexportbutton";
@@ -69,6 +70,7 @@ declare var moment: any;
         DragDropModule
     ],
     declarations: [
+        FieldReportCategory,
         ReporterDetailView,
         ReporterFilterButton,
         ReporterFilterPanel,
