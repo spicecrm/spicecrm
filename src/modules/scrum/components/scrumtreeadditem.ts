@@ -34,6 +34,7 @@ export class ScrumTreeAddItem {
      * add child-item to parent, subscribe to model observable and emit change
      */
     private addItem() {
+        this.model.id = undefined;
         this.model.module = this.module;
         this.model.addModel('', this.parent).subscribe(
             item => {
