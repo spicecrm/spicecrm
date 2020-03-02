@@ -2,6 +2,8 @@
  * @module ModuleScrum
  */
 import {Injectable, EventEmitter} from '@angular/core';
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import {backend} from "../../../services/backend.service";
 
 interface scrumobject {
     id: string;
@@ -22,8 +24,11 @@ export class scrum {
     public selectedObject$: EventEmitter<scrumobject> = new EventEmitter<scrumobject>();
 
 
-    constructor() {
+    constructor(
+        private backend: backend,
+    ) {
         this._selectedObject = {id: undefined, type: ''};
+
     }
 
     /**
@@ -41,6 +46,17 @@ export class scrum {
     set selectedObject(selectedObject: scrumobject) {
         this._selectedObject = selectedObject;
         this.selectedObject$.emit(this._selectedObject);
+    }
+
+    /**
+     * handle drop and reassign the array sequence
+     * @param event: CdkDragDrop
+     * @param module: string
+     */
+    public onDrop(event: CdkDragDrop<any>, module: string) {
+        moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        const sequencedItems = event.container.data.map((item, index) => ({id: item.id, sequence: index}));
+        this.backend.postRequest('module/' + module, {}, sequencedItems);
     }
 
 }
