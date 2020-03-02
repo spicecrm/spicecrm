@@ -1,5 +1,5 @@
 /**
- * @module ModuleReportsDesigner
+ * @module ModuleReports
  */
 import {Component} from '@angular/core';
 import {language} from "../../../services/language.service";
