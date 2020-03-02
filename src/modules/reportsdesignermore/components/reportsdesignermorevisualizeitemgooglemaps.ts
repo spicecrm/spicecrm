@@ -92,24 +92,6 @@ export class ReportsDesignerMoreVisualizeItemGoogleMaps implements OnInit {
     }
 
     /**
-     * show selectModule modal and assign the value from response
-     */
-    private searchPeripheryModule() {
-        this.modal.openModal('ReportsDesignerSelectModuleModal')
-            .subscribe(modalRef => {
-                modalRef.instance.response.subscribe(response => {
-                    if (response) {
-                        this.properties.googlemaps.kreportgooglemapscircledesignermodule = response.module;
-                    }
-                });
-            });
-    }
-
-    private clearPeripheryModule() {
-        this.properties.googlemaps.kreportgooglemapscircledesignermodule = '';
-    }
-
-    /**
      * A function that defines how to track changes for items in the iterable (ngForOf).
      * https://angular.io/api/common/NgForOf#properties
      * @param index
