@@ -12,7 +12,7 @@ import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: 'field-report-category',
-    templateUrl: './src/modules/reportsdesigner/templates/fieldreportcategory.html',
+    templateUrl: './src/modules/reports/templates/fieldreportcategory.html',
 })
 export class FieldReportCategory extends fieldGeneric {
 
