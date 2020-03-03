@@ -1,11 +1,12 @@
 /**
  * @module SystemComponents
  */
-import {AfterViewInit, Component, forwardRef, Input, OnInit} from '@angular/core';
+import {AfterViewInit, Component, forwardRef, Input, OnDestroy, OnInit} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
 import {configurationService} from "../../services/configuration.service";
+import {Subscription} from "rxjs";
 
 /**
  * a generic input that renders a select with the companycodes
@@ -21,7 +22,7 @@ import {configurationService} from "../../services/configuration.service";
         }
     ]
 })
-export class SystemInputModuleField implements ControlValueAccessor, OnInit {
+export class SystemInputModuleField implements ControlValueAccessor, OnInit, OnDestroy {
 
     /**
      * input to disable the input
@@ -51,6 +52,8 @@ export class SystemInputModuleField implements ControlValueAccessor, OnInit {
      */
     private _fields: any[] = [];
 
+    private subscription: Subscription = new Subscription();
+
     constructor(
         private language: language,
         private metadata: metadata,
@@ -69,7 +72,7 @@ export class SystemInputModuleField implements ControlValueAccessor, OnInit {
         this.sortFields();
 
         // resort in case of Language change
-        this.language.currentlanguage$.subscribe((language) => {
+        this.subscription = this.language.currentlanguage$.subscribe((language) => {
             this.sortFields();
         });
     }
@@ -126,4 +129,7 @@ export class SystemInputModuleField implements ControlValueAccessor, OnInit {
         this._field = value;
     }
 
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
+    }
 }
