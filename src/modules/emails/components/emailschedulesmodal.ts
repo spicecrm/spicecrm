@@ -9,7 +9,7 @@ import {language} from '../../../services/language.service';
 import {view} from "../../../services/view.service";
 import {backend} from "../../../services/backend.service";
 import {metadata} from "../../../services/metadata.service";
-import {FormGroup, FormControl} from '@angular/forms';
+import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: "email-schedules-modal",
@@ -18,7 +18,7 @@ import {FormGroup, FormControl} from '@angular/forms';
 })
 export class EmailSchedulesModal {
     private self: any = {};
-    private componentconfig: any = {};
+
     constructor(private language: language,
                 private model: model,
                 private injector: Injector,
@@ -26,7 +26,8 @@ export class EmailSchedulesModal {
                 private modal: modal,
                 private metadata: metadata,
                 private modellist: modellist,
-                private backend: backend) {
+                private backend: backend,
+                private toast: toast) {
 
         this.view.isEditable = true;
         this.view.setEditMode();
@@ -36,10 +37,6 @@ export class EmailSchedulesModal {
     public ngOnInit() {
         this.model.module = 'EmailSchedules';
         this.model.initialize();
-    }
-
-    get itemcount() {
-        return this.modellist.listData.totalcount;
     }
 
     private close() {
@@ -53,9 +50,21 @@ export class EmailSchedulesModal {
             let selectedIds = this.modellist.getSelectedIDs();
             let params = {
                 module: this.modellist.module,
-                ids: selectedIds
+                ids: selectedIds,
+                data: this.model.data,
+                modulefilter: this.modellist.modulefilter,
+                searchterm: this.modellist.searchTerm,
+                aggregates: this.modellist.selectedAggregates
             };
-
+            this.backend.postRequest('/modules/EmailSchedules/saveSchedule', {}, params).subscribe(result => {
+                loadingRef.instance.self.destroy();
+                if (result.status == 'success') {
+                    this.toast.sendToast(result.status, 'success');
+                    this.close();
+                } else {
+                    this.toast.sendToast(result.msg, 'error');
+                }
+            });
         });
     }
 }
