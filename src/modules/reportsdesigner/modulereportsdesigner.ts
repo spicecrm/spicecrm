@@ -9,7 +9,7 @@ import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
 import {DragDropModule} from '@angular/cdk/drag-drop';
-import {ModuleReports} from "../reports/modulereports";
+import {ModuleReports} from "../../modules/reports/modulereports";
 
 import /*embed*/ {ReportsDesignerService} from './services/reportsdesigner.service';
 
