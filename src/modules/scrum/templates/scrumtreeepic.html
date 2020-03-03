@@ -6,7 +6,7 @@
     <scrum-tree-additem [title]="title" (newitem)="loadChanges($event)" module="ScrumUserStories"></scrum-tree-additem>
 </div>
 <system-spinner class="slds-p-around--xx-small" *ngIf="userstories.isloading && has_stories"></system-spinner>
-<ul role="group" *ngIf="userstories.items.length > 0">
-    <li *ngFor="let userstory of userstories.items" scrum-tree-userstory [userstory]="userstory" aria-level="3" role="treeitem"></li>
+<ul role="group" class="scrum-tree-epic-drop-list"  cdkDropList [cdkDropListData]="userstories.items" cdkDropListLockAxis="y" (cdkDropListDropped)="this.scrum.onDrop($event, 'ScrumUserStories')" *ngIf="userstories.items.length > 0">
+    <li *ngFor="let userstory of userstories.items" cdkDrag cdkDragBoundary=".scrum-tree-epic-drop-list" class="slds-drag--preview" style="list-style: none" scrum-tree-userstory [userstory]="userstory" aria-level="3" role="treeitem"></li>
 </ul>
 
