@@ -9,6 +9,7 @@ import {modellist} from "../../../services/modellist.service";
 import {language} from '../../../services/language.service';
 import {scrum} from '../services/scrum.service';
 import {relatedmodels} from "../../../services/relatedmodels.service";
+import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: '[scrum-tree-theme]',
@@ -45,7 +46,20 @@ export class ScrumTreeTheme implements OnDestroy {
      */
     private has_epics: boolean;
 
-    constructor(private scrum: scrum, private language: language, private modellist: modellist, private metadata: metadata, private model: model, private epics: relatedmodels) {
+    constructor(private scrum: scrum,
+                private language: language,
+                private modellist: modellist,
+                private metadata: metadata,
+                private model: model,
+                private backend: backend,
+                private epics: relatedmodels) {
+    }
+
+    /**
+     * getter for the title attribute
+     */
+    get title() {
+        return this.language.getLabel('LBL_ADD_EPIC');
     }
 
     /**
@@ -116,10 +130,5 @@ export class ScrumTreeTheme implements OnDestroy {
         this.loadRelatedEpics();
     }
 
-    /**
-     * getter for the title attribute
-     */
-    get title() {
-        return this.language.getLabel('LBL_ADD_EPIC');
-    }
+
 }
