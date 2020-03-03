@@ -1,11 +1,11 @@
-    <div class="slds-media__figure">
-        <system-icon [module]="report.report_module"></system-icon>
+<div class="slds-media__figure slds-m-right--none">
+    <system-icon [module]="report.report_module"></system-icon>
+</div>
+<div class="slds-media__body">
+    <div class="slds-grid slds-grid--align-spread slds-has-flexi-truncate">
+        <h3 class="slds-truncate"><a href="javascript:void(0);" (click)="navgiateDetail()">{{report.kreport_name}}</a></h3>
     </div>
-    <div class="slds-media__body">
-        <div class="slds-grid slds-grid--align-spread slds-has-flexi-truncate">
-            <h3 class="slds-truncate"><a href="javascript:void(0);" (click)="navgiateDetail()">{{report.kreport_name}}</a></h3>
-        </div>
-        <div class="slds-tile__detail slds-text-body--small">
-            <dd class="slds-item--detail slds-truncate" [innerHtml]="report.kreport_description"></dd>
-        </div>
+    <div class="slds-tile__detail slds-text-body--small">
+        <dd class="slds-item--detail slds-truncate" [innerHtml]="report.kreport_description"></dd>
     </div>
+</div>
