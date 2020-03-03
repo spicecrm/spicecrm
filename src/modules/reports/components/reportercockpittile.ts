@@ -6,7 +6,7 @@ import {
     Input,
 } from '@angular/core';
 import {backend} from '../../../services/backend.service';
-import {Router}   from '@angular/router';
+import {Router} from '@angular/router';
 
 /**
  * represents a tile in the cockpit that is one report the user can visualize
@@ -14,8 +14,8 @@ import {Router}   from '@angular/router';
 @Component({
     selector: 'reporter-cockpit-tile',
     templateUrl: './src/modules/reports/templates/reportercockpittile.html',
-    host:{
-        class: 'slds-tile slds-media slds-p-vertical--small slds-card__tile slds-p-horizontal--small slds-size--1-of-1 spicecrm-card-size slds-hint-parent'
+    host: {
+        class: 'slds-tile slds-p-around--xx-small slds-media slds-card__tile slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4 slds- slds-hint-parent'
     }
 })
 export class ReporterCockpitTile {
@@ -32,7 +32,7 @@ export class ReporterCockpitTile {
     /**
      * changes the route and displays the report
      */
-    private navgiateDetail(){
+    private navgiateDetail() {
         this.router.navigate(['/module/KReports/' + this.report.kreport_id]);
     }
 }
