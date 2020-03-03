@@ -15,7 +15,7 @@ import {backend} from "../../../services/backend.service";
 })
 export class EmailSchedulesModal {
     private self: any = {};
-    private targetlistname: string = '';
+    private componentconfig: any = {};
 
     constructor(private language: language,
                 private model: model,
@@ -34,22 +34,44 @@ export class EmailSchedulesModal {
     private close() {
         this.self.destroy();
     }
-    private export() {
+
+    /**
+     * @openModal ObjectModalModuleLookup
+     * @pass module
+     * @pass multiselect
+     * @setField email_subject
+     * @setField email_body
+     * @setField email_stylesheet_id
+     */
+    private copyFromTemplate() {
+        this.modal.openModal('ObjectModalModuleLookup', true, this.injector)
+            .subscribe(selectModal => {
+                selectModal.instance.module = 'EmailTemplates';
+                selectModal.instance.multiselect = false;
+                selectModal.instance.selectedItems.subscribe(items => {
+                    if (items.length) {
+                        this.model.setField('email_subject', items[0].subject);
+                        this.model.setField('email_body', items[0].body_html);
+                        this.model.setField('email_stylesheet_id', items[0].style);
+                    }
+                });
+            });
+    }
+
+    private send() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
-            loadingRef.instance.messagelabel = 'LBL_EXPORTING';
+            loadingRef.instance.messagelabel = 'LBL_LOADING';
 
             let selectedIds = this.modellist.getSelectedIDs();
             let params = {
-                listtype: this.modellist.currentList.type,
-                targetlistname: this.targetlistname,
-                owner: this.modellist.currentList.type == 'owner' ? true : false,
                 module: this.modellist.module,
-                modulefilter: this.modellist.modulefilter,
-                searchterm: this.modellist.searchTerm,
-                aggregates: this.modellist.selectedAggregates,
-                listid: this.modellist.currentList.id,
+                // subject:,
+                //                 // body:,
+                //                 // stylesheetid:,
+                //                 // mailbox:,
                 ids: selectedIds
             };
+            window.console.log(params);
         });
     }
 }

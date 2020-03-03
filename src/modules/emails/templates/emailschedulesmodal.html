@@ -4,13 +4,21 @@
         <field-container field="mailbox_id" [fieldconfig]="{fieldtype: 'mailboxes', scope: 'outboundmass'}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spicecrm-fieldminheight"></field-container>
         <div class="slds-grid">
             <field-container field="email_subject" class="slds-grow"  fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spicecrm-fieldminheight"></field-container>
+            <div class="slds-align-bottom slds-col--bump-left slds-m-left--small slds-p-bottom--xx-small">
+                <button [disabled]="!view.isEditMode()" (click)="copyFromTemplate()" class="slds-button slds-button--neutral">
+                    <system-button-icon icon="copy" position="left"></system-button-icon>
+                    {{language.getLabel('LBL_COPY')}}
+                </button>
+            </div>
         </div>
+
         <field-container field="email_body" [fieldconfig]="{fieldtype: 'richtext', asiframe:true, 'simplemode': true, height: '250px'}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spicecrm-fieldminheight"></field-container>
         <field-container field="email_stylesheet_id" [fieldconfig]="{fieldtype: 'stylesheetid'}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small spicecrm-fieldminheight"></field-container>
     </div>
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button class="slds-button slds-button--brand" (click)="send()">{{language.getLabel('LBL_SEND')}}</button>
     </system-modal-footer>
 </system-modal>
 <
