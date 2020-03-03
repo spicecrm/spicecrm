@@ -24,9 +24,9 @@ export class fieldMultienum extends fieldGeneric implements OnInit {
         public router: Router
     ) {
         super(model, view, language, metadata, router);
-        this.language.currentlanguage$.subscribe((newlang) => {
+        this.subscriptions.add(this.language.currentlanguage$.subscribe((newlang) => {
             this.buildOptions();
-        });
+        }));
     }
 
     public ngOnInit() {
