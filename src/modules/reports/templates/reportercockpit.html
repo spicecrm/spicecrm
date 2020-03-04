@@ -15,7 +15,7 @@
                     <reporter-cockpit-tile *ngFor="let report of getCategoryReports(category.bucket)" [report]="report"></reporter-cockpit-tile>
                 </div>
             </div>
-            <div *ngIf="category.items <= category.total" class="slds-card__footer slds-grid">
+            <div *ngIf="category.items < category.total" class="slds-card__footer slds-grid">
                 <div>
                     {{category.items}} {{language.getLabel('LBL_OF')}} {{category.total}}
                 </div>
