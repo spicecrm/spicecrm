@@ -23,6 +23,7 @@ import {canNavigateAway} from "./navigation.service";
 declare var System: any;
 declare var SystemJS: any;
 declare var SystemDynamicRouteContainer: any;
+declare var SystemNavigationCollector: any;
 declare var _;
 
 @Injectable()
@@ -213,7 +214,8 @@ export class metadata {
             .then((type: any) => {
                 this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
                     componentfactory.componentFactories.some(factory => {
-                        if (factory.componentType.name === "SystemDynamicRouteContainer") {
+                        // if (factory.componentType.name === "SystemDynamicRouteContainer") {
+                        if (factory.componentType.name === "SystemNavigationCollector") {
                             for (let route of this.routes) {
                                 this.router.config.unshift({
                                     path: route.path,
@@ -462,8 +464,8 @@ export class metadata {
         }
 
         retComponentSets.sort((a, b) => {
-            if ( !a.name ) return 1;
-            return a.name.localeCompare( b.name );
+            if (!a.name) return 1;
+            return a.name.localeCompare(b.name);
         });
 
         return retComponentSets;
@@ -698,7 +700,7 @@ export class metadata {
      * @param field the name of the field
      * @return true or false
      */
-    public hasField( module: string, field: string ): boolean {
+    public hasField(module: string, field: string): boolean {
         return true && this.fieldDefs[module] && this.fieldDefs[module][field];
     }
 
@@ -884,9 +886,9 @@ export class metadata {
      * @param module
      * @param listtype
      */
-    public deleteModuleListType(module: string, listtype: string){
+    public deleteModuleListType(module: string, listtype: string) {
         let typeIndex = this.moduleDefs[module].listtypes.findIndex(ltype => ltype.id == listtype);
-        if(typeIndex >= 0){
+        if (typeIndex >= 0) {
             this.moduleDefs[module].listtypes.splice(typeIndex, 1);
         }
         return this.moduleDefs[module].listtypes;
@@ -990,7 +992,7 @@ export class metadata {
      */
     public getSystemModuleByComponent(comp) {
         for (let component in this.componentDirectory) {
-            if(component == comp) {
+            if (component == comp) {
                 return this.componentDirectory[component].module;
             }
         }
@@ -1129,7 +1131,7 @@ export class metadata {
         this.actionSets[actionset_id] = {
             id: actionset_id,
             module: params.module,
-            name:  params.name,
+            name: params.name,
             package: params.package,
             version: params.version,
             actions: params.actions,

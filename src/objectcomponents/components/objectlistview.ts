@@ -38,7 +38,8 @@ export class ObjectListView implements AfterViewInit, OnDestroy {
     constructor(private navigation: navigation, private activatedRoute: ActivatedRoute, private metadata: metadata, private modellist: modellist, private model: model, private userpreferences: userpreferences) {
 
         // get the module from teh activated route
-        this.model.module = this.activatedRoute.params['value']['module'];
+        // this.model.module = this.activatedRoute.params['value']['module'];
+        this.model.module = this.navigation.activeRoute.params.module;
 
         // set the navigation paradigm
         this.navigation.setActiveModule(this.model.module);
