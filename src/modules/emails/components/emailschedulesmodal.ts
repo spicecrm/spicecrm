@@ -10,11 +10,12 @@ import {view} from "../../../services/view.service";
 import {backend} from "../../../services/backend.service";
 import {metadata} from "../../../services/metadata.service";
 import {toast} from "../../../services/toast.service";
+import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
     selector: "email-schedules-modal",
     templateUrl: "./src/modules/emails/templates/emailschedulesmodal.html",
-    providers: [model, view],
+    providers: [model, view, relatedmodels],
 })
 export class EmailSchedulesModal {
     private self: any = {};
@@ -27,23 +28,32 @@ export class EmailSchedulesModal {
                 private metadata: metadata,
                 private modellist: modellist,
                 private backend: backend,
-                private toast: toast) {
+                private toast: toast,
+                private relatedmodels: relatedmodels) {
 
         this.view.isEditable = true;
         this.view.setEditMode();
 
     }
 
+    /**
+     * initialize EmailSchedules
+     */
     public ngOnInit() {
         this.model.module = 'EmailSchedules';
         this.model.initialize();
     }
 
+    /**
+     * destroy modal instance
+     */
     private close() {
         this.self.destroy();
     }
 
-
+    /**
+     * save selected ids of modellist, module, model data and send object to backend
+     */
     private saveSchedule() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             loadingRef.instance.messagelabel = 'LBL_LOADING';
