@@ -1,16 +1,17 @@
 /**
  * @module ModuleReports
  */
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {metadata} from '../../../services/metadata.service';
 import {backend} from '../../../services/backend.service';
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'reporter-filter-item-enum',
     templateUrl: './src/modules/reports/templates/reporterfilteritemenum.html'
 })
-export class ReporterFilterItemEnum implements OnInit {
+export class ReporterFilterItemEnum implements OnInit, OnDestroy {
 
     @Input() private field: string = '';
     @Input() private wherecondition: any = {};
@@ -20,9 +21,10 @@ export class ReporterFilterItemEnum implements OnInit {
 
     private enumOptions: any[] = [];
     private valueArray: any = [];
+    private subscription: Subscription = new Subscription();
 
     constructor(private metadata: metadata, private language: language, private backend: backend) {
-        this.language.currentlanguage$.subscribe(() => {
+        this.subscription = this.language.currentlanguage$.subscribe(() => {
             this.getEnumOptions();
         });
     }
@@ -80,6 +82,10 @@ export class ReporterFilterItemEnum implements OnInit {
         // get the enum options
         this.getEnumOptions();
         this.initializeValueArray();
+    }
+
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     private initializeValueArray() {
