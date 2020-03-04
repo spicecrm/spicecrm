@@ -19,8 +19,9 @@ export class GlobalSearch implements OnDestroy {
     private searchTerm: string = '';
     private routeSubscription: any;
 
-    constructor(navigation: navigation, private elementref: ElementRef, router: Router, private activatedRoute: ActivatedRoute, private fts: fts, private language: language) {
-        this.routeSubscription = this.activatedRoute.params.subscribe(params => {
+    constructor(private navigation: navigation, private elementref: ElementRef, router: Router, private activatedRoute: ActivatedRoute, private fts: fts, private language: language) {
+        this.routeSubscription = this.navigation.activeRoute$.subscribe(route => {
+            const params = route.params;
             if (params.searchterm) {
                 // try to base 64 decode .. but can also be plain string
                 try {

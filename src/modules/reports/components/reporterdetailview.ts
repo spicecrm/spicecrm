@@ -134,9 +134,8 @@ export class ReporterDetailView implements OnInit {
         this.navigation.setActiveModule('KReports');
 
         // get the bean details
-        this.model.module = this.activatedRoute.snapshot.params.module;
-        this.model.id = this.activatedRoute.snapshot.params.id;
-
+        this.model.module = this.navigation.activeRoute.params.module;
+        this.model.id = this.navigation.activeRoute.params.id;
 
         this.model.getData(true, 'detailview', true, true).subscribe(data => {
             this.navigation.setActiveModule(this.model.module, this.model.id, data.summary_text);
