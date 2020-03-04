@@ -1,0 +1,6 @@
+<div [ngClass]="{'slds-hide': !isActive}">
+    <div #objectcontainer></div>
+    <div *ngIf="!loaded" class="slds-align_absolute-center slds-p-around--medium">
+        <system-spinner></system-spinner>
+    </div>
+</div>

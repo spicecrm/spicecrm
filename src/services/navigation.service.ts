@@ -10,6 +10,19 @@ import {CanActivate} from "@angular/router";
 import {modal} from "./modal.service";
 import {language} from "./language.service";
 
+declare var _: any;
+
+export interface routeObject {
+    path: string;
+    params: any;
+}
+
+export interface objectTab {
+    path: string;
+    params: any;
+    subtabs: routeObject[];
+}
+
 @Injectable()
 export class navigation {
 
@@ -132,6 +145,62 @@ export class navigation {
         })) {
             return true;
         } else return false;
+    }
+
+    /*
+    for the route management
+     */
+    public activeObject: string = '';
+    public activeRoute: any = {};
+    public activeRoute$: EventEmitter<any> = new EventEmitter<any>();
+    public objectTabs: objectTab[] = [];
+    public objectSubTabs: routeObject[] = [];
+    public routercontainer: any;
+
+    public handleNavigation(routeParams, routeConfig) {
+
+        this.activeRoute = {
+            path: routeConfig.path,
+            params: {...routeParams}
+        };
+        this.activeRoute$.emit(this.activeRoute);
+
+        if (routeConfig.path == 'module/:module') {
+            this.activeObject = routeParams.module;
+            this.objectSubTabs = [];
+        } else {
+
+            // check if we need to open a new tab
+            for (let objectTab of this.objectTabs) {
+                if (objectTab.path == this.activeRoute.path && _.isEqual(objectTab.params, this.activeRoute.params)) {
+                    return;
+                }
+            }
+
+            // if we are here we did not find an active tab for the route and add a new tab
+            this.objectTabs.unshift({
+                path: routeConfig.path,
+                params: {...routeParams},
+                subtabs: []
+            });
+        }
+
+
+    }
+
+    public closeObjectTab(object) {
+        let i = 0;
+        for (let objectTab of this.objectTabs) {
+            if (_.isEqual(objectTab, object)) {
+                this.objectTabs.splice(i, 1);
+                return;
+            }
+            i++;
+        }
+    }
+
+    public checkActiveRoute(object) {
+        return _.isEqual(object, this.activeRoute);
     }
 
 }
