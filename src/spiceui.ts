@@ -77,7 +77,7 @@ moment.defaultFormat = "YYYY-MM-DD HH:mm:ss";
  */
 @Component({
     selector: "spicecrm",
-    template: "<global-header></global-header><div [ngStyle]='outletstyle'><router-outlet></router-outlet></div><global-footer></global-footer>"
+    template: "<global-header></global-header><div [ngStyle]='outletstyle'><router-outlet></router-outlet><system-navigation-manager></system-navigation-manager></div><global-footer></global-footer>"
 })
 export class SpiceUI {
     constructor(private layout: layout, private render: Renderer2) {

@@ -12,6 +12,7 @@ import {model} from '../../services/model.service';
 import {broadcast} from '../../services/broadcast.service';
 import {favorite} from '../../services/favorite.service';
 import {navigation} from '../../services/navigation.service';
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'object-recordview',
@@ -21,61 +22,60 @@ import {navigation} from '../../services/navigation.service';
 })
 export class ObjectRecordView implements OnInit, OnDestroy {
     private moduleName: any = '';
-    private initialized: boolean = false;
-    private componentRefs: any = [];
     private componentconfig: any = {};
-    private componentSubscriptions: any[] = [];
-    private listViewDefs: any = [];
-    private componentSets: any = {};
+    private componentSubscriptions: Subscription = new Subscription();
 
     constructor(
         private broadcast: broadcast,
         private navigation: navigation,
         private activatedRoute: ActivatedRoute,
         private metadata: metadata,
-        private componentFactoryResolver: ComponentFactoryResolver,
         private model: model,
         private favorite: favorite,
-        private elementRef: ElementRef
     ) {
-        this.componentSubscriptions.push(this.broadcast.message$.subscribe(message => {
+        this.componentSubscriptions.add(this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         }));
-
     }
 
     public ngOnInit() {
-        this.moduleName = this.activatedRoute.params['value'].module;
+        // this.moduleName = this.activatedRoute.params['value'].module;
+        this.moduleName = this.navigation.activeRoute.params.module;
 
         // set theenavigation paradigm
         this.navigation.setActiveModule(this.moduleName);
 
         // get the bean details
         this.model.module = this.moduleName;
-        this.model.id = this.activatedRoute.params['value'].id;
+        this.model.id = this.navigation.activeRoute.params.id;
 
         // set data to the FAV service
         this.favorite.enable(this.model.module, this.model.id);
 
         this.model.getData(true, 'detailview', true, true).subscribe(data => {
             this.navigation.setActiveModule(this.moduleName, this.model.id, data.summary_text);
-
         });
 
-        this.buildContainer();
+        /**
+         * load the component config
+         */
+        this.componentconfig = this.metadata.getComponentConfig('ObjectRecordView', this.moduleName);
 
     }
 
+    /**
+     * unsbscribve from all subscriptions
+     */
     public ngOnDestroy() {
-        for (let component of this.componentRefs) {
-            component.destroy();
-        }
+        this.componentSubscriptions.unsubscribe();
 
-        for (let subscription of this.componentSubscriptions) {
-            subscription.unsubscribe();
-        }
     }
 
+    /**
+     * react to model changes if the happen outside of the scope
+     *
+     * @param message
+     */
     private handleMessage(message: any) {
         switch (message.messagetype) {
 
@@ -87,10 +87,5 @@ export class ObjectRecordView implements OnInit, OnDestroy {
         }
     }
 
-    private buildContainer() {
-        for (let component of this.componentRefs) {
-            component.destroy();
-        }
-        this.componentconfig = this.metadata.getComponentConfig('ObjectRecordView', this.moduleName);
-    }
+
 }

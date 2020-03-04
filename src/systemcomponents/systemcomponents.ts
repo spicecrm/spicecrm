@@ -268,7 +268,8 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemNavigationManagerRouteContainer
     ],
     entryComponents: [
-        SystemDynamicRouteContainer
+        SystemDynamicRouteContainer,
+        SystemNavigationCollector
     ],
     exports: [
         PaginationControlsComponent,

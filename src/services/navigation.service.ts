@@ -3,12 +3,13 @@
  */
 import {Injectable, EventEmitter} from "@angular/core";
 import {Title} from "@angular/platform-browser";
-import {Observable, Subject, of} from "rxjs";
+import {Observable, Subject, of, BehaviorSubject} from "rxjs";
 import {broadcast} from "./broadcast.service";
 import {configurationService} from "./configuration.service";
 import {CanActivate} from "@angular/router";
 import {modal} from "./modal.service";
 import {language} from "./language.service";
+import {metadata} from "./metadata.service";
 
 declare var _: any;
 
@@ -45,7 +46,10 @@ export class navigation {
      */
     private modelregisterCounter = 0;
 
-    constructor(private title: Title, private broadcast: broadcast, private configurationService: configurationService) {
+    public activeRoute: routeObject;
+    public activeRoute$: BehaviorSubject<routeObject>;
+
+    constructor(private title: Title, private broadcast: broadcast, private configurationService: configurationService, private metadata: metadata) {
         this.activeModule$ = new EventEmitter<string>();
 
         // subscribe to the save event .. so when the title for the current displayed bean changes update the browser title
@@ -60,6 +64,8 @@ export class navigation {
                 }
             } );
         }, 1 );
+
+        this.activeRoute$ = new BehaviorSubject(this.activeRoute);
 
     }
 
@@ -151,11 +157,12 @@ export class navigation {
     for the route management
      */
     public activeObject: string = '';
-    public activeRoute: any = {};
-    public activeRoute$: EventEmitter<any> = new EventEmitter<any>();
+
     public objectTabs: objectTab[] = [];
     public objectSubTabs: routeObject[] = [];
     public routercontainer: any;
+
+    public routercomponent: string;
 
     public handleNavigation(routeParams, routeConfig) {
 
@@ -163,7 +170,10 @@ export class navigation {
             path: routeConfig.path,
             params: {...routeParams}
         };
-        this.activeRoute$.emit(this.activeRoute);
+        this.activeRoute$.next(this.activeRoute);
+
+        let component = this.metadata.getRouteComponent(routeConfig.path);
+        this.routercomponent = component ? component : undefined;
 
         if (routeConfig.path == 'module/:module') {
             this.activeObject = routeParams.module;

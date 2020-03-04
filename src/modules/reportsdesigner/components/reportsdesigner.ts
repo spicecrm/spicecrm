@@ -1,7 +1,7 @@
 /**
  * @module ModuleReportsDesigner
  */
-import {ChangeDetectorRef, Component, Injector} from '@angular/core';
+import {ChangeDetectorRef, Component, Injector, OnDestroy} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {ReportsDesignerService} from "../services/reportsdesigner.service";
 import {reporterconfig} from "../../../modules/reports/services/reporterconfig";
@@ -9,7 +9,9 @@ import {view} from "../../../services/view.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
+import {navigation} from "../../../services/navigation.service";
 import {metadata} from "../../../services/metadata.service";
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'reports-designer',
@@ -21,7 +23,9 @@ import {metadata} from "../../../services/metadata.service";
     ],
     templateUrl: './src/modules/reportsdesigner/templates/reportsdesigner.html',
 })
-export class ReportsDesigner {
+export class ReportsDesigner implements OnDestroy {
+
+    private Subscriptions: Subscription = new Subscription();
 
     protected currentUnionListFields: any[] = [];
     private activeTab: 'details' | 'filter' | 'manipulate' | 'present' | 'visualize' | 'integrate' = 'manipulate';
@@ -33,6 +37,7 @@ export class ReportsDesigner {
                 private model: model,
                 private modal: modal,
                 private metadata: metadata,
+                private navigation: navigation,
                 private activatedRoute: ActivatedRoute,
                 private injector: Injector,
                 private reportsDesignerService: ReportsDesignerService) {
@@ -48,6 +53,13 @@ export class ReportsDesigner {
         this.view.setEditMode();
         this.view.isEditable = true;
         this.cdr.detectChanges();
+    }
+
+    /**
+     * kill any subscriptions
+     */
+    public ngOnDestroy(): void {
+        this.Subscriptions.unsubscribe();
     }
 
     /**
@@ -80,26 +92,29 @@ export class ReportsDesigner {
      * @set activeModule
      */
     private subscribeToActivatedRoute() {
-        this.activatedRoute.params.subscribe(params => {
-            if (!params.id || params.id.length == 0) return;
-            if (params.id == 'new') {
-                this.openSelectModuleModal();
-            } else {
-                this.model.id = params.id;
-                this.model.getData()
-                    .subscribe(res => {
-                        if (!res.report_module || res.report_module.length == 0) {
-                            this.openSelectModuleModal();
-                            this.activeTab = 'details';
-                        } else {
-                            const module = this.model.getField('report_module');
-                            this.reportsDesignerService.setCurrentPath(module, module);
-                            this.reportsDesignerService.activeModule = {unionid: 'root', module: res.report_module};
-                        }
-                        if (!res.listfields) this.model.setField('listfields', []);
-                    });
-            }
-        });
+        this.Subscriptions.add(
+            this.navigation.activeRoute$.subscribe(route => {
+                const params = route.params;
+                if (!params.id || params.id.length == 0) return;
+                if (params.id == 'new') {
+                    this.openSelectModuleModal();
+                } else {
+                    this.model.id = params.id;
+                    this.model.getData()
+                        .subscribe(res => {
+                            if (!res.report_module || res.report_module.length == 0) {
+                                this.openSelectModuleModal();
+                                this.activeTab = 'details';
+                            } else {
+                                const module = this.model.getField('report_module');
+                                this.reportsDesignerService.setCurrentPath(module, module);
+                                this.reportsDesignerService.activeModule = {unionid: 'root', module: res.report_module};
+                            }
+                            if (!res.listfields) this.model.setField('listfields', []);
+                        });
+                }
+            })
+        );
     }
 
     /**
