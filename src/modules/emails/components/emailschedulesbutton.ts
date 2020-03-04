@@ -1,12 +1,13 @@
 /**
  * @module ModuleEmails
  */
-import {Component, OnInit, Injector} from '@angular/core';
+import {Component, Injector} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {modellist} from '../../../services/modellist.service';
 import {modal} from '../../../services/modal.service';
+import {toast} from "../../../services/toast.service";
 
 
 @Component({
@@ -22,14 +23,25 @@ export class EmailSchedulesButton {
         private model: model,
         private modellist: modellist,
         private modal: modal,
-        private injector: Injector
-    ) {}
+        private injector: Injector,
+        private toast: toast
+    ) {
+    }
 
     get exportcount() {
         let selectedCount = this.modellist.getSelectedCount();
         return selectedCount ? selectedCount : this.modellist.listData.totalcount;
     }
+
+    /**
+     * throw error if the field emails doesnt exist
+     */
     public execute() {
-        this.modal.openModal('EmailSchedulesModal', true, this.injector);
+        if(this.model.fields.hasOwnProperty('emails')) {
+            this.modal.openModal('EmailSchedulesModal', true, this.injector);
+        } else {
+            this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
+        }
     }
+
 }
