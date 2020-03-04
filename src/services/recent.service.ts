@@ -18,7 +18,7 @@ export class recent {
         this.broadcast.message$.subscribe(message => this.handleMessage(message));
     }
 
-    get items() {
+    get items(): any[] {
         let recentItems = this.configuration.getData('recentitmes')
         return recentItems ? recentItems : [];
     }
