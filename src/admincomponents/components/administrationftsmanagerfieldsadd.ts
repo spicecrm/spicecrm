@@ -72,7 +72,7 @@ export class AdministrationFTSManagerFieldsAdd {
     private getModuleFields(module) {
         this.nodefields = [];
 
-        this.backend.getRequest('/dictionary/browser/' + module + '/fields').subscribe(items => {
+        this.backend.getRequest('fts/fields/' + module).subscribe(items => {
             this.nodefields = items;
         });
     }
