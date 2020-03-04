@@ -1,1 +1,21 @@
-<div #mapContainer style="width: 100%; height: 100%; border-radius: 4px; overflow: hidden;"></div>
+<div #mapContainer style="width: 100%; height: 100%; overflow: hidden;" class="slds-border--bottom"></div>
+
+<ng-template #legendContainer>
+    <div class="spice-google-maps-legend">
+        <div class="slds-border--bottom slds-p-around--x-small slds-text-align--center slds-text-heading--small slds-theme--shade">
+            {{vizdata.data.data.mapaddins.legend.title}}
+        </div>
+        <div class="slds-grow slds-scrollable--y" style="min-height: 0;">
+            <div *ngFor="let item of legendItems" class="slds-grid slds-border--bottom" style="height: 30px">
+                <div style="padding: 3px">
+                    <div [style.background-color]="'#' + item.color" class="spice-google-maps-legend-color-box">
+                        {{item.colorLabel}}
+                    </div>
+                </div>
+                <div class="slds-grow slds-truncate slds-p-around--x-small">
+                    {{item.text}}
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

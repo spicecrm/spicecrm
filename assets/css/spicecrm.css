@@ -1460,3 +1460,24 @@ ul.spice-taglist span.slds-badge {
 .spice-button-group-vertical .slds-button+.slds-button {
     margin-left: 0;
 }
+
+.spice-google-maps-legend {
+    margin-right: 60px;
+    width: 200px;
+    min-height: 200px;
+    background-color: #fff;
+    box-shadow: 0 0 8px #999;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 30px);
+    top: 10px;
+}
+
+.spice-google-maps-legend-color-box {
+    width: 24px;
+    height: 100%;
+    text-align: center;
+    line-height: 24px;
+    font-size: 1rem;
+    color: #fff;
+}
