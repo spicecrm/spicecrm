@@ -5,7 +5,7 @@ import {Component, SkipSelf} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
-import {ReportsDesignerService} from "../../reportsdesigner/services/reportsdesigner.service";
+import {ReportsDesignerService} from "../../../modules/reportsdesigner/services/reportsdesigner.service";
 
 @Component({
     selector: 'reports-designer-more-integrate-item-drilldown',

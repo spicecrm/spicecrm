@@ -4,12 +4,12 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 import {ObjectFields} from '../../objectfields/objectfields';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
-import {DragDropModule} from '@angular/cdk/drag-drop';
-import {ModuleReportsDesigner} from "../reportsdesigner/modulereportsdesigner";
+import {ModuleReportsDesigner} from "../../modules/reportsdesigner/modulereportsdesigner";
 
 import /*embed*/ {ReportsDesignerMorePresentItemStandardWithSummary} from "./components/reportsdesignermorepresentitemstandardwithsummary";
 import /*embed*/ {ReportsDesignerMorePresentItemStandardWithPreview} from "./components/reportsdesignermorepresentitemstandardwithpreview";

@@ -4,7 +4,7 @@
 import {Component, OnInit} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
-import {ReportsDesignerService} from "../../reportsdesigner/services/reportsdesigner.service";
+import {ReportsDesignerService} from "../../../modules/reportsdesigner/services/reportsdesigner.service";
 
 @Component({
     selector: 'reports-designer-more-visualize-item-high-charts',
