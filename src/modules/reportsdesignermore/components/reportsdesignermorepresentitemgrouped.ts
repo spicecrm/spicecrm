@@ -4,8 +4,8 @@
 import {Component, OnInit} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
-import {ReportsDesignerPresentItemStandard} from "../../reportsdesigner/components/reportsdesignerpresentitemstandard";
-import {ReportsDesignerService} from "../../reportsdesigner/services/reportsdesigner.service";
+import {ReportsDesignerPresentItemStandard} from "../../../modules/reportsdesigner/components/reportsdesignerpresentitemstandard";
+import {ReportsDesignerService} from "../../../modules/reportsdesigner/services/reportsdesigner.service";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
 @Component({
