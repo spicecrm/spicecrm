@@ -33,6 +33,10 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit {
      */
     private oms: any;
     /**
+     * MarkerClustererPlus
+     */
+    private markerCluster: any;
+    /**
      * popup window instance for markers
      */
     private infoWindow: any = {};
@@ -105,7 +109,7 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit {
      * set maker cluster
      */
     private setMarkerCluster() {
-        const markerCluster = new MarkerClusterer(this.map, this.markers,
+        this.markerCluster = new MarkerClusterer(this.map, this.markers,
             {imagePath: 'vendor/google-maps/MarkerClustererPlus/images/m'});
     }
 
@@ -164,7 +168,6 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit {
 
             iconData.fillColor = '#' + item.colorLabel;
             const markerData: any = {
-                id: this.model.generateGuid(),
                 map: this.map,
                 position: null,
                 title: !!item.title ? item.title : '',
@@ -215,6 +218,9 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit {
 
         if (!!this.oms) {
             this.addMarkerToOMS(marker);
+        }
+        if (!!this.markerCluster) {
+            this.markerCluster.addMarker(marker);
         }
     }
 }
