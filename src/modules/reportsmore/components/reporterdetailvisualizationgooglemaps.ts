@@ -29,14 +29,6 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit {
      */
     private map: any = {};
     /**
-     * OverlappingMarkerSpiderfier
-     */
-    private oms: any;
-    /**
-     * MarkerClustererPlus
-     */
-    private markerCluster: any;
-    /**
      * popup window instance for markers
      */
     private infoWindow: any = {};
@@ -109,32 +101,25 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit {
      * set maker cluster
      */
     private setMarkerCluster() {
-        this.markerCluster = new MarkerClusterer(this.map, this.markers,
+        const markerCluster = new MarkerClusterer(this.map, this.markers,
             {imagePath: 'vendor/google-maps/MarkerClustererPlus/images/m'});
     }
 
     /**
-     * set maker spiderfier
+     * set maker spiderfier and add markers to speiderfy
      */
     private setMarkerSpiderfier() {
-        this.oms = new OverlappingMarkerSpiderfier(this.map,
+        const oms = new OverlappingMarkerSpiderfier(this.map,
             {
                 markersWontMove: true,
                 markersWontHide: true,
                 keepSpiderfied: true
             });
-        this.markers.forEach(marker => this.addMarkerToOMS(marker));
-    }
-
-    /**
-     * add marker to OverlappingMarkerSpiderfier and set listener for popup
-     * @param marker
-     */
-    private addMarkerToOMS(marker) {
-        if (!this.oms) return;
-        this.oms.addMarker(marker, () => {
-            this.infoWindow.setContent(marker.info);
-            this.infoWindow.open(this.map, marker);
+        this.markers.forEach(marker => {
+            oms.addMarker(marker, () => {
+                this.infoWindow.setContent(marker.info);
+                this.infoWindow.open(this.map, marker);
+            });
         });
     }
 
@@ -154,7 +139,6 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit {
     private setMarkers() {
         this.markers = [];
         const mapBounds = new google.maps.LatLngBounds();
-        const mapGeoCoder = new google.maps.Geocoder();
         const iconData = {
             path: `M7.8,1.3L7.8,1.3C6-0.4,3.1-0.4,1.3,1.3c-1.8,1.7-1.8,4.6-0.1,6.3c0,0,0,0,0.1,0.1l3.2,3.2l3.2-3.2C9.6,6,9.6,3.2,7.8,1.3`,
             strokeColor: '#fff',
@@ -182,17 +166,6 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit {
             if (!!item.latitude && !!item.longitude) {
                 markerData.position = {lat: +item.latitude, lng: +item.longitude};
                 this.createMarker(markerData, mapBounds);
-            } else {
-                const address = `${item.street_address} ${item.postal_code} ${item.locality} ${item.country}`;
-                markerData.routeLabel = !!item.routeLabel ? item.routeLabel : '';
-                markerData.routeAddress = !!item.routeAddress ? item.routeAddress : '';
-
-                mapGeoCoder.geocode( {address: address}, (results, status) => {
-                    if (status == google.maps.GeocoderStatus.OK) {
-                        markerData.position = results[0].geometry.location;
-                        this.createMarker(markerData, mapBounds);
-                    }
-                });
             }
         });
     }
@@ -208,19 +181,12 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit {
         marker.addListener('click', () => {
             this.infoWindow.close();
             // if spiderfy is active it will add its own listener
-            if (!this.oms) {
+            if (!(window as any).OverlappingMarkerSpiderfier) {
                 this.infoWindow.open(this.map, marker);
             }
         });
         this.markers.push(marker);
         mapBounds.extend(marker.position);
         this.map.fitBounds(mapBounds);
-
-        if (!!this.oms) {
-            this.addMarkerToOMS(marker);
-        }
-        if (!!this.markerCluster) {
-            this.markerCluster.addMarker(marker);
-        }
     }
 }
