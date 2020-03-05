@@ -10,12 +10,11 @@ import {view} from "../../../services/view.service";
 import {backend} from "../../../services/backend.service";
 import {metadata} from "../../../services/metadata.service";
 import {toast} from "../../../services/toast.service";
-import {relatedmodels} from "../../../services/relatedmodels.service";
 
 @Component({
     selector: "email-schedules-modal",
     templateUrl: "./src/modules/emails/templates/emailschedulesmodal.html",
-    providers: [model, view, relatedmodels],
+    providers: [model, view],
 })
 export class EmailSchedulesModal {
     private self: any = {};
@@ -28,8 +27,7 @@ export class EmailSchedulesModal {
                 private metadata: metadata,
                 private modellist: modellist,
                 private backend: backend,
-                private toast: toast,
-                private relatedmodels: relatedmodels) {
+                private toast: toast) {
 
         this.view.isEditable = true;
         this.view.setEditMode();
