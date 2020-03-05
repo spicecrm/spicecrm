@@ -28,6 +28,9 @@ export class EmailSchedulesButton {
     ) {
     }
 
+    /**
+     * get the count of the selected objects
+     */
     get exportcount() {
         let selectedCount = this.modellist.getSelectedCount();
         return selectedCount ? selectedCount : this.modellist.listData.totalcount;
