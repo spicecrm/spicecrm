@@ -46,13 +46,6 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit {
     }
 
     /**
-     * @return isApiLoaded: boolean
-     */
-    get isApiLoaded(): boolean {
-        return (window as any).google && (window as any).google.maps;
-    }
-
-    /**
      * @return legendItems: object[]
      */
     get legendItems() {
@@ -149,25 +142,24 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit {
         };
 
         this.vizdata.data.data.pinpoints.forEach(item => {
+            if (!!item.latitude && !!item.longitude) return;
 
             iconData.fillColor = '#' + item.colorLabel;
             const markerData: any = {
                 map: this.map,
-                position: null,
                 title: !!item.title ? item.title : '',
                 icon: iconData,
                 info: !!item.info ? item.info : '',
-                animation: google.maps.Animation.DROP
+                animation: google.maps.Animation.DROP,
+                position: {lat: +item.latitude, lng: +item.longitude}
             };
             // set popup window content
             this.infoWindow.setContent(markerData.info);
 
-            // set the marker position either from the geo data or from address by mapGeoCoder
-            if (!!item.latitude && !!item.longitude) {
-                markerData.position = {lat: +item.latitude, lng: +item.longitude};
-                this.createMarker(markerData, mapBounds);
-            }
+            this.createMarker(markerData, mapBounds);
         });
+
+        this.map.fitBounds(mapBounds);
     }
 
     /**
@@ -187,6 +179,5 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit {
         });
         this.markers.push(marker);
         mapBounds.extend(marker.position);
-        this.map.fitBounds(mapBounds);
     }
 }
