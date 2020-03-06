@@ -50,13 +50,8 @@ export class QuestionsManagerAddModal implements OnInit {
             this.model.initializeModel();
             this.model.data.questionset_id = this.questionset.id;
         }
-        let params = {
-            fields: JSON.stringify( ['id', 'name', 'abbreviation'] ),
-            sortfield: 'name',
-            limit: -99
-        };
-        this.backend.getRequest('module/QuestionOptionCategories', params).subscribe(( response: any ) => {
-            let allCategories = response.list;
+        this.backend.getRequest('module/QuestionOptionCategories/getList').subscribe(( response: any ) => {
+            let allCategories = response;
             if ( this.questionset.data.categorypool && this.questionset.data.categorypool != '' ) {
                 let categorypool = this.questionset.data.categorypool.split(',');
                 allCategories.forEach( category => {
