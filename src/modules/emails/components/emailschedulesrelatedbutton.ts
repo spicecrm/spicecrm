@@ -15,6 +15,7 @@ import {backend} from "../../../services/backend.service";
     templateUrl: "./src/modules/emails/templates/emailschedulesrelatedbutton.html",
 })
 export class EmailSchedulesRelatedButton {
+    public prospects: any = [];
     public disabled: boolean = false;
 
     constructor(
@@ -32,15 +33,11 @@ export class EmailSchedulesRelatedButton {
         this.checkEmailsLink();
     }
 
-    // }
     public execute() {
-        this.modal.openModal('EmailSchedulesRelatedModal', true, this.injector);
+        this.modal.openModal('EmailSchedulesRelatedModal', true, this.injector).subscribe( modal => {
+               modal.instance.prospects = this.prospects;
+            });
     }
-
-    // private sendModulesToBackend(array) {
-    //     array = this.checkEmailsLink();
-    //     let params: {array};
-    //     window.console.log(params);
 
     /**
      * iterate through the model fields, find each field that is of type link, get the module name, and find these modules have an emails link
@@ -65,12 +62,15 @@ export class EmailSchedulesRelatedButton {
             }
             let body = {arrayOfModules};
 
-            this.backend.postRequest(`/module/${this.model.module}/${this.model.id}/checkEmailsLink`, {}, body).subscribe(result => {
+            this.backend.postRequest(`/module/${this.model.module}/${this.model.id}/checkProspectListsProspects`, {}, body).subscribe(result => {
                 loadingRef.instance.self.destroy();
+                if (result.status == 'success') {
+                    this.prospects = result.prospects;
+                } else {
+                    this.toast.sendToast(result.msg, 'error');
+                }
             });
         });
-
-        // window.console.log(body);
     }
 
 }

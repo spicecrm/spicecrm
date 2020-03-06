@@ -19,10 +19,7 @@
                     <thead>
                     <tr class="slds-text-title_caps">
                         <th scope="col">
-                            <div class="slds-truncate"></div>
-                        </th>
-                        <th scope="col">
-                            <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
+                            <div class="slds-truncate">{{language.getLabel('LBL_MODULE')}}</div>
                         </th>
                         <th scope="col">
                             <div class="slds-truncate">{{language.getLabel('LBL_COUNT')}}</div>
@@ -31,18 +28,14 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td class="slds-text-align_right" role="gridcell">
+                    <tr *ngFor="let prospect of prospects | keyvalue">
+                        <td>
                             <object-record-checklist-item></object-record-checklist-item>
+                            <div class="slds-truncate"> <system-icon [size]="'small'" [module]="prospect.key"></system-icon></div>
+                            <div class="slds-truncate">{{prospect.key}}</div>
                         </td>
                         <td>
-                            <div class="slds-truncate">icon</div>
-                        </td>
-                        <td>
-                            <div class="slds-truncate">name</div>
-                        </td>
-                        <td>
-                            <div class="slds-truncate">count</div>
+                            <div class="slds-truncate">{{prospect.value}}</div>
                         </td>
                     </tr>
                     </tbody>
