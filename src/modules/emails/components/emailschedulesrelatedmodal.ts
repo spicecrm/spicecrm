@@ -18,6 +18,7 @@ import {toast} from "../../../services/toast.service";
 export class EmailSchedulesRelatedModal {
     private self: any = {};
     private activetab: string = 'recipients';
+    private prospects: any = [];
     private isLoaded = false;
     constructor(private language: language,
                 private model: model,
@@ -35,6 +36,7 @@ export class EmailSchedulesRelatedModal {
 
     public ngOnInit() {
         this.model.module = "EmailSchedules";
+        window.console.log(this.prospects);
     }
 
     /**
