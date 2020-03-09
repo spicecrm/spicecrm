@@ -20,9 +20,9 @@ export class fieldEnumRadio extends fieldGeneric {
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);
 
-        this.language.currentlanguage$.subscribe((language) => {
+        this.subscriptions.add(this.language.currentlanguage$.subscribe((language) => {
             this.getOptions();
-        });
+        }));
     }
 
     public ngOnInit() {
