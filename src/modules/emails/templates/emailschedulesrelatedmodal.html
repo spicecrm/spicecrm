@@ -32,7 +32,7 @@
                             <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small ">
                                 <div class="slds-form-element slds-p-vertical--xx-small">
                                 <div class="slds-checkbox">
-                                    <input [disabled]="prospect.key == fiilterProspects(prospects)" type="checkbox" name="options" [checked]="prospect.checked" />
+                                    <input [disabled]="prospect.key == fiilterProspects(prospects)" type="checkbox" name="options" [checked]="prospect.value.selected"  />
                                     <label class="slds-checkbox__label" >
                                         <span class="slds-checkbox_faux"></span>
                                     </label>
@@ -43,7 +43,7 @@
                         </td>
                         <td>
                             <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small">
-                                <div class="slds-truncate">{{prospect.value}}</div>
+                                <div class="slds-truncate">{{prospect.value.count}}</div>
                             </div>
                         </td>
                     </tr>
