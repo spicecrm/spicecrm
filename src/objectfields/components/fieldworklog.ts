@@ -82,6 +82,12 @@ export class fieldWorklog extends fieldGeneric {
 
     set new_log_entry(val) {
         this._new_log_entry = val;
+
+        // SPICEUI-223: check on content. Inline editing won't have any origin:logs loaded
+        if(this.origin_logs.length < 1) {
+            this.origin_logs = this.logs;
+        }
+
         let new_logs = [...this.origin_logs];
         new_logs.unshift(
             {
