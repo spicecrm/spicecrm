@@ -9,6 +9,7 @@ import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 import {backend} from "../../../services/backend.service";
+import {configurationService} from "../../../services/configuration.service";
 
 @Component({
     selector: 'field-report-category',
@@ -22,6 +23,7 @@ export class FieldReportCategory extends fieldGeneric {
                 public router: Router,
                 public view: view,
                 public backend: backend,
+                public configuration: configurationService,
                 public metadata: metadata,
                 public model: model) {
         super(model, view, language, metadata, router);
@@ -46,8 +48,14 @@ export class FieldReportCategory extends fieldGeneric {
      * load reports categories from backend
      */
     private loadCategories() {
-        this.backend.getRequest('KReporter/categoriesmanager/categories').subscribe(categories => {
-            if (!!categories) this.categories = categories;
-        });
+        const categories = this.configuration.getData('reportcategories');
+        if (!categories) {
+            this.backend.getRequest('KReporter/categoriesmanager/categories').subscribe(categories => {
+                if (!!categories) this.categories = categories;
+            });
+        } else {
+            this.categories = categories;
+        }
     }
+
 }

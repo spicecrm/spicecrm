@@ -1,11 +1,12 @@
 /**
  * @module SystemComponents
  */
-import {AfterViewInit, Component, forwardRef, Input} from '@angular/core';
+import {AfterViewInit, Component, forwardRef, Input, OnDestroy} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
 import {configurationService} from "../../services/configuration.service";
+import {Subscription} from "rxjs";
 
 /**
  * a generic input that renders a select with the companycodes
@@ -21,7 +22,7 @@ import {configurationService} from "../../services/configuration.service";
         }
     ]
 })
-export class SystemInputModule implements ControlValueAccessor {
+export class SystemInputModule implements ControlValueAccessor, OnDestroy {
 
     /**
      * input to disable the input
@@ -42,6 +43,7 @@ export class SystemInputModule implements ControlValueAccessor {
     private onChange: (value: string) => void;
     private onTouched: () => void;
 
+    private subscription: Subscription = new Subscription();
     /**
      * holds the companycoded
      */
@@ -61,9 +63,13 @@ export class SystemInputModule implements ControlValueAccessor {
         this.sortModules();
 
         // resort in case of Language change
-        this.language.currentlanguage$.subscribe((language) => {
+        this.subscription = this.language.currentlanguage$.subscribe((language) => {
             this.sortModules();
         });
+    }
+
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     private sortModules() {

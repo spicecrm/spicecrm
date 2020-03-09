@@ -1194,6 +1194,45 @@ export class modellist implements OnDestroy {
 
 
     /**
+     * loads on top of the existing results for a single bucket
+     * @param bucketName: string
+     */
+    public loadMoreBucketList(bucketName) {
+        const bucket = this.buckets.bucketitems.find(b => b.bucket == bucketName);
+
+        if (!bucket || this.isLoading || bucket.items >= bucket.items.total) {
+            return false;
+        }
+        this.isLoading = true;
+        let aggregates = {};
+        aggregates[this.module] = this.selectedAggregates;
+        this.backend.getList(this.module, this.sortArray, this.lastFields, {
+            modulefilter: this.modulefilter,
+            start: this.listData.list.length,
+            limit: this.loadlimit,
+            listid: this.currentList.id,
+            searchterm: this.searchTerm,
+            searchgeo: this.searchGeo,
+            aggregates: aggregates,
+            buckets: {
+                bucketfield: this.buckets.bucketfield,
+                bucketitems: [bucket]
+            }
+        })
+            .subscribe((res: any) => {
+                this.listData.list = this.listData.list.concat(res.list);
+                this.lastLoad = new moment();
+
+                this.isLoading = false;
+
+                // save the current result
+                this.setToSession();
+            });
+        // }
+    }
+
+
+    /**
      * doanloads a list
      *
      * @param fields
