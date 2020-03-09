@@ -36,9 +36,19 @@ export class EmailSchedulesRelatedModal {
 
     public ngOnInit() {
         this.model.module = "EmailSchedules";
-        window.console.log(this.prospects);
     }
 
+    /**
+     * check if each module in prospect_lists_prospects Object doesn't have emails link
+     * @param modules
+     */
+    private fiilterProspects(modules) {
+        for (let module in modules) {
+            if (!this.metadata.getFieldDefs(module, 'emails')) {
+                return module;
+            }
+        }
+    }
     /**
      * destroy modal instance
      */

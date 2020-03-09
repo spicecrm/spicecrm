@@ -51,17 +51,10 @@ export class EmailSchedulesRelatedButton {
                 if (this.model.fields[item].type == 'link' && this.model.fields[item].hasOwnProperty('vname') && !this.model.fields[item].hasOwnProperty('link_type')) {
                     let module = this.language.getLabel(this.model.fields[item].vname).split(" ").join("");
                     arrayOfModules.push(module);
+
                 }
             });
-            // find each module in metadata, if module doesnt have emails as property take it out
-            for (let module of arrayOfModules) {
-                if (!this.metadata.getFieldDefs(module, 'emails')) {
-                    let pos = arrayOfModules.indexOf(module);
-                    arrayOfModules.splice(pos);
-                }
-            }
             let body = {arrayOfModules};
-
             this.backend.postRequest(`/module/${this.model.module}/${this.model.id}/checkProspectListsProspects`, {}, body).subscribe(result => {
                 loadingRef.instance.self.destroy();
                 if (result.status == 'success') {
