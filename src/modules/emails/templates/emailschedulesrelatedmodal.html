@@ -30,14 +30,7 @@
                     <tr *ngFor="let prospect of prospects | keyvalue" [ngClass]="{'slds-disabled-text': prospect.key == fiilterProspects(prospects)}">
                         <td>
                             <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small ">
-                                <div class="slds-form-element slds-p-vertical--xx-small">
-                                <div class="slds-checkbox">
-                                    <input [disabled]="prospect.key == fiilterProspects(prospects)" type="checkbox" name="options" [checked]="prospect.value.selected"  />
-                                    <label class="slds-checkbox__label" >
-                                        <span class="slds-checkbox_faux"></span>
-                                    </label>
-                                </div>
-                                </div>
+                                <system-checkbox [disabled]="prospect.key == fiilterProspects(prospects)"  [(ngModel)]="prospect.value.selected" (click)="select(prospect.key, prospect.value.selected)"></system-checkbox>
                             <div class="slds-truncate"> <system-icon [addclasses]="prospect.key == fiilterProspects(prospects) ? 'slds-icon_disabled' : null" [size]="'small'" [module]="prospect.key"></system-icon></div>
                             <div class="slds-truncate">{{prospect.key}}</div></div>
                         </td>
