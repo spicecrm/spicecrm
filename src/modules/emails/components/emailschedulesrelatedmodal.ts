@@ -19,7 +19,10 @@ export class EmailSchedulesRelatedModal {
     private self: any = {};
     private activetab: string = 'recipients';
     private prospects: any = [];
+    private selectedModules: any = [];
+
     private isLoaded = false;
+
     constructor(private language: language,
                 private model: model,
                 private injector: Injector,
@@ -38,6 +41,17 @@ export class EmailSchedulesRelatedModal {
         this.model.module = "EmailSchedules";
     }
 
+
+    private select(currentmodule, isSelected) {
+        if(isSelected) {
+            this.selectedModules.push(currentmodule);
+        } else {
+            let pos = this.selectedModules.indexOf(currentmodule);
+            this.selectedModules.splice(pos, 1);
+        }
+        window.console.log(this.selectedModules);
+    }
+
     /**
      * check if each module in prospect_lists_prospects Object doesn't have emails link
      * @param modules
@@ -49,6 +63,7 @@ export class EmailSchedulesRelatedModal {
             }
         }
     }
+
     /**
      * destroy modal instance
      */
