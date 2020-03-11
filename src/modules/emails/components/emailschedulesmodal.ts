@@ -56,7 +56,7 @@ export class EmailSchedulesModal {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             loadingRef.instance.messagelabel = 'LBL_LOADING';
             let selectedIds = this.modellist.getSelectedIDs();
-            let params = {
+            let body = {
                 module: this.modellist.module,
                 ids: selectedIds,
                 data: this.model.data,
@@ -64,7 +64,7 @@ export class EmailSchedulesModal {
                 searchterm: this.modellist.searchTerm,
                 aggregates: this.modellist.selectedAggregates
             };
-            this.backend.postRequest('/modules/EmailSchedules/saveSchedule', {}, params).subscribe(result => {
+            this.backend.postRequest('/modules/EmailSchedules/saveSchedule', {}, body).subscribe(result => {
                 loadingRef.instance.self.destroy();
                 if (result.status == 'success') {
                     this.toast.sendToast(result.status, 'success');
