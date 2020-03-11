@@ -46,18 +46,18 @@ export class EmailSchedulesRelatedButton {
     private checkEmailsLink() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             loadingRef.instance.messagelabel = 'LBL_LOADING';
-            let arrayOfModules = [];
-            Object.keys(this.model.fields).forEach(item => {
-                if (this.model.fields[item].type == 'link' && this.model.fields[item].hasOwnProperty('vname') && !this.model.fields[item].hasOwnProperty('link_type')) {
-                    let module = this.language.getLabel(this.model.fields[item].vname).split(" ").join("");
-                    arrayOfModules.push(module);
-
-                }
-            });
-            let body = {arrayOfModules};
-            this.backend.postRequest(`/module/${this.model.module}/${this.model.id}/checkProspectListsProspects`, {}, body).subscribe(result => {
+            // let arrayOfModules = [];
+            // Object.keys(this.model.fields).forEach(item => {
+            //     if (this.model.fields[item].type == 'link' && this.model.fields[item].hasOwnProperty('vname') && !this.model.fields[item].hasOwnProperty('link_type')) {
+            //         let module = this.language.getLabel(this.model.fields[item].vname).split(" ").join("");
+            //         arrayOfModules.push(module);
+            //
+            //     }
+            // });
+            // let body = {arrayOfModules};
+            this.backend.getRequest(`/module/${this.model.module}/${this.model.id}/checkProspectListsProspects`).subscribe(result => {
                 loadingRef.instance.self.destroy();
-                if (result.status == 'success') {
+                if (result.status) {
                     this.prospects = result.prospects;
                 } else {
                     this.toast.sendToast(result.msg, 'error');

@@ -18,10 +18,7 @@ import {toast} from "../../../services/toast.service";
 export class EmailSchedulesRelatedModal {
     private self: any = {};
     private activetab: string = 'recipients';
-    private prospects: any = [];
-    private selectedModules: any = [];
-
-    private isLoaded = false;
+    private prospects: any[] = [];
 
     constructor(private language: language,
                 private model: model,
@@ -39,29 +36,18 @@ export class EmailSchedulesRelatedModal {
 
     public ngOnInit() {
         this.model.module = "EmailSchedules";
-    }
-
-
-    private select(currentmodule, isSelected) {
-        if(isSelected) {
-            this.selectedModules.push(currentmodule);
-        } else {
-            let pos = this.selectedModules.indexOf(currentmodule);
-            this.selectedModules.splice(pos, 1);
-        }
-        window.console.log(this.selectedModules);
+        this.fiilterProspects();
     }
 
     /**
-     * check if each module in prospect_lists_prospects Object doesn't have emails link
-     * @param modules
+     * check if the each module of prospects has an email link, if not, it will be disabled and unselectable
      */
-    private fiilterProspects(modules) {
-        for (let module in modules) {
-            if (!this.metadata.getFieldDefs(module, 'emails')) {
-                return module;
-            }
-        }
+    private fiilterProspects() {
+        this.prospects = this.prospects.map(prospect => {
+            prospect.disabled = !this.metadata.getFieldDefs(prospect.module, 'emails');
+            prospect.selected = false;
+            return prospect;
+        });
     }
 
     /**
@@ -69,6 +55,13 @@ export class EmailSchedulesRelatedModal {
      */
     private close() {
         this.self.destroy();
+    }
+
+    /**
+     * filter the prospect by selection
+     */
+    private schedule() {
+        const selectedProspects = this.prospects.filter(prospect => prospect.selected).map(prospect => prospect.module);
     }
 
 }
