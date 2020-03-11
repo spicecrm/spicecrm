@@ -27,16 +27,16 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr *ngFor="let prospect of prospects | keyvalue" [ngClass]="{'slds-disabled-text': prospect.key == fiilterProspects(prospects)}">
+                    <tr *ngFor="let prospect of prospects" [class.slds-disabled-text]="prospect.disabled">
                         <td>
                             <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small ">
-                                <system-checkbox [disabled]="prospect.key == fiilterProspects(prospects)"  [(ngModel)]="prospect.value.selected" (click)="select(prospect.key, prospect.value.selected)"></system-checkbox>
-                            <div class="slds-truncate"> <system-icon [addclasses]="prospect.key == fiilterProspects(prospects) ? 'slds-icon_disabled' : null" [size]="'small'" [module]="prospect.key"></system-icon></div>
-                            <div class="slds-truncate">{{prospect.key}}</div></div>
+                                <system-checkbox [disabled]="prospect.disabled"  [(ngModel)]="prospect.selected"></system-checkbox>
+                            <div class="slds-truncate"> <system-icon [addclasses]="prospect.disabled ? 'slds-icon_disabled' : null" [size]="'small'" [module]="prospect.module"></system-icon></div>
+                            <div class="slds-truncate">{{language.getModuleName(prospect.module)}}</div></div>
                         </td>
                         <td>
                             <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small">
-                                <div class="slds-truncate">{{prospect.value.count}}</div>
+                                <div class="slds-truncate">{{prospect.count}}</div>
                             </div>
                         </td>
                     </tr>
@@ -46,6 +46,6 @@
         </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--brand">{{language.getLabel('LBL_SCHEDULE')}}</button>
+        <button (click)="schedule()" class="slds-button slds-button--brand">{{language.getLabel('LBL_SCHEDULE')}}</button>
     </system-modal-footer>
 </system-modal>
