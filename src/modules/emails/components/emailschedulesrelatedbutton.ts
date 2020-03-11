@@ -17,6 +17,7 @@ import {backend} from "../../../services/backend.service";
 export class EmailSchedulesRelatedButton {
     public prospects: any = [];
     public disabled: boolean = false;
+    public listId: string;
 
     constructor(
         private language: language,
@@ -36,6 +37,7 @@ export class EmailSchedulesRelatedButton {
     public execute() {
         this.modal.openModal('EmailSchedulesRelatedModal', true, this.injector).subscribe( modal => {
                modal.instance.prospects = this.prospects;
+               modal.instance.listId = this.listId;
             });
     }
 
@@ -59,6 +61,7 @@ export class EmailSchedulesRelatedButton {
                 loadingRef.instance.self.destroy();
                 if (result.status) {
                     this.prospects = result.prospects;
+                    this.listId = result.listId;
                 } else {
                     this.toast.sendToast(result.msg, 'error');
                 }

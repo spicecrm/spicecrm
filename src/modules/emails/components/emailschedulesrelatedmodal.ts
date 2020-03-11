@@ -19,7 +19,7 @@ export class EmailSchedulesRelatedModal {
     private self: any = {};
     private activetab: string = 'recipients';
     private prospects: any[] = [];
-
+    private listId: string;
     constructor(private language: language,
                 private model: model,
                 private injector: Injector,
@@ -36,6 +36,7 @@ export class EmailSchedulesRelatedModal {
 
     public ngOnInit() {
         this.model.module = "EmailSchedules";
+        this.model.initialize();
         this.fiilterProspects();
     }
 
@@ -60,8 +61,25 @@ export class EmailSchedulesRelatedModal {
     /**
      * filter the prospect by selection
      */
-    private schedule() {
-        const selectedProspects = this.prospects.filter(prospect => prospect.selected).map(prospect => prospect.module);
+    private saveSchedule() {
+        this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
+            loadingRef.instance.messagelabel = 'LBL_LOADING';
+            const selectedProspects = this.prospects.filter(prospect => prospect.selected).map(prospect => prospect.module);
+            let body = {
+                listId: this.listId,
+                modules: selectedProspects,
+                data: this.model.data
+            };
+            this.backend.postRequest('/modules/EmailSchedules/saveScheduleFromProspectList', {}, body).subscribe(result => {
+                loadingRef.instance.self.destroy();
+                if (result.status == 'success') {
+                    this.toast.sendToast(result.status, 'success');
+                    this.close();
+                } else {
+                    this.toast.sendToast(result.msg, 'error');
+                }
+            });
+        });
     }
 
 }
