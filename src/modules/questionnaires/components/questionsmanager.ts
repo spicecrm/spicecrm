@@ -29,7 +29,7 @@ export class QuestionsManager implements OnInit {
     constructor( private language: language, private model: model, private backend: backend, private modalservice: modal ) { }
 
     public ngOnInit(): void {
-        this.backend.getRequest('module/QuestionSets/'+this.model.id+'/related/questions' ).subscribe( (response: any) => {
+        this.backend.getRequest('module/QuestionSets/'+this.model.id+'/related/questions', {limit: 999} ).subscribe( (response: any) => {
             for ( let id in response ) {
                 this.questions.push( this.model.utils.backendModel2spice('Questions', response[id] ));
             }

@@ -28,7 +28,7 @@ export class QuestionnaireRender implements OnInit {
     private loadQuestionsets(): void {
         this.isLoading = true;
         this.questionsets = [];
-        this.backend.getRequest('module/Questionnaires/'+this.questionnaire.id+'/related/questionsets').subscribe( questionsets => {
+        this.backend.getRequest('module/Questionnaires/'+this.questionnaire.id+'/related/questionsets', {limit: 999}).subscribe( questionsets => {
 
             for (let key of Object.keys( questionsets )) this.questionsets.push( questionsets[key] );
             this.questionsets.sort((a, b) => {
