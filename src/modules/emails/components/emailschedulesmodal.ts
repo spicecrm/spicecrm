@@ -66,7 +66,7 @@ export class EmailSchedulesModal {
             };
             this.backend.postRequest('/modules/EmailSchedules/saveSchedule', {}, body).subscribe(result => {
                 loadingRef.instance.self.destroy();
-                if (result.status == 'success') {
+                if (result.status) {
                     this.toast.sendToast(result.status, 'success');
                     this.close();
                 } else {
