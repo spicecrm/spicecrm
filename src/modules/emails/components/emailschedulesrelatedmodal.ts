@@ -72,7 +72,7 @@ export class EmailSchedulesRelatedModal {
             };
             this.backend.postRequest('/modules/EmailSchedules/saveScheduleFromProspectList', {}, body).subscribe(result => {
                 loadingRef.instance.self.destroy();
-                if (result.status == 'success') {
+                if (result.status) {
                     this.toast.sendToast(result.status, 'success');
                     this.close();
                 } else {
