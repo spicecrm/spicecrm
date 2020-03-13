@@ -216,8 +216,8 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
             start: (this.currentPage - 1) * this.listEntries,
             limit: this.listEntries,
             whereConditions: JSON.stringify(whereConditions),
-            parentbeanId: this.model.getField('parentBeanId'),
-            parentbeanModule: this.model.getField('parentBeanModule'),
+            parentbeanId: this.model['parentBeanId'],
+            parentbeanModule: this.model['parentBeanModule'],
             sort: undefined
         };
 
