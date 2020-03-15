@@ -7,7 +7,7 @@ import {configurationService} from './configuration.service';
 import {session} from './session.service';
 import {backend} from './backend.service';
 import {broadcast} from './broadcast.service';
-import {Subject, of} from 'rxjs';
+import {Subject, of, Observable} from 'rxjs';
 
 @Injectable()
 export class recent {
@@ -108,7 +108,7 @@ export class recent {
         }
     }
 
-    public getModuleRecent(module: string) {
+    public getModuleRecent(module: string): Observable<any> {
         // special handling for Home
         if (module == 'Home') {
             // return 5 items

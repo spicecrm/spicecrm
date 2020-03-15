@@ -12,7 +12,7 @@ export class SystemNavigationCollector {
     constructor(private activatedRoute: ActivatedRoute, private navigation: navigation) {
         this.activatedRoute.params.subscribe(routeParams => {
             if(this.activatedRoute.routeConfig) {
-                this.navigation.handleNavigation(routeParams, this.activatedRoute.routeConfig);
+                this.navigation.handleNavigation(routeParams, this.activatedRoute.routeConfig, this.activatedRoute.snapshot);
             }
         });
     }

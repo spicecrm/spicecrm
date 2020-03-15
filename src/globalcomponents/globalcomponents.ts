@@ -66,6 +66,15 @@ import /*embed*/ {GlobalAppLauncher} from "./components/globalapplauncher";
 import /*embed*/ {GlobalAppLauncherDialog} from "./components/globalapplauncherdialog";
 import /*embed*/ {GlobalAppLauncherDialogRoleTile} from "./components/globalapplauncherdialogroletile";
 
+import /*embed*/ {GlobalNavigationTabbed} from "./components/globalnavigationtabbed";
+import /*embed*/ {GlobalNavigationTabbedMenu} from "./components/globalnavigationtabbedmenu";
+import /*embed*/ {GlobalNavigationTabbedMenuModules} from "./components/globalnavigationtabbedmenumodules";
+import /*embed*/ {GlobalNavigationTabbedMenuModuleMenu} from "./components/globalnavigationtabbedmenumodulemenu";
+import /*embed*/ {GlobalNavigationTabbedMenuTab} from "./components/globalnavigationtabbedmenutab";
+import /*embed*/ {GlobalNavigationTabbedMoreTab} from "./components/globalnavigationtabbedmoretab";
+import /*embed*/ {GlobalNavigationTabbedSubtabs} from "./components/globalnavigationtabbedsubtabs";
+import /*embed*/ {GlobalNavigationTabbedSubtabItem} from "./components/globalnavigationtabbedsubtabitem";
+
 
 import /*embed*/ {GlobalUser} from "./components/globaluser";
 import /*embed*/ {GlobaUserPanel} from "./components/globaluserpanel";
@@ -157,7 +166,15 @@ import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobt
         GlobalSearchModuleOnly,
         GlobalSearchModuleItem,
         GlobalLoginGoogle,
-        GlobalObtainImportantPreferences
+        GlobalObtainImportantPreferences,
+        GlobalNavigationTabbed,
+        GlobalNavigationTabbedMenu,
+        GlobalNavigationTabbedMenuModules,
+        GlobalNavigationTabbedMenuModuleMenu,
+        GlobalNavigationTabbedMenuTab,
+        GlobalNavigationTabbedMoreTab,
+        GlobalNavigationTabbedSubtabs,
+        GlobalNavigationTabbedSubtabItem
     ],
     entryComponents: [
         GlobalHeader,
