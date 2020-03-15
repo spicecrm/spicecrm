@@ -1,70 +1,140 @@
 import {
     Component,
     Input,
-    OnInit, ViewChild, ViewContainerRef, ChangeDetectionStrategy, ChangeDetectorRef
+    OnInit, ViewChild, ViewContainerRef, ChangeDetectionStrategy, ChangeDetectorRef, SkipSelf, OnDestroy
 } from '@angular/core';
 import {Router} from '@angular/router';
 import {broadcast} from '../../services/broadcast.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
-import {navigation, routeObject} from '../../services/navigation.service';
-import {Subject, Observable} from 'rxjs';
+import {navigation, objectTab, objectTabInfo, routeObject} from '../../services/navigation.service';
+import {navigationtab} from '../../services/navigationtab.service';
+import {Subject, Observable, Subscription} from 'rxjs';
 
 declare var _: any;
 
 @Component({
     selector: 'system-navigation-manager-route-container',
     templateUrl: './src/systemcomponents/templates/systemnavigationmanagerroutecontainer.html',
+    providers: [navigationtab]
 })
-export class SystemNavigationManagerRouteContainer {
-    @ViewChild('objectcontainer', {read: ViewContainerRef}) private objectcontainer: ViewContainerRef;
+export class SystemNavigationManagerRouteContainer implements OnInit, OnDestroy {
 
-    @Input() private object: routeObject;
+    /**
+     * the tab object
+     */
+    @Input() private object: objectTab;
+
+    /**
+     * the tabid
+     */
+    @Input() private tabid: string;
+
+    /**
+     * the id of the parenttab if this is a subtab
+     */
+    @Input() private parentttabid: string;
+
+    /**
+     * inidcates if the tab is loaded
+     */
     private loaded = false;
-    private isActive: boolean = true;
 
-    constructor(private metadata: metadata, private language: language, private router: Router, private broadcast: broadcast, private navigation: navigation, private changeDetectorRef: ChangeDetectorRef) {
-        this.navigation.activeRoute$.subscribe(activeRoute => {
-            if(_.isEqual(this.object.params, activeRoute.params)) {
-                this.isActive = true;
-                this.changeDetectorRef.reattach();
-            } else {
-                this.isActive = false;
-                this.changeDetectorRef.detach();
-                this.changeDetectorRef.detectChanges();
-            }
-        });
+    /**
+     * the component from the dynamic route to be rendered
+     */
+    private routercomponent: string;
+
+    /**
+     * internally held rendere path
+     */
+    private renderedPath: string;
+
+    /**
+     * internally held rendered component
+     */
+    private rendererParams: string;
+
+    /**
+     * holds component subscriptions
+     */
+    private subscriptions: Subscription = new Subscription();
+
+    constructor(private metadata: metadata, private language: language, private router: Router, private broadcast: broadcast, @SkipSelf() private navigation: navigation, private navigationtab: navigationtab, private changeDetectorRef: ChangeDetectorRef) {
+        this.changeDetectorRef.detach();
+
+        // add  subscription to the nav service
+        this.subscriptions.add(
+            this.navigationtab.tabinfo$.subscribe((tabinfo: objectTabInfo) => {
+                this.navigation.settabinfo(this.tabid, tabinfo);
+            })
+        );
     }
 
-    /*
-    public ngOnInit() {
-
-        switch(this.object.path) {
-            case 'module/:module/:id':
-                this.metadata.addComponent('ObjectRecordView2', this.objectcontainer).subscribe(componentRef => {
-                   componentRef.instance.module = this.object.params.module;
-                   componentRef.instance.id = this.object.params.id;
-                });
-                break;
-            default:
-                break;
+    public ngOnInit(): void {
+        // pass on the tab id if we are not on main, the navigation is subtabbed and the object allows for subtabs
+        if (this.tabid != 'main' && this.navigation.navigationparadigm == 'subtabbed' && this.object.enablesubtabs) {
+            this.navigationtab.tabid = this.parentttabid ? this.parentttabid : this.tabid;
         }
-    }
-    */
 
-    /*
+        this.subscriptions.add(
+            this.navigation.activeTab$.subscribe(activetab => {
+                if (activetab == this.tabid) {
+                    let component;
+                    switch (this.tabid) {
+                        case 'main':
+                            if (this.renderedPath != this.navigation.maintab.path || !_.isEqual(this.rendererParams, this.navigation.maintab.params)) {
+                                component = this.metadata.getRouteComponent(this.navigation.maintab.path);
+                                this.routercomponent = component ? component : undefined;
+                                this.navigationtab.activeRoute = {
+                                    path: this.navigation.maintab.path,
+                                    params: this.navigation.maintab.params
+                                };
+                                this.navigationtab.activeRoute$.next(this.navigationtab.activeRoute);
+
+                                this.renderedPath = this.navigation.maintab.path;
+                                this.rendererParams = {...this.navigation.maintab.params};
+                            }
+                            break;
+                        default:
+                            if (this.renderedPath != this.object.path || !_.isEqual(this.rendererParams, this.object.params)) {
+                                component = this.metadata.getRouteComponent(this.object.path.replace('tab/:tabid/', ''));
+                                this.routercomponent = component ? component : undefined;
+                                this.navigationtab.activeRoute = {
+                                    path: this.object.path,
+                                    params: this.object.params
+                                };
+                                this.navigationtab.activeRoute$.next(this.navigationtab.activeRoute);
+
+                                this.renderedPath = this.object.path;
+                                this.rendererParams = {...this.object.params};
+                            }
+                            break;
+                    }
+                    this.loaded = true;
+                    this.changeDetectorRef.reattach();
+                    this.changeDetectorRef.markForCheck();
+                } else {
+                    this.changeDetectorRef.detach();
+                    this.changeDetectorRef.detectChanges();
+                }
+            })
+        );
+    }
+
+    /**
+     * unsubscribe from any pending subscription
+     */
+    public ngOnDestroy(): void {
+        this.subscriptions.unsubscribe();
+    }
+
+    /**
+     * returns if the current tba is active
+     */
     get isActive() {
-        return this.navigation.checkActiveRoute(this.object);
+        return this.navigation.displayTab == this.tabid;
     }
-    */
 
-    public addComponent(component, params) {
-        let intfunc = setInterval(() => { this.changeDetectorRef.detectChanges(); }, 50);
 
-        this.metadata.addComponent(component, this.objectcontainer).subscribe(componentRef => {
-            componentRef.instance.module = params.module;
-            componentRef.instance.id = params.id;
-            this.loaded = true;
-        });
-    }
 }

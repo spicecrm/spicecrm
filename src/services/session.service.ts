@@ -103,7 +103,7 @@ export class session {
      *
      * @param key
      */
-    public clearSessionData(key){
+    public clearSessionData(key) {
         sessionStorage.removeItem(key);
     }
     /**

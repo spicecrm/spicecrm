@@ -7,6 +7,7 @@ import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {modellist} from '../../services/modellist.service';
 import {model} from '../../services/model.service';
+import {navigationtab} from '../../services/navigationtab.service';
 import {navigation} from '../../services/navigation.service';
 import {userpreferences} from '../../services/userpreferences.service';
 
@@ -35,14 +36,14 @@ export class ObjectListView implements AfterViewInit, OnDestroy {
      */
     private modellistSubscription: any;
 
-    constructor(private navigation: navigation, private activatedRoute: ActivatedRoute, private metadata: metadata, private modellist: modellist, private model: model, private userpreferences: userpreferences) {
+    constructor(private navigation: navigation, private navigationtab: navigationtab, private activatedRoute: ActivatedRoute, private metadata: metadata, private modellist: modellist, private model: model, private userpreferences: userpreferences) {
 
         // get the module from teh activated route
         // this.model.module = this.activatedRoute.params['value']['module'];
-        this.model.module = this.navigation.activeRoute.params.module;
+        this.model.module = this.navigationtab.activeRoute.params.module;
 
         // set the navigation paradigm
-        this.navigation.setActiveModule(this.model.module);
+        // this.navigation.setActiveModule(this.model.module);
 
         // set the module and get the list
         this.modellist.module = this.model.module;

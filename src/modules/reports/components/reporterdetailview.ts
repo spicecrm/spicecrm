@@ -7,7 +7,7 @@ import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
-import {navigation} from '../../../services/navigation.service';
+import {navigationtab} from '../../../services/navigationtab.service';
 import {broadcast} from '../../../services/broadcast.service';
 
 import {reporterconfig} from '../services/reporterconfig';
@@ -68,7 +68,7 @@ export class ReporterDetailView implements OnInit {
                 private model: model,
                 private backend: backend,
                 private activatedRoute: ActivatedRoute,
-                private navigation: navigation,
+                private navigationtab: navigationtab,
                 private router: Router,
                 private reporterconfig: reporterconfig,
                 private view: view) {
@@ -131,14 +131,14 @@ export class ReporterDetailView implements OnInit {
     public ngOnInit(): void {
 
         // set theenavigation paradigm
-        this.navigation.setActiveModule('KReports');
+        this.navigationtab.setTabInfo({displayname: this.language.getModuleName(this.model.module), displaymodule: this.model.module});
 
         // get the bean details
-        this.model.module = this.navigation.activeRoute.params.module;
-        this.model.id = this.navigation.activeRoute.params.id;
+        this.model.module = this.navigationtab.activeRoute.params.module;
+        this.model.id = this.navigationtab.activeRoute.params.id;
 
         this.model.getData(true, 'detailview', true, true).subscribe(data => {
-            this.navigation.setActiveModule(this.model.module, this.model.id, data.summary_text);
+            this.navigationtab.setTabInfo({displayname: data.summary_text,displaymodule: this.model.module});
             if (data.visualization_params != '') {
                 let visualizationParams = data.visualization_params;
                 if (visualizationParams && visualizationParams.layout && visualizationParams.layout != '-') {

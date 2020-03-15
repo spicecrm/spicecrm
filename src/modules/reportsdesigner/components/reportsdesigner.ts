@@ -9,7 +9,7 @@ import {view} from "../../../services/view.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
-import {navigation} from "../../../services/navigation.service";
+import {navigationtab} from "../../../services/navigationtab.service";
 import {metadata} from "../../../services/metadata.service";
 import {Subscription} from "rxjs";
 
@@ -37,7 +37,7 @@ export class ReportsDesigner implements OnDestroy {
                 private model: model,
                 private modal: modal,
                 private metadata: metadata,
-                private navigation: navigation,
+                private navigationtab: navigationtab,
                 private activatedRoute: ActivatedRoute,
                 private injector: Injector,
                 private reportsDesignerService: ReportsDesignerService) {
@@ -93,7 +93,7 @@ export class ReportsDesigner implements OnDestroy {
      */
     private subscribeToActivatedRoute() {
         this.Subscriptions.add(
-            this.navigation.activeRoute$.subscribe(route => {
+            this.navigationtab.activeRoute$.subscribe(route => {
                 const params = route.params;
                 if (!params.id || params.id.length == 0) return;
                 if (params.id == 'new') {

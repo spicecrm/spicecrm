@@ -12,6 +12,7 @@ import {model} from '../../services/model.service';
 import {broadcast} from '../../services/broadcast.service';
 import {favorite} from '../../services/favorite.service';
 import {navigation} from '../../services/navigation.service';
+import {navigationtab} from '../../services/navigationtab.service';
 import {Subscription} from "rxjs";
 
 @Component({
@@ -28,6 +29,7 @@ export class ObjectRecordView implements OnInit, OnDestroy {
     constructor(
         private broadcast: broadcast,
         private navigation: navigation,
+        private navigationtab: navigationtab,
         private activatedRoute: ActivatedRoute,
         private metadata: metadata,
         private model: model,
@@ -40,20 +42,21 @@ export class ObjectRecordView implements OnInit, OnDestroy {
 
     public ngOnInit() {
         // this.moduleName = this.activatedRoute.params['value'].module;
-        this.moduleName = this.navigation.activeRoute.params.module;
+        this.moduleName = this.navigationtab.activeRoute.params.module;
 
         // set theenavigation paradigm
-        this.navigation.setActiveModule(this.moduleName);
+        // this.navigation.setActiveModule(this.moduleName);
 
         // get the bean details
         this.model.module = this.moduleName;
-        this.model.id = this.navigation.activeRoute.params.id;
+        this.model.id = this.navigationtab.activeRoute.params.id;
 
         // set data to the FAV service
         this.favorite.enable(this.model.module, this.model.id);
 
         this.model.getData(true, 'detailview', true, true).subscribe(data => {
-            this.navigation.setActiveModule(this.moduleName, this.model.id, data.summary_text);
+            // this.navigation.setActiveModule(this.moduleName, this.model.id, data.summary_text);
+            this.navigationtab.setTabInfo({displayname: data.summary_text, displaymodule: this.model.module});
         });
 
         /**

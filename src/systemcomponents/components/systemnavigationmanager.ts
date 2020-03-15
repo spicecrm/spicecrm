@@ -6,15 +6,16 @@ import {session} from '../../services/session.service';
     selector: 'system-navigation-manager',
     templateUrl: './src/systemcomponents/templates/systemnavigationmanager.html',
 })
-export class SystemNavigationManager implements AfterViewInit {
-
-    @ViewChild('routercontainer', {read: ViewContainerRef}) private routercontainer: ViewContainerRef;
+export class SystemNavigationManager {
 
     constructor(private session: session, private navigation: navigation, private changeDetectorRef: ChangeDetectorRef) {
 
     }
 
-    public ngAfterViewInit() {
-        this.navigation.routercontainer = this.routercontainer;
+    /**
+     * checks if the user is authenticates
+     */
+    get authenticated() {
+        return this.session.authData.sessionId && this.session.authData.loaded === true;
     }
 }

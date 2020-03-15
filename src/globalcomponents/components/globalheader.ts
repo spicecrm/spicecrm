@@ -3,30 +3,29 @@
  */
 import {
     Component,
-    ElementRef,
-    HostListener,
-    EventEmitter,
-    Output,
-    ViewChildren, QueryList, ViewChild, ViewContainerRef, DoCheck
+    ViewChild, ViewContainerRef
 } from '@angular/core';
 import {toast} from '../../services/toast.service';
 import {session} from '../../services/session.service';
+import {navigation} from '../../services/navigation.service';
 import {layout} from '../../services/layout.service';
 import {ActivationStart, Router} from '@angular/router';
-import {ObjectActionContainerItem} from "../../objectcomponents/components/objectactioncontaineritem";
 
 
 @Component({
     selector: 'global-header',
-    templateUrl: './src/globalcomponents/templates/globalheader.html',
-    providers: []
+    templateUrl: './src/globalcomponents/templates/globalheader.html'
 })
-export class GlobalHeader implements DoCheck {
+export class GlobalHeader {
 
+    /**
+     * reference to the header to get the height
+     */
     @ViewChild('header', {read: ViewContainerRef, static: false}) private header: ViewContainerRef;
 
-    constructor(private session: session, private router: Router, private toast: toast, private elementRef: ElementRef, private layout: layout) {
+    constructor(private session: session, private router: Router, private toast: toast, private layout: layout, private navigation: navigation) {
 
+        // ToDo: check what this is doing here
         this.router.events.subscribe((val: any) => {
             if (val instanceof ActivationStart) {
                 if (val.snapshot.params.module === 'Users' && val.snapshot.params.id) {
@@ -40,14 +39,27 @@ export class GlobalHeader implements DoCheck {
 
     }
 
-    public ngDoCheck(): void {
+    /**
+     * a getter for the header height
+     */
+    get headerHeight() {
         if (this.header) {
-            this.layout.headerheight = this.header.element.nativeElement.getBoundingClientRect().height;
+            return this.header.element.nativeElement.getBoundingClientRect().height;
         } else {
-            this.layout.headerheight = 0;
+            return 0;
         }
     }
 
+    /**
+     * returns true if the navigation paradigm is tabbed or subtabbed
+     */
+    get tabbed() {
+        return this.navigation.navigationparadigm == 'tabbed' || this.navigation.navigationparadigm == 'subtabbed';
+    }
+
+    /**
+     * returns if the view is considered small
+     */
     get issmall() {
         return this.layout.screenwidth == 'small';
     }
