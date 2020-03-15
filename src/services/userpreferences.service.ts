@@ -49,7 +49,8 @@ export class userpreferences {
         timezone: 'Europe/Vienna',
         default_currency_significant_digits: 2,
         default_locale_name_format: 'l, f',
-        week_day_start: 0
+        week_day_start: 0,
+        navigation_paradigm: 'simple'
     };
 
     public formats = {nameFormats: [], loaded: false};

@@ -42,28 +42,44 @@ export class SystemDynamicComponent implements AfterViewInit, OnChanges {
      */
     @Output() private componentref: EventEmitter<any> = new EventEmitter<any>();
 
+    /**
+     * the component that is rendered
+     */
     private _component: any;
 
+    /**
+     *
+     */
     private initialized: boolean = false;
 
     constructor(private metadata: metadata) {
     }
 
     /**
-     * after view init add the component via teh metadata service
+     * after view init add the component via the metadata service
      */
     public ngAfterViewInit() {
-        this.renderComponent();
-
-        this.initialized = true;
+        if(!this.initialized){
+            this.renderComponent();
+        }
     }
 
+    /**
+     * react to changes
+     *
+     * @param changes
+     */
     public ngOnChanges(changes: SimpleChanges): void {
-        if (this._component) {
-            this._component.destroy();
-            this._component = undefined;
+        if(this.container && changes.component) {
+            if (this._component) {
+                this._component.destroy();
+                this._component = undefined;
+            }
+            this.renderComponent();
+
+            this.initialized = true;
+
         }
-        this.renderComponent();
     }
 
     private renderComponent() {

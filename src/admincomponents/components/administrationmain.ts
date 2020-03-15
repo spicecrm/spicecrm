@@ -10,6 +10,8 @@ import {
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {navigation} from '../../services/navigation.service';
+import {language} from '../../services/language.service';
+import {navigationtab} from '../../services/navigationtab.service';
 import {administration} from '../services/administration.service';
 
 
@@ -35,11 +37,12 @@ export class AdministrationMain implements AfterViewInit {
     constructor(
         private administration: administration,
         private metadata: metadata,
-        private navigation: navigation
+        private language: language,
+        private navigation: navigation,
+        private navigationtab: navigationtab,
     ) {
-        this.navigation.setActiveModule('Administration');
-
-
+        // this.navigation.setActiveModule('Administration');
+        this.navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_ADMINISTRATION'), displayicon: 'settings'});
     }
 
     /**

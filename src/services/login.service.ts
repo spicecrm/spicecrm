@@ -104,6 +104,9 @@ export class loginService {
                         this.load();
                     }
 
+                    // broadcast taht we have a login
+                    this.broadcast.broadcastMessage('login');
+
                     this.loginSuccessful.next(true);
                     this.loginSuccessful.complete();
                 },
