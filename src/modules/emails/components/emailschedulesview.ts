@@ -29,4 +29,11 @@ export class EmailSchedulesView {
                 private backend: backend,
                 private toast: toast) {
     }
+
+
+    public ngOnInit() {
+
+        window.console.log(this.modellist)
+    }
+
 }
