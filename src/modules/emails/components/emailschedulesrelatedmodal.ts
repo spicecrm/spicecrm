@@ -34,6 +34,9 @@ export class EmailSchedulesRelatedModal {
 
     }
 
+    /**
+     * initalize emailschedules and filter the prospects
+     */
     public ngOnInit() {
         this.model.module = "EmailSchedules";
         this.model.initialize();
