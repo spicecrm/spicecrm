@@ -1,1 +1,28 @@
-<p>schedule</p>
+<div>
+    <table  width="100%" class="slds-table slds-table_cell-buffer slds-table_bordered">
+        <thead>
+        <tr class="slds-line-height_reset">
+            <th class="" scope="col" *ngFor="let listField of modellist.listfields">
+                <div class="slds-truncate">{{language.getFieldDisplayName(modellist.module, listField.field)}}</div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let listItem of modellist.listData.list; trackBy: trackbyfn" class="slds-hint-parent">
+            <td>
+                <div class="slds-truncate">{{listItem.id}}</div>
+            </td>
+            <td>
+                <div class="slds-truncate">{{listItem.email_subject}}</div>
+            </td>
+            <td>
+                <div class="slds-truncate">{{listItem.email_schedule_status}}</div>
+            </td>
+        </tr>
+        </tbody>
+        <tbody system-table-stencils [columns]="modellist.listfields.length" [select]="true" [tools]="true" [rows]="20" *ngIf="isloading"></tbody>
+    </table>
+    <div *ngIf="!modellist.isLoading && modellist.listData.totalcount == 0" class="slds-align--absolute-center" style="height: calc(100% - 35px)">
+        <system-illustration-no-records>{{language.getLabel('MSG_NO_RECORDS_FOUND')}}</system-illustration-no-records>
+    </div>
+</div>

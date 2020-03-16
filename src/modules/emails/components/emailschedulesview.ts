@@ -2,38 +2,43 @@
  * @module ModuleEmails
  */
 
-import {Component, Injector} from '@angular/core';
+import {Component} from '@angular/core';
 import {model} from '../../../services/model.service';
-import {modal} from '../../../services/modal.service';
 import {modellist} from '../../../services/modellist.service';
 import {language} from '../../../services/language.service';
 import {view} from "../../../services/view.service";
-import {backend} from "../../../services/backend.service";
 import {metadata} from "../../../services/metadata.service";
-import {toast} from "../../../services/toast.service";
 
 @Component({
     selector: "email-schedules-views",
     templateUrl: "./src/modules/emails/templates/emailschedulesview.html",
-    providers: [modellist],
+    providers: [modellist, view],
 })
 
 export class EmailSchedulesView {
     constructor(private language: language,
                 private model: model,
-                private injector: Injector,
                 private view: view,
-                private modal: modal,
                 private metadata: metadata,
-                private modellist: modellist,
-                private backend: backend,
-                private toast: toast) {
+                private modellist: modellist
+    ) {
+        this.modellist.module = 'EmailSchedules';
     }
 
 
-    public ngOnInit() {
-
-        window.console.log(this.modellist)
+    /**
+     * get isLoading list property
+     */
+    get isloading() {
+        return this.modellist.isLoading;
     }
 
+    /**
+     * track items
+     * @param index
+     * @param item
+     */
+    protected trackbyfn(index, item) {
+        return item.id;
+    }
 }

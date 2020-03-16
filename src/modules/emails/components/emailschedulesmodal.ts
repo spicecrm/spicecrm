@@ -65,7 +65,7 @@ export class EmailSchedulesModal {
                 aggregates: this.modellist.selectedAggregates
             };
             this.backend.postRequest('/modules/EmailSchedules/saveSchedule', {}, body).subscribe(result => {
-                loadingRef.instance.self.destroy();
+                loadingRef.instance.self.destroy();1
                 if (result.status) {
                     this.toast.sendToast(result.status, 'success');
                     this.close();
