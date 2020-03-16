@@ -224,6 +224,7 @@ export class calendar implements OnDestroy {
             .pipe(
                 map(events => {
                     return events.map(event => {
+                        event.id = userId + event.id;
                         event.otherColor = this.usersCalendars.find(calendar => calendar.id == userId).color;
                         return event;
                     });
@@ -241,14 +242,31 @@ export class calendar implements OnDestroy {
         const visibleUserCalendars = this.usersCalendars.filter(c => !!c.visible);
         const visibleUserIds = visibleUserCalendars.map(c => c.id);
         const calendarsObject = _.object(visibleUserIds, visibleUserCalendars);
-
+        if (visibleUserCalendars.length == 0) {
+            return of([]);
+        }
         return this.loadEvents(startDate, endDate, this.owner, visibleUserIds)
             .pipe(
                 map(events => {
-                    return events.map(event => {
-                        event.otherColor = calendarsObject[event.data.assigned_user_id].color;
-                        return event;
+                    const resEvents = [];
+
+                    events.forEach(event => {
+
+                        // check if user assigned
+                        if (!!calendarsObject[event.data.assigned_user_id]) {
+                            event.otherColor = calendarsObject[event.data.assigned_user_id].color;
+                            resEvents.push(event);
+
+                        // check if user is participant
+                        } else if (!!event.data.meeting_user_status_accept) {
+                            const userId = visibleUserIds.find(userId => !!event.data.meeting_user_status_accept.beans[userId]);
+                            if (!userId) return;
+                            event.id = userId + event.id;
+                            event.otherColor = calendarsObject[userId].color;
+                            resEvents.push(event);
+                        }
                     });
+                    return resEvents;
                 })
             );
     }
@@ -726,7 +744,7 @@ export class calendar implements OnDestroy {
             this.deleteEvent(id, module);
             return true;
         }
-        let event = this.calendars[uid].find(thisevent => thisevent.id == id);
+        let event = this.calendars[uid].find(thisevent => thisevent.data.id == id);
         if (event) {
             event.start = data.date_start;
             event.end = data.date_end;
@@ -744,8 +762,8 @@ export class calendar implements OnDestroy {
      */
     private deleteEvent(id, module) {
         this.calendars[this.owner].some(event => {
-            if (event.id == id && module == event.module) {
-                this.calendars[this.owner] = this.calendars[this.owner].filter(e => e.id != event.id);
+            if (event.data.id == id && module == event.module) {
+                this.calendars[this.owner] = this.calendars[this.owner].filter(e => e.data.id != event.data.id);
                 this.triggerSheetReload();
                 return true;
             }
