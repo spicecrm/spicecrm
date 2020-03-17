@@ -187,7 +187,9 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
     }
 
     private getUserEvents(calendar) {
-        this.userEvents = this.userEvents.filter(event => event.data.assigned_user_id != calendar.id);
+        this.userEvents = this.userEvents.filter(event => event.data.assigned_user_id != calendar.id &&
+            (!event.data.meeting_user_status_accept || !event.data.meeting_user_status_accept.beans[calendar.id]));
+
         this.allEvents = this.allevents.slice();
 
         if (this.calendar.isMobileView || !calendar.visible) {

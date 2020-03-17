@@ -142,7 +142,7 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit {
         };
 
         this.vizdata.data.data.pinpoints.forEach(item => {
-            if (!!item.latitude && !!item.longitude) return;
+            if (!item.latitude || !item.longitude) return;
 
             iconData.fillColor = '#' + item.colorLabel;
             const markerData: any = {

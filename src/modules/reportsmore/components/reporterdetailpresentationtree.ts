@@ -120,7 +120,10 @@ export class ReporterDetailPresentationTree extends ReporterDetailPresentationSt
 
         // if not laoded - load it
         if (index < 0 || !this.reportRecords[index].loaded) {
-            this.backend.postRequest('KReporter/Tree/' + this.model.id + '/node/' + encodeURIComponent(btoa(node))).subscribe(reportData => {
+            this.backend.postRequest('KReporter/Tree/' + this.model.id + '/node/' + encodeURIComponent(btoa(node)), {}, {
+                parentbeanId: this.model['parentBeanId'],
+                parentbeanModule: this.model['parentBeanModule']
+            }).subscribe(reportData => {
                 let newRecords = [];
 
                 // if we found the record mark as loaded and expanded
