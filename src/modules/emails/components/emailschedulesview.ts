@@ -4,41 +4,46 @@
 
 import {Component} from '@angular/core';
 import {model} from '../../../services/model.service';
-import {modellist} from '../../../services/modellist.service';
 import {language} from '../../../services/language.service';
 import {view} from "../../../services/view.service";
 import {metadata} from "../../../services/metadata.service";
+import {backend} from "../../../services/backend.service";
 
 @Component({
-    selector: "email-schedules-views",
+    selector: "email-schedules-view",
     templateUrl: "./src/modules/emails/templates/emailschedulesview.html",
-    providers: [modellist, view],
+    providers: [view],
 })
 
 export class EmailSchedulesView {
+    private emailschedules: any[] = [];
+    private locked: boolean = false;
+    private isLoading: boolean = false;
     constructor(private language: language,
                 private model: model,
                 private view: view,
                 private metadata: metadata,
-                private modellist: modellist
+                private backend: backend
     ) {
-        this.modellist.module = 'EmailSchedules';
+        this.getData(this.model.id);
     }
 
 
     /**
-     * get isLoading list property
+     * proof the id
+     * get the data from the backend
      */
-    get isloading() {
-        return this.modellist.isLoading;
+    private getData(id) {
+        this.isLoading = true;
+        this.backend.getRequest(`/module/${this.model.module}/${id}/myOpenSchedules`).subscribe(result => {
+                if (result.status) {
+                    this.isLoading = false;
+                    this.emailschedules = result.openschedules;
+                } else {
+                    this.locked = true;
+                }
+            });
     }
 
-    /**
-     * track items
-     * @param index
-     * @param item
-     */
-    protected trackbyfn(index, item) {
-        return item.id;
-    }
+
 }
