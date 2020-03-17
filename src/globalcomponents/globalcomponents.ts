@@ -83,6 +83,7 @@ import /*embed*/ {GlobalNewsFeedItem} from "./components/globalnewsfeeditem";
 
 import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
 import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobtainimportantpreferences';
+import /*embed*/ {GlobalObtainGDPRConsent} from './components/globalobtaingdprconsent';
 
 
 /**
@@ -155,7 +156,8 @@ import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobt
         GlobalSearchModuleOnly,
         GlobalSearchModuleItem,
         GlobalLoginGoogle,
-        GlobalObtainImportantPreferences
+        GlobalObtainImportantPreferences,
+        GlobalObtainGDPRConsent
     ],
     entryComponents: [
         GlobalHeader,
