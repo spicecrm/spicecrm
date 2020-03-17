@@ -13,14 +13,22 @@
                         <system-button-icon [icon]="'chevronright'"></system-button-icon>
                     </button>
                     <a href="javascript:void(0);" tabindex="-1" class="slds-truncate" (click)="selectGroup(productgroup)" [title]="getLinkTitle(productgroup)">
-                        {{productgroup.summary_text}}&nbsp;({{getAggregateCount(productgroup)}})
+                        {{productgroup.summary_text}} ( {{getAggregateCount(productgroup)}} )
                     </a>
                 </div>
                 <div *ngIf="productgroup.type=='Product' && displayTreeNode(productgroup)" class="slds-tree__item slds grid slds-grid--vertical-align-center" (click)="selectProduct(productgroup)">
                     <system-icon [module]="'Products'" [size]="'small'"></system-icon>
-                    <a href="javascript:void(0);" tabindex="-1" class="slds-truncate">
-                        {{productgroup.summary_text}}&nbsp;({{getAggregateCount(productgroup)}})
+                    <a *ngIf="!fieldset; else fieldsetContainer" href="javascript:void(0);" tabindex="-1" class="slds-truncate">
+                        {{productgroup.summary_text}}
                     </a>
+                    <ng-template #fieldsetContainer>
+                        <div [viewprovider]="{editable: false, displayLabels: false}" [modelProvider]="{id: productgroup.id, module: 'Products', data: productgroup}" class="slds-truncate">
+                            <object-record-fieldset-horizontal-list [fieldset]="fieldset"></object-record-fieldset-horizontal-list>
+                        </div>
+                    </ng-template>
+                    <span class="slds-p-horizontal--xx-small">
+                        ( {{getAggregateCount(productgroup)}} )
+                    </span>
                 </div>
             </li>
         </ul>

@@ -6,7 +6,7 @@ import {model} from '../../../services/model.service';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {language} from '../../../services/language.service';
 import {productfinder} from '../services/productfinder.service';
-import {view} from '../../../services/view.service';
+import {metadata} from "../../../services/metadata.service";
 
 
 /**
@@ -17,20 +17,21 @@ declare var moment: any;
 @Component({
     selector: 'product-brwoser-variant',
     templateUrl: './src/modules/products/templates/productbrowservariant.html',
-    providers: [model, view]
+    providers: [model]
 })
 export class ProductBrowserVariant implements OnInit {
 
     @Input() private productvariant: any = {};
     @Output() private selectionchanged: EventEmitter<any> = new EventEmitter<any>();
     private opened: boolean = false;
+    private fieldset: string;
+    private detailsFieldset: string;
 
     constructor(private model: model,
                 private modelutilities: modelutilities,
-                private view: view,
                 private language: language,
+                private metadata: metadata,
                 private productfinder: productfinder) {
-        this.view.isEditable = false;
     }
 
     get buttonIcon() {
@@ -45,6 +46,10 @@ export class ProductBrowserVariant implements OnInit {
         this.model.id = this.productvariant.id;
         this.model.module = 'ProductVariants';
         this.model.data = this.modelutilities.backendModel2spice('ProductVariants', this.productvariant);
+
+        const config = this.metadata.getComponentConfig('ProductBrowserVariant', 'ProductVariants');
+        this.fieldset = !!config && !!config.fieldset ? config.fieldset : undefined;
+        this.detailsFieldset = !!config && !!config.detailsFieldset ? config.detailsFieldset : undefined;
 
     }
 
