@@ -1,7 +1,7 @@
 /**
  * @module ModuleReportsDesignerMore
  */
-import {Component} from '@angular/core';
+import {Component, Injector} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
@@ -13,7 +13,11 @@ import {modal} from "../../../services/modal.service";
 })
 export class ReportsDesignerMoreIntegrateItemPublish {
 
-    constructor(private language: language, private model: model, private metadata: metadata, private modal: modal) {
+    constructor(private language: language,
+                private model: model,
+                private metadata: metadata,
+                private injector: Injector,
+                private modal: modal) {
     }
 
     get canClearModule() {
@@ -94,7 +98,7 @@ export class ReportsDesignerMoreIntegrateItemPublish {
     }
 
     private searchModule() {
-        this.modal.openModal('ReportsDesignerSelectModuleModal')
+        this.modal.openModal('ReportsDesignerSelectModuleModal', true, this.injector)
             .subscribe(modalRef => {
                 modalRef.instance.response.subscribe(response => {
                     if (response) {
