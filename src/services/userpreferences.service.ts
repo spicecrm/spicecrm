@@ -57,7 +57,7 @@ export class userpreferences {
 
     constructor(private backend: backend, private toast: toast, private configuration: configurationService, private language: language, private broadcast: broadcast, private modalservice: modal, private session: session) {
         this.toUse = this.preferences.global;
-        this.retrievePrefsFromConfigService();
+        // this.retrievePrefsFromConfigService();
         this.broadcast.message$.subscribe(msg => {
             if (msg.messagetype === 'loader.completed' && msg.messagedata === 'loadUserData') this.retrievePrefsFromConfigService();
         });

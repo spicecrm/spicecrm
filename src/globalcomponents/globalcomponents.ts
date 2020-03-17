@@ -74,6 +74,7 @@ import /*embed*/ {GlobalNavigationTabbedMenuTab} from "./components/globalnaviga
 import /*embed*/ {GlobalNavigationTabbedMoreTab} from "./components/globalnavigationtabbedmoretab";
 import /*embed*/ {GlobalNavigationTabbedSubtabs} from "./components/globalnavigationtabbedsubtabs";
 import /*embed*/ {GlobalNavigationTabbedSubtabItem} from "./components/globalnavigationtabbedsubtabitem";
+import /*embed*/ {GlobalNavigationTabbedSubTabMoreTab} from "./components/globalnavigationtabbedsubtabmoretab";
 
 
 import /*embed*/ {GlobalUser} from "./components/globaluser";
@@ -174,7 +175,8 @@ import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobt
         GlobalNavigationTabbedMenuTab,
         GlobalNavigationTabbedMoreTab,
         GlobalNavigationTabbedSubtabs,
-        GlobalNavigationTabbedSubtabItem
+        GlobalNavigationTabbedSubtabItem,
+        GlobalNavigationTabbedSubTabMoreTab
     ],
     entryComponents: [
         GlobalHeader,

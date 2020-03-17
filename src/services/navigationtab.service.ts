@@ -8,7 +8,6 @@ import {objectTabInfo, routeObject} from "./navigation.service";
 declare var _: any;
 
 
-
 @Injectable()
 export class navigationtab {
 
@@ -32,6 +31,11 @@ export class navigationtab {
      */
     public tabinfo$: EventEmitter<objectTabInfo> = new EventEmitter<objectTabInfo>();
 
+    /**
+     * emits when the tab shopudl be closed
+     */
+    public close$: EventEmitter<boolean> = new EventEmitter<boolean>();
+
     constructor() {
         this.activeRoute$ = new BehaviorSubject(this.activeRoute);
     }
@@ -43,6 +47,13 @@ export class navigationtab {
      */
     public setTabInfo(tabinfo: objectTabInfo) {
         this.tabinfo$.emit(tabinfo);
+    }
+
+    /**
+     * closes the tab
+     */
+    public closeTab() {
+        this.close$.emit(true);
     }
 
 }
