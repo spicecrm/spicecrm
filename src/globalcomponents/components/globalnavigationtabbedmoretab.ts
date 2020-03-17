@@ -15,6 +15,7 @@ import {language} from '../../services/language.service';
     templateUrl: './src/globalcomponents/templates/globalnavigationtabbedmoretab.html',
     host: {
         '[class.slds-context-bar__item]': '1',
+        '[class.slds-is-active]': 'activeItem'
     }
 })
 export class GlobalNavigationTabbedMoreTab {
@@ -37,7 +38,7 @@ export class GlobalNavigationTabbedMoreTab {
      *
      * @param tabid
      */
-    private setActiveTab(tabid){
+    private setActiveTab(tabid) {
         this.navigation.setActiveTab(tabid);
     }
 
@@ -46,24 +47,36 @@ export class GlobalNavigationTabbedMoreTab {
      *
      * @param tabid
      */
-    private closeObjectTab(tabid){
+    private closeObjectTab(tabid) {
         this.navigation.closeObjectTab(tabid);
     }
 
     /**
      * returns if the tab is active
      */
-    private isActive(tabid) {
+    public isActive(tabid) {
         // check if the current is active
-        if(tabid == this.navigation.activeTab) return true;
+        if (tabid == this.navigation.activeTab) return true;
 
         // get the active tab object and if one is returned check the parent id
         let activeTab = this.navigation.getTabById(this.navigation.activeTab);
-        if(activeTab && activeTab.parentid && tabid == activeTab.parentid) return true;
+        if (activeTab && activeTab.parentid && tabid == activeTab.parentid) return true;
 
         // else not active
         return false;
     }
 
+    /**
+     * check if the tab has active items or any item has an active subtab
+     * used to set the active class ont eh more tab
+     */
+    get activeItem() {
+
+        // get the active tab object
+        let activeTab = this.navigation.activeTabObject;
+
+        // try to find an active tab
+        return !!this.moreObjects.find(moretab =>  moretab.active || (activeTab && activeTab?.parentid == moretab.id));
+    }
 
 }

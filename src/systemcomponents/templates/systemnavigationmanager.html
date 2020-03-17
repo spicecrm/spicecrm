@@ -1,6 +1,6 @@
 <ng-container *ngIf="authenticated">
     <system-navigation-manager-route-container tabid="main"></system-navigation-manager-route-container>
     <ng-container *ngFor="let objectTab of navigation.objectTabs">
-        <system-navigation-manager-route-container  [tabid]="objectTab.id" [object]="objectTab"></system-navigation-manager-route-container>
+        <system-navigation-manager-route-container  [tabid]="objectTab.id" [parentttabid]="objectTab.parentid" [object]="objectTab"></system-navigation-manager-route-container>
     </ng-container >
 </ng-container>

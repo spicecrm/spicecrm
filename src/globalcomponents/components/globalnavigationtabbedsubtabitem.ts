@@ -2,7 +2,7 @@
  * @module GlobalComponents
  */
 import {
-    Component, Input
+    Component, ElementRef, Input
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
@@ -24,7 +24,7 @@ export class GlobalNavigationTabbedSubtabItem {
      */
     @Input() public ismain: boolean = false;
 
-    constructor(private metadata: metadata, private language: language, private navigation: navigation) {
+    constructor(private metadata: metadata, private language: language, private navigation: navigation, public elementRef: ElementRef) {
 
     }
 

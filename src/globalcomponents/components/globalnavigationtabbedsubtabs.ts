@@ -2,33 +2,85 @@
  * @module GlobalComponents
  */
 import {
-    Component, Input
+    AfterViewChecked,
+    AfterViewInit,
+    Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {navigation, objectTab} from '../../services/navigation.service';
 import {InputNamesRule} from "@angular/cdk/schematics/ng-update/upgrade-rules/input-names-rule";
+import {GlobalNavigationTabbedMenuTab} from "./globalnavigationtabbedmenutab";
+import {GlobalNavigationTabbedMoreTab} from "./globalnavigationtabbedmoretab";
+import {GlobalNavigationTabbedSubtabItem} from "./globalnavigationtabbedsubtabitem";
+import {GlobalNavigationTabbedSubTabMoreTab} from "./globalnavigationtabbedsubtabmoretab";
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'global-navigation-tabbed-subtabs',
-    templateUrl: './src/globalcomponents/templates/globalnavigationtabbedsubtabs.html'
+    templateUrl: './src/globalcomponents/templates/globalnavigationtabbedsubtabs.html',
+    host: {
+        '(window:resize)': 'handleResize()'
+    }
 })
-export class GlobalNavigationTabbedSubtabs {
+export class GlobalNavigationTabbedSubtabs implements AfterViewChecked, OnDestroy {
 
+    /**
+     * the parent tab object
+     */
     @Input() private parenttab: objectTab;
 
-    constructor(private metadata: metadata, private language: language, private navigation: navigation) {
+    /**
+     * reference to the navigation tabs
+     */
+    @ViewChildren(GlobalNavigationTabbedSubtabItem) private subMenuTabs: QueryList<GlobalNavigationTabbedSubtabItem>;
 
+    /**
+     * reference to the more item
+     */
+    @ViewChild(GlobalNavigationTabbedSubTabMoreTab) private subMenuMore: GlobalNavigationTabbedSubTabMoreTab;
+
+    /**
+     * the component subscriptions
+     */
+    private subscriptions: Subscription = new Subscription();
+
+    constructor(private metadata: metadata, private language: language, private navigation: navigation, private elementRef: ElementRef) {
+
+        this.subscriptions.add(
+            this.navigation.objectTabsChange$.subscribe(changed => {
+                // little bit of an ugly trick to come after the change detection run
+                window.setTimeout(() => {
+                    this.handleResize();
+                });
+            })
+        );
+    }
+
+    /**
+     * determine the overflow and sizing
+     */
+    public ngAfterViewChecked(): void {
+        window.setTimeout(() => {
+            this.handleResize();
+        });
+    }
+
+    /**
+     * unsubscribe
+     */
+    public ngOnDestroy(): void {
+        this.subscriptions.unsubscribe();
     }
 
     /**
      * returns the subtabs
      */
     get subtabs() {
-        return this.navigation.getSubTabs(this.parenttab?.id).sort((t1, t2)=> {
-            if((t1.pinned && t2.pinned) || (!t1.pinned && !t2.pinned) ) return 0;
-            if(t1.pinned) return -1;
-            if(t2.pinned) return 1;
+        return this.navigation.getSubTabs(this.parenttab?.id).sort((t1, t2) => {
+            if ((t1.pinned && t2.pinned) || (!t1.pinned && !t2.pinned)) return 0;
+            if (t1.pinned) return -1;
+            if (t2.pinned) return 1;
         });
     }
 
@@ -40,6 +92,50 @@ export class GlobalNavigationTabbedSubtabs {
      */
     private trackByFn(index, item) {
         return item.id;
+    }
+
+    /**
+     * handle the resize and calculöate the total width as well as overflow
+     */
+    private handleResize() {
+
+        // caluclate the width of the various items
+        let left = this.elementRef.nativeElement.getBoundingClientRect().left;
+        let totalWidth = window.innerWidth - left;
+
+        // get the width of the more item
+        this.subMenuMore.elementRef.nativeElement.classList.add('slds-hidden');
+        this.subMenuMore.moreObjects = [];
+        let moreWidth = this.subMenuMore.tabWidth;
+
+        this.subMenuTabs.forEach(thisitem => {
+            thisitem.elementRef.nativeElement.classList.remove('slds-hide');
+            thisitem.elementRef.nativeElement.classList.add('slds-hidden');
+        });
+
+        let usedWidth = 0;
+        let showmore = false;
+        this.subMenuTabs.forEach((thisItem, itemIndex) => {
+            let itemwidth = thisItem.elementRef.nativeElement.getBoundingClientRect().width;
+            usedWidth += itemwidth;
+            if (usedWidth > totalWidth - moreWidth) {
+                // special handling for last element
+                // if (showmore || itemIndex + 1 < this.menuTabs.length || itemwidth < moreWidth) {
+                thisItem.elementRef.nativeElement.classList.add('slds-hide');
+                // this.moreModules.push(thisitem.element.nativeElement.attributes.getNamedItem('data-module').value);
+                showmore = true;
+
+                this.subMenuMore.moreObjects.push(thisItem.object);
+                // }
+            }
+            thisItem.elementRef.nativeElement.classList.remove('slds-hidden');
+        });
+
+        if (showmore) {
+            this.subMenuMore.elementRef.nativeElement.classList.remove('slds-hidden');
+        }
+
+        return true;
     }
 
 }
