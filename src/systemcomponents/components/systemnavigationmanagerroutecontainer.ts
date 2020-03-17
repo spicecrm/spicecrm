@@ -69,6 +69,13 @@ export class SystemNavigationManagerRouteContainer implements OnInit, OnDestroy 
                 this.navigation.settabinfo(this.tabid, tabinfo);
             })
         );
+
+        // add a subscription to ensable closing the tab
+        this.subscriptions.add(
+            this.navigationtab.close$.subscribe(close => {
+                this.navigation.closeObjectTab(this.tabid, true);
+            })
+        );
     }
 
     public ngOnInit(): void {

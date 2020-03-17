@@ -14,7 +14,7 @@ import {language} from '../../services/language.service';
     host: {
         '[class.slds-context-bar__item]': '1',
         '[class.slds-context-bar__item_tab]': '1',
-        '[class.slds-is-active]': 'isActive',
+        '[class.slds-is-active]': 'isActive'
     }
 })
 export class GlobalNavigationTabbedMenuTab {

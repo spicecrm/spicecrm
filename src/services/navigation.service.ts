@@ -81,6 +81,7 @@ export interface objectTab {
      * if subtabs are enabled on the tab
      */
     enablesubtabs: boolean;
+
 }
 
 /**
@@ -207,6 +208,15 @@ export class navigation {
         this.session.setSessionData('navigation', {main: this.maintab, tabs: this.objectTabs});
     }
 
+
+    /**
+     * gets the current active tab object
+     */
+    get activeTabObject(): objectTab {
+        if (this.maintab.active) return this.maintab;
+
+        return this.objectTabs.find(tab => tab.active);
+    }
 
     /**
      * gets the current active tab
@@ -411,6 +421,7 @@ export class navigation {
     public registerModel(model): number {
         let id = ++this.modelregisterCounter;
         this.modelregister.push({id: id, model: model, tabid: this.activeTab});
+
         return id;
     }
 
@@ -488,14 +499,14 @@ export class navigation {
      * @param objectparams
      * @param routeparams
      */
-    private matchRouteParams(objectparams: any, routeparams: any): boolean {
-        if (_.isEqual(objectparams, routeparams)) return true;
+    private matchRouteParams(objecttab: objectTab, routeparams: any): boolean {
+        if (_.isEqual(objecttab.params, routeparams)) return true;
 
-        // if not check if the object has a tabid
-        if (routeparams.tabid) {
+        // if not check if the object has a tabid and that matches the objecttab
+        if (routeparams.tabid && routeparams.tabid == objecttab.id) {
             let clonedRouteparams = {...routeparams};
             delete (clonedRouteparams.tabid);
-            return _.isEqual(objectparams, clonedRouteparams);
+            return _.isEqual(objecttab.params, clonedRouteparams);
         }
 
         // if not return false
@@ -541,7 +552,7 @@ export class navigation {
             });
         } else {
             for (let objectTab of this.objectTabs) {
-                if (this.matchPath(objectTab, routeData) && this.matchRouteParams(objectTab.params, routeParams)) {
+                if (this.matchPath(objectTab, routeData) && this.matchRouteParams(objectTab, routeParams)) {
                     // set the path since the path might be changed dues to the reference path of routes for the tabbed navigation
                     // but do not change it when the only difference is the tabid
                     // that happens if the same object is clicked in a link on a subtab
@@ -620,7 +631,7 @@ export class navigation {
      */
     public getTabById(tabid) {
         // if we have the maintab .. return the maintab
-        if(tabid == 'main') return this.maintab;
+        if (tabid == 'main') return this.maintab;
 
         // otherwise find and return the tab from the obejcttabs
         return this.objectTabs.find(tab => tab.id == tabid);
@@ -651,9 +662,12 @@ export class navigation {
      *
      * * @param tabid
      */
-    public closeObjectTab(tabid) {
+    public closeObjectTab(tabid, force: boolean = false) {
+        // not for the main tab
+        if(tabid == 'main') return;
+
         // check dirty tab
-        if (this.anyDirtyModel(tabid)) {
+        if (!force && this.anyDirtyModel(tabid)) {
             this.modal.confirm(this.language.getLabel('MSG_NAVIGATIONSTOP', '', 'long'), this.language.getLabel('MSG_NAVIGATIONSTOP')).subscribe(retval => {
                 if (retval) {
                     this.unsetObjectTab(tabid);
@@ -675,12 +689,21 @@ export class navigation {
 
             // check if this is the active tab or a subtab is active that has the curretn tab as parent
             // if yes set main as the active tab
-            if (this.objectTabs[index].active || this.objectTabs.find(tab => tab.active).parentid == tabid) {
+            if (this.objectTabs[index].active || this.objectTabs.find(tab => tab.active)?.parentid == tabid) {
                 this.router.navigate([this.maintab.url]);
             }
 
             // slice the object tab array
             this.objectTabs.splice(index, 1);
+
+            // remove all records pointinmg to editale models
+
+            // tslint:disable:no-conditional-assignment
+            let modelIndex = -1;
+            while ((modelIndex = this.modelregister.findIndex(model => model.tabid == tabid)) >= 0) {
+                this.modelregister.splice(modelIndex, 1);
+            }
+
         }
 
         // find any tab that has the id as a parent id
@@ -689,6 +712,12 @@ export class navigation {
             // if the id matched splice the array otherwise increase the index
             if (objectTab.parentid == tabid) {
                 this.objectTabs.splice(index, 1);
+
+                // tslint:disable:no-conditional-assignment
+                let modelIndex = -1;
+                while ((modelIndex = this.modelregister.findIndex(model => model.tabid == tabid)) >= 0) {
+                    this.modelregister.splice(modelIndex, 1);
+                }
             } else {
                 index++;
             }

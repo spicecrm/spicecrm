@@ -111,6 +111,9 @@ export class ReportsDesigner implements OnDestroy {
                                 this.reportsDesignerService.activeModule = {unionid: 'root', module: res.report_module};
                             }
                             if (!res.listfields) this.model.setField('listfields', []);
+
+                            // set the tab info
+                            this.navigationtab.setTabInfo({displayname: this.model.getField('name'), displaymodule: this.model.module});
                         });
                 }
             })
@@ -136,8 +139,17 @@ export class ReportsDesigner implements OnDestroy {
      * @navigate to Record in view mode or to list view
      */
     private cancel() {
+        // if we have a new tab .. close the tab
+        if(this.model.isNew) this.navigationtab.closeTab();
+
+        // cancel edit and set view mode
         this.model.cancelEdit();
         this.view.setViewMode();
+
+        // close the tab
+        this.navigationtab.closeTab();
+
+        // route away
         this.router.navigate(['/module/KReports/' + (this.model.isNew ? '' : this.model.id)]);
     }
 
@@ -150,7 +162,13 @@ export class ReportsDesigner implements OnDestroy {
         if (this.model.validate()) {
             this.model.save(true)
                 .subscribe(() => {
+                    // set to view mode
                     this.view.setViewMode();
+
+                    // close the tab
+                    this.navigationtab.closeTab();
+
+                    // route away
                     this.router.navigate(['/module/KReports/' + this.model.id]);
                 });
         }
@@ -174,7 +192,9 @@ export class ReportsDesigner implements OnDestroy {
                         this.setInitialValues(response);
                         this.reportsDesignerService.setCurrentPath(response.module, response.module);
                         this.reportsDesignerService.activeModule = {unionid: 'root', module: response.module};
+                        this.navigationtab.setTabInfo({displayname: this.model.getField('name'), displaymodule: this.model.module});
                     } else {
+                        this.navigationtab.closeTab();
                         this.cancel();
                     }
                 });

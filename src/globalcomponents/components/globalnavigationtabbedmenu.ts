@@ -2,7 +2,7 @@
  * @module GlobalComponents
  */
 import {
-    AfterViewInit, Component, ViewChild, ViewContainerRef, ElementRef, ViewChildren, QueryList
+    AfterViewInit, Component, ViewChild, ViewContainerRef, ElementRef, ViewChildren, QueryList, OnDestroy
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {broadcast} from '../../services/broadcast.service';
@@ -11,6 +11,7 @@ import {SystemResizeDirective} from "../../directives/directives/systemresize";
 import {GlobalNavigationTabbedMenuModules} from "./globalnavigationtabbedmenumodules";
 import {GlobalNavigationTabbedMoreTab} from "./globalnavigationtabbedmoretab";
 import {GlobalNavigationTabbedMenuTab} from "./globalnavigationtabbedmenutab";
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'global-navigation-tabbed-menu',
@@ -19,7 +20,7 @@ import {GlobalNavigationTabbedMenuTab} from "./globalnavigationtabbedmenutab";
         '(window:resize)': 'handleResize()'
     }
 })
-export class GlobalNavigationTabbedMenu implements AfterViewInit {
+export class GlobalNavigationTabbedMenu implements AfterViewInit, OnDestroy {
 
     /**
      * reference to the module menu item
@@ -52,30 +53,47 @@ export class GlobalNavigationTabbedMenu implements AfterViewInit {
      */
     private rendering: boolean = false;
 
-
     /**
      * timeout function to handle resize event ... to not render after any time the event is triggered but the size is stable for some time
      */
     private resizeTimeOut: any = undefined;
 
-    constructor(private metadata: metadata, private elementRef: ElementRef, private broadcast: broadcast, private navigation: navigation) {
-        this.broadcast.message$.subscribe(message => {
-            this.handleMessage(message);
-        });
+    /**
+     * the component subscriptions
+     */
+    private subscriptions: Subscription = new Subscription();
 
-        this.navigation.objectTabsChange$.subscribe(changed => {
-            // little bit of an ugly trick to come after the change detection run
-            window.setTimeout(() => {
-                this.handleResize();
-            });
-        });
+    constructor(private metadata: metadata, private elementRef: ElementRef, private broadcast: broadcast, private navigation: navigation) {
+        this.subscriptions.add(
+            this.broadcast.message$.subscribe(message => {
+                this.handleMessage(message);
+            })
+        );
+
+        this.subscriptions.add(
+            this.navigation.objectTabsChange$.subscribe(changed => {
+                // little bit of an ugly trick to come after the change detection run
+                window.setTimeout(() => {
+                    this.handleResize();
+                });
+            })
+        );
 
     }
 
+    /**
+     * build the menu items
+     */
     public ngAfterViewInit() {
         // build the internal menu items
         this.buildMenuItems();
+    }
 
+    /**
+     * unsubscribe from all subscriptions we might have
+     */
+    public ngOnDestroy(): void {
+        this.subscriptions.unsubscribe();
     }
 
     private buildMenuItems() {
@@ -91,10 +109,10 @@ export class GlobalNavigationTabbedMenu implements AfterViewInit {
      * returns only the main objecttabs
      */
     get objectTabs() {
-        return this.navigation.objectTabs.filter(tab => !tab.parentid).sort((t1, t2)=> {
-            if((t1.pinned && t2.pinned) || (!t1.pinned && !t2.pinned) ) return 0;
-            if(t1.pinned) return -1;
-            if(t2.pinned) return 1;
+        return this.navigation.objectTabs.filter(tab => !tab.parentid).sort((t1, t2) => {
+            // if values are equal return 0
+            if ((t1.pinned && t2.pinned) || (!t1.pinned && !t2.pinned)) return 0;
+            return t1.pinned ? -1 : 1;
         });
     }
 
@@ -126,6 +144,9 @@ export class GlobalNavigationTabbedMenu implements AfterViewInit {
         }
     }
 
+    /**
+     * handle the resize and calculöate the total width as well as overflow
+     */
     private handleResize() {
 
         // caluclate the width of the various items
