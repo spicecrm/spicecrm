@@ -54,7 +54,6 @@ import {libloader} from "./services/libloader.service";
 
 import {GlobalLogin} from "./globalcomponents/components/globallogin";
 import {SystemDynamicRouteInterceptor} from "./systemcomponents/components/systemdynamicrouteinterceptor";
-import {GlobalNavigationTabbedMenuModules} from "./globalcomponents/components/globalnavigationtabbedmenumodules";
 import {GlobalHeader} from "./globalcomponents/components/globalheader";
 
 // declarations for TS
