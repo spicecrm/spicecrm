@@ -1,12 +1,27 @@
 <div class="">
+    <div class="slds-p-horizontal--xx-small slds-float_right" *ngIf="isExpanded && utilityButtonsPosition=='top'">
+        <button class="slds-button slds-button_icon" (click)="cancel()" [title]="language.getLabel('LBL_CANCEL')">
+            <system-button-icon icon="close" size="medium"></system-button-icon>
+            <span class="slds-assistive-text">{{language.getLabel('LBL_CANCEL')}}</span>
+        </button>
+        <button class="slds-button slds-button_icon" (click)="expand()" [title]="language.getLabel('LBL_EXPAND')">
+            <system-button-icon icon="expand"></system-button-icon>
+            <span class="slds-assistive-text">{{language.getLabel('LBL_EXPAND')}}</span>
+        </button>
+        <button class="slds-button slds-button_icon" (click)="dock()" [title]="language.getLabel('LBL_DOCK')">
+            <system-button-icon icon="dock_panel"></system-button-icon>
+            <span class="slds-assistive-text">{{language.getLabel('LBL_DOCK')}}</span>
+        </button>
+    </div>
     <div class="slds-p-horizontal--xx-small" (click)="onHeaderClick()">
         <object-record-fieldset [fieldset]="headerFieldSet"></object-record-fieldset>
     </div>
     <div class="slds-p-horizontal--xx-small" *ngIf="isExpanded">
+
         <object-record-fieldset [fieldset]="bodyFieldSet" [direction]="'vertical'"></object-record-fieldset>
         <system-dynamic-component *ngIf="allowattachments" component="SpiceAttachmentsPanel"></system-dynamic-component>
         <div class="slds-p-vertical--x-small slds-grid">
-            <div class="slds-button-group" role="group">
+            <div class="slds-button-group" role="group" *ngIf="utilityButtonsPosition!='top'">
                 <button class="slds-button slds-button--neutral" (click)="cancel()" [title]="language.getLabel('LBL_CANCEL')">
                     <system-button-icon icon="close"></system-button-icon>
                     <span class="slds-assistive-text">{{language.getLabel('LBL_CANCEL')}}</span>

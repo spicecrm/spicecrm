@@ -27,6 +27,7 @@ interface authDataIf {
     googleToken: string;
     userimage: string;
     companycode_id: string;
+    obtainGDPRconsent: boolean;
 }
 
 /**
@@ -51,7 +52,8 @@ export class session {
         portalOnly: false,
         googleToken: '',
         userimage: '',
-        companycode_id: ''
+        companycode_id: '',
+        obtainGDPRconsent: false
     };
 
     /**

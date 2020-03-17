@@ -43,6 +43,11 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
     private bodyFieldSet: string = '';
 
     /**
+     * the position for the utility buttons (cancel, expand, dock)
+     */
+    private utilityButtonsPosition: string = 'bottom';
+
+    /**
      * @ignore
      *
      * indicator if the panel is expanded or not
@@ -82,6 +87,11 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
         // get the fields
         this.headerFieldSet = this.componentconfig.headerfieldset;
         this.bodyFieldSet = this.componentconfig.bodyfieldset;
+
+        // position for buttons
+        if(this.componentconfig.utilitybuttonsposition) {
+            this.utilityButtonsPosition = this.componentconfig.utilitybuttonsposition;
+        }
     }
 
     /**
