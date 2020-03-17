@@ -65,12 +65,12 @@ export class EmailSchedulesModal {
                 aggregates: this.modellist.selectedAggregates
             };
             this.backend.postRequest('/modules/EmailSchedules/saveSchedule', {}, body).subscribe(result => {
-                loadingRef.instance.self.destroy();1
+                loadingRef.instance.self.destroy();
                 if (result.status) {
                     this.toast.sendToast(result.status, 'success');
                     this.close();
                 } else {
-                    this.toast.sendToast(result.msg, 'error');
+                    this.toast.sendToast(result.status, 'error');
                 }
             });
         });
