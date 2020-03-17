@@ -6,6 +6,7 @@ import {backend} from '../../../services/backend.service';
 import {modellist} from "../../../services/modellist.service";
 import {metadata} from "../../../services/metadata.service";
 import {configurationService} from "../../../services/configuration.service";
+import {language} from "../../../services/language.service";
 
 /**
  * renders the reporter cockpit
@@ -22,7 +23,11 @@ export class ReporterCockpit implements OnInit, OnDestroy {
      */
     protected allFields: any[] = [];
 
-    constructor(private backend: backend, private modellist: modellist, private configuration: configurationService, private metadata: metadata) {
+    constructor(private backend: backend,
+                private modellist: modellist,
+                private language: language,
+                private configuration: configurationService,
+                private metadata: metadata) {
         this.componentconfig = this.metadata.getComponentConfig('ReporterCockpit', this.modellist.module);
     }
 
@@ -41,7 +46,22 @@ export class ReporterCockpit implements OnInit, OnDestroy {
     }
 
     public ngOnInit() {
-        this.loadList();
+        this.loadCategories();
+    }
+
+
+    /**
+     * load reports categories from backend
+     */
+    private loadCategories() {
+        const categories = this.configuration.getData('reportcategories');
+        if (!categories) {
+            this.backend.getRequest('KReporter/categoriesmanager/categories').subscribe(categories => {
+                if (!!categories) this.loadList(categories);
+            });
+        } else {
+            this.loadList(categories);
+        }
     }
 
     /**
@@ -55,9 +75,8 @@ export class ReporterCockpit implements OnInit, OnDestroy {
      * function to load the listdata. Checks on the listdata if the component is the same .. if yes .. no reload is needed
      * this can happen when the list is loaded from the appdata service that cahces the previous list
      */
-    private loadList() {
-        const categories = this.configuration.getData('reportcategories');
-        if (!categories) return;
+    private loadList(categories) {
+
         const bucketItems = categories.map(category => ({
             bucket: category.name,
             values: {},
@@ -71,8 +90,17 @@ export class ReporterCockpit implements OnInit, OnDestroy {
             bucketfield: 'category_name',
             bucketitems: bucketItems
         };
+        this.modellist.loadlimit = 15;
 
         this.modellist.getListData();
+    }
+
+    /**
+     * load more items for single bucket
+     * @param bucket
+     */
+    private loadMore(bucket) {
+        this.modellist.loadMoreBucketList(bucket);
     }
 
     /**
