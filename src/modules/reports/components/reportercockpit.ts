@@ -1,7 +1,7 @@
 /**
  * @module ModuleReports
  */
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {modellist} from "../../../services/modellist.service";
 import {metadata} from "../../../services/metadata.service";
@@ -14,7 +14,7 @@ import {configurationService} from "../../../services/configuration.service";
     selector: 'reporter-cockpit',
     templateUrl: './src/modules/reports/templates/reportercockpit.html'
 })
-export class ReporterCockpit implements OnInit {
+export class ReporterCockpit implements OnInit, OnDestroy {
 
     public componentconfig: any = {};
     /**
@@ -42,6 +42,13 @@ export class ReporterCockpit implements OnInit {
 
     public ngOnInit() {
         this.loadList();
+    }
+
+    /**
+     * reset the buckets on destroy
+     */
+    public ngOnDestroy(): void {
+        this.modellist.buckets = {};
     }
 
     /**
