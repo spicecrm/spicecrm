@@ -9,6 +9,7 @@ import {session} from "./session.service";
 import {backend} from "./backend.service";
 import {toast} from "./toast.service";
 import {language} from "./language.service";
+import {broadcast} from "./broadcast.service";
 
 /**
  * @ignore
@@ -55,6 +56,7 @@ export class modelattachments {
         private configurationService: configurationService,
         private session: session,
         private toast: toast,
+        private broadcast: broadcast,
         private language: language
     ) {
     }
@@ -68,6 +70,7 @@ export class modelattachments {
             response => {
                 // set the count
                 this.count = response.count;
+
                 retSubject.next(this.count);
                 retSubject.complete();
             },
@@ -75,6 +78,17 @@ export class modelattachments {
                 retSubject.complete();
             });
         return retSubject.asObservable();
+    }
+
+    /**
+     * broadcasts the number of open workflows found
+     */
+    private broadcastAttachmentCount() {
+        this.broadcast.broadcastMessage('attachments.loaded', {
+            module: this.module,
+            id: this.id,
+            attachmentcount: this.count
+        });
     }
 
     /**
@@ -94,6 +108,9 @@ export class modelattachments {
 
                 // set the count
                 this.count = this.files.length;
+
+                // broadcast the count
+                this.broadcastAttachmentCount();
 
                 this.loading = false;
                 // this.files = response;
@@ -136,53 +153,6 @@ export class modelattachments {
         return bytes.toFixed(1) + " " + units[u];
     }
 
-    /*
-    * deprecated: replaces by uploadAttachmentsBase64
-    */
-
-    /*
-    public uploadAttachments(files): Observable<any> {
-        if (files.length === 0) {
-            return;
-        }
-
-        let retSub = new Subject<any>();
-
-        // let params: Array<string> = [];
-        // params.push("sessionid=" + this.session.authData.sessionId);
-
-        let data = new FormData();
-        data.append("file", files[0], files[0].name);
-
-        let request = new XMLHttpRequest();
-        let resp: any = {};
-        request.onreadystatechange = (scope: any = this) => {
-            if (request.readyState == 4) {
-                try {
-                    let retVal = JSON.parse(request.response);
-                    retSub.next({files: retVal});
-                    retSub.complete();
-                } catch (e) {
-                    resp = {
-                        status: "error",
-                        data: "Unknown error occurred: [" + request.responseText + "]"
-                    };
-                }
-            }
-        };
-
-        request.upload.addEventListener("progress", (e: any) => {
-            retSub.next({progress: {total: e.total, loaded: e.loaded}});
-        }, false);
-
-        request.open("POST", this.configurationService.getBackendUrl() + "/module/" + this.module + "/" + this.id + "/attachment/ui", true);
-        request.setRequestHeader("OAuth-Token", this.session.authData.sessionId);
-        request.send(data);
-
-        return retSub.asObservable();
-    }
-    */
-
     /**
      * upload files from teh files passed back from a drop or a file select input
      *
@@ -218,6 +188,10 @@ export class modelattachments {
                 uploadprogress: 0
             };
             this.files.unshift(newfile);
+
+            // broadcast the count
+            this.count++;
+            this.broadcastAttachmentCount();
 
             this.readFile(file).subscribe(filecontent => {
                 let request = new XMLHttpRequest();
@@ -299,6 +273,10 @@ export class modelattachments {
         };
         this.files.unshift(newfile);
 
+        // broadcast the count
+        this.count++;
+        this.broadcastAttachmentCount();
+
         let request = new XMLHttpRequest();
         let resp: any = {};
         request.onreadystatechange = (scope: any = this) => {
@@ -376,6 +354,11 @@ export class modelattachments {
                 this.files.some((item, index) => {
                     if (item.id == id) {
                         this.files.splice(index, 1);
+
+                        // broadcast the count
+                        this.count--;
+                        this.broadcastAttachmentCount();
+
                         return true;
                     }
                 });
@@ -443,12 +426,6 @@ export class modelattachments {
     }
 
     public openAttachment(id, name?) {
-        /*let params: Array<string> = [];
-        params.push("sessionid=" + this.session.authData.sessionId);
-        window.open(
-            this.configurationService.getBackendUrl() + "/module/" + this.module + "/" + this.id + "/attachment/" + id + "/download?" + params.join("&"),
-            "_blank" // <- open in a new window
-        );*/
         this.backend.getRequest("/module/" + this.module + "/" + this.id + "/attachment/" + id).subscribe(fileData => {
             let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
             let blobUrl = URL.createObjectURL(blob);
