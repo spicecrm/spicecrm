@@ -11,6 +11,8 @@ import {session} from './session.service';
 import {toast} from './toast.service';
 import {helper} from './helper.service';
 import {broadcast} from './broadcast.service';
+import { modal } from './modal.service';
+import { metadata } from './metadata.service';
 
 interface loginAuthDataIf {
     userName: string;
@@ -39,7 +41,8 @@ export class loginService {
         private toast: toast,
         private helper: helper,
         public session: session,
-        public broadcast: broadcast
+        public broadcast: broadcast,
+        public modal: modal, public metadata: metadata
     ) {
     }
 
@@ -95,14 +98,18 @@ export class loginService {
                     this.session.authData.portalOnly = response.portal_only === '1' ? true : false;
                     this.session.authData.renewPass = response.renewPass === '1' ? true : false;
                     this.session.authData.googleToken = response.access_token;
+                    this.session.authData.obtainGDPRconsent = response.obtainGDPRconsent;
                     sessionStorage['OAuth-Token'] = this.session.authData.sessionId;
                     sessionStorage[btoa(this.session.authData.sessionId + ':backendurl')] =
                         btoa(this.configurationService.getBackendUrl());
                     sessionStorage[btoa(this.session.authData.sessionId + ':siteid')] =
                         btoa(this.configurationService.getSiteId());
-                    if (!this.session.authData.renewPass) {
+                    if ( !this.session.authData.renewPass && !this.session.authData.obtainGDPRconsent ) {
                         this.load();
                     }
+
+                    // broadcast taht we have a login
+                    this.broadcast.broadcastMessage('login');
 
                     this.loginSuccessful.next(true);
                     this.loginSuccessful.complete();

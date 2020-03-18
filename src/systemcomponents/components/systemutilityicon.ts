@@ -1,7 +1,7 @@
 /**
  * @module SystemComponents
  */
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 /**
  * an icon rendered from the utility sprite
@@ -40,6 +40,11 @@ export class SystemUtilityIcon {
      * a string for the title that is rendered as part of the SVG HTML element
      */
     @Input() private title: string = '';
+
+    /**
+     * emits the click event
+     */
+    @Output() private click: EventEmitter<MouseEvent> = new EventEmitter<MouseEvent>();
 
     /**
      * returns the SVG href

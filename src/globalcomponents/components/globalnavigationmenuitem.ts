@@ -26,9 +26,7 @@ interface menuItem {
     templateUrl: './src/globalcomponents/templates/globalnavigationmenuitem.html',
     host: {
         '[class.slds-context-bar__item]': 'true',
-        '[class.slds-is-active]': 'isActive()',
-        '[class.slds-has-sub-tabs]': 'isActive() && hasSubTabs()',
-        '[class.slds-context-bar__item_tab]': 'isActive() && hasSubTabs()',
+        '[class.slds-is-active]': 'isActive()'
     },
     providers: [model]
 })
@@ -158,10 +156,6 @@ export class GlobalNavigationMenuItem implements AfterViewInit, OnInit, OnDestro
         } else {
             return false;
         }
-    }
-
-    private hasSubTabs(): boolean {
-        return this.isActive() && this.navigation.hasSubTabs == this.navigation.activeModule;
     }
 
     public ngAfterViewInit() {

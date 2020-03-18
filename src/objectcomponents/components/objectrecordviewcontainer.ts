@@ -2,7 +2,7 @@
  * @module ObjectComponents
  */
 import {
-    AfterViewInit,  Component, ElementRef,  ViewChild, ViewContainerRef,
+    AfterViewInit, Component, ElementRef, ViewChild, ViewContainerRef,
     OnDestroy
 } from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
@@ -10,6 +10,8 @@ import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {broadcast} from '../../services/broadcast.service';
 import {navigation} from '../../services/navigation.service';
+import {navigationtab} from '../../services/navigationtab.service';
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'object-recordview-container',
@@ -25,28 +27,29 @@ export class ObjectRecordViewContainer implements OnDestroy, AfterViewInit {
     private componentRefs: any[] = [];
 
     private routeSubscribe: any = {};
-    private componentSubscriptions: any[] = [];
+    private componentSubscriptions: Subscription = new Subscription();
 
     constructor(private navigation: navigation,
+                private navigationtab: navigationtab,
                 private activatedRoute: ActivatedRoute,
                 private metadata: metadata,
                 private model: model,
                 private broadcast: broadcast,
                 private elementref: ElementRef) {
 
-        this.componentSubscriptions.push(
-            this.activatedRoute.params.subscribe(params => {
-                this.module = params.module;
-                this.id = params.id;
+        this.componentSubscriptions.add(
+            this.navigationtab.activeRoute$.subscribe(route => {
+                if (this.module != route.params.module || this.id != route.params.id) {
+                    this.module = route.params.module;
+                    this.id = route.params.id;
 
-                // set theenavigation paradigm
-                this.navigation.setActiveModule(this.module);
-                if (this.initialized) {
-                    this.buildContainer();
+                    if (this.initialized) {
+                        this.buildContainer();
+                    }
                 }
             })
         );
-        this.componentSubscriptions.push(
+        this.componentSubscriptions.add(
             this.broadcast.message$.subscribe(message => {
                 this.handleMessage(message);
             })
@@ -67,10 +70,7 @@ export class ObjectRecordViewContainer implements OnDestroy, AfterViewInit {
     }
 
     public ngOnDestroy() {
-        // unsubscribe from Observables
-        for (let componentSubscription of this.componentSubscriptions) {
-            componentSubscription.unsubscribe();
-        }
+        this.componentSubscriptions.unsubscribe();
     }
 
     private buildContainer() {

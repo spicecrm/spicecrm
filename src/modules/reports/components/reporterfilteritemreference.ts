@@ -20,6 +20,15 @@ export class ReporterFilterItemReference implements OnInit {
     constructor(private language: language, private model: model) {
     }
 
+    set referenceField(value: string) {
+        this.whereCondition.referencefieldid = value;
+        this.whereCondition.value = this.referenceFields.find(field => field.referencefieldid == value).value;
+    }
+
+    get referenceField(): string {
+        return this.whereCondition.referencefieldid;
+    }
+
     get referenceFields() {
         const whereConditions = this.model.getField('whereconditions');
         return whereConditions.filter(condition => condition.type == this.whereCondition.type && !!condition.reference && this.whereCondition.fieldid != condition.fieldid);

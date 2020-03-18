@@ -1,0 +1,32 @@
+<ul #menulist class="slds-dropdown__list " role="menu">
+    <div #menucontainer></div>
+    <ng-container *ngIf="itemMenu.length > 0">
+        <li *ngFor="let actionitem of itemMenu" class="slds-dropdown__item" role="presentation" (click)="propagateclick(actionitem.id)">
+            <a href="javascript:void(0);" role="menuitem">
+                <global-navigation-menu-item-action-container class="slds-truncate" [ngClass]="{'slds-disabled-text': isDisabled(actionitem.id)}" [actionitem]="actionitem"></global-navigation-menu-item-action-container>
+            </a>
+        </li>
+    </ng-container>
+    <ng-container *ngIf="favorites.length > 0">
+        <li class="slds-dropdown__header" role="separator">
+            <span class="slds-text-title--caps">{{language.getLabel('LBL_FAVORITES')}}</span>
+        </li>
+        <li *ngFor="let favorite of favorites" class="slds-dropdown__item" role="presentation" (click)="openRecord(favorite.item_id)">
+            <a href="javascript:void(0);" role="menuitem">
+                <span class="slds-truncate">{{favorite.item_summary}}</span>
+            </a>
+        </li>
+    </ng-container>
+    <ng-container *ngIf="trackRecent">
+        <li class="slds-dropdown__header" role="separator">
+            <span class="slds-text-title--caps">{{language.getLabel('LBL_RECENTLYVIEWED')}}</span>
+        </li>
+        <li *ngFor="let recentItem of recentitems" class="slds-dropdown__item" role="presentation" (click)="openRecord(recentItem.item_id)">
+            <a href="javascript:void(0);" role="menuitem">
+                <span class="slds-truncate">{{recentItem.item_summary}}</span>
+            </a>
+        </li>
+        <li class="slds-dropdown__item slds-align--absolute-center slds-text-color_inverse-weak slds-p-around--xx-small" *ngIf="!loadingRecent && recentitems.length == 0">{{language.getLabel('LBL_NO_ENTRIES')}}</li>
+        <system-spinner *ngIf="loadingRecent" size="16"></system-spinner>
+    </ng-container>
+</ul>

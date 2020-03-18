@@ -6,6 +6,7 @@ import {language} from "../../../services/language.service";
 import {view} from "../../../services/view.service";
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
+import {broadcast} from "../../../services/broadcast.service";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {currency} from '../../../services/currency.service';
 import {Subject} from "rxjs";
@@ -38,8 +39,19 @@ declare var moment: any;
 })
 export class UserPreferences {
 
+    /**
+     * the preferences loaded
+     */
     private preferences: any = {};
+
+    /**
+     * a list of dashboards that is available for selection
+     */
     private dashboards: any[] = [];
+
+    /**
+     * the default preferences to be laoded
+     */
     private names = [
         "export_delimiter",
         "default_export_charset",
@@ -59,7 +71,12 @@ export class UserPreferences {
         "home_dashboardset",
         "home_assistant",
         "help_icon",
+        "navigation_paradigm"
     ];
+
+    /**
+     * availabel startdays for the calendar
+     */
     private weekDayStartList = ["Sunday", "Monday"];
     private visibilityOptions = ["visible", "hidden"];
     private weekDaysCountList = [5,6,7];
@@ -67,6 +84,10 @@ export class UserPreferences {
 
     private expanded = {loc: true, exp: true, other: true, calendar: true, home: true};
     private exportDelimiterList = [",", ";"];
+
+    /**
+     * list of charsets
+     */
     private charsetlist = [
         "BIG-5", "CP1251", "CP1252", "EUC-CN", "EUC-JP", "EUC-KR", "EUC-TW", "ISO-2022-JP",
         "ISO-2022-KR", "ISO-8859-1", "ISO-8859-2", "ISO-8859-3", "ISO-8859-4", "ISO-8859-5",
@@ -80,6 +101,10 @@ export class UserPreferences {
 
     private currencyList: any[] = [];
     private dashboardSets: any[] = [];
+
+    /**
+     * examples for the formatting of numbers
+     */
     private formattingsOfNumbers = [
         {
             show: "1.000.000,00",
@@ -101,6 +126,11 @@ export class UserPreferences {
     private cannotPrefs: boolean;
     private handlingWithForeignPrefs: boolean;
 
+    /**
+     * inidcates if the preferences are being loaded
+     */
+    private loading: boolean = true;
+
     constructor(
         private backend: backend,
         private view: view,
@@ -110,6 +140,7 @@ export class UserPreferences {
         private prefservice: userpreferences,
         private session: session,
         private model: model,
+        private broadcast: broadcast,
         private configurationService: configurationService ) {
 
         this.view.isEditable = true;
@@ -133,6 +164,9 @@ export class UserPreferences {
 
             this.prefsLoaded.subscribe( () => {
                 this.preferences = _.pick( this.prefservice.unchangedPreferences.global, this.names );
+
+                // preferences are loaded
+                this.loading = false;
             } );
             this.prefservice.getPreferences( this.prefsLoaded );
 
@@ -141,6 +175,9 @@ export class UserPreferences {
             if ( !this.cannotPrefs ) {
                 this.backend.getRequest( 'user/' + this.model.data.id + '/preferences/global', {} ).subscribe( prefs => {
                     this.preferences = prefs;
+
+                    // set loaded to true
+                    this.loading = false;
                 },
                     error => {
                         this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message);
@@ -212,10 +249,12 @@ export class UserPreferences {
             this.prefservice.setPreferences( this.preferences ).subscribe( () => {
                 this.toast.sendToast( this.language.getLabel( "LBL_DATA_SAVED" ), "success" );
                 this.preferences = _.pick( this.prefservice.unchangedPreferences.global, this.names );
+
+                // broadcast that the references have been saved
+                this.broadcast.broadcastMessage('userpreferences.save');
             });
             this.view.setViewMode();
         }
-
     }
 
     private togglePanel(panel) {

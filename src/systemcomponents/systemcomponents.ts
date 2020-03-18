@@ -135,6 +135,10 @@ import /*embed*/ {SystemTrendIndicator} from "./components/systemtrendindicator"
 import /*embed*/ {SystemImageModal} from './components/systemimagemodal';
 import /*embed*/ {SystemSlider} from "./components/systemslider";
 
+import /*embed*/ {SystemNavigationCollector} from "./components/systemnavigationcollector";
+import /*embed*/ {SystemNavigationManager} from "./components/SystemNavigationManager";
+import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/systemnavigationmanagerroutecontainer";
+
 @NgModule({
     imports: [
         DirectivesModule,
@@ -258,10 +262,14 @@ import /*embed*/ {SystemSlider} from "./components/systemslider";
         SystemTrendIndicator,
         SystemSlider,
         SystemTrendIndicator,
-        SystemImageModal
+        SystemImageModal,
+        SystemNavigationCollector,
+        SystemNavigationManager,
+        SystemNavigationManagerRouteContainer
     ],
     entryComponents: [
-        SystemDynamicRouteContainer
+        SystemDynamicRouteContainer,
+        SystemNavigationCollector
     ],
     exports: [
         PaginationControlsComponent,
@@ -360,7 +368,9 @@ import /*embed*/ {SystemSlider} from "./components/systemslider";
         SystemTrendIndicator,
         SystemSlider,
         SystemTrendIndicator,
-        SystemImageModal
+        SystemImageModal,
+        SystemNavigationCollector,
+        SystemNavigationManager,
     ]
 })
 export class SystemComponents {
