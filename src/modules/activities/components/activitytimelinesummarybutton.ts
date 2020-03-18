@@ -26,8 +26,8 @@ export class ActivityTimelineSummaryButton {
      */
     private displaySummary() {
         let routeprefix = '';
-        if(this.navigationtab?.tabid){
-            routeprefix = '/tabid/'+this.navigationtab.tabid
+        if (this.navigationtab?.tabid) {
+            routeprefix = '/tab/' + this.navigationtab.tabid
         }
 
         this.router.navigate([routeprefix + "/module/" + this.model.module + "/historysummary/" + this.model.id]);
