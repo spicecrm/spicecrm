@@ -54,38 +54,27 @@ export class ProductBrowserTree implements OnInit {
     }
 
     private getProductGroups(parentId = '') {
-        let fields = ['id', 'name', 'summary_text', 'parent_productgroup_id', 'member_count', 'product_count', 'sortparam', 'sortseq'];
-        let searchFields = {
-            field: 'parent_productgroup_id',
-            operator: (parentId != '' ? '=' : 'empty'),
-            value: parentId
-        };
-        let params = {
-            searchfields: JSON.stringify(searchFields),
-            fields: JSON.stringify(fields),
-            offset: 0,
-            limit: 250
-        };
 
-        this.backend.getRequest('module/ProductGroups', params)
-            .subscribe(items => {
-                items.list.sort((a, b) => {
-                    return parseInt(a.sortseq, 10) > parseInt(b.sortseq, 10) ? 1 : -1;
-                });
-
-                for (let item of items.list) {
-                    item.expanded = false;
-                    item.loaded = false;
-                    item.type = 'ProductGroup';
-                    item.member_count = parseInt(item.member_count, 10);
-                    item.product_count = parseInt(item.product_count, 10);
-                    this.productGroups.push(item);
-                }
-                this.buildTree();
-                if (this.productfinder.searchfocus.type.length == 0) {
-                    this.selectGroup(this.productGroupTree[0]);
-                }
+        this.backend.getRequest('productgroups/tree' + (parentId ? '/' + parentId : '')).subscribe(items => {
+            items.sort((a, b) => {
+                return parseInt(a.sortseq, 10) > parseInt(b.sortseq, 10) ? 1 : -1;
             });
+
+            for (let item of items) {
+                item.expanded = false;
+                item.loaded = false;
+                item.type = 'ProductGroup';
+                item.member_count = parseInt(item.member_count, 10);
+                item.product_count = parseInt(item.product_count, 10);
+                this.productGroups.push(item);
+            }
+
+            this.buildTree();
+
+            if (this.productfinder.searchfocus.type.length == 0) {
+                this.selectGroup(this.productGroupTree[0]);
+            }
+        });
     }
 
     private getProducts(parentId = '') {
