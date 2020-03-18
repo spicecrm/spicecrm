@@ -122,7 +122,7 @@ export class ReportsDesignerConditionGroup {
         let condition = {
             id: guid,
             groupid: this.group.id,
-            unionid: this.group.id,
+            unionid: this.group.unionid,
             fieldid: guid,
             referencefieldid: '',
             path: `${this.reportsDesignerService.getCurrentPath()}::${field.id}`,
