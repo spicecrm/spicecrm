@@ -20,7 +20,7 @@ import {Subscription} from "rxjs";
         '(window:resize)': 'handleResize()'
     }
 })
-export class GlobalNavigationTabbedMenu implements AfterViewInit, OnDestroy {
+export class GlobalNavigationTabbedMenu implements OnDestroy {
 
     /**
      * reference to the module menu item
@@ -38,22 +38,6 @@ export class GlobalNavigationTabbedMenu implements AfterViewInit, OnDestroy {
     @ViewChild(GlobalNavigationTabbedMoreTab) private menuMore: GlobalNavigationTabbedMoreTab;
 
     /**
-     * the menu items derived from the role
-     */
-    private menuItems: any[] = [];
-
-
-    /**
-     * inidcvates that an item is moved to the active state
-     */
-    private movingActive: boolean = false;
-
-    /**
-     * indicates that we are in teh rendering and calculation process
-     */
-    private rendering: boolean = false;
-
-    /**
      * timeout function to handle resize event ... to not render after any time the event is triggered but the size is stable for some time
      */
     private resizeTimeOut: any = undefined;
@@ -65,12 +49,6 @@ export class GlobalNavigationTabbedMenu implements AfterViewInit, OnDestroy {
 
     constructor(private metadata: metadata, private elementRef: ElementRef, private broadcast: broadcast, private navigation: navigation) {
         this.subscriptions.add(
-            this.broadcast.message$.subscribe(message => {
-                this.handleMessage(message);
-            })
-        );
-
-        this.subscriptions.add(
             this.navigation.objectTabsChange$.subscribe(changed => {
                 // little bit of an ugly trick to come after the change detection run
                 window.setTimeout(() => {
@@ -78,15 +56,6 @@ export class GlobalNavigationTabbedMenu implements AfterViewInit, OnDestroy {
                 });
             })
         );
-
-    }
-
-    /**
-     * build the menu items
-     */
-    public ngAfterViewInit() {
-        // build the internal menu items
-        this.buildMenuItems();
     }
 
     /**
@@ -96,14 +65,6 @@ export class GlobalNavigationTabbedMenu implements AfterViewInit, OnDestroy {
         this.subscriptions.unsubscribe();
     }
 
-    private buildMenuItems() {
-        this.menuItems = [];
-
-        let modules = this.metadata.getRoleModules(true);
-        for (let module of modules) {
-            this.menuItems.push(module);
-        }
-    }
 
     /**
      * returns only the main objecttabs
@@ -124,24 +85,6 @@ export class GlobalNavigationTabbedMenu implements AfterViewInit, OnDestroy {
      */
     private trackByFn(index, item) {
         return item.id;
-    }
-
-    /**
-     * a handler for the broadcast message
-     *
-     * catch role changes and reloads
-     *
-     * @param message
-     */
-    private handleMessage(message) {
-        switch (message.messagetype) {
-            case 'applauncher.setrole':
-            case 'loader.reloaded':
-                this.buildMenuItems();
-
-                break;
-
-        }
     }
 
     /**
