@@ -196,12 +196,14 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         DirectivesModule,
         RouterModule.forRoot([
             // {path: 'module/Home', component: ModuleHome, canActivate: [loginCheck]},
+            /*
             {
                 path: 'module/:module',
-                    component: ObjectListViewContainer,
+                component: SystemNavigationCollector,
                 canActivate: [loginCheck, canNavigateAway, aclCheck],
                 data: {aclaction: 'list'}
             },
+            */
             /*
             {
                 path: 'module/:module/historysummary/:id',
@@ -210,12 +212,15 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
                 data: {aclaction: 'view'}
             },
             */
+            /*
             {
                 path: 'module/:module/:id',
-                component: ObjectRecordViewContainer,
+                component: SystemNavigationCollector,
                 canActivate: [loginCheck, canNavigateAway, aclCheck],
                 data: {aclaction: 'view'}
             },
+            */
+            /*
             {path: 'module/:module/:id/:related/:link', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
             {
                 path: 'module/:module/:id/:related/:link/:fieldset',
@@ -223,6 +228,7 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
                 canActivate: [loginCheck, aclCheck],
                 data: {aclaction: 'view'}
             }
+            */
         ])],
     declarations: [
         ObjectListViewContainer,
@@ -408,7 +414,7 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectListHeaderSort,
         ObjectRelatedlistFiles,
         ObjectKeyValuesPipe,
-        ObjectRecordChecklistItem
+        ObjectPageHeaderTags
     ]
 })
 export class ObjectComponents {
