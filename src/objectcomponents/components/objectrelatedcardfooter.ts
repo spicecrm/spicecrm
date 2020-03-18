@@ -5,6 +5,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {relatedmodels} from '../../services/relatedmodels.service';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
+import {navigationtab} from '../../services/navigationtab.service';
 import {Router} from '@angular/router';
 
 /**
@@ -49,7 +50,7 @@ export class ObjectRelatedCardFooter implements OnInit {
      */
     private componentid: string;
 
-    constructor(private language: language, private relatedmodels: relatedmodels, private model: model, private router: Router) {
+    constructor(private language: language, private relatedmodels: relatedmodels, private model: model, private router: Router, private navigationtab: navigationtab) {
         this.componentid = this.model.utils.generateGuid();
     }
 
@@ -102,10 +103,15 @@ export class ObjectRelatedCardFooter implements OnInit {
      * navigates to the route to show all related mndels
      */
     private showAll() {
+        let routePrefix = '';
+        if(this.navigationtab?.tabid){
+            routePrefix = '/tab/'+this.navigationtab.tabid;
+        }
+
         if (this.fieldset && this.fieldset != '') {
-            this.router.navigate(['/module/' + this.model.module + '/' + this.model.id + '/' + this.relatedmodels.relatedModule + '/' + this.relatedmodels._linkName + '/' + this.fieldset]);
+            this.router.navigate([routePrefix + '/module/' + this.model.module + '/' + this.model.id + '/' + this.relatedmodels.relatedModule + '/' + this.relatedmodels._linkName + '/' + this.fieldset]);
         } else {
-            this.router.navigate(['/module/' + this.model.module + '/' + this.model.id + '/' + this.relatedmodels.relatedModule + '/' + this.relatedmodels._linkName]);
+            this.router.navigate([routePrefix + '/module/' + this.model.module + '/' + this.model.id + '/' + this.relatedmodels.relatedModule + '/' + this.relatedmodels._linkName]);
         }
     }
 
