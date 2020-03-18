@@ -1,7 +1,16 @@
 /**
  * @module SystemComponents
  */
-import {Component, ViewChild, ViewContainerRef, EventEmitter, AfterViewInit, Input, Output} from '@angular/core';
+import {
+    Component,
+    ViewChild,
+    ViewContainerRef,
+    EventEmitter,
+    AfterViewInit,
+    Input,
+    Output,
+    OnChanges, SimpleChanges
+} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 
 /**
@@ -11,7 +20,7 @@ import {metadata} from '../../services/metadata.service';
     selector: 'system-dynamic-component',
     templateUrl: './src/systemcomponents/templates/systemdynamiccomponent.html'
 })
-export class SystemDynamicComponent implements AfterViewInit {
+export class SystemDynamicComponent implements AfterViewInit, OnChanges {
 
     /**
      * the reference to the container in the template
@@ -33,20 +42,58 @@ export class SystemDynamicComponent implements AfterViewInit {
      */
     @Output() private componentref: EventEmitter<any> = new EventEmitter<any>();
 
+    /**
+     * the component that is rendered
+     */
+    private _component: any;
+
+    /**
+     *
+     */
+    private initialized: boolean = false;
+
     constructor(private metadata: metadata) {
     }
 
     /**
-     * after view init add the component via teh metadata service
+     * after view init add the component via the metadata service
      */
     public ngAfterViewInit() {
-        this.metadata.addComponent(this.component, this.container).subscribe(componentref => {
-            this.componentref.emit(componentref);
+        if(!this.initialized){
+            this.renderComponent();
+        }
+    }
 
-            // if we have the componetconfig .. add it
-            if (this.componentconfig) {
-                componentref.instance.componentconfig = this.componentconfig;
+    /**
+     * react to changes
+     *
+     * @param changes
+     */
+    public ngOnChanges(changes: SimpleChanges): void {
+        if(this.container && changes.component) {
+            if (this._component) {
+                this._component.destroy();
+                this._component = undefined;
             }
-        });
+            this.renderComponent();
+
+            this.initialized = true;
+
+        }
+    }
+
+    private renderComponent() {
+        if (this.component) {
+            this.metadata.addComponent(this.component, this.container).subscribe(componentref => {
+                this.componentref.emit(componentref);
+
+                // if we have the componetconfig .. add it
+                if (this.componentconfig) {
+                    componentref.instance.componentconfig = this.componentconfig;
+                }
+
+                this._component = componentref;
+            });
+        }
     }
 }

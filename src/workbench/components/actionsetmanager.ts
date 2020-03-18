@@ -66,7 +66,12 @@ export class ActionsetManager {
         this.checkMode();
     }
 
-    // get all actionsets for the current module and type(global, custom)
+    /**
+     *
+     * @param type (global, custom) string
+     *
+     * get all actionsets for the current module and type(global, custom)
+     */
     private getActionSets(type = null) {
         let retArray = [];
         if (!type) {
@@ -150,26 +155,33 @@ export class ActionsetManager {
     }
 
     private selectCurrentActionset() {
-        let newID = this.currentActionSet.id;
-        if(this.actionSetBackup != "") {
-            // set it back to the old id .. for the dirty-field check
-            this.currentActionSet.id = JSON.parse(this.actionSetBackup).id;
-            JSON.stringify(this.actionSetBackup);
-            if(this.checkForChangesFunction()) {
-                this.modal.confirm(  'LBL_ALL_CHANGES_WOULD_BE_DELETED.', 'LBL_ARE_YOU_SURE' ).subscribe( ( answer ) => {
-                    if(answer) {
-                        this.deleteChanges();
-                        this.loadCurrentActionset(newID);
-                    }
-                });
+        if(this.currentActionSet.id) {
+            let newID = this.currentActionSet.id;
+            if(this.actionSetBackup != "") {
+                // set it back to the old id .. for the dirty-field check
+                this.currentActionSet.id = JSON.parse(this.actionSetBackup).id;
+                JSON.stringify(this.actionSetBackup);
+                if(this.checkForChangesFunction()) {
+                    this.modal.confirm(  'LBL_ALL_CHANGES_WOULD_BE_DELETED.', 'LBL_ARE_YOU_SURE' ).subscribe( ( answer ) => {
+                        if(answer) {
+                            this.deleteChanges();
+                            this.loadCurrentActionset(newID);
+                        }
+                    });
+                } else {
+                    this.loadCurrentActionset(newID);
+                }
             } else {
                 this.loadCurrentActionset(newID);
             }
-        } else {
-            this.loadCurrentActionset(newID);
         }
     }
 
+    /**
+     * @param newID string
+     *
+     * selected an actionset
+     */
     private loadCurrentActionset(newID) {
         this.selectedItem = null;
         this.checkMode();
@@ -186,7 +198,10 @@ export class ActionsetManager {
     }
 
 
-
+    /**
+     *
+     * Add a new actionsetitem
+     */
     private addActionsetItem() {
         let currentActionSetItem = {
             // actionset: this.currentActionSet,
@@ -216,6 +231,10 @@ export class ActionsetManager {
         });
     }
 
+    /**
+     *
+     * Add a new actionset
+     */
     private addActionset() {
         this.modalservice.openModal('ActionsetManagerAddDialog').subscribe(modal => {
 
@@ -251,6 +270,11 @@ export class ActionsetManager {
         });
     }
 
+    /**
+     *
+     * Selected a module
+     * Check if any changes are active
+     */
     private selectModule() {
         let newModule = this.currentActionSet.module;
         if(this.actionSetBackup != "") {
@@ -272,6 +296,9 @@ export class ActionsetManager {
         }
     }
 
+    /**
+     * reset the current data
+     */
     private reset() {
         this.currentActionSet = {
             id: '',
@@ -285,11 +312,20 @@ export class ActionsetManager {
         this.selectedItemID = "";
     }
 
+    /**#
+     * @param item object
+     *
+     * get the label of the item
+     */
     private getDisplayName(item) {
         let name = item.action ? item.action: item.component;
         return item.actionconfig.label ? name + " (" + this.language.getLabel(item.actionconfig.label) + ")":  name;
     }
 
+    /**#
+     * check if id is selected
+     * return bool
+     */
     private isSelected(id) {
         return id == this.selectedItem.id;
     }

@@ -49,14 +49,15 @@ export class userpreferences {
         timezone: 'Europe/Vienna',
         default_currency_significant_digits: 2,
         default_locale_name_format: 'l, f',
-        week_day_start: 0
+        week_day_start: 0,
+        navigation_paradigm: 'simple'
     };
 
     public formats = {nameFormats: [], loaded: false};
 
     constructor(private backend: backend, private toast: toast, private configuration: configurationService, private language: language, private broadcast: broadcast, private modalservice: modal, private session: session) {
         this.toUse = this.preferences.global;
-        this.retrievePrefsFromConfigService();
+        // this.retrievePrefsFromConfigService();
         this.broadcast.message$.subscribe(msg => {
             if (msg.messagetype === 'loader.completed' && msg.messagedata === 'loadUserData') this.retrievePrefsFromConfigService();
         });

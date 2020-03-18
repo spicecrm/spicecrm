@@ -64,7 +64,7 @@ export class ObjectRelatedlistAll implements OnInit {
      */
     private listfields: any[] = [];
 
-    constructor(private activatedRoute: ActivatedRoute, private navigation: navigation, private language: language, private metadata: metadata, private model: model, private relatedmodels: relatedmodels) {
+    constructor(private navigation: navigation, private language: language, private metadata: metadata, private model: model, private relatedmodels: relatedmodels) {
 
     }
 
@@ -72,17 +72,17 @@ export class ObjectRelatedlistAll implements OnInit {
      * load teh info from teh rtelated route and load the related models initially
      */
     public ngOnInit() {
-        this.module = this.activatedRoute.params['value']['module'];
-        this.link = this.activatedRoute.params['value']['link'];
-        this.related = this.activatedRoute.params['value']['related'];
-        this.fieldset = this.activatedRoute.params['value']['fieldset'];
+        this.module = this.navigation.activeRoute.params.module;
+        this.link = this.navigation.activeRoute.params.link;
+        this.related = this.navigation.activeRoute.params.related;
+        this.fieldset = this.navigation.activeRoute.params.fieldset;
 
         // set theenavigation paradigm
         this.navigation.setActiveModule(this.module);
 
         // get the bean details
         this.model.module = this.module;
-        this.model.id = this.activatedRoute.params['value']['id'];
+        this.model.id = this.navigation.activeRoute.params.id;
 
         this.model.getData(true, 'detailview').subscribe(data => {
             this.navigation.setActiveModule(this.module, this.model.id, data.summary_text);

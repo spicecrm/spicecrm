@@ -37,6 +37,21 @@ export class ReportsDesignerConditionGroup {
                 private model: model) {
     }
 
+    get groupType(): string {
+        return this.group.type;
+    }
+
+    set groupType(value: string) {
+        this.group.type = value;
+        this.model.getField('wheregroups').some(group => {
+            if (group.id == this.group.id) {
+                group.type = value;
+                return true;
+            }
+        });
+
+    }
+
     /**
     * @return whereConditions: object[]
      */
@@ -107,7 +122,7 @@ export class ReportsDesignerConditionGroup {
         let condition = {
             id: guid,
             groupid: this.group.id,
-            unionid: this.group.id,
+            unionid: this.group.unionid,
             fieldid: guid,
             referencefieldid: '',
             path: `${this.reportsDesignerService.getCurrentPath()}::${field.id}`,
