@@ -243,11 +243,13 @@ export class navigation {
 
         // set the new active tab
         if (tabid == 'main') {
+
             this.maintab.active = true;
             this.activeTab$.next('main');
 
             // set the browser location accordingly without triggering the router
-            this.location.replaceState(this.maintab.url);
+            // this.location.replaceState(this.maintab.url);
+            this.router.navigate([this.maintab.url]);
         } else {
             let tab = this.objectTabs.find(tab => tab.id == tabid);
             if (tab) {
@@ -269,7 +271,8 @@ export class navigation {
         this.activeTab$.next(tab.id);
 
         // set the browser location accordingly without triggering the router
-        this.location.replaceState(tab.url);
+        this.router.navigate([tab.url]);
+        // this.location.replaceState(tab.url);
     }
 
     /**
@@ -664,7 +667,7 @@ export class navigation {
      */
     public closeObjectTab(tabid, force: boolean = false) {
         // not for the main tab
-        if(tabid == 'main') return;
+        if (tabid == 'main') return;
 
         // check dirty tab
         if (!force && this.anyDirtyModel(tabid)) {
@@ -690,7 +693,12 @@ export class navigation {
             // check if this is the active tab or a subtab is active that has the curretn tab as parent
             // if yes set main as the active tab
             if (this.objectTabs[index].active || this.objectTabs.find(tab => tab.active)?.parentid == tabid) {
-                this.router.navigate([this.maintab.url]);
+                // if we have a parent tab navigate to that .. otherwise to the main tab
+                if (this.objectTabs[index].parentid) {
+                    this.router.navigate([this.objectTabs.find(tab => tab.id == this.objectTabs[index].parentid).url]);
+                } else {
+                    this.router.navigate([this.maintab.url]);
+                }
             }
 
             // slice the object tab array
