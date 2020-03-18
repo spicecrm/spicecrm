@@ -62,6 +62,7 @@ export class ActivityTimelineSummary implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
+        // initialize the tab
         this.initialize(this.navigationtab.activeRoute.params);
     }
 
@@ -111,7 +112,10 @@ export class ActivityTimelineSummary implements OnInit, OnDestroy {
         // get the bean details
         this.parent.module = params.module;
         this.parent.id = params.id;
-        this.parent.getData(true, '', true);
+        this.parent.getData(true, '', true).subscribe(data => {
+            // set the tab params
+            this.navigationtab.setTabInfo({displayname: this.parent.getField('summary_text') + ' • ' + this.language.getModuleName( 'History'), displaymodule: 'History'});
+        });
 
         this.activitiytimeline.parent = this.parent;
         this.activitiytimeline.defaultLimit = 25;
