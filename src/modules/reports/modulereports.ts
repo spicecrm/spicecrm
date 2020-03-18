@@ -13,7 +13,10 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import /*embed*/ {reporterconfig} from './services/reporterconfig';
 
 import /*embed*/ {ReporterDetailView} from "./components/reporterdetailview";
+import /*embed*/ {ReporterDetailViewHeader} from "./components/reporterdetailviewheader";
 import /*embed*/ {ReporterFilterButton} from "./components/reporterfilterbutton";
+import /*embed*/ {ReporterDetailViewRefreshButton} from "./components/reporterdetailviewrefreshbutton";
+import /*embed*/ {ReporterDetailViewEditButton} from "./components/reporterdetailvieweditbutton";
 import /*embed*/ {ReporterFilterPanel} from "./components/reporterfilterpanel";
 import /*embed*/ {ReporterFilterSavedFilters} from "./components/reporterfiltersavedfilters";
 import /*embed*/ {ReporterFilterItem} from "./components/reporterfilteritem";
@@ -72,7 +75,10 @@ declare var moment: any;
     declarations: [
         FieldReportCategory,
         ReporterDetailView,
+        ReporterDetailViewHeader,
         ReporterFilterButton,
+        ReporterDetailViewRefreshButton,
+        ReporterDetailViewEditButton,
         ReporterFilterPanel,
         ReporterFilterSavedFilters,
         ReporterFilterItem,
