@@ -32,13 +32,15 @@ export class SpiceAttachmentsPanelHeader implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * get the count also if the panel is not forced to load
+     */
     public ngOnInit(): void {
         this.modelattachments.module = this.model.module;
         this.modelattachments.id = this.model.id;
         this.modelattachments.getCount().subscribe(count => {
             this.attachmentcount = count;
-        })
-
+        });
     }
 
     /**
