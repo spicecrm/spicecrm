@@ -1,11 +1,1 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var defer_1 = require("./defer");
-var empty_1 = require("./empty");
-function iif(condition, trueResult, falseResult) {
-    if (trueResult === void 0) { trueResult = empty_1.EMPTY; }
-    if (falseResult === void 0) { falseResult = empty_1.EMPTY; }
-    return defer_1.defer(function () { return condition() ? trueResult : falseResult; });
-}
-exports.iif = iif;
-//# sourceMappingURL=iif.js.map
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var defer_1=require("./defer"),empty_1=require("./empty");function iif(e,r,i){return void 0===r&&(r=empty_1.EMPTY),void 0===i&&(i=empty_1.EMPTY),defer_1.defer(function(){return e()?r:i})}exports.iif=iif;
