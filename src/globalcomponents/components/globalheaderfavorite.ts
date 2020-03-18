@@ -53,7 +53,7 @@ export class GlobalHeaderFavorite {
         return this.favorite.favorites.length == 0;
     }
 
-    private isDisabled() {
+    get isDisabled() {
         return !this.favorite.isEnabled;
     }
 

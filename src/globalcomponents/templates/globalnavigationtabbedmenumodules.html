@@ -1,0 +1,34 @@
+<div class="slds-context-bar__item slds-context-bar__item_divider-right slds-dropdown-trigger slds-dropdown-trigger_click"  [ngClass]="{'slds-is-open': isopen}">
+    <a href="javascript:void(0);" class="slds-context-bar__label-action" (click)="setActive()">
+        <div class="slds-truncate slds-grid slds-grid--vertical-align-center" [title]="navModule">
+            <system-icon [module]="navModule" size="x-small"></system-icon>
+            <span>{{navModule}}</span>
+        </div>
+    </a>
+    <div class="slds-context-bar__icon-action">
+        <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-x-small" aria-haspopup="true" title="Open object switcher menu">
+            <system-button-icon icon="chevrondown"></system-button-icon>
+            <span class="slds-assistive-text">Open object switcher menu</span>
+        </button>
+    </div>
+    <div class="slds-dropdown slds-dropdown_left slds-dropdown--large">
+        <div class="slds-grid">
+            <ul class="slds-dropdown__list slds-size--1-of-2 slds-border--right" role="menu">
+                <li *ngFor="let menuItem of menuItems" class="slds-dropdown__item slds-nav-vertical__item" [ngClass]="{'slds-is-active': menuItem == activeModule}" role="presentation" (click)="navigateTo(menuItem)">
+                    <a href="javascript:void(0);" role="menuitem" tabindex="-1">
+                        <div class="slds-truncate slds-size--1-of-1 slds-grid slds-grid--vertical-align-center" [title]="menuItem">
+                            <system-icon [module]="menuItem" size="x-small"></system-icon>
+                            <span>{{menuItem}}</span>
+                            <button class="slds-button slds-button--icon slds-col--bump-left" (click)="setActiveModule($event, menuItem)">
+                                <system-button-icon icon="chevronright" addclasses="slds-icon-text-light"></system-button-icon>
+                            </button>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+            <div class="slds-size--1-of-2">
+                <global-navigation-tabbed-module-menu [module]="activeModule" (actionTriggered)="closeMenu()"></global-navigation-tabbed-module-menu>
+            </div>
+        </div>
+    </div>
+</div>

@@ -100,6 +100,7 @@ export class SystemModuleTreeItem {
             if (items) {
                 this.nodeitems = items
                     .map(item => {
+                        item.nodeId = this.modelUtilities.generateGuid();
                         item.displayname = !!item.label ? this.language.getLabel(item.label) : this.language.getModuleName(item.module);
                         return item;
                     })

@@ -1,6 +1,6 @@
 <div *ngIf="canShowFavorites" class="slds-show--medium slds-dropdown-trigger slds-dropdown-trigger--click slds-is-open">
     <div class="slds-button-group">
-        <button class="slds-button slds-button--icon slds-button--icon-border slds-p-horizontal--xx-small slds-p-vertical--xx-small-small" [ngClass]="getFavoriteActive()" [disabled]="isDisabled()" (click)="toggleFavorite()">
+        <button class="slds-button slds-button--icon slds-button--icon-border slds-p-horizontal--xx-small slds-p-vertical--xx-small-small" [ngClass]="getFavoriteActive()" [disabled]="isDisabled" (click)="toggleFavorite()">
             <system-utility-icon icon="favorite" size="x-small"></system-utility-icon>
         </button>
         <button class="slds-button slds-button--icon slds-button--icon-border slds-p-horizontal--xx-small slds-p-vertical--xx-small" [disabled]="nofavorites" (click)="toggleFavorites()">
