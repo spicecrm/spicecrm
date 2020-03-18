@@ -7,7 +7,7 @@ import {configurationService} from './configuration.service';
 import {session} from './session.service';
 import {backend} from './backend.service';
 import {broadcast} from './broadcast.service';
-import {Subject, of} from 'rxjs';
+import {Subject, of, Observable} from 'rxjs';
 
 @Injectable()
 export class recent {
@@ -18,7 +18,7 @@ export class recent {
         this.broadcast.message$.subscribe(message => this.handleMessage(message));
     }
 
-    get items() {
+    get items(): any[] {
         let recentItems = this.configuration.getData('recentitmes')
         return recentItems ? recentItems : [];
     }
@@ -108,7 +108,7 @@ export class recent {
         }
     }
 
-    public getModuleRecent(module: string) {
+    public getModuleRecent(module: string): Observable<any> {
         // special handling for Home
         if (module == 'Home') {
             // return 5 items
