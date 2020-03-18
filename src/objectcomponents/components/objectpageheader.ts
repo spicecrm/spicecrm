@@ -32,7 +32,7 @@ export class ObjectPageHeader implements OnInit {
         return this.model.module;
     }
 
-    constructor(private language: language, private router: Router, private model: model, private metadata: metadata) {
+    constructor(public language: language, public router: Router, public model: model, public metadata: metadata) {
 
     }
 
@@ -48,7 +48,7 @@ export class ObjectPageHeader implements OnInit {
         }
     }
 
-    private goToModule() {
+    public goToModule() {
         this.router.navigate(['/module/' + this.moduleName]);
     }
 
