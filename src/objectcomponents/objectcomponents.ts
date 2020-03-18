@@ -407,7 +407,8 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectListViewHeaderDetails,
         ObjectListHeaderSort,
         ObjectRelatedlistFiles,
-        ObjectKeyValuesPipe
+        ObjectKeyValuesPipe,
+        ObjectPageHeaderTags
     ]
 })
 export class ObjectComponents {
