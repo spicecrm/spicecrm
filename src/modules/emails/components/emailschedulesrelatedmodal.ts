@@ -18,8 +18,9 @@ import {toast} from "../../../services/toast.service";
 export class EmailSchedulesRelatedModal {
     private self: any = {};
     private activetab: string = 'recipients';
-    private prospects: any[] = [];
-    private listId: string;
+    private linkedBeans: any[] = [];
+    private modelId: string;
+    private currentModule: string;
     constructor(private language: language,
                 private model: model,
                 private injector: Injector,
@@ -35,7 +36,7 @@ export class EmailSchedulesRelatedModal {
     }
 
     /**
-     * initalize emailschedules and filter the prospects
+     * initalize emailschedules and filter the linkedBeans
      */
     public ngOnInit() {
         this.model.module = "EmailSchedules";
@@ -44,13 +45,13 @@ export class EmailSchedulesRelatedModal {
     }
 
     /**
-     * check if the each module of prospects has an email link, if not, it will be disabled and unselectable
+     * if the count of the linked beans is equal to 0 it will be disabled and unselectable
      */
     private fiilterProspects() {
-        this.prospects = this.prospects.map(prospect => {
-            prospect.disabled = !this.metadata.getFieldDefs(prospect.module, 'emails');
-            prospect.selected = false;
-            return prospect;
+        this.linkedBeans = this.linkedBeans.map(link => {
+            link.disabled = link.count == 0;
+            link.selected = false;
+            return link;
         });
     }
 
@@ -62,18 +63,20 @@ export class EmailSchedulesRelatedModal {
     }
 
     /**
-     * filter the prospect by selection
+     * save the emailschedule model data, the current bean id, the current bean name, the selected links and send the object to the backend
      */
     private saveSchedule() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             loadingRef.instance.messagelabel = 'LBL_LOADING';
-            const selectedProspects = this.prospects.filter(prospect => prospect.selected).map(prospect => prospect.module);
+            const selectedLinks = this.linkedBeans.filter(link => link.selected).map(link => link.module);
             let body = {
-                listId: this.listId,
-                modules: selectedProspects,
+                beanId: this.modelId,
+                bean: this.currentModule,
+                links: selectedLinks,
                 data: this.model.data
             };
-            this.backend.postRequest('/modules/EmailSchedules/saveScheduleFromProspectList', {}, body).subscribe(result => {
+
+            this.backend.postRequest('/modules/EmailSchedules/saveScheduleFromRelated', {}, body).subscribe(result => {
                 loadingRef.instance.self.destroy();
                 if (result.status) {
                     this.toast.sendToast(result.status, 'success');
