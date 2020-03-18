@@ -33,10 +33,10 @@
         </div>
         <div class="slds-form-element slds-col--bump-left">
 
-            <button *ngIf="!checkForChanges && currentActionSet.id != ''" [disabled]="!allowBarButtons || !view.isEditMode()" class="slds-button slds-button--brand" (click)="copy()" >
+            <button *ngIf="!checkForChanges && currentActionSet.id != ''" [disabled]="!allowBarButtons" class="slds-button slds-button--brand" (click)="copy()" >
                 <span>{{language.getAppLanglabel('LBL_COPY')}}</span>
             </button>
-            <button *ngIf="!checkForChanges" [disabled]="!allowBarButtons || !view.isEditMode()" type="button" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="addActionset()"><system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon></button>
+            <button *ngIf="!checkForChanges" [disabled]="!allowBarButtons" type="button" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="addActionset()"><system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon></button>
 
             <button *ngIf="checkForChanges && currentActionSet.id != ''" [disabled]="!view.isEditMode()" type="button" class="slds-button slds-button--brand" (click)="saveChanges()">
                 {{language.getLabel('LBL_SAVE')}}
