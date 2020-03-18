@@ -8,6 +8,7 @@ import {backend} from "../../../services/backend.service";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {toast} from "../../../services/toast.service";
+import {navigationtab} from "../../../services/navigationtab.service";
 import {Location} from "@angular/common";
 
 @Component({
@@ -29,6 +30,7 @@ export class KnowledgeContainer implements AfterViewInit, OnDestroy {
                 private location: Location,
                 private language: language,
                 private toast: toast,
+                private navigationtab: navigationtab,
                 private metadata: metadata) {
         this.routerSubscriber();
     }
@@ -39,7 +41,8 @@ export class KnowledgeContainer implements AfterViewInit, OnDestroy {
     }
 
     private routerSubscriber() {
-        this.subscription = this.activatedRoute.params.subscribe(params => {
+        this.subscription = this.navigationtab.activeRoute$.subscribe(route => {
+            let params = route.params;
             if (!params.module) this.router.navigate(['module/Home']);
 
             this.module = params.module;
