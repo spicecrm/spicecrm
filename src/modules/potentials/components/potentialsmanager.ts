@@ -1,7 +1,7 @@
 /**
  * @module ModulePotentials
  */
-import {Component, OnInit, ViewChild} from "@angular/core";
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
 import {currency} from "../../../services/currency.service";
@@ -67,9 +67,10 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
         private configuration: configurationService,
         private backend: backend,
         private currency: currency,
-        private userpreferences: userpreferences
+        private userpreferences: userpreferences,
+        public cdref: ChangeDetectorRef
     ) {
-        super(language, metadata, relatedmodels, model);
+        super(language, metadata, relatedmodels, model, cdref);
 
         this.currencies = this.currency.getCurrencies();
 

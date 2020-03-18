@@ -1,0 +1,19 @@
+<div class="slds-context-bar__item slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger_click" dropdowntrigger>
+    <div class="slds-context-bar__label-action"  aria-haspopup="true">
+        <span class="slds-truncate" title="More Tabs">{{language.getLabel('LBL_MORE')}} ({{moreObjects.length}})</span>
+        <system-button-icon class="slds-p-left--x-small" icon="chevrondown"></system-button-icon>
+    </div>
+    <div class="slds-dropdown slds-dropdown_right">
+        <ul class="slds-dropdown__list" role="menu">
+            <li class="slds-dropdown__item slds-nav-vertical__item" [ngClass]="{'slds-is-active': isActive(moreObject.id)}" *ngFor="let moreObject of moreObjects" role="presentation">
+                <a href="javascript:void(0);" role="menuitem" >
+                    <system-icon *ngIf="moreObject.displaymodule" [module]="moreObject.displaymodule" size="x-small" divClass="slds-p-right--x-small"></system-icon>
+                    <div class="slds-grow" (click)="setActiveTab(moreObject.id)">{{moreObject.displayname}}</div>
+                    <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-x-small slds-m-around--none" aria-haspopup="true" (click)="closeObjectTab(moreObject.id)">
+                        <system-button-icon icon="close"></system-button-icon>
+                    </button>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

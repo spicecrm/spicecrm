@@ -78,7 +78,7 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
     }
 
     private setNavigationHasSubTabValue(value) {
-        this.navigation.hasSubTabs = value;
+        // this.navigation.hasSubTabs = value;
     }
 
     private loadDashboards() {

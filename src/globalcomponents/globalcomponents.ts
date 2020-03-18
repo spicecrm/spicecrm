@@ -66,6 +66,15 @@ import /*embed*/ {GlobalAppLauncher} from "./components/globalapplauncher";
 import /*embed*/ {GlobalAppLauncherDialog} from "./components/globalapplauncherdialog";
 import /*embed*/ {GlobalAppLauncherDialogRoleTile} from "./components/globalapplauncherdialogroletile";
 
+import /*embed*/ {GlobalNavigationTabbed} from "./components/globalnavigationtabbed";
+import /*embed*/ {GlobalNavigationTabbedMenuModules} from "./components/globalnavigationtabbedmenumodules";
+import /*embed*/ {GlobalNavigationTabbedMenuModuleMenu} from "./components/globalnavigationtabbedmenumodulemenu";
+import /*embed*/ {GlobalNavigationTabbedMenuTab} from "./components/globalnavigationtabbedmenutab";
+import /*embed*/ {GlobalNavigationTabbedMoreTab} from "./components/globalnavigationtabbedmoretab";
+import /*embed*/ {GlobalNavigationTabbedMenu} from "./components/globalnavigationtabbedmenu";
+import /*embed*/ {GlobalNavigationTabbedSubtabItem} from "./components/globalnavigationtabbedsubtabitem";
+import /*embed*/ {GlobalNavigationTabbedSubTabMoreTab} from "./components/globalnavigationtabbedsubtabmoretab";
+import /*embed*/ {GlobalNavigationTabbedSubtabs} from "./components/globalnavigationtabbedsubtabs";
 
 import /*embed*/ {GlobalUser} from "./components/globaluser";
 import /*embed*/ {GlobaUserPanel} from "./components/globaluserpanel";
@@ -99,10 +108,12 @@ import /*embed*/ {GlobalObtainGDPRConsent} from './components/globalobtaingdprco
         ObjectComponents,
         RouterModule.forRoot([
             // {path: "login", component: GlobalLogin},
-            {path: "setup", component: GlobalSetup},
+            {path: "setup", component: GlobalSetup}
+            /*
             {path: "recent", component: GlobalRecentItems, canActivate: [loginCheck]},
             {path: "search", component: GlobalSearch, canActivate: [loginCheck]},
             {path: "search/:searchterm", component: GlobalSearch, canActivate: [loginCheck]},
+            */
         ])
     ],
     declarations: [
@@ -157,7 +168,16 @@ import /*embed*/ {GlobalObtainGDPRConsent} from './components/globalobtaingdprco
         GlobalSearchModuleItem,
         GlobalLoginGoogle,
         GlobalObtainImportantPreferences,
-        GlobalObtainGDPRConsent
+        GlobalObtainGDPRConsent,
+        GlobalNavigationTabbed,
+        GlobalNavigationTabbedMenu,
+        GlobalNavigationTabbedMenuModules,
+        GlobalNavigationTabbedMenuModuleMenu,
+        GlobalNavigationTabbedMenuTab,
+        GlobalNavigationTabbedMoreTab,
+        GlobalNavigationTabbedSubtabs,
+        GlobalNavigationTabbedSubtabItem,
+        GlobalNavigationTabbedSubTabMoreTab
     ],
     entryComponents: [
         GlobalHeader,
