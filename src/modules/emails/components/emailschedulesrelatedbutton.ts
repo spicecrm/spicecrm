@@ -20,6 +20,7 @@ export class EmailSchedulesRelatedButton {
     public modelId: string;
     public currentModule: string;
 
+
     constructor(
         private language: language,
         private metadata: metadata,
@@ -37,6 +38,8 @@ export class EmailSchedulesRelatedButton {
     public ngOnInit() {
         this.checkEmailsLink();
     }
+
+
 
     /**
      *  subscribe and save the instances of linkedbeans, modelid and currentmodule to use them in the modal that will open
@@ -58,6 +61,8 @@ export class EmailSchedulesRelatedButton {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             loadingRef.instance.messagelabel = 'LBL_LOADING';
             let arrayOfModules = [];
+            // search for fields of type link to get the related modules, proof that each of these is actually a module by looping through the fielddefs of metadata where all the object
+            // properties are the names of the modules, if this is true then, push this property(key) to the arrayOfModules
             Object.keys(this.model.fields).forEach(item => {
                 if (this.model.fields[item].type == 'link' && this.model.fields[item].hasOwnProperty('vname') && !this.model.fields[item].hasOwnProperty('link_type')) {
                     let module = this.model.fields[item].name;
@@ -68,6 +73,9 @@ export class EmailSchedulesRelatedButton {
                     }
                 }
             });
+            // filter the arrayOfModules by looping first through the array and saving the name of the module at each position (pos)
+            // then loop through the fielddefs of metadata and verify if email and email1 are properties of each module in arrayOfModule, if both check true than push
+            // the module into filteredModules
             let filteredModules = [];
             for(let pos in arrayOfModules) {
                 let module = arrayOfModules[pos];
@@ -88,7 +96,13 @@ export class EmailSchedulesRelatedButton {
                 } else {
                     this.toast.sendToast(result.msg, 'error');
                 }
+                // add the corresponding labels
+                for(let bean in this.linkedBeans) {
+                    let link = this.linkedBeans[bean];
+                    link.vname = this.model.fields[link.link].vname;
+                }
             });
+
         });
     }
 

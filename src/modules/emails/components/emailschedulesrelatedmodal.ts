@@ -42,6 +42,7 @@ export class EmailSchedulesRelatedModal {
         this.model.module = "EmailSchedules";
         this.model.initialize();
         this.fiilterProspects();
+
     }
 
     /**
