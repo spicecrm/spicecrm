@@ -59,7 +59,14 @@ export class ObjectRelatedlistTable implements OnInit {
     private nowDragging = false;
     private isSequenced = false;
 
-    constructor(public language: language, public metadata: metadata, public relatedmodels: relatedmodels, public model: model, public layout: layout, public backend: backend, private logger: loggerService) {
+    constructor(
+        public language: language,
+        public metadata: metadata,
+        public relatedmodels: relatedmodels,
+        public model: model,
+        public layout: layout,
+        public backend: backend,
+        private logger: loggerService) {
     }
 
     public ngOnInit() {

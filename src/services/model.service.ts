@@ -339,9 +339,13 @@ export class model implements OnDestroy {
     /**
      * navigates to the detasil view route of the given model
      */
-    public goDetail() {
+    public goDetail(tabid?: string) {
         if (this.checkAccess("detail")) {
-            this.router.navigate(["/module/" + this.module + "/" + this.id]);
+            let objectlink = "/module/" + this.module + "/" + this.id;
+            // if we have a tabid and it is not th emain tab add it
+            if(tabid) objectlink = '/tab/'+tabid + '/'+ objectlink;
+            // navigate to the route
+            this.router.navigate([objectlink]);
         } else {
             return false;
         }

@@ -12,6 +12,7 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import /*embed*/ {SpiceAttachmentsPanel} from "./components/spiceattachmentspanel";
+import /*embed*/ {SpiceAttachmentsPanelHeader} from "./components/spiceattachmentspanelheader";
 import /*embed*/ {SpiceAttachmentsList} from "./components/spiceattachmentslist";
 import /*embed*/ {SpiceAttachmentsPopupList} from "./components/spiceattachmentspopuplist";
 import /*embed*/ {SpiceAttachmentFile} from "./components/spiceattachmentfile";
@@ -31,6 +32,7 @@ import /*embed*/ {fieldSpiceAttachmentsCount} from "./fields/fieldspiceattachmen
     ],
     declarations: [
         SpiceAttachmentsPanel,
+        SpiceAttachmentsPanelHeader,
         SpiceAttachmentFile,
         SpiceAttachmentAddImageModal,
         SpiceAttachmentsList,
