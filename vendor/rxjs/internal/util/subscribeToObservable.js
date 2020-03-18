@@ -1,13 +1,1 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var observable_1 = require("../symbol/observable");
-exports.subscribeToObservable = function (obj) { return function (subscriber) {
-    var obs = obj[observable_1.observable]();
-    if (typeof obs.subscribe !== 'function') {
-        throw new TypeError('Provided object does not correctly implement Symbol.observable');
-    }
-    else {
-        return obs.subscribe(subscriber);
-    }
-}; };
-//# sourceMappingURL=subscribeToObservable.js.map
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var observable_1=require("../symbol/observable");exports.subscribeToObservable=function(o){return function(e){var r=o[observable_1.observable]();if("function"!=typeof r.subscribe)throw new TypeError("Provided object does not correctly implement Symbol.observable");return r.subscribe(e)}};

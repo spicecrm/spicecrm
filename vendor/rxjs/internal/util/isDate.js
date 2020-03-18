@@ -1,7 +1,1 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-function isDate(value) {
-    return value instanceof Date && !isNaN(+value);
-}
-exports.isDate = isDate;
-//# sourceMappingURL=isDate.js.map
+"use strict";function isDate(e){return e instanceof Date&&!isNaN(+e)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.isDate=isDate;

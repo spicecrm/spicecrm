@@ -1,14 +1,1 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var hostReportError_1 = require("./hostReportError");
-exports.subscribeToPromise = function (promise) { return function (subscriber) {
-    promise.then(function (value) {
-        if (!subscriber.closed) {
-            subscriber.next(value);
-            subscriber.complete();
-        }
-    }, function (err) { return subscriber.error(err); })
-        .then(null, hostReportError_1.hostReportError);
-    return subscriber;
-}; };
-//# sourceMappingURL=subscribeToPromise.js.map
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var hostReportError_1=require("./hostReportError");exports.subscribeToPromise=function(r){return function(e){return r.then(function(r){e.closed||(e.next(r),e.complete())},function(r){return e.error(r)}).then(null,hostReportError_1.hostReportError),e}};
