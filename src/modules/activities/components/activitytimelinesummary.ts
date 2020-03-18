@@ -2,11 +2,12 @@
  * @module ModuleActivities
  */
 import {
-    Component, OnDestroy, ViewChild, ViewContainerRef
+    Component, OnDestroy, OnInit, ViewChild, ViewContainerRef
 } from '@angular/core';
-import {ActivatedRoute, Params} from '@angular/router';
+import { Params} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
+import {navigationtab} from '../../../services/navigationtab.service';
 import {language} from '../../../services/language.service';
 import {layout} from '../../../services/layout.service';
 import {activitiytimeline} from '../../../services/activitiytimeline.service';
@@ -23,7 +24,7 @@ declare var moment: any;
     templateUrl: './src/modules/activities/templates/activitytimelinesummary.html',
     providers: [activitiytimeline, model]
 })
-export class ActivityTimelineSummary implements OnDestroy {
+export class ActivityTimelineSummary implements OnInit, OnDestroy {
     /**
      * a reference to the list container. Required to have a scroll handle and do the infinite scrolling
      */
@@ -51,15 +52,17 @@ export class ActivityTimelineSummary implements OnDestroy {
 
     private componentconfig: any;
 
-    constructor(private metadata: metadata, private parent: model, private language: language, private activitiytimeline: activitiytimeline, private activatedRoute: ActivatedRoute, private layout: layout) {
+    constructor(private metadata: metadata, private parent: model, private language: language, private activitiytimeline: activitiytimeline, private navigationtab: navigationtab, private layout: layout) {
 
         // check the componentconfig wether to use fts or not
         this.componentconfig = this.metadata.getComponentConfig('ActivityTimelineSummary');
         if (this.componentconfig.usefts) this.activitiytimeline.usefts = true;
 
-        this.activatedRoute.params.subscribe(params => this.initialize(params));
-
         this.subscription = this.activitiytimeline.loading$.subscribe(loading => this.clearActivitiy());
+    }
+
+    public ngOnInit(): void {
+        this.initialize(this.navigationtab.activeRoute.params);
     }
 
     /**

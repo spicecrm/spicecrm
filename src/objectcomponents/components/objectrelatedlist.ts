@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, AfterViewInit, OnInit, OnDestroy, Input} from "@angular/core";
+import {Component, AfterViewInit, OnInit, OnDestroy, Input, ChangeDetectorRef} from "@angular/core";
 import {relatedmodels} from "../../services/relatedmodels.service";
 import {model} from "../../services/model.service";
 import {metadata} from "../../services/metadata.service";
@@ -13,7 +13,7 @@ import {language} from "../../services/language.service";
     templateUrl: "./src/objectcomponents/templates/objectrelatedlist.html",
     providers: [relatedmodels]
 })
-export class ObjectRelatedList implements OnInit, OnDestroy, AfterViewInit {
+export class ObjectRelatedList implements OnInit, OnDestroy {
 
     @Input() public componentconfig: any = {};
     private listfields: any[] = [];
@@ -25,7 +25,8 @@ export class ObjectRelatedList implements OnInit, OnDestroy, AfterViewInit {
         public language: language,
         public metadata: metadata,
         public relatedmodels: relatedmodels,
-        public model: model
+        public model: model,
+        public cdref: ChangeDetectorRef
     ) {
         this.relatedmodels.module = this.model.module;
         this.relatedmodels.id = this.model.id;
@@ -83,6 +84,7 @@ export class ObjectRelatedList implements OnInit, OnDestroy, AfterViewInit {
             this.relatedmodels.sort.sortdirection = this.componentconfig.sortdirection ? this.componentconfig.sortdirection : "ASC";
         }
 
+        this.loadRelated();
     }
 
     get editable() {
@@ -95,10 +97,6 @@ export class ObjectRelatedList implements OnInit, OnDestroy, AfterViewInit {
 
     get hideactions() {
         return this.componentconfig.hideactions;
-    }
-
-    public ngAfterViewInit() {
-        this.loadRelated();
     }
 
     public ngOnDestroy() {
