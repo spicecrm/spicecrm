@@ -414,7 +414,8 @@ import {SystemNavigationCollector} from "../systemcomponents/components/systemna
         ObjectListViewHeaderDetails,
         ObjectListHeaderSort,
         ObjectRelatedlistFiles,
-        ObjectKeyValuesPipe
+        ObjectKeyValuesPipe,
+        ObjectPageHeaderTags
     ]
 })
 export class ObjectComponents {
