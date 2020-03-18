@@ -1,14 +1,1 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var ReplaySubject_1 = require("../ReplaySubject");
-var multicast_1 = require("./multicast");
-function publishReplay(bufferSize, windowTime, selectorOrScheduler, scheduler) {
-    if (selectorOrScheduler && typeof selectorOrScheduler !== 'function') {
-        scheduler = selectorOrScheduler;
-    }
-    var selector = typeof selectorOrScheduler === 'function' ? selectorOrScheduler : undefined;
-    var subject = new ReplaySubject_1.ReplaySubject(bufferSize, windowTime, scheduler);
-    return function (source) { return multicast_1.multicast(function () { return subject; }, selector)(source); };
-}
-exports.publishReplay = publishReplay;
-//# sourceMappingURL=publishReplay.js.map
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var ReplaySubject_1=require("../ReplaySubject"),multicast_1=require("./multicast");function publishReplay(e,t,u,i){u&&"function"!=typeof u&&(i=u);var r="function"==typeof u?u:void 0,l=new ReplaySubject_1.ReplaySubject(e,t,i);return function(e){return multicast_1.multicast(function(){return l},r)(e)}}exports.publishReplay=publishReplay;
