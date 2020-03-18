@@ -182,6 +182,7 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
 import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmessagesbadge";
 import /*embed*/ {ObjectActionDeactivateBeansButton} from "./components/objectactiondeactivatebeansbutton";
 import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectactiondeactivatebeansmodal";
+import {SystemNavigationCollector} from "../systemcomponents/components/systemnavigationcollector";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -196,12 +197,14 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         DirectivesModule,
         RouterModule.forRoot([
             // {path: 'module/Home', component: ModuleHome, canActivate: [loginCheck]},
+            /*
             {
                 path: 'module/:module',
-                    component: ObjectListViewContainer,
+                component: SystemNavigationCollector,
                 canActivate: [loginCheck, canNavigateAway, aclCheck],
                 data: {aclaction: 'list'}
             },
+            */
             /*
             {
                 path: 'module/:module/historysummary/:id',
@@ -210,12 +213,15 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
                 data: {aclaction: 'view'}
             },
             */
+            /*
             {
                 path: 'module/:module/:id',
-                component: ObjectRecordViewContainer,
+                component: SystemNavigationCollector,
                 canActivate: [loginCheck, canNavigateAway, aclCheck],
                 data: {aclaction: 'view'}
             },
+            */
+            /*
             {path: 'module/:module/:id/:related/:link', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
             {
                 path: 'module/:module/:id/:related/:link/:fieldset',
@@ -223,6 +229,7 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
                 canActivate: [loginCheck, aclCheck],
                 data: {aclaction: 'view'}
             }
+            */
         ])],
     declarations: [
         ObjectListViewContainer,

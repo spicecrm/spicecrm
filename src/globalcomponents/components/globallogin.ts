@@ -7,6 +7,7 @@ import {
 import {loginService} from '../../services/login.service';
 import {configurationService} from '../../services/configuration.service';
 import {session} from '../../services/session.service';
+import {broadcast} from '../../services/broadcast.service';
 import {cookie} from '../../services/cookie.service';
 import {language} from '../../services/language.service';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
@@ -77,6 +78,7 @@ export class GlobalLogin {
                 private session: session,
                 private cookie: cookie,
                 private language: language,
+                private broadcast: broadcast,
                 private sanitizer: DomSanitizer,
                 private changeDetectorRef: ChangeDetectorRef
     ) {
@@ -110,6 +112,9 @@ export class GlobalLogin {
                     // this.configuration.data.backendUrl = backendurl;
 
                     if (!this.session.authData.renewPass) {
+                        // broadcast taht we have a login
+                        this.broadcast.broadcastMessage('login');
+
                         this.loginService.load();
                     }
                 },

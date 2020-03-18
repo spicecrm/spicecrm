@@ -1,0 +1,26 @@
+<div class="slds-context-bar__item " >
+    <a href="javascript:void(0);" class="slds-context-bar__label-action" (click)="setActive()" >
+        <div class="slds-truncate slds-grid slds-grid--vertical-align-center">
+            <ng-container *ngIf="tabname; else tabloading">
+                <!--span class="slds-indicator-container slds-p-horizontal--xx-small">
+                  <span class="slds-indicator_unread"></span>
+                </span-->
+                <system-utility-icon *ngIf="tabicon" [icon]="tabicon" size="x-small" class="slds-p-right--x-small"></system-utility-icon>
+                <system-icon *ngIf="tabmodule" [module]="tabmodule" size="x-small" divClass="slds-p-right--x-small"></system-icon>
+                <div>{{tabname}}</div>
+            </ng-container>
+            <ng-template #tabloading>
+                <system-spinner size="10" class="slds-p-right--x-small"></system-spinner>
+                <div>{{language.getLabel('LBL_LOADING')}}</div>
+            </ng-template>
+        </div>
+    </a>
+    <div class="slds-context-bar__icon-action">
+        <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-x-small slds-m-around--none" (click)="pintab()">
+            <system-button-icon [icon]="pinned ? 'pinned' : 'pin'"></system-button-icon>
+        </button>
+        <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-x-small slds-m-around--none" aria-haspopup="true" (click)="closetab()">
+            <system-button-icon icon="close"></system-button-icon>
+        </button>
+    </div>
+</div>
