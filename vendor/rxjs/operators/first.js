@@ -1,7 +1,1 @@
-"use strict";
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(require("rxjs-compat/operators/first"));
-//# sourceMappingURL=first.js.map
+"use strict";function __export(r){for(var e in r)exports.hasOwnProperty(e)||(exports[e]=r[e])}Object.defineProperty(exports,"__esModule",{value:!0}),__export(require("rxjs-compat/operators/first"));

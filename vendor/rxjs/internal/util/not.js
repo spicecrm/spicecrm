@@ -1,12 +1,1 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-function not(pred, thisArg) {
-    function notPred() {
-        return !(notPred.pred.apply(notPred.thisArg, arguments));
-    }
-    notPred.pred = pred;
-    notPred.thisArg = thisArg;
-    return notPred;
-}
-exports.not = not;
-//# sourceMappingURL=not.js.map
+"use strict";function not(t,e){function r(){return!r.pred.apply(r.thisArg,arguments)}return r.pred=t,r.thisArg=e,r}Object.defineProperty(exports,"__esModule",{value:!0}),exports.not=not;

@@ -5,7 +5,7 @@ import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {relatedmodels} from '../../services/relatedmodels.service';
 import {model} from '../../services/model.service';
-import {navigation} from '../../services/navigation.service';
+import {navigationtab} from '../../services/navigationtab.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 
@@ -64,7 +64,7 @@ export class ObjectRelatedlistAll implements OnInit {
      */
     private listfields: any[] = [];
 
-    constructor(private navigation: navigation, private language: language, private metadata: metadata, private model: model, private relatedmodels: relatedmodels) {
+    constructor(private navigationtab: navigationtab, private language: language, private metadata: metadata, private model: model, private relatedmodels: relatedmodels) {
 
     }
 
@@ -72,20 +72,18 @@ export class ObjectRelatedlistAll implements OnInit {
      * load teh info from teh rtelated route and load the related models initially
      */
     public ngOnInit() {
-        this.module = this.navigation.activeRoute.params.module;
-        this.link = this.navigation.activeRoute.params.link;
-        this.related = this.navigation.activeRoute.params.related;
-        this.fieldset = this.navigation.activeRoute.params.fieldset;
+        this.module = this.navigationtab.activeRoute.params.module;
+        this.link = this.navigationtab.activeRoute.params.link;
+        this.related = this.navigationtab.activeRoute.params.related;
+        this.fieldset = this.navigationtab.activeRoute.params.fieldset;
 
-        // set theenavigation paradigm
-        this.navigation.setActiveModule(this.module);
 
         // get the bean details
         this.model.module = this.module;
-        this.model.id = this.navigation.activeRoute.params.id;
+        this.model.id = this.navigationtab.activeRoute.params.id;
 
         this.model.getData(true, 'detailview').subscribe(data => {
-            this.navigation.setActiveModule(this.module, this.model.id, data.summary_text);
+            this.navigationtab.setTabInfo({displaymodule: this.module, displayname: data.summary_text + ' • ' + this.language.getModuleName(this.related)});
         });
 
         // load the config and fieldset

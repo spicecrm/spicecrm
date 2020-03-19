@@ -28,7 +28,8 @@ export class ObjectRelatedDuplicates implements AfterViewInit {
         this.checkDuplicates();
     }
 
-    private toggleDuplicates() {
+    private toggleDuplicates(e: MouseEvent) {
+        e.stopPropagation();
         this.hideDuplicates = !this.hideDuplicates;
     }
 

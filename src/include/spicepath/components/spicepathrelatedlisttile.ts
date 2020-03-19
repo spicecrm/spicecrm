@@ -9,6 +9,10 @@ import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
 import {metadata} from '../../../services/metadata.service';
 
+
+/**
+ * renders a tile with the path and the details for the model
+ */
 @Component({
     selector: 'spice-path-related-list-tile',
     templateUrl: './src/include/spicepath/templates/spicepathrelatedlisttile.html',
@@ -16,16 +20,32 @@ import {metadata} from '../../../services/metadata.service';
 })
 export class SpicePathRelatedListTile implements OnInit {
 
+    /**
+     * the module
+     */
     @Input() private module: string = '';
+
+    /**
+     * the data for the
+     */
     @Input() private data: any = {};
-    @Input() private fieldset: string = '';
+
+    /**
+     * the componentset to be rendered
+     */
     @Input() private componentset: string = '';
 
+    /**
+     * the componentconfig
+     */
     private componentconfig: any = {};
 
     constructor(private model: model, private relatedmodels: relatedmodels, private view: view, private language: language, private metadata: metadata) {
     }
 
+    /**
+     * initialize the model
+     */
     public ngOnInit() {
         this.model.module = this.module;
         this.model.id = this.data.id;
@@ -34,23 +54,25 @@ export class SpicePathRelatedListTile implements OnInit {
         this.componentconfig = this.metadata.getComponentConfig('SpicePathRelatedListTile', this.module);
     }
 
+    /**
+     * getter for the actionset
+     */
     get actionset() {
         return this.componentconfig.actionset;
     }
 
+    /**
+     * getter for the left componentset
+     */
     get componentSetLeft() {
         return this.componentconfig.left;
     }
 
+    /**
+     * getter for the right componentset
+     */
     get componentSetRight() {
         return this.componentconfig.right;
     }
 
-    private getFields() {
-        return this.metadata.getFieldSetFields(this.fieldset)
-    }
-
-    private navgiateDetail() {
-        this.model.goDetail();
-    }
 }
