@@ -9,6 +9,7 @@ import {backend} from "../../../services/backend.service";
 import {KnowledgeService} from "../services/knowledge.service";
 import {Router} from "@angular/router";
 import {modal} from "../../../services/modal.service";
+import {navigationtab} from "../../../services/navigationtab.service";
 
 @Component({
     selector: 'knowledge-manager',
@@ -29,6 +30,7 @@ export class KnowledgeManager implements AfterViewInit {
                 private backend: backend,
                 private router: Router,
                 private metadata: metadata,
+                private navigationTab: navigationtab,
                 private injector: Injector,
                 private viewContainerRef: ViewContainerRef,
                 private knowledgeService: KnowledgeService) {
@@ -74,7 +76,9 @@ export class KnowledgeManager implements AfterViewInit {
 
     public ngAfterViewInit() {
         this.knowledgeService.setActiveModule("KnowledgeBooks");
-        this.knowledgeService.setTabInfo({displayname: 'Knowledge Manager', displayicon: 'table'});
+        if (this.navigationTab.activeRoute.path == 'KnowledgeManager') {
+            this.navigationTab.setTabInfo({displayname: 'Knowledge Manager', displayicon: 'table'});
+        }
     }
 
     private checkAccess() {

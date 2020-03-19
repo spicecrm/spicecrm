@@ -7,6 +7,7 @@ import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
 import {KnowledgeService} from "../services/knowledge.service";
 import {Subscription} from "rxjs";
+import {navigationtab} from "../../../services/navigationtab.service";
 
 @Component({
     selector: 'knowledge-browser',
@@ -24,6 +25,7 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
     constructor(private language: language,
                 private model: model,
                 private metadata: metadata,
+                private navigationTab: navigationtab,
                 private knowledgeService: KnowledgeService) {
         this.model.module = "KnowledgeDocuments";
         this.loadReleasedFilter();
@@ -65,7 +67,9 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
 
     public ngAfterViewInit() {
         this.knowledgeService.setActiveModule("KnowledgeBooks");
-        this.knowledgeService.setTabInfo({displayname: 'Knowledge Browser', displayicon: 'knowledge_base'});
+        if (this.navigationTab.activeRoute.path == 'KnowledgeBrowser') {
+            this.navigationTab.setTabInfo({displayname: 'Knowledge Browser', displayicon: 'knowledge_base'});
+        }
     }
 
     public ngOnDestroy() {
