@@ -182,7 +182,6 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
 import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmessagesbadge";
 import /*embed*/ {ObjectActionDeactivateBeansButton} from "./components/objectactiondeactivatebeansbutton";
 import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectactiondeactivatebeansmodal";
-import {SystemNavigationCollector} from "../systemcomponents/components/systemnavigationcollector";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
