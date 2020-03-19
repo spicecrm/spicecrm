@@ -71,7 +71,8 @@ export class ActivityTimelineFilter {
      *
      * helper to toggle the dropdown open or closed
      */
-    private toggleOpen() {
+    private toggleOpen(e: MouseEvent) {
+        e.stopPropagation();
         this.isOpen = !this.isOpen;
         if (this.isOpen) {
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));

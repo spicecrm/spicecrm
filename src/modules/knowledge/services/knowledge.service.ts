@@ -13,6 +13,7 @@ import {Subscription} from "rxjs";
 import {navigation} from "../../../services/navigation.service";
 import {Location} from "@angular/common";
 import {toast} from "../../../services/toast.service";
+import {navigationtab} from "../../../services/navigationtab.service";
 import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
 import {ActivatedRoute} from "@angular/router";
@@ -46,6 +47,7 @@ export class KnowledgeService {
                 private activatedRoute: ActivatedRoute,
                 private toast: toast,
                 private metadata: metadata,
+                private navigationtab: navigationtab,
                 private fts: fts) {
         this.loadPreferences();
         this.saveSubscriber();
@@ -221,7 +223,8 @@ export class KnowledgeService {
 
 
     private routerSubscriber() {
-        let subscriber = this.activatedRoute.params.subscribe(params => {
+        let subscriber = this.navigationtab.activeRoute$.subscribe(route => {
+            let params = route.params;
             if (!params.module) return;
             if (params.id) {
                 this.backend.get(params.module, params.id).subscribe((item: any) => {

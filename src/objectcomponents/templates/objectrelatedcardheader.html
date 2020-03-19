@@ -9,7 +9,7 @@
                     </span>
                 </a>
             </h2>
-            <system-utility-icon class="slds-m-horizontal--xx-small" *ngIf="relatedmodels.count > 0" icon="up" size="x-small" (click)="toggleOpen()" [@animateicon]="isopen? 'open' : 'closed'"></system-utility-icon>
+            <system-utility-icon class="slds-m-horizontal--xx-small" *ngIf="relatedmodels.count > 0" icon="up" size="x-small" (click)="toggleOpen($event)" [@animateicon]="isopen? 'open' : 'closed'"></system-utility-icon>
         </div>
     </header>
     <!-- additional header eleents go here-->
