@@ -1,8 +1,1 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var iterator_1 = require("../symbol/iterator");
-function isIterable(input) {
-    return input && typeof input[iterator_1.iterator] === 'function';
-}
-exports.isIterable = isIterable;
-//# sourceMappingURL=isIterable.js.map
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var iterator_1=require("../symbol/iterator");function isIterable(e){return e&&"function"==typeof e[iterator_1.iterator]}exports.isIterable=isIterable;

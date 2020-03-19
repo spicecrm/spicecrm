@@ -1,12 +1,1 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var SubscriptionLog = (function () {
-    function SubscriptionLog(subscribedFrame, unsubscribedFrame) {
-        if (unsubscribedFrame === void 0) { unsubscribedFrame = Number.POSITIVE_INFINITY; }
-        this.subscribedFrame = subscribedFrame;
-        this.unsubscribedFrame = unsubscribedFrame;
-    }
-    return SubscriptionLog;
-}());
-exports.SubscriptionLog = SubscriptionLog;
-//# sourceMappingURL=SubscriptionLog.js.map
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var SubscriptionLog=function(e,i){void 0===i&&(i=Number.POSITIVE_INFINITY),this.subscribedFrame=e,this.unsubscribedFrame=i};exports.SubscriptionLog=SubscriptionLog;

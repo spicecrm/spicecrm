@@ -1,4 +1,1 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.isArrayLike = (function (x) { return x && typeof x.length === 'number' && typeof x !== 'function'; });
-//# sourceMappingURL=isArrayLike.js.map
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.isArrayLike=function(e){return e&&"number"==typeof e.length&&"function"!=typeof e};
