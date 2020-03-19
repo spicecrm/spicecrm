@@ -1,11 +1,1 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var reduce_1 = require("./reduce");
-function min(comparer) {
-    var min = (typeof comparer === 'function')
-        ? function (x, y) { return comparer(x, y) < 0 ? x : y; }
-        : function (x, y) { return x < y ? x : y; };
-    return reduce_1.reduce(min);
-}
-exports.min = min;
-//# sourceMappingURL=min.js.map
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var reduce_1=require("./reduce");function min(n){var e="function"==typeof n?function(e,r){return n(e,r)<0?e:r}:function(e,r){return e<r?e:r};return reduce_1.reduce(e)}exports.min=min;

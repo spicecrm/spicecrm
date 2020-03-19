@@ -1,7 +1,1 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-function isFunction(x) {
-    return typeof x === 'function';
-}
-exports.isFunction = isFunction;
-//# sourceMappingURL=isFunction.js.map
+"use strict";function isFunction(t){return"function"==typeof t}Object.defineProperty(exports,"__esModule",{value:!0}),exports.isFunction=isFunction;

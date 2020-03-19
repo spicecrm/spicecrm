@@ -1,17 +1,1 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var Scheduler = (function () {
-    function Scheduler(SchedulerAction, now) {
-        if (now === void 0) { now = Scheduler.now; }
-        this.SchedulerAction = SchedulerAction;
-        this.now = now;
-    }
-    Scheduler.prototype.schedule = function (work, delay, state) {
-        if (delay === void 0) { delay = 0; }
-        return new this.SchedulerAction(this, work).schedule(state, delay);
-    };
-    Scheduler.now = function () { return Date.now(); };
-    return Scheduler;
-}());
-exports.Scheduler = Scheduler;
-//# sourceMappingURL=Scheduler.js.map
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var Scheduler=function(){function n(e,t){void 0===t&&(t=n.now),this.SchedulerAction=e,this.now=t}return n.prototype.schedule=function(e,t,n){return void 0===t&&(t=0),new this.SchedulerAction(this,e).schedule(n,t)},n.now=function(){return Date.now()},n}();exports.Scheduler=Scheduler;
