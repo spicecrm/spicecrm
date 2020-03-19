@@ -108,6 +108,11 @@ export class KnowledgeService {
         this.location.replaceState(state);
     }
 
+    public setTabInfo(info) {
+        this.navigationtab.setTabInfo(info);
+
+    }
+
     public favoriteEnable(module, id) {
         this.favoriteDisable();
         this.favorite.enable(module, id);

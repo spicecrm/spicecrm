@@ -1,7 +1,7 @@
 /**
  * @module ModuleKnowledge
  */
-import {AfterViewInit, Component, ViewChild, ViewContainerRef} from "@angular/core";
+import {AfterViewInit, Component, Injector, ViewChild, ViewContainerRef} from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
@@ -29,6 +29,7 @@ export class KnowledgeManager implements AfterViewInit {
                 private backend: backend,
                 private router: Router,
                 private metadata: metadata,
+                private injector: Injector,
                 private viewContainerRef: ViewContainerRef,
                 private knowledgeService: KnowledgeService) {
         this.model.module = "KnowledgeDocuments";
@@ -73,6 +74,7 @@ export class KnowledgeManager implements AfterViewInit {
 
     public ngAfterViewInit() {
         this.knowledgeService.setActiveModule("KnowledgeBooks");
+        this.knowledgeService.setTabInfo({displayname: 'Knowledge Manager', displayicon: 'table'});
     }
 
     private checkAccess() {
@@ -90,7 +92,7 @@ export class KnowledgeManager implements AfterViewInit {
             knowledgebook_id: this.knowledgeService.selectedBook.id,
             status: "Draft"
         };
-        this.modal.openModal('KnowledgeManagerAddModal')
+        this.modal.openModal('KnowledgeManagerAddModal', true, this.injector)
             .subscribe(modalRef => {
                 modalRef.instance.presets = presets;
                 modalRef.instance.response.subscribe(res => {

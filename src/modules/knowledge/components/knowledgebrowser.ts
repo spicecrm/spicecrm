@@ -65,6 +65,7 @@ export class KnowledgeBrowser implements AfterViewInit, OnDestroy {
 
     public ngAfterViewInit() {
         this.knowledgeService.setActiveModule("KnowledgeBooks");
+        this.knowledgeService.setTabInfo({displayname: 'Knowledge Browser', displayicon: 'knowledge_base'});
     }
 
     public ngOnDestroy() {
