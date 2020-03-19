@@ -98,6 +98,11 @@ export class ActivityTimeline implements OnInit, OnDestroy {
         this.activitiytimeline.getTimeLineData('History');
     }
 
+    private toggleAggregates(module: string, e: MouseEvent){
+        e.stopPropagation();
+        this.displayaggregates[module] = !this.displayaggregates[module];
+    }
+
     /**
      * loads more items
      *
