@@ -3,7 +3,9 @@
  */
 import {
     AfterViewInit,
+    ChangeDetectorRef,
     Component,
+    ComponentRef,
     ElementRef,
     OnDestroy,
     QueryList,
@@ -16,31 +18,50 @@ import {metadata} from '../../../services/metadata.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {userpreferences} from "../../../services/userpreferences.service";
 import {language} from "../../../services/language.service";
-import {navigation} from "../../../services/navigation.service";
 import {backend} from "../../../services/backend.service";
+import {Subscription} from "rxjs";
 
+/** @ignore */
 declare var _;
 
+/**
+ * displays a set of dashboards related to a dashboardset module.
+ */
 @Component({
     selector: 'home-dashboardset-container',
     templateUrl: './src/modules/home/templates/homedashboardsetcontainer.html'
 })
 export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
 
-    public componentSubscriptions: any[] = [];
-    public dashboardid: string = '';
-    public dashboardcontainercomponent: any = undefined;
+    public subscriptions: Subscription = new Subscription();
+    public activeDashboardId: string = '';
+    public dashboardContainerComponentRef: ComponentRef<any>;
+    /**
+     * list of dashboards related to a dashboardset
+     */
     public dashboardsList: any[] = [];
+    /**
+     * list of overflowed dashboards
+     */
     public moreDashboardsList: any[] = [];
     public isLoading: boolean = false;
+    /**
+     * view reference of more tab to render overflowed items inside
+     */
+    @ViewChild('moreTab', {read: ViewContainerRef, static: false}) private moreTab: ViewContainerRef;
+    /**
+     * view reference of main tabs used for the overflow handling
+     */
+    @ViewChildren('maintabs', {read: ViewContainerRef}) protected maintabs: QueryList<any>;
+    /**
+     * view reference of more tabs used for the overflow handling
+     */
+    @ViewChildren('moreTabItems', {read: ViewContainerRef}) protected moreTabItems: QueryList<any>;
+    /**
+     * view reference to render the active dashboard inside
+     */
+    @ViewChild('activeDashboardContainer', {read: ViewContainerRef}) private activeDashboardContainer: ViewContainerRef;
 
-    @ViewChild('allDashboardsContainer', {
-        read: ViewContainerRef,
-        static: true
-    }) private allDashboardsContainer: ViewContainerRef;
-    @ViewChildren('maintabs', {read: ViewContainerRef}) private maintabs: QueryList<any>;
-    @ViewChildren('moretabs', {read: ViewContainerRef}) private moretabs: QueryList<any>;
-    @ViewChild('moretab', {read: ViewContainerRef, static: false}) private moretab: ViewContainerRef;
     private resizeListener: any;
 
 
@@ -49,106 +70,113 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
         private metadata: metadata,
         private language: language,
         private renderer: Renderer2,
-        private navigation: navigation,
         private backend: backend,
         private elementRef: ElementRef,
+        private cdr: ChangeDetectorRef,
         private userpreferences: userpreferences) {
-        this.componentSubscriptions.push(this.broadcast.message$.subscribe(message => {
-            this.handleMessage(message);
-        }));
+        this.subscribeToBroadcast();
         this.loadDashboardConfig();
 
     }
 
-    public ngOnInit() {
-        this.setNavigationHasSubTabValue('Home');
-    }
-
+    /**
+     * @ignore
+     */
     public ngOnDestroy() {
-        for (let subscription of this.componentSubscriptions) {
-            subscription.unsubscribe();
-        }
+        this.subscriptions.unsubscribe();
         this.resetView();
         if (this.resizeListener) this.resizeListener();
-        this.setNavigationHasSubTabValue(undefined);
     }
 
+    /**
+     * @ignore
+     */
     public ngAfterViewInit() {
         this.loadDashboards();
     }
 
-    private setNavigationHasSubTabValue(value) {
-        // this.navigation.hasSubTabs = value;
+    private subscribeToBroadcast() {
+        this.subscriptions.add(this.broadcast.message$.subscribe(message => {
+            this.handleBroadcastSubscription(message);
+        }));
     }
 
+    /**
+     * load related dashboards for the dashboardset
+     * handle the overflowed dashboard tabs
+     * listen to resize event and handle overflow
+     */
     private loadDashboards() {
         // set isLoading on timeout to prevent angular change detection error
-        window.setTimeout(()=> this.isLoading = true);
+        this.isLoading = true;
+        this.cdr.detectChanges();
         this.loadDashboardSetDashboards().subscribe(res => {
             this.isLoading = false;
             if (res) {
                 this.dashboardsList = _.toArray(res);
                 if (this.dashboardsList.length > 0) this.setActiveDashboard(this.dashboardsList[0].id);
-                window.setTimeout(() => this.handleOverflow());
+                this.handleOverflow();
+                this.cdr.detectChanges();
             }
         });
-        this.resizeListener = this.renderer.listen('window', 'resize', e => this.handleOverflow());
+        this.resizeListener = this.renderer.listen('window', 'resize', () => this.handleOverflow());
     }
 
-    /*
+    /**
     * Handel role changes and set the role dashboard
-    * @returns void
+    * @param message: broadcastMessage
     */
-    private handleMessage(message) {
+    private handleBroadcastSubscription(message) {
         switch (message.messagetype) {
             case 'applauncher.setrole':
                 this.loadDashboardConfig();
                 break;
-
         }
     }
 
-    /*
-    * @returns void
+    /**
+    * load dashboard config from user preferences
+    * set the active dashboard id
+    * pass the active dashboard id to the dashboard container reference
     */
     private loadDashboardConfig() {
         let homeDashboard = this.userpreferences.toUse.home_dashboard || undefined;
         let activeRole = this.metadata.getActiveRole();
-        this.dashboardid = homeDashboard || activeRole.default_dashboard || '';
+        this.activeDashboardId = homeDashboard || activeRole.default_dashboard || '';
 
         // set it to the component
-        if (this.dashboardcontainercomponent) {
-            this.dashboardcontainercomponent.instance.dashboardid = this.dashboardid;
+        if (this.dashboardContainerComponentRef) {
+            this.dashboardContainerComponentRef.instance.dashboardid = this.activeDashboardId;
         }
     }
 
-    /*
-    * @param container: string
-    * @returns void
+    /**
+    * render the DashboardContainer in the active dashboard container and pass the necessary params to it
     */
     private renderView() {
 
         this.resetView();
-        this.metadata.addComponent('DashboardContainer', this.allDashboardsContainer).subscribe(component => {
-            component.instance.dashboardid = this.dashboardid;
+        this.metadata.addComponent('DashboardContainer', this.activeDashboardContainer).subscribe(component => {
+            component.instance.dashboardid = this.activeDashboardId;
             component.instance.context = 'Home';
 
-            this.dashboardcontainercomponent = component;
+            this.dashboardContainerComponentRef = component;
         });
     }
 
-    /*
-    * @returns void
+    /**
+    * destroy the dashboardContainerComponentRef
     */
     private resetView() {
-        if (this.dashboardcontainercomponent) {
-            this.dashboardcontainercomponent.destroy();
-            this.dashboardcontainercomponent = undefined;
+        if (this.dashboardContainerComponentRef) {
+            this.dashboardContainerComponentRef.destroy();
+            this.dashboardContainerComponentRef = undefined;
         }
     }
 
-    /*
-    * @returns observable
+    /**
+     * define the observable of dashboards list related to the dashboardset from backend
+     * @return Observable<dashboards[]>
     */
     private loadDashboardSetDashboards() {
         let dashboardSetId = this.userpreferences.toUse.home_dashboardset;
@@ -162,18 +190,16 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
         return this.backend.getRequest(`module/DashboardSets/${dashboardSetId}/related/dashboards`, params);
     }
 
-    /*
-    * @param id: dashboardId
-    * @returns void
+    /**
+     * set the active dashboard id and rerender the view
     */
-    private setActiveDashboard(dashboardId) {
-        this.dashboardid = dashboardId;
+    private setActiveDashboard(dashboardId: string) {
+        this.activeDashboardId = dashboardId;
         this.renderView();
     }
 
-    /*
-    * Handel tabs list overflow items and push the more items.
-    * @returns observable
+    /**
+    * Handel tabs list overflow items and push the more items or destroy the overflow dropdown when not needed
     */
     private handleOverflow() {
         this.moreDashboardsList = [];
@@ -182,13 +208,13 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
             thisitem.element.nativeElement.classList.remove('slds-hide');
             thisitem.element.nativeElement.classList.add('slds-hidden');
         });
-        this.moretab.element.nativeElement.classList.add('slds-hidden');
-        this.moretab.element.nativeElement.classList.remove('slds-hide');
+        this.moreTab.element.nativeElement.classList.add('slds-hidden');
+        this.moreTab.element.nativeElement.classList.remove('slds-hide');
 
         // get the total width and the more tab with
         let totalwidth = this.elementRef.nativeElement.getBoundingClientRect().width;
-        let morewidth = this.moretab.element.nativeElement.getBoundingClientRect().width;
-        let showmore = false;
+        let morewidth = this.moreTab.element.nativeElement.getBoundingClientRect().width;
+        let showMore = false;
 
         let usedWidth = 0;
         this.maintabs.forEach((thisitem, itemindex) => {
@@ -196,20 +222,20 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
             usedWidth += itemwidth;
             if (usedWidth > totalwidth - morewidth) {
                 // special handling for last element
-                if (showmore || itemindex + 1 < this.maintabs.length || itemwidth > morewidth) {
+                if (showMore || itemindex + 1 < this.maintabs.length || itemwidth > morewidth) {
                     thisitem.element.nativeElement.classList.add('slds-hide');
                     this.moreDashboardsList.push(thisitem.element.nativeElement.attributes.getNamedItem('data-dashboard').value);
-                    showmore = true;
+                    showMore = true;
                 }
             }
             thisitem.element.nativeElement.classList.remove('slds-hidden');
         });
 
         // handle the more element hidden attribute
-        if (showmore) {
-            this.moretab.element.nativeElement.classList.remove('slds-hidden');
+        if (showMore) {
+            this.moreTab.element.nativeElement.classList.remove('slds-hidden');
 
-            this.moretabs.forEach(moreitem => {
+            this.moreTabItems.forEach(moreitem => {
                 if (this.moreDashboardsList.indexOf(moreitem.element.nativeElement.attributes.getNamedItem('data-dashboard').value) >= 0) {
                     moreitem.element.nativeElement.classList.remove('slds-hide');
                 } else {
@@ -218,8 +244,8 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
             });
 
         } else {
-            this.moretab.element.nativeElement.classList.remove('slds-hidden');
-            this.moretab.element.nativeElement.classList.add('slds-hide');
+            this.moreTab.element.nativeElement.classList.remove('slds-hidden');
+            this.moreTab.element.nativeElement.classList.add('slds-hide');
         }
 
     }

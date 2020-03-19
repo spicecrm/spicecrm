@@ -89,7 +89,8 @@ export class ObjectRelatedCardHeader implements OnInit {
     /**
      * toggle Open or Close the panel
      */
-    private toggleOpen() {
+    private toggleOpen(e: MouseEvent) {
+        e.stopPropagation();
         this.isopen = !this.isopen;
     }
 
