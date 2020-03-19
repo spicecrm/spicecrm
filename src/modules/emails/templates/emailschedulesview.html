@@ -1,5 +1,5 @@
-<div [overlayLoadingSpinner]="isLoading">
-    <table  *ngIf="emailschedules.length > 0" width="100%" class="slds-table slds-table_cell-buffer slds-table_bordered">
+<div [overlayLoadingSpinner]="isLoading" tobottomnoscroll>
+    <table *ngIf="emailschedules.length > 0" width="100%" class="slds-table slds-table_cell-buffer slds-table_bordered">
         <thead>
         <tr class="slds-line-height_reset">
             <th class="" scope="col">
