@@ -30,7 +30,6 @@ export class EmailSchedulesView {
 
 
     /**
-     * proof the id
      * get the data from the backend
      */
     private getData(id) {
