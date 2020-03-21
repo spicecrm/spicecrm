@@ -204,7 +204,10 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
     private doAutocomplete() {
         if (this.autocompletesearchterm.length > 3) {
             this.isSearching = true;
-            this.backend.getRequest('googleapi/places/search/' + btoa(this.autocompletesearchterm) + '/' + btoa(this.locationbias)).subscribe(
+            const searchTerm = encodeURIComponent(btoa(this.autocompletesearchterm));
+            const locationBias = encodeURIComponent(btoa(this.locationbias));
+
+            this.backend.getRequest(`googleapi/places/search/${searchTerm}/${locationBias}`).subscribe(
                 (res: any) => {
                     if (res.candidates && res.candidates.length > 0) {
                         this.autocompleteResults = res.candidates;
