@@ -1,0 +1,9 @@
+<div [overlayLoadingSpinner]="isLoading" class="slds-grid slds-grid--vertical" style="width: 100%; height: 100%">
+    <spice-google-maps [options]="mapOptions" [records]="records" style="display: block" class="slds-grow"></spice-google-maps>
+    <div class="slds-grid slds-theme--shade slds-p-around--xx-small slds-border--bottom slds-border--top slds-border--left slds-border--right">
+        <span class="slds-truncate">( {{records.length}} ) {{language.getLabel('MSG_RECORDS_FOUND_WITH_GEO_DATA')}}</span>
+        <a *ngIf="canLoadMore" (click)="loadMore()" class="slds-text-link slds-m-left--x-small">
+            {{language.getLabel('LBL_MORE')}}
+        </a>
+    </div>
+</div>
