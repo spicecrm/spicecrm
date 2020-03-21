@@ -1,5 +1,5 @@
 /**
- * @module ModuleSpicePath
+ * @module ModuleSpiceMap
  */
 import {CommonModule} from "@angular/common";
 import {NgModule} from "@angular/core";
@@ -14,6 +14,8 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
 import /*embed*/ {SpiceMap} from './components/spicemap';
+import /*embed*/ {SpiceGoogleMapsList} from './components/spicegooglemapslist';
+import /*embed*/ {SpiceGoogleMapsRecord} from './components/spicegooglemapsrecord';
 import /*embed*/ {SpiceMapSelector} from './components/spicemapselector';
 import /*embed*/ {SpiceGoogleMaps} from './components/spicegooglemaps';
 
@@ -25,12 +27,17 @@ import /*embed*/ {SpiceGoogleMaps} from './components/spicegooglemaps';
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
-        DirectivesModule,
+        DirectivesModule
     ],
     declarations: [
         SpiceMap,
+        SpiceGoogleMapsList,
+        SpiceGoogleMapsRecord,
         SpiceGoogleMaps,
         SpiceMapSelector
+    ],
+    exports: [
+        SpiceGoogleMaps
     ]
 })
 export class ModuleSpiceMap {

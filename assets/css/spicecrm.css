@@ -1482,3 +1482,24 @@ ul.spice-taglist span.slds-badge {
     font-size: 1rem;
     color: #fff;
 }
+
+.spice-google-maps-control-recenter {
+    background-color: #fff;
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: #0000004d 0 1px 4px -1px;
+    cursor: pointer;
+}
+
+.spice-google-maps-control-recenter-icon {
+    background-image: url(//maps.gstatic.com/tactile/mylocation/mylocation-sprite-2x.png);
+    background-position: 0 0;
+    background-size: 180px 18px;
+    width: 18px;
+    height: 18px;
+    transform: scale(1.3);
+}
