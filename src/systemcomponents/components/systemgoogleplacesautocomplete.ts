@@ -1,7 +1,7 @@
 /**
  * @module SystemComponents
  */
-import {Component, Output, EventEmitter, ElementRef, Renderer2} from "@angular/core";
+import {Component, Output, EventEmitter, ElementRef, Renderer2, Input} from "@angular/core";
 import {backend} from "../../services/backend.service";
 import {language} from "../../services/language.service";
 import {configurationService} from "../../services/configuration.service";
@@ -12,6 +12,7 @@ import {configurationService} from "../../services/configuration.service";
 })
 export class SystemGooglePlacesAutocomplete {
     @Output() private address: EventEmitter<any> = new EventEmitter<any>();
+    @Input() private disabled: boolean = false;
 
     private isenabled: boolean = false;
     private autocompletesearchterm: string = '';
