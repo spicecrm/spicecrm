@@ -14,11 +14,11 @@ import {Subscription} from "rxjs";
 import {language} from '../../services/language.service';
 
 @Component({
-    selector: 'system-language-label',
-    templateUrl: './src/systemcomponents/templates/systemlanguagelabel.html',
+    selector: 'system-label',
+    templateUrl: './src/systemcomponents/templates/systemlabel.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SystemLanguageLabel implements OnChanges, OnDestroy{
+export class SystemLabel implements OnChanges, OnDestroy{
 
     /**
      * teh label to be rendered
