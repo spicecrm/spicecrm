@@ -27,7 +27,7 @@
                 <div class="slds-truncate">{{field.fieldname}}</div>
             </td>
             <td data-label="Account Name">
-                <div class="slds-truncate">{{language.getLabel(field.name)}}</div>
+                <div class="slds-truncate"><system-label [label]="field.name"></system-label></div>
             </td>
             <td class="slds-cell-shrink">
                 <button class="slds-button slds-button--icon" (click)="deleteField(i)">

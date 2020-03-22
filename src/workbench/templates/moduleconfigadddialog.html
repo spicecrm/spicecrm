@@ -15,7 +15,7 @@
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="currentType">
-                            <option *ngFor="let type of types" [value]="type.value">{{language.getLabel(type.text)}}</option>
+                            <option *ngFor="let type of types" [value]="type.value"><system-label [label]="type.text"></system-label></option>
                         </select>
                     </div>
                 </div>

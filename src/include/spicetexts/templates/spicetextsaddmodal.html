@@ -9,7 +9,7 @@
                         <div class="slds-select_container">
                             <select id="text_id" class="slds-select" [(ngModel)]="textId" [disabled]="isDisabledText">
                                 <option *ngFor="let sysText of availableSysTexts; trackBy: trackByFn" [value]="sysText.text_id">
-                                    {{language.getLabel(sysText.label)}}
+                                    <system-label [label]="sysText.label"></system-label>
                                 </option>
                             </select>
                         </div>

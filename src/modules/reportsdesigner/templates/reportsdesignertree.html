@@ -58,7 +58,7 @@
                    <div class="slds-truncate" [title]="reportField.name">{{reportField.name}}</div>
                </td>
                <td>
-                   <div class="slds-truncate" [title]="language.getLabel(reportField.label)">{{language.getLabel(reportField.label)}}</div>
+                   <div class="slds-truncate" [title]="language.getLabel(reportField.label)"><system-label [label]="reportField.label"></system-label></div>
                </td>
            </tr>
            </tbody>

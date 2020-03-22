@@ -2,9 +2,9 @@
     <h3 *ngIf="titlelabel" class="slds-section__title" [ngClass]="{'slds-theme_shade':alwaysExpanded}">
         <button *ngIf="!alwaysExpanded" aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" (click)="togglePanel()">
             <system-utility-icon [icon]="'switch'" [size]="'x-small'" [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
-            <span class="slds-truncate" title="{{language.getLabel(titlelabel)}}">{{language.getLabel(titlelabel)}}</span>
+            <span class="slds-truncate" title="{{language.getLabel(titlelabel)}}"><system-label [label]="titlelabel"></system-label></span>
         </button>
-        <span *ngIf="alwaysExpanded" class="slds-truncate slds-p-horizontal_small" title="{{language.getLabel(titlelabel)}}">{{language.getLabel(titlelabel)}}</span>
+        <span *ngIf="alwaysExpanded" class="slds-truncate slds-p-horizontal_small" title="{{language.getLabel(titlelabel)}}"><system-label [label]="titlelabel"></system-label></span>
     </h3>
     <div [ngStyle]="getTabStyle()">
         <ng-content></ng-content>

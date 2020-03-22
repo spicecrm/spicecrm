@@ -12,7 +12,7 @@
                       <input type="checkbox" [id]="'action_'+standardaction.id" [checked]="getActionValue(standardaction.id)"/>
                       <label class="slds-checkbox__label" [attr.for]="'action_'+standardaction.id">
                         <span class="slds-checkbox_faux"></span>
-                        <span class="slds-form-element__label">{{language.getLabel(standardaction.action)}}</span>
+                        <span class="slds-form-element__label"><system-label [label]="standardaction.action"></system-label></span>
                       </label>
                     </div>
                 </div>

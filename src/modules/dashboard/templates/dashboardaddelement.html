@@ -59,7 +59,7 @@
                                              [module]="!dashlet.module ? 'Dashboards': dashlet.module" size="large" class="slds-align_absolute-center"></system-icon>
                                 <div class="slds-media__body slds-border_left slds-p-around_small">
                                     <h2 class="slds-truncate slds-text-heading_small slds-truncate" [title]="dashlet.label">
-                                        {{language.getLabel(dashlet.label)}}
+                                        <system-label [label]="dashlet.label"></system-label>
                                     </h2>
                                     <p class="slds-m-top_small slds-truncate">
                                         {{language.getLabel(dashlet.label, '','long')}}
