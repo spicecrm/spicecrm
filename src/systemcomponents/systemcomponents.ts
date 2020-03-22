@@ -136,7 +136,7 @@ import /*embed*/ {SystemImageModal} from './components/systemimagemodal';
 import /*embed*/ {SystemSlider} from "./components/systemslider";
 
 import /*embed*/ {SystemNavigationCollector} from "./components/systemnavigationcollector";
-import /*embed*/ {SystemNavigationManager} from "./components/SystemNavigationManager";
+import /*embed*/ {SystemNavigationManager} from "./components/systemnavigationmanager";
 import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/systemnavigationmanagerroutecontainer";
 
 @NgModule({
