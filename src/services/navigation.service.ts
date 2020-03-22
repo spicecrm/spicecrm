@@ -2,7 +2,6 @@
  * @module services
  */
 import {Injectable, EventEmitter} from "@angular/core";
-import {Location} from "@angular/common";
 import {Title} from "@angular/platform-browser";
 import {Observable, Subject, of, BehaviorSubject} from "rxjs";
 import {broadcast} from "./broadcast.service";
@@ -182,8 +181,7 @@ export class navigation {
         private metadata: metadata,
         private helper: helper,
         private userpreferences: userpreferences,
-        private router: Router,
-        private location: Location
+        private router: Router
     ) {
         this.activeModule$ = new EventEmitter<string>();
 
@@ -439,6 +437,16 @@ export class navigation {
                 return true;
             }
         });
+    }
+
+    /**
+     * returns the stored data from a mode that is registered
+     *
+     * @param id
+     * @param module
+     */
+    public getRegisteredModel(id: string, module: string) {
+        return this.modelregister.find(model => model.id == id && model.model.module == module)?.model;
     }
 
     /**
