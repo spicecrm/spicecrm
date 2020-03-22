@@ -13,31 +13,35 @@ import {assistant} from '../../../services/assistant.service';
 export class HomeAssistantFilter {
 
     private isOpen: boolean = false;
-    clickListener: any;
+    private clickListener: any;
 
-    activityObjects: Array<any> = ['Tasks', 'Meetings', 'Calls', 'Opportunities', 'Reminders'];
-    activityTypes: Array<any> = [];
+    private activityObjects: string[] = ['Tasks', 'Meetings', 'Calls', 'Opportunities', 'Reminders'];
+    private activityTypes: any[] = [];
 
-    objectfilters: Array<any> = [];
-    timefilter: string = 'all';
+    private objectfilters: any[] = [];
+    private timefilter: string = 'all';
 
     constructor(private renderer: Renderer2, private elementRef: ElementRef, private language: language, private metadata: metadata, private assistant: assistant) {
         this.setFromService();
     }
 
-    setFromService(){
+    private setFromService(){
         this.objectfilters = JSON.parse(JSON.stringify(this.assistant.assistantFilters.objectfilters));
         this.timefilter = JSON.parse(JSON.stringify(this.assistant.assistantFilters.timefilter));
     }
 
-    setToService(){
+    private setToService(){
         this.assistant.assistantFilters.objectfilters = JSON.parse(JSON.stringify(this.objectfilters));
         this.assistant.assistantFilters.timefilter = JSON.parse(JSON.stringify(this.timefilter));
 
         this.assistant.loadItems();
     }
 
-    toggleOpen() {
+    private toggleOpen(e: MouseEvent) {
+        // stop the event propagation
+        e.stopPropagation();
+
+        // open the filter
         this.isOpen = !this.isOpen;
         if (this.isOpen) {
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
@@ -58,7 +62,7 @@ export class HomeAssistantFilter {
         }
     }
 
-    buildTypes() {
+    private buildTypes() {
         this.activityTypes = [];
 
         for (let activityObject of this.activityObjects) {
@@ -77,7 +81,7 @@ export class HomeAssistantFilter {
         return this.assistant.assistantFilters.objectfilters.length > 0 || this.assistant.assistantFilters.timefilter != 'all' ? 'slds-icon-text-error' : 'slds-icon-text-default' ;
     }
 
-    setFilter(event, filter) {
+    private setFilter(event, filter) {
         event.preventDefault();
         if (filter == 'all') {
             this.objectfilters = [];
@@ -91,7 +95,7 @@ export class HomeAssistantFilter {
         }
     }
 
-    getChecked(filter) {
+    private getChecked(filter) {
         if (filter == 'all') {
             return this.objectfilters.length == 0 ? true : false;
         } else {
@@ -99,9 +103,10 @@ export class HomeAssistantFilter {
         }
     }
 
-    closeDialog(apply) {
-        if (this.clickListener)
+    private closeDialog(apply) {
+        if (this.clickListener){
             this.clickListener();
+        }
 
         if(apply){
             this.setToService();
@@ -111,5 +116,4 @@ export class HomeAssistantFilter {
 
         this.isOpen = false;
     }
-
 }
