@@ -2,7 +2,7 @@
     <div class="slds-size--1-of-3 slds-border--right slds-scrollable--y" style="height: 100%">
         <div *ngFor="let plugin of plugins" (click)="setSelectedItemId(plugin.id)" [class.slds-theme--shade]="plugin.id == selectedItemId" class="slds-grid slds-p-around--x-small slds-size--1-of-1 slds-border--bottom" style="cursor: pointer">
             <div class="slds-truncate slds-grow slds-align-middle">
-                {{language.getLabel(plugin.name)}}
+                <system-label [label]="plugin.name"></system-label>
             </div>
             <div class="slds-form-element">
                 <label class="slds-checkbox_toggle slds-grid">

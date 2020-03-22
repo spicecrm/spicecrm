@@ -8,7 +8,7 @@
                 <div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="properties.dimensions.dimension1">
                         <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
-                            {{language.getLabel(listField.name)}}
+                            <system-label [label]="listField.name"></system-label>
                         </option>
                     </select>
                 </div>
@@ -22,7 +22,7 @@
                 <div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="properties.dataseries[0].fieldid">
                         <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
-                            {{language.getLabel(listField.name)}}
+                            <system-label [label]="listField.name"></system-label>
                         </option>
                     </select>
                 </div>
@@ -39,7 +39,7 @@
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="properties.dimensions.dimension2">
                             <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
-                                {{language.getLabel(listField.name)}}
+                                <system-label [label]="listField.name"></system-label>
                             </option>
                         </select>
                     </div>
@@ -74,7 +74,7 @@
                 <div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="properties.dimensions.dimension3">
                         <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
-                            {{language.getLabel(listField.name)}}
+                            <system-label [label]="listField.name"></system-label>
                         </option>
                     </select>
                 </div>

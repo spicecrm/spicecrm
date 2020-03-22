@@ -10,7 +10,7 @@
                         <system-icon [icon]="getIcon(calendar.icon)" [sprite]="getSprite(calendar.icon)" size="large" class="slds-align_absolute-center"></system-icon>
                         <div class="slds-media__body slds-p-around_small">
                             <h2 class="slds-truncate slds-text-heading_small slds-truncate">
-                                {{language.getLabel(calendar.name)}}
+                                <system-label [label]="calendar.name"></system-label>
                             </h2>
                         </div>
                     </a>

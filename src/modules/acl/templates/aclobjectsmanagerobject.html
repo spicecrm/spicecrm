@@ -1,6 +1,6 @@
 <div *ngIf="loaded" class="slds-tabs_scoped" style="height: 100%;">
     <ul class="slds-tabs_scoped__nav" role="tablist">
-        <li *ngFor="let tab of tabs" class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': tab.tab == activeTab}" (click)="switchTab(tab.tab)"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab">{{language.getLabel(tab.label)}}</a></li>
+        <li *ngFor="let tab of tabs" class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': tab.tab == activeTab}" (click)="switchTab(tab.tab)"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab"><system-label [label]="tab.label"></system-label></a></li>
     </ul>
     <div *ngFor="let tab of tabs"  class="slds-tabs_scoped__content" [ngClass]="{'slds-show': tab.tab == activeTab,'slds-hide': tab.tab != activeTab}" role="tabpanel">
         <system-dynamic-component *ngIf="tab.component" [component]="tab.component"></system-dynamic-component>

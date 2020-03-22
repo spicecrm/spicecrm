@@ -33,7 +33,7 @@
                             <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small ">
                                 <system-checkbox [disabled]="link.disabled"  [(ngModel)]="link.selected"></system-checkbox>
                             <div class="slds-truncate"> <system-icon [addclasses]="link.disabled ? 'slds-icon_disabled' : null" [size]="'small'" [module]="link.module"></system-icon></div>
-                            <div class="slds-truncate">{{language.getLabel(link.vname)}}</div></div>
+                            <div class="slds-truncate"><system-label [label]="link.vname"></system-label></div></div>
                         </td>
                         <td>
                             <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small">

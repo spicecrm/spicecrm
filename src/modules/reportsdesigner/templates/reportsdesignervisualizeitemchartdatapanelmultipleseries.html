@@ -7,7 +7,7 @@
             <div class="slds-select_container">
                 <select class="slds-select" [(ngModel)]="properties.dimensions.dimension1">
                     <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
-                        {{language.getLabel(listField.name)}}
+                        <system-label [label]="listField.name"></system-label>
                     </option>
                 </select>
             </div>
@@ -33,7 +33,7 @@
                     </td>
                     <td>
                         <div [title]="listField.name" class="slds-truncate">
-                            {{language.getLabel(listField.name)}}
+                            <system-label [label]="listField.name"></system-label>
                         </div>
                     </td>
                 </tr>
@@ -76,7 +76,7 @@
                     <tr *ngFor="let dataSeriesItem of properties.dataseries; trackBy: trackByFn" cdkDrag cdkDragDisabled class="slds-border--bottom">
                         <td>
                             <div [title]="dataSeriesItem.name" class="slds-truncate">
-                                {{language.getLabel(dataSeriesItem.name)}}
+                                <system-label [label]="dataSeriesItem.name"></system-label>
                             </div>
                         </td>
                         <td>

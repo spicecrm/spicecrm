@@ -1,5 +1,5 @@
 <system-modal size="large">
-    <system-modal-header (close)="close()">{{language.getLabel(titlelabel)}}</system-modal-header>
+    <system-modal-header (close)="close()"><system-label [label]="titlelabel"></system-label></system-modal-header>
     <system-modal-content>
         <object-record-fieldset [fieldset]="fieldset" direction="vertical"></object-record-fieldset>
     </system-modal-content>

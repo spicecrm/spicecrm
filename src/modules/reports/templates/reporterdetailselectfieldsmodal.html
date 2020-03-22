@@ -8,7 +8,7 @@
                 <span class="slds-form-element__label"><system-label label="LBL_AVAILABLE_FIELDS"></system-label></span>
                 <div class="slds-picklist slds-picklist__options slds-size--1-of-1" style="height: 50vh" cdkDropList #listOne="cdkDropList" [cdkDropListData]="availableFields" [cdkDropListConnectedTo]="[listTwo]" (cdkDropListDropped)="onFieldDrop($event)">
                     <div *ngFor="let field of availableFields" cdkDrag [cdkDragData]="field" class="slds-drag--preview slds-picklist__item" [attr.aria-selected]="isSelected('available', field.id)" role="option" (click)="selectField('available', field.id)">
-                        <span class="slds-truncate">{{language.getLabel(field.name)}}</span>
+                        <span class="slds-truncate"><system-label [label]="field.name"></system-label></span>
                     </div>
                 </div>
             </div>
@@ -16,7 +16,7 @@
                 <span class="slds-form-element__label"><system-label label="LBL_SELECTED_FIELDS"></system-label></span>
                 <div class="slds-picklist slds-picklist__options slds-size--1-of-1 cdk-drag" style="height: 50vh" cdkDropList #listTwo="cdkDropList" [cdkDropListData]="displayFields" [cdkDropListConnectedTo]="[listOne]" (cdkDropListDropped)="onFieldDrop($event)">
                     <div *ngFor="let field of displayFields" cdkDrag [cdkDragData]="field" class="slds-drag--preview slds-picklist__item" [attr.aria-selected]="isSelected('list', field.id)" role="option" (click)="selectField('list', field.id)">
-                        <span class="slds-truncate">{{language.getLabel(field.name)}}</span>
+                        <span class="slds-truncate"><system-label [label]="field.name"></system-label></span>
                     </div>
                 </div>
             </div>

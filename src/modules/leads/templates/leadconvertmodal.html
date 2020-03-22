@@ -10,7 +10,7 @@
         </div>
         <div class="slds-modal__content slds-p-around--medium">
             <div class="slds-grid slds-grid--align-spread slds-p-vertical--small " *ngFor="let saveaction of saveactions; let i = index ;" [ngClass]="{'slds-border--bottom' : itemBorder(i)}">
-                <div class="slds-truncate">{{language.getLabel(saveaction.label)}}</div>
+                <div class="slds-truncate"><system-label [label]="saveaction.label"></system-label></div>
                 <div>{{getStatusLabel(saveaction.status)}}</div>
             </div>
         </div>
