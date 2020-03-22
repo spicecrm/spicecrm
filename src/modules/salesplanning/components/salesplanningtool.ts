@@ -102,7 +102,7 @@ export class SalesPlanningTool implements OnInit {
             this.getContentFields(item);
             this.navigation.setActiveModule(this.model.module, this.model.id, item.summary_text);
         });
-        this.favorite.enable(this.model.module, this.model.id);
+
         this.planningService.versionId = this.model.id;
         this.getCharacteristicList();
         this.subscribeToModelSave();

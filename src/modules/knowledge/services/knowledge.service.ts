@@ -3,7 +3,6 @@
  */
 import {Injectable, ViewChild, ViewContainerRef} from '@angular/core';
 import {backend} from '../../../services/backend.service';
-import {favorite} from "../../../services/favorite.service";
 import {fts} from "../../../services/fts.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {modelutilities} from "../../../services/modelutilities.service";
@@ -38,7 +37,6 @@ export class KnowledgeService {
 
     constructor(private backend: backend,
                 private language: language,
-                private favorite: favorite,
                 private broadcast: broadcast,
                 private modelutilities: modelutilities,
                 private navigation: navigation,
@@ -92,7 +90,7 @@ export class KnowledgeService {
     set selectedBook(book) {
         this.selectedbook = book;
         this.getDocuments(book);
-        if (book) this.favoriteEnable('KnowledgeBooks', book.id);
+
     }
 
     public setActiveModule(module) {
@@ -108,14 +106,6 @@ export class KnowledgeService {
         this.location.replaceState(state);
     }
 
-    public favoriteEnable(module, id) {
-        this.favoriteDisable();
-        this.favorite.enable(module, id);
-    }
-
-    public favoriteDisable() {
-        this.favorite.disable();
-    }
 
     public getBooks() {
         this.isBookLoading = true;
