@@ -1,30 +1,82 @@
 /**
  * @module SystemComponents
  */
-import {Component, Input} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges} from "@angular/core";
 import {metadata} from "../../services/metadata.service";
 
+/**
+ * renders an icon that can be embedded in a button.
+ */
 @Component({
     selector: "system-button-icon",
-    templateUrl: "./src/systemcomponents/templates/systembuttonicon.html"
+    templateUrl: "./src/systemcomponents/templates/systembuttonicon.html",
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SystemButtonIcon {
+export class SystemButtonIcon implements OnChanges {
+
+    /**
+     * the name of the icon to be rendered
+     *
+     * - it can be a simple name of an icon .. then it is rendered as a utility icon
+     * - it can be a string sepoarated with the sprite and the icon. e.g. 'standard:decision' then the sprite is taken form the icon
+     *  - it can hold sprite, icon and size override. e.g. 'standard:decision:medium'
+     *
+     */
     @Input() private icon: string = "";
+
+    /**
+     * the sprite the icon is found in
+     */
     @Input() private sprite: string = "utility";
-    @Input() private size: string = "";
+
+    @Input() private size: ''|'large' | 'small' | 'x-small' | 'xx-small' = "";
+
+    /**
+     * a module name if the icon shoudl be loaded from teh metadata
+     */
     @Input() private module: string = "";
-    @Input() private position: string = "";
+
+    /**
+     * the position of the button icon
+     */
+    @Input() private position: ''|'left'|'right' = "";
+
+    /**
+     * if the icon shoudl be rendered inverted
+     */
     @Input() private inverse: boolean = false;
+
+    /**
+     * a title for the icon
+     */
     @Input() private title: string = undefined;
+
+    /**
+     * any additonal classes that shoudl be applied to the button
+     */
     @Input() private addclasses: string = "";
 
-    constructor(private metadata: metadata) {
+    constructor(private metadata: metadata, private cdref: ChangeDetectorRef) {
     }
 
+    /**
+     * triger change dtection as the cdref is onpush strategy
+     * @param changes
+     */
+    public ngOnChanges(changes: SimpleChanges): void {
+        this.cdref.detectChanges();
+    }
+
+    /**
+     * loads the SVG ref for the svg in the button
+     */
     private getSvgHRef() {
         return "./sldassets/icons/" + this.getSprite() + "-sprite/svg/symbols.svg#" + this.getIcon();
     }
 
+    /**
+     * loads the icon to be added with the svg
+     */
     private getIcon() {
         if (this.icon) {
             return this.icon;
@@ -39,6 +91,9 @@ export class SystemButtonIcon {
         return "empty";
     }
 
+    /**
+     * returns the sprite
+     */
     private getSprite() {
         if (this.module && this.metadata.getModuleIcon(this.module) && this.metadata.getModuleIcon(this.module).indexOf(":") > 0) {
             return this.metadata.getModuleIcon(this.module).split(":")[0];
@@ -49,6 +104,9 @@ export class SystemButtonIcon {
         }
     }
 
+    /**
+     * builds a string with additonal classes
+     */
     private getClass() {
         let classList: string[] = [];
         if (this.size != "") {
