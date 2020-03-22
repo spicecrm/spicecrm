@@ -23,7 +23,7 @@
 
         <div class="slds-modal__footer">
             <button class="slds-button slds-button--brand" [disabled]="!model.data.signature_contact" (click)="accept()">OK</button>
-            <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
+            <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
         </div>
 
     </div>

@@ -1,5 +1,5 @@
 <system-modal>
-    <system-modal-header (close)="cancel()">{{language.getLabel('LBL_FIND_DUNS_NUMBER')}}</system-modal-header>
+    <system-modal-header (close)="cancel()"><system-label label="LBL_FIND_DUNS_NUMBER"></system-label></system-modal-header>
     <system-modal-content style="padding: 0">
         <div class="slds-p-around--x-small">
             <div *ngFor="let field of fieldsetFields" class="slds-cell-buffer--left">
@@ -13,22 +13,22 @@
             <thead>
             <tr class="slds-line-height_reset">
                 <th class="slds-text-title_caps" scope="col">
-                    <div class="slds-truncate" [title]="language.getLabel('LBL_NUMBER')">{{ language.getLabel('LBL_NUMBER') }}</div>
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_NUMBER')"><system-label label="LBL_NUMBER"></system-label></div>
                 </th>
                 <th class="slds-text-title_caps" scope="col">
-                    <div class="slds-truncate" [title]="language.getLabel('LBL_NAME')">{{ language.getLabel('LBL_NAME') }} </div>
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_NAME')"><system-label label="LBL_NAME"></system-label> </div>
                 </th>
                 <th class="slds-text-title_caps" scope="col">
-                    <div class="slds-truncate" [title]="language.getLabel('LBL_STREET')">{{ language.getLabel('LBL_STREET') }} </div>
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_STREET')"><system-label label="LBL_STREET"></system-label> </div>
                 </th>
                 <th class="slds-text-title_caps" scope="col">
-                    <div class="slds-truncate" [title]="language.getLabel('LBL_POSTALCODE')">{{ language.getLabel('LBL_POSTALCODE') }} </div>
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_POSTALCODE')"><system-label label="LBL_POSTALCODE"></system-label> </div>
                 </th>
                 <th class="slds-text-title_caps" scope="col">
-                    <div class="slds-truncate" [title]="language.getLabel('LBL_CITY')">{{ language.getLabel('LBL_CITY') }} </div>
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_CITY')"><system-label label="LBL_CITY"></system-label> </div>
                 </th>
                 <th class="slds-text-title_caps" scope="col">
-                    <div class="slds-truncate" [title]="language.getLabel('LBL_COUNTRY')">{{ language.getLabel('LBL_COUNTRY') }} </div>
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_COUNTRY')"><system-label label="LBL_COUNTRY"></system-label> </div>
                 </th>
                 <th class="slds-cell-shrink" scope="col"></th>
             </tr>
@@ -71,7 +71,7 @@
             </tr>
             <tr *ngIf="!isLoading && results?.length == 0">
                 <td colspan="7">
-                    <div class="slds-p-around--small slds-align--absolute-center">{{language.getLabel('LBL_NO_ENTRIES')}}</div>
+                    <div class="slds-p-around--small slds-align--absolute-center"><system-label label="LBL_NO_ENTRIES"></system-label></div>
                 </td>
             </tr>
             <tr *ngIf="isLoading">
@@ -83,8 +83,8 @@
         </table>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
-        <button class="slds-button slds-button--neutral" (click)="notFound()">{{language.getLabel('LBL_NOT_FOUND')}}</button>
-        <button class="slds-button slds-button--brand" (click)="confirm()" [disabled]="!selectedItem">{{language.getLabel('LBL_CONFIRM')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--neutral" (click)="notFound()"><system-label label="LBL_NOT_FOUND"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="confirm()" [disabled]="!selectedItem"><system-label label="LBL_CONFIRM"></system-label></button>
     </system-modal-footer>
 </system-modal>

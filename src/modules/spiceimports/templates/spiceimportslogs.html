@@ -3,7 +3,7 @@
     <div class="slds-text-title_caps slds-p-left--small">{{ activeLogName }}</div>
     <div class="slds-p-around_xx-small slds-col--bump-left">
         <button *ngIf="activeLogName" class="slds-button slds-button--brand" (click)="delete()">
-            {{language.getLabel('LBL_DELETE')}}
+            <system-label label="LBL_DELETE"></system-label>
         </button>
     </div>
 </div>
@@ -11,11 +11,11 @@
 <div #logscontainer class="slds-scrollable--y" [ngStyle]="mainStyle()">
     <div *ngIf="!spiceimportsservice.isloadingLogs && spiceimportsservice.activeImportData && itemLogs?.length <= 0"
          class="slds-align_absolute-center slds-m-around--xx-large slds-text-heading--medium">
-        {{language.getLabel('MSG_NO_LOGS_FOUND')}}
+        <system-label label="MSG_NO_LOGS_FOUND"></system-label>
     </div>
     <div *ngIf="!spiceimportsservice.isloadingLogs && !spiceimportsservice.activeImportData"
          class="slds-align_absolute-center slds-m-around--xx-large slds-text-heading--medium">
-        {{language.getLabel('LBL_MAKE_SELECTION')}}
+        <system-label label="LBL_MAKE_SELECTION"></system-label>
     </div>
     <system-spinner *ngIf="spiceimportsservice.isloadingLogs"></system-spinner>
 

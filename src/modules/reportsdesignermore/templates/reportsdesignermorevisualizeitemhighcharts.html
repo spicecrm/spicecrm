@@ -7,7 +7,7 @@
                 <div class="slds-p-around--x-small slds-height_full">
                     <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-p-horizontal--x-small slds-size--1-of-1">
                         <label class="slds-form-element__label">
-                            {{language.getLabel('LBL_TITLE')}}
+                            <system-label label="LBL_TITLE"></system-label>
                         </label>
                         <div class="slds-form-element__control slds-grow">
                             <input type="text" size="5" [(ngModel)]="properties.highcharts.title" class="slds-input">
@@ -16,25 +16,25 @@
                     <div class="slds-grid slds-grid--vertical-align-center">
                         <div class="slds-size--1-of-2 slds-form-element slds-grid slds-grid--vertical-align-center slds-p-horizontal--x-small slds-m-top--x-small slds-size--1-of-1">
                             <label class="slds-form-element__label">
-                                {{language.getLabel('LBL_LEGEND')}}
+                                <system-label label="LBL_LEGEND"></system-label>
                             </label>
                             <div class="slds-form-element__control slds-grow">
                                 <div class="slds-select_container">
                                     <select class="slds-select" [(ngModel)]="properties.highcharts.legend">
                                         <option value="none">
-                                            {{language.getLabel('LBL_NONE')}}
+                                            <system-label label="LBL_NONE"></system-label>
                                         </option>
                                         <option value="right">
-                                            {{language.getLabel('LBL_RIGHT')}}
+                                            <system-label label="LBL_RIGHT"></system-label>
                                         </option>
                                         <option value="left">
-                                            {{language.getLabel('LBL_LEFT')}}
+                                            <system-label label="LBL_LEFT"></system-label>
                                         </option>
                                         <option value="top">
-                                            {{language.getLabel('LBL_TOP')}}
+                                            <system-label label="LBL_TOP"></system-label>
                                         </option>
                                         <option value="bottom">
-                                            {{language.getLabel('LBL_BOTTOM')}}
+                                            <system-label label="LBL_BOTTOM"></system-label>
                                         </option>
                                     </select>
                                 </div>
@@ -42,7 +42,7 @@
                         </div>
                         <div class="slds-size--1-of-2 slds-form-element slds-grid slds-grid--vertical-align-center slds-p-horizontal--x-small slds-m-top--x-small slds-size--1-of-1">
                             <label class="slds-form-element__label">
-                                {{language.getLabel('LBL_CONTEXT')}}
+                                <system-label label="LBL_CONTEXT"></system-label>
                             </label>
                             <div class="slds-form-element__control slds-grow">
                                 <div class="slds-select_container">
@@ -58,28 +58,28 @@
                     </div>
                     <div class="slds-size--1-of-1 slds-p-vertical--x-small slds-grid slds-wrap">
                         <system-checkbox [ngModel]="properties.highcharts.options.emptyvalues == 'on'" (ngModelChange)="setPropertiesOption('emptyvalues', $event)" class="slds-size--1-of-3 slds-p-horizontal--x-small">
-                            {{language.getLabel('LBL_SHOW_EMPTY_VALUES')}}
+                            <system-label label="LBL_SHOW_EMPTY_VALUES"></system-label>
                         </system-checkbox>
                         <system-checkbox [ngModel]="properties.highcharts.options.hideValues == 'on'" (ngModelChange)="setPropertiesOption('hideValues', $event)" class="slds-size--1-of-3 slds-p-horizontal--x-small">
-                            {{language.getLabel('LBL_HIDE_VALUES')}}
+                            <system-label label="LBL_HIDE_VALUES"></system-label>
                         </system-checkbox>
                         <system-checkbox [ngModel]="properties.highcharts.options.hideLabels == 'on'" (ngModelChange)="setPropertiesOption('hideLabels', $event)" class="slds-size--1-of-3 slds-p-horizontal--x-small">
-                            {{language.getLabel('LBL_HIDE_LABELS')}}
+                            <system-label label="LBL_HIDE_LABELS"></system-label>
                         </system-checkbox>
                         <system-checkbox [ngModel]="properties.highcharts.options.rotateLabels == 'on'" (ngModelChange)="setPropertiesOption('rotateLabels', $event)" class="slds-size--1-of-3 slds-p-horizontal--x-small">
-                            {{language.getLabel('LBL_ROTATE_LABELS')}}
+                            <system-label label="LBL_ROTATE_LABELS"></system-label>
                         </system-checkbox>
                         <system-checkbox [ngModel]="properties.highcharts.options.logv == 'on'" (ngModelChange)="setPropertiesOption('logv', $event)" class="slds-size--1-of-3 slds-p-horizontal--x-small">
-                            {{language.getLabel('LBL_LOGARITHMIC_V_SCALE')}}
+                            <system-label label="LBL_LOGARITHMIC_V_SCALE"></system-label>
                         </system-checkbox>
                         <system-checkbox [ngModel]="properties.highcharts.options.is3D == 'on'" (ngModelChange)="setPropertiesOption('is3D', $event)" class="slds-size--1-of-3 slds-p-horizontal--x-small">
-                            3 {{language.getLabel('LBL_DIMENSIONAL')}}
+                            3 <system-label label="LBL_DIMENSIONAL"></system-label>
                         </system-checkbox>
                         <system-checkbox [ngModel]="properties.highcharts.options.allowOverlap == 'on'" (ngModelChange)="setPropertiesOption('allowOverlap', $event)" class="slds-size--1-of-3 slds-p-horizontal--x-small">
-                            {{language.getLabel('LBL_ALLOW_DATA_LABELS_TO_OVERLAP')}}
+                            <system-label label="LBL_ALLOW_DATA_LABELS_TO_OVERLAP"></system-label>
                         </system-checkbox>
                         <system-checkbox [ngModel]="properties.highcharts.options.colorByPoint == 'on'" (ngModelChange)="setPropertiesOption('colorByPoint', $event)" class="slds-size--1-of-3 slds-p-horizontal--x-small">
-                            {{language.getLabel('LBL_COLOR_BY_POINT')}}
+                            <system-label label="LBL_COLOR_BY_POINT"></system-label>
                         </system-checkbox>
                     </div>
                 </div>

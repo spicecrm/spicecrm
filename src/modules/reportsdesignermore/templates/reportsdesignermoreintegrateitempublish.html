@@ -1,30 +1,30 @@
 <div class="slds-p-around--x-small">
     <fieldset class="slds-form-element slds-form-element_compound slds-m-bottom--medium">
-        <legend class="slds-form-element__legend slds-form-element__label slds-text-title--caps">{{language.getLabel('LBL_PUBLISH_AS_DASHLET')}}</legend>
+        <legend class="slds-form-element__legend slds-form-element__label slds-text-title--caps"><system-label label="LBL_PUBLISH_AS_DASHLET"></system-label></legend>
         <div class="slds-form-element__control slds-p-left--small slds-p-top--small">
             <div class="slds-form-element__row">
                 <div class="slds-form-element slds-size--1-of-1">
                     <system-checkbox [ngModel]="getCheckboxValue('dashletPresentation')" (ngModelChange)="setValue('dashletPresentation', $event)">
-                        {{language.getLabel('LBL_PRESENTATION')}}
+                        <system-label label="LBL_PRESENTATION"></system-label>
                     </system-checkbox>
                 </div>
             </div>
             <div class="slds-form-element__row">
                 <div class="slds-form-element slds-size--1-of-2">
                     <system-checkbox [ngModel]="getCheckboxValue('dashletVisualization')" (ngModelChange)="setValue('dashletVisualization', $event)">
-                        {{language.getLabel('LBL_VISUALISATION')}}
+                        <system-label label="LBL_VISUALISATION"></system-label>
                     </system-checkbox>
                 </div>
             </div>
         </div>
     </fieldset>
     <fieldset class="slds-form-element slds-form-element_compound slds-m-top--small slds-has-divider--top-space">
-        <legend class="slds-form-element__legend slds-form-element__label slds-text-title--caps">{{language.getLabel('LBL_PUBLISH_AS_RELATED')}}</legend>
+        <legend class="slds-form-element__legend slds-form-element__label slds-text-title--caps"><system-label label="LBL_PUBLISH_AS_RELATED"></system-label></legend>
         <div class="slds-form-element__control slds-p-left--small slds-p-top--small">
             <div class="slds-form-element__row">
                 <div class="slds-form-element slds-size--1-of-1">
                     <label class="slds-form-element__label">
-                        {{language.getLabel('LBL_MODULE')}}
+                        <system-label label="LBL_MODULE"></system-label>
                     </label>
                     <div class="slds-combobox_container">
                         <div class="slds-form-element slds-lookup">
@@ -62,16 +62,16 @@
             <div class="slds-form-element__row">
                 <div class="slds-form-element slds-size--1-of-1">
                     <label class="slds-form-element__label">
-                        {{language.getLabel('LBL_TAB')}}
+                        <system-label label="LBL_TAB"></system-label>
                     </label>
                     <div class="slds-select_container slds-grow slds-m-horizontal--xx-small">
                         <select class="slds-select" [(ngModel)]="properties.subpanelTab">
                             <option></option>
-                            <option value="LBL_TABGROUP_SALES">{{language.getLabel('LBL_SALES')}}</option>
-                            <option value="LBL_TABGROUP_MARKETING">{{language.getLabel('LBL_MARKETING')}}</option>
-                            <option value="LBL_TABGROUP_SUPPORT">{{language.getLabel('LBL_SUPPORT')}}</option>
-                            <option value="LBL_TABGROUP_ACTIVITIES">{{language.getLabel('LBL_ACTIVITIES')}}</option>
-                            <option value="LBL_TABGROUP_COLLABORATION">{{language.getLabel('LBL_COLLABORATION')}}</option>
+                            <option value="LBL_TABGROUP_SALES"><system-label label="LBL_SALES"></system-label></option>
+                            <option value="LBL_TABGROUP_MARKETING"><system-label label="LBL_MARKETING"></system-label></option>
+                            <option value="LBL_TABGROUP_SUPPORT"><system-label label="LBL_SUPPORT"></system-label></option>
+                            <option value="LBL_TABGROUP_ACTIVITIES"><system-label label="LBL_ACTIVITIES"></system-label></option>
+                            <option value="LBL_TABGROUP_COLLABORATION"><system-label label="LBL_COLLABORATION"></system-label></option>
                         </select>
                     </div>
                 </div>
@@ -79,7 +79,7 @@
             <div class="slds-form-element__row">
                 <div class="slds-form-element slds-size--1-of-1">
                     <label class="slds-form-element__label">
-                        {{language.getLabel('LBL_SEQUENCE')}}
+                        <system-label label="LBL_SEQUENCE"></system-label>
                     </label>
                     <input type="number" [(ngModel)]="properties.subpanelSequence" class="slds-input">
                 </div>
@@ -87,14 +87,14 @@
             <div class="slds-form-element__row slds-m-top--small">
                 <div class="slds-form-element slds-size--1-of-1">
                     <system-checkbox [ngModel]="getCheckboxValue('subpanelPresentation')" (ngModelChange)="setValue('subpanelPresentation', $event)">
-                        {{language.getLabel('LBL_PRESENTATION')}}
+                        <system-label label="LBL_PRESENTATION"></system-label>
                     </system-checkbox>
                 </div>
             </div>
             <div class="slds-form-element__row">
                 <div class="slds-form-element slds-size--1-of-2">
                     <system-checkbox [ngModel]="getCheckboxValue('subpanelVisualization')" (ngModelChange)="setValue('subpanelVisualization', $event)">
-                        {{language.getLabel('LBL_VISUALISATION')}}
+                        <system-label label="LBL_VISUALISATION"></system-label>
                     </system-checkbox>
                 </div>
             </div>

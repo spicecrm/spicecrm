@@ -38,8 +38,8 @@
             </div>
         </div>
         <div class="slds-modal__footer">
-            <button class="slds-button slds-button--neutral" (click)="closeDialog()">{{language.getLabel('LBL_CANCEL')}}</button>
-            <button class="slds-button slds-button--brand" [disabled]="validate()" (click)="copy()">{{language.getLabel('LBL_SAVE')}}</button>
+            <button class="slds-button slds-button--neutral" (click)="closeDialog()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button class="slds-button slds-button--brand" [disabled]="validate()" (click)="copy()"><system-label label="LBL_SAVE"></system-label></button>
         </div>
     </div>
 </div>

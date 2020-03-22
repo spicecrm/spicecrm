@@ -1,6 +1,6 @@
 <div class="slds-p-vertical--x-small">
     <div class="slds-p-bottom--x-small slds-grid slds-grid--align-end slds-grid--vertical-align-center">
-        <div class="slds-p-horizontal--x-small">{{language.getLabel('LBL_COMPANYCODE')}}</div>
+        <div class="slds-p-horizontal--x-small"><system-label label="LBL_COMPANYCODE"></system-label></div>
         <system-input-companycodes [(ngModel)]="companyCode"></system-input-companycodes>
     </div>
     <table  class="slds-table slds-table_bordered">
@@ -14,7 +14,7 @@
                     <div class="slds-truncate">{{language.getFieldDisplayName('Potentials', 'potential_value')}}</div>
                 </th>
                 <th scope="col">
-                    <div class="slds-truncate">{{language.getLabel('LBL_COMPANYCODE')}}</div>
+                    <div class="slds-truncate"><system-label label="LBL_COMPANYCODE"></system-label></div>
                 </th>
                 <th scope="col">
                     <div class="slds-truncate">{{language.getFieldDisplayName('Potentials', 'opportunity_amount')}}</div>

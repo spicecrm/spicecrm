@@ -24,7 +24,7 @@
     </div>
 </div>
 <div class="slds-grid slds-grid--align-spread slds-p-around--small slds-theme--shade slds-border--bottom">
-        <button class="slds-button slds-button--neutral" (click)="prevStep()">{{language.getLabel('LBL_PREVIOUS')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="prevStep()"><system-label label="LBL_PREVIOUS"></system-label></button>
         <div class="slds-progress slds-progress--shade">
             <ol class="slds-progress__list">
                 <li *ngFor="let convertStep of convertSteps" class="slds-progress__item" [ngClass]="getStepClass(convertStep)">
@@ -38,8 +38,8 @@
                 <span class="slds-progress-bar__value" [ngStyle]="getProgressBarWidth()"></span>
             </div>
         </div>
-        <button *ngIf="showNext()" class="slds-button slds-button--neutral" (click)="nextStep()">{{language.getLabel('LBL_NEXT')}}</button>
-        <button *ngIf="showSave()" class="slds-button slds-button--brand" (click)="nextStep()">{{language.getLabel('LBL_SAVE')}}</button>
+        <button *ngIf="showNext()" class="slds-button slds-button--neutral" (click)="nextStep()"><system-label label="LBL_NEXT"></system-label></button>
+        <button *ngIf="showSave()" class="slds-button slds-button--brand" (click)="nextStep()"><system-label label="LBL_SAVE"></system-label></button>
 </div>
 <div class="slds-scrollable--y" tobottom>
     <lead-convert-account [lead]="model" [hidden]="currentConvertStep!==0" (account)="setAccount($event)" (selectedaccount)="setSelectedAccount($event)" (createaccount)="setCreateAccount($event)"></lead-convert-account>

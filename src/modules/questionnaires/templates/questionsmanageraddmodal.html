@@ -4,8 +4,8 @@
             <button class="slds-button slds-button_icon slds-modal__close slds-button--icon-inverse" title="{{language.getLabel('LBL_CLOSE')}}" (click)="closeModal()">
                 <system-button-icon [icon]="'close'" [size]="'large'"></system-button-icon>
             </button>
-            <h2 *ngIf="!questionid" class="slds-text-heading_medium slds-hyphenate">{{language.getLabel('LBL_ADD_QUESTION')}}</h2>
-            <h2 *ngIf="questionid" class="slds-text-heading_medium slds-hyphenate">{{language.getLabel('LBL_EDIT_QUESTION')}}</h2>
+            <h2 *ngIf="!questionid" class="slds-text-heading_medium slds-hyphenate"><system-label label="LBL_ADD_QUESTION"></system-label></h2>
+            <h2 *ngIf="questionid" class="slds-text-heading_medium slds-hyphenate"><system-label label="LBL_EDIT_QUESTION"></system-label></h2>
         </header>
         <div class="slds-modal__content slds-p-around_medium">
             <div [ngSwitch]="questionset.data.questiontype">
@@ -16,12 +16,12 @@
                 <questions-manager-edit-text *ngSwitchCase="'text'" [questionset]="questionset" [categorypool]="categorypool"></questions-manager-edit-text>
                 <questions-manager-edit-ist *ngSwitchCase="'ist'" [questionset]="questionset" [categorypool]="categorypool"></questions-manager-edit-ist>
                 <questions-manager-edit-nps *ngSwitchCase="'nps'" [questionset]="questionset" [categorypool]="categorypool"></questions-manager-edit-nps>
-                <div *ngSwitchDefault>{{language.getLabel('MSG_NO_QUESTIONTYPE_NO_QUESTION')}}</div>
+                <div *ngSwitchDefault><system-label label="MSG_NO_QUESTIONTYPE_NO_QUESTION"></system-label></div>
             </div>
         </div>
         <footer class="slds-modal__footer">
-            <button class="slds-button slds-button--neutral" (click)="cancelModal()">{{language.getLabel('LBL_CANCEL')}}</button>
-            <button class="slds-button slds-button--brand" (click)="saveQuestion()">{{language.getLabel('LBL_SAVE')}}</button>
+            <button class="slds-button slds-button--neutral" (click)="cancelModal()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button class="slds-button slds-button--brand" (click)="saveQuestion()"><system-label label="LBL_SAVE"></system-label></button>
         </footer>
     </div>
 </section>

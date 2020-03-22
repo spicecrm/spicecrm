@@ -1,19 +1,19 @@
 <div class="slds-p-around--x-small">
     <div class="slds-grid slds-p-vertical--x-small slds-grid--vertical-align-center">
         <div class="slds-p-right--small">
-            {{language.getLabel('LBL_SHOW_ATTRIBUTES')}}:
+            <system-label label="LBL_SHOW_ATTRIBUTES"></system-label>:
         </div>
-        <system-checkbox [(ngModel)]="showrequired">{{language.getLabel('LBL_REQUIRED')}}</system-checkbox>
-        <system-checkbox [(ngModel)]="showoptional">{{language.getLabel('LBL_OPTIONAL')}}</system-checkbox>
-        <system-checkbox [(ngModel)]="showreadonly">{{language.getLabel('LBL_READONLY')}}</system-checkbox>
+        <system-checkbox [(ngModel)]="showrequired"><system-label label="LBL_REQUIRED"></system-label></system-checkbox>
+        <system-checkbox [(ngModel)]="showoptional"><system-label label="LBL_OPTIONAL"></system-label></system-checkbox>
+        <system-checkbox [(ngModel)]="showreadonly"><system-label label="LBL_READONLY"></system-label></system-checkbox>
         <div class="slds-p-right--small slds-col_bump-left">
-            {{language.getLabel('LBL_FILTER')}}:
+            <system-label label="LBL_FILTER"></system-label>:
         </div>
         <div class="slds-form-element">
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="displaygroup" [disabled]="displaygroups?.length == 0">
-                        <option value="all">{{language.getLabel('LBL_ALL')}}</option>
+                        <option value="all"><system-label label="LBL_ALL"></system-label></option>
                         <option *ngFor="let displaygroup of displaygroups" [value]="displaygroup">{{displaygroup}}</option>
                     </select>
                 </div>
@@ -24,8 +24,8 @@
         <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table--fixed-layout">
             <thead>
             <tr class="slds-text-title_caps">
-                <th scope="col" width="30%"><div class="slds-truncate">{{language.getLabel('LBL_ATTRIBUTE')}}</div></th>
-                <th scope="col" width="70%"><div class="slds-truncate">{{language.getLabel('LBL_VALUE')}}</div></th>
+                <th scope="col" width="30%"><div class="slds-truncate"><system-label label="LBL_ATTRIBUTE"></system-label></div></th>
+                <th scope="col" width="70%"><div class="slds-truncate"><system-label label="LBL_VALUE"></system-label></div></th>
             </tr>
             </thead>
             <tbody>

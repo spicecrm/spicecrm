@@ -1,11 +1,11 @@
 <div class="slds-p-around--x-small">
     <div class="slds-grid slds-grid--vertical-align-center slds-p-bottom--x-small">
         <system-icon [module]="'Projects'" [size]="'small'"></system-icon>
-        <h2 class="slds-text-heading--medium slds-p-bottom--xx-small">{{language.getLabel('LBL_RECORD_PROJECTACTIVITY')}}</h2>
+        <h2 class="slds-text-heading--medium slds-p-bottom--xx-small"><system-label label="LBL_RECORD_PROJECTACTIVITY"></system-label></h2>
     </div>
     <div class="slds-grid">
         <div class="slds-form-element slds-size--1-of-2">
-            <label class="slds-form-element__label">{{language.getLabel('LBL_WBS_ELEMENT')}}</label>
+            <label class="slds-form-element__label"><system-label label="LBL_WBS_ELEMENT"></system-label></label>
             <div class="slds-form-element__control slds-p-vertical--xx-small">
 
                 <div *ngIf="selected_wbs" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
@@ -57,7 +57,7 @@
             <field-container fieldname="activity_end" [fieldconfig]="{fieldtype:'duration', freeentry: true}"></field-container>
         </div>
         <div class="slds-size--1-of-5 slds-form-element slds-col--bump-left slds-p-top--small slds-m-top--x-small slds-p-right--small slds-text-align_right">
-            <button class="slds-button slds-button--brand slds-m-left--xx-small" [disabled]="!validate()" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+            <button class="slds-button slds-button--brand slds-m-left--xx-small" [disabled]="!validate()" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
         </div>
     </div>
 
@@ -76,7 +76,7 @@
                 <a href="javascript:void(0);" (click)="model.goModule()">View All</a>
             </div>
             <div *ngIf="!modellist.isLoading && modellist.listData.totalcount == 0" class="slds-align--absolute-center" style="height: calc(100% - 35px)">
-                <system-illustration-no-records>{{language.getLabel('MSG_NO_RECORDS_FOUND')}}</system-illustration-no-records>
+                <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
             </div>
         </div>
 </div>

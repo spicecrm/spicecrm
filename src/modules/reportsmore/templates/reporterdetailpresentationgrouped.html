@@ -25,7 +25,7 @@
                                     </button>
                                     <label>{{groupByValue.value}}</label>
                                 </div>
-                                <label>{{groupByValue.count}} {{language.getLabel('LBL_RECORDS')}}</label>
+                                <label>{{groupByValue.count}} <system-label label="LBL_RECORDS"></system-label></label>
                             </div>
                         </td>
                     </tr>
@@ -55,7 +55,7 @@
     <div #tablefooter class="slds-border--top">
         <div class="slds-p-vertical--x-small slds-grid slds-grid_vertical-align-center slds-grid_align-spread">
             <div class="slds-grid slds-grid_vertical-align-center slds-p-left--x-small">
-                <label class="slds-form-element__label">{{language.getLabel('LBL_GROUPDBY')}}</label>
+                <label class="slds-form-element__label"><system-label label="LBL_GROUPDBY"></system-label></label>
                 <div class="slds-form-element">
                     <div class="slds-form-element__control">
                         <div class="slds-select_container">
@@ -67,7 +67,7 @@
                 </div>
             </div>
             <div class="slds-p-horizontal--medium slds-grid slds-grid--vertical-align-center">
-                <div class="slds-p-horizontal--xx-small">{{totalRecords}} {{language.getLabel('LBL_RECORDS')}}</div>
+                <div class="slds-p-horizontal--xx-small">{{totalRecords}} <system-label label="LBL_RECORDS"></system-label></div>
                 <button class="slds-button slds-button_icon" (click)="selectFields()" [title]="language.getLabel('LBL_CHOOSE_FIELDS')">
                     <system-button-icon icon="settings" ></system-button-icon>
                 </button>

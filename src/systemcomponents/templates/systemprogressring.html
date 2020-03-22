@@ -9,19 +9,19 @@
               <svg class="slds-icon" aria-hidden="true">
                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="sldassets/icons/utility-sprite/svg/symbols.svg#warning" />
               </svg>
-          <span class="slds-assistive-text">{{language.getLabel('LBL_WARNING')}}</span>
+          <span class="slds-assistive-text"><system-label label="LBL_WARNING"></system-label></span>
         </span>
         <span *ngIf="iconstatus=='expired'" class="slds-icon_container slds-icon-utility-error" title="Expired">
           <svg class="slds-icon" aria-hidden="true">
             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="sldassets/icons/utility-sprite/svg/symbols.svg#error" />
           </svg>
-          <span class="slds-assistive-text">{{language.getLabel('LBL_EXPIRED')}}</span>
+          <span class="slds-assistive-text"><system-label label="LBL_EXPIRED"></system-label></span>
         </span>
         <span *ngIf="iconstatus=='complete'" class="slds-icon_container slds-icon-utility-check" title="Complete">
           <svg class="slds-icon" aria-hidden="true">
             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="sldassets/icons/utility-sprite/svg/symbols.svg#check" />
           </svg>
-          <span class="slds-assistive-text">{{language.getLabel('LBL_COMPLETE')}}</span>
+          <span class="slds-assistive-text"><system-label label="LBL_COMPLETE"></system-label></span>
         </span>
     </div>
 </div>

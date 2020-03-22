@@ -3,14 +3,14 @@
     <div class="slds-is-absolute slds-dropdown slds-dropdown_right slds-nubbin_top-right" style="right:-10px;top:25px;">
         <div class="slds-grid">
             <div class="slds-p-horizontal--small slds-border--right" style="min-width: 180px">
-                <div class="slds-p-vertical--x-small">{{language.getLabel('LBL_TYPE')}}</div>
+                <div class="slds-p-vertical--x-small"><system-label label="LBL_TYPE"></system-label></div>
                 <div class="slds-form-element slds-p-vertical--xx-small">
                     <div class="slds-form-element__control" (click)="setFilter($event, 'all')">
                         <span class="slds-checkbox">
                           <input type="checkbox" id="alltypes" [checked]="getChecked('all')"/>
                           <label class="slds-checkbox__label" for="alltypes">
                             <span class="slds-checkbox_faux"></span>
-                            <span class="slds-form-element__label">{{language.getLabel('LBL_ALL')}}</span>
+                            <span class="slds-form-element__label"><system-label label="LBL_ALL"></system-label></span>
                           </label>
                         </span>
                     </div>
@@ -28,28 +28,28 @@
                 </div>
             </div>
             <div class="slds-p-horizontal--small" style="min-width: 180px">
-                <div class="slds-p-vertical--x-small">{{language.getLabel('LBL_FILTER')}}</div>
+                <div class="slds-p-vertical--x-small"><system-label label="LBL_FILTER"></system-label></div>
                 <fieldset class="slds-form-element">
                     <div class="slds-form-element__control">
                         <span class="slds-radio">
                           <input type="radio" id="ownerall" name="filters" value="" [(ngModel)]="ownerfilter"/>
                           <label class="slds-radio__label" for="ownerall">
                             <span class="slds-radio_faux"></span>
-                            <span class="slds-form-element__label">{{language.getLabel('LBL_ALL')}}</span>
+                            <span class="slds-form-element__label"><system-label label="LBL_ALL"></system-label></span>
                           </label>
                         </span>
                         <span class="slds-radio">
                           <input type="radio" id="ownerassignedtome" name="filters" value="assigned" [(ngModel)]="ownerfilter" />
                           <label class="slds-radio__label" for="ownerassignedtome">
                             <span class="slds-radio_faux"></span>
-                            <span class="slds-form-element__label slds-truncate">{{language.getLabel('LBL_ASSIGNEDTOME')}}</span>
+                            <span class="slds-form-element__label slds-truncate"><system-label label="LBL_ASSIGNEDTOME"></system-label></span>
                           </label>
                         </span>
                         <span class="slds-radio">
                           <input type="radio" id="ownercreatedbyme" name="filters" value="created" [(ngModel)]="ownerfilter" />
                           <label class="slds-radio__label" for="ownercreatedbyme">
                             <span class="slds-radio_faux"></span>
-                            <span class="slds-form-element__label slds-truncate">{{language.getLabel('LBL_CREATEDBYME')}}</span>
+                            <span class="slds-form-element__label slds-truncate"><system-label label="LBL_CREATEDBYME"></system-label></span>
                           </label>
                         </span>
                     </div>
@@ -58,8 +58,8 @@
         </div>
         <footer class="slds-popover__footer">
            <div class="slds-grid">
-               <button class="slds-col--bump-left slds-button slds-button_neutral" (click)="closeDialog(false)">{{language.getLabel('LBL_CANCEL')}}</button>
-               <button class="slds-button slds-button--brand" (click)="closeDialog(true)">{{language.getLabel('LBL_APPLY')}}</button>
+               <button class="slds-col--bump-left slds-button slds-button_neutral" (click)="closeDialog(false)"><system-label label="LBL_CANCEL"></system-label></button>
+               <button class="slds-button slds-button--brand" (click)="closeDialog(true)"><system-label label="LBL_APPLY"></system-label></button>
            </div>
         </footer>
     </div>

@@ -8,8 +8,8 @@
                         <div class="slds-page-header__name-title">
                             <h1>
                                 <span>{{language.getModuleName('Emails')}}</span>
-                                <span *ngIf="isArchived" class="slds-page-header__title slds-truncate slds-text-heading--small">{{language.getLabel('LBL_ARCHIVED')}}</span>
-                                <span *ngIf="!isArchived" class="slds-page-header__title slds-truncate slds-text-heading--small">{{language.getLabel('LBL_NOT_ARCHIVED')}}</span>
+                                <span *ngIf="isArchived" class="slds-page-header__title slds-truncate slds-text-heading--small"><system-label label="LBL_ARCHIVED"></system-label></span>
+                                <span *ngIf="!isArchived" class="slds-page-header__title slds-truncate slds-text-heading--small"><system-label label="LBL_NOT_ARCHIVED"></system-label></span>
                             </h1>
                         </div>
                     </div>
@@ -21,7 +21,7 @@
                 <div class="slds-page-header__control">
                     <ul class="slds-button-group-list">
                         <li>
-                            <button class="slds-button slds-button_neutral" [disabled]="!canArchive" (click)="archive()">{{language.getLabel('LBL_ARCHIVE')}}</button>
+                            <button class="slds-button slds-button_neutral" [disabled]="!canArchive" (click)="archive()"><system-label label="LBL_ARCHIVE"></system-label></button>
                         </li>
                     </ul>
                 </div>

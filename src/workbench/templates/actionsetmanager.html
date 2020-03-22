@@ -39,10 +39,10 @@
             <button *ngIf="!checkForChanges" [disabled]="!allowBarButtons" type="button" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="addActionset()"><system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon></button>
 
             <button *ngIf="checkForChanges && currentActionSet.id != ''" [disabled]="!view.isEditMode()" type="button" class="slds-button slds-button--brand" (click)="saveChanges()">
-                {{language.getLabel('LBL_SAVE')}}
+                <system-label label="LBL_SAVE"></system-label>
             </button>
             <button *ngIf="checkForChanges && currentActionSet.id != ''" [disabled]="!view.isEditMode()" type="button" class="slds-button slds-button--brand" (click)="deleteChanges()">
-                {{language.getLabel('LBL_CANCEL')}}
+                <system-label label="LBL_CANCEL"></system-label>
             </button>
         </div>
     </div>

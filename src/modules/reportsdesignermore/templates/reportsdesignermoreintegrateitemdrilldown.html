@@ -1,7 +1,7 @@
 <div class="slds-grid slds-grid--vertical" tobottomnoscroll>
     <div class="slds-border--bottom slds-p-around--x-small">
     <button (click)="addDrilldown()" class="slds-button slds-button_neutral slds-m-right--small slds-p-horizontal--x-small slds-text-title--caps" style="height: 100%; line-height: 22px">
-        {{language.getLabel('LBL_ADD_DRILLDOWN')}}
+        <system-label label="LBL_ADD_DRILLDOWN"></system-label>
     </button>
     </div>
     <div class="slds-grow slds-scrollable--y">
@@ -10,17 +10,17 @@
             <tr class="slds-text-title--caps slds-theme--shade">
                 <th scope="col">
                     <div class="slds-truncate" [title]="language.getLabel('LBL_NAME')">
-                        {{language.getLabel('LBL_NAME')}}
+                        <system-label label="LBL_NAME"></system-label>
                     </div>
                 </th>
                 <th scope="col">
                     <div class="slds-truncate" [title]="language.getLabel('LBL_DISPLAY_NAME')">
-                        {{language.getLabel('LBL_DISPLAY_NAME')}}
+                        <system-label label="LBL_DISPLAY_NAME"></system-label>
                     </div>
                 </th>
                 <th scope="col" style="padding-left: 5px">
                     <div class="slds-truncate" [title]="language.getLabel('LBL_LINK_TYPE')">
-                        {{language.getLabel('LBL_LINK_TYPE')}}
+                        <system-label label="LBL_LINK_TYPE"></system-label>
                     </div>
                 </th>
                 <th scope="col" class="slds-cell-shrink"></th>
@@ -47,8 +47,8 @@
                                 <div class="slds-form-element__control">
                                     <div class="slds-select_container">
                                         <select class="slds-select" [(ngModel)]="drilldown.linktype">
-                                            <option value="LINK">{{language.getLabel('LBL_LINK')}}</option>
-                                            <option value="POPUP">{{language.getLabel('LBL_POPUP')}}</option>
+                                            <option value="LINK"><system-label label="LBL_LINK"></system-label></option>
+                                            <option value="POPUP"><system-label label="LBL_POPUP"></system-label></option>
                                         </select>
                                     </div>
                                 </div>
@@ -72,17 +72,17 @@
                                     <tr class="slds-text-title--caps">
                                         <th scope="col">
                                             <div class="slds-truncate" [title]="language.getLabel('LBL_WHERE_FIELD')">
-                                                {{language.getLabel('LBL_WHERE_FIELD')}}
+                                                <system-label label="LBL_WHERE_FIELD"></system-label>
                                             </div>
                                         </th>
                                         <th scope="col">
                                             <div class="slds-truncate" [title]="language.getLabel('LBL_OPERATOR')">
-                                                {{language.getLabel('LBL_OPERATOR')}}
+                                                <system-label label="LBL_OPERATOR"></system-label>
                                             </div>
                                         </th>
                                         <th scope="col" style="padding-left: 5px">
                                             <div class="slds-truncate" [title]="language.getLabel('LBL_FIELD')">
-                                                {{language.getLabel('LBL_FIELD')}}
+                                                <system-label label="LBL_FIELD"></system-label>
                                             </div>
                                         </th>
                                     </tr>
@@ -99,15 +99,15 @@
                                                 <div class="slds-form-element__control">
                                                     <div class="slds-select_container">
                                                         <select class="slds-select" [(ngModel)]="mappingDataItem.operator">
-                                                            <option value="equals">{{language.getLabel('LBL_EQUALS')}}</option>
-                                                            <option value="notequal">{{language.getLabel('LBL_OP_NOTEQUAL')}}</option>
-                                                            <option value="starts">{{language.getLabel('LBL_STARTS')}}</option>
-                                                            <option value="greaterequal">{{language.getLabel('LBL_OP_GREATEREQUAL')}}</option>
-                                                            <option value="greater">{{language.getLabel('LBL_OP_GREATER')}}</option>
-                                                            <option value="lessequal">{{language.getLabel('LBL_OP_LESSEQUAL')}}</option>
-                                                            <option value="less">{{language.getLabel('LBL_OP_LESS')}}</option>
-                                                            <option value="reference">{{language.getLabel('LBL_REFERENCE')}}</option>
-                                                            <option value="ignore">{{language.getLabel('LBL_OP_IGNORE')}}</option>
+                                                            <option value="equals"><system-label label="LBL_EQUALS"></system-label></option>
+                                                            <option value="notequal"><system-label label="LBL_OP_NOTEQUAL"></system-label></option>
+                                                            <option value="starts"><system-label label="LBL_STARTS"></system-label></option>
+                                                            <option value="greaterequal"><system-label label="LBL_OP_GREATEREQUAL"></system-label></option>
+                                                            <option value="greater"><system-label label="LBL_OP_GREATER"></system-label></option>
+                                                            <option value="lessequal"><system-label label="LBL_OP_LESSEQUAL"></system-label></option>
+                                                            <option value="less"><system-label label="LBL_OP_LESS"></system-label></option>
+                                                            <option value="reference"><system-label label="LBL_REFERENCE"></system-label></option>
+                                                            <option value="ignore"><system-label label="LBL_OP_IGNORE"></system-label></option>
                                                         </select>
                                                     </div>
                                                 </div>

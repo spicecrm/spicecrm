@@ -14,7 +14,7 @@
         </div>
         <div class="slds-p-right--small slds-col_bump-left">
             <button class="slds-button slds-button--neutral" title="add item" [disabled]="!canAdd" (click)="addConversion()">
-                {{language.getLabel('LBL_ADD')}} {{language.getModuleName('UOMConversions', true)}}
+                <system-label label="LBL_ADD"></system-label> {{language.getModuleName('UOMConversions', true)}}
             </button>
         </div>
     </div>
@@ -23,22 +23,22 @@
         <tr class="slds-text-title_caps">
             <th scope="col">
                 <div class="slds-truncate">
-                    {{language.getLabel('LBL_QUANTITY')}}
+                    <system-label label="LBL_QUANTITY"></system-label>
                 </div>
             </th>
             <th scope="col">
                 <div class="slds-truncate">
-                    {{language.getLabel('LBL_UNIT_OF_MEASURE')}}
+                    <system-label label="LBL_UNIT_OF_MEASURE"></system-label>
                 </div>
             </th>
             <th scope="col">
                 <div class="slds-truncate">
-                    {{language.getLabel('LBL_CONVERSION_FACTOR')}}
+                    <system-label label="LBL_CONVERSION_FACTOR"></system-label>
                 </div>
             </th>
             <th scope="col">
                 <div class="slds-truncate">
-                    {{language.getLabel('LBL_REFERENCE_UNIT_OF_MEASURE')}}
+                    <system-label label="LBL_REFERENCE_UNIT_OF_MEASURE"></system-label>
                 </div>
             </th>
             <th class="slds-cell-shrink"></th>
@@ -100,10 +100,10 @@
         </tbody>
     </table>
     <div *ngIf="baseUom && uomConversions?.length == 0" class="slds-align--absolute-center slds-p-around_medium">
-        {{ language.getLabel('MSG_NO_RECORDS_FOUND') }}
+        <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
     </div>
     <div *ngIf="!baseUom" class="slds-align--absolute-center slds-p-around_medium">
-        {{ language.getLabel('MSG_SELECT_UOM') }}
+        <system-label label="MSG_SELECT_UOM"></system-label>
     </div>
 </system-section>
 

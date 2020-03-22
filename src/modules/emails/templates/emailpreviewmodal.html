@@ -1,10 +1,10 @@
 <system-modal size="large">
-    <system-modal-header (close)="closeModal()">{{language.getLabel('LBL_EMAIL')}} <span *ngIf="!isLoading" class="slds-truncate">"{{model.data.name}}"</span></system-modal-header>
+    <system-modal-header (close)="closeModal()"><system-label label="LBL_EMAIL"></system-label> <span *ngIf="!isLoading" class="slds-truncate">"{{model.data.name}}"</span></system-modal-header>
     <system-modal-content margin="none">
         <div *ngIf="isLoading" style="height: 50vh;" class="slds-align--absolute-center">
             <div class="slds-grid_vertical">
                 <system-spinner></system-spinner>
-                <div class="slds-p-around--small">... {{language.getLabel('LBL_LOADING')}} ...</div>
+                <div class="slds-p-around--small">... <system-label label="LBL_LOADING"></system-label> ...</div>
             </div>
         </div>
         <object-record-fieldset *ngIf="!isLoading" [fieldset]="fieldset" direction="vertical"></object-record-fieldset>

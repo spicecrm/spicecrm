@@ -3,11 +3,11 @@
         {{language.getLabel(wherecondition.name)}}
     </div>
     <div class="slds-form-element slds-p-vertical--xx-small">
-        <!--label class="slds-form-element__label">{{language.getLabel('LBL_OPERATOR', 'KReports')}}</label-->
+        <!--label class="slds-form-element__label"><system-label label="LBL_OPERATOR', 'KReports"></system-label></label-->
         <div class="slds-form-element__control">
             <div class="slds-select_container">
                 <select class="slds-select" [(ngModel)]="wherecondition.operator" (change)="changeOperator()">
-                    <option value="ignore">{{language.getLabel('LBL_OP_IGNORE', 'KReports')}}</option>
+                    <option value="ignore"><system-label label="LBL_OP_IGNORE', 'KReports"></system-label></option>
                     <option *ngFor="let operator of getOperators()" [value]="operator.value">{{operator.display}}</option>
                 </select>
             </div>

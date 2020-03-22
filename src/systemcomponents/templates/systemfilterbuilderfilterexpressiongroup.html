@@ -2,24 +2,24 @@
     <fieldset>
         <div class="slds-grid slds-gutters_direct-xx-small slds-grid--vertical-align-end slds-size--1-of-1">
             <div class="slds-form-element slds-col slds-grow-none">
-                <label class="slds-form-element__label">{{language.getLabel('LBL_GROUP_OPERATOR')}}</label>
+                <label class="slds-form-element__label"><system-label label="LBL_GROUP_OPERATOR"></system-label></label>
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="filtergroup.logicaloperator">
-                            <option value="and">{{language.getLabel('LBL_AND')}}</option>
-                            <option value="or">{{language.getLabel('LBL_OR')}}</option>
+                            <option value="and"><system-label label="LBL_AND"></system-label></option>
+                            <option value="or"><system-label label="LBL_OR"></system-label></option>
                         </select>
                     </div>
                 </div>
             </div>
             <div class="slds-form-element slds-col slds-grow-none">
-                <label class="slds-form-element__label">{{language.getLabel('LBL_GROUP_SCOPE')}}</label>
+                <label class="slds-form-element__label"><system-label label="LBL_GROUP_SCOPE"></system-label></label>
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="filtergroup.groupscope">
-                            <option value="all">{{language.getLabel('LBL_ALL')}}</option>
-                            <option value="own">{{language.getLabel('LBL_OWN')}}</option>
-                            <option value="creator">{{language.getLabel('LBL_CREATOR')}}</option>
+                            <option value="all"><system-label label="LBL_ALL"></system-label></option>
+                            <option value="own"><system-label label="LBL_OWN"></system-label></option>
+                            <option value="creator"><system-label label="LBL_CREATOR"></system-label></option>
                         </select>
                     </div>
                 </div>
@@ -42,11 +42,11 @@
         <div class="slds-expression__buttons">
             <button class="slds-button slds-button_neutral" (click)="addExpression()">
                 <system-button-icon icon="add"></system-button-icon>
-                {{language.getLabel('LBL_ADD_CONDITION')}}
+                <system-label label="LBL_ADD_CONDITION"></system-label>
             </button>
             <button class="slds-button slds-button_neutral" (click)="addGroup()">
                 <system-button-icon icon="add"></system-button-icon>
-                {{language.getLabel('LBL_ADD_GROUP')}}
+                <system-label label="LBL_ADD_GROUP"></system-label>
             </button>
         </div>
     </fieldset>

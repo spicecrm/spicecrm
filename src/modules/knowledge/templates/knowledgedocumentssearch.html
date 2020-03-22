@@ -12,16 +12,16 @@
     </div>
     <div class="slds-p-vertical--none slds-scrollable--y spicecrm-scrollbar-thin" [ngStyle]="resultsMenuStyle">
         <div *ngIf="searchTerm != ''" class="slds-theme--shade slds-p-vertical--xx-small slds-p-horizontal--small slds-text-body--small slds-border--bottom">
-            {{resultsList.length}} {{language.getLabel('MSG_DOCUMENTS_FOUND')}}
+            {{resultsList.length}} <system-label label="MSG_DOCUMENTS_FOUND"></system-label>
         </div>
         <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--fixed-layout">
             <thead>
             <tr class="slds-line-height_reset">
                 <th class="slds-text-title_caps" scope="col">
-                    <div class="slds-truncate" title="Account Name">{{ language.getLabel('LBL_NAME') }}</div>
+                    <div class="slds-truncate" title="Account Name"><system-label label="LBL_NAME"></system-label></div>
                 </th>
                 <th class="slds-text-title_caps" scope="col">
-                    <div class="slds-truncate" title="Account Name">{{ language.getLabel('LBL_STATUS') }}</div>
+                    <div class="slds-truncate" title="Account Name"><system-label label="LBL_STATUS"></system-label></div>
                 </th>
             </tr>
             </thead>

@@ -18,7 +18,7 @@
                 <system-utility-icon icon="filterList" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
                 <input class="slds-input" type="text" [(ngModel)]="objectFilter"/>
             </div>
-            <button [disabled]="!view.isEditMode()" class="slds-button slds-button_neutral" (click)="addObjRepo()">{{language.getLabel('LBL_ADD')}}</button>
+            <button [disabled]="!view.isEditMode()" class="slds-button slds-button_neutral" (click)="addObjRepo()"><system-label label="LBL_ADD"></system-label></button>
         </div>
         <ul tobottom class="slds-has-dividers_around-space">
             <li class="slds-item" *ngFor="let objrepoItem of objrepoList|objectrepositorymanagerfilter:objectFilter" (click)="clickObjRepo(objrepoItem)" [ngClass]="{'slds-theme--shade': checkCurrentObjRepo(objrepoItem.id)}">
@@ -122,7 +122,7 @@
         </div>
         <div class="slds-text-align--right slds-p-vertical--x-small">
             <button [disabled]="!view.isEditMode()" type="button" class="slds-button slds-button--brand" (click)="saveChanges()">
-                {{language.getLabel('LBL_SAVE')}}
+                <system-label label="LBL_SAVE"></system-label>
             </button>
         </div>
         <!--<workbench-component-config *ngIf="selectedComponent.id" [component]="selectedComponent"></workbench-component-config>-->
