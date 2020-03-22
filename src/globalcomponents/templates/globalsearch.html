@@ -1,10 +1,10 @@
 <div class="slds-grid">
     <div tobottom class="slds-show--large slds-size--1-of-5 slds-grid slds-grid--vertical slds-navigation-list--vertical slds-navigation-list--vertical-inverse">
-        <h2 class="slds-text-title--caps slds-p-around--medium">{{language.getLabel('LBL_SEARCHRESULTS')}}</h2>
+        <h2 class="slds-text-title--caps slds-p-around--medium"><system-label label="LBL_SEARCHRESULTS"></system-label></h2>
         <ul>
             <li [ngClass]="getScopeClass('*')">
                 <a href="javascript:void(0);" class="slds-navigation-list--vertical__action slds-text-link--reset"
-                   (click)="setSearchScope('*')">{{language.getLabel('LBL_TOPRESULTS')}}</a>
+                   (click)="setSearchScope('*')"><system-label label="LBL_TOPRESULTS"></system-label></a>
             </li>
             <li *ngFor="let module of fts.searchModules" [ngClass]="getScopeClass(module)">
                 <a href="javascript:void(0);" class="slds-navigation-list--vertical__action slds-text-link--reset"
@@ -39,7 +39,7 @@
             </table>
             <global-search-module class="slds-m-bottom--medium" *ngFor="let result of fts.moduleSearchresults" [module]="result.module" (scope)="setSearchScope($event)"></global-search-module>
             <div *ngIf="!fts.runningmodulesearch && totalcount == 0" class="slds-align--absolute-center slds-height_full">
-                <system-illustration-no-records>{{language.getLabel('MSG_NO_RECORDS_FOUND')}}</system-illustration-no-records>
+                <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
             </div>
         </div>
         <div *ngIf="searchScope != '*'">

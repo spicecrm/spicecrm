@@ -5,7 +5,7 @@
         </li>
         <li #moretab class="slds-tabs_scoped__item slds-tabs_scoped__overflow-button slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open': moreOpen, 'slds-active': moreactive}" (click)="toggleOpen()" role="presentation">
             <a class="slds-tabs--scoped__link" href="javascript:void(0);" role="tab">
-                {{language.getLabel('LBL_MORE')}}<system-utility-icon class="slds-p-horizontal--xx-small" icon="down" size="x-small"></system-utility-icon>
+                <system-label label="LBL_MORE"></system-label><system-utility-icon class="slds-p-horizontal--xx-small" icon="down" size="x-small"></system-utility-icon>
             </a>
             <div class="slds-dropdown slds-dropdown_right">
                 <ul class="slds-dropdown__list slds-dropdown_length-with-icon-10" role="menu">

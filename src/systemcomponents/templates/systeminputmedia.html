@@ -42,7 +42,7 @@
             </li>
         </ul>
         <div *ngIf="allowResizing" class="slds-grid slds-grid--vertical-align-center slds-col--bump-left">
-            <system-checkbox [(ngModel)]="doResizeByUser" [disabled]="!canResize">{{language.getLabel('LBL_DOWNSIZE_TO_MAX')}}</system-checkbox>
+            <system-checkbox [(ngModel)]="doResizeByUser" [disabled]="!canResize"><system-label label="LBL_DOWNSIZE_TO_MAX"></system-label></system-checkbox>
             <system-input-number onlyField="true" [(ngModel)]="maxWidthInput" precision="0" min="1" placeholder="{{language.getLabel('LBL_WIDTH')}} " [disabled]="!doResizeByUser || !canResize" size="5" (change)="maxWidthChanged()"></system-input-number>
             <div class="slds-p-left--xxx-small">px</div>
             <div class="slds-p-horizontal--x-small">x</div>
@@ -56,9 +56,9 @@
             <ng-template #uploadbutton>
                 <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
                     <div class="slds-grid slds-grid--vertical-align-center">
-                        <button class="slds-button slds-button--neutral" (click)="triggerFileSelectionDialog()">{{language.getLabel('LBL_SELECT_FILE')}}</button>
+                        <button class="slds-button slds-button--neutral" (click)="triggerFileSelectionDialog()"><system-label label="LBL_SELECT_FILE"></system-label></button>
                         <input #fileselector style="display:none" type="file" accept="image/*" (change)="fileSelectionChange()"/>
-                        <div class="slds-p-horizontal--x-small">{{language.getLabel('LBL_OR_PASTE_IMAGE_OR_DROP_FILE_HERE')}}</div>
+                        <div class="slds-p-horizontal--x-small"><system-label label="LBL_OR_PASTE_IMAGE_OR_DROP_FILE_HERE"></system-label></div>
                     </div>
                 </div>
             </ng-template>

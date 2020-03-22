@@ -3,10 +3,10 @@
         <header class="slds-modal__header slds-theme--shade">
             <button class="slds-button slds-button_icon slds-modal__close slds-button--icon-inverse" (click)="close()">
                 <system-button-icon [icon]="'close'" [size]="'large'"></system-button-icon>
-                <span class="slds-assistive-text">{{language.getLabel('LBL_CLOSE')}}</span>
+                <span class="slds-assistive-text"><system-label label="LBL_CLOSE"></system-label></span>
             </button>
             <div class="slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
-                <h2 class="slds-text-heading--medium slds-show--medium">{{language.getLabel('LBL_APP_LAUNCHER')}}</h2>
+                <h2 class="slds-text-heading--medium slds-show--medium"><system-label label="LBL_APP_LAUNCHER"></system-label></h2>
                 <div class="slds-app-launcher__header-search">
                     <div class="slds-form-element">
                         <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">

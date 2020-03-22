@@ -1,17 +1,17 @@
 <div class="slds-grid slds-grid--vertical-align-center slds-p-around--x-small">
-    <label for="searchField" class="slds-item_label">{{language.getLabel('LBL_SEARCH')}}</label>
+    <label for="searchField" class="slds-item_label"><system-label label="LBL_SEARCH"></system-label></label>
     <div class="slds-col slds-form-element slds-m-left--x-small">
         <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
             <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--right"></system-utility-icon>
             <input id="searchField" type="text" class="slds-input" placeholder="search by" [(ngModel)]="searchTerm">
         </div>
     </div>
-    <label for="languageFilter" class="slds-item_label slds-m-left--small slds-m-right--xx-small">{{language.getLabel('LBL_FILTER')}}</label>
+    <label for="languageFilter" class="slds-item_label slds-m-left--small slds-m-right--xx-small"><system-label label="LBL_FILTER"></system-label></label>
     <div class="slds-form-element slds-m-right--small">
         <div class="slds-form-element__control">
             <div class="slds-select_container">
                 <select id="languageFilter" class="slds-select" [(ngModel)]="languageFilter" [disabled]="sysLanguages?.length == 0">
-                    <option value="all">{{language.getLabel('LBL_ALL')}}</option>
+                    <option value="all"><system-label label="LBL_ALL"></system-label></option>
                     <option *ngFor="let sysLanguage of sysLanguages; trackBy: trackByFn" [value]="sysLanguage.language">
                         {{language.getLabel(sysLanguage?.text)}}
                     </option>
@@ -30,5 +30,5 @@
     </div>
 </div>
 <div *ngIf="!relatedModels.isloading && relatedModels.items?.length == 0" class="slds-align--absolute-center slds-m-top--large">
-    {{language.getLabel('MSG_NO_RECORDS_FOUND')}}
+    <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
 </div>

@@ -2,7 +2,7 @@
     <div class="slds-border--bottom slds-p-around--x-small slds-page-header slds-grid" style="border-radius: 0">
         <div class="slds-form-element slds-grid slds-grid--vertical-align-center">
             <label class="slds-form-element__label slds-text-heading--label">
-                {{language.getLabel('LBL_LAYOUT')}}
+                <system-label label="LBL_LAYOUT"></system-label>
             </label>
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
@@ -16,7 +16,7 @@
         </div>
         <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-m-left--x-small">
             <label class="slds-form-element__label slds-text-heading--label">
-                {{language.getLabel('LBL_HEIGHT')}}
+                <system-label label="LBL_HEIGHT"></system-label>
             </label>
             <div class="slds-form-element__control">
                 <input type="text" size="5" [(ngModel)]="chartHeight" class="slds-input">
@@ -24,7 +24,7 @@
         </div>
         <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-m-left--x-small">
             <label class="slds-form-element__label slds-text-heading--label">
-                {{language.getLabel('LBL_ITEMS')}}
+                <system-label label="LBL_ITEMS"></system-label>
             </label>
             <div class="slds-form-element__control">
                 <div class="slds-radio_button-group">
@@ -41,7 +41,7 @@
         </div>
         <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-m-left--x-small">
             <label class="slds-form-element__label slds-text-heading--label">
-                {{language.getLabel('LBL_PLUGIN')}} ({{activeLayoutItem}})
+                <system-label label="LBL_PLUGIN"></system-label> ({{activeLayoutItem}})
             </label>
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
@@ -57,7 +57,7 @@
             <reports-designer-visualize-item *ngIf="selectedLayout.itemsCount > 0 && selectedPluginId == item.id && !!item.component" [component]="item.component"></reports-designer-visualize-item>
         </div>
         <div *ngIf="selectedLayout.itemsCount == 0 || !selectedPluginId" class="slds-align--absolute-center" style="height: 100%">
-            {{language.getLabel('LBL_MAKE_SELECTION')}}
+            <system-label label="LBL_MAKE_SELECTION"></system-label>
         </div>
     </div>
 </div>

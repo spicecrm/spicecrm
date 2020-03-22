@@ -20,6 +20,6 @@
     </div>
     <system-spinner *ngIf="isLoading"></system-spinner>
     <div *ngIf="!isLoading && companyCodes.length == 0" class="slds-align_absolute-center slds-p-around--small">
-        {{language.getLabel('LBL_NO_ENTRIES')}}
+        <system-label label="LBL_NO_ENTRIES"></system-label>
     </div>
 </div>

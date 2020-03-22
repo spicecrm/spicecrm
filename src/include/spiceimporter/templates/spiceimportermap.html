@@ -5,7 +5,7 @@
         </div>
         <div *ngIf="modelFields && this.spiceImport.importAction == 'new'">
             <legend class="slds-form-element__legend slds-form-element__label">
-                {{language.getLabel('MSG_REQUIRED_MAPPED_FIXED')}}
+                <system-label label="MSG_REQUIRED_MAPPED_FIXED"></system-label>
             </legend>
             <div class="slds-tile__detail slds-text-body--small slds-p-horizontal--small">
                 <div class="slds-grid" *ngFor="let field of this.requiredModelFields; trackBy: trackByFn">
@@ -22,14 +22,14 @@
         </div>
         <div class="slds-m-vertical--x-small">
             <fieldset class="slds-form-element slds-m-top--small">
-                <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_UNIQUE_FIELD')}}</legend>
+                <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_UNIQUE_FIELD"></system-label></legend>
                 <div class="slds-form-element__control">
                         <span class="slds-radio">
                           <input type="radio" id="idFieldAuto" name="idFieldOptions" value="auto"
                                  [(ngModel)]="idFieldAction"/>
                           <label class="slds-radio__label" for="idFieldAuto">
                             <span class="slds-radio_faux"></span>
-                            <span class="slds-form-element__label">{{language.getLabel('LBL_HAVE_NO_ID')}}</span>
+                            <span class="slds-form-element__label"><system-label label="LBL_HAVE_NO_ID"></system-label></span>
                           </label>
                         </span>
                     <span class="slds-radio">
@@ -37,14 +37,14 @@
                                  [(ngModel)]="idFieldAction"/>
                           <label class="slds-radio__label" for="idFieldHave">
                             <span class="slds-radio_faux"></span>
-                            <span class="slds-form-element__label">{{language.getLabel('LBL_ALREAD_HAVE_ID')}}</span>
+                            <span class="slds-form-element__label"><system-label label="LBL_ALREAD_HAVE_ID"></system-label></span>
                           </label>
                         </span>
                 </div>
             </fieldset>
 
             <div *ngIf="idFieldAction == 'have' " class="slds-form-element  slds-m-vertical--small">
-                <label class="slds-form-element__label" for="idFieldSelect">{{language.getLabel('LBL_SELECT_ID_FIELD')}}</label>
+                <label class="slds-form-element__label" for="idFieldSelect"><system-label label="LBL_SELECT_ID_FIELD"></system-label></label>
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
                         <select class="slds-select" id="idFieldSelect" [(ngModel)]="spiceImport.idField">
@@ -62,13 +62,13 @@
             <thead>
             <tr class="slds-text-title--caps">
                 <th scope="col" colspan="2">
-                    <div style="font-weight: 600" class="slds-truncate slds-p-vertical--xx-small">{{language.getLabel('LBL_HEADER')}}</div>
+                    <div style="font-weight: 600" class="slds-truncate slds-p-vertical--xx-small"><system-label label="LBL_HEADER"></system-label></div>
                 </th>
                 <th scope="col">
-                    <div style="font-weight: 600" class="slds-truncate  slds-p-vertical--xx-small">{{ model.module }} {{language.getLabel('LBL_FIELDS')}}</div>
+                    <div style="font-weight: 600" class="slds-truncate  slds-p-vertical--xx-small">{{ model.module }} <system-label label="LBL_FIELDS"></system-label></div>
                 </th>
                 <th colspan="2" scope="col">
-                    <div style="font-weight: 600" class="slds-truncate  slds-p-vertical--xx-small">{{language.getLabel('LBL_RECORDS')}}
+                    <div style="font-weight: 600" class="slds-truncate  slds-p-vertical--xx-small"><system-label label="LBL_RECORDS"></system-label>
                         ({{spiceImport.fileRows}})
                     </div>
                 </th>

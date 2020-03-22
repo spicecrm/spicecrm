@@ -4,8 +4,8 @@
         <thead class="slds-table--bordered slds-text-align_center">
             <tr class="slds-text-title--caps">
                 <th></th>
-                <th style="padding: .75rem 1rem">{{ language.getLabel('LBL_NAME') }}</th>
-                <th colspan="2">{{ language.getLabel('LBL_DEFAULT') }}</th>
+                <th style="padding: .75rem 1rem"><system-label label="LBL_NAME"></system-label></th>
+                <th colspan="2"><system-label label="LBL_DEFAULT"></system-label></th>
             </tr>
         </thead>
         <tbody>
@@ -38,7 +38,7 @@
     </table>
     <div *ngIf="noneUserRoles.length > 0 && session.authData.admin" class="slds-p-around--small slds-align--absolute-center">
         <button class="slds-button slds-button--brand slds-button-space-left" (click)="addRole($event)">
-            {{language.getLabel('LBL_ASSIGN_ROLE')}} &hellip;
+            <system-label label="LBL_ASSIGN_ROLE"></system-label> &hellip;
         </button>
     </div>
 </div>

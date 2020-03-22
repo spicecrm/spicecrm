@@ -5,7 +5,7 @@
     <div *ngIf="hasAddItems" class="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last" dropdowntrigger>
         <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-haspopup="true" [disabled]="opendisabled" [title]="language.getLabel('LBL_MORE')" >
             <system-button-icon icon="down"></system-button-icon>
-            <span class="slds-assistive-text">{{language.getLabel('LBL_MORE')}}</span>
+            <span class="slds-assistive-text"><system-label label="LBL_MORE"></system-label></span>
         </button>
         <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions">
             <ul class="slds-dropdown__list" role="menu">

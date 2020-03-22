@@ -1,11 +1,11 @@
 <div class="slds-border--right">
     <div class="slds-p-around--x-small slds-border--bottom">
         <div class="slds-form-element slds-grid slds-grid--vertical-align-center">
-            <label for="moduleselect" class="slds-form-element__label">{{language.getLabel('LBL_MODULE')}}</label>
+            <label for="moduleselect" class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
             <div class="slds-form-element__control slds-col">
                 <div class="slds-select_container">
                     <select id="moduleselect" class="slds-select" [(ngModel)]="module">
-                        <option value="">{{language.getLabel('LBL_SELECT')}}</option>
+                        <option value=""><system-label label="LBL_SELECT"></system-label></option>
                         <option *ngFor="let thismodule of modules" [value]="thismodule">{{thismodule}}</option>
                     </select>
                 </div>
@@ -17,18 +17,18 @@
             <system-spinner></system-spinner>
         </div>
         <div *ngIf="!module && !loading" class="slds-align--absolute-center slds-height_full">
-            {{language.getLabel('LBL_MAKE_SELECTION')}}
+            <system-label label="LBL_MAKE_SELECTION"></system-label>
         </div>
         <div *ngIf="module && !loading" class="slds-tabs_default" style="background-color: transparent">
             <ul class="slds-tabs_default__nav" role="tablist">
                 <li class="slds-tabs_default__item slds-text-title--caps" [class.slds-is-active]="activeTab == 'custom'" [title]="language.getLabel('LBL_CUSTOM')" role="presentation">
                     <a class="slds-tabs_default__link" href="javascript:void(0);" (click)="activeTab = 'custom'" role="tab" tabindex="0" aria-selected="true" aria-controls="tab-custom" id="tab-custom-item">
-                        {{language.getLabel('LBL_CUSTOM')}}
+                        <system-label label="LBL_CUSTOM"></system-label>
                     </a>
                 </li>
                 <li class="slds-tabs_default__item slds-text-title--caps" [class.slds-is-active]="activeTab == 'global'" [title]="language.getLabel('LBL_GLOBAL')" role="presentation">
                     <a class="slds-tabs_default__link" href="javascript:void(0);" (click)="activeTab = 'global'" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-global" id="tab-global-item">
-                        {{language.getLabel('LBL_GLOBAL')}}
+                        <system-label label="LBL_GLOBAL"></system-label>
                     </a>
                 </li>
             </ul>

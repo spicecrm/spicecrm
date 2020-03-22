@@ -1,6 +1,6 @@
 <system-modal size="large">
     <system-modal-header (close)="hideAuditLog()">
-        {{language.getLabel('LBL_LOGGED_CHANGES')}}
+        <system-label label="LBL_LOGGED_CHANGES"></system-label>
     </system-modal-header>
     <system-modal-content margin="none">
         <system-spinner *ngIf="loading" class="slds-p-around--medium"></system-spinner>
@@ -8,22 +8,22 @@
             <thead>
                 <tr class="slds-text-title--caps">
                     <th scope="col">
-                        <div class="slds-truncate">{{language.getLabel('LBL_DATE')}}</div>
+                        <div class="slds-truncate"><system-label label="LBL_DATE"></system-label></div>
                     </th>
                     <!--th scope="col">
-                        <div class="slds-truncate">{{language.getLabel('LBL_TRANSACTION')}}</div>
+                        <div class="slds-truncate"><system-label label="LBL_TRANSACTION"></system-label></div>
                     </th-->
                     <th scope="col">
-                        <div class="slds-truncate">{{language.getLabel('LBL_USER')}}</div>
+                        <div class="slds-truncate"><system-label label="LBL_USER"></system-label></div>
                     </th>
                     <th scope="col">
-                        <div class="slds-truncate">{{language.getLabel('LBL_FIELD')}}</div>
+                        <div class="slds-truncate"><system-label label="LBL_FIELD"></system-label></div>
                     </th>
                     <th scope="col">
-                        <div class="slds-truncate">{{language.getLabel('LBL_BEFOREVALUE')}}</div>
+                        <div class="slds-truncate"><system-label label="LBL_BEFOREVALUE"></system-label></div>
                     </th>
                     <th scope="col">
-                        <div class="slds-truncate">{{language.getLabel('LBL_AFTERVALUE')}}</div>
+                        <div class="slds-truncate"><system-label label="LBL_AFTERVALUE"></system-label></div>
                     </th>
                 </tr>
             </thead>
@@ -53,11 +53,11 @@
             </tbody>
         </table>
         <div *ngIf="!loading && auditLog.length === 0" class="slds-text-heading--small slds-p-around--medium">
-            {{language.getLabel('MSG_NOAUDITRECORDS_FOUND')}}.
+            <system-label label="MSG_NOAUDITRECORDS_FOUND"></system-label>.
         </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--brand" (click)="hideAuditLog()">{{language.getLabel('LBL_CLOSE')}}
+        <button class="slds-button slds-button--brand" (click)="hideAuditLog()"><system-label label="LBL_CLOSE"></system-label>
         </button>
     </system-modal-footer>
 </system-modal>

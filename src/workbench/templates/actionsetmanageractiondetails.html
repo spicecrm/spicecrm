@@ -16,7 +16,7 @@
 </div>
 <div class="slds-grid">
     <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
-        <label class="slds-form-element__label" >{{language.getLabel('LBL_MODULE')}}</label>
+        <label class="slds-form-element__label" ><system-label label="LBL_MODULE"></system-label></label>
         <div class="slds-form-element__control">
             <div class="slds-select_container">
                 <select [disabled]="!view.isEditMode() || (action.action != '' && action.action)" class="slds-select" [(ngModel)]="systemmodule">
@@ -26,7 +26,7 @@
         </div>
     </div>
     <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
-        <label class="slds-form-element__label" >{{language.getLabel('LBL_COMPONENT')}}</label>
+        <label class="slds-form-element__label" ><system-label label="LBL_COMPONENT"></system-label></label>
         <div class="slds-form-element__control">
             <div class="slds-select_container">
                 <select [disabled]="!view.isEditMode() || (action.action != '' && action.action)" class="slds-select" (change)="setComponent()" [(ngModel)]="localcomponent">

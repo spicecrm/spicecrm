@@ -14,13 +14,13 @@
     <div *ngIf="isLoading" class="slds-align--absolute-center slds-grid slds-grid--vertical" tobottom>
         <system-spinner></system-spinner>
         <div class="slds-m-around--medium slds-text-heading--small">
-            {{language.getLabel('MSG_LOADING_DASHBOARDS')}}
+            <system-label label="MSG_LOADING_DASHBOARDS"></system-label>
         </div>
     </div>
     <div *ngIf="!isLoading && dashboardlayout.dashboardNotFound" class="slds-align--absolute-center slds-grid slds-grid--vertical" style="height: 100%">
         <system-illustration-no-access></system-illustration-no-access>
     </div>
     <div *ngIf="!isLoading && dashboardElements.length == 0 && !dashboardlayout.dashboardNotFound && !isEditMode" class="slds-align--absolute-center slds-grid slds-grid--vertical" style="height: 100%">
-        <system-illustration-no-records>{{language.getLabel('MSG_NO_RECORDS_FOUND')}}</system-illustration-no-records>
+        <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
     </div>
 </div>

@@ -8,7 +8,7 @@
     <div *ngIf="true" class="slds-form-element slds-col--bump-left">
         <div class="slds-button-group" role="group">
             <button type="button" class="slds-button slds-button--neutral" (click)="addLabel()">
-                {{language.getLabel('LBL_ADD')}}
+                <system-label label="LBL_ADD"></system-label>
             </button>
         </div>
     </div>
@@ -22,7 +22,7 @@
 <div *ngIf="labels.length > 0 && !is_searching" class="slds-grid">
     <div class="slds-size--2-of-5 slds-p-around--small">
         <div class="slds-grid slds-grid--vertical-align-center">
-            <h2 class="slds-p-vertical--small slds-text-heading--small">{{language.getLabel('LBL_LABELS')}}:</h2>
+            <h2 class="slds-p-vertical--small slds-text-heading--small"><system-label label="LBL_LABELS"></system-label>:</h2>
             <div class="slds-col--bump-left">
                 <pagination-controls [(page)]="page" [limit]="20" [total_records]="labels.length" [variation]="'short'"></pagination-controls>
             </div>
@@ -50,7 +50,7 @@
     </div>
     <div *ngIf="selected_label" class="slds-size--3-of-5 slds-p-around--small">
         <div class="slds-grid slds-grid--vertical-align-center slds-p-bottom--small">
-            <h2 class="slds-p-vertical--small slds-text-heading--small">{{language.getLabel('LBL_TRANSLATIONS')}}:</h2>
+            <h2 class="slds-p-vertical--small slds-text-heading--small"><system-label label="LBL_TRANSLATIONS"></system-label>:</h2>
             <div class="slds-grid slds-col--bump-left">
                 <span class="slds-radio">
                     <input type="radio" name="translation_scope" [(ngModel)]="translation_scope" id="translation_scope_global" value="global" [disabled]="selected_label.scope == 'custom'" />
@@ -99,10 +99,10 @@
                         </select>
                     </div>
                 </div>
-                <button class="slds-button slds-button--neutral" title="{{language.getLabel('LBL_ADD_TRANSLATION')}}..." (click)="addTranslation(translation_scope, add_translation_language.value)">{{language.getLabel('LBL_ADD')}}</button>
+                <button class="slds-button slds-button--neutral" title="{{language.getLabel('LBL_ADD_TRANSLATION')}}..." (click)="addTranslation(translation_scope, add_translation_language.value)"><system-label label="LBL_ADD"></system-label></button>
             </div>
             <div class="slds-col--bump-left">
-                <button type="button" class="slds-button slds-button--brand" [disabled]="labels.length < 1" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+                <button type="button" class="slds-button slds-button--brand" [disabled]="labels.length < 1" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
             </div>
         </div>
     </div>

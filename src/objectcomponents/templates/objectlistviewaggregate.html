@@ -8,6 +8,6 @@
         <object-listview-aggregate-item  [bucketitem]="bucketItem" [aggregate]="aggregate" class="slds-form-element__control"></object-listview-aggregate-item >
     </div>
     <div *ngIf="aggregate.sum_other_doc_count">
-        <p class="slds-text-body--small slds-text-color--weak">{{aggregate.sum_other_doc_count}} {{language.getLabel('LBL_ARE_NOT_INCLUDED')}}...</p>
+        <p class="slds-text-body--small slds-text-color--weak">{{aggregate.sum_other_doc_count}} <system-label label="LBL_ARE_NOT_INCLUDED"></system-label>...</p>
     </div>
 </div>

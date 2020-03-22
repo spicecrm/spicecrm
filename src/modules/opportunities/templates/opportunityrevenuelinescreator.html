@@ -1,5 +1,5 @@
 <system-modal>
-    <system-modal-header (close)="close()">{{language.getLabel('LBL_OPPORTUNITYREVENUELINES')}}</system-modal-header>
+    <system-modal-header (close)="close()"><system-label label="LBL_OPPORTUNITYREVENUELINES"></system-label></system-modal-header>
     <system-modal-content [grow]="true" margin="none">
         <system-collapsable-tab tabtitle="LBL_OPPORTUNITY">
             <div class="slds-p-around--small">
@@ -16,21 +16,21 @@
                                 <input type="radio" id="splittypesplit" value="split" name="splittype" [(ngModel)]="splittype"/>
                                 <label class="slds-radio__label" for="splittypesplit">
                                     <span class="slds-radio_faux"></span>
-                                    <span class="slds-form-element__label">{{language.getLabel('LBL_SPLIT')}}</span>
+                                    <span class="slds-form-element__label"><system-label label="LBL_SPLIT"></system-label></span>
                                 </label>
                             </div>
                             <div class="slds-radio">
                                 <input type="radio" id="splittyperampup" value="rampup" name="splittype"  [(ngModel)]="splittype"/>
                                 <label class="slds-radio__label" for="splittyperampup">
                                     <span class="slds-radio_faux"></span>
-                                    <span class="slds-form-element__label">{{language.getLabel('LBL_RAMPUP')}}</span>
+                                    <span class="slds-form-element__label"><system-label label="LBL_RAMPUP"></system-label></span>
                                 </label>
                             </div>
                         </div>
                     </div>
                     <div class="slds-col">
                         <div class="slds-form-element">
-                            <label class="slds-form-element__label">{{language.getLabel('LBL_OPPORTUNITYREVENUELINES')}}</label>
+                            <label class="slds-form-element__label"><system-label label="LBL_OPPORTUNITYREVENUELINES"></system-label></label>
                             <div class="slds-form-element__control">
                                 <input type="text" [placeholder]="language.getLabel('LBL_OPPORTUNITYREVENUELINES')" class="slds-input" [(ngModel)]="nooflines"/>
                             </div>
@@ -38,7 +38,7 @@
                     </div>
                     <div class="slds-col">
                         <div class="slds-form-element">
-                            <label class="slds-form-element__label">{{language.getLabel('LBL_EVERY')}}</label>
+                            <label class="slds-form-element__label"><system-label label="LBL_EVERY"></system-label></label>
                             <div class="slds-form-element__control">
                                 <input type="text" [placeholder]="language.getLabel('LBL_EVERY')" class="slds-input" [(ngModel)]="periodcount"/>
                             </div>
@@ -46,12 +46,12 @@
                     </div>
                     <div class="slds-col">
                         <div class="slds-form-element">
-                            <label class="slds-form-element__label">{{language.getLabel('LBL_PERIOD')}}</label>
+                            <label class="slds-form-element__label"><system-label label="LBL_PERIOD"></system-label></label>
                             <div class="slds-form-element__control">
                                 <div class="slds-select_container">
                                     <select class="slds-select" [(ngModel)]="periodtype">
-                                        <option value="M">{{language.getLabel('LBL_MONTH')}}</option>
-                                        <option value="y">{{language.getLabel('LBL_YEAR')}}</option>
+                                        <option value="M"><system-label label="LBL_MONTH"></system-label></option>
+                                        <option value="y"><system-label label="LBL_YEAR"></system-label></option>
                                     </select>
                                 </div>
                             </div>
@@ -59,7 +59,7 @@
                     </div>
                 </div>
                 <div class="slds-p-top--x-small slds-text-align_right">
-                    <button class="slds-button slds-button--brand" [disabled]="!canGenerate" (click)="generate()">{{language.getLabel('LBL_GENERATE')}}</button>
+                    <button class="slds-button slds-button--brand" [disabled]="!canGenerate" (click)="generate()"><system-label label="LBL_GENERATE"></system-label></button>
                 </div>
             </div>
         </system-collapsable-tab>
@@ -84,7 +84,7 @@
         </system-collapsable-tab>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CLOSE')}}</button>
-        <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_OK')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_OK"></system-label></button>
     </system-modal-footer>
 </system-modal>
