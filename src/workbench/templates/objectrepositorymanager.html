@@ -28,13 +28,13 @@
     </div>
     <div tobottom *ngIf="(currentObjRepo | json) != '{}'" class="slds-size--3-of-5 slds-p-horizontal--small">
         <div class="slds-form-element slds-m-vertical_medium">
-            <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_OBJECT')}}</label>
+            <label class="slds-form-element__label"><system-label label="LBL_OBJECT"></system-label></label>
             <div class="slds-form-element__control">
                 <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [ngModel]="currentObjRepo.object"/>
             </div>
         </div>
         <div class="slds-form-element slds-m-vertical_medium">
-            <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_COMPONENT')}}</label>
+            <label class="slds-form-element__label"><system-label label="LBL_COMPONENT"></system-label></label>
             <div class="slds-form-element__control">
                 <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [ngModel]="currentObjRepo.component"/>
             </div>
@@ -42,35 +42,35 @@
         <label class="slds-checkbox" for="deprecated">
             <input [disabled]="!view.isEditMode()" type="checkbox" id="deprecated" (change)="updateDeprecated()" [ngModel]="getDeprecatedBool(currentObjRepo.deprecated)"/>
             <span class="slds-checkbox--faux"></span>
-            <span class="slds-form-element__label"> {{language.getAppLanglabel('LBL_DEPRECATED')}}</span>
+            <span class="slds-form-element__label"> <system-label label="LBL_DEPRECATED"></system-label></span>
         </label>
         <div *ngIf="view.isEditMode()" class="slds-form-element slds-m-vertical_medium">
-            <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_DESCRIPTION')}}</label>
+            <label class="slds-form-element__label"><system-label label="LBL_DESCRIPTION"></system-label></label>
             <div class="slds-form-element__control">
                 <system-richtext-editor [(ngModel)]="currentObjRepo.description"></system-richtext-editor>
                 <!--system-html-editor id="editor-id-01" [fieldid]="'123'" [(fieldvalue)]="currentObjRepo.description" [fieldconfig]="'{}'" [useStylesheets]="" [useStylesheetSwitcher]="" [(stylesheetId)]="stylesheetId" (contentchange)="updateField($event)"></system-html-editor-->
             </div>
         </div>
         <div *ngIf="!view.isEditMode()" class="slds-form-element slds-m-vertical_medium">
-            <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_DESCRIPTION')}}</label>
+            <label class="slds-form-element__label"><system-label label="LBL_DESCRIPTION"></system-label></label>
             <div class="slds-form-element__control slds-box slds-scrollable_y" style="background-color: #ecebea; background-color: #ecebea; max-height: 300px;">
                 <!--<div *ngIf="!asiframe" class="slds-size&#45;&#45;1-of-1 html-text" [innerHTML]="currentObjRepo.description"></div>-->
                 <iframe [(srcdoc)]="currentObjRepo.description" width="100%" height="100%" frameborder="0" seamless="true" sandbox></iframe>
             </div>
         </div>
         <div class="slds-table_edit_container slds-is-relative">
-            <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_CONFIGURATION')}}</label>
+            <label class="slds-form-element__label"><system-label label="LBL_CONFIGURATION"></system-label></label>
             <table class="slds-table slds-table_bordered" role="grid" style="width: 100%;">
                 <thead>
                     <tr class="slds-line-height_reset">
                         <th scope="col">
-                                <span class="slds-truncate" title="Name">{{language.getAppLanglabel('LBL_NAME')}}</span>
+                                <span class="slds-truncate" title="Name"><system-label label="LBL_NAME"></system-label></span>
                         </th>
                         <th scope="col">
-                                <span class="slds-truncate" title="Name">{{language.getAppLanglabel('LBL_TYPE')}}</span>
+                                <span class="slds-truncate" title="Name"><system-label label="LBL_TYPE"></system-label></span>
                         </th>
                         <th scope="col">
-                            <span class="slds-truncate" title="Name">{{language.getAppLanglabel('LBL_DESCRIPTION')}}</span>
+                            <span class="slds-truncate" title="Name"><system-label label="LBL_DESCRIPTION"></system-label></span>
                         </th>
                         <th scope="col"></th>
                     </tr>
