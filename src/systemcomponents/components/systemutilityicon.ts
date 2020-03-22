@@ -1,16 +1,25 @@
 /**
  * @module SystemComponents
  */
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    Output, SimpleChanges
+} from '@angular/core';
 
 /**
  * an icon rendered from the utility sprite
  */
 @Component({
     selector: 'system-utility-icon',
-    templateUrl: './src/systemcomponents/templates/systemutilityicon.html'
+    templateUrl: './src/systemcomponents/templates/systemutilityicon.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SystemUtilityIcon {
+export class SystemUtilityIcon implements OnChanges{
     /**
      * the name of the icon to be rendered
      *
@@ -45,6 +54,19 @@ export class SystemUtilityIcon {
      * emits the click event
      */
     @Output() private click: EventEmitter<MouseEvent> = new EventEmitter<MouseEvent>();
+
+    constructor(private cdref: ChangeDetectorRef) {
+
+    }
+
+
+    /**
+     * run detect changes in teh onCHnage Lifecycle event
+     * @param changes
+     */
+    public ngOnChanges(changes: SimpleChanges): void {
+        this.cdref.detectChanges();
+    }
 
     /**
      * returns the SVG href
