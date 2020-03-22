@@ -52,11 +52,7 @@ export class SpiceGoogleMapsList implements OnInit {
     /**
      * map options will be passed to the spice google maps
      */
-    protected mapOptions: mapOptionsI = {
-        showMyLocation: true,
-        showCluster: true,
-        markerWithModelPopover: true
-    };
+    protected mapOptions: mapOptionsI = {};
     /**
      * List of records to be displayed on the map as markers
      */
@@ -68,7 +64,7 @@ export class SpiceGoogleMapsList implements OnInit {
     /**
      * component config from metadata
      */
-    public componentconfig: any = {};
+    public componentconfig: mapOptionsI;
     /**
      * differentiate the records array changes
      */
@@ -130,28 +126,37 @@ export class SpiceGoogleMapsList implements OnInit {
     }
 
     /**
-     * load the component configs from metadata
-     * set the geo fields names
+     * load the component config from metadata to save the default map options
+     * set the component config locally if it is not set from the outside
+     * define the latitude and longitude field names from the module defs
+     * copy the component configs to the map options set the geo fields names
      */
     public loadComponentConfigs() {
-        this.componentconfig = this.metadata.getComponentConfig(this.componentName, this.modelList.module);
-        if (!!this.componentconfig) {
-            if (this.componentconfig.hasOwnProperty('showMyLocation')) {
-                this.mapOptions.showMyLocation = !!this.componentconfig.showMyLocation;
-            }
-            if (this.componentconfig.hasOwnProperty('showCluster')) {
-                this.mapOptions.showCluster = !!this.componentconfig.showCluster;
-            }
-            if (this.componentconfig.hasOwnProperty('markerWithModelPopover')) {
-                this.mapOptions.markerWithModelPopover = !!this.componentconfig.markerWithModelPopover;
-            }
-            if (this.componentconfig.hasOwnProperty('directionTravelMode')) {
-                this.mapOptions.directionTravelMode = (this.componentconfig.directionTravelMode || 'DRIVING');
-            }
-            if (this.componentconfig.hasOwnProperty('defaultRadius') && !isNaN(this.componentconfig.defaultRadius)) {
-                this.mapOptions.radius = +this.componentconfig.defaultRadius;
-            }
+        // if not defined from the component set get it from module config
+        if (!this.componentconfig) {
+            this.componentconfig = this.metadata.getComponentConfig(this.componentName, this.modelList.module);
         }
+
+        if (!this.componentconfig) this.componentconfig = {};
+
+        if (!this.componentconfig.hasOwnProperty('showMyLocation')) {
+            this.componentconfig.showMyLocation = false;
+        }
+        if (!this.componentconfig.hasOwnProperty('showCluster')) {
+            this.componentconfig.showCluster = true;
+        }
+        if (!this.componentconfig.hasOwnProperty('markerWithModelPopover')) {
+            this.componentconfig.markerWithModelPopover = true;
+        }
+        if (!this.componentconfig.hasOwnProperty('defaultRadius') || isNaN(this.componentconfig.defaultRadius)) {
+            this.componentconfig.defaultRadius = 10;
+        }
+        if (!this.componentconfig.directionTravelMode || ['DRIVING','WALKING','TRANSIT','BICYCLING'].indexOf(this.componentconfig.directionTravelMode) == -1) {
+            this.componentconfig.directionTravelMode = 'DRIVING';
+        }
+
+        this.mapOptions = {...this.componentconfig};
+
         const moduleDefs = this.metadata.getModuleDefs(this.modelList.module);
         if (!!moduleDefs && !!moduleDefs.ftsgeo) {
             this.lngName = moduleDefs.ftsgeo.longitude_field;

@@ -410,7 +410,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
             zIndex: 1,
             map: this.map,
             center: this.options.center,
-            radius: (this.options.radius || 5) * 1000
+            radius: (this.options.defaultRadius || 5) * 1000
         });
 
         this.circle.addListener('radius_changed', () => {
