@@ -3,7 +3,7 @@
         <div class="slds-grid slds-p-bottom--x-small">
             <div class="slds-radio_button-group slds-m-right--x-small">
                 <span class="slds-button slds-radio_button">
-                    <input type="radio" name="useMapForOption" value="search" [(ngModel)]="useMapFor" id="spice-google-maps-record-use-map-for-search">
+                    <input type="radio" name="useMapForOption" value="search" [(ngModel)]="useMapFor" [disabled]="isLoadingDirection" id="spice-google-maps-record-use-map-for-search">
                     <label class="slds-radio_button__label slds-height_full" for="spice-google-maps-record-use-map-for-search">
                         <span class="slds-radio_faux" style="padding: 0 .5rem;">
                             <system-utility-icon icon="search" size="x-small" [colorclass]="useMapFor == 'search' ? ' ' : 'slds-icon-text-default'"></system-utility-icon>
