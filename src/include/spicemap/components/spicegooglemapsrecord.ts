@@ -112,6 +112,7 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
                 center: undefined,
                 directionTravelMode: (this.componentconfig.directionTravelMode || 'DRIVING')
             };
+            this.records = [];
         }
     }
 
