@@ -8,7 +8,7 @@
     <div @displaycoaching *ngIf="coachingVisible" class="slds-grid slds-grid--align-spread slds-gutters_direct-xx-small slds-p-top--medium slds-p-horizontal--xxx-small">
         <div class="slds-col slds-size--1-of-2">
             <ng-container *ngIf="checks.length > 0;else nochecks">
-            <h2 class="slds-text-title--caps slds-p-bottom--small">{{language.getLabel('LBL_CHECKS')}}</h2>
+            <h2 class="slds-text-title--caps slds-p-bottom--small"><system-label label="LBL_CHECKS"></system-label></h2>
             <dl class="slds-dl--horizontal">
                 <ng-container *ngFor="let check of checks">
                     <dt class="slds-coach__item slds-dl--horizontal__label">
@@ -19,11 +19,11 @@
             </dl>
             </ng-container>
             <ng-template #nochecks>
-                <div class="slds-height_full slds-align--absolute-center">{{language.getLabel('LBL_NO_CHECKS_DEFINED')}}</div>
+                <div class="slds-height_full slds-align--absolute-center"><system-label label="LBL_NO_CHECKS_DEFINED"></system-label></div>
             </ng-template>
         </div>
         <div class="slds-col slds-size--1-of-2">
-                <h2 class="slds-text-title--caps slds-p-bottom--small slds-has-divider--bottom">{{language.getLabel('LBL_DETAILS')}}</h2>
+                <h2 class="slds-text-title--caps slds-p-bottom--small slds-has-divider--bottom"><system-label label="LBL_DETAILS"></system-label></h2>
                 <div class="slds-has-divider--bottom slds-p-vertical--xx-small slds-text-align--justify" [innerHtml]="stageDescription"></div>
                 <system-componentset *ngIf="stageComponentset" [componentset]="stageComponentset"></system-componentset>
         </div>

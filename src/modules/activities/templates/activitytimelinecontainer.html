@@ -20,6 +20,6 @@
 <!-- displays if no records are found-->
 <ng-template #nocontent>
     <div class="slds-p-vertical--medium">
-        <system-illustration-no-records *ngIf="!loading">{{language.getLabel('LBL_NO_ENTRIES')}}</system-illustration-no-records>
+        <system-illustration-no-records *ngIf="!loading"><system-label label="LBL_NO_ENTRIES"></system-label></system-illustration-no-records>
     </div>
 </ng-template>

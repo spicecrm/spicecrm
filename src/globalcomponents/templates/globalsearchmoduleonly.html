@@ -11,7 +11,7 @@
         <div class="slds-grid">
             <div class="slds-col slds-align-bottom">
                 <ul class="slds-list--horizontal slds-has-dividers--left">
-                    <li class="slds-item">{{getCount().hits}} {{language.getLabel('LBL_OF')}} {{getCount().total}} {{language.getLabel('LBL_ITEMS')}}</li>
+                    <li class="slds-item">{{getCount().hits}} <system-label label="LBL_OF"></system-label> {{getCount().total}} <system-label label="LBL_ITEMS"></system-label></li>
                 </ul>
             </div>
         </div>
@@ -35,7 +35,7 @@
             <tbody system-table-stencils [columns]="listfields?.length" [select]="false" [tools]="false" [rows]="5" *ngIf="fts.runningmodulesearch"></tbody>
         </table>
         <div *ngIf="!fts.runningmodulesearch && getCount().total == 0" class="slds-align--absolute-center slds-height_full">
-            <system-illustration-no-records>{{language.getLabel('MSG_NO_RECORDS_FOUND')}}</system-illustration-no-records>
+            <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
         </div>
     </div>
 </div>

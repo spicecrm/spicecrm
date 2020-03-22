@@ -15,7 +15,7 @@
         </div>
     </div>
     <div class="slds-col slds-align-bottom">
-        <p class="slds-text-body--small">{{relatedmodels.items.length}} {{language.getLabel('LBL_OF')}} {{relatedmodels.count}} {{language.getLabel('LBL_ITEMS')}} • {{language.getLabel('LBL_SORTEDBY')}} {{language.getFieldDisplayName(related, relatedmodels.sortfield)}}   • {{language.getLabel('LBL_LASTUPDATE')}} {{relatedmodels.getLastLoadTime()}}</p>
+        <p class="slds-text-body--small">{{relatedmodels.items.length}} <system-label label="LBL_OF"></system-label> {{relatedmodels.count}} <system-label label="LBL_ITEMS"></system-label> • <system-label label="LBL_SORTEDBY"></system-label> {{language.getFieldDisplayName(related, relatedmodels.sortfield)}}   • <system-label label="LBL_LASTUPDATE"></system-label> {{relatedmodels.getLastLoadTime()}}</p>
     </div>
 </div>
 <div tobottom #tablecontent (scroll)="onScroll($event)">

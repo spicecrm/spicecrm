@@ -33,13 +33,13 @@
                   <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#warning"></use>
                 </svg>
               </span>
-                <h2>{{language.getLabel('LBL_DEPRECATED_MSG')}}</h2>
+                <h2><system-label label="LBL_DEPRECATED_MSG"></system-label></h2>
             </div>
 
             <system-select [selectList]="roleSelectList" [(selectedItem)]="roleSelectedItem" [label]="'LBL_ROLES'"></system-select>
 
             <div *ngIf="this.mode == 'copy'" class="slds-text-align_center slds-p-vertical_small slds-text-heading_small">
-                {{language.getLabel('LBL_NOTE_COPY_CONFIG_INFO')}}
+                <system-label label="LBL_NOTE_COPY_CONFIG_INFO"></system-label>
             </div>
 
         </div>

@@ -4,7 +4,7 @@
         <object-record-fieldset [fieldset]="fieldset" direction="vertical"></object-record-fieldset>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
-        <button [disabled]="isDisabled" class="slds-button slds-button--brand" (click)="sendEmail()">{{language.getLabel('LBL_SEND')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button [disabled]="isDisabled" class="slds-button slds-button--brand" (click)="sendEmail()"><system-label label="LBL_SEND"></system-label></button>
     </system-modal-footer>
 </system-modal>

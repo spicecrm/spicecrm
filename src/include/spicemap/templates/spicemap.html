@@ -3,12 +3,12 @@
         <header class="slds-media slds-media--center slds-has-flexi-truncate">
             <div class="slds-media__body slds-truncate">
                 <h2>
-                    <span class="slds-text-heading--small">{{language.getLabel('LBL_MAP_VIEW')}} ({{surroundingObjects.length}})</span>
+                    <span class="slds-text-heading--small"><system-label label="LBL_MAP_VIEW"></system-label> ({{surroundingObjects.length}})</span>
                 </h2>
             </div>
         </header>
         <div class="slds-button-group" role="group">
-            <button class="slds-button slds-button--neutral" (click)="reCenter()">{{language.getLabel('LBL_RECENTER')}}</button>
+            <button class="slds-button slds-button--neutral" (click)="reCenter()"><system-label label="LBL_RECENTER"></system-label></button>
             <!--button class="slds-button slds-button--neutral" (click)="getSurrounding()">get Surrounding</button-->
         </div>
     </div>

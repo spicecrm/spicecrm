@@ -13,5 +13,5 @@
         <system-spinner size="12"></system-spinner>
     </div>
     <object-model-popover-related-item *ngFor="let relateditem of relatedmodels.items" [module]="relatedmodels.relatedModule" [item]="relateditem" [fields]="listfields"></object-model-popover-related-item>
-    <dd *ngIf="canViewAll" class="slds-m-top_x-small slds-text-align_right"><a href="javascript:void(0);" (click)="showAll()">{{language.getLabel('LBL_VIEWALL')}}</a></dd>
+    <dd *ngIf="canViewAll" class="slds-m-top_x-small slds-text-align_right"><a href="javascript:void(0);" (click)="showAll()"><system-label label="LBL_VIEWALL"></system-label></a></dd>
 </dl>

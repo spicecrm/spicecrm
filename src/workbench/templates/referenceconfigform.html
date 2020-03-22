@@ -7,16 +7,16 @@
         <li class="slds-list__item">load default UI settings into sysui tables</li>
     </ol>
     <div class="slds-form-element">
-        <label>{{language.getLabel('LBL_PACKAGES')}}:</label>
+        <label><system-label label="LBL_PACKAGES"></system-label>:</label>
         <div class="slds-form-element__control">
             <system-checkbox-group [(ngModel)]="package_names">
-                <system-checkbox-group-checkbox [value]="all_package_names">{{language.getLabel('LBL_SELECT_ALL')}}</system-checkbox-group-checkbox>
+                <system-checkbox-group-checkbox [value]="all_package_names"><system-label label="LBL_SELECT_ALL"></system-label></system-checkbox-group-checkbox>
                 <system-checkbox-group-checkbox *ngFor="let pack of available_packages" value="{{pack.package}}">{{pack.package}}</system-checkbox-group-checkbox>
             </system-checkbox-group>
         </div>
     </div>
     <div class="slds-form-element">
-        <label>{{language.getLabel('LBL_VERSION')}}:</label>
+        <label><system-label label="LBL_VERSION"></system-label>:</label>
         <div class="slds-form-element__control">
             <!--system-checkbox-group [(ngModel)]="version_names">
                 <system-checkbox-group-checkbox *ngFor="let vers of available_versions" value="{{vers.version}}">{{vers.version}}</system-checkbox-group-checkbox>
@@ -27,12 +27,12 @@
         </div>
     </div>
     <div *ngIf="pull_result" class="slds-form-element">
-        <label>{{language.getLabel('LBL_RESULT')}}:</label>
+        <label><system-label label="LBL_RESULT"></system-label>:</label>
         <pre>{{pull_result}}</pre>
     </div>
     <div class="slds-form-element slds-p-top--medium">
         <system-spinner *ngIf="is_pulling"></system-spinner>
-        <button *ngIf="!is_pulling" class="slds-button slds-button--brand" (click)="submit()">{{language.getLabel('LBL_SUBMIT')}}</button>
+        <button *ngIf="!is_pulling" class="slds-button slds-button--brand" (click)="submit()"><system-label label="LBL_SUBMIT"></system-label></button>
         <button (click)="test()">test me!</button>
     </div>
 </div>

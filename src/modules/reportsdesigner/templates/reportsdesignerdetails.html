@@ -5,24 +5,24 @@
     <system-collapsable-tab [collapsible]="false" tabtitle="LBL_OPTIONS">
         <div class="slds-grid">
             <fieldset class="slds-form-element slds-m-vertical--xxx-small slds-size--1-of-2">
-                <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_SHOW_DELETED')}}</legend>
+                <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_SHOW_DELETED"></system-label></legend>
                 <div class="slds-form-element__control">
                     <system-checkbox [(ngModel)]="reportOptions.showDeleted">
-                        {{language.getLabel('LBL_SHOW_DELETED')}}
+                        <system-label label="LBL_SHOW_DELETED"></system-label>
                     </system-checkbox>
                 </div>
             </fieldset>
             <fieldset class="slds-form-element slds-m-vertical--xxx-small slds-size--1-of-2">
-                <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_AUTHORIZATION_CHECK')}}</legend>
+                <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_AUTHORIZATION_CHECK"></system-label></legend>
                 <div class="slds-form-element__control">
                     <system-input-radio name="reportOptionsAuthCheck" value="full" [(ngModel)]="reportOptions.authCheck">
-                        {{language.getLabel('LBL_ON_ALL_NODES')}}
+                        <system-label label="LBL_ON_ALL_NODES"></system-label>
                     </system-input-radio>
                     <system-input-radio name="reportOptionsAuthCheck" value="top" [(ngModel)]="reportOptions.authCheck">
-                        {{language.getLabel('LBL_TOP_NODE_ONLY')}}
+                        <system-label label="LBL_TOP_NODE_ONLY"></system-label>
                     </system-input-radio>
                     <system-input-radio name="reportOptionsAuthCheck" value="none" [(ngModel)]="reportOptions.authCheck">
-                        {{language.getLabel('LBL_DISABLED')}}
+                        <system-label label="LBL_DISABLED"></system-label>
                     </system-input-radio>
                 </div>
             </fieldset>

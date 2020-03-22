@@ -1,11 +1,11 @@
 <system-modal>
     <system-modal-header (close)="close()">
-        {{language.getLabel('LBL_SETFIELDS')}}
+        <system-label label="LBL_SETFIELDS"></system-label>
     </system-modal-header>
     <system-modal-content>
         <div class="slds-grid">
             <div class="slds-form-element slds-p-horizontal--small slds-size--1-of-2">
-                <span class="slds-form-element__label">{{language.getLabel('LBL_AVAILABLE_FIELDS')}}</span>
+                <span class="slds-form-element__label"><system-label label="LBL_AVAILABLE_FIELDS"></system-label></span>
                 <div class="slds-picklist slds-picklist__options slds-size--1-of-1" style="height: 50vh" cdkDropList #listOne="cdkDropList" [cdkDropListData]="availableFields" [cdkDropListConnectedTo]="[listTwo]" (cdkDropListDropped)="onFieldDrop($event)">
                     <div *ngFor="let field of availableFields" cdkDrag [cdkDragData]="field" class="slds-drag--preview slds-picklist__item" [attr.aria-selected]="isSelected('available', field.id)" role="option" (click)="selectField('available', field.id)">
                         <span class="slds-truncate">{{language.getLabel(field.name)}}</span>
@@ -13,7 +13,7 @@
                 </div>
             </div>
             <div class="slds-form-element slds-p-horizontal--small slds-size--1-of-2">
-                <span class="slds-form-element__label">{{language.getLabel('LBL_SELECTED_FIELDS')}}</span>
+                <span class="slds-form-element__label"><system-label label="LBL_SELECTED_FIELDS"></system-label></span>
                 <div class="slds-picklist slds-picklist__options slds-size--1-of-1 cdk-drag" style="height: 50vh" cdkDropList #listTwo="cdkDropList" [cdkDropListData]="displayFields" [cdkDropListConnectedTo]="[listOne]" (cdkDropListDropped)="onFieldDrop($event)">
                     <div *ngFor="let field of displayFields" cdkDrag [cdkDragData]="field" class="slds-drag--preview slds-picklist__item" [attr.aria-selected]="isSelected('list', field.id)" role="option" (click)="selectField('list', field.id)">
                         <span class="slds-truncate">{{language.getLabel(field.name)}}</span>
@@ -24,10 +24,10 @@
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()">
-            {{language.getLabel('LBL_CANCEL')}}
+            <system-label label="LBL_CANCEL"></system-label>
         </button>
         <button class="slds-button slds-button--brand" [disabled]="!canSet()" (click)="set()">
-            {{language.getLabel('LBL_SET')}}
+            <system-label label="LBL_SET"></system-label>
         </button>
     </system-modal-footer>
 </system-modal>

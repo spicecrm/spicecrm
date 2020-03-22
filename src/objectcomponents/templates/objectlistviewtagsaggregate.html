@@ -9,10 +9,10 @@
             </div>
         </div>
         <div *ngIf="aggregate.sum_other_doc_count" class="slds-p-vertical--xxx-small slds-truncate" style="max-width: 50%;">
-            <div class="slds-badge slds-truncate">{{aggregate.sum_other_doc_count}} {{language.getLabel('LBL_MORE')}}</div>
+            <div class="slds-badge slds-truncate">{{aggregate.sum_other_doc_count}} <system-label label="LBL_MORE"></system-label></div>
         </div>
     </ng-container>
     <div *ngIf="!hasItems" class="slds-align--absolute-center">
-        {{language.getLabel('MSG_NO_RECORDS_TAGGED')}}
+        <system-label label="MSG_NO_RECORDS_TAGGED"></system-label>
     </div>
 </div>

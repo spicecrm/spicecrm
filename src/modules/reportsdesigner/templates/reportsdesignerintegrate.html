@@ -20,7 +20,7 @@
             <reports-designer-integrate-item *ngIf="selectedItemId == item.id && !!item.component" [component]="item.component"></reports-designer-integrate-item>
             <div *ngIf="selectedItemId == item.id && !item.component" class="slds-grid slds-grid--vertical-align-center slds-grid--align-center" style="height: 100%">
                 <system-illustration-no-data>
-                    {{language.getLabel('LBL_NO_CONFIGURATION_NEEDED')}}
+                    <system-label label="LBL_NO_CONFIGURATION_NEEDED"></system-label>
                 </system-illustration-no-data>
             </div>
         </ng-container>
