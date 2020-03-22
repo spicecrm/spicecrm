@@ -19,7 +19,6 @@ import {Subscription} from "rxjs";
     selector: 'object-recordview',
     templateUrl: './src/objectcomponents/templates/objectrecordview.html',
     providers: [model]
-
 })
 export class ObjectRecordView implements OnInit, OnDestroy {
     private moduleName: any = '';
@@ -51,8 +50,7 @@ export class ObjectRecordView implements OnInit, OnDestroy {
         this.model.module = this.moduleName;
         this.model.id = this.navigationtab.activeRoute.params.id;
 
-        // set data to the FAV service
-        this.favorite.enable(this.model.module, this.model.id);
+
 
         this.model.getData(true, 'detailview', true, true).subscribe(data => {
             // this.navigation.setActiveModule(this.moduleName, this.model.id, data.summary_text);
