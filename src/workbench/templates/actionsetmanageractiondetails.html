@@ -1,10 +1,10 @@
 <fieldset *ngIf="action" class="slds-form-element slds-form-element_compound">
-<legend class="slds-form-element__legend slds-form-element__label slds-m-vertical_small">{{language.getAppLanglabel('LBL_COMPONENT')}}</legend>
+<legend class="slds-form-element__legend slds-form-element__label slds-m-vertical_small"><system-label label="LBL_COMPONENT"></system-label></legend>
     <div class="slds-form-element__control">
 
 
 <div class="slds-form-element">
-    <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_STANDARD_ACTION')}}</label>
+    <label class="slds-form-element__label"><system-label label="LBL_STANDARD_ACTION"></system-label></label>
     <div class="slds-form-element__control">
         <div class="slds-select_container slds-m-vertical--xx-small">
             <select [disabled]="!view.isEditMode()" #focus class="slds-select " [(ngModel)]="action.action" (change)="setActionComponent()">
@@ -38,7 +38,7 @@
     </div>
 </div>
     </div>
-<legend class="slds-form-element__legend slds-form-element__label slds-m-vertical_small">{{language.getAppLanglabel('LBL_INFORMATION')}}</legend>
+<legend class="slds-form-element__legend slds-form-element__label slds-m-vertical_small"><system-label label="LBL_INFORMATION"></system-label></legend>
     <div class="slds-form-element__control">
         <div class="slds-form-element slds-m-bottom--x-small">
             <label class="slds-form-element__label" >ID</label>
@@ -47,22 +47,22 @@
             </div>
         </div>
         <div class="slds-form-element slds-m-vertical--xxx-small">
-            <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_PACKAGE')}}</label>
+            <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
                 <input [disabled]="!view.isEditMode()" type="text" class="slds-input" placeholder="package" [(ngModel)]="action.package"/>
             </div>
         </div>
         <div class="slds-form-element slds-m-vertical--xxx-small">
-            <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_VERSION')}}</label>
+            <label class="slds-form-element__label"><system-label label="LBL_VERSION"></system-label></label>
             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
                 <input [disabled]="!view.isEditMode()" type="text" class="slds-input" placeholder="version" [(ngModel)]="action.version"/>
             </div>
         </div>
     </div>
-<legend class="slds-form-element__legend slds-form-element__label slds-m-vertical_small">{{language.getAppLanglabel('LBL_OPTIONS')}}</legend>
+<legend class="slds-form-element__legend slds-form-element__label slds-m-vertical_small"><system-label label="LBL_OPTIONS"></system-label></legend>
         <div class="slds-form-element__control">
 <div class="slds-form-element slds-m-vertical--xx-small">
-    <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_LABEL')}}</label>
+    <label class="slds-form-element__label"><system-label label="LBL_LABEL"></system-label></label>
     <system-input-label *ngIf="view.isEditMode()" [(ngModel)]="action.actionconfig.label"></system-input-label>
     <input class="slds-input" disabled *ngIf="!view.isEditMode()" [(ngModel)]="action.actionconfig.label"/>
 </div>
@@ -72,7 +72,7 @@
         <label class="slds-checkbox" for="link">
             <input [disabled]="!view.isEditMode()" type="checkbox" id="link" [(ngModel)]="action.singlebutton"/>
             <span class="slds-checkbox--faux"></span>
-            <span class="slds-form-element__label">{{language.getAppLanglabel('LBL_SINGLEBUTTON')}}</span>
+            <span class="slds-form-element__label"><system-label label="LBL_SINGLEBUTTON"></system-label></span>
         </label>
     </div>
 </fieldset>
