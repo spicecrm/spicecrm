@@ -16,8 +16,8 @@
                 <system-utility-icon icon="check" size="x-small"></system-utility-icon>
                 <span class="slds-p-horizontal--xx-small"><system-label label="LBL_OK"></system-label></span>
             </div>
-            <button [disabled]="!validConnection" class="slds-button slds-col--bump-left slds-button--neutral" (click)="close()">{{language.getAppLanglabel('LBL_CLOSE')}}</button>
-            <button [disabled]="testemailaddress.trim().length === 0" class="slds-button slds-button--brand" (click)="testConnection()">{{language.getAppLanglabel('LBL_TEST')}}</button>
+            <button [disabled]="!validConnection" class="slds-button slds-col--bump-left slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label></button>
+            <button [disabled]="testemailaddress.trim().length === 0" class="slds-button slds-button--brand" (click)="testConnection()"><system-label label="LBL_TEST"></system-label></button>
         </div>
     </system-modal-footer>
 </system-modal>

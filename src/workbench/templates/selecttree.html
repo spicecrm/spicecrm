@@ -4,7 +4,7 @@
 <div class="slds-p-around--small slds-border--bottom">
     <div class="slds-grid slds-grid--vertical-align-center slds-form--inline">
         <div class="slds-form-element">
-            <label class="slds-form-element__label">{{language.getAppLanglabel('LBL_TREE')}}</label>
+            <label class="slds-form-element__label"><system-label label="LBL_TREE"></system-label></label>
             <div class="slds-form-element__control" style="min-width:250px;">
                 <div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="currentSelectTree" (change)="loadSelectTree(currentSelectTree)" [disabled]="trees.length == 0">
