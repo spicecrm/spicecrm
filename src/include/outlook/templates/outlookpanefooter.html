@@ -8,7 +8,7 @@
                 <ul class="slds-dropdown__list" role="menu" aria-label="Show More">
                     <li class="slds-dropdown__item" role="presentation" *ngFor="let action of actions" (click)="callAction(action)">
                         <a href="javascript:void(0);" role="menuitem">
-                            <span class="slds-truncate" [title]="language.getLabel(action.actionconfig.label)">{{language.getLabel(action.actionconfig.label)}}</span>
+                            <span class="slds-truncate" [title]="language.getLabel(action.actionconfig.label)"><system-label [label]="action.actionconfig.label"></system-label></span>
                         </a>
                     </li>
                 </ul>

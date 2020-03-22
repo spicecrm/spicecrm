@@ -4,12 +4,12 @@
             <tr>
                 <th scope="col">
                     <ul class="slds-p-around--x-small slds-list_horizontal slds-has-dividers_left">
-                        <li *ngFor="let groupField of groupFields" class="slds-item">{{language.getLabel(groupField.text)}}</li>
+                        <li *ngFor="let groupField of groupFields" class="slds-item"><system-label [label]="groupField.text"></system-label></li>
                     </ul>
                 </th>
                 <th *ngFor="let treeDisplayField of treeDisplayFields" scope="col" [width]="getFieldWidth(treeDisplayField.dataIndex)">
                     <a  href="javascript:void(0);" class="slds-th__action slds-text-link--reset slds-grid"  [ngClass]="displayClasses(treeDisplayField)">
-                        <div class="slds-truncate slds-p-around--x-small" [title]="language.getLabel(treeDisplayField.text)">{{language.getLabel(treeDisplayField.text)}}</div>
+                        <div class="slds-truncate slds-p-around--x-small" [title]="language.getLabel(treeDisplayField.text)"><system-label [label]="treeDisplayField.text"></system-label></div>
                     </a>
                 </th>
             </tr>

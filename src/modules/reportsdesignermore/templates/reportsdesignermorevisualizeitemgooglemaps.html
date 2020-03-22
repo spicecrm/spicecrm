@@ -10,7 +10,7 @@
                         <select class="slds-select" [(ngModel)]="properties.googlemaps.kreportgooglemapslongitude">
                             <option></option>
                             <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
-                                {{language.getLabel(listField.name)}}
+                                <system-label [label]="listField.name"></system-label>
                             </option>
                         </select>
                     </div>
@@ -25,7 +25,7 @@
                         <select class="slds-select" [(ngModel)]="properties.googlemaps.kreportgooglemapstatitude">
                             <option></option>
                             <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
-                                {{language.getLabel(listField.name)}}
+                                <system-label [label]="listField.name"></system-label>
                             </option>
                         </select>
                     </div>
@@ -44,7 +44,7 @@
                         <select class="slds-select" [(ngModel)]="properties.googlemaps.kreportgooglemapstitle">
                             <option></option>
                             <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
-                                {{language.getLabel(listField.name)}}
+                                <system-label [label]="listField.name"></system-label>
                             </option>
                         </select>
                     </div>
@@ -59,7 +59,7 @@
                         <select class="slds-select" [(ngModel)]="properties.googlemaps.kreportgooglemapsinfo">
                             <option></option>
                             <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
-                                {{language.getLabel(listField.name)}}
+                                <system-label [label]="listField.name"></system-label>
                             </option>
                         </select>
                     </div>
@@ -98,7 +98,7 @@
                         <select class="slds-select" [(ngModel)]="properties.googlemaps.kreportgooglemapscolorcriteria">
                             <option></option>
                             <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
-                                {{language.getLabel(listField.name)}}
+                                <system-label [label]="listField.name"></system-label>
                             </option>
                         </select>
                     </div>

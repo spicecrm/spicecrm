@@ -8,7 +8,7 @@
                         <div class="slds-truncate" [title]="language.getLabel('LBL_SPICEACLTERRITORY')"><system-label label="LBL_SPICEACLTERRITORY"></system-label></div>
                     </th>
                     <th *ngFor="let moduleElement of moduleElements" scope="col">
-                        <div class="slds-truncate" [title]="language.getLabel(moduleElement.name)">{{language.getLabel(moduleElement.name)}}</div>
+                        <div class="slds-truncate" [title]="language.getLabel(moduleElement.name)"><system-label [label]="moduleElement.name"></system-label></div>
                     </th>
                 </tr>
                 <tr class="slds-line-height_reset">

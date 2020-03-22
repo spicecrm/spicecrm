@@ -3,7 +3,7 @@
             <thead *ngIf="totalCountArray.length > 0">
                 <tr class="slds-text-title--caps">
                     <th scope="col" class="slds-border--bottom slds-truncate" width="10%" [rowSpan]="pivotColumnCount + 1">
-                        {{language.getLabel(dataName)}}
+                        <system-label [label]="dataName"></system-label>
                     </th>
                     <th class="slds-p-around--none" width="10%" *ngFor="let column of totalCountArray">
                     </th>

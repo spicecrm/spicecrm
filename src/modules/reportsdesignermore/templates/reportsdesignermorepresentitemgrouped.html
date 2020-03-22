@@ -9,7 +9,7 @@
                     <select class="slds-select" [(ngModel)]="properties.groupById">
                         <option></option>
                         <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
-                            {{language.getLabel(listField.name)}}
+                            <system-label [label]="listField.name"></system-label>
                         </option>
                     </select>
                 </div>
@@ -76,7 +76,7 @@
                         </td>
                         <td>
                             <div class="slds-truncate">
-                                {{language.getLabel(listField.name)}}
+                                <system-label [label]="listField.name"></system-label>
                             </div>
                         </td>
                         <td>

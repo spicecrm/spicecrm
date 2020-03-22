@@ -1,6 +1,6 @@
 <div class="slds-filters__item slds-m-vertical--xx-small slds-grid slds-grid--vertical-align-center">
     <a href="javascript:void(0);" class="slds-grow slds-has-blur-focus" (click)="onClick()" (focus)="onFocus($event)">
-        <p class="slds-text-body--small">{{getDisplayName()}} {{language.getLabel(operatorLabel)}} {{interpretvalue(filterexpression.filtervalue)}} <span *ngIf="filterexpression.filtervalueto"><system-label label="LBL_AND"></system-label> {{interpretvalue(filterexpression.filtervalueto)}}</span></p>
+        <p class="slds-text-body--small">{{getDisplayName()}} <system-label [label]="operatorLabel"></system-label> {{interpretvalue(filterexpression.filtervalue)}} <span *ngIf="filterexpression.filtervalueto"><system-label label="LBL_AND"></system-label> {{interpretvalue(filterexpression.filtervalueto)}}</span></p>
     </a>
     <div class="slds-form-element">
         <div class="slds-form-element__control">
@@ -24,7 +24,7 @@
                     <div class="slds-form-element__control">
                         <div class="slds-select_container">
                             <select [disabled]="!filterexpression.field" class="slds-select" [(ngModel)]="operator">
-                                <option *ngFor="let operator of operators[operatortype]" [value]="operator.operator">{{language.getLabel(operator.name)}}</option>
+                                <option *ngFor="let operator of operators[operatortype]" [value]="operator.operator"><system-label [label]="operator.name"></system-label></option>
                             </select>
                         </div>
                     </div>

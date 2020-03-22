@@ -23,7 +23,7 @@
                     <select class="slds-select" [(ngModel)]="pluginData.previewId">
                         <option></option>
                         <option *ngFor="let listField of listFields" [value]="listField.fieldid">
-                            {{language.getLabel(listField.name)}}
+                            <system-label [label]="listField.name"></system-label>
                         </option>
                     </select>
                 </div>

@@ -62,7 +62,7 @@
                             </td>
                             <td [title]="listField.name">
                                 <div class="slds-truncate">
-                                    {{language.getLabel(listField.name)}}
+                                    <system-label [label]="listField.name"></system-label>
                                 </div>
                             </td>
                             <td [title]="listField.sqlfunction">
@@ -176,7 +176,7 @@
                                         </td>
                                         <td>
                                             <div class="slds-form-element">
-                                                {{language.getLabel(pivotColumn.name)}}
+                                                <system-label [label]="pivotColumn.name"></system-label>
                                             </div>
                                         </td>
                                         <td>
@@ -224,7 +224,7 @@
                                         </td>
                                         <td>
                                             <div class="slds-form-element">
-                                                {{language.getLabel(pivotValue.name)}}
+                                                <system-label [label]="pivotValue.name"></system-label>
                                             </div>
                                         </td>
                                         <td>

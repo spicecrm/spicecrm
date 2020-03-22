@@ -4,7 +4,7 @@
       <input type="checkbox" name="options" [id]="checkid" [ngModel]="checked" (change)="checkItem($event)" [disabled]="disabled"/>
       <label class="slds-checkbox__label" [attr.for]="checkid">
         <span class="slds-checkbox_faux"></span>
-        <span class="slds-form-element__label">{{language.getLabel(checkitem.name)}}</span>
+        <span class="slds-form-element__label"><system-label [label]="checkitem.name"></system-label></span>
       </label>
     </span>
     </div>

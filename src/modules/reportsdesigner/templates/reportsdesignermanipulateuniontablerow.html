@@ -9,7 +9,7 @@
 </td>
 <td>
     <div class="slds-truncate" [title]="language.getLabel(listItem.name)">
-        {{language.getLabel(listItem.name)}}
+        <system-label [label]="listItem.name"></system-label>
     </div>
 </td>
 <td>
@@ -23,7 +23,7 @@
 </td>
 <td>
    <div class="slds-truncate" [title]="language.getLabel(listItem.unionfielddisplayname)">
-       {{language.getLabel(listItem.unionfielddisplayname)}}
+       <system-label [label]="listItem.unionfielddisplayname"></system-label>
     </div>
 </td>
 <td>
