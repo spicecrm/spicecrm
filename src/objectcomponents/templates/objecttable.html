@@ -6,7 +6,7 @@
             <system-checkbox [checked]="areAllObjectsSelected()" (click)="toggleAll()" [disabled]="objects.length > max_selections"></system-checkbox>
         </th>
         <th *ngFor="let field of fields" scope="col">
-            <div *ngIf="!field.fieldconfig || !field.fieldconfig.hidelabel" class="slds-truncate">{{language.getFieldDisplayName(module, field.field, field.fieldconfig)}}</div>
+            <div *ngIf="!field.fieldconfig || !field.fieldconfig.hidelabel" class="slds-truncate"><system-label-fieldname [module]="module" [field]="field.field" [fieldconfig]="field.fieldconfig"></system-label-fieldname></div>
         </th>
     </tr>
     </thead>
