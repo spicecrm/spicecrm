@@ -1,6 +1,6 @@
 <system-modal>
     <system-modal-header (close)="close()" module="KReports">
-        {{language.getModuleName('KReports', true)}}
+        <system-label-modulename module="KReports" [singular]="true"></system-label-modulename>
     </system-modal-header>
     <system-modal-content margin="xx-small" [grow]="true">
         <system-collapsable-tab *ngIf="createmode" tabtitle="LBL_DETAILS" [collapsible]="false">

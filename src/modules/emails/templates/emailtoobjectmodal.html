@@ -4,7 +4,7 @@
             <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" (click)="close()">
                 <system-button-icon [icon]="'close'"></system-button-icon>
             </button>
-            <h2 class="slds-text-heading--medium">{{language.getModuleName(object_module_name,true)}}</h2>
+            <h2 class="slds-text-heading--medium"><system-label-modulename [module]="object_module_name,true"></system-label-modulename></h2>
         </div>
         <div class="slds-modal__content" >
             <div class="slds-grid" style="height: 80vh;">

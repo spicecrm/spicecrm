@@ -7,7 +7,7 @@
                     <a class="slds-tabs--default__link slds-grid" href="javascript:void(0);" role="tab" aria-selected="false">
                         <system-icon [module]="module.module" size="small" divClass="slds-m-right--x-small"></system-icon>
                         <span class="slds-truncate">
-                        {{language.getModuleName(module.module)}}
+                        <system-label-modulename [module]="module.module"></system-label-modulename>
                     </span>
                     </a>
                     <div *ngIf="module.unionid != 'root'" class="slds-col_bump-left slds-p-left_none slds-p-right_none">
