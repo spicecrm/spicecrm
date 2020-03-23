@@ -46,6 +46,7 @@ export class ScrumTreeDetail implements OnChanges {
                             this.scrum.selectedObject.id = this.model.id;
                             return;
                         } else {
+                            this.model.cancelEdit();
                             this.renderComponent(this.focusid);
                         }
                     });
