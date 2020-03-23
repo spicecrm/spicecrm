@@ -10,7 +10,7 @@
                         <system-icon [module]="module.name" size="large" class="slds-align_absolute-center"></system-icon>
                         <div class="slds-media__body slds-p-around_small">
                             <h2 class="slds-truncate slds-text-heading_small slds-truncate">
-                                {{language.getModuleName(module.name)}}
+                                <system-label-modulename [module]="module.name"></system-label-modulename>
                             </h2>
                         </div>
                     </a>

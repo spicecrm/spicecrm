@@ -2,7 +2,7 @@
     <nav role="navigation" aria-label="Breadcrumbs">
         <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
             <li class="slds-breadcrumb__item slds-text-title_caps">
-                <a href="javascript:void(0);" (click)="goModule()">{{language.getModuleName( module )}}</a>
+                <a href="javascript:void(0);" (click)="goModule()"><system-label-modulename [module]=" module "></system-label-modulename></a>
             </li>
             <li class="slds-breadcrumb__item slds-text-title_caps">
                 <a href="javascript:void(0);" (click)="goModel()">{{model.data.summary_text}}</a>

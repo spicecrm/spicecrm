@@ -2,7 +2,7 @@
 <li class="slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger--click"
     [ngClass]="{'slds-is-open': isOpen}" aria-haspopup="true">
     <a href="javascript:void(0);" class="slds-context-bar__label-action" (click)="navigateTo()">
-        <span class="slds-truncate">{{language.getModuleName(item.name)}}</span>
+        <span class="slds-truncate"><system-label-modulename [module]="item.name"></system-label-modulename></span>
     </a>
     <div *ngIf="hasMenu()" class="slds-context-bar__icon-action slds-p-left--none">
         <button class="slds-button slds-button--icon slds-context-bar__button" (click)="toggleOpen()">

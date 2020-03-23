@@ -15,7 +15,7 @@
                                 <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
                                     <div class="slds-grid slds-grid--vertical-align-center">
                                         <system-icon [module]="lookuplink.module" size="x-small"></system-icon>
-                                        <div class="slds-truncate">{{language.getModuleName(lookuplink.module)}}</div>
+                                        <div class="slds-truncate"><system-label-modulename [module]="lookuplink.module"></system-label-modulename></div>
                                     </div>
                                 </div>
                             </li>

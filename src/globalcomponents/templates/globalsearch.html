@@ -8,7 +8,7 @@
             </li>
             <li *ngFor="let module of fts.searchModules" [ngClass]="getScopeClass(module)">
                 <a href="javascript:void(0);" class="slds-navigation-list--vertical__action slds-text-link--reset"
-                   (click)="setSearchScope(module)">{{language.getModuleName(module)}}</a>
+                   (click)="setSearchScope(module)"><system-label-modulename [module]="module"></system-label-modulename></a>
             </li>
         </ul>
     </div>

@@ -4,7 +4,7 @@
             <div class="slds-media slds-no-space slds-grow">
                 <system-icon [module]="'Calendar'"></system-icon>
                 <div class="slds-media__body">
-                    <p class="slds-text-title--caps slds-line-height--reset">{{language.getModuleName('Calendar')}}</p>
+                    <p class="slds-text-title--caps slds-line-height--reset"><system-label-modulename module="Calendar"></system-label-modulename></p>
                     <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
                         {{getCalendarHeader()}}
                         <span *ngIf="calendar.sheetType == 'Week'" class="slds-p-horizontal--x-small slds-p-vertical--xx-small slds-pill slds-text-body--small">
