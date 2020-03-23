@@ -4,7 +4,7 @@
         <th scope="col" style="width:3.25rem;" class="slds-text-align--right">
         </th>
         <th scope="col" *ngFor="let listField of listFields">
-            <div class="slds-truncate">{{language.getFieldDisplayName(model.module, listField.field)}}</div>
+            <div class="slds-truncate"><system-label-fieldname [module]="model.module" [field]="listField.field"></system-label-fieldname></div>
         </th>
     </tr>
     </thead>

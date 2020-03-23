@@ -18,7 +18,7 @@
             <thead>
                 <tr class="slds-text-title--caps">
                     <th *ngFor="let field of fieldsetFields" scope="col">
-                        <div class="slds-truncate">{{language.getFieldDisplayName('ProjectWBSs', field.field)}}</div>
+                        <div class="slds-truncate"><system-label-fieldname module="ProjectWBSs" [field]="field.field"></system-label-fieldname></div>
                     </th>
                     <th class="slds-cell-shrink" scope="col"></th>
                 </tr>

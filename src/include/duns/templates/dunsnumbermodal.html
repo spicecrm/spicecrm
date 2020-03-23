@@ -4,7 +4,7 @@
         <div class="slds-p-around--x-small">
             <div *ngFor="let field of fieldsetFields" class="slds-cell-buffer--left">
                 <div class="slds-truncate">
-                    <span class="slds-text-heading--label">{{language.getFieldDisplayName(model.module, field.field)}} : </span>
+                    <span class="slds-text-heading--label"><system-label-fieldname [module]="model.module" [field]="field.field"></system-label-fieldname> : </span>
                     <span>{{model.getFieldValue(field.field)}}</span>
                 </div>
             </div>
