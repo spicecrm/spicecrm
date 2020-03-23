@@ -12,7 +12,7 @@
         <ul class="slds-dropdown__list" role="menu">
             <li *ngFor="let item of moreMenuItems"class="slds-dropdown__item" role="presentation" (click)="navigateTo(item)">
                 <a href="javascript:void(0);" role="menuitem">
-                    <span class="slds-truncate">{{language.getModuleName(item)}}</span>
+                    <span class="slds-truncate"><system-label-modulename [module]="item"></system-label-modulename></span>
                 </a>
             </li>
         </ul>

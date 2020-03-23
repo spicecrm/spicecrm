@@ -32,7 +32,7 @@
             <tbody>
                 <tr *ngFor="let module of modules">
                     <td>
-                        <div class="slds-truncate">{{language.getModuleName(module.module)}}</div>
+                        <div class="slds-truncate"><system-label-modulename [module]="module.module"></system-label-modulename></div>
                     </td>
                     <td>
                         <div class="slds-truncate">{{getTypeName(module.spiceaclterritorytype_id)}}</div>

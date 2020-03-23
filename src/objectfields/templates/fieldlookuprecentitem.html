@@ -13,7 +13,7 @@
         </div>
         <span class="slds-lookup__result-meta slds-text-body--small">
             <ul class="slds-list_horizontal slds-has-dividers_right slds-truncate">
-              <li class="slds-item">{{language.getModuleName(model.module, true)}}</li>
+              <li class="slds-item"><system-label-modulename [module]="model.module" [singular]="true"></system-label-modulename></li>
                 <ng-container *ngFor="let fieldsetitem of subfieldsetfields">
                    <li *ngIf="model.getField(fieldsetitem.field)" class="slds-item">
                        <field-container [field]="fieldsetitem.field" [fieldconfig]="fieldsetitem.fieldconfig" fielddisplayclass="slds-truncate"></field-container>

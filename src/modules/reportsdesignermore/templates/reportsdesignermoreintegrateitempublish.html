@@ -36,7 +36,7 @@
                                             <system-icon [module]="properties.subpanelModule" size="small"></system-icon>
                                         </span>
                                         <span class="slds-pill__label">
-                                            {{language.getModuleName(properties.subpanelModule)}}
+                                            <system-label-modulename [module]="properties.subpanelModule"></system-label-modulename>
                                         </span>
                                         <button class="slds-button slds-button--icon slds-pill__remove" (click)="clearModule()" [disabled]="!canClearModule">
                                             <system-button-icon icon="close"></system-button-icon>

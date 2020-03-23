@@ -14,7 +14,7 @@
         </div>
         <div class="slds-p-right--small slds-col_bump-left">
             <button class="slds-button slds-button--neutral" title="add item" [disabled]="!canAdd" (click)="addConversion()">
-                <system-label label="LBL_ADD"></system-label> {{language.getModuleName('UOMConversions', true)}}
+                <system-label label="LBL_ADD"></system-label> <system-label-modulename module="UOMConversions" [singular]="true"></system-label-modulename>
             </button>
         </div>
     </div>

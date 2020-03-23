@@ -7,7 +7,7 @@
                     <nav role="navigation" aria-label="Breadcrumbs">
                         <ol class="slds-breadcrumb slds-list--horizontal">
                             <li class="slds-breadcrumb__item slds-text-title--caps">
-                                <a href="javascript:void(0);" (click)="gotoModule()">{{language.getModuleName(model.module)}}</a>
+                                <a href="javascript:void(0);" (click)="gotoModule()"><system-label-modulename [module]="model.module"></system-label-modulename></a>
                             </li>
                             <li class="slds-breadcrumb__item slds-text-title--caps">
                                 <a href="javascript:void(0);"><system-label label="LBL_IMPORT"></system-label></a>

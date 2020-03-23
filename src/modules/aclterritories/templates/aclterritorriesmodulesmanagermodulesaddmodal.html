@@ -8,7 +8,7 @@
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="module">
-                        <option *ngFor="let availablemodule of availablemodules" [value]="availablemodule">{{language.getModuleName(availablemodule)}}</option>
+                        <option *ngFor="let availablemodule of availablemodules" [value]="availablemodule"><system-label-modulename [module]="availablemodule"></system-label-modulename></option>
                     </select>
                 </div>
             </div>
