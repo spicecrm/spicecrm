@@ -30,7 +30,7 @@
     <div *ngIf="emailschedules.length == 0 && !isLoading" class="slds-align--absolute-center" style="height: calc(100% - 35px)">
         <system-illustration-no-records>{{language.getLabel('MSG_NO_RECORDS_FOUND')}}</system-illustration-no-records>
     </div>
-    <div *ngIf="locked" class="slds-align--absolute-center" style="height: calc(100% - 35px)">
+    <div *ngIf="!isLoading && locked" class="slds-align--absolute-center" style="height: calc(100% - 35px)">
         <system-illustration-no-access>{{language.getLabel('LBL_NO_ACCESS')}}</system-illustration-no-access>
     </div>
 </div>
