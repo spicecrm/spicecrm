@@ -8,6 +8,7 @@ import {language} from '../../../services/language.service';
 import {modal} from '../../../services/modal.service';
 import {toast} from "../../../services/toast.service";
 import {backend} from "../../../services/backend.service";
+import {Observable, Subject} from "rxjs";
 
 
 @Component({
@@ -16,10 +17,9 @@ import {backend} from "../../../services/backend.service";
 })
 export class EmailSchedulesRelatedButton {
     public linkedBeans: any = [];
-    public disabled: boolean = false;
     public modelId: string;
     public currentModule: string;
-
+    public isLoaded: boolean = false;
 
     constructor(
         private language: language,
@@ -32,38 +32,41 @@ export class EmailSchedulesRelatedButton {
     ) {
     }
 
-    /**
-     *  check if emails can be sent to the related objects when the component initializes
-     */
-    public ngOnInit() {
-        this.checkEmailsLink();
-    }
-
 
 
     /**
+     *  execute checkemailslink and await the response
      *  subscribe and save the instances of linkedbeans, modelid and currentmodule to use them in the modal that will open
      */
     public execute() {
-        this.modal.openModal('EmailSchedulesRelatedModal', true, this.injector).subscribe( modal => {
-               modal.instance.linkedBeans = this.linkedBeans;
-               modal.instance.modelId = this.modelId;
-               modal.instance.currentModule = this.model.module;
-            });
+        let await = this.modal.await('SystemLoadingModal');
+        this.checkEmailsLink().subscribe( response => {
+            await.emit(true);
+            if(response) {
+                this.modal.openModal('EmailSchedulesRelatedModal', true, this.injector).subscribe( modal => {
+                    modal.instance.linkedBeans = this.linkedBeans;
+                    modal.instance.modelId = this.modelId;
+                    modal.instance.currentModule = this.model.module;
+
+                });
+            }
+        }
+        );
+
     }
 
     /**
      * iterate through the model fields, find each field that is of type link, get the module name, and find these modules have an emails link and an email address, by iterating through
      * the fielddefs of metadata
      * pass the object as parameter in the get request
+     * return an observable
      */
-    private checkEmailsLink() {
-        this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
-            loadingRef.instance.messagelabel = 'LBL_LOADING';
-            let arrayOfModules = [];
+    private checkEmailsLink(): Observable<any> {
+        let responseSubject = new Subject<any>();
+        let arrayOfModules = [];
             // search for fields of type link to get the related modules, proof that each of these is actually a module by looping through the fielddefs of metadata where all the object
             // properties are the names of the modules, if this is true then, push this property(key) to the arrayOfModules
-            Object.keys(this.model.fields).forEach(item => {
+        Object.keys(this.model.fields).forEach(item => {
                 if (this.model.fields[item].type == 'link' && this.model.fields[item].hasOwnProperty('vname') && !this.model.fields[item].hasOwnProperty('link_type')) {
                     let module = this.model.fields[item].name;
                     for(let key in this.metadata.fieldDefs) {
@@ -76,8 +79,8 @@ export class EmailSchedulesRelatedButton {
             // filter the arrayOfModules by looping first through the array and saving the name of the module at each position (pos)
             // then loop through the fielddefs of metadata and verify if email and email1 are properties of each module in arrayOfModule, if both check true than push
             // the module into filteredModules
-            let filteredModules = [];
-            for(let pos in arrayOfModules) {
+        let filteredModules = [];
+        for(let pos in arrayOfModules) {
                 let module = arrayOfModules[pos];
                 Object.keys(this.metadata.fieldDefs).forEach(item => {
                     if(this.metadata.fieldDefs[item] != null && item == module) {
@@ -87,23 +90,24 @@ export class EmailSchedulesRelatedButton {
                     }
                 });
             }
-            let params = {modules: filteredModules};
-            this.backend.getRequest(`/module/EmailSchedules/checkRelated/${this.model.module}/${this.model.id}`, params).subscribe(result => {
-                loadingRef.instance.self.destroy();
+        let params = {modules: filteredModules};
+        this.backend.getRequest(`/module/EmailSchedules/checkRelated/${this.model.module}/${this.model.id}`, params).subscribe(result => {
                 if (result.status) {
                     this.linkedBeans = result.linkedBeans;
                     this.modelId = result.beanId;
+                    responseSubject.next(result.status);
                 } else {
-                    this.toast.sendToast(result.msg, 'error');
+                    responseSubject.next(false);
+                    this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
                 }
                 // add the corresponding labels
                 for(let bean in this.linkedBeans) {
                     let link = this.linkedBeans[bean];
                     link.vname = this.model.fields[link.link].vname;
                 }
+                responseSubject.complete();
             });
-
-        });
+        return responseSubject.asObservable();
     }
 
 }
