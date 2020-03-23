@@ -3,7 +3,7 @@
     <div class="slds-form-element__control">
         <div class="slds-select_container">
             <select class="slds-select" [(ngModel)]="field">
-                <option *ngFor="let f of fields" [value]="f.name">{{language.getFieldDisplayName(module, f.name)}} ({{f.name}})</option>
+                <option *ngFor="let f of fields" [value]="f.name"><system-label-fieldname [module]="module" [field]="f.name"></system-label-fieldname> ({{f.name}})</option>
             </select>
         </div>
     </div>

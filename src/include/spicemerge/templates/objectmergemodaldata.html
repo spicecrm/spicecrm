@@ -35,7 +35,7 @@
         <tr *ngFor="let mergeField of objectmerge.mergeFields">
             <ng-container *ngIf="showField(mergeField)">
                 <td class="slds-truncate">
-                    {{language.getFieldDisplayName(modellist.module, mergeField.name)}}
+                    <system-label-fieldname [module]="modellist.module" [field]="mergeField.name"></system-label-fieldname>
                 </td>
                 <td class="slds-truncate" *ngFor="let item of getSelected()">
                     <div class="slds-grid">

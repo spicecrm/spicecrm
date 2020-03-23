@@ -20,7 +20,7 @@
                         <div class="slds-truncate"><system-utility-icon [icon]="message.type" size="x-small" ></system-utility-icon></div>
                     </td>
                     <td data-label="Field">
-                        <div class="slds-truncate">{{language.getFieldDisplayName(model.module, message.reference)}}</div>
+                        <div class="slds-truncate"><system-label-fieldname [module]="model.module" [field]="message.reference"></system-label-fieldname></div>
                     </td>
                     <td data-label="Message">
                         <div class="slds-truncate">{{message.message}}</div>

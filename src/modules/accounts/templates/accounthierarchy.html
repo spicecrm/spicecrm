@@ -16,7 +16,7 @@
             <thead>
                 <tr class="slds-text-title--caps">
                     <th *ngFor="let field of fieldsetFields" class="slds-cell-buffer--left" scope="col">
-                        <div class="slds-truncate">{{language.getFieldDisplayName('Accounts', field.field)}}</div>
+                        <div class="slds-truncate"><system-label-fieldname module="Accounts" [field]="field.field"></system-label-fieldname></div>
                     </th>
                 </tr>
             </thead>

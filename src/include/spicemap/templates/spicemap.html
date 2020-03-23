@@ -20,7 +20,7 @@
                 <tr class="slds-text-title--caps">
                     <th *ngFor="let item of getListFields()" class="slds-is-sortable" scope="col">
                         <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
-                            <span class="slds-truncate">{{language.getFieldDisplayName(module, item.field, item.fieldconfig)}}</span>
+                            <span class="slds-truncate"><system-label-fieldname [module]="model.module" [field]="item.field" [fieldconfig]="item.fieldconfig"></system-label-fieldname></span>
                         </a>
                     </th>
                     <th class="slds-cell-shrink" scope="col"></th>
