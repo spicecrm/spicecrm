@@ -52,11 +52,18 @@ export class scrum {
      * handle drop and reassign the array sequence
      * @param event: CdkDragDrop
      * @param module: string
+     * @param relatedModel
      */
-    public onDrop(event: CdkDragDrop<any>, module: string) {
+    public onDrop(event: CdkDragDrop<any>, module: string, relatedModel) {
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         const sequencedItems = event.container.data.map((item, index) => ({id: item.id, sequence: index}));
-        this.backend.postRequest('module/' + module, {}, sequencedItems);
+        this.backend.postRequest('module/' + module, {}, sequencedItems).subscribe(res => {
+            if (!res || !res.length) return;
+            relatedModel.items = relatedModel.items.map((item, index) => {
+                item.sequence = index;
+                return item;
+            });
+        });
     }
 
 }
