@@ -37,7 +37,7 @@ export class EmailSchedulesRelatedButton {
      *  subscribe and save the instances of linkedbeans, modelid and currentmodule to use them in the modal that will open
      */
     public execute() {
-        let await = this.modal.await('SystemLoadingModal');
+        let await = this.modal.await('loading');
         this.checkEmailsLink().subscribe(response => {
             await.emit(true);
             if (response) {
