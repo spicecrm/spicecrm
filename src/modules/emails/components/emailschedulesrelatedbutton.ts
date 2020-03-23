@@ -19,7 +19,6 @@ export class EmailSchedulesRelatedButton {
     public linkedBeans: any = [];
     public modelId: string;
     public currentModule: string;
-    public isLoaded: boolean = false;
 
     constructor(
         private language: language,
