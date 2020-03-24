@@ -27,7 +27,7 @@ import /*embed*/ {GroupwareReadPaneLinked} from './components/groupwarereadpanel
 import /*embed*/ {GroupwareReadPaneSearch} from './components/groupwarereadpanesearch';
 import /*embed*/ {GroupwareDetailPane} from './components/groupwaredetailpane';
 import /*embed*/ {GroupwareDetailPaneBean} from './components/groupwaredetailpanebean';
-import {GroupwareMeetingPane} from "./components/groupwaremeeting.pane";
+import /*embed*/ {GroupwareMeetingPane} from "./components/groupwaremeetingpane";
 
 @NgModule({
     imports: [
