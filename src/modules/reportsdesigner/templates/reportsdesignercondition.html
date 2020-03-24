@@ -14,7 +14,7 @@
         <div class="slds-form-element__control slds-grow">
             <div class="slds-select_container">
                 <select class="slds-select" [(ngModel)]="whereCondition.operator" (change)="changeOperator()">
-                    <option value="ignore"><system-label label="LBL_OP_IGNORE', 'KReports"></system-label></option>
+                    <option value="ignore"><system-label label="LBL_OP_IGNORE"></system-label></option>
                     <option *ngFor="let operator of getOperators(); trackBy: trackByFn" [value]="operator.value">{{operator.display}}</option>
                 </select>
             </div>
