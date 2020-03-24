@@ -2,92 +2,59 @@
  * @module ModuleReports
  */
 import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
     Component,
     Input,
     OnChanges,
-    OnDestroy,
-    Renderer2,
-    ElementRef,
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
-import {Router} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
-import {footer} from '../../../services/footer.service';
 import {language} from '../../../services/language.service';
 
-import {reporterconfig} from '../services/reporterconfig';
-
+/**
+ * buttons group to render the report integration plugin action items
+ */
 @Component({
     selector: 'reporter-integration-export-button',
-    templateUrl: './src/modules/reports/templates/reporterintegrationexportbutton.html'
+    templateUrl: './src/modules/reports/templates/reporterintegrationexportbutton.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ReporterIntegrationExportButton implements OnChanges, OnDestroy {
-
-    @ViewChild('actionitems', {read: ViewContainerRef, static: true}) private actionitems: ViewContainerRef;
-
+export class ReporterIntegrationExportButton implements OnChanges, AfterViewInit {
+    /**
+     * container reference to render the action items inside
+     */
+    @ViewChild('actionItemsContainer', {
+        read: ViewContainerRef,
+        static: true
+    }) private actionItemsContainer: ViewContainerRef;
+    /**
+     * integration params of the report to handle the plugins
+     */
     @Input() private integrationParams: any = {};
+    /**
+     * to save the action component references
+     */
+    private actionComponentRefs: any[] = [];
 
-    private clickListener: any;
-    private opened: boolean = false;
-    private actionComponents: any[] = [];
-
-    constructor(private language: language, private metadata: metadata, private model: model, private footer: footer, private reporterconfig: reporterconfig, private renderer: Renderer2, private elementRef: ElementRef) {
+    constructor(private language: language,
+                private metadata: metadata,
+                private model: model) {
     }
 
-    public ngOnChanges() {
-        if (this.integrationParams.activePlugins) {
-            for (let plugin in this.integrationParams.activePlugins) {
-
-                // check if the plugin is active
-                if (this.integrationParams.activePlugins[plugin] != 1) break;
-
-                switch (plugin) {
-                    case 'ktargetlistexport':
-                        this.metadata.addComponent('ReporterIntegrationTargetlistexportButton', this.actionitems).subscribe(object => {
-                            this.actionComponents.push(object);
-                        })
-                        break;
-                    case 'kcsvexport':
-                        this.metadata.addComponent('ReporterIntegrationCSVexportButton', this.actionitems).subscribe(object => {
-                            this.actionComponents.push(object);
-                        })
-                        break;
-                    case 'kexcelexport':
-                        this.metadata.addComponent('ReporterIntegrationXLSexportButton', this.actionitems).subscribe(object => {
-                            this.actionComponents.push(object);
-                        })
-                        break;
-                    case 'kpdfexport':
-                        this.metadata.addComponent('ReporterIntegrationPDFexportButton', this.actionitems).subscribe(object => {
-                            this.actionComponents.push(object);
-                        })
-                        break;
-                    case 'kplannerexport':
-                        this.metadata.addComponent('SalesPlanningReporterIntegrationExportButton', this.actionitems).subscribe(object => {
-                            this.actionComponents.push(object);
-                        })
-                        break;
-                }
-            }
-        }
-    }
-
-    public ngOnDestroy() {
-        if (this.clickListener) {
-            this.clickListener();
-        }
-    }
-
+    /**
+     * return disabled if there is no active plugins or user has no permission to export
+     */
     get isDisabled() {
         if (!this.model.checkAccess('export')) return false;
 
         if (this.integrationParams.activePlugins) {
             for (let plugin in this.integrationParams.activePlugins) {
-
+                if (!this.integrationParams.activePlugins.hasOwnProperty(plugin)) continue;
                 // check if the plugin is active
-                if (this.integrationParams.activePlugins[plugin] != 1) break;
+                if (this.integrationParams.activePlugins[plugin] != 1) continue;
 
                 switch (plugin) {
                     case 'ktargetlistexport':
@@ -95,7 +62,7 @@ export class ReporterIntegrationExportButton implements OnChanges, OnDestroy {
                     case 'kexcelexport':
                     case 'kpdfexport':
                     case 'kplannerexport':
-                        return false;
+                        if (this.integrationParams.activePlugins[plugin] == 1) return false;
                 }
             }
         }
@@ -103,22 +70,72 @@ export class ReporterIntegrationExportButton implements OnChanges, OnDestroy {
         return true;
     }
 
-    private toggleOpen() {
-        this.opened = !this.opened;
+    /**
+     * render the action items
+     */
+    public ngAfterViewInit() {
+        this.renderActionItems();
+    }
 
-        if (this.opened) {
-            this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
-        } else if (this.clickListener) {
-            this.clickListener();
+    /**
+     * render the action items
+     */
+    public ngOnChanges() {
+        this.renderActionItems();
+    }
+
+    /**
+     * rerender the action items and push the component reference to array
+     */
+    private renderActionItems() {
+        this.actionComponentRefs.forEach(ref => ref.destroy());
+        this.actionComponentRefs = [];
+
+        if (!this.integrationParams.activePlugins) return;
+
+        for (let plugin in this.integrationParams.activePlugins) {
+
+            // check if the plugin is active
+            if (!this.integrationParams.activePlugins.hasOwnProperty(plugin) || this.integrationParams.activePlugins[plugin] != 1) continue;
+
+            switch (plugin) {
+                case 'ktargetlistexport':
+                    if (this.integrationParams.activePlugins.ktargetlistexport == 1) {
+                        this.renderActionItem('ReporterIntegrationTargetlistexportButton');
+                    }
+                    break;
+                case 'kcsvexport':
+                    if (this.integrationParams.activePlugins.kcsvexport == 1) {
+                        this.renderActionItem('ReporterIntegrationCSVexportButton');
+                    }
+                    break;
+                case 'kexcelexport':
+                    if (this.integrationParams.activePlugins.kexcelexport == 1) {
+                        this.renderActionItem('ReporterIntegrationXLSexportButton');
+                    }
+                    break;
+                case 'kpdfexport':
+                    if (this.integrationParams.activePlugins.kpdfexport == 1) {
+                        this.renderActionItem('ReporterIntegrationPDFexportButton');
+                    }
+
+                    break;
+                case 'kplannerexport':
+                    if (this.integrationParams.activePlugins.kplannerexport == 1) {
+                        this.renderActionItem('SalesPlanningReporterIntegrationExportButton');
+                    }
+                    break;
+            }
         }
     }
 
-    public onClick(event: MouseEvent): void {
-
-        const clickedInside = this.elementRef.nativeElement.contains(event.target);
-        if (!clickedInside) {
-            this.opened = false;
-            this.clickListener();
-        }
+    /**
+     * render action item component by metadata service
+     * @param componentName
+     */
+    private renderActionItem(componentName) {
+        this.metadata.addComponent(componentName, this.actionItemsContainer).subscribe(object => {
+            this.actionComponentRefs.push(object);
+        });
     }
 }
