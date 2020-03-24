@@ -68,7 +68,10 @@ export class KnowledgeBrowserDetails implements OnChanges {
             if (this.rightPanelContainer) {
                 this.rightPanelContainer.renderView();
             }
-            this.knowledgeService.favoriteEnable(this.model.module, this.model.id);
+
+            // ToDo: check if we stiull need that or can avoid this for favs on the knkowledge books
+            // this.knowledgeService.favoriteEnable(this.model.module, this.model.id);
+
             this.breadcrumbs = [];
             this.model.getData(true, "", true)
                 .subscribe(data => {
