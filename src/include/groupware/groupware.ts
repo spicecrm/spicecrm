@@ -27,6 +27,7 @@ import /*embed*/ {GroupwareReadPaneLinked} from './components/groupwarereadpanel
 import /*embed*/ {GroupwareReadPaneSearch} from './components/groupwarereadpanesearch';
 import /*embed*/ {GroupwareDetailPane} from './components/groupwaredetailpane';
 import /*embed*/ {GroupwareDetailPaneBean} from './components/groupwaredetailpanebean';
+import /*embed*/ {GroupwareMeetingPane} from "./components/groupwaremeetingpane";
 
 @NgModule({
     imports: [
@@ -40,6 +41,7 @@ import /*embed*/ {GroupwareDetailPaneBean} from './components/groupwaredetailpan
         RouterModule.forRoot([
             {path: 'mailitem', component: GroupwareReadPane, canActivate: [loginCheck]},
             {path: 'details', component: GroupwareDetailPane, canActivate: [loginCheck]},
+            {path: 'meeting', component: GroupwareMeetingPane, canActivate: [loginCheck]},
         ])
     ],
     declarations: [
@@ -53,6 +55,7 @@ import /*embed*/ {GroupwareDetailPaneBean} from './components/groupwaredetailpan
         GroupwareReadPaneSearch,
         GroupwareDetailPane,
         GroupwareDetailPaneBean,
+        GroupwareMeetingPane,
     ]
 })
 export class ModuleGroupware {
