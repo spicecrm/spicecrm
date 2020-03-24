@@ -31,9 +31,7 @@ export class ReporterIntegrationXLSexportButton {
      */
     @ViewChild('downloadlink', {read: ViewContainerRef, static: true}) private downloadlink: ViewContainerRef;
 
-
-    private loadUrl: any = undefined;
-    private fileName: string = 'file.csv';
+    private fileName: string = 'file.xls';
 
     constructor(private language: language, private metadata: metadata, private backend: backend, private model: model, private modal: modal, private footer: footer, private reporterconfig: reporterconfig, private toast: toast) {
     }
@@ -50,7 +48,7 @@ export class ReporterIntegrationXLSexportButton {
      */
     private exportXLS() {
         // check if user has export right
-        if(!this.canExport) return;
+        if (!this.canExport) return;
 
         // build wherecondition
         let whereConditions: any[] = [];
@@ -68,18 +66,23 @@ export class ReporterIntegrationXLSexportButton {
         // generate a filename
         this.fileName = this.model.data.name.replace(' ', '_') + '_' + moment().format('YYYY_MM_DD_HH_mm_ss') + '.xlsx';
 
-        let awaitpromise =  this.modal.await(this.language.getLabel('LBL_LOADING'));
+        let awaitpromise = this.modal.await(this.language.getLabel('LBL_LOADING'));
         this.backend.getDownloadPostRequestFile('KReporter/plugins/action/kexcelexport/export', {
             record: this.model.id,
             dynamicoptions: JSON.stringify(whereConditions)
         }).subscribe(
             url => {
-            this.loadUrl = url;
-            this.downloadlink.element.nativeElement.href = url;
-            this.downloadlink.element.nativeElement.click();
-            awaitpromise.emit(true);
-        },
-            error=> {
+                let a = document.createElement("a");
+                document.body.appendChild(a);
+                a.href = url;
+                a.download = this.fileName;
+                a.type = 'application/x-xls';
+                a.click();
+                a.remove();
+
+                awaitpromise.emit(true);
+            },
+            error => {
                 awaitpromise.emit(true);
                 this.toast.sendToast('Error Loading File', "error");
             });
