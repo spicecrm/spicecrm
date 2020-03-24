@@ -25,6 +25,7 @@ import /*embed*/ {ViewProviderDirective} from './directives/viewprovider';
 import /*embed*/ {SpiceDropFileArea} from './directives/spicedropfilearea';
 import /*embed*/ {OverlayLoadingSpinner} from './directives/overlayloadingspinner';
 import /*embed*/ {SystemResizeDirective} from './directives/systemresize';
+import /*embed*/ {SystemTitleDirective} from './directives/systemtitle';
 
 /**
  * the angular module that collects all teh directives and can be imported by other modules to use the set of directives
@@ -49,7 +50,8 @@ import /*embed*/ {SystemResizeDirective} from './directives/systemresize';
         ViewProviderDirective,
         SpiceDropFileArea,
         OverlayLoadingSpinner,
-        SystemResizeDirective
+        SystemResizeDirective,
+        SystemTitleDirective
     ],
     exports: [
         ModelPopOverDirective,
@@ -67,7 +69,8 @@ import /*embed*/ {SystemResizeDirective} from './directives/systemresize';
         ViewProviderDirective,
         SpiceDropFileArea,
         OverlayLoadingSpinner,
-        SystemResizeDirective
+        SystemResizeDirective,
+        SystemTitleDirective
     ]
 })
 export class DirectivesModule {
