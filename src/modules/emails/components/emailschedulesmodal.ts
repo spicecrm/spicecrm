@@ -67,10 +67,10 @@ export class EmailSchedulesModal {
             this.backend.postRequest('/modules/EmailSchedules/saveSchedule', {}, body).subscribe(result => {
                 loadingRef.instance.self.destroy();
                 if (result.status) {
-                    this.toast.sendToast(result.status, 'success');
+                    this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
                     this.close();
                 } else {
-                    this.toast.sendToast(result.status, 'error');
+                    this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
                 }
             });
         });
