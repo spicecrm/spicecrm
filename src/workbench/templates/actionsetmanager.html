@@ -19,11 +19,11 @@
                 <div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="currentActionSet.id" (change)="selectCurrentActionset()" [disabled]="getActionSets().length == 0">
                         <option></option>
-                        <optgroup label="custom <system-label label="LBL_ACTIONSET"></system-label>" *ngIf="getActionSets('custom').length > 0">
+                        <optgroup [label]="'custom' +  language.getLabel('LBL_ACTIONSET')" *ngIf="getActionSets('custom').length > 0">
                             <option *ngFor="let sysActionset of getActionSets('custom')" [value]="sysActionset.id">{{sysActionset.name}}
                             </option>
                         </optgroup>
-                        <optgroup label="global <system-label label="LBL_ACTIONSET"></system-label>"  *ngIf="getActionSets('global').length > 0">
+                        <optgroup [label]="'global' +  language.getLabel('LBL_ACTIONSET')"  *ngIf="getActionSets('global').length > 0">
                             <option *ngFor="let sysActionset of getActionSets('global')" [value]="sysActionset.id">{{sysActionset.name}}
                             </option>
                         </optgroup>
