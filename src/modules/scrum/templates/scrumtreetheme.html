@@ -6,6 +6,6 @@
     <scrum-tree-additem [title]="title" (newitem)="loadChanges($event)" module="ScrumEpics"></scrum-tree-additem>
 </div>
 <system-spinner class="slds-p-around--xx-small" *ngIf="epics.isloading && has_epics"></system-spinner>
-<ul role="group" class="scrum-tree-theme-drop-list" *ngIf="epics.items.length > 0" cdkDropList [cdkDropListData]="epics.items" cdkDropListLockAxis="y" (cdkDropListDropped)="this.scrum.onDrop($event, 'ScrumEpics')">
+<ul role="group" class="scrum-tree-theme-drop-list" *ngIf="epics.items.length > 0" cdkDropList [cdkDropListData]="epics.items" cdkDropListLockAxis="y" (cdkDropListDropped)="this.scrum.onDrop($event, 'ScrumEpics', epics)">
     <li *ngFor="let epic of epics.items" cdkDrag cdkDragBoundary=".scrum-tree-theme-drop-list" scrum-tree-epic [epic]="epic" aria-level="2" role="treeitem" class="slds-drag--preview" style="list-style: none"></li>
 </ul>
