@@ -1,14 +1,20 @@
-<div [overlayLoadingSpinner]="isLoading" tobottomnoscroll>
-    <table *ngIf="emailschedules.length > 0" width="100%" class="slds-table slds-table_cell-buffer slds-table_bordered">
+<div [overlayLoadingSpinner]="isLoading" tobottom>
+    <div class="slds-grid slds-p-around--small" style="align-items: center">
+        <system-icon class="slds-col slds-grow-none" [module]="'EmailSchedules'"
+                     [title]="'EmailSchedules'"></system-icon>
+        <h2 class="slds-col">{{language.getModuleName('EmailSchedules')}}</h2>
+    </div>
+    <table *ngIf="emailschedules.length > 0" width="100%"
+           class="slds-table slds-table_cell-buffer slds-table_bordered">
         <thead>
         <tr class="slds-line-height_reset">
-            <th class="" scope="col">
+            <th>
                 <div class="slds-truncate">Id</div>
             </th>
-            <th class="" scope="col">
+            <th>
                 <div class="slds-truncate">{{language.getLabel('LBL_SUBJECT')}}</div>
             </th>
-            <th class="" scope="col">
+            <th>
                 <div class="slds-truncate">{{language.getLabel('LBL_STATUS')}}</div>
             </th>
         </tr>
@@ -27,10 +33,12 @@
         </tr>
         </tbody>
     </table>
-    <div *ngIf="emailschedules.length == 0 && !isLoading" class="slds-align--absolute-center" style="height: calc(100% - 35px)">
+    <div *ngIf="emailschedules.length == 0 && !isLoading" class="slds-align--absolute-center"
+         style="height: calc(100% - 35px)">
         <system-illustration-no-records>{{language.getLabel('MSG_NO_RECORDS_FOUND')}}</system-illustration-no-records>
     </div>
     <div *ngIf="!isLoading && locked" class="slds-align--absolute-center" style="height: calc(100% - 35px)">
         <system-illustration-no-access>{{language.getLabel('LBL_NO_ACCESS')}}</system-illustration-no-access>
     </div>
+
 </div>
