@@ -13,6 +13,9 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
+// import interfaces
+import /*embed*/ {mapOptionsI,RecordI,DirectionResultI,RoutePointI} from './interfaces/spicemap.interfaces';
+
 import /*embed*/ {SpiceMap} from './components/spicemap';
 import /*embed*/ {SpiceGoogleMapsList} from './components/spicegooglemapslist';
 import /*embed*/ {SpiceGoogleMapsRecord} from './components/spicegooglemapsrecord';

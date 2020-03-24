@@ -36,7 +36,10 @@ export class KnowledgeManagerDetails implements OnDestroy {
         if (this.docId && this.docId !== "") {
             this.view.setViewMode();
             this.model.id = this.docId;
-            this.knowledgeService.favoriteEnable(this.model.module, this.model.id);
+
+            // ToDo: check if we stiull need that or can avoid this for favs on the knkowledge books
+            // this.knowledgeService.favoriteEnable(this.model.module, this.model.id);
+
             this.model.getData(true, "", true).subscribe(data => this.renderView());
         }
     }

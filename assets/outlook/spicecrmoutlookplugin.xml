@@ -129,7 +129,7 @@
                                         <bt:Image size="80" resid="icon80"/>
                                     </Icon>
                                     <Action xsi:type="ShowTaskpane">
-                                        <SourceLocation resid="crmURL"/>
+                                        <SourceLocation resid="meetingURL"/>
                                     </Action>
                                 </Control>
                                 <!-- Go to http://aka.ms/ButtonCommands to learn how to add more Controls: ExecuteFunction and Menu -->
@@ -152,6 +152,7 @@
                         DefaultValue="https://<serverurl>/assets/outlook/function-file.html"/>
                 <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://<serverurl>/outlook.html#/mailitem"/>
                 <bt:Url id="crmURL" DefaultValue="https://<serverurl>/outlook.html#/details"/>
+                <bt:Url id="meetingURL" DefaultValue="https://<serverurl>/outlook.html#/meeting"/>
             </bt:Urls>
             <bt:ShortStrings>
                 <bt:String id="groupLabel" DefaultValue="SpiceCRM"/>
@@ -241,7 +242,7 @@
                                             <bt:Image size="80" resid="icon80"/>
                                         </Icon>
                                         <Action xsi:type="ShowTaskpane">
-                                            <SourceLocation resid="crmURL"/>
+                                            <SourceLocation resid="meetingURL"/>
                                         </Action>
                                     </Control>
                                     <!-- Go to http://aka.ms/ButtonCommands to learn how to add more Controls: ExecuteFunction and Menu -->
@@ -309,6 +310,7 @@
                     <bt:Url id="functionFile" DefaultValue="https://<serverurl>/assets/outlook/function-file.html"/>
                     <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://<serverurl>/outlook.html#/mailitem"/>
                     <bt:Url id="crmURL" DefaultValue="https://<serverurl>/outlook.html#/details"/>
+                    <bt:Url id="meetingURL" DefaultValue="https://<serverurl>/outlook.html#/meeting"/>
                 </bt:Urls>
                 <bt:ShortStrings>
                     <bt:String id="groupLabel" DefaultValue="SpiceCRM"/>
