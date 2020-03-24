@@ -24,6 +24,7 @@ export class DashboardAddElement {
     private loadLimit: number = 40;
     private addDashlet: EventEmitter<any> = new EventEmitter<any>();
     private searchTimeout: any;
+    private modules = [];
 
     constructor(private language: language, private metadata: metadata, private backend: backend) {
     }
@@ -53,12 +54,9 @@ export class DashboardAddElement {
         }
     }
 
-    get modules() {
-        return this.metadata.getModules();
-    }
-
     public ngOnInit() {
         this.getDashlets();
+        this.modules = this.metadata.getModules().sort();
     }
 
     private resetValues() {
