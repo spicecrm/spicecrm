@@ -22,7 +22,7 @@ import {view} from "../../../services/view.service";
 
 @Component({
     selector: 'groupware-meeting-pane',
-    templateUrl: './src/include/outlook/templates/groupwaremeetingpane.html'
+    templateUrl: './src/include/groupware/templates/groupwaremeetingpane.html'
 })
 export class GroupwareMeetingPane {
 
