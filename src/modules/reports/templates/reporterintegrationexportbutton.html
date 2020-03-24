@@ -1,11 +1,11 @@
-<div class="slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open':opened}">
-    <button class="slds-button slds-button--neutral" aria-haspopup="true" [disabled]="isDisabled" (click)="toggleOpen()" style="border-top-right-radius: 0;border-bottom-right-radius: 0;">
-        <span>Export</span>
+<div class="slds-dropdown-trigger slds-dropdown-trigger_click" dropdowntriggersimple>
+    <button class="slds-button slds-button--neutral" aria-haspopup="true" [disabled]="isDisabled" style="border-top-right-radius: 0;border-bottom-right-radius: 0;">
+        <span><system-label label="LBL_EXPORT"></system-label></span>
         <system-button-icon [icon]="'down'"></system-button-icon>
     </button>
     <div class="slds-dropdown slds-dropdown_right">
         <ul class="slds-dropdown__list" role="menu">
-            <div #actionitems></div>
+            <div #actionItemsContainer></div>
         </ul>
     </div>
 </div>
