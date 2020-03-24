@@ -4,7 +4,7 @@
                      [title]="'EmailSchedules'"></system-icon>
         <h2 class="slds-col">{{language.getModuleName('EmailSchedules')}}</h2>
     </div>
-    <table [overlayLoadingSpinner]="isLoading" *ngIf="emailschedules.length > 0" width="100%"
+    <table *ngIf="emailschedules.length > 0" width="100%"
            class="slds-table slds-table_cell-buffer slds-table_bordered">
         <thead>
         <tr class="slds-line-height_reset">
