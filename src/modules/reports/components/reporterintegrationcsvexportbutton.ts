@@ -27,11 +27,6 @@ declare var moment: any;
 export class ReporterIntegrationCSVexportButton {
 
     /**
-     * a getter to check if the user is allowed to export
-     */
-    @ViewChild('downloadlink', {read: ViewContainerRef, static: true}) private downloadlink: ViewContainerRef;
-
-    /**
      * the url for the download
      */
     private loadUrl: any = undefined;
@@ -78,8 +73,14 @@ export class ReporterIntegrationCSVexportButton {
             dynamicoptions: JSON.stringify(whereConditions)
         }).subscribe(
             url => {
-                this.downloadlink.element.nativeElement.href = url;
-                this.downloadlink.element.nativeElement.click();
+                let a = document.createElement("a");
+                document.body.appendChild(a);
+                a.href = url;
+                a.download = this.fileName;
+                a.type = 'text/css';
+                a.click();
+                a.remove();
+
                 awaitpromise.emit(true);
             },
             error => {
