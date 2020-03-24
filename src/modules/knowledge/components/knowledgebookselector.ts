@@ -96,7 +96,9 @@ export class KnowledgeBookSelector {
         this.knowledgeService.selectedDoc = "";
         this.knowledgeService.documents = [];
         this.knowledgeService.setLastViewedBook(true);
-        this.knowledgeService.favoriteDisable();
+
+        // ToDo: check if we stiull need that or can avoid this for favs on the knkowledge books
+        // this.knowledgeService.favoriteDisable();
     }
 
     private trackByFn(index, item) {
