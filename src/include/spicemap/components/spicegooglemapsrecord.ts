@@ -40,12 +40,7 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
     /**
      * map options will be passed to the spice google maps
      */
-    protected mapOptions: mapOptionsI = {
-        showMyLocation: true,
-        showCluster: true,
-        markerWithModelPopover: true,
-        radius: 5
-    };
+    protected mapOptions: mapOptionsI = {};
     /**
      * save the google places search term
      */
@@ -86,7 +81,10 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
     }
 
     /**
-     * sets the use map for to adjust map options
+     * reset the map options for the map use purpose from the component config
+     * reset the direction start type
+     * reset the map records
+     *
      * @param value
      */
     set useMapFor(value) {
@@ -96,22 +94,12 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
         this._useMapFor = value;
         this.directionStartType = undefined;
         if (value == 'search') {
-            this.mapOptions = {
-                showCluster: !!this.componentconfig.showCluster,
-                markerWithModelPopover: !!this.componentconfig.markerWithModelPopover,
-                showMyLocation: !!this.componentconfig.showMyLocation,
-                radius: !isNaN(this.componentconfig.defaultRadius) ? +this.componentconfig.defaultRadius : 5
-            };
+            this.mapOptions = {...this.componentconfig};
             this.directionResult = undefined;
             this.setCenterFromModel();
             this.setRecords();
         } else {
-            this.mapOptions = {
-                showCluster: false,
-                markerWithModelPopover: false,
-                center: undefined,
-                directionTravelMode: (this.componentconfig.directionTravelMode || 'DRIVING')
-            };
+            this.setMapOptionsForDirectionUse();
             this.records = [];
         }
     }
@@ -216,6 +204,15 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
      */
     private setComponentName() {
         this.componentName = 'SpiceGoogleMapsRecord';
+    }
+
+    private setMapOptionsForDirectionUse() {
+        this.mapOptions = {
+            showCluster: false,
+            markerWithModelPopover: false,
+            center: undefined,
+            directionTravelMode: this.componentconfig.directionTravelMode
+        };
     }
 
     /**

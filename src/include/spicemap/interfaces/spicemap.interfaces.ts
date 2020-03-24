@@ -24,6 +24,8 @@ export interface mapOptionsI {
     directionTravelMode?: 'DRIVING' | 'BICYCLING' | 'TRANSIT' | 'WALKING';
     /** radius of the drawn circle */
     radius?: number;
+    /** default radius of the drawn circle */
+    defaultRadius?: number;
 }
 
 /**
