@@ -1,8 +1,9 @@
 /**
  * @module ModuleActivities
  */
-import {Component, Injector, OnDestroy, OnInit} from '@angular/core';
+import {Component, Injector, OnDestroy, OnInit, Optional} from '@angular/core';
 import {language} from '../../../services/language.service';
+import {navigationtab} from '../../../services/navigationtab.service';
 import {model} from '../../../services/model.service';
 import {activitiytimeline} from '../../../services/activitiytimeline.service';
 import {modelattachments} from "../../../services/modelattachments.service";
@@ -40,7 +41,9 @@ export class ActivityTimeline implements OnInit, OnDestroy {
                 public activitiytimeline: activitiytimeline,
                 public metadata: metadata,
                 public utils: modelutilities,
-                public injector: Injector) {
+                @Optional() public navigationtab: navigationtab,
+                public injector: Injector
+    ) {
     }
 
     /**
