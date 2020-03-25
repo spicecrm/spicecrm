@@ -162,6 +162,7 @@ export class ReporterIntegrationQueryanalyzerModal implements OnInit {
         // fnd the matchs and
         let matches = this.mainquery.match(/FROM\s*[a-z_]*\s[a-z]*/gm).concat(this.mainquery.match(/JOIN\s*[a-z_]*\s[a-z]*/gm));
         for (let match of matches) {
+            if(!match) continue;
             let clausArray = match.split(' ');
             if (clausArray.length == 3) {
                 let tablename = clausArray[1];
