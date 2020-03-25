@@ -17,8 +17,8 @@ wenn nicht einfach das von oben zeigen
 wenn es nicht in spice ist aber parent type,id und exchange id dann abspeichern (und dann im hintergrund den rest holen)
 */
 import {Component} from "@angular/core";
-import {model} from "../../../services/model.service";
-import {view} from "../../../services/view.service";
+// import {model} from "../../../services/model.service";
+// import {view} from "../../../services/view.service";
 
 @Component({
     selector: 'groupware-meeting-pane',
@@ -26,11 +26,9 @@ import {view} from "../../../services/view.service";
 })
 export class GroupwareMeetingPane {
 
-    private _currentroute: string = 'meeting';
-
     constructor(
-        private model: model,
-        private view: view
+        /*private model: model,
+        private view: view*/
     ) {
         console.log('meeting pane');
     }
