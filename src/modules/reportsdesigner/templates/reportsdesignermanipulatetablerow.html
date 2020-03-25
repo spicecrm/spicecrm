@@ -45,7 +45,7 @@
     <button class="slds-button slds-button--icon" (click)="deleteField()">
         <system-button-icon icon="delete"></system-button-icon>
     </button>
-    <system-utility-icon [icon]="reportsDesignerService.manipulateExpandedItemId == listItem.fieldid ? 'up' : 'down'" (click)="toggleExpand()"
+    <system-utility-icon [icon]="reportsDesignerService.manipulateExpandedItemId == listItem.fieldid ? 'up' : 'down'" (click)="toggleExpand($event)"
                          [colorclass]="reportsDesignerService.expertMode ? 'slds-icon-text-default' : 'slds-icon-text-light'"
                          size="x-small" class="slds-p-horizontal--xx-small slds-p-vertical--xx-small" style="cursor: pointer"></system-utility-icon>
 </td>
