@@ -31,5 +31,7 @@ export class GroupwareMeetingPane {
     constructor(
         private model: model,
         private view: view
-    ) {}
+    ) {
+        console.log('meeting pane');
+    }
 }
