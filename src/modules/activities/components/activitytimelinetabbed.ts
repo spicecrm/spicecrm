@@ -21,7 +21,12 @@ export class ActivityTimelineTabbed extends ActivityTimeline implements OnInit, 
      * display the summary
      */
     private displaySummary() {
-        this.router.navigate(["/module/" + this.model.module + "/historysummary/" + this.model.id]);
+        let routeprefix = '';
+        if (this.navigationtab?.tabid) {
+            routeprefix = '/tab/' + this.navigationtab.tabid
+        }
+
+        this.router.navigate([routeprefix + "/module/" + this.model.module + "/historysummary/" + this.model.id]);
     }
 
 }

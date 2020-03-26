@@ -100,7 +100,9 @@ export class ReportsDesignerManipulateTableRow {
     /**
     * @set expandedItemId = fieldId | ''
      */
-    private toggleExpand() {
+    private toggleExpand(e: MouseEvent) {
+        e.stopPropagation();
+
         if (!this.reportsDesignerService.expertMode) return;
         this.reportsDesignerService.manipulateExpandedItemId = this.reportsDesignerService.manipulateExpandedItemId == this.listItem.fieldid ? '' : this.listItem.fieldid;
     }
