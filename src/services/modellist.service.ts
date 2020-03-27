@@ -1253,14 +1253,20 @@ export class modellist implements OnDestroy {
                 }
             );
         } else {
+            let aggregates = {};
+            aggregates[this.module] = this.selectedAggregates;
             this.backend.getLinkToDownload(
                 '/module/' + this.module + '/export',
                 'POST',
                 {},
                 {
                     listid: this.currentList.id,
+                    modulefilter: this.modulefilter,
                     sortfields: this.sortArray,
-                    fields: fields ? fields : this.lastFields
+                    fields: fields ? fields : this.lastFields,
+                    searchterm: this.searchTerm,
+                    searchgeo: this.searchGeo,
+                    aggregates: aggregates,
                 }
             ).subscribe(
                 (res) => {
