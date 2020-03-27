@@ -75,7 +75,7 @@ export class ReportsDesignerManipulateUnion {
     private linkUnionField(unionField, dragField) {
         const rootPath = this.reportsDesignerService.getCurrentPath().indexOf('link') < 0 ? 'unionroot::' : '';
         const unionPath = this.reportsDesignerService.getCurrentPath().replace('root:' , '');
-        unionField.unionfieldname = dragField.fieldname;
+        unionField.unionfieldname = dragField.name;
         unionField.unionfielddisplayname = dragField.label;
         unionField.unionfielddisplaypath = this.reportsDesignerService.getCurrentPath();
         unionField.unionfieldpath = `${rootPath}union${this.module.unionid}:${unionPath}::${dragField.id}`;
