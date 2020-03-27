@@ -1,13 +1,15 @@
 /**
  * @module ObjectComponents
  */
-import {AfterViewInit, Component, Injector, OnDestroy} from '@angular/core';
+import {AfterViewInit, Component, Injector, OnDestroy, Optional} from '@angular/core';
 import {Router} from '@angular/router';
+import {Subscription} from "rxjs";
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {helper} from '../../services/helper.service';
 import {language} from '../../services/language.service';
-import {Subscription} from "rxjs";
+import {navigationtab} from '../../services/navigationtab.service';
+
 
 /**
  * standard actionset item to delete a model
@@ -34,7 +36,7 @@ export class ObjectActionDeleteButton implements AfterViewInit, OnDestroy {
      */
     public actionconfig: any = {};
 
-    constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private helper: helper, private injector: Injector) {
+    constructor(private language: language, private metadata: metadata, private model: model, @Optional() private navigationtab: navigationtab, private router: Router, private helper: helper, private injector: Injector) {
 
         // handleDisabled on on model.mode changes
         this.subscriptions.add(
@@ -103,11 +105,17 @@ export class ObjectActionDeleteButton implements AfterViewInit, OnDestroy {
     /**
      * completes and redirects to the list except other set in the config
      */
-    private completeAction(){
-        if(this.actionconfig.noredirectoncomplete == true) return;
+    private completeAction() {
+        // if no redirect is supposed to happen return true
+        if (this.actionconfig.noredirectoncomplete == true) return;
 
         // reditrect to the list
         this.router.navigate(['/module/' + this.model.module]);
+
+        // close the tab if we have one
+        if (this.navigationtab) {
+            this.navigationtab.closeTab();
+        }
     }
 
     /*
