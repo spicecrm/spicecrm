@@ -76,7 +76,6 @@ export class EmailSchedulesRelatedModal {
                 links: selectedLinks,
                 data: this.model.data
             };
-
             this.backend.postRequest('/modules/EmailSchedules/saveScheduleFromRelated', {}, body).subscribe(result => {
                 loadingRef.instance.self.destroy();
                 if (result.status) {
