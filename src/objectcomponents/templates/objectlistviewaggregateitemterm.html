@@ -1,2 +1,2 @@
-<system-label *ngIf="item.key == '#not#set#'" label="LBL_NOT_SET"></system-label>
+<span style="font-style: italic;"><system-label *ngIf="item.key == '#not#set#'" label="LBL_NOT_SET"></system-label></span>
 <field-container *ngIf="item.key != '#not#set#'" [fieldname]="aggregate.fielddetails.field" fielddisplayclass="slds-truncate"></field-container>
