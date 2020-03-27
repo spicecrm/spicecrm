@@ -25,7 +25,8 @@ export class ReportsDesignerConditionGroupExpansion implements OnInit {
      * @return jointype: boolean
      */
     get referenceDisabled() {
-        const referenceUsed = this.model.getField('whereconditions').some(condition => condition.referencefieldid == this.whereCondition.fieldid);
+        const referenceUsed = this.model.getField('whereconditions')
+            .some(condition => this.whereCondition.fieldid != condition.fieldid && condition.operator == 'reference' && condition.value == this.whereCondition.reference);
         return this.whereCondition.operator == 'reference' || referenceUsed;
     }
 

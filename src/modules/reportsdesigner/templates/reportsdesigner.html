@@ -56,18 +56,18 @@
                         <system-label label="LBL_FILTER"></system-label>
                     </a>
                 </li>
-                <li (click)="setActiveTab('present')" [class.slds-active]="activeTab == 'present'" [class.slds-text-color--inverse-weak]="reportsDesignerService.listFields.length == 0" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
+                <li (click)="setActiveTab('present')" [class.slds-active]="activeTab == 'present'" [class.slds-text-color--inverse-weak]="reportsDesignerService.listFields?.length == 0" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
                     <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
                         <span class="slds-tabs__left-icon">
-                            <system-utility-icon icon="screen" size="x-small" [colorclass]="reportsDesignerService.listFields.length == 0 ? 'slds-icon-text-light' : 'slds-icon-text-default'"></system-utility-icon>
+                            <system-utility-icon icon="screen" size="x-small" [colorclass]="reportsDesignerService.listFields?.length == 0 ? 'slds-icon-text-light' : 'slds-icon-text-default'"></system-utility-icon>
                         </span>
                         <system-label label="LBL_PRESENT"></system-label>
                     </a>
                 </li>
-                <li (click)="setActiveTab('visualize')" [class.slds-active]="activeTab == 'visualize'" [class.slds-text-color--inverse-weak]="reportsDesignerService.listFields.length == 0" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
+                <li (click)="setActiveTab('visualize')" [class.slds-active]="activeTab == 'visualize'" [class.slds-text-color--inverse-weak]="reportsDesignerService.listFields?.length == 0" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
                     <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
                         <span class="slds-tabs__left-icon">
-                            <system-utility-icon icon="chart" size="x-small" [colorclass]="reportsDesignerService.listFields.length == 0 ? 'slds-icon-text-light' : 'slds-icon-text-default'"></system-utility-icon>
+                            <system-utility-icon icon="chart" size="x-small" [colorclass]="reportsDesignerService.listFields?.length == 0 ? 'slds-icon-text-light' : 'slds-icon-text-default'"></system-utility-icon>
                         </span>
                         <system-label label="LBL_VISUALIZE"></system-label>
                     </a>

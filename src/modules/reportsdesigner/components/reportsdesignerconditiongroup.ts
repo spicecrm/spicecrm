@@ -119,13 +119,22 @@ export class ReportsDesignerConditionGroup {
      */
     private addCondition(field) {
         let guid = this.reportsDesignerService.generateGuid();
+        let path = `${this.reportsDesignerService.getCurrentPath()}::${field.id}`;
+
+        // replace the path with union path
+        if (this.group.unionid != 'root') {
+            const rootPath = this.reportsDesignerService.getCurrentPath().indexOf('link') < 0 ? 'unionroot::' : '';
+            const unionPath = this.reportsDesignerService.getCurrentPath().replace('root:' , '');
+            path = `${rootPath}union${this.group.unionid}:${unionPath}::${field.id}`;
+        }
+
         let condition = {
             id: guid,
             groupid: this.group.id,
             unionid: this.group.unionid,
             fieldid: guid,
             referencefieldid: '',
-            path: `${this.reportsDesignerService.getCurrentPath()}::${field.id}`,
+            path: path,
             displaypath: this.reportsDesignerService.getCurrentPath(),
             name: field.name,
             type: field.type,
