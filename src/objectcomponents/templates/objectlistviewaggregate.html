@@ -1,13 +1,18 @@
 <div class="slds-filters__item">
-    <div class="slds-p-vertical--xx-small">
+    <div class="slds-p-vertical--xx-small slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
         <ul class="slds-list_horizontal slds-has-dividers_right">
             <li class="slds-item" *ngFor="let aggregateNameItem of aggregateNameItems">{{aggregateNameItem}}</li>
         </ul>
+        <button class="slds-button slds-button--icon" (click)="collapsed = !collapsed">
+            <system-button-icon [icon]="collapsed? 'down' : 'up'"></system-button-icon>
+        </button>
     </div>
-    <div class="slds-form-element" *ngFor="let bucketItem of aggregate.buckets">
-        <object-listview-aggregate-item  [bucketitem]="bucketItem" [aggregate]="aggregate" class="slds-form-element__control"></object-listview-aggregate-item >
-    </div>
-    <div *ngIf="aggregate.sum_other_doc_count">
-        <p class="slds-text-body--small slds-text-color--weak">{{aggregate.sum_other_doc_count}} <system-label label="LBL_ARE_NOT_INCLUDED"></system-label>...</p>
-    </div>
+    <ng-container *ngIf="!collapsed">
+        <div class="slds-form-element" *ngFor="let bucketItem of aggregate.buckets">
+            <object-listview-aggregate-item  [bucketitem]="bucketItem" [aggregate]="aggregate" class="slds-form-element__control"></object-listview-aggregate-item >
+        </div>
+        <div *ngIf="aggregate.sum_other_doc_count">
+            <p class="slds-text-body--small slds-text-color--weak">{{aggregate.sum_other_doc_count}} <system-label label="LBL_ARE_NOT_INCLUDED"></system-label>...</p>
+        </div>
+    </ng-container>
 </div>

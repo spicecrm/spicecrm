@@ -90,6 +90,11 @@
                             </div>
                         </div>
                     </div>
+                    <div class="slds-form-element slds-p-vertical--x-small">
+                        <div class="slds-form-element__control">
+                            <system-checkbox [disabled]="fieldDetails.aggregate != 'term'" [(ngModel)]="fieldDetails.aggregateempty"><system-label label="LBL_EMPTYVALUES"></system-label></system-checkbox>
+                        </div>
+                    </div>
                     <div class="slds-form-element" *ngIf="fieldDetails.aggregate">
                         <label class="slds-form-element__label"><system-label label="LBL_PARAMETERS"></system-label></label>
                         <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_AGGREGATE_PARAMS')"></system-icon-help-text>

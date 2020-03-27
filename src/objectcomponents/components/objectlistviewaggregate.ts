@@ -23,6 +23,11 @@ export class ObjectListViewAggregate {
      */
     @Input() public aggregate: any = {};
 
+    /**
+     * if the panel is collapsed
+     */
+    private collapsed: boolean = false;
+
     constructor(public language: language, public modellist: modellist, public model: model) {
     }
 
