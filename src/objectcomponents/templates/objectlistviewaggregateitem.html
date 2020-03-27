@@ -1,7 +1,7 @@
 <div class="slds-grid slds-grid--vertical-align-center">
     <system-checkbox [(ngModel)]="checked"></system-checkbox>
     <!-- switch between the different display types-->
-    <ng-container  [ngSwitch]="aggregate.type">
+    <ng-container [ngSwitch]="aggregate.type">
         <object-listview-aggregate-item-range *ngSwitchCase="'range'" [aggregate]="aggregate" [item]="bucketitem"></object-listview-aggregate-item-range>
         <object-listview-aggregate-item-term *ngSwitchCase="'term'" [aggregate]="aggregate" [item]="bucketitem"></object-listview-aggregate-item-term>
         <div *ngSwitchDefault>{{bucketitem.displayName}}</div>
