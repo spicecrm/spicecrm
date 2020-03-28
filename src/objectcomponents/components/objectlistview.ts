@@ -2,7 +2,7 @@
  * @module ObjectComponents
  */
 
-import {AfterViewInit, Component, ViewChild, ViewContainerRef, OnInit, OnDestroy} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {modellist} from '../../services/modellist.service';
@@ -17,7 +17,8 @@ import {userpreferences} from '../../services/userpreferences.service';
 @Component({
     selector: 'object-listview',
     templateUrl: './src/objectcomponents/templates/objectlistview.html',
-    providers: [modellist, model]
+    providers: [modellist, model],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ObjectListView implements AfterViewInit, OnDestroy {
 
