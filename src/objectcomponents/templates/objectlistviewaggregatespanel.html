@@ -7,9 +7,9 @@
             </div>
             <div class="slds-filters__body" tobottom>
                 <div class="slds-grid_vertical">
-                    <object-listview-tags-aggregate *ngIf="hasTags" [aggregate]="tagsaggregate"></object-listview-tags-aggregate>
-                    <div class="slds-m-vertical--xx-small" *ngFor="let aggregate of getAggregates()">
-                        <object-listview-aggregate [aggregate]="aggregate"></object-listview-aggregate>
+                    <object-listview-tags-aggregate *ngIf="hasTags"></object-listview-tags-aggregate>
+                    <div class="slds-m-vertical--xx-small" *ngFor="let aggregate of aggregates">
+                        <object-listview-aggregate [aggregate]="aggregate" ></object-listview-aggregate>
                     </div>
                 </div>
             </div>
