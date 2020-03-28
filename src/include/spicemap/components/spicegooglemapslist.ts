@@ -1,19 +1,14 @@
 /**
  * @module ModuleSpiceMap
  */
-import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    IterableDiffer,
-    IterableDiffers,
-    OnInit
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, IterableDiffers, OnInit} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {metadata} from "../../../services/metadata.service";
 import {modellist} from "../../../services/modellist.service";
 import {animate, style, transition, trigger} from "@angular/animations";
-import {mapOptionsI, RecordI} from "../interfaces/spicemap.interfaces";
+import {MapCenterI, MapOptionsI, RecordComponentConfigI, RecordI} from "../interfaces/spicemap.interfaces";
+import {model} from "../../../services/model.service";
+import {Subscription} from "rxjs";
 
 /** @ignore */
 const ANIMATIONS = [
@@ -42,6 +37,15 @@ const ANIMATIONS = [
 export class SpiceGoogleMapsList implements OnInit {
 
     /**
+     * save the editing radius value to handle radius changes
+     */
+    public editingRadius: boolean = false;
+
+    /**
+     * save the search around active value to toggle display the search functionality
+     */
+    public searchAroundActive: boolean = false;
+    /**
      * longitude field name to be used for markers position
      */
     public lngName: string = 'longitude';
@@ -50,9 +54,13 @@ export class SpiceGoogleMapsList implements OnInit {
      */
     public latName: string = 'latitude';
     /**
+     * component config from metadata
+     */
+    public componentconfig: RecordComponentConfigI;
+    /**
      * map options will be passed to the spice google maps
      */
-    protected mapOptions: mapOptionsI = {};
+    protected mapOptions: MapOptionsI = {};
     /**
      * List of records to be displayed on the map as markers
      */
@@ -62,20 +70,17 @@ export class SpiceGoogleMapsList implements OnInit {
      */
     protected componentName: string = 'SpiceGoogleMapsList';
     /**
-     * component config from metadata
-     */
-    public componentconfig: mapOptionsI;
-    /**
      * differentiate the records array changes
      */
-    private recordsDiffer: IterableDiffer<any>;
+    private subscription: Subscription = new Subscription();
 
     constructor(
         public language: language,
         public modelList: modellist,
         public metadata: metadata,
         public iterableDiffers: IterableDiffers,
-        public cdr: ChangeDetectorRef,
+        public cdRef: ChangeDetectorRef,
+        public model: model
     ) {
     }
 
@@ -99,14 +104,7 @@ export class SpiceGoogleMapsList implements OnInit {
      */
     public ngOnInit() {
         this.loadComponentConfigs();
-        this.initialize();
-    }
-
-    /**
-     * check for any changes on the record
-     */
-    public ngDoCheck() {
-        this.handleRecordChanges();
+        this.subscribeToListLoaded();
     }
 
     /**
@@ -122,7 +120,7 @@ export class SpiceGoogleMapsList implements OnInit {
                 lng: +item[this.lngName],
                 lat: +item[this.latName]
             }));
-        this.cdr.detectChanges();
+        this.cdRef.detectChanges();
     }
 
     /**
@@ -151,11 +149,20 @@ export class SpiceGoogleMapsList implements OnInit {
         if (!this.componentconfig.hasOwnProperty('defaultRadius') || isNaN(this.componentconfig.defaultRadius)) {
             this.componentconfig.defaultRadius = 10;
         }
-        if (!this.componentconfig.directionTravelMode || ['DRIVING','WALKING','TRANSIT','BICYCLING'].indexOf(this.componentconfig.directionTravelMode) == -1) {
+        if (!this.componentconfig.directionTravelMode || ['DRIVING', 'WALKING', 'TRANSIT', 'BICYCLING'].indexOf(this.componentconfig.directionTravelMode) == -1) {
             this.componentconfig.directionTravelMode = 'DRIVING';
         }
+        if (!this.componentconfig.mapHeight) {
+            this.componentconfig.mapHeight = 300;
+        }
+        if (!this.componentconfig.focusColor) {
+            this.componentconfig.focusColor = '#1A73E8';
+        }
+        if (!this.componentconfig.defaultRadius) {
+            this.componentconfig.defaultRadius = 5;
+        }
 
-        this.mapOptions = {...this.componentconfig};
+        this.setFirstMapOptionsChanged();
 
         const moduleDefs = this.metadata.getModuleDefs(this.modelList.module);
         if (!!moduleDefs && !!moduleDefs.ftsgeo) {
@@ -165,22 +172,61 @@ export class SpiceGoogleMapsList implements OnInit {
     }
 
     /**
-     * reset records on if changed
+     * set changed property for mapOptions to trigger change detections on the map
      */
-    private handleRecordChanges() {
-        if (this.recordsDiffer.diff(this.modelList.listData.list)) {
-            this.setRecords();
-        }
+    public setFirstMapOptionsChanged() {
+        this.mapOptions = {
+            ...this.componentconfig, changed: {
+                circle: true,
+                showMyLocation: true,
+                showCluster: true,
+                markerWithModelPopover: true,
+                directionTravelMode: true,
+                unitSystem: true,
+                focusColor: true,
+            }
+        };
     }
 
     /**
-     * set iterable differs on the loaded list records to reduce change detection trigger
-     * load the list data
+     * set search geo filter on modelList and reload the records list
      */
-    private initialize() {
-        this.recordsDiffer = this.iterableDiffers.find([]).create(null);
-        this.modelList.loadlimit = 20;
-        this.modelList.getListData();
+    public onRadiusChange(radius: number) {
+
+        if (!!this.mapOptions.circle) {
+            this.mapOptions.circle.radius = radius;
+        }
+        if (this.editingRadius) return;
+
+        this.modelList.searchGeo = {
+            radius: radius,
+            lat: this.mapOptions.circle.center.lat,
+            lng: this.mapOptions.circle.center.lng
+        };
+        this.modelList.reLoadList(true).subscribe(() => {
+            this.setRecords();
+        });
+    }
+
+    /**
+     * set search geo filter on modelList and reload the records list
+     */
+    public onCenterChange(center: MapCenterI) {
+        this.mapOptions.circle.center = center;
+    }
+
+    /**
+     * reset the map options with the changed object property set to true to force the map component to reload by property
+     */
+    public setMapOptionChanged(property: string) {
+        this.mapOptions.changed = {[property]: true};
+        this.mapOptions = {...this.mapOptions};
+    }
+
+    private subscribeToListLoaded() {
+        this.subscription = this.modelList.listDataReloaded$.subscribe(() => {
+            this.setRecords();
+        });
     }
 
     /**
@@ -188,5 +234,48 @@ export class SpiceGoogleMapsList implements OnInit {
      */
     private loadMore() {
         this.modelList.loadMoreList();
+    }
+
+    /**
+     * toggle search around to draw/remove the circle on the map
+     */
+    private toggleSearchAround() {
+        this.searchAroundActive = !this.searchAroundActive;
+        if (!this.searchAroundActive) {
+            this.mapOptions.circle = undefined;
+            this.editingRadius = false;
+            this.modelList.searchGeo = undefined;
+            this.modelList.reLoadList(true);
+        } else {
+            this.mapOptions.circle = {
+                center: null,
+                draggable: true,
+                radius: this.componentconfig.defaultRadius
+            };
+            this.startRadiusEditing();
+        }
+        this.setMapOptionChanged('circle');
+    }
+
+    /**
+     * set editing radius to true
+     */
+    private startRadiusEditing() {
+        this.editingRadius = true;
+    }
+
+    /**
+     * set editing radius to false
+     */
+    private cancelEditingRadius() {
+        this.editingRadius = false;
+    }
+
+    /**
+     * call confirm circle changes and stop editing radius
+     */
+    private confirmRadiusInput() {
+        this.editingRadius = false;
+        this.setMapOptionChanged('circleRadius');
     }
 }
