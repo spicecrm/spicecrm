@@ -1,6 +1,6 @@
-<div style="width: 100%" class="slds-grid slds-grid--vertical" tobottomnoscroll>
+<div #mainContainer style="width: 100%" class="slds-grid slds-grid--vertical slds-theme--default slds-height_full">
     <div>
-        <div class="slds-grid slds-p-bottom--x-small">
+        <div class="slds-grid slds-p-bottom--x-small" [class.slds-p-around--x-small]="isFullScreenOn">
             <div class="slds-radio_button-group slds-m-right--x-small">
                 <span class="slds-button slds-radio_button">
                     <input type="radio" name="useMapForOption" value="search" [(ngModel)]="useMapFor" [disabled]="isLoadingDirection" id="spice-google-maps-record-use-map-for-search">
@@ -63,6 +63,9 @@
                     </div>
                 </div>
             </ng-template>
+            <button class="slds-button slds-button--neutral slds-button--icon-border slds-m-left--xx-small slds-m-right--xxx-small slds-col--bump-left" (click)="toggleFullScreen(mainContainer)">
+                <system-button-icon [icon]="!isFullScreenOn ? 'expand' : 'contract'"></system-button-icon>
+            </button>
         </div>
         <div class="slds-grid slds-theme--shade slds-p-around--xx-small slds-border--bottom slds-border--top slds-border--left slds-border--right">
             <div *ngIf="useMapFor == 'search'; else directionInfoContainer" class="slds-grid">
@@ -75,7 +78,7 @@
             <ng-template #directionInfoContainer>
                 <system-utility-icon [icon]="(mapOptions.directionTravelMode == 'DRIVING' && !!directionResult) ? 'travel_and_places' : 'info_alt'" size="x-small" class="slds-m-right--x-small"></system-utility-icon>
                 <span *ngIf="directionResult; else infoTextContainer">
-                    {{directionResult.duration?.hours}} h {{directionResult.duration?.minutes}} min ( {{directionResult.distance}} m )
+                    {{directionResult.duration?.hours}} h {{directionResult.duration?.minutes}} min ( {{directionResult.distance.text}} )
                 </span>
                 <ng-template #infoTextContainer>
                     <span class="slds-truncate">
@@ -85,8 +88,10 @@
             </ng-template>
         </div>
     </div>
-    <div class="slds-is-relative slds-grow slds-grid slds-grid--vertical" [overlayLoadingSpinner]="isLoading || isLoadingDirection">
-        <spice-google-maps [options]="mapOptions" [records]="records" [routes]="routes" (radiusChange)="onRadiusChange($event)" (directionChange)="setDirectionResult($event)" style="display: block" class="slds-grow"></spice-google-maps>
+    <div class="slds-border--left slds-border--right slds-grid slds-grid--vertical slds-grow" style="min-height: 0;" [overlayLoadingSpinner]="isLoading || isLoadingDirection">
+        <spice-google-maps [options]="mapOptions" [records]="records" [routes]="routes" (radiusChange)="onRadiusChange($event)" (directionChange)="setDirectionResult($event)"
+                           [style.height]="!isFullScreenOn ? componentconfig.mapHeight + 'px' : useMapFor == 'search' ? '50%' : '100%'" style="display: block"></spice-google-maps>
+        <object-list *ngIf="useMapFor == 'search'" style="display: block; height: 250px; min-height: 250px; max-height: 500px"></object-list>
         <div @animatepanel *ngIf="modelList.displayAggregates" class="slds-is-absolute slds-panel slds-panel--filters slds-filters__body slds-nowrap  slds-scrollable--y" style="width: 320px; height: 100%; top:0; right: 0;z-index: 99;" [modelProvider]="{module: modelList.module}">
             <div class="slds-filters__body slds-grid_vertical">
                 <div class="slds-m-vertical--xx-small" *ngFor="let aggregate of listAggregates">

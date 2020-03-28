@@ -1,7 +1,7 @@
 /**
  * @module ModuleSpiceMap
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, IterableDiffers, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, IterableDiffers, OnDestroy, OnInit} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {metadata} from "../../../services/metadata.service";
 import {modellist} from "../../../services/modellist.service";
@@ -34,7 +34,7 @@ const ANIMATIONS = [
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: ANIMATIONS
 })
-export class SpiceGoogleMapsList implements OnInit {
+export class SpiceGoogleMapsList implements OnInit, OnDestroy {
 
     /**
      * save the editing radius value to handle radius changes
@@ -72,7 +72,7 @@ export class SpiceGoogleMapsList implements OnInit {
     /**
      * differentiate the records array changes
      */
-    private subscription: Subscription = new Subscription();
+    public subscription: Subscription = new Subscription();
 
     constructor(
         public language: language,
@@ -105,6 +105,13 @@ export class SpiceGoogleMapsList implements OnInit {
     public ngOnInit() {
         this.loadComponentConfigs();
         this.subscribeToListLoaded();
+    }
+
+    /**
+     * unsubscribe from subscriptions
+     */
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 
     /**
