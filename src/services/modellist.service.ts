@@ -38,6 +38,12 @@ export class modellist implements OnDestroy {
 
 
     /**
+     * a behavioural subject to catch the list data loads
+     */
+    public listDataReloaded$: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+
+    /**
      * a behavioural subject for the listtype to catch changes in other components
      */
     public listtype$: BehaviorSubject<string>;
@@ -388,6 +394,8 @@ export class modellist implements OnDestroy {
         if (this.currentList.id == 'all' || this.currentList.id == 'owner') {
             this.userpreferences.setPreference('defaultlisttype', listcomponent, false, 'SpiceUI_' + this.module);
         }
+        // determine the listfields
+        this.determineListFields();
     }
 
     /**
@@ -551,7 +559,7 @@ export class modellist implements OnDestroy {
         let fielddefs = this.getFieldDefs();
 
         // load all fields
-        let componentconfig = this.metadata.getComponentConfig('ObjectList', this.module);
+        let componentconfig = this.metadata.getComponentConfig(this.listcomponent, this.module);
         let allFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
         for (let listField of allFields) {
             // check if we have the field in the defs
@@ -1152,6 +1160,7 @@ export class modellist implements OnDestroy {
                 // return & close the subject
                 retSub.next(true);
                 retSub.complete();
+                this.listDataReloaded$.next(true);
             }
         );
 
@@ -1181,6 +1190,7 @@ export class modellist implements OnDestroy {
         })
             .subscribe((res: any) => {
                 this.listData.list = this.listData.list.concat(res.list);
+                this.listDataReloaded$.next(true);
                 this.lastLoad = new moment();
 
                 this.isLoading = false;
@@ -1222,7 +1232,7 @@ export class modellist implements OnDestroy {
             .subscribe((res: any) => {
                 this.listData.list = this.listData.list.concat(res.list);
                 this.lastLoad = new moment();
-
+                this.listDataReloaded$.next(true);
                 this.isLoading = false;
 
                 // save the current result
