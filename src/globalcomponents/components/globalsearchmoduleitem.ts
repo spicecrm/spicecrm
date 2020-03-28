@@ -26,7 +26,7 @@ export class GlobalSearchModuleItem implements OnInit {
     }
 
     public ngOnInit() {
-        this.model.module = this.listitem._type;
+        this.model.module = this.listitem._source._module;
         this.model.id = this.listitem._id;
         this.model.data = this.model.utils.backendModel2spice(this.model.module, this.listitem._source);
         this.model.data.acl = this.listitem.acl;
