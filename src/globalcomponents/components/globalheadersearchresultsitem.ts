@@ -41,7 +41,7 @@ export class GlobalHeaderSearchResultsItem implements OnInit {
     }
 
     public ngOnInit() {
-        this.model.module = this.hit._type;
+        this.model.module = this.hit._source._module;
         this.model.id = this.hit._id;
 
         // get the fieldconfig
