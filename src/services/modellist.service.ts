@@ -99,6 +99,11 @@ export class modellist implements OnDestroy {
     public searchTerm: string = '';
 
     /**
+     * holds the aggregates for the module
+     */
+    public moduleAggregates: any[] = [];
+
+    /**
      * the set search aggregates as returned by the search
      */
     public searchAggregates: any;
@@ -106,7 +111,7 @@ export class modellist implements OnDestroy {
     /**
      * the aggregate values the user selected
      */
-    public selectedAggregates: any[] = [];
+    public selectedAggregates: string[] = [];
 
     /**
      * search geo data
@@ -267,6 +272,16 @@ export class modellist implements OnDestroy {
                 // reload quite if we did retrive from cache
                 this.reLoadList(true);
             }
+
+            // set the aggergates for the module
+            this.moduleAggregates = [];
+            for (let moduleAggregate of this.metadata.getModuleAggregates(module)) {
+                this.moduleAggregates.push({...moduleAggregate});
+            }
+            this.moduleAggregates.sort((a, b) => {
+                if (!a.priority && !b.priority) return 0;
+                return (!a.priority || a.priority > b.priority) ? 1 : -1;
+            });
         }
     }
 
@@ -490,7 +505,7 @@ export class modellist implements OnDestroy {
      * @param listType
      * @param setPreference
      */
-    public setListType(listType: string, setPreference = true, sortArray=[]): void {
+    public setListType(listType: string, setPreference = true, sortArray = []): void {
 
         // close filters and aggegarts if they are being displayed
         this.displayAggregates = false;
@@ -985,6 +1000,15 @@ export class modellist implements OnDestroy {
     }
 
     /**
+     * checks if the field has selected aggregates and returns the number
+     *
+     * @param aggregatefield
+     */
+    public getCheckedAggregateCount(aggregatefield): number {
+        return this.selectedAggregates.filter(item => item.indexOf(aggregatefield + '::') > -1).length;
+    }
+
+    /**
      * checks if the aggregate is set
      *
      * @param aggregate
@@ -1313,16 +1337,16 @@ export class modellist implements OnDestroy {
     // private updateBuckets(from, to, valuefrom?, valueto?) {
     private updateBuckets(from, to, bucketamountfields = []) {
         // reduce from buckets
-            let frombucket = this.buckets.bucketitems.find(bucket => bucket.bucket == from);
-            frombucket.items--;
-            frombucket.total--;
+        let frombucket = this.buckets.bucketitems.find(bucket => bucket.bucket == from);
+        frombucket.items--;
+        frombucket.total--;
 
-            // add to the bucket
-            let tobucket = this.buckets.bucketitems.find(bucket => bucket.bucket == to);
-            tobucket.items++;
-            tobucket.total++;
+        // add to the bucket
+        let tobucket = this.buckets.bucketitems.find(bucket => bucket.bucket == to);
+        tobucket.items++;
+        tobucket.total++;
 
-            for (let bucket of this.buckets.buckettotal) {
+        for (let bucket of this.buckets.buckettotal) {
             for (let bucketamountfield of bucketamountfields) {
                 if (bucket.function == "sum" && bucket.name == bucketamountfield.fieldname) {
                     frombucket.values['_bucket_agg_' + bucketamountfield.fieldname] -= bucketamountfield.valuefrom;
