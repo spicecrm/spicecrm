@@ -7,7 +7,6 @@ import {
     Component,
     EventEmitter,
     Input,
-    IterableDiffers,
     NgZone,
     OnChanges,
     OnDestroy,
@@ -23,7 +22,10 @@ import {libloader} from '../../../services/libloader.service';
 import {metadata} from "../../../services/metadata.service";
 import {footer} from "../../../services/footer.service";
 import {toast} from "../../../services/toast.service";
-import {mapOptionsI, RecordI, DirectionResultI, RoutePointI} from "../interfaces/spicemap.interfaces";
+import {DirectionResultI, MapCenterI, MapOptionsI, RecordI, RoutePointI} from "../interfaces/spicemap.interfaces";
+import {broadcast} from "../../../services/broadcast.service";
+import {Subscription} from "rxjs";
+import {navigation} from "../../../services/navigation.service";
 
 /** @ignore */
 declare var google: any;
@@ -47,7 +49,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * map options
      */
-    @Input() protected options: mapOptionsI;
+    @Input() protected options: MapOptionsI;
     /**
      * List of records to be displayed on the map as markers
      */
@@ -60,6 +62,10 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * emit the radius of the search circle
      */
     @Output() protected radiusChange = new EventEmitter<number>();
+    /**
+     * emit the radius of the search circle
+     */
+    @Output() protected centerChange = new EventEmitter<MapCenterI>();
     /**
      * emit the result of the direction service on click event
      */
@@ -108,6 +114,14 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * google.maps.DirectionsRenderer[] array instance to render the routes on the map
      */
     private directionsRenderers: any[] = [];
+    /**
+     * to hold the observable subscription for unsubscribe purpose
+     */
+    private subscription: Subscription = new Subscription();
+    /**
+     * google.maps.Marker to save the focused marker to be removed on changes
+     */
+    private focusedMarker: any;
 
     constructor(
         private language: language,
@@ -116,9 +130,10 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
         private footer: footer,
         private metadata: metadata,
         private renderer: Renderer2,
-        private iterableDiffers: IterableDiffers,
         private zone: NgZone,
         private toast: toast,
+        private navigation: navigation,
+        private broadcast: broadcast
     ) {
     }
 
@@ -127,6 +142,8 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * handle the options change
      */
     public ngOnChanges(changes: SimpleChanges) {
+        if (!this.map) return;
+
         if (!!changes.records) {
             this.setMarkers();
         }
@@ -143,6 +160,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      */
     public ngAfterViewInit() {
         this.loadNecessaryLibraries();
+        this.subscribeToMapFocus();
     }
 
     /**
@@ -157,25 +175,87 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
     }
 
     /**
+     * convert distance to string with the unit on measure
+     * @param distance
+     */
+    protected convertDistanceToString(distance: number) {
+
+        if (this.options.unitSystem == 'IMPERIAL') {
+            const feetDistance = distance * 3.2808;
+            if (feetDistance > 5280) {
+                const roundedMileDistance = Math.pow(+(feetDistance / 5280).toFixed(1), 1);
+                return roundedMileDistance + ' mile';
+            }
+            return Math.round(feetDistance) + ' ft';
+        } else if (distance > 1000) {
+            const roundedKilometerDistance = Math.pow(+(distance / 1000).toFixed(1), 1);
+            return roundedKilometerDistance + ' km';
+        }
+
+        return distance + ' m';
+    }
+
+    protected generateMarkerColor(color: string) {
+        return {
+            path: `M7.8,1.3L7.8,1.3C6-0.4,3.1-0.4,1.3,1.3c-1.8,1.7-1.8,4.6-0.1,6.3c0,0,0,0,0.1,0.1l3.2,3.2l3.2-3.2C9.6,6,9.6,3.2,7.8,1.3`,
+            strokeColor: '#fff',
+            fillOpacity: 1,
+            scale: 2,
+            anchor: {x: 4.5, y: 5},
+            fillColor: color.indexOf('#') == 0 ? color : '#' + color
+        };
+    }
+
+    private subscribeToMapFocus() {
+        this.subscription = this.broadcast.message$.subscribe(msg => {
+            if (msg.messagetype != 'map.focus' || !msg.messagedata ||
+                this.navigation.activeTabObject.id != msg.messagedata.tabId || !msg.messagedata.modelId) {
+                return;
+            }
+            if (!!this.focusedMarker) {
+                this.focusedMarker.setIcon(null);
+            }
+            this.markers.some(marker => {
+                if (marker.id == msg.messagedata.modelId) {
+                    marker.setIcon(
+                        this.generateMarkerColor(this.options.focusColor)
+                    );
+                    this.map.setCenter(marker.position);
+                    this.focusedMarker = marker;
+                    return true;
+                }
+            });
+        });
+    }
+
+    /**
      * handle the option changes to adjust the map view and clear the disabled elements from the map
      */
     private handleOptionsChange() {
-        if (!this.options.center) {
+
+        if (!this.options.circle) {
             this.removeCircle();
-        } else {
+        } else if (!!this.options.changed.circle) {
             this.clearRoutes();
             this.createCircle();
+        } else if (!!this.options.changed.circleRadius) {
+
+            this.circle.setRadius(this.options.circle.radius * 1000);
+
+        } else if (!!this.options.changed.circleCenter) {
+
+            this.circle.setCenter(this.options.circle.center);
         }
 
         if (!this.options.showCluster) {
             this.removeMarkerClusterMarkers();
-        } else {
+        } else if (!!this.options.changed.showCluster) {
             this.setMarkerCluster();
         }
 
         if (!this.options.showMyLocation) {
             this.clearMyLocationMarker();
-        } else {
+        } else if (!!this.options.changed.showMyLocation) {
             this.setCurrentLocationMarker();
         }
     }
@@ -218,7 +298,8 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
                 origin: start,
                 destination: destination,
                 waypoints: waypoints,
-                travelMode: this.options.directionTravelMode || 'DRIVING'
+                travelMode: this.options.directionTravelMode || 'DRIVING',
+                unitSystem: google.maps.UnitSystem[(this.options.unitSystem || 'METRIC')]
             },
             (response, status) => {
                 if (status === 'OK') {
@@ -226,6 +307,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
                     directionsRenderer.setMap(this.map);
                     directionsRenderer.setDirections(response);
                     this.directionsRenderers.push(directionsRenderer);
+                    this.clearMarkers();
 
                     const directionData: DirectionResultI = this.calculateDirectionData(response.routes);
                     this.directionChange.emit(directionData);
@@ -253,6 +335,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
     private removeReCenterControlListener() {
         if (!!this.centerControlListener) {
             this.centerControlListener();
+            this.centerControlListener = null;
         }
     }
 
@@ -280,13 +363,19 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      */
     private renderMap() {
         this.zone.runOutsideAngular(() => {
-            this.map = new google.maps.Map(this.mapContainer.element.nativeElement, {streetViewControl: false});
+            this.map = new google.maps.Map(
+                this.mapContainer.element.nativeElement,
+                {
+                    streetViewControl: false,
+                    fullscreenControl: false
+                }
+            );
 
             google.maps.event.addListener(this.map, 'click', () => this.closePopover());
 
-            if (!!this.options.center) {
+            if (!!this.options.circle && this.options.circle.center) {
                 this.map.setZoom(11);
-                this.map.setCenter(this.options.center);
+                this.map.setCenter(this.options.circle.center);
 
                 if (!!this.routes) {
                     this.directionsService = new google.maps.DirectionsService();
@@ -313,7 +402,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
 
         this.clearMyLocationMarker();
 
-        if (!!(window as any ).google && !!navigator.geolocation) {
+        if (!!(window as any).google && !!navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
 
                 const markerData: any = {
@@ -350,17 +439,19 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * append the re-center control to the map controls
      */
     private defineReCenterControl() {
+
         const controlDiv = document.createElement('div');
         controlDiv.title = this.language.getLabel('LBL_RE_CENTER');
         controlDiv.classList.add('spice-google-maps-control-recenter');
         const controlImg = document.createElement('div');
         controlImg.classList.add('spice-google-maps-control-recenter-icon');
         controlDiv.appendChild(controlImg);
+
         this.centerControlListener = this.renderer.listen(controlDiv, 'click', () => {
-            if (!this.options.center) {
+            if (!this.options.circle) {
                 this.map.fitBounds(this.mapBounds);
-            } else {
-                this.map.setCenter(this.options.center);
+            } else if (!!this.circle) {
+                this.map.setCenter(this.circle.getCenter());
             }
         });
         this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(controlDiv);
@@ -396,10 +487,20 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * add center change listener to prevent prevent changing the center by recreating the circle if the center changes
      */
     private createCircle() {
+
         if (!!this.circle) {
             this.removeCircle();
         }
         if (!(window as any).google) return;
+
+        let circleCenter = this.options.circle.center;
+        if (!circleCenter) {
+            circleCenter = {
+                lat: this.map.getCenter().lat(),
+                lng: this.map.getCenter().lng()
+            };
+            this.reverseGeoCode(circleCenter);
+        }
 
         this.circle = new google.maps.Circle({
             strokeColor: '#CA1B21',
@@ -409,19 +510,47 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
             editable: true,
             zIndex: 1,
             map: this.map,
-            center: this.options.center,
-            radius: (this.options.defaultRadius || 5) * 1000
+            center: circleCenter,
+            radius: (this.options.circle.radius || 5) * 1000
         });
 
+
         this.circle.addListener('radius_changed', () => {
-            this.options.radius = Math.round(this.circle.getRadius() / 100) / 10;
-            this.radiusChange.emit(this.options.radius);
+            this.radiusChange.emit(Math.round(this.circle.getRadius() / 100) / 10);
         });
 
         this.circle.addListener('center_changed', () => {
-            if (this.circle.getCenter().toString() !== this.options.center.toString()) {
-                this.createCircle();
+            if (this.circle.getCenter().toString() !== this.options.circle.center.toString()) {
+                if (!this.options.circle.draggable) {
+                    this.createCircle();
+                } else {
+                    this.reverseGeoCode({
+                        lat: this.circle.getCenter().lat(),
+                        lng: this.circle.getCenter().lng()
+                    });
+                }
             }
+
+        });
+
+        this.map.fitBounds(this.circle.getBounds());
+    }
+
+    /**
+     * reverse geo code to address
+     */
+    private reverseGeoCode(latLng: {lat: number, lng: number}) {
+
+        let geoCoder = new google.maps.Geocoder();
+
+        geoCoder.geocode({
+            location: latLng
+        }, (results, status) => {
+            if (status !== 'OK') return;
+            this.centerChange.emit({
+                address: results[0].formatted_address,
+                ...latLng
+            });
         });
     }
 
@@ -443,7 +572,6 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      */
     private clearMarkers() {
 
-        this.clearRoutes();
         this.removeMarkerClusterMarkers();
         this.markers.forEach(marker => {
             marker.setMap(null);
@@ -474,6 +602,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
                 if (!(!!item.lat) || !(!!item.lng)) return;
 
                 const markerData: any = {
+                    id: item.id,
                     map: this.map,
                     title: !!item.title ? item.title : '',
                     animation: google.maps.Animation.DROP,
@@ -481,14 +610,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
                 };
 
                 if (!!item.color) {
-                    markerData.icon = {
-                        path: `M7.8,1.3L7.8,1.3C6-0.4,3.1-0.4,1.3,1.3c-1.8,1.7-1.8,4.6-0.1,6.3c0,0,0,0,0.1,0.1l3.2,3.2l3.2-3.2C9.6,6,9.6,3.2,7.8,1.3`,
-                        strokeColor: '#fff',
-                        fillOpacity: 1,
-                        scale: 2,
-                        anchor: {x: 4.5, y: 5},
-                        fillColor: '#' + item.color
-                    };
+                    markerData.icon = this.generateMarkerColor(item.color);
                 }
                 const marker = new google.maps.Marker(markerData);
                 this.mapBounds.extend(marker.position);
@@ -505,7 +627,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
             if (this.options.showCluster) {
                 this.setMarkerCluster();
             }
-            if (!this.options.center) {
+            if (!this.options.circle) {
                 this.map.fitBounds(this.mapBounds);
             }
         });
@@ -516,14 +638,17 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * @param routes: DirectionResult
      */
     private calculateDirectionData(routes): DirectionResultI {
-        let distance = 0;
+        let distance = {value: 0, text: ''};
         let duration = 0;
         routes.forEach(route => {
             route.legs.forEach(leg => {
-                distance += leg.distance.value;
+                distance.value += leg.distance.value;
                 duration += leg.duration.value;
             });
         });
+
+        distance.text = this.convertDistanceToString(distance.value);
+
         return {
             distance, duration: {
                 minutes: Math.round(((duration / 3600) - Math.floor(duration / 3600)) * 60),
