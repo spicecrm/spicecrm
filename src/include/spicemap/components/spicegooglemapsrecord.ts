@@ -50,6 +50,10 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
      */
     private directionResult: DirectionResultI;
     /**
+     * save the unit system for the distance measuring
+     */
+    private unitSystem: 'IMPERIAL'|'METRIC' = 'METRIC';
+    /**
      * save timeout of the search term
      */
     private searchTimeout: number;
@@ -212,7 +216,7 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
     protected setDistanceUnitSystemFromPreferences() {
         this.subscription = this.broadcast.message$.subscribe(msg => {
             if (msg.messagetype == 'userpreferences.save') {
-                this.componentconfig.unitSystem = this.userpreferences.toUse.distance_unit_system || 'METRIC';
+                this.unitSystem = this.userpreferences.toUse.distance_unit_system || 'METRIC';
                 this.setMapOptionsForDirectionUse();
                 if (!!this.directionResult) {
                     this.directionResult.distance.text = this.convertDistanceToString(this.directionResult.distance.value);
@@ -220,7 +224,7 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
                 }
             }
         });
-        this.componentconfig.unitSystem = this.userpreferences.toUse.distance_unit_system || 'METRIC';
+        this.unitSystem = this.userpreferences.toUse.distance_unit_system || 'METRIC';
     }
 
     /**
@@ -229,7 +233,7 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
      */
     protected convertDistanceToString(distance) {
 
-        if (this.componentconfig.unitSystem == 'IMPERIAL') {
+        if (this.unitSystem == 'IMPERIAL') {
             const feetDistance = distance * 3.2808;
             if (feetDistance > 5280) {
                 const roundedMileDistance = Math.pow(+(feetDistance / 5280).toFixed(1), 1);
@@ -268,7 +272,7 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
             markerWithModelPopover: false,
             circle: undefined,
             directionTravelMode: this.componentconfig.directionTravelMode,
-            unitSystem: this.componentconfig.unitSystem,
+            unitSystem: this.unitSystem,
             changed: {
                 showCluster: true,
                 markerWithModelPopover: true,
@@ -294,9 +298,10 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
         };
         if (!this.verifyLatLng(this.mapOptions.circle.center)) {
             return this.mapOptions.circle = undefined;
+        } else {
+            this.setMapOptionChanged('circle');
         }
         this.onRadiusChange(this.componentconfig.defaultRadius);
-
     }
 
     /**
