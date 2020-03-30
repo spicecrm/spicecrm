@@ -13,7 +13,7 @@
             <dl class="slds-list_horizontal slds-wrap">
                 <ng-container *ngFor="let tileField of tileFields">
                     <dt class="slds-item--label slds-text-color--weak slds-truncate">
-                        {{language.getFieldDisplayName(model.module, tileField.field)}}
+                        <system-label-fieldname [module]="model.module" [field]="tileField.field"></system-label-fieldname>
                     </dt>
                     <dd class="slds-item--detail slds-truncate">
                         <field-container [field]="tileField.field" [fieldconfig]="tileField.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>

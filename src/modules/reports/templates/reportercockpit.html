@@ -17,11 +17,11 @@
             </div>
             <div *ngIf="category.items < category.total" class="slds-card__footer slds-grid">
                 <div>
-                    {{category.items}} {{language.getLabel('LBL_OF')}} {{category.total}}
+                    {{category.items}} <system-label label="LBL_OF"></system-label> {{category.total}}
                 </div>
                 <div class="slds-grow">
                     <a href="javascript:void(0);" (click)="loadMore(category.bucket)">
-                        {{language.getLabel('LBL_MORE')}}
+                        <system-label label="LBL_MORE"></system-label>
                     </a>
                 </div>
             </div>

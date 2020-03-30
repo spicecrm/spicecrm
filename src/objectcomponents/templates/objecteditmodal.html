@@ -3,7 +3,7 @@
         {{modalHeader}}
         <system-modal-header-right>
             <button *ngIf="duplicateCheckEnabled" class="slds-button slds-button--brand" [disabled]="model.duplicates.length == 0" (click)="showDuplicates = !showDuplicates" [ngClass]="{'slds-hidden': showDuplicatesTable}">
-                {{model.duplicateChecking ? '' : model.duplicatecount}} {{language.getLabel('LBL_DUPLICATES')}}
+                {{model.duplicateChecking ? '' : model.duplicatecount}} <system-label label="LBL_DUPLICATES"></system-label>
             </button>
         </system-modal-header-right>
     </system-modal-header>

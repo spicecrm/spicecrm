@@ -1,6 +1,6 @@
 <div class="slds-p-around--medium">
     <div class="slds-m-around--medium">
-        <button class="slds-button slds-button--brand" (click)="diagnose('incomplete')">{{language.getLabel('LBL_INCOMPLETE_RECORDS')}}</button>
+        <button class="slds-button slds-button--brand" (click)="diagnose('incomplete')"><system-label label="LBL_INCOMPLETE_RECORDS"></system-label></button>
     </div>
     <div *ngIf="is_loading">
         <system-spinner></system-spinner>

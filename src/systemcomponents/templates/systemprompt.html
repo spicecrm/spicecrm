@@ -17,7 +17,7 @@
             </div>
         </div>
         <footer class="slds-modal__footer">
-            <button *ngIf="type !== 'info'" #cancelButton class="slds-button slds-button--neutral" (click)="clickCancel()">{{language.getLabel('LBL_CANCEL')}}</button>
+            <button *ngIf="type !== 'info'" #cancelButton class="slds-button slds-button--neutral" (click)="clickCancel()"><system-label label="LBL_CANCEL"></system-label></button>
             <button #okButton class="slds-button slds-button--brand" (click)="clickOK()">OK</button>
         </footer>
     </div>

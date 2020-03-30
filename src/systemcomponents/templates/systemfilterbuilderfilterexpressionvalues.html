@@ -1,10 +1,10 @@
 <div *ngIf="operator !='' && value1" class="slds-col">
     <div *ngIf="value1" class="slds-form-element">
-        <label class="slds-form-element__label">{{language.getLabel('LBL_VALUE')}}</label>
+        <label class="slds-form-element__label"><system-label label="LBL_VALUE"></system-label></label>
         <system-filter-builder-expression-value [(ngModel)]="filterexpression.filtervalue" [valueType]="value1" [module]="module" [field]="field"></system-filter-builder-expression-value>
     </div>
     <div *ngIf="value2" class="slds-form-element">
-        <label class="slds-form-element__label">{{language.getLabel('LBL_VALUE')}}</label>
+        <label class="slds-form-element__label"><system-label label="LBL_VALUE"></system-label></label>
         <system-filter-builder-expression-value [(ngModel)]="filterexpression.filtervalueto" [valueType]="value2" [module]="module" [field]="field"></system-filter-builder-expression-value>
     </div>
 </div>

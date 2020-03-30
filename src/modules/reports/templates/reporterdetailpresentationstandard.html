@@ -5,11 +5,11 @@
                 <tr class="slds-text-title--caps">
                     <th *ngFor="let field of getFields()" [ngClass]="displayClasses(field)" scope="col" class="slds-resizable" [width]="getFieldWidth(field.fieldid)" (systemresize)="onresize()" [resizeid]="field.fieldid">
                         <a *ngIf="isSortable(field); else notsortable" href="javascript:void(0);" class="slds-th__action slds-text-link--reset slds-grid" (click)="toggleSort(field)" [ngClass]="displayClasses(field)">
-                            <div class="slds-truncate slds-p-vertical--xx-small">{{language.getLabel(field.name)}}</div>
+                            <div class="slds-truncate slds-p-vertical--xx-small"><system-label [label]="field.name"></system-label></div>
                             <system-utility-icon [icon]="getSortIcon(field.fieldid)" addclasses="slds-is-sortable__icon" size="x-small"></system-utility-icon>
                         </a>
                         <ng-template #notsortable>
-                            <div class="slds-th__action">{{language.getLabel(field.name)}}</div>
+                            <div class="slds-th__action"><system-label [label]="field.name"></system-label></div>
                         </ng-template>
                     </th>
                 </tr>

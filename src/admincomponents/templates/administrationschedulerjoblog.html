@@ -1,5 +1,5 @@
 <div *ngIf="schedulerLogs.length" class="slds-grid slds-grid_align-spread slds-m-bottom--medium">
-    <div>{{language.ucFirst(language.getLabel('LBL_RECENT_ENTRIES'))}} ({{schedulerLogs.length}} {{language.getLabel('LBL_FROM')}} {{totalLines}} {{language.getLabel('LBL_TOTAL')}}):</div>
+    <div>{{language.ucFirst(language.getLabel('LBL_RECENT_ENTRIES'))}} ({{schedulerLogs.length}} <system-label label="LBL_FROM"></system-label> {{totalLines}} <system-label label="LBL_TOTAL"></system-label>):</div>
     <system-button-icon class="slds-p-horizontal--xxx-small" [icon]="'refresh'" (click)="!isLoading && reloadData()"></system-button-icon>
 </div>
 
@@ -7,16 +7,16 @@
     <thead>
     <tr class="slds-line-height_reset">
         <th scope="col">
-            <div class="slds-truncate">{{language.getLabel('LBL_EXECUTE_TIME')}}</div>
+            <div class="slds-truncate"><system-label label="LBL_EXECUTE_TIME"></system-label></div>
         </th>
         <th scope="col">
-            <div class="slds-truncate">{{language.getLabel('LBL_STATUS')}}</div>
+            <div class="slds-truncate"><system-label label="LBL_STATUS"></system-label></div>
         </th>
         <th scope="col">
-            <div class="slds-truncate">{{language.getLabel('LBL_RESOLUTION')}}</div>
+            <div class="slds-truncate"><system-label label="LBL_RESOLUTION"></system-label></div>
         </th>
         <th scope="col">
-            <div class="slds-truncate">{{language.getLabel('LBL_MESSAGE')}}</div>
+            <div class="slds-truncate"><system-label label="LBL_MESSAGE"></system-label></div>
         </th>
     </thead>
     <tbody>
@@ -44,5 +44,5 @@
     <div class="slds-text-align--center" style="width:100%">
         <system-spinner *ngIf="isLoading"></system-spinner>
     </div>
-    <button class="slds-button slds-button_neutral" [disabled]="isLoading" (click)="getMoreData()">{{language.getLabel('LBL_MORE')}}</button>
+    <button class="slds-button slds-button_neutral" [disabled]="isLoading" (click)="getMoreData()"><system-label label="LBL_MORE"></system-label></button>
 </div>

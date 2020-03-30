@@ -19,12 +19,12 @@
             <div class="slds-form-element slds-p-horizontal--xx-small slds-size--1-of-2">
                 <label class="slds-form-element__label">
                     <abbr class="slds-required ng-star-inserted">*</abbr>
-                    {{language.getLabel('LBL_JOB_TASK')}}
+                    <system-label label="LBL_JOB_TASK"></system-label>
                 </label>
                 <div class="slds-form-element__control slds-m-vertical--xx-small ">
                     <div class="slds-select_container">
                         <select id="moduleselect1" class="slds-select" [(ngModel)]="job">
-                            <option *ngIf="!job" value="">{{language.getLabel('LBL_SELECT')}} &hellip;</option>
+                            <option *ngIf="!job" value=""><system-label label="LBL_SELECT"></system-label> &hellip;</option>
                             <option *ngFor="let job of jobsList; trackBy: trackByFn" [value]="job.key">{{job.name}}</option>
                         </select>
                     </div>
@@ -33,7 +33,7 @@
             <div class="slds-form-element slds-p-horizontal--xx-small slds-size--1-of-2">
                 <label class="slds-form-element__label" for="text-input-id-1">
                     <abbr *ngIf="job==='url::'" class="slds-required ng-star-inserted">*</abbr>
-                    {{language.getLabel('LBL_URL')}}
+                    <system-label label="LBL_URL"></system-label>
                 </label>
                 <div class="slds-form-element__control slds-m-vertical--xx-small ">
                     <input type="text" id="text-input-id-1" class="slds-input" [(ngModel)]="url" [disabled]="job!=='url::'"/>

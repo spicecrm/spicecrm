@@ -11,8 +11,8 @@
             <object-edit-modal-dialog-duplicates class="slds-is-absolute slds-theme--shade" *ngIf="showDuplicates" [ngStyle]="duplicateStyle" [duplicates]="duplicates"></object-edit-modal-dialog-duplicates>
         </div>
         <div class="slds-modal__footer">
-            <button class="slds-button slds-button--neutral" (click)="closeModal()">{{language.getLabel('LBL_CANCEL')}}</button>
-            <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+            <button class="slds-button slds-button--neutral" (click)="closeModal()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
         </div>
     </div>
 </div>

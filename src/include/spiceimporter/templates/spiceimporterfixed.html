@@ -5,7 +5,7 @@
         </div>
         <div *ngIf="modelFields && this.spiceImport.importAction == 'new'">
             <legend class="slds-form-element__legend slds-form-element__label">
-                {{language.getLabel('MSG_REQUIRED_MAPPED_FIXED')}}
+                <system-label label="MSG_REQUIRED_MAPPED_FIXED"></system-label>
             </legend>
             <div class="slds-tile__detail slds-text-body--small slds-p-horizontal--small">
                 <div class="slds-grid" *ngFor="let field of this.requiredModelFields">
@@ -27,10 +27,10 @@
             <thead>
             <tr class="slds-text-title--caps">
                 <th scope="col" width="50%">
-                    <div class="slds-truncate slds-p-vertical--xx-small" style="font-weight: 600">{{language.getLabel('LBL_FIELD')}}</div>
+                    <div class="slds-truncate slds-p-vertical--xx-small" style="font-weight: 600"><system-label label="LBL_FIELD"></system-label></div>
                 </th>
                 <th scope="col" width="50%">
-                    <div class="slds-truncate slds-p-vertical--xx-small" style="font-weight: 600">{{language.getLabel('LBL_VALUE')}}</div>
+                    <div class="slds-truncate slds-p-vertical--xx-small" style="font-weight: 600"><system-label label="LBL_VALUE"></system-label></div>
                 </th>
                 <th scope="col">
                 </th>
@@ -67,7 +67,7 @@
             </tbody>
         </table>
         <div class="slds-grid slds-grid--align-center slds-p-vertical--xx-small">
-            <button type="button" class="slds-button slds-button--brand" (click)="spiceImport.addFixed()">{{language.getLabel('LBL_ADD_FIXED_FIELDS', '', 'short')}}</button>
+            <button type="button" class="slds-button slds-button--brand" (click)="spiceImport.addFixed()"><system-label label="LBL_ADD_FIXED_FIELDS" length="short"></system-label></button>
         </div>
     </div>
 </div>
