@@ -58,6 +58,10 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
      */
     public componentconfig: RecordComponentConfigI;
     /**
+     * differentiate the records array changes
+     */
+    public subscription: Subscription = new Subscription();
+    /**
      * map options will be passed to the spice google maps
      */
     protected mapOptions: MapOptionsI = {};
@@ -69,10 +73,6 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
      * name of this component for load component config on extended components
      */
     protected componentName: string = 'SpiceGoogleMapsList';
-    /**
-     * differentiate the records array changes
-     */
-    public subscription: Subscription = new Subscription();
 
     constructor(
         public language: language,
@@ -104,7 +104,7 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
      */
     public ngOnInit() {
         this.loadComponentConfigs();
-        this.subscribeToListLoaded();
+        this.subscribeToModelListChanges();
     }
 
     /**
@@ -119,7 +119,7 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
      */
     public setRecords() {
         this.records = (!this.latName || !this.lngName) ? [] : this.modelList.listData.list
-            .filter(item => !!item[this.latName] && !isNaN(item[this.latName]) && !!item[this.lngName] && !isNaN(item[this.lngName]))
+            .filter(item => this.verifyLatLng({lat: item[this.latName], lng: item[this.lngName]}))
             .map(item => ({
                 id: item.id,
                 module: this.modelList.module,
@@ -162,6 +162,12 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
         if (!this.componentconfig.mapHeight) {
             this.componentconfig.mapHeight = 300;
         }
+        if (!this.componentconfig.circleColor) {
+            this.componentconfig.circleColor = '#CA1B21';
+        }
+        if (!this.componentconfig.filterCircleColor) {
+            this.componentconfig.filterCircleColor = '#1A73E8';
+        }
         if (!this.componentconfig.focusColor) {
             this.componentconfig.focusColor = '#1A73E8';
         }
@@ -171,11 +177,7 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
 
         this.setFirstMapOptionsChanged();
 
-        const moduleDefs = this.metadata.getModuleDefs(this.modelList.module);
-        if (!!moduleDefs && !!moduleDefs.ftsgeo) {
-            this.lngName = moduleDefs.ftsgeo.longitude_field;
-            this.latName = moduleDefs.ftsgeo.latitude_field;
-        }
+        this.setLatLngFieldsNames();
     }
 
     /**
@@ -230,10 +232,59 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
         this.mapOptions = {...this.mapOptions};
     }
 
-    private subscribeToListLoaded() {
-        this.subscription = this.modelList.listDataReloaded$.subscribe(() => {
+    /**
+     * check if the geo object latitude and longitude are correct
+     * @param latLng
+     */
+    public verifyLatLng(latLng: { lat: number, lng: number }) {
+        return !!latLng.lng && !isNaN(latLng.lng) && !!latLng.lat && !isNaN(latLng.lat);
+    }
+
+    /**
+     * set the latitude longitude fields names from module defs
+     */
+    private setLatLngFieldsNames() {
+        const moduleDefs = this.metadata.getModuleDefs(this.modelList.module);
+        if (!!moduleDefs && !!moduleDefs.ftsgeo) {
+            this.lngName = moduleDefs.ftsgeo.longitude_field;
+            this.latName = moduleDefs.ftsgeo.latitude_field;
+        }
+    }
+
+    /**
+     * set fixed circle data from the model list current list filter defs
+     */
+    private setFixedCircle() {
+        const geoFilter = this.modelList.getFilterDefs().geography;
+
+        if (!geoFilter || !this.verifyLatLng(geoFilter) || !geoFilter.radius || isNaN(geoFilter.radius)) {
+            this.mapOptions.fixedCircle = undefined;
+            return this.setMapOptionChanged('fixedCircle');
+        }
+
+        this.mapOptions.fixedCircle = {
+            radius: geoFilter.radius,
+            center: {
+                lng: geoFilter.lng,
+                lat: geoFilter.lat
+            },
+            color: this.componentconfig.filterCircleColor
+        };
+
+        this.setMapOptionChanged('fixedCircle');
+    }
+
+    /**
+     * subscribe to model list type and data reloaded changes to reset records
+     */
+    private subscribeToModelListChanges() {
+        this.subscription.add(this.modelList.listtype$.subscribe(() => {
             this.setRecords();
-        });
+        }));
+        this.subscription.add(this.modelList.listDataChanged$.subscribe(() => {
+            this.setRecords();
+            this.setFixedCircle();
+        }));
     }
 
     /**
@@ -257,7 +308,9 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
             this.mapOptions.circle = {
                 center: null,
                 draggable: true,
-                radius: this.componentconfig.defaultRadius
+                editable: true,
+                radius: this.componentconfig.defaultRadius,
+                color: this.componentconfig.circleColor
             };
             this.startRadiusEditing();
         }
