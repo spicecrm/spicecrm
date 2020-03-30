@@ -24,15 +24,25 @@ export interface MapCenterI {
 }
 
 /**
- * used for building the map circle
+ * used for building the map fixed circle
  */
-export interface MapCircleI {
+export interface MapFixedCircleI {
     /** the center of the circle */
     center: MapCenterI;
     /** radius of the circle */
     radius: number;
-    /** enable dragging the center of the map */
+    /** define the circle color */
+    color?: string;
+}
+
+/**
+ * used for building the map circle
+ */
+export interface MapCircleI extends MapFixedCircleI {
+    /** enable dragging the circle center on the map */
     draggable?: boolean;
+    /** enable resizing the circle on the map */
+    editable?: boolean;
 }
 
 /**
@@ -47,6 +57,8 @@ export interface MapOptionsI {
     markerWithModelPopover?: boolean;
     /** when the center is set, a circle will be drawn on the map centered by the input latitude and longitude */
     circle?: MapCircleI;
+    /** when the center is set, a circle will be drawn on the map centered by the input latitude and longitude */
+    fixedCircle?: MapCircleI;
     /** set the travel model for the direction service */
     directionTravelMode?: 'DRIVING' | 'BICYCLING' | 'TRANSIT' | 'WALKING';
     /** a distance unit of measure to be returned by the navigation service result */
@@ -58,6 +70,7 @@ export interface MapOptionsI {
         showMyLocation?: boolean
         showCluster?: boolean,
         markerWithModelPopover?: boolean,
+        fixedCircle?: boolean,
         circle?: boolean,
         circleRadius?: boolean,
         circleCenter?: boolean,
@@ -77,6 +90,10 @@ export interface RecordComponentConfigI extends MapOptionsI {
     fieldset?: string;
     /** default radius of the drawn circle */
     defaultRadius?: number;
+    /** color of the map circle */
+    circleColor?: string;
+    /** color of the model list filter map circle */
+    filterCircleColor?: string;
 }
 
 /**
