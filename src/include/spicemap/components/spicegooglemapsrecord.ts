@@ -9,7 +9,8 @@ import {
     Input,
     IterableDiffers,
     NgZone,
-    OnInit
+    OnInit,
+    Renderer2
 } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
@@ -72,6 +73,7 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
         public session: session,
         public model: model,
         public elementRef: ElementRef,
+        public renderer: Renderer2,
         public broadcast: broadcast,
         private userpreferences: userpreferences
     ) {
@@ -222,14 +224,6 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
     }
 
     /**
-     * check if the route entries are correct
-     * @param routePoint
-     */
-    protected verifyPlaceLatLng(routePoint: RoutePointI) {
-        return (!!routePoint.placeId) || (!!routePoint.lng && !isNaN(routePoint.lng) && !!routePoint.lat && !isNaN(routePoint.lat));
-    }
-
-    /**
      * convert distance to string with the unit on measure
      * @param distance
      */
@@ -254,7 +248,6 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
      * set the module for the module list service and activate cache
      */
     private initializeModelList() {
-        this.modelList._listcomponent = 'SpiceGoogleMapsRecord';
         this.modelList.module = this.model.module;
         this.modelList.usecache = true;
     }
@@ -266,6 +259,9 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
         this.componentName = 'SpiceGoogleMapsRecord';
     }
 
+    /**
+     * set the map map options for the direction use
+     */
     private setMapOptionsForDirectionUse() {
         this.mapOptions = {
             showCluster: false,
@@ -292,9 +288,11 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
                 lng: +this.model.getField(this.lngName),
                 lat: +this.model.getField(this.latName)
             },
-            radius: this.componentconfig.defaultRadius
+            radius: this.componentconfig.defaultRadius,
+            color: this.componentconfig.circleColor,
+            editable: true
         };
-        if (!this.verifyPlaceLatLng(this.mapOptions.circle.center)) {
+        if (!this.verifyLatLng(this.mapOptions.circle.center)) {
             return this.mapOptions.circle = undefined;
         }
         this.onRadiusChange(this.componentconfig.defaultRadius);
@@ -316,6 +314,14 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
 
         this.routes = [route];
         this.cdRef.detectChanges();
+    }
+
+    /**
+     * check if the route entries are correct
+     * @param routePoint
+     */
+    protected verifyPlaceLatLng(routePoint: RoutePointI) {
+        return (!!routePoint.placeId) || this.verifyLatLng((routePoint as any));
     }
 
     /**
@@ -437,6 +443,17 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
                     documentRef.mozCancelFullScreen();
                 } else if (documentRef.msExitFullscreen) documentRef.msExitFullscreen();
             }
+        });
+    }
+
+    /**
+     * listen to input range mouse down to handle triggering the map change on mouse up
+     * @param inputRangeElement
+     */
+    private onRangeMouseDown(inputRangeElement: HTMLInputElement) {
+        const mouseListener = this.renderer.listen(inputRangeElement, 'mouseup', () => {
+            this.setMapOptionChanged('circleRadius');
+            mouseListener();
         });
     }
 }
