@@ -18,12 +18,17 @@ import {language} from '../../services/language.service';
     templateUrl: './src/systemcomponents/templates/systemlabel.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SystemLabel implements OnChanges, OnDestroy{
+export class SystemLabel implements OnChanges, OnDestroy {
 
     /**
      * teh label to be rendered
      */
     @Input() private label: string;
+
+    /**
+     * the field
+     */
+    @Input() private length: 'default' | 'long' | 'short' = 'default';
 
     /**
      * the subscription on the language
