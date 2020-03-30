@@ -154,7 +154,7 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
             this.componentconfig.markerWithModelPopover = true;
         }
         if (!this.componentconfig.hasOwnProperty('defaultRadius') || isNaN(this.componentconfig.defaultRadius)) {
-            this.componentconfig.defaultRadius = 10;
+            this.componentconfig.defaultRadius = 5;
         }
         if (!this.componentconfig.directionTravelMode || ['DRIVING', 'WALKING', 'TRANSIT', 'BICYCLING'].indexOf(this.componentconfig.directionTravelMode) == -1) {
             this.componentconfig.directionTravelMode = 'DRIVING';
@@ -170,9 +170,6 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
         }
         if (!this.componentconfig.focusColor) {
             this.componentconfig.focusColor = '#1A73E8';
-        }
-        if (!this.componentconfig.defaultRadius) {
-            this.componentconfig.defaultRadius = 5;
         }
 
         this.setFirstMapOptionsChanged();
