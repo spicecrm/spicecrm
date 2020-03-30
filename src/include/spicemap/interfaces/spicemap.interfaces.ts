@@ -104,6 +104,8 @@ export interface RecordComponentConfigI {
     filterCircleColor?: string;
     /** hex color for the focused item marker */
     focusColor?: string;
+    /** a distance unit of measure to be returned by the navigation service result */
+    unitSystem?: 'METRIC'|'IMPERIAL';
 }
 
 /**
