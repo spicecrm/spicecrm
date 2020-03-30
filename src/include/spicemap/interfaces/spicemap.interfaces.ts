@@ -83,17 +83,27 @@ export interface MapOptionsI {
 /**
  * used for the spice google maps record component config and extends the mapOptions
  */
-export interface RecordComponentConfigI extends MapOptionsI {
+export interface RecordComponentConfigI {
+    /** show/hide current position by browser */
+    showMyLocation?: boolean;
+    /** activate/deactivate grouping markers by cluster service on a narrow distance between markers */
+    showCluster?: boolean;
+    /** activate/deactivate model popover for the marker on click event */
+    markerWithModelPopover?: boolean;
+    /** set the travel model for the direction service */
+    directionTravelMode?: 'DRIVING' | 'BICYCLING' | 'TRANSIT' | 'WALKING';
     /** to save the height of the map */
     mapHeight?: number;
-    /** for the list fields */
+    /** for the data table fields */
     fieldset?: string;
     /** default radius of the drawn circle */
     defaultRadius?: number;
-    /** color of the map circle */
+    /** hex color for the map circle */
     circleColor?: string;
-    /** color of the model list filter map circle */
+    /** hex color for the model list filter map circle */
     filterCircleColor?: string;
+    /** hex color for the focused item marker */
+    focusColor?: string;
 }
 
 /**
