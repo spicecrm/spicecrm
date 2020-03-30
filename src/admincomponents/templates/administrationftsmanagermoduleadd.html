@@ -1,8 +1,8 @@
 <system-modal>
-    <system-modal-header (close)="close()">{{language.getLabel('LBL_ADD_MODULE')}}</system-modal-header>
+    <system-modal-header (close)="close()"><system-label label="LBL_ADD_MODULE"></system-label></system-modal-header>
     <system-modal-content>
         <div class="slds-form-element">
-            <label class="slds-form-element__label">{{language.getLabel('LBL_MODULE')}}</label>
+            <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="module">
@@ -13,7 +13,7 @@
         </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
-        <button class="slds-button slds-button--brand" (click)="add()">{{language.getLabel('LBL_ADD')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="add()"><system-label label="LBL_ADD"></system-label></button>
     </system-modal-footer>
 </system-modal>

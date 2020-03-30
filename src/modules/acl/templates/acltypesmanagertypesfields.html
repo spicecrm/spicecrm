@@ -1,12 +1,12 @@
 <div class="slds-grid slds-grid--vertical-align-center slds-p-around--x-small">
-    <h2 class="slds-text-heading--small">{{language.getLabel('LBL_FIELDS')}}</h2>
-    <button class="slds-col--bump-left slds-button slds-button--brand" (click)="addField()">{{language.getLabel('LBL_ADD')}}</button>
+    <h2 class="slds-text-heading--small"><system-label label="LBL_FIELDS"></system-label></h2>
+    <button class="slds-col--bump-left slds-button slds-button--brand" (click)="addField()"><system-label label="LBL_ADD"></system-label></button>
 </div>
 <table class="slds-table slds-table_bordered slds-table_cell-buffer">
     <thead>
     <tr class="slds-text-title_caps">
         <th scope="col">
-            <div class="slds-truncate">{{language.getLabel('LBL_FIELD')}}</div>
+            <div class="slds-truncate"><system-label label="LBL_FIELD"></system-label></div>
         </th>
         <th scope="col" style="width: 3rem;"></th>
     </tr>

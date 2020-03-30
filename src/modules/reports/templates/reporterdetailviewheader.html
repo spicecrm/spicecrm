@@ -5,7 +5,7 @@
                 <system-icon [module]="moduleName" (click)="goToModule()"></system-icon>
                 <div class="slds-media__body">
                     <p class="slds-text-title--caps slds-line-height--reset">
-                        <a (click)="goToModule()">{{language.getModuleName(moduleName)}}</a>
+                        <a (click)="goToModule()"><system-label-modulename [module]="moduleName"></system-label-modulename></a>
                     </p>
                     <div>
                         <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">

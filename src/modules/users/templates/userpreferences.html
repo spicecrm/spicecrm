@@ -276,10 +276,10 @@
 
         <div *ngIf="view.isEditMode()" class="slds-p-around--small slds-align--absolute-center">
             <button class="slds-button slds-button--neutral" (click)="cancel()">
-                {{language.getLabel('LBL_CANCEL')}}
+                <system-label label="LBL_CANCEL"></system-label>
             </button>
             <button class="slds-button slds-button--brand slds-button-space-left" (click)="save()">
-                {{language.getLabel('LBL_SAVE')}}
+                <system-label label="LBL_SAVE"></system-label>
             </button>
         </div>
     </div>

@@ -14,7 +14,7 @@
                 <input type="text" class="slds-input" [disabled]="!activeType" [(ngModel)]="searchterm" [placeholder]="language.getLabel('LBL_SEARCH')" (keyup)="onKeyUp($event)"/>
             </div>
         </div>
-        <button class="slds-col--bump-left slds-button slds-button--brand" [disabled]="!activeType" (click)="addTerritory()">{{language.getLabel('LBL_ADD')}}</button>
+        <button class="slds-col--bump-left slds-button slds-button--brand" [disabled]="!activeType" (click)="addTerritory()"><system-label label="LBL_ADD"></system-label></button>
     </div>
     <div *ngIf="loading; else typesdisplay" class="slds-p-around--medium slds-align--absolute-center">
         <system-spinner></system-spinner>
@@ -24,10 +24,10 @@
             <thead>
                 <tr class="slds-text-title_caps">
                     <th scope="col">
-                        <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
+                        <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
                     </th>
                     <th scope="col">
-                        <div class="slds-truncate">{{language.getLabel('LBL_ASSIGNED_USER_NAME')}}</div>
+                        <div class="slds-truncate"><system-label label="LBL_ASSIGNED_USER_NAME"></system-label></div>
                     </th>
                     <th scope="col" style="width: 3rem;"></th>
                 </tr>

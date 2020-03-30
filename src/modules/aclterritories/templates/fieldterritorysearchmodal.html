@@ -1,14 +1,14 @@
 <system-modal>
-    <system-modal-header (close)="close()">{{language.getLabel('LBL_SEARCH_TERRITORY')}}</system-modal-header>
+    <system-modal-header (close)="close()"><system-label label="LBL_SEARCH_TERRITORY"></system-label></system-modal-header>
     <system-modal-content margin="none" [grow]="true">
         <table class="slds-table slds-table_bordered slds-theme--default">
             <thead>
                 <tr class="slds-line-height_reset">
                     <th class="" scope="col">
-                        <div class="slds-truncate" [title]="language.getLabel('LBL_SPICEACLTERRITORY')">{{language.getLabel('LBL_SPICEACLTERRITORY')}}</div>
+                        <div class="slds-truncate" [title]="language.getLabel('LBL_SPICEACLTERRITORY')"><system-label label="LBL_SPICEACLTERRITORY"></system-label></div>
                     </th>
                     <th *ngFor="let moduleElement of moduleElements" scope="col">
-                        <div class="slds-truncate" [title]="language.getLabel(moduleElement.name)">{{language.getLabel(moduleElement.name)}}</div>
+                        <div class="slds-truncate" [title]="language.getLabel(moduleElement.name)"><system-label [label]="moduleElement.name"></system-label></div>
                     </th>
                 </tr>
                 <tr class="slds-line-height_reset">
@@ -21,7 +21,7 @@
                         <!--div class="slds-form-element__control">
                             <div class="slds-select_container">
                                 <select class="slds-select" id="select-01">
-                                    <option value="">{{language.getLabel('LBL_SELECT_FILTER')}}</option>
+                                    <option value=""><system-label label="LBL_SELECT_FILTER"></system-label></option>
                                     <option *ngFor="let moduleElementsValue of moduleElementsValues[moduleElement.id]" [value]="moduleElementsValue.elementvalue">{{moduleElementsValue.elementdescription}}</option>
                                 </select>
                             </div>
@@ -44,6 +44,6 @@
         </table>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
     </system-modal-footer>
 </system-modal>

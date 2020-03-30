@@ -5,7 +5,7 @@
             <div class="slds-grid slds-grid--vertical-align-center slds-media__body slds-truncate">
                 <h2>
                     <a href="javascript:void(0);" class="slds-text-link--reset">
-                        <span class="slds-text-heading--small">{{language.getLabel('LBL_DUPLICATES')}} ({{duplicatecount}})</span>
+                        <span class="slds-text-heading--small"><system-label label="LBL_DUPLICATES"></system-label> ({{duplicatecount}})</span>
                     </a>
                 </h2>
                 <system-utility-icon class="slds-m-horizontal--xx-small" *ngIf="duplicatecount > 0" icon="up" [ngStyle]="iconStyle" style="transition: .5s;" size="x-small" (click)="toggleDuplicates($event)"></system-utility-icon>

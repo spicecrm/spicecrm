@@ -3,14 +3,14 @@
         <div class="slds-grid slds-p-vertical--x-small">
             <div class="slds-size--1-of-2 slds-form-element slds-p-horizontal--x-small">
                 <label class="slds-form-element__label">
-                    {{language.getLabel('LBL_LONGITUDE')}}
+                    <system-label label="LBL_LONGITUDE"></system-label>
                 </label>
                 <div class="slds-form-element__control slds-grow">
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="properties.googlemaps.kreportgooglemapslongitude">
                             <option></option>
                             <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
-                                {{language.getLabel(listField.name)}}
+                                <system-label [label]="listField.name"></system-label>
                             </option>
                         </select>
                     </div>
@@ -18,14 +18,14 @@
             </div>
             <div class="slds-size--1-of-2 slds-form-element slds-p-horizontal--x-small">
                 <label class="slds-form-element__label">
-                    {{language.getLabel('LBL_LATITUDE')}}
+                    <system-label label="LBL_LATITUDE"></system-label>
                 </label>
                 <div class="slds-form-element__control slds-grow">
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="properties.googlemaps.kreportgooglemapstatitude">
                             <option></option>
                             <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
-                                {{language.getLabel(listField.name)}}
+                                <system-label [label]="listField.name"></system-label>
                             </option>
                         </select>
                     </div>
@@ -37,14 +37,14 @@
         <div class="slds-grid slds-grid--vertical-align-end slds-p-vertical--x-small">
             <div class="slds-size--1-of-4 slds-form-element slds-p-horizontal--x-small">
                 <label class="slds-form-element__label">
-                    {{language.getLabel('LBL_TITLE')}}
+                    <system-label label="LBL_TITLE"></system-label>
                 </label>
                 <div class="slds-form-element__control slds-grow">
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="properties.googlemaps.kreportgooglemapstitle">
                             <option></option>
                             <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
-                                {{language.getLabel(listField.name)}}
+                                <system-label [label]="listField.name"></system-label>
                             </option>
                         </select>
                     </div>
@@ -52,24 +52,24 @@
             </div>
             <div class="slds-size--1-of-4 slds-form-element slds-p-horizontal--x-small">
                 <label class="slds-form-element__label">
-                    {{language.getLabel('LBL_PIN_INFO')}}
+                    <system-label label="LBL_PIN_INFO"></system-label>
                 </label>
                 <div class="slds-form-element__control slds-grow">
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="properties.googlemaps.kreportgooglemapsinfo">
                             <option></option>
                             <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
-                                {{language.getLabel(listField.name)}}
+                                <system-label [label]="listField.name"></system-label>
                             </option>
                         </select>
                     </div>
                 </div>
             </div>
             <system-checkbox [(ngModel)]="properties.googlemaps.kreportgooglemapscluster" class="slds-m-left--x-small">
-                {{language.getLabel('LBL_CLUSTER_PINS')}}
+                <system-label label="LBL_CLUSTER_PINS"></system-label>
             </system-checkbox>
             <system-checkbox [(ngModel)]="properties.googlemaps.kreportgooglemapsspiderfy" class="slds-m-left--xx-small">
-                {{language.getLabel('LBL_SPIDERFY_PINS')}}
+                <system-label label="LBL_SPIDERFY_PINS"></system-label>
             </system-checkbox>
         </div>
     </system-collapsable-tab>
@@ -77,7 +77,7 @@
         <div class="slds-grid slds-grid--vertical-align-end slds-p-vertical--x-small">
             <div class="slds-size--1-of-4 slds-form-element slds-p-horizontal--x-small">
                 <label class="slds-form-element__label">
-                    {{language.getLabel('LBL_COLORS')}}
+                    <system-label label="LBL_COLORS"></system-label>
                 </label>
                 <div class="slds-form-element__control slds-grow">
                     <div class="slds-select_container">
@@ -91,14 +91,14 @@
             </div>
             <div class="slds-size--1-of-4 slds-form-element slds-p-horizontal--x-small">
                 <label class="slds-form-element__label">
-                    {{language.getLabel('LBL_COLOR_BY')}}
+                    <system-label label="LBL_COLOR_BY"></system-label>
                 </label>
                 <div class="slds-form-element__control slds-grow">
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="properties.googlemaps.kreportgooglemapscolorcriteria">
                             <option></option>
                             <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
-                                {{language.getLabel(listField.name)}}
+                                <system-label [label]="listField.name"></system-label>
                             </option>
                         </select>
                     </div>
@@ -106,12 +106,12 @@
             </div>
             <div class="slds-size--1-of-4 slds-grid slds-grid--vertical-align-center">
                 <system-checkbox [(ngModel)]="properties.googlemaps.kreportgooglemapslegend" class="slds-size--1-of-2 slds-m-left--xx-small">
-                    {{language.getLabel('LBL_DISPLAY_LEGEND')}}
+                    <system-label label="LBL_DISPLAY_LEGEND"></system-label>
                 </system-checkbox>
             </div>
             <div class="slds-size--1-of-4 slds-p-horizontal--x-small">
                 <label class="slds-form-element__label">
-                    {{language.getLabel('LBL_PREVIEW')}}
+                    <system-label label="LBL_PREVIEW"></system-label>
                 </label>
                 <div class="slds-color-picker slds-color-picker_swatches-only slds-grid slds-grid--vertical-align-center slds-grow" style="padding: .15rem 0;">
                     <div class="slds-color-picker__selector">

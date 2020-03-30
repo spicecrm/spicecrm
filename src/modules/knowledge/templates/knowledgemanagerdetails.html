@@ -1,13 +1,13 @@
 <div *ngIf="!selectedBook && docId == ''" class="slds-align--absolute-center slds-p-vertical--medium spice-h-full slds-text-heading--medium">
-    <span>{{ language.getLabel('LBL_MAKE_SELECTION') }}</span>
+    <span><system-label label="LBL_MAKE_SELECTION"></system-label></span>
 </div>
 <div *ngIf="selectedBook && docId == ''" style="width: 100%">
     <div class="slds-grid slds-grid--vertical-align-center slds-border--bottom slds-text-title--caps slds-p-around--x-small" style="border-radius: 0; height: 52px">
-        <strong>{{ language.getLabel('LBL_BOOK_DESCRIPTION') }}</strong>
+        <strong><system-label label="LBL_BOOK_DESCRIPTION"></system-label></strong>
     </div>
     <div class="slds-p-around--x-small">
         <div *ngIf="selectedBook?.html?.length > 0" [innerHTML]="selectedBook?.html"></div>
-        <div *ngIf="selectedBook?.html?.length == 0">{{language.getLabel('LBL_NO_DESCRIPTION_FOUND')}}</div>
+        <div *ngIf="selectedBook?.html?.length == 0"><system-label label="LBL_NO_DESCRIPTION_FOUND"></system-label></div>
     </div>
 </div>
 <div [hidden]="!docId || docId == ''" class="slds-p-around--xxx-small" style="background-color: #fff">

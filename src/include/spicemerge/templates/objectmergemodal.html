@@ -1,5 +1,5 @@
 <system-modal size="large">
-    <system-modal-header (close)="closeModal()">{{language.getLabel('LBL_MERGE_RECORD')}} - {{model.data.summary_text}}</system-modal-header>
+    <system-modal-header (close)="closeModal()"><system-label label="LBL_MERGE_RECORD"></system-label> - {{model.data.summary_text}}</system-modal-header>
     <system-modal-content margin="none" [grow]="true">
         <object-merge-modal-records  [hidden]="currentMergeStep!==0"></object-merge-modal-records>
         <object-merge-modal-data  [hidden]="currentMergeStep!==1"></object-merge-modal-data>
@@ -19,8 +19,8 @@
                     <div class="slds-progress-bar__value" [ngStyle]="getProgressBarWidth()"></div>
                 </div>
             </div>
-            <button class="slds-button slds-button--neutral slds-order--1" (click)="prevStep()" [disabled]="prevDisabled()">{{language.getLabel('LBL_PREVIOUS')}}</button>
-            <button class="slds-button slds-button--brand slds-order--3" (click)="nextStep()" [disabled]="nextDisabled()">{{language.getLabel('LBL_NEXT')}}</button>
+            <button class="slds-button slds-button--neutral slds-order--1" (click)="prevStep()" [disabled]="prevDisabled()"><system-label label="LBL_PREVIOUS"></system-label></button>
+            <button class="slds-button slds-button--brand slds-order--3" (click)="nextStep()" [disabled]="nextDisabled()"><system-label label="LBL_NEXT"></system-label></button>
         </div>
     </system-modal-footer>
 </system-modal>

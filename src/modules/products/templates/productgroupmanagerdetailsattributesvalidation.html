@@ -6,7 +6,7 @@
                 <tr class="slds-text-title_caps">
                     <th scope="col" *ngFor="let item of listFields; trackBy: trackByFn">
                         <div class="slds-truncate slds-cell-fixed slds-grid slds-grid_vertical-align-center  slds-p-horizontal--x-small">
-                            {{language.getFieldDisplayName('ProductAttributeValueValidations', item.field, item.fieldconfig, 'short')}}
+                            <system-label-fieldname [module]="'ProductAttributeValueValidations'" [field]="item.field" [fieldconfig]="item.fieldconfig" length="short"></system-label-fieldname>
                         </div>
                     </th>
                     <th class="slds-cell-shrink"></th>

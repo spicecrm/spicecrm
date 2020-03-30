@@ -4,11 +4,11 @@
             <thead>
             <tr class="slds-text-title_caps">
                 <th scope="col" class="">
-                    <div class="slds-truncate">{{language.getLabel('LBL_CATEGORY')}}</div>
+                    <div class="slds-truncate"><system-label label="LBL_CATEGORY"></system-label></div>
                 </th>
                 <th scope="col" class="slds-text-align--right">
                     <div class="slds-truncate">
-                        <ng-container *ngIf="evaluationType !== 'lmi'; else notLMI">{{language.getLabel('LBL_POINTS')}}</ng-container>
+                        <ng-container *ngIf="evaluationType !== 'lmi'; else notLMI"><system-label label="LBL_POINTS"></system-label></ng-container>
                         <ng-template #notLMI>%</ng-template>
                     </div>
                 </th>

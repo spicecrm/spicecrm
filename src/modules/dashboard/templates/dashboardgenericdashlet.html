@@ -1,6 +1,6 @@
 <div #headercontainer class="slds-grid slds-grid--vertical-align-center slds-border--bottom slds-p-around--x-small">
     <system-icon [module]="dashletModule" [size]="'small'"></system-icon>
-    <h2 class="slds-text-heading--medium slds-p-bottom--xx-small">{{dashletTitle}} ({{recordcount}} {{language.getLabel('LBL_OF')}} {{recordtotal}})</h2>
+    <h2 class="slds-text-heading--medium slds-p-bottom--xx-small">{{dashletTitle}} ({{recordcount}} <system-label label="LBL_OF"></system-label> {{recordtotal}})</h2>
 </div>
 <!-- the table - hidden if no records have been found and the dashlet is not loading-->
 <div class="slds-size--1-of-1" [ngStyle]="tableContainerStyle" [ngClass]="{'slds-table--header-fixed_container': islarge}">
@@ -35,7 +35,7 @@
         </table>
         <!-- if no records are found dispaly a no record message-->
         <div *ngIf="!loading && records.length == 0" class="slds-align_absolute-center" style="height: calc(100% - 5px);">
-            <system-illustration-no-records>{{language.getLabel('MSG_NO_RECORDS_FOUND')}}</system-illustration-no-records>
+            <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
         </div>
     </div>
 </div>

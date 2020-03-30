@@ -3,7 +3,7 @@
         <div class="slds-lookup__item-action slds-media" role="option" (mousedown)="searchWithModal.emit()">
               <system-icon [icon]="'search'" [sprite]="'utility'" [size]="'x-small'" [addclasses]="'slds-m-vertical--xxx-small slds-m-horizontal--xx-small'"></system-icon>
               <div class="slds-media__body">
-                  <div class="slds-lookup__result-text"><i>{{searchTerm}}</i> in {{language.getModuleName(module)}} {{modellist.listData.list.length}}</div>
+                  <div class="slds-lookup__result-text"><i>{{searchTerm}}</i> in <system-label-modulename [module]="module"></system-label-modulename> {{modellist.listData.list.length}}</div>
               </div>
         </div>
     </li>

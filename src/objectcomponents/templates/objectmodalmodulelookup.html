@@ -43,10 +43,10 @@
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="closePopup()">
-            {{language.getLabel('LBL_CANCEL')}}
+            <system-label label="LBL_CANCEL"></system-label>
         </button>
         <button *ngIf="multiselect" class="slds-button slds-button--brand" [disabled]="selectedCount == 0" (click)="selectItems()">
-            {{language.getLabel('LBL_SELECT')}}
+            <system-label label="LBL_SELECT"></system-label>
         </button>
     </system-modal-footer>
 </system-modal>

@@ -35,7 +35,7 @@
     </div>
     <div *ngIf="searchOpen && searchResults.length > 0" class="slds-lookup__menu slds-size--1-of-4 slds-p-vertical--none" [ngStyle]="lookupMenuStyle">
         <div class="slds-theme--shade slds-p-around--xx-small slds-text-body--small slds-border--bottom">
-            {{searchResults.length}} {{language.getLabel('MSG_BOOKS_FOUND')}}
+            {{searchResults.length}} <system-label label="MSG_BOOKS_FOUND"></system-label>
         </div>
         <ul class="slds-lookup__list spicecrm-scrollbar-thin" style="height: 175px" role="listbox">
             <li *ngFor="let book of searchResults; trackBy: trackByFn" role="presentation" (mousedown)="selectBook(book)">

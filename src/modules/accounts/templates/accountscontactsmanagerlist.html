@@ -29,5 +29,5 @@
 <system-spinner *ngIf="isloading"></system-spinner>
 <div *ngIf="!isloading && contacts?.length == 0"
      class="slds-text-align_center slds-p-vertical--medium">
-    <span>{{ language.getLabel('LBL_NO_ENTRIES') }}</span>
+    <span><system-label label="LBL_NO_ENTRIES"></system-label></span>
 </div>

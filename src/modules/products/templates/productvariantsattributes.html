@@ -4,6 +4,6 @@
         <tbody system-table-stencils [columns]="2" [rows]="3"></tbody>
     </table>
     <div *ngIf="productId?.length == 0 && !isLoading" class="slds-align_absolute-center">
-        {{language.getLabel('MSG_SELECT_PRODUCT_GROUP')}}
+        <system-label label="MSG_SELECT_PRODUCT_GROUP"></system-label>
     </div>
 </system-section>

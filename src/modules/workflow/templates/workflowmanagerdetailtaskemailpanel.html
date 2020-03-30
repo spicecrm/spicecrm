@@ -27,10 +27,10 @@
     </div>
     <div class="slds-grid">
         <div class="slds-size--1-of-6">
-            <label class="slds-truncate  slds-form-element__label" for="workflow-manager-details-tasks-email-panel-content-option">{{language.getLabel('LBL_CONTENT_OPTION')}}</label>
+            <label class="slds-truncate  slds-form-element__label" for="workflow-manager-details-tasks-email-panel-content-option"><system-label label="LBL_CONTENT_OPTION"></system-label></label>
             <select id="workflow-manager-details-tasks-email-panel-content-option" class="slds-select" [(ngModel)]="contentOption">
-                <option value="email_template">{{language.getLabel('LBL_EMAILTEMPLATE')}}</option>
-                <option value="method">{{language.getLabel('LBL_METHOD_CONTENT')}}</option>
+                <option value="email_template"><system-label label="LBL_EMAILTEMPLATE"></system-label></option>
+                <option value="method"><system-label label="LBL_METHOD_CONTENT"></system-label></option>
             </select>
         </div>
         <div *ngIf="contentOption == 'email_template'" class="slds-grow slds-m-left--xx-small">

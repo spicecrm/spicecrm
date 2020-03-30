@@ -101,6 +101,11 @@ export class navigation {
     public navigationparadigm: 'simple' | 'tabbed' | 'subtabbed' = 'simple';
 
     /**
+     * determines the navigatioon paradigm if set to tabbed or simple
+     */
+    private enforcednavigationparadigm: boolean = false;
+
+    /**
      * the current active module ...
      * ToDo: remove
      */
@@ -318,6 +323,17 @@ export class navigation {
     }
 
     /**
+     * call to enforce a navigation paradigm
+     *
+     * @param paradigm
+     */
+    public enforceNavigationParadigm(paradigm: 'simple'|'tabbed'|'subtabbed'){
+       this.enforcednavigationparadigm = true;
+       this.navigationparadigm = paradigm;
+    }
+
+
+    /**
      * sets the model name if the current bean is in focus and the bean is saved
      * @param message
      */
@@ -325,7 +341,7 @@ export class navigation {
         switch (message.messagetype) {
             case "loader.completed":
                 // once the laoder completed set the paradigm
-                if (message.messagedata == 'loadUserData') {
+                if (!this.enforcednavigationparadigm &&  message.messagedata == 'loadUserData') {
                     let navparadigm = this.userpreferences.getPreference('navigation_paradigm');
                     this.navigationparadigm = navparadigm ? navparadigm : 'simple';
                 }
@@ -333,7 +349,7 @@ export class navigation {
             case 'userpreferences.save':
                 // handle the paradigm Change
                 let nvp = this.userpreferences.getPreference('navigation_paradigm');
-                if (nvp && this.navigationparadigm != nvp) {
+                if (!this.enforcednavigationparadigm && nvp && this.navigationparadigm != nvp) {
                     if (nvp == 'simple' && this.navigationparadigm != nvp) {
                         this.objectTabs = [];
                         this.router.navigate(['module/Home']);

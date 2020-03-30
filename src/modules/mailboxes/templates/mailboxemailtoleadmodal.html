@@ -1,6 +1,6 @@
 <system-modal size="large">
     <system-modal-header (close)="closeModal()">
-        {{language.getLabel('Leads', 'LBL_NEW_FORM_TITLE')}}
+        <system-label label="Leads', 'LBL_NEW_FORM_TITLE"></system-label>
     </system-modal-header>
     <system-modal-content>
         <div class="slds-grid" style="height: 70vh;">
@@ -19,10 +19,10 @@
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="closeModal()">
-            {{language.getLabel('LBL_CANCEL')}}
+            <system-label label="LBL_CANCEL"></system-label>
         </button>
         <button class="slds-button slds-button--brand" (click)="saveLead()">
-            {{language.getLabel('LBL_SAVE')}}
+            <system-label label="LBL_SAVE"></system-label>
         </button>
     </system-modal-footer>
 </system-modal>

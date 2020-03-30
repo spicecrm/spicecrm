@@ -7,8 +7,8 @@
                     <div class="slds-page-header__name">
                         <div class="slds-page-header__name-title">
                             <h1>
-                                <span>{{language.getLabel('LBL_CONNECTION')}}</span>
-                                <span class="slds-page-header__title slds-truncate">{{language.getLabel('LBL_SETTINGS')}}</span>
+                                <span><system-label label="LBL_CONNECTION"></system-label></span>
+                                <span class="slds-page-header__title slds-truncate"><system-label label="LBL_SETTINGS"></system-label></span>
                             </h1>
                         </div>
                     </div>
@@ -20,7 +20,7 @@
                 <div class="slds-page-header__control">
                     <ul class="slds-button-group-list">
                         <li>
-                            <button class="slds-button slds-button_neutral" (click)="saveSettings()">{{language.getLabel('LBL_SAVE')}}</button>
+                            <button class="slds-button slds-button_neutral" (click)="saveSettings()"><system-label label="LBL_SAVE"></system-label></button>
                         </li>
                     </ul>
                 </div>
@@ -34,14 +34,14 @@
 </div>
 <div *ngIf="!loading" class="slds-p-around--x-small">
     <div class="slds-form-element">
-        <label class="slds-form-element__label">{{language.getLabel('LBL_USERNAME')}}</label>
+        <label class="slds-form-element__label"><system-label label="LBL_USERNAME"></system-label></label>
         <div class="slds-form-element__control">
             <input type="text" autocomplete="off" placeholder="Please enter your SpiceCRM username"
                    class="slds-input" [(ngModel)]="this.configuration.username"/>
         </div>
     </div>
     <div class="slds-form-element">
-        <label class="slds-form-element__label">{{language.getLabel('LBL_PASSWORD')}}</label>
+        <label class="slds-form-element__label"><system-label label="LBL_PASSWORD"></system-label></label>
         <div class="slds-form-element__control">
             <input type="password" autocomplete="off" placeholder="Please enter your SpiceCRM password"
                    class="slds-input" [(ngModel)]="this.configuration.password"/>
@@ -49,7 +49,7 @@
     </div>
     <div *ngIf="saveFailed" class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error"
          role="alert">
-        <span class="slds-assistive-text">{{language.getLabel('LBL_ERROR')}}</span>
+        <span class="slds-assistive-text"><system-label label="LBL_ERROR"></system-label></span>
         <system-utility-icon icon="error"></system-utility-icon>
         <h2>{{ errorMessage }}</h2>
         <div class="slds-notify__close">

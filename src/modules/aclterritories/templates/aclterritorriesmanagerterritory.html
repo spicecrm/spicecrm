@@ -1,8 +1,8 @@
 <div class="slds-scrollable" style="height: 100%;">
     <div class="slds-p-around--small slds-border--bottom slds-grid slds-grid--vertical-align-center">
-        <h2 class="slds-text-heading_medium">{{language.getLabel('LBL_SPICEACLTERRITORY')}}</h2>
-        <button class="slds-col--bump-left slds-button slds-button--neutral" *ngIf="model.data.inactive == 1" [disabled]="!(modelid && modelid != '')" (click)="activateTerritory()">{{language.getLabel('LBL_ACTIVATE')}}</button>
-        <button class="slds-col--bump-left slds-button slds-button--neutral" *ngIf="model.data.inactive == 0" [disabled]="!(modelid && modelid != '')" (click)="deactivateTerritory()">{{language.getLabel('LBL_DEACTIVATE')}}</button>
+        <h2 class="slds-text-heading_medium"><system-label label="LBL_SPICEACLTERRITORY"></system-label></h2>
+        <button class="slds-col--bump-left slds-button slds-button--neutral" *ngIf="model.data.inactive == 1" [disabled]="!(modelid && modelid != '')" (click)="activateTerritory()"><system-label label="LBL_ACTIVATE"></system-label></button>
+        <button class="slds-col--bump-left slds-button slds-button--neutral" *ngIf="model.data.inactive == 0" [disabled]="!(modelid && modelid != '')" (click)="deactivateTerritory()"><system-label label="LBL_DEACTIVATE"></system-label></button>
     </div>
     <div *ngIf="modelid && modelid != ''" class="slds-p-around--small">
         <div>
@@ -17,8 +17,8 @@
         </div>
         <div class="slds-align--absolute-center" *ngIf="isEditMode">
             <div class="slds-p-around--small slds-align--absolute-center">
-                <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="cancelEdit()">{{language.getLabel('LBL_CANCEL')}}</button>
-                <button class="slds-col--bump-left slds-button slds-button--brand" (click)="saveTerritory()">{{language.getLabel('LBL_SAVE')}}</button>
+                <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="cancelEdit()"><system-label label="LBL_CANCEL"></system-label></button>
+                <button class="slds-col--bump-left slds-button slds-button--brand" (click)="saveTerritory()"><system-label label="LBL_SAVE"></system-label></button>
             </div>
         </div>
     </div>

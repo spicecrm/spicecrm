@@ -2,11 +2,11 @@
     <thead>
     <tr class="slds-text-title--caps">
         <th *ngIf="selectable" class="slds-cell-shrink" scope="col">
-            <span class="slds-assistive-text" id="check-group-header">{{language.getLabel('LBL_CHOOSE_ROWS_TO_SELECT')}}</span>
+            <span class="slds-assistive-text" id="check-group-header"><system-label label="LBL_CHOOSE_ROWS_TO_SELECT"></system-label></span>
             <system-checkbox [checked]="areAllObjectsSelected()" (click)="toggleAll()" [disabled]="objects.length > max_selections"></system-checkbox>
         </th>
         <th *ngFor="let field of fields" scope="col">
-            <div *ngIf="!field.fieldconfig || !field.fieldconfig.hidelabel" class="slds-truncate">{{language.getFieldDisplayName(module, field.field, field.fieldconfig)}}</div>
+            <div *ngIf="!field.fieldconfig || !field.fieldconfig.hidelabel" class="slds-truncate"><system-label-fieldname [module]="module" [field]="field.field" [fieldconfig]="field.fieldconfig"></system-label-fieldname></div>
         </th>
     </tr>
     </thead>

@@ -16,15 +16,15 @@
     <td>
         <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" (click)="optionUp()" title="{{language.getLabel('LBL_UP')}}" [disabled]="isFirstRow">
             <system-button-icon [icon]="'arrowup'"></system-button-icon>
-            <span class="slds-assistive-text">{{language.getLabel('LBL_UP')}}</span>
+            <span class="slds-assistive-text"><system-label label="LBL_UP"></system-label></span>
         </button>
         <button
             class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" (click)="optionDown()" title="{{language.getLabel('LBL_DOWN')}}" [disabled]="isLastRow">
             <system-button-icon [icon]="'arrowdown'"></system-button-icon>
-            <span class="slds-assistive-text">{{language.getLabel('LBL_DOWN')}}</span>
+            <span class="slds-assistive-text"><system-label label="LBL_DOWN"></system-label></span>
         </button><button
             class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" (click)="deleteOption()" title="{{language.getLabel('LBL_DELETE')}}">
             <system-button-icon [icon]="'delete'"></system-button-icon>
-            <span class="slds-assistive-text">{{language.getLabel('LBL_DELETE')}}</span>
+            <span class="slds-assistive-text"><system-label label="LBL_DELETE"></system-label></span>
         </button>
     </td>
