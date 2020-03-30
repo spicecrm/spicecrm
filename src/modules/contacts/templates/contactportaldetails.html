@@ -1,21 +1,21 @@
 <system-modal>
     <system-modal-header (close)="closeModal()">
         <ng-container *ngIf="loaded">
-            <ng-container *ngIf="isNewUser">{{lang.getLabel('LBL_CREATE_PORTAL_USER')}}</ng-container>
-            <ng-container *ngIf="!isNewUser">{{lang.getLabel('LBL_EDIT_PORTAL_USER')}}</ng-container>
+            <ng-container *ngIf="isNewUser"><system-label label="LBL_CREATE_PORTAL_USER"></system-label></ng-container>
+            <ng-container *ngIf="!isNewUser"><system-label label="LBL_EDIT_PORTAL_USER"></system-label></ng-container>
             <span class="slds-text-heading_small slds-p-top_x-small" style="display:block">
                 <span class="slds-p-horizontal--x-small slds-theme--info slds-text-color--inverse" style="opacity:0.66">{{model.data.name}}</span>
             </span>
         </ng-container>
         <ng-container *ngIf="!loaded">
-            {{lang.getLabel('LBL_PORTAL_USER')}}
+            <system-label label="LBL_PORTAL_USER"></system-label>
         </ng-container>
     </system-modal-header>
     <system-modal-content>
         <system-spinner *ngIf="!loaded"></system-spinner>
         <div *ngIf="loaded" class="slds-form slds-form_horizontal">
             <div class="slds-form-element">
-                <label class="slds-form-element__label">{{lang.getLabel('LBL_ACTIVE')}}</label>
+                <label class="slds-form-element__label"><system-label label="LBL_ACTIVE"></system-label></label>
                 <div class="slds-form-element__control">
                     <label class="slds-checkbox_toggle slds-grid">
                         <input type="checkbox" name="active" [(ngModel)]="user.active">
@@ -26,28 +26,28 @@
                 </div>
             </div>
             <div class="slds-form-element" [ngClass]="{'slds-has-error':usernameAlreadyExists}">
-                <label class="slds-form-element__label"><abbr class="slds-required" title="required">*  </abbr>{{lang.getLabel('LBL_USER_NAME')}}</label>
+                <label class="slds-form-element__label"><abbr class="slds-required" title="required">*  </abbr><system-label label="LBL_USER_NAME"></system-label></label>
                 <div class="slds-form-element__control">
                     <input type="text" class="slds-input" [(ngModel)]="user.name" (change)="testUsername()" [disabled]="usernameTesting">
-                    <div *ngIf="usernameAlreadyExists" class="slds-form-element__help">{{lang.getLabel('MSG_USERNAME_ALREADY_EXISTS')}}</div>
+                    <div *ngIf="usernameAlreadyExists" class="slds-form-element__help"><system-label label="MSG_USERNAME_ALREADY_EXISTS"></system-label></div>
                 </div>
             </div>
             <div class="slds-form-element" [ngClass]="{'slds-has-error':pwdError}">
                 <label class="slds-form-element__label">
-                    <ng-container *ngIf="isNewUser"><abbr class="slds-required" title="required">*  </abbr>{{lang.getLabel('LBL_PASSWORD')}}</ng-container>
-                    <ng-container *ngIf="!isNewUser">{{lang.getLabel('LBL_NEW_PWD')}}?</ng-container>
+                    <ng-container *ngIf="isNewUser"><abbr class="slds-required" title="required">*  </abbr><system-label label="LBL_PASSWORD"></system-label></ng-container>
+                    <ng-container *ngIf="!isNewUser"><system-label label="LBL_NEW_PWD"></system-label>?</ng-container>
                 </label>
                 <div class="slds-form-element__control">
                     <input type="text" class="slds-input" [(ngModel)]="user.password" [ngClass]="{'slds-has-error':pwdError}">
                     <div *ngIf="pwdError" class="slds-form-element__help">{{pwdError}}</div>
                     <div *ngIf="pwdGuideline" class="slds-m-top--xx-small slds-form-element__help" style="color:inherit">
-                        {{lang.getLabel('LBL_PWD_GUIDELINE')}}:<br>
+                        <system-label label="LBL_PWD_GUIDELINE"></system-label>:<br>
                         {{pwdGuideline}}
                     </div>
                 </div>
             </div>
             <div class="slds-form-element">
-                <label class="slds-form-element__label"><abbr class="slds-required" title="required">*  </abbr>{{lang.getLabel('LBL_ACL_ROLE')}}</label>
+                <label class="slds-form-element__label"><abbr class="slds-required" title="required">*  </abbr><system-label label="LBL_ACL_ROLE"></system-label></label>
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="user.aclRole">
@@ -57,7 +57,7 @@
                 </div>
             </div>
             <div class="slds-form-element">
-                <label class="slds-form-element__label"><abbr class="slds-required" title="required">*  </abbr>{{lang.getLabel('LBL_PORTAL_ROLE')}}</label>
+                <label class="slds-form-element__label"><abbr class="slds-required" title="required">*  </abbr><system-label label="LBL_PORTAL_ROLE"></system-label></label>
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="user.portalRole">
@@ -81,7 +81,7 @@
         </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="closeModal()">{{lang.getLabel('LBL_CANCEL')}}</button>
-        <button *ngIf="loaded" class="slds-button slds-button--brand" (click)="save()" [disabled]="!canSave">{{lang.getLabel('LBL_SAVE')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="closeModal()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button *ngIf="loaded" class="slds-button slds-button--brand" (click)="save()" [disabled]="!canSave"><system-label label="LBL_SAVE"></system-label></button>
     </system-modal-footer>
 </system-modal>
