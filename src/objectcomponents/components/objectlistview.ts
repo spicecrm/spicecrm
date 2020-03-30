@@ -17,8 +17,7 @@ import {userpreferences} from '../../services/userpreferences.service';
 @Component({
     selector: 'object-listview',
     templateUrl: './src/objectcomponents/templates/objectlistview.html',
-    providers: [modellist, model],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    providers: [modellist, model]
 })
 export class ObjectListView implements AfterViewInit, OnDestroy {
 

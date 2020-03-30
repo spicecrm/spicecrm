@@ -62,7 +62,7 @@ export class ObjectList implements OnDestroy {
 
     constructor(private router: Router, private cdRef: ChangeDetectorRef, private metadata: metadata, private modellist: modellist, private language: language, private layout: layout) {
 
-        this.modellistsubscribe.add(this.modellist.listDataReloaded$.subscribe(() => {
+        this.modellistsubscribe.add(this.modellist.listDataChanged$.subscribe(() => {
             this.cdRef.detectChanges();
         }));
         // get the confih
@@ -139,7 +139,7 @@ export class ObjectList implements OnDestroy {
             if (this.sortfield) {
                 this.modellist.setSortField(this.sortfield, this.sortdirection, false);
             }
-            this.modellist.getListData(requestedFields);
+            this.modellist.getListData(requestedFields).subscribe(() => this.cdRef.detectChanges());
         }
     }
 
