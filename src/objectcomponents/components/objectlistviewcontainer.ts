@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {navigation} from '../../services/navigation.service';
 import {navigationtab} from '../../services/navigationtab.service';
@@ -9,8 +9,7 @@ import {broadcast} from '../../services/broadcast.service';
 
 @Component({
     selector: 'object-listview-container',
-    templateUrl: './src/objectcomponents/templates/objectlistviewcontainer.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    templateUrl: './src/objectcomponents/templates/objectlistviewcontainer.html'
 })
 export class ObjectListViewContainer implements AfterViewInit, OnDestroy {
     @ViewChild('container', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
