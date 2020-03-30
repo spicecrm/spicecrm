@@ -484,14 +484,15 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
             if (!!this.routes) {
                 this.directionsService = new google.maps.DirectionsService();
             }
-
             if (this.options.showMyLocation) {
                 this.setCurrentLocationMarker();
             }
-            this.zone.runOutsideAngular(() =>
-                this.createCircle()
-            );
-            this.createFixedCircle();
+            if (!!this.options.circle) {
+                this.createCircle();
+            }
+            if (!!this.options.fixedCircle) {
+                this.createFixedCircle();
+            }
         }
 
         this.mapBounds = new google.maps.LatLngBounds();
@@ -585,7 +586,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      */
     private removeMarkerClusterMarkers() {
         if (!this.markerCluster) return;
-        this.markerCluster.removeMarkers(this.markers);
+        this.markerCluster.clearMarkers();
     }
 
     /**

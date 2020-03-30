@@ -2,7 +2,7 @@
     <div>
         <div class="slds-grid slds-p-bottom--x-small" [class.slds-p-around--x-small]="isFullScreenOn">
             <div class="slds-radio_button-group slds-m-right--x-small">
-                <span class="slds-button slds-radio_button">
+                <span class="slds-button slds-radio_button" system-title="LBL_SEARCH">
                     <input type="radio" name="useMapForOption" value="search" [(ngModel)]="useMapFor" [disabled]="isLoadingDirection" id="spice-google-maps-record-use-map-for-search">
                     <label class="slds-radio_button__label slds-height_full" for="spice-google-maps-record-use-map-for-search">
                         <span class="slds-radio_faux" style="padding: 0 .5rem;">
@@ -10,7 +10,7 @@
                         </span>
                     </label>
                 </span>
-                <span class="slds-button slds-radio_button">
+                <span class="slds-button slds-radio_button" system-title="LBL_DIRECTION">
                     <input type="radio" name="useMapForOption" value="direction" [(ngModel)]="useMapFor" id="spice-google-maps-record-use-map-for-direction">
                     <label class="slds-radio_button__label slds-height_full" for="spice-google-maps-record-use-map-for-direction">
                         <span class="slds-radio_faux" style="padding: 0 .5rem;">
@@ -63,7 +63,7 @@
                     </div>
                 </div>
             </ng-template>
-            <button class="slds-button slds-button--neutral slds-button--icon-border slds-m-left--xx-small slds-m-right--xxx-small slds-col--bump-left" (click)="toggleFullScreen(mainContainer)">
+            <button (click)="toggleFullScreen(mainContainer)" system-title="LBL_FULL_SCREEN" class="slds-button slds-button--neutral slds-button--icon-border slds-m-left--xx-small slds-m-right--xxx-small slds-col--bump-left">
                 <system-button-icon [icon]="!isFullScreenOn ? 'expand' : 'contract'"></system-button-icon>
             </button>
         </div>

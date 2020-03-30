@@ -144,31 +144,22 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
 
         if (!this.componentconfig) this.componentconfig = {};
 
-        if (!this.componentconfig.hasOwnProperty('showMyLocation')) {
-            this.componentconfig.showMyLocation = false;
-        }
-        if (!this.componentconfig.hasOwnProperty('showCluster')) {
-            this.componentconfig.showCluster = true;
-        }
-        if (!this.componentconfig.hasOwnProperty('markerWithModelPopover')) {
-            this.componentconfig.markerWithModelPopover = true;
-        }
-        if (!this.componentconfig.hasOwnProperty('defaultRadius') || isNaN(this.componentconfig.defaultRadius)) {
+        if (!(!!this.componentconfig.defaultRadius) || isNaN(this.componentconfig.defaultRadius)) {
             this.componentconfig.defaultRadius = 5;
         }
         if (!this.componentconfig.directionTravelMode || ['DRIVING', 'WALKING', 'TRANSIT', 'BICYCLING'].indexOf(this.componentconfig.directionTravelMode) == -1) {
             this.componentconfig.directionTravelMode = 'DRIVING';
         }
-        if (!this.componentconfig.mapHeight) {
+        if (!(!!this.componentconfig.mapHeight)) {
             this.componentconfig.mapHeight = 300;
         }
-        if (!this.componentconfig.circleColor) {
+        if (!(!!this.componentconfig.circleColor)) {
             this.componentconfig.circleColor = '#CA1B21';
         }
-        if (!this.componentconfig.filterCircleColor) {
+        if (!(!!this.componentconfig.filterCircleColor)) {
             this.componentconfig.filterCircleColor = '#1A73E8';
         }
-        if (!this.componentconfig.focusColor) {
+        if (!(!!this.componentconfig.focusColor)) {
             this.componentconfig.focusColor = '#1A73E8';
         }
 
@@ -183,12 +174,10 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
     public setFirstMapOptionsChanged() {
         this.mapOptions = {
             ...this.componentconfig, changed: {
-                circle: true,
                 showMyLocation: true,
                 showCluster: true,
                 markerWithModelPopover: true,
                 directionTravelMode: true,
-                unitSystem: true,
                 focusColor: true,
             }
         };
