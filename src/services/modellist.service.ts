@@ -40,7 +40,7 @@ export class modellist implements OnDestroy {
     /**
      * a behavioural subject to catch the list data loads
      */
-    public listDataReloaded$: EventEmitter<boolean> = new EventEmitter<boolean>();
+    public listDataChanged$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 
     /**
@@ -310,6 +310,8 @@ export class modellist implements OnDestroy {
                         this.removeItemFromBucket(message.messagedata.data[this.bucketfield], bucketamountfields);
                     }
                 }
+                this.listDataChanged$.next(true);
+
                 break;
             case 'model.save':
                 let eventHandled = false;
@@ -347,6 +349,7 @@ export class modellist implements OnDestroy {
 
                         }
                     }
+                    this.listDataChanged$.next(true);
 
                 } else {
                     this.reLoadList();
@@ -394,7 +397,9 @@ export class modellist implements OnDestroy {
         if (this.currentList.id == 'all' || this.currentList.id == 'owner') {
             this.userpreferences.setPreference('defaultlisttype', listcomponent, false, 'SpiceUI_' + this.module);
         }
-        // determine the listfields
+
+        // reset current list fielddefs and redetermine its fields from the component config
+        this.currentList.fielddefs = undefined;
         this.determineListFields();
     }
 
@@ -558,7 +563,7 @@ export class modellist implements OnDestroy {
         // check if we have fielddefs
         let fielddefs = this.getFieldDefs();
 
-        // load all fields
+        // load all fields from the selected component configs
         let componentconfig = this.metadata.getComponentConfig(this.listcomponent, this.module);
         let allFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
         for (let listField of allFields) {
@@ -1160,7 +1165,7 @@ export class modellist implements OnDestroy {
                 // return & close the subject
                 retSub.next(true);
                 retSub.complete();
-                this.listDataReloaded$.next(true);
+                this.listDataChanged$.next(true);
             }
         );
 
@@ -1190,7 +1195,7 @@ export class modellist implements OnDestroy {
         })
             .subscribe((res: any) => {
                 this.listData.list = this.listData.list.concat(res.list);
-                this.listDataReloaded$.next(true);
+                this.listDataChanged$.next(true);
                 this.lastLoad = new moment();
 
                 this.isLoading = false;
@@ -1232,7 +1237,7 @@ export class modellist implements OnDestroy {
             .subscribe((res: any) => {
                 this.listData.list = this.listData.list.concat(res.list);
                 this.lastLoad = new moment();
-                this.listDataReloaded$.next(true);
+                this.listDataChanged$.next(true);
                 this.isLoading = false;
 
                 // save the current result
