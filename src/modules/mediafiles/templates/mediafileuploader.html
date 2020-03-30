@@ -1,6 +1,6 @@
 <system-modal size="large">
     <system-modal-header (close)="cancel()">
-        {{lang.getLabel('LBL_NEW_IMAGE')}}
+        <system-label label="LBL_NEW_IMAGE"></system-label>
     </system-modal-header>
     <system-modal-content><!-- grow="true" -->
 
@@ -20,11 +20,11 @@
 
     <system-modal-footer>
         <div *ngIf="!isSaving">
-            <button class="slds-button slds-button--brand" (click)="save()" [disabled]="!canSave">{{lang.getLabel('LBL_SAVE')}}</button>
-            <button class="slds-button slds-button--neutral" (click)="cancel()">{{lang.getLabel('LBL_CANCEL')}}</button>
+            <button class="slds-button slds-button--brand" (click)="save()" [disabled]="!canSave"><system-label label="LBL_SAVE"></system-label</button>
+            <button class="slds-button slds-button--neutral" (click)="cancel()"> <system-label label="LBL_CANCEL"></system-label></button>
         </div>
         <div *ngIf="isSaving">
-            <system-progress-bar [progress]="theProgress">{{lang.getLabel('LBL_UPLOADING_MEDIA_FILE')}}</system-progress-bar>
+            <system-progress-bar [progress]="theProgress"><system-label label="LBL_UPLOADING_MEDIA_FILE"></system-label></system-progress-bar>
         </div>
     </system-modal-footer>
 

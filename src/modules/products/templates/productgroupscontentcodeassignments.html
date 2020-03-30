@@ -1,9 +1,9 @@
-<span (click)="showDialog()">{{language.getLabel(model.module, 'LBL_CONTENTCODE')}}</span>
+<span (click)="showDialog()"><system-label label="LBL_CONTENTCODE"></system-label></span>
 <ng-container *ngIf="dialogvisible">
     <div role="dialog" tabindex="-1" class="slds-modal slds-modal--large slds-fade-in-open">
         <div class="slds-modal__container">
             <div class="slds-modal__header slds-theme--default">
-                <h2 class="slds-text-heading--medium">{{language.getLabel(model.module, 'LBL_CONTENTCODE_LONG')}}</h2>
+                <h2 class="slds-text-heading--medium"><system-label label="LBL_CONTENTCODE_LONG"></system-label></h2>
             </div>
             <div class="slds-modal__content slds-theme--default slds-scrollable" style="height:80%;">
                 <div *ngIf="!isLoading; else loading">

@@ -51,7 +51,7 @@
             </ng-container>
             <div *ngIf="!asPicker" class=" slds-dropdown-trigger slds-dropdown-trigger--click slds-m-left--xx-small" [ngClass]="typeDropdownClass">
                 <button class="slds-button slds-button--neutral slds-p-horizontal--x-small" (click)="toggleTypeSelector()">
-                    {{language.getLabel('LBL_'+ sheetType | uppercase )}}
+                    <system-label [label]="'LBL_'+ sheetType|uppercase "></system-label>
                     <system-button-icon [icon]="'down'"></system-button-icon>
                 </button>
                 <div class="slds-dropdown slds-dropdown--right slds-dropdown--x-small">
