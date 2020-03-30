@@ -2,12 +2,12 @@
     <system-filter-builder-expression-fields class="slds-col slds-size--1-of-4" [module]="module" [(ngModel)]="field"></system-filter-builder-expression-fields>
     <div class="slds-col slds-size--1-of-4">
         <div class="slds-form-element">
-            <label class="slds-form-element__label">{{language.getLabel('LBL_OPERATOR')}}</label>
+            <label class="slds-form-element__label"><system-label label="LBL_OPERATOR"></system-label></label>
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
                     <select [disabled]="!filterexpression.field" class="slds-select" [(ngModel)]="operator">
                         <option></option>
-                        <option *ngFor="let operator of operators[operatortype]" [value]="operator.operator">{{language.getLabel(operator.name)}}</option>
+                        <option *ngFor="let operator of operators[operatortype]" [value]="operator.operator"><system-label [label]="operator.name"></system-label></option>
                     </select>
                 </div>
             </div>

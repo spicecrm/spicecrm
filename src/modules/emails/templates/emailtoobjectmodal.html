@@ -4,7 +4,7 @@
             <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" (click)="close()">
                 <system-button-icon [icon]="'close'"></system-button-icon>
             </button>
-            <h2 class="slds-text-heading--medium">{{language.getModuleName(object_module_name,true)}}</h2>
+            <h2 class="slds-text-heading--medium"><system-label-modulename [module]="object_module_name" [singular]="true"></system-label-modulename></h2>
         </div>
         <div class="slds-modal__content" >
             <div class="slds-grid" style="height: 80vh;">
@@ -17,8 +17,8 @@
             </div>
         </div>
         <div class="slds-modal__footer">
-            <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
-            <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+            <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
         </div>
     </div>
 </div>

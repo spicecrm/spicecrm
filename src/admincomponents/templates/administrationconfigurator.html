@@ -1,6 +1,6 @@
 <div class="slds-grid slds-grid--align-spread slds-p-around--medium">
-    <h2 class="slds-text-heading--medium ">{{language.getLabel('LBL_DICTIONARY_ITEM')}}: {{componentconfig.dictionary}} ({{count}} {{language.getLabel('LBL_RECORDS')}})</h2>
-    <button class="slds-button slds-button--neutral" (click)="addEntry()">{{language.getLabel('LBL_ADD')}}</button>
+    <h2 class="slds-text-heading--medium "><system-label label="LBL_DICTIONARY_ITEM"></system-label>: {{componentconfig.dictionary}} ({{count}} <system-label label="LBL_RECORDS"></system-label>)</h2>
+    <button class="slds-button slds-button--neutral" (click)="addEntry()"><system-label label="LBL_ADD"></system-label></button>
 </div>
 <table class="slds-table slds-table--bordered slds-table--cell-buffer">
     <thead>

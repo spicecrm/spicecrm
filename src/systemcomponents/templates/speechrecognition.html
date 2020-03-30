@@ -1,10 +1,10 @@
 <system-modal size="large">
     <system-modal-header (close)="buttonCancel()">
-        {{language.getLabel('LBL_SPEECH_RECOGNITION')}}
+        <system-label label="LBL_SPEECH_RECOGNITION"></system-label>
     </system-modal-header>
     <system-modal-content>
         <div style="min-height: 300px;">
-            <div *ngIf="!dirty" class="slds-text-align_center slds-m-vertical--x-large" style="margin-bottom:3rem" [style.visibility]="pausing ? 'hidden':'visible'">{{language.getLabel('LBL_WAITING_START_SPEAKING')}}</div>
+            <div *ngIf="!dirty" class="slds-text-align_center slds-m-vertical--x-large" style="margin-bottom:3rem" [style.visibility]="pausing ? 'hidden':'visible'"><system-label label="LBL_WAITING_START_SPEAKING"></system-label></div>
             <div *ngIf="dirty" [innerHTML]="theTextHtml" class="slds-text-longform"></div>
         </div>
     </system-modal-content>
@@ -18,20 +18,20 @@
                 </div>
             </div>
             <div class="slds-col">
-                <button class="slds-button slds-button--neutral" (click)="buttonCancel()">{{language.getLabel('LBL_CANCEL')}}</button>
+                <button class="slds-button slds-button--neutral" (click)="buttonCancel()"><system-label label="LBL_CANCEL"></system-label></button>
                 <button class="slds-button slds-button--neutral" (click)="buttonPause()" [disabled]="cancelling">
                     <ng-container *ngIf="!pausing">
                         <system-button-icon [icon]="'pause'" [position]="'left'"></system-button-icon>
-                        {{language.getLabel('LBL_PAUSE')}}
+                        <system-label label="LBL_PAUSE"></system-label>
                     </ng-container>
                     <ng-container *ngIf="pausing">
                         <system-button-icon [icon]="'record'" [position]="'left'"></system-button-icon>
-                        {{language.getLabel('LBL_CONTINUE')}}
+                        <system-label label="LBL_CONTINUE"></system-label>
                     </ng-container>
                 </button>
                 <button class="slds-button slds-button--brand" (click)="buttonAcceptClose($event)" [disabled]="!dirty || cancelling">
                     <system-button-icon [icon]="'stop'" [position]="'left'"></system-button-icon>
-                    {{language.getLabel('LBL_ACCEPT')}} &amp; {{language.getLabel('LBL_CLOSE')}}
+                    <system-label label="LBL_ACCEPT"></system-label> &amp; <system-label label="LBL_CLOSE"></system-label>
                 </button>
             </div>
         </div>

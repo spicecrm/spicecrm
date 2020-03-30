@@ -1,7 +1,7 @@
 <div class="slds-scrollable--y slds-p-around--x-small">
     <div *ngIf="!activeContactId"
          class="slds-text-align_center slds-p-vertical--medium">
-        <span>{{ language.getLabel('LBL_MAKE_SELECTION') }}</span>
+        <span><system-label label="LBL_MAKE_SELECTION"></system-label></span>
     </div>
     <div [hidden]="!activeContactId">
         <div #detailscontainer></div>

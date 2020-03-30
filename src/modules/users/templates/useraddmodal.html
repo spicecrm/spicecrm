@@ -9,7 +9,7 @@
                 <div class="slds-p-around--x-small">
                     <div class="slds-form--stacked slds-text-align--left">
                         <div *ngIf="pwdGuideline" class="slds-m-vertical--medium">
-                            <div>{{language.getLabel('LBL_PWD_GUIDELINE')}}</div>
+                            <div><system-label label="LBL_PWD_GUIDELINE"></system-label></div>
                             <div>{{pwdGuideline}}</div>
                         </div>
                         <div class="slds-grid">
@@ -42,8 +42,8 @@
                             </div>
                         </div>
                     </div>
-                    <system-checkbox [(ngModel)]="autoGenerate">{{language.getLabel('LBL_AUTO_GENERATE')}}</system-checkbox>
-                    <system-checkbox [(ngModel)]="sendByEmail">{{language.getLabel('LBL_SEND_BY_EMAIL')}}</system-checkbox>
+                    <system-checkbox [(ngModel)]="autoGenerate"><system-label label="LBL_AUTO_GENERATE"></system-label></system-checkbox>
+                    <system-checkbox [(ngModel)]="sendByEmail"><system-label label="LBL_SEND_BY_EMAIL"></system-label></system-checkbox>
                 </div>
             </div>
         </system-section>
@@ -52,8 +52,8 @@
         </system-section>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
-        <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
-        <button class="slds-button slds-button--brand" (click)="save(true)">{{language.getLabel('LBL_SAVE_AND_GO_TO_RECORD')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="save(true)"><system-label label="LBL_SAVE_AND_GO_TO_RECORD"></system-label></button>
     </system-modal-footer>
 </system-modal>

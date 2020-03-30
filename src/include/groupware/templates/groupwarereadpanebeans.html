@@ -2,5 +2,5 @@
     <groupware-pane-bean *ngFor="let bean of beans" [bean]="bean" [modelProvider]="{module: bean.module, id: bean.id, data: bean.data}"></groupware-pane-bean>
 </div>
 <div *ngIf="beans.length == 0" class="slds-p-around--medium slds-align--absolute-center">
-    {{language.getLabel('MSG_NO_RECORDS_FOUND')}}
+    <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
 </div>

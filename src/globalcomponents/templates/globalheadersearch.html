@@ -19,7 +19,7 @@
                                                         <system-utility-icon icon="check" size="x-small" *ngIf="'all' == searchmodule"></system-utility-icon>
                                                     </div>
                                                     <div class="slds-media__body">
-                                                        <div class="slds-truncate">{{language.getLabel('LBL_ALL')}}</div>
+                                                        <div class="slds-truncate"><system-label label="LBL_ALL"></system-label></div>
                                                     </div>
                                                 </div>
                                             </li>
@@ -30,7 +30,7 @@
                                                         <system-utility-icon  icon="check" size="x-small" *ngIf="searchModule == _searchmodule"></system-utility-icon>
                                                     </div>
                                                     <div class="slds-media__body">
-                                                        <div class="slds-truncate">{{language.getModuleName(searchModule)}}</div>
+                                                        <div class="slds-truncate"><system-label-modulename [module]="searchModule"></system-label-modulename></div>
                                                     </div>
                                                 </div>
                                             </li>

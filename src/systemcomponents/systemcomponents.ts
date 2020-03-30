@@ -76,6 +76,8 @@ import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
 import /*embed*/ {SystemInputCompanycodes} from "./components/systeminputcompanycodes";
 import /*embed*/ {SystemInputBackendMethod} from "./components/systeminputbackendmethod";
 import /*embed*/ {SystemLabel} from "./components/systemlabel";
+import /*embed*/ {SystemLabelFieldname} from "./components/systemlabelfieldname";
+import /*embed*/ {SystemLabelModulename} from "./components/systemlabelmodulename";
 import /*embed*/ {SystemLink} from "./components/systemlink";
 import /*embed*/ {SystemLoaderProgress} from "./components/systemloaderprogress";
 import /*embed*/ {SystemLoadingModal} from "./components/systemloadingmodal";
@@ -211,6 +213,8 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemInputBackendMethod,
         SystemInputBase64,
         SystemLabel,
+        SystemLabelFieldname,
+        SystemLabelModulename,
         SystemLink,
         SystemLoaderProgress,
         SystemLoadingModal,
@@ -329,6 +333,8 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemInputBackendMethod,
         SystemInputBase64,
         SystemLabel,
+        SystemLabelFieldname,
+        SystemLabelModulename,
         SystemLink,
         SystemLoaderProgress,
         SystemModal,

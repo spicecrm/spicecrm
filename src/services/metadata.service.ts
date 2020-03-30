@@ -222,7 +222,7 @@ export class metadata {
 
                                 // add the same for the tabbed browser
                                 this.router.config.unshift({
-                                    path: 'tab/:tabid/'+route.path,
+                                    path: 'tab/:tabid/' + route.path,
                                     component: factory.componentType,
                                     canActivate: [aclCheck]
                                 });
@@ -777,6 +777,7 @@ export class metadata {
         }
     }
 
+
     public getModuleFromSingular(singular) {
         let module = "";
         for (let thismodule in this.moduleDefs) {
@@ -898,6 +899,14 @@ export class metadata {
         return this.moduleDefs[module].listtypes;
     }
 
+    /**
+     * returns the ggregate settings for a module
+     *
+     * @param module
+     */
+    public getModuleAggregates(module: string) {
+        return this.moduleDefs[module].ftsaggregates;
+    }
 
     /**
      * returns the field defs for a given module
@@ -1336,8 +1345,8 @@ export class metadata {
      * returns the details for a given route
      * @param route
      */
-    public getRouteDetails(route){
-        return this.routes?.find(routeDetails=> {
+    public getRouteDetails(route) {
+        return this.routes?.find(routeDetails => {
             if (routeDetails.path == route) {
                 return true;
             } else if (route.split("/").length == routeDetails.path.split("/").length) {

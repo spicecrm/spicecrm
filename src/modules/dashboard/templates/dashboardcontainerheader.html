@@ -17,13 +17,13 @@
         <div *ngIf="!dashboardlayout.isloading && model.id" class="slds-button-group" role="group">
             <button class="slds-button slds-button--neutral" (click)="toggleHomeDashboard()">
                 <system-button-icon class="slds-m-right--xx-small" *ngIf="isHomeDashboard" icon="check"></system-button-icon>
-                <span class="slds-truncate">{{language.getLabel('LBL_AS_HOME_DASHBOARD')}}</span>
+                <span class="slds-truncate"><system-label label="LBL_AS_HOME_DASHBOARD"></system-label></span>
             </button>
-            <button *ngIf="editable && !view.isEditMode()" class="slds-button slds-button--neutral" (click)="toggleEditContent()">{{language.getLabel('LBL_EDIT')}}</button>
+            <button *ngIf="editable && !view.isEditMode()" class="slds-button slds-button--neutral" (click)="toggleEditContent()"><system-label label="LBL_EDIT"></system-label></button>
         </div>
         <div *ngIf="view.isEditMode()" class="slds-button-group" role="group">
-            <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
-            <button class="slds-button slds-button--brand" (click)="saveComponents()">{{language.getLabel('LBL_SAVE')}}</button>
+            <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button class="slds-button slds-button--brand" (click)="saveComponents()"><system-label label="LBL_SAVE"></system-label></button>
         </div>
     </div>
 </div>

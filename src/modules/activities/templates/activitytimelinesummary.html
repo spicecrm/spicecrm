@@ -3,13 +3,13 @@
         <nav role="navigation" aria-label="Breadcrumbs">
             <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
                 <li class="slds-breadcrumb__item slds-text-title_caps">
-                    <a href="javascript:void(0);" (click)="goModule()">{{language.getModuleName(parent.module)}}</a>
+                    <a href="javascript:void(0);" (click)="goModule()"><system-label-modulename [module]="parent.module"></system-label-modulename></a>
                 </li>
                 <li class="slds-breadcrumb__item slds-text-title_caps">
                     <a href="javascript:void(0);" (click)="goModel()">{{parent.data.summary_text}}</a>
                 </li>
                 <li class="slds-breadcrumb__item slds-text-title_caps">
-                    <span class="slds-p-horizontal--x-small">{{language.getModuleName( 'History' )}}</span>
+                    <span class="slds-p-horizontal--x-small"><system-label-modulename [module]=" 'History' "></system-label-modulename></span>
                 </li>
             </ol>
         </nav>

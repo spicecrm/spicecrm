@@ -16,16 +16,16 @@
         <thead>
             <tr class="slds-text-title_caps">
                 <th scope="col" colspan="2">
-                    <div class="slds-truncate">{{language.getLabel('LBL_OBJECT')}}</div>
+                    <div class="slds-truncate"><system-label label="LBL_OBJECT"></system-label></div>
                 </th>
                 <th scope="col">
-                    <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
+                    <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
                 </th>
                 <th scope="col">
-                    <div class="slds-truncate">{{language.getLabel('LBL_DATE_DELETED')}}</div>
+                    <div class="slds-truncate"><system-label label="LBL_DATE_DELETED"></system-label></div>
                 </th>
                 <th scope="col">
-                    <div class="slds-truncate">{{language.getLabel('LBL_DELETED_BY')}}</div>
+                    <div class="slds-truncate"><system-label label="LBL_DELETED_BY"></system-label></div>
                 </th>
                 <th scope="col" class="slds-cell-shrink"></th>
             </tr>
@@ -57,6 +57,6 @@
         <tbody system-table-stencils [columns]="5" [select]="false" [tools]="true" [rows]="5" *ngIf="loading"></tbody>
     </table>
     <div *ngIf="!loading && records.length == 0" class="slds-p-around--medium slds-align--absolute-center">
-        <h2 class="slds-text-heading--small">{{language.getLabel('LBL_NO_RECORDS_FOUND')}}</h2>
+        <h2 class="slds-text-heading--small"><system-label label="LBL_NO_RECORDS_FOUND"></system-label></h2>
     </div>
 </div>

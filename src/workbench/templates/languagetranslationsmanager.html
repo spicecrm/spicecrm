@@ -8,14 +8,14 @@
                 <input type="radio" name="translation_scope" [(ngModel)]="scope" [disabled]="isLoading" id="scope_global" value="global">
                 <label class="slds-radio__label" for="scope_global">
                     <span class="slds-radio_faux"></span>
-                    <span class="slds-form-element__label">{{language.getLabel('LBL_GLOBAL')}}</span>
+                    <span class="slds-form-element__label"><system-label label="LBL_GLOBAL"></system-label></span>
                 </label>
             </span>
             <span class="slds-radio">
                 <input type="radio" name="translation_scope" [(ngModel)]="scope" [disabled]="isLoading" id="scope_custom" value="custom">
                 <label class="slds-radio__label" for="scope_custom">
                     <span class="slds-radio_faux"></span>
-                    <span class="slds-form-element__label">{{language.getLabel('LBL_CUSTOM')}}</span>
+                    <span class="slds-form-element__label"><system-label label="LBL_CUSTOM"></system-label></span>
                 </label>
             </span>
         </div>
@@ -50,7 +50,7 @@
         <div class="slds-card slds-m-around--small">
             <div class="slds-card__header">
                 <h2 class="slds-text-heading--small">
-                    {{language.getLabel('LBL_LABEL')}}:
+                    <system-label label="LBL_LABEL"></system-label>:
                     <span class="slds-required">{{language.getLangText(label.name)}}</span>
                 </h2>
             </div>
@@ -58,29 +58,29 @@
                 <div class="slds-grid">
                     <div class="slds-size--1-of-2 slds-p-right--small">
                         <div class="slds-form-element">
-                            <label>{{language.getLabel('LBL_TEXT_SHORT')}}:</label>
+                            <label><system-label label="LBL_TEXT_SHORT"></system-label>:</label>
                             <input type="text" class="slds-input" [value]="getLabelSpecificLength(label.name, 'short')" disabled>
                         </div>
                         <div class="slds-form-element">
-                            <label>{{language.getLabel('LBL_DEFAULT')}}:</label>
+                            <label><system-label label="LBL_DEFAULT"></system-label>:</label>
                             <input type="text" class="slds-input" required="required" [value]="language.getLabel(label.name)" disabled>
                         </div>
                         <div class="slds-form-element">
-                            <label>{{language.getLabel('LBL_TEXT_LONG')}}:</label>
+                            <label><system-label label="LBL_TEXT_LONG"></system-label>:</label>
                             <textarea class="slds-textarea" [value]="getLabelSpecificLength(label.name, 'long')" disabled></textarea>
                         </div>
                     </div>
                     <div class="slds-size--1-of-2">
                         <div class="slds-form-element">
-                            <label>{{language.getLabel('LBL_TEXT_SHORT')}}:</label>
+                            <label><system-label label="LBL_TEXT_SHORT"></system-label>:</label>
                             <input type="text" class="slds-input" [(ngModel)]="label.translation_short" />
                         </div>
                         <div class="slds-form-element">
-                            <label><abbr class="slds-required">*</abbr>{{language.getLabel('LBL_DEFAULT')}}:</label>
+                            <label><abbr class="slds-required">*</abbr><system-label label="LBL_DEFAULT"></system-label>:</label>
                             <input type="text" class="slds-input" required="required" [(ngModel)]="label.translation_default" />
                         </div>
                         <div class="slds-form-element">
-                            <label>{{language.getLabel('LBL_TEXT_LONG')}}:</label>
+                            <label><system-label label="LBL_TEXT_LONG"></system-label>:</label>
                             <textarea class="slds-textarea" [(ngModel)]="label.translation_long"></textarea>
                         </div>
                     </div>
@@ -88,13 +88,13 @@
                 <div class="slds-grid slds-p-top--x-small">
                     <div class="slds-col--bump-left">
                         <button type="button" class="slds-button slds-button--brand" [disabled]="!canSave(label)" (click)="save(label)">
-                            {{language.getLabel('LBL_SAVE')}}
+                            <system-label label="LBL_SAVE"></system-label>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div *ngIf="!isLoading && selectedLanguage.length == 0" class="slds-align_absolute-center" style="height: 100%;">{{language.getLabel('LBL_MAKE_SELECTION')}}</div>
-    <div *ngIf="!isLoading && selectedLanguage?.length > 0 && labels?.length == 0" class="slds-align_absolute-center" style="height: 100%;">{{language.getLabel('LBL_NO_ENTRIES')}}</div>
+    <div *ngIf="!isLoading && selectedLanguage.length == 0" class="slds-align_absolute-center" style="height: 100%;"><system-label label="LBL_MAKE_SELECTION"></system-label></div>
+    <div *ngIf="!isLoading && selectedLanguage?.length > 0 && labels?.length == 0" class="slds-align_absolute-center" style="height: 100%;"><system-label label="LBL_NO_ENTRIES"></system-label></div>
 </div>
