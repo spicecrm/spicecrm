@@ -23,6 +23,19 @@ interface geoSearch {
     lng: number;
 }
 
+/**
+ * refines an interface for the relate filter
+ * this can be used to limit results to relationships
+ */
+export interface relateFilter {
+    module: string;
+    relationship: string;
+    id: string;
+    display: string;
+    active: boolean;
+    required: boolean;
+}
+
 @Injectable()
 export class modellist implements OnDestroy {
 
@@ -36,6 +49,10 @@ export class modellist implements OnDestroy {
      */
     public modulefilter: string;
 
+    /**
+     * a relatefilter
+     */
+    public relatefilter: relateFilter;
 
     /**
      * a behavioural subject for the listtype to catch changes in other components
@@ -218,8 +235,6 @@ export class modellist implements OnDestroy {
         private configuration: configurationService,
         private toast: toast
     ) {
-
-
         // create the event behaviour Subject
         this.listtype$ = new BehaviorSubject<string>('all');
 
@@ -234,7 +249,6 @@ export class modellist implements OnDestroy {
         );
     }
 
-
     /**
      * simple getter for the module
      */
@@ -248,6 +262,16 @@ export class modellist implements OnDestroy {
      * @param module
      */
     set module(module: string) {
+        this.setModule(module);
+    }
+
+    /**
+     * sets the mopdule
+     *
+     * @param module the module
+     * @param embedded set to true if the listservice is run embedded ina  component and setting listtype etc is not needed, this is used e.g. when used in builöt in lists
+     */
+    public setModule(module: string, embedded: boolean = false) {
         // check if the module has changed
         if (!this._module || this._module != module) {
             // set the module internally
@@ -255,6 +279,9 @@ export class modellist implements OnDestroy {
 
             // reset the list data
             this.resetListData();
+
+            // if we are in embedded mode stop processing and return
+            if(embedded) return;
 
             // load the list types for the module
             this.loadListTypes();
@@ -1161,7 +1188,8 @@ export class modellist implements OnDestroy {
             searchterm: this.searchTerm,
             searchgeo: this.searchGeo,
             aggregates: aggregates,
-            buckets: this.buckets
+            buckets: this.buckets,
+            relatefilter: this.relatefilter?.active ? this.relatefilter : null
         }).subscribe((res: any) => {
                 // set the listdata
                 this.listData = res;
@@ -1212,7 +1240,8 @@ export class modellist implements OnDestroy {
             searchterm: this.searchTerm,
             searchgeo: this.searchGeo,
             aggregates: aggregates,
-            buckets: this.buckets
+            buckets: this.buckets,
+            relatefilter: this.relatefilter?.active ? this.relatefilter : null
         })
             .subscribe((res: any) => {
                 this.listData.list = this.listData.list.concat(res.list);
@@ -1252,7 +1281,8 @@ export class modellist implements OnDestroy {
             buckets: {
                 bucketfield: this.buckets.bucketfield,
                 bucketitems: [bucket]
-            }
+            },
+            relatefilter: this.relatefilter?.active ? this.relatefilter : null
         })
             .subscribe((res: any) => {
                 this.listData.list = this.listData.list.concat(res.list);
