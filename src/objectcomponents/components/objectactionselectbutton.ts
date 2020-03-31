@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, SkipSelf} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 import {relatedmodels} from '../../services/relatedmodels.service';
@@ -20,7 +20,7 @@ export class ObjectActionSelectButton implements OnInit, OnDestroy {
     public disabled: boolean = true;
     private subscriptions: Subscription = new Subscription();
 
-    constructor(private metadata: metadata, private language: language, private modal: modal, private model: model, private relatedmodels: relatedmodels) {
+    constructor(private metadata: metadata, private language: language, private modal: modal, private model: model, @SkipSelf() private parent: model, private relatedmodels: relatedmodels) {
     }
 
     public ngOnInit() {
@@ -47,6 +47,21 @@ export class ObjectActionSelectButton implements OnInit, OnDestroy {
             selectModal.instance.module = this.model.module;
             selectModal.instance.multiselect = true;
             selectModal.instance.modulefilter = this.actionconfig.modulefilter;
+
+            if (this.actionconfig.relatefilterfield) {
+                let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.actionconfig.relatefilterfield);
+                if (fieldDefs) {
+                    selectModal.instance.relatefilter = {
+                        module: fieldDefs.module,
+                        relationship: this.actionconfig.relatefilterrelationship,
+                        id: this.parent.getField(fieldDefs.id_name),
+                        display: this.parent.getField(this.actionconfig.relatefilterfield),
+                        active: this.parent.getField(fieldDefs.id_name) ? true : false,
+                        required: this.actionconfig.relatedfilterrequired
+                    };
+                }
+            }
+
             selectModal.instance.selectedItems.subscribe(items => {
                 this.addSelectedItems(items);
             });
