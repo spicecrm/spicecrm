@@ -9,6 +9,8 @@ import {animate, style, transition, trigger} from "@angular/animations";
 import {MapCenterI, MapOptionsI, RecordComponentConfigI, RecordI} from "../interfaces/spicemap.interfaces";
 import {model} from "../../../services/model.service";
 import {Subscription} from "rxjs";
+import {navigationtab} from "../../../services/navigationtab.service";
+import {broadcast} from "../../../services/broadcast.service";
 
 /** @ignore */
 const ANIMATIONS = [
@@ -70,6 +72,10 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
      */
     protected records: RecordI[] = [];
     /**
+     * to be highlighted on the map and re centered
+     */
+    protected focusedRecordId: string;
+    /**
      * name of this component for load component config on extended components
      */
     protected componentName: string = 'SpiceGoogleMapsList';
@@ -80,7 +86,9 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
         public metadata: metadata,
         public iterableDiffers: IterableDiffers,
         public cdRef: ChangeDetectorRef,
-        public model: model
+        public model: model,
+        public navigationtab: navigationtab,
+        public broadcast: broadcast
     ) {
     }
 
@@ -105,6 +113,7 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
     public ngOnInit() {
         this.loadComponentConfigs();
         this.subscribeToModelListChanges();
+        this.subscribeToMapFocus();
     }
 
     /**
@@ -228,6 +237,15 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
     }
 
     /**
+     * subscribe to map focus from the focus field and set focused record id
+     */
+    public subscribeToMapFocus() {
+        this.subscription.add(this.broadcast.message$.subscribe(msg => {
+            this.setFocusedRecordId(msg);
+        }));
+    }
+
+    /**
      * set the latitude longitude fields names from module defs
      */
     private setLatLngFieldsNames() {
@@ -324,5 +342,18 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
     private confirmRadiusInput() {
         this.editingRadius = false;
         this.setMapOptionChanged('circleRadius');
+    }
+
+    /**
+     * set the focused record from geo data field broadcast
+     * @param msg
+     */
+    private setFocusedRecordId(msg: { messagedata: any, messagetype: string }) {
+        if (msg.messagetype != 'map.focus' || !msg.messagedata || !msg.messagedata.modelId || this.focusedRecordId == msg.messagedata.modelId ||
+            (msg.messagedata.tabId == 'main' && !!this.navigationtab.tabid) || (msg.messagedata.tabId != 'main' && this.navigationtab.tabid != msg.messagedata.tabId)) {
+            return;
+        }
+
+        this.focusedRecordId = msg.messagedata.modelId;
     }
 }

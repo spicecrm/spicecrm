@@ -22,6 +22,7 @@ import {backend} from "../../../services/backend.service";
 import {session} from "../../../services/session.service";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {broadcast} from "../../../services/broadcast.service";
+import {navigationtab} from "../../../services/navigationtab.service";
 
 /** @ignore */
 declare let _;
@@ -52,7 +53,7 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
     /**
      * save the unit system for the distance measuring
      */
-    private unitSystem: 'IMPERIAL'|'METRIC' = 'METRIC';
+    private unitSystem: 'IMPERIAL' | 'METRIC' = 'METRIC';
     /**
      * save timeout of the search term
      */
@@ -79,9 +80,10 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
         public elementRef: ElementRef,
         public renderer: Renderer2,
         public broadcast: broadcast,
-        private userpreferences: userpreferences
+        public navigationtab: navigationtab,
+        private userpreferences: userpreferences,
     ) {
-        super(language, modelList, metadata, iterableDiffers, cdr, model);
+        super(language, modelList, metadata, iterableDiffers, cdr, model, navigationtab, broadcast);
     }
 
     /**
@@ -249,9 +251,18 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
     }
 
     /**
+     * check if the route entries are correct
+     * @param routePoint
+     */
+    protected verifyPlaceLatLng(routePoint: RoutePointI) {
+        return (!!routePoint.placeId) || this.verifyLatLng((routePoint as any));
+    }
+
+    /**
      * set the module for the module list service and activate cache
      */
     private initializeModelList() {
+        this.modelList._listcomponent = 'SpiceGoogleMapsRecord';
         this.modelList.module = this.model.module;
         this.modelList.usecache = true;
     }
@@ -319,14 +330,6 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
 
         this.routes = [route];
         this.cdRef.detectChanges();
-    }
-
-    /**
-     * check if the route entries are correct
-     * @param routePoint
-     */
-    protected verifyPlaceLatLng(routePoint: RoutePointI) {
-        return (!!routePoint.placeId) || this.verifyLatLng((routePoint as any));
     }
 
     /**
