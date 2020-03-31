@@ -30,9 +30,6 @@ import {
     RecordI,
     RoutePointI
 } from "../interfaces/spicemap.interfaces";
-import {broadcast} from "../../../services/broadcast.service";
-import {Subscription} from "rxjs";
-import {navigation} from "../../../services/navigation.service";
 
 /** @ignore */
 declare var google: any;
@@ -61,6 +58,10 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * List of records to be displayed on the map as markers
      */
     @Input() protected records: RecordI[] = [];
+    /**
+     * used for the focused marker to be highlighted on the map
+     */
+    @Input() protected focusedRecordId: string;
     /**
      * routes array to be rendered on the map by the direction service
      */
@@ -126,10 +127,6 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      */
     private directionsRenderers: any[] = [];
     /**
-     * to hold the observable subscription for unsubscribe purpose
-     */
-    private subscription: Subscription = new Subscription();
-    /**
      * google.maps.Marker to save the focused marker to be removed on changes
      */
     private focusedMarker: any;
@@ -142,9 +139,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
         private metadata: metadata,
         private renderer: Renderer2,
         private zone: NgZone,
-        private toast: toast,
-        private navigation: navigation,
-        private broadcast: broadcast
+        private toast: toast
     ) {
     }
 
@@ -160,6 +155,9 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
             if (!!changes.records) {
                 this.setMarkers();
             }
+            if (!!changes.focusedRecordId) {
+                this.setFocusedMarker();
+            }
             if (!!changes.routes) {
                 this.renderRoutes();
             }
@@ -174,9 +172,6 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      */
     public ngAfterViewInit() {
         this.loadNecessaryLibraries();
-        this.zone.runOutsideAngular(() =>
-            this.subscribeToMapFocus()
-        );
     }
 
     /**
@@ -295,32 +290,32 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
     }
 
     /**
-     * subscribe to map focus from the focus field and recenter the map
+     * set the focused marker color and recenter the map
      */
-    private subscribeToMapFocus() {
-        this.subscription = this.broadcast.message$.subscribe(msg => {
-            if (msg.messagetype != 'map.focus' || !msg.messagedata ||
-                this.navigation.activeTabObject.id != msg.messagedata.tabId || !msg.messagedata.modelId) {
-                return;
-            }
-            if (!!this.focusedMarker) {
-                this.focusedMarker.setIcon(null);
-                this.markerCluster.addMarker(this.focusedMarker);
-            }
-            this.markers.some(marker => {
-                if (marker.id == msg.messagedata.modelId) {
-                    marker.setIcon(
-                        this.generateMarkerColor(this.options.focusColor)
-                    );
-                    if (!!this.markerCluster) {
-                        this.markerCluster.removeMarker(marker);
-                        marker.setMap(this.map);
-                    }
-                    this.map.setCenter(marker.position);
-                    this.focusedMarker = marker;
-                    return true;
+    private setFocusedMarker() {
+
+        if (!this.focusedRecordId && !!this.focusedMarker) {
+            this.markerCluster.addMarker(this.focusedMarker);
+            this.focusedMarker.setMap(null);
+            return this.focusedMarker = undefined;
+        }
+        if (!!this.focusedMarker && this.focusedMarker.id != this.focusedRecordId) {
+            this.focusedMarker.setIcon(null);
+            this.markerCluster.addMarker(this.focusedMarker);
+        }
+        this.markers.some(marker => {
+            if (marker.id == this.focusedRecordId) {
+                marker.setIcon(
+                    this.generateMarkerColor(this.options.focusColor)
+                );
+                if (!!this.markerCluster) {
+                    this.markerCluster.removeMarker(marker);
+                    marker.setMap(this.map);
                 }
-            });
+                this.map.setCenter(marker.position);
+                this.focusedMarker = marker;
+                return true;
+            }
         });
     }
 
