@@ -71,7 +71,8 @@ export class UserPreferences {
         "home_dashboardset",
         "home_assistant",
         "help_icon",
-        "navigation_paradigm"
+        "navigation_paradigm",
+        "distance_unit_system"
     ];
 
     /**

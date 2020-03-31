@@ -55,6 +55,12 @@ export class modellist implements OnDestroy {
     public relatefilter: relateFilter;
 
     /**
+     * a behavioural subject to catch the list data loads
+     */
+    public listDataChanged$: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+
+    /**
      * a behavioural subject for the listtype to catch changes in other components
      */
     public listtype$: BehaviorSubject<string>;
@@ -351,6 +357,8 @@ export class modellist implements OnDestroy {
                         this.removeItemFromBucket(message.messagedata.data[this.bucketfield], bucketamountfields);
                     }
                 }
+                this.listDataChanged$.next(true);
+
                 break;
             case 'model.save':
                 let eventHandled = false;
@@ -388,6 +396,7 @@ export class modellist implements OnDestroy {
 
                         }
                     }
+                    this.listDataChanged$.next(true);
 
                 } else {
                     this.reLoadList();
@@ -435,6 +444,10 @@ export class modellist implements OnDestroy {
         if (this.currentList.id == 'all' || this.currentList.id == 'owner') {
             this.userpreferences.setPreference('defaultlisttype', listcomponent, false, 'SpiceUI_' + this.module);
         }
+
+        // reset current list fielddefs and redetermine its fields from the component config
+        this.currentList.fielddefs = undefined;
+        this.determineListFields();
     }
 
     /**
@@ -597,8 +610,8 @@ export class modellist implements OnDestroy {
         // check if we have fielddefs
         let fielddefs = this.getFieldDefs();
 
-        // load all fields
-        let componentconfig = this.metadata.getComponentConfig('ObjectList', this.module);
+        // load all fields from the selected component configs
+        let componentconfig = this.metadata.getComponentConfig(this.listcomponent, this.module);
         let allFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
         for (let listField of allFields) {
             // check if we have the field in the defs
@@ -1215,6 +1228,7 @@ export class modellist implements OnDestroy {
                 // return & close the subject
                 retSub.next(true);
                 retSub.complete();
+                this.listDataChanged$.next(true);
             }
         );
 
@@ -1245,6 +1259,7 @@ export class modellist implements OnDestroy {
         })
             .subscribe((res: any) => {
                 this.listData.list = this.listData.list.concat(res.list);
+                this.listDataChanged$.next(true);
                 this.lastLoad = new moment();
 
                 this.isLoading = false;
@@ -1287,7 +1302,7 @@ export class modellist implements OnDestroy {
             .subscribe((res: any) => {
                 this.listData.list = this.listData.list.concat(res.list);
                 this.lastLoad = new moment();
-
+                this.listDataChanged$.next(true);
                 this.isLoading = false;
 
                 // save the current result

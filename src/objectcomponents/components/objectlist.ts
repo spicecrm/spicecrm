@@ -1,21 +1,28 @@
 /**
  * @module ObjectComponents
  */
-import {Component, ViewChild, ViewContainerRef, OnDestroy, ViewChildren, QueryList} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    ViewChild,
+    ViewContainerRef
+} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {layout} from '../../services/layout.service';
 import {modellist} from '../../services/modellist.service';
-import {ObjectActionContainerItem} from "./objectactioncontaineritem";
-import {SystemResizeDirective} from "../../directives/directives/systemresize";
+import {Subscription} from "rxjs";
 
 /**
  * renders the modellist
  */
 @Component({
     selector: 'object-list',
-    templateUrl: './src/objectcomponents/templates/objectlist.html'
+    templateUrl: './src/objectcomponents/templates/objectlist.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ObjectList implements OnDestroy {
 
@@ -32,7 +39,7 @@ export class ObjectList implements OnDestroy {
     /**
      * the subscription to the modellist
      */
-    private modellistsubscribe: any = undefined;
+    private modellistsubscribe: Subscription = new Subscription();
 
     /**
      * the componentconfig
@@ -53,8 +60,11 @@ export class ObjectList implements OnDestroy {
         return this.modellist.isLoading;
     }
 
-    constructor(private router: Router, private metadata: metadata, private modellist: modellist, private language: language, private layout: layout) {
+    constructor(private router: Router, private cdRef: ChangeDetectorRef, private metadata: metadata, private modellist: modellist, private language: language, private layout: layout) {
 
+        this.modellistsubscribe.add(this.modellist.listDataChanged$.subscribe(() => {
+            this.cdRef.detectChanges();
+        }));
         // get the confih
         this.componentconfig = this.metadata.getComponentConfig('ObjectList', this.modellist.module);
 
@@ -65,7 +75,7 @@ export class ObjectList implements OnDestroy {
         this.loadList(true);
 
         // subscribe to changes of the listtype
-        this.modellistsubscribe = this.modellist.listtype$.subscribe(newType => this.switchListtype());
+        this.modellistsubscribe.add(this.modellist.listtype$.subscribe(newType => this.switchListtype()));
     }
 
     /**
@@ -129,7 +139,7 @@ export class ObjectList implements OnDestroy {
             if (this.sortfield) {
                 this.modellist.setSortField(this.sortfield, this.sortdirection, false);
             }
-            this.modellist.getListData(requestedFields);
+            this.modellist.getListData(requestedFields).subscribe(() => this.cdRef.detectChanges());
         }
     }
 
