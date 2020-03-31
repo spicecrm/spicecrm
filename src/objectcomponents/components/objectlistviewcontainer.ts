@@ -2,7 +2,6 @@
  * @module ObjectComponents
  */
 import {AfterViewInit, Component, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {navigation} from '../../services/navigation.service';
 import {navigationtab} from '../../services/navigationtab.service';
