@@ -190,6 +190,7 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
 
         if (!!this.mapOptions.circle) {
             this.mapOptions.circle.radius = radius;
+            this.cdRef.detectChanges();
         }
         if (this.editingRadius) return;
 
