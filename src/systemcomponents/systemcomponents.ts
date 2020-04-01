@@ -84,6 +84,7 @@ import /*embed*/ {SystemLoadingModal} from "./components/systemloadingmodal";
 import /*embed*/ {SystemModalContent} from "./components/systemmodalcontent";
 import /*embed*/ {SystemModalFooter} from "./components/systemmodalfooter";
 import /*embed*/ {SystemModalHeaderRight} from "./components/systemmodalheaderright";
+import /*embed*/ {SystemModalHeaderTagline} from "./components/systemmodalheadertagline";
 import /*embed*/ {SystemModalHeader} from "./components/systemmodalheader";
 import /*embed*/ {SystemModalWrapper} from "./components/systemmodalwrapper";
 import /*embed*/ {SystemModal} from "./components/systemmodal";
@@ -223,6 +224,7 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemModalFooter,
         SystemModalHeader,
         SystemModalHeaderRight,
+        SystemModalHeaderTagline,
         SystemModalWrapper,
         SystemModuleCustomPipe,
         SystemModuleGlobalPipe,
@@ -342,6 +344,7 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemModalFooter,
         SystemModalHeader,
         SystemModalHeaderRight,
+        SystemModalHeaderTagline,
         SystemModalWrapper,
         SystemNumberSpinner,
         SystemProgressRing,
