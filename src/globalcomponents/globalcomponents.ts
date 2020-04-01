@@ -93,6 +93,7 @@ import /*embed*/ {GlobalNewsFeedItem} from "./components/globalnewsfeeditem";
 import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
 import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobtainimportantpreferences';
 import /*embed*/ {GlobalObtainGDPRConsent} from './components/globalobtaingdprconsent';
+import /*embed*/ {GlobalObtainGDPRConsentContainer} from './components/globalobtaingdprconsentcontainer';
 
 
 /**
@@ -169,6 +170,7 @@ import /*embed*/ {GlobalObtainGDPRConsent} from './components/globalobtaingdprco
         GlobalLoginGoogle,
         GlobalObtainImportantPreferences,
         GlobalObtainGDPRConsent,
+        GlobalObtainGDPRConsentContainer,
         GlobalNavigationTabbed,
         GlobalNavigationTabbedMenu,
         GlobalNavigationTabbedMenuModules,

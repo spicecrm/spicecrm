@@ -1,0 +1,19 @@
+<system-modal size="small">
+    <system-modal-header hiddenCloseButton="true">
+        {{language.getLabel( headerLabel )}}
+        <system-modal-header-tagline>{{language.getLabel( taglineLabel )}}</system-modal-header-tagline>
+    </system-modal-header>
+    <system-modal-content [overlayLoadingSpinner]="isSaving()">
+        <div #container></div>
+        <global-obtain-gdpr-consent *ngIf="showDefault"></global-obtain-gdpr-consent>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="finished(false)">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button [disabled]="!canSave()" class="slds-button slds-button--brand" (click)="save()">{{language.getLabel( saveButtonLabel )}}</button>
+    </system-modal-footer>
+</system-modal>
+
+
+
+
+
