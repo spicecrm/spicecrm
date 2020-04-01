@@ -1,7 +1,7 @@
 /**
  * @module GlobalComponents
  */
-import {Component, Input} from '@angular/core';
+import {Component} from '@angular/core';
 import {loginService} from '../../services/login.service';
 import {configurationService} from '../../services/configuration.service';
 import {session} from '../../services/session.service';
@@ -10,6 +10,7 @@ import { language } from '../../services/language.service';
 import { metadata } from '../../services/metadata.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { toast } from '../../services/toast.service';
+import { backend } from '../../services/backend.service';
 
 @Component({
     selector: 'global-obtain-gdpr-consent',
@@ -25,9 +26,9 @@ export class GlobalObtainGDPRConsent {
     /*
      * Indicates whether the consent is currently being saved to the backend.
      */
-    private isSaving = false;
+    public isSaving = false;
 
-    constructor( private sanitizer: DomSanitizer, private metadata: metadata, private language: language, private loginService: loginService, private http: HttpClient, private configuration: configurationService, private session: session, private toast: toast ) {
+    constructor( private sanitizer: DomSanitizer, private metadata: metadata, private language: language, private backend: backend, private loginService: loginService, private http: HttpClient, private configuration: configurationService, private session: session, private toast: toast ) {
         this.retrieveConsentText();
     }
 
@@ -45,14 +46,11 @@ export class GlobalObtainGDPRConsent {
     /*
      *  Send the GDPR consent to the backend.
      */
-    private save() {
+    public save() {
         if ( this.isSaving ) return;
         this.isSaving = true;
-        let headers = new HttpHeaders();
-        headers = headers.set('OAuth-Token', this.session.authData.sessionId);
-        this.http.post(this.configuration.getBackendUrl() + '/gdpr/portalGDPRconsent', { consentText: this.consentText }, { headers: headers }).subscribe(
+        this.backend.postRequest('/gdpr/portalGDPRconsent', null, { consentText: this.consentText } ).subscribe(
             ( response: any ) => {
-                if ( !this.loginService.session.authData.renewPass ) this.loginService.load(); // If the renewal of the password is not pending ... now initiate the loading of the UI.
                 this.loginService.session.authData.obtainGDPRconsent = false; // The GDPR consent is no longer missing.
             },
             error => {
@@ -64,6 +62,10 @@ export class GlobalObtainGDPRConsent {
                     }
                 }
             );
+    }
+
+    public canSave(): boolean {
+        return this.consentText && !this.isSaving;
     }
 
 }
