@@ -3,6 +3,7 @@
  */
 import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {language} from '../../services/language.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 /**
  * a component that is rendered as part of a system-modal. it represents the header

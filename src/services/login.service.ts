@@ -44,6 +44,15 @@ export class loginService {
         public broadcast: broadcast,
         public modal: modal, public metadata: metadata
     ) {
+
+        this.broadcast.message$.subscribe( ( message: any ) => {
+            if ( message.messagetype === 'loader.completed' && message.messagedata === 'loadUserData' ) {
+                if ( this.session.authData.obtainGDPRconsent ) {
+                    this.modal.openModal('GlobalObtainGDPRConsentContainer');
+                }
+            }
+        });
+
     }
 
     public login(): Observable<boolean> {
@@ -104,7 +113,7 @@ export class loginService {
                         btoa(this.configurationService.getBackendUrl());
                     sessionStorage[btoa(this.session.authData.sessionId + ':siteid')] =
                         btoa(this.configurationService.getSiteId());
-                    if ( !this.session.authData.renewPass && !this.session.authData.obtainGDPRconsent ) {
+                    if (!this.session.authData.renewPass) {
                         this.load();
                     }
 

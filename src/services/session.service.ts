@@ -5,6 +5,7 @@ import {Injectable} from '@angular/core';
 import {HttpHeaders} from "@angular/common/http";
 import {loggerService} from './logger.service';
 import {broadcast} from './broadcast.service';
+import { metadata } from './metadata.service';
 
 declare var moment: any;
 
@@ -168,6 +169,7 @@ export class session {
         this.authData.dev = false;
         this.authData.renewPass = false;
         this.authData.companycode_id = '';
+        this.authData.obtainGDPRconsent = false
 
         this.sessionData = {};
 
