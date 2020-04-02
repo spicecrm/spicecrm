@@ -1,6 +1,6 @@
 <div #listcontainer (scroll)="onScroll($event)" class="slds-scrollable--y" [ngStyle]="listStyle()">
     <div *ngIf="!spiceimportsservice.isloading && items?.length == 0" class="slds-text-align_center slds-p-vertical--medium">
-        <span>{{ language.getLabel('LBL_NO_ENTRIES') }}</span>
+        <span><system-label label="LBL_NO_ENTRIES"></system-label></span>
     </div>
     <spice-imports-list-item *ngFor="let item of items" [item]="item">
     </spice-imports-list-item>

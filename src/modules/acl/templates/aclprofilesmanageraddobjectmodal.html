@@ -1,5 +1,5 @@
 <system-modal>
-    <system-modal-header (close)="close()">{{language.getLabel('LBL_SELECT_SPICEACLOBJECT')}}</system-modal-header>
+    <system-modal-header (close)="close()"><system-label label="LBL_SELECT_SPICEACLOBJECT"></system-label></system-modal-header>
     <system-modal-content margin="none" [grow]="true">
             <div #header class="slds-grid slds-grid--vertical-align-center slds-p-around--x-small">
                 <div class="slds-form-element__control slds-size--1-of-3 slds-p-right--xx-small">
@@ -21,10 +21,10 @@
                     <thead>
                     <tr class="slds-text-title_caps">
                         <th scope="col">
-                            <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
+                            <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
                         </th>
                         <th scope="col">
-                            <div class="slds-truncate">{{language.getLabel('LBL_TYPE')}}</div>
+                            <div class="slds-truncate"><system-label label="LBL_TYPE"></system-label></div>
                         </th>
                         <th scope="col" style="width: 3rem;"></th>
                     </tr>
@@ -47,6 +47,6 @@
             </ng-template>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
     </system-modal-footer>
 </system-modal>

@@ -19,11 +19,11 @@
                     <thead>
                     <tr class="slds-text-title_caps">
                         <th scope="col" class="slds-resizable">
-                            <div class="slds-truncate">{{language.getLabel('LBL_LINK')}}</div>
+                            <div class="slds-truncate"><system-label label="LBL_LINK"></system-label></div>
 
                         </th>
                         <th scope="col" class="slds-resizable">
-                            <div class="slds-truncate">{{language.getLabel('LBL_COUNT')}}</div>
+                            <div class="slds-truncate"><system-label label="LBL_COUNT"></system-label></div>
                         </th>
                     </tr>
                     </thead>
@@ -33,7 +33,7 @@
                             <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small ">
                                 <system-checkbox [disabled]="link.disabled"  [(ngModel)]="link.selected"></system-checkbox>
                             <div class="slds-truncate"> <system-icon [addclasses]="link.disabled ? 'slds-icon_disabled' : null" [size]="'small'" [module]="link.module"></system-icon></div>
-                            <div class="slds-truncate">{{language.getLabel(link.vname)}}</div></div>
+                            <div class="slds-truncate"><system-label [label]="link.vname"></system-label></div></div>
                         </td>
                         <td>
                             <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small">
@@ -47,6 +47,6 @@
         </div>
     </system-modal-content>
     <system-modal-footer>
-        <button (click)="saveSchedule()" class="slds-button slds-button--brand">{{language.getLabel('LBL_SCHEDULE')}}</button>
+        <button (click)="saveSchedule()" class="slds-button slds-button--brand"><system-label label="LBL_SCHEDULE"></system-label></button>
     </system-modal-footer>
 </system-modal>

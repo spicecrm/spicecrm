@@ -40,6 +40,13 @@ export class ObjectListViewAggregateItem {
     }
 
     /**
+     * gets the name of the aggregate
+     */
+    get aggregatename() {
+        return this.aggregate.indexfieldname?.replace('>', '');
+    }
+
+    /**
      * a setter for the checked value of teh checkbox. A change triggers teh set int eh listservice and a refiltering
      *
      * @param value
@@ -47,9 +54,9 @@ export class ObjectListViewAggregateItem {
     set checked(value) {
         this.isChecked = value;
         if (value) {
-            this.modellist.setAggregate(this.aggregate.aggregateindex, this.bucketitem.aggdata);
+            this.modellist.setAggregate(this.aggregatename, this.bucketitem.aggdata);
         } else {
-            this.modellist.removeAggregate(this.aggregate.aggregateindex, this.bucketitem.aggdata);
+            this.modellist.removeAggregate(this.aggregatename, this.bucketitem.aggdata);
         }
     }
 
@@ -57,6 +64,6 @@ export class ObjectListViewAggregateItem {
      * the getter for the checkvox value
      */
     get checked() {
-        return this.modellist.checkAggregate(this.aggregate.aggregateindex, this.bucketitem.aggdata);
+        return this.modellist.checkAggregate(this.aggregatename, this.bucketitem.aggdata);
     }
 }

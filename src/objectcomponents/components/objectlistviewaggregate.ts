@@ -44,4 +44,54 @@ export class ObjectListViewAggregate {
         }
         return nameItems;
     }
+
+    /**
+     * gets the name of the aggregate
+     */
+    get aggregatename() {
+        return this.aggregate.indexfieldname?.replace('>', '');
+    }
+
+    /**
+     * returns the buckets from the modellist service
+     */
+    get aggregateBuckets() {
+        if (this.aggregatename && this.modellist.searchAggregates?.[this.aggregatename]) {
+            return this.modellist.searchAggregates?.[this.aggregatename].buckets;
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * returns the count of the documents not considered in teh aggregate
+     */
+    get otherDocCount() {
+        if (this.aggregatename && this.modellist.searchAggregates?.[this.aggregatename]) {
+            return this.modellist.searchAggregates?.[this.aggregatename].sum_other_doc_count;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * returns the number of the checked aggregates
+     */
+    get checkdCount() {
+        return this.modellist.getCheckedAggregateCount(this.aggregatename);
+    }
+
+    /**
+     * returns if the aggregate is collapsed
+     */
+    get collapsed() {
+        return !!this.aggregate.collapsed;
+    }
+
+    /**
+     * toggles the collapsed status
+     */
+    private toggleCollapsed() {
+        this.aggregate.collapsed = !this.aggregate.collapsed;
+    }
 }

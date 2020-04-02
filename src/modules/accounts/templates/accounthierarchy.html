@@ -5,7 +5,7 @@
             <div class="slds-media__body slds-truncate">
                 <h2>
                     <a href="javascript:void(0);" class="slds-text-link--reset">
-                        <span class="slds-text-heading--small">{{language.getLabel('LBL_SUBSIDIARIES')}}</span>
+                        <span class="slds-text-heading--small"><system-label label="LBL_SUBSIDIARIES"></system-label></span>
                     </a>
                 </h2>
             </div>
@@ -16,7 +16,7 @@
             <thead>
                 <tr class="slds-text-title--caps">
                     <th *ngFor="let field of fieldsetFields" class="slds-cell-buffer--left" scope="col">
-                        <div class="slds-truncate">{{language.getFieldDisplayName('Accounts', field.field)}}</div>
+                        <div class="slds-truncate"><system-label-fieldname module="Accounts" [field]="field.field"></system-label-fieldname></div>
                     </th>
                 </tr>
             </thead>

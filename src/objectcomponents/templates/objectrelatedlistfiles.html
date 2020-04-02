@@ -5,15 +5,15 @@
             <div class="slds-media__body slds-truncate slds-grid slds-grid--vertical-align-center">
                 <h2>
                     <a href="javascript:void(0);" class="slds-text-link--reset">
-                        <span class="slds-text-heading--small">{{language.getLabel('LBL_FILES')}} ({{modelattachments.files.length}})</span>
+                        <span class="slds-text-heading--small"><system-label label="LBL_FILES"></system-label> ({{modelattachments.files.length}})</span>
                     </a>
                 </h2>
                 <system-utility-icon *ngIf="modelattachments.files.length > 0" class="slds-m-horizontal--xx-small" icon="up" size="x-small" (click)="toggleOpen($event)" [@animateicon]="isopen? 'open' : 'closed'"></system-utility-icon>
             </div>
         </header>
         <div class="slds-no-flex slds-button-group" role="group">
-            <button *ngIf="!componentconfig.disableupload" class="slds-button slds-button--neutral" (click)="selectFile()">{{language.getLabel('LBL_UPLOAD')}}</button>
-            <!--button *ngIf="!componentconfig.disableupload" class="slds-button slds-button--neutral" (click)="takeFoto()">{{language.getLabel('LBL_PHOTO')}}</button-->
+            <button *ngIf="!componentconfig.disableupload" class="slds-button slds-button--neutral" (click)="selectFile()"><system-label label="LBL_UPLOAD"></system-label></button>
+            <!--button *ngIf="!componentconfig.disableupload" class="slds-button slds-button--neutral" (click)="takeFoto()"><system-label label="LBL_PHOTO"></system-label></button-->
         </div>
         <input #fileupload style="display:none" type="file" multiple (change)="uploadFile()"/>
     </div>

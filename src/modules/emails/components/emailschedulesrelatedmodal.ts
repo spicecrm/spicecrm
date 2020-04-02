@@ -76,16 +76,34 @@ export class EmailSchedulesRelatedModal {
                 links: selectedLinks,
                 data: this.model.data
             };
-
-            this.backend.postRequest('/modules/EmailSchedules/saveScheduleFromRelated', {}, body).subscribe(result => {
+            let mailboxCondition = body.data.hasOwnProperty('mailbox_id');
+            let emailsubjectCondition = body.data.hasOwnProperty('email_subject');
+            let selectedLinksCondition = selectedLinks.length > 0;
+            if(mailboxCondition && emailsubjectCondition && selectedLinksCondition) {
+                this.backend.postRequest('/modules/EmailSchedules/saveScheduleFromRelated', {}, body).subscribe(result => {
+                    loadingRef.instance.self.destroy();
+                    if (result.status) {
+                        this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
+                        this.close();
+                    } else {
+                        this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
+                    }
+                });
+            } else {
                 loadingRef.instance.self.destroy();
-                if (result.status) {
-                    this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
-                    this.close();
-                } else {
-                    this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
+                let errorOccured = "Following errors occured: ";
+                if(!mailboxCondition) {
+                    errorOccured += "Mailbox field is emtpy ";
                 }
-            });
+                if(!emailsubjectCondition) {
+                    errorOccured += "Email subject is missing ";
+                }
+                if(!selectedLinksCondition) {
+                    errorOccured += "No recipients selected ";
+                }
+                this.toast.sendAlert(errorOccured, 'warning');
+            }
+
         });
     }
 

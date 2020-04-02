@@ -1,6 +1,6 @@
 <div style="height: 100%;">
     <div #header class="slds-grid slds-grid--vertical-align-center slds-p-around--x-small">
-        <h2 class="slds-text-heading--small">{{language.getLabel('LBL_MODULES')}}</h2>
+        <h2 class="slds-text-heading--small"><system-label label="LBL_MODULES"></system-label></h2>
     </div>
     <div class="slds-scrollable" [ngStyle]="contentStyle">
         <div *ngIf="loading; else typesdisplay" class="slds-p-around--medium slds-align--absolute-center">
@@ -11,7 +11,7 @@
                 <thead>
                 <tr class="slds-text-title_caps">
                     <th scope="col">
-                        <div class="slds-truncate">{{language.getLabel('LBL_MODULE')}}</div>
+                        <div class="slds-truncate"><system-label label="LBL_MODULE"></system-label></div>
                     </th>
                     <th scope="col" style="width: 3rem;"></th>
                 </tr>

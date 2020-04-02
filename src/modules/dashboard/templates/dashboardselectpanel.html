@@ -1,7 +1,7 @@
 <nav class="slds-nav-vertical" aria-label="Sub page">
     <div class="slds-nav-vertical__section">
         <div class="slds-grid slds-grid_align-spread slds-grid--vertical-align-center slds-p-horizontal--small slds-p-vertical--x-small">
-            <h2 id="entity-header" class="slds-text-heading--small">{{language.getModuleName('Dashboards')}}</h2>
+            <h2 id="entity-header" class="slds-text-heading--small"><system-label-modulename module="Dashboards"></system-label-modulename></h2>
             <dashboard-select-panel-add-button *ngIf="canAdd"></dashboard-select-panel-add-button>
             <button class="slds-hide--large slds-button slds-button_icon" (click)="hidepanel()">
                 <system-button-icon [icon]="'close'"></system-button-icon>

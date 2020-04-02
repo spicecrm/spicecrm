@@ -3,10 +3,10 @@
     <div class="slds-grid slds-grid--vertical-align-center">
         <ul class="slds-tabs_default__nav slds-grow" role="tablist">
             <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active': activetab == 'history'}" role="presentation">
-                <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" (click)="activetab = 'history'">{{language.getLabel('LBL_PAST_ACTIVITIES')}} ({{activitiytimeline.activities.History.totalcount}})</a>
+                <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" (click)="activetab = 'history'"><system-label label="LBL_PAST_ACTIVITIES"></system-label> ({{activitiytimeline.activities.History.totalcount}})</a>
             </li>
             <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active': activetab == 'planned'}"  role="presentation">
-                <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab"  (click)="activetab = 'planned'">{{language.getLabel('LBL_NEXT_STEPS')}} ({{activitiytimeline.activities.Activities.totalcount}})</a>
+                <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab"  (click)="activetab = 'planned'"><system-label label="LBL_NEXT_STEPS"></system-label> ({{activitiytimeline.activities.Activities.totalcount}})</a>
             </li>
             <li class="slds-col--bump-left slds-p-vertical--xx-small">
                 <div class="slds-grid slds-grid--vertical-align-center">

@@ -76,12 +76,15 @@ import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
 import /*embed*/ {SystemInputCompanycodes} from "./components/systeminputcompanycodes";
 import /*embed*/ {SystemInputBackendMethod} from "./components/systeminputbackendmethod";
 import /*embed*/ {SystemLabel} from "./components/systemlabel";
+import /*embed*/ {SystemLabelFieldname} from "./components/systemlabelfieldname";
+import /*embed*/ {SystemLabelModulename} from "./components/systemlabelmodulename";
 import /*embed*/ {SystemLink} from "./components/systemlink";
 import /*embed*/ {SystemLoaderProgress} from "./components/systemloaderprogress";
 import /*embed*/ {SystemLoadingModal} from "./components/systemloadingmodal";
 import /*embed*/ {SystemModalContent} from "./components/systemmodalcontent";
 import /*embed*/ {SystemModalFooter} from "./components/systemmodalfooter";
 import /*embed*/ {SystemModalHeaderRight} from "./components/systemmodalheaderright";
+import /*embed*/ {SystemModalHeaderTagline} from "./components/systemmodalheadertagline";
 import /*embed*/ {SystemModalHeader} from "./components/systemmodalheader";
 import /*embed*/ {SystemModalWrapper} from "./components/systemmodalwrapper";
 import /*embed*/ {SystemModal} from "./components/systemmodal";
@@ -211,6 +214,8 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemInputBackendMethod,
         SystemInputBase64,
         SystemLabel,
+        SystemLabelFieldname,
+        SystemLabelModulename,
         SystemLink,
         SystemLoaderProgress,
         SystemLoadingModal,
@@ -219,6 +224,7 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemModalFooter,
         SystemModalHeader,
         SystemModalHeaderRight,
+        SystemModalHeaderTagline,
         SystemModalWrapper,
         SystemModuleCustomPipe,
         SystemModuleGlobalPipe,
@@ -329,6 +335,8 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemInputBackendMethod,
         SystemInputBase64,
         SystemLabel,
+        SystemLabelFieldname,
+        SystemLabelModulename,
         SystemLink,
         SystemLoaderProgress,
         SystemModal,
@@ -336,6 +344,7 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemModalFooter,
         SystemModalHeader,
         SystemModalHeaderRight,
+        SystemModalHeaderTagline,
         SystemModalWrapper,
         SystemNumberSpinner,
         SystemProgressRing,
