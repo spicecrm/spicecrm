@@ -230,7 +230,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * create google maps circle with the given options
      * set the circle listeners
      */
-    protected createCircle(isFixed?) {
+    protected createCircle(isFixed?: boolean) {
 
         if (!(window as any).google) return;
 
@@ -253,7 +253,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
         }
 
         this[circleKeyName] = new google.maps.Circle(
-            this.generateCircleOptions(this.options[circleKeyName])
+            this.generateCircleOptions(this.options[circleKeyName], isFixed)
         );
 
         if (!isFixed) {
@@ -273,8 +273,22 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * generate circle options from input options circle
      * @param optionsCircle
+     * @param isFixed
      */
-    private generateCircleOptions(optionsCircle: MapCircleI) {
+    private generateCircleOptions(optionsCircle: MapCircleI, isFixed?: boolean) {
+
+        let radius = optionsCircle.radius  * 1000;
+
+        if (!isFixed && !!this.map.getBounds() && !isNaN(this.options.circle.radiusPercentage)) {
+            const spherical = google.maps.geometry.spherical,
+                cor1 = this.map.getBounds().getNorthEast(),
+                cor2 = this.map.getBounds().getSouthWest(),
+                cor3 = new google.maps.LatLng(cor2.lat(), cor1.lng()),
+                height = spherical.computeDistanceBetween(cor1,cor3);
+
+            radius = (height/2) * (this.options.circle.radiusPercentage / 100);
+        }
+
         return {
             strokeColor: optionsCircle.color,
             fillOpacity: 0,
@@ -285,7 +299,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
             zIndex: 1,
             map: this.map,
             center: optionsCircle.center,
-            radius: (optionsCircle.radius || 5) * 1000
+            radius: radius
         };
     }
 
@@ -473,7 +487,6 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
         google.maps.event.addListener(this.map, 'click', () => this.closePopover());
 
         if (!!this.options.circle && this.options.circle.center) {
-            this.map.setZoom(11);
             this.map.setCenter(this.options.circle.center);
 
             if (!!this.routes) {
