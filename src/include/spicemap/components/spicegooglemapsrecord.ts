@@ -37,11 +37,18 @@ declare let _;
     providers: [modellist]
 })
 export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit {
-
+    /**
+     * show/hide use map options and set the default use map for value
+     * @param options
+     */
+    @Input('useMapOptions') set applyUseMapOptions(options: {direction: boolean, search: boolean}) {
+        this.showUseMapOptions = options.search && options.direction;
+        this._useMapFor = options.search ? 'search' : 'direction';
+    }
     /**
      * routes array to be rendered on the map by the direction service
      */
-    @Input() protected routes: [RoutePointI[]?] = [];
+    protected routes: [RoutePointI[]?] = [];
     /**
      * map options will be passed to the spice google maps
      */
@@ -66,6 +73,10 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
      * save full screen on/off
      */
     private isFullScreenOn: boolean = false;
+    /**
+     * to show/hide option buttons on the map
+     */
+    private showUseMapOptions: boolean = true;
 
     constructor(
         public language: language,
@@ -303,7 +314,7 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
                 lng: +this.model.getField(this.lngName),
                 lat: +this.model.getField(this.latName)
             },
-            radius: this.componentconfig.defaultRadius,
+            radius: this.componentconfig.radiusPercentage,
             color: this.componentconfig.circleColor,
             editable: true
         };
@@ -312,7 +323,7 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
         } else {
             this.setMapOptionChanged('circle');
         }
-        this.onRadiusChange(this.componentconfig.defaultRadius);
+        this.onRadiusChange(this.componentconfig.radiusPercentage);
     }
 
     /**
