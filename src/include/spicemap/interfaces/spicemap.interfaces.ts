@@ -75,6 +75,7 @@ export interface MapOptionsI {
         fixedCircle?: boolean,
         circle?: boolean,
         circleRadius?: boolean,
+        circleEditable?: boolean,
         circleCenter?: boolean,
         directionTravelMode?: boolean,
         unitSystem?: boolean,
