@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -114,34 +114,49 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
             case 'ArrowUp':
                 break;
             case 'Enter':
-                // clear timeout if one is set
-                if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
-
-                // if the atring is an email address add it .. else do search
-                if (this.validateEmail(this.addAddress)) {
-                    if (!this.model.data.recipient_addresses) {
-                        this.model.data.recipient_addresses = [];
-                    }
-
-                    this.model.data.recipient_addresses.push({
-                        id: this.model.generateGuid(),
-                        address_type: this.addresstype,
-                        email_address: this.addAddress
-                    });
-
-                    // clear the address string, the resuklts and hide the show dialog
-                    this.addAddress = '';
-                    this.closeSearchDialog();
-
-
-                } else {
-                    this.doSearch();
-                }
+                this.checkEmailAddress();
+                break;
+            case ',':
+                this.addAddress = this.addAddress.substring(0, this.addAddress.length - 1);
+                this.checkEmailAddress();
                 break;
             default:
                 if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
                 this.searchTimeOut = window.setTimeout(() => this.doSearch(), 1000);
                 break;
+        }
+    }
+
+    // click outside -> check validation -> insert email
+    @HostListener('document:click')
+    public clickout() {
+        this.checkEmailAddress();
+    }
+
+    private checkEmailAddress() {
+
+        // clear timeout if one is set
+        if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
+
+        // if the atring is an email address add it .. else do search
+        if (this.validateEmail(this.addAddress)) {
+            if (!this.model.data.recipient_addresses) {
+                this.model.data.recipient_addresses = [];
+            }
+
+            this.model.data.recipient_addresses.push({
+                id: this.model.generateGuid(),
+                address_type: this.addresstype,
+                email_address: this.addAddress
+            });
+
+            // clear the address string, the resuklts and hide the show dialog
+            this.addAddress = '';
+            this.closeSearchDialog();
+
+
+        } else {
+            this.doSearch();
         }
     }
 
