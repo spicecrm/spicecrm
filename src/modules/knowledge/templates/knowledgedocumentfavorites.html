@@ -6,6 +6,6 @@
     </ul>
     <system-spinner *ngIf="favorites.isloading"></system-spinner>
     <div *ngIf="favorites.length == 0" class="slds-align--absolute-center slds-text-body--regular slds-p-around--x-small">
-        {{ language.getLabel('MSG_NO_RECORDS_FOUND') }}
+        <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
     </div>
 </system-collapsable-tab>

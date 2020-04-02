@@ -23,11 +23,11 @@
         <div class="slds-card__body slds-p-horizontal--small">
             <div class="slds-grid slds-gutters_direct-x-small">
                 <div class="slds-size--1-of-2 slds-col">
-                    <div class="slds-text-heading_small slds-p-vertical--xx-small">{{language.getLabel('LBL_DETAILS')}}</div>
+                    <div class="slds-text-heading_small slds-p-vertical--xx-small"><system-label label="LBL_DETAILS"></system-label></div>
                     <div class="slds-text-align--justify">{{package.description}}</div>
                 </div>
                 <div class="slds-size--1-of-2 slds-col">
-                    <div class="slds-text-heading_small slds-p-vertical--xx-small">{{language.getLabel('LBL_PREREQUISITES')}}</div>
+                    <div class="slds-text-heading_small slds-p-vertical--xx-small"><system-label label="LBL_PREREQUISITES"></system-label></div>
                     <div class="slds-grid slds-grid_vertical-align-center slds-p-vertical--xxx-small" *ngFor="let extension of extensions">
                         <div class="slds-size--1-of-2 slds-truncate"><system-utility-icon icon="apex_plugin" size="xx-small" [colorclass]="disabled ? 'slds-icon-text-light' : 'slds-icon-text-default'"></system-utility-icon> {{extension.name}}</div>
                         <div class="slds-size--1-of-2 slds-text-align--right"><system-utility-icon size="xx-small" [icon]="extension.status ? 'check' : 'close'" [colorclass]="disabled ? 'slds-icon-text-light' : 'slds-icon-text-default'"></system-utility-icon></div>
@@ -37,7 +37,7 @@
                         <div class="slds-size--1-of-2 slds-text-align--right"><system-utility-icon size="xx-small" [icon]="requiredpackage.installed ? 'check' : 'close'" [colorclass]="disabled ? 'slds-icon-text-light' : 'slds-icon-text-default'"></system-utility-icon></div>
                     </div>
                     <div class="slds-disabled-text" *ngIf="requiredpackages.length == 0 && extensions.length == 0">
-                        {{language.getLabel('LBL_NO_PREREQUISITES')}}
+                        <system-label label="LBL_NO_PREREQUISITES"></system-label>
                     </div>
                 </div>
             </div>
@@ -46,7 +46,7 @@
     <div *ngIf="loading" class="slds-is-absolute__top slds-size_full slds-height_full slds-align_absolute-center">
         <div *ngIf="loading == 'package'" class="slds-grid slds-grid_vertical-align-center">
             <system-spinner size="16"></system-spinner>
-            <span class="slds-p-left--small">{{language.getLabel('LBL_LOADING')}}</span>
+            <span class="slds-p-left--small"><system-label label="LBL_LOADING"></system-label></span>
         </div>
         <system-loader-progress *ngIf="loading == 'configuration'" class="slds-size_full"></system-loader-progress>
     </div>

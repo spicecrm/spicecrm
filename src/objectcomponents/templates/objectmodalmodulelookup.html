@@ -1,7 +1,6 @@
 <system-modal size="large">
-    <system-modal-header
-            (close)="closePopup()">{{language.getModuleCombinedLabel('LBL_SEARCH', modellist.module)}}</system-modal-header>
-    <system-modal-content margin="none" #modalcontent [grow]="true">
+    <system-modal-header (close)="closePopup()">{{language.getModuleCombinedLabel('LBL_SEARCH', modellist.module)}}</system-modal-header>
+    <system-modal-content margin="none" [grow]="true">
         <div class="slds-height_full">
             <div #headercontent>
                 <div class="slds-form-element slds-p-top--medium slds-p-horizontal--medium slds-m-bottom--small slds-grid slds-grid--vertical-align-center">
@@ -15,8 +14,9 @@
                     </button>
                     <object-listview-aggregates-button></object-listview-aggregates-button>
                 </div>
-                <div class="slds-theme--shade slds-p-around--x-small slds-border--top">
+                <div class="slds-theme--shade slds-p-around--x-small slds-border--top slds-grid slds-grid--vertical-align-center slds slds-grid--align-spread">
                     <object-listview-header-details></object-listview-header-details>
+                    <system-checkbox *ngIf="relatefilter && relatefilter.id" [disabled]="relatefilter.required" [(ngModel)]="relatefilterActive"><system-label label="LBL_RELATED_TO"></system-label> <system-label-modulename [module]="relatefilter.module" [singular]="true"></system-label-modulename> {{relatefilter.display}}</system-checkbox>
                 </div>
             </div>
             <div class="slds-is-relative" [ngStyle]="contentStyle()">
@@ -43,10 +43,10 @@
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="closePopup()">
-            {{language.getLabel('LBL_CANCEL')}}
+            <system-label label="LBL_CANCEL"></system-label>
         </button>
         <button *ngIf="multiselect" class="slds-button slds-button--brand" [disabled]="selectedCount == 0" (click)="selectItems()">
-            {{language.getLabel('LBL_SELECT')}}
+            <system-label label="LBL_SELECT"></system-label>
         </button>
     </system-modal-footer>
 </system-modal>

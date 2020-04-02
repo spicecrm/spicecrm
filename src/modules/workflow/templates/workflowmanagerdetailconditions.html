@@ -1,6 +1,6 @@
 <system-collapsable-tab title="LBL_CONDITION_START" >
     <div class="slds-p-around--x-small">
-        <h3 class="slds-text-heading--small">{{language.getLabel('LBL_FILTER')}}</h3>
+        <h3 class="slds-text-heading--small"><system-label label="LBL_FILTER"></system-label></h3>
         <div class="slds-expression">
             <ul>
                 <system-filter-builder [(ngModel)]="conditions" [module]="module"></system-filter-builder>
@@ -8,7 +8,7 @@
         </div>
     </div>
     <div class="slds-p-around--x-small">
-        <h3 class="slds-text-heading--small">{{language.getLabel('LBL_SYSTEM_CONDITION')}}</h3>
+        <h3 class="slds-text-heading--small"><system-label label="LBL_SYSTEM_CONDITION"></system-label></h3>
         <div>
             <field-label [fieldname]="'condclass'"></field-label>
             <field-container [field]="'condclass'"></field-container>
@@ -21,7 +21,7 @@
 </system-collapsable-tab>
 <system-collapsable-tab title="LBL_CONDITION_END" >
     <div class="slds-p-around--x-small">
-        <h3 class="slds-text-heading--small">{{language.getLabel('LBL_FILTER')}}</h3>
+        <h3 class="slds-text-heading--small"><system-label label="LBL_FILTER"></system-label></h3>
         <div class="slds-expression">
             <ul>
                 <system-filter-builder [(ngModel)]="conditions_end" [module]="module"></system-filter-builder>
@@ -29,7 +29,7 @@
         </div>
     </div>
     <div class="slds-p-around--x-small">
-        <h3 class="slds-text-heading--small">{{language.getLabel('LBL_SYSTEM_CONDITION')}}</h3>
+        <h3 class="slds-text-heading--small"><system-label label="LBL_SYSTEM_CONDITION"></system-label></h3>
         <div>
             <field-label [fieldname]="'condclass'"></field-label>
             <field-container [field]="'condclass_end'"></field-container>

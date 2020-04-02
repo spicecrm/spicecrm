@@ -1,14 +1,15 @@
 /**
  * @module ObjectComponents
  */
-import {Component, OnInit, EventEmitter, Output, ViewChild, ViewContainerRef, OnDestroy} from '@angular/core';
+import {Component, OnInit, EventEmitter, Output, ViewChild, ViewContainerRef, OnDestroy, Input} from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {model} from '../../services/model.service';
-import {modellist} from '../../services/modellist.service';
+import {modellist, relateFilter} from '../../services/modellist.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {animate, style, transition, trigger} from "@angular/animations";
+import {Subscription} from "rxjs";
 
 /**
  * provides a lookup modal with a modellist and the option to select a model
@@ -39,28 +40,66 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
     @ViewChild('headercontent', {read: ViewContainerRef, static: true}) private headercontent: ViewContainerRef;
 
-    public allSelected: boolean = false;
+    /**
+     * the search term entered
+     */
     public searchTerm: string = '';
+
+    /**
+     * the search term used in the search before
+     */
     public searchTermOld: string = '';
+
+    /**
+     * a search timeout function to wait until the user stops typing with a certain delay and onyl then start the search
+     */
     public searchTimeOut: any = undefined;
+
+    /**
+     * referemce to self to allow closing the modal window
+     */
     public self: any = {};
+
+    /**
+     * set to true to enable multiselect, default to false
+     */
     public multiselect: boolean = false;
+
+    /**
+     * the mdule for the list
+     */
     public module: string = '';
+
+    /**
+     * a module filter id to be applied to the search
+     */
     public modulefilter: string = '';
+
+    /**
+     * a relate filter for the modellist
+     */
+    @Input() private relatefilter: relateFilter;
 
     /**
      * a guid to kill the autocomplete
      */
     private autoCompleteKiller: string;
 
-    private modellistsubscribe: any;
+    private subscriptions: Subscription = new Subscription();
 
+    /**
+     * emits when an item is selected and which items are selected
+     */
     @Output() private selectedItems: EventEmitter<any> = new EventEmitter<any>();
+
+    /**
+     * emits the used search term
+     */
     @Output() private usedSearchTerm: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, public model: model) {
         // subscribe to changes of the listtype
-        this.modellistsubscribe = this.modellist.listtype$.subscribe(newType => this.switchListtype());
+        this.subscriptions.add(this.modellist.listtype$.subscribe(newType => this.switchListtype()));
 
         // set a random id so no autocomplete is triggered on the field
         this.autoCompleteKiller = this.modelutilities.generateGuid();
@@ -90,14 +129,34 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
         return requestfields;
     }
 
+
+    /**
+     * returns the relate filter active flag
+     */
+    get relatefilterActive() {
+        return this.relatefilter?.active;
+    }
+
+    /**
+     * sets the relate filter active flag and triggers a reload
+     *
+     * @param value
+     */
+    set relatefilterActive(value) {
+        this.relatefilter.active = value;
+        this.modellist.relatefilter.active = value;
+        this.modellist.reLoadList();
+    }
+
     /**
      * loads the modellist and sets the various paramaters
      */
     public ngOnInit() {
 
         // this.model.module = this.module;
-        this.modellist.module = this.module;
         this.modellist.modulefilter = this.modulefilter;
+        this.modellist.relatefilter = this.relatefilter;
+        this.modellist.module = this.module;
 
         // set hte module on the model
         this.model.module = this.module;
@@ -109,9 +168,11 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
             this.searchTerm = this.modellist.searchTerm;
             this.searchTermOld = this.modellist.searchTerm;
             // load the list if the view of the cached entry is different
+            /*
             if (this.modellist.listData.listcomponent != 'ObjectList') {
                 this.modellist.getListData(this.requestfields);
             }
+             */
         }
     }
 
@@ -119,7 +180,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
      * unsubscribe from teh list type change
      */
     public ngOnDestroy(): void {
-        if (this.modellistsubscribe) this.modellistsubscribe.unsubscribe();
+        this.subscriptions.unsubscribe();
     }
 
     /**

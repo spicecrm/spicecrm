@@ -12,6 +12,7 @@ import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {backend} from '../../services/backend.service';
 import {toast} from '../../services/toast.service';
+import {relateFilter} from "../../services/modellist.service";
 
 @Component({
     selector: 'field-relate',
@@ -24,6 +25,11 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
     private relateType: string = '';
     private relateSearchOpen: boolean = false;
     private relateSearchTerm: string = '';
+
+    /**
+     * a relateFilter
+     */
+    private relateFilter: relateFilter;
 
     constructor(
         public model: model,
@@ -64,11 +70,105 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * returns the currently set id;
+     */
+    get id() {
+        return this.model.getField(this.relateIdField);
+    }
+
     public ngOnInit() {
         const fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
         this.relateIdField = fieldDefs.id_name;
         this.relateNameField = this.fieldname;
         this.relateType = fieldDefs.module;
+
+        this.handleRelateFIlterField();
+
+    }
+
+    /**
+     * checks if we have a relate filter field and if yes sets the filter accordingly
+     */
+    private handleRelateFIlterField() {
+        // check if we have a relate filter in the fieldconfig
+        if (this.fieldconfig.relatefilterfield) {
+            this.createRelateFilter();
+            this.subscriptions.add(
+                this.model.data$.subscribe(data => {
+                    this.updateRelateFilter();
+                })
+            );
+        }
+    }
+
+    /**
+     * creates the relate filter for the list service
+     */
+    private createRelateFilter() {
+        let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldconfig.relatefilterfield);
+        if (fieldDefs) {
+            this.relateFilter = {
+                module: fieldDefs.module,
+                relationship: this.fieldconfig.relatefilterrelationship,
+                id: this.model.getField(fieldDefs.id_name),
+                display: this.model.getField(this.fieldconfig.relatefilterfield),
+                active: this.model.getField(fieldDefs.id_name) ? true : false,
+                required: !!this.fieldconfig.relatedfilterrequired
+            };
+        }
+    }
+
+    /**
+     * getter for the placeholder
+     */
+    get placeholder() {
+        // check if we have a relate field and it is required
+        if (this.relateFilter && this.fieldconfig.relatedfilterrequired) {
+            let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldconfig.relatefilterfield);
+            if (!this.model.getField(fieldDefs.id_name)) {
+                return this.language.getLabelFormatted('LBL_SELECT_FIELD_FIRST', [this.language.getFieldDisplayName(this.model.module, this.fieldconfig.relatefilterfield)]);
+            }
+        }
+
+        // return default placeholder
+        return this.language.getModuleCombinedLabel('LBL_SEARCH', this.relateType);
+    }
+
+    /**
+     * returns if the relate filter is required
+     */
+    get relatedfilterrequired() {
+        return this.fieldconfig.relatedfilterrequired;
+    }
+
+    /**
+     * returns true to set the input to required when a relate filter is set
+     */
+    get disabled() {
+        if (this.relateFilter && this.relatedfilterrequired) {
+            let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldconfig.relatefilterfield);
+            if (!this.model.getField(fieldDefs.id_name)) return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * updates the relate filter
+     */
+    private updateRelateFilter() {
+        let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldconfig.relatefilterfield);
+        this.relateFilter.id = this.model.getField(fieldDefs.id_name);
+        this.relateFilter.display = this.model.getField(this.fieldconfig.relatefilterfield);
+
+        // if this is required and id not set reset the field
+        if (this.fieldconfig.relatedfilterrequired && !this.relateFilter.id && this.id) {
+            this.removeRelated();
+        }
+
+        // toggle the active flag
+        this.relateFilter.active = !!this.relateFilter.id ? true : false;
     }
 
     /**
@@ -99,9 +199,14 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * removes the related field
+     */
     private removeRelated() {
-        this.model.setField(this.relateNameField, '');
-        this.model.setField(this.relateIdField, '');
+        let fields = {};
+        fields[this.relateNameField] = '';
+        fields[this.relateIdField] = '';
+        this.model.setFields(fields);
     }
 
     /**
@@ -124,7 +229,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
         if (this.fieldconfig.executeCopyRules == 2) {
             this.executeCopyRules(related.id);
         } else if (this.fieldconfig.executeCopyRules == 1) {
-            this.modal.confirm('Copy the data from related record?', 'Copy data?').subscribe(answer => answer && this.executeCopyRules(related.id));
+            this.modal.confirm(this.language.getLabel('MSG_COPY_DATA', '', 'long'), this.language.getLabel('MSG_COPY_DATA')).subscribe(answer => answer && this.executeCopyRules(related.id));
         }
         this.closePopups();
     }
@@ -169,6 +274,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
             selectModal.instance.module = this.relateType;
             selectModal.instance.modulefilter = this.fieldconfig.modulefilter;
             selectModal.instance.multiselect = false;
+            selectModal.instance.relatefilter = this.relateFilter;
             this.subscriptions.add(
                 selectModal.instance.selectedItems.subscribe(items => {
                     if (items.length) {

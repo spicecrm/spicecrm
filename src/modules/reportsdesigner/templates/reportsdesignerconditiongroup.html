@@ -2,12 +2,12 @@
     <fieldset>
         <div class="slds-grid slds-gutters_direct-xx-small slds-grid--vertical-align-end slds-size--1-of-1">
             <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-m-bottom--xx-small">
-                <label class="slds-form-element__label">{{language.getLabel('LBL_GROUP_OPERATOR')}}</label>
+                <label class="slds-form-element__label"><system-label label="LBL_GROUP_OPERATOR"></system-label></label>
                 <div class="slds-form-element__control">
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="groupType">
-                            <option value="AND">{{language.getLabel('LBL_AND')}}</option>
-                            <option value="OR">{{language.getLabel('LBL_OR')}}</option>
+                            <option value="AND"><system-label label="LBL_AND"></system-label></option>
+                            <option value="OR"><system-label label="LBL_OR"></system-label></option>
                         </select>
                     </div>
                 </div>
@@ -32,7 +32,7 @@
                 <reports-designer-condition-group-expansion *ngIf="expanded == condition.id && reportsDesignerService.expertMode" [whereCondition]="condition"></reports-designer-condition-group-expansion>
             </li>
             <li cdkDropList [id]="group.id" (cdkDropListDropped)="onDrop($event)" class="slds-align--absolute-center slds-text-color--inverse-weak" style="min-height: 30px; border: 1px dashed #ddd">
-                {{language.getLabel('MSG_DROP_FIELD_HERE')}}
+                <system-label label="MSG_DROP_FIELD_HERE"></system-label>
             </li>
             <ng-container *ngFor="let childGroup of group.children; trackBy: trackByFn">
                 <reports-designer-condition-group [group]="childGroup" [canDelete]="true" (treeChange)="handleTreeChange($event)"></reports-designer-condition-group>
@@ -41,11 +41,11 @@
         <div class="slds-expression__buttons">
             <button (click)="addGroup()" class="slds-button slds-button_neutral">
                 <system-button-icon icon="add" class="slds-m-right--xx-small"></system-button-icon>
-                {{language.getLabel('LBL_ADD_GROUP')}}
+                <system-label label="LBL_ADD_GROUP"></system-label>
             </button>
             <button *ngIf="canDelete" (click)="deleteGroup()" class="slds-button slds-button_neutral slds-m-left--xx-small">
                 <system-button-icon icon="delete" class="slds-m-right--xx-small"></system-button-icon>
-                {{language.getLabel('LBL_DELETE_GROUP')}}
+                <system-label label="LBL_DELETE_GROUP"></system-label>
             </button>
         </div>
     </fieldset>

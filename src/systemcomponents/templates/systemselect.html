@@ -1,5 +1,5 @@
 <div class="slds-form-element slds-size_2-of-2">
-    <label *ngIf="label" class="slds-form-element__label">{{language.getLabel(label)}}</label>
+    <label *ngIf="label" class="slds-form-element__label"><system-label [label]="label"></system-label></label>
     <div class="slds-form-element__control slds-size_2-of-2">
         <div class="slds-combobox_container">
             <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open"

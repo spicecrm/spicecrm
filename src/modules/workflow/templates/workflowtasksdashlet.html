@@ -1,7 +1,7 @@
 <div style="height: 100%; overflow: hidden;">
     <div class="slds-grid slds-grid--vertical-align-center slds-border--bottom slds-p-around--x-small">
         <system-icon [module]="'Workflows'" [size]="'small'"></system-icon>
-        <h2 class="slds-text-heading--medium slds-p-bottom--xx-small">{{language.getModuleName('WorkflowTasks')}}</h2>
+        <h2 class="slds-text-heading--medium slds-p-bottom--xx-small"><system-label-modulename module="WorkflowTasks"></system-label-modulename></h2>
     </div>
     <div #itemcontainer class="slds-scrollable--y" [ngStyle]="containerStyle">
         <div *ngFor="let workflowtask of workflowtasks" class="slds-p-around--x-small">

@@ -1,19 +1,16 @@
 /**
  * @module ModuleSpiceMap
  */
-import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    IterableDiffer,
-    IterableDiffers,
-    OnInit
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, IterableDiffers, OnDestroy, OnInit} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {metadata} from "../../../services/metadata.service";
 import {modellist} from "../../../services/modellist.service";
 import {animate, style, transition, trigger} from "@angular/animations";
-import {mapOptionsI, RecordI} from "../interfaces/spicemap.interfaces";
+import {MapCenterI, MapOptionsI, RecordComponentConfigI, RecordI} from "../interfaces/spicemap.interfaces";
+import {model} from "../../../services/model.service";
+import {Subscription} from "rxjs";
+import {navigationtab} from "../../../services/navigationtab.service";
+import {broadcast} from "../../../services/broadcast.service";
 
 /** @ignore */
 const ANIMATIONS = [
@@ -39,8 +36,17 @@ const ANIMATIONS = [
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: ANIMATIONS
 })
-export class SpiceGoogleMapsList implements OnInit {
+export class SpiceGoogleMapsList implements OnInit, OnDestroy {
 
+    /**
+     * save the editing radius value to handle radius changes
+     */
+    public editingRadius: boolean = false;
+
+    /**
+     * save the search around active value to toggle display the search functionality
+     */
+    public searchAroundActive: boolean = false;
     /**
      * longitude field name to be used for markers position
      */
@@ -50,32 +56,39 @@ export class SpiceGoogleMapsList implements OnInit {
      */
     public latName: string = 'latitude';
     /**
+     * component config from metadata
+     */
+    public componentconfig: RecordComponentConfigI;
+    /**
+     * differentiate the records array changes
+     */
+    public subscription: Subscription = new Subscription();
+    /**
      * map options will be passed to the spice google maps
      */
-    protected mapOptions: mapOptionsI = {};
+    protected mapOptions: MapOptionsI = {};
     /**
      * List of records to be displayed on the map as markers
      */
     protected records: RecordI[] = [];
     /**
+     * to be highlighted on the map and re centered
+     */
+    protected focusedRecordId: string;
+    /**
      * name of this component for load component config on extended components
      */
     protected componentName: string = 'SpiceGoogleMapsList';
-    /**
-     * component config from metadata
-     */
-    public componentconfig: mapOptionsI;
-    /**
-     * differentiate the records array changes
-     */
-    private recordsDiffer: IterableDiffer<any>;
 
     constructor(
         public language: language,
         public modelList: modellist,
         public metadata: metadata,
         public iterableDiffers: IterableDiffers,
-        public cdr: ChangeDetectorRef,
+        public cdRef: ChangeDetectorRef,
+        public model: model,
+        public navigationtab: navigationtab,
+        public broadcast: broadcast
     ) {
     }
 
@@ -99,14 +112,15 @@ export class SpiceGoogleMapsList implements OnInit {
      */
     public ngOnInit() {
         this.loadComponentConfigs();
-        this.initialize();
+        this.subscribeToModelListChanges();
+        this.subscribeToMapFocus();
     }
 
     /**
-     * check for any changes on the record
+     * unsubscribe from subscriptions
      */
-    public ngDoCheck() {
-        this.handleRecordChanges();
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 
     /**
@@ -114,7 +128,7 @@ export class SpiceGoogleMapsList implements OnInit {
      */
     public setRecords() {
         this.records = (!this.latName || !this.lngName) ? [] : this.modelList.listData.list
-            .filter(item => !!item[this.latName] && !isNaN(item[this.latName]) && !!item[this.lngName] && !isNaN(item[this.lngName]))
+            .filter(item => this.verifyLatLng({lat: item[this.latName], lng: item[this.lngName]}))
             .map(item => ({
                 id: item.id,
                 module: this.modelList.module,
@@ -122,7 +136,7 @@ export class SpiceGoogleMapsList implements OnInit {
                 lng: +item[this.lngName],
                 lat: +item[this.latName]
             }));
-        this.cdr.detectChanges();
+        this.cdRef.detectChanges();
     }
 
     /**
@@ -139,24 +153,102 @@ export class SpiceGoogleMapsList implements OnInit {
 
         if (!this.componentconfig) this.componentconfig = {};
 
-        if (!this.componentconfig.hasOwnProperty('showMyLocation')) {
-            this.componentconfig.showMyLocation = false;
+        if (!(!!this.componentconfig.defaultRadius) || isNaN(this.componentconfig.defaultRadius)) {
+            this.componentconfig.defaultRadius = 5;
         }
-        if (!this.componentconfig.hasOwnProperty('showCluster')) {
-            this.componentconfig.showCluster = true;
-        }
-        if (!this.componentconfig.hasOwnProperty('markerWithModelPopover')) {
-            this.componentconfig.markerWithModelPopover = true;
-        }
-        if (!this.componentconfig.hasOwnProperty('defaultRadius') || isNaN(this.componentconfig.defaultRadius)) {
-            this.componentconfig.defaultRadius = 10;
-        }
-        if (!this.componentconfig.directionTravelMode || ['DRIVING','WALKING','TRANSIT','BICYCLING'].indexOf(this.componentconfig.directionTravelMode) == -1) {
+        if (!this.componentconfig.directionTravelMode || ['DRIVING', 'WALKING', 'TRANSIT', 'BICYCLING'].indexOf(this.componentconfig.directionTravelMode) == -1) {
             this.componentconfig.directionTravelMode = 'DRIVING';
         }
+        if (!(!!this.componentconfig.mapHeight)) {
+            this.componentconfig.mapHeight = 300;
+        }
+        if (!(!!this.componentconfig.circleColor)) {
+            this.componentconfig.circleColor = '#CA1B21';
+        }
+        if (!(!!this.componentconfig.filterCircleColor)) {
+            this.componentconfig.filterCircleColor = '#1A73E8';
+        }
+        if (!(!!this.componentconfig.focusColor)) {
+            this.componentconfig.focusColor = '#1A73E8';
+        }
 
-        this.mapOptions = {...this.componentconfig};
+        this.setFirstMapOptionsChanged();
 
+        this.setLatLngFieldsNames();
+    }
+
+    /**
+     * set changed property for mapOptions to trigger change detections on the map
+     */
+    public setFirstMapOptionsChanged() {
+        this.mapOptions = {
+            ...this.componentconfig, changed: {
+                showMyLocation: true,
+                showCluster: true,
+                markerWithModelPopover: true,
+                directionTravelMode: true,
+                focusColor: true,
+            }
+        };
+    }
+
+    /**
+     * set search geo filter on modelList and reload the records list
+     */
+    public onRadiusChange(radius: number) {
+
+        if (!!this.mapOptions.circle) {
+            this.mapOptions.circle.radius = radius;
+            this.cdRef.detectChanges();
+        }
+        if (this.editingRadius) return;
+
+        this.modelList.searchGeo = {
+            radius: radius,
+            lat: this.mapOptions.circle.center.lat,
+            lng: this.mapOptions.circle.center.lng
+        };
+        this.modelList.reLoadList(true).subscribe(() => {
+            this.setRecords();
+        });
+    }
+
+    /**
+     * set search geo filter on modelList and reload the records list
+     */
+    public onCenterChange(center: MapCenterI) {
+        this.mapOptions.circle.center = center;
+    }
+
+    /**
+     * reset the map options with the changed object property set to true to force the map component to reload by property
+     */
+    public setMapOptionChanged(property: string) {
+        this.mapOptions.changed = {[property]: true};
+        this.mapOptions = {...this.mapOptions};
+    }
+
+    /**
+     * check if the geo object latitude and longitude are correct
+     * @param latLng
+     */
+    public verifyLatLng(latLng: { lat: number, lng: number }) {
+        return !!latLng.lng && !isNaN(latLng.lng) && !!latLng.lat && !isNaN(latLng.lat);
+    }
+
+    /**
+     * subscribe to map focus from the focus field and set focused record id
+     */
+    public subscribeToMapFocus() {
+        this.subscription.add(this.broadcast.message$.subscribe(msg => {
+            this.setFocusedRecordId(msg);
+        }));
+    }
+
+    /**
+     * set the latitude longitude fields names from module defs
+     */
+    private setLatLngFieldsNames() {
         const moduleDefs = this.metadata.getModuleDefs(this.modelList.module);
         if (!!moduleDefs && !!moduleDefs.ftsgeo) {
             this.lngName = moduleDefs.ftsgeo.longitude_field;
@@ -165,22 +257,39 @@ export class SpiceGoogleMapsList implements OnInit {
     }
 
     /**
-     * reset records on if changed
+     * set fixed circle data from the model list current list filter defs
      */
-    private handleRecordChanges() {
-        if (this.recordsDiffer.diff(this.modelList.listData.list)) {
-            this.setRecords();
+    private setFixedCircle() {
+        const geoFilter = this.modelList.getFilterDefs().geography;
+
+        if (!geoFilter || !this.verifyLatLng(geoFilter) || !geoFilter.radius || isNaN(geoFilter.radius)) {
+            this.mapOptions.fixedCircle = undefined;
+            return this.setMapOptionChanged('fixedCircle');
         }
+
+        this.mapOptions.fixedCircle = {
+            radius: geoFilter.radius,
+            center: {
+                lng: geoFilter.lng,
+                lat: geoFilter.lat
+            },
+            color: this.componentconfig.filterCircleColor
+        };
+
+        this.setMapOptionChanged('fixedCircle');
     }
 
     /**
-     * set iterable differs on the loaded list records to reduce change detection trigger
-     * load the list data
+     * subscribe to model list type and data reloaded changes to reset records
      */
-    private initialize() {
-        this.recordsDiffer = this.iterableDiffers.find([]).create(null);
-        this.modelList.loadlimit = 20;
-        this.modelList.getListData();
+    private subscribeToModelListChanges() {
+        this.subscription.add(this.modelList.listtype$.subscribe(() => {
+            this.setRecords();
+        }));
+        this.subscription.add(this.modelList.listDataChanged$.subscribe(() => {
+            this.setRecords();
+            this.setFixedCircle();
+        }));
     }
 
     /**
@@ -188,5 +297,63 @@ export class SpiceGoogleMapsList implements OnInit {
      */
     private loadMore() {
         this.modelList.loadMoreList();
+    }
+
+    /**
+     * toggle search around to draw/remove the circle on the map
+     */
+    private toggleSearchAround() {
+        this.searchAroundActive = !this.searchAroundActive;
+        if (!this.searchAroundActive) {
+            this.mapOptions.circle = undefined;
+            this.editingRadius = false;
+            this.modelList.searchGeo = undefined;
+            this.modelList.reLoadList(true);
+        } else {
+            this.mapOptions.circle = {
+                center: null,
+                draggable: true,
+                editable: true,
+                radius: this.componentconfig.defaultRadius,
+                color: this.componentconfig.circleColor
+            };
+            this.startRadiusEditing();
+        }
+        this.setMapOptionChanged('circle');
+    }
+
+    /**
+     * set editing radius to true
+     */
+    private startRadiusEditing() {
+        this.editingRadius = true;
+    }
+
+    /**
+     * set editing radius to false
+     */
+    private cancelEditingRadius() {
+        this.editingRadius = false;
+    }
+
+    /**
+     * call confirm circle changes and stop editing radius
+     */
+    private confirmRadiusInput() {
+        this.editingRadius = false;
+        this.setMapOptionChanged('circleRadius');
+    }
+
+    /**
+     * set the focused record from geo data field broadcast
+     * @param msg
+     */
+    private setFocusedRecordId(msg: { messagedata: any, messagetype: string }) {
+        if (msg.messagetype != 'map.focus' || !msg.messagedata || !msg.messagedata.modelId || this.focusedRecordId == msg.messagedata.modelId ||
+            (msg.messagedata.tabId == 'main' && !!this.navigationtab.tabid) || (msg.messagedata.tabId != 'main' && this.navigationtab.tabid != msg.messagedata.tabId)) {
+            return;
+        }
+
+        this.focusedRecordId = msg.messagedata.modelId;
     }
 }

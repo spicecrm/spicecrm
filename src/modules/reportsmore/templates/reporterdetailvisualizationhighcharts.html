@@ -1,6 +1,6 @@
 <div [ngStyle]="getVizStyle()" class="slds-is-absolute slds-box--border slds-p-vertical--small slds-p-horizontal--small">
     <div *ngIf="!noData" class="slds-size--1-of-1 slds-height_full" [id]="chart_element_id"></div>
     <div *ngIf="noData" class="slds-size--1-of-1 slds-height_full slds-align_absolute-center">
-        <system-illustration-no-data>{{language.getModuleName('KReports', true)}} <i>{{reportName}}</i> {{language.getLabel('LBL_HAS')}} {{language.getLabel('LBL_NO_DATA')}}</system-illustration-no-data>
+        <system-illustration-no-data><system-label-modulename module="KReports" [singular]="true"></system-label-modulename> <i>{{reportName}}</i> <system-label label="LBL_HAS"></system-label> <system-label label="LBL_NO_DATA"></system-label></system-illustration-no-data>
     </div>
 </div>

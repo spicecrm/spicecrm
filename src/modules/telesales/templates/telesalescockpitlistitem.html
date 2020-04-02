@@ -20,7 +20,7 @@
                              [fielddisplayclass]="'slds-truncate'"></field-container>
         </div>
         <div *ngIf="item.planned_activity_date" class="slds-grid">
-            <label class="slds-truncate">{{language.getLabel('LBL_PLANNED_ACTIVITY_DATE')}}</label>
+            <label class="slds-truncate"><system-label label="LBL_PLANNED_ACTIVITY_DATE"></system-label></label>
             <div class="slds-col--bump-left slds-truncate slds-text-color_error">{{ activityDate }}</div>
         </div>
     </div>

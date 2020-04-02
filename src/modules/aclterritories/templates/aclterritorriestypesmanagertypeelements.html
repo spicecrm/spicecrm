@@ -1,6 +1,6 @@
 <div class="slds-scrollable" style="height: 100%;">
     <div class="slds-p-around--small slds-border--bottom">
-        <h2 class="slds-text-heading_medium">{{language.getLabel('LBL_ELEMENTS')}}</h2>
+        <h2 class="slds-text-heading_medium"><system-label label="LBL_ELEMENTS"></system-label></h2>
     </div>
     <div *ngIf="loading; else typeelementsdisplay" class="slds-p-around--medium slds-align--absolute-center">
         <system-spinner></system-spinner>
@@ -14,7 +14,7 @@
             <system-button-icon class="slds-col--bump-left" icon="delete" (click)="deleteTypeElement(typeelement)"></system-button-icon>
         </div>
         <div *ngIf="activeType" class="slds-p-around--medium slds-align--absolute-center">
-            <button class="slds-button slds-button--neutral" (click)="addTypeElement()">{{language.getLabel('LBL_ADD')}}</button>
+            <button class="slds-button slds-button--neutral" (click)="addTypeElement()"><system-label label="LBL_ADD"></system-label></button>
         </div>
     </ng-template>
 </div>

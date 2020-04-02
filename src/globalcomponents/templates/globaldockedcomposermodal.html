@@ -7,9 +7,9 @@
         <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
             <global-docked-composer-messages-badge></global-docked-composer-messages-badge>
             <div class="slds-text-align_right">
-                <button class="slds-button slds-button--neutral" (click)="closeComposer()">{{language.getLabel('LBL_CANCEL')}}</button>
-                <button class="slds-button slds-button--brand" (click)="saveComposer()">{{language.getLabel('LBL_SAVE')}}</button>
-                <button class="slds-button slds-button--brand" (click)="saveComposer(true)">{{language.getLabel('LBL_SAVE_AND_GO_TO_RECORD')}}</button>
+                <button class="slds-button slds-button--neutral" (click)="closeComposer()"><system-label label="LBL_CANCEL"></system-label></button>
+                <button class="slds-button slds-button--brand" (click)="saveComposer()"><system-label label="LBL_SAVE"></system-label></button>
+                <button class="slds-button slds-button--brand" (click)="saveComposer(true)"><system-label label="LBL_SAVE_AND_GO_TO_RECORD"></system-label></button>
             </div>
         </div>
     </system-modal-footer>

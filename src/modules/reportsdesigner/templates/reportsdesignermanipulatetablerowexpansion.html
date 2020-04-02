@@ -4,13 +4,13 @@
             <div class="slds-form-element__control">
                 <div class="slds-form-element slds-grid">
                     <div class="slds-form-element slds-size--1-of-2">
-                        <label class="slds-form-element__label">{{language.getLabel('LBL_FIXED_VALUE')}}</label>
+                        <label class="slds-form-element__label"><system-label label="LBL_FIXED_VALUE"></system-label></label>
                         <div class="slds-form-element__control">
                             <input type="text" [(ngModel)]="listItem.fixedvalue" class="slds-input" tabindex="1" autofocus>
                         </div>
                     </div>
                     <div class="slds-form-element slds-size--1-of-2">
-                        <label class="slds-form-element__label">{{language.getLabel('LBL_GROUPING')}}</label>
+                        <label class="slds-form-element__label"><system-label label="LBL_GROUPING"></system-label></label>
                         <div class="slds-form-element__control">
                             <input disabled type="text" [(ngModel)]="listItem.grouping" class="slds-input">
                         </div>
@@ -18,55 +18,55 @@
                 </div>
                 <div class="slds-form-element slds-grid">
                     <div class="slds-form-element slds-size--1-of-2">
-                        <label class="slds-form-element__label">{{language.getLabel('LBL_VALUE_TYPE')}}</label>
+                        <label class="slds-form-element__label"><system-label label="LBL_VALUE_TYPE"></system-label></label>
                         <div class="slds-form-element__control">
                             <div class="slds-select_container">
                                 <select class="slds-select" [(ngModel)]="listItem.valuetype">
                                     <option></option>
-                                    <option value="TOFSUM">{{language.getLabel('LBL_VALUE_TYPE_TOFSUM')}}</option>
-                                    <option value="POFSUM">{{language.getLabel('LBL_VALUE_TYPE_POFSUM')}}</option>
-                                    <option value="POFCOUNT">{{language.getLabel('LBL_VALUE_TYPE_POFCOUNT')}}</option>
-                                    <option value="POFAVG">{{language.getLabel('LBL_VALUE_TYPE_POFAVERAGE')}}</option>
-                                    <option value="DOFSUM">{{language.getLabel('LBL_VALUE_TYPE_DOFSUM')}}</option>
-                                    <option value="DOFCOUNT">{{language.getLabel('LBL_VALUE_TYPE_DOFCOUNT')}}</option>
-                                    <option value="DOFAVG">{{language.getLabel('LBL_VALUE_TYPE_DOFAVERAGE')}}</option>
-                                    <option value="C">{{language.getLabel('LBL_VALUE_TYPE_C')}}</option>
+                                    <option value="TOFSUM"><system-label label="LBL_VALUE_TYPE_TOFSUM"></system-label></option>
+                                    <option value="POFSUM"><system-label label="LBL_VALUE_TYPE_POFSUM"></system-label></option>
+                                    <option value="POFCOUNT"><system-label label="LBL_VALUE_TYPE_POFCOUNT"></system-label></option>
+                                    <option value="POFAVG"><system-label label="LBL_VALUE_TYPE_POFAVERAGE"></system-label></option>
+                                    <option value="DOFSUM"><system-label label="LBL_VALUE_TYPE_DOFSUM"></system-label></option>
+                                    <option value="DOFCOUNT"><system-label label="LBL_VALUE_TYPE_DOFCOUNT"></system-label></option>
+                                    <option value="DOFAVG"><system-label label="LBL_VALUE_TYPE_DOFAVERAGE"></system-label></option>
+                                    <option value="C"><system-label label="LBL_VALUE_TYPE_C"></system-label></option>
                                 </select>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="slds-form-element slds-m-top--x-small slds-has-divider--top">
-                    <label class="slds-form-element__label">{{language.getLabel('LBL_CUSTOM_FUNCTION')}}</label>
+                    <label class="slds-form-element__label"><system-label label="LBL_CUSTOM_FUNCTION"></system-label></label>
                     <system-input-base64 [(ngModel)]="listItem.customsqlfunction"></system-input-base64>
                 </div>
                 <div class="slds-grid slds-has-divider--top">
                     <div class="slds-form-element slds-size--1-of-2">
-                        <label class="slds-form-element__label">{{language.getLabel('LBL_STORE')}}</label>
+                        <label class="slds-form-element__label"><system-label label="LBL_STORE"></system-label></label>
                         <div class="slds-form-element__control">
                             <input type="text" [(ngModel)]="listItem.assigntovalue" class="slds-input">
                         </div>
                     </div>
                     <div class="slds-form-element slds-size--1-of-2">
-                        <label class="slds-form-element__label">{{language.getLabel('LBL_SEQUENCE')}}</label>
+                        <label class="slds-form-element__label"><system-label label="LBL_SEQUENCE"></system-label></label>
                         <div class="slds-form-element__control">
                             <input type="text" [(ngModel)]="listItem.formulasequence" class="slds-input">
                         </div>
                     </div>
                 </div>
                 <div class="slds-form-element">
-                    <label class="slds-form-element__label">{{language.getLabel('LBL_FORMULA')}}</label>
+                    <label class="slds-form-element__label"><system-label label="LBL_FORMULA"></system-label></label>
                     <system-input-base64 [(ngModel)]="listItem.formulavalue"></system-input-base64>
                 </div>
                 <div class="slds-grid slds-has-divider--top">
                     <div class="slds-form-element slds-size--1-of-2">
-                        <label class="slds-form-element__label">{{language.getLabel('LBL_PATH')}}</label>
+                        <label class="slds-form-element__label"><system-label label="LBL_PATH"></system-label></label>
                         <div class="slds-form-element__control">
                             <input type="text" disabled [(ngModel)]="listItem.path" class="slds-input" tabindex="1" autofocus>
                         </div>
                     </div>
                     <div class="slds-form-element slds-size--1-of-2">
-                        <label class="slds-form-element__label">{{language.getLabel('LBL_ID')}}</label>
+                        <label class="slds-form-element__label"><system-label label="LBL_ID"></system-label></label>
                         <div class="slds-form-element__control">
                             <input disabled type="text" [(ngModel)]="listItem.fieldid" class="slds-input">
                         </div>

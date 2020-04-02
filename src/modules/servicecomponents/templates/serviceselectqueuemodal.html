@@ -1,6 +1,6 @@
 <system-modal>
     <system-modal-header (close)="cancel()">
-        {{language.getLabel('LBL_SELECT_QUEUE')}}
+        <system-label label="LBL_SELECT_QUEUE"></system-label>
     </system-modal-header>
     <system-modal-content>
         <div *ngIf="loading; else queuelist" class="slds-align--absolute-center slds-p-around--medium">
@@ -8,7 +8,7 @@
         </div>
         <ng-template #queuelist>
             <fieldset class="slds-form-element">
-                <legend class="slds-form-element__legend slds-form-element__label">{{language.getLabel('LBL_AVAILABLE_QUEUES')}}</legend>
+                <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_AVAILABLE_QUEUES"></system-label></legend>
                 <div class="slds-form-element__control">
                     <span class="slds-radio" *ngFor="let queue of queues">
                       <input type="radio" [id]="queue.id" [value]="queue.id" name="queue" [(ngModel)]="selectedqueueid"/>
@@ -20,7 +20,7 @@
                 </div>
             </fieldset>
             <div *ngIf="displaynote" class="slds-form-element slds-p-top--small">
-                <label class="slds-form-element__label">{{language.getLabel('LBL_NOTE')}}</label>
+                <label class="slds-form-element__label"><system-label label="LBL_NOTE"></system-label></label>
                 <div class="slds-form-element__control">
                     <textarea class="slds-textarea" [(ngModel)]="note"></textarea>
                 </div>
@@ -28,7 +28,7 @@
         </ng-template>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
-        <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
     </system-modal-footer>
 </system-modal>

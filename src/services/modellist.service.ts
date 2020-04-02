@@ -23,6 +23,19 @@ interface geoSearch {
     lng: number;
 }
 
+/**
+ * refines an interface for the relate filter
+ * this can be used to limit results to relationships
+ */
+export interface relateFilter {
+    module: string;
+    relationship: string;
+    id: string;
+    display: string;
+    active: boolean;
+    required: boolean;
+}
+
 @Injectable()
 export class modellist implements OnDestroy {
 
@@ -35,6 +48,16 @@ export class modellist implements OnDestroy {
      * an optional modulefilter
      */
     public modulefilter: string;
+
+    /**
+     * a relatefilter
+     */
+    public relatefilter: relateFilter;
+
+    /**
+     * a behavioural subject to catch the list data loads
+     */
+    public listDataChanged$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 
     /**
@@ -59,6 +82,11 @@ export class modellist implements OnDestroy {
         type: '',
         items: []
     };
+
+    /**
+     * emits when the selection of the list has been changed via select all .. to trigger chanmge detection on the components
+     */
+    public selectionChanged$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * keeps the last retrieved fields
@@ -94,6 +122,11 @@ export class modellist implements OnDestroy {
     public searchTerm: string = '';
 
     /**
+     * holds the aggregates for the module
+     */
+    public moduleAggregates: any[] = [];
+
+    /**
      * the set search aggregates as returned by the search
      */
     public searchAggregates: any;
@@ -101,7 +134,7 @@ export class modellist implements OnDestroy {
     /**
      * the aggregate values the user selected
      */
-    public selectedAggregates: any[] = [];
+    public selectedAggregates: string[] = [];
 
     /**
      * search geo data
@@ -208,8 +241,6 @@ export class modellist implements OnDestroy {
         private configuration: configurationService,
         private toast: toast
     ) {
-
-
         // create the event behaviour Subject
         this.listtype$ = new BehaviorSubject<string>('all');
 
@@ -224,7 +255,6 @@ export class modellist implements OnDestroy {
         );
     }
 
-
     /**
      * simple getter for the module
      */
@@ -238,6 +268,16 @@ export class modellist implements OnDestroy {
      * @param module
      */
     set module(module: string) {
+        this.setModule(module);
+    }
+
+    /**
+     * sets the mopdule
+     *
+     * @param module the module
+     * @param embedded set to true if the listservice is run embedded ina  component and setting listtype etc is not needed, this is used e.g. when used in builöt in lists
+     */
+    public setModule(module: string, embedded: boolean = false) {
         // check if the module has changed
         if (!this._module || this._module != module) {
             // set the module internally
@@ -245,6 +285,9 @@ export class modellist implements OnDestroy {
 
             // reset the list data
             this.resetListData();
+
+            // if we are in embedded mode stop processing and return
+            if(embedded) return;
 
             // load the list types for the module
             this.loadListTypes();
@@ -262,6 +305,16 @@ export class modellist implements OnDestroy {
                 // reload quite if we did retrive from cache
                 this.reLoadList(true);
             }
+
+            // set the aggergates for the module
+            this.moduleAggregates = [];
+            for (let moduleAggregate of this.metadata.getModuleAggregates(module)) {
+                this.moduleAggregates.push({...moduleAggregate});
+            }
+            this.moduleAggregates.sort((a, b) => {
+                if (!a.priority && !b.priority) return 0;
+                return (!a.priority || a.priority > b.priority) ? 1 : -1;
+            });
         }
     }
 
@@ -304,6 +357,8 @@ export class modellist implements OnDestroy {
                         this.removeItemFromBucket(message.messagedata.data[this.bucketfield], bucketamountfields);
                     }
                 }
+                this.listDataChanged$.next(true);
+
                 break;
             case 'model.save':
                 let eventHandled = false;
@@ -341,6 +396,7 @@ export class modellist implements OnDestroy {
 
                         }
                     }
+                    this.listDataChanged$.next(true);
 
                 } else {
                     this.reLoadList();
@@ -388,6 +444,10 @@ export class modellist implements OnDestroy {
         if (this.currentList.id == 'all' || this.currentList.id == 'owner') {
             this.userpreferences.setPreference('defaultlisttype', listcomponent, false, 'SpiceUI_' + this.module);
         }
+
+        // reset current list fielddefs and redetermine its fields from the component config
+        this.currentList.fielddefs = undefined;
+        this.determineListFields();
     }
 
     /**
@@ -485,7 +545,7 @@ export class modellist implements OnDestroy {
      * @param listType
      * @param setPreference
      */
-    public setListType(listType: string, setPreference = true, sortArray=[]): void {
+    public setListType(listType: string, setPreference = true, sortArray = []): void {
 
         // close filters and aggegarts if they are being displayed
         this.displayAggregates = false;
@@ -550,8 +610,8 @@ export class modellist implements OnDestroy {
         // check if we have fielddefs
         let fielddefs = this.getFieldDefs();
 
-        // load all fields
-        let componentconfig = this.metadata.getComponentConfig('ObjectList', this.module);
+        // load all fields from the selected component configs
+        let componentconfig = this.metadata.getComponentConfig(this.listcomponent, this.module);
         let allFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
         for (let listField of allFields) {
             // check if we have the field in the defs
@@ -980,6 +1040,15 @@ export class modellist implements OnDestroy {
     }
 
     /**
+     * checks if the field has selected aggregates and returns the number
+     *
+     * @param aggregatefield
+     */
+    public getCheckedAggregateCount(aggregatefield): number {
+        return this.selectedAggregates.filter(item => item.indexOf(aggregatefield + '::') > -1).length;
+    }
+
+    /**
      * checks if the aggregate is set
      *
      * @param aggregate
@@ -1019,6 +1088,9 @@ export class modellist implements OnDestroy {
         for (let listItem of this.listData.list) {
             listItem.selected = true;
         }
+
+        // emit so items can trigger change detection
+        this.selectionChanged$.emit(true);
     }
 
     public setAllUnselected() {
@@ -1026,6 +1098,9 @@ export class modellist implements OnDestroy {
         for (let listItem of this.listData.list) {
             listItem.selected = false;
         }
+
+        // emit so items can trigger change detection
+        this.selectionChanged$.emit(true);
     }
 
     /**
@@ -1126,7 +1201,8 @@ export class modellist implements OnDestroy {
             searchterm: this.searchTerm,
             searchgeo: this.searchGeo,
             aggregates: aggregates,
-            buckets: this.buckets
+            buckets: this.buckets,
+            relatefilter: this.relatefilter?.active ? this.relatefilter : null
         }).subscribe((res: any) => {
                 // set the listdata
                 this.listData = res;
@@ -1152,6 +1228,7 @@ export class modellist implements OnDestroy {
                 // return & close the subject
                 retSub.next(true);
                 retSub.complete();
+                this.listDataChanged$.next(true);
             }
         );
 
@@ -1177,10 +1254,12 @@ export class modellist implements OnDestroy {
             searchterm: this.searchTerm,
             searchgeo: this.searchGeo,
             aggregates: aggregates,
-            buckets: this.buckets
+            buckets: this.buckets,
+            relatefilter: this.relatefilter?.active ? this.relatefilter : null
         })
             .subscribe((res: any) => {
                 this.listData.list = this.listData.list.concat(res.list);
+                this.listDataChanged$.next(true);
                 this.lastLoad = new moment();
 
                 this.isLoading = false;
@@ -1217,12 +1296,13 @@ export class modellist implements OnDestroy {
             buckets: {
                 bucketfield: this.buckets.bucketfield,
                 bucketitems: [bucket]
-            }
+            },
+            relatefilter: this.relatefilter?.active ? this.relatefilter : null
         })
             .subscribe((res: any) => {
                 this.listData.list = this.listData.list.concat(res.list);
                 this.lastLoad = new moment();
-
+                this.listDataChanged$.next(true);
                 this.isLoading = false;
 
                 // save the current result
@@ -1253,14 +1333,20 @@ export class modellist implements OnDestroy {
                 }
             );
         } else {
+            let aggregates = {};
+            aggregates[this.module] = this.selectedAggregates;
             this.backend.getLinkToDownload(
                 '/module/' + this.module + '/export',
                 'POST',
                 {},
                 {
                     listid: this.currentList.id,
+                    modulefilter: this.modulefilter,
                     sortfields: this.sortArray,
-                    fields: fields ? fields : this.lastFields
+                    fields: fields ? fields : this.lastFields,
+                    searchterm: this.searchTerm,
+                    searchgeo: this.searchGeo,
+                    aggregates: aggregates,
                 }
             ).subscribe(
                 (res) => {
@@ -1296,16 +1382,16 @@ export class modellist implements OnDestroy {
     // private updateBuckets(from, to, valuefrom?, valueto?) {
     private updateBuckets(from, to, bucketamountfields = []) {
         // reduce from buckets
-            let frombucket = this.buckets.bucketitems.find(bucket => bucket.bucket == from);
-            frombucket.items--;
-            frombucket.total--;
+        let frombucket = this.buckets.bucketitems.find(bucket => bucket.bucket == from);
+        frombucket.items--;
+        frombucket.total--;
 
-            // add to the bucket
-            let tobucket = this.buckets.bucketitems.find(bucket => bucket.bucket == to);
-            tobucket.items++;
-            tobucket.total++;
+        // add to the bucket
+        let tobucket = this.buckets.bucketitems.find(bucket => bucket.bucket == to);
+        tobucket.items++;
+        tobucket.total++;
 
-            for (let bucket of this.buckets.buckettotal) {
+        for (let bucket of this.buckets.buckettotal) {
             for (let bucketamountfield of bucketamountfields) {
                 if (bucket.function == "sum" && bucket.name == bucketamountfield.fieldname) {
                     frombucket.values['_bucket_agg_' + bucketamountfield.fieldname] -= bucketamountfield.valuefrom;

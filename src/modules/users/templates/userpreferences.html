@@ -4,13 +4,30 @@
     <div [overlayLoadingSpinner]="loading">
         <system-collapsable-tab [collapsible]="false"  tabtitle="LBL_LOCALE_PREFERENCES">
             <div class="slds-grid slds-grid--align-spread">
-                <user-preferences-item class="slds-size--1-of-2" itemlabel="LBL_TIMEZONE">
+                <user-preferences-item class="slds-size--1-of-4" itemlabel="LBL_TIMEZONE">
                     <user-preferences-item-display>{{preferences.timezone}}</user-preferences-item-display>
                     <user-preferences-item-edit>
                         <div class="slds-select_container">
                             <select class="slds-select" name="timezone" (change)="change($event,'timezone')">
                                 <option value="-" [selected]="!preferences.timezone"></option>
                                 <option *ngFor="let key of timezoneKeys" value="{{key}}" [selected]="preferences.timezone === key">{{timezones[key]}}</option>
+                            </select>
+                        </div>
+                    </user-preferences-item-edit>
+                </user-preferences-item>
+                <user-preferences-item class="slds-size--1-of-4" itemlabel="LBL_DISTANCE_UNIT_SYSTEM">
+                    <user-preferences-item-display>
+                        <system-label *ngIf="!!preferences.distance_unit_system" [label]="'LBL_' + preferences.distance_unit_system"></system-label>
+                    </user-preferences-item-display>
+                    <user-preferences-item-edit>
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="preferences.distance_unit_system">
+                                <option value="METRIC">
+                                    <system-label label="LBL_METRIC"></system-label>
+                                </option>
+                                <option value="IMPERIAL">
+                                    <system-label label="LBL_IMPERIAL"></system-label>
+                                </option>
                             </select>
                         </div>
                     </user-preferences-item-edit>
@@ -259,10 +276,10 @@
 
         <div *ngIf="view.isEditMode()" class="slds-p-around--small slds-align--absolute-center">
             <button class="slds-button slds-button--neutral" (click)="cancel()">
-                {{language.getLabel('LBL_CANCEL')}}
+                <system-label label="LBL_CANCEL"></system-label>
             </button>
             <button class="slds-button slds-button--brand slds-button-space-left" (click)="save()">
-                {{language.getLabel('LBL_SAVE')}}
+                <system-label label="LBL_SAVE"></system-label>
             </button>
         </div>
     </div>

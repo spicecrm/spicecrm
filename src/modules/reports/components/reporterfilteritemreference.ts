@@ -21,12 +21,12 @@ export class ReporterFilterItemReference implements OnInit {
     }
 
     set referenceField(value: string) {
-        this.whereCondition.referencefieldid = value;
-        this.whereCondition.value = this.referenceFields.find(field => field.referencefieldid == value).value;
+        this.whereCondition.value = value;
+        this.whereCondition.valuekey = value;
     }
 
     get referenceField(): string {
-        return this.whereCondition.referencefieldid;
+        return this.whereCondition.value;
     }
 
     get referenceFields() {

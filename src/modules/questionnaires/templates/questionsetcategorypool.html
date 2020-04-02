@@ -2,13 +2,13 @@
     <h3 class="slds-section__title">
         <button class="slds-button slds-section__title-action" (click)="toggleSection()">
             <system-utility-icon [icon]="'switch'" [size]="'x-small'" [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
-            <span class="slds-truncate" title="Section Title">{{language.getLabel('LBL_CATEGORYPOOL')}}</span>
+            <span class="slds-truncate" title="Section Title"><system-label label="LBL_CATEGORYPOOL"></system-label></span>
         </button>
     </h3>
     <div [ngStyle]="getSectionStyle()" class="slds-p-around--x-small">
         <div *ngIf="editing">
             <div class="slds-form-element">
-                <label class="slds-form-element__label" for="input-categorypool">{{language.getLabel('LBL_SEARCH')}}</label>
+                <label class="slds-form-element__label" for="input-categorypool"><system-label label="LBL_SEARCH"></system-label></label>
                 <div class="slds-form-element__control">
                     <div class="slds-combobox_container slds-has-object-switcher" [class.slds-has-input-focus]="hasFocus==true">
                         <div *ngIf="presentedCategories" #inputField class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open':listIsExpanded}">
@@ -18,7 +18,7 @@
                                     <svg class="slds-icon slds-icon slds-icon_x-small slds-icon-text-default">
                                         <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#search"></use>
                                     </svg>
-                                    <span class="slds-assistive-text">{{language.getLabel('LBL_SEARCH')}}</span>
+                                    <span class="slds-assistive-text"><system-label label="LBL_SEARCH"></system-label></span>
                                 </span>
                             </div>
                             <div *ngIf="numPresentedCategories && listIsExpanded">

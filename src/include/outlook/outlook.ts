@@ -135,6 +135,9 @@ declare var Office: any;
     ]
 })
 export class Outlook {
+    constructor(private navigation: navigation) {
+        this.navigation.enforceNavigationParadigm('simple');
+    }
 }
 
 // set prod mode

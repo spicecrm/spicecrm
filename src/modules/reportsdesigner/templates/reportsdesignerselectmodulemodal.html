@@ -1,6 +1,6 @@
 <system-modal>
     <system-modal-header (close)="close()" module="KReports">
-        {{language.getModuleName('KReports', true)}}
+        <system-label-modulename module="KReports" [singular]="true"></system-label-modulename>
     </system-modal-header>
     <system-modal-content margin="xx-small" [grow]="true">
         <system-collapsable-tab *ngIf="createmode" tabtitle="LBL_DETAILS" [collapsible]="false">
@@ -33,10 +33,10 @@
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()">
-            {{language.getLabel('LBL_CANCEL')}}
+            <system-label label="LBL_CANCEL"></system-label>
         </button>
         <button *ngIf="createmode" [disabled]="!canCreate" class="slds-button slds-button--neutral" (click)="confirm()">
-            {{language.getLabel('LBL_NEXT')}}
+            <system-label label="LBL_NEXT"></system-label>
         </button>
     </system-modal-footer>
 </system-modal>

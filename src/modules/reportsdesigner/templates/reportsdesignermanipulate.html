@@ -1,7 +1,7 @@
 <div class="slds-grid slds-grid--vertical" style="height: 100%">
     <div class="slds-border--bottom slds-p-around--x-small">
         <button (click)="addFixed()" [disabled]="!reportsDesignerService.expertMode" class="slds-button slds-button_neutral slds-m-right--small slds-p-horizontal--x-small slds-text-title--caps" style="height: 100%; line-height: 22px">
-            {{language.getLabel('LBL_ADD_FIXED')}}
+            <system-label label="LBL_ADD_FIXED"></system-label>
         </button>
     </div>
     <div cdkDropList [cdkDropListData]="listFields" (cdkDropListDropped)="onDrop($event)" class="slds-grow slds-scrollable--y" style="height: 100%">
@@ -11,17 +11,17 @@
                 <th class="slds-cell-shrink"></th>
                 <th scope="col" class="slds-resizable">
                     <div class="slds-truncate">
-                        {{language.getLabel('LBL_PATH')}}
+                        <system-label label="LBL_PATH"></system-label>
                     </div>
                 </th>
                 <th scope="col" class="slds-resizable">
                     <div class="slds-truncate">
-                        {{language.getLabel('LBL_NAME')}}
+                        <system-label label="LBL_NAME"></system-label>
                     </div>
                 </th>
                 <th scope="col" class="slds-resizable">
                     <div class="slds-truncate">
-                        {{language.getLabel('LBL_FUNCTION')}}
+                        <system-label label="LBL_FUNCTION"></system-label>
                     </div>
                 </th>
                 <th scope="col" class="slds-text-align--center slds-cell-shrink">
@@ -44,7 +44,7 @@
                 </ng-container>
                 <tr *ngIf="listFields?.length == 0">
                     <td colspan="7" >
-                        <div class="slds-align--absolute-center slds-p-around--large">{{language.getLabel('MSG_DROP_FIELD_HERE')}}</div>
+                        <div class="slds-align--absolute-center slds-p-around--large"><system-label label="MSG_DROP_FIELD_HERE"></system-label></div>
                     </td>
                 </tr>
             </tbody>
