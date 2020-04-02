@@ -17,7 +17,7 @@ import {view} from "../../../services/view.service";
 /**
  * @ignore
  */
-const ANIMATIONS = [
+const REPORTERDETAILVIEWANIMATIONS = [
     trigger('displayfilter', [
         transition(':enter', [
             style({width: '0px', overflow: 'hidden'}),
@@ -38,7 +38,7 @@ const ANIMATIONS = [
     selector: 'reporter-detilview',
     templateUrl: './src/modules/reports/templates/reporterdetailview.html',
     providers: [view, model, reporterconfig],
-    animations: ANIMATIONS
+    animations: REPORTERDETAILVIEWANIMATIONS
 })
 export class ReporterDetailView implements OnInit {
     /**

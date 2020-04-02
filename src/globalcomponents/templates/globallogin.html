@@ -56,8 +56,7 @@
                     <global-login-forgot-password class="slds-col" *ngIf="showForgotPass" (hasNewPassword)="showForgotPass = $event"></global-login-forgot-password>
                 </div>
             </div>
-            <global-login-reset-password *ngIf="loginService.session.authData.renewPass && !loginService.session.authData.obtainGDPRconsent" [oldpassword]="password"></global-login-reset-password>
-            <global-obtain-gdpr-consent *ngIf="!loginService.session.authData.renewPass && loginService.session.authData.obtainGDPRconsent"></global-obtain-gdpr-consent>
+            <global-login-reset-password *ngIf="loginService.session.authData.renewPass" [oldpassword]="password"></global-login-reset-password>
             <ng-container *ngIf="loginService.session.authData.sessionId && !loginService.session.authData.renewPass">
                 <system-loader-progress></system-loader-progress>
             </ng-container>

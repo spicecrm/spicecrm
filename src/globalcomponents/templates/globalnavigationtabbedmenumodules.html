@@ -2,7 +2,7 @@
     <a href="javascript:void(0);" class="slds-context-bar__label-action" (click)="setActive()">
         <div class="slds-truncate slds-grid slds-grid--vertical-align-center" [title]="navModule">
             <system-icon [module]="navModule" size="x-small"></system-icon>
-            <span>{{navModule}}</span>
+            <span><system-label-modulename [module]="navModule"></system-label-modulename></span>
         </div>
     </a>
     <div class="slds-context-bar__icon-action">
@@ -18,7 +18,7 @@
                     <a href="javascript:void(0);" role="menuitem" tabindex="-1">
                         <div class="slds-truncate slds-size--1-of-1 slds-grid slds-grid--vertical-align-center" [title]="menuItem">
                             <system-icon [module]="menuItem" size="x-small"></system-icon>
-                            <span>{{menuItem}}</span>
+                            <span><system-label-modulename [module]="menuItem"></system-label-modulename></span>
                             <button class="slds-button slds-button--icon slds-col--bump-left" (click)="setActiveModule($event, menuItem)">
                                 <system-button-icon icon="chevronright" addclasses="slds-icon-text-light"></system-button-icon>
                             </button>
