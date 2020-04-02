@@ -22,6 +22,7 @@ import /*embed*/ {SpiceGoogleMapsRecord} from './components/spicegooglemapsrecor
 import /*embed*/ {SpiceMapSelector} from './components/spicemapselector';
 import /*embed*/ {SpiceGoogleMaps} from './components/spicegooglemaps';
 import /*embed*/ {SpiceMapGeoDataField} from './fields/spicemapgeodatafield';
+import /*embed*/ {SpiceGoogleMapsDirectionModal} from './components/spicegooglemapsdirectionmodal';
 
 @NgModule({
     imports: [
@@ -39,7 +40,8 @@ import /*embed*/ {SpiceMapGeoDataField} from './fields/spicemapgeodatafield';
         SpiceGoogleMapsRecord,
         SpiceGoogleMaps,
         SpiceMapSelector,
-        SpiceMapGeoDataField
+        SpiceMapGeoDataField,
+        SpiceGoogleMapsDirectionModal
     ],
     exports: [
         SpiceGoogleMaps,
