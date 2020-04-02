@@ -2,6 +2,7 @@ import {Component} from "@angular/core";
 import {language} from "../../../services/language.service";
 import {Router} from "@angular/router";
 import {model} from "../../../services/model.service";
+import {metadata} from "../../../services/metadata.service";
 
 @Component({
     templateUrl: './src/modules/reports/templates/reporternewbutton.html'
@@ -10,6 +11,7 @@ import {model} from "../../../services/model.service";
 export class ReporterNewButton {
 
     constructor(private language: language,
+                private metadata: metadata,
                 private model: model,
                 private router: Router) {
     }
@@ -25,6 +27,6 @@ export class ReporterNewButton {
      * hide the button while the model is editing
      */
     get hidden() {
-        return this.model.data.acl && !this.model.checkAccess('create');
+        return !this.metadata.checkModuleAcl(this.model.module, 'create');
     }
 }
