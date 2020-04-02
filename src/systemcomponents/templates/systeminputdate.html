@@ -16,11 +16,11 @@
                 <div aria-hidden="false" class="slds-datepicker slds-dropdown slds-dropdown--large" [ngClass]="dropdownside" role="dialog">
                     <system-input-date-picker *ngIf="isOpen" [setDate]="_date.moment" (datePicked)="datePicked($event)"></system-input-date-picker>
                     <div *ngIf="showCalendarButton" class="slds-grid slds-grid--align-center">
-                        <button class="slds-button slds-text-link slds-p-around--xx-small" (click)="openCalendar()">{{language.getLabel('LBL_CALENDAR')}}</button>
+                        <button class="slds-button slds-text-link slds-p-around--xx-small" (click)="openCalendar()"><system-label label="LBL_CALENDAR"></system-label></button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div *ngIf="!isValid" class="slds-form-element__help">{{language.getLabel('LBL_INPUT_INVALID')}}</div>
+    <div *ngIf="!isValid" class="slds-form-element__help"><system-label label="LBL_INPUT_INVALID"></system-label></div>
 </div>

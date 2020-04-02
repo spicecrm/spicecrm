@@ -39,8 +39,6 @@ import /*embed*/ {GroupwareMeetingPane} from "./components/groupwaremeetingpane"
         DirectivesModule,
         ObjectFields,
         RouterModule.forRoot([
-            {path: 'mailitem', component: GroupwareReadPane, canActivate: [loginCheck]},
-            {path: 'details', component: GroupwareDetailPane, canActivate: [loginCheck]},
             {path: 'meeting', component: GroupwareMeetingPane, canActivate: [loginCheck]},
         ])
     ],

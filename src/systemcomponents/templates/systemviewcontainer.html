@@ -1,7 +1,7 @@
 <div [viewprovider]="{editable: editable}">
     <system-componentset *ngIf="componentset" [componentset]="componentset"></system-componentset>
     <div class="slds-text-align--center slds-p-bottom--small" *ngIf="view.isEditMode()">
-        <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
-        <button class="slds-button slds-button--brand slds-button-space-left" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand slds-button-space-left" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
     </div>
 </div>

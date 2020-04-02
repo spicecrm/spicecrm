@@ -13,13 +13,13 @@
             <div class="slds-col slds-size--1-of-1 slds-large-size--1-of-2 slds-p-vertical--xxx-small">
                 <div class="slds-grid slds-grid--align-spread">
                     <system-input-radio value="1" [ngModel]="emailaddress.primary_address" [disabled]="true" class="slds-size--1-of-3">
-                        {{language.getLabel('LBL_EMAILADDRESS_FIELD_PRIMARY')}}
+                        <system-label label="LBL_EMAILADDRESS_FIELD_PRIMARY"></system-label>
                     </system-input-radio>
                     <system-checkbox [ngModel]="emailaddress.opt_out == '1'" [disabled]="true" class="slds-size--1-of-3">
-                        {{language.getLabel('LBL_EMAILADDRESS_FIELD_OPT_OUT')}}
+                        <system-label label="LBL_EMAILADDRESS_FIELD_OPT_OUT"></system-label>
                     </system-checkbox>
                     <system-checkbox [ngModel]="emailaddress.invalid_email == '1'" [disabled]="true" class="slds-size--1-of-3">
-                        {{language.getLabel('LBL_EMAILADDRESS_FIELD_INVALID')}}
+                        <system-label label="LBL_EMAILADDRESS_FIELD_INVALID"></system-label>
                     </system-checkbox>
                 </div>
             </div>

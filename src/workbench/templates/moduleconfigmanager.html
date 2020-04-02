@@ -7,7 +7,7 @@
                     <div class="slds-page-header__name">
                         <div class="slds-page-header__name-title">
                             <h1>
-                                <span class="slds-page-header__title slds-truncate">{{language.getLabel('LBL_CONFIGURATION_MANAGER')}}</span>
+                                <span class="slds-page-header__title slds-truncate"><system-label label="LBL_CONFIGURATION_MANAGER"></system-label></span>
                             </h1>
                         </div>
                     </div>
@@ -20,7 +20,7 @@
 </div>
 <div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
     <div class="slds-form-element">
-        <label class="slds-form-element__label">{{language.getLabel('LBL_MODULE')}}</label>
+        <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
         <div class="slds-form-element__control">
             <div class="slds-select_container" style="min-width:250px;">
                 <select class="slds-select" [(ngModel)]="currentModule" [disabled]="!initialized" (change)="selectedModule()">
@@ -43,13 +43,13 @@
                     <li class="slds-tabs_default__item slds-is-active" [ngClass]="{'slds-is-active': currentTableActive == 'global' || currentTableActive == 'default'}" title="Item One" role="presentation">
                         <div class="slds-grid slds-grid--vertical-align-center">
                             <system-custom-icon icon="global" size="x-small"></system-custom-icon>
-                            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="0" (click)="loadGlobal()" id="tab-default-1__item">{{language.getLabel('LBL_GLOBAL')}}</a>
+                            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="0" (click)="loadGlobal()" id="tab-default-1__item"><system-label label="LBL_GLOBAL"></system-label></a>
                         </div>
                     </li>
                     <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active': currentTableActive == 'custom' || currentTableActive == 'default_custom'}" title="Item Two" role="presentation">
                         <div class="slds-grid slds-grid--vertical-align-center">
                             <system-custom-icon icon="custom" size="x-small"></system-custom-icon>
-                            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-2" (click)="loadCustom()" id="tab-default-2__item">{{language.getLabel('LBL_CUSTOM')}}</a>
+                            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-2" (click)="loadCustom()" id="tab-default-2__item"><system-label label="LBL_CUSTOM"></system-label></a>
                         </div>
                     </li>
                 </ul>
@@ -73,10 +73,10 @@
             </div>
             <div class="slds-col--bump-left">
                 <button [disabled]="!getAllowCopyButton" type="button" class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--neutral" (click)="copyConf()">
-                    {{language.getLabel('LBL_COPY')}}
+                    <system-label label="LBL_COPY"></system-label>
                 </button>
                 <button [disabled]="!view.isEditMode()" type="button" class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--brand" (click)="saveChanges()">
-                    {{language.getLabel('LBL_SAVE')}}
+                    <system-label label="LBL_SAVE"></system-label>
                 </button>
             </div>
         </div>

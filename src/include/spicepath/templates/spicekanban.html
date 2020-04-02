@@ -39,7 +39,7 @@
             <system-spinner *ngIf="modellist.isLoading"></system-spinner>
         </div>
         <div *ngIf="!modellist.isLoading && !hasVisibleItems" class="slds-height_full slds-align--absolute-center">
-            <system-illustration-no-records>{{language.getLabel('MSG_NO_RECORDS_FOUND')}}</system-illustration-no-records>
+            <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
         </div>
         <div *ngIf="hiddenstages.length > 0" class="slds-utility-bar_container" aria-label="Utility Bar">
             <div #kanbanUtilityBar class="slds-utility-bar" style="height: 3rem;">

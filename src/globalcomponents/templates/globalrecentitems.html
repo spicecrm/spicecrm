@@ -6,11 +6,11 @@
                     <div class="slds-page-header__name">
                         <div class="slds-page-header__name-title">
                             <h1>
-                                <span class="slds-page-header__title slds-truncate">{{language.getLabel('LBL_RECENT_ITEMS')}}</span>
+                                <span class="slds-page-header__title slds-truncate"><system-label label="LBL_RECENT_ITEMS"></system-label></span>
                             </h1>
                         </div>
                     </div>
-                    <p class="slds-page-header__name-meta">{{recent.items.length}} {{language.getLabel('LBL_ITEMS')}}</p>
+                    <p class="slds-page-header__name-meta">{{recent.items.length}} <system-label label="LBL_ITEMS"></system-label></p>
                 </div>
             </div>
         </div>
@@ -23,10 +23,10 @@
                 <th class="slds-cell-shrink" scope="col">
                 </th>
                 <th class="slds-is-sortable slds-is-resizable " scope="col">
-                    <span class="slds-truncate slds-th__action">{{language.getLabel('LBL_NAME')}}</span>
+                    <span class="slds-truncate slds-th__action"><system-label label="LBL_NAME"></system-label></span>
                 </th>
                 <th class="slds-is-sortable slds-is-resizable " scope="col">
-                    <span class="slds-truncate slds-th__action">{{language.getLabel('LBL_MODULE')}}</span>
+                    <span class="slds-truncate slds-th__action"><system-label label="LBL_MODULE"></system-label></span>
                 </th>
             </tr>
         </thead>
@@ -41,7 +41,7 @@
                     </a>
                 </td>
                 <td scope="row">
-                    <div class="slds-truncate">{{language.getModuleName(recentItem.module_name, true)}}</div>
+                    <div class="slds-truncate"><system-label-modulename [module]="recentItem.module_name" [singular]="true"></system-label-modulename></div>
                 </td>
             </tr>
         </tbody>

@@ -44,7 +44,12 @@ export class ObjectListHeaderActionsExportCSVSelectFields {
     ) {
 
         // get the current last fields
-        this.exportFields = [...this.modellist.lastFields];
+        // this.exportFields = [...this.modellist.lastFields];
+        this.exportFields = [];
+        for(let field of this.modellist.listfields){
+            this.exportFields.push(field.field);
+        }
+
 
         // get all module fields
         let componentConfig = this.metadata.getComponentConfig('ObjectListHeaderActionsExportCSVSelectFields', this.model.module);
@@ -54,9 +59,16 @@ export class ObjectListHeaderActionsExportCSVSelectFields {
                 if (this.isExportable(fields[field]) && this.exportFields.indexOf(field) == -1) this.availableFields.push(field);
             }
         } else if (componentConfig.fieldset) {
-            let fieldsetfields = this.metadata.getFieldSetFields(componentConfig.fieldset);
-            for (let field of fieldsetfields) {
-                if (this.exportFields.indexOf(field.field) == -1) this.availableFields.push(field.field);
+            let fields = this.metadata.getFieldSetFields(componentConfig.fieldset);
+            for (let field of fields) {
+                if (this.isExportable(field) && this.exportFields.indexOf(field.field) == -1) this.availableFields.push(field.field);
+            }
+        } else {
+            // get the default fields
+            let componentconfig = this.metadata.getComponentConfig('ObjectList', this.modellist.module);
+            let fields = this.metadata.getFieldSetFields(componentconfig.fieldset);
+            for (let field of fields) {
+                if (this.isExportable(field) && this.exportFields.indexOf(field.field) == -1) this.availableFields.push(field.field);
             }
         }
         this.sortAvailableFields();

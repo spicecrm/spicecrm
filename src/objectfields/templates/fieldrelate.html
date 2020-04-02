@@ -2,14 +2,14 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
     <div class="slds-grid slds-grid--vertical-align-center" >
         <system-icon *ngIf="displayicon" [module]="relateType" size="x-small" divClass="slds-align--absolute-center slds-p-right--xx-small"></system-icon>
-        <span modelPopOver [module]="relateType" [id]="model.data[relateIdField]" [enablelink]="link">{{value}}</span>
+        <span modelPopOver [module]="relateType" [id]="id" [enablelink]="link">{{value}}</span>
     </div>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="getFieldClass()">
     <div class="slds-combobox_container">
         <div class="slds-form-element slds-lookup">
             <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click " [ngClass]="{'slds-is-open': relateSearchOpen}" role="combobox">
-                <div *ngIf="model.data[relateIdField]" class="slds-form-element__control">
+                <div *ngIf="id" class="slds-form-element__control">
                     <div class="slds-pill_container">
                           <span class="slds-pill slds-size--1-of-1">
                             <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
@@ -24,13 +24,13 @@
                 </div>
                 <div *ngIf="!model.data[relateIdField]" class="slds-form-element__control slds-grid slds-box--border" [ngClass]="getFieldClass()">
                     <div class="slds-input-has-icon slds-input-has-icon--right slds-grow">
-                        <input #focus type="text" class="slds-lookup__search-input slds-input--bare" [(ngModel)]="relateSearchTerm" (blur)="closePopups()" (focus)="onFocus()" [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', relateType)" [autocomplete]="fieldid" role="combobox"/>
+                        <input #focus [disabled]="disabled" type="text" class="slds-lookup__search-input slds-input--bare" [(ngModel)]="relateSearchTerm" (blur)="closePopups()" (focus)="onFocus()" [placeholder]="placeholder" [autocomplete]="fieldid" role="combobox"/>
                         <button (click)="searchWithModal()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"><system-button-icon [icon]="'search'"></system-button-icon></button>
                     </div>
                 </div>
                 <div class="slds-dropdown slds-dropdown_fluid" role="listbox">
-                    <field-lookup-recent *ngIf="relateSearchTerm === '' && !fieldconfig.modulefilter" [module]="relateType" (selectedObject)="setRelated($event)"></field-lookup-recent>
-                    <field-lookup-search *ngIf="relateSearchTerm !== '' || fieldconfig.modulefilter" [module]="relateType" [modulefilter]="fieldconfig.modulefilter" [disableadd]="disableadd" (selectedObject)="setRelated($event)" (searchWithModal)="searchWithModal()" [searchterm]="relateSearchTerm"></field-lookup-search>
+                    <field-lookup-recent *ngIf="relateSearchTerm === '' && !fieldconfig.modulefilter && !relatedfilterrequired" [module]="relateType" (selectedObject)="setRelated($event)"></field-lookup-recent>
+                    <field-lookup-search *ngIf="relateSearchTerm !== '' || fieldconfig.modulefilter || relatedfilterrequired" [module]="relateType" [modulefilter]="fieldconfig.modulefilter" [relatefilter]="relateFilter" [disableadd]="disableadd" (selectedObject)="setRelated($event)" (searchWithModal)="searchWithModal()" [searchterm]="relateSearchTerm"></field-lookup-search>
                 </div>
             </div>
         </div>

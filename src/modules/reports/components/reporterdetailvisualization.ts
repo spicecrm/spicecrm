@@ -109,6 +109,10 @@ export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
      * ToDo: remove the hardcoded components and keep this more flexibile in line with the architecture we are having
      */
     private renderVisualization() {
+        // reset the view
+        this.chartComponent.forEach(componentRef => componentRef.destroy());
+        this.chartComponent = [];
+
         for (let visualization of this.vizData) {
             let visComponent = '';
             switch (visualization.plugin) {

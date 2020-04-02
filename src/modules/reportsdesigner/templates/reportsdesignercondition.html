@@ -1,7 +1,7 @@
 <div class="slds-grid slds-size--1-of-2 slds-grid--vertical-align-center">
     <div class="slds-form-element slds-grid slds-size--1-of-2">
         <label class="slds-form-element__label slds-grid slds-grid--vertical-align-center">
-            {{language.getLabel('LBL_NAME')}}
+            <system-label label="LBL_NAME"></system-label>
         </label>
         <div class="slds-form-element__control slds-grow">
             <input type="text" [ngModel]="whereCondition.name" [disabled]="true" class="slds-input">
@@ -9,12 +9,12 @@
     </div>
     <div class="slds-form-element slds-p-horizontal--xx-small slds-grid slds-grid--vertical-align-center slds-size--1-of-2">
         <label class="slds-form-element__label slds-grid slds-grid--vertical-align-center slds-m-left--xx-small">
-            {{language.getLabel('LBL_OPERATOR')}}
+            <system-label label="LBL_OPERATOR"></system-label>
         </label>
         <div class="slds-form-element__control slds-grow">
             <div class="slds-select_container">
                 <select class="slds-select" [(ngModel)]="whereCondition.operator" (change)="changeOperator()">
-                    <option value="ignore">{{language.getLabel('LBL_OP_IGNORE', 'KReports')}}</option>
+                    <option value="ignore"><system-label label="LBL_OP_IGNORE"></system-label></option>
                     <option *ngFor="let operator of getOperators(); trackBy: trackByFn" [value]="operator.value">{{operator.display}}</option>
                 </select>
             </div>
@@ -23,7 +23,7 @@
 </div>
 <div *ngIf="showValue" class="slds-size--1-of-2 slds-grid">
     <label class="slds-form-element__label slds-grid slds-grid--vertical-align-center slds-m-left--xx-small">
-        {{language.getLabel('LBL_VALUE')}}
+        <system-label label="LBL_VALUE"></system-label>
     </label>
     <div class="slds-grid slds-grow">
         <div [ngSwitch]="itemType" class="slds-grow">

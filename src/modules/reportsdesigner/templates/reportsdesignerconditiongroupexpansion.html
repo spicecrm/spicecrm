@@ -3,21 +3,21 @@
         <div class="slds-form-element__control">
             <div class="slds-grid">
                 <div class="slds-form-element slds-size--1-of-2">
-                    <label class="slds-form-element__label">{{language.getLabel('LBL_USER_EDITABLE')}}</label>
+                    <label class="slds-form-element__label"><system-label label="LBL_USER_EDITABLE"></system-label></label>
                     <div class="slds-form-element__control">
                         <div class="slds-select_container">
                             <select class="slds-select" [(ngModel)]="whereCondition.usereditable">
-                                <option value="yes">{{language.getLabel('LBL_YES')}}</option>
-                                <option value="no">{{language.getLabel('LBL_NO')}}</option>
-                                <option value="yfo">{{language.getLabel('LBL_VALUE_ONLY')}}</option>
-                                <option value="yo1">{{language.getLabel('LBL_REPORTS_ALLOW_EDIT_ON_OFF')}}</option>
-                                <option value="yo2">{{language.getLabel('LBL_REPORTS_ALLOW_EDIT_ON_ON')}}</option>
+                                <option value="yes"><system-label label="LBL_YES"></system-label></option>
+                                <option value="no"><system-label label="LBL_NO"></system-label></option>
+                                <option value="yfo"><system-label label="LBL_VALUE_ONLY"></system-label></option>
+                                <option value="yo1"><system-label label="LBL_REPORTS_ALLOW_EDIT_ON_OFF"></system-label></option>
+                                <option value="yo2"><system-label label="LBL_REPORTS_ALLOW_EDIT_ON_ON"></system-label></option>
                             </select>
                         </div>
                     </div>
                 </div>
                 <div class="slds-form-element slds-size--1-of-2">
-                    <label class="slds-form-element__label">{{language.getLabel('LBL_GROUPING')}}</label>
+                    <label class="slds-form-element__label"><system-label label="LBL_GROUPING"></system-label></label>
                     <div class="slds-form-element__control">
                         <input type="text" [(ngModel)]="whereCondition.grouping" class="slds-input" [disabled]="true">
                     </div>
@@ -25,13 +25,13 @@
             </div>
             <div class="slds-grid">
                 <div class="slds-form-element slds-size--1-of-2">
-                    <label class="slds-form-element__label">{{language.getLabel('LBL_SEQUENCE')}}</label>
+                    <label class="slds-form-element__label"><system-label label="LBL_SEQUENCE"></system-label></label>
                     <div class="slds-form-element__control">
                         <input type="text" [(ngModel)]="whereCondition.sequence" class="slds-input">
                     </div>
                 </div>
                 <div class="slds-form-element slds-size--1-of-2">
-                    <label class="slds-form-element__label">{{language.getLabel('LBL_CONTEXT')}}</label>
+                    <label class="slds-form-element__label"><system-label label="LBL_CONTEXT"></system-label></label>
                     <div class="slds-form-element__control">
                         <input type="text" [(ngModel)]="whereCondition.context" class="slds-input" [disabled]="contextUsed">
                     </div>
@@ -39,7 +39,7 @@
             </div>
             <div class="slds-grid">
                 <div class="slds-form-element slds-size--1-of-1">
-                    <label class="slds-form-element__label">{{language.getLabel('LBL_REFERENCE')}}</label>
+                    <label class="slds-form-element__label"><system-label label="LBL_REFERENCE"></system-label></label>
                     <div class="slds-form-element__control">
                         <input type="text" [(ngModel)]="whereCondition.reference" class="slds-input" [disabled]="referenceDisabled">
                     </div>

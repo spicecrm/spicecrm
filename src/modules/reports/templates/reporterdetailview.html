@@ -1,10 +1,10 @@
-<div #pageheader>
+<div #pageHeader>
     <reporter-detail-view-header [integrationParams]="integrationParams" [whereConditions]="whereConditions" (showFilters)="toggleFilters($event)"></reporter-detail-view-header>
 </div>
 <div *ngIf="hasVisualization" class="slds-size--1-of-1" [ngStyle]="visualizationStyle">
     <reporter-detail-visualization></reporter-detail-visualization>
 </div>
-<div #presentationcontainer tobottomnoscroll>
-    <div #presentationview></div>
+<div tobottomnoscroll>
+    <div #presentationContainer></div>
 </div>
-<reporter-filter-panel @displayfilter *ngIf="showFilters" class="slds-is-absolute" [ngStyle]="filterPanelStyle" [integrationparams]="integrationParams" (filterapplied)="filterapplied()"></reporter-filter-panel>
+<reporter-filter-panel @displayfilter *ngIf="showFilters" class="slds-is-absolute" [ngStyle]="filterPanelStyle" [integrationparams]="integrationParams" (filterapplied)="filterApplied()"></reporter-filter-panel>

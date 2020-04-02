@@ -6,7 +6,7 @@
     <div class="slds-dropdown slds-dropdown--left slds-dropdown--medium">
         <ul class="slds-dropdown__list" role="menu">
             <li class="slds-dropdown__header slds-has-divider--bottom" role="separator">
-                <span class="slds-text-title--caps">{{language.getLabel('LBL_LIST_TYPES')}}</span>
+                <span class="slds-text-title--caps"><system-label label="LBL_LIST_TYPES"></system-label></span>
             </li>
             <li class="slds-dropdown__item" [ngClass]="{'slds-is-selected': modellist.listtype == 'all'}" role="presentation" (click)="setListType('all')">
                 <a href="javascript:void(0);" role="menuitemcheckbox">

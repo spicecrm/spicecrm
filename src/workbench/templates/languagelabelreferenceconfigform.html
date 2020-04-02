@@ -11,7 +11,7 @@
         <li class="slds-list__item">load default language labels and translations into tables</li>
     </ol>
     <div class="slds-form-element">
-        <label><abbr class="slds-required">*</abbr>{{language.getLabel('LBL_LANGUAGES')}}:</label>
+        <label><abbr class="slds-required">*</abbr><system-label label="LBL_LANGUAGES"></system-label>:</label>
         <!--select class="slds-select" [(ngModel)]="language_names" [disabled]="is_loading_availabilities" multiple>
             <option *ngFor="let lang of available_languages" [value]="lang.language_code">{{lang.language_name}}</option>
         </select-->
@@ -22,7 +22,7 @@
         </div>
     </div>
     <div class="slds-form-element">
-        <label>{{language.getLabel('LBL_VERSIONS')}}:</label>
+        <label><system-label label="LBL_VERSIONS"></system-label>:</label>
         <!--select class="slds-select" [(ngModel)]="version_names" [disabled]="is_loading_availabilities">
             <option value="*">*</option>
             <option *ngFor="let vers of available_versions" [value]="vers.version">{{vers.version}}</option>
@@ -34,11 +34,11 @@
         </div>
     </div>
     <div *ngIf="pull_result" class="slds-form-element">
-        <label>{{language.getLabel('LBL_RESULT')}}:</label>
+        <label><system-label label="LBL_RESULT"></system-label>:</label>
         <pre>{{pull_result}}</pre>
     </div>
     <div class="slds-form-element slds-p-top--small">
         <system-spinner *ngIf="is_pulling"></system-spinner>
-        <button *ngIf="!is_pulling" class="slds-button slds-button--brand" [disabled]="!language_names" (click)="submit()">{{language.getLabel('LBL_SUBMIT')}}</button>
+        <button *ngIf="!is_pulling" class="slds-button slds-button--brand" [disabled]="!language_names" (click)="submit()"><system-label label="LBL_SUBMIT"></system-label></button>
     </div>
 </div>

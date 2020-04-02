@@ -4,12 +4,12 @@
         <th class="slds-cell-shrink"></th>
         <th scope="col" class="slds-resizable">
             <div class="slds-truncate" [title]="language.getLabel('LBL_NAME')">
-                {{language.getLabel('LBL_NAME')}}
+                <system-label label="LBL_NAME"></system-label>
             </div>
         </th>
         <th scope="col" class="slds-resizable">
             <div class="slds-truncate" [title]="language.getLabel('LBL_DISPLAY')">
-                {{language.getLabel('LBL_DISPLAY')}}
+                <system-label label="LBL_DISPLAY"></system-label>
             </div>
         </th>
         <th scope="col" class="slds-cell-shrink">
@@ -19,27 +19,27 @@
         </th>
         <th scope="col" class="slds-resizable">
             <div class="slds-truncate" [title]="language.getLabel('LBL_SORT')">
-                {{language.getLabel('LBL_SORT')}}
+                <system-label label="LBL_SORT"></system-label>
             </div>
         </th>
         <th scope="col" class="slds-resizable">
             <div class="slds-truncate" [title]="language.getLabel('LBL_WIDTH')">
-                {{language.getLabel('LBL_WIDTH')}}
+                <system-label label="LBL_WIDTH"></system-label>
             </div>
         </th>
         <th scope="col" class="slds-resizable">
             <div class="slds-truncate" [title]="language.getLabel('LBL_OVERRIDE_TYPE')">
-                {{language.getLabel('LBL_OVERRIDE_TYPE')}}
+                <system-label label="LBL_OVERRIDE_TYPE"></system-label>
             </div>
         </th>
         <th scope="col" class="slds-resizable">
             <div class="slds-truncate" [title]="language.getLabel('LBL_OVERRIDE_ALIGNMENT')">
-                {{language.getLabel('LBL_OVERRIDE_ALIGNMENT')}}
+                <system-label label="LBL_OVERRIDE_ALIGNMENT"></system-label>
             </div>
         </th>
         <th scope="col" class="slds-resizable">
             <div class="slds-truncate" [title]="language.getLabel('LBL_COMPONENT')">
-                {{language.getLabel('LBL_COMPONENT')}}
+                <system-label label="LBL_COMPONENT"></system-label>
             </div>
         </th>
     </tr>
@@ -52,7 +52,7 @@
                 </td>
                 <td>
                     <div class="slds-truncate">
-                        {{language.getLabel(listField.name)}}
+                        <system-label [label]="listField.name"></system-label>
                     </div>
                 </td>
                 <td>
@@ -60,9 +60,9 @@
                         <div class="slds-form-element__control">
                             <div class="slds-select_container">
                                 <select class="slds-select" [(ngModel)]="listField.display">
-                                    <option value="yes">{{language.getLabel('LBL_YES')}}</option>
-                                    <option value="no">{{language.getLabel('LBL_NO')}}</option>
-                                    <option value="hid">{{language.getLabel('LBL_HIDDEN')}}</option>
+                                    <option value="yes"><system-label label="LBL_YES"></system-label></option>
+                                    <option value="no"><system-label label="LBL_NO"></system-label></option>
+                                    <option value="hid"><system-label label="LBL_HIDDEN"></system-label></option>
                                 </select>
                             </div>
                         </div>
@@ -79,9 +79,9 @@
                             <div class="slds-select_container">
                                 <select class="slds-select" [(ngModel)]="listField.sort">
                                     <option></option>
-                                    <option value="asc">{{language.getLabel('LBL_ASCENDING')}}</option>
-                                    <option value="desc">{{language.getLabel('LBL_DESCENDING')}}</option>
-                                    <option value="sortable">{{language.getLabel('LBL_SORTABLE')}}</option>
+                                    <option value="asc"><system-label label="LBL_ASCENDING"></system-label></option>
+                                    <option value="desc"><system-label label="LBL_DESCENDING"></system-label></option>
+                                    <option value="sortable"><system-label label="LBL_SORTABLE"></system-label></option>
                                 </select>
                             </div>
                         </div>
@@ -99,18 +99,18 @@
                         <div class="slds-form-element__control">
                             <div class="slds-select_container">
                                 <select class="slds-select" [(ngModel)]="listField.overridetype">
-                                    <option value="none">{{language.getLabel('LBL_NONE')}}</option>
-                                    <option value="currency">{{language.getLabel('LBL_CURRENCY')}}</option>
-                                    <option value="currencyint">{{language.getLabel('LBL_CURRENCY_INTEGER')}}</option>
-                                    <option value="percentage">{{language.getLabel('LBL_PERCENTAGE')}}</option>
-                                    <option value="number">{{language.getLabel('LBL_NUMBER')}}</option>
-                                    <option value="int">{{language.getLabel('LBL_INTEGER')}}</option>
-                                    <option value="float">{{language.getLabel('LBL_FLOAT')}}</option>
-                                    <option value="date">{{language.getLabel('LBL_DATE')}}</option>
-                                    <option value="datetime">{{language.getLabel('LBL_DATE_TIME')}}</option>
-                                    <option value="datetutc">{{language.getLabel('LBL_DATE_TO_UTC')}}</option>
-                                    <option value="bool">{{language.getLabel('LBL_BOOLEAN')}}</option>
-                                    <option value="text">{{language.getLabel('LBL_TEXT')}}</option>
+                                    <option value="none"><system-label label="LBL_NONE"></system-label></option>
+                                    <option value="currency"><system-label label="LBL_CURRENCY"></system-label></option>
+                                    <option value="currencyint"><system-label label="LBL_CURRENCY_INTEGER"></system-label></option>
+                                    <option value="percentage"><system-label label="LBL_PERCENTAGE"></system-label></option>
+                                    <option value="number"><system-label label="LBL_NUMBER"></system-label></option>
+                                    <option value="int"><system-label label="LBL_INTEGER"></system-label></option>
+                                    <option value="float"><system-label label="LBL_FLOAT"></system-label></option>
+                                    <option value="date"><system-label label="LBL_DATE"></system-label></option>
+                                    <option value="datetime"><system-label label="LBL_DATE_TIME"></system-label></option>
+                                    <option value="datetutc"><system-label label="LBL_DATE_TO_UTC"></system-label></option>
+                                    <option value="bool"><system-label label="LBL_BOOLEAN"></system-label></option>
+                                    <option value="text"><system-label label="LBL_TEXT"></system-label></option>
                                 </select>
                             </div>
                         </div>
@@ -121,9 +121,9 @@
                         <div class="slds-form-element__control">
                             <div class="slds-select_container">
                                 <select class="slds-select" [(ngModel)]="listField.overridealignment">
-                                    <option value="left">{{language.getLabel('LBL_LEFT_ALIGN')}}</option>
-                                    <option value="right">{{language.getLabel('LBL_RIGHT_ALIGN')}}</option>
-                                    <option value="center">{{language.getLabel('LBL_CENTER_ALIGN')}}</option>
+                                    <option value="left"><system-label label="LBL_LEFT_ALIGN"></system-label></option>
+                                    <option value="right"><system-label label="LBL_RIGHT_ALIGN"></system-label></option>
+                                    <option value="center"><system-label label="LBL_CENTER_ALIGN"></system-label></option>
                                 </select>
                             </div>
                         </div>

@@ -6,12 +6,12 @@
             <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" (click)="cancelDialog()">
                 <system-button-icon [icon]="'close'" [size]="'large'" [inverse]="true"></system-button-icon>
             </button>
-            <h2 class="slds-text-heading--medium">{{language.getLabel('LBL_EDIT')}}</h2>
+            <h2 class="slds-text-heading--medium"><system-label label="LBL_EDIT"></system-label></h2>
         </div>
         <div class="slds-modal__content slds-theme--default slds-p-around--medium slds-p-bottom--xx-small">
             <div class="slds-grid">
                 <div class="slds-form-element slds-size--3-of-4">
-                    <label><abbr class="slds-required">*</abbr>{{language.getLabel('LBL_NAME')}}:</label>
+                    <label><abbr class="slds-required">*</abbr><system-label label="LBL_NAME"></system-label>:</label>
                     <input type="text" class="slds-input" [(ngModel)]="name" placeholder="only A-Z, 0-9 and _ are allowed!">
                 </div>
                 <div class="slds-form-element slds-size--1-of-4 slds-p-around--small">
@@ -34,7 +34,7 @@
                 </div>
             </div>
             <div>
-                <h2>{{language.getLabel('LBL_TRANSLATIONS')}}:</h2>
+                <h2><system-label label="LBL_TRANSLATIONS"></system-label>:</h2>
                 <article *ngFor="let trans of translations">
                     <div class="slds-card slds-m-bottom--small">
                         <div class="slds-card__header">
@@ -64,25 +64,25 @@
                             </select>
                         </div>
                     </div>
-                    <button class="slds-button slds-button--neutral" title="{{language.getLabel('LBL_ADD_TRANSLATION')}}..." (click)="addTranslation(add_translation_language.value)">{{language.getLabel('LBL_ADD')}}</button>
+                    <button class="slds-button slds-button--neutral" title="{{language.getLabel('LBL_ADD_TRANSLATION')}}..." (click)="addTranslation(add_translation_language.value)"><system-label label="LBL_ADD"></system-label></button>
                 </div>
             </div>
         </div>
         <div class="slds-modal__footer">
             <div class="slds-col">
-                <button class="slds-button slds-button--neutral" (click)="cancelDialog()">{{language.getLabel('LBL_CANCEL')}}</button>
-                <button class="slds-button slds-button--brand" [disabled]="!validate()" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+                <button class="slds-button slds-button--neutral" (click)="cancelDialog()"><system-label label="LBL_CANCEL"></system-label></button>
+                <button class="slds-button slds-button--brand" [disabled]="!validate()" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
             </div>
         </div>
     </div>
 </div-->
 
 <system-modal size="large">
-    <system-modal-header (close)="cancelDialog()">{{language.getLabel('LBL_EDIT')}}</system-modal-header>
+    <system-modal-header (close)="cancelDialog()"><system-label label="LBL_EDIT"></system-label></system-modal-header>
     <system-modal-content>
         <div class="slds-grid">
             <div class="slds-form-element slds-size--3-of-4">
-                <label><abbr class="slds-required">*</abbr>{{language.getLabel('LBL_NAME')}}:</label>
+                <label><abbr class="slds-required">*</abbr><system-label label="LBL_NAME"></system-label>:</label>
                 <input type="text" class="slds-input" [(ngModel)]="name" placeholder="only A-Z, 0-9 and _ are allowed!">
             </div>
             <div class="slds-form-element slds-size--1-of-4 slds-p-around--small">
@@ -105,7 +105,7 @@
             </div>
         </div>
         <div>
-            <h2>{{language.getLabel('LBL_TRANSLATIONS')}}:</h2>
+            <h2><system-label label="LBL_TRANSLATIONS"></system-label>:</h2>
             <article *ngFor="let trans of translations">
                 <div class="slds-card slds-m-bottom--small">
                     <div class="slds-card__header">
@@ -135,12 +135,12 @@
                         </select>
                     </div>
                 </div>
-                <button class="slds-button slds-button--neutral" title="{{language.getLabel('LBL_ADD_TRANSLATION')}}..." (click)="addTranslation(add_translation_language.value)">{{language.getLabel('LBL_ADD')}}</button>
+                <button class="slds-button slds-button--neutral" title="{{language.getLabel('LBL_ADD_TRANSLATION')}}..." (click)="addTranslation(add_translation_language.value)"><system-label label="LBL_ADD"></system-label></button>
             </div>
         </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="cancelDialog()">{{language.getLabel('LBL_CANCEL')}}</button>
-        <button class="slds-button slds-button--brand" [disabled]="!validate()" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="cancelDialog()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" [disabled]="!validate()" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
     </system-modal-footer>
 </system-modal>

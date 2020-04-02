@@ -3,12 +3,12 @@
         <header class="slds-media slds-media--center slds-has-flexi-truncate">
             <div class="slds-media__body slds-truncate">
                 <h2>
-                    <span class="slds-text-heading--small">{{language.getLabel('LBL_MAP_VIEW')}} ({{surroundingObjects.length}})</span>
+                    <span class="slds-text-heading--small"><system-label label="LBL_MAP_VIEW"></system-label> ({{surroundingObjects.length}})</span>
                 </h2>
             </div>
         </header>
         <div class="slds-button-group" role="group">
-            <button class="slds-button slds-button--neutral" (click)="reCenter()">{{language.getLabel('LBL_RECENTER')}}</button>
+            <button class="slds-button slds-button--neutral" (click)="reCenter()"><system-label label="LBL_RECENTER"></system-label></button>
             <!--button class="slds-button slds-button--neutral" (click)="getSurrounding()">get Surrounding</button-->
         </div>
     </div>
@@ -20,7 +20,7 @@
                 <tr class="slds-text-title--caps">
                     <th *ngFor="let item of getListFields()" class="slds-is-sortable" scope="col">
                         <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
-                            <span class="slds-truncate">{{language.getFieldDisplayName(module, item.field, item.fieldconfig)}}</span>
+                            <span class="slds-truncate"><system-label-fieldname [module]="model.module" [field]="item.field" [fieldconfig]="item.fieldconfig"></system-label-fieldname></span>
                         </a>
                     </th>
                     <th class="slds-cell-shrink" scope="col"></th>

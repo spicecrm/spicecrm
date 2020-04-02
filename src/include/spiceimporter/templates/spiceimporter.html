@@ -7,10 +7,10 @@
                     <nav role="navigation" aria-label="Breadcrumbs">
                         <ol class="slds-breadcrumb slds-list--horizontal">
                             <li class="slds-breadcrumb__item slds-text-title--caps">
-                                <a href="javascript:void(0);" (click)="gotoModule()">{{language.getModuleName(model.module)}}</a>
+                                <a href="javascript:void(0);" (click)="gotoModule()"><system-label-modulename [module]="model.module"></system-label-modulename></a>
                             </li>
                             <li class="slds-breadcrumb__item slds-text-title--caps">
-                                <a href="javascript:void(0);">{{language.getLabel('LBL_IMPORT')}}</a>
+                                <a href="javascript:void(0);"><system-label label="LBL_IMPORT"></system-label></a>
                             </li>
                             <li *ngIf="currentImportStep >= 1" class="slds-breadcrumb__item slds-text-title--caps slds-p-left--x-small">
                                 {{ spiceImporter.importAction == 'new' ? language.getLabel('LBL_LOAD_NEW_RECORDS'): language.getLabel('LBL_UPDATE_EXISTING_RECORDS')}}
@@ -29,7 +29,7 @@
 <div class="slds-grid slds-grid--align-spread slds-p-around--small slds-theme--shade slds-border--bottom">
     <button class="slds-button slds-button--neutral" [disabled]="showExit()" (click)="prevStep()"
             [ngClass]="{'slds-hide': !currentImportStep}">
-        {{language.getLabel('LBL_PREVIOUS')}}
+        <system-label label="LBL_PREVIOUS"></system-label>
     </button>
     <div class="slds-progress slds-progress--shade">
         <ol class="slds-progress__list">
@@ -46,7 +46,7 @@
         </div>
     </div>
     <button *ngIf="showNext()" class="slds-button slds-button--neutral" (click)="nextStep()">
-        {{language.getLabel('LBL_NEXT')}}
+        <system-label label="LBL_NEXT"></system-label>
     </button>
     <button *ngIf="showImport()" [disabled]="processing"
             class="slds-button slds-button--brand slds-grid slds-grid_vertical-align-center"
@@ -65,7 +65,7 @@
         <system-spinner *ngIf="processing" inverse="true" [size]="16"></system-spinner>
     </button>
     <button *ngIf="showExit()" class="slds-button slds-button--brand" (click)="nextStep()">
-        {{language.getLabel('LBL_CLOSE')}}
+        <system-label label="LBL_CLOSE"></system-label>
     </button>
 
 </div>
