@@ -74,13 +74,13 @@ export class ObjectActionMailModal implements OnInit {
      * check if the send button is disabled
      */
     get isDisabled() {
-        let recipientAddresses = this.model.getFieldValue('recipient_addresses');
+        let to_addrs = this.model.getFieldValue('to_addrs');
         let mailbox = this.model.getFieldValue('mailbox_id');
         let name = this.model.getFieldValue('name');
         let body = this.model.getFieldValue('body');
-        let recipientTo = recipientAddresses ? recipientAddresses.find(re => re.address_type == 'to') : undefined;
+        let recipientTo = to_addrs ? to_addrs.find(re => re.address_type == 'to') : undefined;
 
-        return (!name || !body || !mailbox || !recipientAddresses || !recipientTo) ? true : this.sending;
+        return (!name || !body || !mailbox || !to_addrs || !recipientTo) ? true : this.sending;
     }
 
     /**
