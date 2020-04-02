@@ -1,7 +1,7 @@
 <div #mainContainer style="width: 100%" class="slds-grid slds-grid--vertical slds-theme--default slds-height_full">
     <div>
         <div class="slds-grid slds-p-bottom--x-small" [class.slds-p-around--x-small]="isFullScreenOn">
-            <div class="slds-radio_button-group slds-m-right--x-small">
+            <div *ngIf="showUseMapOptions" class="slds-radio_button-group slds-m-right--x-small">
                 <span class="slds-button slds-radio_button" system-title="LBL_SEARCH">
                     <input type="radio" name="useMapForOption" value="search" [(ngModel)]="useMapFor" [disabled]="isLoadingDirection" id="spice-google-maps-record-use-map-for-search">
                     <label class="slds-radio_button__label slds-height_full" for="spice-google-maps-record-use-map-for-search">
