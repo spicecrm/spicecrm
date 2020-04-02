@@ -5,7 +5,7 @@ import {
     OnDestroy,
     ElementRef,
     Renderer2,
-    Input
+    Input, ChangeDetectorRef
 } from '@angular/core';
 
 @Directive({
@@ -18,6 +18,7 @@ export class DropdownTriggerSimpleDirective implements OnDestroy {
 
     constructor(
         private renderer: Renderer2,
+        private cdRef: ChangeDetectorRef,
         private elementRef: ElementRef
     ) {
 
@@ -42,6 +43,7 @@ export class DropdownTriggerSimpleDirective implements OnDestroy {
     private onClick(event): void {
         if (!this.elementRef.nativeElement.contains(event.target)) {
             this.dropDownOpen = false;
+            this.cdRef.detectChanges();
             this.clickListener();
         }
     }
