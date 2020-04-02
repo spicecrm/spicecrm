@@ -19,6 +19,17 @@ export class ReporterDetailViewEditButton {
      * navigate to reports designer
      */
     private execute() {
+        if (this.disabled) return;
         this.router.navigate(['/module/KReports/designer/' + this.model.id]);
+    }
+
+    /**
+     * set to dsiabled when we are not allowed to edit or we are editing or saving already
+     */
+    get disabled() {
+        if (this.model.data.acl && !this.model.checkAccess('edit')) {
+            return true;
+        }
+        return this.model.isEditing || this.model.isSaving;
     }
 }

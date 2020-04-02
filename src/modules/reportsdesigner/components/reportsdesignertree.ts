@@ -87,7 +87,7 @@ export class ReportsDesignerTree {
         return !this.filterKey ? reportFields : reportFields
             .filter(nodeFiled => {
                 return nodeFiled.name.toLowerCase().includes(this.filterKey.toLowerCase()) ||
-                    (nodeFiled.label && nodeFiled.label.toLowerCase().includes(this.filterKey.toLowerCase()));
+                    (nodeFiled.label && this.language.getLabel(nodeFiled.label).toLowerCase().includes(this.filterKey.toLowerCase()));
             });
     }
 
