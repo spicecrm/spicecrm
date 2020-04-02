@@ -121,6 +121,7 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
      */
     public ngOnDestroy() {
         this.subscription.unsubscribe();
+        this.modelList.searchGeo = undefined;
     }
 
     /**
@@ -153,8 +154,8 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
 
         if (!this.componentconfig) this.componentconfig = {};
 
-        if (!(!!this.componentconfig.defaultRadius) || isNaN(this.componentconfig.defaultRadius)) {
-            this.componentconfig.defaultRadius = 5;
+        if (!(!!this.componentconfig.radiusPercentage) || isNaN(this.componentconfig.radiusPercentage)) {
+            this.componentconfig.radiusPercentage = 80;
         }
         if (!this.componentconfig.directionTravelMode || ['DRIVING', 'WALKING', 'TRANSIT', 'BICYCLING'].indexOf(this.componentconfig.directionTravelMode) == -1) {
             this.componentconfig.directionTravelMode = 'DRIVING';
@@ -314,7 +315,8 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
                 center: null,
                 draggable: true,
                 editable: true,
-                radius: this.componentconfig.defaultRadius,
+                radius: 5,
+                radiusPercentage: this.componentconfig.radiusPercentage,
                 color: this.componentconfig.circleColor
             };
             this.startRadiusEditing();
