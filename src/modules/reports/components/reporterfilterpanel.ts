@@ -11,7 +11,7 @@ import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {session} from "../../../services/session.service";
 
-const ANIMATIONS = [
+const REPORTERFILTERPANELANIMATIONS = [
     trigger('animatepopover', [
         transition(':enter', [
             style({opacity: 0}),
@@ -30,7 +30,7 @@ const ANIMATIONS = [
 @Component({
     selector: 'reporter-filter-panel',
     templateUrl: './src/modules/reports/templates/reporterfilterpanel.html',
-    animations: ANIMATIONS
+    animations: REPORTERFILTERPANELANIMATIONS
 })
 export class ReporterFilterPanel {
     @ViewChild('popover', {read: ViewContainerRef, static: true}) private popover: ViewContainerRef;
