@@ -130,13 +130,13 @@ export class EmailReplyModal implements OnInit {
      * check if the send button is disabled
      */
     get isDisabled() {
-        let recipientAddresses = this.model.getFieldValue('recipient_addresses');
+        let to_addrs = this.model.getFieldValue('to_addrs');
         let mailbox = this.model.getFieldValue('mailbox_id');
         let name = this.model.getFieldValue('name');
         let body = this.model.getFieldValue('body');
-        let recipientTo = recipientAddresses ? recipientAddresses.find(re => re.address_type == 'to') : undefined;
+        let recipientTo = to_addrs ? to_addrs.find(re => re.address_type == 'to') : undefined;
 
-        return (!name || !body || !mailbox || !recipientAddresses || !recipientTo) ? true : this.sending;
+        return (!name || !body || !mailbox || !to_addrs || !recipientTo) ? true : this.sending;
     }
 
     /**
@@ -158,6 +158,7 @@ export class EmailReplyModal implements OnInit {
             this.model.setField('to_be_sent', '1');
             this.model.setField('from_addr', this.model.data.from_addr_name);
             this.model.setField('to_addrs', this.model.data.to_addrs_names);
+            this.model.setField('cc_addrs', this.model.data.cc_addrs_names);
 
             this.model.save().subscribe(
                 success => {
