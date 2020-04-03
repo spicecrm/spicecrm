@@ -30,7 +30,7 @@
                         </td>
                     </tr>
                     <ng-container *ngIf="groupByValue.expanded">
-                        <tr *ngFor="let record of getRecords(groupByValue.value)"  style="vertical-align: top;">
+                        <tr *ngFor="let record of getGroupedRecords(groupByValue.value)"  style="vertical-align: top;">
                             <td scope="row" *ngFor="let field of getFields()" [width]="getFieldWidth(field.fieldid)">
                                 <reporter-field-container [field]="field" [record]="record"></reporter-field-container>
                             </td>
