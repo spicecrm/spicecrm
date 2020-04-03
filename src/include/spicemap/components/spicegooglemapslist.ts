@@ -1,7 +1,15 @@
 /**
  * @module ModuleSpiceMap
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, IterableDiffers, OnDestroy, OnInit} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    IterableDiffers,
+    OnDestroy,
+    OnInit
+} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {metadata} from "../../../services/metadata.service";
 import {modellist} from "../../../services/modellist.service";
@@ -36,7 +44,7 @@ const ANIMATIONS = [
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: ANIMATIONS
 })
-export class SpiceGoogleMapsList implements OnInit, OnDestroy {
+export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
 
     /**
      * save the editing radius value to handle radius changes
@@ -114,6 +122,13 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
         this.loadComponentConfigs();
         this.subscribeToModelListChanges();
         this.subscribeToMapFocus();
+    }
+
+    /**
+     * set map option changed to rebuild circle
+     */
+    public ngAfterViewInit(): void {
+        this.setMapOptionChanged('circle');
     }
 
     /**

@@ -2,6 +2,7 @@
  * @module ModuleSpiceMap
  */
 import {
+    AfterViewInit,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
@@ -36,7 +37,7 @@ declare let _;
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [modellist]
 })
-export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit {
+export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit, AfterViewInit {
     /**
      * show/hide use map options and set the default use map for value
      * @param options
@@ -77,6 +78,13 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
      * to show/hide option buttons on the map
      */
     private showUseMapOptions: boolean = true;
+    /**
+     * to prevent duplicated names ids in dom tree
+     */
+    private inputRadioNameIds: {
+        useMapFor: string,
+        directionStartType: string
+    };
 
     constructor(
         public language: language,
@@ -121,12 +129,13 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
         if (this.isLoadingDirection) return;
 
         this._useMapFor = value;
+
         this.directionStartType = undefined;
         if (value == 'search') {
             this.setFirstMapOptionsChanged();
             this.directionResult = undefined;
-            this.setCenterFromModel();
             this.setRecords();
+            this.setCenterFromModel();
         } else {
             this.records = [{
                 id: this.model.id,
@@ -215,11 +224,30 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
      * set the mapOption.center from the record
      */
     public ngOnInit() {
+        this.generateInputRadioIds();
         this.initializeModelList();
         this.setComponentName();
         super.ngOnInit();
         this.setDistanceUnitSystemFromPreferences();
         this.setCenterFromModel();
+    }
+
+    /**
+     * set map option changed to rebuild circle
+     */
+    public ngAfterViewInit(): void {
+        this.setMapOptionChanged('circle');
+    }
+
+    /**
+     * generate Input radio Ids
+     */
+    private generateInputRadioIds() {
+
+        this.inputRadioNameIds = {
+            useMapFor: 'useMapFor' + this.model.generateGuid(),
+            directionStartType: 'directionStartType' + this.model.generateGuid()
+        };
     }
 
     /**
@@ -314,7 +342,8 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
                 lng: +this.model.getField(this.lngName),
                 lat: +this.model.getField(this.latName)
             },
-            radius: this.componentconfig.radiusPercentage,
+            radius: undefined,
+            radiusPercentage: this.componentconfig.radiusPercentage,
             color: this.componentconfig.circleColor,
             editable: true
         };
@@ -323,7 +352,6 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
         } else {
             this.setMapOptionChanged('circle');
         }
-        this.onRadiusChange(this.componentconfig.radiusPercentage);
     }
 
     /**
@@ -348,6 +376,7 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
      * @param details the details on the address
      */
     private defineMapRouteFromSearchAddress(details) {
+
         if (this.directionStartType != 'address') return;
 
         this.isLoadingDirection = true;

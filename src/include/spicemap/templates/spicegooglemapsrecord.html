@@ -3,16 +3,16 @@
         <div class="slds-grid slds-p-bottom--x-small" [class.slds-p-around--x-small]="isFullScreenOn">
             <div *ngIf="showUseMapOptions" class="slds-radio_button-group slds-m-right--x-small">
                 <span class="slds-button slds-radio_button" system-title="LBL_SEARCH">
-                    <input type="radio" name="useMapForOption" value="search" [(ngModel)]="useMapFor" [disabled]="isLoadingDirection" id="spice-google-maps-record-use-map-for-search">
-                    <label class="slds-radio_button__label slds-height_full" for="spice-google-maps-record-use-map-for-search">
+                    <input type="radio" [(ngModel)]="useMapFor" value="search" [disabled]="isLoadingDirection" [name]="inputRadioNameIds.useMapFor" [id]="inputRadioNameIds.useMapFor + '-search'">
+                    <label class="slds-radio_button__label slds-height_full" [for]="inputRadioNameIds.useMapFor + '-search'">
                         <span class="slds-radio_faux" style="padding: 0 .5rem;">
                             <system-utility-icon icon="search" size="x-small" [colorclass]="useMapFor == 'search' ? ' ' : 'slds-icon-text-default'"></system-utility-icon>
                         </span>
                     </label>
                 </span>
                 <span class="slds-button slds-radio_button" system-title="LBL_DIRECTION">
-                    <input type="radio" name="useMapForOption" value="direction" [(ngModel)]="useMapFor" id="spice-google-maps-record-use-map-for-direction">
-                    <label class="slds-radio_button__label slds-height_full" for="spice-google-maps-record-use-map-for-direction">
+                    <input type="radio" [(ngModel)]="useMapFor" value="direction" [name]="inputRadioNameIds.useMapFor" [id]="inputRadioNameIds.useMapFor + '-direction'">
+                    <label class="slds-radio_button__label slds-height_full" [for]="inputRadioNameIds.useMapFor + '-direction'">
                         <span class="slds-radio_faux" style="padding: 0 .5rem;">
                             <system-utility-icon icon="travel_and_places" size="x-small" [colorclass]="useMapFor == 'direction' ? ' ' : 'slds-icon-text-default'"></system-utility-icon>
                         </span>
@@ -34,24 +34,24 @@
                 <div class="slds-grid slds-grow slds-grid--vertical-align-center">
                     <div class="slds-radio_button-group slds-m-right--x-small">
                     <span class="slds-button slds-radio_button">
-                        <input type="radio" value="myLocation" [(ngModel)]="directionStartType" [disabled]="isLoadingDirection" name="directionStartTypeOption" id="spice-google-maps-record-direction-start-type-my-location">
-                        <label class="slds-radio_button__label slds-height_full" for="spice-google-maps-record-direction-start-type-my-location">
+                        <input type="radio" value="myLocation" [(ngModel)]="directionStartType" [disabled]="isLoadingDirection" [name]="inputRadioNameIds.directionStartType" [id]="inputRadioNameIds.directionStartType + '-my-location'">
+                        <label class="slds-radio_button__label slds-height_full" [for]="inputRadioNameIds.directionStartType + '-my-location'">
                             <span class="slds-radio_faux">
                                 <system-label label="LBL_MY_LOCATION"></system-label>
                             </span>
                         </label>
                     </span>
                         <span class="slds-button slds-radio_button">
-                        <input type="radio" value="office" [(ngModel)]="directionStartType" [disabled]="isLoadingDirection" name="directionStartTypeOption" id="spice-google-maps-record-direction-start-type-office">
-                        <label class="slds-radio_button__label slds-height_full" for="spice-google-maps-record-direction-start-type-office">
+                        <input type="radio" value="office" [(ngModel)]="directionStartType" [disabled]="isLoadingDirection" [name]="inputRadioNameIds.directionStartType" [id]="inputRadioNameIds.directionStartType + '-office'">
+                        <label class="slds-radio_button__label slds-height_full" [for]="inputRadioNameIds.directionStartType + '-office'">
                             <span class="slds-radio_faux">
                                 <system-label label="LBL_OFFICE"></system-label>
                             </span>
                         </label>
                     </span>
                         <span class="slds-button slds-radio_button">
-                        <input type="radio" value="address" [(ngModel)]="directionStartType" [disabled]="isLoadingDirection" name="directionStartTypeOption" id="spice-google-maps-record-direction-start-type-address">
-                        <label class="slds-radio_button__label slds-height_full" for="spice-google-maps-record-direction-start-type-address">
+                        <input type="radio" value="address" [(ngModel)]="directionStartType" [disabled]="isLoadingDirection" [name]="inputRadioNameIds.directionStartType" [id]="inputRadioNameIds.directionStartType + '-address'">
+                        <label class="slds-radio_button__label slds-height_full" [for]="inputRadioNameIds.directionStartType + '-address'">
                             <span class="slds-radio_faux">
                                 <system-label label="LBL_ADDRESS"></system-label>
                             </span>
