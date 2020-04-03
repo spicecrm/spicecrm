@@ -1,0 +1,3 @@
+<div class="slds-radio_button-group slds-m-right--x-small">
+    <system-input-radio-button *ngFor="let inputOption of inputOptions" [(ngModel)]="modelValue" [disabled]="disabled || inputOption.disabled" [inputOption]="inputOption" class="slds-button slds-radio_button" style="display: flex"></system-input-radio-button>
+</div>
