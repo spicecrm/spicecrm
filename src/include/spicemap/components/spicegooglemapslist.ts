@@ -227,6 +227,7 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
     public setMapOptionChanged(property: string) {
         this.mapOptions.changed = {[property]: true};
         this.mapOptions = {...this.mapOptions};
+        this.cdRef.detectChanges();
     }
 
     /**
@@ -315,11 +316,11 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
                 center: null,
                 draggable: true,
                 editable: true,
-                radius: 5,
+                radius: null,
                 radiusPercentage: this.componentconfig.radiusPercentage,
                 color: this.componentconfig.circleColor
             };
-            this.startRadiusEditing();
+            this.startRadiusEditing(true);
         }
         this.setMapOptionChanged('circle');
     }
@@ -327,8 +328,14 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
     /**
      * set editing radius to true
      */
-    private startRadiusEditing() {
+    private startRadiusEditing(silent?: boolean) {
         this.editingRadius = true;
+        this.mapOptions.circle.editable = true;
+        this.mapOptions.circle.draggable = true;
+
+        if (!silent) {
+            this.setMapOptionChanged('circleEditable');
+        }
     }
 
     /**
@@ -336,13 +343,17 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
      */
     private cancelEditingRadius() {
         this.editingRadius = false;
+        this.mapOptions.circle.editable = false;
+        this.mapOptions.circle.draggable = false;
+
+        this.setMapOptionChanged('circleEditable');
     }
 
     /**
      * call confirm circle changes and stop editing radius
      */
     private confirmRadiusInput() {
-        this.editingRadius = false;
+        this.cancelEditingRadius();
         this.setMapOptionChanged('circleRadius');
     }
 
