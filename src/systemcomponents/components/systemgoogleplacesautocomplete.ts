@@ -1,7 +1,7 @@
 /**
  * @module SystemComponents
  */
-import {Component, Output, EventEmitter, ElementRef, Renderer2, Input} from "@angular/core";
+import {Component, Output, EventEmitter, ElementRef, Renderer2, Input, ChangeDetectorRef} from "@angular/core";
 import {backend} from "../../services/backend.service";
 import {language} from "../../services/language.service";
 import {configurationService} from "../../services/configuration.service";
@@ -22,7 +22,12 @@ export class SystemGooglePlacesAutocomplete {
     private displayAutocompleteResults: boolean = false;
     private isSearching: boolean = false;
 
-    constructor(private language: language, private backend: backend, private configuration: configurationService, private elementref: ElementRef, private renderer: Renderer2) {
+    constructor(private language: language,
+                private backend: backend,
+                private configuration: configurationService,
+                private elementref: ElementRef,
+                private cdRef: ChangeDetectorRef,
+                private renderer: Renderer2) {
         let googleAPIConfig = this.configuration.getCapabilityConfig('google_api');
         if (googleAPIConfig.key && googleAPIConfig.key != '') {
             this.isenabled = true;
@@ -45,13 +50,14 @@ export class SystemGooglePlacesAutocomplete {
 
     private onSearchFocus() {
         if (this.autocompletesearchterm.length > 1 && this.autocompleteResults.length > 0) {
-            this.openSearchResults()
+            this.openSearchResults();
         }
     }
 
     private openSearchResults() {
         this.displayAutocompleteResults = true;
         this.autocompleteClickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
+        this.cdRef.detectChanges();
     }
 
     public onClick(event: MouseEvent): void {
@@ -66,6 +72,7 @@ export class SystemGooglePlacesAutocomplete {
             this.autocompleteClickListener();
         }
         this.displayAutocompleteResults = false;
+        this.cdRef.detectChanges();
     }
 
     private doAutocomplete() {
@@ -86,6 +93,8 @@ export class SystemGooglePlacesAutocomplete {
                     this.isSearching = false;
                 }
             );
+        } else {
+            this.closeSearchResutls();
         }
     }
 
@@ -103,6 +112,8 @@ export class SystemGooglePlacesAutocomplete {
                 longitude: parseFloat(res.address.location.lng)
             };
             this.address.emit(address);
+            this.autocompletesearchterm = res.formatted_address;
+            this.cdRef.detectChanges();
         });
     }
 }
