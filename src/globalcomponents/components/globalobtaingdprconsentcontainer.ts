@@ -69,6 +69,7 @@ export class GlobalObtainGDPRConsentContainer implements AfterViewInit {
             this.nameOfCustomComponent = this.componentConfig.customComponent;
             this.metadata.addComponent( this.nameOfCustomComponent, this.container ).subscribe( ( comp ) => {
                 if ( comp.instance.headerLabel ) this.headerLabel = comp.instance.headerLabel; // For the header: Get the specific label, if defined.
+                if ( comp.instance.taglineLabel ) this.taglineLabel = comp.instance.taglineLabel; // For the tagline: Get the specific label, if defined.
                 if ( comp.instance.saveButtonLabel ) this.saveButtonLabel = comp.instance.saveButtonLabel; // For the save button: Get the specific label, if defined.
                 comp.instance.finished.subscribe( success => this.finished(success) );
                 this.childComponent = comp.instance; // Get the reference to the component to access its properties and methods.

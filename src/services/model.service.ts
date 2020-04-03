@@ -1123,7 +1123,7 @@ export class model implements OnDestroy {
         let copyrules = this.metadata.getCopyRules("*", this.module);
         for (let copyrule of copyrules) {
             if (copyrule.tofield && copyrule.fixedvalue) {
-                this.setFieldValue(copyrule.tofield, copyrule.fixedvalue);
+                this.setFixedValue( copyrule.tofield, copyrule.fixedvalue );
             } else if (copyrule.tofield && copyrule.calculatedvalue) {
                 this.setFieldValue(copyrule.tofield, this.getCalculatdValue(copyrule.calculatedvalue));
             }
@@ -1170,6 +1170,28 @@ export class model implements OnDestroy {
                 }
             default:
                 this.setField(toField, value);
+                break;
+        }
+    }
+
+    /**
+     * Set the fixed value to a field. Executed from the copy rules. Takes the field type into account.
+     *
+     * @param toField
+     * @param value
+     */
+    private setFixedValue( toField, value ) {
+        let fieldDef = this.metadata.getFieldDefs(this.module, toField);
+
+        // if no field definition found just set the field attribute
+        if ( !fieldDef ) this.setField( toField, value );
+
+        switch ( fieldDef.type ) {
+            case 'bool':
+                this.setField( toField, ( value === 'true' || value === '1' ) ? true : (( value === 'false' || value === '0' ) ? false : null ));
+                break;
+            default:
+                this.setField( toField, value );
                 break;
         }
     }
