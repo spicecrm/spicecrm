@@ -47,6 +47,12 @@ export class ReporterDetailPresentationGrouped extends ReporterDetailPresentatio
      */
     private hasSummary: boolean = false;
 
+    /**
+     * returns the set listentries from the pres params if set ... by default 25
+     */
+    get listEntries() {
+        return 1000;
+    }
 
     constructor(public language: language, public model: model, public modal: modal, public injector: Injector, public backend: backend, public reporterconfig: reporterconfig, public toast: toast) {
         super(language, model, modal, injector, backend, reporterconfig, toast);
