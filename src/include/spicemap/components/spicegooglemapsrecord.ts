@@ -24,6 +24,7 @@ import {session} from "../../../services/session.service";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {navigationtab} from "../../../services/navigationtab.service";
+import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
 
 /** @ignore */
 declare let _;
@@ -79,12 +80,35 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
      */
     private showUseMapOptions: boolean = true;
     /**
-     * to prevent duplicated names ids in dom tree
+     * to be used for the radio button group inputs
      */
-    private inputRadioNameIds: {
-        useMapFor: string,
-        directionStartType: string
-    };
+    protected useMapForOptions: InputRadioOptionI[] = [
+        {
+            icon: 'search',
+            value: 'search',
+        },
+        {
+            icon: 'travel_and_places',
+            value: 'direction'
+        }
+    ];
+    /**
+     * to be used for the radio button group inputs
+     */
+    protected directionStartOptions: InputRadioOptionI[] = [
+        {
+            value: 'myLocation',
+            label: 'LBL_MY_LOCATION'
+        },
+        {
+            value: 'office',
+            label: 'LBL_OFFICE'
+        },
+        {
+            value: 'address',
+            label: 'LBL_ADDRESS'
+        }
+    ];
 
     constructor(
         public language: language,
@@ -224,7 +248,6 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
      * set the mapOption.center from the record
      */
     public ngOnInit() {
-        this.generateInputRadioIds();
         this.initializeModelList();
         this.setComponentName();
         super.ngOnInit();
@@ -237,17 +260,6 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
      */
     public ngAfterViewInit(): void {
         this.setMapOptionChanged('circle');
-    }
-
-    /**
-     * generate Input radio Ids
-     */
-    private generateInputRadioIds() {
-
-        this.inputRadioNameIds = {
-            useMapFor: 'useMapFor' + this.model.generateGuid(),
-            directionStartType: 'directionStartType' + this.model.generateGuid()
-        };
     }
 
     /**
