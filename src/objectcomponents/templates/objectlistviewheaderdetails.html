@@ -1,5 +1,10 @@
 <ul class="slds-list_horizontal slds-has-dividers_left slds-has-block-links_space">
-    <li class="slds-item">{{modellist.listData.list.length}} <system-label label="LBL_OF"></system-label> {{modellist.listData.totalcount}} <system-label label="LBL_ITEMS"></system-label></li>
+    <li class="slds-item">
+        {{modellist.listData.list.length}}
+        <system-label label="LBL_OF" class="slds-m-horizontal--xxx-small"></system-label>
+        {{modellist.listData.totalcount}}
+        <system-label label="LBL_ITEMS" class="slds-m-left--xxx-small"></system-label>
+    </li>
     <li *ngIf="modellist.isSorted" class="slds-item"><system-label label="LBL_SORTEDBY"></system-label> {{modellist.getSortFields()}}</li>
     <li class="slds-item"><system-label label="LBL_LASTUPDATE"></system-label> {{modellist.getLastLoadTime()}}</li>
     <li class="slds-item"><system-utility-icon [icon]="modellist.listData.source == 'db' ? 'database' : 'feed'" size="xx-small"></system-utility-icon></li>

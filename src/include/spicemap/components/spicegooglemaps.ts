@@ -230,7 +230,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      * create google maps circle with the given options
      * set the circle listeners
      */
-    protected createCircle(isFixed?) {
+    protected createCircle(isFixed?: boolean) {
 
         if (!(window as any).google) return;
 
@@ -253,7 +253,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
         }
 
         this[circleKeyName] = new google.maps.Circle(
-            this.generateCircleOptions(this.options[circleKeyName])
+            this.generateCircleOptions(this.options[circleKeyName], isFixed)
         );
 
         if (!isFixed) {
@@ -273,8 +273,27 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * generate circle options from input options circle
      * @param optionsCircle
+     * @param isFixed
      */
-    private generateCircleOptions(optionsCircle: MapCircleI) {
+    private generateCircleOptions(optionsCircle: MapCircleI, isFixed?: boolean) {
+
+        let radius = (optionsCircle.radius || 5) * 1000;
+        const percentage = this.options.circle.radiusPercentage || 80;
+
+        if (!optionsCircle.radius && !isFixed && !!this.map.getBounds() && percentage && !isNaN(percentage)) {
+            const spherical = google.maps.geometry.spherical,
+                cor1 = this.map.getBounds().getNorthEast(),
+                cor2 = this.map.getBounds().getSouthWest(),
+                cor3 = new google.maps.LatLng(cor2.lat(), cor1.lng()),
+                height = spherical.computeDistanceBetween(cor1, cor3);
+
+            radius = (height / 2) * (percentage / 100);
+            this.zone.run(() =>
+                this.radiusChange.emit(Math.round(radius / 100) / 10)
+            );
+        }
+
+
         return {
             strokeColor: optionsCircle.color,
             fillOpacity: 0,
@@ -285,7 +304,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
             zIndex: 1,
             map: this.map,
             center: optionsCircle.center,
-            radius: (optionsCircle.radius || 5) * 1000
+            radius: radius
         };
     }
 
@@ -343,6 +362,11 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
         } else if (!!this.options.changed.circleCenter) {
 
             this.circle.setCenter(this.options.circle.center);
+
+        } else if (!!this.options.changed.circleEditable) {
+
+            this.circle.setEditable(this.options.circle.editable);
+            this.circle.setDraggable(this.options.circle.draggable);
         }
 
         if (!this.options.showCluster) {
@@ -409,11 +433,15 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
                     this.clearMarkers();
 
                     const directionData: DirectionResultI = this.calculateDirectionData(response.routes);
-                    this.directionChange.emit(directionData);
+                    this.zone.run(() =>
+                        this.directionChange.emit(directionData)
+                    );
                 } else {
                     // Directions request failed due to
                     this.toast.sendToast(`${this.language.getLabel('MSG_DIRECTION_REQUEST_FAILED')} ${status}`, 'error');
-                    this.directionChange.emit(null);
+                    this.zone.run(() =>
+                        this.directionChange.emit(null)
+                    );
                 }
             });
 
@@ -473,7 +501,6 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
         google.maps.event.addListener(this.map, 'click', () => this.closePopover());
 
         if (!!this.options.circle && this.options.circle.center) {
-            this.map.setZoom(11);
             this.map.setCenter(this.options.circle.center);
 
             if (!!this.routes) {
@@ -599,7 +626,9 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      */
     private setCircleListeners() {
         this.circle.addListener('radius_changed', () => {
-            this.radiusChange.emit(Math.round(this.circle.getRadius() / 100) / 10);
+            this.zone.run(() =>
+                this.radiusChange.emit(Math.round(this.circle.getRadius() / 100) / 10)
+            );
         });
 
         this.circle.addListener('center_changed', () => {
@@ -630,10 +659,13 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
             location: latLng
         }, (results, status) => {
             if (status !== 'OK') return;
-            this.centerChange.emit({
-                address: results[0].formatted_address,
-                ...latLng
-            });
+
+            this.zone.run(() =>
+                this.centerChange.emit({
+                    address: results[0].formatted_address,
+                    ...latLng
+                })
+            );
         });
     }
 
