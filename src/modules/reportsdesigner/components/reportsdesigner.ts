@@ -67,9 +67,12 @@ export class ReportsDesigner implements OnDestroy {
      * @param data: object
      */
     protected setInitialValues(data) {
+
+        const statusFieldDefs = this.metadata.getFieldDefs(this.model.module, 'report_status');
         this.model.setFields({
             report_module: data.module,
             listfields: [],
+            report_status: statusFieldDefs.default || '1',
             whereconditions: [],
             listtype: 'standard',
             presentation_params: {

@@ -1,7 +1,15 @@
 /**
  * @module ModuleSpiceMap
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, IterableDiffers, OnDestroy, OnInit} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    IterableDiffers,
+    OnDestroy,
+    OnInit
+} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {metadata} from "../../../services/metadata.service";
 import {modellist} from "../../../services/modellist.service";
@@ -36,7 +44,7 @@ const ANIMATIONS = [
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: ANIMATIONS
 })
-export class SpiceGoogleMapsList implements OnInit, OnDestroy {
+export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
 
     /**
      * save the editing radius value to handle radius changes
@@ -117,10 +125,18 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
     }
 
     /**
+     * set map option changed to rebuild circle
+     */
+    public ngAfterViewInit(): void {
+        this.setMapOptionChanged('circle');
+    }
+
+    /**
      * unsubscribe from subscriptions
      */
     public ngOnDestroy() {
         this.subscription.unsubscribe();
+        this.modelList.searchGeo = undefined;
     }
 
     /**
@@ -153,8 +169,8 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
 
         if (!this.componentconfig) this.componentconfig = {};
 
-        if (!(!!this.componentconfig.defaultRadius) || isNaN(this.componentconfig.defaultRadius)) {
-            this.componentconfig.defaultRadius = 5;
+        if (!(!!this.componentconfig.radiusPercentage) || isNaN(this.componentconfig.radiusPercentage)) {
+            this.componentconfig.radiusPercentage = 80;
         }
         if (!this.componentconfig.directionTravelMode || ['DRIVING', 'WALKING', 'TRANSIT', 'BICYCLING'].indexOf(this.componentconfig.directionTravelMode) == -1) {
             this.componentconfig.directionTravelMode = 'DRIVING';
@@ -226,6 +242,7 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
     public setMapOptionChanged(property: string) {
         this.mapOptions.changed = {[property]: true};
         this.mapOptions = {...this.mapOptions};
+        this.cdRef.detectChanges();
     }
 
     /**
@@ -314,10 +331,11 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
                 center: null,
                 draggable: true,
                 editable: true,
-                radius: this.componentconfig.defaultRadius,
+                radius: null,
+                radiusPercentage: this.componentconfig.radiusPercentage,
                 color: this.componentconfig.circleColor
             };
-            this.startRadiusEditing();
+            this.startRadiusEditing(true);
         }
         this.setMapOptionChanged('circle');
     }
@@ -325,8 +343,14 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
     /**
      * set editing radius to true
      */
-    private startRadiusEditing() {
+    private startRadiusEditing(silent?: boolean) {
         this.editingRadius = true;
+        this.mapOptions.circle.editable = true;
+        this.mapOptions.circle.draggable = true;
+
+        if (!silent) {
+            this.setMapOptionChanged('circleEditable');
+        }
     }
 
     /**
@@ -334,13 +358,17 @@ export class SpiceGoogleMapsList implements OnInit, OnDestroy {
      */
     private cancelEditingRadius() {
         this.editingRadius = false;
+        this.mapOptions.circle.editable = false;
+        this.mapOptions.circle.draggable = false;
+
+        this.setMapOptionChanged('circleEditable');
     }
 
     /**
      * call confirm circle changes and stop editing radius
      */
     private confirmRadiusInput() {
-        this.editingRadius = false;
+        this.cancelEditingRadius();
         this.setMapOptionChanged('circleRadius');
     }
 

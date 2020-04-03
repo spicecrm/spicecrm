@@ -43,6 +43,8 @@ export interface MapCircleI extends MapFixedCircleI {
     draggable?: boolean;
     /** enable resizing the circle on the map */
     editable?: boolean;
+    /** percentage of the circle radius to the map */
+    radiusPercentage?: number;
 }
 
 /**
@@ -73,6 +75,7 @@ export interface MapOptionsI {
         fixedCircle?: boolean,
         circle?: boolean,
         circleRadius?: boolean,
+        circleEditable?: boolean,
         circleCenter?: boolean,
         directionTravelMode?: boolean,
         unitSystem?: boolean,
@@ -96,8 +99,8 @@ export interface RecordComponentConfigI {
     mapHeight?: number;
     /** for the data table fields */
     fieldset?: string;
-    /** default radius of the drawn circle */
-    defaultRadius?: number;
+    /** percentage of the circle radius to the map */
+    radiusPercentage?: number;
     /** hex color for the map circle */
     circleColor?: string;
     /** hex color for the model list filter map circle */

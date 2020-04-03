@@ -1,11 +1,12 @@
 /**
  * @module ModuleSpiceMap
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, OnInit} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {metadata} from "../../../services/metadata.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {navigation} from "../../../services/navigation.service";
+import {modal} from "../../../services/modal.service";
 
 /**
  * check for the element geo data and display an icon button which emits the click by broadcast service
@@ -28,6 +29,8 @@ export class SpiceMapGeoDataField implements OnInit {
         private metadata: metadata,
         private navigation: navigation,
         private broadcast: broadcast,
+        private modal: modal,
+        private injector: Injector,
         private cdRef: ChangeDetectorRef
     ) {
     }
@@ -72,5 +75,12 @@ export class SpiceMapGeoDataField implements OnInit {
                 this.cdRef.detach();
             }
         }
+    }
+
+    /**
+     * open direction modal
+     */
+    private openDirectionModal() {
+        this.modal.openModal('SpiceGoogleMapsDirectionModal', true, this.injector);
     }
 }
