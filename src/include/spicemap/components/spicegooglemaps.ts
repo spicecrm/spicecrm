@@ -277,9 +277,10 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
      */
     private generateCircleOptions(optionsCircle: MapCircleI, isFixed?: boolean) {
 
-        let radius = optionsCircle.radius * 1000;
+        let radius = (optionsCircle.radius || 5) * 1000;
         const percentage = this.options.circle.radiusPercentage || 80;
-        if (!radius && !isFixed && !!this.map.getBounds() && !isNaN(percentage)) {
+
+        if (!optionsCircle.radius && !isFixed && !!this.map.getBounds() && percentage && !isNaN(percentage)) {
             const spherical = google.maps.geometry.spherical,
                 cor1 = this.map.getBounds().getNorthEast(),
                 cor2 = this.map.getBounds().getSouthWest(),
@@ -287,8 +288,11 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
                 height = spherical.computeDistanceBetween(cor1, cor3);
 
             radius = (height / 2) * (percentage / 100);
-            this.radiusChange.emit(Math.round(radius / 100) / 10);
+            this.zone.run(() =>
+                this.radiusChange.emit(Math.round(radius / 100) / 10)
+            );
         }
+
 
         return {
             strokeColor: optionsCircle.color,
