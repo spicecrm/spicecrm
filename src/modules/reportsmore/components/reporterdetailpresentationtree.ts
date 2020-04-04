@@ -73,13 +73,17 @@ export class ReporterDetailPresentationTree extends ReporterDetailPresentationSt
      * overwite the getPOresentation Method
      */
     public getPresentation() {
-        this.isLoading = true;
+        this.isLoading = true
 
         this.backend.getRequest('KReporter/Tree/' + this.model.id + '/columns', {}).subscribe((columns: any) => {
             let treeStopReached = false;
 
             // set to the fields
             this.fields = columns;
+
+            // reset the fields
+            this.treeDisplayFields = [];
+            this.groupFields = [];
 
             // loop through the columns
             for (let column of columns) {
@@ -113,17 +117,35 @@ export class ReporterDetailPresentationTree extends ReporterDetailPresentationSt
         if (node != 'root') {
             let depthArray = node.split('::');
             depth = depthArray.length;
+        } else {
+            this.reportRecords = [];
         }
+
+        // build wherecondition
+        let whereConditions: any[] = [];
+        for (let userFilter of this.reporterconfig.userFilters) {
+            whereConditions.push({
+                fieldid: userFilter.fieldid,
+                operator: userFilter.operator,
+                value: userFilter.value,
+                valuekey: userFilter.valuekey,
+                valueto: userFilter.valueto,
+                valuetokey: userFilter.valuetokey
+            });
+        }
+
+        let body = {
+            whereConditions: JSON.stringify(whereConditions),
+            parentbeanId: this.model['parentBeanId'],
+            parentbeanModule: this.model['parentBeanModule'],
+        };
 
         // find the current node
         let index = this.reportRecords.findIndex(record => record.node == node);
 
         // if not laoded - load it
         if (index < 0 || !this.reportRecords[index].loaded) {
-            this.backend.postRequest('KReporter/Tree/' + this.model.id + '/node/' + encodeURIComponent(btoa(node)), {}, {
-                parentbeanId: this.model['parentBeanId'],
-                parentbeanModule: this.model['parentBeanModule']
-            }).subscribe(reportData => {
+            this.backend.postRequest('KReporter/Tree/' + this.model.id + '/node/' + encodeURIComponent(btoa(node)), {}, body).subscribe(reportData => {
                 let newRecords = [];
 
                 // if we found the record mark as loaded and expanded
