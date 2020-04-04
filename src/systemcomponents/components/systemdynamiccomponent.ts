@@ -38,6 +38,11 @@ export class SystemDynamicComponent implements AfterViewInit, OnChanges {
     @Input() private componentconfig: any;
 
     /**
+     * componentparameters to be set to the instance
+     */
+    @Input() private componentattributes: any;
+
+    /**
      * the componentref that is created. The component will emit that
      */
     @Output() private componentref: EventEmitter<any> = new EventEmitter<any>();
@@ -90,6 +95,13 @@ export class SystemDynamicComponent implements AfterViewInit, OnChanges {
                 // if we have the componetconfig .. add it
                 if (this.componentconfig) {
                     componentref.instance.componentconfig = this.componentconfig;
+                }
+
+                // set additonal attributes
+                if(this.componentattributes){
+                    for(let attrib in this.componentattributes){
+                        componentref.instance[attrib] = this.componentattributes[attrib];
+                    }
                 }
 
                 this._component = componentref;
