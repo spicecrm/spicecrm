@@ -428,7 +428,7 @@ export class modellist implements OnDestroy {
      * simple getter for the listcomponent
      */
     get listcomponent() {
-        return this._listcomponent;
+        return this._listcomponent ? this._listcomponent : 'ObjectList';
     }
 
     /**
