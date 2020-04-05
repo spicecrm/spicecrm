@@ -27,7 +27,7 @@ export class ReporterIntegrationToolsButton implements OnChanges, AfterViewInit 
      */
     @ViewChild('actionItemsContainer', {
         read: ViewContainerRef,
-        static: true
+        static: false
     }) private actionItemsContainer: ViewContainerRef;
     /**
      * integration params of the report to handle the plugins

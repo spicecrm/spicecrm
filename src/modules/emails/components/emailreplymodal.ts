@@ -158,6 +158,7 @@ export class EmailReplyModal implements OnInit {
             this.model.setField('to_be_sent', '1');
             this.model.setField('from_addr', this.model.data.from_addr_name);
             this.model.setField('to_addrs', this.model.data.to_addrs_names);
+            this.model.setField('cc_addrs', this.model.data.cc_addrs_names);
 
             this.model.save().subscribe(
                 success => {

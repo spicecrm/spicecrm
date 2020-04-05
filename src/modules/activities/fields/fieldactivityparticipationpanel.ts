@@ -10,6 +10,7 @@ import {metadata} from '../../../services/metadata.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {modal} from '../../../services/modal.service';
 import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
+import {relateFilter} from "../../../services/modellist.service";
 import {Subscription} from "rxjs";
 
 @Component({
@@ -62,6 +63,11 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
      */
     private fieldset: string;
 
+    /**
+     * a relateFilter
+     */
+    private relateFilter: relateFilter;
+
     constructor(public model: model,
                 public view: view,
                 public broadcast: broadcast,
@@ -82,7 +88,11 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
 
         // subscribe to model $data and build the participants .. replacing the setter
         this.subscriptions.add(this.model.data$.subscribe(modelData => {
+            // set the participants
             this.setParticipants();
+
+            // update the relate filter
+            this.updateRelateFilter();
         }));
     }
 
@@ -95,6 +105,11 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
         } else {
             this.fieldset = this.fieldconfig.fieldset;
         }
+
+        // create the relate filter
+        if (this.fieldconfig.relatefilterfield) {
+            this.createRelateFilter();
+        }
     }
 
     /**
@@ -102,6 +117,63 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
      */
     get lookupTypeName() {
         return this.language.getModuleName(this.lookuplinks[this.lookupType].module);
+    }
+
+
+    /**
+     * checks if we have a relate filter field and if yes sets the filter accordingly
+     */
+    private handleRelateFIlterField() {
+        // check if we have a relate filter in the fieldconfig
+        if (this.fieldconfig.relatefilterfield) {
+            this.createRelateFilter();
+            this.subscriptions.add(
+                this.model.data$.subscribe(data => {
+                    this.updateRelateFilter();
+                })
+            );
+        }
+    }
+
+    /**
+     * creates the relate filter for the list service
+     */
+    private createRelateFilter() {
+        let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldconfig.relatefilterfield);
+        if (fieldDefs) {
+            let module = fieldDefs.type == 'parent' ? this.model.getField(fieldDefs.type_name) : fieldDefs.module;
+            this.relateFilter = {
+                module: module,
+                relationship: this.fieldconfig.relatefilterrelationship,
+                id: this.model.getField(fieldDefs.id_name),
+                display: this.model.getField(this.fieldconfig.relatefilterfield),
+                active: this.model.getField(fieldDefs.id_name) ? true : false,
+                required: false
+            };
+        }
+    }
+
+    /**
+     * removes the relate filter
+     */
+    private removeRelateFilter() {
+        this.relateFilter = undefined;
+    }
+
+    /**
+     * updates the relate filter
+     */
+    private updateRelateFilter() {
+        if (this.relateFilterActive) {
+            let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldconfig.relatefilterfield);
+            if (fieldDefs) {
+                this.relateFilter.id = this.model.getField(fieldDefs.id_name);
+                this.relateFilter.display = this.model.getField(this.fieldconfig.relatefilterfield);
+
+                // toggle the active flag
+                this.relateFilter.active = !!this.relateFilter.id ? true : false;
+            }
+        }
     }
 
     /**
@@ -217,6 +289,10 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
         this.lookupSearchOpen = false;
     }
 
+    get relateFilterActive() {
+        return this.lookuplinks[this.lookupType].module != 'Users';
+    }
+
     /**
      * sets the type selected from the type dropdown
      *
@@ -226,6 +302,14 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
         this.lookupSearchTerm = '';
         this.lookupType = lookupType;
         this.lookuplinkSelectOpen = false;
+
+        if (this.relateFilterActive) {
+            this.createRelateFilter();
+
+        } else {
+            this.removeRelateFilter();
+        }
+
     }
 
     /**
@@ -267,6 +351,13 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
         this.modal.openModal('ObjectModalModuleLookup').subscribe((selectModal) => {
             selectModal.instance.module = this.lookuplinks[this.lookupType].module;
             selectModal.instance.multiselect = false;
+
+            // set the relate filter if we have one
+            if (this.relateFilter) {
+                selectModal.instance.relatefilter = this.relateFilter;
+            }
+
+
             selectModal.instance.selectedItems.subscribe((items) => {
                 this.addItem({id: items[0].id, text: items[0].summary_text, data: items[0]});
             });
