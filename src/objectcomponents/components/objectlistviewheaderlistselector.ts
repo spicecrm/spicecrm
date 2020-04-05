@@ -45,7 +45,7 @@ export class ObjectListViewHeaderListSelector {
         }
 
         // set the first as default list if not already one is set on the modellist
-        if (!this.modellist.listcomponent) {
+        //if (!this.modellist.listcomponent) {
             let defaultlist = this.userpreferences.getPreference('defaultlisttype', this.modellist.module);
             if (!defaultlist) {
                 defaultlist = this.componentconfig.lists[0].component;
@@ -53,7 +53,7 @@ export class ObjectListViewHeaderListSelector {
 
             // set the list component
             this.modellist.listcomponent = defaultlist;
-        }
+        //}
 
     }
 

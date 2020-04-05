@@ -193,7 +193,7 @@ export class modellist implements OnDestroy {
     /**
      * the listcomponent used to render the list
      */
-    public _listcomponent: string;
+    public _listcomponent: string = 'ObjectList';
 
     /**
      * an eventemitter for the listcompoonent
