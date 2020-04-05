@@ -25,8 +25,7 @@ export class ObjectPageHeader implements OnInit {
 
     public componentconfig: any = {};
     private actionSet: string = '';
-    private fieldset: string = '';
-    private fieldsetitems: any[];
+    public fieldset: string = '';
 
     get moduleName() {
         return this.model.module;
@@ -43,9 +42,6 @@ export class ObjectPageHeader implements OnInit {
         // set the actionset & fiedset
         this.actionSet = componentconfig.actionset;
         this.fieldset = componentconfig.fieldset;
-        if (this.fieldset) {
-            this.fieldsetitems = this.metadata.getFieldSetFields(this.fieldset);
-        }
     }
 
     public goToModule() {
