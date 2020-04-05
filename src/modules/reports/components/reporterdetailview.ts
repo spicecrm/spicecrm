@@ -1,7 +1,7 @@
 /**
  * @module ModuleReports
  */
-import {Component, Injector, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, Injector, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
@@ -13,11 +13,12 @@ import {broadcast} from '../../../services/broadcast.service';
 import {reporterconfig} from '../services/reporterconfig';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {view} from "../../../services/view.service";
+import {Subscription} from "rxjs";
 
 /**
  * @ignore
  */
-const ANIMATIONS = [
+const REPORTERDETAILVIEWANIMATIONS = [
     trigger('displayfilter', [
         transition(':enter', [
             style({width: '0px', overflow: 'hidden'}),
@@ -38,9 +39,9 @@ const ANIMATIONS = [
     selector: 'reporter-detilview',
     templateUrl: './src/modules/reports/templates/reporterdetailview.html',
     providers: [view, model, reporterconfig],
-    animations: ANIMATIONS
+    animations: REPORTERDETAILVIEWANIMATIONS
 })
-export class ReporterDetailView implements OnInit {
+export class ReporterDetailView implements OnInit, OnDestroy {
     /**
      * container reference to render the presentation component inside
      */
@@ -50,7 +51,7 @@ export class ReporterDetailView implements OnInit {
     }) private presentationContainer: ViewContainerRef;
     @ViewChild('pageHeader', {read: ViewContainerRef, static: true}) private pageHeader: ViewContainerRef;
     /**
-     *
+     * container reference of the presentation component
      */
     private presentationComponentRef: any = undefined;
     /**
@@ -63,11 +64,22 @@ export class ReporterDetailView implements OnInit {
      */
     private visualizationHeight: number = 0;
 
-
+    /**
+     * where conditions will be passed to the children
+     */
     private whereConditions: any = {};
+    /**
+     * integration parms will be passed to the action buttons
+     */
     private integrationParams: any = {};
-
+    /**
+     * show/hide filter panel
+     */
     private showFilters: boolean = false;
+    /**
+     * to save observable subscriptions for unsubscribe purpose
+     */
+    private subscriptions: Subscription = new Subscription();
 
     constructor(private broadcast: broadcast,
                 private language: language,
@@ -116,20 +128,29 @@ export class ReporterDetailView implements OnInit {
     }
 
     /**
+     * unsubscribe from subscriptions
+      */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
+    }
+
+    /**
      * subscribe to broadcast message and refresh the results if the model match
      * and reset the views
      */
     private subscribeToBroadcast() {
-        this.broadcast.message$.subscribe(msg => {
-            if (msg.messagetype == 'model.save' && msg.messagedata.module == this.model.module && msg.messagedata.id == this.model.id) {
-                this.showFilters = false;
-                this.whereConditions = msg.messagedata.data.whereconditions;
-                this.setIntegrationParams(msg.messagedata.data.integration_params);
-                this.setVisualizationProperties(msg.messagedata.data.visualization_params);
-                this.renderPresentation();
-                this.reporterconfig.refresh();
-            }
-        });
+        this.subscriptions.add(
+            this.broadcast.message$.subscribe(msg => {
+                if (msg.messagetype == 'model.save' && msg.messagedata.module == this.model.module && msg.messagedata.id == this.model.id) {
+                    this.showFilters = false;
+                    this.whereConditions = msg.messagedata.data.whereconditions;
+                    this.setIntegrationParams(msg.messagedata.data.integration_params);
+                    this.setVisualizationProperties(msg.messagedata.data.visualization_params);
+                    this.renderPresentation();
+                    this.reporterconfig.refresh();
+                }
+            })
+        );
     }
 
     /**

@@ -12,16 +12,26 @@ import {language} from '../../services/language.service';
     templateUrl: './src/objectcomponents/templates/objectactionduplicatebutton.html',
     providers: [model]
 })
-export class ObjectActionDuplicateButton implements OnInit {
-
-    public disabled: boolean = true;
+export class ObjectActionDuplicateButton {
 
     constructor(@SkipSelf() private parent: model, private language: language, private metadata: metadata, private model: model, private session: session) {
 
     }
+    /**
+     * hide the button while the model is editing
+     */
+    get hidden() {
+        return this.model.isEditing;
+    }
 
-    public ngOnInit() {
-        this.disabled = this.metadata.checkModuleAcl(this.model.module, 'create') ? true : false;
+    /**
+     * set to dsiabled when we are not allowed to edit or we are editing or saving already
+     */
+    get disabled() {
+        if (this.model.data.acl && !this.model.checkAccess('create')) {
+            return true;
+        }
+        return this.model.isEditing || this.model.isSaving;
     }
 
     public execute() {

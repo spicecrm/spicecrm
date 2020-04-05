@@ -14,13 +14,15 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
 // import interfaces
-import /*embed*/ {mapOptionsI,RecordI,DirectionResultI,RoutePointI} from './interfaces/spicemap.interfaces';
+import /*embed*/ {MapCenterI,MapFixedCircleI,MapCircleI,RecordComponentConfigI,MapOptionsI,RecordI,DirectionResultI,RoutePointI} from './interfaces/spicemap.interfaces';
 
 import /*embed*/ {SpiceMap} from './components/spicemap';
 import /*embed*/ {SpiceGoogleMapsList} from './components/spicegooglemapslist';
 import /*embed*/ {SpiceGoogleMapsRecord} from './components/spicegooglemapsrecord';
 import /*embed*/ {SpiceMapSelector} from './components/spicemapselector';
 import /*embed*/ {SpiceGoogleMaps} from './components/spicegooglemaps';
+import /*embed*/ {SpiceMapGeoDataField} from './fields/spicemapgeodatafield';
+import /*embed*/ {SpiceGoogleMapsDirectionModal} from './components/spicegooglemapsdirectionmodal';
 
 @NgModule({
     imports: [
@@ -37,10 +39,13 @@ import /*embed*/ {SpiceGoogleMaps} from './components/spicegooglemaps';
         SpiceGoogleMapsList,
         SpiceGoogleMapsRecord,
         SpiceGoogleMaps,
-        SpiceMapSelector
+        SpiceMapSelector,
+        SpiceMapGeoDataField,
+        SpiceGoogleMapsDirectionModal
     ],
     exports: [
-        SpiceGoogleMaps
+        SpiceGoogleMaps,
+        SpiceMapGeoDataField
     ]
 })
 export class ModuleSpiceMap {

@@ -6,6 +6,9 @@ import {
 } from "@angular/core";
 import {DragDropModule} from '@angular/cdk/drag-drop';
 
+// interfaces
+import /*embed*/ {InputRadioOptionI} from "./interfaces/systemcomponents.interfaces";
+
 // MODULEs
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
@@ -15,7 +18,6 @@ import {metadata} from "../services/metadata.service";
 import {VersionManagerService} from "../services/versionmanager.service";
 
 import /*embed*/ {systemrichtextservice} from "./services/systemrichtext.service";
-
 
 // Pipes...
 import /*embed*/ {SystemModuleCustomPipe} from "./pipes/systemmodulecustompipe";
@@ -70,6 +72,8 @@ import /*embed*/ {SystemInputModuleField} from "./components/systeminputmodulefi
 import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
 import /*embed*/ {SystemInputPassword} from "./components/systeminputpassword";
 import /*embed*/ {SystemInputRadio} from "./components/systeminputradio";
+import /*embed*/ {SystemInputRadioButton} from "./components/systeminputradiobutton";
+import /*embed*/ {SystemInputRadioButtonGroup} from "./components/systeminputradiobuttongroup";
 import /*embed*/ {SystemInputRelate} from "./components/systeminputrelate";
 import /*embed*/ {SystemInputTags} from "./components/systeminputtags";
 import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
@@ -84,6 +88,7 @@ import /*embed*/ {SystemLoadingModal} from "./components/systemloadingmodal";
 import /*embed*/ {SystemModalContent} from "./components/systemmodalcontent";
 import /*embed*/ {SystemModalFooter} from "./components/systemmodalfooter";
 import /*embed*/ {SystemModalHeaderRight} from "./components/systemmodalheaderright";
+import /*embed*/ {SystemModalHeaderTagline} from "./components/systemmodalheadertagline";
 import /*embed*/ {SystemModalHeader} from "./components/systemmodalheader";
 import /*embed*/ {SystemModalWrapper} from "./components/systemmodalwrapper";
 import /*embed*/ {SystemModal} from "./components/systemmodal";
@@ -206,6 +211,8 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemInputNumber,
         SystemInputPassword,
         SystemInputRadio,
+        SystemInputRadioButton,
+        SystemInputRadioButtonGroup,
         SystemInputRelate,
         SystemInputTags,
         SystemInputTime,
@@ -223,6 +230,7 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemModalFooter,
         SystemModalHeader,
         SystemModalHeaderRight,
+        SystemModalHeaderTagline,
         SystemModalWrapper,
         SystemModuleCustomPipe,
         SystemModuleGlobalPipe,
@@ -326,6 +334,8 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemInputNumber,
         SystemInputPassword,
         SystemInputRadio,
+        SystemInputRadioButton,
+        SystemInputRadioButtonGroup,
         SystemInputRelate,
         SystemInputTags,
         SystemInputTime,
@@ -342,6 +352,7 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemModalFooter,
         SystemModalHeader,
         SystemModalHeaderRight,
+        SystemModalHeaderTagline,
         SystemModalWrapper,
         SystemNumberSpinner,
         SystemProgressRing,

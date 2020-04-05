@@ -23,6 +23,19 @@ interface geoSearch {
     lng: number;
 }
 
+/**
+ * refines an interface for the relate filter
+ * this can be used to limit results to relationships
+ */
+export interface relateFilter {
+    module: string;
+    relationship: string;
+    id: string;
+    display: string;
+    active: boolean;
+    required: boolean;
+}
+
 @Injectable()
 export class modellist implements OnDestroy {
 
@@ -35,6 +48,16 @@ export class modellist implements OnDestroy {
      * an optional modulefilter
      */
     public modulefilter: string;
+
+    /**
+     * a relatefilter
+     */
+    public relatefilter: relateFilter;
+
+    /**
+     * a behavioural subject to catch the list data loads
+     */
+    public listDataChanged$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 
     /**
@@ -170,7 +193,7 @@ export class modellist implements OnDestroy {
     /**
      * the listcomponent used to render the list
      */
-    public _listcomponent: string;
+    public _listcomponent: string = 'ObjectList';
 
     /**
      * an eventemitter for the listcompoonent
@@ -218,8 +241,6 @@ export class modellist implements OnDestroy {
         private configuration: configurationService,
         private toast: toast
     ) {
-
-
         // create the event behaviour Subject
         this.listtype$ = new BehaviorSubject<string>('all');
 
@@ -234,7 +255,6 @@ export class modellist implements OnDestroy {
         );
     }
 
-
     /**
      * simple getter for the module
      */
@@ -248,6 +268,16 @@ export class modellist implements OnDestroy {
      * @param module
      */
     set module(module: string) {
+        this.setModule(module);
+    }
+
+    /**
+     * sets the mopdule
+     *
+     * @param module the module
+     * @param embedded set to true if the listservice is run embedded ina  component and setting listtype etc is not needed, this is used e.g. when used in builöt in lists
+     */
+    public setModule(module: string, embedded: boolean = false) {
         // check if the module has changed
         if (!this._module || this._module != module) {
             // set the module internally
@@ -255,6 +285,9 @@ export class modellist implements OnDestroy {
 
             // reset the list data
             this.resetListData();
+
+            // if we are in embedded mode stop processing and return
+            if(embedded) return;
 
             // load the list types for the module
             this.loadListTypes();
@@ -324,6 +357,8 @@ export class modellist implements OnDestroy {
                         this.removeItemFromBucket(message.messagedata.data[this.bucketfield], bucketamountfields);
                     }
                 }
+                this.listDataChanged$.next(true);
+
                 break;
             case 'model.save':
                 let eventHandled = false;
@@ -361,6 +396,7 @@ export class modellist implements OnDestroy {
 
                         }
                     }
+                    this.listDataChanged$.next(true);
 
                 } else {
                     this.reLoadList();
@@ -392,7 +428,7 @@ export class modellist implements OnDestroy {
      * simple getter for the listcomponent
      */
     get listcomponent() {
-        return this._listcomponent;
+        return this._listcomponent ? this._listcomponent : 'ObjectList';
     }
 
     /**
@@ -408,6 +444,10 @@ export class modellist implements OnDestroy {
         if (this.currentList.id == 'all' || this.currentList.id == 'owner') {
             this.userpreferences.setPreference('defaultlisttype', listcomponent, false, 'SpiceUI_' + this.module);
         }
+
+        // reset current list fielddefs and redetermine its fields from the component config
+        this.currentList.fielddefs = undefined;
+        this.determineListFields();
     }
 
     /**
@@ -570,8 +610,8 @@ export class modellist implements OnDestroy {
         // check if we have fielddefs
         let fielddefs = this.getFieldDefs();
 
-        // load all fields
-        let componentconfig = this.metadata.getComponentConfig('ObjectList', this.module);
+        // load all fields from the selected component configs
+        let componentconfig = this.metadata.getComponentConfig(this.listcomponent, this.module);
         let allFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
         for (let listField of allFields) {
             // check if we have the field in the defs
@@ -1161,7 +1201,8 @@ export class modellist implements OnDestroy {
             searchterm: this.searchTerm,
             searchgeo: this.searchGeo,
             aggregates: aggregates,
-            buckets: this.buckets
+            buckets: this.buckets,
+            relatefilter: this.relatefilter?.active ? this.relatefilter : null
         }).subscribe((res: any) => {
                 // set the listdata
                 this.listData = res;
@@ -1187,6 +1228,7 @@ export class modellist implements OnDestroy {
                 // return & close the subject
                 retSub.next(true);
                 retSub.complete();
+                this.listDataChanged$.next(true);
             }
         );
 
@@ -1212,10 +1254,12 @@ export class modellist implements OnDestroy {
             searchterm: this.searchTerm,
             searchgeo: this.searchGeo,
             aggregates: aggregates,
-            buckets: this.buckets
+            buckets: this.buckets,
+            relatefilter: this.relatefilter?.active ? this.relatefilter : null
         })
             .subscribe((res: any) => {
                 this.listData.list = this.listData.list.concat(res.list);
+                this.listDataChanged$.next(true);
                 this.lastLoad = new moment();
 
                 this.isLoading = false;
@@ -1252,12 +1296,13 @@ export class modellist implements OnDestroy {
             buckets: {
                 bucketfield: this.buckets.bucketfield,
                 bucketitems: [bucket]
-            }
+            },
+            relatefilter: this.relatefilter?.active ? this.relatefilter : null
         })
             .subscribe((res: any) => {
                 this.listData.list = this.listData.list.concat(res.list);
                 this.lastLoad = new moment();
-
+                this.listDataChanged$.next(true);
                 this.isLoading = false;
 
                 // save the current result
