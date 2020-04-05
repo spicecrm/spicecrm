@@ -26,6 +26,7 @@ import /*embed*/ {GroupwareReadPaneBeans} from './components/groupwarereadpanebe
 import /*embed*/ {GroupwareReadPaneLinked} from './components/groupwarereadpanelinked';
 import /*embed*/ {GroupwareReadPaneSearch} from './components/groupwarereadpanesearch';
 import /*embed*/ {GroupwareDetailPane} from './components/groupwaredetailpane';
+import /*embed*/ {GroupwareDetailPaneHeader} from './components/groupwaredetailpaneheader';
 import /*embed*/ {GroupwareDetailPaneBean} from './components/groupwaredetailpanebean';
 import /*embed*/ {GroupwareMeetingPane} from "./components/groupwaremeetingpane";
 
@@ -52,6 +53,7 @@ import /*embed*/ {GroupwareMeetingPane} from "./components/groupwaremeetingpane"
         GroupwareReadPaneLinked,
         GroupwareReadPaneSearch,
         GroupwareDetailPane,
+        GroupwareDetailPaneHeader,
         GroupwareDetailPaneBean,
         GroupwareMeetingPane,
     ]
