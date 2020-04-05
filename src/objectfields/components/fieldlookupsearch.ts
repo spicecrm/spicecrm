@@ -17,7 +17,7 @@ import {Subscription} from "rxjs";
     templateUrl: './src/objectfields/templates/fieldlookupsearch.html',
     providers: [modellist]
 })
-export class fieldLookupSearch implements OnInit {
+export class fieldLookupSearch implements OnInit, OnChanges {
     /**
      * the searchterm entered
      */
@@ -47,6 +47,11 @@ export class fieldLookupSearch implements OnInit {
      * a relate filter for the modellist
      */
     @Input() private relatefilter: relateFilter;
+
+    /**
+     * additonal input for the id of the relate filter so the onChange can detect and trigger a reload
+     */
+    @Input() private relateId: string;
 
     /**
      * an emitter if an object has been selected
@@ -95,8 +100,15 @@ export class fieldLookupSearch implements OnInit {
         this.modellist.setModule(this.module, true);
     }
 
+    /**
+     * react to changes of the relatedId
+     *
+     * @param changes
+     */
     public ngOnChanges(changes: SimpleChanges): void {
-        console.log(changes);
+        if (changes.relateId) {
+            this.modellist.getListData();
+        }
     }
 
     /**
