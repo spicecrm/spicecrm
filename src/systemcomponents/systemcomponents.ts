@@ -7,7 +7,7 @@ import {
 import {DragDropModule} from '@angular/cdk/drag-drop';
 
 // interfaces
-import /*embed*/ {InputRadioItemI} from "./interfaces/systemcomponents.interfaces";
+import /*embed*/ {InputRadioOptionI} from "./interfaces/systemcomponents.interfaces";
 
 // MODULEs
 import {CommonModule} from "@angular/common";
