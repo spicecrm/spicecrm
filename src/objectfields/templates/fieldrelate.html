@@ -30,7 +30,7 @@
                 </div>
                 <div class="slds-dropdown slds-dropdown_fluid" role="listbox">
                     <field-lookup-recent *ngIf="relateSearchTerm === '' && !fieldconfig.modulefilter && !relatedfilterrequired" [module]="relateType" (selectedObject)="setRelated($event)"></field-lookup-recent>
-                    <field-lookup-search *ngIf="relateSearchTerm !== '' || fieldconfig.modulefilter || relatedfilterrequired" [module]="relateType" [modulefilter]="fieldconfig.modulefilter" [relatefilter]="relateFilter" [disableadd]="disableadd" (selectedObject)="setRelated($event)" (searchWithModal)="searchWithModal()" [searchterm]="relateSearchTerm"></field-lookup-search>
+                    <field-lookup-search *ngIf="relateSearchTerm !== '' || fieldconfig.modulefilter || relatedfilterrequired" [module]="relateType" [modulefilter]="fieldconfig.modulefilter" [relatefilter]="relateFilter" [relateId]="relateFilter?.id" [disableadd]="disableadd" (selectedObject)="setRelated($event)" (searchWithModal)="searchWithModal()" [searchterm]="relateSearchTerm"></field-lookup-search>
                 </div>
             </div>
         </div>
