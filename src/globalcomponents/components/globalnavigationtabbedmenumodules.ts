@@ -76,6 +76,10 @@ export class GlobalNavigationTabbedMenuModules {
         this.navigation.setActiveTab('main');
     }
 
+    get activeModuleVisible() {
+        return this.menuItems.find(item => item == this.navModule);
+    }
+
     /**
      * handle the message .. mainly needed to requild the menu when the role is shifted
      *
