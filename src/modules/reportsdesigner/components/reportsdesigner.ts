@@ -67,9 +67,13 @@ export class ReportsDesigner implements OnDestroy {
      * @param data: object
      */
     protected setInitialValues(data) {
+
+        const statusFieldDefs = this.metadata.getFieldDefs(this.model.module, 'report_status');
         this.model.setFields({
             report_module: data.module,
             listfields: [],
+            report_status: statusFieldDefs.default || '1',
+            whereconditions: [],
             listtype: 'standard',
             presentation_params: {
                 plugin: 'standard',
@@ -111,6 +115,7 @@ export class ReportsDesigner implements OnDestroy {
                                 this.reportsDesignerService.activeModule = {unionid: 'root', module: res.report_module};
                             }
                             if (!res.listfields) this.model.setField('listfields', []);
+                            if (!res.whereconditions) this.model.setField('whereconditions', []);
 
                             // set the tab info
                             this.navigationtab.setTabInfo({displayname: this.model.getField('name'), displaymodule: this.model.module});

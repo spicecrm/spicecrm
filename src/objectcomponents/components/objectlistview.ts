@@ -2,7 +2,7 @@
  * @module ObjectComponents
  */
 
-import {AfterViewInit, Component, ViewChild, ViewContainerRef, OnInit, OnDestroy} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {modellist} from '../../services/modellist.service';
