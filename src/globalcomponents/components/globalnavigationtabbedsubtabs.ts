@@ -3,6 +3,7 @@
  */
 import {
     AfterViewChecked,
+    NgZone,
     AfterViewInit,
     Component, ElementRef, Input, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren
 } from '@angular/core';
@@ -23,7 +24,7 @@ import {Subscription} from "rxjs";
         '(window:resize)': 'handleResize()'
     }
 })
-export class GlobalNavigationTabbedSubtabs implements AfterViewChecked, OnDestroy {
+export class GlobalNavigationTabbedSubtabs implements OnDestroy {
 
     /**
      * the parent tab object
@@ -45,7 +46,9 @@ export class GlobalNavigationTabbedSubtabs implements AfterViewChecked, OnDestro
      */
     private subscriptions: Subscription = new Subscription();
 
-    constructor(private metadata: metadata, private language: language, private navigation: navigation, private elementRef: ElementRef) {
+    private stable: boolean = true;
+
+    constructor(private metadata: metadata, private language: language, private navigation: navigation, private elementRef: ElementRef, private ngZone: NgZone) {
 
         this.subscriptions.add(
             this.navigation.objectTabsChange$.subscribe(changed => {
@@ -55,16 +58,30 @@ export class GlobalNavigationTabbedSubtabs implements AfterViewChecked, OnDestro
                 });
             })
         );
+
+        /*
+        * ToDo: check if thsi is needed
+        */
+        /*
+        this.subscriptions.add(
+            this.ngZone.onStable.subscribe(stable => {
+                this.handleResize();
+            })
+        );
+        */
     }
 
     /**
      * determine the overflow and sizing
+     * ToDo: removed because that caused performance issues
      */
+    /*
     public ngAfterViewChecked(): void {
         window.setTimeout(() => {
-            this.handleResize();
+           this.handleResize();
         });
     }
+    */
 
     /**
      * unsubscribe
