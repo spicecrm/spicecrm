@@ -6,13 +6,11 @@ export interface InputRadioOptionI {
     value: string;
     /** display label */
     label?: string;
-    /** for dom unique id */
+    /** for dom unique id (will be set in the group) */
     id?: string;
-    /** for dom unique name */
-    name?: string;
-    /** display icon */
+    /** display icon instead of text */
     icon?: string;
-    /** used for title attribute */
+    /** used for title attribute (will be defined from label if it is undefined) */
     title?: string;
     /** disabled value for the input */
     disabled?: boolean;

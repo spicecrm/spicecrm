@@ -41,6 +41,10 @@ export class SystemInputRadioButtonGroup implements ControlValueAccessor, AfterV
      */
     @Input() protected readonly disabled: boolean = false;
     /**
+     * the value to be set
+     */
+    protected groupName: string;
+    /**
      * save on change function for ControlValueAccessor
      */
     private onChange: (value: string) => void;
@@ -49,8 +53,11 @@ export class SystemInputRadioButtonGroup implements ControlValueAccessor, AfterV
      */
     private onTouched: () => void;
 
-
+    /**
+     * set group name for dom
+     */
     constructor(private cdRef: ChangeDetectorRef) {
+        this.groupName = _.uniqueId('group-name-');
     }
 
     /**
@@ -120,11 +127,7 @@ export class SystemInputRadioButtonGroup implements ControlValueAccessor, AfterV
      */
     private setItemsInitialValues() {
 
-        const inputName = _.uniqueId('input-name-');
-
         this.inputOptions.forEach(inputOption => {
-
-            inputOption.name = inputName;
 
             if (!inputOption.id) {
                 inputOption.id = _.uniqueId('input-id-');
@@ -135,5 +138,16 @@ export class SystemInputRadioButtonGroup implements ControlValueAccessor, AfterV
                 inputOption.title = inputOption.label;
             }
         });
+    }
+
+    /**
+     * A function that defines how to track changes for items in the iterable (ngForOf).
+     * https://angular.io/api/common/NgForOf#properties
+     * @param index
+     * @param item
+     * @return index
+     */
+    protected trackByFn(index, item) {
+        return item.id;
     }
 }
