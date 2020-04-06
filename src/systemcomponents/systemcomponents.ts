@@ -72,7 +72,6 @@ import /*embed*/ {SystemInputModuleField} from "./components/systeminputmodulefi
 import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
 import /*embed*/ {SystemInputPassword} from "./components/systeminputpassword";
 import /*embed*/ {SystemInputRadio} from "./components/systeminputradio";
-import /*embed*/ {SystemInputRadioButton} from "./components/systeminputradiobutton";
 import /*embed*/ {SystemInputRadioButtonGroup} from "./components/systeminputradiobuttongroup";
 import /*embed*/ {SystemInputRelate} from "./components/systeminputrelate";
 import /*embed*/ {SystemInputTags} from "./components/systeminputtags";
@@ -211,7 +210,6 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemInputNumber,
         SystemInputPassword,
         SystemInputRadio,
-        SystemInputRadioButton,
         SystemInputRadioButtonGroup,
         SystemInputRelate,
         SystemInputTags,
@@ -334,7 +332,6 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemInputNumber,
         SystemInputPassword,
         SystemInputRadio,
-        SystemInputRadioButton,
         SystemInputRadioButtonGroup,
         SystemInputRelate,
         SystemInputTags,
