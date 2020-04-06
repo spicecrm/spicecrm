@@ -192,12 +192,12 @@ export class UserPreferences {
             this.dayHoursList.push(i);
         }
 
-        this.backend.getList("Dashboards", [{sortfield: "name", sortdirection: "DESC"}], ["name", "id"], {limit: -1})
+        this.backend.getList("Dashboards", [{sortfield: "name", sortdirection: "DESC"}], ["name", "id"], {limit: -99})
             .subscribe((dashboards: any) => {
                 this.dashboards = dashboards.list;
             });
 
-        this.backend.getList("DashboardSets", [{sortfield: "name", sortdirection: "DESC"}], ["name", "id"], {limit: -1})
+        this.backend.getList("DashboardSets", [{sortfield: "name", sortdirection: "DESC"}], ["name", "id"], {limit: -99})
             .subscribe((dashboardSets: any) => {
                 this.dashboardSets = dashboardSets.list;
             });
