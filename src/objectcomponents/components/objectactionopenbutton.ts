@@ -19,13 +19,24 @@ import {view} from "../../services/view.service";
 })
 export class ObjectActionOpenButton {
 
+    /**
+     * if set to true didpslay teh button as icon
+     */
+    public displayasicon: boolean = false;
+
     constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private helper: helper, private view: view) {
     }
 
+    /**
+     * checks if the user is allowed to access the bean
+     */
     get disabled() {
         return !this.model.checkAccess('detail') ? true : this.view.isEditMode();
     }
 
+    /**
+     * opens the modal with the record
+     */
     public execute() {
         this.model.goDetail();
     }
