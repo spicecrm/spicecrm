@@ -1,7 +1,14 @@
 /**
  * @module ModuleQuestionnaires
  */
-import { Component, EventEmitter, Input, OnInit } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import { language } from '../../../services/language.service';
 import { backend } from "../../../services/backend.service";
 import { helper } from '../../../services/helper.service';
@@ -18,9 +25,9 @@ declare var _: any;
         '.questionset-render.in-modal .questionset-render-header, .questionset-render.in-modal .questionset-render-footer { flex-grow: 0; flex-shrink: 0; }',
         '.questionset-render.in-modal .questionset-render-questions { flex-shrink: 1; flex-grow: 1; overflow-y: scroll; }',
         '.questionset-render.in-modal { display: flex; flex-direction: column; height: 100%; justify-content: space-between; }',
-        '.questionset-render-text.collapsed { border-bottom-style: dashed; border-bottom-width: 2px; }',
-        '.questionset-render-text.collapsed div:first-child { overflow-y: hidden; position: relative; height: 3rem; }',
-        '.questionset-render-transition { background: linear-gradient(to bottom, rgba(243,242,242,0) 0%, rgba(243,242,242,1) 100%); height: 2rem; position: absolute; bottom: 0; left: 0; right: 0; }'
+        '.collapsed div.questionset-render-text { max-height: 4rem; overflow: hidden; }',
+        '.questionset-render-textbefore-fadeout { display: none; background: linear-gradient(to bottom, rgba(243,242,242,0) 0%, rgba(243,242,242,1) 100%); height: 5rem; position: absolute; bottom: 0; left: 0; right: 0; padding: 0 1rem 1rem 1rem; border-radius: 0.25rem; }',
+        '.collapsed div.questionset-render-textbefore-fadeout { display: block; }'
     ],
     providers: [helper]
 } )
@@ -44,7 +51,11 @@ export class QuestionsetRender implements OnInit {
     private questions: any[] = [];
     private questionset: any;
     private questionsMeta = {};
+
+    private textIsCollapsable = false;
     private textIsCollapsed = false;
+
+    @ViewChild('box', {read: ElementRef, static: false}) private box: ElementRef;
 
     private isCompleteChange = new EventEmitter();
 
@@ -138,6 +149,11 @@ export class QuestionsetRender implements OnInit {
         }
 
         this.isLoading = false;
+
+        // setTimeout() is a workaround
+        window.setTimeout( () => {
+            if ( this.box.nativeElement.clientHeight > 64 ) this.textIsCollapsable = true;
+        },1 );
 
     }
 
