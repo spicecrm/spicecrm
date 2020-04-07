@@ -25,7 +25,7 @@ import {Subscription} from "rxjs";
 })
 export class ReportsDesigner implements OnDestroy {
 
-    private Subscriptions: Subscription = new Subscription();
+    private subscriptions: Subscription = new Subscription();
 
     protected currentUnionListFields: any[] = [];
     private activeTab: 'details' | 'filter' | 'manipulate' | 'present' | 'visualize' | 'integrate' = 'manipulate';
@@ -59,7 +59,7 @@ export class ReportsDesigner implements OnDestroy {
      * kill any subscriptions
      */
     public ngOnDestroy(): void {
-        this.Subscriptions.unsubscribe();
+        this.subscriptions.unsubscribe();
     }
 
     /**
@@ -96,7 +96,7 @@ export class ReportsDesigner implements OnDestroy {
      * @set activeModule
      */
     private subscribeToActivatedRoute() {
-        this.Subscriptions.add(
+        this.subscriptions.add(
             this.navigationtab.activeRoute$.subscribe(route => {
                 const params = route.params;
                 if (!params.id || params.id.length == 0) return;
