@@ -5,7 +5,6 @@ import {Component, OnInit} from '@angular/core';
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
-import {language} from "../../../services/language.service";
 
 /**
  * Outlook add-in detail pane showing a list of beans that use the email addresses found in the email.
@@ -23,18 +22,12 @@ export class GroupwareDetailPane implements OnInit {
      */
     private loading: boolean = false;
 
-    /**
-     * the componentset found and to be rendered to view the details
-     */
-    private componentset: string;
-
     private componentconfig: any = {};
 
     constructor(
         private groupware: GroupwareService,
         private model: model,
-        private metadata: metadata,
-        private language: language
+        private metadata: metadata
     ) {}
 
     /**
