@@ -73,7 +73,8 @@ export class GroupwareReadPaneSearch {
             sort: {},
         };
 
-        this.backend.postRequest('module/Emails/groupware/search', {}, searchParams).subscribe(
+        // this.backend.postRequest('module/Emails/groupware/search', {XDEBUG_SESSION_START: 'PHPSTORM'}, searchParams).subscribe(
+        this.backend.postRequest('module/Emails/groupware/search', {XDEBUG_SESSION_START: 'PHPSTORM'}, searchParams).subscribe(
             (res: any) => {
                 this.searchResults = res;
                 this.searching = false;
