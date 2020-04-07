@@ -143,6 +143,8 @@ export class ReporterDetailView implements OnInit, OnDestroy {
             this.broadcast.message$.subscribe(msg => {
                 if (msg.messagetype == 'model.save' && msg.messagedata.module == this.model.module && msg.messagedata.id == this.model.id) {
                     this.showFilters = false;
+                    // load the where conditions
+                    this.reporterconfig.resetUserFilters();
                     this.whereConditions = msg.messagedata.data.whereconditions;
                     this.setIntegrationParams(msg.messagedata.data.integration_params);
                     this.setVisualizationProperties(msg.messagedata.data.visualization_params);
