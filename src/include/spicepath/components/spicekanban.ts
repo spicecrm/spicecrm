@@ -280,7 +280,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     get hasVisibleItems() {
         let visible = false;
-        if (this.modellist.buckets) {
+        if (!!this.modellist.buckets && !!this.modellist.buckets.bucketitems) {
             for (let bucket of this.modellist.buckets.bucketitems) {
                 if (this.stages.findIndex(st => st.stage == bucket.bucket) >= 0 && bucket.items > 0) {
                     visible = true;
