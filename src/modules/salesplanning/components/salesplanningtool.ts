@@ -11,6 +11,7 @@ import {navigation} from "../../../services/navigation.service";
 import {favorite} from "../../../services/favorite.service";
 import {Subscription} from "rxjs";
 import {broadcast} from "../../../services/broadcast.service";
+import {navigationtab} from "../../../services/navigationtab.service";
 
 declare var _;
 const ANIMATIONS: any = [
@@ -36,7 +37,7 @@ const ANIMATIONS: any = [
     animations: ANIMATIONS
 })
 
-export class SalesPlanningTool implements OnInit {
+export class SalesPlanningTool {
 
     public self: any = {};
     public subscriptions: Subscription = new Subscription();
@@ -58,7 +59,9 @@ export class SalesPlanningTool implements OnInit {
                 private model: model,
                 private broadcast: broadcast,
                 private favorite: favorite,
+                private navigationtab: navigationtab,
                 private planningService: SalesPlanningService) {
+        this.initialize();
     }
 
     get selectedNode() {
@@ -73,51 +76,8 @@ export class SalesPlanningTool implements OnInit {
         return this.planningService.characteristics.length > 0;
     }
 
-    public ngOnInit() {
-        this.initialize();
-    }
-
     public ngOnDestroy() {
         this.subscriptions.unsubscribe();
-    }
-
-
-    /**
-     * @model.initialize
-     * @set model.id
-     * @model.getData
-     * @openSelectModuleModal
-     * @set currentPath
-     * @set activeModule
-     */
-    private subscribeToActivatedRoute() {
-        this.subscriptions.add(
-            this.navigationtab.activeRoute$.subscribe(route => {
-                const params = route.params;
-                if (!params.id || params.id.length == 0) return;
-                if (params.id == 'new') {
-                    this.openSelectModuleModal();
-                } else {
-                    this.model.id = params.id;
-                    this.model.getData()
-                        .subscribe(res => {
-                            if (!res.report_module || res.report_module.length == 0) {
-                                this.openSelectModuleModal();
-                                this.activeTab = 'details';
-                            } else {
-                                const module = this.model.getField('report_module');
-                                this.reportsDesignerService.setCurrentPath(module, module);
-                                this.reportsDesignerService.activeModule = {unionid: 'root', module: res.report_module};
-                            }
-                            if (!res.listfields) this.model.setField('listfields', []);
-                            if (!res.whereconditions) this.model.setField('whereconditions', []);
-
-                            // set the tab info
-                            this.navigationtab.setTabInfo({displayname: this.model.getField('name'), displaymodule: this.model.module});
-                        });
-                }
-            })
-        );
     }
 
     /*
@@ -131,18 +91,26 @@ export class SalesPlanningTool implements OnInit {
     * @subscribe model.save
     */
     private initialize() {
-        this.activatedRoute.params.subscribe(params => {
-            this.model.module = params.module;
-            this.model.id = params.id;
-        });
-        this.model.getData().subscribe(item => {
-            this.getContentFields(item);
-            this.navigation.setActiveModule(this.model.module, this.model.id, item.summary_text);
-        });
 
-        this.planningService.versionId = this.model.id;
-        this.getCharacteristicList();
-        this.subscribeToModelSave();
+        this.subscriptions.add(
+            this.navigationtab.activeRoute$.subscribe(route => {
+                const params = route.params;
+                if (!params.id || params.id.length == 0 || !params.module || params.module.length == 0) return;
+                this.model.module = params.module;
+                this.model.id = params.id;
+                this.planningService.versionId = this.model.id;
+
+                this.model.getData().subscribe(item => {
+
+                    this.navigationtab.setTabInfo({displayname: item.name, displaymodule: this.model.module});
+                    this.getContentFields(item);
+                    this.navigation.setActiveModule(this.model.module, this.model.id, item.summary_text);
+                });
+
+                this.getCharacteristicList();
+                this.subscribeToModelSave();
+            })
+        );
     }
 
     /*
