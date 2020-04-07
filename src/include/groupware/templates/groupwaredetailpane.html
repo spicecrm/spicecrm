@@ -1,32 +1,34 @@
 <ng-container *ngIf="!model.id; else modeldetails">
-    <div class="slds-page-header slds-page-header_record-home">
-        <div class="slds-page-header__row">
-            <div class="slds-page-header__col-title">
-                <div class="slds-media">
-                    <system-icon module="Emails"></system-icon>
-                    <div class="slds-media__body">
-                        <div class="slds-page-header__name">
-                            <div class="slds-page-header__name-title">
-                                <h1>
-                                    <span><system-label-modulename module="Emails"></system-label-modulename></span>
-                                    <span *ngIf="loading" class="slds-page-header__title slds-truncate slds-text-heading--small"><system-label label="LBL_SEARCHING"></system-label></span>
-                                    <span *ngIf="!loading" class="slds-page-header__title slds-truncate slds-text-heading--small"><system-label label="LBL_SELECT"></system-label></span>
-                                </h1>
+    <div>
+        <div class="slds-page-header slds-page-header_record-home">
+            <div class="slds-page-header__row">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-media">
+                        <system-icon icon="dynamic_record_choice"></system-icon>
+                        <div class="slds-media__body">
+                            <div class="slds-page-header__name">
+                                <div class="slds-page-header__name-title">
+                                    <h1>
+                                        <span><system-label label="LBL_RECORDS"></system-label></span>
+                                        <span *ngIf="loading" class="slds-page-header__title slds-truncate slds-text-heading--small"><system-label label="LBL_SEARCHING"></system-label></span>
+                                        <span *ngIf="!loading" class="slds-page-header__title slds-truncate slds-text-heading--small"><system-label label="LBL_SELECT"></system-label></span>
+                                    </h1>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div *ngIf="!loading" class="slds-p-around--x-small">
-        <groupware-detail-pane-bean *ngFor="let bean of beans" [bean]="bean" [modelProvider]="{module: bean.module, id: bean.id, data: bean.data}" (selected)="selectBean($event)"></groupware-detail-pane-bean>
-    </div>
-    <div *ngIf="beans.length == 0 && !loading">
-        <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
-    </div>
-    <div *ngIf="loading" class="slds-p-around--small slds-align--absolute-center">
-        <system-spinner></system-spinner>
+        <div *ngIf="!loading" class="slds-p-around--x-small">
+            <groupware-detail-pane-bean *ngFor="let bean of beans" [bean]="bean" [modelProvider]="{module: bean.module, id: bean.id, data: bean.data}" (selected)="selectBean($event)"></groupware-detail-pane-bean>
+        </div>
+        <div *ngIf="beans.length == 0 && !loading">
+            <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
+        </div>
+        <div *ngIf="loading" class="slds-p-around--small slds-align--absolute-center">
+            <system-spinner></system-spinner>
+        </div>
     </div>
 </ng-container>
 <ng-template #modeldetails>
