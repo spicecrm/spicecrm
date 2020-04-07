@@ -1,7 +1,16 @@
 /**
  * @module ModuleReportsMore
  */
-import {AfterViewInit, Component, NgZone, TemplateRef, ViewChild, ViewContainerRef} from '@angular/core';
+import {
+    AfterViewInit,
+    Component,
+    NgZone,
+    OnDestroy,
+    Renderer2,
+    TemplateRef,
+    ViewChild,
+    ViewContainerRef
+} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {libloader} from '../../../services/libloader.service';
@@ -19,9 +28,13 @@ declare let _: any;
     selector: 'reporter-detail-visualization-google-maps',
     templateUrl: './src/modules/reportsmore/templates/reporterdetailvisualizationgooglemaps.html'
 })
-export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit {
+export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnDestroy {
 
     public vizdata: any;
+    /**
+     * google maps pin markers arry
+     */
+    protected markers: any[] = [];
     @ViewChild('mapContainer', {read: ViewContainerRef, static: false}) private mapContainer: ViewContainerRef;
     @ViewChild('legendContainer') private legendContainer: TemplateRef<any>;
     /**
@@ -33,15 +46,24 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit {
      */
     private infoWindow: any = {};
     /**
-     * google maps pin markers arry
+     * to ensure that the map is ready to handle panning and drawing actions
      */
-    protected markers: any[] =  [];
+    private isMapIdled: boolean = false;
+    /**
+     * event listener for the center control rendered on the map
+     */
+    private centerControlListener: any;
+    /**
+     * google.maps.LatLngBounds instance to fit the map zoom and position to markers or the defined center
+     */
+    private mapBounds: any;
 
     constructor(
         private language: language,
         private model: model,
         private libLoader: libloader,
-        private zone: NgZone
+        private zone: NgZone,
+        private renderer: Renderer2
     ) {
     }
 
@@ -59,13 +81,89 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit {
      */
     public ngAfterViewInit() {
         this.libLoader.loadLib('maps.googleapis').subscribe(() => {
-            this.renderMap();
+            this.zone.runOutsideAngular(() =>
+                this.renderMap()
+            );
             if (!!this.vizdata.data.data.mapaddins.cluster) {
-                this.libLoader.loadLib('MarkerClustererPlus').subscribe(() => this.setMarkerCluster());
+                this.libLoader.loadLib('MarkerClustererPlus').subscribe(() => {
+                    this.zone.runOutsideAngular(() =>
+                        this.setMarkerCluster()
+                    );
+                });
             } else if (!!this.vizdata.data.data.mapaddins.spiderfy) {
-                this.libLoader.loadLib('OverlappingMarkerSpiderfier').subscribe(() => this.setMarkerSpiderfier());
+                this.libLoader.loadLib('OverlappingMarkerSpiderfier').subscribe(() => {
+                    this.zone.runOutsideAngular(() =>
+                        this.setMarkerSpiderfier()
+                    );
+                });
             }
         });
+
+    }
+
+    /**
+     * remove all event listeners from all google maps instances
+     */
+    public ngOnDestroy(): void {
+        google.maps.event.clearInstanceListeners(this.map);
+        this.markers.forEach(marker => {
+            google.maps.event.clearInstanceListeners(marker);
+        });
+        this.removeReCenterControlListener();
+    }
+
+    /**
+     * remove re-center controll listener
+     */
+    private removeReCenterControlListener() {
+        if (!!this.centerControlListener) {
+            this.centerControlListener();
+            this.centerControlListener = null;
+        }
+    }
+
+    /**
+     * define re-center control element
+     * add click event listener to the control to either fit the map bounds or reset the map to the center
+     * append the re-center control to the map controls
+     */
+    private defineReCenterControl() {
+
+        const controlDiv = document.createElement('div');
+        controlDiv.title = this.language.getLabel('LBL_RE_CENTER');
+        controlDiv.classList.add('spice-google-maps-control-recenter');
+        const controlImg = document.createElement('div');
+        controlImg.classList.add('spice-google-maps-control-recenter-icon');
+        controlDiv.appendChild(controlImg);
+
+        this.centerControlListener = this.renderer.listen(controlDiv, 'click', () => {
+            this.fitMapBounds();
+        });
+        this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(controlDiv);
+    }
+
+    /**
+     * generate marker color
+     * @param color
+     */
+    protected generateMarkerColor(color: string) {
+        return {
+            path: `M 0,0 L -43.3,-75 A 50 50 1 1 1 43.30,-75 L 0,0 z`,
+            strokeColor: '#fff',
+            strokeWeight: 1,
+            fillOpacity: 1,
+            scale: .25,
+            anchor: {x: 4.5, y: 5},
+            fillColor: color.indexOf('#') == 0 ? color : '#' + color
+        };
+    }
+
+    /**
+     * check if the geo object latitude and longitude are correct
+     * @param latLng
+     */
+    protected verifyLatLng(latLng: { latitude: number, longitude: number }) {
+        return !!latLng.longitude && !isNaN(latLng.longitude) && !!latLng.latitude && !isNaN(latLng.latitude);
     }
 
     /**
@@ -73,12 +171,24 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit {
      * set legend if active
      */
     private renderMap() {
-        this.zone.runOutsideAngular(() => {
-            this.map = new google.maps.Map(this.mapContainer.element.nativeElement);
-            this.infoWindow = new google.maps.InfoWindow();
 
-            // close popup window on map click
-            google.maps.event.addListener(this.map, 'click', () => this.infoWindow.close());
+        this.map = new google.maps.Map(this.mapContainer.element.nativeElement,
+            {
+                center: {lat: 48.168588, lng: 16.346818},
+                zoom: 11,
+                streetViewControl: false
+            });
+
+        this.mapBounds = new google.maps.LatLngBounds();
+
+        this.infoWindow = new google.maps.InfoWindow();
+
+        // close popup window on map click
+        google.maps.event.addListener(this.map, 'click', () => this.infoWindow.close());
+
+        google.maps.event.addListenerOnce(this.map, 'idle', () => {
+
+            this.isMapIdled = true;
 
             if (!!this.vizdata) {
                 this.setMarkers();
@@ -88,28 +198,38 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit {
                 }
             }
         });
+
+        this.defineReCenterControl();
     }
 
     /**
-     * set maker cluster
+     * initialize MarkerClusterer and add markers to it
      */
     private setMarkerCluster() {
+
+        if (!this.isMapIdled || !(window as any).MarkerClusterer || this.markers.length == 0) return;
+
         const markerCluster = new MarkerClusterer(this.map, this.markers,
             {imagePath: 'vendor/google-maps/MarkerClustererPlus/images/m'});
     }
 
     /**
-     * set maker spiderfier and add markers to speiderfy
+     * set marker spiderfier and add markers to spiderfier
      */
     private setMarkerSpiderfier() {
-        const oms = new OverlappingMarkerSpiderfier(this.map,
+
+        if (!this.isMapIdled || !(window as any).OverlappingMarkerSpiderfier || this.markers.length == 0) return;
+
+
+        const markerSpiderfier = new OverlappingMarkerSpiderfier(this.map,
             {
                 markersWontMove: true,
                 markersWontHide: true,
                 keepSpiderfied: true
             });
+
         this.markers.forEach(marker => {
-            oms.addMarker(marker, () => {
+            markerSpiderfier.addMarker(marker, () => {
                 this.infoWindow.setContent(marker.info);
                 this.infoWindow.open(this.map, marker);
             });
@@ -123,61 +243,71 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit {
         const templateRef = this.legendContainer.createEmbeddedView(null);
         templateRef.detectChanges();
         this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(templateRef.rootNodes[0]);
-
     }
 
     /**
-     * set markers from report result records
+     * define marker data for each record
+     * define a colored marker icon for each record if its color is set
+     * create marker for each record
+     * push the marker position to map bounds to reposition and re-zoom on all markers later
+     * push each marker to markers array
+     * set marker cluster if it is active and the direction service is inactive
+     * fit the map bounds to all rendered markers
      */
     private setMarkers() {
-        this.markers = [];
-        const mapBounds = new google.maps.LatLngBounds();
-        const iconData = {
-            path: `M7.8,1.3L7.8,1.3C6-0.4,3.1-0.4,1.3,1.3c-1.8,1.7-1.8,4.6-0.1,6.3c0,0,0,0,0.1,0.1l3.2,3.2l3.2-3.2C9.6,6,9.6,3.2,7.8,1.3`,
-            strokeColor: '#fff',
-            fillOpacity: 1,
-            fillColor: '',
-            scale: 2,
-            anchor: {x: 4.5,y: 5}
-        };
+
+        this.mapBounds = new google.maps.LatLngBounds();
 
         this.vizdata.data.data.pinpoints.forEach(item => {
-            if (!item.latitude || !item.longitude) return;
 
-            iconData.fillColor = '#' + item.colorLabel;
+            if (!this.verifyLatLng(item)) return;
+
             const markerData: any = {
+                id: item.id,
                 map: this.map,
                 title: !!item.title ? item.title : '',
-                icon: iconData,
                 info: !!item.info ? item.info : '',
                 animation: google.maps.Animation.DROP,
-                position: {lat: +item.latitude, lng: +item.longitude}
+                position: {lat: +item.latitude, lng: +item.longitude},
+                icon: this.generateMarkerColor(item.colorLabel)
             };
+
             // set popup window content
             this.infoWindow.setContent(markerData.info);
 
-            this.createMarker(markerData, mapBounds);
+
+            const marker = new google.maps.Marker(markerData);
+            this.mapBounds.extend(marker.position);
+
+            marker.addListener('click', () => {
+                this.infoWindow.close();
+                // if spiderfier is active it will add its own listener
+                if (!(window as any).OverlappingMarkerSpiderfier) {
+                    this.infoWindow.open(this.map, marker);
+                }
+            });
+
+            this.markers.push(marker);
         });
 
-        this.map.fitBounds(mapBounds);
+        if (!!this.vizdata.data.data.mapaddins.cluster) {
+            this.setMarkerCluster();
+        } else {
+            if (!!this.vizdata.data.data.mapaddins.spiderfy) {
+                this.setMarkerSpiderfier();
+            }
+            this.fitMapBounds();
+        }
     }
 
     /**
-     * create a marker from the given markerData and push it to markers array
-     * add info window to the marker and fit the map bounds
-     * @param markerData: object
-     * @param mapBounds: google.maps.LatLngBounds
+     * fit the map bounds with less zoom if we have only one marker
      */
-    private createMarker(markerData, mapBounds) {
-        const marker = new google.maps.Marker(markerData);
-        marker.addListener('click', () => {
-            this.infoWindow.close();
-            // if spiderfy is active it will add its own listener
-            if (!(window as any).OverlappingMarkerSpiderfier) {
-                this.infoWindow.open(this.map, marker);
-            }
-        });
-        this.markers.push(marker);
-        mapBounds.extend(marker.position);
+    private fitMapBounds() {
+
+        this.map.setOptions({maxZoom: 14});
+        this.map.fitBounds(this.mapBounds);
+        this.map.setOptions({maxZoom: null});
+
     }
 }
