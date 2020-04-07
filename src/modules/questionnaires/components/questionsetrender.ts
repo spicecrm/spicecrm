@@ -152,7 +152,7 @@ export class QuestionsetRender implements OnInit {
 
         // setTimeout() is a workaround
         window.setTimeout( () => {
-            if ( this.box.nativeElement.clientHeight > 64 ) this.textIsCollapsable = true;
+            if ( this.box && this.box.nativeElement.clientHeight > 64 ) this.textIsCollapsable = true;
         },1 );
 
     }
