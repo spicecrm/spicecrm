@@ -21,6 +21,9 @@ import {navigationtab} from "../../../services/navigationtab.service";
 import {broadcast} from "../../../services/broadcast.service";
 
 /** @ignore */
+declare var _;
+
+/** @ignore */
 const ANIMATIONS = [
     trigger('animatepanel', [
         transition(':enter', [
@@ -70,7 +73,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     /**
      * differentiate the records array changes
      */
-    public subscription: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
     /**
      * map options will be passed to the spice google maps
      */
@@ -135,7 +138,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
      * unsubscribe from subscriptions
      */
     public ngOnDestroy() {
-        this.subscription.unsubscribe();
+        this.subscriptions.unsubscribe();
         this.modelList.searchGeo = undefined;
     }
 
@@ -176,7 +179,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
             this.componentconfig.directionTravelMode = 'DRIVING';
         }
         if (!(!!this.componentconfig.mapHeight)) {
-            this.componentconfig.mapHeight = 300;
+            this.componentconfig.mapHeight = 500;
         }
         if (!(!!this.componentconfig.circleColor)) {
             this.componentconfig.circleColor = '#CA1B21';
@@ -188,23 +191,20 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
             this.componentconfig.focusColor = '#1A73E8';
         }
 
-        this.setFirstMapOptionsChanged();
+        this.setMapOptionsFromComponentConfig();
 
         this.setLatLngFieldsNames();
     }
 
     /**
-     * set changed property for mapOptions to trigger change detections on the map
+     * set map options from component config
      */
-    public setFirstMapOptionsChanged() {
+    private setMapOptionsFromComponentConfig() {
         this.mapOptions = {
-            ...this.componentconfig, changed: {
-                showMyLocation: true,
-                showCluster: true,
-                markerWithModelPopover: true,
-                directionTravelMode: true,
-                focusColor: true,
-            }
+            showCluster: this.componentconfig.showCluster,
+            markerWithModelPopover: this.componentconfig.markerWithModelPopover,
+            focusColor: this.componentconfig.focusColor,
+            showMyLocation: this.componentconfig.showMyLocation,
         };
     }
 
@@ -233,6 +233,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
      * set search geo filter on modelList and reload the records list
      */
     public onCenterChange(center: MapCenterI) {
+        if (!this.mapOptions.circle) return;
         this.mapOptions.circle.center = center;
     }
 
@@ -257,7 +258,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
      * subscribe to map focus from the focus field and set focused record id
      */
     public subscribeToMapFocus() {
-        this.subscription.add(this.broadcast.message$.subscribe(msg => {
+        this.subscriptions.add(this.broadcast.message$.subscribe(msg => {
             this.setFocusedRecordId(msg);
         }));
     }
@@ -300,10 +301,10 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
      * subscribe to model list type and data reloaded changes to reset records
      */
     private subscribeToModelListChanges() {
-        this.subscription.add(this.modelList.listtype$.subscribe(() => {
+        this.subscriptions.add(this.modelList.listtype$.subscribe(() => {
             this.setRecords();
         }));
-        this.subscription.add(this.modelList.listDataChanged$.subscribe(() => {
+        this.subscriptions.add(this.modelList.listDataChanged$.subscribe(() => {
             this.setRecords();
             this.setFixedCircle();
         }));
@@ -377,8 +378,8 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
      * @param msg
      */
     private setFocusedRecordId(msg: { messagedata: any, messagetype: string }) {
-        if (msg.messagetype != 'map.focus' || !msg.messagedata || !msg.messagedata.modelId || this.focusedRecordId == msg.messagedata.modelId ||
-            (msg.messagedata.tabId == 'main' && !!this.navigationtab.tabid) || (msg.messagedata.tabId != 'main' && this.navigationtab.tabid != msg.messagedata.tabId)) {
+        if (msg.messagetype != 'map.focus' || !msg.messagedata || !msg.messagedata.modelId || (msg.messagedata.tabId == 'main' && !!this.navigationtab.tabid) ||
+            (msg.messagedata.tabId != 'main' && this.navigationtab.tabid != msg.messagedata.tabId)) {
             return;
         }
 
