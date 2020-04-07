@@ -119,18 +119,20 @@ export class ModelPopOverDirective implements OnInit, OnDestroy {
     }
 
     /**
-     * renders the popover
+     * renders the popover if a footer container if in the footer service
      */
     private renderPopover() {
-        this.metadata.addComponent('ObjectModelPopover', this.footer.footercontainer).subscribe(
-            popover => {
-                popover.instance.popovermodule = this.module;
-                popover.instance.popoverid = this.id;
-                popover.instance.parentElementRef = this.elementRef;
+        if(this.footer.footercontainer){
+            this.metadata.addComponent('ObjectModelPopover', this.footer.footercontainer).subscribe(
+                popover => {
+                    popover.instance.popovermodule = this.module;
+                    popover.instance.popoverid = this.id;
+                    popover.instance.parentElementRef = this.elementRef;
 
-                this.popoverCmp = popover.instance;
-            }
-        );
+                    this.popoverCmp = popover.instance;
+                }
+            );
+        }
     }
 
     public ngOnInit() {
