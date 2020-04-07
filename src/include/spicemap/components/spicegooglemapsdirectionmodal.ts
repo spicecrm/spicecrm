@@ -1,7 +1,7 @@
 /**
  * @module ModuleSpiceMap
  */
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 
 /**
  * display a google direction modal
@@ -24,4 +24,12 @@ export class SpiceGoogleMapsDirectionModal {
         direction: true,
         search: false
     };
+
+    constructor(private cdRef: ChangeDetectorRef) {
+    }
+
+    private close() {
+        this.cdRef.detach();
+        this.self.destroy();
+    }
 }
