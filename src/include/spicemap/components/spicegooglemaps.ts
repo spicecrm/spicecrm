@@ -647,6 +647,9 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
         this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(controlDiv);
     }
 
+    /**
+     * fit the map bounds with less zoom if we have only one marker
+     */
     private fitMapBounds() {
         this.map.setOptions({maxZoom: 14});
 
