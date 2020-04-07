@@ -38,10 +38,7 @@ import /*embed*/ {GroupwareMeetingPane} from "./components/groupwaremeetingpane"
         SystemComponents,
         ObjectComponents,
         DirectivesModule,
-        ObjectFields,
-        RouterModule.forRoot([
-            {path: 'meeting', component: GroupwareMeetingPane, canActivate: [loginCheck]},
-        ])
+        ObjectFields
     ],
     declarations: [
         GroupwarePaneBean,
