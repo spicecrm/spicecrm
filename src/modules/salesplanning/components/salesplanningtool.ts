@@ -4,7 +4,6 @@
 import {Component, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {backend} from "../../../services/backend.service";
-import {ActivatedRoute} from "@angular/router";
 import {SalesPlanningService} from "../services/salesplanning.service";
 import {model} from "../../../services/model.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
@@ -54,7 +53,6 @@ export class SalesPlanningTool implements OnInit {
 
     constructor(private language: language,
                 private backend: backend,
-                private activatedRoute: ActivatedRoute,
                 private renderer: Renderer2,
                 private navigation: navigation,
                 private model: model,
@@ -81,6 +79,45 @@ export class SalesPlanningTool implements OnInit {
 
     public ngOnDestroy() {
         this.subscriptions.unsubscribe();
+    }
+
+
+    /**
+     * @model.initialize
+     * @set model.id
+     * @model.getData
+     * @openSelectModuleModal
+     * @set currentPath
+     * @set activeModule
+     */
+    private subscribeToActivatedRoute() {
+        this.subscriptions.add(
+            this.navigationtab.activeRoute$.subscribe(route => {
+                const params = route.params;
+                if (!params.id || params.id.length == 0) return;
+                if (params.id == 'new') {
+                    this.openSelectModuleModal();
+                } else {
+                    this.model.id = params.id;
+                    this.model.getData()
+                        .subscribe(res => {
+                            if (!res.report_module || res.report_module.length == 0) {
+                                this.openSelectModuleModal();
+                                this.activeTab = 'details';
+                            } else {
+                                const module = this.model.getField('report_module');
+                                this.reportsDesignerService.setCurrentPath(module, module);
+                                this.reportsDesignerService.activeModule = {unionid: 'root', module: res.report_module};
+                            }
+                            if (!res.listfields) this.model.setField('listfields', []);
+                            if (!res.whereconditions) this.model.setField('whereconditions', []);
+
+                            // set the tab info
+                            this.navigationtab.setTabInfo({displayname: this.model.getField('name'), displaymodule: this.model.module});
+                        });
+                }
+            })
+        );
     }
 
     /*
