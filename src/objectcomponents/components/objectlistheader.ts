@@ -6,6 +6,7 @@ import {language} from '../../services/language.service';
 import {modellist} from '../../services/modellist.service';
 import {view} from '../../services/view.service';
 import {SystemResizeDirective} from "../../directives/directives/systemresize";
+import {layout} from "../../services/layout.service";
 
 /**
  * renders the header row for a list view table
@@ -34,10 +35,20 @@ export class ObjectListHeader {
      */
     @Input() private showRowActionMenu: boolean = true;
 
-    constructor(private modellist: modellist, private language: language, private view: view, private elementRef: ElementRef) {
+    constructor(private modellist: modellist, private language: language, private view: view, private elementRef: ElementRef, private layout: layout) {
         this.view.labels = 'short';
     }
 
+    /**
+     * returns if the layout is set to small
+     */
+    get isSmall() {
+        return this.layout.screenwidth == 'small';
+    }
+
+    /**
+     * returns the listfields
+     */
     get listfields() {
         return this.modellist.listfields;
     }
@@ -83,7 +94,7 @@ export class ObjectListHeader {
     }
 
     private onresize(e) {
-        let elementWidths = {}
+        let elementWidths = {};
         let totalwidth = 0;
 
         this.resizeElements.forEach(element => {

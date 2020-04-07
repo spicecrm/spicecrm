@@ -77,21 +77,6 @@
                             <Group id="msgReadGroup">
                                 <Label resid="groupLabel"/>
                                 <!-- Launch the add-in : task pane button -->
-                                <Control xsi:type="Button" id="msgReadOpenPaneButton">
-                                    <Label resid="paneReadButtonLabel"/>
-                                    <Supertip>
-                                        <Title resid="paneReadSuperTipTitle"/>
-                                        <Description resid="paneReadSuperTipDescription"/>
-                                    </Supertip>
-                                    <Icon>
-                                        <bt:Image size="16" resid="icon16"/>
-                                        <bt:Image size="32" resid="icon32"/>
-                                        <bt:Image size="80" resid="icon80"/>
-                                    </Icon>
-                                    <Action xsi:type="ShowTaskpane">
-                                        <SourceLocation resid="messageReadTaskPaneUrl"/>
-                                    </Action>
-                                </Control>
                                 <Control xsi:type="Button" id="crmPaneButton">
                                     <Label resid="CRMButtonLabel"/>
                                     <Supertip>
@@ -150,8 +135,8 @@
             <bt:Urls>
                 <bt:Url id="functionFile"
                         DefaultValue="https://<serverurl>/assets/outlook/function-file.html"/>
-                <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://<serverurl>/outlook.html#/mailitem"/>
-                <bt:Url id="crmURL" DefaultValue="https://<serverurl>/outlook.html#/details"/>
+                <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://<serverurl>/outlook.html#/groupware/mailitem"/>
+                <bt:Url id="crmURL" DefaultValue="https://<serverurl>/outlook.html#/groupware/details"/>
                 <bt:Url id="meetingURL" DefaultValue="https://<serverurl>/outlook.html#/meeting"/>
             </bt:Urls>
             <bt:ShortStrings>
@@ -162,12 +147,7 @@
                 <bt:String id="paneReadSuperTipTitle" DefaultValue="SpiceCRM"/>
                 <bt:String id="CRMAppointmentCreateLabel" DefaultValue="link to CRM"/>
             </bt:ShortStrings>
-            <bt:LongStrings>
-                <bt:String id="paneReadSuperTipDescription"
-                           DefaultValue="Opens a pane displaying all available properties. This is an example of a button that opens a task pane."/>
-            </bt:LongStrings>
         </Resources>
-
         <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides/1.1"
                           xsi:type="VersionOverridesV1_1">
             <Requirements>
@@ -177,11 +157,9 @@
             </Requirements>
             <Hosts>
                 <Host xsi:type="MailHost">
-
                     <DesktopFormFactor>
                         <!-- Location of the Functions that UI-less buttons can trigger (ExecuteFunction Actions). -->
                         <FunctionFile resid="functionFile"/>
-
                         <!-- Message Read -->
                         <ExtensionPoint xsi:type="MessageReadCommandSurface">
                             <!-- Use the default tab of the ExtensionPoint or create your own with <CustomTab id="myTab"> -->
@@ -190,21 +168,6 @@
                                 <Group id="msgReadGroup">
                                     <Label resid="groupLabel"/>
                                     <!-- Launch the add-in : task pane button -->
-                                    <Control xsi:type="Button" id="msgReadOpenPaneButton">
-                                        <Label resid="paneReadButtonLabel"/>
-                                        <Supertip>
-                                            <Title resid="paneReadSuperTipTitle"/>
-                                            <Description resid="paneReadSuperTipDescription"/>
-                                        </Supertip>
-                                        <Icon>
-                                            <bt:Image size="16" resid="icon16"/>
-                                            <bt:Image size="32" resid="icon32"/>
-                                            <bt:Image size="80" resid="icon80"/>
-                                        </Icon>
-                                        <Action xsi:type="ShowTaskpane">
-                                            <SourceLocation resid="messageReadTaskPaneUrl"/>
-                                        </Action>
-                                    </Control>
                                     <Control xsi:type="Button" id="crmPaneButton">
                                         <Label resid="CRMButtonLabel"/>
                                         <Supertip>
@@ -308,8 +271,8 @@
                 </bt:Images>
                 <bt:Urls>
                     <bt:Url id="functionFile" DefaultValue="https://<serverurl>/assets/outlook/function-file.html"/>
-                    <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://<serverurl>/outlook.html#/mailitem"/>
-                    <bt:Url id="crmURL" DefaultValue="https://<serverurl>/outlook.html#/details"/>
+                    <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://<serverurl>/outlook.html#/groupware/mailitem"/>
+                    <bt:Url id="crmURL" DefaultValue="https://<serverurl>/outlook.html#/groupware/details"/>
                     <bt:Url id="meetingURL" DefaultValue="https://<serverurl>/outlook.html#/meeting"/>
                 </bt:Urls>
                 <bt:ShortStrings>

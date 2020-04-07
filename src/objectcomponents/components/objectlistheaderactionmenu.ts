@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Input, NgZone, Injector} from '@angular/core';
+import {Component, Input, NgZone, Injector, ChangeDetectorRef} from '@angular/core';
 import {language} from '../../services/language.service';
 import {modal} from '../../services/modal.service';
 import {modellist} from '../../services/modellist.service';
@@ -23,8 +23,8 @@ export class ObjectListHeaderActionMenu extends ObjectActionContainer {
      */
     public actionitems: any[] = [];
 
-    constructor(private modellist: modellist, public language: language, public metadata: metadata, public model: model, public ngZone: NgZone, private modal: modal, private injector: Injector) {
-        super(language, metadata, model, ngZone);
+    constructor(private modellist: modellist, public language: language, public metadata: metadata, public model: model, public ngZone: NgZone, public cdRef: ChangeDetectorRef, private modal: modal, private injector: Injector) {
+        super(language, metadata, model, ngZone, cdRef);
     }
 
     /**
