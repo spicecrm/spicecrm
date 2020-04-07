@@ -16,13 +16,24 @@ import {Subscription} from "rxjs";
 })
 export class ObjectActionRemoveButton implements AfterViewInit, OnDestroy {
 
+    /**
+     * the ationemitter the container can subscribe to
+     */
     @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
-    public module: string = '';
     /**
      * defines if the delete ooptionis disabled. By defualt it is but this is checked on model load and model changes and set accordingly to ACL Rules there
      */
     public disabled: boolean = true;
+
+    /**
+     * if set to true didpslay teh button as icon
+     */
+    public displayasicon: boolean = false;
+
+    /**
+     * the subscriptions the component has
+     */
     private subscriptions: Subscription = new Subscription();
 
     constructor(private language: language, private metadata: metadata, private model: model, private view: view, private relatedmodels: relatedmodels, private modalservice: modal) {
