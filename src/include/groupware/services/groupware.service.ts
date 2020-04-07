@@ -263,4 +263,11 @@ export abstract class GroupwareService {
      * Retrieves an of email adresses and the message ID of the current email.
      */
     public abstract getEmailAddressData();
+
+    /**
+     * Retrieves an array of all email addresses (From, To, Cc)
+     */
+    public abstract getCalenderItemId();
+
+    public abstract getCustomProperties();
 }
