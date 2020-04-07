@@ -27,6 +27,11 @@ export class ObjectActionDeleteButton implements AfterViewInit, OnDestroy {
     public disabled: boolean = true;
 
     /**
+     * if set to true didpslay teh button as icon
+     */
+    public displayasicon: boolean = false;
+
+    /**
      * holds the subscriptions
      */
     private subscriptions: Subscription = new Subscription();

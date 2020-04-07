@@ -1,5 +1,5 @@
 <th *ngIf="showSelectColumn" class="slds-cell-shrink" scope="col">
-    <object-list-header-actionmenu [actionset]="actionset"></object-list-header-actionmenu>
+    <object-list-header-actionmenu [actionset]="actionset" [displayasicon]="isSmall"></object-list-header-actionmenu>
 </th>
 <th *ngFor="let item of listfields" scope="col" class="slds-resizable" (systemresize)="onresize($event)" [resizeid]="item.id" [width]="columnWidth(item.id)">
     <ng-container *ngIf="isSortable(item); else nosort">
