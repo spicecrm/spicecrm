@@ -41,6 +41,7 @@ import {recent} from "../../services/recent.service";
 import {userpreferences} from "../../services/userpreferences.service";
 import {fts} from "../../services/fts.service";
 import {loader} from "../../services/loader.service";
+import {libloader} from "../../services/libloader.service";
 import {broadcast} from "../../services/broadcast.service";
 import {dockedComposer} from "../../services/dockedcomposer.service";
 import {backend} from "../../services/backend.service";
@@ -67,11 +68,10 @@ import /*embed*/ {OutlookGroupware} from "./services/outlookgroupware.service";
 
 import /*embed*/ {OutlookPane} from './components/outlookpane';
 import /*embed*/ {OutlookPaneFooter} from './components/outlookpanefooter';
-import /*embed*/ {OutlookRouteHandler} from './components/outlookroutehandler';
 import /*embed*/ {OutlookSettingsPane} from './components/outlooksettingspane';
 import /*embed*/ {OutlookLoginPane} from "./components/outlookloginpane";
-import {GlobalLogin} from "../../globalcomponents/components/globallogin";
 import {loggerService} from "../../services/logger.service";
+import {SystemDynamicRouteInterceptor} from "../../systemcomponents/components/systemdynamicrouteinterceptor";
 
 declare var Office: any;
 
@@ -86,15 +86,14 @@ declare var Office: any;
         DirectivesModule,
         ModuleGroupware,
         RouterModule.forRoot([
-            {path: 'settings', component: OutlookSettingsPane},
             {path: 'login', component: OutlookLoginPane},
-            {path: "", component: OutlookRouteHandler, pathMatch: "full", canActivate: [loginCheck]}
+            {path: "", component: SystemDynamicRouteInterceptor, pathMatch: "full", canActivate: [loginCheck]},
+            {path: '**', component: SystemDynamicRouteInterceptor, canActivate: [loginCheck]}
         ])
     ],
     declarations: [
         OutlookPane,
         OutlookPaneFooter,
-        OutlookRouteHandler,
         OutlookSettingsPane,
         OutlookLoginPane,
     ],
@@ -114,6 +113,7 @@ declare var Office: any;
         loginCheck,
         loginService,
         loader,
+        libloader,
         configurationService,
         language,
         dockedComposer,
