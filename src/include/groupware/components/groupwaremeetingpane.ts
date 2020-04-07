@@ -29,34 +29,29 @@ import {backend} from "../../../services/backend.service";
     templateUrl: './src/include/groupware/templates/groupwaremeetingpane.html'
 })
 export class GroupwareMeetingPane {
-    /**
-     * Currently active tab.
-     */
-    private activetab: 'beans' | 'search' | 'attachments' | 'linked' = 'beans';
+
+    private meetingid: string;
+
+    private customProperties: any;
 
     constructor(
         private backend: backend,
         private groupware: GroupwareService,
     ) {
-        this.groupware.getEmailFromSpice();
+        this.groupware.getCalenderItemId().subscribe(id => {
+            this.meetingid = id ? id : 'meeting is new';
+        });
+
+        this.groupware.getCustomProperties().subscribe(props => {
+            this.customProperties = props;
+
+            if(!this.customProperties.get('accountid')){
+                this.customProperties.set('accountid', '4711');
+                this.customProperties.saveAsync(resp => {
+                    console.log(resp);
+                });
+            }
+        });
     }
 
-    /**
-     * Sets a tab as open and displays its content.
-     * @param tab
-     */
-    private open(tab) {
-        this.activetab = tab;
-    }
-
-    /**
-     * Checks if the current email has already been archived in SpiceCRM.
-     */
-    get isArchived() {
-        if (this.groupware.emailId.length === 0) {
-            return false;
-        }
-
-        return true;
-    }
 }

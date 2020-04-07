@@ -3,7 +3,7 @@
  */
 import {Injectable} from "@angular/core";
 import {GroupwareService} from "../../../include/groupware/services/groupware.service";
-import {Observable, Subject} from "rxjs";
+import {Observable, Subject, of} from "rxjs";
 
 declare var Office: any;
 
@@ -144,4 +144,31 @@ export class OutlookGroupware extends GroupwareService {
 
         return data;
     }
+
+    /**
+     * get the calendar item id
+     */
+    public getCalenderItemId(): Observable<string> {
+        if (Office.context.mailbox.item.itemId) {
+            return of(Office.context.mailbox.item.itemId);
+        } else {
+            let retSubject = new Subject<string>();
+            Office.context.mailbox.item.getItemIdAsync(id => {
+                retSubject.next(id.value);
+                retSubject.complete();
+            });
+            return retSubject.asObservable();
+        }
+    }
+
+    public getCustomProperties(): Observable<any> {
+        let retSubject = new Subject<any>();
+        Office.context.mailbox.item.loadCustomPropertiesAsync(cProps => {
+            retSubject.next(cProps.value);
+            retSubject.complete();
+        });
+        return retSubject.asObservable();
+    }
+
+
 }
