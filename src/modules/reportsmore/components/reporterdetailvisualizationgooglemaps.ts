@@ -269,8 +269,11 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnD
                 info: !!item.info ? item.info : '',
                 animation: google.maps.Animation.DROP,
                 position: {lat: +item.latitude, lng: +item.longitude},
-                icon: this.generateMarkerColor(item.colorLabel)
             };
+
+            if (!!item.colorLabel) {
+                markerData.icon = this.generateMarkerColor(item.colorLabel);
+            }
 
             // set popup window content
             this.infoWindow.setContent(markerData.info);
