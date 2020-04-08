@@ -4,6 +4,7 @@
 import {Component, Input} from '@angular/core';
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {metadata} from '../../services/metadata.service';
+import {layout} from '../../services/layout.service';
 
 /**
  * a component that is the base for a modal window. It can conatain a set of other components
@@ -45,14 +46,14 @@ export class SystemModal {
     /**
      * the size of the modal tobe rendered
      */
-    @Input() private size: 'prompt'|'small'|'medium'|'large' = 'medium';
+    @Input() private size: 'prompt' | 'small' | 'medium' | 'large' = 'medium';
 
     /**
      * additonal classes that are put in and are rendered with the modal
      */
     @Input() private class: string = '';
 
-    constructor(private metadata: metadata) {
+    constructor(private metadata: metadata, private layout: layout) {
 
     }
 
@@ -69,4 +70,20 @@ export class SystemModal {
         return this.class;
     }
 
+    /**
+     * make the modal full screen on small screens
+     */
+    get containerStyle() {
+        if (this.layout.screenwidth == 'small') {
+            return {
+                'padding': '0px',
+                'margin': '0px',
+                'border-radius': '0px'
+            };
+        } else {
+            return {};
+        }
+    }
+
 }
+
