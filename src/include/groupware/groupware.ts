@@ -26,9 +26,11 @@ import /*embed*/ {GroupwareReadPaneBeans} from './components/groupwarereadpanebe
 import /*embed*/ {GroupwareReadPaneLinked} from './components/groupwarereadpanelinked';
 import /*embed*/ {GroupwareReadPaneSearch} from './components/groupwarereadpanesearch';
 import /*embed*/ {GroupwareDetailPane} from './components/groupwaredetailpane';
+import /*embed*/ {GroupwareDetailPanefooter} from './components/groupwaredetailpanefooter';
 import /*embed*/ {GroupwareDetailPaneHeader} from './components/groupwaredetailpaneheader';
 import /*embed*/ {GroupwareDetailPaneBean} from './components/groupwaredetailpanebean';
-import /*embed*/ {GroupwareMeetingPane} from "./components/groupwaremeetingpane";
+import /*embed*/ {GroupwareMeetingEditPane} from "./components/groupwaremeetingeditpane";
+import /*embed*/ {GroupwareMeetingReadPane} from "./components/groupwaremeetingreadpane";
 
 @NgModule({
     imports: [
@@ -50,9 +52,11 @@ import /*embed*/ {GroupwareMeetingPane} from "./components/groupwaremeetingpane"
         GroupwareReadPaneLinked,
         GroupwareReadPaneSearch,
         GroupwareDetailPane,
+        GroupwareDetailPanefooter,
         GroupwareDetailPaneHeader,
         GroupwareDetailPaneBean,
-        GroupwareMeetingPane,
+        GroupwareMeetingEditPane,
+        GroupwareMeetingReadPane
     ]
 })
 export class ModuleGroupware {

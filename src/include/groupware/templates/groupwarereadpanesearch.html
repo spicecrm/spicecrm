@@ -1,14 +1,11 @@
-<div class="slds-p-around--x-small">
+<div class="slds-p-around--x-small" [overlayLoadingSpinner]="searching">
     <div class="slds-form-element">
         <div class="slds-form-element__control">
             <input type="text" id="search-term" placeholder="Please enter your search term"
                    class="slds-input" [(ngModel)]="this.searchTerm" (keyup)="search($event)"/>
         </div>
     </div>
-    <div class="slds-p-vertical--small" *ngIf="!searching && searchResults.length > 0">
+    <div class="slds-p-vertical--small" tobottom>
         <groupware-pane-bean *ngFor="let bean of searchResults" [bean]="bean" [modelProvider]="{module: bean.module, id: bean.id, data: bean.data}"></groupware-pane-bean>
-    </div>
-    <div *ngIf="searching" class="slds-size--1-of-1 slds-align--absolute-center" style="height: 80%">
-        <h2 class="slds-text-heading--medium">.. Searching ..</h2>
     </div>
 </div>

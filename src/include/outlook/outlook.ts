@@ -25,6 +25,7 @@ import {Subject, Observable} from 'rxjs';
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {DirectivesModule} from "../../directives/directives";
+import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 
 // various services we need on global app level
 import {configurationService} from "../../services/configuration.service";
@@ -84,6 +85,7 @@ declare var Office: any;
         SystemComponents,
         ObjectComponents,
         DirectivesModule,
+        GlobalComponents,
         ModuleGroupware,
         RouterModule.forRoot([
             {path: 'login', component: OutlookLoginPane},
