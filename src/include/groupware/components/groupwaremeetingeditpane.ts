@@ -25,10 +25,9 @@ import {backend} from "../../../services/backend.service";
 
 
 @Component({
-    selector: 'groupware-meeting-pane',
-    templateUrl: './src/include/groupware/templates/groupwaremeetingpane.html'
+    templateUrl: './src/include/groupware/templates/groupwaremeetingeditpane.html'
 })
-export class GroupwareMeetingPane {
+export class GroupwareMeetingEditPane {
 
     private meetingid: string;
 
