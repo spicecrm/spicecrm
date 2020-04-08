@@ -9,6 +9,8 @@ import {
     DoCheck, AfterViewInit, HostListener, Output, EventEmitter
 } from '@angular/core';
 
+import {footer} from "../../services/footer.service";
+
 /**
  * a directive that sets the height of an element to the bottom ov the vioewable viewport, renders the element as scrollable anbd also emits
  * an event when the content is close to the bottom so an infinite list can reload automatically
@@ -24,7 +26,7 @@ export class ToBottomDirective implements DoCheck {
      */
     @Output('tobottom') private more: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor(private element: ElementRef, private renderer: Renderer2) {
+    constructor(private element: ElementRef, private renderer: Renderer2, private footer: footer) {
     }
 
     /**
@@ -37,7 +39,7 @@ export class ToBottomDirective implements DoCheck {
      */
     public ngDoCheck() {
         let rect = this.element.nativeElement.getBoundingClientRect();
-        let height = Math.floor(window.innerHeight - rect.top - parseInt( getComputedStyle(this.element.nativeElement).marginBottom, 10 ) - parseInt( getComputedStyle(this.element.nativeElement).paddingBottom, 10 ));
+        let height = Math.floor(window.innerHeight - rect.top - parseInt( getComputedStyle(this.element.nativeElement).marginBottom, 10 ) - parseInt( getComputedStyle(this.element.nativeElement).paddingBottom, 10 ) - this.footer.visibleFooterHeight);
         this.renderer.setStyle(this.element.nativeElement, 'height',  height + 'px');
     }
 
