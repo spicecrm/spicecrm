@@ -50,6 +50,10 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnD
      */
     private isMapIdled: boolean = false;
     /**
+     * to ensure that the map tiles are loaded to handle adding clusters
+     */
+    private tilesLoaded: boolean = false;
+    /**
      * event listener for the center control rendered on the map
      */
     private centerControlListener: any;
@@ -186,6 +190,10 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnD
         // close popup window on map click
         google.maps.event.addListener(this.map, 'click', () => this.infoWindow.close());
 
+        google.maps.event.addListenerOnce(this.map, 'tilesloaded', () => {
+            this.tilesLoaded = true;
+        });
+
         google.maps.event.addListenerOnce(this.map, 'idle', () => {
 
             this.isMapIdled = true;
@@ -209,8 +217,17 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnD
 
         if (!this.isMapIdled || !(window as any).MarkerClusterer || this.markers.length == 0) return;
 
-        const markerCluster = new MarkerClusterer(this.map, this.markers,
+        const markerCluster = new MarkerClusterer(this.map, [],
             {imagePath: 'vendor/google-maps/MarkerClustererPlus/images/m'});
+
+        if (!this.tilesLoaded) {
+            google.maps.event.addListenerOnce(this.map, 'tilesloaded', () => {
+                this.tilesLoaded = true;
+                markerCluster.addMarkers(this.markers);
+            });
+        } else {
+            markerCluster.addMarkers(this.markers);
+        }
     }
 
     /**
@@ -295,12 +312,11 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnD
 
         if (!!this.vizdata.data.data.mapaddins.cluster) {
             this.setMarkerCluster();
-        } else {
-            if (!!this.vizdata.data.data.mapaddins.spiderfy) {
-                this.setMarkerSpiderfier();
-            }
-            this.fitMapBounds();
+        } else if (!!this.vizdata.data.data.mapaddins.spiderfy) {
+            this.setMarkerSpiderfier();
         }
+
+        this.fitMapBounds();
     }
 
     /**
