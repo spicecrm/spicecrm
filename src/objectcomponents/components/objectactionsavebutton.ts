@@ -15,6 +15,11 @@ export class ObjectActionSaveButton {
 
     @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
+    /**
+     * if set to true didpslay teh button as icon
+     */
+    public displayasicon: boolean = false;
+
     constructor(private language: language, private metadata: metadata, private model: model, private view: view) {
 
     }

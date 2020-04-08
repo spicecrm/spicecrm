@@ -22,6 +22,11 @@ export class ObjectActionCancelButton {
 
     @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
 
+    /**
+     * if set to true didpslay teh button as icon
+     */
+    public displayasicon: boolean = false;
+
     constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private helper: helper, private view: view, @Optional() private modalwindow: modalwindow) {
     }
 

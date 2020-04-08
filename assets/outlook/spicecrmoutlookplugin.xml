@@ -100,7 +100,7 @@
                         <!-- Use the default tab of the ExtensionPoint or create your own with <CustomTab id="myTab"> -->
                         <OfficeTab id="TabDefault">
                             <!-- Up to 6 Groups added per Tab -->
-                            <Group id="appointmentOrganizeroup">
+                            <Group id="appointmentOrganizerGroup">
                                 <Label resid="groupLabel"/>
                                 <Control xsi:type="Button" id="crmAppointmentButton">
                                     <Label resid="CRMAppointmentCreateLabel"/>
@@ -114,7 +114,32 @@
                                         <bt:Image size="80" resid="icon80"/>
                                     </Icon>
                                     <Action xsi:type="ShowTaskpane">
-                                        <SourceLocation resid="meetingURL"/>
+                                        <SourceLocation resid="meetingEditURL"/>
+                                    </Action>
+                                </Control>
+                                <!-- Go to http://aka.ms/ButtonCommands to learn how to add more Controls: ExecuteFunction and Menu -->
+                            </Group>
+                        </OfficeTab>
+                    </ExtensionPoint>
+                    <ExtensionPoint xsi:type="AppointmentAttendeeCommandSurface">
+                        <!-- Use the default tab of the ExtensionPoint or create your own with <CustomTab id="myTab"> -->
+                        <OfficeTab id="TabDefault">
+                            <!-- Up to 6 Groups added per Tab -->
+                            <Group id="appointmentAttendeeGroup">
+                                <Label resid="groupLabel"/>
+                                <Control xsi:type="Button" id="crmAppointmentAttendeeButton">
+                                    <Label resid="CRMAppointmentCreateLabel"/>
+                                    <Supertip>
+                                        <Title resid="paneReadSuperTipTitle"/>
+                                        <Description resid="paneReadSuperTipDescription"/>
+                                    </Supertip>
+                                    <Icon>
+                                        <bt:Image size="16" resid="icon16"/>
+                                        <bt:Image size="32" resid="icon32"/>
+                                        <bt:Image size="80" resid="icon80"/>
+                                    </Icon>
+                                    <Action xsi:type="ShowTaskpane">
+                                        <SourceLocation resid="meetingReadURL"/>
                                     </Action>
                                 </Control>
                                 <!-- Go to http://aka.ms/ButtonCommands to learn how to add more Controls: ExecuteFunction and Menu -->
@@ -137,7 +162,8 @@
                         DefaultValue="https://<serverurl>/assets/outlook/function-file.html"/>
                 <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://<serverurl>/outlook.html#/groupware/mailitem"/>
                 <bt:Url id="crmURL" DefaultValue="https://<serverurl>/outlook.html#/groupware/details"/>
-                <bt:Url id="meetingURL" DefaultValue="https://<serverurl>/outlook.html#/meeting"/>
+                <bt:Url id="meetingReadURL" DefaultValue="https://<serverurl>/outlook.html#/groupware/meeting/read"/>
+                <bt:Url id="meetingEditURL" DefaultValue="https://<serverurl>/outlook.html#/groupware/meeting/edit"/>
             </bt:Urls>
             <bt:ShortStrings>
                 <bt:String id="groupLabel" DefaultValue="SpiceCRM"/>
@@ -147,6 +173,10 @@
                 <bt:String id="paneReadSuperTipTitle" DefaultValue="SpiceCRM"/>
                 <bt:String id="CRMAppointmentCreateLabel" DefaultValue="link to CRM"/>
             </bt:ShortStrings>
+            <bt:LongStrings>
+                <bt:String id="paneReadSuperTipDescription"
+                           DefaultValue="Allows you to archive an email in SpiceCRM by selecting the contacts and other objects to link to as well as selecting attachments"/>
+            </bt:LongStrings>
         </Resources>
         <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides/1.1"
                           xsi:type="VersionOverridesV1_1">
@@ -191,7 +221,7 @@
                             <!-- Use the default tab of the ExtensionPoint or create your own with <CustomTab id="myTab"> -->
                             <OfficeTab id="TabDefault">
                                 <!-- Up to 6 Groups added per Tab -->
-                                <Group id="appointmentOrganizeroup">
+                                <Group id="appointmentOrganizeGroup">
                                     <Label resid="groupLabel"/>
                                     <Control xsi:type="Button" id="crmAppointmentButton">
                                         <Label resid="CRMAppointmentCreateLabel"/>
@@ -205,7 +235,32 @@
                                             <bt:Image size="80" resid="icon80"/>
                                         </Icon>
                                         <Action xsi:type="ShowTaskpane">
-                                            <SourceLocation resid="meetingURL"/>
+                                            <SourceLocation resid="meetingEditURL"/>
+                                        </Action>
+                                    </Control>
+                                    <!-- Go to http://aka.ms/ButtonCommands to learn how to add more Controls: ExecuteFunction and Menu -->
+                                </Group>
+                            </OfficeTab>
+                        </ExtensionPoint>
+                        <ExtensionPoint xsi:type="AppointmentAttendeeCommandSurface">
+                            <!-- Use the default tab of the ExtensionPoint or create your own with <CustomTab id="myTab"> -->
+                            <OfficeTab id="TabDefault">
+                                <!-- Up to 6 Groups added per Tab -->
+                                <Group id="appointmentAttendeeGroup">
+                                    <Label resid="groupLabel"/>
+                                    <Control xsi:type="Button" id="crmAppointmentAttendeeButton">
+                                        <Label resid="CRMAppointmentCreateLabel"/>
+                                        <Supertip>
+                                            <Title resid="paneReadSuperTipTitle"/>
+                                            <Description resid="paneReadSuperTipDescription"/>
+                                        </Supertip>
+                                        <Icon>
+                                            <bt:Image size="16" resid="icon16"/>
+                                            <bt:Image size="32" resid="icon32"/>
+                                            <bt:Image size="80" resid="icon80"/>
+                                        </Icon>
+                                        <Action xsi:type="ShowTaskpane">
+                                            <SourceLocation resid="meetingReadURL"/>
                                         </Action>
                                     </Control>
                                     <!-- Go to http://aka.ms/ButtonCommands to learn how to add more Controls: ExecuteFunction and Menu -->
@@ -273,7 +328,8 @@
                     <bt:Url id="functionFile" DefaultValue="https://<serverurl>/assets/outlook/function-file.html"/>
                     <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://<serverurl>/outlook.html#/groupware/mailitem"/>
                     <bt:Url id="crmURL" DefaultValue="https://<serverurl>/outlook.html#/groupware/details"/>
-                    <bt:Url id="meetingURL" DefaultValue="https://<serverurl>/outlook.html#/meeting"/>
+                    <bt:Url id="meetingReadURL" DefaultValue="https://<serverurl>/outlook.html#/groupware/meeting/read"/>
+                    <bt:Url id="meetingEditURL" DefaultValue="https://<serverurl>/outlook.html#/groupware/meeting/edit"/>
                 </bt:Urls>
                 <bt:ShortStrings>
                     <bt:String id="groupLabel" DefaultValue="SpiceCRM"/>
