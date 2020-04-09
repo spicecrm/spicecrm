@@ -1,56 +1,70 @@
 /**
  * @module ModuleReports
  */
-import {
-    Component, OnInit
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
 
+/**
+ * display formatted report record value with enum
+ */
 @Component({
     selector: 'reporter-field-enum',
-    templateUrl: './src/modules/reports/templates/reporterfieldenum.html'
+    templateUrl: './src/modules/reports/templates/reporterfieldenum.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterFieldEnum implements OnInit {
-
+    /**
+     * report full record
+     */
     private record: any = {};
+    /**
+     * report field
+     */
     private field: any = {};
-
-    private fieldName: string;
-    private moduleName: string;
+    /**
+     * display value
+     */
+    private value: string = '';
 
     constructor(private language: language, private metadata: metadata) {
-
     }
 
+    /**
+     * call to set the display value
+     */
     public ngOnInit(): void {
+        this.setFormattedFieldValue();
+    }
+
+    /**
+     * set formatted field value
+     */
+    private setFormattedFieldValue() {
+
         let pathArray = this.field.path.split('::');
 
         let arrCount = pathArray.length;
 
         // the last entry has to be the field
         let fieldArray = pathArray[arrCount - 1].split(':');
-        this.fieldName = fieldArray[1];
-
+        const fieldName = fieldArray[1];
+        let moduleName;
         let moduleArray = pathArray[arrCount - 2].split(':');
         switch (moduleArray[0]) {
             case 'root':
-                this.moduleName = moduleArray[1];
+                moduleName = moduleArray[1];
                 break;
             case 'link':
                 let field = this.metadata.getFieldDefs(moduleArray[1], moduleArray[2]);
-                this.moduleName = field.module;
+                moduleName = field.module;
                 break;
         }
 
-    }
-
-    get value() {
-        if (this.fieldName && this.moduleName) {
-            return this.language.getFieldDisplayOptionValue(this.moduleName, this.fieldName, this.record[this.field.fieldid + '_val']);
+        if (fieldName && moduleName) {
+            this.value = this.language.getFieldDisplayOptionValue(moduleName, fieldName, this.record[this.field.fieldid + '_val']);
         } else {
-            return this.record[this.field.fieldid];
+            this.value = this.record[this.field.fieldid];
         }
     }
-
 }
