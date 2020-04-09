@@ -59,6 +59,9 @@ export class OutlookMeetingEditPane {
 
             this.module = this.customProperties.get('_module');
             this.id = this.customProperties.get('_id');
+
+            // this.module = 'Meetings';
+            // this.id = '105b119a-81c6-f039-e6c0-57bc0c7540e9';
         });
     }
 
