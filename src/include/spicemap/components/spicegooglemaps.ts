@@ -36,7 +36,7 @@ declare var _: any;
 /** @ignore */
 declare var google: any;
 /** @ignore */
-declare let MarkerClusterer: any;
+declare var MarkerClusterer: any;
 
 /**
  * This renders a google map and display the given records on the map as markers and it also renders a circle on the map
