@@ -1,7 +1,16 @@
 /**
  * @module ModuleReports
  */
-import {Component, Injector, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Injector,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+    ViewContainerRef
+} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
@@ -15,9 +24,7 @@ import {animate, style, transition, trigger} from "@angular/animations";
 import {view} from "../../../services/view.service";
 import {Subscription} from "rxjs";
 
-/**
- * @ignore
- */
+/** @ignore */
 const REPORTERDETAILVIEWANIMATIONS = [
     trigger('displayfilter', [
         transition(':enter', [
@@ -39,7 +46,8 @@ const REPORTERDETAILVIEWANIMATIONS = [
     selector: 'reporter-detilview',
     templateUrl: './src/modules/reports/templates/reporterdetailview.html',
     providers: [view, model, reporterconfig],
-    animations: REPORTERDETAILVIEWANIMATIONS
+    animations: REPORTERDETAILVIEWANIMATIONS,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterDetailView implements OnInit, OnDestroy {
     /**
@@ -49,7 +57,6 @@ export class ReporterDetailView implements OnInit, OnDestroy {
         read: ViewContainerRef,
         static: true
     }) private presentationContainer: ViewContainerRef;
-    @ViewChild('pageHeader', {read: ViewContainerRef, static: true}) private pageHeader: ViewContainerRef;
     /**
      * container reference of the presentation component
      */
@@ -91,26 +98,10 @@ export class ReporterDetailView implements OnInit, OnDestroy {
                 private navigationtab: navigationtab,
                 private router: Router,
                 private reporterconfig: reporterconfig,
+                private cdRef: ChangeDetectorRef,
                 private view: view) {
-    }
 
-    get filterPanelStyle() {
-        let rect = this.pageHeader.element.nativeElement.getBoundingClientRect();
-        return {
-            'right': '0px',
-            'top': rect.bottom + 'px',
-            'height': `calc(100vh - ${rect.bottom}px)`,
-            'z-index': 100
-        };
-    }
-
-    /**
-     * returns the style to be set with ngStyle on the vis container
-     */
-    get visualizationStyle() {
-        return {
-            height: this.visualizationHeight + 'px'
-        };
+        this.subscribeToBroadcast();
     }
 
     /**
@@ -124,12 +115,11 @@ export class ReporterDetailView implements OnInit, OnDestroy {
         this.setNavigationTabInfos(this.language.getModuleName(this.model.module));
         this.setModelData();
         this.view.isEditable = this.metadata.checkModuleAcl(this.model.module, 'edit');
-        this.subscribeToBroadcast();
     }
 
     /**
      * unsubscribe from subscriptions
-      */
+     */
     public ngOnDestroy() {
         this.subscriptions.unsubscribe();
     }
@@ -148,8 +138,9 @@ export class ReporterDetailView implements OnInit, OnDestroy {
                     this.whereConditions = msg.messagedata.data.whereconditions;
                     this.setIntegrationParams(msg.messagedata.data.integration_params);
                     this.setVisualizationProperties(msg.messagedata.data.visualization_params);
-                    this.renderPresentation();
+                    this.renderPresentation(msg.messagedata.data.presentation_params);
                     this.reporterconfig.refresh();
+                    this.cdRef.detectChanges();
                 }
             })
         );
@@ -186,8 +177,9 @@ export class ReporterDetailView implements OnInit, OnDestroy {
             this.whereConditions = data.whereconditions;
 
             // render the presentation
-            this.renderPresentation();
+            this.renderPresentation(data.presentation_params);
             this.setIntegrationParams(data.integration_params);
+            this.cdRef.detectChanges();
         });
     }
 
@@ -217,13 +209,14 @@ export class ReporterDetailView implements OnInit, OnDestroy {
     /**
      * render the presentation component
      */
-    private renderPresentation() {
+    private renderPresentation(presentationParams) {
+
         if (this.presentationComponentRef) {
             this.presentationComponentRef.destroy();
             this.presentationComponentRef = undefined;
         }
 
-        let presentationParams = this.model.data.presentation_params;
+        if (!presentationParams) return;
 
         let presentationComponent = '';
         switch (presentationParams.plugin) {
@@ -247,6 +240,7 @@ export class ReporterDetailView implements OnInit, OnDestroy {
         if (presentationComponent != '') {
             this.metadata.addComponent(presentationComponent, this.presentationContainer).subscribe(componentRef => {
                 this.presentationComponentRef = componentRef;
+                this.presentationComponentRef.changeDetectorRef.detectChanges();
             });
         }
     }

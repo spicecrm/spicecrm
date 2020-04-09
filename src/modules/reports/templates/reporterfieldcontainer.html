@@ -1,6 +1,5 @@
-<ng-container *ngIf="hasLink; else nolink">
+<ng-container *ngIf="field.link == 'yes'; else nolink">
     <div class="slds-text-link_reset" modelPopOver [module]="recordModule" [id]="recordId">
-        <div #reportFieldContainer></div>
         <system-dynamic-component [component]="fieldType" [componentattributes]="{record: record, field: field}"></system-dynamic-component>
     </div>
 </ng-container>

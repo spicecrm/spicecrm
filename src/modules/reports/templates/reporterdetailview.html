@@ -1,10 +1,14 @@
-<div #pageHeader>
-    <reporter-detail-view-header [integrationParams]="integrationParams" [whereConditions]="whereConditions" (showFilters)="toggleFilters($event)"></reporter-detail-view-header>
+<div class="slds-grid slds-grid--vertical">
+    <div>
+        <reporter-detail-view-header [integrationParams]="integrationParams" [whereConditions]="whereConditions" (showFilters)="toggleFilters($event)"></reporter-detail-view-header>
+    </div>
+    <div class="slds-is-relative slds-grow" style="min-height: 0">
+        <div *ngIf="hasVisualization" class="slds-size--1-of-1" [style.height.px]="visualizationHeight">
+            <reporter-detail-visualization></reporter-detail-visualization>
+        </div>
+        <div tobottomnoscroll>
+            <div #presentationContainer></div>
+        </div>
+        <reporter-filter-panel @displayfilter *ngIf="showFilters" class="slds-is-absolute" style="z-index: 100; right: 0; top: 0; bottom: 0" [integrationparams]="integrationParams" (filterapplied)="filterApplied()"></reporter-filter-panel>
+    </div>
 </div>
-<div *ngIf="hasVisualization" class="slds-size--1-of-1" [ngStyle]="visualizationStyle">
-    <reporter-detail-visualization></reporter-detail-visualization>
-</div>
-<div tobottomnoscroll>
-    <div #presentationContainer></div>
-</div>
-<reporter-filter-panel @displayfilter *ngIf="showFilters" class="slds-is-absolute" [ngStyle]="filterPanelStyle" [integrationparams]="integrationParams" (filterapplied)="filterApplied()"></reporter-filter-panel>

@@ -1,54 +1,40 @@
 /**
  * @module ModuleReports
  */
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 
 import {language} from '../../../services/language.service';
 import {metadata} from '../../../services/metadata.service';
-import {model} from '../../../services/model.service';
+import {BehaviorSubject} from "rxjs";
 
 /**
  * a modal that allows the user to choose from fields for a report
  */
 @Component({
-    templateUrl: './src/modules/reports/templates/reporterdetailselectfieldsmodal.html'
+    templateUrl: './src/modules/reports/templates/reporterdetailselectfieldsmodal.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterDetailSelectFieldsModal implements OnInit {
 
+    public dataChanged$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    /**
+     * the report fields .. passed in from the view
+     */
+    protected presentationFields: any[] = [];
     /**
      * reference to self to be able to close the modal
      */
     private self: any = {};
-
-    /**
-     * the report fields .. passed in from the view
-     */
-    private presentationFields: any[] = [];
-
     /**
      * the remaining available fields
      */
     private availableFields: any[] = [];
-
     /**
      * the display fields
      */
     private displayFields: any[] = [];
 
-    /**
-     * the list fo selected fields
-     */
-    private selectedAvailableFields: any[] = [];
-    private selectedListFields: any[] = [];
-
-    /**
-     * load the modal and initlaize the fields from the modellist vs the ones available
-     *
-     * @param metadata
-     * @param language
-     * @param modellist
-     */
-    constructor(private metadata: metadata, private language: language, private model: model) {
+    constructor(private metadata: metadata, private language: language) {
     }
 
     /**
@@ -63,7 +49,7 @@ export class ReporterDetailSelectFieldsModal implements OnInit {
             this.sortAvailableFields();
         }
 
-        this.displayFields.sort((a, b) => parseInt(a.sequence, 10) > parseInt(b.sequence, 10) ? -1 : 1);
+        this.displayFields.sort((a, b) => !!a.sequence && !!b.sequence ? parseInt(a.sequence, 10) > parseInt(b.sequence, 10) ? 1 : -1 : 0);
     }
 
     /**
@@ -98,7 +84,7 @@ export class ReporterDetailSelectFieldsModal implements OnInit {
             for (let displayField of this.displayFields) {
                 displayField.display = 'yes';
                 displayField.sequence = sequence;
-                if(!displayField.width) displayField.width = 25;
+                if (!displayField.width) displayField.width = 25;
                 sequence++;
             }
             for (let availableField of this.availableFields) {
@@ -106,7 +92,10 @@ export class ReporterDetailSelectFieldsModal implements OnInit {
                 availableField.sequence = sequence;
                 sequence++;
             }
-            this.presentationFields.sort((a, b) => parseInt(a.sequence, 10) > parseInt(b.sequence, 10) ? 1 : -1);
+            this.presentationFields.sort((a, b) => !!a.sequence && !!b.sequence ? parseInt(a.sequence, 10) > parseInt(b.sequence, 10) ? 1 : -1 : 0);
+
+            this.dataChanged$.next(true);
+            this.dataChanged$.complete();
             this.close();
         }
     }
@@ -119,70 +108,5 @@ export class ReporterDetailSelectFieldsModal implements OnInit {
     private onFieldDrop(event) {
         let previousItem = event.previousContainer.data.splice(event.previousIndex, 1);
         event.container.data.splice(event.currentIndex, 0, previousItem[0]);
-    }
-
-    /*
-     select the field when clicked int he container
-     */
-    private selectField(container, fieldid) {
-        switch (container) {
-            case 'available':
-                this.selectedAvailableFields = [fieldid];
-                break;
-            case 'list':
-                this.selectedListFields = [fieldid];
-                break;
-        }
-    }
-
-    /*
-     function to set the aria-selected attr on a field
-     */
-    private isSelected(container, field) {
-        switch (container) {
-            case 'available':
-                if (this.selectedAvailableFields.indexOf(field) >= 0) {
-                    return true;
-                } else {
-                    return false;
-                }
-            case 'list':
-                if (this.selectedListFields.indexOf(field) >= 0) {
-                    return true;
-                } else {
-                    return false;
-                }
-        }
-    }
-
-    /*
-     move selected field to the othe container
-     */
-    private moveFields(fromContainer) {
-        switch (fromContainer) {
-            case 'available':
-                this.selectedAvailableFields.forEach((item) => {
-                    this.availableFields.some((targetitem, targetindex) => {
-                        if (item == targetitem.field) {
-                            this.displayFields.push(this.availableFields.splice(targetindex, 1)[0]);
-                            return true;
-                        }
-                    });
-                });
-                this.selectedAvailableFields = [];
-                break;
-            case 'list':
-                this.selectedListFields.forEach((item) => {
-                    this.displayFields.some((targetitem, targetindex) => {
-                        if (item == targetitem.field) {
-                            this.availableFields.push(this.displayFields.splice(targetindex, 1)[0]);
-                            return true;
-                        }
-                    });
-                });
-                this.selectedListFields = [];
-                this.sortAvailableFields();
-                break;
-        }
     }
 }
