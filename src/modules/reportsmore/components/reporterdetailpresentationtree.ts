@@ -1,9 +1,7 @@
 /**
  * @module ModuleReportsMore
  */
-import {
-    Component, AfterViewInit, OnInit, ViewChild, ViewContainerRef, Injector
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
 import {backend} from '../../../services/backend.service';
@@ -18,64 +16,52 @@ import {ReporterDetailPresentationStandard} from "../../../modules/reports/compo
  */
 @Component({
     selector: 'reporter-detail-presentation-tree',
-    templateUrl: './src/modules/reportsmore/templates/reporterdetailpresentationtree.html'
+    templateUrl: './src/modules/reportsmore/templates/reporterdetailpresentationtree.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterDetailPresentationTree extends ReporterDetailPresentationStandard {
-
-    /**
-     * the field to be displayed
-     */
-    private fields: any[] = [];
 
     /**
      * the array of fields to be displayed for the report
      * this is loaded initially with all feilds and then limited to one for all in the tree and then all the others
      */
-    private treeDisplayFields: any[] = [];
-
+    protected treeDisplayFields: any[] = [];
+    /**
+     * the fields the tree is grouped by
+     */
+    protected groupFields: any[] = [];
+    /**
+     * the field to be displayed
+     */
+    private fields: any[] = [];
     /**
      * holds the report data
      */
     private reportRecords: any[] = [];
 
-    /**
-     * the fields the tree is grouped by
-     */
-    private groupFields: any[] = [];
-
-    constructor(public language: language, public model: model, public modal: modal, public injector: Injector, public backend: backend, public reporterconfig: reporterconfig, public toast: toast) {
-        super(language, model, modal, injector, backend, reporterconfig, toast);
+    constructor(public language: language,
+                public model: model,
+                public modal: modal,
+                public injector: Injector,
+                public backend: backend,
+                public reporterconfig: reporterconfig,
+                public cdRef: ChangeDetectorRef,
+                public toast: toast) {
+        super(language, model, modal, injector, backend, reporterconfig, cdRef, toast);
 
         // no footer
         this.showFooter = false;
     }
 
-
     /**
-     * returns the name of the grouped fields in the tree we can expand on
-     */
-    get groupFieldName() {
-        let groupNames = [];
-        for (let groupField of this.groupFields) {
-            groupNames.push(groupField.text);
-        }
-        return groupNames.join(' / ');
-    }
-
-    /**
-     * returns the field entry for the first field to be displayed
-     */
-    get lastGroupField() {
-        return this.fields[this.groupFields.length - 1];
-    }
-
-    /**
-     * overwite the getPOresentation Method
+     * override the getPresentation method from standard component
      */
     public getPresentation() {
-        this.isLoading = true
+        this.isLoading = true;
+        this.cdRef.detectChanges();
 
         this.backend.getRequest('KReporter/Tree/' + this.model.id + '/columns', {}).subscribe((columns: any) => {
+
             let treeStopReached = false;
 
             // set to the fields
@@ -84,6 +70,8 @@ export class ReporterDetailPresentationTree extends ReporterDetailPresentationSt
             // reset the fields
             this.treeDisplayFields = [];
             this.groupFields = [];
+            this.reportRecords = [];
+            this.cdRef.detectChanges();
 
             // loop through the columns
             for (let column of columns) {
@@ -104,12 +92,12 @@ export class ReporterDetailPresentationTree extends ReporterDetailPresentationSt
             this.getNode('root');
 
             this.isLoading = false;
+            this.cdRef.detectChanges();
         });
     }
 
     /**
      * function to get the node when the node is expanded
-     *
      * @param node
      */
     private getNode(node) {
@@ -120,8 +108,9 @@ export class ReporterDetailPresentationTree extends ReporterDetailPresentationSt
         } else {
             this.reportRecords = [];
         }
+        this.cdRef.detectChanges();
 
-        // build wherecondition
+        // build where conditions
         let whereConditions: any[] = [];
         for (let userFilter of this.reporterconfig.userFilters) {
             whereConditions.push({
@@ -136,22 +125,32 @@ export class ReporterDetailPresentationTree extends ReporterDetailPresentationSt
 
         let body = {
             whereConditions: JSON.stringify(whereConditions),
-            parentbeanId: this.model['parentBeanId'],
-            parentbeanModule: this.model['parentBeanModule'],
+            parentbeanId: (this.model as any).parentBeanId,
+            parentbeanModule: (this.model as any).parentBeanModule,
         };
 
         // find the current node
         let index = this.reportRecords.findIndex(record => record.node == node);
 
-        // if not laoded - load it
+        // if not loaded - load it
         if (index < 0 || !this.reportRecords[index].loaded) {
+
+            if (index >= 0) {
+                if (this.reportRecords[index].isLoading) return;
+                this.reportRecords[index].isLoading = true;
+                this.cdRef.detectChanges();
+            }
+
+
             this.backend.postRequest('KReporter/Tree/' + this.model.id + '/node/' + encodeURIComponent(btoa(node)), {}, body).subscribe(reportData => {
-                let newRecords = [];
+
+                if (!reportData) return;
 
                 // if we found the record mark as loaded and expanded
                 if (index >= 0) {
                     this.reportRecords[index].loaded = true;
                     this.reportRecords[index].expanded = true;
+                    this.reportRecords[index].isLoading = false;
                 }
 
                 // keep a separate insert index and do mot overwrte the index of the record
@@ -165,12 +164,14 @@ export class ReporterDetailPresentationTree extends ReporterDetailPresentationSt
                     reportRecord.depth = depth;
                     reportRecord.expanded = false;
                     reportRecord.loaded = false;
+                    reportRecord.isLoading = false;
                     reportRecord.visible = true;
 
                     // insert after the last node
                     insertIndex++;
                     this.reportRecords.splice(insertIndex, 0, reportRecord);
                 }
+                this.cdRef.detectChanges();
             });
         } else {
             this.reportRecords[index].expanded = !this.reportRecords[index].expanded;
@@ -186,8 +187,7 @@ export class ReporterDetailPresentationTree extends ReporterDetailPresentationSt
                     record.visible = true;
                 }
             }
+            this.cdRef.detectChanges();
         }
-
     }
-
 }

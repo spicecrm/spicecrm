@@ -1,9 +1,7 @@
 /**
  * @module ModuleReportsMore
  */
-import {
-    Component, Injector
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
 import {backend} from '../../../services/backend.service';
@@ -17,10 +15,35 @@ import {ReporterDetailPresentationStandard} from "../../../modules/reports/compo
  */
 @Component({
     selector: 'reporter-detail-presentation-grouped',
-    templateUrl: './src/modules/reportsmore/templates/reporterdetailpresentationgrouped.html'
+    templateUrl: './src/modules/reportsmore/templates/reporterdetailpresentationgrouped.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterDetailPresentationGrouped extends ReporterDetailPresentationStandard {
 
+
+    /**
+     * the values for the group by cal use
+     */
+    protected groupByValues: any[] = [];
+    /**
+     * the reporter fields for the select for the group ba clause
+     */
+    protected reportFields: any[] = [];
+    /**
+     * indicates if the report has a summary
+     */
+    private hasSummary: boolean = false;
+
+    constructor(public language: language,
+                public model: model,
+                public modal: modal,
+                public injector: Injector,
+                public backend: backend,
+                public reporterconfig: reporterconfig,
+                public cdRef: ChangeDetectorRef,
+                public toast: toast) {
+        super(language, model, modal, injector, backend, reporterconfig, cdRef, toast);
+    }
 
     /**
      * the id of the field the reports i grouped by
@@ -28,38 +51,7 @@ export class ReporterDetailPresentationGrouped extends ReporterDetailPresentatio
     private _groupById: string = '';
 
     /**
-     * the values for the group by caluse
-     */
-    private groupByValues: any[] = [];
-
-    /**
-     * the total record
-     */
-    private totalRecord: {};
-
-    /**
-     * the reporter fields for the select for the group ba clause
-     */
-    private reportFields: any[] = [];
-
-    /**
-     * indicates if the report has a summary
-     */
-    private hasSummary: boolean = false;
-
-    /**
-     * returns the set listentries from the pres params if set ... by default 25
-     */
-    get listEntries() {
-        return 1000;
-    }
-
-    constructor(public language: language, public model: model, public modal: modal, public injector: Injector, public backend: backend, public reporterconfig: reporterconfig, public toast: toast) {
-        super(language, model, modal, injector, backend, reporterconfig, toast);
-    }
-
-    /**
-     * simple gettr for the group by id
+     * simple getter for the group by id
      */
     get groupById() {
         return this._groupById;
@@ -80,25 +72,10 @@ export class ReporterDetailPresentationGrouped extends ReporterDetailPresentatio
     }
 
     /**
-     * rebuilds the groups
+     * returns the set list entries from the pres params if set ... by default 25
      */
-    private rebuildGroups() {
-        // determine values
-        this.groupByValues = [];
-        let groupByValues = {};
-        for (let record of this.presData.records) {
-            if (!groupByValues[record[this._groupById]]) groupByValues[record[this._groupById]] = 0;
-            groupByValues[record[this._groupById]]++;
-        }
-
-        for (let groupByValue in groupByValues) {
-            this.groupByValues.push({
-                value: groupByValue,
-                expanded: true,
-                count: groupByValues[groupByValue],
-                totalRecord: this.buildSummary(this.getGroupedRecords(groupByValue))
-            });
-        }
+    get listEntries() {
+        return 1000;
     }
 
     /**
@@ -106,7 +83,7 @@ export class ReporterDetailPresentationGrouped extends ReporterDetailPresentatio
      */
     public processPresData() {
         // check if we have a summary to be displayed
-        let fields = this.presData.metaData.gridColumns.filter(column => column.summaryType);
+        let fields = this.presData.metaData.gridColumns.filter(column => !!column.summaryType);
         this.hasSummary = fields.length > 0;
 
         // set the group by id if it is not set already
@@ -116,9 +93,7 @@ export class ReporterDetailPresentationGrouped extends ReporterDetailPresentatio
         // rebuild the grouped sums and count
         this.rebuildGroups();
 
-        this.totalRecord = this.buildSummary(this.presData.records);
-
-        // buid the fields for the group by select
+        // build the fields for the group by select
         this.reportFields = [];
         for (let field of this.presData.reportmetadata.fields) {
             this.fieldsData[field.fieldid] = field;
@@ -132,9 +107,42 @@ export class ReporterDetailPresentationGrouped extends ReporterDetailPresentatio
         }
     }
 
+    public getGroupedRecords(groupvalue): any[] {
+        try {
+            return this.presData.records.filter(record => record[this._groupById] == groupvalue);
+        } catch (e) {
+            return [];
+        }
+    }
+
+    /**
+     * rebuilds the groups
+     */
+    private rebuildGroups() {
+        // determine values
+        this.groupByValues = [];
+        let groupByValues = {};
+        for (let record of this.presData.records) {
+            if (!groupByValues[record[this._groupById]]) {
+                groupByValues[record[this._groupById]] = 0;
+            }
+            groupByValues[record[this._groupById]]++;
+        }
+
+        for (let groupByValue in groupByValues) {
+            this.groupByValues.push({
+                value: groupByValue,
+                expanded: true,
+                count: groupByValues[groupByValue],
+                totalRecord: this.buildSummary(this.getGroupedRecords(groupByValue)),
+                records: this.getGroupedRecords(groupByValue)
+            });
+        }
+    }
+
     private buildSummary(records) {
         let fields = this.presData.metaData.gridColumns.filter(column => column.summaryType);
-        if (fields.length < 1) return [];
+        if (fields.length < 1) return {};
 
         let summaryrecord = {};
         for (let field of fields) {
@@ -166,23 +174,4 @@ export class ReporterDetailPresentationGrouped extends ReporterDetailPresentatio
         }
         return retRecord;
     }
-
-    private getRecordTotals() {
-        try {
-            return this.presData.recordtotal;
-        } catch (e) {
-            return [];
-        }
-    }
-
-
-    public getGroupedRecords(groupvalue): any[] {
-        try {
-            return this.presData.records.filter(record => record[this._groupById] == groupvalue);
-        } catch (e) {
-            return [];
-        }
-    }
-
-
 }

@@ -2,6 +2,8 @@
  * @module ModuleReportsMore
  */
 import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component, Injector
 } from '@angular/core';
 import {model} from '../../../services/model.service';
@@ -17,20 +19,19 @@ import {ReporterDetailPresentationStandard} from "../../../modules/reports/compo
  */
 @Component({
     selector: 'reporter-detail-presentation-standardws',
-    templateUrl: './src/modules/reportsmore/templates/reporterdetailpresentationstandardws.html'
+    templateUrl: './src/modules/reportsmore/templates/reporterdetailpresentationstandardws.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterDetailPresentationStandardWS extends ReporterDetailPresentationStandard {
 
-    constructor(public language: language, public model: model,public modal: modal, public injector: Injector, public backend: backend, public reporterconfig: reporterconfig, public toast: toast) {
-        super(language, model, modal, injector, backend, reporterconfig, toast);
+    constructor(public language: language,
+                public model: model,
+                public modal: modal,
+                public injector: Injector,
+                public backend: backend,
+                public reporterconfig: reporterconfig,
+                public cdRef: ChangeDetectorRef,
+                public toast: toast) {
+        super(language, model, modal, injector, backend, reporterconfig, cdRef, toast);
     }
-
-    private getRecordTotals() {
-        try {
-            return this.presData.recordtotal;
-        } catch (e) {
-            return [];
-        }
-    }
-
 }

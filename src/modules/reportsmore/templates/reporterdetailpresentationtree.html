@@ -1,5 +1,5 @@
-<div class="slds-height_full" class="slds-scrollable--y" [ngStyle]="getContainerStyle()">
-    <table #tablecontent class="slds-table slds-table_bordered slds-table_edit slds-table--header-fixed slds-tree slds-table_tree slds-table--fixed-layout" role="treegrid">
+<div class="slds-scrollable--y slds-height_full" style="min-height: 0" [overlayLoadingSpinner]="isLoading">
+    <table class="slds-table slds-table_bordered slds-table_edit slds-table--header-fixed slds-tree slds-table_tree slds-table--fixed-layout" role="treegrid">
         <thead>
             <tr>
                 <th scope="col">
@@ -7,9 +7,11 @@
                         <li *ngFor="let groupField of groupFields" class="slds-item"><system-label [label]="groupField.text"></system-label></li>
                     </ul>
                 </th>
-                <th *ngFor="let treeDisplayField of treeDisplayFields" scope="col" [width]="getFieldWidth(treeDisplayField.dataIndex)">
-                    <a  href="javascript:void(0);" class="slds-th__action slds-text-link--reset slds-grid"  [ngClass]="displayClasses(treeDisplayField)">
-                        <div class="slds-truncate slds-p-around--x-small" [title]="language.getLabel(treeDisplayField.text)"><system-label [label]="treeDisplayField.text"></system-label></div>
+                <th *ngFor="let treeDisplayField of treeDisplayFields" scope="col" [style.width.%]="fieldsData[treeDisplayField.dataIndex].width">
+                    <a  href="javascript:void(0);" class="slds-th__action slds-text-link--reset slds-grid"  [ngClass]="fieldsDisplayClasses[treeDisplayField]">
+                        <div class="slds-truncate slds-p-around--x-small" system-title="treeDisplayField.text">
+                            <system-label [label]="treeDisplayField.text"></system-label>
+                        </div>
                     </a>
                 </th>
             </tr>
@@ -25,10 +27,11 @@
                             <div class="slds-truncate" >
                                 {{record.text}}
                             </div>
+                            <system-spinner *ngIf="record.isLoading" size="16" class="slds-align-middle slds-m-left--x-small"></system-spinner>
                         </ng-container>
                         <ng-template #lastgrouped>
                             <system-button-icon icon="file" class="slds-p-horizontal--x-small"></system-button-icon>
-                            <reporter-field-container [field]="lastGroupField" [record]="record"></reporter-field-container>
+                            <reporter-field-container [field]="fields[this.groupFields.length - 1]" [record]="record"></reporter-field-container>
                         </ng-template>
                     </td>
                     <td *ngFor="let treeDisplayField of treeDisplayFields" role="gridcell">
@@ -40,4 +43,7 @@
             </ng-container>
         </tbody>
     </table>
+    <div *ngIf="!isLoading && reportRecords.length == 0" class="slds-p-around--medium slds-align--absolute-center"  tobottomnoscroll>
+        <h2 class="slds-text-heading--small"><system-label label="LBL_NO_ENTRIES"></system-label></h2>
+    </div>
 </div>
