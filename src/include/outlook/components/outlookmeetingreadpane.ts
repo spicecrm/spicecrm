@@ -17,17 +17,14 @@ wenn nicht einfach das von oben zeigen
 wenn es nicht in spice ist aber parent type,id und exchange id dann abspeichern (und dann im hintergrund den rest holen)
 */
 import {Component} from "@angular/core";
-// import {model} from "../../../services/model.service";
-// import {view} from "../../../services/view.service";
 
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {backend} from "../../../services/backend.service";
 
-
 @Component({
-    templateUrl: './src/include/groupware/templates/groupwaremeetingreadpane.html'
+    templateUrl: './src/include/outlook/templates/outlookmeetingreadpane.html'
 })
-export class GroupwareMeetingReadPane {
+export class OutlookMeetingReadPane {
 
     private meetingid: string;
 

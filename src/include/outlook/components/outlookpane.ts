@@ -24,7 +24,15 @@ export class OutlookPane implements OnInit {
         private configuration: OutlookConfiguration,
         private groupware: GroupwareService,
         private session: session
-    ) {}
+    ) {
+    }
+
+    /**
+     * display the bottom bar only when we have a message with an id
+     */
+    get displayBottomBar() {
+        return Office.context.mailbox.item.itemType == 'message' && Office.context.mailbox.item.itemId;
+    }
 
     /**
      * Sets the ID of the currently selected email.

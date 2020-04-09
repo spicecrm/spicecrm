@@ -162,8 +162,8 @@
                         DefaultValue="https://<serverurl>/assets/outlook/function-file.html"/>
                 <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://<serverurl>/outlook.html#/groupware/mailitem"/>
                 <bt:Url id="crmURL" DefaultValue="https://<serverurl>/outlook.html#/groupware/details"/>
-                <bt:Url id="meetingReadURL" DefaultValue="https://<serverurl>/outlook.html#/groupware/meeting/read"/>
-                <bt:Url id="meetingEditURL" DefaultValue="https://<serverurl>/outlook.html#/groupware/meeting/edit"/>
+                <bt:Url id="meetingReadURL" DefaultValue="https://<serverurl>/outlook.html#/outlook/meeting/read"/>
+                <bt:Url id="meetingEditURL" DefaultValue="https://<serverurl>/outlook.html#/outlook/meeting/edit"/>
             </bt:Urls>
             <bt:ShortStrings>
                 <bt:String id="groupLabel" DefaultValue="SpiceCRM"/>
@@ -328,8 +328,8 @@
                     <bt:Url id="functionFile" DefaultValue="https://<serverurl>/assets/outlook/function-file.html"/>
                     <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://<serverurl>/outlook.html#/groupware/mailitem"/>
                     <bt:Url id="crmURL" DefaultValue="https://<serverurl>/outlook.html#/groupware/details"/>
-                    <bt:Url id="meetingReadURL" DefaultValue="https://<serverurl>/outlook.html#/groupware/meeting/read"/>
-                    <bt:Url id="meetingEditURL" DefaultValue="https://<serverurl>/outlook.html#/groupware/meeting/edit"/>
+                    <bt:Url id="meetingReadURL" DefaultValue="https://<serverurl>/outlook.html#/outlook/meeting/read"/>
+                    <bt:Url id="meetingEditURL" DefaultValue="https://<serverurl>/outlook.html#/outlook/meeting/edit"/>
                 </bt:Urls>
                 <bt:ShortStrings>
                     <bt:String id="groupLabel" DefaultValue="SpiceCRM"/>

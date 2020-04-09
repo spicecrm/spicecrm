@@ -58,21 +58,26 @@ import {cookie} from "../../services/cookie.service";
 import {VersionManagerService} from "../../services/versionmanager.service";
 import {modal} from "../../services/modal.service";
 import {layout} from "../../services/layout.service";
+import {loggerService} from "../../services/logger.service";
+import {SystemDynamicRouteInterceptor} from "../../systemcomponents/components/systemdynamicrouteinterceptor";
 
 
 import {ModuleGroupware} from "../../include/groupware/groupware";
 import {GroupwareService} from '../../include/groupware/services/groupware.service';
 
+import /*embed*/ {outlookNameValuePairI} from "./interfaces/outlook.interfaces";
+
 import /*embed*/ {OutlookConfiguration} from './services/outlookconfiguration.service';
 import /*embed*/ {OutlookGroupware} from "./services/outlookgroupware.service";
-
 
 import /*embed*/ {OutlookPane} from './components/outlookpane';
 import /*embed*/ {OutlookPaneFooter} from './components/outlookpanefooter';
 import /*embed*/ {OutlookSettingsPane} from './components/outlooksettingspane';
 import /*embed*/ {OutlookLoginPane} from "./components/outlookloginpane";
-import {loggerService} from "../../services/logger.service";
-import {SystemDynamicRouteInterceptor} from "../../systemcomponents/components/systemdynamicrouteinterceptor";
+import /*embed*/ {OutlookMeetingEditPane} from "./components/outlookmeetingeditpane";
+import /*embed*/ {OutlookMeetingReadPane} from "./components/outlookmeetingreadpane";
+import /*embed*/ {OutlookMeetingAddContainer} from "./components/outlookmeetingaddcontainer";
+import /*embed*/ {OutlookMeetingEditContainer} from "./components/outlookmeetingeditcontainer";
 
 declare var Office: any;
 
@@ -98,6 +103,10 @@ declare var Office: any;
         OutlookPaneFooter,
         OutlookSettingsPane,
         OutlookLoginPane,
+        OutlookMeetingEditPane,
+        OutlookMeetingReadPane,
+        OutlookMeetingAddContainer,
+        OutlookMeetingEditContainer
     ],
     bootstrap: [OutlookPane],
     providers: [

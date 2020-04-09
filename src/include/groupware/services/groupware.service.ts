@@ -269,5 +269,8 @@ export abstract class GroupwareService {
      */
     public abstract getCalenderItemId();
 
+    /**
+     * returns the custom properties on the object
+     */
     public abstract getCustomProperties();
 }
