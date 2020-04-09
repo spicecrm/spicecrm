@@ -21,10 +21,10 @@ export class DunsNumberModal {
     public results: any[] = [];
     public selectedItem: string;
     public response: Observable<string>;
-    public responseSubject: Subject<string>;
+    public responseSubject: Subject<any>;
 
     constructor(private language: language, private backend: backend, private metadata: metadata, private model: model) {
-        this.responseSubject = new Subject<string>();
+        this.responseSubject = new Subject<any>();
         this.response = this.responseSubject.asObservable();
     }
 
@@ -40,7 +40,7 @@ export class DunsNumberModal {
     }
 
     private notFound() {
-        this.responseSubject.next('none');
+        this.responseSubject.next({duns: 'none'});
         this.responseSubject.complete();
         this.self.destroy();
     }
