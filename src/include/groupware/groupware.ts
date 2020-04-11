@@ -53,6 +53,9 @@ import /*embed*/ {GroupwareDetailPaneBean} from './components/groupwaredetailpan
         GroupwareDetailPanefooter,
         GroupwareDetailPaneHeader,
         GroupwareDetailPaneBean
+    ],
+    exports: [
+        GroupwareDetailPaneHeader
     ]
 })
 export class ModuleGroupware {

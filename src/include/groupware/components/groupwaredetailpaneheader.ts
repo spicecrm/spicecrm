@@ -19,6 +19,7 @@ declare var _: any;
  * In case there is just one such bean, the details of it will be shown.
  */
 @Component({
+    selector: 'groupware-detail-pane-header',
     templateUrl: './src/include/groupware/templates/groupwaredetailpaneheader.html',
     providers: [view]
 })
