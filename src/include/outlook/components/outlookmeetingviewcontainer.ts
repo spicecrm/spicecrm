@@ -23,11 +23,11 @@ import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
 
 @Component({
-    selector: 'outlook-meeting-edit-container',
-    templateUrl: './src/include/outlook/templates/outlookmeetingeditcontainer.html',
+    selector: 'outlook-meeting-view-container',
+    templateUrl: './src/include/outlook/templates/outlookmeetingviewcontainer.html',
     providers: [model, view]
 })
-export class OutlookMeetingEditContainer implements OnInit {
+export class OutlookMeetingViewContainer implements OnInit {
 
     /**
      * the custom properties of the object
@@ -66,7 +66,7 @@ export class OutlookMeetingEditContainer implements OnInit {
     }
 
     private getConfiguration() {
-        let componentconfig = this.metadata.getComponentConfig('OutlookMeetingEditContainer', this.module);
+        let componentconfig = this.metadata.getComponentConfig('OutlookMeetingViewContainer', this.module);
         this.componentset = componentconfig.componentset;
     }
 

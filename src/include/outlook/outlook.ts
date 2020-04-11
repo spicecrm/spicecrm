@@ -77,6 +77,7 @@ import /*embed*/ {OutlookLoginPane} from "./components/outlookloginpane";
 import /*embed*/ {OutlookMeetingEditPane} from "./components/outlookmeetingeditpane";
 import /*embed*/ {OutlookMeetingReadPane} from "./components/outlookmeetingreadpane";
 import /*embed*/ {OutlookMeetingAddContainer} from "./components/outlookmeetingaddcontainer";
+import /*embed*/ {OutlookMeetingViewContainer} from "./components/outlookmeetingviewcontainer";
 import /*embed*/ {OutlookMeetingEditContainer} from "./components/outlookmeetingeditcontainer";
 
 declare var Office: any;
@@ -106,6 +107,7 @@ declare var Office: any;
         OutlookMeetingEditPane,
         OutlookMeetingReadPane,
         OutlookMeetingAddContainer,
+        OutlookMeetingViewContainer,
         OutlookMeetingEditContainer
     ],
     bootstrap: [OutlookPane],

@@ -19,7 +19,6 @@ wenn es nicht in spice ist aber parent type,id und exchange id dann abspeichern 
 import {Component} from "@angular/core";
 
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
-import {backend} from "../../../services/backend.service";
 
 @Component({
     templateUrl: './src/include/outlook/templates/outlookmeetingeditpane.html'
@@ -47,7 +46,6 @@ export class OutlookMeetingEditPane {
     private customProperties: any;
 
     constructor(
-        private backend: backend,
         private groupware: GroupwareService,
     ) {
         this.groupware.getCalenderItemId().subscribe(id => {
