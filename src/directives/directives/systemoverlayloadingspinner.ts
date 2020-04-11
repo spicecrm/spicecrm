@@ -7,9 +7,9 @@ import {Directive, ElementRef, Input, Renderer2} from '@angular/core';
  * a directive that displays a loading spinner inside an overlay container over the parent
  */
 @Directive({
-    selector: '[overlayLoadingSpinner]'
+    selector: '[system-overlay-loading-spinner]'
 })
-export class OverlayLoadingSpinner {
+export class SystemOverlayLoadingSpinnerDirective {
 
     private overlayElement: HTMLElement;
 
@@ -20,7 +20,7 @@ export class OverlayLoadingSpinner {
         this.defineOverlayElement();
     }
 
-    @Input('overlayLoadingSpinner') set isLoading(bool) {
+    @Input('system-overlay-loading-spinner') set isLoading(bool) {
         if (bool) this.renderer.appendChild(this.elementRef.nativeElement, this.overlayElement);
         else this.renderer.removeChild(this.elementRef.nativeElement, this.overlayElement);
     }

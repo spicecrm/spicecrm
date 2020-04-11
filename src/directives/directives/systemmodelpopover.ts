@@ -24,13 +24,13 @@ import {navigationtab} from "../../services/navigationtab.service";
  * displays a popover over an item
  */
 @Directive({
-    selector: '[modelPopOver]',
+    selector: '[system-model-popover]',
     host:{
         '[class.slds-text-link_faux]' : 'enablelink'
     },
     providers: [model]
 })
-export class ModelPopOverDirective implements OnInit, OnDestroy {
+export class SystemModelPopOverDirective implements OnInit, OnDestroy {
     /**
      * the module for the popover
      */

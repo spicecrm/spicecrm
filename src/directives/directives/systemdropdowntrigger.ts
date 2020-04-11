@@ -18,7 +18,7 @@ import {footer} from "../../services/footer.service";
  * This directive can be added to an element to handle show/hide the dropdown element
  * it also move the dropdown element to the footer and re position it to prevent any overflow.
  *
- * <div dropdowntrigger>
+ * <div system-dropdown-trigger>
  *      <button>dropdown button</button>
  *      <div class="slds-dropdown">
  *          dropdown content
@@ -26,9 +26,9 @@ import {footer} from "../../services/footer.service";
  * </div>
  */
 @Directive({
-    selector: '[dropdowntrigger]'
+    selector: '[system-dropdown-trigger]'
 })
-export class DropdownTriggerDirective implements OnDestroy, AfterViewChecked {
+export class SystemDropdownTriggerDirective implements OnDestroy, AfterViewChecked {
 
     @HostBinding('class.slds-is-open') public dropDownOpen: boolean = false;
     private clickListener: any;
@@ -38,7 +38,7 @@ export class DropdownTriggerDirective implements OnDestroy, AfterViewChecked {
     /*
     * @input dropdowntrigger: boolean = false
     */
-    @Input('dropdowntrigger') private dropdowntriggerdisabled: boolean = false;
+    @Input('system-dropdown-trigger') private dropdowntriggerdisabled: boolean = false;
 
     constructor(
         private renderer: Renderer2,

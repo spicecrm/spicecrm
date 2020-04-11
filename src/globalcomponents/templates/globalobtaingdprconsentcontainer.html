@@ -3,7 +3,7 @@
         {{language.getLabel( headerLabel )}}
         <system-modal-header-tagline>{{language.getLabel( taglineLabel )}}</system-modal-header-tagline>
     </system-modal-header>
-    <system-modal-content [overlayLoadingSpinner]="isSaving()">
+    <system-modal-content [system-overlay-loading-spinner]="isSaving()">
         <div #container></div>
         <global-obtain-gdpr-consent *ngIf="showDefault"></global-obtain-gdpr-consent>
     </system-modal-content>

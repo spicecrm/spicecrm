@@ -1,7 +1,7 @@
 <div *ngIf="cannotPrefs; else prefs" class="slds-text-align--center slds-m-top--x-large">The preferences of the user are only viewable/editable by himself.</div>
 
 <ng-template #prefs>
-    <div [overlayLoadingSpinner]="loading">
+    <div [system-overlay-loading-spinner]="loading">
         <system-collapsable-tab [collapsible]="false"  tabtitle="LBL_LOCALE_PREFERENCES">
             <div class="slds-grid slds-grid--align-spread">
                 <user-preferences-item class="slds-size--1-of-4" itemlabel="LBL_TIMEZONE">
@@ -236,7 +236,7 @@
                 <user-preferences-item class="slds-size--1-of-3" itemlabel="LBL_HOME_DASHBOARD">
                     <user-preferences-item-display *ngIf="!preferences.home_dashboard; else homeDashboardContainer"></user-preferences-item-display>
                     <ng-template #homeDashboardContainer>
-                        <field-container [modelProvider]="{module: 'Dashboards', id: preferences.home_dashboard, data: getDashboardData(preferences.home_dashboard)}" [field]="'name'" [fieldconfig]="{link: true, hidelabel: true}"></field-container>
+                        <field-container [system-model-provider]="{module: 'Dashboards', id: preferences.home_dashboard, data: getDashboardData(preferences.home_dashboard)}" [field]="'name'" [fieldconfig]="{link: true, hidelabel: true}"></field-container>
                     </ng-template>
                     <user-preferences-item-edit>
                         <div class="slds-select_container">
@@ -250,7 +250,7 @@
                 <user-preferences-item class="slds-size--1-of-3" itemlabel="LBL_HOME_DASHBOARDSET">
                     <user-preferences-item-display *ngIf="!preferences.home_dashboardset; else homeDashboardSetContainer"></user-preferences-item-display>
                     <ng-template #homeDashboardSetContainer>
-                        <field-container [modelProvider]="{module: 'DashboardSets', id: preferences.home_dashboardset, data: getDashboardSetData(preferences.home_dashboardset)}" [field]="'name'" [fieldconfig]="{link: true, hidelabel: true}"></field-container>
+                        <field-container [system-model-provider]="{module: 'DashboardSets', id: preferences.home_dashboardset, data: getDashboardSetData(preferences.home_dashboardset)}" [field]="'name'" [fieldconfig]="{link: true, hidelabel: true}"></field-container>
                     </ng-template>
                     <user-preferences-item-edit>
                         <div class="slds-select_container">

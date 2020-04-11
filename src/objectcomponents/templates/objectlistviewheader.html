@@ -6,7 +6,7 @@
         </div>
         <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left slds-grow slds-p-right--small">
             <system-utility-icon [icon]="'search'" [addclasses]="'slds-input__icon'"></system-utility-icon>
-            <input spiceuiautofocus style="max-width: 400px;" class="slds-input slds-lookup__search-input" type="search" [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', model.module)" [(ngModel)]="modellist.searchTerm" (keyup)="onKeyUp($event)"/>
+            <input system-autofocus style="max-width: 400px;" class="slds-input slds-lookup__search-input" type="search" [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', model.module)" [(ngModel)]="modellist.searchTerm" (keyup)="onKeyUp($event)"/>
         </div>
         <object-action-container class="slds-col--bump-left" [actionset]="actionSet"></object-action-container>
     </div>
