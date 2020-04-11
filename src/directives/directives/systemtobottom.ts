@@ -16,15 +16,15 @@ import {footer} from "../../services/footer.service";
  * an event when the content is close to the bottom so an infinite list can reload automatically
  */
 @Directive({
-    selector: '[tobottom]',
+    selector: '[system-to-bottom]',
 })
-export class ToBottomDirective implements DoCheck {
+export class SystemToBottomDirective implements DoCheck {
 
     /**
      * an emitter that fires if the scrollable item is approaching the end of the list
      * this should trigger loading more
      */
-    @Output('tobottom') private more: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output('system-to-bottom') private more: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     constructor(private element: ElementRef, private renderer: Renderer2, private footer: footer) {
     }

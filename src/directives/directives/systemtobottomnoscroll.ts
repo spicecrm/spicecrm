@@ -12,11 +12,11 @@ import {
 import {footer} from "../../services/footer.service";
 
 @Directive({
-    selector: '[tobottomnoscroll]',
+    selector: '[system-to-bottom-noscroll]', // tobottomnoscroll
 })
-export class ToBottomNoScrollDirective implements DoCheck {
+export class SystemToBottomNoScrollDirective implements DoCheck {
 
-    @Input('tobottomnoscroll') private toBottomNoScroll: boolean = true;
+    @Input('system-to-bottom-noscroll') private toBottomNoScroll: boolean = true;
 
     constructor(private element: ElementRef, private renderer: Renderer2, private footer: footer) {
     }

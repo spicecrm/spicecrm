@@ -2,7 +2,7 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
     <div class="slds-grid slds-grid--vertical-align-center" >
         <system-icon *ngIf="displayicon" [module]="relateType" size="x-small" divClass="slds-align--absolute-center slds-p-right--xx-small"></system-icon>
-        <span modelPopOver [module]="relateType" [id]="id" [enablelink]="link">{{value}}</span>
+        <span system-model-popover [module]="relateType" [id]="id" [enablelink]="link">{{value}}</span>
     </div>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="getFieldClass()">

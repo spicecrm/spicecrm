@@ -1,5 +1,5 @@
 <div class="slds-grid slds-height_full">
-    <div [overlayLoadingSpinner]="isLoading" class="slds-grid slds-grid--vertical slds-height_full slds-size--1-of-2 slds-border--right">
+    <div [system-overlay-loading-spinner]="isLoading" class="slds-grid slds-grid--vertical slds-height_full slds-size--1-of-2 slds-border--right">
         <spice-google-maps [options]="mapOptions" [records]="records" [focusedRecordId]="focusedRecordId" (radiusChange)="onRadiusChange($event)" (centerChange)="onCenterChange($event)" style="display: block" class="slds-grow"></spice-google-maps>
         <div class="slds-grid slds-grid--vertical-align-center slds-theme--shade slds-p-around--xx-small slds-border--bottom slds-border--top slds-border--left slds-border--right">
             <span class="slds-truncate">( {{records.length}} ) <system-label label="MSG_RECORDS_FOUND_WITH_GEO_DATA"></system-label></span>

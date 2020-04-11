@@ -11,7 +11,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr object-table-row *ngFor="let object of objects" [fields]="fields" [modelProvider]="{module:module, data:object}" [selectable]="selectable ? true : null" (select)="select($event)" (unselect)="unselect($event)" [selected]="isObjectSelected(object)">
+    <tr object-table-row *ngFor="let object of objects" [fields]="fields" [system-model-provider]="{module:module, data:object}" [selectable]="selectable ? true : null" (select)="select($event)" (unselect)="unselect($event)" [selected]="isObjectSelected(object)">
     </tr>
     </tbody>
 </table>
