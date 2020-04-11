@@ -23,6 +23,6 @@ export class ObjectRelatedlistList extends ObjectRelatedList {
         if ( this.relatedmodels._linkName && this.metadata.fieldDefs[this.relatedmodels.module][this.relatedmodels._linkName] && this.metadata.fieldDefs[this.relatedmodels.module][this.relatedmodels._linkName].vname ) {
             return this.language.getLabel( this.metadata.fieldDefs[this.relatedmodels.module][this.relatedmodels._linkName].vname );
         }
-        return this.language.getModuleName( this.module );
+        return this.language.getModuleName( this.relatedmodels.module );
     }
 }
