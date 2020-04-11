@@ -4,7 +4,6 @@
 import {Injectable} from "@angular/core";
 import {GroupwareService} from "../../../include/groupware/services/groupware.service";
 import {Observable, Subject, of} from "rxjs";
-
 declare var Office: any;
 
 /**

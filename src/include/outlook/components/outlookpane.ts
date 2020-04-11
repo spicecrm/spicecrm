@@ -25,6 +25,10 @@ export class OutlookPane implements OnInit {
         private groupware: GroupwareService,
         private session: session
     ) {
+
+        Office.context.mailbox.addHandlerAsync(Office.EventType.ItemChanged, () => {
+            this.itemChanged();
+        });
     }
 
     /**
@@ -39,6 +43,11 @@ export class OutlookPane implements OnInit {
      */
     public ngOnInit(): void {
         this.groupware.messageId = Office.context.mailbox.item.itemId;
+    }
+
+    private itemChanged() {
+        this.groupware.messageId = Office.context.mailbox.item.itemId;
+        this.groupware.loadLinkedBeans();
     }
 
 }

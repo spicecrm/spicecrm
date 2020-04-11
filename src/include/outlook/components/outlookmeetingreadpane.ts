@@ -19,7 +19,7 @@ wenn es nicht in spice ist aber parent type,id und exchange id dann abspeichern 
 import {Component} from "@angular/core";
 
 
-import {GroupwareService} from "../../groupware/services/groupware.service";
+import {GroupwareService} from "../../../include/groupware/services/groupware.service";
 
 @Component({
     templateUrl: './src/include/outlook/templates/outlookmeetingreadpane.html'
