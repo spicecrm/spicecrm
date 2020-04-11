@@ -4,4 +4,4 @@
     </span>
     <img style="height: 32px; width: 32px" *ngIf="userimage" [src]="userimage"/>
 </button>
-<global-user-panel *ngIf="!hideUserDetails"></global-user-panel>
+<global-user-panel *ngIf="!hideUserDetails" (closepopup)="closepopup()"></global-user-panel>
