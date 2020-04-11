@@ -12,7 +12,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let contact of contacts" [modelProvider]="{module:'Contacts', data: contact}"
+                <tr *ngFor="let contact of contacts" [system-model-provider]="{module:'Contacts', data: contact}"
                     (click)="setActiveContactId(contact.id)" style="cursor: pointer"
                     (mouseover)="hovered = contact.id" (mouseout)="hovered = ''"
                     [ngClass]="{'slds-theme_shade': activeContactId == contact.id}"

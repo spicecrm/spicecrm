@@ -18,6 +18,6 @@
         <p class="slds-text-body--small">{{relatedmodels.items.length}} <system-label label="LBL_OF"></system-label> {{relatedmodels.count}} <system-label label="LBL_ITEMS"></system-label> • <system-label label="LBL_SORTEDBY"></system-label> <system-label-fieldname [module]="related" [field]="relatedmodels.sortfield"></system-label-fieldname>   • <system-label label="LBL_LASTUPDATE"></system-label> {{relatedmodels.getLastLoadTime()}}</p>
     </div>
 </div>
-<div tobottom #tablecontent (scroll)="onScroll($event)">
+<div system-to-bottom #tablecontent (scroll)="onScroll($event)">
     <object-relatedlist-table [listfields]="listfields" ></object-relatedlist-table>
 </div>

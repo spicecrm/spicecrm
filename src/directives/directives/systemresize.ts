@@ -14,7 +14,7 @@ import {
  * a resizer directive that reacts on mopuse down and mouseup
  */
 @Directive({
-    selector: '[systemresize]'
+    selector: '[system-resize]'
 })
 export class SystemResizeDirective implements OnDestroy {
 
@@ -26,7 +26,7 @@ export class SystemResizeDirective implements OnDestroy {
     /**
      * the emitter with the name of the directive emitting the dimensions if they changed
      */
-    @Output('systemresize') private resizeemitter: EventEmitter<any> = new EventEmitter<any>();
+    @Output('system-resize') private resizeemitter: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * the widht of the element when mouse went down

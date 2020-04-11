@@ -13,7 +13,7 @@
             </tr>
         </thead>
         <tbody>
-            <ng-container *ngFor="let workflowtask of workflowtasks" [modelProvider]="{module:'WorkflowTasks', id: workflowtask.id, data: workflowtask}">
+            <ng-container *ngFor="let workflowtask of workflowtasks" [system-model-provider]="{module:'WorkflowTasks', id: workflowtask.id, data: workflowtask}">
                 <tr workflow-panel-tasks-item><tr>
             </ng-container>
         </tbody>

@@ -2,7 +2,7 @@
     <div class="slds-grid">
         <header class="slds-grid slds-grid--vertical-align-end slds-has-flexi-truncate">
             <system-icon [module]="'ProductVariants'" size="x-small"></system-icon>
-            <h2 class="slds-truncate" [viewprovider]="{editable: false, displayLabels: false}">
+            <h2 class="slds-truncate" [system-view-provider]="{editable: false, displayLabels: false}">
                 <a *ngIf="!fieldset; else fieldsetContainer" href="javascript:void(0);" class="slds-card__header-link slds-truncate"
                    [title]="model.data.summary_text" (click)="godetail()">
                     <span class="slds-text-heading_x-small">{{model.data.summary_text}}</span>
@@ -18,7 +18,7 @@
             </button>
         </div>
     </div>
-    <div *ngIf="opened" class="slds-p-top--xx-small" [viewprovider]="{editable: false, displayLabels: true}">
+    <div *ngIf="opened" class="slds-p-top--xx-small" [system-view-provider]="{editable: false, displayLabels: true}">
         <object-record-fieldset *ngIf="!!detailsFieldset" [fieldset]="detailsFieldset"></object-record-fieldset>
         <product-variants-attributes-table [attributes]="groupAttributes"></product-variants-attributes-table>
     </div>

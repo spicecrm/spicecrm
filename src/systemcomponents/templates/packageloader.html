@@ -28,7 +28,7 @@
             <div class="slds-form-element">
                 <div class="slds-form-element__control">
                     <div class="slds-combobox_container">
-                        <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [dropdowntrigger]="repositories.length <= 1" role="combobox">
+                        <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [system-dropdown-trigger]="repositories.length <= 1" role="combobox">
                             <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
                                 <input type="text" class="slds-input slds-combobox__input" autoComplete="off" role="textbox" [(ngModel)]="repositoryname" [disabled]="repositories.length <= 1"/>
                                 <system-icon icon="down" sprite="utility" size="x-small" addclasses="slds-icon_container slds-icon-utility-down slds-input__icon slds-input__icon_right"></system-icon>
@@ -69,10 +69,10 @@
     <package-loader-languages [ngClass]="{'slds-show': scope == 'languages', 'slds-hide': scope != 'languages'}" [languages]="languages"  [repository]="repository"></package-loader-languages>
     <package-loader-packages [ngClass]="{'slds-show': scope == 'content', 'slds-hide': scope != 'content'}" [packages]="packages" packagescope="content" [repository]="repository"></package-loader-packages>
 </div>
-<div *ngIf="!loading && !repository" tobottom class="slds-theme--default slds-align--absolute-center">
+<div *ngIf="!loading && !repository" system-to-bottom class="slds-theme--default slds-align--absolute-center">
     <h2 class="slds-text-heading--medium slds-p-vertical--small">Please select a Repository</h2>
 </div>
-<div tobottom class="slds-align_absolute-center" *ngIf="loading">
+<div system-to-bottom class="slds-align_absolute-center" *ngIf="loading">
     <div class="slds-grid slds-grid_vertical-align-center">
         <system-spinner size="16"></system-spinner>
         <div class="slds-p-horizontal--small"><system-label label="LBL_RETRIEVING_PACKAGES"></system-label></div>

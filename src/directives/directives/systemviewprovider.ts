@@ -16,10 +16,10 @@ import {view} from "../../services/view.service";
  * parameters are editable to make the view editbale and displayLabels to show or display labels in the view
  */
 @Directive({
-    selector: '[viewprovider]',
+    selector: '[system-view-provider]',
     providers:[view]
 })
-export class ViewProviderDirective implements AfterViewInit, OnDestroy {
+export class SystemViewProviderDirective implements AfterViewInit, OnDestroy {
 
     private resizeHandler: any;
 
@@ -31,7 +31,7 @@ export class ViewProviderDirective implements AfterViewInit, OnDestroy {
 
     }
 
-    @Input('viewprovider')
+    @Input('system-view-provider')
     set viewSettings(viewSettings: { editable: boolean, displayLabels: boolean }) {
         if (viewSettings.editable) {
             this.view.isEditable = true;

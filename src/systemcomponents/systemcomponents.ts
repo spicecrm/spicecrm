@@ -81,6 +81,7 @@ import /*embed*/ {SystemInputBackendMethod} from "./components/systeminputbacken
 import /*embed*/ {SystemLabel} from "./components/systemlabel";
 import /*embed*/ {SystemLabelFieldname} from "./components/systemlabelfieldname";
 import /*embed*/ {SystemLabelModulename} from "./components/systemlabelmodulename";
+import /*embed*/ {SystemLanguageSelector} from "./components/systemlanguageselector";
 import /*embed*/ {SystemLink} from "./components/systemlink";
 import /*embed*/ {SystemLoaderProgress} from "./components/systemloaderprogress";
 import /*embed*/ {SystemLoadingModal} from "./components/systemloadingmodal";
@@ -220,6 +221,7 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemLabel,
         SystemLabelFieldname,
         SystemLabelModulename,
+        SystemLanguageSelector,
         SystemLink,
         SystemLoaderProgress,
         SystemLoadingModal,
@@ -342,6 +344,7 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemLabel,
         SystemLabelFieldname,
         SystemLabelModulename,
+        SystemLanguageSelector,
         SystemLink,
         SystemLoaderProgress,
         SystemModal,

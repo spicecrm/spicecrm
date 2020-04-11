@@ -1,4 +1,4 @@
-<div *ngIf="!isSmall; else smallformfactor" class="slds-dropdown-trigger slds-dropdown-trigger--click" dropdowntrigger>
+<div *ngIf="!isSmall; else smallformfactor" class="slds-dropdown-trigger slds-dropdown-trigger--click" system-dropdown-trigger>
     <button class="slds-button slds-button--icon-border-filled" [ngClass]="getButtonSizeClass()" aria-haspopup="true" [disabled]="hasNoActions">
         <system-button-icon [icon]="'down'"></system-button-icon>
     </button>
