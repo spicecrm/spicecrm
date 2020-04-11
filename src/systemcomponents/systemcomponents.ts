@@ -100,6 +100,7 @@ import /*embed*/ {SystemPrompt} from "./components/systemprompt";
 import /*embed*/ {SystemRichTextEditor} from "./components/systemrichtexteditor";
 import /*embed*/ {SystemRichTextEditorModal} from "./components/systemrichtexteditormodal";
 import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextsourcemodal";
+import /*embed*/ {SystemRoleSelector} from "./components/systemroleselector";
 import /*embed*/ {SystemSection} from "./components/systemsection";
 import /*embed*/ {SystemSelect} from "./components/systemselect";
 import /*embed*/ {SystemSpinner} from "./components/systemspinner";
@@ -250,6 +251,7 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemRichTextEditor,
         SystemRichTextEditorModal,
         SystemRichTextSourceModal,
+        SystemRoleSelector,
         SystemSection,
         SystemSelect,
         SystemSpinner,
@@ -359,6 +361,7 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemProgressBar,
         SystemPrompt,
         SystemRichTextEditor,
+        SystemRoleSelector,
         SystemSection,
         SystemSelect,
         SystemSpinner,
