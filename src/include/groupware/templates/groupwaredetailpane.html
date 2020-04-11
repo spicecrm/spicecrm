@@ -21,7 +21,7 @@
             </div>
         </div>
         <div *ngIf="!loading" class="slds-p-around--x-small">
-            <groupware-detail-pane-bean *ngFor="let bean of beans" [bean]="bean" [modelProvider]="{module: bean.module, id: bean.id, data: bean.data}" (selected)="selectBean($event)"></groupware-detail-pane-bean>
+            <groupware-detail-pane-bean *ngFor="let bean of beans" [bean]="bean" [system-model-provider]="{module: bean.module, id: bean.id, data: bean.data}" (selected)="selectBean($event)"></groupware-detail-pane-bean>
         </div>
         <div *ngIf="beans.length == 0 && !loading">
             <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
@@ -33,7 +33,7 @@
 </ng-container>
 <ng-template #modeldetails>
     <system-componentset [componentset]="componentconfig.header"></system-componentset>
-    <div class="slds-theme--default" tobottom>
+    <div class="slds-theme--default" system-to-bottom>
         <system-componentset [componentset]="componentconfig.main"></system-componentset>
     </div>
 </ng-template>
