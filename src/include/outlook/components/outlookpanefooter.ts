@@ -1,7 +1,7 @@
 /**
  * @module Outlook
  */
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 
 import {metadata} from "../../../services/metadata.service";
@@ -16,7 +16,7 @@ import {footer} from "../../../services/footer.service";
     selector: 'outlook-pane-footer',
     templateUrl: './src/include/outlook/templates/outlookpanefooter.html'
 })
-export class OutlookPaneFooter {
+export class OutlookPaneFooter implements AfterViewInit, OnDestroy {
 
     @ViewChild('footer', {static: false}) private footerElement;
 
@@ -57,6 +57,20 @@ export class OutlookPaneFooter {
             return this.metadata.getActionSetItems(componentConfig.actionset);
         }
         return [];
+    }
+
+    /**
+     * get the footer heigth and set it to the footer service
+     */
+    public ngAfterViewInit(): void {
+        this.setFooterHeight();
+    }
+
+    /**
+     * set the footer heigth to 0
+     */
+    public ngOnDestroy(): void {
+        this.clearFooterHeight();
     }
 
     /**

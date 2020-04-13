@@ -1,7 +1,7 @@
 /**
  * @module ModuleGroupware
  */
-import {Component} from '@angular/core';
+import {Component, ChangeDetectorRef} from '@angular/core';
 
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {language} from "../../../services/language.service";
@@ -17,7 +17,8 @@ export class GroupwareReadPaneHeader {
 
     constructor(
         private language: language,
-        private groupware: GroupwareService
+        private groupware: GroupwareService,
+        private cdRef: ChangeDetectorRef
     ) {}
 
     /**
@@ -32,8 +33,7 @@ export class GroupwareReadPaneHeader {
                 // display error
             },
             () => {
-                // Office.context.ui.closeContainer();
-                // todo move that into the specific module
+                this.cdRef.detectChanges();
             });
     }
 
@@ -41,7 +41,7 @@ export class GroupwareReadPaneHeader {
      * Check if there are any beans to be archived.
      */
     get canArchive() {
-        return this.groupware.archiveto.length > 0;
+        return this.groupware.archiveto.length > 0 && !this.groupware.isArchiving;
     }
 
     /**

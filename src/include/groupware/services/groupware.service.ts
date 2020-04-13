@@ -13,8 +13,21 @@ import {backend} from "../../../services/backend.service";
 @Injectable()
 export abstract class GroupwareService {
 
+    /**
+     * the id of the email on SpiceCRM
+     */
     public emailId: string = "";
+
+    /**
+     * the outlook item id
+     */
     public _messageId: string = "";
+
+    /**
+     * set to true when the email is being archived
+     */
+    public isArchiving: boolean = false;
+
     /**
      * A list of beans that are to be archived.
      */
@@ -39,7 +52,8 @@ export abstract class GroupwareService {
 
     constructor(
         protected backend: backend,
-    ) {}
+    ) {
+    }
 
     /**
      * Adds a bean to the archive bean.
@@ -88,7 +102,7 @@ export abstract class GroupwareService {
      * @param attachment
      */
     public checkAttachmentArchive(attachment) {
-        return this.archiveattachments.findIndex(element => attachment.id == element.id) >= 0 ? true : false;
+        return this.archiveattachments.findIndex(element => element && attachment.id == element.id) >= 0 ? true : false;
     }
 
     /**
@@ -96,7 +110,7 @@ export abstract class GroupwareService {
      * @param id
      */
     public getAttachment(id) {
-        return this.outlookAttachments.attachments.filter(element => id == element.id);
+        return this.outlookAttachments.attachments.find(element => id == element.id);
     }
 
     /**
@@ -113,6 +127,8 @@ export abstract class GroupwareService {
      */
     public archiveEmail(): Observable<any> {
         let retSubject = new Subject();
+
+        this.isArchiving = true;
 
         this.assembleEmail().subscribe(
             (email: any) => {
@@ -133,10 +149,12 @@ export abstract class GroupwareService {
 
                             this.backend.postRequest('module/Emails/groupware/saveaddinattachments', {}, attachmentData).subscribe(
                                 success => {
+                                    this.isArchiving = false;
                                     retSubject.next(true);
                                     retSubject.complete();
                                 },
                                 error => {
+                                    this.isArchiving = false;
                                     retSubject.error('error archiving attachments');
                                     retSubject.complete();
                                 }
@@ -144,18 +162,23 @@ export abstract class GroupwareService {
 
                             this.emailId = res.email_id;
                         } else {
+                            this.isArchiving = false;
                             retSubject.next(true);
                             retSubject.complete();
                         }
                     },
                     error => {
+                        this.isArchiving = false;
                         retSubject.error('error archiving email');
                         retSubject.complete();
                     }
                 );
             },
             (err) => {
-                console.log('Cannot assemble email: ' + err);
+                // console.log('Cannot assemble email: ' + err);
+                retSubject.error('error assembling email');
+                retSubject.complete();
+                this.isArchiving = false;
             }
         );
 
@@ -183,13 +206,11 @@ export abstract class GroupwareService {
                     }
                 }
 
-                for (let attId in res.attachments) {
-                    if (attId == "") {
-                        continue;
+                for (let atttachment of res.attachments) {
+                    let currentAttachment = this.getAttachment(atttachment.external_id);
+                    if (currentAttachment) {
+                        this.addAttachment(currentAttachment);
                     }
-
-                    let currentAttachment = this.getAttachment(attId);
-                    this.addAttachment(currentAttachment[0]);
                 }
 
                 retSubject.next(true);
