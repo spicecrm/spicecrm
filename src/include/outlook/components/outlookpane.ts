@@ -2,10 +2,11 @@
  * @module Outlook
  */
 import {Component, OnInit} from '@angular/core';
-
+import {Router} from "@angular/router";
 import {OutlookConfiguration} from '../services/outlookconfiguration.service';
 import {GroupwareService} from "../../../include/groupware/services/groupware.service";
 import {session} from "../../../services/session.service";
+import {broadcast} from "../../../services/broadcast.service";
 
 declare var Office: any;
 
@@ -23,12 +24,15 @@ export class OutlookPane implements OnInit {
     constructor(
         private configuration: OutlookConfiguration,
         private groupware: GroupwareService,
-        private session: session
+        private router: Router,
+        private session: session,
+        private broadcast: broadcast
     ) {
-
+        /* ToDo: implement pinned pane that relaod when item is changed
         Office.context.mailbox.addHandlerAsync(Office.EventType.ItemChanged, () => {
             this.itemChanged();
         });
+        */
     }
 
     /**
@@ -47,7 +51,11 @@ export class OutlookPane implements OnInit {
 
     private itemChanged() {
         this.groupware.messageId = Office.context.mailbox.item.itemId;
-        this.groupware.loadLinkedBeans();
+        if (this.router.routerState.snapshot.url == '/groupware/details') {
+            this.broadcast.broadcastMessage('groupware.itemchanged');
+        } else {
+            this.router.navigate(['/groupware/details']);
+        }
     }
 
 }

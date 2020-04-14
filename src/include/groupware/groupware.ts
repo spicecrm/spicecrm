@@ -12,12 +12,12 @@ import {RouterModule} from '@angular/router';
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {DirectivesModule} from "../../directives/directives";
-import {loginCheck} from "../../services/login.service";
 import {ObjectFields} from "../../objectfields/objectfields";
 
 import /*embed*/ {GroupwareService} from './services/groupware.service';
 
 import /*embed*/ {GroupwarePaneBean} from './components/groupwarepanebean';
+import /*embed*/ {GroupwareDetailPaneView} from './components/groupwaredetailpaneview';
 import /*embed*/ {GroupwarePaneAttachment} from './components/groupwarepaneattachment';
 import /*embed*/ {GroupwareReadPane} from './components/groupwarereadpane';
 import /*embed*/ {GroupwareReadPaneHeader} from './components/groupwarereadpaneheader';
@@ -42,6 +42,7 @@ import /*embed*/ {GroupwareDetailPaneBean} from './components/groupwaredetailpan
     ],
     declarations: [
         GroupwarePaneBean,
+        GroupwareDetailPaneView,
         GroupwarePaneAttachment,
         GroupwareReadPane,
         GroupwareReadPaneHeader,
