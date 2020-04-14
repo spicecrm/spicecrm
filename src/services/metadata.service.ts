@@ -757,11 +757,26 @@ export class metadata {
     }
 
     /**
+     * gets the module by the sysmoduleid
+     *
+     * @param sysmoudleid
+     */
+    public getModuleById(sysmoudleid: string): string {
+        for (let module in this.moduleDefs) {
+            if(this.moduleDefs[module].id == sysmoudleid){
+                return module;
+            }
+        }
+
+        return '';
+    }
+
+    /**
      * returns the name of the icon to be used for the module
      *
      * @param module the name of the module
      */
-    public getModuleIcon(module) {
+    public getModuleIcon(module: string) {
         try {
             return this.moduleDefs[module].icon;
         } catch (e) {
@@ -769,7 +784,12 @@ export class metadata {
         }
     }
 
-    public getModuleSingular(module) {
+    /**
+     * returns the singular label for a module
+     *
+     * @param module
+     */
+    public getModuleSingular(module: string) {
         try {
             return this.moduleDefs[module].singular;
         } catch (e) {
@@ -778,7 +798,11 @@ export class metadata {
     }
 
 
-    public getModuleFromSingular(singular) {
+    /**
+     * returns the module from the singualr
+     * @param singular
+     */
+    public getModuleFromSingular(singular: string) {
         let module = "";
         for (let thismodule in this.moduleDefs) {
             if (this.moduleDefs[thismodule].singular == singular) {
@@ -788,6 +812,11 @@ export class metadata {
         return module;
     }
 
+    /**
+     * returns if a module is active in the tracker
+     *
+     * @param module
+     */
     public getModuleTrackflag(module): boolean {
         try {
             return parseInt(this.moduleDefs[module].track, 10) ? true : false;

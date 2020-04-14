@@ -51,7 +51,7 @@
         </div>
     </div>
     <div [ngStyle]="{height:cropperHeight}">
-        <div class="slds-height_full" style="overflow:hidden" spiceDropFileArea (filesDrop)="onDrop($event)" [overlayLoadingSpinner]="isLoading" >
+        <div class="slds-height_full" style="overflow:hidden" (system-drop-file)="onDrop($event)" [system-overlay-loading-spinner]="isLoading" >
             <img #imgelement *ngIf="mediaBase64, else uploadbutton" [src]="mediaBase64" (load)="imageLoaded($event)" style="display:block"/>
             <ng-template #uploadbutton>
                 <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">

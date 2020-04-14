@@ -1,4 +1,4 @@
-<div class="slds-scrollable" style="height: 100%;" [overlayLoadingSpinner]="modellist.isLoading">
+<div class="slds-scrollable" style="height: 100%;" [system-overlay-loading-spinner]="modellist.isLoading">
     <ng-container *ngFor="let category of modellist.buckets?.bucketitems">
         <article *ngIf="category?.items > 0" class="slds-card slds-m-around--medium" >
             <div class="slds-card__header slds-grid">

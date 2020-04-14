@@ -1,9 +1,9 @@
 <div class="slds-height_full slds-grid slds-grid--vertical">
-    <div class="slds-scrollable--y slds-grow slds-grid slds-grid--vertical" style="min-height: 0" [overlayLoadingSpinner]="isLoading">
+    <div class="slds-scrollable--y slds-grow slds-grid slds-grid--vertical" style="min-height: 0" [system-overlay-loading-spinner]="isLoading">
         <table class="slds-table slds-table_bordered slds-table--fixed-layout slds-table--header-fixed">
             <thead>
                 <tr class="slds-text-title--caps">
-                    <th *ngFor="let field of displayFields; trackBy: trackByFn" [ngClass]="fieldsDisplayClasses[field.fieldid]" scope="col" class="slds-resizable" [style.width.%]="fieldsData[field.fieldid].width" (systemresize)="onresize()" [resizeid]="field.fieldid">
+                    <th *ngFor="let field of displayFields; trackBy: trackByFn" [ngClass]="fieldsDisplayClasses[field.fieldid]" scope="col" class="slds-resizable" [style.width.%]="fieldsData[field.fieldid].width" (system-resize)="onresize()" [resizeid]="field.fieldid">
                         <a *ngIf="!!field.sort && field.sort == 'sortable'; else notsortable" href="javascript:void(0);" class="slds-th__action slds-text-link--reset slds-grid" (click)="toggleSort(field)" [ngClass]="fieldsDisplayClasses[field.fieldid]">
                             <div class="slds-truncate slds-p-vertical--xx-small">
                                 <system-label [label]="field.name"></system-label>

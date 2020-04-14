@@ -22,7 +22,7 @@
                         {{productgroup.summary_text}}
                     </a>
                     <ng-template #fieldsetContainer>
-                        <div [viewprovider]="{editable: false, displayLabels: false}" [modelProvider]="{id: productgroup.id, module: 'Products', data: productgroup}" class="slds-truncate">
+                        <div [system-view-provider]="{editable: false, displayLabels: false}" [system-model-provider]="{id: productgroup.id, module: 'Products', data: productgroup}" class="slds-truncate">
                             <object-record-fieldset-horizontal-list [fieldset]="fieldset"></object-record-fieldset-horizontal-list>
                         </div>
                     </ng-template>

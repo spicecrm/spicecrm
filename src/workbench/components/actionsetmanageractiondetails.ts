@@ -40,6 +40,7 @@ export class ActionsetManagerActionDetails implements OnChanges {
         {display: "IMPORT", value: "IMPORT", component: "SpiceImporterImportButton"},
         {display: "MAIL", value: "MAIL", component: "ObjectActionBeanToMailButton"},
         {display: "PRINT", value: "PRINT", component: "ObjectActionOutputBeanButton"},
+        {display: "ROUTE", value: "ROUTE", component: "GlobalNavigationMenuItemActionRoute"},
         {display: "SELECT", value: "SELECT", component: "ObjectActionSelectButton"},
         {display: "OPEN", value: "OPEN", component: "ObjectActionOpenButton"},
         {display: "CANCEL", value: "CANCEL", component: "ObjectActionCancelButton"},

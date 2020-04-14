@@ -21,7 +21,7 @@ import {navigationtab} from "../../../services/navigationtab.service";
 import {broadcast} from "../../../services/broadcast.service";
 
 /** @ignore */
-declare var _;
+declare var _: any;
 
 /** @ignore */
 const ANIMATIONS = [

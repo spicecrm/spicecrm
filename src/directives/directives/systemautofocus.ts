@@ -7,13 +7,13 @@ import {AfterViewInit, Directive, ElementRef, Input} from '@angular/core';
  * a directive that can be added to an input element and then will ensure when it is rendered it is focused automatically
  *
  * ```html
- * <input spiceuiautofocus type="search" class="slds-input" [(ngModel)]="searchTerm" [placeholder]="language.getLabel('LBL_SEARCH')">
+ * <input system-autofocus type="search" class="slds-input" [(ngModel)]="searchTerm" [placeholder]="language.getLabel('LBL_SEARCH')">
  * ```
  */
 @Directive({
-    selector: '[spiceuiautofocus]'
+    selector: '[system-autofocus]'
 })
-export class SpiceUIAutofocusDirective implements AfterViewInit {
+export class SystemAutofocusDirective implements AfterViewInit {
 
     /**
      * @ignore

@@ -3,7 +3,7 @@
         <div class="slds-grow slds-p-horizontal--medium slds-scrollable--x slds-text-heading--small slds-align-middle slds-grid slds-grid--vertical-align-center">
             <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
                 <li *ngFor="let nodeCrumb of displayNodeCrumbs" class="slds-breadcrumb__item">
-                    <div *ngIf="nodeCrumb.linkid" modelPopOver [module]="nodeCrumb.linkmodule" [id]="nodeCrumb.linkid" class="slds-p-horizontal--x-small">{{nodeCrumb.displayname}}</div>
+                    <div *ngIf="nodeCrumb.linkid" system-model-popover [module]="nodeCrumb.linkmodule" [id]="nodeCrumb.linkid" class="slds-p-horizontal--x-small">{{nodeCrumb.displayname}}</div>
                     <div *ngIf="!nodeCrumb.linkid" class="slds-p-horizontal--x-small">{{nodeCrumb.displayname}}</div>
                 </li>
             </ol>

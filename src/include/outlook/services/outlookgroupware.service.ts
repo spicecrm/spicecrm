@@ -6,6 +6,7 @@ import {GroupwareService} from "../../../include/groupware/services/groupware.se
 import {Observable, Subject, of} from "rxjs";
 
 declare var Office: any;
+declare var _: any;
 
 /**
  * Extension of the groupware service used to communicate with Outlook.
@@ -73,9 +74,7 @@ export class OutlookGroupware extends GroupwareService {
                     this.outlookAttachments.attachmentToken = res;
 
                     for (let i = 0; i < Office.context.mailbox.item.attachments.length; i++) {
-                        this.outlookAttachments.attachments[i] = JSON.parse(
-                            JSON.stringify(Office.context.mailbox.item.attachments[i]._data$p$0)
-                        );
+                        this.outlookAttachments.attachments[i] = _.clone(Office.context.mailbox.item.attachments[i]);
                         this.outlookAttachments.attachments[i].selected = false;
                     }
 

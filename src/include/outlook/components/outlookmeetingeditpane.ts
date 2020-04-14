@@ -17,39 +17,49 @@ wenn nicht einfach das von oben zeigen
 wenn es nicht in spice ist aber parent type,id und exchange id dann abspeichern (und dann im hintergrund den rest holen)
 */
 import {Component} from "@angular/core";
-// import {model} from "../../../services/model.service";
-// import {view} from "../../../services/view.service";
 
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
-import {backend} from "../../../services/backend.service";
-
 
 @Component({
-    templateUrl: './src/include/groupware/templates/groupwaremeetingreadpane.html'
+    templateUrl: './src/include/outlook/templates/outlookmeetingeditpane.html'
 })
-export class GroupwareMeetingReadPane {
+export class OutlookMeetingEditPane {
 
+    /**
+     * the outlöook meeting id
+     */
     private meetingid: string;
 
+    /**
+     * the module this is linked to
+     */
+    private module: string;
+
+    /**
+     * the id this is linked to
+     */
+    private id: string;
+
+    /**
+     * the custom properties object
+     */
     private customProperties: any;
 
     constructor(
-        private backend: backend,
         private groupware: GroupwareService,
     ) {
         this.groupware.getCalenderItemId().subscribe(id => {
-            this.meetingid = id ? id : 'meeting is new';
+            this.meetingid = id;
         });
 
         this.groupware.getCustomProperties().subscribe(props => {
             this.customProperties = props;
 
-            if(!this.customProperties.get('accountid')){
-                this.customProperties.set('accountid', '4711');
-                this.customProperties.saveAsync(resp => {
-                    console.log(resp);
-                });
-            }
+            this.module = this.customProperties.get('_module');
+            this.id = this.customProperties.get('_id');
+
+            // this.module = 'Meetings';
+            // this.id = '105b119a-81c6-f039-e6c0-57bc0c7540e9';
         });
     }
 

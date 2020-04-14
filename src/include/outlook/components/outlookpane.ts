@@ -24,13 +24,30 @@ export class OutlookPane implements OnInit {
         private configuration: OutlookConfiguration,
         private groupware: GroupwareService,
         private session: session
-    ) {}
+    ) {
+
+        Office.context.mailbox.addHandlerAsync(Office.EventType.ItemChanged, () => {
+            this.itemChanged();
+        });
+    }
+
+    /**
+     * display the bottom bar only when we have a message with an id
+     */
+    get displayBottomBar() {
+        return Office.context.mailbox.item.itemType == 'message' && Office.context.mailbox.item.itemId;
+    }
 
     /**
      * Sets the ID of the currently selected email.
      */
     public ngOnInit(): void {
         this.groupware.messageId = Office.context.mailbox.item.itemId;
+    }
+
+    private itemChanged() {
+        this.groupware.messageId = Office.context.mailbox.item.itemId;
+        this.groupware.loadLinkedBeans();
     }
 
 }

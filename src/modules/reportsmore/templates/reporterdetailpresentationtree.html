@@ -1,4 +1,4 @@
-<div class="slds-scrollable--y slds-height_full" style="min-height: 0" [overlayLoadingSpinner]="isLoading">
+<div class="slds-scrollable--y slds-height_full" style="min-height: 0" [system-overlay-loading-spinner]="isLoading">
     <table class="slds-table slds-table_bordered slds-table_edit slds-table--header-fixed slds-tree slds-table_tree slds-table--fixed-layout" role="treegrid">
         <thead>
             <tr>
@@ -43,7 +43,7 @@
             </ng-container>
         </tbody>
     </table>
-    <div *ngIf="!isLoading && reportRecords.length == 0" class="slds-p-around--medium slds-align--absolute-center"  tobottomnoscroll>
+    <div *ngIf="!isLoading && reportRecords.length == 0" class="slds-p-around--medium slds-align--absolute-center"  system-to-bottom-noscroll>
         <h2 class="slds-text-heading--small"><system-label label="LBL_NO_ENTRIES"></system-label></h2>
     </div>
 </div>
