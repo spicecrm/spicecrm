@@ -17,13 +17,13 @@ import {language} from '../../../services/language.service';
 import {libloader} from '../../../services/libloader.service';
 
 /** @ignore */
-declare let google: any;
+declare var google: any;
 /** @ignore */
-declare let MarkerClusterer: any;
+declare var MarkerClusterer: any;
 /** @ignore */
-declare let OverlappingMarkerSpiderfier: any;
+declare var OverlappingMarkerSpiderfier: any;
 /** @ignore */
-declare let _: any;
+declare var _: any;
 
 @Component({
     selector: 'reporter-detail-visualization-google-maps',

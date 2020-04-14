@@ -15,7 +15,7 @@ import {modelutilities} from "../../../services/modelutilities.service";
 /** @ignore */
 declare var Highcharts: any;
 /** @ignore */
-declare var _;
+declare var _: any;
 
 /**
  * handel displaying a high chart with the report data
