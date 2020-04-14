@@ -1,4 +1,4 @@
-<div class="slds-scrollable--y slds-border--right" (tobottom)="loadmore()">
+<div class="slds-scrollable--y slds-border--right" (system-to-bottom)="loadmore()">
     <mailbox-manager-textmessage *ngFor="let email of mailboxesEmails.emails;trackBy:trackbyfn" [message]="email"></mailbox-manager-textmessage>
     <div *ngIf="mailboxesEmails.isLoading" class="slds-p-around--medium">
         <system-spinner></system-spinner>

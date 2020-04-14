@@ -11,11 +11,10 @@ import {metadata} from "../../services/metadata.service";
 export class SystemIcon {
     @Input() private module: string = "";
     @Input() private icon: string = "";
-    @Input() private size: string = "";
+    @Input() private size: 'large' | 'small' | 'x-small' | 'xx-small' = 'small';
     @Input() private sprite: string = "standard";
     @Input() private addclasses: string = "";
     @Input() private divClass = "slds-media__figure";
-
 
     constructor(private metadata: metadata) {
 

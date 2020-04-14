@@ -15,7 +15,7 @@
     </div>
     <div class="slds-card__body" [hidden]="hideDuplicates">
         <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
-            <object-related-duplicate-tile class="slds-size--1-of-1 slds-large-size--1-of-3" *ngFor="let duplicate of duplicates" [modelProvider]="{module:model.module, data:duplicate}"></object-related-duplicate-tile>
+            <object-related-duplicate-tile class="slds-size--1-of-1 slds-large-size--1-of-3" *ngFor="let duplicate of duplicates" [system-model-provider]="{module:model.module, data:duplicate}"></object-related-duplicate-tile>
         </div>
     </div>
 </article>

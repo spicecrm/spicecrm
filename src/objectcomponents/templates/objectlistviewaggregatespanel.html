@@ -5,7 +5,7 @@
                 <h4 class="slds-align-middle slds-text-heading--small"><system-label label="LBL_AGGREGATES"></system-label></h4>
                 <button [disabled]="!modellist.hasAggregates" class="slds-button slds-button--brand" (click)="clearAggregates()"><system-label label="LBL_CLEARALL"></system-label></button>
             </div>
-            <div class="slds-filters__body" tobottom>
+            <div class="slds-filters__body" system-to-bottom>
                 <div class="slds-grid_vertical">
                     <object-listview-tags-aggregate *ngIf="hasTags"></object-listview-tags-aggregate>
                     <div class="slds-m-vertical--xx-small" *ngFor="let aggregate of aggregates">
