@@ -112,7 +112,7 @@ export class ReportsDesignerCondition {
 
         // push reference operator if other condition has reference value
         const whereConditions = this.model.getField('whereconditions');
-        if (whereConditions.some(condition => condition.type == this.whereCondition.type && !!condition.reference)) {
+        if (!!whereConditions && whereConditions.some(condition => condition.type == this.whereCondition.type && !!condition.reference)) {
             retArray.push({
                 value: 'reference',
                 display: this.language.getLabel('LBL_REFERENCE')
