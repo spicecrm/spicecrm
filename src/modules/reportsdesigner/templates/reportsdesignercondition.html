@@ -32,6 +32,7 @@
             <reporter-filter-item-text *ngSwitchCase="'text'"  [field]="'value'" [wherecondition]="whereCondition"></reporter-filter-item-text>
             <reporter-filter-item-user *ngSwitchCase="'user'" [whereCondition]="whereCondition"></reporter-filter-item-user>
             <reporter-filter-item-reference *ngSwitchCase="'reference'" [whereCondition]="whereCondition"></reporter-filter-item-reference>
+            <reporter-filter-item-function *ngSwitchCase="'function'" [whereCondition]="whereCondition"></reporter-filter-item-function>
         </div>
         <div *ngIf="showValueTo" class="slds-size--1-of-2 slds-p-left--xx-small" [ngSwitch]="itemType">
             <reporter-filter-item-enum *ngSwitchCase="'enum'" [field]="'valueto'" [wherecondition]="whereCondition"></reporter-filter-item-enum>
