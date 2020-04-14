@@ -3,6 +3,7 @@
  */
 import {
     AfterViewInit,
+    ChangeDetectionStrategy,
     Component,
     NgZone,
     OnDestroy,
@@ -26,7 +27,8 @@ declare let _: any;
 
 @Component({
     selector: 'reporter-detail-visualization-google-maps',
-    templateUrl: './src/modules/reportsmore/templates/reporterdetailvisualizationgooglemaps.html'
+    templateUrl: './src/modules/reportsmore/templates/reporterdetailvisualizationgooglemaps.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnDestroy {
 
