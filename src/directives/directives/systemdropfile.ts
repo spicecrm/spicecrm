@@ -8,11 +8,11 @@ import {language} from "../../services/language.service";
  * highlights the wrapped element to notify that this element is draggable and emit the dropped files
  */
 @Directive({
-    selector: '[spiceDropFileArea]'
+    selector: '[system-drop-file]' // spiceDropFileArea
 })
-export class SpiceDropFileArea {
+export class SystemDropFile {
 
-    @Output() public filesDrop: EventEmitter<FileList> = new EventEmitter<FileList>();
+    @Output('system-drop-file') public filesDrop: EventEmitter<FileList> = new EventEmitter<FileList>();
     @Input() private dropMessage: string;
     private overlayElement: HTMLElement;
     private dragStartListener: any;

@@ -26,7 +26,7 @@ import {navigationtab} from "../../../services/navigationtab.service";
 import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
 
 /** @ignore */
-declare let _;
+declare var _: any;
 
 /**
  * render a google map with model list service which enables searching around and use the navigation service

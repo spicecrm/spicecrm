@@ -14,10 +14,10 @@ import {model} from "../../services/model.service";
  * ```
  */
 @Directive({
-    selector: '[modelProvider]',
+    selector: '[system-model-provider]',
     providers: [model]
 })
-export class ModelProviderDirective {
+export class SystemModelProviderDirective {
     constructor(
         private model: model
     ) {
@@ -36,7 +36,7 @@ export class ModelProviderDirective {
      *
      * @param provided_model
      */
-    @Input('modelProvider')
+    @Input('system-model-provider')
     set provided_model(provided_model: { module: string, id: string, data: any }) {
         this.model.module = provided_model.module;
         if (provided_model.id) {

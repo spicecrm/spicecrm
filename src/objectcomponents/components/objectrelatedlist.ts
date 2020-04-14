@@ -7,19 +7,37 @@ import {model} from "../../services/model.service";
 import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
 
-
+/**
+ * a generic component for a related list.
+ *
+ * gets extended in the various subpanel implementations
+ */
 @Component({
     selector: "object-related-list",
     templateUrl: "./src/objectcomponents/templates/objectrelatedlist.html",
     providers: [relatedmodels]
 })
-export class ObjectRelatedList implements OnInit, OnDestroy {
+export class ObjectRelatedList implements OnInit {
 
+    /**
+     * the componentconfig
+     */
     @Input() public componentconfig: any = {};
+
+    /**
+     * the listfields
+     */
     private listfields: any[] = [];
-    private fieldset: string = "";
+
+    /**
+     * can hold a separate editcomponentset if the editing modal shoudl be specifically configured
+     */
     private editcomponentset: string = "";
-    public module: string = "";
+
+    /**
+     * if set to true no actions are displayed in the table lines
+     */
+    private hideactions: boolean = false;
 
     constructor(
         public language: language,
@@ -28,11 +46,7 @@ export class ObjectRelatedList implements OnInit, OnDestroy {
         public model: model,
         public cdref: ChangeDetectorRef
     ) {
-        this.relatedmodels.module = this.model.module;
-        this.relatedmodels.id = this.model.id;
 
-        // pass in the model
-        this.relatedmodels.model = this.model;
     }
 
     /**
@@ -42,68 +56,100 @@ export class ObjectRelatedList implements OnInit, OnDestroy {
      */
     get aclAccess() {
         let linkField = this.relatedmodels.linkName != "" ? this.relatedmodels.linkName : this.relatedmodels.relatedModule.toLowerCase();
-        return this.metadata.checkModuleAcl(this.module, "list") && this.model.checkFieldAccess(linkField);
+        return this.metadata.checkModuleAcl(this.relatedmodels.module, "list") && this.model.checkFieldAccess(linkField);
     }
 
-    public loadRelated() {
-        if (!this.aclAccess) return;
-
-        this.relatedmodels.getData();
-    }
-
+    /**
+     * laod config, initialize the related model service and load the related records
+     */
     public ngOnInit() {
-        this.fieldset = this.componentconfig.fieldset;
-        this.listfields = this.metadata.getFieldSetFields(this.fieldset);
-        this.module = this.componentconfig.object;
+        // loads the config
+        this.loadConfig();
+
+        // Initialize the related Model Service
+        this.initializeRelatedModelService();
+
+        // load the related records
+        this.loadRelated();
+    }
+
+    /**
+     * loads the list fields from the componentconfig
+     */
+    private loadConfig() {
+        let fieldset = this.componentconfig.fieldset;
+        this.listfields = this.metadata.getFieldSetFields(fieldset);
+
+        // check for a separate componentconfig
+        if (this.componentconfig.editcomponentset) this.editcomponentset = this.componentconfig.editcomponentset;
+
+        // determines if the action shoudl be hidden
+        this.hideactions = !!this.componentconfig.hideactions;
+    }
+
+    /**
+     * initializes the related model service
+     */
+    private initializeRelatedModelService() {
+        this.relatedmodels.module = this.model.module;
+        this.relatedmodels.id = this.model.id;
+
+        // pass in the model
+        this.relatedmodels.model = this.model;
+
+        // set the related model from teh config
         this.relatedmodels.relatedModule = this.componentconfig.object;
 
+        // ToDo: check if this still is in use
         this.relatedmodels.isonlyfiltered = this.componentconfig.isonlyfiltered;
 
+        // check if we have a separate link
         if (this.componentconfig.link) this.relatedmodels.linkName = this.componentconfig.link;
 
+        // check if we have a sequence field and thus the list shoudl be sequenced
         if (this.componentconfig.sequencefield) {
             this.relatedmodels.sequencefield = this.componentconfig.sequencefield;
         } else if (this.relatedmodels._linkName && this.model.fields[this.relatedmodels._linkName] && this.model.fields[this.relatedmodels._linkName].sequence_field) {
             this.relatedmodels.sequencefield = this.model.fields[this.relatedmodels._linkName].sequence_field;
         }
 
-        if (this.componentconfig.items) this.relatedmodels.loaditems = this.componentconfig.items;
-
-        if (this.componentconfig.modulefilter) this.relatedmodels.modulefilter = this.componentconfig.modulefilter;
-
-        /*
-        if(this.componentconfig.editable) {
-            this.editable = this.componentconfig.editable;
-        }
-        */
-
-        if (this.componentconfig.editcomponentset) this.editcomponentset = this.componentconfig.editcomponentset;
-
+        // set an optional sortfield
         if (this.componentconfig.sortfield) {
             this.relatedmodels.sort.sortfield = this.componentconfig.sortfield;
             this.relatedmodels.sort.sortdirection = this.componentconfig.sortdirection ? this.componentconfig.sortdirection : "ASC";
         }
 
-        this.loadRelated();
+        // set the numbe rof items to be laoded
+        if (this.componentconfig.items) this.relatedmodels.loaditems = this.componentconfig.items;
+
+        // set the modulefilter if one is set
+        if (this.componentconfig.modulefilter) this.relatedmodels.modulefilter = this.componentconfig.modulefilter;
     }
 
+    /**
+     * loads the related records
+     */
+    public loadRelated() {
+        if (!this.aclAccess) return;
+
+        this.relatedmodels.getData();
+    }
+
+    /**
+     * returns if the table shoudl allow edit
+     */
     get editable() {
         try {
-            return this.componentconfig.editable && this.model.data.acl.edit;
+            return this.componentconfig.editable && this.model.checkAccess('edit');
         } catch (e) {
             return false;
         }
     }
 
-    get hideactions() {
-        return this.componentconfig.hideactions;
-    }
-
-    public ngOnDestroy() {
-        // need to stop all subscrptions on my service
-        this.relatedmodels.stopSubscriptions();
-    }
-
+    /**
+     * adds selected items fromt he popup
+     * @param items
+     */
     public addSelectedItems(items) {
         this.relatedmodels.addItems(items);
     }

@@ -1,4 +1,4 @@
-<div #bodycontainer tobottom class="slds-is-relative spicecrm-scrollbar" [ngStyle]="bodyContainerStyle">
+<div #bodycontainer system-to-bottom class="slds-is-relative spicecrm-scrollbar" [ngStyle]="bodyContainerStyle">
     <ng-container *ngIf="isEditMode">
         <ng-container *ngFor="let row of dashboardGrid; trackBy: trackByGridFn">
             <ng-container *ngFor="let column of row">
@@ -11,7 +11,7 @@
         </ng-container>
     </ng-container>
     <dashboard-container-element *ngFor="let item of dashboardElements; trackBy: trackByItemFn" [item]="item"></dashboard-container-element>
-    <div *ngIf="isLoading" class="slds-align--absolute-center slds-grid slds-grid--vertical" tobottom>
+    <div *ngIf="isLoading" class="slds-align--absolute-center slds-grid slds-grid--vertical" system-to-bottom>
         <system-spinner></system-spinner>
         <div class="slds-m-around--medium slds-text-heading--small">
             <system-label label="MSG_LOADING_DASHBOARDS"></system-label>

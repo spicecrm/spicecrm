@@ -1,4 +1,4 @@
-<div (tobottom)="handleScroll()">
+<div (system-to-bottom)="handleScroll()">
     <tasks-manager-task *ngFor="let task of modellist.listData.list" [task]="task" [focus]="focus" (taskselected)="selectTask($event)" [ngClass]="{'slds-theme_shade': focus == task.id }"></tasks-manager-task>
     <div *ngIf="modellist.isLoading" class="slds-p-around--medium slds-align--absolute-center">
         <system-spinner ></system-spinner>

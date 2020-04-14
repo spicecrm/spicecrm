@@ -87,8 +87,8 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody [viewprovider]="{displayLabels: false}">
-                    <tr *ngFor="let gdprAuditEntry of gdprAuditLog" [modelProvider]="{module: model.module, data:getModelData(gdprAuditEntry)}">
+                <tbody [system-view-provider]="{displayLabels: false}">
+                    <tr *ngFor="let gdprAuditEntry of gdprAuditLog" [system-model-provider]="{module: model.module, data:getModelData(gdprAuditEntry)}">
                         <td scope="row">
                             <div class="slds-truncate">{{gdprAuditEntry.date_created}}</div>
                         </td>

@@ -34,7 +34,7 @@
     </div>
 </div>
 <div class="slds-grid" >
-    <div #listContainer tobottom class="slds-size--1-of-1 slds-medium-size--1-of-3 slds-border--right slds-scrollable" (scroll)="onScroll($event)">
+    <div #listContainer system-to-bottom class="slds-size--1-of-1 slds-medium-size--1-of-3 slds-border--right slds-scrollable" (scroll)="onScroll($event)">
         <ul class="slds-timeline" [ngClass]="{'slds-hide': activitiytimeline.activities.History.loading}">
             <li class="slds-p-around--x-small" *ngFor="let activity of activities" (click)="setActivitiy(activity)" [ngClass]="{'slds-theme--default slds-border--bottom slds-border--top' : activity.id == activityid}">
                 <activitytimeline-item-container [activity]="activity"></activitytimeline-item-container>
@@ -59,7 +59,7 @@
             </li>
         </ul>
     </div>
-    <div *ngIf="displayDetailsPane" class="slds-size--2-of-3" tobottom>
+    <div *ngIf="displayDetailsPane" class="slds-size--2-of-3" system-to-bottom>
         <activity-timeline-summary-item-view *ngIf="activitymodule" [module]="activitymodule" [id]="activityid" [data]="activitydata"></activity-timeline-summary-item-view>
     </div>
 </div>

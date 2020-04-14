@@ -7,6 +7,7 @@ import {model} from '../../services/model.service';
 import {modellist, relateFilter} from '../../services/modellist.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
+import {layout} from '../../services/layout.service';
 import {metadata} from '../../services/metadata.service';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {Subscription} from "rxjs";
@@ -97,7 +98,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
      */
     @Output() private usedSearchTerm: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, public model: model) {
+    constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, public model: model, public layout: layout) {
         // subscribe to changes of the listtype
         this.subscriptions.add(this.modellist.listtype$.subscribe(newType => this.switchListtype()));
 
@@ -146,6 +147,13 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
         this.relatefilter.active = value;
         this.modellist.relatefilter.active = value;
         this.modellist.reLoadList();
+    }
+
+    /**
+     * returns treu if we have a small screen factor
+     */
+    get smallView() {
+        return this.layout.screenwidth == 'small';
     }
 
     /**
