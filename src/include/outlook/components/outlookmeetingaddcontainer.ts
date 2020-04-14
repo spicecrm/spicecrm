@@ -49,10 +49,13 @@ export class OutlookMeetingAddContainer implements OnInit {
      * ToDo: needs to be replaced witha load of modules that can be added, loadded form the mapping in the config
      */
     private modules: InputRadioOptionI[] = [
-        {value: '', label: 'LBL_NONE'},
-        {value: 'Calls', label: 'LBL_CALL'},
-        {value: 'Meetings', label: 'LBL_MEETING'},
+        {value: '', label: 'LBL_NONE'}
     ];
+
+    /**
+     * set to true if modules are loaded and can be added
+     */
+    private canAdd: boolean = false;
 
     /**
      * the current set module
@@ -174,10 +177,38 @@ export class OutlookMeetingAddContainer implements OnInit {
      * load the module if set on the custom properties
      */
     public ngOnInit(): void {
+        this.loadExchangeConfig();
+    }
+
+    /**
+     * loads the modules that can be added from Outlook
+     */
+    private loadExchangeConfig() {
+        this.backend.getRequest(`spicecrmexchange/config`).subscribe(response => {
+            for (let module of response.modules) {
+                if (module.exchange_object == 'calendar' && module.outlookaddenabled == '1' && response.userconfig.find(c => c.sysmodule_id == module.sysmodule_id)) {
+                    let addmodule = this.metadata.getModuleById(module.sysmodule_id);
+                    this.modules.push({
+                        value: addmodule,
+                        label: this.metadata.getModuleDefs(addmodule).singular_label
+                    });
+                }
+            }
+
+            // set the item module
+            this.setItemModule();
+
+            if(this.modules.length > 1){
+                this.canAdd = true;
+            }
+        });
+    }
+
+    private setItemModule(){
         let itemModule = this.customProperties.get('_module');
 
         // if we have a module then do not allow changing it
-        if(itemModule) this.allowModuleChange = false;
+        if (itemModule) this.allowModuleChange = false;
 
         // triugger the set of the module
         this.module = itemModule ? itemModule : '';
