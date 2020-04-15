@@ -6,8 +6,8 @@ import {Subscription} from "rxjs";
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 import {navigation} from "../../../services/navigation.service";
+import {broadcast} from "../../../services/broadcast.service";
 import {navigationtab} from "../../../services/navigationtab.service";
-
 
 /**
  * The pane shows the details customized for the oputlook add in
@@ -46,6 +46,7 @@ export class GroupwareDetailPaneView implements AfterViewInit, OnDestroy {
 
     constructor(private navigation: navigation,
                 private navigationtab: navigationtab,
+                private broadcast: broadcast,
                 private metadata: metadata,
                 private model: model) {
 
@@ -57,14 +58,11 @@ export class GroupwareDetailPaneView implements AfterViewInit, OnDestroy {
         );
 
         // subscribe to the broacast message
-        // ToDo: once we make the add in pinnable
-        /*
         this.componentSubscriptions.add(
             this.broadcast.message$.subscribe(message => {
                 this.handleMessage(message);
             })
         );
-        */
     }
 
     /**
@@ -73,7 +71,7 @@ export class GroupwareDetailPaneView implements AfterViewInit, OnDestroy {
      * @param route
      */
     private setRouteData(route) {
-        if (this.model.module != route.params.module || this.model.id != route.params.id) {
+        if (route.params.module && route.params.id && (this.model.module != route.params.module || this.model.id != route.params.id)) {
             // load the model
             // get the bean details
             this.model.module = route.params.module;

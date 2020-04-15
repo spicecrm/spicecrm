@@ -12,10 +12,10 @@ import {language} from '../../../services/language.service';
  * A component showing the beans and attachments that are linked to the currently opened email.
  */
 @Component({
-    selector: 'groupware-read-pane-linked',
-    templateUrl: './src/include/groupware/templates/groupwarereadpanelinked.html'
+    selector: 'groupware-email-archive-pane-linked',
+    templateUrl: './src/include/groupware/templates/groupwareemailarchivepanelinked.html'
 })
-export class GroupwareReadPaneLinked {
+export class GroupwareEmailArchivePaneLinked {
 
     constructor(
         private groupware: GroupwareService,
