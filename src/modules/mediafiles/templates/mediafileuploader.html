@@ -20,7 +20,7 @@
 
     <system-modal-footer>
         <div *ngIf="!isSaving">
-            <button class="slds-button slds-button--brand" (click)="save()" [disabled]="!canSave"><system-label label="LBL_SAVE"></system-label</button>
+            <button class="slds-button slds-button--brand" (click)="save()" [disabled]="!canSave"><system-label label="LBL_SAVE"></system-label></button>
             <button class="slds-button slds-button--neutral" (click)="cancel()"> <system-label label="LBL_CANCEL"></system-label></button>
         </div>
         <div *ngIf="isSaving">
