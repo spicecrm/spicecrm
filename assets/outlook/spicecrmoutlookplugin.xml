@@ -5,7 +5,7 @@
     <ProviderName>aac service k.s.</ProviderName>
     <DefaultLocale>en-US</DefaultLocale>
     <DisplayName DefaultValue="SpiceCRM"/>
-    <Description DefaultValue="SpiceCRM Outlook add-in"/>
+    <Description DefaultValue="Manage SpiceCRM Data and your customer interactions right in Outlook. With full customer insight and all data from SpiceCRM."/>
     <IconUrl DefaultValue="https://<serverurl>/assets/images/icon-32.png"/>
     <HighResolutionIconUrl DefaultValue="https://<serverurl>/assets/images/icon-80.png"/>
     <SupportUrl DefaultValue="http://community.spicecrm.io"/>
@@ -61,7 +61,7 @@
                                         </Icon>
                                         <Action xsi:type="ShowTaskpane">
                                             <SourceLocation resid="messageReadDetailsUrl"/>
-                                            <!--SupportsPinning>true</SupportsPinning-->
+                                            <SupportsPinning>true</SupportsPinning>
                                         </Action>
                                     </Control>
                                 </Group>

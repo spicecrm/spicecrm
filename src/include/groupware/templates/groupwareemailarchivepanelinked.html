@@ -6,7 +6,7 @@
     <ng-container *ngIf="attachments.length > 0">
         <h2 class="slds-p-vertical--xx-small slds-p-around--x-small slds-theme--shade"><system-label label="LBL_ATTACHMENTS"></system-label></h2>
         <div class="slds-p-around--x-small">
-            <groupware-pane-attachment *ngFor="let attachment of attachments" [attachment]="attachment"></groupware-pane-attachment>
+            <groupware-email-archive-pane-attachment *ngFor="let attachment of attachments" [attachment]="attachment"></groupware-email-archive-pane-attachment>
         </div>
     </ng-container>
 </div>

@@ -1,6 +1,4 @@
 <div *ngIf="beans.length > 0" class="slds-p-around--x-small">
     <groupware-pane-bean *ngFor="let bean of beans" [bean]="bean" [system-model-provider]="{module: bean.module, id: bean.id, data: bean.data}"></groupware-pane-bean>
 </div>
-<div *ngIf="beans.length == 0" class="slds-p-around--medium slds-align--absolute-center">
-    <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
-</div>
+<groupware-pane-no-beans-found *ngIf="beans.length == 0"></groupware-pane-no-beans-found>
