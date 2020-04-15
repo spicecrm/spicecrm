@@ -28,11 +28,11 @@ export class OutlookPane implements OnInit {
         private session: session,
         private broadcast: broadcast
     ) {
-        /* ToDo: implement pinned pane that relaod when item is changed
+        // ToDo: implement pinned pane that relaod when item is changed
         Office.context.mailbox.addHandlerAsync(Office.EventType.ItemChanged, () => {
             this.itemChanged();
         });
-        */
+
     }
 
     /**

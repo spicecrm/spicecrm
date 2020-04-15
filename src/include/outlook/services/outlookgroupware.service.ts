@@ -115,16 +115,20 @@ export class OutlookGroupware extends GroupwareService {
     /**
      * Returns an array of email adresses used in the selected email.
      */
-    public getAddressArray() {
+    public getAddressArray(includeown: boolean = false) {
         let toAddresses = [];
         toAddresses.push(Office.context.mailbox.item.from.emailAddress);
         for (let address of Office.context.mailbox.item.to) {
-            toAddresses.push(address.emailAddress);
+            if(includeown || address.emailAddress != Office.context.mailbox.userProfile.emailAddress){
+                toAddresses.push(address.emailAddress);
+            }
         }
 
         let ccAddresses = [];
         for (let address of Office.context.mailbox.item.cc) {
-            ccAddresses.push(address.emailAddress);
+            if(includeown || address.emailAddress != Office.context.mailbox.userProfile.emailAddress) {
+                ccAddresses.push(address.emailAddress);
+            }
         }
 
         let allAddresses = toAddresses.concat(ccAddresses);

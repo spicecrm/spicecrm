@@ -10,10 +10,10 @@ import {language} from '../../../services/language.service';
  * A list of attachments for the current email.
  */
 @Component({
-    selector: 'groupware-read-pane-attachments',
-    templateUrl: './src/include/groupware/templates/groupwarereadpaneattachments.html'
+    selector: 'groupware-email-archive-pane-attachments',
+    templateUrl: './src/include/groupware/templates/groupwareemailarchivepaneattachments.html'
 })
-export class GroupwareReadPaneAttachments {
+export class GroupwareEmailArchivePaneAttachments {
 
     constructor(
         private groupware: GroupwareService,

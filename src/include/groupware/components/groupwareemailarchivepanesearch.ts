@@ -14,10 +14,10 @@ declare var _: any;
  * Search component. Returns a list of beans found using the search terms.
  */
 @Component({
-    selector: 'groupware-read-pane-search',
-    templateUrl: './src/include/groupware/templates/groupwarereadpanesearch.html'
+    selector: 'groupware-email-archive-pane-search',
+    templateUrl: './src/include/groupware/templates/groupwareemailarchivepanesearch.html'
 })
-export class GroupwareReadPaneSearch {
+export class GroupwareEmailArchivePaneSearch {
     /**
      * Input string used for searching.
      */

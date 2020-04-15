@@ -17,14 +17,15 @@ import {ObjectFields} from "../../objectfields/objectfields";
 import /*embed*/ {GroupwareService} from './services/groupware.service';
 
 import /*embed*/ {GroupwarePaneBean} from './components/groupwarepanebean';
+import /*embed*/ {GroupwarePaneNoBeansFound} from './components/groupwarepanenobeansfound';
 import /*embed*/ {GroupwareDetailPaneView} from './components/groupwaredetailpaneview';
-import /*embed*/ {GroupwarePaneAttachment} from './components/groupwarepaneattachment';
-import /*embed*/ {GroupwareReadPane} from './components/groupwarereadpane';
-import /*embed*/ {GroupwareReadPaneHeader} from './components/groupwarereadpaneheader';
-import /*embed*/ {GroupwareReadPaneAttachments} from './components/groupwarereadpaneattachments';
-import /*embed*/ {GroupwareReadPaneBeans} from './components/groupwarereadpanebeans';
-import /*embed*/ {GroupwareReadPaneLinked} from './components/groupwarereadpanelinked';
-import /*embed*/ {GroupwareReadPaneSearch} from './components/groupwarereadpanesearch';
+import /*embed*/ {GroupwareEmailArchivePaneAttachment} from './components/groupwareemailarchivepaneattachment';
+import /*embed*/ {GroupwareEmailArchivePane} from './components/groupwareemailarchivepane';
+import /*embed*/ {GroupwareEmailArchivePaneHeader} from './components/groupwareemailarchivepaneheader';
+import /*embed*/ {GroupwareEmailArchivePaneAttachments} from './components/groupwareemailarchivepaneattachments';
+import /*embed*/ {GroupwareEmailArchivePaneBeans} from './components/groupwareemailarchivepanebeans';
+import /*embed*/ {GroupwareEmailArchivePaneLinked} from './components/groupwareemailarchivepanelinked';
+import /*embed*/ {GroupwareEmailArchivePaneSearch} from './components/groupwareemailarchivepanesearch';
 import /*embed*/ {GroupwareDetailPane} from './components/groupwaredetailpane';
 import /*embed*/ {GroupwareDetailPanefooter} from './components/groupwaredetailpanefooter';
 import /*embed*/ {GroupwareDetailPaneHeader} from './components/groupwaredetailpaneheader';
@@ -42,14 +43,15 @@ import /*embed*/ {GroupwareDetailPaneBean} from './components/groupwaredetailpan
     ],
     declarations: [
         GroupwarePaneBean,
+        GroupwarePaneNoBeansFound,
         GroupwareDetailPaneView,
-        GroupwarePaneAttachment,
-        GroupwareReadPane,
-        GroupwareReadPaneHeader,
-        GroupwareReadPaneAttachments,
-        GroupwareReadPaneBeans,
-        GroupwareReadPaneLinked,
-        GroupwareReadPaneSearch,
+        GroupwareEmailArchivePaneAttachment,
+        GroupwareEmailArchivePane,
+        GroupwareEmailArchivePaneHeader,
+        GroupwareEmailArchivePaneAttachments,
+        GroupwareEmailArchivePaneBeans,
+        GroupwareEmailArchivePaneLinked,
+        GroupwareEmailArchivePaneSearch,
         GroupwareDetailPane,
         GroupwareDetailPanefooter,
         GroupwareDetailPaneHeader,
