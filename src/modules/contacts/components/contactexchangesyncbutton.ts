@@ -5,7 +5,9 @@ import {Component, ViewContainerRef, OnInit} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
 import {modal} from "../../../services/modal.service";
+import {metadata} from "../../../services/metadata.service";
 import {backend} from "../../../services/backend.service";
+import {configurationService} from "../../../services/configuration.service";
 
 /**
  * renders a button that toggles the exchange sync state
@@ -20,8 +22,15 @@ export class ContactExchangeSyncButton {
      */
     private isLoading: boolean = false;
 
+    public hidden: boolean = true;
+
     // public disabled: boolean = true;
-    constructor(private language: language, private model: model, private modal: modal, private backend: backend) {
+    constructor(private metadata: metadata, private language: language, private model: model, private modal: modal, private backend: backend, private configuration: configurationService) {
+
+        let config = this.configuration.getData('exchangeuserconfig');
+        let moduleData = this.metadata.getModuleDefs('Contacts');
+
+        this.hidden = config.findIndex(cr => cr.sysmodule_id == moduleData.id) == -1;
     }
 
     /**
