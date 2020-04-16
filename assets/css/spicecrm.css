@@ -1519,6 +1519,12 @@ ul.spice-taglist span.slds-badge {
     border: 0 !important;
 }
 
+.ql-formats:not(:last-child){
+    border-right: 1px solid #999;
+    margin-right: 5px;
+    padding-right: 5px;
+}
+
 .ql-container {
     -webkit-box-flex: 1;
     -ms-flex-positive: 1;
