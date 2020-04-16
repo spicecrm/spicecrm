@@ -1,31 +1,14 @@
-/*view und model providen
-fieldset laden mit parent feld
-auf model data subscriben
-parent type und parent id in das exchange object reinschreiben (extended field)
-
-
-
-im xml die neue route im appointment manager pane
-nach dem speichern im exchange sollte es ein notification zum spicecrm schicken
-
-
-
-checken ob das meeting schon im crm ist -> dann zeigen
-wenn nicht einfach das von oben zeigen
-
-
-wenn es nicht in spice ist aber parent type,id und exchange id dann abspeichern (und dann im hintergrund den rest holen)
-*/
 import {Component, Input, OnInit} from "@angular/core";
+import {Subscription} from "rxjs";
+
+import {outlookNameValuePairI} from "../interfaces/outlook.interfaces";
+import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
 
 import {backend} from "../../../services/backend.service";
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 import {view} from "../../../services/view.service";
-import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
-import {Subscription} from "rxjs";
-import {outlookNameValuePairI} from "../interfaces/outlook.interfaces";
-
+import {configurationService} from "../../../services/configuration.service";
 
 declare var _: any;
 
@@ -37,7 +20,7 @@ declare var _: any;
     templateUrl: './src/include/outlook/templates/outlookmeetingaddcontainer.html',
     providers: [model, view]
 })
-export class OutlookMeetingAddContainer implements OnInit {
+export class OutlookMeetingAddContainer {
 
     /**
      * the custom prperties of the mailbox item
@@ -51,11 +34,6 @@ export class OutlookMeetingAddContainer implements OnInit {
     private modules: InputRadioOptionI[] = [
         {value: '', label: 'LBL_NONE'}
     ];
-
-    /**
-     * set to true if modules are loaded and can be added
-     */
-    private canAdd: boolean = false;
 
     /**
      * the current set module
@@ -81,12 +59,18 @@ export class OutlookMeetingAddContainer implements OnInit {
 
     constructor(
         private backend: backend,
+        private configuration: configurationService,
         private model: model,
         private view: view,
         private metadata: metadata
     ) {
         this.view.isEditable = true;
         this.view.setEditMode();
+        this.loadExchangeConfig();
+    }
+
+    get canAdd() {
+        return this.modules.length > 1;
     }
 
     /**
@@ -173,38 +157,24 @@ export class OutlookMeetingAddContainer implements OnInit {
         return fields;
     }
 
-    /**
-     * load the module if set on the custom properties
-     */
-    public ngOnInit(): void {
-        this.loadExchangeConfig();
-    }
 
     /**
      * loads the modules that can be added from Outlook
      */
     private loadExchangeConfig() {
-        this.backend.getRequest(`spicecrmexchange/config`).subscribe(response => {
-            for (let module of response.modules) {
-                if (module.exchange_object == 'calendar' && module.outlookaddenabled == '1' && response.userconfig.find(c => c.sysmodule_id == module.sysmodule_id)) {
-                    let addmodule = this.metadata.getModuleById(module.sysmodule_id);
-                    this.modules.push({
-                        value: addmodule,
-                        label: this.metadata.getModuleDefs(addmodule).singular_label
-                    });
-                }
+        let config = this.configuration.getData('exchangeuserconfig');
+        for (let e of config) {
+            if (e.exchange_object == 'calendar' && e.outlookaddenabled == '1') {
+                let addmodule = this.metadata.getModuleById(e.sysmodule_id);
+                this.modules.push({
+                    value: addmodule,
+                    label: this.metadata.getModuleDefs(addmodule).singular_label
+                });
             }
-
-            // set the item module
-            this.setItemModule();
-
-            if(this.modules.length > 1){
-                this.canAdd = true;
-            }
-        });
+        }
     }
 
-    private setItemModule(){
+    private setItemModule() {
         let itemModule = this.customProperties.get('_module');
 
         // if we have a module then do not allow changing it
