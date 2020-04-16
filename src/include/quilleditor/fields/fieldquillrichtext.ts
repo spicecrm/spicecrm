@@ -13,7 +13,12 @@ import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
     selector: 'field-quill-rich-text',
     templateUrl: './src/include/quilleditor/templates/fieldquillrichtext.html'
 })
-export class fieldQuillRichText extends fieldGeneric {
+export class fieldQuillRichText extends fieldGeneric implements OnInit {
+
+    /**
+     * hold internal height value
+     */
+    private heightStyle: string = '300px';
 
     constructor(public model: model,
                 public view: view,
@@ -22,5 +27,19 @@ export class fieldQuillRichText extends fieldGeneric {
                 public metadata: metadata,
                 public router: Router) {
         super(model, view, language, metadata, router);
+    }
+
+    /**
+     * call to set the height style
+     */
+    public ngOnInit() {
+        this.setHeightStyle();
+    }
+
+    /**
+     * set editor height
+     */
+    private setHeightStyle() {
+        this.heightStyle = !isNaN(parseInt(this.fieldconfig.height, 10)) ? parseInt(this.fieldconfig.height, 10) + 'px' : '300px';
     }
 }

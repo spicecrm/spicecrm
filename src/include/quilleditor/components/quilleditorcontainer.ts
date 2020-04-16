@@ -56,9 +56,9 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
      */
     @Input() protected readonly disabled: boolean = false;
     /**
-     * holds the disabled value to handle the editor disabled
+     * holds parent height number from parent
      */
-    @Input() protected readonly height: string = '300';
+    @Input() protected readonly heightStyle: string = '300px';
     /**
      * scrolling container to be passed to the editor
      */
@@ -288,21 +288,11 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
                 this.quillEditor.history.clear();
             }
 
-            this.setEditorHeight();
             this.setDisabledState();
 
             this.registerTextChangeHandler();
             this.quillEditor.on('text-change', this.textChangeHandler);
         });
-    }
-
-    /**
-     * set editor height
-     */
-    private setEditorHeight() {
-        const height = !isNaN(parseInt(this.height, 10)) ? parseInt(this.height, 10) : '300';
-        this.renderer.setStyle(this.editorContainer.element.nativeElement, 'height', height + 'px');
-        this.renderer.setStyle(this.editorContainer.element.nativeElement, 'overflow-y', 'auto');
     }
 
     /**
@@ -314,17 +304,20 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
             componentRef.instance.answer.subscribe(image => {
                 if (!image) return;
 
+                const range = this.quillEditor.getSelection();
+                const index = range ? range.index : 0;
+
                 if (image.upload) {
                     this.modal.openModal('MediaFileUploader').subscribe(uploadComponentRef => {
                         uploadComponentRef.instance.answer.subscribe(uploadimage => {
                             if (uploadimage) {
-                                this.quillEditor.insertEmbed(10, 'image', 'https://cdn.spicecrm.io/' + uploadimage);
+                                this.quillEditor.insertEmbed(index, 'image', 'https://cdn.spicecrm.io/' + uploadimage);
                             }
                         });
                     });
                 } else {
                     if (image.id) {
-                        this.quillEditor.insertEmbed(10, 'image', 'https://cdn.spicecrm.io/' + image.id);
+                        this.quillEditor.insertEmbed(index, 'image', 'https://cdn.spicecrm.io/' + image.id);
                     }
                 }
             });
@@ -353,12 +346,6 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
         // define the full screen change handler
         document.onfullscreenchange = () => {
             this.isFullScreenOn = !!document.fullscreenElement;
-            if (!this.isFullScreenOn) {
-                this.setEditorHeight();
-            } else {
-                this.renderer.setStyle(this.editorContainer.element.nativeElement, 'height', '100%');
-
-            }
             this.cdRef.detectChanges();
         };
 

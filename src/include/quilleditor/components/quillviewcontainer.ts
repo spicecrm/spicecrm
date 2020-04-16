@@ -9,7 +9,8 @@ import {
     NgZone,
     OnChanges,
     PLATFORM_ID,
-    Renderer2, SimpleChanges,
+    Renderer2,
+    SimpleChanges,
     ViewChild,
     ViewContainerRef,
     ViewEncapsulation
@@ -26,6 +27,18 @@ declare var Quill: any;
 })
 export class QuillViewContainer implements AfterViewInit, OnChanges {
     /**
+     * save the content to be displayed in the editor view mode
+     */
+    @Input() protected readonly content: string;
+    /**
+     * holds the disabled value to handle the editor disabled
+     */
+    @Input() protected readonly heightStyle: string = '300px';
+    /**
+     * save the full height boolean
+     */
+    @Input() protected readonly fullHeight: boolean = false;
+    /**
      * to render the quill editor inside
      */
     @ViewChild('editorContainer', {read: ViewContainerRef, static: false}) private editorContainer: ViewContainerRef;
@@ -33,14 +46,6 @@ export class QuillViewContainer implements AfterViewInit, OnChanges {
      * to save the quill editor instance
      */
     private quillEditor: any;
-    /**
-     * save the content to be displayed in the editor view mode
-     */
-    @Input() protected readonly content: string;
-    /**
-     * holds the disabled value to handle the editor disabled
-     */
-    @Input() protected readonly height: string = '300';
     /**
      * to help encoding/decoding html
      */
@@ -87,19 +92,9 @@ export class QuillViewContainer implements AfterViewInit, OnChanges {
                     theme: 'snow'
                 });
 
-                this.setEditorHeight();
                 this.setEditorContent();
             });
         });
-    }
-
-    /**
-     * set editor height
-     */
-    private setEditorHeight() {
-        const height = !isNaN(parseInt(this.height, 10)) ? parseInt(this.height, 10) : '300';
-        this.renderer.setStyle(this.editorContainer.element.nativeElement, 'height', height + 'px');
-        this.renderer.setStyle(this.editorContainer.element.nativeElement, 'overflow-y', 'auto');
     }
 
     /**
