@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.1" xsi:type="MailApp">
     <Id>7b063bfc-5997-48e6-bc71-0e03ab15962f</Id>
-    <Version>1.0.0.0</Version>
+    <Version>1.0.1.0</Version>
     <ProviderName>aac service k.s.</ProviderName>
     <DefaultLocale>en-US</DefaultLocale>
     <DisplayName DefaultValue="SpiceCRM"/>
-    <Description DefaultValue="SpiceCRM Outlook add-in"/>
+    <Description DefaultValue="Manage SpiceCRM Data and your customer interactions right in Outlook. With full customer insight and all data from SpiceCRM."/>
     <IconUrl DefaultValue="https://<serverurl>/assets/images/icon-32.png"/>
     <HighResolutionIconUrl DefaultValue="https://<serverurl>/assets/images/icon-80.png"/>
     <SupportUrl DefaultValue="http://community.spicecrm.io"/>
@@ -60,7 +60,8 @@
                                             <bt:Image size="80" resid="icon80"/>
                                         </Icon>
                                         <Action xsi:type="ShowTaskpane">
-                                            <SourceLocation resid="crmURL"/>
+                                            <SourceLocation resid="messageReadDetailsUrl"/>
+                                            <SupportsPinning>true</SupportsPinning>
                                         </Action>
                                     </Control>
                                 </Group>
@@ -116,23 +117,6 @@
                         <ExtensionPoint xsi:type="MobileMessageReadCommandSurface">
                             <Group id="mobileMsgRead">
                                 <Label resid="groupLabel"/>
-                                <Control xsi:type="MobileButton" id="TaskPaneBtn">
-                                    <Label resid="paneReadButtonLabel"/>
-                                    <Icon xsi:type="bt:MobileIconList">
-                                        <bt:Image size="25" scale="1" resid="icon16"/>
-                                        <bt:Image size="25" scale="2" resid="icon16"/>
-                                        <bt:Image size="25" scale="3" resid="icon16"/>
-                                        <bt:Image size="32" scale="1" resid="icon32"/>
-                                        <bt:Image size="32" scale="2" resid="icon32"/>
-                                        <bt:Image size="32" scale="3" resid="icon32"/>
-                                        <bt:Image size="48" scale="1" resid="icon32"/>
-                                        <bt:Image size="48" scale="2" resid="icon32"/>
-                                        <bt:Image size="48" scale="3" resid="icon32"/>
-                                    </Icon>
-                                    <Action xsi:type="ShowTaskpane">
-                                        <SourceLocation resid="messageReadTaskPaneUrl"/>
-                                    </Action>
-                                </Control>
                                 <Control xsi:type="MobileButton" id="CRMButton">
                                     <Label resid="CRMButtonLabel"/>
                                     <Icon xsi:type="bt:MobileIconList">
@@ -147,7 +131,7 @@
                                         <bt:Image size="48" scale="3" resid="icon32"/>
                                     </Icon>
                                     <Action xsi:type="ShowTaskpane">
-                                        <SourceLocation resid="crmURL"/>
+                                        <SourceLocation resid="messageReadDetailsUrl"/>
                                     </Action>
                                 </Control>
                             </Group>
@@ -163,8 +147,8 @@
                 </bt:Images>
                 <bt:Urls>
                     <bt:Url id="functionFile" DefaultValue="https://<serverurl>/assets/outlook/function-file.html"/>
-                    <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://<serverurl>/outlook.html#/groupware/mailitem"/>
-                    <bt:Url id="crmURL" DefaultValue="https://<serverurl>/outlook.html#/groupware/details"/>
+                    <bt:Url id="messageReadArchiveUrl" DefaultValue="https://<serverurl>/outlook.html#/groupware/mailitem"/>
+                    <bt:Url id="messageReadDetailsUrl" DefaultValue="https://<serverurl>/outlook.html#/groupware/details"/>
                     <bt:Url id="meetingReadURL" DefaultValue="https://<serverurl>/outlook.html#/outlook/meeting/read"/>
                     <bt:Url id="meetingEditURL" DefaultValue="https://<serverurl>/outlook.html#/outlook/meeting/edit"/>
                 </bt:Urls>

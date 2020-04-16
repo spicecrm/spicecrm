@@ -8,10 +8,10 @@ import {GroupwareService} from '../../../include/groupware/services/groupware.se
  * An email attachment component.
  */
 @Component({
-    selector: 'groupware-pane-attachment',
-    templateUrl: './src/include/groupware/templates/groupwarepaneattachment.html'
+    selector: 'groupware-email-archive-pane-attachment',
+    templateUrl: './src/include/groupware/templates/groupwareemailarchivepaneattachment.html'
 })
-export class GroupwarePaneAttachment {
+export class GroupwareEmailArchivePaneAttachment {
 
     /**
      * Current attachment.

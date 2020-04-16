@@ -2,15 +2,15 @@
     <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
         <div system-dropdown-trigger-simple class="slds-dropdown-trigger slds-dropdown-trigger_click">
             <button class="slds-button slds-button--icon-border slds-m-right--xx-small" [title]="moduleTitle">
-                <system-icon size="small" divClass="" *ngIf="searchmodule != 'all'" [module]="searchmodule"></system-icon>
-                <system-utility-icon size="x-small" *ngIf="searchmodule == 'all'" icon="world"></system-utility-icon>
+                <system-icon size="small" divClass="" *ngIf="_searchmodule != 'all'" [module]="_searchmodule"></system-icon>
+                <system-utility-icon size="x-small" *ngIf="_searchmodule == 'all'" icon="world"></system-utility-icon>
             </button>
             <div class="slds-dropdown slds-dropdown_left">
                 <ul class="slds-listbox slds-listbox_vertical" role="group">
                     <li role="presentation" class="slds-listbox__item" (click)="searchmodule = 'all'">
                         <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
                             <div class="slds-media__figure slds-listbox__option-icon">
-                                <system-utility-icon icon="check" size="x-small" *ngIf="'all' == searchmodule"></system-utility-icon>
+                                <system-utility-icon icon="check" size="x-small" *ngIf="'all' == _searchmodule"></system-utility-icon>
                             </div>
                             <div class="slds-media__body">
                                 <div class="slds-truncate"><system-label label="LBL_ALL"></system-label></div>
@@ -36,6 +36,6 @@
         </div>
     </div>
     <div class="slds-p-vertical--small" system-to-bottom>
-        <groupware-pane-bean *ngFor="let hit of searchResults" [bean]="hit._source" [system-model-provider]="{module: hit._source._module, id: hit._source.id, data: hit._source}"></groupware-pane-bean>
+        <groupware-pane-bean *ngFor="let bean of beans" [bean]="bean" [system-model-provider]="{module: bean.module, id: bean.id, data: bean.data}"></groupware-pane-bean>
     </div>
 </div>

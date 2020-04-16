@@ -1,10 +1,11 @@
 /**
  * @module ModuleGroupware
  */
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectorRef} from '@angular/core';
+import {Router} from "@angular/router";
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
-import {model} from "../../../services/model.service";
-import {metadata} from "../../../services/metadata.service";
+import {broadcast} from "../../../services/broadcast.service";
+import {Subscription} from "rxjs";
 
 /**
  * Outlook add-in detail pane showing a list of beans that use the email addresses found in the email.
@@ -13,69 +14,87 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: 'groupware-detail-pane',
     templateUrl: './src/include/groupware/templates/groupwaredetailpane.html',
-    providers: [model]
 })
-export class GroupwareDetailPane implements OnInit {
+export class GroupwareDetailPane implements OnInit, OnDestroy {
 
     /**
      * boolean indicator that the component is loading
      */
     private loading: boolean = false;
 
-    private componentconfig: any = {};
+    private subscriptions: Subscription = new Subscription();
 
     constructor(
         private groupware: GroupwareService,
-        private model: model,
-        private metadata: metadata
-    ) {}
+        private router: Router,
+        private broadcast: broadcast,
+        private cdref: ChangeDetectorRef
+    ) {
+    }
 
     /**
      * triggers the loader and if one record is found opens that one
      */
     public ngOnInit(): void {
+        this.loadRecords();
+
+        this.subscriptions.add(
+            this.broadcast.message$.subscribe(message => {
+                this.handleMessage(message);
+            })
+        );
+
+    }
+
+    /**
+     * unsubscribe from teh broadcast
+     */
+    public ngOnDestroy(): void {
+        this.subscriptions.unsubscribe();
+    }
+
+    /**
+     * handle the broadcast message
+     *
+     * @param message
+     */
+    private handleMessage(message) {
+        switch (message.messagetype) {
+            case 'groupware.itemchanged':
+                this.loadRecords();
+                break;
+        }
+    }
+
+    /**
+     * loads records for the email addresses found in the item
+     */
+    private loadRecords() {
         this.loading = true;
 
         this.groupware.loadLinkedBeans().subscribe(
             (res) => {
                 if (res.length == 1) {
-                    this.loadRecord(res[0].module, res[0].id);
+                    this.router.navigate(["/groupware/details/" + res[0].module + '/' + res[0].id]);
                 }
                 this.loading = false;
+                this.cdref.detectChanges();
             },
             (err) => {
                 // todo logger service
-                console.log(err);
-
                 this.loading = false;
             }
         );
     }
 
-    private selectBean(bean) {
-        this.loadRecord(bean.module, bean.id);
-    }
-
     /**
-     * loads a selected bean and shows its details
+     * handles the select when the user clicks a record
      *
-     * @param module
-     * @param id
+     * @param bean
      */
-    private loadRecord(module, id) {
-        // load te model
-        this.model.module = module;
-        this.model.id = id;
-        this.model.getData(true);
-
-        // load the componentset
-        this.componentconfig = this.metadata.getComponentConfig('GroupwareDetailPane', module);
+    private selectBean(bean) {
+        // this.loadRecord(bean.module, bean.id);
+        this.router.navigate(["/groupware/details/" + bean.module + '/' + bean.id]);
     }
 
-    /**
-     * Getter for the related beans array.
-     */
-    get beans() {
-        return this.groupware.relatedBeans;
-    }
 }
