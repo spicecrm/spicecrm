@@ -353,6 +353,12 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
         // define the full screen change handler
         document.onfullscreenchange = () => {
             this.isFullScreenOn = !!document.fullscreenElement;
+            if (!this.isFullScreenOn) {
+                this.setEditorHeight();
+            } else {
+                this.renderer.setStyle(this.editorContainer.element.nativeElement, 'height', '100%');
+
+            }
             this.cdRef.detectChanges();
         };
 
