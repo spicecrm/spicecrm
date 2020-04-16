@@ -84,6 +84,9 @@ export class ObjectRecordView implements OnInit, OnDestroy {
                 if (this.model.module === message.messagedata.module && this.model.id === message.messagedata.id) {
                     this.model.data = message.messagedata.data;
                 }
+
+                // update the tab info
+                this.navigationtab.setTabInfo({displayname: message.messagedata.data.summary_text, displaymodule: this.model.module});
                 break;
         }
     }
