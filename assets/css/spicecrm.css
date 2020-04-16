@@ -1518,3 +1518,9 @@ ul.spice-taglist span.slds-badge {
 .quill-rich-text-editor-view-container .ql-container {
     border: 0 !important;
 }
+
+.ql-formats:not(:last-child){
+    border-right: 1px solid #999;
+    margin-right: 5px;
+    padding-right: 5px;
+}
