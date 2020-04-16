@@ -10,10 +10,10 @@ import {language} from '../../../services/language.service';
  * Any beans already linked to the email will have their checkboxes selected.
  */
 @Component({
-    selector: 'groupware-read-pane-beans',
-    templateUrl: './src/include/groupware/templates/groupwarereadpanebeans.html'
+    selector: 'groupware-email-archive-pane-beans',
+    templateUrl: './src/include/groupware/templates/groupwareemailarchivepanebeans.html'
 })
-export class GroupwareReadPaneBeans {
+export class GroupwareEmailArchivePaneBeans {
 
     constructor(
         private groupware: GroupwareService,

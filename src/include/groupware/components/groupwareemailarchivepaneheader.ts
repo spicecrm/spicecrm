@@ -10,10 +10,10 @@ import {language} from "../../../services/language.service";
  * Header component for the add-in.
  */
 @Component({
-    selector: 'groupware-read-pane-header',
-    templateUrl: './src/include/groupware/templates/groupwarereadpaneheader.html'
+    selector: 'groupware-email-archive-pane-header',
+    templateUrl: './src/include/groupware/templates/groupwareemailarchivepaneheader.html'
 })
-export class GroupwareReadPaneHeader {
+export class GroupwareEmailArchivePaneHeader {
 
     constructor(
         private language: language,
