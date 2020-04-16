@@ -1,1 +1,5 @@
 <outlook-meeting-view-container *ngIf="id" [module]="module" [id]="id"></outlook-meeting-view-container>
+<div *ngIf="!id" style="height: 100vh;" class="slds-p-around--x-small slds-align--absolute-center slds-grid--vertical slds-theme--alert-texture">
+    <h2 class="slds-p-around--small slds-text-heading_small"><system-label label="MSG_NO_RECORD_LINKED"></system-label></h2>
+    <div class="slds-size--3-of-4 slds-text-align--center"><system-label label="MSG_NO_RECORD_LINKED" length="long"></system-label></div>
+</div>
