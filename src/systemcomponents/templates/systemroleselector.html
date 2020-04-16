@@ -1,5 +1,5 @@
 <div system-dropdown-trigger-simple class="slds-dropdown-trigger slds-dropdown-trigger_click">
-    <button class="slds-button slds-p-horizontal--xx-small" [title]="language.getLabel(activeRole.label, undefined, 'short')">
+    <button class="slds-button slds-p-horizontal--xx-small" [disabled]="roles.length < 2"  [title]="language.getLabel(activeRole.label, undefined, 'short')">
         <span class="slds-avatar--small slds-align--absolute-center slds-line-height_reset" style="line-height: 25px;" [ngClass]="activeRole.icon"><system-label [label]="activeRole.label" length="short"></system-label></span>
     </button>
     <div class="slds-dropdown slds-dropdown--bottom slds-dropdown_right">

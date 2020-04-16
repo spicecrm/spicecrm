@@ -456,7 +456,7 @@ export class backend {
             {headers: this.getHeaders(), params: this.prepareParams(params)}
         ).subscribe(
             (res) => {
-                responseSubject.next(true);
+                responseSubject.next(res ? res : true);
                 responseSubject.complete();
             },
             (err) => {
@@ -779,7 +779,7 @@ export class backend {
 
         this.deleteRequest("module/" + module + "/" + id)
             .subscribe((res) => {
-                responseSubject.next(true);
+                responseSubject.next(res ? res : true);
                 responseSubject.complete();
             });
         return responseSubject.asObservable();
