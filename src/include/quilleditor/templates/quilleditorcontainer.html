@@ -2,35 +2,6 @@
     <div #editorToolbar class="slds-theme--shade">
         <ng-container *ngIf="!simpleMode; else editorSimpleToolbar">
             <span class="ql-formats">
-                <button class="ql-bold" system-title="LBL_BOLD"></button>
-                <button class="ql-italic" system-title="LBL_ITALIC"></button>
-                <button class="ql-underline" system-title="LBL_UNDERLINE"></button>
-                <button class="ql-strike" system-title="LBL_STRIKETHROUGH"></button>
-            </span>
-            <span class="ql-formats">
-                <button class="ql-blockquote" system-title="LBL_QUOTE"></button>
-                <button class="ql-code-block" system-title="LBL_ADD_CODE_SNIPPET"></button>
-            </span>
-            <span class="ql-formats">
-                <button class="ql-header" value="1"></button>
-                <button class="ql-header" value="2"></button>
-            </span>
-            <span class="ql-formats">
-                <button class="ql-list" value="ordered" system-title="LBL_NUMBERED_LIST"></button>
-                <button class="ql-list" value="bullet" system-title="LBL_BULLETED_LIST"></button>
-            </span>
-            <span class="ql-formats">
-                <button class="ql-script" value="sub" system-title="LBL_SUB"></button>
-                <button class="ql-script" value="super" system-title="LBL_SUPER"></button>
-            </span>
-            <span class="ql-formats">
-                <button class="ql-indent" value="-1" system-title="LBL_TEXT_INDENT"></button>
-                <button class="ql-indent" value="+1" system-title="LBL_TEXT_OUTDENT"></button>
-            </span>
-            <span class="ql-formats">
-                <button class="ql-direction" value="rtl" system-title="LBL_RTL_DIRECTION"></button>
-            </span>
-            <span class="ql-formats">
                 <select class="ql-header">
                     <option></option>
                     <option value="1"></option>
@@ -40,8 +11,15 @@
                     <option value="5"></option>
                     <option value="6"></option>
                 </select>
+                <button class="ql-clean" system-title="LBL_REMOVE_FORMATTING"></button>
             </span>
             <span class="ql-formats">
+                <button class="ql-bold" system-title="LBL_BOLD"></button>
+                <button class="ql-italic" system-title="LBL_ITALIC"></button>
+                <button class="ql-underline" system-title="LBL_UNDERLINE"></button>
+                <button class="ql-strike" system-title="LBL_STRIKETHROUGH"></button>
+                <button class="ql-script" value="sub" system-title="LBL_SUB"></button>
+                <button class="ql-script" value="super" system-title="LBL_SUPER"></button>
                 <select class="ql-color" system-title="LBL_COLOR">
                     <option></option>
                     <option value="#e60000"></option>
@@ -118,27 +96,33 @@
                 </select>
             </span>
             <span class="ql-formats">
+                <button class="ql-indent" value="-1" system-title="LBL_TEXT_INDENT"></button>
+                <button class="ql-indent" value="+1" system-title="LBL_TEXT_OUTDENT"></button>
+                <button class="ql-list" value="ordered" system-title="LBL_NUMBERED_LIST"></button>
+                <button class="ql-list" value="bullet" system-title="LBL_BULLETED_LIST"></button>
+                <button class="ql-blockquote" system-title="LBL_QUOTE"></button>
+                <button class="ql-code-block" system-title="LBL_ADD_CODE_SNIPPET"></button>
+            </span>
+            <span class="ql-formats">
                 <select class="ql-align">
                     <option></option>
                     <option value="center" system-title="LBL_CENTER_ALIGN"></option>
                     <option value="right" system-title="LBL_RIGHT_ALIGN"></option>
                     <option value="justify" system-title="LBL_ALIGN_TEXT"></option>
                 </select>
-            </span>
-            <span class="ql-formats">
-                <button class="ql-clean" system-title="LBL_REMOVE_FORMATTING"></button>
+                <button class="ql-direction" value="rtl" system-title="LBL_RTL_DIRECTION"></button>
             </span>
             <span class="ql-formats">
                 <button class="ql-link" system-title="LBL_LINK"></button>
                 <button class="ql-image" system-title="LBL_NEW_IMAGE"></button>
+                <button (click)="openMediaFilePicker()" system-title="LBL_MEDIAFILE_PICKER">
+                    <system-button-icon icon="ad_set" size="small"></system-button-icon>
+                </button>
                 <button class="ql-video" system-title="LBL_ADD_VIDEO"></button>
             </span>
             <span class="ql-formats">
                 <button (click)="openSourceEditor()" system-title="LBL_SOURCE_EDITOR">
                     <system-button-icon icon="apex"></system-button-icon>
-                </button>
-                <button (click)="openMediaFilePicker()" system-title="LBL_MEDIAFILE_PICKER">
-                    <system-button-icon icon="ad_set" size="small"></system-button-icon>
                 </button>
                  <button (click)="toggleFullScreen(mainContainer)" system-title="LBL_FULL_SCREEN" class="slds-button slds-button--neutral slds-button--icon-border slds-m-left--xx-small slds-m-right--xxx-small slds-col--bump-left">
                     <system-button-icon [icon]="!isFullScreenOn ? 'expand' : 'contract'"></system-button-icon>
@@ -150,9 +134,14 @@
                 <button class="ql-bold" system-title="LBL_BOLD"></button>
                 <button class="ql-italic" system-title="LBL_ITALIC"></button>
                 <button class="ql-underline" system-title="LBL_UNDERLINE"></button>
-                <button class="ql-strike" system-title="LBL_STRIKETHROUGH"></button>
             </span>
-                <span class="ql-formats">
+            <span class="ql-formats">
+                <button class="ql-indent" value="-1" system-title="LBL_TEXT_INDENT"></button>
+                <button class="ql-indent" value="+1" system-title="LBL_TEXT_OUTDENT"></button>
+                <button class="ql-list" value="ordered" system-title="LBL_NUMBERED_LIST"></button>
+                <button class="ql-list" value="bullet" system-title="LBL_BULLETED_LIST"></button>
+            </span>
+            <span class="ql-formats">
                 <select class="ql-align">
                     <option></option>
                     <option value="center" system-title="LBL_CENTER_ALIGN"></option>
@@ -160,29 +149,9 @@
                     <option value="justify" system-title="LBL_ALIGN_TEXT"></option>
                 </select>
             </span>
-                <span class="ql-formats">
-                <select class="ql-header">
-                    <option></option>
-                    <option value="1"></option>
-                    <option value="2"></option>
-                    <option value="3"></option>
-                    <option value="4"></option>
-                    <option value="5"></option>
-                    <option value="6"></option>
-                </select>
-            </span>
-                <span class="ql-formats">
-                <button class="ql-list" value="ordered" system-title="LBL_NUMBERED_LIST"></button>
-                <button class="ql-list" value="bullet" system-title="LBL_BULLETED_LIST"></button>
-            </span>
-                <span class="ql-formats">
+            <span class="ql-formats">
                 <button class="ql-link" system-title="LBL_LINK"></button>
                 <button class="ql-image" system-title="LBL_NEW_IMAGE"></button>
-            </span>
-                <span class="ql-formats">
-                 <button (click)="toggleFullScreen(mainContainer)" system-title="LBL_FULL_SCREEN" class="slds-button slds-button--neutral slds-button--icon-border slds-m-left--xx-small slds-m-right--xxx-small slds-col--bump-left">
-                    <system-button-icon [icon]="!isFullScreenOn ? 'expand' : 'contract'"></system-button-icon>
-                </button>
             </span>
         </ng-template>
     </div>
