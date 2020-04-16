@@ -5,9 +5,9 @@
     </button>
 </div>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="false" [fieldconfig]="fieldconfig">
-    <quill-view [content]="value"></quill-view>
+    <quill-view [content]="value" [height]="fieldconfig.height"></quill-view>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
-    <quill-editor [(ngModel)]="value"></quill-editor>
+    <quill-editor [(ngModel)]="value" [simpleMode]="fieldconfig.simpleMode" [height]="fieldconfig.height"></quill-editor>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>

@@ -7,6 +7,7 @@ import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import /*embed*/ {QuillViewContainer} from './components/quillviewcontainer';
 import /*embed*/ {QuillEditorContainer} from './components/quilleditorcontainer';
 import /*embed*/ {QuillRichTextField} from "./components/quillrichtextfield";
+import /*embed*/ {QuillSourceEditorModal} from "./components/quillsourceeditormodal";
 
 import /*embed*/ {QuillModulesI, QuillToolbarConfigT} from './interfaces/quilleditor.interfaces';
 import {FormsModule} from "@angular/forms";
@@ -16,7 +17,8 @@ import {DirectivesModule} from "../../directives/directives";
     declarations: [
         QuillEditorContainer,
         QuillViewContainer,
-        QuillRichTextField
+        QuillRichTextField,
+        QuillSourceEditorModal
     ],
     exports: [
         QuillEditorContainer,

@@ -3,7 +3,8 @@ import {DomSanitizer} from '@angular/platform-browser';
 
 import {
     AfterViewInit,
-    ChangeDetectionStrategy, ChangeDetectorRef,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     ElementRef,
     forwardRef,
@@ -28,8 +29,6 @@ import {libloader} from "../../../services/libloader.service";
 
 /** @ignore */
 declare var Quill: any;
-/** @ignore */
-declare var ImageResize: any;
 
 /**
  * render a quill rich text editor and handle its changes
@@ -49,9 +48,17 @@ declare var ImageResize: any;
 })
 export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor, OnChanges, OnDestroy {
     /**
+     * holds the simple mode boolean value to display some or all toolbar actions
+     */
+    @Input() protected readonly simpleMode: boolean = false;
+    /**
      * holds the disabled value to handle the editor disabled
      */
     @Input() protected readonly disabled: boolean = false;
+    /**
+     * holds the disabled value to handle the editor disabled
+     */
+    @Input() protected readonly height: string = '300';
     /**
      * scrolling container to be passed to the editor
      */
@@ -88,6 +95,14 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
      * save full screen on/off
      */
     private isFullScreenOn: boolean = false;
+    /**
+     * to help encoding/decoding html
+     */
+    private textarea: HTMLElement;
+    /**
+     * save the typing timeout
+     */
+    private typingTimeout: any;
 
     constructor(
         private elementRef: ElementRef,
@@ -99,6 +114,7 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
         private cdRef: ChangeDetectorRef,
         private zone: NgZone
     ) {
+        this.textarea = document.createElement('textarea');
     }
 
     /**
@@ -154,6 +170,7 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
 
     /**
      * write value by ControlValueAccessor
+     * encode the html value and set the editor content
      * @param value
      */
     public writeValue(value: any) {
@@ -161,13 +178,15 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
         this.content = value;
         if (!this.quillEditor) return;
 
-        if (value) {
-            const sanitizedValue = this.domSanitizer.sanitize(SecurityContext.HTML, value);
-            this.quillEditor.setContents(
-                this.quillEditor.clipboard.convert(sanitizedValue)
-            );
-        } else {
+        if (!value) {
             this.quillEditor.setText('');
+        } else {
+            this.content = this.getCleanHtml();
+            this.quillEditor.setContents(
+                this.quillEditor.clipboard.convert(
+                    this.domSanitizer.sanitize(SecurityContext.HTML, this.content)
+                )
+            );
         }
     }
 
@@ -188,17 +207,56 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
     }
 
     /**
+     * encode html value
+     * @param value
+     */
+    protected encodeHtml(value: string) {
+        return value
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    /**
+     * get clean html value by ensuring the encode/decode the code snippets
+     */
+    private getCleanHtml() {
+        const regexp = /(?<=<pre class="ql-syntax" spellcheck="false">)[\s\S]*?(?=<\/pre>)/g;
+        const match = regexp.exec(
+            this.decodeHTMLEntities(this.content)
+        );
+        return this.content.replace(match.toString(), this.encodeHTMLEntities(match.toString()));
+    }
+
+    private decodeHTMLEntities(text) {
+        this.textarea.innerHTML = text;
+        return this.textarea.innerText;
+    }
+
+    private encodeHTMLEntities(text) {
+        this.textarea.innerText = text;
+        return this.textarea.innerHTML;
+    }
+
+    /**
      * handle text changes to emit the value
      */
     private registerTextChangeHandler() {
 
         this.textChangeHandler = () => {
-            this.zone.run(() => {
-                const html = this.editorContainer.element.nativeElement.querySelector('.ql-editor')!.innerHTML;
-                const value = html === '<p><br></p>' || html === '<div><br></div>' ? null : html;
-                this.content = html;
-                this.onChange(value);
-            });
+
+            if (this.typingTimeout) {
+                window.clearTimeout(this.typingTimeout);
+            }
+            this.typingTimeout = window.setTimeout(() => {
+                this.zone.run(() => {
+                    const html = this.editorContainer.element.nativeElement.querySelector('.ql-editor')!.innerHTML;
+                    const value = html === '<p><br></p>' || html === '<div><br></div>' ? null : html;
+                    this.content = value;
+                    this.onChange(value);
+                });
+            }, 1000);
         };
     }
 
@@ -206,7 +264,6 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
      * render the quill editor with the defined options and toolbar and pass the content
      */
     private renderQuillEditor() {
-
         const modules: QuillModulesI = {
             toolbar: this.editorToolbar.element.nativeElement,
             imageResize: {
@@ -230,13 +287,21 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
                 this.quillEditor.history.clear();
             }
 
-            this.renderer.setStyle(this.editorContainer.element.nativeElement, 'min-height', '200px');
-
+            this.setEditorHeight();
             this.setDisabledState();
 
             this.registerTextChangeHandler();
             this.quillEditor.on('text-change', this.textChangeHandler);
         });
+    }
+
+    /**
+     * set editor height
+     */
+    private setEditorHeight() {
+        const height = !isNaN(parseInt(this.height, 10)) ? parseInt(this.height, 10) : '300';
+        this.renderer.setStyle(this.editorContainer.element.nativeElement, 'height', height + 'px');
+        this.renderer.setStyle(this.editorContainer.element.nativeElement, 'overflow-y', 'auto');
     }
 
     /**
@@ -270,7 +335,7 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
      */
     private openSourceEditor() {
 
-        this.modal.openModal('SystemRichTextSourceModal').subscribe(componentRef => {
+        this.modal.openModal('QuillSourceEditorModal').subscribe(componentRef => {
             componentRef.instance._html = this.content;
             componentRef.instance.html.subscribe(newHtml => {
                 // update our internal value

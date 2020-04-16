@@ -1510,3 +1510,11 @@ ul.spice-taglist span.slds-badge {
 .slds-radio_button-group .slds-radio_button [type=radio]:checked + label svg {
     fill: #fff;
 }
+
+.quill-rich-text-editor-view-container .ql-editor {
+    padding: 0 !important;
+}
+
+.quill-rich-text-editor-view-container .ql-container {
+    border: 0 !important;
+}

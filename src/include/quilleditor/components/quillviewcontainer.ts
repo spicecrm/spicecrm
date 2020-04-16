@@ -9,7 +9,7 @@ import {
     NgZone,
     OnChanges,
     PLATFORM_ID,
-    Renderer2,
+    Renderer2, SimpleChanges,
     ViewChild,
     ViewContainerRef,
     ViewEncapsulation
@@ -25,10 +25,26 @@ declare var Quill: any;
     templateUrl: './src/include/quilleditor/templates/quillviewcontainer.html'
 })
 export class QuillViewContainer implements AfterViewInit, OnChanges {
-
+    /**
+     * to render the quill editor inside
+     */
     @ViewChild('editorContainer', {read: ViewContainerRef, static: false}) private editorContainer: ViewContainerRef;
+    /**
+     * to save the quill editor instance
+     */
     private quillEditor: any;
-    @Input() protected readonly content: any;
+    /**
+     * save the content to be displayed in the editor view mode
+     */
+    @Input() protected readonly content: string;
+    /**
+     * holds the disabled value to handle the editor disabled
+     */
+    @Input() protected readonly height: string = '300';
+    /**
+     * to help encoding/decoding html
+     */
+    private textarea: HTMLElement;
 
     constructor(
         @Inject(PLATFORM_ID) private platformId: any,
@@ -37,13 +53,16 @@ export class QuillViewContainer implements AfterViewInit, OnChanges {
         private libLoader: libloader,
         private zone: NgZone
     ) {
+        this.textarea = document.createElement('textarea');
     }
 
     /**
      * set the editor content
      */
-    public ngOnChanges() {
-        this.setEditorContent();
+    public ngOnChanges(changes: SimpleChanges) {
+        if (changes.content) {
+            this.setEditorContent();
+        }
     }
 
     /**
@@ -67,10 +86,20 @@ export class QuillViewContainer implements AfterViewInit, OnChanges {
                     strict: true,
                     theme: 'snow'
                 });
-                this.renderer.setStyle(this.editorContainer.element.nativeElement, 'border', '0');
+
+                this.setEditorHeight();
                 this.setEditorContent();
             });
         });
+    }
+
+    /**
+     * set editor height
+     */
+    private setEditorHeight() {
+        const height = !isNaN(parseInt(this.height, 10)) ? parseInt(this.height, 10) : '300';
+        this.renderer.setStyle(this.editorContainer.element.nativeElement, 'height', height + 'px');
+        this.renderer.setStyle(this.editorContainer.element.nativeElement, 'overflow-y', 'auto');
     }
 
     /**
@@ -79,8 +108,30 @@ export class QuillViewContainer implements AfterViewInit, OnChanges {
     private setEditorContent(): any {
 
         if (!this.quillEditor || !this.content) return;
+        this.quillEditor.setContents(
+            this.quillEditor.clipboard.convert(this.getCleanHtml())
+        );
 
-        const value = this.quillEditor.clipboard.convert(this.content);
-        this.quillEditor.setContents(value);
+    }
+
+    /**
+     * get clean html value by ensuring the encode/decode the code snippets
+     */
+    private getCleanHtml() {
+        const regexp = /(?<=<pre class="ql-syntax" spellcheck="false">)[\s\S]*?(?=<\/pre>)/g;
+        const match = regexp.exec(
+            this.decodeHTMLEntities(this.content)
+        );
+        return this.content.replace(match.toString(), this.encodeHTMLEntities(match.toString()));
+    }
+
+    private decodeHTMLEntities(text) {
+        this.textarea.innerHTML = text;
+        return this.textarea.innerText;
+    }
+
+    private encodeHTMLEntities(text) {
+        this.textarea.innerText = text;
+        return this.textarea.innerHTML;
     }
 }
