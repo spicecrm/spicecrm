@@ -2,7 +2,7 @@
  * @module services
  */
 import {EventEmitter, Injectable} from "@angular/core";
-import {Subject, Observable, of, concat} from "rxjs";
+import {Subject, Observable, of} from "rxjs";
 import {configurationService} from "./configuration.service";
 
 /**
@@ -65,17 +65,15 @@ export class libloader {
             o.subscribe(
                 (res) => {
                     cnt++;
-                },
-                (err) => {
-                    cnt++;
-                    sub.error(err);
-                },
-                () => {
                     // console.log("completed...", cnt == observables.length);
                     if (cnt == observables.length) {
                         sub.next();
                         sub.complete();
                     }
+                },
+                (err) => {
+                    cnt++;
+                    sub.error(err);
                 }
             );
         }
@@ -95,48 +93,60 @@ export class libloader {
     public loadLib(name: string): Observable<any> {
         // error if not found... (but how?)
         if (!this.scripts[name]) {
-
             return of({script: name, loaded: false, status: "Unknown"});
-
         } else if (this.isLibLoaded(name)) {
-
             return of({script: name, loaded: true, status: "Already Loaded"});
-
         } else {
             this.loadedLibs.push({name: name, status: 'loading'});
             let sub = new Subject<object>();
-            const loadScriptObservables = [];
-            const responseData = [];
+            // load script(s)
+            this.loadScriptsDirect(this.scripts[name]).then(
+                success => {
+                    sub.next({script: name, loaded: true, status: "Loaded"});
+                    sub.complete();
 
-            // push the script loading observable to the observable array to be concatenated
-            this.scripts[name].forEach(lib => {
-                loadScriptObservables.push(
-                    this.loadScriptDirect(lib.src)
-                );
-            });
-
-            // concat all observables together to ensure loading in order
-            concat(loadScriptObservables).subscribe(
-                () => {
-                    responseData.push({script: name, loaded: true, status: "Loaded"});
+                    // set and emit internally
+                    this.loadedLibs.find(lib => lib.name == name).status = 'loaded';
+                    this.loadedLibs$.emit({script: name, loaded: true, status: "Loaded"});
                 },
-                () => {
-                    responseData.push({script: name, loaded: false, status: "error"});
+                error => {
+                    sub.error({script: name, loaded: false, status: "error"});
+                    sub.complete();
 
                     // emit the error internally if somebody else is waiting
                     this.loadedLibs.find(lib => lib.name == name).status = 'error';
                     this.loadedLibs$.emit({script: name, loaded: true, status: "error"});
-                },
-                () => {
-                    sub.next(responseData);
-                    sub.complete();
-                    // set and emit internally
-                    this.loadedLibs.find(lib => lib.name == name).status = 'loaded';
-                    this.loadedLibs$.emit({script: name, loaded: true, status: "Loaded"});
                 }
             );
+
             return sub.asObservable();
         }
+    }
+
+    /**
+     * async function to load libs waiting for themn to be loaded ina  sequence
+     *
+     * @param scripts
+     */
+    private async loadScriptsDirect(scripts): Promise<any> {
+        let sub = new Subject();
+        let loadedcount = 0;
+        for (let lib of scripts) {
+            await this.loadScriptDirect(lib.src).then(
+                success => {
+                    loadedcount++;
+                    if (loadedcount == scripts.length) {
+                        sub.next({script: name, loaded: true, status: "Loaded"});
+                        sub.complete();
+                    }
+                },
+                error => {
+                    sub.error({script: name, loaded: false, status: "error"});
+                    sub.complete();
+                }
+            );
+        }
+        return sub.toPromise();
     }
 
     /**
@@ -148,7 +158,7 @@ export class libloader {
         let sub = new Subject<boolean>();
         let resolved = 0;
         for (let source of sources) {
-            this.loadScriptDirect(source).subscribe(
+            this.loadScriptDirect(source).then(
                 res => {
                     resolved++;
                     if (resolved == sources.length) {
@@ -170,12 +180,11 @@ export class libloader {
      *
      * @param src the source to be loaded
      */
-    private loadScriptDirect(src: string): Observable<boolean> {
+    private async loadScriptDirect(src: string): Promise<boolean> {
         if (this.loadedDirect.indexOf(src) != -1) {
-            return of(true);
+            return of(true).toPromise();
         } else {
             let sub = new Subject<boolean>();
-
             // create the elemnt as script or stylesheet
             let element: any = {};
             if (src.endsWith('.css')) {
@@ -207,7 +216,7 @@ export class libloader {
                 sub.complete();
             };
             document.getElementsByTagName("head")[0].appendChild(element);
-            return sub.asObservable();
+            return sub.toPromise();
         }
     }
 
