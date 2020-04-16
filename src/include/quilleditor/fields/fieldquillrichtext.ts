@@ -10,10 +10,10 @@ import {Router} from '@angular/router';
 import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 
 @Component({
-    selector: 'quill-rich-text-field',
-    templateUrl: './src/include/quilleditor/templates/quillrichtextfield.html'
+    selector: 'field-quill-rich-text',
+    templateUrl: './src/include/quilleditor/templates/fieldquillrichtext.html'
 })
-export class QuillRichTextField extends fieldGeneric {
+export class fieldQuillRichText extends fieldGeneric {
 
     constructor(public model: model,
                 public view: view,

@@ -226,6 +226,7 @@ export class QuillEditorContainer implements AfterViewInit, ControlValueAccessor
         const match = regexp.exec(
             this.decodeHTMLEntities(this.content)
         );
+        if (!match) return this.content;
         return this.content.replace(match.toString(), this.encodeHTMLEntities(match.toString()));
     }
 
