@@ -2,7 +2,7 @@
  * @module services
  */
 import {EventEmitter, Injectable} from "@angular/core";
-import {Subject, Observable, of} from "rxjs";
+import {Subject, Observable, of, concat} from "rxjs";
 import {configurationService} from "./configuration.service";
 
 /**
@@ -95,57 +95,46 @@ export class libloader {
     public loadLib(name: string): Observable<any> {
         // error if not found... (but how?)
         if (!this.scripts[name]) {
+
             return of({script: name, loaded: false, status: "Unknown"});
+
         } else if (this.isLibLoaded(name)) {
+
             return of({script: name, loaded: true, status: "Already Loaded"});
-            /* }  else if (this.isLibLoading(name)) {
-                let sub = new Subject<object>();
-                let subscription = this.loadedLibs$.subscribe(
-                    loadedname => {
-                        if (loadedname.name == name) {
-                            sub.next(loadedname);
-                            sub.complete();
-                            subscription.unsubscribe();
-                        }
-                    },
-                    error => {
-                        if (error.name == name) {
-                            sub.error(error);
-                            sub.complete();
-                            subscription.unsubscribe();
-                        }
-                    }
-                );
-                return sub.asObservable(); */
+
         } else {
             this.loadedLibs.push({name: name, status: 'loading'});
             let sub = new Subject<object>();
-            // load script(s)
-            let script: any = document.createElement("script");
-            let loadedcount = 0;
-            for (let lib of this.scripts[name]) {
-                this.loadScriptDirect(lib.src).subscribe(
-                    success => {
-                        loadedcount++;
-                        if (loadedcount == this.scripts[name].length) {
-                            sub.next({script: name, loaded: true, status: "Loaded"});
-                            sub.complete();
+            const loadScriptObservables = [];
+            const responseData = [];
 
-                            // set and emit internally
-                            this.loadedLibs.find(lib => lib.name == name).status = 'loaded';
-                            this.loadedLibs$.emit({script: name, loaded: true, status: "Loaded"});
-                        }
-                    },
-                    error => {
-                        sub.error({script: name, loaded: false, status: "error"});
-                        sub.complete();
-
-                        // emit the error internally if somebody else is waiting
-                        this.loadedLibs.find(lib => lib.name == name).status = 'error';
-                        this.loadedLibs$.emit({script: name, loaded: true, status: "error"});
-                    }
+            // push the script loading observable to the observable array to be concatenated
+            this.scripts[name].forEach(lib => {
+                loadScriptObservables.push(
+                    this.loadScriptDirect(lib.src)
                 );
-            }
+            });
+
+            // concat all observables together to ensure loading in order
+            concat(loadScriptObservables).subscribe(
+                () => {
+                    responseData.push({script: name, loaded: true, status: "Loaded"});
+                },
+                () => {
+                    responseData.push({script: name, loaded: false, status: "error"});
+
+                    // emit the error internally if somebody else is waiting
+                    this.loadedLibs.find(lib => lib.name == name).status = 'error';
+                    this.loadedLibs$.emit({script: name, loaded: true, status: "error"});
+                },
+                () => {
+                    sub.next(responseData);
+                    sub.complete();
+                    // set and emit internally
+                    this.loadedLibs.find(lib => lib.name == name).status = 'loaded';
+                    this.loadedLibs$.emit({script: name, loaded: true, status: "Loaded"});
+                }
+            );
             return sub.asObservable();
         }
     }

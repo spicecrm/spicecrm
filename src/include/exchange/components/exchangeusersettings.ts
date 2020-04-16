@@ -6,6 +6,7 @@ import {Component, OnInit} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {backend} from '../../../services/backend.service';
+import {configurationService} from '../../../services/configuration.service';
 
 /**
  * @ignore
@@ -37,7 +38,7 @@ export class ExchangeUserSettings implements OnInit {
      */
     private userconfig: any[] = [];
 
-    constructor(private metadata: metadata, private model: model, private backend: backend) {
+    constructor(private metadata: metadata, private model: model, private backend: backend, private configuration: configurationService) {
 
     }
 
@@ -85,7 +86,7 @@ export class ExchangeUserSettings implements OnInit {
      * @param sysmoduleid
      */
     private isActive(sysmoduleid: string) {
-        return !!this.userconfig.find(r => r.sysmodule_id == sysmoduleid);
+        return this.userconfig && this.userconfig.findIndex(r => r.sysmodule_id == sysmoduleid) >= 0;
     }
 
     /**
@@ -99,11 +100,17 @@ export class ExchangeUserSettings implements OnInit {
             this.backend.postRequest('spicecrmexchange/config/' + this.model.id + '/' + sysmoduleid).subscribe(res => {
                 this.userconfig = res.userconfig;
                 this.subscriptions = res.subscriptions;
+
+                // set the user config
+                this.configuration.setData('exchangeuserconfig', this.userconfig);
             });
         } else {
             this.backend.deleteRequest('spicecrmexchange/config/' + this.model.id + '/' + sysmoduleid).subscribe(res => {
                 this.userconfig = res.userconfig;
                 this.subscriptions = res.subscriptions;
+
+                // set the user config
+                this.configuration.setData('exchangeuserconfig', this.userconfig);
             });
         }
     }
