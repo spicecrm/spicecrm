@@ -7,12 +7,11 @@
                     <div class="slds-page-header__name">
                         <div class="slds-page-header__name-title">
                             <h1>
-                                <span><system-label-modulename module="Emails"></system-label-modulename></span>
-                                <span *ngIf="isArchived" class="slds-page-header__title slds-truncate slds-text-heading--small"><system-label label="LBL_ARCHIVED"></system-label></span>
-                                <span *ngIf="!isArchived" class="slds-page-header__title slds-truncate slds-text-heading--small"><system-label label="LBL_NOT_ARCHIVED"></system-label></span>
+                                <span class="slds-page-header__title slds-truncate"><system-label-modulename module="Emails" [singular]="true"></system-label-modulename></span>
                             </h1>
                         </div>
                     </div>
+                    <p class="slds-page-header__name-meta"><system-label [label]="isArchived ? 'LBL_ARCHIVED' : 'LBL_NOT_ARCHIVED'"></system-label></p>
                 </div>
             </div>
         </div>

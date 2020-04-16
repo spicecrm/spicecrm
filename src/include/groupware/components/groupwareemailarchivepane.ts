@@ -10,10 +10,10 @@ import {backend} from "../../../services/backend.service";
  * Those include: beans list, search pane, attachment list, linked bean list.
  */
 @Component({
-    selector: 'groupware-read-pane',
-    templateUrl: './src/include/groupware/templates/groupwarereadpane.html'
+    selector: 'groupware-email-archive-pane',
+    templateUrl: './src/include/groupware/templates/groupwareemailarchivepane.html'
 })
-export class GroupwareReadPane {
+export class GroupwareEmailArchivePane {
     /**
      * Currently active tab.
      */

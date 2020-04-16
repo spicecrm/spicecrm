@@ -232,7 +232,7 @@ export abstract class GroupwareService {
     public loadLinkedBeans(): Observable<any> {
         let responseSubject = new Subject<any>();
         let payload = this.getEmailAddressData();
-
+        this.relatedBeans = [];
         this.backend.postRequest('EmailAddress/searchBeans', {}, payload).subscribe(
             (res: any) => {
                 for (let item in res) {

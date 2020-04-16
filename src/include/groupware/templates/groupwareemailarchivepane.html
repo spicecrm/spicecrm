@@ -1,4 +1,4 @@
-<groupware-read-pane-header></groupware-read-pane-header>
+<groupware-email-archive-pane-header></groupware-email-archive-pane-header>
 <div class="slds-tabs_default" [system-overlay-loading-spinner]="groupware.isArchiving">
     <ul class="slds-tabs_default__nav" role="tablist">
         <li class="slds-tabs_default__item" title="Search" role="presentation" [ngClass]="{'slds-is-active': activetab=='beans'}">
@@ -23,9 +23,9 @@
         </li>
     </ul>
     <div class="slds-scrollable">
-        <groupware-read-pane-beans [ngClass]="{'slds-hide': activetab!='beans'}"></groupware-read-pane-beans>
-        <groupware-read-pane-search [ngClass]="{'slds-hide': activetab!='search'}"></groupware-read-pane-search>
-        <groupware-read-pane-attachments [ngClass]="{'slds-hide': activetab!='attachments'}"></groupware-read-pane-attachments>
-        <groupware-read-pane-linked [ngClass]="{'slds-hide': activetab!='linked'}"></groupware-read-pane-linked>
+        <groupware-email-archive-pane-beans [ngClass]="{'slds-hide': activetab!='beans'}"></groupware-email-archive-pane-beans>
+        <groupware-email-archive-pane-search [ngClass]="{'slds-hide': activetab!='search'}"></groupware-email-archive-pane-search>
+        <groupware-email-archive-pane-attachments [ngClass]="{'slds-hide': activetab!='attachments'}"></groupware-email-archive-pane-attachments>
+        <groupware-email-archive-pane-linked [ngClass]="{'slds-hide': activetab!='linked'}"></groupware-email-archive-pane-linked>
     </div>
 </div>

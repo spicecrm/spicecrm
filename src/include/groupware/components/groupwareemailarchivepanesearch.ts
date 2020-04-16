@@ -14,10 +14,10 @@ declare var _: any;
  * Search component. Returns a list of beans found using the search terms.
  */
 @Component({
-    selector: 'groupware-read-pane-search',
-    templateUrl: './src/include/groupware/templates/groupwarereadpanesearch.html'
+    selector: 'groupware-email-archive-pane-search',
+    templateUrl: './src/include/groupware/templates/groupwareemailarchivepanesearch.html'
 })
-export class GroupwareReadPaneSearch {
+export class GroupwareEmailArchivePaneSearch {
     /**
      * Input string used for searching.
      */
@@ -26,7 +26,8 @@ export class GroupwareReadPaneSearch {
     /**
      * A list of found beans.
      */
-    private searchResults: any[] = [];
+    private beans: any[] = [];
+
     /**
      * A boolean used to indicate if a search is currently running.
      */
@@ -141,7 +142,7 @@ export class GroupwareReadPaneSearch {
         this.searching = true;
 
         // reset the search results
-        this.searchResults = [];
+        this.beans = [];
 
         // build the searchmodules
         let searchmodules = [];
@@ -159,7 +160,14 @@ export class GroupwareReadPaneSearch {
             hits.sort((a, b) => {
                 return a._score > b._score ? -1 : 1;
             });
-            this.searchResults = hits;
+
+            for(let hit of hits){
+                this.beans.push({
+                    id: hit._id,
+                    module: hit._source._module ? hit._source._module : hit._type,
+                    data: hit._source
+                });
+            }
 
             // set to no longer searching
             this.searching = false;
