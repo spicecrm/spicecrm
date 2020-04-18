@@ -27,11 +27,6 @@ import {Subscription} from "rxjs";
 export class ObjectList implements OnDestroy {
 
     /**
-     * the element reference for the content of the view
-     */
-    @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
-
-    /**
      * all fields that are available
      */
     private allFields: any[] = [];
@@ -148,11 +143,8 @@ export class ObjectList implements OnDestroy {
      *
      * @param e
      */
-    private onScroll(e) {
-        let element = this.tablecontent.element.nativeElement;
-        if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
-            this.modellist.loadMoreList();
-        }
+    private onScroll() {
+        this.modellist.loadMoreList();
     }
 
     /**
