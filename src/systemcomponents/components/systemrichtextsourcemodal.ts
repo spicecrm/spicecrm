@@ -3,7 +3,10 @@
  */
 import {Component, EventEmitter, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {language} from '../../services/language.service';
+import {libloader} from '../../services/libloader.service';
 import {DomSanitizer} from '@angular/platform-browser';
+
+declare var html_beautify: any;
 
 @Component({
     selector: "system-richtext-sourcemodal",
@@ -12,15 +15,20 @@ import {DomSanitizer} from '@angular/platform-browser';
 export class SystemRichTextSourceModal implements OnInit {
 
     public self: any = {};
-    private _html: string = '';
-    private searchtext: string = '';
+    public _html: string = '';
+    public searchtext: string = '';
     private foundIndices: number[] = [];
     private currentIndex: number = -1;
     private html: EventEmitter<string> = new EventEmitter<string>();
 
-    @ViewChild('sourceeditor', {static: true}) private sourceEditor: any;
+    private beautifyenabled: boolean = false;
 
-    constructor(private language: language, private renderer: Renderer2, public sanitized: DomSanitizer) {
+    @ViewChild('sourceeditor', {static: true}) public sourceEditor: any;
+
+    constructor(public language: language, public renderer: Renderer2, public sanitized: DomSanitizer, private libloader: libloader) {
+        this.libloader.loadLib('jsbeautify').subscribe(loaded => {
+            this.beautifyenabled = true;
+        });
     }
 
     get nextDisabled() {
@@ -121,6 +129,30 @@ export class SystemRichTextSourceModal implements OnInit {
             textRange.moveStart("character", start);
             textRange.select();
         }
+    }
+
+    private beautify() {
+        this.renderer.setProperty(this.sourceEditor.nativeElement, 'innerText', html_beautify(this.sourceEditor.nativeElement.innerText, {
+            indent_size: 4,
+            indent_char:  " ",
+            indent_with_tabs: false,
+            end_with_newline: false,
+            indent_level: 0,
+            preserve_newlines: true,
+            max_preserve_newlines: 10,
+            space_in_paren: false,
+            space_in_empty_paren: false,
+            unindent_chained_methods: false,
+            break_chained_methods: false,
+            keep_array_indentation: false,
+            unescape_strings: false,
+            wrap_line_length: 100,
+            e4x: false,
+            comma_first: false,
+            operator_position: "before-newline",
+            indent_empty_lines: false,
+            templating: ["auto"]
+        }));
     }
 
     private nextResult() {
