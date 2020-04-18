@@ -34,7 +34,7 @@ export class ObjectList implements OnDestroy {
     /**
      * the subscription to the modellist
      */
-    private modellistsubscribe: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     /**
      * the componentconfig
@@ -55,9 +55,9 @@ export class ObjectList implements OnDestroy {
         return this.modellist.isLoading;
     }
 
-    constructor(private router: Router, private cdRef: ChangeDetectorRef, private metadata: metadata, private modellist: modellist, private language: language, private layout: layout) {
+    constructor(public router: Router, public cdRef: ChangeDetectorRef, public metadata: metadata, public modellist: modellist, public language: language, public layout: layout) {
 
-        this.modellistsubscribe.add(this.modellist.listDataChanged$.subscribe(() => {
+        this.subscriptions.add(this.modellist.listDataChanged$.subscribe(() => {
             this.cdRef.detectChanges();
         }));
         // get the confih
@@ -70,7 +70,7 @@ export class ObjectList implements OnDestroy {
         this.loadList(true);
 
         // subscribe to changes of the listtype
-        this.modellistsubscribe.add(this.modellist.listtype$.subscribe(newType => this.switchListtype()));
+        this.subscriptions.add(this.modellist.listtype$.subscribe(newType => this.switchListtype()));
     }
 
     /**
@@ -106,7 +106,7 @@ export class ObjectList implements OnDestroy {
      * unsubscribe from the modellist subscription
      */
     public ngOnDestroy() {
-        this.modellistsubscribe.unsubscribe();
+        this.subscriptions.unsubscribe();
     }
 
     /**
