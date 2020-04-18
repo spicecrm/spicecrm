@@ -3,16 +3,19 @@
  */
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {FormsModule}   from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 
-import {ObjectFields}               from '../../objectfields/objectfields';
-import {GlobalComponents}           from '../../globalcomponents/globalcomponents';
-import {ObjectComponents}           from '../../objectcomponents/objectcomponents';
-import {SystemComponents}           from '../../systemcomponents/systemcomponents';
+import {ObjectFields} from '../../objectfields/objectfields';
+import {GlobalComponents} from '../../globalcomponents/globalcomponents';
+import {ObjectComponents} from '../../objectcomponents/objectcomponents';
+import {SystemComponents} from '../../systemcomponents/systemcomponents';
+import {DirectivesModule} from "../../directives/directives";
 
-import /*embed*/ {MediaFileImage}       from './components/mediafileimage';
-import /*embed*/ {MediaFilePicker}      from './components/mediafilepicker';
-import /*embed*/ {MediaFileUploader}    from './components/mediafileuploader';
+import /*embed*/ {MediaFileImage} from './components/mediafileimage';
+import /*embed*/ {MediaFilePicker} from './components/mediafilepicker';
+import /*embed*/ {MediaFileUploader} from './components/mediafileuploader';
+import /*embed*/ {MediaFilesList} from './components/mediafileslist';
+import /*embed*/ {MediaFilesTile} from './components/mediafilestile';
 
 @NgModule({
     imports: [
@@ -22,11 +25,14 @@ import /*embed*/ {MediaFileUploader}    from './components/mediafileuploader';
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
+        DirectivesModule
     ],
     declarations: [
         MediaFileImage,
         MediaFilePicker,
-        MediaFileUploader
+        MediaFileUploader,
+        MediaFilesList,
+        MediaFilesTile
     ],
     exports: [
         MediaFileImage,
@@ -34,4 +40,5 @@ import /*embed*/ {MediaFileUploader}    from './components/mediafileuploader';
         MediaFileUploader
     ]
 })
-export class ModuleMediaFiles {}
+export class ModuleMediaFiles {
+}
