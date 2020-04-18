@@ -231,7 +231,7 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
             }
 
             // check if we have the colValue
-            if (this.rowValues.indexOf(record[this.presParams.pluginData.rowData]) == -1) this.rowValues.push(record[this.presParams.pluginData.rowData]);
+            if (this.rowValues.indexOf(record[this.presParams.pluginData.rowData]) == -1 && !!record[this.presParams.pluginData.rowData]) this.rowValues.push(record[this.presParams.pluginData.rowData]);
         }
 
         for (let rowValue of this.rowValues) {
