@@ -13,7 +13,7 @@ export class SystemIconHelpText {
     @Input() private file: string = './assets/icons/spicecrm.svg';
     @Input() private size: string = 'xx-small'; // possible: xx-small, x-small, small, large
     @Input() private popoverMaxWidth: string = '300px';
-    @Input() private color: string = '#eeeeee';
+    @Input() private color: string = '#bbb';
     @Input() private hovercolor: string = '#5B5B5B';
     @Input() private desaturate: boolean = false;
     @Input() private addclasses: string = '';
