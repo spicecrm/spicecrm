@@ -152,6 +152,8 @@ import /*embed*/ {ObjectRecordTabbedDetailsTab} from './components/objectrecordt
 import /*embed*/ {ObjectRecordDetailsRelatedListTab} from './components/objectrecorddetailsrelatedlisttab';
 
 import /*embed*/ {ObjectModalModuleLookup} from './components/objectmodalmodulelookup';
+import /*embed*/ {ObjectModalModuleLookupHeader} from './components/objectmodalmodulelookupheader';
+import /*embed*/ {ObjectModalModuleLookupAggregates} from './components/objectmodalmodulelookupaggregates';
 import /*embed*/ {ObjectSelectButton} from './components/objectselectbutton';
 
 
@@ -346,6 +348,8 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectRecordTabbedDetailsTab,
         ObjectRecordDetailsRelatedListTab,
         ObjectModalModuleLookup,
+        ObjectModalModuleLookupHeader,
+        ObjectModalModuleLookupAggregates,
         ObjectSelectButton,
         ObjectReminderButton,
         ObjectActionBeanToMailButton,
@@ -414,7 +418,10 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectListHeaderSort,
         ObjectRelatedlistFiles,
         ObjectKeyValuesPipe,
-        ObjectPageHeaderTags
+        ObjectPageHeaderTags,
+        ObjectModalModuleLookup,
+        ObjectModalModuleLookupHeader,
+        ObjectModalModuleLookupAggregates
     ]
 })
 export class ObjectComponents {
