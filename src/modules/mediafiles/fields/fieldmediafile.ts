@@ -9,19 +9,19 @@ import {
     AfterViewInit,
     Renderer2
 } from '@angular/core';
-import { model } from '../../services/model.service';
-import { view } from '../../services/view.service';
+import { model } from '../../../services/model.service';
+import { view } from '../../../services/view.service';
 import { Router } from '@angular/router';
-import { language } from '../../services/language.service';
-import { metadata } from '../../services/metadata.service';
-import { fieldGeneric } from './fieldgeneric';
-import { mediafiles } from '../../services/mediafiles.service';
-import { backend } from '../../services/backend.service';
-import { modal } from '../../services/modal.service';
+import { language } from '../../../services/language.service';
+import { metadata } from '../../../services/metadata.service';
+import { fieldGeneric } from '../../../objectfields/components/fieldgeneric';
+import { mediafiles } from '../../../services/mediafiles.service';
+import { backend } from '../../../services/backend.service';
+import { modal } from '../../../services/modal.service';
 
 @Component( {
     selector: 'field-media-file',
-    templateUrl: './src/objectfields/templates/fieldmediafile.html',
+    templateUrl: './src/modules/mediafiles/templates/fieldmediafile.html',
     providers: [ mediafiles ],
 })
 export class fieldMediaFile extends fieldGeneric implements OnInit, AfterViewInit {

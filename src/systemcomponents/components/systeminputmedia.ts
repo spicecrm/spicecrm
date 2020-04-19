@@ -815,8 +815,9 @@ export class SystemInputMedia implements OnDestroy {
     }
 
     private emitChange() {
-        if ( this.mediaMetaData.fileformat ) this.onChange( this.mediaMetaData.fileformat+'|'+this.getImage() );
-        else this.onChange(null);
+        // if ( this.mediaMetaData.fileformat ) this.onChange( this.mediaMetaData.fileformat+'|'+this.getImage() );
+        // else
+        this.onChange(this.getImage());
     }
 
     /**

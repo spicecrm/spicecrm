@@ -9,18 +9,18 @@ import {
     AfterViewInit,
     Renderer2, OnDestroy
 } from '@angular/core';
-import { model } from '../../services/model.service';
-import { view } from '../../services/view.service';
+import { model } from '../../../services/model.service';
+import { view } from '../../../services/view.service';
 import { Router } from '@angular/router';
-import { language } from '../../services/language.service';
-import { metadata } from '../../services/metadata.service';
-import { fieldGeneric } from './fieldgeneric';
-import { mediafiles } from '../../services/mediafiles.service';
-import { backend } from '../../services/backend.service';
+import { language } from '../../../services/language.service';
+import { metadata } from '../../../services/metadata.service';
+import { fieldGeneric } from '../../../objectfields/components/fieldgeneric';
+import { mediafiles } from '../../../services/mediafiles.service';
+import { backend } from '../../../services/backend.service';
 
 @Component( {
     selector: 'field-media-file-image',
-    templateUrl: './src/objectfields/templates/fieldmediafileimage.html',
+    templateUrl: './src/modules/mediafiles/templates/fieldmediafileimage.html',
     providers: [ mediafiles ],
 })
 export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
@@ -190,6 +190,7 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
      * Get the image from the user.
      */
     private getImage(): void {
+
         this.mediafiles.getMediaFile( 1, '', this.fieldconfig.noImagePicker || false, this.fieldconfig.noMetaData || false, this.fieldconfig.category ).subscribe( (answer) => {
             if ( answer ) {
                 this.value = answer;
