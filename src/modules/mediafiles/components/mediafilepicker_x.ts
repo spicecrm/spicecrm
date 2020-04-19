@@ -73,10 +73,12 @@ export class Mediafilepicker_x implements OnInit {
 
     public ngOnInit(): void {
 
+        /*
         this.mediafiles.loadCategories().subscribe( () => {
             this.categoriesLoaded = true;
             if ( this.filesLoaded ) this.pickerIsLoading = false;
         });
+         */
 
         let paramsFiles = {
             fields: [ 'id', 'name', 'mediacategory_id', 'thumbnail', 'filetype', 'filesize', 'date_entered', 'width', 'height' ],

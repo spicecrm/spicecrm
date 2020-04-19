@@ -2,19 +2,16 @@
     <div class="slds-file slds-file_card slds-has-title">
         <figure>
             <!--a href="javascript:void(0);" class="slds-file__crop"-->
-            <div style="height: 165px; width: 294px;">
-                <a href="javascript:void(0);" class="slds-align--absolute-center">
-                    <span class="slds-assistive-text"><system-label label="LBL_PREVIEW"></system-label></span>
-                    <img *ngIf="!thumbnail" src="./sldassets/images/placeholder-img@16x9.jpg"/>
-                    <img *ngIf="thumbnail" [src]="thumbnail" alt="Description of the image" />
-                </a>
+            <div style="height: 165px; width: 294px;" class="slds-align--absolute-center">
+                <img *ngIf="!thumbnail" src="./sldassets/images/placeholder-img@16x9.jpg"/>
+                <img style="max-height: 100%;max-width: 100%;" *ngIf="thumbnail" [src]="thumbnail" alt="Description of the image" />
             </div>
             <figcaption class="slds-file__title slds-is-relative slds-file__title_card">
                 <div class="slds-grid slds-grid--vertical-align-center slds-size--1-of-1">
                     <div class="slds-p-right--xx-small">
                         <system-file-icon size="x-small" [filename]="model.getField('name')" divClass="" [filemimetype]="model.getField('filetype')" ></system-file-icon>
                     </div>
-                    <div class="slds-media__body slds-grow">
+                    <div class="slds-media__body slds-grow slds-truncate">
                         <object-record-fieldset-horizontal-list [fieldset]="fieldset"></object-record-fieldset-horizontal-list>
                     </div>
                     <object-action-menu *ngIf="!selectbox" buttonsize="small"></object-action-menu>

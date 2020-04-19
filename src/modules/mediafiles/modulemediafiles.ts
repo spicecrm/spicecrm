@@ -16,6 +16,9 @@ import /*embed*/ {MediaFilePicker} from './components/mediafilepicker';
 import /*embed*/ {MediaFileUploader} from './components/mediafileuploader';
 import /*embed*/ {MediaFilesList} from './components/mediafileslist';
 import /*embed*/ {MediaFilesTile} from './components/mediafilestile';
+import /*embed*/ {fieldMediaFilesImage} from './fields/fieldmediafilesimage';
+import /*embed*/ {fieldMediaFile} from './fields/fieldmediafile';
+import /*embed*/ {fieldMediaFileImage} from './fields/fieldmediafileimage';
 
 @NgModule({
     imports: [
@@ -32,7 +35,10 @@ import /*embed*/ {MediaFilesTile} from './components/mediafilestile';
         MediaFilePicker,
         MediaFileUploader,
         MediaFilesList,
-        MediaFilesTile
+        MediaFilesTile,
+        fieldMediaFilesImage,
+        fieldMediaFile,
+        fieldMediaFileImage
     ],
     exports: [
         MediaFileImage,
