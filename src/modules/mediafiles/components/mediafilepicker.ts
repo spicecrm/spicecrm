@@ -22,10 +22,16 @@ import {ObjectModalModuleLookup} from "../../../objectcomponents/components/obje
     templateUrl: './src/modules/mediafiles/templates/mediafilepicker.html',
     providers: [view, modellist, model]
 })
-export class MediaFilePicker extends ObjectModalModuleLookup  {
+export class MediaFilePicker extends ObjectModalModuleLookup {
 
+    /**
+     * set the module fixed to MediaFiles
+     */
     public module = 'MediaFiles';
 
+    /**
+     * event emitter for the response
+     */
     @Output() private answer: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, public model: model, public layout: layout, private elementRef: ElementRef) {
@@ -45,15 +51,27 @@ export class MediaFilePicker extends ObjectModalModuleLookup  {
         };
     }
 
-    private pick( item ): void {
-        this.answer.emit( { id: item } );
+    /**
+     * delibvers the pick event if an image is picked
+     *
+     * @param item
+     */
+    private pick(item): void {
+        this.answer.emit({id: item});
         this.self.destroy();
     }
 
-
+    /**
+     * adds a new model
+     */
     private upload(): void {
-        this.answer.emit( { upload: true } );
-        this.self.destroy();
+        this.model.module = 'MediaFiles';
+        this.model.id = undefined;
+        this.model.initialize();
+        this.model.addModel().subscribe(data => {
+            this.answer.emit({id: this.model.id});
+            this.self.destroy();
+        });
     }
 
 }
