@@ -12,7 +12,7 @@ import {Router} from '@angular/router';
     selector: 'reporter-cockpit-tile',
     templateUrl: './src/modules/reports/templates/reportercockpittile.html',
     host: {
-        class: 'slds-tile slds-media slds-p-vertical--small slds-card__tile slds-p-horizontal--small slds-size--1-of-1 spicecrm-card-size slds-hint-parent'
+        class: 'slds-tile slds-media slds-p-vertical--small slds-card__tile slds-p-horizontal--small slds-size--1-of-1 slds-hint-parent'
     }
 })
 export class ReporterCockpitTile {
