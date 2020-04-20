@@ -37,7 +37,8 @@ export class configurationService {
     public data: any = {
         backendUrl: 'proxy',
         backendextensions: {},
-        systemparameters: {}
+        systemparameters: {},
+        theme: {}
     };
 
     /**
@@ -82,6 +83,9 @@ export class configurationService {
 
             // subscribe to the broadcast to catch the logout
             this.broadcast.message$.subscribe(message => this.handleLogout(message));
+
+            // Update Theme when configuration has been loaded.
+            this.loaded$.subscribe(() => this.updateTheme() );
         }
 
         // reload the sites
@@ -246,7 +250,7 @@ export class configurationService {
      */
     public getCapabilityConfig(capability) {
         try {
-            return (this.data.backendextensions[capability] && this.data.backendextensions[capability].config) ? this.data.backendextensions[capability].config : {}
+            return (this.data.backendextensions[capability] && this.data.backendextensions[capability].config) ? this.data.backendextensions[capability].config : {};
         } catch (e) {
             return {};
         }
@@ -273,4 +277,12 @@ export class configurationService {
     public getData(key) {
         return this.appdata[key] ? this.appdata[key] : false;
     }
+
+    public updateTheme() {
+        if ( this.data.backendextensions.spiceTheme && this.data.backendextensions.spiceTheme.config ) {
+            let theme = this.data.backendextensions.spiceTheme.config;
+            if ( theme.contrastColor ) document.documentElement.style.setProperty( '--contrast-color', theme.contrastColor );
+        }
+    }
+
 }
