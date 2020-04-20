@@ -3,7 +3,7 @@
         <div class="slds-size--1-of-1 slds-medium-size--2-of-3 slds-p-around--medium">
             <!--div class="spiceLoginLogo"-->
             <div class="slds-align--absolute-center slds-p-vertical--medium">
-                <img src="./config/loginimage"/>
+                <global-login-image></global-login-image>
             </div>
             <div class="slds-box--border slds-theme--shade" *ngIf="!loginService.session.authData.sessionId && promptUser">
                 <div class="slds-p-around--medium">
