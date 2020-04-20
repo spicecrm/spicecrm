@@ -10,15 +10,21 @@
             <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': selectedTab == 'footer'}" [title]="language.getLabel('LBL_FOOTER')" (click)="selectedTab='footer'" role="presentation">
                 <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab"><system-label label="LBL_FOOTER"></system-label></a>
             </li>
+            <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': selectedTab == 'preview'}" [title]="language.getLabel('LBL_PREVIEW')" (click)="selectedTab='preview'" role="presentation">
+                <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab"><system-label label="LBL_PREVIEW"></system-label></a>
+            </li>
         </ul>
         <div class="slds-tabs_scoped__content" [ngClass]="{'slds-show': selectedTab == 'body', 'slds-hide': selectedTab != 'body'}" role="tabpanel">
             <object-record-fieldset [fieldset]="bodyfieldset" direction="vertical"></object-record-fieldset>
         </div>
-        <div class="slds-tabs_scoped__content" [ngClass]="{'slds-show': selectedTab == 'body', 'slds-hide': selectedTab != 'header'}" role="tabpanel">
+        <div class="slds-tabs_scoped__content" [ngClass]="{'slds-show': selectedTab == 'header', 'slds-hide': selectedTab != 'header'}" role="tabpanel">
             <object-record-fieldset [fieldset]="headerfieldset" direction="vertical"></object-record-fieldset>
         </div>
-        <div class="slds-tabs_scoped__content" [ngClass]="{'slds-show': selectedTab == 'body', 'slds-hide': selectedTab != 'footer'}" role="tabpanel">
+        <div class="slds-tabs_scoped__content" [ngClass]="{'slds-show': selectedTab == 'footer', 'slds-hide': selectedTab != 'footer'}" role="tabpanel">
             <object-record-fieldset [fieldset]="footerfieldset" direction="vertical"></object-record-fieldset>
+        </div>
+        <div class="slds-tabs_scoped__content" [ngClass]="{'slds-show': selectedTab == 'preview', 'slds-hide': selectedTab != 'preview'}" role="tabpanel">
+            <output-templates-preview></output-templates-preview>
         </div>
     </div>
 </system-collapsable-tab>
