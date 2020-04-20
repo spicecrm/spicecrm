@@ -169,7 +169,7 @@ export class session {
         this.authData.dev = false;
         this.authData.renewPass = false;
         this.authData.companycode_id = '';
-        this.authData.obtainGDPRconsent = false
+        this.authData.obtainGDPRconsent = false;
 
         this.sessionData = {};
 
