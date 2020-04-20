@@ -2,15 +2,15 @@
  * @module ObjectComponents
  */
 import { Component, EventEmitter, ViewContainerRef } from '@angular/core';
-import {model} from '../../services/model.service';
-import {language} from '../../services/language.service';
-import {modal} from "../../services/modal.service";
-import {backend} from "../../services/backend.service";
-import {configurationService} from "../../services/configuration.service";
+import {model} from '../../../services/model.service';
+import {language} from '../../../services/language.service';
+import {modal} from "../../../services/modal.service";
+import {backend} from "../../../services/backend.service";
+import {configurationService} from "../../../services/configuration.service";
 
 @Component({
     selector: 'object-action-output-bean-button',
-    templateUrl: './src/objectcomponents/templates/objectactionoutputbeanbutton.html'
+    templateUrl: './src/modules/outputtemplates/templates/objectactionoutputbeanbutton.html'
 })
 export class ObjectActionOutputBeanButton {
 

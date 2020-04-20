@@ -2,19 +2,17 @@
  * @module ObjectComponents
  */
 import { Component, EventEmitter } from '@angular/core';
-import {model} from '../../services/model.service';
-import {metadata} from '../../services/metadata.service';
-import {language} from '../../services/language.service';
-import {modal} from "../../services/modal.service";
-import {view} from "../../services/view.service";
-import {backend} from "../../services/backend.service";
 import {DomSanitizer} from '@angular/platform-browser';
-import {SystemLoadingModal} from "../../systemcomponents/components/systemloadingmodal";
-import {field} from "../../objectfields/components/field";
+import {model} from '../../../services/model.service';
+import {metadata} from '../../../services/metadata.service';
+import {language} from '../../../services/language.service';
+import {modal} from "../../../services/modal.service";
+import {view} from "../../../services/view.service";
+import {backend} from "../../../services/backend.service";
 
 @Component({
     selector: 'object-action-output-bean-modal',
-    templateUrl: './src/objectcomponents/templates/objectactionoutputbeanmodal.html',
+    templateUrl: './src/modules/outputtemplates/templates/objectactionoutputbeanmodal.html',
     providers: [view],
 })
 export class ObjectActionOutputBeanModal {

@@ -2,20 +2,23 @@
  * @module ObjectFields
  */
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {model} from '../../services/model.service';
-import {view} from '../../services/view.service';
-import {language} from '../../services/language.service';
-import {metadata} from '../../services/metadata.service';
-import {configurationService} from '../../services/configuration.service';
 import {Router} from '@angular/router';
-import {backend} from "../../services/backend.service";
-import {fieldGeneric} from "./fieldgeneric";
+
+import {model} from '../../../services/model.service';
+import {view} from '../../../services/view.service';
+import {language} from '../../../services/language.service';
+import {metadata} from '../../../services/metadata.service';
+import {configurationService} from '../../../services/configuration.service';
+import {backend} from "../../../services/backend.service";
+
+import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
+
 
 @Component({
     selector: 'field-output-templates',
-    templateUrl: './src/objectfields/templates/fieldoutputtemplates.html'
+    templateUrl: './src/modules/outputtemplates/templates/fieldoutputtemplates.html'
 })
-export class FieldEnumOutputTemplates extends fieldGeneric implements OnInit {
+export class fieldOutputTemplates extends fieldGeneric implements OnInit {
 
     /**
      * set to true if the templates are loaded

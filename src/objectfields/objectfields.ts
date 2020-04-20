@@ -85,7 +85,6 @@ import /*embed*/ {fieldServiceCategorySearch} from "./components/fieldcategoryse
 import /*embed*/ {fieldWorklog} from "./components/fieldworklog";
 import /*embed*/ {FieldModelInfoComponent} from "./components/fieldmodelinfo";
 import /*embed*/ {FieldEnumModulesComponent} from "./components/fieldenummodules";
-import /*embed*/ {FieldEnumOutputTemplates} from "./components/fieldenumoutputtemplates";
 import /*embed*/ {fieldGDPR} from "./components/fieldgdpr";
 import /*embed*/ {fieldServiceQueue} from "./components/fieldservicequeue";
 import /*embed*/ {fieldSelectTree,} from "./components/fieldselecttree";
@@ -208,7 +207,6 @@ declare var _: any;
         fieldWorklog,
         FieldModelInfoComponent,
         FieldEnumModulesComponent,
-        FieldEnumOutputTemplates,
         FieldModelInfoComponent,
         fieldGDPR,
         fieldServiceQueue,
@@ -251,7 +249,6 @@ declare var _: any;
         fieldHtml,
         FieldMessagesComponent,
         FieldModuleLookupComponent,
-        FieldEnumOutputTemplates,
         fieldLookup,
         fieldLookupRecent,
         fieldLookupSearch,
