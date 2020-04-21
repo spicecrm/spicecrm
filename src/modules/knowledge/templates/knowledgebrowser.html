@@ -22,7 +22,7 @@
                     <div *ngIf="isLoading && selectedBook" class="slds-m-top--small">
                         <system-spinner></system-spinner>
                     </div>
-                    <div *ngIf="selectedBook && documents.length == 0 && !isLoading" class="slds-align--absolute-center spice-h-full slds-text-heading--medium">
+                    <div *ngIf="selectedBook && documents.length == 0 && !isLoading" class="slds-align--absolute-center slds-height_full slds-text-heading--medium">
                         <span><system-label label="MSG_NO_RECORDS_FOUND"></system-label></span>
                     </div>
                 </div>

@@ -1,0 +1,67 @@
+/* SpiceCRM Scrollbar */
+/* for firefox and*/
+.slds-scrollable,
+.slds-scrollable--x,
+.slds-scrollable--y {
+    scrollbar-width: thin;
+}
+
+/* width normal */
+.slds-scrollable::-webkit-scrollbar,
+.slds-scrollable--x::-webkit-scrollbar,
+.slds-scrollable--y::-webkit-scrollbar,
+.spicecrm-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    /* for firefox and*/
+    scrollbar-width: thin;
+}
+
+/* width thin */
+.spicecrm-scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+/* Track */
+.slds-scrollable::-webkit-scrollbar-track,
+.slds-scrollable--x::-webkit-scrollbar-track,
+.slds-scrollable--y::-webkit-scrollbar-track,
+.spicecrm-scrollbar::-webkit-scrollbar-track,
+.spicecrm-scrollbar-thin::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+.slds-scrollable::-webkit-scrollbar-thumb,
+.slds-scrollable--x::-webkit-scrollbar-thumb,
+.slds-scrollable--y::-webkit-scrollbar-thumb,
+.spicecrm-scrollbar::-webkit-scrollbar-thumb {
+    background: #aaa;
+    border-top: 2px solid #f1f1f1;
+    border-bottom: 2px solid #f1f1f1;
+}
+
+.spicecrm-scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #aaa;
+    border-top: 1px solid #f1f1f1;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+/* Handle on hover */
+.slds-scrollable::-webkit-scrollbar-thumb:hover,
+.slds-scrollable--x::-webkit-scrollbar-thumb:hover,
+.slds-scrollable--y::-webkit-scrollbar-thumb:hover,
+.spicecrm-scrollbar::-webkit-scrollbar-thumb:hover,
+.spicecrm-scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+/* Buttons */
+.slds-scrollable::-webkit-scrollbar-button:single-button,
+.slds-scrollable--x::-webkit-scrollbar-button:single-button,
+.slds-scrollable--y::-webkit-scrollbar-button:single-button,
+.spicecrm-scrollbar::-webkit-scrollbar-button:single-button,
+.spicecrm-scrollbar-thin::-webkit-scrollbar-button:single-button {
+    display: none;
+}
