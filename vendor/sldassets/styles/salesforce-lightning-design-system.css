@@ -14571,7 +14571,7 @@ a.slds-button--inverse:focus{
 }
 .slds-progress-bar__value{
   display:block;
-  background:#5eb4ff;
+  background:var(--color-progressbar_item-completed);
   height:100%;
 }
 .slds-progress-bar__value_success{
@@ -14655,7 +14655,7 @@ a.slds-button--inverse:focus{
 }
 .slds-progress__item.slds-is-completed .slds-progress__marker_icon, .slds-progress__item.slds-is-completed .slds-progress__marker--icon{
   border-color:var(--color-white);
-  color:#5eb4ff;
+  color:var(--color-progressbar_item-completed);
 }
 .slds-progress__item.slds-is-active .slds-progress__marker{
   -webkit-box-shadow:var(--color-white) 0 0 0 4px;
@@ -14729,7 +14729,7 @@ a.slds-button--inverse:focus{
   display:none;
 }
 .slds-progress_vertical .slds-progress__item.slds-is-completed:before, .slds-progress_vertical .slds-progress__item.slds-is-completed:after, .slds-progress_vertical .slds-progress__item.slds-is-active:before, .slds-progress_vertical .slds-progress__item.slds-has-error:before{
-  background-color:#5eb4ff;
+  background-color:var(--color-progressbar_item-completed);
 }
 .slds-progress_vertical .slds-progress__item_content{
   -webkit-box-flex:1;
@@ -14760,7 +14760,7 @@ a.slds-button--inverse:focus{
   border-left:0;
 }
 .slds-progress_vertical .slds-progress__item.slds-is-completed .slds-progress__marker_icon svg{
-  fill:#5eb4ff;
+  fill:var(--color-progressbar_item-completed);
 }
 .slds-progress_vertical .slds-progress__item.slds-is-completed .slds-progress__marker_icon-success svg{
   fill:var(--color-background-success);
