@@ -369,7 +369,7 @@ ul{
 }
 
 a{
-  color:#006dcc;
+  color:var(--brand-text-link);
   text-decoration:none;
   -webkit-transition:color 0.1s linear;
   transition:color 0.1s linear;
@@ -6124,7 +6124,7 @@ a.slds-button--inverse:focus{
 .slds-chat-message__action .slds-chat-icon.slds-icon-utility-redo .slds-icon{
   width:0.75rem;
   height:0.75rem;
-  fill:#006dcc;
+  fill:var(--brand-text-link);
 }
 .slds-chat-event{
   -webkit-box-align:center;
@@ -10051,7 +10051,7 @@ a.slds-button--inverse:focus{
 
 .slds-dropdown_actions a,
 .slds-dropdown--actions a{
-  color:#006dcc;
+  color:var(--brand-text-link);
 }
 .slds-has-submenu{
   position:relative;
@@ -16796,7 +16796,7 @@ a.slds-button--inverse:focus{
 .slds-tabs_scoped .slds-tabs__item .slds-active > a,
 .slds-tabs--scoped .slds-tabs__item .slds-active > a{
   background-color:var(--color-white);
-  color:#006dcc;
+  color:var(--brand-text-link);
   border-color:#dddbda;
 }
 .slds-tabs_scoped .slds-tabs__item .slds-active > a:focus,
@@ -17322,7 +17322,7 @@ a.slds-button--inverse:focus{
           transform:rotate(-90deg);
 }
 .slds-nav-vertical__action-text{
-  color:#006dcc;
+  color:var(--brand-text-link);
 }
 .slds-notify_alert,
 .slds-notify--alert{
@@ -19055,11 +19055,11 @@ a.slds-button--inverse:focus{
           box-shadow:#c23934 0 0 0 2px inset;
 }
 .slds-no-cell-focus thead .slds-has-focus:hover{
-  color:#006dcc;
+  color:var(--brand-text-link);
 }
 .slds-no-cell-focus thead .slds-has-focus:hover .slds-is-sortable__icon{
   display:inline-block;
-  fill:#006dcc;
+  fill:var(--brand-text-link);
 }
 
 .slds-hint-parent .slds-cell-edit .slds-button__icon_edit,
@@ -19374,7 +19374,7 @@ a.slds-button--inverse:focus{
 }
 .slds-table_tree .slds-tree__item a,
 .slds-table--tree .slds-tree__item a{
-  color:#006dcc;
+  color:var(--brand-text-link);
 }
 .slds-table_tree .slds-tree__item a:hover,
 .slds-table--tree .slds-tree__item a:hover{
@@ -19725,7 +19725,7 @@ a.slds-button--inverse:focus{
   margin-right:-1px;
   border-right:0;
   background:var(--color-white);
-  color:#006dcc;
+  color:var(--brand-text-link);
 }
 .slds-vertical-tabs__nav-item.slds-is-active .slds-vertical-tabs__link:hover{
   background:var(--color-white);
@@ -21915,7 +21915,7 @@ a.slds-button--inverse:focus{
   text-decoration:inherit;
 }
 .slds-text-link{
-  color:#006dcc;
+  color:var(--brand-text-link);
   text-decoration:none;
   -webkit-transition:color 0.1s linear;
   transition:color 0.1s linear;
