@@ -7010,7 +7010,7 @@ a.slds-button--inverse:focus {
 }
 .slds-progress-bar__value {
   display: block;
-  background: #5eb4ff;
+  background: var(--color-progressbar_item-completed);
   height: 100%;
 }
 .slds-progress-bar__value_success {
