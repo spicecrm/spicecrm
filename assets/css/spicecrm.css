@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Titillium+Web');
+
 @import "spiceloader.css";
 @import "spicequill.css";
 @import "spicecalendar.css";
@@ -13,6 +14,7 @@
 :root {
     --color-white: white;
     --color-grey-3: #f3f2f2;
+    --color-grey-5: #dddbda;
     --color-grey-9: #706e6b;
     --color-grey-13: #080707;
     --brand-background-primary: #fafaf9;
@@ -239,35 +241,6 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     }
 }
 
-
-
-
-.slds-modal__footer .slds-button-group .slds-button + .slds-button {
-    margin-left: 0px;
-}
-
-/* sticky headers */
-.spice-table_header-fixed thead th {
-    position: sticky;
-    top: 0px;
-    z-index: 1;
-    border-bottom: 1px solid #dddbda;
-}
-
-.spice-table_header-fixed tbody tr:first-child td,
-.spice-table_header-fixed tbody tr:first-child th {
-    border: 0;
-}
-
-/* sticky headers */
-.spice-table_footer-fixed tfoot,
-.spice-table_footer-fixed tfoot td {
-    position: sticky;
-    bottom: 0px;
-    z-index: 1;
-    border-top: 1px solid #dddbda;
-}
-
 .slds-sub-tabs__item.slds-active, .slds-sub-tabs__item.slds-is-open {
     background: rgba(155, 155, 155, .1) !important;
 }
@@ -384,6 +357,7 @@ field-generic-display .slds-button--icon{
     color: var(--color-grey-3);
 }
 
+/* required for replaced colors to manage design*/
 .slds-button{
     color: var(--color-grey-9);
 }
