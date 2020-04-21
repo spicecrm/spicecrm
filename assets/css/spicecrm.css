@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=Titillium+Web');
 
-@import "spiceloader.css";
-@import "spicequill.css";
-@import "spicecalendar.css";
-@import "spicemaps.css";
-@import "spicehtmltext.css";
-@import "spicecdk.css";
+@import "./imports/spiceloader.css";
+@import "./imports/spicequill.css";
+@import "./imports/spicecalendar.css";
+@import "./imports/spicemaps.css";
+@import "./imports/spicehtmltext.css";
+@import "./imports/spicecdk.css";
 
 :root {
     --contrast-color: #CA1B21;
