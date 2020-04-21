@@ -347,7 +347,7 @@ ul {
 }
 
 a {
-  color: #006dcc;
+  color: var(--brand-text-link);
   text-decoration: none;
   -webkit-transition: color 0.1s linear;
   transition: color 0.1s linear;
@@ -2915,11 +2915,11 @@ a.slds-button--inverse:focus {
   box-shadow: #c23934 0 0 0 2px inset;
 }
 .slds-no-cell-focus thead .slds-has-focus:hover {
-  color: #006dcc;
+  color: var(--brand-text-link);
 }
 .slds-no-cell-focus thead .slds-has-focus:hover .slds-is-sortable__icon {
   display: inline-block;
-  fill: #006dcc;
+  fill: var(--brand-text-link);
 }
 
 .slds-hint-parent .slds-cell-edit .slds-button__icon_edit,
@@ -8157,7 +8157,7 @@ a.slds-button--inverse:focus {
   line-height: 1.5rem;
 }
 .slds-table_tree .slds-tree__item a {
-  color: #006dcc;
+  color: var(--brand-text-link);
 }
 .slds-table_tree .slds-tree__item a:hover {
   text-decoration: underline;
@@ -8562,7 +8562,7 @@ a.slds-button--inverse:focus {
   margin-right: -1px;
   border-right: 0;
   background: var(--color-white);
-  color: #006dcc;
+  color: var(--brand-text-link);
 }
 .slds-vertical-tabs__nav-item.slds-is-active .slds-vertical-tabs__link:hover {
   background: var(--color-white);
@@ -10190,7 +10190,7 @@ a.slds-button--inverse:focus {
   text-decoration: inherit;
 }
 .slds-text-link {
-  color: #006dcc;
+  color: var(--brand-text-link);
   text-decoration: none;
   -webkit-transition: color 0.1s linear;
   transition: color 0.1s linear;
