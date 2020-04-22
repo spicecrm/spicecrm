@@ -83,10 +83,10 @@ export class configurationService {
 
             // subscribe to the broadcast to catch the logout
             this.broadcast.message$.subscribe(message => this.handleLogout(message));
-
-            // Update Theme when configuration has been loaded.
-            this.loaded$.subscribe(() => this.updateTheme() );
         }
+
+        // Update Theme when configuration has been loaded.
+        this.loaded$.subscribe(() => this.updateTheme() );
 
         // reload the sites
         http.get('config/sites/')
@@ -257,6 +257,15 @@ export class configurationService {
     }
 
     /**
+     * Is there a configuration for a specific backend extension?
+     *
+     * @param capability
+     */
+    public hasCapabilityConfig(capability): boolean {
+        return this.data.backendextensions[capability] && this.data.backendextensions[capability].config && Object.keys( this.data.backendextensions[capability].config ).length > 0;
+    }
+
+    /**
      * sores data ion teh internal key store
      *
      * @param key
@@ -281,7 +290,7 @@ export class configurationService {
     public updateTheme() {
         if ( this.data.backendextensions.spiceTheme && this.data.backendextensions.spiceTheme.config ) {
             let theme = this.data.backendextensions.spiceTheme.config;
-            if ( theme.contrastColor ) document.documentElement.style.setProperty( '--contrast-color', theme.contrastColor );
+            if ( theme['color-brand-primary'] ) document.documentElement.style.setProperty( '--brand-primary', theme['color-brand-primary'] );
         }
     }
 
