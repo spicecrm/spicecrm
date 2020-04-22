@@ -21,7 +21,7 @@ export class OutputTemplatesEditor {
     /**
      * the currently selected tab
      */
-    private selectedTab: 'body' | 'header' | 'footer' = 'body';
+    private selectedTab: 'body' | 'header' | 'footer' | 'preview' = 'body';
 
     /**
      * the component config as passed in
