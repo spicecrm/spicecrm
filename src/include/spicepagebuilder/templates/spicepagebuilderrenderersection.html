@@ -1,0 +1,12 @@
+<ng-container *ngIf="!showDropZone; else dropZoneContainer">
+    <div *ngFor="let column of section.columns; trackBy: trackByFn" class="slds-grid slds-height_full" [ngStyle]="column.style" [ngClass]="'slds-size--1-of-' + section.columns?.length">
+        <spice-page-builder-renderer-column [column]="column" class="slds-grid slds-size--1-of-1"></spice-page-builder-renderer-column>
+    </div>
+</ng-container>
+<ng-template #dropZoneContainer>
+    <spice-page-builder-renderer-drop-zone (delete$)="delete$.emit()" label="Section" class="slds-size--1-of-1 slds-height_full">
+        <div *ngFor="let column of section.columns; trackBy: trackByFn" class="slds-grid slds-height_full" [ngStyle]="column.style" [ngClass]="'slds-size--1-of-' + section.columns?.length">
+            <spice-page-builder-renderer-column [column]="column" class="slds-grid slds-size--1-of-1"></spice-page-builder-renderer-column>
+        </div>
+    </spice-page-builder-renderer-drop-zone>
+</ng-template>

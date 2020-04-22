@@ -1,0 +1,8 @@
+<ng-container *ngIf="!showDropZone; else dropZoneContainer">
+    <div [innerHTML]="sanitizedContent" class="slds-height_full slds-size--1-of-1"></div>
+</ng-container>
+<ng-template #dropZoneContainer>
+    <spice-page-builder-renderer-drop-zone icon="connected_apps" label="text">
+        <div [innerHTML]="sanitizedContent" class="slds-height_full slds-size--1-of-1"></div>
+    </spice-page-builder-renderer-drop-zone>
+</ng-template>
