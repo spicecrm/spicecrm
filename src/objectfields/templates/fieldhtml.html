@@ -14,7 +14,7 @@
     </div>
 </div>
 <div *ngIf="!isEditMode()" class="slds-scrollable--y" style="max-height: 300px;" [ngClass]="fielddisplayclass">
-    <div *ngIf="!asiframe" class="slds-size--1-of-1 html-text" [innerHTML]="htmlValue"></div>
+    <div *ngIf="!asiframe" class="slds-size--1-of-1 html-text" [innerHTML]="sanitizedValue"></div>
     <iframe *ngIf="asiframe" [src]="sanitizedValue" style="resize: vertical;" width="100%" frameborder="0" height="100%" seamless="true" sandbox></iframe>
 </div>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
