@@ -1,0 +1,28 @@
+<table class="slds-table slds-table--fixed-layout slds-table--header-fixed slds-max-medium-table_stacked-horizontal slds-table--bordered">
+    <thead>
+        <tr class="slds-text-title--caps">
+            <th  scope="col">
+                <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                    <span class="slds-truncate"><system-label label="LBL_SAP_FIELD"></system-label></span>
+                </a>
+            </th>
+            <th  scope="col">
+                <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                    <span class="slds-truncate"><system-label label="LBL_MAPPING_FIELD"></system-label></span>
+                </a>
+            </th>
+            <th  scope="col">
+                <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                    <span class="slds-truncate"><system-label label="LBL_IDENTIFIER"></system-label></span>
+                </a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let segmentField of segmentFields">
+            <td>{{segmentField.sap_field}}</td>
+            <td>{{segmentField.mapping_field}}</td>
+            <td><system-checkbox disabled [ngModel]="segmentField.identifier == 1"></system-checkbox></td>
+        </tr>
+    </tbody>
+</table>

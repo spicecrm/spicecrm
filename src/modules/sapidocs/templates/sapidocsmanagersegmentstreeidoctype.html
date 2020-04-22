@@ -1,0 +1,11 @@
+<div class="slds-tree__item">
+    <button [disabled]="children.length == 0" class="slds-button slds-button_icon slds-m-right_x-small" (click)="toggle()">
+        <system-button-icon icon="chevronright"></system-button-icon>
+    </button>
+    <span class="slds-has-flexi-truncate">
+        <span class="slds-tree__item-label slds-truncate">{{idoctype.idoctyp}}/{{idoctype.mestyp}}</span>
+    </span>
+</div>
+<ul *ngIf="children.length > 0" role="group">
+    <li *ngFor="let child of children" sapidocs-manager-segments-tree-node [segmentrelation]="child" role="treeitem" tabindex="0"></li>
+</ul>

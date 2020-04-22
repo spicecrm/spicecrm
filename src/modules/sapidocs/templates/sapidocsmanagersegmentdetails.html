@@ -1,0 +1,15 @@
+<h4 class="slds-tree__group-header slds-p-around--x-small slds-border--bottom"><system-label label="LBL_SEGMENT_DETAILS"></system-label></h4>
+<fieldset>
+    <div class="slds-grid slds-grid_vertical-align-center slds-m-top--x-small">
+        <div class="slds-form-element slds-size--1-of-2">
+            <label class="slds-form-element__label"><system-label label="LBL_SAP_IDOC_SPLIT_FIELD"></system-label></label>
+            <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_BOOST')"></system-icon-help-text>
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" [(ngModel)]="segment.split_field"/>
+            </div>
+        </div>
+    </div>
+</fieldset>
+<div class="slds-grid slds-grid--vertical" system-to-bottom-noscroll>
+    <sapidocs-manager-segment-details-fields style="height: 50%;"></sapidocs-manager-segment-details-fields>
+</div>
