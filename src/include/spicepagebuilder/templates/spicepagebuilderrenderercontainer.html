@@ -1,0 +1,6 @@
+<div *ngFor="let section of container.sections; trackBy: trackByFn" cdkDrag [cdkDragData]="section" [ngStyle]="section.style" class="slds-grid slds-grow slds-drag--preview">
+    <spice-page-builder-renderer-section (delete$)="onSectionDelete(section)" [section]="section" class="slds-grid slds-size--1-of-1"></spice-page-builder-renderer-section>
+</div>
+<div *ngIf="container.sections?.length == 0" class="slds-align--absolute-center slds-height_full slds-size--1-of-1 slds-text-title--caps">
+    Drop Section Here
+</div>
