@@ -2,10 +2,9 @@
  * @module GlobalComponents
  */
 import {Router} from "@angular/router";
-import {Component, ViewChild, ViewContainerRef} from "@angular/core";
+import {Component, EventEmitter, Output, ViewChild, ViewContainerRef} from "@angular/core";
 import {loginService} from "../../services/login.service";
 import {session} from "../../services/session.service";
-import {popup} from "../../services/popup.service";
 import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
 import {backend} from "../../services/backend.service";
@@ -23,17 +22,20 @@ declare var _: any;
 })
 export class GlobaUserPanel {
 
-    @ViewChild("imgupload", {read: ViewContainerRef, static: true}) public imgupload: ViewContainerRef;
     private timezones: object;
     private timezoneKeys: string[];
     private isEditingTz = false;
     private compId: string = _.uniqueId();
 
+    /**
+     * emits that the popup shoudl be closed
+     */
+    @Output() private closepopup: EventEmitter<boolean> = new EventEmitter<boolean>();
+
     constructor(
         private loginService: loginService,
         private session: session,
         private router: Router,
-        private popup: popup,
         private language: language,
         private metadata: metadata,
         private backend: backend,
@@ -71,10 +73,6 @@ export class GlobaUserPanel {
         });
     }
 
-    private getAvialableLanguages() {
-        return this.language.getAvialableLanguages(true);
-    }
-
     get displayName() {
         return this.session.authData.display_name ? this.session.authData.display_name : this.session.authData.userName;
     }
@@ -83,19 +81,9 @@ export class GlobaUserPanel {
         return this.session.authData.userName;
     }
 
-    get currentlanguage() {
-        return this.language.currentlanguage;
-    }
-
-    set currentlanguage(value) {
-        this.popup.close();
-        this.language.currentlanguage = value;
-        this.language.loadLanguage();
-    }
-
     private goDetails() {
-        this.popup.close();
         this.router.navigate(["/module/Users/" + this.session.authData.userId]);
+        this.close();
     }
 
     private changePassword() {
@@ -106,20 +94,30 @@ export class GlobaUserPanel {
         return this.session.authData.userimage;
     }
 
-    private set currentTz( value ) {
-        if ( this.userprefs.unchangedPreferences.global && this.userprefs.unchangedPreferences.global.timezone === value ) return;
-        this.userprefs.setPreference('timezone', value, true ).subscribe( ( data: any ) => {
-            this.toastservice.sendToast('Timezone set successfully to "'+data.timezone+'".', 'success' );
+    private set currentTz(value) {
+        if (this.userprefs.unchangedPreferences.global && this.userprefs.unchangedPreferences.global.timezone === value) return;
+        this.userprefs.setPreference('timezone', value, true).subscribe((data: any) => {
+            this.toastservice.sendToast('Timezone set successfully to "' + data.timezone + '".', 'success');
         }, error => {
-            this.toastservice.sendToast('Error setting timezone.', 'error' );
+            this.toastservice.sendToast('Error setting timezone.', 'error');
         });
-        this.session.setTimezone( value ); // Let the UI together with all the models and components know about the new configured timezone.
-        this.popup.close();
+        this.session.setTimezone(value); // Let the UI together with all the models and components know about the new configured timezone.
+        this.close();
     }
 
     private get currentTz(): string {
-        if ( this.userprefs.unchangedPreferences && this.userprefs.unchangedPreferences.global ) return this.userprefs.unchangedPreferences.global.timezone;
-        else return '';
+        if (this.userprefs.unchangedPreferences && this.userprefs.unchangedPreferences.global) {
+            return this.userprefs.unchangedPreferences.global.timezone;
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * closes the popup
+     */
+    private close() {
+        this.closepopup.emit(true);
     }
 
 }

@@ -15,14 +15,30 @@ import {HttpClient} from "@angular/common/http";
  */
 declare var _: any;
 
+/**
+ * holds aplication configuration
+ */
 @Injectable()
 export class configurationService {
+
+    /**
+     * set to true once the service loaded itself
+     */
     public initialized: boolean = false;
+
+    /**
+     * holds the sites from the frontend config
+     */
     public sites: any[] = [];
+
+    /**
+     * holds general system data retrieved from sysinfo call
+     */
     public data: any = {
         backendUrl: 'proxy',
         backendextensions: {},
-        systemparameters: {}
+        systemparameters: {},
+        theme: {}
     };
 
     /**
@@ -30,7 +46,15 @@ export class configurationService {
      */
     private appdata: any = {};
 
+    /**
+     * emits when the systemparamaters have been laoded
+     */
     public loaded$: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    /**
+     * emits when a data with a give key is changed
+     */
+    public datachanged$: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(private http: HttpClient,
                 private cookie: cookie,
@@ -59,6 +83,9 @@ export class configurationService {
             // subscribe to the broadcast to catch the logout
             this.broadcast.message$.subscribe(message => this.handleLogout(message));
         }
+
+        // Update Theme when configuration has been loaded.
+        this.loaded$.subscribe(() => this.updateTheme() );
 
         // reload the sites
         http.get('config/sites/')
@@ -172,6 +199,9 @@ export class configurationService {
         return this.data.password;
     }
 
+    /**
+     * calls sysinfo on the backend and stores the data
+     */
     public getSysinfo() {
         let sysinfo = this.http.get(this.getBackendUrl() + '/sysinfo');
         sysinfo.subscribe(
@@ -189,6 +219,11 @@ export class configurationService {
         return sysinfo;
     }
 
+    /**
+     * returns a specific systemparameter
+     *
+     * @param parameter
+     */
     public getSystemParamater(parameter) {
         try {
             return this.data.systemparameters[parameter];
@@ -197,23 +232,64 @@ export class configurationService {
         }
     }
 
+    /**
+     * returns if the backend has a specific capability
+     *
+     * @param capability
+     */
     public checkCapability(capability) {
         return this.data.backendextensions && this.data.backendextensions.hasOwnProperty(capability);
     }
 
+    /**
+     * returns the configuration for a specific backend extension
+     *
+     * @param capability
+     */
     public getCapabilityConfig(capability) {
         try {
-            return (this.data.backendextensions[capability] && this.data.backendextensions[capability].config) ? this.data.backendextensions[capability].config : {}
+            return (this.data.backendextensions[capability] && this.data.backendextensions[capability].config) ? this.data.backendextensions[capability].config : {};
         } catch (e) {
             return {};
         }
     }
 
-    public setData(key, data) {
-        this.appdata[key] = data;
+    /**
+     * Is there a configuration for a specific backend extension?
+     *
+     * @param capability
+     */
+    public hasCapabilityConfig(capability): boolean {
+        return this.data.backendextensions[capability] && this.data.backendextensions[capability].config && Object.keys( this.data.backendextensions[capability].config ).length > 0;
     }
 
+    /**
+     * sores data ion teh internal key store
+     *
+     * @param key
+     * @param data
+     */
+    public setData(key, data) {
+        this.appdata[key] = data;
+
+        // emit the key
+        this.datachanged$.emit(key);
+    }
+
+    /**
+     * gets the data from the key store
+     *
+     * @param key
+     */
     public getData(key) {
         return this.appdata[key] ? this.appdata[key] : false;
     }
+
+    public updateTheme() {
+        if ( this.data.backendextensions.spiceTheme && this.data.backendextensions.spiceTheme.config ) {
+            let theme = this.data.backendextensions.spiceTheme.config;
+            if ( theme['color-brand-primary'] ) document.documentElement.style.setProperty( '--brand-primary', theme['color-brand-primary'] );
+        }
+    }
+
 }

@@ -1,6 +1,6 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
-    <div modelPopOver module="CompanyCodes" [id]="value">{{companyName}}</div>
+    <div system-model-popover module="CompanyCodes" [id]="value">{{companyName}}</div>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-p-vertical--xx-small" [ngClass]="getFieldClass()">
     <system-input-companycodes [(ngModel)]="value"></system-input-companycodes>

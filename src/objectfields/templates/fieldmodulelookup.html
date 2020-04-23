@@ -2,7 +2,7 @@
     <div *ngIf="!isEditMode()" [ngClass]="fielddisplayclass">
         <system-stencil *ngIf="model.isLoading; else displaycontent"></system-stencil>
         <ng-template #displaycontent>
-            <span><a href="javascript:void(0);" modelPopOver [module]="module" [id]="id" (click)="goToDetail()">{{value}}</a></span>
+            <span><a href="javascript:void(0);" system-model-popover [module]="module" [id]="id" (click)="goToDetail()">{{value}}</a></span>
             <button *ngIf="isEditable()" style="float: right" class="slds-button slds-button--icon" (click)="setEditMode()">
                 <system-button-icon [icon]="'edit'"></system-button-icon>
             </button>

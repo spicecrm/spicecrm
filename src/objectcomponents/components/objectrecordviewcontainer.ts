@@ -26,7 +26,6 @@ export class ObjectRecordViewContainer implements OnDestroy, AfterViewInit {
     private componentset: string = '';
     private componentRefs: any[] = [];
 
-    private routeSubscribe: any = {};
     private componentSubscriptions: Subscription = new Subscription();
 
     constructor(private navigation: navigation,

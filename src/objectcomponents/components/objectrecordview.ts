@@ -51,7 +51,6 @@ export class ObjectRecordView implements OnInit, OnDestroy {
         this.model.id = this.navigationtab.activeRoute.params.id;
 
 
-
         this.model.getData(true, 'detailview', true, true).subscribe(data => {
             // this.navigation.setActiveModule(this.moduleName, this.model.id, data.summary_text);
             this.navigationtab.setTabInfo({displayname: data.summary_text, displaymodule: this.model.module});
@@ -83,6 +82,12 @@ export class ObjectRecordView implements OnInit, OnDestroy {
             case 'model.save':
                 if (this.model.module === message.messagedata.module && this.model.id === message.messagedata.id) {
                     this.model.data = message.messagedata.data;
+
+                    // update the tab info
+                    this.navigationtab.setTabInfo({
+                        displayname: message.messagedata.data.summary_text,
+                        displaymodule: this.model.module
+                    });
                 }
                 break;
         }

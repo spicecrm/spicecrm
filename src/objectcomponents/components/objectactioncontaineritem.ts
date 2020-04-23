@@ -30,14 +30,22 @@ export class ObjectActionContainerItem implements AfterViewInit {
      * an Input parameter with the action item from the actionset items defined in the metadata
      */
     @Input() public actionitem: any;
+
+    /**
+     * passes on that the item shoudl diosplay as icon if the button supports that
+     */
+    @Input() public displayasicon: boolean = false;
+
     /**
      * an emitter that emits if the action was executed. This fires up through the acitonset item container as well
      */
     @Output() public actionemitter: EventEmitter<any> = new EventEmitter<any>();
+
     /**
      * a viewcontainer ref to the container itself so the action set item can render the component from the config in this element
      */
     @ViewChild("actioncontainer", {read: ViewContainerRef, static: true}) private actioncontainer: ViewContainerRef;
+
     /**
      * a reference to the individual component that was rendered in the conatinerrf as part of the actionset item config
      */
@@ -116,6 +124,7 @@ export class ObjectActionContainerItem implements AfterViewInit {
         this.metadata.addComponent(this.actionitem.action ? this.standardActions[this.actionitem.action] : this.actionitem.component, this.actioncontainer, this.injector).subscribe(componentref => {
             componentref.instance.parent = this.model;
             componentref.instance.actionconfig = this.actionitem.actionconfig;
+            componentref.instance.displayasicon = this.displayasicon;
 
             // emit the componentRef action emitter event
             if (componentref.instance.actionemitter) {

@@ -39,21 +39,21 @@ export class ObjectListViewHeaderListSelector {
         for (let item of items) {
             this.componentconfig.lists.push({
                 component: item.component,
-                icon: item.componentconfig.icon,
+                icon: item.componentconfig.icon ? item.componentconfig.icon : 'list',
                 label: item.componentconfig.name
             });
         }
 
         // set the first as default list if not already one is set on the modellist
-        //if (!this.modellist.listcomponent) {
-            let defaultlist = this.userpreferences.getPreference('defaultlisttype', this.modellist.module);
-            if (!defaultlist) {
-                defaultlist = this.componentconfig.lists[0].component;
-            }
+        // if (!this.modellist.listcomponent) {
+        let defaultlist = this.userpreferences.getPreference('defaultlisttype', this.modellist.module);
+        if (!defaultlist) {
+            defaultlist = this.componentconfig.lists[0].component;
+        }
 
-            // set the list component
-            this.modellist.listcomponent = defaultlist;
-        //}
+        // set the list component
+        this.modellist.listcomponent = defaultlist;
+        // }
 
     }
 

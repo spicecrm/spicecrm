@@ -1,4 +1,4 @@
-<div spiceDropFileArea (filesDrop)="handleDroppedFiles($event)">
+<div (system-drop-file)="handleDroppedFiles($event)">
     <!-- for the upload when a file is dropped-->
     <div *ngIf="uploadData.uploading" class="slds-m-vertical--medium slds-media">
         <div style="width: 30px; height: 30px;" class="slds-m-right--x-small slds-align--absolute-center">

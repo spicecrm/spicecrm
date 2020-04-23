@@ -1,7 +1,7 @@
 <td class="slds-hide--medium">
     <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small" >
         <div class="slds-text-align--left slds-truncate slds-grow" (click)="navigateDetail()">{{model.data.summary_text}}</div>
-        <system-utility-icon [icon]="expandicon" size="xx-small" (click)="toggleexpanded()"></system-utility-icon>
+        <system-utility-icon [icon]="expandicon" size="xx-small" (click)="toggleexpanded($event)"></system-utility-icon>
     </div>
 </td>
 <ng-container *ngIf="isexpanded">

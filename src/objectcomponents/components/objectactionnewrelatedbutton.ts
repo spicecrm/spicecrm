@@ -16,6 +16,11 @@ export class ObjectActionNewrelatedButton implements OnInit {
 
     public disabled: boolean = true;
 
+    /**
+     * if set to true didpslay teh button as icon
+     */
+    public displayasicon: boolean = false;
+
     constructor(@SkipSelf() private parent: model, private language: language, private metadata: metadata, private model: model, private relatedmodels: relatedmodels) {
 
     }

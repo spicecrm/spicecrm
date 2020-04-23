@@ -9,7 +9,7 @@ import {
     ViewChildren,
     QueryList,
     OnInit,
-    OnChanges, AfterViewInit, NgZone
+    OnChanges, AfterViewInit, NgZone, ChangeDetectorRef
 } from "@angular/core";
 import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
@@ -29,7 +29,15 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
      */
     @ViewChildren(ObjectActionContainerItem) private actionitemlist: QueryList<ObjectActionContainerItem>;
 
+    /**
+     * ToDo: ???
+     */
     @Input() private containerclass: string = 'slds-button-group';
+
+    /**
+     * set to true to display the primary buttons as icons if the item supports this
+     */
+    @Input() private displayasicon: boolean = false;
 
     /**
      * the id of the actionset to be rendered
@@ -61,7 +69,7 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
      */
     private stableSub: any;
 
-    constructor(public language: language, public metadata: metadata, public model: model, public ngZone: NgZone) {
+    constructor(public language: language, public metadata: metadata, public model: model, public ngZone: NgZone, public cdRef: ChangeDetectorRef) {
     }
 
     public ngOnChanges() {
@@ -101,6 +109,7 @@ export class ObjectActionContainer implements OnChanges, AfterViewInit {
         this.stableSub = this.ngZone.onStable.subscribe(stable => {
             this.stable = true;
             this.stableSub.unsubscribe();
+            this.cdRef.detectChanges();
         });
     }
 

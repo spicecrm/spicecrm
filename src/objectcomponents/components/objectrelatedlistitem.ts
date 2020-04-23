@@ -129,7 +129,8 @@ export class ObjectRelatedListItem implements OnInit {
         }
     }
 
-    private toggleexpanded() {
+    private toggleexpanded(e: MouseEvent) {
+        e.stopPropagation();
         this.expanded = !this.expanded;
     }
 
