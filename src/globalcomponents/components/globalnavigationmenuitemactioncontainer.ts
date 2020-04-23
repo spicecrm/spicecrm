@@ -65,18 +65,27 @@ export class GlobalNavigationMenuItemActionContainer implements AfterViewInit {
     constructor(private language: language, private metadata: metadata, private model: model, private ngZone: NgZone, private cdr: ChangeDetectorRef) {
     }
 
+    /**
+     * returns the id of the action item
+     */
     get id() {
         return this.actionitem.id;
     }
 
+    /**
+     * getter for the disabled state of the embedded component
+     */
     get disabled() {
-        if (this.stable && this.componentref) {
+        if (this.componentref) {
             return this.componentref.instance.disabled ? true : false;
         } else {
             return true;
         }
     }
 
+    /**
+     * getter for the hidden state of the embedded component
+     */
     get hidden() {
         if (this.stable && this.componentref) {
             return this.componentref.instance.hidden ? true : false;
@@ -100,14 +109,6 @@ export class GlobalNavigationMenuItemActionContainer implements AfterViewInit {
             // use ChangeDetectorRef.detectChanges to force the app to detect the changes
             // this prevents angular change detection error "ExpressionChangedAfterItHasBeenCheckedError"
             this.cdr.detectChanges();
-        });
-
-
-        // ugly workaround to detect once the first stable
-        // change detection run is done and then start returning the poroper disabled valued
-        this.stableSub = this.ngZone.onStable.subscribe(stable => {
-            this.stable = true;
-            this.stableSub.unsubscribe();
         });
     }
 
