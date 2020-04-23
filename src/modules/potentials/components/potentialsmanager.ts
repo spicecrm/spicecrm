@@ -153,7 +153,7 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
             return false;
         }
 
-        return this.relatedmodels.count > 0 || this.isloading;
+        return this.relatedmodels.count > 0 || this.cc_revenues.length > 0 || this.isloading;
     }
 
     /**

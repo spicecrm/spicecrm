@@ -13,6 +13,7 @@ import {
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {InputRadioOptionI} from "../interfaces/systemcomponents.interfaces";
 
+/** @ignore */
 declare var _;
 
 /**

@@ -1,4 +1,4 @@
-/*! Lightning Design System 2.11.6 */
+/*! Lightning Design System 2.11.7 */
 @charset "UTF-8";
 @font-face{
   font-family:"Salesforce Sans";
@@ -317,11 +317,6 @@ html{
 body{
   font-size:0.8125rem;
   background:transparent;
-}
-@media (pointer: coarse) and (hover: none){
-  body{
-    font-size:1rem;
-  }
 }
 
 h1,
@@ -10679,6 +10674,9 @@ a.slds-button--inverse:focus{
 .slds-picklist__options.slds-is-disabled .slds-listbox__option:focus{
   background-color:transparent;
 }
+.slds-disabled-text{
+  color:#dddbda;
+}
 .slds-datepicker{
   padding:0;
   font-size:0.75rem;
@@ -10745,8 +10743,8 @@ a.slds-button--inverse:focus{
   -webkit-box-shadow:none;
           box-shadow:none;
 }
-.slds-disabled-text{
-  color:#dddbda;
+.slds-day_adjacent-month{
+  color:#706e6b;
 }
 
 .slds-datepicker{

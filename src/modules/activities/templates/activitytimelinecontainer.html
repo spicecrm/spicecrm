@@ -2,7 +2,7 @@
     <activity-timeline-aggregates [module]="module" labellength="short"></activity-timeline-aggregates>
 </div>
 <ul *ngIf="hasActivities; else nocontent" [ngClass]="{'slds-hide': loading}" class="slds-timeline slds-p-vertical--small">
-    <li *ngFor="let activity of activities; trackBy:trackByFn">
+    <li *ngFor="let activity of activities">
         <activitytimeline-item-container [activity]="activity" [module]="module"></activitytimeline-item-container>
     </li>
 </ul>

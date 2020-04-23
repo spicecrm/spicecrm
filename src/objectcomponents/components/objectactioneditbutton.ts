@@ -16,6 +16,11 @@ import {Subscription} from "rxjs";
 })
 export class ObjectActionEditButton {
 
+    /**
+     * if set to true didpslay teh button as icon
+     */
+    public displayasicon: boolean = false;
+
     constructor(
         private language: language,
         private metadata: metadata,

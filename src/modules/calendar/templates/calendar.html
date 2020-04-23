@@ -1,4 +1,4 @@
-<div #calendarcontainer [ngClass]="mainContainerClass" [class.slds-text-body--small]="isMobileView" [attr.role]="!asPicker ? 'none' : 'dialog'" [tobottomnoscroll]="!asPicker" style="height: 100%">
+<div #calendarcontainer [ngClass]="mainContainerClass" [class.slds-text-body--small]="isMobileView" [attr.role]="!asPicker ? 'none' : 'dialog'" [system-to-bottom-noscroll]="!asPicker" style="height: 100%">
     <div [class.slds-modal__container]="asPicker" style="height: inherit">
         <div class="slds-grid slds-grid--vertical" style="height: inherit">
             <calendar-header (datePicked)="setDateChanged($event)" style="display: block"></calendar-header>
@@ -7,7 +7,7 @@
                     <system-input-date-picker [setDate]="calendarDate" [dual]="pickerDualMode" [showTodayButton]="false" [weekStartDay]="weekStartDay" (datePicked)="setDateChanged($event)"></system-input-date-picker>
                     <calendar_other_calendars_monitor (googleIsVisible$)="handleGoogleIsVisible($event)" [othercalendars]="otherCalendars"></calendar_other_calendars_monitor>
                 </div>
-                <div [ngStyle]="sheetStyle" [ngSwitch]="sheetType" [overlayLoadingSpinner]="calendar.isLoading">
+                <div [ngStyle]="sheetStyle" [ngSwitch]="sheetType" [system-overlay-loading-spinner]="calendar.isLoading">
                     <calendar-sheet-day
                             *ngSwitchCase="'Day'"
                             [googleisvisible]="googleIsVisible"

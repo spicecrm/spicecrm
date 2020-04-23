@@ -1,4 +1,4 @@
-<div class="slds-grid slds-theme--default slds-grow" tobottom>
+<div class="slds-grid slds-theme--default slds-grow" system-to-bottom>
     <div [@collapseContainerAnimation]="!isCollapsed || isHovered ? 'open' : 'closed'" (@collapseContainerAnimation.start)="onAnimationStart()" (@collapseContainerAnimation.done)="onAnimationDone()" (mouseleave)="toggleHover(false)" class="slds-split-view_container" style="height: inherit">
         <div class="slds-split-view__toggle-button slds-grid slds-grid--vertical" style="border-top: 0">
             <button (click)="toggleCollapseView()" style="min-height: 2.5rem" class="slds-button slds-button_icon slds-button_icon" aria-controls="salesplanningtool-split-view" aria-expanded="true" [title]="language.getLabel('LBL_COLLAPSE')">

@@ -34,21 +34,12 @@ declare var _;
 export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
 
     public subscriptions: Subscription = new Subscription();
-    public activeDashboardId: string = '';
     public dashboardContainerComponentRef: ComponentRef<any>;
     /**
      * list of dashboards related to a dashboardset
      */
     public dashboardsList: any[] = [];
-    /**
-     * list of overflowed dashboards
-     */
-    public moreDashboardsList: any[] = [];
     public isLoading: boolean = false;
-    /**
-     * view reference of more tab to render overflowed items inside
-     */
-    @ViewChild('moreTab', {read: ViewContainerRef, static: false}) private moreTab: ViewContainerRef;
     /**
      * view reference of main tabs used for the overflow handling
      */
@@ -58,12 +49,13 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
      */
     @ViewChildren('moreTabItems', {read: ViewContainerRef}) protected moreTabItems: QueryList<any>;
     /**
+     * view reference of more tab to render overflowed items inside
+     */
+    @ViewChild('moreTab', {read: ViewContainerRef, static: false}) private moreTab: ViewContainerRef;
+    /**
      * view reference to render the active dashboard inside
      */
     @ViewChild('activeDashboardContainer', {read: ViewContainerRef}) private activeDashboardContainer: ViewContainerRef;
-
-    private resizeListener: any;
-
 
     constructor(
         private broadcast: broadcast,
@@ -79,13 +71,30 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
 
     }
 
+    private _activeDashboardId: string = '';
+
+    /**
+     * @return active dashboard id
+     */
+    get activeDashboardId(): string {
+        return this._activeDashboardId;
+    }
+
+    /**
+     * set active dashboard id
+     * @param value
+     */
+    set activeDashboardId(value: string) {
+        this._activeDashboardId = value;
+        this.renderView();
+    }
+
     /**
      * @ignore
      */
     public ngOnDestroy() {
         this.subscriptions.unsubscribe();
         this.resetView();
-        if (this.resizeListener) this.resizeListener();
     }
 
     /**
@@ -113,19 +122,19 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
         this.loadDashboardSetDashboards().subscribe(res => {
             this.isLoading = false;
             if (res) {
-                this.dashboardsList = _.toArray(res);
-                if (this.dashboardsList.length > 0) this.setActiveDashboard(this.dashboardsList[0].id);
-                this.handleOverflow();
+                this.dashboardsList = _.toArray(res).map(item => ({label: item.name, value: item.id}));
+                if (this.dashboardsList.length > 0) {
+                    this.activeDashboardId = this.dashboardsList[0].value;
+                }
                 this.cdr.detectChanges();
             }
         });
-        this.resizeListener = this.renderer.listen('window', 'resize', () => this.handleOverflow());
     }
 
     /**
-    * Handel role changes and set the role dashboard
-    * @param message: broadcastMessage
-    */
+     * Handel role changes and set the role dashboard
+     * @param message: broadcastMessage
+     */
     private handleBroadcastSubscription(message) {
         switch (message.messagetype) {
             case 'applauncher.setrole':
@@ -135,10 +144,10 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
     }
 
     /**
-    * load dashboard config from user preferences
-    * set the active dashboard id
-    * pass the active dashboard id to the dashboard container reference
-    */
+     * load dashboard config from user preferences
+     * set the active dashboard id
+     * pass the active dashboard id to the dashboard container reference
+     */
     private loadDashboardConfig() {
         let homeDashboard = this.userpreferences.toUse.home_dashboard || undefined;
         let activeRole = this.metadata.getActiveRole();
@@ -151,11 +160,12 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
     }
 
     /**
-    * render the DashboardContainer in the active dashboard container and pass the necessary params to it
-    */
+     * render the DashboardContainer in the active dashboard container and pass the necessary params to it
+     */
     private renderView() {
 
         this.resetView();
+        if (!this.activeDashboardContainer) return;
         this.metadata.addComponent('DashboardContainer', this.activeDashboardContainer).subscribe(component => {
             component.instance.dashboardid = this.activeDashboardId;
             component.instance.context = 'Home';
@@ -165,8 +175,8 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
     }
 
     /**
-    * destroy the dashboardContainerComponentRef
-    */
+     * destroy the dashboardContainerComponentRef
+     */
     private resetView() {
         if (this.dashboardContainerComponentRef) {
             this.dashboardContainerComponentRef.destroy();
@@ -177,7 +187,7 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
     /**
      * define the observable of dashboards list related to the dashboardset from backend
      * @return Observable<dashboards[]>
-    */
+     */
     private loadDashboardSetDashboards() {
         let dashboardSetId = this.userpreferences.toUse.home_dashboardset;
         let config = this.metadata.getComponentConfig('HomeDashboardSetContainer', 'Home');
@@ -188,65 +198,5 @@ export class HomeDashboardSetContainer implements AfterViewInit, OnDestroy {
         };
 
         return this.backend.getRequest(`module/DashboardSets/${dashboardSetId}/related/dashboards`, params);
-    }
-
-    /**
-     * set the active dashboard id and rerender the view
-    */
-    private setActiveDashboard(dashboardId: string) {
-        this.activeDashboardId = dashboardId;
-        this.renderView();
-    }
-
-    /**
-    * Handel tabs list overflow items and push the more items or destroy the overflow dropdown when not needed
-    */
-    private handleOverflow() {
-        this.moreDashboardsList = [];
-        // make sure we set all to hidden
-        this.maintabs.forEach(thisitem => {
-            thisitem.element.nativeElement.classList.remove('slds-hide');
-            thisitem.element.nativeElement.classList.add('slds-hidden');
-        });
-        this.moreTab.element.nativeElement.classList.add('slds-hidden');
-        this.moreTab.element.nativeElement.classList.remove('slds-hide');
-
-        // get the total width and the more tab with
-        let totalwidth = this.elementRef.nativeElement.getBoundingClientRect().width;
-        let morewidth = this.moreTab.element.nativeElement.getBoundingClientRect().width;
-        let showMore = false;
-
-        let usedWidth = 0;
-        this.maintabs.forEach((thisitem, itemindex) => {
-            let itemwidth = thisitem.element.nativeElement.getBoundingClientRect().width;
-            usedWidth += itemwidth;
-            if (usedWidth > totalwidth - morewidth) {
-                // special handling for last element
-                if (showMore || itemindex + 1 < this.maintabs.length || itemwidth > morewidth) {
-                    thisitem.element.nativeElement.classList.add('slds-hide');
-                    this.moreDashboardsList.push(thisitem.element.nativeElement.attributes.getNamedItem('data-dashboard').value);
-                    showMore = true;
-                }
-            }
-            thisitem.element.nativeElement.classList.remove('slds-hidden');
-        });
-
-        // handle the more element hidden attribute
-        if (showMore) {
-            this.moreTab.element.nativeElement.classList.remove('slds-hidden');
-
-            this.moreTabItems.forEach(moreitem => {
-                if (this.moreDashboardsList.indexOf(moreitem.element.nativeElement.attributes.getNamedItem('data-dashboard').value) >= 0) {
-                    moreitem.element.nativeElement.classList.remove('slds-hide');
-                } else {
-                    moreitem.element.nativeElement.classList.add('slds-hide');
-                }
-            });
-
-        } else {
-            this.moreTab.element.nativeElement.classList.remove('slds-hidden');
-            this.moreTab.element.nativeElement.classList.add('slds-hide');
-        }
-
     }
 }

@@ -94,6 +94,8 @@ import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
 import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobtainimportantpreferences';
 import /*embed*/ {GlobalObtainGDPRConsent} from './components/globalobtaingdprconsent';
 import /*embed*/ {GlobalObtainGDPRConsentContainer} from './components/globalobtaingdprconsentcontainer';
+import /*embed*/ {GlobalHeaderImage} from './components/globalheaderimage';
+import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
 
 
 /**
@@ -179,7 +181,9 @@ import /*embed*/ {GlobalObtainGDPRConsentContainer} from './components/globalobt
         GlobalNavigationTabbedMoreTab,
         GlobalNavigationTabbedSubtabs,
         GlobalNavigationTabbedSubtabItem,
-        GlobalNavigationTabbedSubTabMoreTab
+        GlobalNavigationTabbedSubTabMoreTab,
+        GlobalHeaderImage,
+        GlobalLoginImage
     ],
     entryComponents: [
         GlobalHeader,

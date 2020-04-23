@@ -1,0 +1,18 @@
+<div #footer class="slds-docked-form-footer">
+    <div class="slds-size--1-of-1 slds-p-horizontal--xx-small slds-grid slds-grid--align-spread">
+        <div system-dropdown-trigger-simple class="slds-dropdown-trigger slds-dropdown-trigger_click">
+            <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-haspopup="true" title="Show More">
+                <system-button-icon icon="rows"></system-button-icon>
+            </button>
+            <div class="slds-dropdown slds-dropdown--bottom slds-dropdown_left">
+                <ul class="slds-dropdown__list" role="menu" aria-label="Show More">
+                    <li class="slds-dropdown__item" role="presentation" *ngFor="let action of actions" (click)="callAction(action)">
+                        <a href="javascript:void(0);" role="menuitem">
+                            <span class="slds-truncate" [title]="language.getLabel(action.actionconfig.label)"><system-label [label]="action.actionconfig.label"></system-label></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

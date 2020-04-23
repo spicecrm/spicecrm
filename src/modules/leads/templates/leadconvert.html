@@ -41,7 +41,7 @@
         <button *ngIf="showNext()" class="slds-button slds-button--neutral" (click)="nextStep()"><system-label label="LBL_NEXT"></system-label></button>
         <button *ngIf="showSave()" class="slds-button slds-button--brand" (click)="nextStep()"><system-label label="LBL_SAVE"></system-label></button>
 </div>
-<div class="slds-scrollable--y" tobottom>
+<div class="slds-scrollable--y" system-to-bottom>
     <lead-convert-account [lead]="model" [hidden]="currentConvertStep!==0" (account)="setAccount($event)" (selectedaccount)="setSelectedAccount($event)" (createaccount)="setCreateAccount($event)"></lead-convert-account>
     <lead-convert-contact [lead]="model" [hidden]="currentConvertStep!==1" (contact)="setContact($event)"></lead-convert-contact>
     <lead-convert-opportunity [lead]="model" [hidden]="currentConvertStep!==2" (opportunity)="setOpportunity($event)" (createopportunity)="setCreateOpportunity($event)"></lead-convert-opportunity>

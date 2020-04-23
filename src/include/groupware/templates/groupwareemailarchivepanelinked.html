@@ -1,0 +1,15 @@
+<div *ngIf="beans.length > 0" system-to-bottom>
+    <h2 class="slds-p-vertical--xx-small slds-p-around--x-small slds-theme--shade"><system-label label="LBL_LINKED_TO_CRM"></system-label></h2>
+    <div class="slds-p-around--x-small">
+        <groupware-pane-bean *ngFor="let bean of beans" [bean]="bean" [system-model-provider]="{module: bean.module, id: bean.id, data: bean.data}"></groupware-pane-bean>
+    </div>
+    <ng-container *ngIf="attachments.length > 0">
+        <h2 class="slds-p-vertical--xx-small slds-p-around--x-small slds-theme--shade"><system-label label="LBL_ATTACHMENTS"></system-label></h2>
+        <div class="slds-p-around--x-small">
+            <groupware-email-archive-pane-attachment *ngFor="let attachment of attachments" [attachment]="attachment"></groupware-email-archive-pane-attachment>
+        </div>
+    </ng-container>
+</div>
+<div *ngIf="beans.length == 0" class="slds-p-around--medium slds-align--absolute-center" system-to-bottom-noscroll>
+    <system-label label="MSG_NO_RECORDS_SELECTED"></system-label>
+</div>

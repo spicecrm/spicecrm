@@ -1,2 +1,3 @@
 <router-outlet></router-outlet><system-navigation-manager></system-navigation-manager>
-<outlook-pane-footer *ngIf="session.authData.sessionId && session.authData.loaded === true"></outlook-pane-footer>
+<global-footer></global-footer>
+<outlook-pane-footer *ngIf="session.authData.sessionId && session.authData.loaded === true && displayBottomBar"></outlook-pane-footer>

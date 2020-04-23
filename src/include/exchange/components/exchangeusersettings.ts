@@ -5,10 +5,8 @@ import {Component, OnInit} from '@angular/core';
 
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
-import {navigation} from '../../../services/navigation.service';
-import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
-import {toast} from '../../../services/toast.service';
+import {configurationService} from '../../../services/configuration.service';
 
 /**
  * @ignore
@@ -30,7 +28,17 @@ export class ExchangeUserSettings implements OnInit {
      */
     private subscriptions: any[] = [];
 
-    constructor(private model: model, private backend: backend) {
+    /**
+     * holds an array wuith modules that can be synced with Exchange
+     */
+    private modules: any[] = [];
+
+    /**
+     * the config for the user
+     */
+    private userconfig: any[] = [];
+
+    constructor(private metadata: metadata, private model: model, private backend: backend, private configuration: configurationService) {
 
     }
 
@@ -38,32 +46,17 @@ export class ExchangeUserSettings implements OnInit {
      * load the active subscriptions
      */
     public ngOnInit(): void {
-        this.loadSubscriptions();
+        this.getConfig();
     }
 
     /**
-     * subscribe to a folder
+     * loads the config from the backend
      */
-    private subscribe() {
-        this.backend.postRequest(`spicecrmexchange/subscriptions/${this.model.id}/subscribe`).subscribe(response => {
-            console.log(response);
-        });
-    }
-
-    /**
-     * subscribe to a folder
-     */
-    private reload() {
-        this.loadSubscriptions();
-    }
-
-    /**
-     * loads the subscriptions
-     */
-    private loadSubscriptions() {
-        this.subscriptions = [];
-        this.backend.getRequest(`spicecrmexchange/subscriptions/${this.model.id}`).subscribe(subscriptions => {
-            this.subscriptions = subscriptions;
+    private getConfig() {
+        this.backend.getRequest(`spicecrmexchange/config/${this.model.id}`).subscribe(response => {
+            this.modules = response.modules;
+            this.userconfig = response.userconfig;
+            this.subscriptions = response.subscriptions;
         });
     }
 
@@ -78,26 +71,48 @@ export class ExchangeUserSettings implements OnInit {
         return sub ? sub.last_active : '';
     }
 
-    private getSubscriptionIcon(folder_id){
-        let sub = this.subscriptions.find(sub => sub.folder_id == folder_id);
-        return sub && sub.subscriptionid ? 'check' : 'add';
+    /**
+     * returns the module for the id
+     *
+     * @param sysmoduleid
+     */
+    private getModuleNameById(sysmoduleid: string) {
+        return this.metadata.getModuleById(sysmoduleid);
     }
 
     /**
-     * returns the last active date if there is one
+     * returns if the user subscription is active
      *
-     * @param folder_id
+     * @param sysmoduleid
      */
-    private toggle(folder_id) {
-        let sub = this.subscriptions.find(sub => sub.folder_id == folder_id);
-        if (sub && sub.subscriptionid) {
-            this.backend.deleteRequest(`spicecrmexchange/subscriptions/${this.model.id}/${folder_id}`).subscribe(response => {
-                this.reload();
+    private isActive(sysmoduleid: string) {
+        return this.userconfig && this.userconfig.findIndex(r => r.sysmodule_id == sysmoduleid) >= 0;
+    }
+
+    /**
+     * toggles the sync for the user
+     *
+     * @param sysmoduleid
+     * @param e
+     */
+    private toggleActive(sysmoduleid: string, e: MouseEvent) {
+        if (e) {
+            this.backend.postRequest('spicecrmexchange/config/' + this.model.id + '/' + sysmoduleid).subscribe(res => {
+                this.userconfig = res.userconfig;
+                this.subscriptions = res.subscriptions;
+
+                // set the user config
+                this.configuration.setData('exchangeuserconfig', this.userconfig);
             });
         } else {
-            this.backend.postRequest(`spicecrmexchange/subscriptions/${this.model.id}/${folder_id}`).subscribe(response => {
-                this.reload();
+            this.backend.deleteRequest('spicecrmexchange/config/' + this.model.id + '/' + sysmoduleid).subscribe(res => {
+                this.userconfig = res.userconfig;
+                this.subscriptions = res.subscriptions;
+
+                // set the user config
+                this.configuration.setData('exchangeuserconfig', this.userconfig);
             });
         }
     }
+
 }

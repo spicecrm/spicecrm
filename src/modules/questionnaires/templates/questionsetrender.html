@@ -25,24 +25,18 @@
                 </div>
             </div>
 
-            <div *ngIf="questionset.textbefore && inModal" class="slds-grid slds-m-top_medium slds-box slds-theme_shade questionset-render-text" [class.collapsed]="textIsCollapsed" [class.slds-p-bottom--medium]="!textIsCollapsed" [class.slds-p-bottom--none]="textIsCollapsed">
-                <div class="slds-col_bump-right">
-                    <div [innerHTML]="questionset.textbefore" class="slds-p-right_medium html-text"></div>
-                    <div *ngIf="textIsCollapsed" class="questionset-render-transition"></div>
-                </div>
-                <div>
-                    <button *ngIf="!textIsCollapsed" title="reduzieren"
-                            class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" (click)="toggleText()">
-                        <system-button-icon [icon]="'collapse_all'"></system-button-icon>
-                    </button>
-                    <button *ngIf="textIsCollapsed" title="expandieren"
-                            class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" (click)="toggleText()">
-                        <system-button-icon [icon]="'expand_all'"></system-button-icon>
-                    </button>
-                </div>
+            <div *ngIf="questionset.textbefore" class="questionset-render-textbefore">
+                <ng-container *ngIf="inModal">
+                    <div #box class="slds-m-top_medium slds-box slds-theme_shade slds-is-relative" [class.slds-p-bottom--none]="textIsCollapsed" [class.collapsed]="textIsCollapsed">
+                        <div class="questionset-render-text">
+                            <div class="html-text"><div [innerHTML]="questionset.textbefore"></div></div>
+                        </div>
+                        <div *ngIf="textIsCollapsable && textIsCollapsed" class="questionset-render-textbefore-fadeout"><div class="slds-m-bottom--medium slds-m-right--medium slds-text-align--right" style="position:absolute;bottom:0;left:0;right:0"><button class="slds-button slds-button--neutral slds-text-body_regular" (click)="toggleText()"><system-button-icon [icon]="'chevrondown'" [position]="'left'"></system-button-icon>{{language.getLabel('LBL_MORE')}}</button></div></div>
+                    </div>
+                    <div *ngIf="textIsCollapsable && !textIsCollapsed" class="slds-text-align--right" style="margin-top:-0.75rem;margin-right:0.5rem"><button class="slds-button slds-button--neutral slds-text-body_regular" (click)="toggleText()"><system-button-icon [icon]="'chevronup'" [position]="'left'"></system-button-icon>{{language.getLabel('LBL_LESS')}}</button></div>
+                </ng-container>
+                <div *ngIf="!inModal" [innerHTML]="questionset.textbefore" class="slds-m-vertical--medium"></div>
             </div>
-            <div *ngIf="questionset.textbefore && !inModal" [innerHTML]="questionset.textbefore" class="slds-m-vertical--medium"></div>
-
         </div>
 
         <div class="questionset-render-questions slds-m-top--medium" [ngClass]="{'slds-p-right--medium':inModal}">

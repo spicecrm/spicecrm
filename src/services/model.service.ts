@@ -124,7 +124,12 @@ export class model implements OnDestroy {
      *}
      *```
      */
-    public mode$ = new EventEmitter();
+    public mode$: EventEmitter<string> = new EventEmitter();
+
+    /**
+     * fires when the editing of the model is cancelled
+     */
+    public canceledit$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * indicates if the model state is valid
@@ -831,6 +836,9 @@ export class model implements OnDestroy {
             // todo: evaluate all fields because they have changed back???
             this.resetMessages();
         }
+
+        // emit that the edit mode has been cancelled
+        this.canceledit$.emit(true);
     }
 
     /**

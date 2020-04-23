@@ -25,6 +25,7 @@ import {Subject, Observable} from 'rxjs';
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {DirectivesModule} from "../../directives/directives";
+import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 
 // various services we need on global app level
 import {configurationService} from "../../services/configuration.service";
@@ -41,6 +42,7 @@ import {recent} from "../../services/recent.service";
 import {userpreferences} from "../../services/userpreferences.service";
 import {fts} from "../../services/fts.service";
 import {loader} from "../../services/loader.service";
+import {libloader} from "../../services/libloader.service";
 import {broadcast} from "../../services/broadcast.service";
 import {dockedComposer} from "../../services/dockedcomposer.service";
 import {backend} from "../../services/backend.service";
@@ -56,22 +58,27 @@ import {cookie} from "../../services/cookie.service";
 import {VersionManagerService} from "../../services/versionmanager.service";
 import {modal} from "../../services/modal.service";
 import {layout} from "../../services/layout.service";
+import {loggerService} from "../../services/logger.service";
+import {SystemDynamicRouteInterceptor} from "../../systemcomponents/components/systemdynamicrouteinterceptor";
 
 
 import {ModuleGroupware} from "../../include/groupware/groupware";
 import {GroupwareService} from '../../include/groupware/services/groupware.service';
 
+import /*embed*/ {outlookNameValuePairI} from "./interfaces/outlook.interfaces";
+
 import /*embed*/ {OutlookConfiguration} from './services/outlookconfiguration.service';
 import /*embed*/ {OutlookGroupware} from "./services/outlookgroupware.service";
 
-
 import /*embed*/ {OutlookPane} from './components/outlookpane';
 import /*embed*/ {OutlookPaneFooter} from './components/outlookpanefooter';
-import /*embed*/ {OutlookRouteHandler} from './components/outlookroutehandler';
 import /*embed*/ {OutlookSettingsPane} from './components/outlooksettingspane';
 import /*embed*/ {OutlookLoginPane} from "./components/outlookloginpane";
-import {GlobalLogin} from "../../globalcomponents/components/globallogin";
-import {loggerService} from "../../services/logger.service";
+import /*embed*/ {OutlookMeetingEditPane} from "./components/outlookmeetingeditpane";
+import /*embed*/ {OutlookMeetingReadPane} from "./components/outlookmeetingreadpane";
+import /*embed*/ {OutlookMeetingAddContainer} from "./components/outlookmeetingaddcontainer";
+import /*embed*/ {OutlookMeetingViewContainer} from "./components/outlookmeetingviewcontainer";
+import /*embed*/ {OutlookMeetingEditContainer} from "./components/outlookmeetingeditcontainer";
 
 declare var Office: any;
 
@@ -84,19 +91,24 @@ declare var Office: any;
         SystemComponents,
         ObjectComponents,
         DirectivesModule,
+        GlobalComponents,
         ModuleGroupware,
         RouterModule.forRoot([
-            {path: 'settings', component: OutlookSettingsPane},
             {path: 'login', component: OutlookLoginPane},
-            {path: "", component: OutlookRouteHandler, pathMatch: "full", canActivate: [loginCheck]}
+            {path: "", component: SystemDynamicRouteInterceptor, pathMatch: "full", canActivate: [loginCheck]},
+            {path: '**', component: SystemDynamicRouteInterceptor, canActivate: [loginCheck]}
         ])
     ],
     declarations: [
         OutlookPane,
         OutlookPaneFooter,
-        OutlookRouteHandler,
         OutlookSettingsPane,
         OutlookLoginPane,
+        OutlookMeetingEditPane,
+        OutlookMeetingReadPane,
+        OutlookMeetingAddContainer,
+        OutlookMeetingViewContainer,
+        OutlookMeetingEditContainer
     ],
     bootstrap: [OutlookPane],
     providers: [
@@ -114,6 +126,7 @@ declare var Office: any;
         loginCheck,
         loginService,
         loader,
+        libloader,
         configurationService,
         language,
         dockedComposer,

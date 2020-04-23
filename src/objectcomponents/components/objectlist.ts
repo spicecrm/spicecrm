@@ -27,11 +27,6 @@ import {Subscription} from "rxjs";
 export class ObjectList implements OnDestroy {
 
     /**
-     * the element reference for the content of the view
-     */
-    @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
-
-    /**
      * all fields that are available
      */
     private allFields: any[] = [];
@@ -39,7 +34,7 @@ export class ObjectList implements OnDestroy {
     /**
      * the subscription to the modellist
      */
-    private modellistsubscribe: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
 
     /**
      * the componentconfig
@@ -60,9 +55,9 @@ export class ObjectList implements OnDestroy {
         return this.modellist.isLoading;
     }
 
-    constructor(private router: Router, private cdRef: ChangeDetectorRef, private metadata: metadata, private modellist: modellist, private language: language, private layout: layout) {
+    constructor(public router: Router, public cdRef: ChangeDetectorRef, public metadata: metadata, public modellist: modellist, public language: language, public layout: layout) {
 
-        this.modellistsubscribe.add(this.modellist.listDataChanged$.subscribe(() => {
+        this.subscriptions.add(this.modellist.listDataChanged$.subscribe(() => {
             this.cdRef.detectChanges();
         }));
         // get the confih
@@ -75,7 +70,7 @@ export class ObjectList implements OnDestroy {
         this.loadList(true);
 
         // subscribe to changes of the listtype
-        this.modellistsubscribe.add(this.modellist.listtype$.subscribe(newType => this.switchListtype()));
+        this.subscriptions.add(this.modellist.listtype$.subscribe(newType => this.switchListtype()));
     }
 
     /**
@@ -111,7 +106,7 @@ export class ObjectList implements OnDestroy {
      * unsubscribe from the modellist subscription
      */
     public ngOnDestroy() {
-        this.modellistsubscribe.unsubscribe();
+        this.subscriptions.unsubscribe();
     }
 
     /**
@@ -148,11 +143,8 @@ export class ObjectList implements OnDestroy {
      *
      * @param e
      */
-    private onScroll(e) {
-        let element = this.tablecontent.element.nativeElement;
-        if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
-            this.modellist.loadMoreList();
-        }
+    private onScroll() {
+        this.modellist.loadMoreList();
     }
 
     /**

@@ -25,7 +25,7 @@
         </div>
     </div>
 </div>
-<div class="slds-grid" tobottom cdkDropListGroup>
+<div class="slds-grid" system-to-bottom cdkDropListGroup>
     <div class="slds-size--1-of-3 slds-border--right slds-grid--vertical" style="height: 100%;">
         <reports-designer-tree (onUnionDelete)="handleUnionDelete($event)" (onUnionAdd)="handleUnionAdd($event)"></reports-designer-tree>
     </div>
@@ -84,7 +84,7 @@
                     <system-checkbox [(ngModel)]="reportsDesignerService.expertMode"><system-label label="LBL_EXPERT_MODE"></system-label></system-checkbox>
                 </li>
             </ul>
-            <div [ngSwitch]="activeTab" tobottom>
+            <div [ngSwitch]="activeTab" system-to-bottom>
                 <ng-container *ngIf="reportsDesignerService.activeModule?.unionid">
                     <reports-designer-details *ngSwitchCase="'details'"></reports-designer-details>
                     <ng-container *ngSwitchCase="'manipulate'">
