@@ -76,8 +76,6 @@ import /*embed*/ {fieldLookupSearch} from './components/fieldlookupsearch';
 import /*embed*/ {fieldLookupSearchItem} from './components/fieldlookupsearchitem';
 import /*embed*/ {fieldLookupSearchAdd} from './components/fieldlookupsearchadd';
 import /*embed*/ {fieldModelFooterPopover} from './components/fieldmodelfooterpopover';
-import /*embed*/ {fieldMediaFile} from './components/fieldmediafile';
-import /*embed*/ {fieldMediaFileImage} from './components/fieldmediafileimage';
 import /*embed*/ {FieldMessagesComponent} from "./components/fieldmessages";
 import /*embed*/ {FieldModuleLookupComponent} from "./components/fieldmodulelookup";
 import /*embed*/ {FieldSignatureComponent} from "./components/fieldsignature";
@@ -87,7 +85,6 @@ import /*embed*/ {fieldServiceCategorySearch} from "./components/fieldcategoryse
 import /*embed*/ {fieldWorklog} from "./components/fieldworklog";
 import /*embed*/ {FieldModelInfoComponent} from "./components/fieldmodelinfo";
 import /*embed*/ {FieldEnumModulesComponent} from "./components/fieldenummodules";
-import /*embed*/ {FieldEnumOutputTemplates} from "./components/fieldenumoutputtemplates";
 import /*embed*/ {fieldGDPR} from "./components/fieldgdpr";
 import /*embed*/ {fieldServiceQueue} from "./components/fieldservicequeue";
 import /*embed*/ {fieldSelectTree,} from "./components/fieldselecttree";
@@ -201,8 +198,6 @@ declare var _: any;
         fieldBarcode,
         fieldBarcodeRenderer,
         fieldRating,
-        fieldMediaFile,
-        fieldMediaFileImage,
         FieldMessagesComponent,
         FieldModuleLookupComponent,
         FieldSignatureComponent,
@@ -212,7 +207,6 @@ declare var _: any;
         fieldWorklog,
         FieldModelInfoComponent,
         FieldEnumModulesComponent,
-        FieldEnumOutputTemplates,
         FieldModelInfoComponent,
         fieldGDPR,
         fieldServiceQueue,
@@ -253,11 +247,8 @@ declare var _: any;
         fieldGeneric,
         fieldGenericDisplay,
         fieldHtml,
-        fieldMediaFile,
-        fieldMediaFileImage,
         FieldMessagesComponent,
         FieldModuleLookupComponent,
-        FieldEnumOutputTemplates,
         fieldLookup,
         fieldLookupRecent,
         fieldLookupSearch,

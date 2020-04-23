@@ -1,5 +1,5 @@
 <div class="slds-grid">
-    <div class="slds-size--1-of-2 slds-grid slds-grid--vertical" tobottom>
+    <div class="slds-size--1-of-2 slds-grid slds-grid--vertical" system-to-bottom>
         <div class="slds-grow slds-scrollable--y" style="height: 100%">
             <administration-ftsmanager-fields-list style="display: block; height: 100%" (selectListField)="selectField($event)" [selectedField]="currentfield"></administration-ftsmanager-fields-list>
         </div>
@@ -7,7 +7,7 @@
             <button class="slds-button slds-button--neutral" (click)="showAddFields()"><system-label label="LBL_ADD_FIELD"></system-label></button>
         </div>
     </div>
-    <div class="slds-size--1-of-2 slds-border--left slds-p-left--x-small" tobottom>
+    <div class="slds-size--1-of-2 slds-border--left slds-p-left--x-small" system-to-bottom>
         <div *ngIf="currentfield; else selectfield">
             <h2 class="slds-text-heading--small slds-p-vertical--x-small"><system-label label="LBL_FIELD_DETAILS"></system-label>: {{fieldDetails.displaypath}}->{{fieldDetails.fieldname}}</h2>
             <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">

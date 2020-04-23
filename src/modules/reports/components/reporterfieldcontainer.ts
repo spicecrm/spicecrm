@@ -1,11 +1,7 @@
 /**
  * @module ModuleReports
  */
-import {
-    Component,
-    Input,
-    OnInit
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 
 import {metadata} from '../../../services/metadata.service';
 
@@ -13,7 +9,8 @@ declare var _: any;
 
 @Component({
     selector: 'reporter-field-container',
-    templateUrl: './src/modules/reports/templates/reporterfieldcontainer.html'
+    templateUrl: './src/modules/reports/templates/reporterfieldcontainer.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterFieldContainer implements OnInit {
 
@@ -23,12 +20,11 @@ export class ReporterFieldContainer implements OnInit {
     @Input() private record: any = {};
 
     /**
-     * alternative a value passed in direct
+     * alternative value passed in direct
      */
-    @Input() private value: any = {};
-
+    @Input() private value: string = '';
     /**
-     * the field
+     * report field
      */
     @Input() private field: any = {};
 
@@ -43,7 +39,7 @@ export class ReporterFieldContainer implements OnInit {
     private recordId: string;
 
     /**
-     * the fieldtype to be rendered
+     * the field type to be rendered
      */
     private fieldType;
 
@@ -55,13 +51,14 @@ export class ReporterFieldContainer implements OnInit {
      * initialize the record
      */
     public ngOnInit(): void {
+
         // build a re cord if do not have one
         this.initializeRecord();
 
         // build the link info
         this.buildLinkInfo();
 
-        // get the field type and comkponent to be rendered
+        // get the field type and component to be rendered
         this.determineFieldType();
     }
 
@@ -78,22 +75,17 @@ export class ReporterFieldContainer implements OnInit {
     }
 
     /**
-     * returns true if the field has a link
-     */
-    get hasLink() {
-        return this.field.link == 'yes';
-    }
-
-    /**
      * builds the info for the link if we have one
      */
     private buildLinkInfo() {
-        if (this.hasLink && this.record) {
+        if (this.field.link == 'yes' && this.record) {
             // route to the proper module
             // check if a link info is set
             if (this.field.linkinfo && this.field.linkinfo[this.record.unionid ? this.record.unionid : 'root']) {
+
                 this.recordModule = this.field.linkinfo[this.record.unionid ? this.record.unionid : 'root'].module;
                 this.recordId = this.record[this.field.linkinfo[this.record.unionid ? this.record.unionid : 'root'].idfield];
+
             } else if (this.hasPathField) {
                 // get the path info
                 let pathinfo = this.fieldPathInfo;
@@ -101,13 +93,13 @@ export class ReporterFieldContainer implements OnInit {
                 // build the path array
                 let pathArray = pathinfo.path.split('::');
 
-                // get the last entry with loink and field
+                // get the last entry with link and field
                 let linkInfo = pathArray.pop();
 
                 // split the link array
                 let linkArray = linkInfo.split(':');
 
-                // get the ionfo ont eh field
+                // get the info ont eh field
                 let fieldData = this.metadata.getFieldDefs(linkArray[1], linkArray[2]);
 
                 // set the field data
@@ -123,7 +115,7 @@ export class ReporterFieldContainer implements OnInit {
 
 
     get fieldPathInfo() {
-        // remove the field info from the fieldpath
+        // remove the field info from the field path
         let pathAray = this.field.path.split('::');
         pathAray.pop();
 
@@ -131,7 +123,7 @@ export class ReporterFieldContainer implements OnInit {
 
         let pathInfo;
         for (let fieldid in this.record) {
-            if (this.record[fieldid] == sanitizedPath) {
+            if (this.record.hasOwnProperty(fieldid) && this.record[fieldid] == sanitizedPath) {
                 pathInfo = {};
                 pathInfo.path = sanitizedPath;
                 pathInfo.id = this.record[fieldid.replace('path', 'id')];
@@ -143,7 +135,7 @@ export class ReporterFieldContainer implements OnInit {
     }
 
     get hasPathField() {
-        // remove the field info from the fieldpath
+        // remove the field info from the field path
         let pathAray = this.field.path.split('::');
         pathAray.pop();
 
@@ -153,9 +145,9 @@ export class ReporterFieldContainer implements OnInit {
         // else join the path for the latch
         let sanitizedPath = pathAray.join('::');
 
-        // check if we find a matching recod field
+        // check if we find a matching record field
         for (let fieldid in this.record) {
-            if (this.record[fieldid] == sanitizedPath) {
+            if (this.record.hasOwnProperty(fieldid) && this.record[fieldid] == sanitizedPath) {
                 return true;
             }
         }
@@ -165,7 +157,7 @@ export class ReporterFieldContainer implements OnInit {
     }
 
     /**
-     * determines the fild type and the component to be rendered for this
+     * determines the field type and the component to be rendered for this
      */
     private determineFieldType() {
         if (this.field.component) {
@@ -176,8 +168,6 @@ export class ReporterFieldContainer implements OnInit {
                     this.fieldType = 'ReporterFieldPercentage';
                     break;
                 case 'currency':
-                    this.fieldType = 'ReporterFieldCurrency';
-                    break;
                 case 'currencyint':
                     this.fieldType = 'ReporterFieldCurrency';
                     break;
@@ -187,7 +177,7 @@ export class ReporterFieldContainer implements OnInit {
                 case "datetimecombo":
                 case "datetime":
                     this.fieldType = 'ReporterFieldDateTime';
-                    break
+                    break;
                 case 'date':
                     this.fieldType = 'ReporterFieldDate';
                     break;

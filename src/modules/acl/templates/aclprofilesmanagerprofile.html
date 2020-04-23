@@ -8,7 +8,7 @@
             <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': activetab=='users'}" title="Users" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='users'"><system-label label="LBL_USERS"></system-label></a></li>
             <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': activetab=='details'}" title="DETAILS" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='details'"><system-label label="LBL_DETAILS"></system-label></a></li>
         </ul>
-        <div tobottom *ngIf="activetab=='profiles'">
+        <div system-to-bottom *ngIf="activetab=='profiles'">
             <div *ngIf="loadingobjects; else objectsdisplay" class="slds-p-around--medium slds-align--absolute-center">
                 <system-spinner></system-spinner>
             </div>
@@ -50,7 +50,7 @@
                 </div>
             </ng-template>
         </div>
-        <div tobottom *ngIf="activetab=='users'">
+        <div system-to-bottom *ngIf="activetab=='users'">
             <div *ngIf="loadingusers; else usersdisplay" class="slds-p-around--medium slds-align--absolute-center">
                 <system-spinner></system-spinner>
             </div>

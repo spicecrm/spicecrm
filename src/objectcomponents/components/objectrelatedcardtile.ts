@@ -10,6 +10,9 @@ import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {Router} from '@angular/router';
 
+/**
+ * renders a tile in the tile panel underneath an object
+ */
 @Component({
     selector: '[object-related-card-tile]',
     templateUrl: './src/objectcomponents/templates/objectrelatedcardtile.html',
@@ -17,33 +20,56 @@ import {Router} from '@angular/router';
 })
 export class ObjectRelatedCardTile {
 
-    @Input() private module: string = '';
+    /**
+     * trhe data passed in fromn teh related models service
+     */
     @Input() private data: any = {};
+
+    /**
+     * the fieldset passed in
+     */
     @Input() private fieldset: string = '';
 
-    public componentconfig: any = {};
+    /**
+     * the actionset
+     */
+    private actionset: string;
+
+    /**
+     * the fields to be didsplayed
+     */
+    private fields: any[] = [];
 
     constructor(private model: model, private relatedmodels: relatedmodels, private view: view, private language: language, private metadata: metadata, private router: Router) {
         this.view.displayLabels = false;
     }
 
     public ngOnInit() {
-        this.model.module = this.module;
+
+        // initialize the model
+        this.initalizeModel();
+
+        // load config and set paramaters
+        this.loadConfig();
+    }
+
+    /**
+     * inialize the model
+     */
+    private initalizeModel(){
+        this.model.module = this.relatedmodels.relatedModule;
         this.model.id = this.data.id;
         this.model.data = this.data;
-
-        this.componentconfig = this.metadata.getComponentConfig('ObjectRelatedCardTile', this.model.module);
     }
 
-    get actionset() {
-        return this.componentconfig.actionset;
+    /**
+     * loads the config (mainly for the actionset
+     */
+    private loadConfig() {
+        let componentconfig = this.metadata.getComponentConfig('ObjectRelatedCardTile', this.model.module);
+        this.actionset = componentconfig.actionset;
+
+        this.fields = this.metadata.getFieldSetFields(this.fieldset);
     }
 
-    private getFields() {
-        return this.metadata.getFieldSetFields(this.fieldset)
-    }
-
-    private navgiateDetail() {
-        this.model.goDetail();
-    }
 }

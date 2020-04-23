@@ -1,0 +1,8 @@
+<div @animatepanel *ngIf="this.modellist.displayAggregates" class="slds-is-absolute slds-panel slds-panel--filters slds-filters__body slds-nowrap  slds-scrollable--y" style="width: 320px; height: 100%; top:0px; right: 0px;z-index: 99;" [system-model-provider]="{module: modellist.module}">
+    <div class="slds-filters__body slds-grid_vertical">
+        <object-listview-tags-aggregate *ngIf="hasTags"></object-listview-tags-aggregate>
+        <div class="slds-m-vertical--xx-small" *ngFor="let aggregate of getAggregates()">
+            <object-listview-aggregate [aggregate]="aggregate"></object-listview-aggregate>
+        </div>
+    </div>
+</div>

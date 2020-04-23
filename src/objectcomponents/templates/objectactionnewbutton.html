@@ -1,1 +1,2 @@
-<span><system-label label="LBL_NEW"></system-label></span>
+<system-button-icon *ngIf="displayasicon" icon="add"></system-button-icon>
+<span *ngIf="!displayasicon"><system-label label="LBL_NEW"></system-label></span>

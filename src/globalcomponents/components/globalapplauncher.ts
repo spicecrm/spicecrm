@@ -30,7 +30,7 @@ export class GlobalAppLauncher {
     get roleName() {
         let role = this.metadata.getActiveRole();
         if (role.label && role.label != '') {
-            return this.language.getLabel(role.label)
+            return this.language.getLabel(role.label);
         } else {
             return this.metadata.getActiveRole().name;
         }

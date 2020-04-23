@@ -1,8 +1,8 @@
 <div [ngClass]="containerclass" role="group">
     <button class="slds-button slds-button_neutral" [ngClass]="addclasses(actionitem)" *ngFor="let actionitem of mainactionitems" [disabled]="isDisabled(actionitem.id)" (click)="propagateclick(actionitem.id)">
-        <object-action-container-item [actionitem]="actionitem" (actionemitter)="emitaction($event)"></object-action-container-item>
+        <object-action-container-item [actionitem]="actionitem" [displayasicon]="displayasicon" (actionemitter)="emitaction($event)"></object-action-container-item>
     </button>
-    <div *ngIf="hasAddItems" class="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last" dropdowntrigger>
+    <div *ngIf="hasAddItems" class="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last" system-dropdown-trigger>
         <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-haspopup="true" [disabled]="opendisabled" [title]="language.getLabel('LBL_MORE')" >
             <system-button-icon icon="down"></system-button-icon>
             <span class="slds-assistive-text"><system-label label="LBL_MORE"></system-label></span>

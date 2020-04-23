@@ -2,20 +2,28 @@
  * @module ModuleReports
  */
 import {
-    Component, Input, AfterViewInit, ViewChild, ViewContainerRef, OnDestroy
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnDestroy,
+    ViewChild,
+    ViewContainerRef
 } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {backend} from '../../../services/backend.service';
-import {navigation} from '../../../services/navigation.service';
-import {broadcast} from '../../../services/broadcast.service';
 import {reporterconfig} from '../services/reporterconfig';
 import {Subscription} from "rxjs";
 
+/**
+ * handle rendering the appropriate visualization component for the report
+ */
 @Component({
     selector: 'reporter-detail-visualization',
-    templateUrl: './src/modules/reports/templates/reporterdetailvisualization.html'
+    templateUrl: './src/modules/reports/templates/reporterdetailvisualization.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
     @ViewChild('vizcontainer', {read: ViewContainerRef, static: true}) private vizcontainer: ViewContainerRef;
@@ -50,7 +58,11 @@ export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
      */
     private subscriptions = new Subscription();
 
-    constructor(private reporterconfig: reporterconfig, private metadata: metadata, private model: model, private backend: backend, private activatedRoute: ActivatedRoute, private navigation: navigation) {
+    constructor(private reporterconfig: reporterconfig,
+                private metadata: metadata,
+                private model: model,
+                private backend: backend,
+                private cdRef: ChangeDetectorRef) {
         this.subscriptions.add(
             this.reporterconfig.refresh$.subscribe(event => {
                 this.getVisualization();
@@ -76,6 +88,10 @@ export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
      * gets the visualization for the report
      */
     private getVisualization() {
+
+        this.loading = true;
+        this.cdRef.detectChanges();
+
         let params: any = {};
         if (this.parentModule && this.parentId) {
             params.parentbeanId = this.parentId;
@@ -99,6 +115,7 @@ export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
         this.backend.getRequest('KReporter/' + this.model.id + '/visualization', params).subscribe(vizData => {
             this.vizData = vizData;
             this.loading = false;
+            this.cdRef.detectChanges();
             this.renderVisualization();
         });
     }
@@ -130,6 +147,7 @@ export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
                 this.metadata.addComponent(visComponent, this.vizcontainer).subscribe(componentRef => {
                     this.chartComponent.push(componentRef);
                     componentRef.instance.vizdata = visualization;
+                    componentRef.changeDetectorRef.detectChanges();
                 });
             }
         }

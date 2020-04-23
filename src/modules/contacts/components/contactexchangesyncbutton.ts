@@ -1,11 +1,14 @@
 /**
  * @module ModuleContacts
  */
-import {Component, ViewContainerRef, OnInit} from "@angular/core";
+import {Component, ViewContainerRef, OnInit, OnDestroy} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
 import {modal} from "../../../services/modal.service";
+import {metadata} from "../../../services/metadata.service";
 import {backend} from "../../../services/backend.service";
+import {configurationService} from "../../../services/configuration.service";
+import {Subscription} from "rxjs";
 
 /**
  * renders a button that toggles the exchange sync state
@@ -13,15 +16,48 @@ import {backend} from "../../../services/backend.service";
 @Component({
     templateUrl: "./src/modules/contacts/templates/contactexchangesyncbutton.html"
 })
-export class ContactExchangeSyncButton {
+export class ContactExchangeSyncButton implements OnDestroy{
 
     /**
      * indicates that the systemis loading and executing a request
      */
     private isLoading: boolean = false;
 
+    /**
+     * the hidden status
+     */
+    public hidden: boolean = true;
+
+    /**
+     * the subscrtiptions
+     */
+    private subscriptions: Subscription = new Subscription();
+
     // public disabled: boolean = true;
-    constructor(private language: language, private model: model, private modal: modal, private backend: backend) {
+    constructor(private metadata: metadata, private language: language, private model: model, private modal: modal, private backend: backend, private configuration: configurationService) {
+
+        // set the hidden flag
+        this.setHidden();
+
+        // subscribe to config hcnges and potentially change the hidden flag
+        this.configuration.datachanged$.subscribe(key => {
+            if(key == 'exchangeuserconfig') this.setHidden();
+        });
+
+    }
+
+    /**
+     * clean up any subscriptions and unsubscribe
+     */
+    public ngOnDestroy(): void {
+        this.subscriptions.unsubscribe();
+    }
+
+    private setHidden(){
+        let config = this.configuration.getData('exchangeuserconfig');
+        let moduleData = this.metadata.getModuleDefs('Contacts');
+
+        this.hidden = config.findIndex(cr => cr.sysmodule_id == moduleData.id) == -1;
     }
 
     /**

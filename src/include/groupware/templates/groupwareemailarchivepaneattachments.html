@@ -1,0 +1,6 @@
+<div *ngIf="attachments.length > 0" class="slds-p-around--x-small">
+    <groupware-email-archive-pane-attachment *ngFor="let attachment of attachments" [attachment]="attachment"></groupware-email-archive-pane-attachment>
+</div>
+<div *ngIf="attachments.length == 0" class="slds-p-around--medium slds-align--absolute-center">
+    <system-label label="MSG_NO_ATTACHMENTS_FOUND"></system-label>
+</div>

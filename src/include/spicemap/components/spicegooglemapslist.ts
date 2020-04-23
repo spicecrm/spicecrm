@@ -6,6 +6,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    Input,
     IterableDiffers,
     OnDestroy,
     OnInit
@@ -66,11 +67,11 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     /**
      * component config from metadata
      */
-    public componentconfig: RecordComponentConfigI;
+    @Input() public componentconfig: RecordComponentConfigI;
     /**
      * differentiate the records array changes
      */
-    public subscription: Subscription = new Subscription();
+    public subscriptions: Subscription = new Subscription();
     /**
      * map options will be passed to the spice google maps
      */
@@ -83,10 +84,6 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
      * to be highlighted on the map and re centered
      */
     protected focusedRecordId: string;
-    /**
-     * name of this component for load component config on extended components
-     */
-    protected componentName: string = 'SpiceGoogleMapsList';
 
     constructor(
         public language: language,
@@ -121,7 +118,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     public ngOnInit() {
         this.loadComponentConfigs();
         this.subscribeToModelListChanges();
-        this.subscribeToMapFocus();
+        this.subscribeToBroadcastMessages();
     }
 
     /**
@@ -135,7 +132,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
      * unsubscribe from subscriptions
      */
     public ngOnDestroy() {
-        this.subscription.unsubscribe();
+        this.subscriptions.unsubscribe();
         this.modelList.searchGeo = undefined;
     }
 
@@ -164,7 +161,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     public loadComponentConfigs() {
         // if not defined from the component set get it from module config
         if (!this.componentconfig) {
-            this.componentconfig = this.metadata.getComponentConfig(this.componentName, this.modelList.module);
+            this.componentconfig = this.metadata.getComponentConfig('SpiceGoogleMapsList', this.modelList.module);
         }
 
         if (!this.componentconfig) this.componentconfig = {};
@@ -176,7 +173,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
             this.componentconfig.directionTravelMode = 'DRIVING';
         }
         if (!(!!this.componentconfig.mapHeight)) {
-            this.componentconfig.mapHeight = 300;
+            this.componentconfig.mapHeight = 500;
         }
         if (!(!!this.componentconfig.circleColor)) {
             this.componentconfig.circleColor = '#CA1B21';
@@ -188,24 +185,9 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
             this.componentconfig.focusColor = '#1A73E8';
         }
 
-        this.setFirstMapOptionsChanged();
+        this.setMapOptionsFromComponentConfig();
 
         this.setLatLngFieldsNames();
-    }
-
-    /**
-     * set changed property for mapOptions to trigger change detections on the map
-     */
-    public setFirstMapOptionsChanged() {
-        this.mapOptions = {
-            ...this.componentconfig, changed: {
-                showMyLocation: true,
-                showCluster: true,
-                markerWithModelPopover: true,
-                directionTravelMode: true,
-                focusColor: true,
-            }
-        };
     }
 
     /**
@@ -233,6 +215,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
      * set search geo filter on modelList and reload the records list
      */
     public onCenterChange(center: MapCenterI) {
+        if (!this.mapOptions.circle) return;
         this.mapOptions.circle.center = center;
     }
 
@@ -254,12 +237,39 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     }
 
     /**
+     * set the focused record from geo data field broadcast
+     * @param msg
+     */
+    public handleBroadcastMessage(msg: { messagedata: any, messagetype: string }) {
+        if (msg.messagetype != 'map.focus' || !msg.messagedata || !msg.messagedata.modelId || (msg.messagedata.tabId == 'main' && !!this.navigationtab.tabid) ||
+            (msg.messagedata.tabId != 'main' && this.navigationtab.tabid != msg.messagedata.tabId)) {
+            return;
+        }
+
+        this.focusedRecordId = msg.messagedata.modelId;
+    }
+
+    /**
      * subscribe to map focus from the focus field and set focused record id
      */
-    public subscribeToMapFocus() {
-        this.subscription.add(this.broadcast.message$.subscribe(msg => {
-            this.setFocusedRecordId(msg);
-        }));
+    private subscribeToBroadcastMessages() {
+        this.subscriptions.add(
+            this.broadcast.message$.subscribe(msg => {
+                this.handleBroadcastMessage(msg);
+            })
+        );
+    }
+
+    /**
+     * set map options from component config
+     */
+    private setMapOptionsFromComponentConfig() {
+        this.mapOptions = {
+            showCluster: this.componentconfig.showCluster,
+            markerWithModelPopover: this.componentconfig.markerWithModelPopover,
+            focusColor: this.componentconfig.focusColor,
+            showMyLocation: this.componentconfig.showMyLocation,
+        };
     }
 
     /**
@@ -300,10 +310,10 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
      * subscribe to model list type and data reloaded changes to reset records
      */
     private subscribeToModelListChanges() {
-        this.subscription.add(this.modelList.listtype$.subscribe(() => {
+        this.subscriptions.add(this.modelList.listtype$.subscribe(() => {
             this.setRecords();
         }));
-        this.subscription.add(this.modelList.listDataChanged$.subscribe(() => {
+        this.subscriptions.add(this.modelList.listDataChanged$.subscribe(() => {
             this.setRecords();
             this.setFixedCircle();
         }));
@@ -370,18 +380,5 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     private confirmRadiusInput() {
         this.cancelEditingRadius();
         this.setMapOptionChanged('circleRadius');
-    }
-
-    /**
-     * set the focused record from geo data field broadcast
-     * @param msg
-     */
-    private setFocusedRecordId(msg: { messagedata: any, messagetype: string }) {
-        if (msg.messagetype != 'map.focus' || !msg.messagedata || !msg.messagedata.modelId || this.focusedRecordId == msg.messagedata.modelId ||
-            (msg.messagedata.tabId == 'main' && !!this.navigationtab.tabid) || (msg.messagedata.tabId != 'main' && this.navigationtab.tabid != msg.messagedata.tabId)) {
-            return;
-        }
-
-        this.focusedRecordId = msg.messagedata.modelId;
     }
 }

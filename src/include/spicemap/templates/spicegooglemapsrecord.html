@@ -1,7 +1,7 @@
 <div #mainContainer style="width: 100%" class="slds-grid slds-grid--vertical slds-theme--default slds-height_full">
     <div>
         <div class="slds-grid slds-p-bottom--x-small" [class.slds-p-around--x-small]="isFullScreenOn">
-            <system-input-radio-button-group *ngIf="showUseMapOptions" [(ngModel)]="useMapFor" [disabled]="isLoadingDirection" [inputOptions]="useMapForOptions" class="slds-m-right--x-small"></system-input-radio-button-group>
+            <system-input-radio-button-group *ngIf="showUseMapOptions" [(ngModel)]="useMapFor" [disabled]="isLoadingDirection || modelList.isLoading" [inputOptions]="useMapForOptions" class="slds-m-right--x-small"></system-input-radio-button-group>
             <div *ngIf="useMapFor == 'search'; else directionToolsContainer" class="slds-form-element slds-grid slds-grid--vertical-align-center slds-grow">
                 <object-list-types></object-list-types>
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right slds-grow">
@@ -45,7 +45,7 @@
             <ng-template #directionInfoContainer>
                 <system-utility-icon [icon]="(mapOptions.directionTravelMode == 'DRIVING' && !!directionResult) ? 'travel_and_places' : 'info_alt'" size="x-small" class="slds-m-right--x-small"></system-utility-icon>
                 <span *ngIf="directionResult; else infoTextContainer">
-                    {{directionResult.duration?.hours}} h {{directionResult.duration?.minutes}} min ( {{directionResult.distance.text}} )
+                    {{directionResult.duration?.hours}} h {{directionResult.duration?.minutes}} min ( {{directionResult.distance?.text}} )
                 </span>
                 <ng-template #infoTextContainer>
                     <span class="slds-truncate">
@@ -55,11 +55,11 @@
             </ng-template>
         </div>
     </div>
-    <div class="slds-border--left slds-border--right slds-border--bottom slds-grid slds-grid--vertical slds-grow" style="min-height: 0;" [overlayLoadingSpinner]="isLoading || isLoadingDirection">
-        <spice-google-maps [focusedRecordId]="focusedRecordId" [options]="mapOptions" [records]="records" [routes]="routes" (radiusChange)="onRadiusChange($event)" (directionChange)="setDirectionResult($event)"
-                           [style.height]="!isFullScreenOn ? componentconfig.mapHeight + 'px' : useMapFor == 'search' ? '50%' : '100%'" style="display: block"></spice-google-maps>
+    <div class="slds-border--left slds-border--right slds-border--bottom slds-grid slds-grid--vertical slds-grow" style="min-height: 0;" [system-overlay-loading-spinner]="isLoading || isLoadingDirection">
+        <spice-google-maps [focusedRecordId]="focusedRecordId" [options]="mapOptions" [records]="records" [routes]="routes" (radiusChange)="onRadiusChange($event)"
+                           (directionChange)="setDirectionResult($event)" [style.height]="mapHeight" style="display: block"></spice-google-maps>
         <object-list *ngIf="useMapFor == 'search'" style="display: block; height: 250px; min-height: 250px; max-height: 500px"></object-list>
-        <div @animatepanel *ngIf="modelList.displayAggregates" class="slds-is-absolute slds-panel slds-panel--filters slds-filters__body slds-nowrap  slds-scrollable--y" style="width: 320px; height: 100%; top:0; right: 0;z-index: 99;" [modelProvider]="{module: modelList.module}">
+        <div @animatepanel *ngIf="modelList.displayAggregates" class="slds-is-absolute slds-panel slds-panel--filters slds-filters__body slds-nowrap  slds-scrollable--y" style="width: 320px; height: 100%; top:0; right: 0;z-index: 99;" [system-model-provider]="{module: modelList.module}">
             <div class="slds-filters__body slds-grid_vertical">
                 <div class="slds-m-vertical--xx-small" *ngFor="let aggregate of listAggregates">
                     <object-listview-aggregate [aggregate]="aggregate"></object-listview-aggregate>

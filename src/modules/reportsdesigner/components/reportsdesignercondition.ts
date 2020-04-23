@@ -67,6 +67,8 @@ export class ReportsDesignerCondition {
         }
 
         if (this.whereCondition.operator == 'reference') type = 'reference';
+        if (this.whereCondition.operator == 'function') type = 'function';
+
 
         return type;
 
@@ -76,7 +78,7 @@ export class ReportsDesignerCondition {
     * @return showValue: boolean
      */
     get showValue() {
-        return this.whereCondition.operator == 'reference' || this.reporterConfig.operatorCount[this.whereCondition.operator] > 0;
+        return this.whereCondition.operator == 'reference' || this.whereCondition.operator == 'function' || this.reporterConfig.operatorCount[this.whereCondition.operator] > 0;
     }
 
     /**
@@ -110,10 +112,18 @@ export class ReportsDesignerCondition {
 
         // push reference operator if other condition has reference value
         const whereConditions = this.model.getField('whereconditions');
-        if (whereConditions.some(condition => condition.type == this.whereCondition.type && !!condition.reference)) {
+        if (!!whereConditions && whereConditions.some(condition => condition.type == this.whereCondition.type && !!condition.reference)) {
             retArray.push({
                 value: 'reference',
                 display: this.language.getLabel('LBL_REFERENCE')
+            });
+        }
+
+        // push function operator  the are where functions found
+        if (!!this.reporterConfig.whereFunctions && this.reporterConfig.whereFunctions.length > 0) {
+            retArray.push({
+                value: 'function',
+                display: this.language.getLabel('LBL_FUNCTION')
             });
         }
 

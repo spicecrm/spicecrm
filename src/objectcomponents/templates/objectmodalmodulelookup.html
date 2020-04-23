@@ -2,27 +2,11 @@
     <system-modal-header (close)="closePopup()">{{language.getModuleCombinedLabel('LBL_SEARCH', modellist.module)}}</system-modal-header>
     <system-modal-content margin="none" [grow]="true">
         <div class="slds-height_full">
-            <div #headercontent>
-                <div class="slds-form-element slds-p-top--medium slds-p-horizontal--medium slds-m-bottom--small slds-grid slds-grid--vertical-align-center">
-                    <object-list-types></object-list-types>
-                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right slds-grow">
-                        <system-utility-icon icon="search" size="x-small" addclasses="slds-input__icon"></system-utility-icon>
-                        <input type="text" id="lookup" class="slds-input" [(ngModel)]="searchTerm" [autocomplete]="autoCompleteKiller" (keyup)="triggerSearch($event)" [placeholder]="language.getModuleName(modellist.module)">
-                    </div>
-                    <button class="slds-button slds-button--neutral slds-button--icon-border slds-m-horizontal--xxx-small" (click)="modellist.reLoadList()">
-                        <system-button-icon [icon]="'refresh'"></system-button-icon>
-                    </button>
-                    <object-listview-aggregates-button></object-listview-aggregates-button>
-                </div>
-                <div class="slds-theme--shade slds-p-around--x-small slds-border--top slds-grid slds-grid--vertical-align-center slds slds-grid--align-spread">
-                    <object-listview-header-details></object-listview-header-details>
-                    <system-checkbox *ngIf="relatefilter && relatefilter.id" [disabled]="relatefilter.required" [(ngModel)]="relatefilterActive"><system-label label="LBL_RELATED_TO"></system-label> <system-label-modulename [module]="relatefilter.module" [singular]="true"></system-label-modulename> {{relatefilter.display}}</system-checkbox>
-                </div>
-            </div>
+            <object-modal-module-lookup-header></object-modal-module-lookup-header>
             <div class="slds-is-relative" [ngStyle]="contentStyle()">
                 <div class="slds-scrollable--y slds-height_full" #tablecontent (scroll)="onScroll($event)" >
-                    <table class="slds-table slds-table--fixed-layout slds-table--bordered slds-table--header-fixed" [ngClass]="{'slds-no-row-hover':multiselect,'singleselect':!multiselect}" role="listbox">
-                        <thead>
+                    <table class="slds-table slds-table--fixed-layout slds-table--bordered slds-max-medium-table--stacked-horizontal" [ngClass]="{'slds-no-row-hover':multiselect,'singleselect':!multiselect, 'slds-table--header-fixed': !smallView}" role="listbox">
+                        <thead *ngIf="!smallView">
                             <tr object-list-header [showSelectColumn]="multiselect" [showRowActionMenu]="false"></tr>
                         </thead>
                         <tbody>
@@ -31,13 +15,7 @@
                         <tbody system-table-stencils [columns]="modellist.listfields?.length" [select]="multiselect" [tools]="false" [rows]="10" *ngIf="modellist.isLoading"></tbody>
                     </table>
                 </div>
-                <div @animatepanel *ngIf="this.modellist.displayAggregates" class="slds-is-absolute slds-panel slds-panel--filters slds-filters__body slds-nowrap  slds-scrollable--y" style="width: 320px; height: 100%; top:0px; right: 0px;z-index: 99;" [modelProvider]="{module: modellist.module}">
-                        <div class="slds-filters__body slds-grid_vertical">
-                            <div class="slds-m-vertical--xx-small" *ngFor="let aggregate of getAggregates()">
-                                <object-listview-aggregate [aggregate]="aggregate"></object-listview-aggregate>
-                            </div>
-                        </div>
-                </div>
+                <object-modal-module-lookup-aggregates></object-modal-module-lookup-aggregates>
             </div>
         </div>
     </system-modal-content>
