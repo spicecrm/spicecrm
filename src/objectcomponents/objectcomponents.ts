@@ -151,12 +151,10 @@ import /*embed*/ {ObjectRecordTabbedDetails} from './components/objectrecordtabb
 import /*embed*/ {ObjectRecordTabbedDetailsTab} from './components/objectrecordtabbeddetailstab';
 import /*embed*/ {ObjectRecordDetailsRelatedListTab} from './components/objectrecorddetailsrelatedlisttab';
 
-import /*embed*/ {ObjectModalModuleLookup} from './components/objectmodalmodulelookup';
 import /*embed*/ {ObjectModalModuleLookupHeader} from './components/objectmodalmodulelookupheader';
 import /*embed*/ {ObjectModalModuleLookupAggregates} from './components/objectmodalmodulelookupaggregates';
+import /*embed*/ {ObjectModalModuleLookup} from './components/objectmodalmodulelookup';
 import /*embed*/ {ObjectSelectButton} from './components/objectselectbutton';
-
-
 
 import /*embed*/ {ObjectMergeButton} from './components/objectmergebutton';
 
@@ -194,42 +192,7 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectFields,
         SystemComponents,
         DirectivesModule,
-        RouterModule.forRoot([
-            // {path: 'module/Home', component: ModuleHome, canActivate: [loginCheck]},
-            /*
-            {
-                path: 'module/:module',
-                component: SystemNavigationCollector,
-                canActivate: [loginCheck, canNavigateAway, aclCheck],
-                data: {aclaction: 'list'}
-            },
-            */
-            /*
-            {
-                path: 'module/:module/historysummary/:id',
-                component: ObjectActivitiyTimelineSummary,
-                canActivate: [loginCheck, aclCheck],
-                data: {aclaction: 'view'}
-            },
-            */
-            /*
-            {
-                path: 'module/:module/:id',
-                component: SystemNavigationCollector,
-                canActivate: [loginCheck, canNavigateAway, aclCheck],
-                data: {aclaction: 'view'}
-            },
-            */
-            /*
-            {path: 'module/:module/:id/:related/:link', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
-            {
-                path: 'module/:module/:id/:related/:link/:fieldset',
-                component: ObjectRelatedlistAll,
-                canActivate: [loginCheck, aclCheck],
-                data: {aclaction: 'view'}
-            }
-            */
-        ])],
+        RouterModule],
     declarations: [
         ObjectListViewContainer,
         ObjectListView,
