@@ -1,14 +1,10 @@
 /**
  * @module ModuleSAPIDOCs
  */
-import {ChangeDetectorRef, EventEmitter, Injectable} from '@angular/core';
-import {CdkDropList} from "@angular/cdk/drag-drop";
+import {Injectable} from '@angular/core';
 import {Md5} from "ts-md5";
-import {configurationService} from "../../../services/configuration.service";
+import {toast} from "../../../services/toast.service";
 import {backend} from "../../../services/backend.service";
-import {modelutilities} from "../../../services/modelutilities.service";
-import {model} from "../../../services/model.service";
-import {metadata} from "../../../services/metadata.service";
 import {helper} from "../../../services/helper.service";
 import {BehaviorSubject} from "rxjs";
 import {
@@ -50,7 +46,7 @@ export class sapIdocsManager {
      */
     public selectedfield$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
-    constructor(private backend: backend, private helper: helper) {
+    constructor(private backend: backend, private helper: helper, private toast: toast) {
         this.loadSegments();
     }
 
@@ -80,9 +76,36 @@ export class sapIdocsManager {
     }
 
     /**
+     * updates the sagments on the backend
+     */
+    public updateSegments() {
+        let changes = this.getChanges();
+        if (changes.length > 0) {
+            this.backend.postRequest('SAPIdocsManager/segments', {}, changes).subscribe(res => {
+                this.toast.sendToast('saved', 'info');
+
+                // reset references and rebuild
+                this.references = [];
+                this.segments = res.segments;
+                this.addToReference(this.segments);
+                this.segmentrelations = res.segmentrelations;
+                this.addToReference(this.segmentrelations);
+                this.fields = res.fields;
+                this.addToReference(this.fields);
+
+                this.selectedsegment$.next(this.selectedsegment);
+                this.selectedfield$.next(this.selectedfield);
+            });
+        } else {
+            this.toast.sendToast('no changes', 'info');
+        }
+
+    }
+
+    /**
      * gets the changed items
      */
-    public getChanges() {
+    private getChanges() {
         let objects = ['segments', 'segmentrelations', 'fields'];
 
         let changed: any[] = [];
@@ -107,8 +130,6 @@ export class sapIdocsManager {
                 }
             }
         }
-
-        console.log(changed);
 
         return changed;
     }

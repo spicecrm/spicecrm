@@ -15,6 +15,17 @@ export class SAPIDOCsManagerSegmentsTree {
 
     }
 
+    /**
+     * @ignore
+     *
+     * a trackby function for the loop
+     *
+     * @param index
+     * @param item
+     */
+    private trackByFn(index, item) {
+        return item.id;
+    }
 
 }
 

@@ -8,6 +8,6 @@
         </span>
     </div>
     <ul *ngIf="children.length > 0" role="group">
-        <li *ngFor="let child of children" sapidocs-manager-segments-tree-node [segmentrelation]="child" role="treeitem" tabindex="0"></li>
+        <li *ngFor="let child of children; trackBy: trackByFn" sapidocs-manager-segments-tree-node [segmentrelation]="child" role="treeitem" tabindex="0"></li>
     </ul>
 </ng-container>

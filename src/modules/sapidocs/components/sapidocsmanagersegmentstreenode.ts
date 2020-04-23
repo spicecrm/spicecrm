@@ -31,12 +31,12 @@ export class SAPIDOCsManagerSegmentsTreeNode implements OnInit {
     /**
      * the segment details
      */
-    private segment: sapIDOCSegmentI;
+    // private segment: sapIDOCSegmentI;
 
     /**
      * the segments underneath this one
      */
-    private children: sapIDOCSegmentRelationI[] = [];
+    // private children: sapIDOCSegmentRelationI[] = [];
 
     /**
      * boolean flag if the node is expanded
@@ -47,12 +47,23 @@ export class SAPIDOCsManagerSegmentsTreeNode implements OnInit {
 
     }
 
+    /**
+     * the segments underneath this one
+     */
+    get children(): sapIDOCSegmentRelationI[] {
+        return this.segmentrelation.segment_id ? this.sapIdocsManager.getSegments(this.segmentrelation.segment_id) : [];
+    }
+
+    get segment(): sapIDOCSegmentI{
+        return this.segmentrelation.segment_id ? this.sapIdocsManager.getSegmentById(this.segmentrelation.segment_id) : undefined;
+    }
+
     public ngOnInit(): void {
         // get the segment
-        this.segment = this.sapIdocsManager.getSegmentById(this.segmentrelation.segment_id);
+        // this.segment = this.sapIdocsManager.getSegmentById(this.segmentrelation.segment_id);
 
         // get the children
-        this.children = this.sapIdocsManager.getSegments(this.segmentrelation.segment_id);
+        // this.children = this.sapIdocsManager.getSegments(this.segmentrelation.segment_id);
     }
 
     /**
@@ -90,7 +101,7 @@ export class SAPIDOCsManagerSegmentsTreeNode implements OnInit {
             componentRef.instance.parentsegment_id = this.segment.id;
             componentRef.instance.added.subscribe((added: sapIDOCSegmentI) => {
                 // get the children
-                this.children = this.sapIdocsManager.getSegments(this.segmentrelation.segment_id);
+                // this.children = this.sapIdocsManager.getSegments(this.segmentrelation.segment_id);
 
                 // expand the node
                 this.expanded = true;
@@ -99,6 +110,18 @@ export class SAPIDOCsManagerSegmentsTreeNode implements OnInit {
                 this.sapIdocsManager.selectSegment(added.id);
             });
         });
+    }
+
+    /**
+     * @ignore
+     *
+     * a trackby function for the loop
+     *
+     * @param index
+     * @param item
+     */
+    private trackByFn(index, item) {
+        return item.id;
     }
 
 }

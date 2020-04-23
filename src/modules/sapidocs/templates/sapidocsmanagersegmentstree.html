@@ -2,7 +2,7 @@
     <h4 class="slds-tree__group-header slds-p-around--x-small slds-border--bottom"><system-label label="LBL_IDOCTYPES"></system-label></h4>
     <div class="slds-p-right--xx-small">
         <ul aria-labelledby="treeheading" class="slds-tree" role="tree">
-            <li *ngFor="let idoctype of sapIdocsManager.getIdocTypes()" sapidocs-manager-segments-tree-ipoc-type [idoctype]="idoctype" role="treeitem"></li>
+            <li *ngFor="let idoctype of sapIdocsManager.getIdocTypes(); trackBy: trackByFn" sapidocs-manager-segments-tree-ipoc-type [idoctype]="idoctype" role="treeitem"></li>
         </ul>
     </div>
 </div>

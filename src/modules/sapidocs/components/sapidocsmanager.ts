@@ -14,8 +14,19 @@ import {sapIDOCSegmentI} from "../interfaces/moudesapidocs.interfaces";
 })
 export class SAPIDOCsManager {
 
-    constructor(private language: language, private modal: modal, private injector: Injector, private sapIdocsManager: sapIdocsManager) {}
+    constructor(private language: language, private modal: modal, private injector: Injector, private sapIdocsManager: sapIdocsManager) {
+    }
 
+    /**
+     * saves the changes
+     */
+    private saveChanges() {
+        this.sapIdocsManager.updateSegments();
+    }
+
+    /**
+     * adds a new idoc type
+     */
     private addIdocType() {
         this.modal.openModal('SAPIDOCsManagerIDOCTypeAddModal', true, this.injector);
     }

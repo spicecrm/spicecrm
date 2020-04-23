@@ -62,8 +62,20 @@ export class SAPIDOCsManagerSegmentsTreeIdocType implements OnInit {
     /**
      * returns if the node is deleted
      */
-    get deleted(){
+    get deleted() {
         return this.idoctype.deleted == '1';
+    }
+
+    /**
+     * @ignore
+     *
+     * a trackby function for the loop
+     *
+     * @param index
+     * @param item
+     */
+    private trackByFn(index, item) {
+        return item.id;
     }
 
 }

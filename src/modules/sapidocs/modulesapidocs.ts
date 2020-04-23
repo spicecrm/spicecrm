@@ -28,6 +28,8 @@ import /*embed*/ {SAPIDOCsManagerIDOCTypeAddModal} from "./components/sapidocsma
 import /*embed*/ {SAPIDOCsManagerSegmentAddModal} from "./components/sapidocsmanagersegmentaddmodal";
 import /*embed*/ {SAPIDOCsManagerFieldAddModal} from "./components/sapidocsmanagerfieldaddmodal";
 import /*embed*/ {SAPIDOCsMonitor} from "./components/sapidocsmonitor";
+import /*embed*/ {SAPIDOCsViewer} from "./components/sapidocsviewer";
+import /*embed*/ {SAPIDOCsViewerButton} from "./components/sapidocsviewerbutton";
 
 @NgModule({
     imports: [
@@ -52,7 +54,9 @@ import /*embed*/ {SAPIDOCsMonitor} from "./components/sapidocsmonitor";
         SAPIDOCsManagerIDOCTypeAddModal,
         SAPIDOCsManagerSegmentAddModal,
         SAPIDOCsManagerFieldAddModal,
-        SAPIDOCsMonitor
+        SAPIDOCsMonitor,
+        SAPIDOCsViewerButton,
+        SAPIDOCsViewer
     ],
 })
 export class ModuleSAPIDOCs {}
