@@ -6,6 +6,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    Input,
     IterableDiffers,
     OnDestroy,
     OnInit
@@ -19,9 +20,6 @@ import {model} from "../../../services/model.service";
 import {Subscription} from "rxjs";
 import {navigationtab} from "../../../services/navigationtab.service";
 import {broadcast} from "../../../services/broadcast.service";
-
-/** @ignore */
-declare var _: any;
 
 /** @ignore */
 const ANIMATIONS = [
@@ -69,7 +67,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     /**
      * component config from metadata
      */
-    public componentconfig: RecordComponentConfigI;
+    @Input() public componentconfig: RecordComponentConfigI;
     /**
      * differentiate the records array changes
      */
@@ -86,10 +84,6 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
      * to be highlighted on the map and re centered
      */
     protected focusedRecordId: string;
-    /**
-     * name of this component for load component config on extended components
-     */
-    protected componentName: string = 'SpiceGoogleMapsList';
 
     constructor(
         public language: language,
@@ -124,7 +118,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     public ngOnInit() {
         this.loadComponentConfigs();
         this.subscribeToModelListChanges();
-        this.subscribeToMapFocus();
+        this.subscribeToBroadcastMessages();
     }
 
     /**
@@ -167,7 +161,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     public loadComponentConfigs() {
         // if not defined from the component set get it from module config
         if (!this.componentconfig) {
-            this.componentconfig = this.metadata.getComponentConfig(this.componentName, this.modelList.module);
+            this.componentconfig = this.metadata.getComponentConfig('SpiceGoogleMapsList', this.modelList.module);
         }
 
         if (!this.componentconfig) this.componentconfig = {};
@@ -194,18 +188,6 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
         this.setMapOptionsFromComponentConfig();
 
         this.setLatLngFieldsNames();
-    }
-
-    /**
-     * set map options from component config
-     */
-    private setMapOptionsFromComponentConfig() {
-        this.mapOptions = {
-            showCluster: this.componentconfig.showCluster,
-            markerWithModelPopover: this.componentconfig.markerWithModelPopover,
-            focusColor: this.componentconfig.focusColor,
-            showMyLocation: this.componentconfig.showMyLocation,
-        };
     }
 
     /**
@@ -255,12 +237,39 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     }
 
     /**
+     * set the focused record from geo data field broadcast
+     * @param msg
+     */
+    public handleBroadcastMessage(msg: { messagedata: any, messagetype: string }) {
+        if (msg.messagetype != 'map.focus' || !msg.messagedata || !msg.messagedata.modelId || (msg.messagedata.tabId == 'main' && !!this.navigationtab.tabid) ||
+            (msg.messagedata.tabId != 'main' && this.navigationtab.tabid != msg.messagedata.tabId)) {
+            return;
+        }
+
+        this.focusedRecordId = msg.messagedata.modelId;
+    }
+
+    /**
      * subscribe to map focus from the focus field and set focused record id
      */
-    public subscribeToMapFocus() {
-        this.subscriptions.add(this.broadcast.message$.subscribe(msg => {
-            this.setFocusedRecordId(msg);
-        }));
+    private subscribeToBroadcastMessages() {
+        this.subscriptions.add(
+            this.broadcast.message$.subscribe(msg => {
+                this.handleBroadcastMessage(msg);
+            })
+        );
+    }
+
+    /**
+     * set map options from component config
+     */
+    private setMapOptionsFromComponentConfig() {
+        this.mapOptions = {
+            showCluster: this.componentconfig.showCluster,
+            markerWithModelPopover: this.componentconfig.markerWithModelPopover,
+            focusColor: this.componentconfig.focusColor,
+            showMyLocation: this.componentconfig.showMyLocation,
+        };
     }
 
     /**
@@ -371,18 +380,5 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     private confirmRadiusInput() {
         this.cancelEditingRadius();
         this.setMapOptionChanged('circleRadius');
-    }
-
-    /**
-     * set the focused record from geo data field broadcast
-     * @param msg
-     */
-    private setFocusedRecordId(msg: { messagedata: any, messagetype: string }) {
-        if (msg.messagetype != 'map.focus' || !msg.messagedata || !msg.messagedata.modelId || (msg.messagedata.tabId == 'main' && !!this.navigationtab.tabid) ||
-            (msg.messagedata.tabId != 'main' && this.navigationtab.tabid != msg.messagedata.tabId)) {
-            return;
-        }
-
-        this.focusedRecordId = msg.messagedata.modelId;
     }
 }
