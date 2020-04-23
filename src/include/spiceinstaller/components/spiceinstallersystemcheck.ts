@@ -2,16 +2,11 @@
  * @module SpiceInstaller
  */
 
-import {
-    Component, OnInit
-} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {Component} from '@angular/core';
+import {HttpClient} from "@angular/common/http";
 import {Router} from '@angular/router';
-import {loginService} from '../../../services/login.service';
 import {configurationService} from '../../../services/configuration.service';
-import {session} from '../../../services/session.service';
 import {toast} from '../../../services/toast.service';
-import {language} from '../../../services/language.service';
 import {backend} from "../../../services/backend.service";
 import {spiceinstaller} from "../services/spiceinstaller.service";
 
@@ -23,6 +18,7 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 
 export class SpiceInstallerSystemCheck {
     private configBody: any = {};
+
     constructor(
         private toast: toast,
         private http: HttpClient,
@@ -31,6 +27,12 @@ export class SpiceInstallerSystemCheck {
         private backend: backend,
         private spiceinstaller: spiceinstaller
     ) {
+        this.spiceinstaller.selectedStep = {
+            id: 'systemcheck',
+            name: 'System Requirements',
+            visible: true,
+            completed: false,
+        };
         this.spiceinstaller.currentStep(1);
         this.spiceinstaller.configBody$.subscribe(data => {
             this.configBody = data;
@@ -39,24 +41,24 @@ export class SpiceInstallerSystemCheck {
 
 
     private checkSystem() {
-        this.http.get(`${this.configBody.backendconfig.backendUrl}/KREST/spiceinstaller/check`).subscribe( result => {
-            if(result) {
+        this.http.get(`${this.configBody.backendconfig.backendUrl}/KREST/spiceinstaller/check`).subscribe(result => {
+            if (result) {
                 let check = false;
                 for (let i in result) {
-                    if(result[i] != true) {
+                    if (result[i] != true) {
                         this.toast.sendAlert('error in: ' + result[i]);
                     } else {
-                       check = true;
+                        check = true;
                     }
                 }
-                if(check) {
+                if (check) {
                     this.toast.sendToast('systemcheck was successful', 'success');
                     this.spiceinstaller.steps[1].completed = true;
                 }
             } else {
                 this.toast.sendToast('error', "error");
             }
-            });
+        });
     }
 
 }
