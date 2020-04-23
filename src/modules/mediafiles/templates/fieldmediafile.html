@@ -1,8 +1,10 @@
+<!-- fieldMediaFile -->
+<span>strombo fieldMediaFile</span>
 <div [ngClass]="fielddisplayclass+' format-'+fieldconfig.format" style="margin-right:-0.75rem;text-align:center;height:400px">
 
     <ng-container *ngIf="isEditMode()">
         <system-spinner *ngIf="isLoadingOriginal" size="large" class="spice-vertically-centered"></system-spinner>
-        <system-input-media *ngIf="!isLoadingOriginal" [(ngModel)]="imageUrlOriginal" [fileformat]="fileformat" (mediaChange)="mediaChange($event)" style="height:100%">
+        <system-input-media *ngIf="!isLoadingOriginal" [(ngModel)]="imageUrlOriginal" style="height:100%"><!--[fileformat]="fileformat" (mediaChange)="mediaChange($event)" -->
         </system-input-media>
     </ng-container>
 

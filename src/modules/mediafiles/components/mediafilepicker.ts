@@ -18,7 +18,7 @@ import {ObjectModalModuleLookup} from "../../../objectcomponents/components/obje
  * provides a lookup modal with a modellist and the option to select a model
  */
 @Component({
-    selector: 'mdeia-file-picker',
+    selector: 'media-file-picker',
     templateUrl: './src/modules/mediafiles/templates/mediafilepicker.html',
     providers: [view, modellist, model]
 })
