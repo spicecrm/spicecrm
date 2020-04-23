@@ -1,0 +1,20 @@
+<div class="slds-grid slds-grid_vertical slds-p-around--medium ">
+    <h2 class="slds-p-around--medium slds-text-heading_medium">Backend Configuration Settings:</h2>
+    <ul class="slds-p-around--medium" *ngFor="let setting of configBody.backendconfig| keyvalue">
+        <li>{{setting.key}}: {{setting.value}}</li>
+    </ul>
+    <h2 class="slds-p-around--medium slds-text-heading_medium">Database Configuration Settings:</h2>
+    <ul class="slds-p-around--medium" *ngFor="let setting of configBody.database| keyvalue">
+        <li>{{setting.key}}: {{setting.value}}</li>
+    </ul>
+    <ul class="slds-p-around--medium" *ngFor="let setting of configBody.dboptions| keyvalue">
+        <li>{{setting.key}}: {{setting.value}}</li>
+    </ul>
+    <h2 class="slds-p-around--medium slds-text-heading_medium">FTS Configuration Settings:</h2>
+    <ul class="slds-p-around--medium" *ngFor="let setting of configBody.fts| keyvalue">
+        <li>{{setting.key}}: {{setting.value}}</li>
+    </ul>
+    <div class="slds-align--absolute-center slds--align-bottom">
+        <button class="slds-button slds-button--brand" (click)="install()">begin installation</button>
+    </div>
+</div>
