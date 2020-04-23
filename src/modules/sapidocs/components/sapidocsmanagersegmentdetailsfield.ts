@@ -8,20 +8,29 @@ import {sapIdocsManager} from "../../../modules/sapidocs/services/sapidocsmanage
 import {Subscription} from "rxjs";
 
 @Component({
-    selector: 'sapidocs-manager-segment-details-fields',
-    templateUrl: './src/modules/sapidocs/templates/sapidocsmanagersegmentdetailsfields.html'
+    selector: 'sapidocs-manager-segment-details-field',
+    templateUrl: './src/modules/sapidocs/templates/sapidocsmanagersegmentdetailsfield.html'
 })
-export class SAPIDOCsManagerSegmentDetailsFields implements OnDestroy {
+export class SAPIDOCsManagerSegmentDetailsField implements OnDestroy {
 
-    private segmentFields: any[];
+    /**
+     * holds the details about the idoc field
+     */
+    private field: any;
 
+    /**
+     * holds the subscriptions
+     */
     private subscriptions: Subscription = new Subscription();
 
     constructor(private language: language, private backend: backend, private sapIdocsManager: sapIdocsManager, private cdRef: ChangeDetectorRef) {
         this.subscriptions.add(
-            this.sapIdocsManager.selectedsegment$.subscribe(segmentid => {
-                this.segmentFields = this.sapIdocsManager.getFields(segmentid);
-                this.sapIdocsManager.selectField(undefined);
+            this.sapIdocsManager.selectedfield$.subscribe(fieldid => {
+                if(fieldid) {
+                    this.field = this.sapIdocsManager.getField(fieldid);
+                } else {
+                    this.field = undefined;
+                }
             })
         );
     }
@@ -31,17 +40,10 @@ export class SAPIDOCsManagerSegmentDetailsFields implements OnDestroy {
      */
     public ngOnDestroy(): void {
         this.subscriptions.unsubscribe();
-
-        this.sapIdocsManager.selectField(undefined);
     }
 
-    private selectField(fieldid) {
-        this.sapIdocsManager.selectField(fieldid);
-    }
-
-    private delete(fieldid) {
-        this.sapIdocsManager.deletefield(fieldid);
-        this.segmentFields = this.sapIdocsManager.getFields();
+    private setboolfield(fieldname, fieldvalue){
+        this.field[fieldname] = fieldvalue ? '1' : '0';
     }
 
 }

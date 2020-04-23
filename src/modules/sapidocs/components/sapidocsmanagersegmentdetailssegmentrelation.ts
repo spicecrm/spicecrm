@@ -8,10 +8,10 @@ import {sapIdocsManager} from "../../../modules/sapidocs/services/sapidocsmanage
 import {Subscription} from "rxjs";
 
 @Component({
-    selector: 'sapidocs-manager-segment-details',
-    templateUrl: './src/modules/sapidocs/templates/sapidocsmanagersegmentdetails.html'
+    selector: 'sapidocs-manager-segment-details-segmentrelation',
+    templateUrl: './src/modules/sapidocs/templates/sapidocsmanagersegmentdetailssegmentrelation.html'
 })
-export class SAPIDOCsManagerSegmentDetails implements OnInit, OnDestroy {
+export class SAPIDOCsManagerSegmentDetailsSegmentrelation implements OnInit, OnDestroy {
 
     /**
      * subscriptions for the component, unsubscribed in OnDestroy Lifecycle Hook
@@ -21,7 +21,7 @@ export class SAPIDOCsManagerSegmentDetails implements OnInit, OnDestroy {
     /**
      * the current selected segment
      */
-    private segment: any;
+    private segmentrelation: any;
 
     constructor(private language: language, private backend: backend, private sapIdocsManager: sapIdocsManager, private cdRef: ChangeDetectorRef) {
 
@@ -49,13 +49,15 @@ export class SAPIDOCsManagerSegmentDetails implements OnInit, OnDestroy {
      */
     private loadSegment(segmentid) {
         if (segmentid) {
-            this.segment = this.sapIdocsManager.getSegmentById(segmentid);
+            this.segmentrelation = this.sapIdocsManager.getSegmentRelationById(segmentid);
         } else {
-            this.segment = undefined;
-
-            // detect changes ... nededed for the to boittom directive
-            this.cdRef.detectChanges();
+            this.segmentrelation = undefined;
         }
+    }
+
+
+    private setboolfield(fieldname, fieldvalue){
+        this.segmentrelation[fieldname] = fieldvalue ? '1' : '0';
     }
 
 }

@@ -1,0 +1,36 @@
+<fieldset class="slds-box slds-m-vertical--xx-small">
+    <div class="slds-grid slds-grid_vertical-align-center slds-m-top--x-small slds-gutters_direct-xx-small">
+        <div class="slds-form-element slds-col slds-size--1-of-2">
+            <label class="slds-form-element__label"><system-label label="LBL_SAPIDOC_RELATIONSHIP_NAME"></system-label></label>
+            <system-icon-help-text [helpText]="language.getLabel('LBL_SAPIDOC_RELATIONSHIP_NAME', '', 'long')"></system-icon-help-text>
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" [(ngModel)]="segmentrelation.relationship_name"/>
+            </div>
+        </div><div class="slds-form-element slds-col slds-size--1-of-2">
+            <label class="slds-form-element__label"><system-label label="LBL_SAPIDOC_SEGMENT_FUNCTION"></system-label></label>
+            <system-icon-help-text [helpText]="language.getLabel('LBL_SAPIDOC_SEGMENT_FUNCTION', '', 'long')"></system-icon-help-text>
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" [(ngModel)]="segmentrelation.segment_function"/>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid slds-grid_vertical-align-center slds-m-top--x-small slds-gutters_direct-xx-small">
+        <div class="slds-form-element slds-col slds-size--1-of-2">
+            <label class="slds-form-element__label"><system-label label="LBL_SAPIDOC_SEGMENT_ORDER"></system-label></label>
+            <system-icon-help-text [helpText]="language.getLabel('LBL_SAPIDOC_SEGMENT_ORDER', '', 'long')"></system-icon-help-text>
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" [(ngModel)]="segmentrelation.segment_order"/>
+            </div>
+        </div>
+        <div class="slds-form-element slds-m-top--large slds-p-vertical--xx-small">
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <system-checkbox [ngModel]="segmentrelation.required == '1'" (ngModelChange)="setboolfield('required', $event)"></system-checkbox>
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_SAPIDOC_SEGMENTREQUIRED"></system-label>
+                </label>
+                <system-icon-help-text [helpText]="language.getLabel('LBL_SAPIDOC_SEGMENTREQUIRED', '', 'long')"></system-icon-help-text>
+            </div>
+        </div>
+    </div>
+</fieldset>
+

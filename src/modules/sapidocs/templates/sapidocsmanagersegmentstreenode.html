@@ -5,6 +5,9 @@
     <span class="slds-has-flexi-truncate">
         <span class="slds-tree__item-label slds-truncate">{{segment.sap_segment}}</span>
     </span>
+    <button class="slds-button slds-button_icon slds-m-right_x-small">
+        <system-button-icon icon="new"></system-button-icon>
+    </button>
 </div>
 <ul *ngIf="children.length > 0" role="group">
     <li *ngFor="let child of children" sapidocs-manager-segments-tree-node [segmentrelation]="child" [level]="level+1"  role="treeitem" tabindex="0"></li>

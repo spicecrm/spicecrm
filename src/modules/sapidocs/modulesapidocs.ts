@@ -18,7 +18,10 @@ import /*embed*/ {SAPIDOCsManagerSegmentsTree} from "./components/sapidocsmanage
 import /*embed*/ {SAPIDOCsManagerSegmentsTreeIdocType} from "./components/sapidocsmanagersegmentstreeidoctype";
 import /*embed*/ {SAPIDOCsManagerSegmentsTreeNode} from "./components/sapidocsmanagersegmentstreenode";
 import /*embed*/ {SAPIDOCsManagerSegmentDetails} from "./components/sapidocsmanagersegmentdetails";
+import /*embed*/ {SAPIDOCsManagerSegmentDetailsSegment} from "./components/sapidocsmanagersegmentdetailssegment";
+import /*embed*/ {SAPIDOCsManagerSegmentDetailsSegmentrelation} from "./components/sapidocsmanagersegmentdetailssegmentrelation";
 import /*embed*/ {SAPIDOCsManagerSegmentDetailsFields} from "./components/sapidocsmanagersegmentdetailsfields";
+import /*embed*/ {SAPIDOCsManagerSegmentDetailsField} from "./components/sapidocsmanagersegmentdetailsfield";
 import /*embed*/ {SAPIDOCsMonitor} from "./components/sapidocsmonitor";
 
 @NgModule({
@@ -37,7 +40,10 @@ import /*embed*/ {SAPIDOCsMonitor} from "./components/sapidocsmonitor";
         SAPIDOCsManagerSegmentsTreeIdocType,
         SAPIDOCsManagerSegmentsTreeNode,
         SAPIDOCsManagerSegmentDetails,
+        SAPIDOCsManagerSegmentDetailsSegment,
+        SAPIDOCsManagerSegmentDetailsSegmentrelation,
         SAPIDOCsManagerSegmentDetailsFields,
+        SAPIDOCsManagerSegmentDetailsField,
         SAPIDOCsMonitor
     ],
 })

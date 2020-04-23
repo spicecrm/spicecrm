@@ -1,0 +1,105 @@
+<fieldset *ngIf="field" class="slds-box">
+    <div class="slds-form-element slds-p-vertical--xx-small">
+        <label class="slds-form-element__label">
+            <system-label label="LBL_SAPIDOC_SAP_FIELD"></system-label>
+        </label>
+        <system-icon-help-text [helpText]="language.getLabel('LBL_SAPIDOC_SAP_FIELD', '', 'long')"></system-icon-help-text>
+        <div class="slds-form-element__control">
+            <input type="text" class="slds-input" [(ngModel)]="field.sap_field"/>
+        </div>
+    </div>
+    <div class="slds-form-element slds-p-vertical--xx-small">
+        <label class="slds-form-element__label">
+            <system-label label="LBL_SAPIDOC_MAPPING_FIELD"></system-label>
+        </label>
+        <system-icon-help-text [helpText]="language.getLabel('LBL_SAPIDOC_MAPPING_FIELD', '', 'long')"></system-icon-help-text>
+        <div class="slds-form-element__control">
+            <input type="text" class="slds-input" [(ngModel)]="field.mapping_field"/>
+        </div>
+    </div>
+    <div class="slds-grid">
+        <div class="slds-form-element slds-p-vertical--xx-small slds-size--1-of-2">
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <system-checkbox [ngModel]="field.identifier == '1'" (ngModelChange)="setboolfield('identifier', $event)"></system-checkbox>
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_SAPIDOC_IDENTIFIER"></system-label>
+                </label>
+                <system-icon-help-text [helpText]="language.getLabel('LBL_SAPIDOC_IDENTIFIER', '', 'long')"></system-icon-help-text>
+            </div>
+        </div>
+        <div class="slds-form-element slds-p-vertical--xx-small slds-size--1-of-2">
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <system-checkbox [ngModel]="field.active == '1'" (ngModelChange)="setboolfield('active', $event)"></system-checkbox>
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_SAPIDOC_ACTIVE"></system-label>
+                </label>
+                <system-icon-help-text [helpText]="language.getLabel('LBL_SAPIDOC_ACTIVE', '', 'long')"></system-icon-help-text>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid">
+        <div class="slds-form-element slds-p-vertical--xx-small slds-size--1-of-2">
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <system-checkbox [ngModel]="field.inbound == '1'" (ngModelChange)="setboolfield('inbound', $event)"></system-checkbox>
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_SAPIDOC_INBOUND"></system-label>
+                </label>
+                <system-icon-help-text [helpText]="language.getLabel('LBL_SAPIDOC_INBOUND', '', 'long')"></system-icon-help-text>
+            </div>
+        </div>
+        <div class="slds-form-element slds-p-vertical--xx-small slds-size--1-of-2">
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <system-checkbox [ngModel]="field.outbound == '1'" (ngModelChange)="setboolfield('outbound', $event)"></system-checkbox>
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_SAPIDOC_OUTBOUND"></system-label>
+                </label>
+                <system-icon-help-text [helpText]="language.getLabel('LBL_SAPIDOC_OUTBOUND', '', 'long')"></system-icon-help-text>
+            </div>
+        </div>
+    </div>
+    <div class="slds-form-element slds-p-vertical--xx-small">
+        <label class="slds-form-element__label">
+            <system-label label="LBL_SAPIDOC_CUSTOM_FIELD_FUNCTION"></system-label>
+        </label>
+        <system-icon-help-text [helpText]="language.getLabel('LBL_SAPIDOC_CUSTOM_FIELD_FUNCTION', '', 'long')"></system-icon-help-text>
+        <div class="slds-form-element__control">
+            <input type="text" class="slds-input" [(ngModel)]="field.custom_field_function"/>
+        </div>
+    </div>
+    <div class="slds-form-element slds-p-vertical--xx-small">
+        <label class="slds-form-element__label">
+            <system-label label="LBL_SAPIDOC_MAPPING_RULE"></system-label>
+        </label>
+        <system-icon-help-text [helpText]="language.getLabel('LBL_SAPIDOC_MAPPING_RULE', '', 'long')"></system-icon-help-text>
+        <div class="slds-form-element__control">
+            <input type="text" class="slds-input" [(ngModel)]="field.mapping_rule"/>
+        </div>
+    </div>
+    <div class="slds-form-element slds-p-vertical--xx-small">
+        <label class="slds-form-element__label">
+            <system-label label="LBL_SAPIDOC_MAPPING_FIELD_DEFAULT"></system-label>
+        </label>
+        <system-icon-help-text [helpText]="language.getLabel('LBL_SAPIDOC_MAPPING_FIELD_DEFAULT', '', 'long')"></system-icon-help-text>
+        <div class="slds-form-element__control">
+            <input type="text" class="slds-input" [(ngModel)]="field.mapping_field_default"/>
+        </div>
+    </div>
+    <div class="slds-form-element slds-p-vertical--xx-small">
+        <label class="slds-form-element__label">
+            <system-label label="LBL_SAPIDOC_MAPPING_FIELD_PREFIX"></system-label>
+        </label>
+        <system-icon-help-text [helpText]="language.getLabel('LBL_SAPIDOC_MAPPING_FIELD_PREFIX', '', 'long')"></system-icon-help-text>
+        <div class="slds-form-element__control">
+            <input type="text" class="slds-input" [(ngModel)]="field.mapping_field_prefix"/>
+        </div>
+    </div>
+    <div class="slds-form-element slds-p-vertical--xx-small">
+        <label class="slds-form-element__label">
+            <system-label label="LBL_VALUE_CONECTOR"></system-label>
+        </label>
+        <system-icon-help-text [helpText]="language.getLabel('LBL_VALUE_CONECTOR', '', 'long')"></system-icon-help-text>
+        <div class="slds-form-element__control">
+            <input type="text" class="slds-input" [(ngModel)]="field.value_conector"/>
+        </div>
+    </div>
+</fieldset>
