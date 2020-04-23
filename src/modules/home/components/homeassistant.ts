@@ -3,7 +3,7 @@
  */
 import {Component,ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
-import {navigation} from '../../../services/navigation.service';
+import {navigationtab} from '../../../services/navigationtab.service';
 import {assistant} from '../../../services/assistant.service';
 
 @Component({
@@ -14,9 +14,11 @@ export class HomeAssistant {
 
     @ViewChild('itemcontainer', {read: ViewContainerRef, static: true}) private  itemcontainer: ViewContainerRef;
 
-    constructor(private assistant: assistant, private navigation: navigation, private language: language) {
-        this.navigation.setActiveModule('Home');
-        this.assistant.initlaize();
+    constructor(private assistant: assistant, private navigationtab: navigationtab, private language: language) {
+
+        this.assistant.initialize();
+
+        this.navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_ASSISTANT'), displaymodule: 'Home'});
     }
 
     private reload() {

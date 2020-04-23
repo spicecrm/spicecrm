@@ -99,7 +99,8 @@ export class ReporterFilterItemEnum implements OnInit, OnDestroy {
             this.enumOptions = this.language.getFieldDisplayOptions(this.moduleName, this.fieldName, true);
         } else {
             this.backend.getRequest('KReporter/core/enumoptions', {path: this.wherecondition.path}).subscribe(options => {
-                this.enumOptions = options;
+                if (!options || options.length == 0) return;
+                this.enumOptions = options.map(option => ({value: option.value, display: option.text}));
             });
         }
     }
