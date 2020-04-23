@@ -388,6 +388,7 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemImageModal,
         SystemNavigationCollector,
         SystemNavigationManager,
+        SystemComponentContainer,
     ]
 })
 export class SystemComponents {
