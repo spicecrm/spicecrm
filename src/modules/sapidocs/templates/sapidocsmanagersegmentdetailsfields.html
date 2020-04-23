@@ -1,18 +1,18 @@
 <div class="slds-m-vertical--xx-small slds-box slds-grid slds-grid--vertical" >
-    <table class="slds-table slds-table--fixed-layout slds-table--header-fixed slds-max-medium-table_stacked-horizontal slds-table--bordered">
+    <table class="slds-table slds-table--fixed-layout slds-max-medium-table_stacked-horizontal slds-table--bordered">
         <thead>
             <tr class="slds-text-title--caps">
-                <th  scope="col">
-                    <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                <th scope="col">
+                    <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" (click)="sortBy('sap_field')">
                         <span class="slds-truncate"><system-label label="LBL_SAPIDOC_SAP_FIELD"></system-label></span>
                     </a>
                 </th>
-                <th  scope="col">
-                    <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                <th scope="col">
+                    <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset"  (click)="sortBy('mapping_field')">
                         <span class="slds-truncate"><system-label label="LBL_SAPIDOC_MAPPING_FIELD"></system-label></span>
                     </a>
                 </th>
-                <th  scope="col">
+                <th scope="col">
                     <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
                         <span class="slds-truncate"><system-label label="LBL_SAPIDOC_IDENTIFIER"></system-label></span>
                     </a>

@@ -1,5 +1,5 @@
 /**
- * @module ModuleScrum
+ * @module ModuleSAPIDOCs
  */
 import {Component, Input, OnInit} from '@angular/core';
 import {language} from "../../../services/language.service";

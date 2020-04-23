@@ -1,10 +1,11 @@
 /**
- * @module ModuleScrum
+ * @module ModuleSAPIDOCs
  */
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, Injector} from '@angular/core';
 import {language} from "../../../services/language.service";
-import {backend} from "../../../services/backend.service";
+import {modal} from "../../../services/modal.service";
 import {sapIdocsManager} from "../../../modules/sapidocs/services/sapidocsmanager.service";
+import {sapIDOCSegmentI, sapIDOCSegmentRelationI} from "../../../modules/sapidocs/interfaces/moudesapidocs.interfaces";
 
 @Component({
     selector: '[sapidocs-manager-segments-tree-node]',
@@ -30,16 +31,19 @@ export class SAPIDOCsManagerSegmentsTreeNode implements OnInit {
     /**
      * the segment details
      */
-    private segment: any = {};
+    private segment: sapIDOCSegmentI;
 
     /**
      * the segments underneath this one
      */
-    private children: any[] = [];
+    private children: sapIDOCSegmentRelationI[] = [];
 
+    /**
+     * boolean flag if the node is expanded
+     */
     private expanded: boolean = false;
 
-    constructor(private language: language, private sapIdocsManager: sapIdocsManager) {
+    constructor(private language: language, private modal: modal, private injector: Injector, private sapIdocsManager: sapIdocsManager) {
 
     }
 
@@ -51,6 +55,9 @@ export class SAPIDOCsManagerSegmentsTreeNode implements OnInit {
         this.children = this.sapIdocsManager.getSegments(this.segmentrelation.segment_id);
     }
 
+    /**
+     * returns a boolean if the current segment is selected
+     */
     get selected() {
         return this.segment.id == this.sapIdocsManager.selectedsegment;
     }
@@ -68,6 +75,23 @@ export class SAPIDOCsManagerSegmentsTreeNode implements OnInit {
     private selectNode(e: MouseEvent) {
         e.stopPropagation();
         this.sapIdocsManager.selectSegment(this.segment.id);
+    }
+
+    // open the add segment modal
+    private addSegment() {
+        this.modal.openModal('SAPIDOCsManagerSegmentAddModal', true, this.injector).subscribe(componentRef => {
+            componentRef.instance.parentsegment_id = this.segment.id;
+            componentRef.instance.added.subscribe((added: sapIDOCSegmentI) => {
+                // get the children
+                this.children = this.sapIdocsManager.getSegments(this.segmentrelation.segment_id);
+
+                // expand the node
+                this.expanded = true;
+
+                // select the new segment
+                this.sapIdocsManager.selectSegment(added.id);
+            });
+        });
     }
 
 }

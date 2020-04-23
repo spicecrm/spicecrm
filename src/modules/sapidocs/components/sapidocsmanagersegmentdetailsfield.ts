@@ -1,11 +1,12 @@
 /**
- * @module ModuleScrum
+ * @module ModuleSAPIDOCs
  */
 import {Component, OnDestroy, ChangeDetectorRef} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {backend} from "../../../services/backend.service";
 import {sapIdocsManager} from "../../../modules/sapidocs/services/sapidocsmanager.service";
 import {Subscription} from "rxjs";
+import {sapIDOCFieldI} from "../../../modules/sapidocs/interfaces/moudesapidocs.interfaces";
 
 @Component({
     selector: 'sapidocs-manager-segment-details-field',
@@ -16,7 +17,7 @@ export class SAPIDOCsManagerSegmentDetailsField implements OnDestroy {
     /**
      * holds the details about the idoc field
      */
-    private field: any;
+    private field: sapIDOCFieldI;
 
     /**
      * holds the subscriptions

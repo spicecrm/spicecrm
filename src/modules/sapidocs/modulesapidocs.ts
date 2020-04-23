@@ -1,5 +1,5 @@
 /**
- * @module ModuleScrum
+ * @module ModuleSAPIDOCs
  */
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
@@ -10,6 +10,8 @@ import {GlobalComponents} from '../../globalcomponents/globalcomponents';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
+
+import /*embed*/ {sapIDOCSegmentI, sapIDOCSegmentRelationI} from "./interfaces/moudesapidocs.interfaces";
 
 import /*embed*/ {sapIdocsManager} from "./services/sapidocsmanager.service";
 
@@ -22,6 +24,7 @@ import /*embed*/ {SAPIDOCsManagerSegmentDetailsSegment} from "./components/sapid
 import /*embed*/ {SAPIDOCsManagerSegmentDetailsSegmentrelation} from "./components/sapidocsmanagersegmentdetailssegmentrelation";
 import /*embed*/ {SAPIDOCsManagerSegmentDetailsFields} from "./components/sapidocsmanagersegmentdetailsfields";
 import /*embed*/ {SAPIDOCsManagerSegmentDetailsField} from "./components/sapidocsmanagersegmentdetailsfield";
+import /*embed*/ {SAPIDOCsManagerSegmentAddModal} from "./components/sapidocsmanagersegmentaddmodal";
 import /*embed*/ {SAPIDOCsMonitor} from "./components/sapidocsmonitor";
 
 @NgModule({
@@ -44,7 +47,8 @@ import /*embed*/ {SAPIDOCsMonitor} from "./components/sapidocsmonitor";
         SAPIDOCsManagerSegmentDetailsSegmentrelation,
         SAPIDOCsManagerSegmentDetailsFields,
         SAPIDOCsManagerSegmentDetailsField,
+        SAPIDOCsManagerSegmentAddModal,
         SAPIDOCsMonitor
     ],
 })
-export class ModuleSAPIOCs {}
+export class ModuleSAPIDOCs {}

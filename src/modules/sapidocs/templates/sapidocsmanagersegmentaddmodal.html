@@ -1,10 +1,15 @@
 <system-modal>
-    <system-modal-header (close)="close()"></system-modal-header>
+    <system-modal-header (close)="close()"><system-label label="LBL_SAPIDOC_ADD_SEGMENT"></system-label></system-modal-header>
     <system-modal-content>
-        adds a new segment
+        <div class="slds-form-element slds-col slds-size--1-of-1">
+            <label class="slds-form-element__label"><system-label label="LBL_SAPIDOC_SEGMENT"></system-label></label>
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" [(ngModel)]="segment.sap_segment"/>
+            </div>
+        </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral"><system-label label="LBL_CANCEL"></system-label></button>
-        <button class="slds-button slds-button--brand"><system-label label="LBL_ADD"></system-label></button>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="add()"><system-label label="LBL_ADD"></system-label></button>
     </system-modal-footer>
 </system-modal>
