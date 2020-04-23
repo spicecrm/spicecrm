@@ -125,7 +125,6 @@ export class MediaFileUploader {
         if (!this.model.getField('name')) {
             this.model.setField('name', this.mediaMetaData.filename.replace(/\.[^\.]+$/, '').replace(/_/, ' '));
         }
-        this.model.setField('mediatype', 1 ); // 1 ... image
         this.model.setField('filetype', imageData.substring( 0, positionDelimiter ));
     }
 
