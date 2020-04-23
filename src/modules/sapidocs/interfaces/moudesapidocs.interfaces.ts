@@ -41,7 +41,7 @@ export interface sapIDOCFieldI {
     custom_field_function?: string;
     mapping_rule?: string;
     mapping_order?: string;
-    mapping_field_default: string;
-    mapping_field_prefix: string;
-    value_conector: string;
+    mapping_field_default?: string;
+    mapping_field_prefix?: string;
+    value_conector?: string;
 }

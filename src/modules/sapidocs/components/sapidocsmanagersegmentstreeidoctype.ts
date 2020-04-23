@@ -59,5 +59,12 @@ export class SAPIDOCsManagerSegmentsTreeIdocType implements OnInit {
         this.sapIdocsManager.selectSegment(undefined);
     }
 
+    /**
+     * returns if the node is deleted
+     */
+    get deleted(){
+        return this.idoctype.deleted == '1';
+    }
+
 }
 

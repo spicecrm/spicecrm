@@ -24,7 +24,9 @@ import /*embed*/ {SAPIDOCsManagerSegmentDetailsSegment} from "./components/sapid
 import /*embed*/ {SAPIDOCsManagerSegmentDetailsSegmentrelation} from "./components/sapidocsmanagersegmentdetailssegmentrelation";
 import /*embed*/ {SAPIDOCsManagerSegmentDetailsFields} from "./components/sapidocsmanagersegmentdetailsfields";
 import /*embed*/ {SAPIDOCsManagerSegmentDetailsField} from "./components/sapidocsmanagersegmentdetailsfield";
+import /*embed*/ {SAPIDOCsManagerIDOCTypeAddModal} from "./components/sapidocsmanageridoctypeaddmodal";
 import /*embed*/ {SAPIDOCsManagerSegmentAddModal} from "./components/sapidocsmanagersegmentaddmodal";
+import /*embed*/ {SAPIDOCsManagerFieldAddModal} from "./components/sapidocsmanagerfieldaddmodal";
 import /*embed*/ {SAPIDOCsMonitor} from "./components/sapidocsmonitor";
 
 @NgModule({
@@ -47,7 +49,9 @@ import /*embed*/ {SAPIDOCsMonitor} from "./components/sapidocsmonitor";
         SAPIDOCsManagerSegmentDetailsSegmentrelation,
         SAPIDOCsManagerSegmentDetailsFields,
         SAPIDOCsManagerSegmentDetailsField,
+        SAPIDOCsManagerIDOCTypeAddModal,
         SAPIDOCsManagerSegmentAddModal,
+        SAPIDOCsManagerFieldAddModal,
         SAPIDOCsMonitor
     ],
 })

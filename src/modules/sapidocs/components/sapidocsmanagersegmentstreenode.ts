@@ -56,6 +56,13 @@ export class SAPIDOCsManagerSegmentsTreeNode implements OnInit {
     }
 
     /**
+     * returns if the node is deleted
+     */
+    get deleted() {
+        return this.segment.deleted == '1';
+    }
+
+    /**
      * returns a boolean if the current segment is selected
      */
     get selected() {
