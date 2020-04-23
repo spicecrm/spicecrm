@@ -1,0 +1,14 @@
+<div class="slds-progress slds-progress_vertical slds-align_absolute-center slds-p-horizontal--large">
+    <ol class="slds-progress__list">
+        <li class="slds-progress__item" *ngFor="let step of spiceinstaller.steps" [ngClass]="{'slds-is-active': step.visible, 'slds-is-completed': step.completed}" >
+            <!--span *ngIf="step.completed" class="slds-icon_container slds-icon-utility-success slds-progress__marker slds-progress__marker_icon slds-progress__marker_icon-success" title="Complete">
+                <system-utility-icon icon="check" size="x-small"></system-utility-icon>
+            </span-->
+            <div class="slds-progress__marker"></div>
+            <div class="slds-progress__item_content slds-grid slds-grid_align-spread">{{step.name}}</div>
+        </li>
+    </ol>
+    <div aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" role="progressbar">
+        <span class="slds-assistive-text">Progress: 25%</span>
+    </div>
+</div>
