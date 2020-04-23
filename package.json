@@ -36,6 +36,7 @@
     "request": "^2.88.0",
     "rxjs": "~6.5.3",
     "systemjs": "^0.21.6",
+    "ts-md5": "^1.2.7",
     "tslib": "^1.10.0",
     "typedoc": "^0.14.2",
     "typedoc-plugin-external-module-name": "^2.0.0",
