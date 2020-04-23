@@ -132,9 +132,6 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
         // SPICEUI-2
         this.model.id = undefined;
         this.model.initializeModel(this.activitiytimeline.parent);
-
-        // set start editing here as well so we can block navigating away
-        this.model.startEdit(false);
     }
 
     /**
@@ -144,6 +141,9 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
         if (!this.isExpanded) {
             this.isExpanded = true;
             this.initializeModule();
+
+            // set start editing here as well so we can block navigating away
+            this.model.startEdit(false);
         }
     }
 
