@@ -15,15 +15,15 @@ import {view} from '../../../services/view.service';
     providers: [view, model]
 })
 export class LeadConvertContact implements AfterViewInit, OnInit {
-    @ViewChild('detailcontainer', {read: ViewContainerRef, static: true}) detailcontainer: ViewContainerRef;
+    @ViewChild('detailcontainer', {read: ViewContainerRef, static: true}) public detailcontainer: ViewContainerRef;
 
-    @Input() lead: model = undefined;
-    @Output() contact: EventEmitter<model> = new EventEmitter<model>();
+    @Input() public lead: model = undefined;
+    @Output() public contact: EventEmitter<model> = new EventEmitter<model>();
 
-    initialized: boolean = false;
-    componentSet: string = '';
-    componentconfig: any = {};
-    componentRefs: any = [];
+    public initialized: boolean = false;
+    public componentSet: string = '';
+    public componentconfig: any = {};
+    public componentRefs: any = [];
 
     constructor(private view: view, private metadata: metadata, private model: model) {
         this.model.module = 'Contacts';
@@ -33,8 +33,8 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
         this.view.setEditMode();
     }
 
-    ngOnInit() {
-        console.log(this.model.data);
+    public ngOnInit() {
+        // console.log(this.model.data);
 
         this.lead.data$.subscribe(data => {
 
@@ -74,12 +74,12 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
         this.contact.emit(this.model);
     }
 
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
         this.initialized = true;
         this.buildContainer();
     }
 
-    buildContainer() {
+    public buildContainer() {
         // Close any already open dialogs
         // this.container.clear();
         for (let component of this.componentRefs) {
@@ -89,7 +89,7 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
         let componentconfig = this.metadata.getComponentConfig('ObjectRecordDetails', this.model.module);
         for (let panel of this.metadata.getComponentSetObjects(componentconfig.componentset)) {
             this.metadata.addComponent(panel.component, this.detailcontainer).subscribe(componentRef => {
-                componentRef.instance['componentconfig'] = panel.componentconfig;
+                componentRef.instance.componentconfig = panel.componentconfig;
                 this.componentRefs.push(componentRef);
             });
         }
