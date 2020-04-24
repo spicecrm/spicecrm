@@ -16,7 +16,7 @@
                         </li>
                     </ul>
                     <div *ngIf="activeTab == 'tree'" class="slds-tabs--default__content slds-show slds-p-vertical--none" role="tabpanel" style="height: calc(100% - 40px); background-color: #fafaf9">
-                        <div class="slds-scrollable--y spicecrm-scrollbar" style="height: 100%">
+                        <div class="slds-scrollable--y spice-scrollbar" style="height: 100%">
                             <system-tree
                                     *ngIf="selectedBook && documents.length > 0 && !isLoading"
                                     [config]="config"

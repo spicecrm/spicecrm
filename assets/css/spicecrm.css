@@ -31,12 +31,6 @@
     --color-progressbar_item-completed: #080707;
 }
 
-/*
-body, .x-body {
-    font-family: 'Titillium Web', sans-serif;
-}
-*/
-
 html {
     font-family: 'Titillium Web', sans-serif;
 }
@@ -46,11 +40,12 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
     display: none;
 }
 
-
+/* Keeps the <input> elements of the login form unchanged (white) also when its values are autofilled by the browser. */
 input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0px 1000px white inset;
 }
 
+/* strombo: delete! */
 .required {
     float: left;
     padding-right: 2px;
@@ -58,10 +53,12 @@ input:-webkit-autofill {
     font-weight: 700;
 }
 
+/* strombo: delete! */
 .slds-global-header_container {
     z-index: 999;
 }
 
+/* Separator / horizontal line at the beginning of a timeline activity. */
 .spiceActivitiyTimelineHeader::before {
     position: absolute;
     right: 0;
@@ -72,12 +69,14 @@ input:-webkit-autofill {
     content: ' ';
 }
 
-.spicecrm-fieldbody {
+/* strombo: ??? */
+.spice-fieldbody {
     /*padding: 5px 0px*/;
     min-height: 29px;
 }
 
-.spicecrm-fieldminheight {
+/* Keep fields when in display mode in the same size as when in edit mode. */
+.spice-fieldminheight {
     /*padding: 5px 0px*/;
     min-height: 34px;
 }

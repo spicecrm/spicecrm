@@ -39,7 +39,7 @@ export class ObjectRecordFieldset implements OnInit {
     /**
      * an optional set of classes that will be applied to fields in teh fieldset
      */
-    @Input() private fielddisplayclass: string = 'slds-has-divider--bottom slds-p-vertical--x-small spicecrm-fieldminheight';
+    @Input() private fielddisplayclass: string = 'slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight';
 
 
     /**
