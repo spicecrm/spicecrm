@@ -1,11 +1,9 @@
-<div cdkDropList #dropList="cdkDropList" [cdkDropListData]="column.elements" (cdkDropListDropped)="onDrop($event)" class="slds-size--1-of-1 slds-height_full">
-    <div *ngFor="let element of column.elements; trackBy: trackByFn" cdkDrag [cdkDragData]="element" [ngStyle]="element.style" class="slds-grid slds-height_full slds-grow slds-drag--preview">
-        <ng-container [ngSwitch]="element.type">
-            <spice-page-builder-renderer-image *ngSwitchCase="'image'" [image]="element"></spice-page-builder-renderer-image>
-            <spice-page-builder-renderer-text *ngSwitchCase="'text'" [text]="element"></spice-page-builder-renderer-text>
-        </ng-container>
-    </div>
-    <div *ngIf="column.elements?.length == 0" class="slds-align--absolute-center slds-height_full slds-p-around--xx-small slds-size--1-of-1">
+<div [ngStyle]="column.style" cdkDropList #dropList="cdkDropList" [cdkDropListEnterPredicate]="contentPredicate" [cdkDropListData]="column" (cdkDropListEntered)="dragEntered = true" (cdkDropListExited)="dragEntered = false" (cdkDropListDropped)="onDrop($event)" class="slds-grid slds-grid--vertical spice-page-builder-renderer-drop-list">
+    <ng-container *ngFor="let element of column.elements; trackBy: trackByFn" [ngSwitch]="element.type">
+        <spice-page-builder-renderer-image *ngSwitchCase="'image'" [image]="element" (delete$)="onContentDelete(element)" cdkDrag [cdkDragData]="element" class="slds-grid slds-grow slds-drag--preview" style="width: 100%"></spice-page-builder-renderer-image>
+        <spice-page-builder-renderer-text *ngSwitchCase="'text'" [text]="element" (delete$)="onContentDelete(element)" cdkDrag [cdkDragData]="element" class="slds-grid slds-grow slds-drag--preview" style="width: 100%"></spice-page-builder-renderer-text>
+    </ng-container>
+    <div *ngIf="!dragEntered && column.elements?.length == 0" class="slds-align--absolute-center slds-size--1-of-1" style="height: 200px">
         <div class="slds-align--absolute-center slds-height_full slds-size--1-of-1 slds-theme--shade slds-text-title--caps slds-truncate">
             Drop Content Here
         </div>

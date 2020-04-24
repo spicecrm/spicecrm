@@ -1,1 +1,31 @@
-<img [src]="image.src" alt="SpiceCRM image" class="slds-height_full slds-size--1-of-1">
+<div class="spice-drop-zone" [class.slds-is-hovered]="spicePageBuilderService.isMouseIn == 'content'" (mouseenter)="setIsMouseIn(true)" (mouseleave)="setIsMouseIn(false)" tabindex="-1">
+    <div class="spice-drop-zone-label">
+        <div class="slds-media slds-media_center">
+            <div class="slds-media__figure">
+                <system-icon icon="image" sprite="utility" size="x-small" divClass="slds-current-color"></system-icon>
+            </div>
+            <div class="slds-media__body">
+                <h2> Image </h2>
+            </div>
+        </div>
+    </div>
+    <article class="spice-drop-zone-content" [ngStyle]="image.style">
+        <img [src]="image.src" alt="SpiceCRM image">
+    </article>
+    <div class="spice-drop-zone-actions">
+        <div class="slds-button-group" role="group">
+            <button cdkDragHandle class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_MOVE">
+                <system-button-icon icon="move" addclasses="slds-icon"></system-button-icon>
+            </button>
+            <button (click)="edit()" class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_CLOSE">
+                <system-button-icon icon="edit" addclasses="slds-icon"></system-button-icon>
+            </button>
+            <button (click)="delete$.emit()" class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_CLOSE">
+                <system-button-icon icon="close" addclasses="slds-icon"></system-button-icon>
+            </button>
+        </div>
+    </div>
+</div>
+
+
+

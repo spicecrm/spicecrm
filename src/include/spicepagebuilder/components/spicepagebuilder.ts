@@ -31,6 +31,9 @@ export class SpicePageBuilder implements AfterViewInit {
      * set the navigation tab info data
      */
     private setNavigationTabInfo() {
-        this.navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_PAGE_BUILDER')});
+        this.navigationtab.setTabInfo({
+            displayname: this.language.getLabel('LBL_PAGE_BUILDER'),
+            displayicon: 'builder'
+        });
     }
 }

@@ -1,9 +1,11 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {AfterViewInit, ChangeDetectionStrategy, Component, Input, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewChild} from '@angular/core';
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
-import {CdkDrag, CdkDragDrop, CdkDropList} from "@angular/cdk/drag-drop";
+import {CdkDrag, CdkDragDrop, CdkDragEnter, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop";
+import {modal} from "../../../services/modal.service";
+import {Observable, Subject} from "rxjs";
 
 /**
  * Parse and renders renderer container
@@ -14,19 +16,26 @@ import {CdkDrag, CdkDragDrop, CdkDropList} from "@angular/cdk/drag-drop";
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderRendererColumn implements AfterViewInit {
-    @ViewChild('dropList', {read: CdkDropList, static: false}) private dropList: CdkDropList;
+    /**
+     * holds the drag entered value
+     */
+    private dragEntered: boolean = false;
     /**
      * containers to be rendered
      */
     @Input() protected readonly column: { type, elements, style };
+    /**
+     * read drop list dom element to be added to the group
+     */
+    @ViewChild('dropList', {read: CdkDropList, static: false}) private dropList: CdkDropList;
 
-    constructor(private spicePageBuilderService: SpicePageBuilderService) {
+    constructor(private spicePageBuilderService: SpicePageBuilderService,
+                private modal: modal,
+                private cdRef: ChangeDetectorRef) {
     }
 
     public ngAfterViewInit(): void {
-        if (!this.spicePageBuilderService.dropListGroup._items.has(this.dropList)) {
-            this.spicePageBuilderService.dropListGroup._items.add(this.dropList);
-        }
+        this.spicePageBuilderService.addDropListToGroup(this.dropList);
     }
 
     /**
@@ -52,9 +61,77 @@ export class SpicePageBuilderRendererColumn implements AfterViewInit {
     private onDrop(event: CdkDragDrop<any>) {
 
         if (event.previousContainer != event.container) {
-            event.container.data.push(
-                {...event.item.data}
-            );
+            // remove placeholder element
+            if (this.spicePageBuilderService.dragPlaceholderNode && event.previousContainer.element.nativeElement.contains(this.spicePageBuilderService.dragPlaceholderNode)) {
+                event.previousContainer.element.nativeElement.removeChild(this.spicePageBuilderService.dragPlaceholderNode);
+                this.spicePageBuilderService.dragPlaceholderNode = undefined;
+            }
+
+            // remove the item if it comes from a sibling list
+            if (event.previousContainer.id.indexOf('panel-drop-list') == -1) {
+                event.previousContainer.data.elements = event.previousContainer.data.elements.filter(item => item != event.item.data);
+            }
+
+            switch (event.item.data.type) {
+                case 'image':
+                    this.openMediaFilePicker().subscribe(src => {
+                        if (!!src) {
+                            const image = {...event.item.data};
+                            image.src = src;
+                            event.container.data.elements.push(image);
+                            this.cdRef.detectChanges();
+                        }
+                    });
+                    break;
+                default:
+                    event.container.data.elements.push(
+                        {...event.item.data}
+                    );
+            }
+        } else {
+            moveItemInArray(event.container.data.sections, event.previousIndex, event.currentIndex);
         }
+        this.dragEntered = false;
+    }
+
+    /**
+     * open media file picker modal and return the src of the image
+     * @return src: string
+     */
+    private openMediaFilePicker(): Observable<string> {
+
+        const response: Subject<string> = new Subject();
+
+        this.modal.openModal('MediaFilePicker').subscribe(componentRef => {
+            componentRef.instance.answer.subscribe(image => {
+
+                if (!image) {
+                    response.next(undefined);
+                    response.complete();
+                }
+
+                if (image.upload) {
+                    this.modal.openModal('MediaFileUploader').subscribe(uploadComponentRef => {
+                        uploadComponentRef.instance.answer.subscribe(uploadimage => {
+                            response.next(!uploadimage ? undefined : 'https://cdn.spicecrm.io/' + uploadimage);
+                            response.complete();
+                        });
+                    });
+                } else {
+                    response.next(!image.id ? undefined : 'https://cdn.spicecrm.io/' + image.id);
+                    response.complete();
+                }
+            });
+        });
+
+        return response.asObservable();
+    }
+
+    /**
+     * delete the content element from the column
+     * @param element
+     */
+    private onContentDelete(element) {
+        this.column.elements = this.column.elements.filter(item => item != element);
     }
 }

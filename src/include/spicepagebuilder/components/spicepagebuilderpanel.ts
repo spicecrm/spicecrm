@@ -3,7 +3,7 @@
  */
 import {Component} from '@angular/core';
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
-import {CdkDragExit} from "@angular/cdk/drag-drop";
+import {CdkDragEnter, CdkDragExit} from "@angular/cdk/drag-drop";
 
 /**
  * render a set of tools and configurations to be used for building pages
@@ -18,7 +18,12 @@ export class SpicePageBuilderPanel {
     protected contentElements: any[] = [
         {
             type: 'text',
-            style: {},
+            style: {
+                'padding': '4px',
+                'height': '200px',
+                'width': '100%',
+                'background-color': '#e7e7e7',
+            },
             content: 'Write Text Here'
         },
         {
@@ -51,7 +56,7 @@ export class SpicePageBuilderPanel {
             let columns = [];
 
             while (counterColumn <= counterSection) {
-                columns.push({type: 'column', style: {}, elements: []});
+                columns.push({type: 'column', style: {padding: '8px'}, elements: []});
                 counterColumn++;
             }
             this.sections.push({
@@ -59,8 +64,7 @@ export class SpicePageBuilderPanel {
                 style:
                     {
                         'background-color': '#C1DFFF',
-                        'min-height': '150px',
-                        'margin': '.25rem'
+                        'margin-bottom': '.5rem'
                     },
                 columns
             });
@@ -88,10 +92,22 @@ export class SpicePageBuilderPanel {
 
     /**
      * emit drag exited to parent
-     * @param itemType
      * @param event
      */
-    private onDragExit(itemType: 'section' | 'content', event: CdkDragExit) {
-        event.container.addItem(event.item);
+    private onDragExit(event: CdkDragExit) {
+        const placeholderNode: any = event.item.getPlaceholderElement().cloneNode(true);
+        this.spicePageBuilderService.dragPlaceholderNode = placeholderNode;
+        event.container.element.nativeElement.insertBefore(placeholderNode, event.item.getPlaceholderElement());
+    }
+
+    /**
+     * remove placeholder element if exists
+     * @param event
+     */
+    private onDragEnter(event: CdkDragEnter) {
+        if (this.spicePageBuilderService.dragPlaceholderNode && event.container.element.nativeElement.contains(this.spicePageBuilderService.dragPlaceholderNode)) {
+            event.container.element.nativeElement.removeChild(this.spicePageBuilderService.dragPlaceholderNode);
+            this.spicePageBuilderService.dragPlaceholderNode = undefined;
+        }
     }
 }
