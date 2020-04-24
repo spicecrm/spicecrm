@@ -81,45 +81,50 @@ input:-webkit-autofill {
     min-height: 34px;
 }
 
-/* filter panel */
+/* filter panel: position it to the right side and overlay the record list. */
 object-listview-filter-panel {
     right: 0px;
     z-index: 90;
 }
 
+/* filter panel: expand it to the full height of the record list and give it a shadow on the left side to differentiate it from the record list in the background. */
 object-listview-filter-panel .slds-panel {
-    height: 100%;
+    height: 100%; /* strombo: height does nothing because overwritten by inline style */
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .40)
 }
 
+/* aggregates panel: position it to the right side and overlay the record list. */
 object-listview-aggregates-panel {
     right: 0px;
     z-index: 90;
 }
 
+/* aggregates panel: expand it to the full height of the record list and give it a shadow on the left side to differentiate it from the record list in the background. */
 object-listview-aggregates-panel .slds-panel {
     height: 100%;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .40)
 }
 
+/* in non-tabbed navigation menu: horizontal arrangement of text and icon. */
 global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-more li.slds-dropdown-trigger {
     display: flex;
 }
 
+/* SLDS OVERRIDES */
 
-
-/* slds overrides */
-
-/* animate icon on collapsible tab ToDo: replace by angular animation */
+/* animate icon on collapsible tab */
+/* ToDo: replace by angular animation */
 .slds-section__title-action-icon {
     transition: 0.5s;
 }
 
+/* a 1 pixel gap between tab and bold horizontal line. */
 .slds-context-bar__item:before {
     bottom: 1px;
 }
 
-.slds-box--border.slds-has-error {
+/* a red border for the invalid input fields. */
+.slds-box--border.slds-has-error, .slds-box_border.slds-has-error {
     background-color: #fff;
     border-color: #c23934;
     box-shadow: #c23934 0 0 0 1px inset;
@@ -143,10 +148,12 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     background-color: rgba(155, 155, 155, .1);
 }
 
+/* strombo: delete! (spiceAnim not in use anywhere) */
 .slds-context-bar__item.slds-is-active {
     animation: spiceAnim 135ms cubic-bezier(.39, .575, .565, 1) both
 }
 
+/* strombo: delete! (spiceAnim not in use anywhere) */
 @keyframes spiceAnim {
     50% {
         background-color: #fff
@@ -160,7 +167,6 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 .slds-button span {
     display: inline-block;
 }
-
 .slds-button span::first-letter {
     text-transform: capitalize;
 }
@@ -199,15 +205,12 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 .slds-illustration .slds-illustration__stroke-primary {
     stroke: #aaa;
 }
-
 .slds-illustration .slds-illustration__fill-primary {
     fill: #bbb;
 }
-
 .slds-illustration .slds-illustration__stroke-secondary {
     stroke: #ccc;
 }
-
 .slds-illustration .slds-illustration__fill-secondary {
     fill: #eee;
 }
