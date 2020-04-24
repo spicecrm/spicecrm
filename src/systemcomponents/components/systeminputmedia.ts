@@ -103,7 +103,6 @@ export class SystemInputMedia implements OnDestroy {
     @Input('mimetype') public set _mimetype( value: string ) {
         this.mediaMetaData.mimetype = value;
         this.mediaMetaData.fileformat = this.getFileformatFromMimetype( this.mediaMetaData.mimetype ) as string;
-        console.log(this.mediaMetaData);
     }
 
     @Output('mimetype') public mimetype = new EventEmitter<string>();
