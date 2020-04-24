@@ -1,8 +1,9 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, Input, ViewChild} from '@angular/core';
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
+import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop";
 
 /**
  * Parse and renders renderer container
@@ -14,19 +15,26 @@ import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 })
 export class SpicePageBuilderRendererContainer implements AfterViewInit {
     /**
+     * holds the drag entered value
+     */
+    private dragEntered: boolean = false;
+    /**
      * containers to be rendered
      */
     @Input() protected readonly container: { type, sections, style };
     /**
-     * emit after view init
+     * read drop list dom element to be added to the group
      */
-    @Output() private domRendered$: EventEmitter<void> = new EventEmitter();
+    @ViewChild('dropList', {read: CdkDropList, static: false}) private dropList: CdkDropList;
 
     constructor(private spicePageBuilderService: SpicePageBuilderService) {
     }
 
+    /**
+     * add drop list to group
+     */
     public ngAfterViewInit() {
-        this.domRendered$.emit();
+        this.spicePageBuilderService.addDropListToGroup(this.dropList);
     }
 
     /**
@@ -40,12 +48,37 @@ export class SpicePageBuilderRendererContainer implements AfterViewInit {
         return index;
     }
 
+    /** Predicate method that only allows sections to be dropped into a list. */
+    protected sectionPredicate(item: CdkDrag<any>) {
+        return item.data.type == 'section';
+    }
+
     /**
      * handle deleting section from container
      * @param section
      */
     private onSectionDelete(section) {
         this.container.sections = this.container.sections.filter(item => item != section);
+    }
 
+    /**
+     * push the dropped item to the container array
+     * @param event
+     */
+    private onDrop(event: CdkDragDrop<any>) {
+
+        if (event.previousContainer != event.container) {
+            // remove placeholder element
+            if (this.spicePageBuilderService.dragPlaceholderNode && event.previousContainer.element.nativeElement.contains(this.spicePageBuilderService.dragPlaceholderNode)) {
+                event.previousContainer.element.nativeElement.removeChild(this.spicePageBuilderService.dragPlaceholderNode);
+                this.spicePageBuilderService.dragPlaceholderNode = undefined;
+            }
+            const section = JSON.parse(JSON.stringify(event.item.data));
+            section.columns.map(column => column);
+            event.container.data.sections.push(section);
+        } else {
+            moveItemInArray(event.container.data.sections, event.previousIndex, event.currentIndex);
+
+        }
     }
 }

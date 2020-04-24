@@ -11,8 +11,8 @@ import /*embed*/ {SpicePageBuilderService} from './services/spicepagebuilder.ser
 
 import /*embed*/ {SpicePageBuilder} from './components/spicepagebuilder';
 import /*embed*/ {SpicePageBuilderPanel} from './components/spicepagebuilderpanel';
+import /*embed*/ {SpicePageBuilderPanelEditor} from './components/spicepagebuilderpaneleditor';
 import /*embed*/ {SpicePageBuilderRenderer} from './components/spicepagebuilderrenderer';
-import /*embed*/ {SpicePageBuilderRendererDropZone} from './components/spicepagebuilderrendererdropzone';
 import /*embed*/ {SpicePageBuilderRendererContainer} from './components/spicepagebuilderrenderercontainer';
 import /*embed*/ {SpicePageBuilderRendererSection} from './components/spicepagebuilderrenderersection';
 import /*embed*/ {SpicePageBuilderRendererColumn} from './components/spicepagebuilderrenderercolumn';
@@ -27,8 +27,8 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
     declarations: [
         SpicePageBuilder,
         SpicePageBuilderPanel,
+        SpicePageBuilderPanelEditor,
         SpicePageBuilderRenderer,
-        SpicePageBuilderRendererDropZone,
         SpicePageBuilderRendererContainer,
         SpicePageBuilderRendererSection,
         SpicePageBuilderRendererColumn,
