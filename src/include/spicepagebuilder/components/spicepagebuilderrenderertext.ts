@@ -1,8 +1,9 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {ChangeDetectionStrategy, Component, HostListener, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
+import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 
 /**
  * Parse and renders renderer container
@@ -22,12 +23,11 @@ export class SpicePageBuilderRendererText implements OnInit {
      */
     private sanitizedContent: SafeHtml = '';
     /**
-     * save show drop zone boolean
+     * emit when delete button clicked
      */
-    private showDropZone: boolean = false;
+    @Output() private delete$: EventEmitter<void> = new EventEmitter();
 
-    constructor(private domSanitizer: DomSanitizer,
-    ) {
+    constructor(private domSanitizer: DomSanitizer, private spicePageBuilderService: SpicePageBuilderService) {
     }
 
     /**
@@ -44,12 +44,18 @@ export class SpicePageBuilderRendererText implements OnInit {
         this.sanitizedContent = this.domSanitizer.bypassSecurityTrustHtml(this.text.content);
     }
 
-    @HostListener('mouseenter')
-    private onMouseEnter() {
-        this.showDropZone = true;
+    /**
+     * set the hovered element level
+     * @param value
+     */
+    private setIsMouseIn(value) {
+        this.spicePageBuilderService.isMouseIn = value ? 'content' : 'section';
     }
-    @HostListener('mouseleave')
-    private onMouseLeave() {
-        this.showDropZone = false;
+
+    /**
+     * set the current editing element
+     */
+    private edit() {
+        this.spicePageBuilderService.editingElement = this.text;
     }
 }

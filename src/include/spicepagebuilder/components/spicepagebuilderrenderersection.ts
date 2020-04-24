@@ -1,7 +1,7 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {ChangeDetectionStrategy, Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 
 /**
@@ -13,14 +13,11 @@ import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderRendererSection {
+
     /**
      * containers to be rendered
      */
     @Input() protected readonly section: { type, columns, style };
-    /**
-     * save show drop zone boolean
-     */
-    private showDropZone: boolean = false;
     /**
      * emit when delete button clicked
      */
@@ -40,13 +37,11 @@ export class SpicePageBuilderRendererSection {
         return index;
     }
 
-    @HostListener('mouseenter')
-    private onMouseEnter() {
-        this.showDropZone = true;
-    }
-
-    @HostListener('mouseleave')
-    private onMouseLeave() {
-        this.showDropZone = false;
+    /**
+     * set the hovered element level
+     * @param value
+     */
+    private setIsMouseIn(value) {
+        this.spicePageBuilderService.isMouseIn = value ? 'section' : undefined;
     }
 }

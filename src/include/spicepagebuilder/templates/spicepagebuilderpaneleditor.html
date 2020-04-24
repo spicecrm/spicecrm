@@ -1,0 +1,21 @@
+<div style="height: 50%">
+    <system-section titlelabel="Element Content" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
+        <div class="slds-grid slds-size--1-of-1 slds-height_full slds-p-around--xx-small">
+
+        </div>
+    </system-section>
+</div>
+<div style="height: 50%">
+    <system-section titlelabel="Element Style" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
+        <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small">
+            <div *ngFor="let item of styleArray" class="slds-grid slds-form-element slds-m-bottom--x-small">
+                <label class="slds-form-element__label">
+                    {{item.label}}
+                </label>
+                <div class="slds-form-element__control slds-grow">
+                    <input type="text" [(ngModel)]="spicePageBuilderService.editingElement.style[item.label]" class="slds-input">
+                </div>
+            </div>
+        </div>
+    </system-section>
+</div>
