@@ -1,5 +1,5 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
-<div *ngIf="!isEditMode()" class="slds-text-body--regular slds-truncate slds-m-vertical--small spicecrm-fieldbody">
+<div *ngIf="!isEditMode()" class="slds-text-body--regular slds-truncate slds-m-vertical--small spice-fieldbody">
     <system-stencil *ngIf="model.isLoading; else displaycontent"></system-stencil>
     <ng-template #displaycontent>
         <span>{{getValue()}}</span>
