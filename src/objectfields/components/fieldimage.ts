@@ -19,6 +19,7 @@ import { backend } from '../../services/backend.service';
 import { modal } from '../../services/modal.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { fieldLabel } from './fieldlabel';
+import { SystemInputMedia } from '../../systemcomponents/components/systeminputmedia';
 
 @Component( {
     selector: 'field-simple-image',
@@ -66,9 +67,7 @@ export class fieldImage extends fieldGeneric implements OnInit, AfterViewInit {
      * The URL for the image tag.
      */
     public get imageUrl(): SafeResourceUrl {
-        let positionOfDelimiter = this.value.indexOf( '|' );
-        let fileformat = this.value.substring( 0, positionOfDelimiter );
-        return this.sanitizer.bypassSecurityTrustResourceUrl( 'data:image/' + fileformat + ';base64,' + this.value.substring( positionOfDelimiter + 1 ) );
+        return this.sanitizer.bypassSecurityTrustResourceUrl( 'data:' + this.value );
     }
 
     /**
@@ -101,9 +100,7 @@ export class fieldImage extends fieldGeneric implements OnInit, AfterViewInit {
             modalRef.instance.imageData = this.value;
 
             modalRef.instance.answer.subscribe( imageData => {
-                if ( imageData !== false ) {
-                    this.value = imageData;
-                }
+                if ( imageData !== false ) this.value = imageData;
             });
 
             if ( droppedFiles ) modalRef.instance.droppedFiles = droppedFiles;
