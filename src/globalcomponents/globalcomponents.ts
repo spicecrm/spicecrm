@@ -67,6 +67,9 @@ import /*embed*/ {GlobalAppLauncherDialog} from "./components/globalapplauncherd
 import /*embed*/ {GlobalAppLauncherDialogRoleTile} from "./components/globalapplauncherdialogroletile";
 
 import /*embed*/ {GlobalNavigationTabbed} from "./components/globalnavigationtabbed";
+import /*embed*/ {GlobalNavigationTabbedBrowser} from "./components/globalnavigationtabbedbrowser";
+import /*embed*/ {GlobalNavigationTabbedBrowserModal} from "./components/globalnavigationtabbedbrowsermodal";
+import /*embed*/ {GlobalNavigationTabbedBrowserModalTab} from "./components/globalnavigationtabbedbrowsermodaltab";
 import /*embed*/ {GlobalNavigationTabbedMenuModules} from "./components/globalnavigationtabbedmenumodules";
 import /*embed*/ {GlobalNavigationTabbedMenuModuleMenu} from "./components/globalnavigationtabbedmenumodulemenu";
 import /*embed*/ {GlobalNavigationTabbedMenuTab} from "./components/globalnavigationtabbedmenutab";
@@ -179,6 +182,9 @@ import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
         GlobalNavigationTabbedMenuModuleMenu,
         GlobalNavigationTabbedMenuTab,
         GlobalNavigationTabbedMoreTab,
+        GlobalNavigationTabbedBrowser,
+        GlobalNavigationTabbedBrowserModal,
+        GlobalNavigationTabbedBrowserModalTab,
         GlobalNavigationTabbedSubtabs,
         GlobalNavigationTabbedSubtabItem,
         GlobalNavigationTabbedSubTabMoreTab,
