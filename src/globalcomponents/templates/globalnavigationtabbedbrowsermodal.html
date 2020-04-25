@@ -1,0 +1,53 @@
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_TABS"></system-label></system-modal-header>
+    <system-modal-content margin="none">
+        <table class="slds-table slds-table--header-fixed slds-table_cell-buffer">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="" scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_TAB"></system-label></div>
+                    </th>
+                    <th scope="col" style="width: 2rem;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let tab of maintabs">
+                    <tr class="slds-hint-parent">
+                        <td>
+                            <global-navigation-tabbed-browser-modal-tab [tab]="tab" (activate)="activateTab($event)"></global-navigation-tabbed-browser-modal-tab>
+                        </td>
+                        <td class="slds-p-horizontal--none slds-text-align--center">
+                            <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-x-small slds-m-around--none" (click)="pintab(tab)">
+                                <system-button-icon [icon]="tab.pinned ? 'pinned' : 'pin'"></system-button-icon>
+                            </button>
+                            <button class="slds-button slds-button--icon slds-col--bump-left" (click)="closetab(tab.id)">
+                                <system-button-icon icon="close"></system-button-icon>
+                            </button>
+                        </td>
+                    </tr>
+                    <ng-container *ngFor="let subtab of subtabs(tab.id)" >
+                        <tr class="slds-hint-parent">
+                            <td>
+                                <global-navigation-tabbed-browser-modal-tab [tab]="subtab" [subtab]="true" (activate)="activateTab($event)"></global-navigation-tabbed-browser-modal-tab>
+                            </td>
+                            <td class="slds-p-horizontal--none slds-text-align--center">
+                                <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-x-small slds-m-around--none" (click)="pintab(subtab)">
+                                    <system-button-icon [icon]="subtab.pinned ? 'pinned' : 'pin'"></system-button-icon>
+                                </button>
+                                <button class="slds-button slds-button--icon slds-col--bump-left"  (click)="closetab(subtab.id)">
+                                    <system-button-icon icon="close"></system-button-icon>
+                                </button>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </ng-container>
+            </tbody>
+        </table>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <div>{{tabs}} <system-label label="LBL_TABS"></system-label> / {{models}} <system-label label="LBL_MODELS"></system-label></div>
+            <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_OK"></system-label></button>
+        </div>
+    </system-modal-footer>
+</system-modal>

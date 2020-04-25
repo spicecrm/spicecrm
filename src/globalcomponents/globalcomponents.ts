@@ -74,6 +74,9 @@ import /*embed*/ {GlobalNavigationTabbedMoreTab} from "./components/globalnaviga
 import /*embed*/ {GlobalNavigationTabbedMenu} from "./components/globalnavigationtabbedmenu";
 import /*embed*/ {GlobalNavigationTabbedSubtabItem} from "./components/globalnavigationtabbedsubtabitem";
 import /*embed*/ {GlobalNavigationTabbedSubTabMoreTab} from "./components/globalnavigationtabbedsubtabmoretab";
+import /*embed*/ {GlobalNavigationTabbedBrowser} from "./components/globalnavigationtabbedbrowser";
+import /*embed*/ {GlobalNavigationTabbedBrowserModal} from "./components/globalnavigationtabbedbrowsermodal";
+import /*embed*/ {GlobalNavigationTabbedBrowserModalTab} from "./components/globalnavigationtabbedbrowsermodaltab";
 import /*embed*/ {GlobalNavigationTabbedSubtabs} from "./components/globalnavigationtabbedsubtabs";
 
 import /*embed*/ {GlobalUser} from "./components/globaluser";
@@ -179,6 +182,9 @@ import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
         GlobalNavigationTabbedMenuModuleMenu,
         GlobalNavigationTabbedMenuTab,
         GlobalNavigationTabbedMoreTab,
+        GlobalNavigationTabbedBrowser,
+        GlobalNavigationTabbedBrowserModal,
+        GlobalNavigationTabbedBrowserModalTab,
         GlobalNavigationTabbedSubtabs,
         GlobalNavigationTabbedSubtabItem,
         GlobalNavigationTabbedSubTabMoreTab,
