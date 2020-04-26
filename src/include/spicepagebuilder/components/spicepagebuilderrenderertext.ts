@@ -1,9 +1,18 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {
+    ChangeDetectionStrategy, ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Injector,
+    Input,
+    OnInit,
+    Output
+} from '@angular/core';
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
+import {modal} from "../../../services/modal.service";
 
 /**
  * Parse and renders renderer container
@@ -17,7 +26,7 @@ export class SpicePageBuilderRendererText implements OnInit {
     /**
      * containers to be rendered
      */
-    @Input() protected readonly text: { type: 'text', style, content };
+    @Input() protected text: { type: 'text', style, content };
     /**
      * hold the sanitized content html
      */
@@ -27,7 +36,11 @@ export class SpicePageBuilderRendererText implements OnInit {
      */
     @Output() private delete$: EventEmitter<void> = new EventEmitter();
 
-    constructor(private domSanitizer: DomSanitizer, private spicePageBuilderService: SpicePageBuilderService) {
+    constructor(private domSanitizer: DomSanitizer,
+                private modal: modal,
+                private injector: Injector,
+                private cdRef: ChangeDetectorRef,
+                private spicePageBuilderService: SpicePageBuilderService) {
     }
 
     /**
@@ -56,6 +69,15 @@ export class SpicePageBuilderRendererText implements OnInit {
      * set the current editing element
      */
     private edit() {
-        this.spicePageBuilderService.editingElement = this.text;
+        this.modal.openModal('SpicePageBuilderPanelEditor', true, this.injector).subscribe(modalRef => {
+            modalRef.instance.element = this.text;
+            modalRef.instance.response.subscribe(res => {
+                if (!!res) {
+                    this.text = JSON.parse(JSON.stringify(this.text));
+                    this.sanitizeContent();
+                    this.cdRef.detectChanges();
+                }
+            });
+        });
     }
 }

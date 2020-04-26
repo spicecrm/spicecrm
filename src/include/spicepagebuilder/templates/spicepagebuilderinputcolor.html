@@ -1,0 +1,9 @@
+<div class="slds-form-element">
+    <label class="slds-form-element__label">{{label}}</label>
+    <div class="slds-form-element__control slds-input-has-fixed-addon">
+        <input type="color" [(ngModel)]="value" (ngModelChange)="emitValue()" class="slds-input">
+        <span class="slds-form-element__addon">
+            {{value}}
+        </span>
+    </div>
+</div>

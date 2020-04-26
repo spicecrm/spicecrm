@@ -3,7 +3,7 @@
  */
 import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewChild} from '@angular/core';
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
-import {CdkDrag, CdkDragDrop, CdkDragEnter, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop";
+import {CdkDrag, CdkDragDrop, CdkDragEnter, CdkDragExit, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop";
 import {modal} from "../../../services/modal.service";
 import {Observable, Subject} from "rxjs";
 
@@ -85,13 +85,36 @@ export class SpicePageBuilderRendererColumn implements AfterViewInit {
                     break;
                 default:
                     event.container.data.elements.push(
-                        {...event.item.data}
+                        JSON.parse(JSON.stringify(event.item.data))
                     );
             }
         } else {
-            moveItemInArray(event.container.data.sections, event.previousIndex, event.currentIndex);
+            moveItemInArray(event.container.data.elements, event.previousIndex, event.currentIndex);
         }
         this.dragEntered = false;
+    }
+
+    /**
+     * emit drag exited to parent
+     * @param event
+     */
+    private onDragExit(event: CdkDragExit) {
+       /* const placeholderNode: any = event.item.getPlaceholderElement().cloneNode(true);
+        this.spicePageBuilderService.dragPlaceholderNode = placeholderNode;
+        event.container.element.nativeElement.insertBefore(placeholderNode, event.item.getPlaceholderElement());
+      */  this.dragEntered = false;
+    }
+
+    /**
+     * remove placeholder element if exists
+     * @param event
+     */
+    private onDragEnter(event: CdkDragEnter) {
+      /*  if (this.spicePageBuilderService.dragPlaceholderNode && event.container.element.nativeElement.contains(this.spicePageBuilderService.dragPlaceholderNode)) {
+            event.container.element.nativeElement.removeChild(this.spicePageBuilderService.dragPlaceholderNode);
+            this.spicePageBuilderService.dragPlaceholderNode = undefined;
+        }
+     */   this.dragEntered = true;
     }
 
     /**
