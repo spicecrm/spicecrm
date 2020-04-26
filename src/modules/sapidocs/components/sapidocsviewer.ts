@@ -5,29 +5,37 @@ import {AfterViewInit, Component, Input, Renderer2, ViewChild} from '@angular/co
 import {modellist} from "../../../services/modellist.service";
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
+import {backend} from "../../../services/backend.service";
 import {libloader} from "../../../services/libloader.service";
-import {ActivatedRoute} from "@angular/router";
 
 declare var html_beautify: any;
 
 @Component({
     templateUrl: './src/modules/sapidocs/templates/sapidocsviewer.html'
 })
-export class SAPIDOCsViewer implements AfterViewInit{
+export class SAPIDOCsViewer implements AfterViewInit {
 
     private self: any;
 
     private xml: string;
 
-    constructor(private metadata: metadata, private modellist: modellist, private model: model, private libloader: libloader, private renderer: Renderer2) {
+    constructor(private backend: backend, private metadata: metadata, private modellist: modellist, private model: model, private libloader: libloader, private renderer: Renderer2) {
 
     }
 
+
     public ngAfterViewInit(): void {
+        this.formatIdoc();
+    }
+
+    /**
+     * loads the formatter and formats the idoc
+     */
+    private formatIdoc() {
         this.libloader.loadLib('jsbeautify').subscribe(loaded => {
             this.xml = html_beautify(this.model.getField('idoc'), {
                 indent_size: 4,
-                indent_char:  " ",
+                indent_char: " ",
                 indent_with_tabs: false,
                 end_with_newline: false,
                 indent_level: 0,
@@ -49,8 +57,15 @@ export class SAPIDOCsViewer implements AfterViewInit{
         });
     }
 
+    /**
+     * closes the modal
+     */
     private close() {
         this.self.destroy();
+    }
+
+    private processIDOC(){
+        this.backend.postRequest('modules/SAPIdocs/'+this.model.id+'/process');
     }
 
 }
