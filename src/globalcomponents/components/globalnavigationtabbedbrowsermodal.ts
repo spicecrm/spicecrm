@@ -68,7 +68,7 @@ export class GlobalNavigationTabbedBrowserModal {
      * activate the tab with the given id and close the modal
      * @param tabid
      */
-    private activateTab(tabid){
+    private activateTab(tabid) {
         this.navigation.setActiveTab(tabid);
         this.close();
     }
@@ -78,6 +78,15 @@ export class GlobalNavigationTabbedBrowserModal {
      */
     private pintab(tab: objectTab) {
         tab.pinned = !tab.pinned;
+    }
+
+    /**
+     * clones the tab
+     *
+     * @param tab
+     */
+    private clonetab(tab: objectTab) {
+        this.navigation.cloneTab(tab.id);
     }
 
     /**
