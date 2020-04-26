@@ -1,18 +1,27 @@
 import {
     Component,
     Input,
-    OnInit, ViewChild, ViewContainerRef, ChangeDetectionStrategy, ChangeDetectorRef, SkipSelf, OnDestroy
+    OnInit,
+    ChangeDetectorRef,
+    SkipSelf,
+    OnDestroy
 } from '@angular/core';
 import {Router} from '@angular/router';
+import {Subscription} from 'rxjs';
 import {broadcast} from '../../services/broadcast.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
-import {navigation, objectTab, objectTabInfo, routeObject} from '../../services/navigation.service';
+import {navigation, objectTab, objectTabInfo} from '../../services/navigation.service';
 import {navigationtab} from '../../services/navigationtab.service';
-import {Subject, Observable, Subscription} from 'rxjs';
 
 declare var _: any;
 
+/**
+ * a componment that renders a route container that is rendered for each active tab
+ *
+ * for each route a container is rendered. Which one is visible is then triggered by the navigation service
+ * that sets the active tab
+ */
 @Component({
     selector: 'system-navigation-manager-route-container',
     templateUrl: './src/systemcomponents/templates/systemnavigationmanagerroutecontainer.html',
@@ -79,11 +88,11 @@ export class SystemNavigationManagerRouteContainer implements OnInit, OnDestroy 
     }
 
     public ngOnInit(): void {
-        // pass on the tab id if we are not on main, the navigation is subtabbed and the object allows for subtabs
-        if (this.tabid != 'main' && this.navigation.navigationparadigm == 'subtabbed' && this.object.enablesubtabs) {
-            this.navigationtab.tabid = this.parentttabid ? this.parentttabid : this.tabid;
-        }
 
+        // set the parent tab id on the navigation tab
+        this.setParentTabId();
+
+        // subscribe to the tabid change
         this.subscriptions.add(
             this.navigation.activeTab$.subscribe(activetab => {
                 if (activetab == this.tabid) {
@@ -130,6 +139,16 @@ export class SystemNavigationManagerRouteContainer implements OnInit, OnDestroy 
     }
 
     /**
+     * set the parent tab id to the navigation tab service
+     */
+    private setParentTabId() {
+        // pass on the tab id if we are not on main, the navigation is subtabbed and the object allows for subtabs
+        if (this.tabid != 'main' && this.navigation.navigationparadigm == 'subtabbed' && this.object.enablesubtabs) {
+            this.navigationtab.tabid = this.parentttabid ? this.parentttabid : this.tabid;
+        }
+    }
+
+    /**
      * unsubscribe from any pending subscription
      */
     public ngOnDestroy(): void {
@@ -142,6 +161,4 @@ export class SystemNavigationManagerRouteContainer implements OnInit, OnDestroy 
     get isActive() {
         return this.navigation.displayTab == this.tabid;
     }
-
-
 }
