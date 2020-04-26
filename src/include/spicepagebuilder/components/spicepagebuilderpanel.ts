@@ -1,7 +1,7 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {CdkDragEnter, CdkDragExit} from "@angular/cdk/drag-drop";
 
@@ -10,29 +10,14 @@ import {CdkDragEnter, CdkDragExit} from "@angular/cdk/drag-drop";
  */
 @Component({
     selector: 'spice-page-builder-panel',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderpanel.html'
+    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderpanel.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderPanel {
-
+    /**
+     * available sections
+     */
     protected sections: Array<{ type, columns, style }> = [];
-    protected contentElements: any[] = [
-        {
-            type: 'text',
-            style: {
-                'padding': '4px',
-                'height': '200px',
-                'width': '100%',
-                'background-color': '#e7e7e7',
-            },
-            content: 'Write Text Here'
-        },
-        {
-            type: 'image',
-            style: {},
-            src: ''
-        },
-
-    ];
 
     constructor(private spicePageBuilderService: SpicePageBuilderService) {
     }

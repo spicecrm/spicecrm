@@ -1,21 +1,40 @@
-<div style="height: 50%">
-    <system-section titlelabel="Element Content" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
-        <div class="slds-grid slds-size--1-of-1 slds-height_full slds-p-around--xx-small">
-
-        </div>
-    </system-section>
-</div>
-<div style="height: 50%">
-    <system-section titlelabel="Element Style" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
-        <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small">
-            <div *ngFor="let item of styleArray" class="slds-grid slds-form-element slds-m-bottom--x-small">
-                <label class="slds-form-element__label">
-                    {{item.label}}
-                </label>
-                <div class="slds-form-element__control slds-grow">
-                    <input type="text" [(ngModel)]="spicePageBuilderService.editingElement.style[item.label]" class="slds-input">
+<system-modal>
+    <system-modal-header (close)="cancel()">
+        Editing {{element.type}}
+    </system-modal-header>
+    <system-modal-content [grow]="true">
+        <div style="height: 50%">
+            <system-section titlelabel="Element Content" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
+                <div class="slds-grid slds-size--1-of-1 slds-height_full slds-p-around--xx-small">
+                    <quill-editor *ngIf="element.type == 'text'" [(ngModel)]="element.content" class="slds-size--1-of-1"></quill-editor>
                 </div>
-            </div>
+            </system-section>
         </div>
-    </system-section>
-</div>
+        <div style="height: 50%">
+            <system-section titlelabel="Element Style" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
+                <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small">
+                    <div class="slds-size--1-of-1 slds-grid slds-wrap">
+                        <ng-container *ngFor="let styleAttribute of spicePageBuilderService.defaultStyleAttributes" [ngSwitch]="styleAttribute.type">
+                            <ng-container *ngSwitchCase="'text'">
+                                <spice-page-builder-input-text *ngIf="element.style[styleAttribute.name]" [(ngModel)]="element.style[styleAttribute.name]" [label]="styleAttribute.name"
+                                                               [suffix]="styleAttribute.suffix" class="slds-size--1-of-2"></spice-page-builder-input-text>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'sides'">
+                                <spice-page-builder-input-sides *ngIf="element.style[styleAttribute.name]" [(ngModel)]="element.style[styleAttribute.name]" [label]="styleAttribute.name"
+                                                                [suffix]="styleAttribute.suffix" class="slds-size--1-of-2"></spice-page-builder-input-sides>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'color'">
+                                <spice-page-builder-input-color *ngIf="element.style[styleAttribute.name]" [(ngModel)]="element.style[styleAttribute.name]" [label]="styleAttribute.name"
+                                                                class="slds-size--1-of-2"></spice-page-builder-input-color>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                </div>
+            </system-section>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="confirm()"><system-label label="LBL_SAVE"></system-label></button>
+    </system-modal-footer>
+</system-modal>
