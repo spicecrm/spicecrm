@@ -7,7 +7,7 @@
                     <th class="" scope="col">
                         <div class="slds-truncate"><system-label label="LBL_TAB"></system-label></div>
                     </th>
-                    <th scope="col" style="width: 4rem;"></th>
+                    <th scope="col" style="width: 5.5rem;"></th>
                 </tr>
             </thead>
             <tbody>
@@ -17,12 +17,7 @@
                             <global-navigation-tabbed-browser-modal-tab [tab]="tab" (activate)="activateTab($event)"></global-navigation-tabbed-browser-modal-tab>
                         </td>
                         <td class="slds-p-horizontal--none slds-text-align--center">
-                            <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-x-small slds-m-around--none" (click)="pintab(tab)">
-                                <system-button-icon [icon]="tab.pinned ? 'pinned' : 'pin'"></system-button-icon>
-                            </button>
-                            <button class="slds-button slds-button--icon slds-col--bump-left" (click)="closetab(tab.id)">
-                                <system-button-icon icon="close"></system-button-icon>
-                            </button>
+                            <global-navigation-tabbed-browser-modal-tab-actions [tab]="tab"></global-navigation-tabbed-browser-modal-tab-actions>
                         </td>
                     </tr>
                     <ng-container *ngFor="let subtab of subtabs(tab.id)" >
@@ -31,12 +26,7 @@
                                 <global-navigation-tabbed-browser-modal-tab [tab]="subtab" [subtab]="true" (activate)="activateTab($event)"></global-navigation-tabbed-browser-modal-tab>
                             </td>
                             <td class="slds-p-horizontal--none slds-text-align--center">
-                                <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-x-small slds-m-around--none" (click)="pintab(subtab)">
-                                    <system-button-icon [icon]="subtab.pinned ? 'pinned' : 'pin'"></system-button-icon>
-                                </button>
-                                <button class="slds-button slds-button--icon slds-col--bump-left"  (click)="closetab(subtab.id)">
-                                    <system-button-icon icon="close"></system-button-icon>
-                                </button>
+                                <global-navigation-tabbed-browser-modal-tab-actions [tab]="subtab"></global-navigation-tabbed-browser-modal-tab-actions>
                             </td>
                         </tr>
                     </ng-container>
