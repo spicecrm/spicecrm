@@ -37,6 +37,39 @@ export class SpicePageBuilderService {
         ]
     };
     /**
+     * hold the available content elements
+     */
+    public readonly contentElements: any[] = [
+        {
+            type: 'text',
+            style: {
+                'padding': '4px',
+                'height': '200px',
+                'width': '100%',
+                'background-color': '#e7e7e7',
+            },
+            content: 'Write Text Here'
+        },
+        {
+            type: 'image',
+            style: {},
+            src: ''
+        },
+
+    ];
+
+    /**
+     * default style attributes definition
+     */
+    public defaultStyleAttributes: Array<{ name, type, suffix? }> = [
+        {name: 'padding', type: 'sides', suffix: 'px'},
+        {name: 'margin', type: 'sides', suffix: 'px'},
+        {name: 'height', type: 'text', suffix: 'px'},
+        {name: 'background-color', type: 'color'},
+        {name: 'color', type: 'color'},
+    ];
+
+    /**
      * holds the drop list group reference
      */
     public dropListGroup: any;
@@ -48,6 +81,7 @@ export class SpicePageBuilderService {
     constructor() {
         this.contentListId = _.uniqueId('panel-drop-list-');
     }
+
     /**
      * add drop list to group
      * @param dropList

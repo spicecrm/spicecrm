@@ -1,7 +1,8 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {BehaviorSubject} from "rxjs";
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 
 /** @ignore */
@@ -12,22 +13,24 @@ declare var _;
  */
 @Component({
     selector: 'spice-page-builder-panel-editor',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderpaneleditor.html'
+    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderpaneleditor.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderPanelEditor {
     /**
-     * hold the element style array
+     * hold the element to be edited
      */
-    protected styleArray: any[] = [];
+    public element: any = {};
+    /**
+     * emit the changes to the element
+     */
+    public response: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    /**
+     * holds a reference to the component for destroy
+     */
+    public self: any = {};
 
     constructor(private spicePageBuilderService: SpicePageBuilderService) {
-    }
-
-    /**
-     * call to generate sections
-     */
-    public ngOnInit() {
-        this.setElementStyleArray();
     }
 
     /**
@@ -41,13 +44,21 @@ export class SpicePageBuilderPanelEditor {
         return index;
     }
 
-    private setElementStyleArray() {
-        for (let attribute in this.spicePageBuilderService.editingElement.style) {
-            if (!this.spicePageBuilderService.editingElement.style.hasOwnProperty(attribute)) continue;
-            this.styleArray.push({
-                label: attribute,
-                value: this.spicePageBuilderService.editingElement.style[attribute]
-            });
-        }
+    /**
+     * close the modal and pass false for no changes
+     */
+    private cancel() {
+        this.response.next(false);
+        this.response.complete();
+        this.self.destroy();
+    }
+
+    /**
+     * close the modal and emit response true for the element
+     */
+    private confirm() {
+        this.response.next(true);
+        this.response.complete();
+        this.self.destroy();
     }
 }

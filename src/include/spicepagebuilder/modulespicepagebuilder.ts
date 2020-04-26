@@ -11,6 +11,9 @@ import /*embed*/ {SpicePageBuilderService} from './services/spicepagebuilder.ser
 
 import /*embed*/ {SpicePageBuilder} from './components/spicepagebuilder';
 import /*embed*/ {SpicePageBuilderPanel} from './components/spicepagebuilderpanel';
+import /*embed*/ {SpicePageBuilderInputText} from './components/spicepagebuilderinputtext';
+import /*embed*/ {SpicePageBuilderInputSides} from './components/spicepagebuilderinputsides';
+import /*embed*/ {SpicePageBuilderInputColor} from './components/spicepagebuilderinputcolor';
 import /*embed*/ {SpicePageBuilderPanelEditor} from './components/spicepagebuilderpaneleditor';
 import /*embed*/ {SpicePageBuilderRenderer} from './components/spicepagebuilderrenderer';
 import /*embed*/ {SpicePageBuilderRendererContainer} from './components/spicepagebuilderrenderercontainer';
@@ -22,11 +25,15 @@ import /*embed*/ {SpicePageBuilderRendererText} from './components/spicepagebuil
 import {FormsModule} from "@angular/forms";
 import {DirectivesModule} from "../../directives/directives";
 import {DragDropModule} from "@angular/cdk/drag-drop";
+import {QuillEditorModule} from "../quilleditor/quilleditor";
 
 @NgModule({
     declarations: [
         SpicePageBuilder,
         SpicePageBuilderPanel,
+        SpicePageBuilderInputText,
+        SpicePageBuilderInputSides,
+        SpicePageBuilderInputColor,
         SpicePageBuilderPanelEditor,
         SpicePageBuilderRenderer,
         SpicePageBuilderRendererContainer,
@@ -44,7 +51,8 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
         SystemComponents,
         FormsModule,
         DirectivesModule,
-        DragDropModule
+        DragDropModule,
+        QuillEditorModule
     ]
 })
 export class ModuleSpicePageBuilder {

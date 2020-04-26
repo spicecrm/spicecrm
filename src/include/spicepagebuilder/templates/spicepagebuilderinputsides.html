@@ -1,0 +1,51 @@
+<fieldset class="slds-form-element slds-form-element_compound">
+    <legend class="slds-form-element__legend slds-form-element__label">{{label}}</legend>
+    <div class="slds-form-element__control">
+        <div class="slds-form-element__row">
+            <div class="slds-size_1-of-4">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label">Top</label>
+                    <div class="slds-form-element__control slds-input-has-fixed-addon">
+                        <input type="number" [(ngModel)]="value.top" (ngModelChange)="emitJoinedValue()" maxlength="4" size="4" class="slds-input">
+                        <span class="slds-form-element__addon">
+                            {{suffix}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-size_1-of-4">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label">Right</label>
+                    <div class="slds-form-element__control slds-input-has-fixed-addon">
+                        <input type="number" [(ngModel)]="value.right" (ngModelChange)="emitJoinedValue()" maxlength="4" size="4" class="slds-input">
+                        <span class="slds-form-element__addon">
+                            {{suffix}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-size_1-of-4">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label">Bottom</label>
+                    <div class="slds-form-element__control slds-input-has-fixed-addon">
+                        <input type="number" [(ngModel)]="value.bottom" (ngModelChange)="emitJoinedValue()" maxlength="4" size="4" class="slds-input">
+                        <span class="slds-form-element__addon">
+                            {{suffix}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-size_1-of-4">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label">Left</label>
+                    <div class="slds-form-element__control slds-input-has-fixed-addon">
+                        <input type="number" [(ngModel)]="value.left" (ngModelChange)="emitJoinedValue()" maxlength="4" size="4" class="slds-input">
+                        <span class="slds-form-element__addon">
+                            {{suffix}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</fieldset>

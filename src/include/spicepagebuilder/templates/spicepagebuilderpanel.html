@@ -1,34 +1,29 @@
 <div class="slds-grid slds-grid--vertical slds-height_full slds-p-around--x-small slds-scrollable--y">
-    <ng-container *ngIf="!spicePageBuilderService.editingElement; else editingContainer">
-        <div style="height: 50%">
-            <system-section titlelabel="Sections" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
-                <div cdkDropList (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragExit($event)" cdkDropListSortingDisabled [cdkDropListEnterPredicate]="noReturnPredicate" [cdkDropListData]="sections"
-                     class="slds-grid slds-size--1-of-1 slds-grid--vertical slds-height_full slds-p-bottom--small spice-page-builder-panel-drop-list">
-                    <div *ngFor="let section of sections; trackBy: trackByFn" cdkDrag [cdkDragData]="section" class="slds-grow slds-p-around--xx-small slds-grid slds-grid--vertical slds-drag--preview spice-drag-placeholder-visible">
-                        <div>
-                            {{section.columns?.length}} Columns
-                        </div>
-                        <div class="slds-grid slds-grow slds-theme--default" style="border: 2px solid #00aaff; cursor: move">
-                            <div *ngFor="let item of section.columns; trackBy: trackByFn; let last = last" [style.border-right]="!last ? '2px solid #00aaff' : 0" class="slds-grow"></div>
-                        </div>
+    <div style="height: 50%">
+        <system-section titlelabel="Sections" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
+            <div cdkDropList (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragExit($event)" cdkDropListSortingDisabled [cdkDropListEnterPredicate]="noReturnPredicate" [cdkDropListData]="sections"
+                 class="slds-grid slds-size--1-of-1 slds-grid--vertical slds-height_full slds-p-bottom--small spice-page-builder-panel-drop-list">
+                <div *ngFor="let section of sections; trackBy: trackByFn" cdkDrag [cdkDragData]="section" class="slds-grow slds-p-around--xx-small slds-grid slds-grid--vertical slds-drag--preview spice-drag-placeholder-visible">
+                    <div>
+                        {{section.columns?.length}} Columns
+                    </div>
+                    <div class="slds-grid slds-grow slds-theme--default" style="border: 2px solid #00aaff; cursor: move">
+                        <div *ngFor="let item of section.columns; trackBy: trackByFn; let last = last" [style.border-right]="!last ? '2px solid #00aaff' : 0" class="slds-grow"></div>
                     </div>
                 </div>
-            </system-section>
-        </div>
-        <div style="height: 50%">
-            <system-section titlelabel="Content Elements" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
-                <div cdkDropList (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragExit($event)" [id]="spicePageBuilderService.contentListId" cdkDropListSortingDisabled
-                     [cdkDropListEnterPredicate]="noReturnPredicate" [cdkDropListData]="contentElements" class="slds-grid slds-size--1-of-1 slds-p-around--xx-small slds-wrap spice-page-builder-panel-drop-list" style="height: fit-content">
-                    <div *ngFor="let contentElement of contentElements; trackBy: trackByFn" cdkDrag [cdkDragData]="contentElement" class="slds-p-around--xxx-small slds-drag--preview">
-                        <div class="slds-p-around--x-small slds-card slds-height_full" style="cursor: move">
-                            <system-utility-icon [icon]="contentElement.type" size="large" class="slds-height_full slds-align--absolute-center"></system-utility-icon>
-                        </div>
+            </div>
+        </system-section>
+    </div>
+    <div style="height: 50%">
+        <system-section titlelabel="Content Elements" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
+            <div cdkDropList (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragExit($event)" [id]="spicePageBuilderService.contentListId" cdkDropListSortingDisabled
+                 [cdkDropListEnterPredicate]="noReturnPredicate" [cdkDropListData]="spicePageBuilderService.contentElements" class="slds-grid slds-size--1-of-1 slds-p-around--xx-small slds-wrap spice-page-builder-panel-drop-list" style="height: fit-content">
+                <div *ngFor="let contentElement of spicePageBuilderService.contentElements; trackBy: trackByFn" cdkDrag [cdkDragData]="contentElement" class="slds-p-around--xxx-small slds-drag--preview">
+                    <div class="slds-p-around--x-small slds-card slds-height_full" style="cursor: move">
+                        <system-utility-icon [icon]="contentElement.type" size="large" class="slds-height_full slds-align--absolute-center"></system-utility-icon>
                     </div>
                 </div>
-            </system-section>
-        </div>
-    </ng-container>
-    <ng-template #editingContainer>
-        <spice-page-builder-panel-editor class="slds-height_full"></spice-page-builder-panel-editor>
-    </ng-template>
+            </div>
+        </system-section>
+    </div>
 </div>
