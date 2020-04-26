@@ -1,5 +1,5 @@
 <system-modal>
-    <system-modal-header (close)="close()"><system-label label="LBL_SAPIDOC"></system-label></system-modal-header>
+    <system-modal-header (close)="close()"><system-label label="LBL_SAPIDOC"></system-label> {{model.getField('name')}}</system-modal-header>
     <system-modal-content [grow]="true" margin="none" class="slds-scrollable--y">
         <pre class="slds-size--1-of-1 slds-m-around--none slds-p-around--x-small">{{xml}}</pre>
     </system-modal-content>

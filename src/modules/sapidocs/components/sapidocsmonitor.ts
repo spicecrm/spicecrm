@@ -5,7 +5,8 @@ import {Component, ViewChild, ViewContainerRef} from '@angular/core';
 import {modellist} from "../../../services/modellist.service";
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
-import {ActivatedRoute} from "@angular/router";
+import {language} from "../../../services/language.service";
+import {navigationtab} from "../../../services/navigationtab.service";
 
 @Component({
     selector: 'sapidocs-monitor',
@@ -29,7 +30,18 @@ export class SAPIDOCsMonitor {
      */
     private modellistSubscription: any;
 
-    constructor( private activatedRoute: ActivatedRoute, private metadata: metadata, private modellist: modellist, private model: model) {
+    constructor(private language: language, private metadata: metadata, private navigationtab: navigationtab, private modellist: modellist, private model: model) {
+        // initalize the modellist service
+        this.initializeModellist();
+
+        // set the tab name
+        this.navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_SAP_IDOCS_MONITOR'), displayicon: 'settings'});
+    }
+
+    /**
+     * initializes the mdoellist service
+     */
+    private initializeModellist() {
 
         // get the module from teh activated route
         // this.model.module = this.activatedRoute.params['value']['module'];

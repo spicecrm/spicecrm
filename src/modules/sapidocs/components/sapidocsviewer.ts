@@ -20,12 +20,12 @@ export class SAPIDOCsViewer implements AfterViewInit {
     private xml: string;
 
     constructor(private backend: backend, private metadata: metadata, private modellist: modellist, private model: model, private libloader: libloader, private renderer: Renderer2) {
-
+        this.formatIdoc();
     }
 
 
     public ngAfterViewInit(): void {
-        this.formatIdoc();
+
     }
 
     /**

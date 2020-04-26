@@ -1,6 +1,21 @@
 <fieldset class="slds-box slds-m-vertical--xx-small">
     <div class="slds-grid slds-grid_vertical-align-center slds-m-top--x-small slds-gutters_direct-xx-small">
         <div class="slds-form-element slds-col slds-size--1-of-2">
+            <label class="slds-form-element__label"><system-label label="LBL_SAPIDOC_IDOCTYP"></system-label></label>
+            <system-icon-help-text [helpText]="language.getLabel('LBL_SAPIDOC_IDOCTYP', '', 'long')"></system-icon-help-text>
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" [(ngModel)]="segmentrelation.idoctyp"/>
+            </div>
+        </div><div class="slds-form-element slds-col slds-size--1-of-2">
+            <label class="slds-form-element__label"><system-label label="LBL_SAPIDOC_MESTYP"></system-label></label>
+            <system-icon-help-text [helpText]="language.getLabel('LBL_SAPIDOC_MESTYP', '', 'long')"></system-icon-help-text>
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" [(ngModel)]="segmentrelation.mestyp"/>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid slds-grid_vertical-align-center slds-m-top--x-small slds-gutters_direct-xx-small">
+        <div class="slds-form-element slds-col slds-size--1-of-2">
             <label class="slds-form-element__label"><system-label label="LBL_SAPIDOC_RELATIONSHIP_NAME"></system-label></label>
             <system-icon-help-text [helpText]="language.getLabel('LBL_SAPIDOC_RELATIONSHIP_NAME', '', 'long')"></system-icon-help-text>
             <div class="slds-form-element__control">
