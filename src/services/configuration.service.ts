@@ -37,7 +37,8 @@ export class configurationService {
     public data: any = {
         backendUrl: 'proxy',
         backendextensions: {},
-        systemparameters: {}
+        systemparameters: {},
+        theme: {}
     };
 
     /**
@@ -83,6 +84,9 @@ export class configurationService {
             // subscribe to the broadcast to catch the logout
             this.broadcast.message$.subscribe(message => this.handleLogout(message));
         }
+
+        // Update Theme when configuration has been loaded.
+        this.loaded$.subscribe(() => this.updateTheme() );
 
         // reload the sites
         http.get('config/sites/')
@@ -246,10 +250,19 @@ export class configurationService {
      */
     public getCapabilityConfig(capability) {
         try {
-            return (this.data.backendextensions[capability] && this.data.backendextensions[capability].config) ? this.data.backendextensions[capability].config : {}
+            return (this.data.backendextensions[capability] && this.data.backendextensions[capability].config) ? this.data.backendextensions[capability].config : {};
         } catch (e) {
             return {};
         }
+    }
+
+    /**
+     * Is there a configuration for a specific backend extension?
+     *
+     * @param capability
+     */
+    public hasCapabilityConfig(capability): boolean {
+        return this.data.backendextensions[capability] && this.data.backendextensions[capability].config && Object.keys( this.data.backendextensions[capability].config ).length > 0;
     }
 
     /**
@@ -273,4 +286,12 @@ export class configurationService {
     public getData(key) {
         return this.appdata[key] ? this.appdata[key] : false;
     }
+
+    public updateTheme() {
+        if ( this.data.backendextensions.spiceTheme && this.data.backendextensions.spiceTheme.config ) {
+            let theme = this.data.backendextensions.spiceTheme.config;
+            if ( theme['color-brand-primary'] ) document.documentElement.style.setProperty( '--brand-primary', theme['color-brand-primary'] );
+        }
+    }
+
 }
