@@ -61,4 +61,12 @@ export class SpicePageBuilderPanelEditor {
         this.response.complete();
         this.self.destroy();
     }
+
+    private openMediaFilePicker() {
+        this.spicePageBuilderService.openMediaFilePicker().subscribe(src => {
+            if (!!src) {
+                this.element.src = src;
+            }
+        });
+    }
 }
