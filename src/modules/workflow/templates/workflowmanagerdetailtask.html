@@ -1,10 +1,10 @@
 <div *ngIf="currenttask; else notaskselected" class="slds-tabs_scoped">
     <ul class="slds-tabs_scoped__nav" role="tablist">
-        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active' : activeTab=='T'}"><a class="slds-tabs_scoped__link" href="javascript:void(0);" (click)="activeTab='T'">{{language.getLabel('LBL_DETAILS')}}</a></li>
-        <!--li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active' : activeTab=='D'}"><a class="slds-tabs_scoped__link" href="javascript:void(0);" (click)="activeTab='D'">{{language.getLabel('LBL_DESCRIPTION')}}</a></li-->
-        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active' : activeTab=='A'}"><a class="slds-tabs_scoped__link" href="javascript:void(0);" (click)="activeTab='A'">{{language.getLabel('LBL_ASSIGNMENT')}}</a></li>
-        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active' : activeTab=='E'}"><a class="slds-tabs_scoped__link" href="javascript:void(0);" (click)="activeTab='E'">{{language.getLabel('LBL_EMAILNOTIFICATIONS')}}</a></li>
-        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active' : activeTab=='S'}"><a class="slds-tabs_scoped__link" href="javascript:void(0);" (click)="activeTab='S'">{{language.getLabel('LBL_SYSTEMACTIONS')}}</a></li>
+        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active' : activeTab=='T'}"><a class="slds-tabs_scoped__link" href="javascript:void(0);" (click)="activeTab='T'"><system-label label="LBL_DETAILS"></system-label></a></li>
+        <!--li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active' : activeTab=='D'}"><a class="slds-tabs_scoped__link" href="javascript:void(0);" (click)="activeTab='D'"><system-label label="LBL_DESCRIPTION"></system-label></a></li-->
+        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active' : activeTab=='A'}"><a class="slds-tabs_scoped__link" href="javascript:void(0);" (click)="activeTab='A'"><system-label label="LBL_ASSIGNMENT"></system-label></a></li>
+        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active' : activeTab=='E'}"><a class="slds-tabs_scoped__link" href="javascript:void(0);" (click)="activeTab='E'"><system-label label="LBL_EMAILNOTIFICATIONS"></system-label></a></li>
+        <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active' : activeTab=='S'}"><a class="slds-tabs_scoped__link" href="javascript:void(0);" (click)="activeTab='S'"><system-label label="LBL_SYSTEMACTIONS"></system-label></a></li>
     </ul>
     <div class="slds-tabs_scoped__content" [ngClass]="{'slds-show' : activeTab=='T', 'slds-hide': activeTab!='T'}" role="tabpanel">
         <workflow-manager-detail-task-taskpanel [tasks]="tasks"></workflow-manager-detail-task-taskpanel>

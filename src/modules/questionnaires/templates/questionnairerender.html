@@ -12,7 +12,7 @@
         </div>
     </div>
     <ng-template #noQuestionsetsTemplate>
-        <p>{{language.getLabel('LBL_NO_QUESTIONSETS_TO_DISPLAY')}}</p>
+        <p><system-label label="LBL_NO_QUESTIONSETS_TO_DISPLAY"></system-label></p>
     </ng-template>
     <div *ngIf="questionnaire.textafter" [innerHTML]="questionnaire.textafter" class="slds-m-top--medium"></div>
 </div>

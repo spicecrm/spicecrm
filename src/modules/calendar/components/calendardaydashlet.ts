@@ -12,26 +12,32 @@ import {calendar} from '../services/calendar.service';
 })
 
 export class CalendarDayDashlet {
+
     @ViewChild('calendarcontent', {read: ViewContainerRef, static: true}) private calendarContent: ViewContainerRef;
 
-    private dashletconfig: any = null;
     private dashletLabel: any = null;
-    private icon: any = null;
 
     constructor(private language: language,
                 private elementRef: ElementRef,
                 private calendar: calendar) {
         this.calendar.isDashlet = true;
+        this.calendar.sheetType = 'Day';
         this.calendar.sheetHourHeight = 50;
     }
 
+    /**
+     * @return calendarDate: moment
+     */
     get calendarDate() {
         return this.calendar.calendarDate;
     }
 
+    /**
+     * @return style: object height of the calendar content
+     */
     get contentStyle() {
         return {
-            height: this.elementRef.nativeElement.getBoundingClientRect().height - this.calendarContent.element.nativeElement.offsetTop + 'px',
+            height: (this.calendarContent ? this.elementRef.nativeElement.getBoundingClientRect().height - this.calendarContent.element.nativeElement.offsetTop : 100) + 'px',
         };
     }
 }

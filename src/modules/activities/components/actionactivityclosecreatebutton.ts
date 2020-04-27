@@ -1,5 +1,5 @@
 /**
- * @module ObjectComponents
+ * @module ModuleActivities
  */
 import {Component, Optional, Injector, OnInit} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';

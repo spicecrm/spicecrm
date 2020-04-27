@@ -1,0 +1,14 @@
+<div class="slds-grid slds-grid--vertical-align-center">
+    <reporter-filter-item-user-single *ngIf="!isMultiSelect; else multipleSelectContainer"
+                                      [whereCondition]="whereCondition"
+                                      [fieldName]="fieldName"
+                                      class="slds-grid slds-grid--vertical-align-center slds-size--1-of-1">
+    </reporter-filter-item-user-single>
+    <ng-template #multipleSelectContainer>
+        <reporter-filter-item-user-multiple
+                [whereCondition]="whereCondition"
+                [fieldName]="fieldName"
+                class="slds-grid slds-grid--vertical-align-center slds-size--1-of-1">
+        </reporter-filter-item-user-multiple>
+    </ng-template>
+</div>

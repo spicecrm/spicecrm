@@ -17,6 +17,7 @@ import {modellist} from '../../../services/modellist.service';
 import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
 import {metadata} from '../../../services/metadata.service';
+import {layout} from '../../../services/layout.service';
 import {ObjectModalModuleLookup} from "../../../objectcomponents/components/objectmodalmodulelookup";
 import {modelutilities} from "../../../services/modelutilities.service";
 
@@ -33,8 +34,8 @@ export class SalesDocsItemsAddProduct extends ObjectModalModuleLookup {
     @Output() public additem: EventEmitter<any> = new EventEmitter<any>();
 
 
-    constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, public model: model) {
-        super(language, modellist, metadata, modelutilities, model);
+    constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, public model: model, public layout: layout) {
+        super(language, modellist, metadata, modelutilities, model, layout);
 
         // set module to Products
         this.module = 'Products';

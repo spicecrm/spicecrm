@@ -1,5 +1,5 @@
 /**
- * @module ObjectComponents
+ * @module ModuleActivities
  */
 import {AfterViewInit, Component, OnDestroy, OnInit, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
@@ -8,7 +8,7 @@ import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {modal} from '../../../services/modal.service';
 import {dockedComposer} from '../../../services/dockedcomposer.service';
-import {activitiyTimeLineService} from '../../../services/activitiytimeline.service';
+import {activitiytimeline} from '../../../services/activitiytimeline.service';
 
 /**
  * @ignore
@@ -43,11 +43,16 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
     private bodyFieldSet: string = '';
 
     /**
+     * the position for the utility buttons (cancel, expand, dock)
+     */
+    private utilityButtonsPosition: string = 'bottom';
+
+    /**
      * @ignore
      *
      * indicator if the panel is expanded or not
      */
-    private isExpanded: boolean = false;
+    public isExpanded: boolean = false;
 
     /**
      * @ignore
@@ -56,7 +61,7 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
      */
     private parentSubscription: any;
 
-    constructor(private metadata: metadata, private activitiyTimeLineService: activitiyTimeLineService, private model: model, private view: view, private language: language, private modal: modal, private dockedComposer: dockedComposer, private ViewContainerRef: ViewContainerRef) {
+    constructor(public metadata: metadata, public activitiytimeline: activitiytimeline, public model: model, public view: view, public language: language, public modal: modal, public dockedComposer: dockedComposer, public ViewContainerRef: ViewContainerRef) {
     }
 
     /**
@@ -68,7 +73,7 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
 
         // subscribe to the parent models data Observable
         // name is not necessarily loaded
-        this.parentSubscription = this.activitiyTimeLineService.parent.data$.subscribe(data => {
+        this.parentSubscription = this.activitiytimeline.parent.data$.subscribe(data => {
             // if we still have the same model .. update
             if (data.id == this.model.data.parent_id) {
                 this.model.data.parent_name = data.summary_text;
@@ -82,6 +87,11 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
         // get the fields
         this.headerFieldSet = this.componentconfig.headerfieldset;
         this.bodyFieldSet = this.componentconfig.bodyfieldset;
+
+        // position for buttons
+        if(this.componentconfig.utilitybuttonsposition) {
+            this.utilityButtonsPosition = this.componentconfig.utilitybuttonsposition;
+        }
     }
 
     /**
@@ -90,7 +100,7 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
      * cancels the subscription on the parent
      */
     public ngOnDestroy(): void {
-        if(this.parentSubscription) this.parentSubscription.unsubscribe();
+        if (this.parentSubscription) this.parentSubscription.unsubscribe();
     }
 
     /**
@@ -108,16 +118,20 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
     }
 
     /**
+     * returns if attachments are allowed. Then displays the attachment panel
+     */
+    get allowattachments() {
+        return this.componentconfig.allowattachments === true ? true : false;
+    }
+
+    /**
      * initializes the model when the item is expanded
      */
     private initializeModule() {
         this.model.module = this.module;
         // SPICEUI-2
-        this.model.id = this.model.generateGuid();
-        this.model.initializeModel(this.activitiyTimeLineService.parent);
-
-        // set start editing here as well so we can block navigating away
-        this.model.startEdit(false);
+        this.model.id = undefined;
+        this.model.initializeModel(this.activitiytimeline.parent);
     }
 
     /**
@@ -127,6 +141,9 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
         if (!this.isExpanded) {
             this.isExpanded = true;
             this.initializeModule();
+
+            // set start editing here as well so we can block navigating away
+            this.model.startEdit(false);
         }
     }
 

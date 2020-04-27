@@ -1,8 +1,8 @@
-<h4>{{language.getLabel('LBL_QUESTIONSTYPE_SETTINGS')}}</h4>
+<h4><system-label label="LBL_QUESTIONSTYPE_SETTINGS"></system-label></h4>
 <div *ngIf="editing">
     <div class="slds-grid slds-grid_vertical-align-end slds-grid--align-spread">
         <div class="slds-col slds-form-element slds-p-vertical--small slds-text-align--left">
-            <label class="slds-form-element__label" >{{language.getLabel('LBL_NUMBER_OF_ENTRIES')}}</label>
+            <label class="slds-form-element__label" ><system-label label="LBL_NUMBER_OF_ENTRIES"></system-label></label>
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
                     <select class="slds-select" [ngModel]="numEntries" (change)="setNumEntries($event)">
@@ -25,10 +25,10 @@
         <thead>
         <tr class="slds-text-title_caps">
             <th scope="col" class="slds-text-align--right">
-                <div class="slds-truncate">{{language.getLabel('LBL_VALUE')}}</div>
+                <div class="slds-truncate"><system-label label="LBL_VALUE"></system-label></div>
             </th>
             <th scope="col">
-                <div class="slds-truncate">{{language.getLabel('LBL_TEXT')}}</div>
+                <div class="slds-truncate"><system-label label="LBL_TEXT"></system-label></div>
             </th>
         </tr>
         </thead>
@@ -53,10 +53,10 @@
         <thead>
         <tr class="slds-text-title_caps">
             <th scope="col">
-                <div class="slds-truncate slds-text-align--right">{{language.getLabel('LBL_VALUE')}}</div>
+                <div class="slds-truncate slds-text-align--right"><system-label label="LBL_VALUE"></system-label></div>
             </th>
             <th scope="col">
-                <div class="slds-truncate">{{language.getLabel('LBL_TEXT')}}</div>
+                <div class="slds-truncate"><system-label label="LBL_TEXT"></system-label></div>
             </th>
         </tr>
         </thead>

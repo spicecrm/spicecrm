@@ -27,6 +27,6 @@
             &nbsp;{{lineNr+1}}/{{nrOfLines}}&nbsp;
             <button class="slds-button--icon slds-button--icon-border-filled" [disabled]="!canRight()" (click)="toRight$.emit()"><system-button-icon [icon]="'right'"></system-button-icon></button>
         </div>
-        <button class="slds-button slds-button--neutral" (click)="closeModal()">{{language.getLabel('LBL_CLOSE')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="closeModal()"><system-label label="LBL_CLOSE"></system-label></button>
     </system-modal-footer>
 </system-modal>

@@ -3,16 +3,16 @@
         <thead>
         <tr class="slds-text-title_caps">
             <th scope="col">
-                <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
+                <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
             </th>
             <th scope="col">
-                <div class="slds-truncate">{{language.getLabel('LBL_OPERATOR')}}</div>
+                <div class="slds-truncate"><system-label label="LBL_OPERATOR"></system-label></div>
             </th>
             <th scope="col">
-                <div class="slds-truncate">{{language.getLabel('LBL_VALUE1')}}</div>
+                <div class="slds-truncate"><system-label label="LBL_VALUE1"></system-label></div>
             </th>
             <th scope="col">
-                <div class="slds-truncate">{{language.getLabel('LBL_VALUE2')}}</div>
+                <div class="slds-truncate"><system-label label="LBL_VALUE2"></system-label></div>
             </th>
             <th scope="col">
             </th>
@@ -36,6 +36,8 @@
                             <option value="LTE">≤</option>
                             <option value="LK">Like</option>
                             <option value="IN">in</option>
+                            <option value="SW">starts with</option>
+                            <option value="SN">does not start with</option>
                         </select>
                     </div>
                 </div>

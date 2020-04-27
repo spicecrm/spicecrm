@@ -66,6 +66,18 @@ import /*embed*/ {GlobalAppLauncher} from "./components/globalapplauncher";
 import /*embed*/ {GlobalAppLauncherDialog} from "./components/globalapplauncherdialog";
 import /*embed*/ {GlobalAppLauncherDialogRoleTile} from "./components/globalapplauncherdialogroletile";
 
+import /*embed*/ {GlobalNavigationTabbed} from "./components/globalnavigationtabbed";
+import /*embed*/ {GlobalNavigationTabbedBrowser} from "./components/globalnavigationtabbedbrowser";
+import /*embed*/ {GlobalNavigationTabbedBrowserModal} from "./components/globalnavigationtabbedbrowsermodal";
+import /*embed*/ {GlobalNavigationTabbedBrowserModalTab} from "./components/globalnavigationtabbedbrowsermodaltab";
+import /*embed*/ {GlobalNavigationTabbedMenuModules} from "./components/globalnavigationtabbedmenumodules";
+import /*embed*/ {GlobalNavigationTabbedMenuModuleMenu} from "./components/globalnavigationtabbedmenumodulemenu";
+import /*embed*/ {GlobalNavigationTabbedMenuTab} from "./components/globalnavigationtabbedmenutab";
+import /*embed*/ {GlobalNavigationTabbedMoreTab} from "./components/globalnavigationtabbedmoretab";
+import /*embed*/ {GlobalNavigationTabbedMenu} from "./components/globalnavigationtabbedmenu";
+import /*embed*/ {GlobalNavigationTabbedSubtabItem} from "./components/globalnavigationtabbedsubtabitem";
+import /*embed*/ {GlobalNavigationTabbedSubTabMoreTab} from "./components/globalnavigationtabbedsubtabmoretab";
+import /*embed*/ {GlobalNavigationTabbedSubtabs} from "./components/globalnavigationtabbedsubtabs";
 
 import /*embed*/ {GlobalUser} from "./components/globaluser";
 import /*embed*/ {GlobaUserPanel} from "./components/globaluserpanel";
@@ -83,6 +95,10 @@ import /*embed*/ {GlobalNewsFeedItem} from "./components/globalnewsfeeditem";
 
 import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
 import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobtainimportantpreferences';
+import /*embed*/ {GlobalObtainGDPRConsent} from './components/globalobtaingdprconsent';
+import /*embed*/ {GlobalObtainGDPRConsentContainer} from './components/globalobtaingdprconsentcontainer';
+import /*embed*/ {GlobalHeaderImage} from './components/globalheaderimage';
+import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
 
 
 /**
@@ -98,10 +114,12 @@ import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobt
         ObjectComponents,
         RouterModule.forRoot([
             // {path: "login", component: GlobalLogin},
-            {path: "setup", component: GlobalSetup},
+            {path: "setup", component: GlobalSetup}
+            /*
             {path: "recent", component: GlobalRecentItems, canActivate: [loginCheck]},
             {path: "search", component: GlobalSearch, canActivate: [loginCheck]},
             {path: "search/:searchterm", component: GlobalSearch, canActivate: [loginCheck]},
+            */
         ])
     ],
     declarations: [
@@ -155,7 +173,23 @@ import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobt
         GlobalSearchModuleOnly,
         GlobalSearchModuleItem,
         GlobalLoginGoogle,
-        GlobalObtainImportantPreferences
+        GlobalObtainImportantPreferences,
+        GlobalObtainGDPRConsent,
+        GlobalObtainGDPRConsentContainer,
+        GlobalNavigationTabbed,
+        GlobalNavigationTabbedMenu,
+        GlobalNavigationTabbedMenuModules,
+        GlobalNavigationTabbedMenuModuleMenu,
+        GlobalNavigationTabbedMenuTab,
+        GlobalNavigationTabbedMoreTab,
+        GlobalNavigationTabbedBrowser,
+        GlobalNavigationTabbedBrowserModal,
+        GlobalNavigationTabbedBrowserModalTab,
+        GlobalNavigationTabbedSubtabs,
+        GlobalNavigationTabbedSubtabItem,
+        GlobalNavigationTabbedSubTabMoreTab,
+        GlobalHeaderImage,
+        GlobalLoginImage
     ],
     entryComponents: [
         GlobalHeader,

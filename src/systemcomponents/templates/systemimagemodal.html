@@ -1,0 +1,16 @@
+<system-modal size="large">
+
+    <system-modal-header (close)="cancel()">
+        {{title}}
+    </system-modal-header>
+
+    <system-modal-content>
+        <system-input-media [(ngModel)]="imageData_onlyBase64code" [maxWidth]="maxWidth" [maxHeight]="maxHeight" class="slds-height_full" [droppedFiles]="droppedFiles" [mimetype]="mimetype" (mimetype)="this.mimetype=$event"></system-input-media>
+    </system-modal-content>
+
+    <system-modal-footer>
+        <button class="slds-button slds-button--brand" (click)="save()" [disabled]="!canSave"><system-label label="LBL_SAVE"></system-label></button>
+        <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
+    </system-modal-footer>
+
+</system-modal>

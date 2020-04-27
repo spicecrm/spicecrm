@@ -3,7 +3,6 @@
  */
 import {Injectable, ViewChild, ViewContainerRef} from '@angular/core';
 import {backend} from '../../../services/backend.service';
-import {favorite} from "../../../services/favorite.service";
 import {fts} from "../../../services/fts.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {modelutilities} from "../../../services/modelutilities.service";
@@ -13,6 +12,7 @@ import {Subscription} from "rxjs";
 import {navigation} from "../../../services/navigation.service";
 import {Location} from "@angular/common";
 import {toast} from "../../../services/toast.service";
+import {navigationtab} from "../../../services/navigationtab.service";
 import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
 import {ActivatedRoute} from "@angular/router";
@@ -37,7 +37,6 @@ export class KnowledgeService {
 
     constructor(private backend: backend,
                 private language: language,
-                private favorite: favorite,
                 private broadcast: broadcast,
                 private modelutilities: modelutilities,
                 private navigation: navigation,
@@ -46,6 +45,7 @@ export class KnowledgeService {
                 private activatedRoute: ActivatedRoute,
                 private toast: toast,
                 private metadata: metadata,
+                private navigationtab: navigationtab,
                 private fts: fts) {
         this.loadPreferences();
         this.saveSubscriber();
@@ -90,7 +90,7 @@ export class KnowledgeService {
     set selectedBook(book) {
         this.selectedbook = book;
         this.getDocuments(book);
-        if (book) this.favoriteEnable('KnowledgeBooks', book.id);
+
     }
 
     public setActiveModule(module) {
@@ -106,14 +106,6 @@ export class KnowledgeService {
         this.location.replaceState(state);
     }
 
-    public favoriteEnable(module, id) {
-        this.favoriteDisable();
-        this.favorite.enable(module, id);
-    }
-
-    public favoriteDisable() {
-        this.favorite.disable();
-    }
 
     public getBooks() {
         this.isBookLoading = true;
@@ -221,7 +213,8 @@ export class KnowledgeService {
 
 
     private routerSubscriber() {
-        let subscriber = this.activatedRoute.params.subscribe(params => {
+        let subscriber = this.navigationtab.activeRoute$.subscribe(route => {
+            let params = route.params;
             if (!params.module) return;
             if (params.id) {
                 this.backend.get(params.module, params.id).subscribe((item: any) => {

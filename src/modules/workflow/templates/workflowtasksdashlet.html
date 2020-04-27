@@ -1,7 +1,7 @@
 <div style="height: 100%; overflow: hidden;">
     <div class="slds-grid slds-grid--vertical-align-center slds-border--bottom slds-p-around--x-small">
         <system-icon [module]="'Workflows'" [size]="'small'"></system-icon>
-        <h2 class="slds-text-heading--medium slds-p-bottom--xx-small">{{language.getModuleName('WorkflowTasks')}}</h2>
+        <h2 class="slds-text-heading--medium slds-p-bottom--xx-small"><system-label-modulename module="WorkflowTasks"></system-label-modulename></h2>
     </div>
     <div #itemcontainer class="slds-scrollable--y" [ngStyle]="containerStyle">
         <div *ngFor="let workflowtask of workflowtasks" class="slds-p-around--x-small">
@@ -10,7 +10,7 @@
                     <system-icon [module]="workflowtask.parent_type" [size]="'small'"></system-icon>
                 </div>
                 <div class="slds-media__body">
-                    <div class="slds-text-title_caps slds-text-link_reset" modelPopOver [module]="workflowtask.parent_type" [id]="workflowtask.parent_id">{{workflowtask.parent_name}}</div>
+                    <div class="slds-text-title_caps slds-text-link_reset" system-model-popover [module]="workflowtask.parent_type" [id]="workflowtask.parent_id">{{workflowtask.parent_name}}</div>
                     <div class="slds-text-body_small slds-line-height_reset">{{workflowtask.wfname}}&nbsp;/&nbsp;{{workflowtask.name}}</div>
                 </div>
             </div>

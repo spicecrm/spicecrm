@@ -1,0 +1,49 @@
+<div class="slds-grid" style="height: 100%">
+    <div class="slds-size--1-of-1" style="height: 100%">
+        <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover reports-designer-manipulate-table">
+            <thead>
+            <tr class="slds-text-title--caps slds-theme--shade">
+                <th class="slds-cell-shrink"></th>
+                <th scope="col" class="slds-resizable">
+                    <div class="slds-truncate">
+                        <system-label label="LBL_PATH"></system-label>
+                    </div>
+                </th>
+                <th scope="col" class="slds-resizable">
+                    <div class="slds-truncate">
+                        <system-label label="LBL_NAME"></system-label>
+                    </div>
+                </th>
+                <th scope="col" class="slds-resizable">
+                    <div class="slds-truncate">
+                        <system-label label="LBL_UNION_FIELD_PATH"></system-label>
+                    </div>
+                </th>
+                <th scope="col" class="slds-resizable">
+                    <div class="slds-truncate">
+                        <system-label label="LBL_UNION_PATH"></system-label>
+                    </div>
+                </th>
+                <th scope="col" class="slds-resizable">
+                    <div class="slds-truncate">
+                        <system-label label="LBL_UNION_FIELD_NAME"></system-label>
+                    </div>
+                </th>
+                <th scope="col" class="slds-resizable">
+                    <div class="slds-truncate">
+                        <system-label label="LBL_FIXED_VALUE"></system-label>
+                    </div>
+                </th>
+                <th class="slds-cell-shrink"></th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr reports-designer-manipulate-union-table-row *ngFor="let field of currentUnionListFields; trackBy: trackByFn"
+                    [listItem]="field" (onUnlink)="unlinkField(field.fieldid)" (cdkDropListEntered)="onDropEntered($event)"
+                    cdkDropList [id]="field.fieldid" [cdkDropListData]="field" (cdkDropListDropped)="onDrop($event)"
+                    cdkDropListSortingDisabled class="slds-border--bottom slds-drag--preview spice-reports-designer-union-list" style="height: 41px">
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

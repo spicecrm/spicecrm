@@ -6,14 +6,17 @@ import {
     Component,
     EventEmitter,
     Input,
-    OnChanges,
-    Output,
+    OnChanges, OnDestroy,
+    Output, QueryList,
     SimpleChanges,
-    ViewChild,
+    ViewChild, ViewChildren,
     ViewContainerRef
 } from '@angular/core';
 import {language} from '../../../services/language.service';
 import {calendar} from '../services/calendar.service';
+import {CdkDragEnd} from "@angular/cdk/drag-drop";
+import {CalendarSheetDropTarget} from "./calendarsheetdroptarget";
+import {Subscription} from "rxjs";
 
 /**
  * @ignore
@@ -25,24 +28,53 @@ declare var moment: any;
     templateUrl: './src/modules/calendar/templates/calendarsheetday.html'
 })
 
-export class CalendarSheetDay implements OnChanges {
+export class CalendarSheetDay implements OnChanges, OnDestroy {
 
+    @ViewChildren(CalendarSheetDropTarget) private dropTargets: QueryList<CalendarSheetDropTarget>;
     @ViewChild('calendarsheet', {read: ViewContainerRef, static: true}) private calendarsheet: ViewContainerRef;
-    @Output() public navigateweek: EventEmitter<any> = new EventEmitter<any>();
+
+    /**
+     * @Input setdate: moment
+     */
     @Input() private setdate: any = {};
+    /**
+     * @Input usersCalendars: {id: string, name: string, visible: boolean, color: string}
+     */
     @Input('userscalendars') private usersCalendars: any[] = [];
+    /**
+     * @Input googleIsVisible: boolean
+     */
     @Input('googleisvisible') private googleIsVisible: boolean = true;
+    /**
+     * @Input calendarcontent: ViewContainerRef
+     */
+    @Input('calendarcontent') private calendarContentContainer: any;
+    /**
+     * @output navigateweek: EventEmitter<moment>
+     */
+    @Output() public navigateweek: EventEmitter<any> = new EventEmitter<any>();
+
     private sheetDay: any = {};
-    private sheetHours: any[] = [];
+    protected sheetHours: any[] = [];
     private ownerEvents: any[] = [];
     private ownerMultiEvents: any[] = [];
     private userEvents: any[] = [];
     private userMultiEvents: any[] = [];
     private googleEvents: any[] = [];
     private googleMultiEvents: any[] = [];
+    private subscription: Subscription = new Subscription();
 
     constructor(private language: language, private calendar: calendar) {
         this.buildHours();
+
+        this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
+                this.getUserEvents(calendar);
+            })
+        );
+        this.subscription.add(this.calendar.usersCalendarsLoad$.subscribe(() => {
+                this.getUsersEvents();
+            })
+        );
     }
 
     get multiEventStyle(): any {
@@ -102,13 +134,17 @@ export class CalendarSheetDay implements OnChanges {
         if (changes.setdate) {
             this.sheetDay = {date: changes.setdate.currentValue};
             this.getEvents();
-        }
-        if (changes.usersCalendars || changes.setdate) {
-            this.getUsersEvents();
+            if (this.calendar.usersCalendarsLoaded) {
+                this.getUsersEvents();
+            }
         }
         if (changes.googleIsVisible || changes.setdate) {
             this.getGoogleEvents();
         }
+    }
+
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     get timeColStyle() {
@@ -198,6 +234,36 @@ export class CalendarSheetDay implements OnChanges {
     /*
     * @return void
     */
+    private getUserEvents(calendar) {
+        this.userEvents = this.userEvents.filter(event => event.data.assigned_user_id != calendar.id &&
+            (!event.data.meeting_user_status_accept || !event.data.meeting_user_status_accept.beans[calendar.id]));
+
+        this.userMultiEvents = this.userMultiEvents.filter(event => event.data.assigned_user_id != calendar.id &&
+            (!event.data.meeting_user_status_accept || !event.data.meeting_user_status_accept.beans[calendar.id]));
+
+        if (this.calendar.isMobileView || !calendar.visible) {
+            return;
+        }
+
+        this.calendar.loadUserEvents(this.startDate, this.endDate, calendar.id)
+            .subscribe(events => {
+                if (events.length > 0) {
+                    events = this.correctHours(events);
+                    events = this.filterEvents(events);
+                    events.forEach(event => {
+                        if (!event.isMulti) {
+                            this.userEvents.push(event);
+                        } else {
+                            this.userMultiEvents.push(event);
+                        }
+                    });
+                }
+            });
+    }
+
+    /*
+    * @return void
+    */
     private getUsersEvents() {
         this.userEvents = [];
         this.userMultiEvents = [];
@@ -248,16 +314,14 @@ export class CalendarSheetDay implements OnChanges {
     */
     private getEventStyle(event): any {
         // get the day of the week
-        let startminutes = (event.start.hour() - this.calendar.startHour) * 60 + event.start.minute();
-        let endminutes = (event.end.hour() - this.calendar.startHour) * 60 + event.end.minute();
-        let itemWidth = ((this.calendarsheet.element.nativeElement.clientWidth - this.sheetTimeWidth)) / (event.maxOverlay > 0 ? event.maxOverlay : 1);
+        const startMinutes = (event.start.hour() - this.calendar.startHour) * 60 + event.start.minute();
+        const endMinutes = (event.end.hour() - this.calendar.startHour) * 60 + event.end.minute();
+        const itemWidth = ((this.calendarsheet.element.nativeElement.clientWidth - this.sheetTimeWidth)) / (event.maxOverlay > 0 ? event.maxOverlay : 1);
         return {
-            'left': (this.sheetTimeWidth + (itemWidth * event.displayIndex)) + 'px',
-            'width': itemWidth + 'px',
-            'top': (((this.calendar.sheetHourHeight / 60 * startminutes)) -1) + 'px',
-            'height': (this.calendar.sheetHourHeight / 60 * (endminutes - startminutes)) + 'px',
-            'z-index': event.resizing ? 20 : 15,
-            'border-bottom': event.resizing ? '1px dotted #fff' : 0
+            left: (this.sheetTimeWidth + (itemWidth * event.displayIndex)) + 'px',
+            width: itemWidth + 'px',
+            top: (((this.calendar.sheetHourHeight / 60 * startMinutes)) -1) + 'px',
+            height: (this.calendar.sheetHourHeight / 60 * (endMinutes - startMinutes)) + 'px',
         };
 
     }
@@ -290,5 +354,13 @@ export class CalendarSheetDay implements OnChanges {
         return {
             color: isToday ? this.calendar.todayColor : 'inherit'
         };
+    }
+
+    /**
+     * @param dragEvent: CdkDragEnd
+     * @call calendar.onEventDrop and pass the dropTargets reference for this sheet
+     */
+    private onEventDrop(dragEvent: CdkDragEnd) {
+        this.calendar.onEventDrop(dragEvent, this.dropTargets);
     }
 }

@@ -54,7 +54,7 @@ export class AdministrationConfigurator implements OnInit {
             let ignoreentry = false;
             if(this.displayFilters) {
                 for (let filterfield in this.filters) {
-                    if (!this.administrationconfigurator.isEditMode(entry.id) && this.filters[filterfield] && entry.data[filterfield] && entry.data[filterfield].indexOf(this.filters[filterfield]) == -1)
+                    if (!this.administrationconfigurator.isEditMode(entry.id) && this.filters[filterfield] && entry.data[filterfield] && entry.data[filterfield].toUpperCase().indexOf(this.filters[filterfield].toUpperCase()) == -1)
                         ignoreentry = true;
                 }
             }

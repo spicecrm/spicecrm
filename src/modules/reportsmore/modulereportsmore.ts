@@ -17,6 +17,7 @@ import /*embed*/ {ReporterDetailPresentationGrouped} from "./components/reporter
 import /*embed*/ {ReporterDetailPresentationTree} from "./components/reporterdetailpresentationtree";
 import /*embed*/ {ReporterDetailPresentationPivot} from "./components/reporterdetailpresentationpivot";
 import /*embed*/ {ReporterDetailVisualizationHighcharts} from "./components/reporterdetailvisualizationhighcharts";
+import /*embed*/ {ReporterDetailVisualizationGoogleMaps} from "./components/reporterdetailvisualizationgooglemaps";
 
 import /*embed*/ {ReporterIntegrationXLSexportButton} from "./components/reporterintegrationxlsexportbutton";
 import /*embed*/ {ReporterIntegrationPDFexportButton} from "./components/reporterintegrationpdfexportbutton";
@@ -41,6 +42,7 @@ import /*embed*/ {ReporterIntegrationQueryanalyzerModal} from "./components/repo
         ReporterDetailPresentationTree,
         ReporterDetailPresentationPivot,
         ReporterDetailVisualizationHighcharts,
+        ReporterDetailVisualizationGoogleMaps,
         ReporterIntegrationXLSexportButton,
         ReporterIntegrationPDFexportButton,
         ReporterIntegrationQueryanalyzerButton,

@@ -1,26 +1,11 @@
-<div class="slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open':opened}">
-    <button class="slds-button slds-button--neutral" aria-haspopup="true" [disabled]="isDisabled" (click)="toggleOpen()">
-        <span>Export</span>
+<div class="slds-dropdown-trigger slds-dropdown-trigger_click" system-dropdown-trigger-simple>
+    <button class="slds-button slds-button--neutral" aria-haspopup="true" [disabled]="isDisabled" style="border-top-right-radius: 0;border-bottom-right-radius: 0;">
+        <span><system-label label="LBL_EXPORT"></system-label></span>
         <system-button-icon [icon]="'down'"></system-button-icon>
     </button>
     <div class="slds-dropdown slds-dropdown_right">
         <ul class="slds-dropdown__list" role="menu">
-            <div #actionitems></div>
-            <!--li class="slds-dropdown__item" role="presentation">
-                <a href="javascript:void(0);" role="menuitem" tabindex="0">
-                    <span class="slds-truncate" title="Overflow Item One">Overflow Item One</span>
-                </a>
-            </li>
-            <li class="slds-dropdown__item" role="presentation">
-                <a href="javascript:void(0);" role="menuitem" tabindex="-1">
-                    <span class="slds-truncate" title="Overflow Item Two">Overflow Item Two</span>
-                </a>
-            </li>
-            <li class="slds-dropdown__item" role="presentation">
-                <a href="javascript:void(0);" role="menuitem" tabindex="-1">
-                    <span class="slds-truncate" title="Overflow Item Three">Overflow Item Three</span>
-                </a>
-            </li-->
+            <div #actionItemsContainer></div>
         </ul>
     </div>
 </div>

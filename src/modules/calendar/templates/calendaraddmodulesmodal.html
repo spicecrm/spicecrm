@@ -1,6 +1,6 @@
 <system-modal size="small">
     <system-modal-header (close)="close()">
-        {{language.getLabel('LBL_MODULES')}}
+        <system-label label="LBL_MODULES"></system-label>
     </system-modal-header>
     <system-modal-content>
         <div class="slds-form-element">
@@ -10,7 +10,7 @@
                         <system-icon [module]="module.name" size="large" class="slds-align_absolute-center"></system-icon>
                         <div class="slds-media__body slds-p-around_small">
                             <h2 class="slds-truncate slds-text-heading_small slds-truncate">
-                                {{language.getModuleName(module.name)}}
+                                <system-label-modulename [module]="module.name"></system-label-modulename>
                             </h2>
                         </div>
                     </a>
@@ -20,7 +20,7 @@
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()">
-            {{language.getLabel('LBL_CANCEL')}}
+            <system-label label="LBL_CANCEL"></system-label>
         </button>
     </system-modal-footer>
 </system-modal>

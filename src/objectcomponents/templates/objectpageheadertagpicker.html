@@ -1,6 +1,6 @@
 <system-modal>
     <system-modal-header (close)="closeModal()">
-        {{ language.getLabel('LBL_ASSIGN_TAGS') }}
+        <system-label label="LBL_ASSIGN_TAGS"></system-label>
     </system-modal-header>
     <system-modal-content>
         <ng-container *ngIf="allTagsAreLoaded && tagsAreParsed; else notReady">
@@ -17,7 +17,7 @@
                     </ul>
                 </ng-container>
                 <ng-template #noAssignedTags>
-                    <div style="font-style:italic">{{language.getLabel('LBL_NO_TAGS_ASSIGNED')}}</div>
+                    <div style="font-style:italic"><system-label label="LBL_NO_TAGS_ASSIGNED"></system-label></div>
                 </ng-template>
             </div>
 
@@ -38,7 +38,7 @@
                     <div class="slds-m-top--xx-small" *ngIf="numberFilteredTags-offeredTagsMaxLength>0" style="font-style:italic;text-align:right">{{ language.getLabelFormatted('LBL_NUMBER_OF_SHOWN_TAGS', [ offeredTags.length, numberFilteredTags ] ) }}</div>
                 </ng-container>
                 <ng-template #noOfferedTags>
-                    <div class="slds-m-top--xx-small" style="font-style:italic">{{ language.getLabel('LBL_NO_TAGS_FOUND') }}</div>
+                    <div class="slds-m-top--xx-small" style="font-style:italic"><system-label label="LBL_NO_TAGS_FOUND"></system-label></div>
                 </ng-template>
             </div>
 
@@ -49,8 +49,8 @@
     </system-modal-content>
 
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="closeModal()">{{language.getLabel('LBL_CANCEL')}}</button>
-        <button class="slds-button slds-button--brand" (click)="saveAndClose()">{{language.getLabel('LBL_SAVE')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="closeModal()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="saveAndClose()"><system-label label="LBL_SAVE"></system-label></button>
     </system-modal-footer>
 
 </system-modal>

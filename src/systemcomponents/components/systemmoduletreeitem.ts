@@ -4,6 +4,7 @@
 import {Component, EventEmitter, Input, Output, SimpleChanges} from "@angular/core";
 import {backend} from "../../services/backend.service";
 import {language} from "../../services/language.service";
+import {modelutilities} from "../../services/modelutilities.service";
 
 /**
  * @ignore
@@ -17,6 +18,11 @@ declare var _: any;
 })
 
 export class SystemModuleTreeItem {
+
+    /**
+     * @input selectedItemPath: string
+     */
+    @Input() public selectedNodeId: string = '';
 
     /**
      * the level we are on
@@ -41,7 +47,7 @@ export class SystemModuleTreeItem {
     /**
      * nodedata
      */
-    @Input() public nodedata: string;
+    @Input() public nodedata: any;
 
     /**
      * if the node is expanded
@@ -73,8 +79,12 @@ export class SystemModuleTreeItem {
      */
     @Output() private itemSelected: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private backend: backend, private language: language) {
+    constructor(private backend: backend, private language: language, private modelUtilities: modelutilities) {
 
+    }
+
+    get isSelected() {
+        return this.selectedNodeId == this.nodedata.nodeId;
     }
 
     get icon() {
@@ -87,13 +97,15 @@ export class SystemModuleTreeItem {
     private loadItems() {
         this.isLoading = true;
         this.backend.getRequest('/dictionary/browser/' + this.module + '/nodes').subscribe(items => {
-
-            for (let item of items) {
-                item.displayname = this.language.getLabel(item.label);
-                this.nodeitems.push(item);
+            if (items) {
+                this.nodeitems = items
+                    .map(item => {
+                        item.nodeId = this.modelUtilities.generateGuid();
+                        item.displayname = !!item.label ? this.language.getLabel(item.label) : this.language.getModuleName(item.module);
+                        return item;
+                    })
+                    .sort((a, b) => !!a.displayname && !!b.displayname ? a.displayname > b.displayname ? 1 : -1 : 0);
             }
-            this.nodeitems.sort((a, b) => !!this.language.getLabel(a.label) && !!this.language.getLabel(b.label) ?
-                this.language.getLabel(a.label).toLowerCase() > this.language.getLabel(b.label).toLowerCase() ? 1 : -1 : 0);
 
             this.isLoading = false;
             this.isLoaded = true;
@@ -124,8 +136,11 @@ export class SystemModuleTreeItem {
      * handler to emit when a node is selected
      */
     private nodeSelected() {
-        // console.log(this.path);
-        this.itemSelected.emit({path: this.path, module: this.module});
+        this.itemSelected.emit({
+            path: this.path,
+            module: this.module,
+            nodeId: !this.nodedata ? 'root' : this.nodedata.nodeId
+        });
     }
 
     private emitSelected(data) {
@@ -134,6 +149,17 @@ export class SystemModuleTreeItem {
 
         // emit the path
         this.itemSelected.emit(data);
+    }
+
+    /*
+    * A function that defines how to track changes for items in the iterable (ngForOf).
+    * https://angular.io/api/common/NgForOf#properties
+    * @param index
+    * @param item
+    * @return index
+    */
+    private trackByFn(index, item) {
+        return item.nodeId;
     }
 
 }

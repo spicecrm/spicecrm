@@ -1,12 +1,12 @@
 /**
- * @module ObjectComponents
+ * @module ModuleActivities
  */
 import {
     Component, Renderer2, ElementRef
 } from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
-import {activitiyTimeLineService, activityTimelineOwnerfilter} from '../../../services/activitiytimeline.service';
+import {activitiytimeline, activityTimelineOwnerfilter} from '../../../services/activitiytimeline.service';
 
 /**
  * a filter button that is tied to the timeline service and allows the user to filter by type and assignment
@@ -44,7 +44,7 @@ export class ActivityTimelineFilter {
      */
     private ownerfilter: activityTimelineOwnerfilter = '';
 
-    constructor(private renderer: Renderer2, private elementRef: ElementRef, private language: language, private metadata: metadata, private activitiyTimeLineService: activitiyTimeLineService) {
+    constructor(private renderer: Renderer2, private elementRef: ElementRef, private language: language, private metadata: metadata, private activitiytimeline: activitiytimeline) {
         this.setFromService();
     }
 
@@ -52,18 +52,18 @@ export class ActivityTimelineFilter {
      * get teh values from the service
      */
     private setFromService() {
-        this.objectfilters = JSON.parse(JSON.stringify(this.activitiyTimeLineService.filters.objectfilters));
-        this.ownerfilter = this.activitiyTimeLineService.filters.own;
+        this.objectfilters = JSON.parse(JSON.stringify(this.activitiytimeline.filters.objectfilters));
+        this.ownerfilter = this.activitiytimeline.filters.own;
     }
 
     /**
      * set the values to the service
      */
     private setToService() {
-        this.activitiyTimeLineService.filters.objectfilters = JSON.parse(JSON.stringify(this.objectfilters));
-        this.activitiyTimeLineService.filters.own = this.ownerfilter;
+        this.activitiytimeline.filters.objectfilters = JSON.parse(JSON.stringify(this.objectfilters));
+        this.activitiytimeline.filters.own = this.ownerfilter;
 
-        this.activitiyTimeLineService.reload();
+        this.activitiytimeline.reload();
     }
 
     /**
@@ -71,7 +71,8 @@ export class ActivityTimelineFilter {
      *
      * helper to toggle the dropdown open or closed
      */
-    private toggleOpen() {
+    private toggleOpen(e: MouseEvent) {
+        e.stopPropagation();
         this.isOpen = !this.isOpen;
         if (this.isOpen) {
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
@@ -108,7 +109,7 @@ export class ActivityTimelineFilter {
     private buildTypes() {
         this.activityTypes = [];
 
-        for (let activityObject of this.activitiyTimeLineService.filterObjects) {
+        for (let activityObject of this.activitiytimeline.filterObjects) {
             this.activityTypes.push({
                 type: activityObject,
                 name: this.language.getModuleName(activityObject)
@@ -124,7 +125,7 @@ export class ActivityTimelineFilter {
      * set the class for the filter properly to indicate if a filter is set and active
      */
     get filterColorClass() {
-        return this.activitiyTimeLineService.filters.objectfilters.length > 0 || this.activitiyTimeLineService.filters.own ? 'slds-icon-text-error' : 'slds-icon-text-default';
+        return this.activitiytimeline.filters.objectfilters.length > 0 || this.activitiytimeline.filters.own ? 'slds-icon-text-error' : 'slds-icon-text-default';
     }
 
     /**

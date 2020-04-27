@@ -4,7 +4,7 @@
             <div class="slds-media slds-no-space slds-grow">
                 <system-icon [module]="'Calendar'"></system-icon>
                 <div class="slds-media__body">
-                    <p class="slds-text-title--caps slds-line-height--reset">{{language.getModuleName('Calendar')}}</p>
+                    <p class="slds-text-title--caps slds-line-height--reset"><system-label-modulename module="Calendar"></system-label-modulename></p>
                     <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
                         {{getCalendarHeader()}}
                         <span *ngIf="calendar.sheetType == 'Week'" class="slds-p-horizontal--x-small slds-p-vertical--xx-small slds-pill slds-text-body--small">
@@ -47,38 +47,38 @@
                         <system-button-icon [icon]="'zoomin'"></system-button-icon>
                     </button>
                 </div>
-                <button class="slds-button slds-button--neutral slds-p-horizontal--x-small" (click)="goToday()">{{language.getLabel('LBL_TODAY')}}</button>
+                <button class="slds-button slds-button--neutral slds-p-horizontal--x-small" (click)="goToday()"><system-label label="LBL_TODAY"></system-label></button>
             </ng-container>
             <div *ngIf="!asPicker" class=" slds-dropdown-trigger slds-dropdown-trigger--click slds-m-left--xx-small" [ngClass]="typeDropdownClass">
                 <button class="slds-button slds-button--neutral slds-p-horizontal--x-small" (click)="toggleTypeSelector()">
-                    {{language.getLabel('LBL_'+ sheetType | uppercase )}}
+                    <system-label [label]="'LBL_'+ sheetType|uppercase "></system-label>
                     <system-button-icon [icon]="'down'"></system-button-icon>
                 </button>
                 <div class="slds-dropdown slds-dropdown--right slds-dropdown--x-small">
                     <ul class="slds-dropdown__list" role="menu">
                         <li class="slds-dropdown__item" role="presentation">
                             <a href="javascript:void(0);" role="menuitem" (click)="setType('Day')">
-                                <span class="slds-truncate">{{language.getLabel('LBL_DAY')}}</span>
+                                <span class="slds-truncate"><system-label label="LBL_DAY"></system-label></span>
                             </a>
                         </li>
                         <li class="slds-dropdown__item" role="presentation" (click)="setType('Three_Days')">
                             <a href="javascript:void(0);" role="menuitem">
-                                <span class="slds-truncate">{{language.getLabel('LBL_THREE_DAYS')}}</span>
+                                <span class="slds-truncate"><system-label label="LBL_THREE_DAYS"></system-label></span>
                             </a>
                         </li>
                         <li class="slds-dropdown__item" role="presentation" (click)="setType('Week')">
                             <a href="javascript:void(0);" role="menuitem">
-                                <span class="slds-truncate">{{language.getLabel('LBL_WEEK')}}</span>
+                                <span class="slds-truncate"><system-label label="LBL_WEEK"></system-label></span>
                             </a>
                         </li>
                         <li class="slds-dropdown__item" role="presentation" (click)="setType('Month')">
                             <a href="javascript:void(0);" role="menuitem">
-                                <span class="slds-truncate">{{language.getLabel('LBL_MONTH')}}</span>
+                                <span class="slds-truncate"><system-label label="LBL_MONTH"></system-label></span>
                             </a>
                         </li>
                         <li class="slds-dropdown__item" role="presentation" (click)="setType('Schedule')">
                             <a href="javascript:void(0);" role="menuitem">
-                                <span class="slds-truncate">{{language.getLabel('LBL_SCHEDULE')}}</span>
+                                <span class="slds-truncate"><system-label label="LBL_SCHEDULE"></system-label></span>
                             </a>
                         </li>
                     </ul>

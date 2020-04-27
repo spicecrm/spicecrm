@@ -1,10 +1,10 @@
 <div class="slds-grid">
     <div class="slds-p-right--medium" style="width:100%">
-        <label class="slds-form-element__label" >{{language.getLabel('LBL_QUESTION_TEXT')}}</label>
+        <label class="slds-form-element__label" ><system-label label="LBL_QUESTION_TEXT"></system-label></label>
         <input type="text" class="slds-input" [(ngModel)]="model.data.name">
     </div>
     <div style="width:4rem">
-        <label class="slds-form-element__label slds-m-horizontal--none">{{language.getLabel('LBL_IMAGE')}}</label><br>
+        <label class="slds-form-element__label slds-m-horizontal--none"><system-label label="LBL_IMAGE"></system-label></label><br>
         <field-container [field]="'image_id'" [fieldconfig]="{fieldtype:'mediafileimage'}" [fielddisplayclass]="'bottom'" (change)="change()"></field-container>
     </div>
     <div class="slds-p-left_medium slds-text-align_center" style="white-space:nowrap">
@@ -23,7 +23,7 @@
 
     </div>
     <div class="slds-p-left_medium slds-text-align_center" style="white-space:nowrap">
-        <label class="slds-form-element__label slds-m-horizontal--none">{{language.getLabel('LBL_MIN_MAX_ANSWERS')}}</label><br>
+        <label class="slds-form-element__label slds-m-horizontal--none"><system-label label="LBL_MIN_MAX_ANSWERS"></system-label></label><br>
         <input type="text" class="slds-input slds-text-align--right slds-m-right--xx-small" style="width:unset" [(ngModel)]="minAnswers" (change)="onChangeNumAnswers()" size="3"><input type="text" class="slds-input slds-text-align--right" style="width:unset" [(ngModel)]="maxAnswers" (change)="onChangeNumAnswers()" size="3">
     </div>
 </div>
@@ -37,16 +37,16 @@
                 R
             </th>
             <th scope="col" width="50%">
-                <div class="slds-truncate">{{language.getLabel('LBL_TEXT')}}</div>
+                <div class="slds-truncate"><system-label label="LBL_TEXT"></system-label></div>
             </th>
             <th scope="col" width="4rem">
-                <div class="slds-truncate">{{language.getLabel('LBL_IMAGE')}}</div>
+                <div class="slds-truncate"><system-label label="LBL_IMAGE"></system-label></div>
             </th>
             <th scope="col" width="50%">
-                <div class="slds-truncate">{{language.getLabel('LBL_CATEGORIES')}}</div>
+                <div class="slds-truncate"><system-label label="LBL_CATEGORIES"></system-label></div>
             </th>
             <th scope="col">
-                <div class="slds-truncate slds-text-align_right">{{language.getLabel('LBL_POINTS')}}</div>
+                <div class="slds-truncate slds-text-align_right"><system-label label="LBL_POINTS"></system-label></div>
             </th>
             <th></th>
         </tr>
@@ -59,7 +59,7 @@
 <div *ngIf="!model.isLoading" class="slds-text-align_right slds-m-top--medium">
     <button class="slds-button slds-button--neutral" (click)="addOption()">
         <system-button-icon [icon]="'add'" [position]="'left'"></system-button-icon>
-        {{language.getLabel('LBL_ADD_ANSWER_OPTION')}}
+        <system-label label="LBL_ADD_ANSWER_OPTION"></system-label>
     </button>
 </div>
 

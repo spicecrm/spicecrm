@@ -60,8 +60,7 @@ export class SystemInputRadio implements ControlValueAccessor {
      * set the radio button toi checked
      */
     private setChecked(event) {
-        console.log(event);
-        if (event.srcElement.checked) {
+        if (event.target.checked) {
             this.onChange(this.value);
         }
     }

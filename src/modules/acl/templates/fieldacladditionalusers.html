@@ -2,7 +2,7 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
     <ul class="slds-list_horizontal slds-has-dividers_left">
         <li *ngFor="let user of users" class="slds-item">
-            <a href="javascript:void(0);" class="slds-text-link_reset" modelPopOver module="Users" [id]="user.id">{{user.summary_text}}</a>
+            <a href="javascript:void(0);" class="slds-text-link_reset" system-model-popover module="Users" [id]="user.id">{{user.summary_text}}</a>
         </li>
     </ul>
 </field-generic-display>
@@ -27,7 +27,7 @@
                 <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
                   <system-icon module="Users" size="small"></system-icon>
                 </span>
-                <span class="slds-pill__label" modelPopOver module="Users" [id]="user.id">{{user.summary_text}}</span>
+                <span class="slds-pill__label" system-model-popover module="Users" [id]="user.id">{{user.summary_text}}</span>
                 <button class="slds-button slds-button--icon slds-pill__remove" (click)="removeItem(user.id)">
                   <system-button-icon [icon]="'close'"></system-button-icon>
                 </button>

@@ -1,13 +1,13 @@
 <system-modal>
-    <system-modal-header (close)="close()">{{language.getLabel('LBL_NOTE')}}</system-modal-header>
+    <system-modal-header (close)="close()"><system-label label="LBL_NOTE"></system-label></system-modal-header>
     <system-modal-content>
         <textarea class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" style="min-height: 300px" [(ngModel)]="nodeInfo.notice"></textarea>
     </system-modal-content>
     <system-modal-footer>
         <div class="slds-button-group">
-            <button class="slds-button-group-item slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
-            <button class="slds-button-group-item slds-button slds-button--neutral" (click)="clear()" [disabled]="!canEdit">{{language.getLabel('LBL_CLEARALL')}}</button>
-            <button class="slds-button-group-item slds-button slds-button--brand" (click)="save()" [disabled]="!canEdit">{{language.getLabel('LBL_SAVE')}}</button>
+            <button class="slds-button-group-item slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button class="slds-button-group-item slds-button slds-button--neutral" (click)="clear()" [disabled]="!canEdit"><system-label label="LBL_CLEARALL"></system-label></button>
+            <button class="slds-button-group-item slds-button slds-button--brand" (click)="save()" [disabled]="!canEdit"><system-label label="LBL_SAVE"></system-label></button>
         </div>
     </system-modal-footer>
 </system-modal>

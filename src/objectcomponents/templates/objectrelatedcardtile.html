@@ -1,18 +1,16 @@
-<system-icon [module]="module" [size]="'small'"></system-icon>
+<system-icon [module]="model.module" [size]="'small'"></system-icon>
 <div class="slds-media__body">
     <div class="slds-grid slds-grid--align-spread slds-has-flexi-truncate">
-        <h3 class="slds-truncate slds-text-heading--small slds-p-top--xxx-small slds-m-bottom--small" modelPopOver (click)="navgiateDetail()">
-            <a href="javascript:void(0);">{{data.summary_text}}</a>
-        </h3>
+        <h3 class="slds-truncate slds-text-heading--small slds-p-top--xxx-small slds-m-bottom--small" system-model-popover>{{data.summary_text}}</h3>
         <div class="slds-shrink-none slds-show--medium">
             <object-action-menu [buttonsize]="'x-small'" [actionset]="actionset"></object-action-menu>
         </div>
     </div>
     <div class="slds-tile__detail slds-text-body--small">
         <dl class="slds-dl--horizontal">
-            <ng-container *ngFor="let field of getFields()">
+            <ng-container *ngFor="let field of fields">
                 <dt class="slds-dl--horizontal__label slds-truncate">
-                    {{language.getFieldDisplayName(module, field.field)}}
+                    <system-label-fieldname [module]="model.module" [field]="field.field"></system-label-fieldname>
                 </dt>
                 <dd class="slds-dl--horizontal__detail slds-tile__meta">
                     <field-container [field]="field.field" [fieldconfig]="field.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>

@@ -4,7 +4,6 @@
 import {Component, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {backend} from "../../../services/backend.service";
-import {ActivatedRoute} from "@angular/router";
 import {SalesPlanningService} from "../services/salesplanning.service";
 import {model} from "../../../services/model.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
@@ -12,6 +11,7 @@ import {navigation} from "../../../services/navigation.service";
 import {favorite} from "../../../services/favorite.service";
 import {Subscription} from "rxjs";
 import {broadcast} from "../../../services/broadcast.service";
+import {navigationtab} from "../../../services/navigationtab.service";
 
 declare var _;
 const ANIMATIONS: any = [
@@ -37,7 +37,7 @@ const ANIMATIONS: any = [
     animations: ANIMATIONS
 })
 
-export class SalesPlanningTool implements OnInit {
+export class SalesPlanningTool {
 
     public self: any = {};
     public subscriptions: Subscription = new Subscription();
@@ -54,13 +54,14 @@ export class SalesPlanningTool implements OnInit {
 
     constructor(private language: language,
                 private backend: backend,
-                private activatedRoute: ActivatedRoute,
                 private renderer: Renderer2,
                 private navigation: navigation,
                 private model: model,
                 private broadcast: broadcast,
                 private favorite: favorite,
+                private navigationtab: navigationtab,
                 private planningService: SalesPlanningService) {
+        this.initialize();
     }
 
     get selectedNode() {
@@ -73,10 +74,6 @@ export class SalesPlanningTool implements OnInit {
 
     get characteristicsLoaded() {
         return this.planningService.characteristics.length > 0;
-    }
-
-    public ngOnInit() {
-        this.initialize();
     }
 
     public ngOnDestroy() {
@@ -94,18 +91,26 @@ export class SalesPlanningTool implements OnInit {
     * @subscribe model.save
     */
     private initialize() {
-        this.activatedRoute.params.subscribe(params => {
-            this.model.module = params.module;
-            this.model.id = params.id;
-        });
-        this.model.getData().subscribe(item => {
-            this.getContentFields(item);
-            this.navigation.setActiveModule(this.model.module, this.model.id, item.summary_text);
-        });
-        this.favorite.enable(this.model.module, this.model.id);
-        this.planningService.versionId = this.model.id;
-        this.getCharacteristicList();
-        this.subscribeToModelSave();
+
+        this.subscriptions.add(
+            this.navigationtab.activeRoute$.subscribe(route => {
+                const params = route.params;
+                if (!params.id || params.id.length == 0 || !params.module || params.module.length == 0) return;
+                this.model.module = params.module;
+                this.model.id = params.id;
+                this.planningService.versionId = this.model.id;
+
+                this.model.getData().subscribe(item => {
+
+                    this.navigationtab.setTabInfo({displayname: item.name, displaymodule: this.model.module});
+                    this.getContentFields(item);
+                    this.navigation.setActiveModule(this.model.module, this.model.id, item.summary_text);
+                });
+
+                this.getCharacteristicList();
+                this.subscribeToModelSave();
+            })
+        );
     }
 
     /*

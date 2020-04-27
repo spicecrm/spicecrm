@@ -90,35 +90,23 @@ export class ProductGroupManagerTree implements OnDestroy {
     }
 
     private getProductGroups(parentId = '') {
-        let fields = ['id', 'name', 'summary_text', 'parent_productgroup_id', 'member_count', 'product_count', 'sortparam', 'sortseq'];
-        let searchfields = {
-            field: 'parent_productgroup_id',
-            operator: (parentId != '' ? '=' : 'empty'),
-            value: parentId
-        };
-        let params = {
-            searchfields: JSON.stringify(searchfields),
-            fields: JSON.stringify(fields),
-            offset: 0,
-            limit: 250
-        };
         this.isLoading = parentId;
-        this.backend.getRequest('module/ProductGroups', params)
-            .subscribe(items => {
-                for (let item of items.list) {
-                    item.expanded = false;
-                    item.loaded = false;
-                    item.type = 'ProductGroup';
-                    item.member_count = parseInt(item.member_count, 10);
-                    item.product_count = parseInt(item.product_count, 10);
-                    this.productGroups.push(item);
-                }
-                this.buildTree();
-                if (this.productfinder.searchfocus.type.length == 0 && this.productGroupTree.length > 0) {
-                    this.selectGroup(this.productGroupTree[0]);
-                }
-                this.isLoading = '';
-            });
+        this.backend.getRequest('productgroups/tree' + (parentId ? '/' + parentId : '')).subscribe(items => {
+            for (let item of items) {
+                item.expanded = false;
+                item.loaded = false;
+                item.type = 'ProductGroup';
+                item.member_count = parseInt(item.member_count, 10);
+                item.product_count = parseInt(item.product_count, 10);
+                this.productGroups.push(item);
+            }
+            this.buildTree();
+            if (this.productfinder.searchfocus.type.length == 0 && this.productGroupTree.length > 0) {
+                this.selectGroup(this.productGroupTree[0]);
+            }
+            this.isLoading = '';
+        });
+
     }
 
     private sortProductGroups() {

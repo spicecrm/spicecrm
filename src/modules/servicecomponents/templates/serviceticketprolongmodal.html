@@ -1,6 +1,6 @@
 <system-modal>
     <system-modal-header (close)="cancel()">
-        {{language.getLabel('LBL_PROLONG')}}
+        <system-label label="LBL_PROLONG"></system-label>
     </system-modal-header>
     <system-modal-content margin="none">
         <div class="slds-grid slds-gutters_direct-x-small">
@@ -9,7 +9,7 @@
             </div>
             <div class="slds-col slds-size--1-of-2">
                 <div class="slds-form-element slds-p-horizontal--x-small">
-                    <label class="slds-form-element__label">{{language.getLabel('LBL_REASON')}}</label>
+                    <label class="slds-form-element__label"><system-label label="LBL_REASON"></system-label></label>
                     <div class="slds-form-element__control">
                         <textarea rows="15" style="resize: none" class="slds-textarea" [(ngModel)]="prolongReason"></textarea>
                     </div>
@@ -18,7 +18,7 @@
         </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" [disabled]="saving"  (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
-        <button class="slds-button slds-button--brand" [disabled]="saving" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+        <button class="slds-button slds-button--neutral" [disabled]="saving"  (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" [disabled]="saving" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
     </system-modal-footer>
 </system-modal>

@@ -2,7 +2,7 @@
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
     <div *ngIf="parentId" class="slds-grid slds-grid_vertical-align-center">
         <system-icon *ngIf="displayModuleIcon" [module]="model.data[parentTypeField]" [size]="'x-small'"></system-icon>
-        <span modelPopOver [module]="parentType" [id]="parentId" [enablelink]="link">{{value}}</span>
+        <span system-model-popover [module]="parentType" [id]="parentId" [enablelink]="link">{{value}}</span>
     </div>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
@@ -36,7 +36,7 @@
                                             <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
                                                 <div class="slds-grid slds-grid--vertical-align-center">
                                                     <system-icon [module]="thisParentType" size="x-small"></system-icon>
-                                                    <div class="slds-truncate">{{language.getModuleName(thisParentType)}}</div>
+                                                    <div class="slds-truncate"><system-label-modulename [module]="thisParentType"></system-label-modulename></div>
                                                 </div>
                                             </div>
                                         </li>
@@ -54,8 +54,8 @@
                         <button (click)="searchWithModal()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"><system-button-icon [icon]="'search'"></system-button-icon></button>
                     </div>
                     <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
-                        <field-lookup-recent *ngIf="parentSearchOpen && parentSearchTerm === ''" [module]="parentType" (selectedObject)="setParent($event)"></field-lookup-recent>
-                        <field-lookup-search *ngIf="parentSearchOpen && parentSearchTerm !== ''" [module]="parentType" (selectedObject)="setParent($event)" (searchWithModal)="searchWithModal()" [searchterm]="parentSearchTerm"></field-lookup-search>
+                        <field-lookup-recent *ngIf="parentSearchTerm === ''" [module]="parentType" (selectedObject)="setParent($event)"></field-lookup-recent>
+                        <field-lookup-search *ngIf="parentSearchTerm !== ''" [module]="parentType" (selectedObject)="setParent($event)" (searchWithModal)="searchWithModal()" [searchterm]="parentSearchTerm"></field-lookup-search>
                     </div>
                 </div>
             </div>

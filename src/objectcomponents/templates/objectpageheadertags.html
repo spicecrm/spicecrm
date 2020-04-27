@@ -14,7 +14,7 @@
                     </div>
                 </div>
                 <div *ngIf="objecttags.length == 0 && !isEditing" class="slds-p-right--xx-small">
-                    <div style="font-style:italic">{{language.getLabel('LBL_NO_TAGS_ASSIGNED')}}</div>
+                    <div style="font-style:italic"><system-label label="LBL_NO_TAGS_ASSIGNED"></system-label></div>
                 </div>
             </div>
             <div *ngIf="!isEditing">

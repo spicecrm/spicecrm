@@ -41,7 +41,8 @@ export class GlobalHeaderSearchResultsItem implements OnInit {
     }
 
     public ngOnInit() {
-        this.model.module = this.hit._type;
+        // backwards compatibility with elasic 6 and still supporting elastic 7
+        this.model.module = this.hit._type == '_doc' ?  this.hit._source._module : this.hit._type;
         this.model.id = this.hit._id;
 
         // get the fieldconfig

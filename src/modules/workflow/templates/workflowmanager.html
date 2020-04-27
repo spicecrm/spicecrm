@@ -7,7 +7,7 @@
                     <div class="slds-page-header__name">
                         <div class="slds-page-header__name-title">
                             <h1>
-                                <span class="slds-page-header__title slds-truncate">{{language.getLabel('LBL_WORKFLOW_MANAGER')}}</span>
+                                <span class="slds-page-header__title slds-truncate"><system-label label="LBL_WORKFLOW_MANAGER"></system-label></span>
                             </h1>
                         </div>
                     </div>
@@ -39,17 +39,17 @@
     </div>
     <div *ngIf="current_module" class="slds-form-element slds-col--bump-left">
         <div class="slds-button-group" role="group">
-            <button type="button" class="slds-button slds-button--neutral" (click)="addWorkflow()">{{language.getLabel('LBL_ADD')}}</button>
-            <!--button type="button" class="slds-button slds-button--neutral" [disabled]="!current_workflow" (click)="deleteWorkflow()">{{language.getLabel('LBL_DELETE')}}</button-->
+            <button type="button" class="slds-button slds-button--neutral" (click)="addWorkflow()"><system-label label="LBL_ADD"></system-label></button>
+            <!--button type="button" class="slds-button slds-button--neutral" [disabled]="!current_workflow" (click)="deleteWorkflow()"><system-label label="LBL_DELETE"></system-label></button-->
         </div>
     </div>
 </div>
-<div *ngIf="current_workflow">
-    <workflow-manager-detail  [modeldata]="_current_workflow_data"></workflow-manager-detail>
+<div *ngIf="current_workflow" system-to-bottom>
+    <workflow-manager-detail [modeldata]="_current_workflow_data"></workflow-manager-detail>
     <div *ngIf="current_module" class="slds-form-element slds-grid slds-grid--align-center slds-theme--default slds-p-around--x-small">
         <div class="slds-button-group" role="group">
-            <button type="button" class="slds-button slds-button--neutral" [disabled]="!current_workflow" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
-            <button type="button" class="slds-button slds-button--brand" [disabled]="!current_workflow" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+            <button type="button" class="slds-button slds-button--neutral" [disabled]="!current_workflow" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button type="button" class="slds-button slds-button--brand" [disabled]="!current_workflow" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
         </div>
     </div>
 </div>

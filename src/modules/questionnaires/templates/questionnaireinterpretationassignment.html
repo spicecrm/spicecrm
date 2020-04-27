@@ -5,7 +5,7 @@
             <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="{{language.getLabel('LBL_CLOSE')}}" (click)="closeModal()">
                 <system-button-icon [icon]="'close'" [size]="'large'"></system-button-icon>
             </button>
-            <h2 class="slds-text-heading_medium slds-hyphenate">{{language.getLabel('LBL_INTERPRETATION_ASSIGNMENT')}}</h2>
+            <h2 class="slds-text-heading_medium slds-hyphenate"><system-label label="LBL_INTERPRETATION_ASSIGNMENT"></system-label></h2>
         </header>
 
         <div class="slds-modal__content slds-p-around_medium" style="height:100%">
@@ -21,7 +21,7 @@
                     <h3 class="slds-section__title">
                         <button class="slds-button slds-section__title-action" (click)="toggleEvaluation()">
                             <system-utility-icon [icon]="'switch'" [size]="'x-small'" [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
-                            <span class="slds-truncate" title="{{language.getLabel('LBL_EVALUATION')}}">{{language.getLabel('LBL_EVALUATION')}}</span>
+                            <span class="slds-truncate" title="{{language.getLabel('LBL_EVALUATION')}}"><system-label label="LBL_EVALUATION"></system-label></span>
                         </button>
                     </h3>
 
@@ -34,7 +34,7 @@
                 <div class="slds-section slds-is-open slds-m-bottom--none">
 
                     <h3 class="slds-section__title slds-theme_shade">
-                        <span class="slds-truncate" title="Zugewiesene Interpretationen">{{language.getLabel('LBL_ASSIGNED_INTERPRETATIONS')}}</span>
+                        <span class="slds-truncate" title="Zugewiesene Interpretationen"><system-label label="LBL_ASSIGNED_INTERPRETATIONS"></system-label></span>
                     </h3>
 
                     <div class="slds-section__content">
@@ -44,7 +44,7 @@
                             <div #divOfferedInterpretations class="slds-dropdown-trigger slds-dropdown-trigger--click" [ngClass]="{'slds-is-open':offeredInterpretationsAreExpanded}">
                                 <button class="slds-button slds-button--neutral" title="Interpretation hinzufügen" (click)="toggleOfferedInterpretations()">
                                     <system-button-icon [icon]="'add'" [position]="'left'"></system-button-icon>
-                                    {{language.getLabel('LBL_ADD_INTERPRETATION')}}
+                                    <system-label label="LBL_ADD_INTERPRETATION"></system-label>
                                 </button>
                                 <div class="slds-dropdown slds-dropdown--left slds-dropdown--large">
                                     <ul *ngIf="offeredInterpretations.length;else noOfferedInterpretations" class="slds-dropdown__list slds-dropdown--length-5">
@@ -53,7 +53,7 @@
                                         </li>
                                     </ul>
                                     <ng-template #noOfferedInterpretations>
-                                        <div class="slds-m-around--x-small">{{language.getLabel('LBL_NO_UNASSIGNED_INTERPRETATIONS_AVAILABLE')}}</div>
+                                        <div class="slds-m-around--x-small"><system-label label="LBL_NO_UNASSIGNED_INTERPRETATIONS_AVAILABLE"></system-label></div>
                                     </ng-template>
                                 </div>
                             </div>
@@ -61,7 +61,7 @@
                             <div>
                                 <button class="slds-button slds-button--neutral" (click)="complementWithSuggestion()">
                                     <system-button-icon [icon]="'add'" [position]="'left'"></system-button-icon>
-                                    {{language.getLabel('LBL_AUTO_COMPLETE_LIST')}}
+                                    <system-label label="LBL_AUTO_COMPLETE_LIST"></system-label>
                                 </button>
                             </div>
 
@@ -76,7 +76,7 @@
                                             <div class="slds-p-left--x-small">
                                                 <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" (click)="removeSingle(i)" title="{{language.getLabel('LBL_REMOVE')}}">
                                                     <system-button-icon [icon]="'delete'"></system-button-icon>
-                                                    <span class="slds-assistive-text">{{language.getLabel('LBL_REMOVE')}}</span>
+                                                    <span class="slds-assistive-text"><system-label label="LBL_REMOVE"></system-label></span>
                                                 </button>
                                             </div>
                                         </div>
@@ -97,7 +97,7 @@
                                                     </ng-container>
                                                     <button *ngIf="meta[interpretation.id].editMode" class="slds-button slds-button_icon-container slds-button_icon-border-filled" (click)="closeEditMode(interpretation.id)">
                                                         <system-button-icon [icon]="'check'"></system-button-icon>
-                                                        <span class="slds-assistive-text">{{language.getLabel('LBL_CLOSE')}}</span>
+                                                        <span class="slds-assistive-text"><system-label label="LBL_CLOSE"></system-label></span>
                                                     </button>
                                                 </div>
                                             </div>
@@ -107,7 +107,7 @@
                             </ul>
                         </div>
                         <ng-template #noInterpretations>
-                            <div class="slds-m-around--medium">{{language.getLabel('LBL_NO_INTERPRETATIONS_ASSIGNED_YET')}}</div>
+                            <div class="slds-m-around--medium"><system-label label="LBL_NO_INTERPRETATIONS_ASSIGNED_YET"></system-label></div>
                         </ng-template>
 
                     </div>
@@ -120,11 +120,11 @@
 
         <footer class="slds-modal__footer">
             <ng-container *ngIf="someExtraTextIsChanged || nrAssignedInterpretationsChanged > 0">
-                <button class="slds-button slds-button--neutral" (click)="cancelModal()">{{language.getLabel('LBL_CANCEL')}}</button>
-                <button class="slds-button slds-button--brand" (click)="closeModal()">{{language.getLabel('LBL_SAVE')}}</button>
+                <button class="slds-button slds-button--neutral" (click)="cancelModal()"><system-label label="LBL_CANCEL"></system-label></button>
+                <button class="slds-button slds-button--brand" (click)="closeModal()"><system-label label="LBL_SAVE"></system-label></button>
             </ng-container>
             <ng-container *ngIf="!someExtraTextIsChanged && nrAssignedInterpretationsChanged === 0">
-                <button class="slds-button slds-button--brand" (click)="cancelModal()">{{language.getLabel('LBL_CLOSE')}}</button>
+                <button class="slds-button slds-button--brand" (click)="cancelModal()"><system-label label="LBL_CLOSE"></system-label></button>
             </ng-container>
         </footer>
 

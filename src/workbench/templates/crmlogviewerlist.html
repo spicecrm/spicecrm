@@ -18,7 +18,7 @@
 
                 <div class="slds-form-element slds-m-left--medium slds-m-vertical--x-small">
                     <div class="slds-form-element__control slds-grid">
-                        <input id="localFiltertextPositive" class="slds-input" type="text" trim="blur" [(ngModel)]="localFiltertextPositive" placeholder="{{lang.getLabel('LBL_TEXT_FILTER')}}, client-side" style="border-bottom-color:#090" />
+                        <input id="localFiltertextPositive" class="slds-input" type="text" system-trim-input="blur" [(ngModel)]="localFiltertextPositive" placeholder="{{lang.getLabel('LBL_TEXT_FILTER')}}, client-side" style="border-bottom-color:#090" />
                         <button class="slds-button slds-button--icon-border slds-m-left--xx-small" (click)="clearLocalTextFilterPositive()" [attr.disabled]="localFiltertextPositive===''?true:null">
                             <system-button-icon [icon]="'clear'" [size]="'small'"></system-button-icon>
                         </button>
@@ -62,7 +62,8 @@
                             <td><a (click)="valuesNotClickable || valueClicked$.emit({type:'uid',value:line.uid})" [ngClass]="{notClickable:valuesNotClickable}">{{getUsername(line.uid)}}</a></td>
                             <td><a (click)="valuesNotClickable || valueClicked$.emit({type:'lev',value:line.lev})" [ngClass]="{notClickable:valuesNotClickable}">{{line.lev}}</a></td>
                             <td [ngClass]="{expanded:line.expand,collapsed:!line.expand}">
-                                <div class="slds-text-font_monospace" [ngClass]="{'slds-truncate':!line.expand}">{{line.txt}}</div></td>
+                                <div class="slds-text-font_monospace" [ngClass]="{'slds-truncate':!line.expand}">{{line.txt}}</div>
+                            </td>
                             <td class="slds-p-left--none" style="border-left:0">
                                 <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="line.expand=true" >
                                     <system-button-icon [icon]="'threedots'" [size]="'small'"></system-button-icon>

@@ -2,63 +2,56 @@
  * @module ModuleReports
  */
 import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
     Component,
     Input,
     OnChanges,
-    OnDestroy,
-    Renderer2,
-    ElementRef,
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
-import {model} from '../../../services/model.service';
-import {footer} from '../../../services/footer.service';
 import {language} from '../../../services/language.service';
 
-import {reporterconfig} from '../services/reporterconfig';
-
+/**
+ * buttons group to render the report integration tools plugin action items
+ */
 @Component({
     selector: 'reporter-integration-tools-button',
-    templateUrl: './src/modules/reports/templates/reporterintegrationtoolsbutton.html'
+    templateUrl: './src/modules/reports/templates/reporterintegrationtoolsbutton.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ReporterIntegrationToolsButton implements OnChanges, OnDestroy {
-
-    @ViewChild('actionitems', {read: ViewContainerRef, static: true}) private actionitems: ViewContainerRef;
-
+export class ReporterIntegrationToolsButton implements OnChanges, AfterViewInit {
+    /**
+     * container reference to render the action items inside
+     */
+    @ViewChild('actionItemsContainer', {
+        read: ViewContainerRef,
+        static: false
+    }) private actionItemsContainer: ViewContainerRef;
+    /**
+     * integration params of the report to handle the plugins
+     */
     @Input() private integrationParams: any = {};
+    /**
+     * to save the action component references
+     */
+    private actionComponentRefs: any[] = [];
 
-    private clickListener: any;
-    private opened: boolean = false;
-    private actionComponents: any[] = [];
-
-    constructor(private language: language, private metadata: metadata, private model: model, private footer: footer, private reporterconfig: reporterconfig, private renderer: Renderer2, private elementRef: ElementRef) {
+    constructor(private language: language,
+                private metadata: metadata) {
     }
 
-    public ngOnChanges() {
-        if (this.integrationParams.activePlugins) {
-            for (let plugin in this.integrationParams.activePlugins) {
-                switch (plugin) {
-                    case 'kqueryanalizer':
-                        this.metadata.addComponent('ReporterIntegrationQueryanalyzerButton', this.actionitems).subscribe(object => {
-                            this.actionComponents.push(object);
-                        })
-                        break;
-                }
-            }
-        }
-    }
-
-    public ngOnDestroy() {
-        if (this.clickListener) this.clickListener();
-    }
-
+    /**
+     * return disabled if there is no active plugins or user has no permission to export
+     */
     get isDisabled() {
         if (this.integrationParams.activePlugins) {
             for (let plugin in this.integrationParams.activePlugins) {
+                if (!this.integrationParams.activePlugins.hasOwnProperty(plugin)) continue;
                 switch (plugin) {
                     case 'kqueryanalizer':
-                        return false;
+                        if (this.integrationParams.activePlugins.kqueryanalizer == 1) return false;
                 }
             }
         }
@@ -66,23 +59,42 @@ export class ReporterIntegrationToolsButton implements OnChanges, OnDestroy {
         return true;
     }
 
-    private toggleOpen() {
-        this.opened = !this.opened;
-
-        if (this.opened) {
-            this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
-        } else if (this.clickListener) {
-            this.clickListener();
-        }
+    /**
+     * render the action items
+     */
+    public ngOnChanges() {
+        this.renderActionItems();
     }
 
+    /**
+     * render the action items
+     */
+    public ngAfterViewInit() {
+        this.renderActionItems();
+    }
 
-    public onClick(event: MouseEvent): void {
+    /**
+     * rerender the action items and push the component reference to array
+     */
+    private renderActionItems() {
+        this.actionComponentRefs.forEach(ref => ref.destroy());
+        this.actionComponentRefs = [];
 
-        const clickedInside = this.elementRef.nativeElement.contains(event.target);
-        if (!clickedInside) {
-            this.opened = false;
-            this.clickListener();
+        if (this.integrationParams.activePlugins) {
+            for (let plugin in this.integrationParams.activePlugins) {
+                if (!this.integrationParams.activePlugins.hasOwnProperty(plugin)) continue;
+
+                switch (plugin) {
+                    case 'kqueryanalizer':
+                        if (this.integrationParams.activePlugins.kqueryanalizer == 1) {
+                            this.metadata.addComponent('ReporterIntegrationQueryanalyzerButton', this.actionItemsContainer).subscribe(object => {
+                                this.actionComponentRefs.push(object);
+                            });
+                        }
+                        break;
+                }
+            }
         }
+
     }
 }

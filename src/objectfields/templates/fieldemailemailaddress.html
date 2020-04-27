@@ -11,17 +11,17 @@
         <div class="slds-grid slds-grid--align-spread">
             <div class="slds-truncate">
                 <system-input-radio value="1" [(ngModel)]="primary" [disabled]="invalid_email || this.emailaddress.email_address == ''" class="slds-size--1-of-3">
-                    {{language.getLabel('LBL_EMAILADDRESS_FIELD_PRIMARY')}}
+                    <system-label label="LBL_EMAILADDRESS_FIELD_PRIMARY"></system-label>
                 </system-input-radio>
             </div>
             <div class="slds-truncate">
                 <system-checkbox [(ngModel)]="opt_out" [disabled]="invalid_email || this.emailaddress.email_address == ''" class="slds-size--1-of-3">
-                    {{language.getLabel('LBL_EMAILADDRESS_FIELD_OPT_OUT')}}
+                    <system-label label="LBL_EMAILADDRESS_FIELD_OPT_OUT"></system-label>
                 </system-checkbox>
             </div>
             <div class="slds-truncate">
                 <system-checkbox [ngModel]="invalid_email" [disabled]="true" class="slds-size--1-of-3">
-                    {{language.getLabel('LBL_EMAILADDRESS_FIELD_INVALID')}}
+                    <system-label label="LBL_EMAILADDRESS_FIELD_INVALID"></system-label>
                 </system-checkbox>
             </div>
         </div>

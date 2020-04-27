@@ -4,7 +4,7 @@
             <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" (click)="close()">
                 <system-button-icon size="large" icon="close"></system-button-icon>
             </button>
-            <h2 class="slds-text-heading_medium slds-hyphenate">{{language.getLabel('LBL_ADD')}} {{language.getLabel('LBL_PRODUCTVARIANT')}}</h2>
+            <h2 class="slds-text-heading_medium slds-hyphenate"><system-label label="LBL_ADD"></system-label> <system-label label="LBL_PRODUCTVARIANT"></system-label></h2>
         </header>
         <div class="slds-modal__content" style="height:80%;">
             <div #productselector></div>
@@ -15,7 +15,7 @@
                 <option value="">--</option>
                 <option *ngFor="let parentitem of items" [value]="parentitem.id">{{parentitem.itemnr}}</option>
             </select>
-            <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+            <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
         </footer>
     </div>
 </section>

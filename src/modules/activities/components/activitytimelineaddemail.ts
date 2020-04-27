@@ -1,7 +1,7 @@
 /**
- * @module ObjectComponents
+ * @module ModuleActivities
  */
-import {Component, OnInit, ViewContainerRef} from '@angular/core';
+import {Component, ElementRef, OnInit, Renderer2, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
@@ -9,30 +9,25 @@ import {view} from '../../../services/view.service';
 import {modal} from '../../../services/modal.service';
 import {backend} from '../../../services/backend.service';
 import {session} from '../../../services/session.service';
-import {activitiyTimeLineService} from '../../../services/activitiytimeline.service';
+import {dockedComposer} from '../../../services/dockedcomposer.service';
+import {activitiytimeline} from '../../../services/activitiytimeline.service';
+import {ActivityTimelineAddItem} from "./activitytimelineadditem";
 
 @Component({
     selector: 'activitytimeline-add-email',
     templateUrl: './src/modules/activities/templates/activitytimelineaddemail.html',
     providers: [model, view]
 })
-export class ActivityTimelineAddEmail implements OnInit {
+export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements OnInit {
 
     public fromEmails: any[] = [];
     private formFields: any[] = [];
     private fromInbox: string = '';
     private formFieldSet: string = '';
-    private isExpanded: boolean = false;
     private isInitialized: boolean = false;
 
-    constructor(private metadata: metadata,
-                private activitiyTimeLineService: activitiyTimeLineService,
-                private model: model, private view: view,
-                private language: language,
-                private session: session,
-                private backend: backend,
-                private modal: modal,
-                private ViewContainerRef: ViewContainerRef) {
+    constructor(public metadata: metadata, public elementRef: ElementRef, renderer: Renderer2, public activitiytimeline: activitiytimeline, public model: model, public view: view, public language: language, public modal: modal, public dockedComposer: dockedComposer, public ViewContainerRef: ViewContainerRef, public backend: backend, private session: session) {
+        super(metadata, activitiytimeline, model, view, language, modal, dockedComposer, ViewContainerRef);
     }
 
     public get firstFormField() {
@@ -54,9 +49,9 @@ export class ActivityTimelineAddEmail implements OnInit {
         this.model.initializeModel();
 
         // set the parent data
-        this.model.data.parent_type = this.activitiyTimeLineService.parent.module;
-        this.model.data.parent_id = this.activitiyTimeLineService.parent.id;
-        this.model.data.parent_name = this.activitiyTimeLineService.parent.data.summary_text;
+        this.model.data.parent_type = this.activitiytimeline.parent.module;
+        this.model.data.parent_id = this.activitiytimeline.parent.id;
+        this.model.data.parent_name = this.activitiytimeline.parent.data.summary_text;
 
         this.model.data.type = 'out';
         this.model.data.status = 'created';
@@ -67,13 +62,14 @@ export class ActivityTimelineAddEmail implements OnInit {
     }
 
     private subscribeParent() {
-        this.activitiyTimeLineService.parent.data$.subscribe(data => {
+        this.activitiytimeline.parent.data$.subscribe(data => {
             if (this.model.data.recipient_addresses.length == 0) {
                 this.determineToAddr();
             }
             // if we still have the same model .. update
-            if (data.id == this.model.data.parent_id)
+            if (data.id == this.model.data.parent_id) {
                 this.model.data.parent_name = data.summary_text;
+            }
         });
     }
 
@@ -106,20 +102,17 @@ export class ActivityTimelineAddEmail implements OnInit {
 
     private determineToAddr() {
         // see if we have an email from the parent
-        if (this.activitiyTimeLineService.parent.data.email1) {
+        if (this.activitiytimeline.parent.data.email1) {
             this.model.data.recipient_addresses = [{
-                parent_type: this.activitiyTimeLineService.parent.module,
-                parent_id: this.activitiyTimeLineService.parent.id,
-                email_address: this.activitiyTimeLineService.parent.data.email1,
+                parent_type: this.activitiytimeline.parent.module,
+                parent_id: this.activitiytimeline.parent.id,
+                email_address: this.activitiytimeline.parent.data.email1,
                 id: this.model.generateGuid(),
                 address_type: 'to'
             }];
         }
     }
 
-    private cancel() {
-        this.isExpanded = false;
-    }
 
     private send() {
         this.model.data.to_be_sent = true;
@@ -133,9 +126,5 @@ export class ActivityTimelineAddEmail implements OnInit {
             this.initializeEmail();
             this.determineToAddr();
         });
-    }
-
-    private expand() {
-        this.modal.openModal('GlobalDockedComposerModal', true, this.ViewContainerRef.injector);
     }
 }

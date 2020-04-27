@@ -1,13 +1,13 @@
 <system-modal size="large" >
-    <system-modal-header (close)="close()">{{language.getLabel('LBL_SOURCE_EDITOR')}}</system-modal-header>
+    <system-modal-header (close)="close()"><system-label label="LBL_SOURCE_EDITOR"></system-label></system-modal-header>
     <system-modal-content>
         <div class="slds-grid" style="height: 70vh;">
             <div class="slds-size--1-of-2 slds-p-right--xx-small" >
                 <div class="slds-box slds-theme--default slds-scrollable_y slds-rich-text-editor__output" [innerHtml]="sanitizedHtml" style="height: 100%;"></div>
             </div>
             <div class="slds-size--1-of-2 slds-p-left--x-small">
-                <div style="height: 36px">
-                    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left-right slds-global-search__form-element" role="none">
+                <div class="slds-p-bottom--xx-small slds-grid">
+                    <div class="slds-grow slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left-right slds-global-search__form-element" role="none">
                         <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
                         <input (keyup)="keyUp($event)" type="text" class="slds-input" [placeholder]="language.getLabel('LBL_SEARCH')" [(ngModel)]="searchText">
                         <div *ngIf="foundIndices.length > 1" class="slds-grid slds-grid--align-spread slds-input__icon_right slds-is-absolute__top" style="height: 100%">
@@ -19,15 +19,17 @@
                             </button>
                         </div>
                     </div>
+                    <button [disabled]="!beautifyenabled" class="slds-m-left--xx-small slds-button slds-button--icon-border slds-button--neutral" (click)="beautify()">
+                        <system-button-icon icon="right_align_text"></system-button-icon>
+                    </button>
                 </div>
-                <div #sourceeditor [attr.contenteditable]="true" (input)="onContentChange($event.target['innerText'])"
-                     style="height: calc(100% - 36px);white-space: pre-line;"  class="slds-box slds-theme--default slds-scrollable_y"></div>
+                <pre #sourceeditor [attr.contenteditable]="true" (input)="onContentChange($event.target['innerText'])" style="height: calc(100% - 36px);"  class="slds-box slds-m-around--none slds-theme--default slds-scrollable_y"></pre>
             </div>
         </div>
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()">
-            {{language.getLabel('LBL_OK')}}
+            <system-label label="LBL_OK"></system-label>
         </button>
     </system-modal-footer>
 </system-modal>

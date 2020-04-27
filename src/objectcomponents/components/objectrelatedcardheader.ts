@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild, OnInit  } from '@angular/core';
 import {
     trigger,
     state,
@@ -35,7 +35,7 @@ import { metadata } from '../../services/metadata.service';
         ])
     ],
 })
-export class ObjectRelatedCardHeader {
+export class ObjectRelatedCardHeader implements OnInit {
 
     /**
      * the component config as key paramater into the component
@@ -53,6 +53,13 @@ export class ObjectRelatedCardHeader {
     // @ViewChild('ngContent', {static:true}) private ngContent: ElementRef;
 
     constructor( private language: language, private relatedmodels: relatedmodels, private model: model, private metadata: metadata ) { }
+
+    public ngOnInit(): void {
+        if ( this.componentconfig.collapsed ) {
+            // use setTimeout to avoid ExpressionChangedAfterItHasBeenCheckedError
+            setTimeout(() => this.isopen = !this.componentconfig.collapsed);
+        }
+    }
 
     /**
      * a getter for the Title to be displayed. This either translates a tilte if set int he config or it renders the module name
@@ -82,7 +89,8 @@ export class ObjectRelatedCardHeader {
     /**
      * toggle Open or Close the panel
      */
-    private toggleOpen() {
+    private toggleOpen(e: MouseEvent) {
+        e.stopPropagation();
         this.isopen = !this.isopen;
     }
 

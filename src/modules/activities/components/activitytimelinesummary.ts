@@ -1,15 +1,16 @@
 /**
- * @module ObjectComponents
+ * @module ModuleActivities
  */
 import {
-    Component, OnDestroy, ViewChild, ViewContainerRef
+    Component, OnDestroy, OnInit, ViewChild, ViewContainerRef
 } from '@angular/core';
-import {ActivatedRoute, Params} from '@angular/router';
+import { Params} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
+import {navigationtab} from '../../../services/navigationtab.service';
 import {language} from '../../../services/language.service';
 import {layout} from '../../../services/layout.service';
-import {activitiyTimeLineService} from '../../../services/activitiytimeline.service';
+import {activitiytimeline} from '../../../services/activitiytimeline.service';
 
 /**
  * @ignore
@@ -21,9 +22,9 @@ declare var moment: any;
  */
 @Component({
     templateUrl: './src/modules/activities/templates/activitytimelinesummary.html',
-    providers: [activitiyTimeLineService, model]
+    providers: [activitiytimeline, model]
 })
-export class ActivityTimelineSummary implements OnDestroy {
+export class ActivityTimelineSummary implements OnInit, OnDestroy {
     /**
      * a reference to the list container. Required to have a scroll handle and do the infinite scrolling
      */
@@ -51,15 +52,18 @@ export class ActivityTimelineSummary implements OnDestroy {
 
     private componentconfig: any;
 
-    constructor(private metadata: metadata, private parent: model, private language: language, private activitiyTimeLineService: activitiyTimeLineService, private activatedRoute: ActivatedRoute, private layout: layout) {
+    constructor(private metadata: metadata, private parent: model, private language: language, private activitiytimeline: activitiytimeline, private navigationtab: navigationtab, private layout: layout) {
 
         // check the componentconfig wether to use fts or not
         this.componentconfig = this.metadata.getComponentConfig('ActivityTimelineSummary');
-        if (this.componentconfig.usefts) this.activitiyTimeLineService.usefts = true;
+        if (this.componentconfig.usefts) this.activitiytimeline.usefts = true;
 
-        this.activatedRoute.params.subscribe(params => this.initialize(params));
+        this.subscription = this.activitiytimeline.loading$.subscribe(loading => this.clearActivitiy());
+    }
 
-        this.subscription = this.activitiyTimeLineService.loading$.subscribe(loading => this.clearActivitiy());
+    public ngOnInit(): void {
+        // initialize the tab
+        this.initialize(this.navigationtab.activeRoute.params);
     }
 
     /**
@@ -73,7 +77,7 @@ export class ActivityTimelineSummary implements OnDestroy {
      * loads the activities for the parent module
      */
     get activities() {
-        return this.activitiyTimeLineService.activities.History.list;
+        return this.activitiytimeline.activities.History.list;
     }
 
     /**
@@ -84,19 +88,19 @@ export class ActivityTimelineSummary implements OnDestroy {
     }
 
     get searchterm() {
-        return this.activitiyTimeLineService.filters.searchterm;
+        return this.activitiytimeline.filters.searchterm;
     }
 
     set searchterm(seacrhterm) {
-        this.activitiyTimeLineService.filters.searchterm = seacrhterm;
-        this.activitiyTimeLineService.reload();
+        this.activitiytimeline.filters.searchterm = seacrhterm;
+        this.activitiytimeline.reload();
     }
 
     /**
      * reloads the list
      */
     private reload() {
-        this.activitiyTimeLineService.reload();
+        this.activitiytimeline.reload();
     }
 
     /**
@@ -108,12 +112,15 @@ export class ActivityTimelineSummary implements OnDestroy {
         // get the bean details
         this.parent.module = params.module;
         this.parent.id = params.id;
-        this.parent.getData(true, '', true);
+        this.parent.getData(true, '', true).subscribe(data => {
+            // set the tab params
+            this.navigationtab.setTabInfo({displayname: this.parent.getField('summary_text') + ' • ' + this.language.getModuleName( 'History'), displaymodule: 'History'});
+        });
 
-        this.activitiyTimeLineService.parent = this.parent;
-        this.activitiyTimeLineService.defaultLimit = 25;
-        this.activitiyTimeLineService.modules = ['History'];
-        this.activitiyTimeLineService.reload();
+        this.activitiytimeline.parent = this.parent;
+        this.activitiytimeline.defaultLimit = 25;
+        this.activitiytimeline.modules = ['History'];
+        this.activitiytimeline.reload();
     }
 
     /**
@@ -124,8 +131,8 @@ export class ActivityTimelineSummary implements OnDestroy {
     private onScroll(e) {
         let element = this.listContainer.element.nativeElement;
         if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
-            if (this.activitiyTimeLineService.canLoadMore('History')) {
-                this.activitiyTimeLineService.getMoreTimeLineData('History', 20);
+            if (this.activitiytimeline.canLoadMore('History')) {
+                this.activitiytimeline.getMoreTimeLineData('History', 20);
             }
         }
     }

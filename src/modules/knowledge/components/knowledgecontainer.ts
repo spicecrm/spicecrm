@@ -8,19 +8,30 @@ import {backend} from "../../../services/backend.service";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {toast} from "../../../services/toast.service";
+import {navigationtab} from "../../../services/navigationtab.service";
 import {Location} from "@angular/common";
 
+/**
+ * handles the route and render the suitable view for the knowledge books/documents
+ */
 @Component({
+    selector: 'knowledge-container',
     templateUrl: "./src/modules/knowledge/templates/knowledgecontainer.html"
 
 })
 export class KnowledgeContainer implements AfterViewInit, OnDestroy {
 
-    private id: string;
-    private module: string;
+    private modelId: string;
+    private module: 'KnowledgeBooks' | 'KnowledgeDocuments' = 'KnowledgeBooks';
+    /**
+     * needed to determine weather the view is rendered or not to render the suitable component properly
+     */
     private viewInitialized: boolean = false;
     private subscription: Subscription = new Subscription();
-    @ViewChild('knowledgeContainer',{read: ViewContainerRef, static: true}) private container: ViewContainerRef;
+    /**
+     * view reference to render the suitable component inside
+     */
+    @ViewChild('knowledgeContainer', {read: ViewContainerRef, static: true}) private container: ViewContainerRef;
 
 
     constructor(private activatedRoute: ActivatedRoute,
@@ -29,22 +40,38 @@ export class KnowledgeContainer implements AfterViewInit, OnDestroy {
                 private location: Location,
                 private language: language,
                 private toast: toast,
+                private navigationtab: navigationtab,
                 private metadata: metadata) {
         this.routerSubscriber();
     }
 
+    /**
+     * @ignore
+     */
     public ngAfterViewInit() {
         this.viewInitialized = true;
         this.renderView();
     }
 
+    /**
+     * @ignore
+     */
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+
+    /**
+     * subscribe to navigation and set the module to render the suitable component
+     */
     private routerSubscriber() {
-        this.subscription = this.activatedRoute.params.subscribe(params => {
+        this.subscription = this.navigationtab.activeRoute$.subscribe(route => {
+            let params = route.params;
             if (!params.module) this.router.navigate(['module/Home']);
 
             this.module = params.module;
+
             if (params.id) {
-                this.id = params.id;
+                this.modelId = params.id;
             }
             if (this.viewInitialized) {
                 this.renderView();
@@ -52,11 +79,18 @@ export class KnowledgeContainer implements AfterViewInit, OnDestroy {
         });
     }
 
+    /**
+     * check for acl permission and render the suitable component depending on the user acl permissions
+     * pass the inputs to the rendered component
+     * display error toast if the record was not found
+     */
     private renderView() {
         if (!this.module) return;
-        let component = this.metadata.checkModuleAcl(this.module,'edit') ? 'KnowledgeManager' : 'KnowledgeBrowser';
-        if (this.id) {
-            this.backend.get(this.module, this.id).subscribe(
+        let component = this.metadata.checkModuleAcl(this.module, 'edit') ? 'KnowledgeManager' : 'KnowledgeBrowser';
+
+        // render the details for the record and pass the data to the component if the model id is set
+        if (this.modelId) {
+            this.backend.get(this.module, this.modelId).subscribe(
                 (item: any) => {
                     if (item) {
                         this.metadata.addComponent(component, this.container).subscribe(componentRef => {
@@ -73,11 +107,12 @@ export class KnowledgeContainer implements AfterViewInit, OnDestroy {
                                     break;
                             }
                         });
+                        this.navigationtab.setTabInfo({displayname: item.summary_text, displaymodule: this.module});
                     } else {
                         this.metadata.addComponent(component, this.container);
                     }
                 },
-                error => {
+                () => {
                     this.metadata.addComponent(component, this.container);
                     this.location.replaceState("/module/" + this.module);
                     this.toast.sendToast(this.language.getLabel("LBL_ERROR_LOADING_RECORD"), "error");
@@ -85,9 +120,5 @@ export class KnowledgeContainer implements AfterViewInit, OnDestroy {
         } else {
             this.metadata.addComponent(component, this.container);
         }
-    }
-
-    public ngOnDestroy() {
-        this.subscription.unsubscribe();
     }
 }

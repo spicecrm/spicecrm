@@ -11,11 +11,9 @@
         <div class="slds-form-element slds-m-right--x-small">
             <label class="slds-form-element__label" for="year">{{lang.getLabel('LBL_YEAR')}}</label>
             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-                <input id="year" class="slds-input slds-text-align--right" size="4" type="text" maxlength="4" trim [(ngModel)]="period.begin.year" (change)="changedYear()"/>
+                <input id="year" class="slds-input slds-text-align--right" size="4" type="text" maxlength="4" system-trim-input [(ngModel)]="period.begin.year" (change)="changedYear()"/>
                 <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="period.begin.year='';changedYear()" >
-                    <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
-                        <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
-                    </svg>
+                    <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                 </button>
             </div>
         </div>
@@ -70,11 +68,9 @@
         <div class="slds-form-element slds-m-right--x-small">
             <label class="slds-form-element__label" for="duration">{{lang.getLabel('LBL_DURATION')}}<span *ngIf="period.type"> ({{lang.getLabel(durationLabel)}})</span></label>
             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-                <input [disabled]="!period.type" id="duration" class="slds-input slds-text-align--right" size="2" type="text" trim [(ngModel)]="period.duration" (change)="sanitizeDuration()"/>
+                <input [disabled]="!period.type" id="duration" class="slds-input slds-text-align--right" size="2" type="text" system-trim-input [(ngModel)]="period.duration" (change)="sanitizeDuration()"/>
                 <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right">
-                    <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
-                        <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
-                    </svg>
+                    <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                 </button>
             </div>
         </div>
@@ -82,11 +78,9 @@
         <div class="slds-form-element slds-m-right--x-small">
             <label class="slds-form-element__label" for="processId">{{lang.getLabel('LBL_PROCESS_ID')}}</label>
             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-                <input id="processId" class="slds-input slds-text-align--right" type="text" size="5" trim [(ngModel)]="filter.processId" />
+                <input id="processId" class="slds-input slds-text-align--right" type="text" size="5" system-trim-input [(ngModel)]="filter.processId" />
                 <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.processId=''">
-                    <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
-                        <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
-                    </svg>
+                    <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                 </button>
             </div>
         </div>
@@ -94,11 +88,9 @@
         <div class="slds-form-element slds-m-right--x-small">
             <label class="slds-form-element__label" for="transactionId">{{lang.getLabel('LBL_TRANSACTION')}}</label>
             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-                <input id="transactionId" class="slds-input slds-text-align--right" type="text" trim [(ngModel)]="filter.transactionId" />
+                <input id="transactionId" class="slds-input slds-text-align--right" type="text" system-trim-input [(ngModel)]="filter.transactionId" />
                 <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.transactionId=''">
-                    <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
-                        <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
-                    </svg>
+                    <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                 </button>
             </div>
         </div>
@@ -131,11 +123,9 @@
         <div class="slds-form-element slds-m-right--x-small">
             <label class="slds-form-element__label" for="filtertextBackend">Text</label>
             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-                <input id="filtertextBackend" class="slds-input" type="text" trim [(ngModel)]="filter.text" />
+                <input id="filtertextBackend" class="slds-input" type="text" system-trim-input [(ngModel)]="filter.text" />
                 <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.text=''">
-                    <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
-                        <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
-                    </svg>
+                    <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                 </button>
             </div>
         </div>
@@ -143,11 +133,9 @@
         <div class="slds-form-element slds-m-right--x-small">
             <label class="slds-form-element__label" for="level">Zeilenlimit</label>
             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-                <input id="limit" class="slds-input slds-text-align--right" type="text" size="8" trim [(ngModel)]="limit" />
+                <input id="limit" class="slds-input slds-text-align--right" type="text" size="8" system-trim-input [(ngModel)]="limit" />
                 <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="limit=''">
-                    <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
-                        <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
-                    </svg>
+                    <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                 </button>
             </div>
         </div>

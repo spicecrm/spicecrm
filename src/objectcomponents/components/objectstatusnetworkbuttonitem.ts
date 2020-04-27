@@ -9,19 +9,21 @@ import {
     Injector,
     ViewChild,
     ViewContainerRef,
-    AfterViewInit
+    AfterViewInit, OnChanges
 } from '@angular/core';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
 import {modal} from '../../services/modal.service';
 import {metadata} from '../../services/metadata.service';
 
-
+/**
+ * the container for the item in the list. Can be seleted by the angular selector and also handle the click on the element and propagate the click to the actionable function on the item
+ */
 @Component({
     selector: 'object-status-network-button-item',
     templateUrl: './src/objectcomponents/templates/objectstatusnetworkbuttonitem.html'
 })
-export class ObjectStatusNetworkButtonItem implements AfterViewInit {
+export class ObjectStatusNetworkButtonItem implements AfterViewInit, OnChanges {
 
     /**
      * a viewcontainer ref to the container itself so the action set item can render the component from the config in this element
@@ -36,9 +38,12 @@ export class ObjectStatusNetworkButtonItem implements AfterViewInit {
      */
     @Input() private item: any = {};
 
+    /**
+     * the rendered action component if there is one rendered
+     */
     private actioncomponent: any;
 
-    @Output() private status: EventEmitter<string> = new EventEmitter<string>();
+    private initialized: boolean = false;
 
     constructor(private language: language, private metadata: metadata, private modal: modal, private model: model, private injector: Injector) {
 
@@ -65,6 +70,22 @@ export class ObjectStatusNetworkButtonItem implements AfterViewInit {
         if (this.hasComponent) {
             this.metadata.addComponent(this.item.status_component, this.componentcontainer, this.injector).subscribe(actioncomponent => {
                 this.actioncomponent = actioncomponent.instance;
+                actioncomponent.instance.item = this.item;
+            });
+        }
+
+        this.initialized = true;
+    }
+
+    public ngOnChanges(): void {
+        if(this.actioncomponent) {
+            this.actioncomponent.self.destroy();
+            this.actioncomponent = null;
+        }
+        if (this.initialized && this.hasComponent) {
+            this.metadata.addComponent(this.item.status_component, this.componentcontainer, this.injector).subscribe(actioncomponent => {
+                this.actioncomponent = actioncomponent.instance;
+                actioncomponent.instance.item = this.item;
             });
         }
     }
@@ -88,14 +109,15 @@ export class ObjectStatusNetworkButtonItem implements AfterViewInit {
 
     /**
      * executes the change on the embedded component or on the item itself
+     * executes the model editing in silent mode
      *
      * @param statusfield
      */
     private executeChange(statusfield) {
-        if(this.actioncomponent && this.actioncomponent.execute){
+        if(this.actioncomponent && this.actioncomponent.execute) {
             this.actioncomponent.execute();
         } else {
-            this.model.startEdit();
+            this.model.startEdit(true, true);
             this.model.setField(statusfield, this.item.status_to);
             if (this.model.validate()) {
                 this.model.save();

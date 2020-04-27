@@ -1,12 +1,12 @@
 /**
- * @module ObjectComponents
+ * @module ModuleActivities
  */
 import {
     Component, OnDestroy, ViewChild, ViewContainerRef, Input
 } from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
-import {activitiyTimeLineService, activityTimeLineModules} from '../../../services/activitiytimeline.service';
+import {activitiytimeline, activityTimeLineModules} from '../../../services/activitiytimeline.service';
 
 /**
  * @ignore
@@ -25,21 +25,21 @@ export class ActivityTimelineAggregates {
     @Input() private module: activityTimeLineModules;
     @Input() private labellength: string = 'default';
 
-    constructor(private metadata: metadata, private language: language, private activitiyTimeLineService: activitiyTimeLineService) {
+    constructor(private metadata: metadata, private language: language, private activitiytimeline: activitiytimeline) {
     }
 
     /**
      * a getter for the aggregates from the service
      */
     get moduleaggregates() {
-        return this.module && this.activitiyTimeLineService.activities[this.module].aggregates.module ? this.activitiyTimeLineService.activities[this.module].aggregates.module : [];
+        return this.module && this.activitiytimeline.activities[this.module].aggregates.module ? this.activitiytimeline.activities[this.module].aggregates.module : [];
     }
 
     /**
      * a getter for the aggregates from the service
      */
     get yearaggregates() {
-        return this.module && this.activitiyTimeLineService.activities[this.module].aggregates.year ? this.activitiyTimeLineService.activities[this.module].aggregates.year : [];
+        return this.module && this.activitiytimeline.activities[this.module].aggregates.year ? this.activitiytimeline.activities[this.module].aggregates.year : [];
     }
 
     /**
@@ -47,7 +47,7 @@ export class ActivityTimelineAggregates {
      * @param module
      */
     private getElementStyle(module) {
-        if (!this.activitiyTimeLineService.checkModuleActive(module)) {
+        if (!this.activitiytimeline.checkModuleActive(module)) {
             return {
                 filter: 'grayscale(100%)',
                 opacity: '0.5'
@@ -61,8 +61,8 @@ export class ActivityTimelineAggregates {
      * @param module the module that is being toggled
      */
     private toggleModuleFilter(module) {
-        this.activitiyTimeLineService.toggleModuleFilter(module);
-        if (this.metadata.getModuleDefs(module).ftsactivities.Activities) this.activitiyTimeLineService.getTimeLineData('Activities');
-        if (this.metadata.getModuleDefs(module).ftsactivities.History) this.activitiyTimeLineService.getTimeLineData('History');
+        this.activitiytimeline.toggleModuleFilter(module);
+        if (this.metadata.getModuleDefs(module).ftsactivities.Activities) this.activitiytimeline.getTimeLineData('Activities');
+        if (this.metadata.getModuleDefs(module).ftsactivities.History) this.activitiytimeline.getTimeLineData('History');
     }
 }

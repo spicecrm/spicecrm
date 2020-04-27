@@ -1,14 +1,1 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-function applyMixins(derivedCtor, baseCtors) {
-    for (var i = 0, len = baseCtors.length; i < len; i++) {
-        var baseCtor = baseCtors[i];
-        var propertyKeys = Object.getOwnPropertyNames(baseCtor.prototype);
-        for (var j = 0, len2 = propertyKeys.length; j < len2; j++) {
-            var name_1 = propertyKeys[j];
-            derivedCtor.prototype[name_1] = baseCtor.prototype[name_1];
-        }
-    }
-}
-exports.applyMixins = applyMixins;
-//# sourceMappingURL=applyMixins.js.map
+"use strict";function applyMixins(e,t){for(var p=0,r=t.length;p<r;p++)for(var o=t[p],i=Object.getOwnPropertyNames(o.prototype),n=0,s=i.length;n<s;n++){var a=i[n];e.prototype[a]=o.prototype[a]}}Object.defineProperty(exports,"__esModule",{value:!0}),exports.applyMixins=applyMixins;

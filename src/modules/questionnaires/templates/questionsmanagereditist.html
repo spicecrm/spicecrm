@@ -1,6 +1,6 @@
 <div class="slds-grid">
     <div class="slds-p-right--medium" style="width:100%">
-        <label class="slds-form-element__label" >{{language.getLabel('LBL_QUESTION_TEXT')}}</label>
+        <label class="slds-form-element__label" ><system-label label="LBL_QUESTION_TEXT"></system-label></label>
         <input type="text" class="slds-input" [(ngModel)]="model.data.name">
     </div>
 </div>
@@ -11,16 +11,16 @@
     <thead>
         <tr>
             <th scope="col" width="25%">
-                <div class="slds-truncate">{{language.getLabel('LBL_VALUE')}}</div>
+                <div class="slds-truncate"><system-label label="LBL_VALUE"></system-label></div>
             </th>
             <th scope="col" width="25%">
-                <div class="slds-truncate">{{language.getLabel('LBL_OPTIONS')}}</div>
+                <div class="slds-truncate"><system-label label="LBL_OPTIONS"></system-label></div>
             </th>
             <th scope="col" width="25%">
-                <div class="slds-truncate">{{language.getLabel('LBL_CATEGORIES')}}</div>
+                <div class="slds-truncate"><system-label label="LBL_CATEGORIES"></system-label></div>
             </th>
             <th scope="col" width="25%">
-                <div class="slds-truncate">{{language.getLabel('LBL_POINTS')}}</div>
+                <div class="slds-truncate"><system-label label="LBL_POINTS"></system-label></div>
             </th>
             <th></th>
         </tr>
@@ -33,7 +33,7 @@
 <div *ngIf="!model.isLoading" class="slds-text-align_right slds-m-top--medium">
     <button class="slds-button slds-button--neutral" (click)="addOption()">
         <system-button-icon [icon]="'add'" [position]="'left'"></system-button-icon>
-        {{language.getLabel('LBL_ADD_ANSWER_OPTION')}}
+        <system-label label="LBL_ADD_ANSWER_OPTION"></system-label>
     </button>
 </div>
 

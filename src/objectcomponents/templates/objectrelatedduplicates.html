@@ -5,17 +5,17 @@
             <div class="slds-grid slds-grid--vertical-align-center slds-media__body slds-truncate">
                 <h2>
                     <a href="javascript:void(0);" class="slds-text-link--reset">
-                        <span class="slds-text-heading--small">{{language.getLabel('LBL_DUPLICATES')}} ({{duplicatecount}})</span>
+                        <span class="slds-text-heading--small"><system-label label="LBL_DUPLICATES"></system-label> ({{duplicatecount}})</span>
                     </a>
                 </h2>
-                <system-utility-icon class="slds-m-horizontal--xx-small" *ngIf="duplicatecount > 0" icon="up" [ngStyle]="iconStyle" style="transition: .5s;" size="x-small" (click)="toggleDuplicates()"></system-utility-icon>
+                <system-utility-icon class="slds-m-horizontal--xx-small" *ngIf="duplicatecount > 0" icon="up" [ngStyle]="iconStyle" style="transition: .5s;" size="x-small" (click)="toggleDuplicates($event)"></system-utility-icon>
             </div>
         </header>
         <object-merge-button *ngIf="showMergeButton" [mergemodels]="duplicates" (merged)="merged($event)"></object-merge-button>
     </div>
     <div class="slds-card__body" [hidden]="hideDuplicates">
         <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
-            <object-related-duplicate-tile class="slds-size--1-of-1 slds-large-size--1-of-3" *ngFor="let duplicate of duplicates" [modelProvider]="{module:model.module, data:duplicate}"></object-related-duplicate-tile>
+            <object-related-duplicate-tile class="slds-size--1-of-1 slds-large-size--1-of-3" *ngFor="let duplicate of duplicates" [system-model-provider]="{module:model.module, data:duplicate}"></object-related-duplicate-tile>
         </div>
     </div>
 </article>

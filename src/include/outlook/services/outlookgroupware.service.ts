@@ -3,15 +3,22 @@
  */
 import {Injectable} from "@angular/core";
 import {GroupwareService} from "../../../include/groupware/services/groupware.service";
-import {Observable, Subject} from "rxjs";
+import {Observable, Subject, of} from "rxjs";
 
 declare var Office: any;
+declare var _: any;
 
+/**
+ * Extension of the groupware service used to communicate with Outlook.
+ */
 @Injectable()
 export class OutlookGroupware extends GroupwareService {
 
     public iframeUrl: string = '';
 
+    /**
+     * Loads the email data from Outlook and assembles it into a GroupwareEmail object.
+     */
     public assembleEmail(): Observable<any> {
         let responseSubject = new Subject<any>();
 
@@ -52,6 +59,10 @@ export class OutlookGroupware extends GroupwareService {
         return responseSubject.asObservable();
     }
 
+    /**
+     * Load the email attachment data from Outlook including the information about each attachment,
+     * as well as the EWS server URL and a temporary attachment token used to download the attachments in the backend.
+     */
     public getAttachments(): Observable<any> {
         let responseSubject = new Subject<any>();
 
@@ -62,14 +73,8 @@ export class OutlookGroupware extends GroupwareService {
                 (res: any) => {
                     this.outlookAttachments.attachmentToken = res;
 
-                    // set to the mailitem
-                    // this.krest.attachmentToken = res;
-                    // this.krest.ewsUrl = this.outlookAttachments.ewsUrl;
-
                     for (let i = 0; i < Office.context.mailbox.item.attachments.length; i++) {
-                        this.outlookAttachments.attachments[i] = JSON.parse(
-                            JSON.stringify(Office.context.mailbox.item.attachments[i]._data$p$0)
-                        );
+                        this.outlookAttachments.attachments[i] = _.clone(Office.context.mailbox.item.attachments[i]);
                         this.outlookAttachments.attachments[i].selected = false;
                     }
 
@@ -87,6 +92,9 @@ export class OutlookGroupware extends GroupwareService {
         return responseSubject.asObservable();
     }
 
+    /**
+     * Load the attachment token.
+     */
     public getAttachmentToken(): Observable<any> {
         let responseSubject = new Subject<any>();
 
@@ -104,16 +112,23 @@ export class OutlookGroupware extends GroupwareService {
         return responseSubject.asObservable();
     }
 
-    public getAddressArray() {
+    /**
+     * Returns an array of email adresses used in the selected email.
+     */
+    public getAddressArray(includeown: boolean = false) {
         let toAddresses = [];
         toAddresses.push(Office.context.mailbox.item.from.emailAddress);
         for (let address of Office.context.mailbox.item.to) {
-            toAddresses.push(address.emailAddress);
+            if(includeown || address.emailAddress != Office.context.mailbox.userProfile.emailAddress){
+                toAddresses.push(address.emailAddress);
+            }
         }
 
         let ccAddresses = [];
         for (let address of Office.context.mailbox.item.cc) {
-            ccAddresses.push(address.emailAddress);
+            if(includeown || address.emailAddress != Office.context.mailbox.userProfile.emailAddress) {
+                ccAddresses.push(address.emailAddress);
+            }
         }
 
         let allAddresses = toAddresses.concat(ccAddresses);
@@ -121,6 +136,9 @@ export class OutlookGroupware extends GroupwareService {
         return allAddresses;
     }
 
+    /**
+     * Returns the email adresses array and the message ID (Outlook ID) of the selected email.
+     */
     public getEmailAddressData() {
         let data = {
             addresses: this.getAddressArray(),
@@ -129,4 +147,31 @@ export class OutlookGroupware extends GroupwareService {
 
         return data;
     }
+
+    /**
+     * get the calendar item id
+     */
+    public getCalenderItemId(): Observable<string> {
+        if (Office.context.mailbox.item.itemId) {
+            return of(Office.context.mailbox.item.itemId);
+        } else {
+            let retSubject = new Subject<string>();
+            Office.context.mailbox.item.getItemIdAsync(id => {
+                retSubject.next(id.value);
+                retSubject.complete();
+            });
+            return retSubject.asObservable();
+        }
+    }
+
+    public getCustomProperties(): Observable<any> {
+        let retSubject = new Subject<any>();
+        Office.context.mailbox.item.loadCustomPropertiesAsync(cProps => {
+            retSubject.next(cProps.value);
+            retSubject.complete();
+        });
+        return retSubject.asObservable();
+    }
+
+
 }

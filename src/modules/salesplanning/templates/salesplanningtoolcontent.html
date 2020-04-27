@@ -3,7 +3,7 @@
         <div class="slds-grow slds-p-horizontal--medium slds-scrollable--x slds-text-heading--small slds-align-middle slds-grid slds-grid--vertical-align-center">
             <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
                 <li *ngFor="let nodeCrumb of displayNodeCrumbs" class="slds-breadcrumb__item">
-                    <div *ngIf="nodeCrumb.linkid" modelPopOver [module]="nodeCrumb.linkmodule" [id]="nodeCrumb.linkid" class="slds-p-horizontal--x-small">{{nodeCrumb.displayname}}</div>
+                    <div *ngIf="nodeCrumb.linkid" system-model-popover [module]="nodeCrumb.linkmodule" [id]="nodeCrumb.linkid" class="slds-p-horizontal--x-small">{{nodeCrumb.displayname}}</div>
                     <div *ngIf="!nodeCrumb.linkid" class="slds-p-horizontal--x-small">{{nodeCrumb.displayname}}</div>
                 </li>
             </ol>
@@ -12,21 +12,21 @@
             </button>
         </div>
         <div class="slds-col_bump-left slds-m-right--xx-small">
-            <system-checkbox [(ngModel)]="markDone" [disabled]="isClosing || isLoading || !nodeInfo?.leaf || !this.canEdit || !isEditMode" class="slds-m-right--x-small">{{language.getLabel('LBL_CLOSE')}}</system-checkbox>
+            <system-checkbox [(ngModel)]="markDone" [disabled]="isClosing || isLoading || !nodeInfo?.leaf || !this.canEdit || !isEditMode" class="slds-m-right--x-small"><system-label label="LBL_CLOSE"></system-label></system-checkbox>
             <div class="slds-button-group">
                 <button *ngIf="isEditMode" [disabled]="isLoading" class="slds-button-group-item slds-button slds-button--neutral" (click)="cancel()">
-                    {{language.getLabel('LBL_CANCEL')}}
+                    <system-label label="LBL_CANCEL"></system-label>
                 </button>
                 <button *ngIf="isEditMode" [disabled]="isLoading || isSaving" class="slds-button-group-item slds-button slds-button--neutral slds-align--absolute-center" (click)="openInputHelper()">
                     <system-spinner *ngIf="isSaving" size="14" inverse="true" class="slds-m-right--xx-small" style="display: inline-block"></system-spinner>
-                    {{language.getLabel('LBL_INPUT_HELPER')}}
+                    <system-label label="LBL_INPUT_HELPER"></system-label>
                 </button>
                 <button *ngIf="isEditMode" [disabled]="isLoading || isSaving" class="slds-button-group-item slds-button slds-button--brand slds-align--absolute-center" (click)="save()">
                     <system-spinner *ngIf="isSaving" size="14" inverse="true" class="slds-m-right--xx-small" style="display: inline-block"></system-spinner>
-                    {{language.getLabel('LBL_SAVE')}}
+                    <system-label label="LBL_SAVE"></system-label>
                 </button>
                 <button *ngIf="!isEditMode" [disabled]="isLoading || !nodeInfo?.leaf || !data || !this.canEdit" class="slds-button-group-item slds-button slds-button--neutral" (click)="setEditMode()">
-                    {{language.getLabel('LBL_EDIT')}}
+                    <system-label label="LBL_EDIT"></system-label>
                 </button>
             </div>
         </div>
@@ -37,7 +37,7 @@
             <tr class="slds-text-title_caps" style="height: 30px">
                 <th scope="col" style="padding: .1rem">
                     <div [title]="language.getLabel('LBL_PLAN_CODE')">
-                        {{language.getLabel('LBL_PLAN_CODE')}}
+                        <system-label label="LBL_PLAN_CODE"></system-label>
                     </div>
                 </th>
                 <th *ngFor="let period of periods; trackBy: trackByIndexFn" class="slds-text-align--right" scope="col" [title]="period?.name" style="padding: .1rem">
@@ -47,7 +47,7 @@
                 </th>
                 <th class="slds-text-align--right" scope="col" style="padding: .1rem">
                     <div class="slds-truncate" [title]="language.getLabel('LBL_SUM_PERIODS')">
-                        {{language.getLabel('LBL_SUM_PERIODS')}}
+                        <system-label label="LBL_SUM_PERIODS"></system-label>
                     </div>
                 </th>
             </tr>
@@ -88,6 +88,6 @@
     </div>
 </div>
 <div *ngIf="!isLoading && !node" class="slds-p-around--small slds-align--absolute-center" style="height: inherit">
-    {{language.getLabel('LBL_MAKE_SELECTION')}}
+    <system-label label="LBL_MAKE_SELECTION"></system-label>
 </div>
 

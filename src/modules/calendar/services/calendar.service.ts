@@ -1,7 +1,7 @@
 /**
  * @module ModuleCalendar
  */
-import {EventEmitter, Injectable, OnDestroy} from '@angular/core';
+import {ChangeDetectorRef, EventEmitter, Injectable, OnDestroy} from '@angular/core';
 import {of, Subject, Subscription} from 'rxjs';
 import {backend} from '../../../services/backend.service';
 import {session} from '../../../services/session.service';
@@ -11,6 +11,7 @@ import {broadcast} from "../../../services/broadcast.service";
 import {modal} from "../../../services/modal.service";
 import {language} from "../../../services/language.service";
 import {map, take} from "rxjs/operators";
+import {CdkDragEnd} from "@angular/cdk/drag-drop";
 
 
 /**
@@ -25,11 +26,13 @@ declare var _: any;
 
 @Injectable()
 export class calendar implements OnDestroy {
-    public usersCalendars$: EventEmitter<any> = new EventEmitter<any>();
+
+    public usersCalendarsLoad$: EventEmitter<any> = new EventEmitter<any>();
+    public userCalendarChange$: EventEmitter<any> = new EventEmitter<any>();
     public addingEvent$: EventEmitter<any> = new EventEmitter<any>();
     public pickerDate$: EventEmitter<any> = new EventEmitter<any>();
-    public color$: EventEmitter<any> = new EventEmitter<any>();
-    public eventDrop$: EventEmitter<any> = new EventEmitter<any>();
+    public otherCalendarsColor$: EventEmitter<any> = new EventEmitter<any>();
+
     public modules: any[] = [];
     public usersCalendars: any[] = [];
     public otherCalendars: any[] = [];
@@ -53,7 +56,7 @@ export class calendar implements OnDestroy {
     public isMobileView: boolean = false;
     public isDashlet: boolean = false;
     public isLoading: boolean = false;
-    public sheettype: string = 'Week';
+    public sheettype: 'Day' | 'Three_Days' | 'Week' | 'Month' | 'Schedule' = 'Week';
     public timeZone: any;
     public duration: any = {
         Day: 'd',
@@ -77,6 +80,7 @@ export class calendar implements OnDestroy {
                 private modal: modal,
                 private language: language,
                 private modelutilities: modelutilities,
+                private cdr: ChangeDetectorRef,
                 private userPreferences: userpreferences) {
         this.loadCalendarModules();
         this.loadPreferences();
@@ -85,67 +89,101 @@ export class calendar implements OnDestroy {
         this.broadcastSubscriber();
     }
 
+    /**
+     * @return user calendar loaded boolean true if we have users
+     */
+    get usersCalendarsLoaded(): boolean {
+        return !!this.usersCalendars && this.usersCalendars.length > 0;
+    }
+
+    /**
+     * @return sheettype: 'Day' | 'Three_Days' | 'Week' | 'Month' | 'Schedule'
+     */
+    get sheetType() {
+        return this.sheettype;
+    }
+
+    /**
+     * @param value: 'Day' | 'Three_Days' | 'Week' | 'Month' | 'Schedule'
+     * @set sheettype
+     * @setSessionData sheetType
+     */
     set sheetType(value) {
         this.sheettype = value;
         this.session.setSessionData('sheetType', value);
     }
 
-    get sheetType() {
-        return this.sheettype;
-    }
-
+    /**
+     * @return calendardate: moment
+     */
     get calendarDate() {
         return this.calendardate;
     }
 
+    /**
+     * set the calendar date locally and in the session data
+     * @param value: moment
+     */
     set calendarDate(value) {
         this.calendardate = new moment(value).locale(this.language.currentlanguage.substring(0, 2));
         this.session.setSessionData('calendarDate', this.calendardate);
     }
 
+    /**
+     * @return sidebarWidth: number
+     */
     get sidebarWidth() {
         return !this.isMobileView && !this.isDashlet ? this.sidebarwidth : 0;
     }
 
+    /**
+     * @return multiEventHeight: number
+     */
     get multiEventHeight() {
         return !this.isMobileView ? 25 : 20;
     }
 
+    /**
+     * @return ownerId: string
+     */
     get owner() {
         return this.session.authData.userId;
     }
 
+    /**
+     * @return ownerName: string
+     */
     get ownerName() {
         return this.session.authData.userName;
     }
 
+    /**
+     * @return weekstartday: number
+     */
     get weekStartDay() {
         return this.weekstartday;
     }
 
+    /**
+     * @param value: number
+     * @set weekstartday
+     */
     set weekStartDay(value) {
         this.weekstartday = value;
     }
 
-    private loadCalendarModules() {
-        this.backend.getRequest('calendar/modules').subscribe(modules => {
-            if (modules) this.modules = modules;
-        });
-    }
-
-    /*
-    * trigger the changes for calendar sheets
-    * @return void
-    */
+    /**
+     * reset the current date and reset the calendar date to ensure reloading the events
+     * @param date?: moment
+     */
     public refresh(date?) {
         this.currentStart = {};
         this.currentEnd = {};
         this.triggerSheetReload(date);
     }
 
-    /*
+    /**
     * add a duration to calendar date
-    * @return void
     */
     public shiftPlus() {
         let weekDaysCountOffset = 7 - this.weekDaysCount;
@@ -155,9 +193,8 @@ export class calendar implements OnDestroy {
         this.calendarDate = new moment(this.calendarDate.add(moment.duration(this.sheetType == 'Three_Days' ? 3 : 1, this.duration[this.sheetType])));
     }
 
-    /*
+    /**
     * subtract a duration from calendar date
-    * @return void
     */
     public shiftMinus() {
         let weekDaysCountOffset = 7 - this.weekDaysCount;
@@ -167,11 +204,11 @@ export class calendar implements OnDestroy {
         this.calendarDate = new moment(this.calendarDate.subtract(moment.duration(this.sheetType == 'Three_Days' ? 3 : 1, this.duration[this.sheetType])));
     }
 
-    /*
+    /**
     * check if reload is necessary
-    * @param start
-    * @param end
-    * @param calendar
+    * @param start: moment
+    * @param end: moment
+    * @param calendar: object
     * @return boolean
     */
     public doReload(start, end, calendar) {
@@ -180,32 +217,80 @@ export class calendar implements OnDestroy {
         return noRecords || dateChanged;
     }
 
-    public loadUsersEvents(startDate, endDate) {
-        let usersObject = _.object(this.usersCalendars.map(c => c.id), this.usersCalendars);
-        return this.loadEvents(startDate, endDate, this.owner, this.usersCalendars.map(c => c.id))
+    /**
+     * load other user events from backend and manipulate them before return
+     * @param startDate: moment
+     * @param endDate: moment
+     * @param userId: string
+     * @return observable of events
+     */
+    public loadUserEvents(startDate, endDate, userId) {
+
+        return this.loadEvents(startDate, endDate, this.owner, [userId], true)
             .pipe(
-                map((events: any) => {
-                    return events
-                        .filter(e => usersObject[e.data.assigned_user_id] && usersObject[e.data.assigned_user_id].visible)
-                        .map(event => {
-                            event.color = usersObject[event.data.assigned_user_id].color;
-                            return event;
-                        });
+                map(events => {
+                    return events.map(event => {
+                        event.id = userId + event.id;
+                        event.otherColor = this.usersCalendars.find(calendar => calendar.id == userId).color;
+                        return event;
+                    });
                 })
             );
     }
 
-    /*
-    * @param start
-    * @param end
-    * @param calendar
-    * @return events
-    */
-    public loadEvents(start, end, calendar = this.owner, users = []) {
+    /**
+     * load other users events from backend and manipulate them before return
+     * @param startDate: moment
+     * @param endDate: moment
+     * @return observable of events
+     */
+    public loadUsersEvents(startDate, endDate) {
+        const visibleUserCalendars = this.usersCalendars.filter(c => !!c.visible);
+        const visibleUserIds = visibleUserCalendars.map(c => c.id);
+        const calendarsObject = _.object(visibleUserIds, visibleUserCalendars);
+        if (visibleUserCalendars.length == 0) {
+            return of([]);
+        }
+        return this.loadEvents(startDate, endDate, this.owner, visibleUserIds)
+            .pipe(
+                map(events => {
+                    const resEvents = [];
+
+                    events.forEach(event => {
+
+                        // check if user assigned
+                        if (!!calendarsObject[event.data.assigned_user_id]) {
+                            event.otherColor = calendarsObject[event.data.assigned_user_id].color;
+                            resEvents.push(event);
+
+                        // check if user is participant
+                        } else if (!!event.data.meeting_user_status_accept) {
+                            const userId = visibleUserIds.find(userId => !!event.data.meeting_user_status_accept.beans[userId]);
+                            if (!userId) return;
+                            event.id = userId + event.id;
+                            event.otherColor = calendarsObject[userId].color;
+                            resEvents.push(event);
+                        }
+                    });
+                    return resEvents;
+                })
+            );
+    }
+
+    /**
+     * load events from backend and manipulate them before saving them to array
+     * @param start: moment
+     * @param end: moment
+     * @param calendar: object
+     * @param users: string[]
+     * @param forceReload: boolean
+     * @return events asObservable
+     */
+    public loadEvents(start, end, calendar = this.owner, users = [], forceReload?) {
         let userId = users.length > 0 ? 'users' : calendar;
-        if (this.doReload(start, end, userId)) {
-            // use setTimeout to prevent Angular change detection error
-            window.setTimeout(()=> this.isLoading = true);
+        if (forceReload || this.doReload(start, end, userId)) {
+            this.isLoading = true;
+            this.cdr.detectChanges();
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
             let params = {start: start.tz('utc').format(format), end: end.tz('utc').format(format), users};
@@ -219,7 +304,7 @@ export class calendar implements OnDestroy {
                     this.isLoading = false;
                     for (let event of events) {
                         if (this.otherCalendars.some(calendar => calendar.name == event.module && !calendar.visible)) continue;
-                        // event.data = this.modelutilities.backendModel2spice(event.module, event.data);
+
                         switch (event.type) {
                             case 'event':
                                 event.start = moment.utc(event.start).tz(this.timeZone);
@@ -270,18 +355,19 @@ export class calendar implements OnDestroy {
         }
     }
 
-    /*
-    * @param startDate
-    * @param endDate
-    * @return google events
-    */
+    /**
+     * load google events from backend and manipulate them before return
+     * @param startDate: moment
+     * @param endDate: moment
+     * @return events asObservable
+     */
     public loadGoogleEvents(startDate, endDate) {
         if (!this.loggedByGoogle) {
             return of([]);
         }
         if (this.doReload(startDate, endDate, "google")) {
-            // use setTimeout to prevent Angular change detection error
-            window.setTimeout(()=> this.isLoading = true);
+            this.isLoading = true;
+            this.cdr.detectChanges();
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
             let params = {startdate: startDate.format(format), enddate: endDate.format(format)};
@@ -322,7 +408,7 @@ export class calendar implements OnDestroy {
         }
     }
 
-    /*
+    /**
     * get events for a specific calendar id
     * @param calendar id
     * @return events
@@ -331,11 +417,12 @@ export class calendar implements OnDestroy {
         return this.calendars[calendar] ? this.calendars[calendar] : [];
     }
 
-    /*
-    * @param calendars
-    * @param save boolean
-    * @return void
-    */
+    /**
+     * save the other calendar changes to the user preferences and reload to apply the change
+     * @param calendars: object[]
+     * @param save: boolean
+     * @param save: boolean
+     */
     public setOtherCalendars(calendars, save = true) {
         if (!calendars) {
             return;
@@ -348,39 +435,65 @@ export class calendar implements OnDestroy {
         }
     }
 
-    /*
-    * @param id
-    * @param name
-    * @return void
-    */
+    /**
+     * add new user calendar to userCalendars and save the changes
+     * @param id: string
+     * @param name: string
+     */
     public addUserCalendar(id, name) {
         if (this.isMobileView || this.isDashlet) {
             return;
         }
         let usersCalendars = this.usersCalendars;
         let color = '#' + this.colorPalette[Math.floor(this.colorPalette.length * Math.random())];
-
-        usersCalendars.push({id: id, name: name, visible: true, color: color});
+        const newCalendar = {
+            id: id,
+            name: name,
+            visible: true,
+            color: color
+        };
+        usersCalendars.push(newCalendar);
+        this.userCalendarChange$.emit(newCalendar);
         this.setUserCalendars(usersCalendars.slice());
     }
 
-    /*
-    * @param id
-    * @return void
-    */
+    /**
+     * find the calendar to be removed and emit the calendar with visible false to reload the calendar events
+     * remove user calendar from usersCalendars and save the changes
+     * @param id: string
+     */
     public removeUserCalendar(id) {
         if (this.isMobileView || this.isDashlet) {
             return;
         }
+        const calendar = this.usersCalendars.find(calendar => calendar.id == id);
+        calendar.visible = false;
+        this.userCalendarChange$.emit(calendar);
+
         let usersCalendars = this.usersCalendars.filter(calendar => calendar.id != id);
         this.setUserCalendars(usersCalendars);
     }
 
-    /*
-    * @param calendars
-    * @param save boolean
-    * @return void
-    */
+    /**
+     * toggle user calendar visibility
+     * @param id
+     */
+    public toggleUserCalendarVisibility(id) {
+        this.usersCalendars.some(calendar => {
+            if (calendar.id == id) {
+                calendar.visible = !calendar.visible;
+                this.userCalendarChange$.emit(calendar);
+                this.setUserCalendars(this.usersCalendars.slice());
+                return true;
+            }
+        });
+    }
+
+    /**
+     * save the user calendar changes to the user preferences and emit the changes
+     * @param calendars
+     * @param save boolean
+     */
     public setUserCalendars(calendars, save = true) {
         if (!calendars) {
             return;
@@ -390,32 +503,30 @@ export class calendar implements OnDestroy {
         if (save) {
             this.userPreferences.setPreference("Users", this.usersCalendars, true, "Calendar");
         }
-        this.usersCalendars$.emit(this.usersCalendars);
     }
 
-    /*
-    * @param id
-    * @param color
-    * @param type
-    * @return void
-    */
+    /**
+     * set user color and save the changes then emit them
+     * @param id: string
+     * @param color: string<hex>
+     */
     public setUserColor(id, color) {
         this.usersCalendars.some(calendar => {
             if (calendar.id == id) {
                 calendar.color = color;
                 this.setUserCalendars(this.usersCalendars);
-                this.color$.emit({id: id, color: color});
+                this.otherCalendarsColor$.emit({id: id, color: color});
                 return true;
             }
         });
     }
 
-    /*
-    * internal function to manage the display
-    * adding diaplyindex and overly count to each event
-    * @param events
-    * @return events
-    */
+    /**
+     * arrange the events equally in the column
+     * adding diaplyindex and overly count to each event
+     * @param events
+     * @return events
+     */
     public arrangeEvents(events) {
         events = events.map(event => {
             event.start = moment(event.start).second(0);
@@ -428,11 +539,7 @@ export class calendar implements OnDestroy {
                 return -1;
             }
             if (a.start === b.start) {
-                if (a.end > b.end) {
-                    return -1;
-                } else {
-                    return 1;
-                }
+                return a.end > b.end ? -1 : 1;
             }
             return 1;
         });
@@ -515,14 +622,58 @@ export class calendar implements OnDestroy {
 
     }
 
+    /**
+     * unsubscribe from subscriptions
+     */
     public ngOnDestroy() {
         this.subscriptions.unsubscribe();
     }
 
-    /*
-    * @param event
-    * @return boolean
-    */
+    /**
+     * get the matched dropTarget on the event left top corner and pass the target data to onDrop method in the event component
+     * @param dragEvent: CdkDragEnd
+     * @param dropTargets: CalendarSheetDropTarget
+     */
+    public onEventDrop(dragEvent: CdkDragEnd, dropTargets) {
+        dropTargets.some(target => {
+            const targetRect = target.elementRef.nativeElement.getBoundingClientRect();
+            const sourceRect = dragEvent.source.element.nativeElement.getBoundingClientRect();
+
+            if (sourceRect.top >= targetRect.top && sourceRect.top <= targetRect.bottom && sourceRect.left >= targetRect.left && sourceRect.left <= targetRect.right) {
+                dragEvent.source.data.onDrop({
+                    day: target.day,
+                    hour: target.hour,
+                    minutes: target.minutes
+                });
+                return true;
+            }
+        });
+        dragEvent.source.reset();
+    }
+
+    /**
+     * check if the field has a valid value
+     * @param field
+     * @return boolean
+     */
+    protected isValid(field) {
+        return field && typeof field === 'object' && field.isValid();
+    }
+
+    /**
+     * load the modules which have the flag 'show in calendar' in the fts configs
+     */
+    private loadCalendarModules() {
+        this.backend.getRequest('calendar/modules').subscribe(modules => {
+            if (modules) this.modules = modules;
+        });
+    }
+
+    /**
+     * check if an absence event exists
+     * @param event: object
+     * @return boolean
+     */
     private absenceExists(event) {
         let found = false;
         for (let prop in this.calendars) {
@@ -534,9 +685,9 @@ export class calendar implements OnDestroy {
         return !!found;
     }
 
-    /*
-    * @return void
-    */
+    /**
+     * subscribe to model and timezone changes and apply the changes in the calendar
+     */
     private broadcastSubscriber() {
         let subscriber = this.broadcast.message$.subscribe(message => {
             let id = message.messagedata.id;
@@ -583,14 +734,14 @@ export class calendar implements OnDestroy {
         this.subscriptions.add(subscriber);
     }
 
-    /*
-    * modify event after drop
-    * @param id
-    * @param module
-    * @param data
-    * @param uid
-    * @return boolean
-    */
+    /**
+     * modify event date after drop
+     * @param id
+     * @param module
+     * @param data
+     * @param uid
+     * @return boolean
+     */
     private modifyEvent(id, module, data, uid) {
         if (!this.isValid(data.date_start) || !this.isValid(data.date_end)) {
             return true;
@@ -599,7 +750,7 @@ export class calendar implements OnDestroy {
             this.deleteEvent(id, module);
             return true;
         }
-        let event = this.calendars[uid].find(thisevent => thisevent.id == id);
+        let event = this.calendars[uid].find(thisevent => thisevent.data.id == id);
         if (event) {
             event.start = data.date_start;
             event.end = data.date_end;
@@ -610,32 +761,24 @@ export class calendar implements OnDestroy {
         }
     }
 
-    /*
-    * @param id
-    * @param module
-    * @return void
-    */
+    /**
+     * remove the event from calendar if it's been deleted
+     * @param id: string
+     * @param module: string
+     */
     private deleteEvent(id, module) {
         this.calendars[this.owner].some(event => {
-            if (event.id == id && module == event.module) {
-                this.calendars[this.owner] = this.calendars[this.owner].filter(e => e.id != event.id);
+            if (event.data.id == id && module == event.module) {
+                this.calendars[this.owner] = this.calendars[this.owner].filter(e => e.data.id != event.data.id);
                 this.triggerSheetReload();
                 return true;
             }
         });
     }
 
-    /*
-    * @param field
-    * @return boolean
-    */
-    private isValid(field) {
-        return field && typeof field === 'object' && field.isValid();
-    }
-
-    /*
-    * @return void
-    */
+    /**
+     * load calendar preferences from user preferences and from the saved session
+     */
     private loadPreferences() {
         this.timeZone = this.session.getSessionData('timezone') || moment.tz.guess();
         let preferences = this.userPreferences.toUse;
@@ -651,10 +794,9 @@ export class calendar implements OnDestroy {
         this.triggerSheetReload();
     }
 
-    /*
-    * get other calendars ids for the calendar monitor
-    * @return void
-    */
+    /**
+     * load calendar preferences from the user preferences and save changes in calendar
+     */
     private getCalendarPreferences() {
         if (this.isMobileView || this.isDashlet) return;
 
@@ -663,20 +805,27 @@ export class calendar implements OnDestroy {
             .subscribe(calendars => {
                 this.setUserCalendars(calendars.Users, false);
                 this.setOtherCalendars(calendars.Other, false);
+                if (calendars.Users && calendars.Users.length > 0) {
+                    this.usersCalendarsLoad$.emit();
+                }
             });
         if (this.session.authData.googleToken) {
             this.loggedByGoogle = true;
         }
     }
 
-    /*
-    * @return void
+    /**
+     * subscribe to language change and reload events to apply change
     */
     private subscribeToLanguage() {
-        let languageSubscriber = this.language.currentlanguage$.subscribe(lang => this.triggerSheetReload());
+        let languageSubscriber = this.language.currentlanguage$.subscribe(() => this.triggerSheetReload());
         this.subscriptions.add(languageSubscriber);
     }
 
+    /**
+     * reset the calendar date to force reload the events
+     * @param date: moment
+     */
     private triggerSheetReload(date?) {
         this.calendarDate = moment(date ? date : this.calendardate);
     }

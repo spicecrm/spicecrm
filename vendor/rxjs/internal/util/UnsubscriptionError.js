@@ -1,13 +1,1 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-function UnsubscriptionErrorImpl(errors) {
-    Error.call(this);
-    this.message = errors ?
-        errors.length + " errors occurred during unsubscription:\n" + errors.map(function (err, i) { return i + 1 + ") " + err.toString(); }).join('\n  ') : '';
-    this.name = 'UnsubscriptionError';
-    this.errors = errors;
-    return this;
-}
-UnsubscriptionErrorImpl.prototype = Object.create(Error.prototype);
-exports.UnsubscriptionError = UnsubscriptionErrorImpl;
-//# sourceMappingURL=UnsubscriptionError.js.map
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var UnsubscriptionErrorImpl=function(){function r(r){return Error.call(this),this.message=r?r.length+" errors occurred during unsubscription:\n"+r.map(function(r,t){return t+1+") "+r.toString()}).join("\n  "):"",this.name="UnsubscriptionError",this.errors=r,this}return r.prototype=Object.create(Error.prototype),r}();exports.UnsubscriptionError=UnsubscriptionErrorImpl;

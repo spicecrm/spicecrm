@@ -1,0 +1,88 @@
+<div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-p-around--small">
+    <h2 class="slds-text-heading_medium">
+        <system-label label="LBL_FTS_STATUS"></system-label>
+    </h2>
+    <button class="slds-button slds-button_icon slds-button_icon-border-filled" [disabled]="loading"
+            (click)="loadstatus()">
+        <system-button-icon icon="refresh"></system-button-icon>
+    </button>
+</div>
+<div [system-overlay-loading-spinner]="loading" system-to-bottom-noscroll>
+    <div *ngIf="!loading">
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-m-bottom--medium">
+            <thead>
+                <tr class="slds-text-title_caps">
+                    <th scope="col">
+                        <system-label label="LBL_ATTRIBUTE"></system-label>
+                    </th>
+                    <th scope="col">
+                        <system-label label="LBL_VALUE"></system-label>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <system-label label="LBL_VERSION"></system-label>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{version.version.number}}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <system-label label="LBL_DOCS"></system-label>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{stats.docs}}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <system-label label="LBL_SIZE"></system-label>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{stats.size}}</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h2 class="slds-p-around--small">Index Details</h2>
+        <div class="slds-border--top" system-to-bottom>
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table--header-fixed">
+                <thead>
+                <tr class="slds-text-title_caps">
+                    <th scope="col">
+                        <div class="slds-truncate">
+                            <system-label label="LBL_INDEX"></system-label>
+                        </div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate">
+                            <system-label label="LBL_DOCS"></system-label>
+                        </div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate">
+                            <system-label label="LBL_SIZE"></system-label>
+                        </div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let index of indices">
+                    <td>
+                        <div class="slds-truncate">{{index.name}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{index.docs}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{index.size}}</div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

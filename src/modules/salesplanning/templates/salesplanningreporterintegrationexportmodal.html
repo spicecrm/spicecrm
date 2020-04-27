@@ -2,7 +2,7 @@
     <system-modal-header (close)="close()">export Planner Data</system-modal-header>
     <system-modal-content [grow]="true" margin="none">
         <div class="slds-form-element slds-p-horizontal--small">
-            <label class="slds-form-element__label">{{language.getLabel('LBL_SALES_PLANNING_VERSION')}}</label>
+            <label class="slds-form-element__label"><system-label label="LBL_SALES_PLANNING_VERSION"></system-label></label>
             <div class="slds-select_container slds-m-vertical--xx-small">
                 <select class="slds-select" [disabled]="salespanningversions.length==0" [(ngModel)]="selectedversion">
                     <option *ngFor="let salespanningversion of salespanningversions"
@@ -15,7 +15,7 @@
                 <thead>
                     <tr class="slds-line-height_reset">
                         <th class="" scope="col">
-                            <div class="slds-truncate">{{language.getLabel('LBL_SALES_PLANNING_CHARACTERISTIC')}}</div>
+                            <div class="slds-truncate"><system-label label="LBL_SALES_PLANNING_CHARACTERISTIC"></system-label></div>
                         </th>
                         <th class="" scope="col">
                             <div class="slds-truncate">Fixed Value</div>
@@ -31,7 +31,7 @@
                 <tbody>
                     <tr class="slds-hint-parent">
                         <td>
-                            <div class="slds-truncate">{{language.getLabel('LBL_SALES_PLANNING_TERRITORY')}}</div>
+                            <div class="slds-truncate"><system-label label="LBL_SALES_PLANNING_TERRITORY"></system-label></div>
                         </td>
                         <td>
                             <div class="slds-select_container slds-m-vertical--xx-small">
@@ -83,7 +83,7 @@
                 <tbody *ngIf="characteristicsloading" system-table-stencils columns="4" rows="3"></tbody>
             </table>
             <div class="slds-form-element slds-p-horizontal--small">
-                <label class="slds-form-element__label">{{language.getLabel('LBL_NAME')}}</label>
+                <label class="slds-form-element__label"><system-label label="LBL_NAME"></system-label></label>
                 <div class="slds-select_container slds-m-vertical--xx-small">
                     <select class="slds-select " [(ngModel)]="nodenamefield">
                         <option *ngFor="let reporterField of reporterFields" [value]="reporterField.fieldid">{{reporterField.name}}</option>
@@ -93,7 +93,7 @@
         </ng-container>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button-group-item slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
-        <button class="slds-button-group-item slds-button slds-button--brand" [disabled]="!canExport" (click)="exportPlanningScope()">{{language.getLabel('LBL_EXPORT')}}</button>
+        <button class="slds-button-group-item slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button-group-item slds-button slds-button--brand" [disabled]="!canExport" (click)="exportPlanningScope()"><system-label label="LBL_EXPORT"></system-label></button>
     </system-modal-footer>
 </system-modal>

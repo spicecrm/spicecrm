@@ -1,45 +1,75 @@
 /**
  * @module ModuleReportsMore
  */
-import {
-    Component, AfterViewInit, OnInit, ViewChild, ViewContainerRef
-} from '@angular/core';
-import {language} from '../../../services/language.service';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {backend} from '../../../services/backend.service';
 import {reporterconfig} from '../../../modules/reports/services/reporterconfig';
+import {Subscription} from "rxjs";
 
 /**
  * renders the standard view for a report which is a simple column based view
  */
 @Component({
     selector: 'reporter-detail-presentation-pivot',
-    templateUrl: './src/modules/reportsmore/templates/reporterdetailpresentationpivot.html'
+    templateUrl: './src/modules/reportsmore/templates/reporterdetailpresentationpivot.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit {
+export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, OnDestroy {
 
-    @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
-    @ViewChild('tableheader', {read: ViewContainerRef, static: true}) private tableheader: ViewContainerRef;
-
+    /**
+     * array for pivot total count
+     */
+    protected totalCountArray: any[] = [];
+    /**
+     * save the presentation params
+     */
     private presParams: any = {};
+    /**
+     * save the presentation data
+     */
     private presData: any = {};
-    private fieldsData: any = {};
-    private totalWidth: number = 0;
-
+    /**
+     * save loading value on backend retrieve
+     */
     private isLoading: boolean = true;
-
+    /**
+     * pivot data array
+     */
     private pivotArray: any[] = [];
+    /**
+     * values of the pivot row
+     */
     private rowValues: any[] = [];
+    /**
+     * holds the pivot header table set (rows)
+     */
+    protected headerTableSet: any[] = [];
+    /**
+     * columns of the pivot row
+     */
     private rowValueColumns: any = {};
+    /**
+     * holds any subscription
+     */
+    private subscriptions = new Subscription();
+    /**
+     * holds any subscription
+     */
+    private pivotNameField: string = 'LBL_DATA';
 
 
-    constructor(private language: language, private model: model, private backend: backend, private reporterconfig: reporterconfig) {
-        // subscribe to the refresh .. hapens when e.g. the filters are applied and the report items shoudl reload themselves
-        this.reporterconfig.refresh$.subscribe(event => {
-            this.getPresentation();
-        });
+    constructor(private model: model,
+                private backend: backend,
+                private cdRef: ChangeDetectorRef,
+                private reporterconfig: reporterconfig) {
+        // subscribe to the refresh .. happen when e.g. the filters are applied and the report items should reload themselves
+        this.subscriptions.add(
+            this.reporterconfig.refresh$.subscribe(() => {
+                this.getPresentation();
+            })
+        );
     }
-
 
     /**
      * get the presentation params
@@ -55,19 +85,68 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit {
         this.getPresentation();
     }
 
-    // todo : fix this for scrolling with a fixed table header
-    private getContainerStyle(): any {
-        let recth = this.tableheader.element.nativeElement.getBoundingClientRect();
-        return {
-            height: 'calc(100% - ' + recth.height + 'px)'
-        };
+    /**
+     * unsubscribe from any subscriptions
+     */
+    public ngOnDestroy(): void {
+        this.subscriptions.unsubscribe();
     }
 
+    /**
+     * A function that defines how to track changes for items in the iterable (ngForOf).
+     * https://angular.io/api/common/NgForOf#properties
+     * @param index
+     * @param item
+     * @return index
+     */
+    protected trackByFn(index, item) {
+        return item.id;
+    }
 
+    /**
+     * generates an array that can be rendered as header for the pivot table in the view
+     */
+    private setHeaderTableSet() {
+
+        if (this.pivotArray.length == 0) return;
+
+        let retArray = [];
+        for (let column of this.presParams.pluginData.columnData) {
+            retArray.push(this.getColumnsForId(column.fieldid));
+        }
+        this.headerTableSet = retArray;
+    }
+
+    /**
+     * set pivot name field label
+     */
+    private setPivotNameField() {
+        if (!!this.presData.reportmetadata) {
+            const nameField = this.presData.reportmetadata.fields.find(record => record.fieldid == this.presParams.pluginData.rowData);
+            this.pivotNameField = !!nameField ? nameField.name : 'LBL_DATA';
+        }
+    }
+
+    /**
+     * set total count array
+     */
+    private setTotalCountArray() {
+        let totalColumns = 0;
+        for (let itemData of this.pivotArray) {
+            totalColumns += this.getColumns(itemData);
+        }
+
+        this.totalCountArray = Array(totalColumns).fill('data');
+    }
+
+    /**
+     * get presentation fields and build the pivot
+     */
     private getPresentation() {
         this.isLoading = true;
+        this.cdRef.detectChanges();
 
-        // build wherecondition
+        // build where condition
         let whereConditions: any[] = [];
         for (let userFilter of this.reporterconfig.userFilters) {
             whereConditions.push({
@@ -86,36 +165,25 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit {
             parentbeanModule: this.model.getField('parentBeanModule')
         }).subscribe((presData: any) => {
 
-            // get field width
-            this.totalWidth = 0;
-            for (let field of presData.reportmetadata.fields) {
-                this.fieldsData[field.fieldid] = field;
-                this.totalWidth += field.width;
-            }
-
             this.presData = presData;
-
             // build the pivot
             this.buildPivot();
-
-            this.isLoading = false;
+            this.setTotalCountArray();
+            this.setHeaderTableSet();
+            this.setPivotNameField();
+            this.cdRef.detectChanges();
         });
     }
 
-    get dataName() {
-        try {
-            return this.presData.reportmetadata.fields.find(record => record.fieldid == this.presParams.pluginData.rowData).name;
-        } catch (e) {
-            return 'data';
-        }
-    }
-
     /**
-     * builds a header aray based on teh records and the pivot settings
+     * builds a header array based on teh records and the pivot settings
+     * set the total count array
      */
     private buildPivot() {
         this.pivotArray = [];
         this.rowValues = [];
+        this.cdRef.detectChanges();
+
         for (let record of this.presData.records) {
             let headObject: any;
             let headArray: any[] = this.pivotArray;
@@ -163,36 +231,15 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit {
             }
 
             // check if we have the colValue
-            if (this.rowValues.indexOf(record[this.presParams.pluginData.rowData]) == -1) this.rowValues.push(record[this.presParams.pluginData.rowData]);
+            if (this.rowValues.indexOf(record[this.presParams.pluginData.rowData]) == -1 && !!record[this.presParams.pluginData.rowData]) this.rowValues.push(record[this.presParams.pluginData.rowData]);
         }
 
         for (let rowValue of this.rowValues) {
             this.rowValueColumns[rowValue] = this.getValues(rowValue);
         }
 
-    }
-
-    /**
-     * returns the number of columns from the pivot
-     * required for the RowSpan for the main row
-     */
-    get pivotColumnCount() {
-        return this.presParams.pluginData.columnData.length;
-    }
-
-    /**
-     * returns the total calculated number of columns
-     */
-    get totalColumnCount() {
-        let totalColumns = 0;
-        for (let itemData of this.pivotArray) {
-            totalColumns += this.getColumns(itemData);
-        }
-        return totalColumns;
-    }
-
-    get totalCountArray() {
-        return Array(this.totalColumnCount).fill('data');
+        this.isLoading = false;
+        this.cdRef.detectChanges();
     }
 
     /**
@@ -214,35 +261,9 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit {
     }
 
     /**
-     * generates an aray that can be rendered as headser for the pivot table in the view
-     */
-    get headerTableSet() {
-        let retArray = [];
-
-        // check if we have an array for the pivot yet .. otherwise return an empty array
-        if (this.pivotArray.length == 0) return retArray;
-
-        let index = 0;
-        for (let column of this.presParams.pluginData.columnData) {
-
-            // add one column for the label
-            /*
-            let rowColumns = [{
-                value: this.language.getLabel(this.presData.reportmetadata.fields.find(record => record.fieldid == column.fieldid).name),
-                span: 1
-            }];
-            */
-
-            retArray.push(this.getColumnsForId(column.fieldid));
-        }
-
-        return retArray;
-    }
-
-    /**
      * get the column record for a given fieldid
-     *
      * @param fieldid
+     * @param columns
      */
     private getColumnsForId(fieldid, columns?) {
         let columnArray = [];
@@ -260,6 +281,11 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit {
         return columnArray;
     }
 
+    /**
+     * get values for row column
+     * @param valuekey
+     * @param columns
+     */
     private getValues(valuekey, columns?) {
         let valueArray = [];
         if (!columns) columns = this.pivotArray;
@@ -290,31 +316,5 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit {
             }
         }
         return valueArray;
-    }
-
-    /**
-     * returns the fields of the report
-     */
-    private getFields() {
-        try {
-            return this.presData.reportmetadata.fields;
-        } catch (e) {
-            return [];
-        }
-    }
-
-    /**
-     * returns the records of the report
-     */
-    private getRecords() {
-        try {
-            return this.presData.records;
-        } catch (e) {
-            return [];
-        }
-    }
-
-    private getFieldWidth(fieldid) {
-        return Math.round(this.fieldsData[fieldid].width / this.totalWidth * 100) + '%';
     }
 }

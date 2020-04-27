@@ -4,8 +4,8 @@
             <div class="slds-media slds-no-space slds-grow">
                 <system-icon [module]="'ProductGroups'"></system-icon>
                 <div class="slds-media__body">
-                    <p class="slds-text-title--caps slds-line-height--reset">{{language.getModuleName('ProductGroups')}}</p>
-                    <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">{{language.getLabel('LBL_PRODUCT_GROUP_MANAGER', 'ProductGroups')}}</h1>
+                    <p class="slds-text-title--caps slds-line-height--reset"><system-label-modulename module="ProductGroups"></system-label-modulename></p>
+                    <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate"><system-label label="LBL_PRODUCT_GROUP_MANAGER', 'ProductGroups"></system-label></h1>
                 </div>
             </div>
         </div>
@@ -13,10 +13,10 @@
     </div>
 </div>
 <div class="slds-grid">
-    <div tobottom class="slds-size--1-of-4 slds-border--right spicecrm-scrollbar">
+    <div system-to-bottom class="slds-size--1-of-4 slds-border--right spicecrm-scrollbar">
         <product-group-manager-tree (selectionchanged)="selectionChanged($event)"></product-group-manager-tree>
     </div>
-    <div tobottom class="slds-size--3-of-4 spicecrm-scrollbar">
+    <div system-to-bottom class="slds-size--3-of-4 spicecrm-scrollbar">
         <product-group-manager-details [groupid]="selectedGroupId"></product-group-manager-details>
     </div>
 </div>

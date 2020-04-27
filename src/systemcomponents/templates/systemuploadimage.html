@@ -1,16 +1,16 @@
 <system-modal>
-    <system-modal-header (close)="close()">{{language.getLabel('LBL_UPLOAD_IMAGE')}}</system-modal-header>
+    <system-modal-header (close)="close()"><system-label label="LBL_UPLOAD_IMAGE"></system-label></system-modal-header>
     <system-modal-content>
             <div [ngStyle]="croppiestyle" class="slds-align--absolute-center slds-scrollable--none">
                 <div *ngIf="!imageBase64">
-                    <button class="slds-button slds-button--neutral" (click)="showUpload()">{{language.getLabel('LBL_SELECT_IMAGE')}}</button>
+                    <button class="slds-button slds-button--neutral" (click)="showUpload()"><system-label label="LBL_SELECT_IMAGE"></system-label></button>
                     <input #imgupload style="display:none" type="file" accept="image/*" (change)="uploadImage($event)"/>
                 </div>
                 <img *ngIf="imageBase64" id="croppieimage" [src]="imageBase64" (load)="doCrop($event)"/>
             </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
-        <button [disabled]="!imageBase64" class="slds-button slds-button--brand" (click)="getcroppedImage()">{{language.getLabel('LBL_USE')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button [disabled]="!imageBase64" class="slds-button slds-button--brand" (click)="getcroppedImage()"><system-label label="LBL_USE"></system-label></button>
     </system-modal-footer>
 </system-modal>

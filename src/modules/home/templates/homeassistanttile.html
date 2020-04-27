@@ -2,7 +2,7 @@
     <system-icon [module]="item.module" [size]="'small'"></system-icon>
     <div class="slds-media__body">
         <div class="slds-grid slds-grid_align-spread slds-has-flexi-truncate slds-p-bottom--xx-small">
-            <h3 class="slds-tile__title slds-truncate" modelPopOver>
+            <h3 class="slds-tile__title slds-truncate" system-model-popover>
                 <a href="javascript:void(0);" (click)="goDetail()">{{item.data.summary_text}}</a>
             </h3>
             <div class="slds-shrink-none">
@@ -13,7 +13,7 @@
             <dl class="slds-list_horizontal slds-wrap">
                 <ng-container *ngFor="let tileField of tileFields">
                     <dt class="slds-item--label slds-text-color--weak slds-truncate">
-                        {{language.getFieldDisplayName(model.module, tileField.field)}}
+                        <system-label-fieldname [module]="model.module" [field]="tileField.field"></system-label-fieldname>
                     </dt>
                     <dd class="slds-item--detail slds-truncate">
                         <field-container [field]="tileField.field" [fieldconfig]="tileField.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>

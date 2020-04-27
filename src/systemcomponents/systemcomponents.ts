@@ -6,6 +6,9 @@ import {
 } from "@angular/core";
 import {DragDropModule} from '@angular/cdk/drag-drop';
 
+// interfaces
+import /*embed*/ {InputRadioOptionI} from "./interfaces/systemcomponents.interfaces";
+
 // MODULEs
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
@@ -15,7 +18,6 @@ import {metadata} from "../services/metadata.service";
 import {VersionManagerService} from "../services/versionmanager.service";
 
 import /*embed*/ {systemrichtextservice} from "./services/systemrichtext.service";
-
 
 // Pipes...
 import /*embed*/ {SystemModuleCustomPipe} from "./pipes/systemmodulecustompipe";
@@ -70,17 +72,23 @@ import /*embed*/ {SystemInputModuleField} from "./components/systeminputmodulefi
 import /*embed*/ {SystemInputNumber} from "./components/systeminputnumber";
 import /*embed*/ {SystemInputPassword} from "./components/systeminputpassword";
 import /*embed*/ {SystemInputRadio} from "./components/systeminputradio";
+import /*embed*/ {SystemInputRadioButtonGroup} from "./components/systeminputradiobuttongroup";
 import /*embed*/ {SystemInputRelate} from "./components/systeminputrelate";
 import /*embed*/ {SystemInputTags} from "./components/systeminputtags";
 import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
 import /*embed*/ {SystemInputCompanycodes} from "./components/systeminputcompanycodes";
 import /*embed*/ {SystemInputBackendMethod} from "./components/systeminputbackendmethod";
+import /*embed*/ {SystemLabel} from "./components/systemlabel";
+import /*embed*/ {SystemLabelFieldname} from "./components/systemlabelfieldname";
+import /*embed*/ {SystemLabelModulename} from "./components/systemlabelmodulename";
+import /*embed*/ {SystemLanguageSelector} from "./components/systemlanguageselector";
 import /*embed*/ {SystemLink} from "./components/systemlink";
 import /*embed*/ {SystemLoaderProgress} from "./components/systemloaderprogress";
 import /*embed*/ {SystemLoadingModal} from "./components/systemloadingmodal";
 import /*embed*/ {SystemModalContent} from "./components/systemmodalcontent";
 import /*embed*/ {SystemModalFooter} from "./components/systemmodalfooter";
 import /*embed*/ {SystemModalHeaderRight} from "./components/systemmodalheaderright";
+import /*embed*/ {SystemModalHeaderTagline} from "./components/systemmodalheadertagline";
 import /*embed*/ {SystemModalHeader} from "./components/systemmodalheader";
 import /*embed*/ {SystemModalWrapper} from "./components/systemmodalwrapper";
 import /*embed*/ {SystemModal} from "./components/systemmodal";
@@ -92,6 +100,7 @@ import /*embed*/ {SystemPrompt} from "./components/systemprompt";
 import /*embed*/ {SystemRichTextEditor} from "./components/systemrichtexteditor";
 import /*embed*/ {SystemRichTextEditorModal} from "./components/systemrichtexteditormodal";
 import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextsourcemodal";
+import /*embed*/ {SystemRoleSelector} from "./components/systemroleselector";
 import /*embed*/ {SystemSection} from "./components/systemsection";
 import /*embed*/ {SystemSelect} from "./components/systemselect";
 import /*embed*/ {SystemSpinner} from "./components/systemspinner";
@@ -118,7 +127,6 @@ import /*embed*/ {PackageLoaderPackage} from "./components/packageloaderpackage"
 import /*embed*/ {PackageLoaderLanguages} from "./components/packageloaderlanguages";
 import /*embed*/ {PackageLoaderLanguage} from "./components/packageloaderlanguage";
 
-
 import /*embed*/ {SystemFilterBuilder} from "./components/systemfilterbuilder";
 import /*embed*/ {SystemFilterBuilderFilterExpressionFields} from "./components/systemfilterbuilderfilterexpressionfields";
 import /*embed*/ {SystemFilterBuilderFilterExpressionValue} from "./components/systemfilterbuilderfilterexpressionvalue";
@@ -133,6 +141,12 @@ import /*embed*/ {SystemInputBase64} from './components/systeminputbase64';
 import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
 import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem";
 import /*embed*/ {SystemTrendIndicator} from "./components/systemtrendindicator";
+import /*embed*/ {SystemImageModal} from './components/systemimagemodal';
+import /*embed*/ {SystemSlider} from "./components/systemslider";
+
+import /*embed*/ {SystemNavigationCollector} from "./components/systemnavigationcollector";
+import /*embed*/ {SystemNavigationManager} from "./components/systemnavigationmanager";
+import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/systemnavigationmanagerroutecontainer";
 
 @NgModule({
     imports: [
@@ -198,12 +212,17 @@ import /*embed*/ {SystemTrendIndicator} from "./components/systemtrendindicator"
         SystemInputNumber,
         SystemInputPassword,
         SystemInputRadio,
+        SystemInputRadioButtonGroup,
         SystemInputRelate,
         SystemInputTags,
         SystemInputTime,
         SystemInputCompanycodes,
         SystemInputBackendMethod,
         SystemInputBase64,
+        SystemLabel,
+        SystemLabelFieldname,
+        SystemLabelModulename,
+        SystemLanguageSelector,
         SystemLink,
         SystemLoaderProgress,
         SystemLoadingModal,
@@ -212,6 +231,7 @@ import /*embed*/ {SystemTrendIndicator} from "./components/systemtrendindicator"
         SystemModalFooter,
         SystemModalHeader,
         SystemModalHeaderRight,
+        SystemModalHeaderTagline,
         SystemModalWrapper,
         SystemModuleCustomPipe,
         SystemModuleGlobalPipe,
@@ -231,6 +251,7 @@ import /*embed*/ {SystemTrendIndicator} from "./components/systemtrendindicator"
         SystemRichTextEditor,
         SystemRichTextEditorModal,
         SystemRichTextSourceModal,
+        SystemRoleSelector,
         SystemSection,
         SystemSelect,
         SystemSpinner,
@@ -254,10 +275,17 @@ import /*embed*/ {SystemTrendIndicator} from "./components/systemtrendindicator"
         SystemSelectUOM,
         SystemInputMedia,
         SystemInputTimezone,
-        SystemTrendIndicator
+        SystemTrendIndicator,
+        SystemSlider,
+        SystemTrendIndicator,
+        SystemImageModal,
+        SystemNavigationCollector,
+        SystemNavigationManager,
+        SystemNavigationManagerRouteContainer
     ],
     entryComponents: [
-        SystemDynamicRouteContainer
+        SystemDynamicRouteContainer,
+        SystemNavigationCollector
     ],
     exports: [
         PaginationControlsComponent,
@@ -308,12 +336,17 @@ import /*embed*/ {SystemTrendIndicator} from "./components/systemtrendindicator"
         SystemInputNumber,
         SystemInputPassword,
         SystemInputRadio,
+        SystemInputRadioButtonGroup,
         SystemInputRelate,
         SystemInputTags,
         SystemInputTime,
         SystemInputCompanycodes,
         SystemInputBackendMethod,
         SystemInputBase64,
+        SystemLabel,
+        SystemLabelFieldname,
+        SystemLabelModulename,
+        SystemLanguageSelector,
         SystemLink,
         SystemLoaderProgress,
         SystemModal,
@@ -321,12 +354,14 @@ import /*embed*/ {SystemTrendIndicator} from "./components/systemtrendindicator"
         SystemModalFooter,
         SystemModalHeader,
         SystemModalHeaderRight,
+        SystemModalHeaderTagline,
         SystemModalWrapper,
         SystemNumberSpinner,
         SystemProgressRing,
         SystemProgressBar,
         SystemPrompt,
         SystemRichTextEditor,
+        SystemRoleSelector,
         SystemSection,
         SystemSelect,
         SystemSpinner,
@@ -353,7 +388,12 @@ import /*embed*/ {SystemTrendIndicator} from "./components/systemtrendindicator"
         SystemModuleTree,
         SystemModuleTreeItem,
         SystemInputTimezone,
-        SystemTrendIndicator
+        SystemTrendIndicator,
+        SystemSlider,
+        SystemTrendIndicator,
+        SystemImageModal,
+        SystemNavigationCollector,
+        SystemNavigationManager,
     ]
 })
 export class SystemComponents {

@@ -1,5 +1,5 @@
 <system-modal *ngIf="showCopyContainer">
-    <system-modal-header (close)="close()">{{language.getLabel('LBL_NEW_FROM_TEMPLATE')}}</system-modal-header>
+    <system-modal-header (close)="close()"><system-label label="LBL_NEW_FROM_TEMPLATE"></system-label></system-modal-header>
     <system-modal-content [grow]="true" style="padding: 0; overflow-y: hidden;">
         <div #maincontainer class="slds-grid" style="height: 100%">
             <div class="slds-size--1-of-4 slds-border--right slds-grid slds-grid--vertical">
@@ -8,11 +8,11 @@
                     <ul #tabsheadercontainer class="slds-tabs--default__nav" role="tablist" style="height: 40px">
                         <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': activeTab == 'tree'}"
                             role="presentation" (click)="activeTab = 'tree'">
-                            <a class="slds-tabs--default__link" style="cursor: pointer" role="tab" aria-selected="false">{{ language.getLabel('LBL_CHAPTERS') }}</a>
+                            <a class="slds-tabs--default__link" style="cursor: pointer" role="tab" aria-selected="false"><system-label label="LBL_CHAPTERS"></system-label></a>
                         </li>
                         <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': activeTab == 'search'}"
                             role="presentation" (click)="activeTab = 'search'">
-                            <a class="slds-tabs--default__link" style="cursor: pointer" role="tab" aria-selected="false">{{ language.getLabel('LBL_SEARCH') }}</a>
+                            <a class="slds-tabs--default__link" style="cursor: pointer" role="tab" aria-selected="false"><system-label label="LBL_SEARCH"></system-label></a>
                         </li>
                     </ul>
                     <div *ngIf="activeTab == 'tree'" class="slds-tabs--default__content slds-show slds-p-vertical--none" role="tabpanel" style="height: calc(100% - 40px); background-color: #fafaf9">
@@ -27,7 +27,7 @@
                                 <system-spinner></system-spinner>
                             </div>
                             <div *ngIf="selectedBook && documents.length == 0 && !isLoading" class="slds-align--absolute-center spice-h-full slds-text-heading--medium">
-                                <span>{{ language.getLabel('MSG_NO_RECORDS_FOUND') }}</span>
+                                <span><system-label label="MSG_NO_RECORDS_FOUND"></system-label></span>
                             </div>
                         </div>
                     </div>
@@ -43,30 +43,30 @@
     </system-modal-content>
     <system-modal-footer>
         <div #footerContainer>
-            <button (click)="confirmCopy()" class="slds-button slds-button--brand">{{language.getLabel('LBL_ADD')}}</button>
+            <button (click)="confirmCopy()" class="slds-button slds-button--brand"><system-label label="LBL_ADD"></system-label></button>
         </div>
     </system-modal-footer>
 </system-modal>
 
 <system-modal *ngIf="!showCopyContainer" size="small">
-    <system-modal-header (close)="close()">{{language.getLabel('LBL_ADD_DOCUMENT')}}</system-modal-header>
+    <system-modal-header (close)="close()"><system-label label="LBL_ADD_DOCUMENT"></system-label></system-modal-header>
     <system-modal-content>
         <div class="slds-grid slds-grid--align-center">
             <div>
                 <button (click)="openNewModal()" class="slds-button slds-button--icon slds-button--icon-border slds-p-around--xx-small slds-align--absolute-center">
                     <system-button-icon icon="new" size="large"></system-button-icon>
                 </button>
-                <div class="slds-p-around--xx-small">{{language.getLabel('LBL_NEW_BLANK_DOCUMENT')}}</div>
+                <div class="slds-p-around--xx-small"><system-label label="LBL_NEW_BLANK_DOCUMENT"></system-label></div>
             </div>
             <div>
                 <button (click)="showCopyContainer = true" class="slds-button slds-button--icon slds-button--icon-border slds-p-around--xx-small slds-align--absolute-center">
                     <system-button-icon icon="copy" size="large"></system-button-icon>
                 </button>
-                <div class="slds-p-around--xx-small">{{language.getLabel('LBL_NEW_FROM_TEMPLATE')}}</div>
+                <div class="slds-p-around--xx-small"><system-label label="LBL_NEW_FROM_TEMPLATE"></system-label></div>
             </div>
         </div>
     </system-modal-content>
     <system-modal-footer>
-        <button (click)="close()" class="slds-button slds-button--neutral">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button (click)="close()" class="slds-button slds-button--neutral"><system-label label="LBL_CANCEL"></system-label></button>
     </system-modal-footer>
 </system-modal>

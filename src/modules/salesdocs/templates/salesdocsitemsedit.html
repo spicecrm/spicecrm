@@ -6,19 +6,19 @@
                 <div class="slds-truncate slds-text-align_center">#</div>
             </th>
             <th scope="col">
-                <div class="slds-truncate">{{language.getLabel('LBL_PRODUCT', 'SalesDocItems')}}</div>
+                <div class="slds-truncate"><system-label label="LBL_PRODUCT"></system-label></div>
             </th>
             <th scope="col">
-                <div class="slds-truncate slds-text-align_right">{{language.getLabel('LBL_QUANTITY', 'SalesDocItems')}}</div>
+                <div class="slds-truncate slds-text-align_right"><system-label label="LBL_QUANTITY"></system-label></div>
             </th>
             <th scope="col">
-                <div class="slds-truncate slds-text-align_right">{{language.getLabel('LBL_PRICEPERUNIT', 'SalesDocItems')}}</div>
+                <div class="slds-truncate slds-text-align_right"><system-label label="LBL_PRICEPERUNIT"></system-label></div>
             </th>
             <th scope="col">
-                <div class="slds-truncate slds-text-align_right">{{language.getLabel('LBL_AMOUNT_NET', 'SalesDocItems')}}</div>
+                <div class="slds-truncate slds-text-align_right"><system-label label="LBL_AMOUNT_NET"></system-label></div>
             </th>
             <th scope="col">
-                <div class="slds-truncate slds-text-align_right">{{language.getLabel('LBL_AMOUNT_GROSS', 'SalesDocItems')}}</div>
+                <div class="slds-truncate slds-text-align_right"><system-label label="LBL_AMOUNT_GROSS"></system-label></div>
             </th>
             <th scope="col">
                 <div class="slds-truncate">tc</div>
@@ -100,19 +100,19 @@
             <td colspan="5">
                 <button class="slds-button slds-button_neutral" (click)="addItem()">
                     <div class="slds-grid">
-                        <span>{{language.getLabel('LBL_ADD_ITEM')}}</span>
+                        <span><system-label label="LBL_ADD_ITEM"></system-label></span>
                     </div>
                 </button>
                 <button class="slds-button slds-button_neutral" (click)="addProduct()">
                     <div class="slds-grid">
                         <system-icon module="Products" size="x-small"></system-icon>
-                        <span>{{language.getLabel('LBL_PRODUCT')}}</span>
+                        <span><system-label label="LBL_PRODUCT"></system-label></span>
                     </div>
                 </button>
                 <button class="slds-button slds-button_neutral" (click)="addProductVariant()">
                     <div class="slds-grid">
                         <system-icon module="ProductVariants" size="x-small"></system-icon>
-                        <span>{{language.getLabel('LBL_PRODUCTVARIANT')}}</span>
+                        <span><system-label label="LBL_PRODUCTVARIANT"></system-label></span>
                     </div>
                 </button>
             </td>
@@ -126,7 +126,7 @@
         </tr>
         <tr>
             <td colspan="3">
-                <div class="slds-truncate slds-text-align_right">{{language.getModuleName('SalesVouchers', true)}}</div>
+                <div class="slds-truncate slds-text-align_right"><system-label-modulename module="SalesVouchers" [singular]="true"></system-label-modulename></div>
             </td>
             <td colspan="2">
                 <div class="slds-truncate slds-text-align_right slds-form-element">

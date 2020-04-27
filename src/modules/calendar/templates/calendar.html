@@ -1,55 +1,55 @@
-<div #calendarcontainer [ngClass]="mainContainerClass" [class.slds-text-body--small]="isMobileView" [attr.role]="!asPicker ? 'none' : 'dialog'">
-    <div [class.slds-modal__container]="asPicker">
-        <calendar-header (datePicked)="setDateChanged($event)"></calendar-header>
-        <div #calendarcontent [ngStyle]="calendarContentStyle" class="slds-grid slds-theme_default slds-border--right">
-            <div *ngIf="!isMobileView" tobottom [ngStyle]="sidebarStyle" class="slds-border--right slds-p-around--xx-small spicecrm-scrollbar slds-scrollable--y slds-size--1-of-1 slds-theme--default">
-                <system-input-date-picker [setDate]="calendarDate" [dual]="pickerDualMode" [showTodayButton]="false" [weekStartDay]="weekStartDay" (datePicked)="setDateChanged($event)"></system-input-date-picker>
-                <calendar_other_calendars_monitor (googleIsVisible$)="handleGoogleIsVisible($event)" [userscalendars]="usersCalendars" [othercalendars]="otherCalendars"></calendar_other_calendars_monitor>
+<div #calendarcontainer [ngClass]="mainContainerClass" [class.slds-text-body--small]="isMobileView" [attr.role]="!asPicker ? 'none' : 'dialog'" [system-to-bottom-noscroll]="!asPicker" style="height: 100%">
+    <div [class.slds-modal__container]="asPicker" style="height: inherit">
+        <div class="slds-grid slds-grid--vertical" style="height: inherit">
+            <calendar-header (datePicked)="setDateChanged($event)" style="display: block"></calendar-header>
+            <div class="slds-grid slds-theme_default slds-border--right slds-grow" style="min-height: 100px">
+                <div *ngIf="!isMobileView" [ngStyle]="sidebarStyle" class="slds-border--right slds-p-around--xx-small slds-scrollable--y slds-size--1-of-1 slds-theme--default" style="height: 100%">
+                    <system-input-date-picker [setDate]="calendarDate" [dual]="pickerDualMode" [showTodayButton]="false" [weekStartDay]="weekStartDay" (datePicked)="setDateChanged($event)"></system-input-date-picker>
+                    <calendar_other_calendars_monitor (googleIsVisible$)="handleGoogleIsVisible($event)" [othercalendars]="otherCalendars"></calendar_other_calendars_monitor>
+                </div>
+                <div [ngStyle]="sheetStyle" [ngSwitch]="sheetType" [system-overlay-loading-spinner]="calendar.isLoading">
+                    <calendar-sheet-day
+                            *ngSwitchCase="'Day'"
+                            [googleisvisible]="googleIsVisible"
+                            [setdate]="calendarDate"
+                            style="display: block; height: inherit">
+                    </calendar-sheet-day>
+                    <calendar-sheet-three-days
+                            *ngSwitchCase="'Three_Days'"
+                            [googleisvisible]="googleIsVisible"
+                            [setdate]="calendarDate"
+                            (navigateday)="gotToDayView($event)"
+                            style="display: block; height: inherit">
+                    </calendar-sheet-three-days>
+                    <calendar-sheet-week
+                            *ngSwitchCase="'Week'"
+                            [googleisvisible]="googleIsVisible"
+                            [setdate]="calendarDate"
+                            (navigateday)="gotToDayView($event)"
+                            style="display: block; height: inherit">
+                    </calendar-sheet-week>
+                    <calendar-sheet-month
+                            *ngSwitchCase="'Month'"
+                            [googleisvisible]="googleIsVisible"
+                            [setdate]="calendarDate"
+                            (navigateday)="gotToDayView($event)"
+                            style="display: block; height: inherit">
+                    </calendar-sheet-month>
+                    <calendar-sheet-schedule
+                            *ngSwitchCase="'Schedule'"
+                            [googleisvisible]="googleIsVisible"
+                            [setdate]="calendarDate"
+                            (navigateday)="gotToDayView($event)"
+                            (untildate$)="handleUntilDate($event)"
+                            style="display: block; height: inherit">
+                    </calendar-sheet-schedule>
+                </div>
             </div>
-            <div [ngStyle]="sheetStyle" [ngSwitch]="sheetType" spiceOverlayLoadingSpinner [isLoading]="calendar.isLoading">
-                <calendar-sheet-day
-                        *ngSwitchCase="'Day'"
-                        [googleisvisible]="googleIsVisible"
-                        [userscalendars]="usersCalendars"
-                        [setdate]="calendarDate">
-                </calendar-sheet-day>
-                <calendar-sheet-three-days
-                        *ngSwitchCase="'Three_Days'"
-                        [googleisvisible]="googleIsVisible"
-                        [calendarcontent]="calendarcontent"
-                        [userscalendars]="usersCalendars"
-                        [setdate]="calendarDate"
-                        (navigateday)="gotToDayView($event)">
-                </calendar-sheet-three-days>
-                <calendar-sheet-week
-                        *ngSwitchCase="'Week'"
-                        [googleisvisible]="googleIsVisible"
-                        [calendarcontent]="calendarcontent"
-                        [userscalendars]="usersCalendars"
-                        [setdate]="calendarDate"
-                        (navigateday)="gotToDayView($event)">
-                </calendar-sheet-week>
-                <calendar-sheet-month
-                        *ngSwitchCase="'Month'"
-                        [googleisvisible]="googleIsVisible"
-                        [userscalendars]="usersCalendars"
-                        [setdate]="calendarDate"
-                        (navigateday)="gotToDayView($event)">
-                </calendar-sheet-month>
-                <calendar-sheet-schedule
-                        *ngSwitchCase="'Schedule'"
-                        [googleisvisible]="googleIsVisible"
-                        [userscalendars]="usersCalendars"
-                        [setdate]="calendarDate"
-                        (navigateday)="gotToDayView($event)"
-                        (untildate$)="handleUntilDate($event)">
-                </calendar-sheet-schedule>
+            <div>
+                <footer *ngIf="asPicker" class="slds-modal__footer">
+                    <button class="slds-button slds-button--neutral" (click)="closeModal()"><system-label label="LBL_CLOSE"></system-label></button>
+                </footer>
             </div>
-        </div>
-        <div #footercontainer>
-            <footer *ngIf="asPicker" class="slds-modal__footer">
-                <button class="slds-button slds-button--neutral" (click)="closeModal()">{{language.getLabel('LBL_CLOSE')}}</button>
-            </footer>
         </div>
     </div>
 </div>

@@ -5,17 +5,17 @@
             <ul #tabsheadercontainer class="slds-tabs--default__nav" role="tablist">
                 <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': activeTab == 'tree'}"
                     role="presentation" (click)="activeTab = 'tree'">
-                    <a class="slds-tabs--default__link" style="cursor: pointer" role="tab" aria-selected="false">{{ language.getLabel('LBL_CHAPTERS') }}</a>
+                    <a class="slds-tabs--default__link" style="cursor: pointer" role="tab" aria-selected="false"><system-label label="LBL_CHAPTERS"></system-label></a>
                 </li>
                 <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': activeTab == 'search'}"
                     role="presentation" (click)="activeTab = 'search'">
-                    <a class="slds-tabs--default__link" style="cursor: pointer" role="tab" aria-selected="false">{{ language.getLabel('LBL_SEARCH') }}</a>
+                    <a class="slds-tabs--default__link" style="cursor: pointer" role="tab" aria-selected="false"><system-label label="LBL_SEARCH"></system-label></a>
                 </li>
             </ul>
             <div *ngIf="activeTab == 'tree'" class="slds-tabs--default__content slds-show slds-p-vertical--none" role="tabpanel" style="background-color: #fafaf9">
                 <div [ngStyle]="treeContainerStyle" class="slds-scrollable--y spicecrm-scrollbar">
                     <div *ngIf="selectedBook && documents.length == 0 && !isLoading" class="slds-text-align--center slds-text-heading--small slds-truncate slds-p-top--x-small">
-                        {{language.getLabel('MSG_CREATE_FIRST_RECORD')}}
+                        <system-label label="MSG_CREATE_FIRST_RECORD"></system-label>
                     </div>
                     <system-tree
                             *ngIf="selectedBook && !isLoading"

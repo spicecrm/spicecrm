@@ -8,18 +8,28 @@ import {ObjectFields} from '../../objectfields/objectfields';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 import /*embed*/ {reporterconfig} from './services/reporterconfig';
 
 import /*embed*/ {ReporterDetailView} from "./components/reporterdetailview";
+import /*embed*/ {ReporterDetailViewHeader} from "./components/reporterdetailviewheader";
 import /*embed*/ {ReporterFilterButton} from "./components/reporterfilterbutton";
+import /*embed*/ {ReporterDetailViewRefreshButton} from "./components/reporterdetailviewrefreshbutton";
+import /*embed*/ {ReporterDetailViewEditButton} from "./components/reporterdetailvieweditbutton";
 import /*embed*/ {ReporterFilterPanel} from "./components/reporterfilterpanel";
 import /*embed*/ {ReporterFilterSavedFilters} from "./components/reporterfiltersavedfilters";
 import /*embed*/ {ReporterFilterItem} from "./components/reporterfilteritem";
 import /*embed*/ {ReporterFilterItemText} from "./components/reporterfilteritemtext";
 import /*embed*/ {ReporterFilterItemEnum} from "./components/reporterfilteritemenum";
 import /*embed*/ {ReporterFilterItemDate} from "./components/reporterfilteritemdate";
+import /*embed*/ {ReporterFilterItemUser} from "./components/reporterfilteritemuser";
+import /*embed*/ {ReporterFilterItemReference} from "./components/reporterfilteritemreference";
+import /*embed*/ {ReporterFilterItemFunction} from "./components/reporterfilteritemfunction";
+import /*embed*/ {ReporterFilterItemUserSingle} from "./components/reporterfilteritemusersingle";
+import /*embed*/ {ReporterFilterItemUserMultiple} from "./components/reporterfilteritemusermultiple";
 import /*embed*/ {ReporterDetailPresentationStandard} from "./components/reporterdetailpresentationstandard";
+import /*embed*/ {ReporterDetailSelectFieldsModal} from "./components/reporterdetailselectfieldsmodal";
 import /*embed*/ {ReporterDetailVisualization} from "./components/reporterdetailvisualization";
 import /*embed*/ {ReporterDetailVisualizationGooglecharts} from "./components/reporterdetailvisualizationgooglecharts";
 import /*embed*/ {ReporterVisualizationDashlet} from "./components/reportervisualizationdashlet";
@@ -37,6 +47,7 @@ import /*embed*/ {ReporterFieldEnum} from "./components/reporterfieldenum";
 import /*embed*/ {ReporterFieldDate} from "./components/reporterfielddate";
 import /*embed*/ {ReporterFieldDateTime} from "./components/reporterfielddatetime";
 import /*embed*/ {ReporterFieldColor} from "./components/reporterfieldcolor";
+import /*embed*/ {FieldReportCategory} from "./fields/fieldreportcategory";
 
 import /*embed*/ {ReporterIntegrationExportButton} from "./components/reporterintegrationexportbutton";
 import /*embed*/ {ReporterIntegrationTargetlistexportButton} from "./components/reporterintegrationtargetlistexportbutton";
@@ -45,6 +56,7 @@ import /*embed*/ {ReporterIntegrationTargetlistexportModal} from "./components/r
 import /*embed*/ {ReporterIntegrationCSVexportButton} from "./components/reporterintegrationcsvexportbutton";
 
 import /*embed*/ {ReporterIntegrationToolsButton} from "./components/reporterintegrationtoolsbutton";
+import /*embed*/ {ReporterNewButton} from "./components/reporternewbutton";
 
 /**
  * @ignore
@@ -58,18 +70,29 @@ declare var moment: any;
         ObjectFields,
         ObjectComponents,
         SystemComponents,
-        DirectivesModule
+        DirectivesModule,
+        DragDropModule
     ],
     declarations: [
+        FieldReportCategory,
         ReporterDetailView,
+        ReporterDetailViewHeader,
         ReporterFilterButton,
+        ReporterDetailViewRefreshButton,
+        ReporterDetailViewEditButton,
         ReporterFilterPanel,
         ReporterFilterSavedFilters,
         ReporterFilterItem,
         ReporterFilterItemText,
         ReporterFilterItemEnum,
         ReporterFilterItemDate,
+        ReporterFilterItemUser,
+        ReporterFilterItemUserSingle,
+        ReporterFilterItemUserMultiple,
+        ReporterFilterItemReference,
+        ReporterFilterItemFunction,
         ReporterDetailPresentationStandard,
+        ReporterDetailSelectFieldsModal,
         ReporterDetailVisualization,
         ReporterDetailVisualizationGooglecharts,
         ReporterVisualizationDashlet,
@@ -93,9 +116,16 @@ declare var moment: any;
         ReporterIntegrationTargetlistexportModal,
         ReporterIntegrationCSVexportButton,
         ReporterIntegrationToolsButton,
+        ReporterNewButton,
     ],
     exports: [
-        ReporterFieldContainer
+        ReporterFieldContainer,
+        ReporterFilterItemEnum,
+        ReporterFilterItemText,
+        ReporterFilterItemDate,
+        ReporterFilterItemUser,
+        ReporterFilterItemReference,
+        ReporterFilterItemFunction
     ]
 })
 export class ModuleReports {

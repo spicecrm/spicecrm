@@ -1,31 +1,24 @@
 <system-modal size="large">
     <system-modal-header (close)="cancel()">
-        {{lang.getLabel('LBL_NEW_IMAGE')}}
+        <system-label label="LBL_NEW_IMAGE"></system-label>
     </system-modal-header>
-    <system-modal-content style="height:100%">
-
-        <div class="slds-grid" style="height:100%">
-
+    <system-modal-content><!-- grow="true" -->
+        <div class="slds-grid">
             <div class="slds-box slds-box_x-small slds-size--1-of-2" [ngClass]="{'slds-size--1-of-1':noMetaData,'slds-size--1-of-2':!noMetaData}">
-                <system-input-media acceptMedia="{image:true}" (mediaChange)="mediaChanged($event)" style="height:100%"></system-input-media>
+                <system-input-media [(ngModel)]="image" class="slds-height_full"></system-input-media>
             </div>
-
             <div *ngIf="!noMetaData" class="slds-p-left--medium slds-size--1-of-2">
                 <object-record-fieldset [fieldset]="fieldsetId" direction="vertical"></object-record-fieldset>
             </div>
-
         </div>
-
     </system-modal-content>
-
     <system-modal-footer>
         <div *ngIf="!isSaving">
-            <button class="slds-button slds-button--brand" (click)="save()" [disabled]="!canSave">{{lang.getLabel('LBL_SAVE')}}</button>
-            <button class="slds-button slds-button--neutral" (click)="cancel()">{{lang.getLabel('LBL_CANCEL')}}</button>
+            <button class="slds-button slds-button--brand" (click)="save()" [disabled]="!canSave"><system-label label="LBL_SAVE"></system-label></button>
+            <button class="slds-button slds-button--neutral" (click)="cancel()"> <system-label label="LBL_CANCEL"></system-label></button>
         </div>
         <div *ngIf="isSaving">
-            <system-progress-bar [progress]="theProgress">{{lang.getLabel('LBL_UPLOADING_MEDIA_FILE')}}</system-progress-bar>
+            <system-progress-bar [progress]="theProgress"><system-label label="LBL_UPLOADING_MEDIA_FILE"></system-label></system-progress-bar>
         </div>
     </system-modal-footer>
-
 </system-modal>

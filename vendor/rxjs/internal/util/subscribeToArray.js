@@ -1,11 +1,1 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.subscribeToArray = function (array) { return function (subscriber) {
-    for (var i = 0, len = array.length; i < len && !subscriber.closed; i++) {
-        subscriber.next(array[i]);
-    }
-    if (!subscriber.closed) {
-        subscriber.complete();
-    }
-}; };
-//# sourceMappingURL=subscribeToArray.js.map
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.subscribeToArray=function(o){return function(e){for(var r=0,t=o.length;r<t&&!e.closed;r++)e.next(o[r]);e.complete()}};

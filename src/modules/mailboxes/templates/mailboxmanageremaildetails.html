@@ -35,11 +35,11 @@
                 </div>
             </div>
         </div>
-        <div class="slds-m-around--x-small slds-p-around--x-small slds-theme--default" tobottom>
+        <div class="slds-m-around--x-small slds-p-around--x-small slds-theme--default" system-to-bottom>
             <div #detailscontent></div>
         </div>
     </div>
-    <div *ngIf="!model.id" class="slds-align--absolute-center" tobottomnoscroll>
-        {{language.getLabel('LBL_SELECT_EMAIL')}}
+    <div *ngIf="!model.id" class="slds-align--absolute-center" system-to-bottom-noscroll>
+        <system-label label="LBL_SELECT_EMAIL"></system-label>
     </div>
 </div>

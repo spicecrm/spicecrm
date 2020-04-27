@@ -1,10 +1,11 @@
 /**
  * @module ModuleProducts
  */
-import {Component, ElementRef, EventEmitter, Output, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {productfinder} from '../services/productfinder.service';
+import {metadata} from "../../../services/metadata.service";
 
 /**
  * @ignore
@@ -15,7 +16,7 @@ declare var moment: any;
     selector: 'product-brwoser-tree',
     templateUrl: './src/modules/products/templates/productbrowsertree.html'
 })
-export class ProductBrowserTree {
+export class ProductBrowserTree implements OnInit {
 
     @ViewChild('treeheader', {read: ViewContainerRef, static: true}) private treeheader: ViewContainerRef;
     @Output() private selectionchanged: EventEmitter<any> = new EventEmitter<any>();
@@ -24,14 +25,24 @@ export class ProductBrowserTree {
     private productGroupTree: any[] = [];
     private productGroupTreeResultsOnly: boolean = false;
     private selectedId: string = '';
+    private fieldset: string;
 
-    constructor(private language: language, private backend: backend, private elementRef: ElementRef, private productfinder: productfinder) {
+    constructor(private language: language,
+                private backend: backend,
+                private elementRef: ElementRef,
+                private metadata: metadata,
+                private productfinder: productfinder) {
         this.getProductGroups();
     }
 
     get treeStyle() {
         let rect = this.treeheader.element.nativeElement.getBoundingClientRect();
         return {height: `calc(100% - ${rect.height}px)`};
+    }
+
+    public ngOnInit(): void {
+        const config = this.metadata.getComponentConfig('ProductBrowserTree', 'Products');
+        this.fieldset = !!config && !!config.fieldset ? config.fieldset : undefined;
     }
 
     private trackByFn(index, item) {
@@ -43,46 +54,33 @@ export class ProductBrowserTree {
     }
 
     private getProductGroups(parentId = '') {
-        let fields = ['id', 'name', 'summary_text', 'parent_productgroup_id', 'member_count', 'product_count', 'sortparam', 'sortseq'];
-        let searchFields = {
-            field: 'parent_productgroup_id',
-            operator: (parentId != '' ? '=' : 'empty'),
-            value: parentId
-        };
-        let params = {
-            searchfields: JSON.stringify(searchFields),
-            fields: JSON.stringify(fields),
-            offset: 0,
-            limit: 250
-        };
 
-        this.backend.getRequest('module/ProductGroups', params)
-            .subscribe(items => {
-                items.list.sort((a, b) => {
-                    return parseInt(a.sortseq, 10) > parseInt(b.sortseq, 10) ? 1 : -1;
-                });
-
-                for (let item of items.list) {
-                    item.expanded = false;
-                    item.loaded = false;
-                    item.type = 'ProductGroup';
-                    item.member_count = parseInt(item.member_count, 10);
-                    item.product_count = parseInt(item.product_count, 10);
-                    this.productGroups.push(item);
-                }
-                this.buildTree();
-                if (this.productfinder.searchfocus.type.length == 0) {
-                    this.selectGroup(this.productGroupTree[0]);
-                }
+        this.backend.getRequest('productgroups/tree' + (parentId ? '/' + parentId : '')).subscribe(items => {
+            items.sort((a, b) => {
+                return parseInt(a.sortseq, 10) > parseInt(b.sortseq, 10) ? 1 : -1;
             });
+
+            for (let item of items) {
+                item.expanded = false;
+                item.loaded = false;
+                item.type = 'ProductGroup';
+                item.member_count = parseInt(item.member_count, 10);
+                item.product_count = parseInt(item.product_count, 10);
+                this.productGroups.push(item);
+            }
+
+            this.buildTree();
+
+            if (this.productfinder.searchfocus.type.length == 0) {
+                this.selectGroup(this.productGroupTree[0]);
+            }
+        });
     }
 
     private getProducts(parentId = '') {
-        let fields = ['id', 'name', 'summary_text'];
         let searchfields = {field: 'productgroup_id', operator: '=', value: parentId};
         let params = {
             searchfields: JSON.stringify(searchfields),
-            fields: JSON.stringify(fields),
             offset: 0,
             limit: 250,
             sortfield: 'name'

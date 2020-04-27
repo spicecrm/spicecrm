@@ -24,10 +24,10 @@
     </div>
     <div *ngIf="current_module" class="slds-form-element slds-col--bump-left">
         <div class="slds-button-group" role="group">
-            <button type="button" class="slds-button slds-button--neutral" (click)="addValidationRule()">{{language.getLabel('LBL_ADD')}}</button>
-            <button type="button" class="slds-button slds-button--neutral" [disabled]="!current_rule" (click)="removeCurrentValidationRule()">{{language.getLabel('LBL_DELETE')}}</button>
-            <button type="button" class="slds-button slds-button--neutral" [disabled]="!current_rule" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}</button>
-            <button type="button" class="slds-button slds-button--brand" [disabled]="!current_rule" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+            <button type="button" class="slds-button slds-button--neutral" (click)="addValidationRule()"><system-label label="LBL_ADD"></system-label></button>
+            <button type="button" class="slds-button slds-button--neutral" [disabled]="!current_rule" (click)="removeCurrentValidationRule()"><system-label label="LBL_DELETE"></system-label></button>
+            <button type="button" class="slds-button slds-button--neutral" [disabled]="!current_rule" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button type="button" class="slds-button slds-button--brand" [disabled]="!current_rule" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
         </div>
     </div>
 </div>

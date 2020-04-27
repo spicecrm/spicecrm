@@ -14,6 +14,9 @@ import {session} from "../../../services/session.service";
  */
 declare var _: any;
 
+/**
+ * renders a tab in the users details vie that allows admins to manage roles for a given user
+ */
 @Component({
     selector: "user-roles",
     templateUrl: "./src/modules/users/templates/userroles.html"
@@ -23,6 +26,11 @@ export class UserRoles {
     private userRoles: any[] = [];
     private noneUserRoles: any[] = [];
     private componentId: string;
+
+    /**
+     * inidcates that the roles are being laoded
+     */
+    private loading: boolean = true;
 
     constructor(
         private backend: backend,
@@ -56,15 +64,28 @@ export class UserRoles {
             this.noneUserRoles = this.sortRoles( this.noneUserRoles );
 
             this.noneUserRoles.map(noneUserRole => noneUserRole.defaultrole = "0");
+
+            // set loading to false
+            this.loading = false;
         });
     }
 
+    /**
+     * sort the roles
+     *
+     * @param roles
+     */
     private sortRoles( roles ): any[] {
         return roles.sort( ( a, b ) => {
             return this.language.getLabel( a.label ).localeCompare( this.language.getLabel( b.label ));
         });
     }
 
+    /**
+     * adds a role to the user
+     *
+     * @param event
+     */
     private addRole(event) {
         if (this.session.authData.admin) {
             this.modal.openModal("UserRolesAddModal").subscribe(addModalRef => {
@@ -86,6 +107,13 @@ export class UserRoles {
         }
     }
 
+    /**
+     * removes a role from the user
+     *
+     * @param roleIndex
+     * @param roleId
+     * @param isDefaultRole
+     */
     private deleteRole(roleIndex, roleId, isDefaultRole) {
         if (this.session.authData.admin && !isDefaultRole) {
             this.modal.confirm(
@@ -112,6 +140,11 @@ export class UserRoles {
 
     }
 
+    /**
+     * set one role as defulat role for the user
+     *
+     * @param roleId
+     */
     private setDefaultRole(roleId) {
         if (this.session.authData.admin) {
             this.userRoles.every(role => {

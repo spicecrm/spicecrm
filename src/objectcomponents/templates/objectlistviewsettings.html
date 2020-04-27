@@ -1,4 +1,4 @@
-<div class="slds-dropdown-trigger slds-dropdown-trigger--click slds-m-horizontal--xxx-small" dropdowntriggersimple>
+<div class="slds-dropdown-trigger slds-dropdown-trigger--click slds-m-horizontal--xxx-small" system-dropdown-trigger-simple>
     <button class="slds-button slds-button--icon-more">
         <system-button-icon icon="settings"></system-button-icon>
         <system-button-icon icon="down" size="x-small"></system-button-icon>
@@ -6,26 +6,26 @@
     <div class="slds-dropdown slds-dropdown--right">
         <ul class="slds-dropdown__list" role="menu">
             <li class="slds-dropdown__header" role="separator">
-                <span class="slds-text-title--caps">{{language.getLabel('LBL_SETTINGS')}}</span>
+                <span class="slds-text-title--caps"><system-label label="LBL_SETTINGS"></system-label></span>
             </li>
             <li class="slds-dropdown__item" role="presentation">
                 <a role="menuitem" (click)="add()">
-                    <span class="slds-truncate"><system-utility-icon class="slds-p-right--xx-small" icon="add" size="x-small"></system-utility-icon> {{language.getLabel('LBL_NEW')}}</span>
+                    <span class="slds-truncate"><system-utility-icon class="slds-p-right--xx-small" icon="add" size="x-small"></system-utility-icon> <system-label label="LBL_NEW"></system-label></span>
                 </a>
             </li>
             <li class="slds-dropdown__item" role="presentation">
                 <a role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('edit')" (click)="edit()">
-                    <span class="slds-truncate"><system-utility-icon class="slds-p-right--xx-small" icon="edit" size="x-small"></system-utility-icon> {{language.getLabel('LBL_EDIT')}}</span>
+                    <span class="slds-truncate"><system-utility-icon class="slds-p-right--xx-small" icon="edit" size="x-small"></system-utility-icon> <system-label label="LBL_EDIT"></system-label></span>
                 </a>
             </li>
             <li class="slds-dropdown__item" role="presentation">
                 <a role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('edit')" (click)="save()">
-                    <span class="slds-truncate"><system-utility-icon class="slds-p-right--xx-small" icon="save" size="x-small"></system-utility-icon> {{language.getLabel('LBL_SAVE')}}</span>
+                    <span class="slds-truncate"><system-utility-icon class="slds-p-right--xx-small" icon="save" size="x-small"></system-utility-icon> <system-label label="LBL_SAVE"></system-label></span>
                 </a>
             </li>
             <li class="slds-dropdown__item" role="presentation">
                 <a  role="menuitem" [attr.aria-disabled]="!modellist.checkAccess('delete')" (click)="delete()">
-                    <span class="slds-truncate"><system-utility-icon class="slds-p-right--xx-small" icon="delete" size="x-small"></system-utility-icon> {{language.getLabel('LBL_DELETE')}}</span>
+                    <span class="slds-truncate"><system-utility-icon class="slds-p-right--xx-small" icon="delete" size="x-small"></system-utility-icon> <system-label label="LBL_DELETE"></system-label></span>
                 </a>
             </li>
         </ul>

@@ -1,0 +1,42 @@
+/**
+ * @module ModuleReportsDesignerMore
+ */
+import {Component} from '@angular/core';
+import {language} from "../../../services/language.service";
+import {model} from "../../../services/model.service";
+import {ReportsDesignerPresentItemStandard} from "../../../modules/reportsdesigner/components/reportsdesignerpresentitemstandard";
+import {ReportsDesignerService} from "../../../modules/reportsdesigner/services/reportsdesigner.service";
+
+@Component({
+    selector: 'reports-designer-more-present-item-standard-with-preview',
+    templateUrl: './src/modules/reportsdesignermore/templates/reportsdesignermorepresentitemstandardwithpreview.html'
+})
+export class ReportsDesignerMorePresentItemStandardWithPreview extends ReportsDesignerPresentItemStandard {
+
+    constructor(public language: language, public model: model, public reportsDesignerService: ReportsDesignerService) {
+        super(language, model, reportsDesignerService);
+    }
+
+    /**
+     * @return pluginData: object
+     */
+    get pluginData() {
+        return this.model.getField('presentation_params').pluginData;
+    }
+
+    /**
+     * set pluginData if not set
+     * @setField presentation_params
+     */
+    public initializePluginData(data?) {
+        const presentationParams = this.model.getField('presentation_params');
+        if (!presentationParams.pluginData.processCount && !presentationParams.pluginData.listEntries && !presentationParams.pluginData.previewId) {
+            presentationParams.pluginData = {
+                processCount: 'Synchronous',
+                listEntries: 25,
+                previewId: ''
+            };
+            this.model.setField('presentation_params', presentationParams);
+        }
+    }
+}

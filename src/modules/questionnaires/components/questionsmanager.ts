@@ -29,18 +29,17 @@ export class QuestionsManager implements OnInit {
     constructor( private language: language, private model: model, private backend: backend, private modalservice: modal ) { }
 
     public ngOnInit(): void {
-        let params = {
-            searchfields: {
-                field: 'questionset_id',
-                operator: '=',
-                value: this.model.id
-            },
-            fields: ['id', 'name', 'position'],
-            sortfield: 'position,date_entered',
-            limit: -99
-        };
-        this.backend.getRequest('module/Questions', params ).subscribe( (response: any) => {
-            this.questions = response.list;
+        this.backend.getRequest('module/QuestionSets/'+this.model.id+'/related/questions' ).subscribe( (response: any) => {
+            for ( let id in response ) {
+                this.questions.push( this.model.utils.backendModel2spice('Questions', response[id] ));
+            }
+            // Sort questions by field "position" (number). Only in case "position" is equal then use "date_entered".
+            this.questions = this.questions.sort(( a, b ) => {
+                let deltaPos = a.position - b.position;
+                if ( deltaPos === 0 ) {
+                    return a.date_entered === b.date_entered ? 0 : a.date_entered > b.date_entered ? 1 : -1;
+                } else return deltaPos;
+            });
             this.isLoading = false;
         });
     }

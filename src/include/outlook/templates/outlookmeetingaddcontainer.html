@@ -1,0 +1,18 @@
+<div *ngIf="canAdd" class="slds-p-around--x-small">
+    <div class="slds-p-horizontal--xx-small slds-p-vertical--small">
+        <h2 class="slds-text-heading_small"><system-label label="LBL_LINK_TO_CRM"></system-label></h2>
+    </div>
+    <div  class="slds-box_border">
+        <div class="slds-m-around--xx-small slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+            <system-label label="LBL_MODULE"></system-label>
+            <system-input-radio-button-group [disabled]="!allowModuleChange" [inputOptions]="modules" [(ngModel)]="module"></system-input-radio-button-group>
+        </div>
+    </div>
+    <div *ngIf="module" class="slds-box_border slds-m-vertical--x-small">
+        <object-record-fieldset [fieldset]="fieldset" direction="vertical"></object-record-fieldset>
+    </div>
+</div>
+<div *ngIf="!canAdd" style="height: 100vh;" class="slds-p-around--x-small slds-align--absolute-center slds-grid--vertical slds-theme--alert-texture slds-theme--error">
+    <h2 class="slds-p-around--small slds-text-heading_small"><system-label label="MSG_NO_MODULE_FOUND"></system-label></h2>
+    <div class="slds-size--3-of-4 slds-text-align--center"><system-label label="MSG_NO_MODULE_FOUND" length="long"></system-label></div>
+</div>

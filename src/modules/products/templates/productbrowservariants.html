@@ -1,5 +1,5 @@
 <div class="slds-border--bottom slds-grid slds-grid--vertical-align-center slds-p-horizontal--small slds-p-vertical--x-small">
-    <h4 class="slds-text-title_caps slds-text-heading--small slds-p-vertical--small">{{language.getModuleName('ProductVariants')}}</h4>
+    <h4 class="slds-text-title_caps slds-text-heading--small slds-p-vertical--small"><system-label-modulename module="ProductVariants"></system-label-modulename></h4>
     <div class="slds-col slds-form-element slds-m-left--x-small">
         <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
             <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--right"></system-utility-icon>
@@ -7,7 +7,7 @@
         </div>
     </div>
 </div>
-<div tobottom #variantscontent class="spicecrm-scrollbar" (scroll)="onScroll($event)">
+<div system-to-bottom #variantscontent class="spicecrm-scrollbar" (scroll)="onScroll($event)">
     <product-brwoser-variant *ngFor="let productvariant of productVariants" [productvariant]="productvariant" (selectionchanged)="handleSelection($event)"></product-brwoser-variant>
     <div *ngIf="loading" class="slds-size--1-of-1 slds-p-around--medium slds-align--absolute-center">
         <system-spinner></system-spinner>
