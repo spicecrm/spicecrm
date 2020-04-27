@@ -1,22 +1,18 @@
 <div class="slds-combobox_container">
     <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-combobox-picklist" role="combobox" [ngClass]="{'slds-is-open':listIsExpanded}">
         <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" (click)="toggleList()">
-            <input type="text" class="slds-input slds-combobox__input" autocomplete="off" placeholder="{{names}}" readonly="" ><!--(blur)="closeList()"-->
+            <input type="text" class="slds-input slds-combobox__input" autocomplete="off" placeholder="{{names}}" readonly=""><!--(blur)="closeList()"-->
             <span class="slds-icon_container slds-icon-utility-down slds-input__icon slds-input__icon_right" title="">
-                <svg class="slds-icon slds-icon slds-icon_x-small slds-icon-text-default">
-                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#down"></use>
-                </svg>
+                <system-utility-icon icon="down" size="x-small"></system-utility-icon>
                 <span class="slds-assistive-text">Open</span>
             </span>
         </div>
         <div>
             <ul class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid">
-                <li *ngFor="let category of categorypool.list; let i=index" class="slds-listbox__item" (click)="toggleCategory(i,$event)">
+                <li *ngFor="let category of categorypool.list; let i=index" class="slds-listbox__item" (click)="toggleCategory(i)">
                     <span class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small slds-media_center" [ngClass]="{'slds-is-selected':hasCategory(i)}">
                         <span class="slds-media__figure">
-                            <svg class="slds-icon slds-icon_x-small slds-listbox__icon-selected">
-                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#check"></use>
-                            </svg>
+                            <system-utility-icon icon="check" size="x-small" addclasses="slds-listbox__icon-selected"></system-utility-icon>
                         </span>
                         <span class="slds-media__body">
                             <span class="slds-truncate" title="">{{category.name}}</span>

@@ -191,7 +191,7 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
      */
     private getImage(): void {
 
-        this.mediafiles.getMediaFile( 1, '', this.fieldconfig.noImagePicker || false, this.fieldconfig.noMetaData || false, this.fieldconfig.category ).subscribe( (answer) => {
+        this.mediafiles.getMediaFile( this.fieldconfig.noImagePicker || false, this.fieldconfig.noMetaData || false, this.fieldconfig.category ).subscribe( (answer) => {
             if ( answer ) {
                 this.value = answer;
                 this.loadImages();
@@ -249,7 +249,7 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
     public isEditable(): boolean {
         return this.getStati( this.fieldname ).editable && !this.getStati( this.fieldname ).readonly && !this.getStati( this.fieldname ).disabled && !this.getStati( this.fieldname ).hidden;
     }
-
+    cdnurl
     public ngOnDestroy() {
         if ( this.unsubscribeClickListener ) this.unsubscribeClickListener();
         super.ngOnDestroy();
