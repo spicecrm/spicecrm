@@ -21,7 +21,8 @@ export class HomeAssistant {
         this.navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_ASSISTANT'), displaymodule: 'Home'});
     }
 
-    private reload() {
+    private reload(e: MouseEvent) {
+        e.stopPropagation();
         this.assistant.loadItems();
     }
 
