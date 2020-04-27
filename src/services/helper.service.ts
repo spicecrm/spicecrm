@@ -15,6 +15,23 @@ export class helper {
     constructor(private modalservice: modal) {
     } // private metadata: metadata, private footer: footer
 
+    /*
+     * for the GUID Generation
+     */
+    private getRand() {
+        return Math.random();
+    }
+
+    private S4() {
+        /* tslint:disable:no-bitwise */
+        return (((1 + this.getRand()) * 0x10000) | 0).toString(16).substring(1);
+        /* tslint:enable:no-bitwise */
+    }
+
+    public generateGuid() {
+        return (this.S4() + this.S4() + "-" + this.S4() + "-" + this.S4() + "-" + this.S4() + "-" + this.S4() + this.S4() + this.S4());
+    }
+
     public confirm(title, message): Observable<boolean> {
 
         /*
@@ -167,10 +184,12 @@ export class helper {
         if (mimeType) {
             let type: string, subtype: string;
             [type, subtype] = mimeType.split('/');
-            if (!type || !subtype) return 'unknown'; // The function input is not valid, it is not in the format 'type/subtype'.
+            if (!type) return 'unknown'; // The function input is not valid, it is not in the format 'type/subtype'.
             // Check the type part:
             switch (type) {
                 case 'image':
+                case 'png':
+                case 'jpeg':
                     return 'image';
                 case "text":
                     switch (subtype) {

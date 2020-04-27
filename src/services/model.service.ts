@@ -124,7 +124,12 @@ export class model implements OnDestroy {
      *}
      *```
      */
-    public mode$ = new EventEmitter();
+    public mode$: EventEmitter<string> = new EventEmitter();
+
+    /**
+     * fires when the editing of the model is cancelled
+     */
+    public canceledit$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * indicates if the model state is valid
@@ -189,6 +194,10 @@ export class model implements OnDestroy {
      */
     public duplicate: boolean = false;
     /**
+     * Holds the ID of the template model, in case the model is a duplicate.
+     */
+    public templateId: string = null;
+    /**
      * inidctaes thata duplicate check is ongoing
      */
     public duplicateChecking: boolean = false;
@@ -198,12 +207,23 @@ export class model implements OnDestroy {
     public duplicates: any[] = [];
 
     /**
+     * can be set if the model is in teh context of a parent and thus allows to pass a parent model through the dom
+     */
+    public parentmodel: model;
+
+    /**
      * the coiunt for the toal duplicates found
      */
     public duplicatecount: number = 0;
 
+    /**
+     * ToDo add documentation on how to use this
+     */
     private modelRegisterId: number;
 
+    /**
+     * ToDo: add documentation how to use this
+     */
     public savingProgress: BehaviorSubject<number> = new BehaviorSubject(1);
 
     constructor(
@@ -324,9 +344,13 @@ export class model implements OnDestroy {
     /**
      * navigates to the detasil view route of the given model
      */
-    public goDetail() {
+    public goDetail(tabid?: string) {
         if (this.checkAccess("detail")) {
-            this.router.navigate(["/module/" + this.module + "/" + this.id]);
+            let objectlink = "/module/" + this.module + "/" + this.id;
+            // if we have a tabid and it is not th emain tab add it
+            if(tabid) objectlink = '/tab/'+tabid + '/'+ objectlink;
+            // navigate to the route
+            this.router.navigate([objectlink]);
         } else {
             return false;
         }
@@ -712,17 +736,24 @@ export class model implements OnDestroy {
      * set the model to the edit mode
      *
      * @param withbackup create backup data so dirty fields can be evaluated. Defaults to true. Shoudl ony be set to false in specific cases
+     * @param silent prevents the model to be set to editing
      */
-    public startEdit(withbackup: boolean = true) {
+    public startEdit(withbackup: boolean = true, silent: boolean = false) {
         // if the model is already editing .. simply return
-        if(this.isEditing) return;
+        if (this.isEditing) return;
 
         // shift to backend format .. no objects like date embedded
         if (withbackup && !this.duplicate) {
             this.backupData = {...this.data};
         }
-        this.isEditing = true;
-        this.mode$.emit('edit');
+
+        /**
+         *  do not set to editing if silent is set
+         */
+        if (!silent) {
+            this.isEditing = true;
+            this.mode$.emit('edit');
+        }
 
         // add the model as editing to the navigation service so we can stop the user from navigating away
         this.navigation.addModelEditing(this.module, this.id, this.getFieldValue('summary_text'));
@@ -805,6 +836,9 @@ export class model implements OnDestroy {
             // todo: evaluate all fields because they have changed back???
             this.resetMessages();
         }
+
+        // emit that the edit mode has been cancelled
+        this.canceledit$.emit(true);
     }
 
     /**
@@ -825,7 +859,7 @@ export class model implements OnDestroy {
     public getDirtyFields() {
         let d = {};
         for (let property in this.data) {
-            if (property && (!this.backupData || _.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
+            if (property && (!this.backupData || _.isObject(this.data[property]) || _.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
                 d[property] = this.data[property];
             }
         }
@@ -861,7 +895,7 @@ export class model implements OnDestroy {
             changedData = this.data;
         }
 
-        this.backend.save(this.module, this.id, changedData, this.savingProgress)
+        this.backend.save(this.module, this.id, changedData, this.savingProgress, this.templateId )
             .subscribe(
                 res => {
                     this.data = res;
@@ -876,14 +910,20 @@ export class model implements OnDestroy {
                         backupdata: {...this.backupData}
                     });
 
+                    // saving is done
+                    this.isSaving = false;
+
                     // if notification is on send a toast
                     if (notify) {
                         this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");
                     }
 
+
+
                     // emit the save$
                     // redetermin the dirty fields since the backend call might have changed also additonal fields
                     this.saved$.emit({changed: this.getDirtyFields(), backupdata: {...this.backupData}});
+
 
                     // end the edit process
                     this.endEdit();
@@ -895,8 +935,6 @@ export class model implements OnDestroy {
                     responseSubject.next(true);
                     responseSubject.complete();
 
-                    // saving is done
-                    this.isSaving = false;
                 },
                 error => {
                     // console.log(error);
@@ -924,7 +962,11 @@ export class model implements OnDestroy {
         let responseSubject = new Subject<boolean>();
         this.backend.delete(this.module, this.id)
             .subscribe(res => {
-                this.broadcast.broadcastMessage("model.delete", {id: this.id, module: this.module, data: _.clone(this.data)});
+                this.broadcast.broadcastMessage("model.delete", {
+                    id: this.id,
+                    module: this.module,
+                    data: _.clone(this.data)
+                });
                 responseSubject.next(true);
                 responseSubject.complete();
             });
@@ -1089,7 +1131,7 @@ export class model implements OnDestroy {
         let copyrules = this.metadata.getCopyRules("*", this.module);
         for (let copyrule of copyrules) {
             if (copyrule.tofield && copyrule.fixedvalue) {
-                this.setFieldValue(copyrule.tofield, copyrule.fixedvalue);
+                this.setFixedValue( copyrule.tofield, copyrule.fixedvalue );
             } else if (copyrule.tofield && copyrule.calculatedvalue) {
                 this.setFieldValue(copyrule.tofield, this.getCalculatdValue(copyrule.calculatedvalue));
             }
@@ -1120,6 +1162,11 @@ export class model implements OnDestroy {
      */
     private copyValue(toField, value) {
         let fieldDef = this.metadata.getFieldDefs(this.module, toField);
+
+        // if not found just set the field attribute
+        if(!fieldDef) this.setField(toField, value);
+
+        // handle links
         switch (fieldDef.type) {
             case 'link':
                 if (_.isObject(value) && value.beans) {
@@ -1127,10 +1174,32 @@ export class model implements OnDestroy {
                     for (let relid in value.beans) {
                         newLink.beans[this.utils.generateGuid()] = {...value.beans[relid]};
                     }
-                    this.setFieldValue(toField, newLink);
+                    this.setField(toField, newLink);
                 }
             default:
-                this.setFieldValue(toField, value);
+                this.setField(toField, value);
+                break;
+        }
+    }
+
+    /**
+     * Set the fixed value to a field. Executed from the copy rules. Takes the field type into account.
+     *
+     * @param toField
+     * @param value
+     */
+    private setFixedValue( toField, value ) {
+        let fieldDef = this.metadata.getFieldDefs(this.module, toField);
+
+        // if no field definition found just set the field attribute
+        if ( !fieldDef ) this.setField( toField, value );
+
+        switch ( fieldDef.type ) {
+            case 'bool':
+                this.setField( toField, ( value === 'true' || value === '1' ) ? true : (( value === 'false' || value === '0' ) ? false : null ));
+                break;
+            default:
+                this.setField( toField, value );
                 break;
         }
     }

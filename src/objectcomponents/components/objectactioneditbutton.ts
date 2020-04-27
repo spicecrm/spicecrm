@@ -7,14 +7,19 @@ import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
 import {Subscription} from "rxjs";
 
+/**
+ * renders an edit button that can be used in actionsets to start editing the model and render the model edit modal
+ */
 @Component({
     selector: 'object-action-edit-button',
     templateUrl: './src/objectcomponents/templates/objectactioneditbutton.html'
 })
-export class ObjectActionEditButton implements OnInit, OnDestroy {
+export class ObjectActionEditButton {
 
-    public disabled: boolean = true;
-    private subscriptions: Subscription = new Subscription();
+    /**
+     * if set to true didpslay teh button as icon
+     */
+    public displayasicon: boolean = false;
 
     constructor(
         private language: language,
@@ -24,23 +29,21 @@ export class ObjectActionEditButton implements OnInit, OnDestroy {
 
     }
 
-    public ngOnInit() {
+    /**
+     * hide the button while the model is editing
+     */
+    get hidden() {
+        return this.model.isEditing;
+    }
 
-        this.handleDisabled(this.model.isEditing ? 'edit' : 'display');
-
-        // handleDisabled on on model.mode changes
-        this.subscriptions.add(
-            this.model.mode$.subscribe(mode => {
-                this.handleDisabled(mode);
-            })
-        );
-
-        // handleDisabled on on model.data changes
-        this.subscriptions.add(
-            this.model.data$.subscribe(data => {
-                this.handleDisabled(this.model.isEditing ? 'edit' : 'display');
-            })
-        );
+    /**
+     * set to dsiabled when we are not allowed to edit or we are editing or saving already
+     */
+    get disabled() {
+        if (this.model.data.acl && !this.model.checkAccess('edit')) {
+            return true;
+        }
+        return this.model.isEditing || this.model.isSaving;
     }
 
     /*
@@ -50,22 +53,4 @@ export class ObjectActionEditButton implements OnInit, OnDestroy {
         this.model.edit();
     }
 
-    /*
-    * @unsubscribe subscriptions
-    */
-    public ngOnDestroy() {
-        this.subscriptions.unsubscribe();
-    }
-
-    /*
-    * @return boolean
-    */
-    private handleDisabled(mode) {
-        if (this.model.data.acl && !this.model.checkAccess('edit')) {
-
-            this.disabled = true;
-            return;
-        }
-        this.disabled = mode == 'edit';
-    }
 }

@@ -1,12 +1,13 @@
 /**
  * @module ObjectFields
  */
-import {Component, Input, Output, EventEmitter, OnInit} from '@angular/core';
+import {Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges} from '@angular/core';
 import {model} from '../../services/model.service';
-import {modellist} from '../../services/modellist.service';
+import {modellist, relateFilter} from '../../services/modellist.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {modal} from '../../services/modal.service';
+import {Subscription} from "rxjs";
 
 /**
  * renders the lookup search dropdown
@@ -16,7 +17,7 @@ import {modal} from '../../services/modal.service';
     templateUrl: './src/objectfields/templates/fieldlookupsearch.html',
     providers: [modellist]
 })
-export class fieldLookupSearch implements OnInit {
+export class fieldLookupSearch implements OnInit, OnChanges {
     /**
      * the searchterm entered
      */
@@ -43,6 +44,16 @@ export class fieldLookupSearch implements OnInit {
     @Input() private disableadd: boolean = false;
 
     /**
+     * a relate filter for the modellist
+     */
+    @Input() private relatefilter: relateFilter;
+
+    /**
+     * additonal input for the id of the relate filter so the onChange can detect and trigger a reload
+     */
+    @Input() private relateId: string;
+
+    /**
      * an emitter if an object has been selected
      */
     @Output() private selectedObject: EventEmitter<any> = new EventEmitter<any>();
@@ -56,6 +67,11 @@ export class fieldLookupSearch implements OnInit {
      * emits when the searchterm has been changed
      */
     @Output() private searchtermChange = new EventEmitter<string>();
+
+    /**
+     * holds the various subscriptions
+     */
+    private subscriptions: Subscription = new Subscription();
 
     @Input() set searchterm(value) {
         this.searchTerm = value;
@@ -72,9 +88,27 @@ export class fieldLookupSearch implements OnInit {
      * initialize the modellist service
      */
     public ngOnInit() {
-        this.modellist.module = this.module;
+        // set th efilters
         this.modellist.modulefilter = this.modulefilter;
+        if (this.relatefilter) {
+            this.modellist.relatefilter = this.relatefilter;
+        }
+
         this.modellist.loadlimit = 5;
+
+        // set the module
+        this.modellist.setModule(this.module, true);
+    }
+
+    /**
+     * react to changes of the relatedId
+     *
+     * @param changes
+     */
+    public ngOnChanges(changes: SimpleChanges): void {
+        if (changes.relateId) {
+            this.modellist.getListData();
+        }
     }
 
     /**
@@ -116,6 +150,5 @@ export class fieldLookupSearch implements OnInit {
     private recordAdded(record) {
         this.setItem(record.data);
     }
-
 
 }

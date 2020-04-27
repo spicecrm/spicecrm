@@ -15,13 +15,13 @@
             </div>
         </div>
     </div>
-    <div tobottom>
+    <div system-to-bottom>
         <ng-container  *ngFor="let adminNavigationBlock of administration.navigationGroups; trackBy: trackbyfn" >
-            <h2 class="slds-text-title--caps slds-p-around--medium">{{language.getLabel(adminNavigationBlock.label)}}</h2>
+            <h2 class="slds-text-title--caps slds-p-around--medium"><system-label [label]="adminNavigationBlock.label"></system-label></h2>
             <ul>
                 <li *ngFor="let item of adminNavigationBlock.groupcomponents; trackBy: trackbyfn" [title]="language.getLabel(item.admin_label, '', 'long')">
                     <a href="javascript:void(0);" class="slds-navigation-list--vertical__action slds-p-vertical--xxx-small slds-text-link--reset" (click)="openContent(item.id)" [ngClass]="{'slds-theme_inverse': item.id == administration.opened_itemid}">
-                        <div class="slds-grid slds-grid--vertical-align-center"><system-icon [icon]="item.icon?item.icon:'empty'" size="x-small"></system-icon> {{item.admin_label ? language.getLabel(item.admin_label) : item.name}}</div>
+                        <div class="slds-grid slds-grid--vertical-align-center slds-truncate"><system-icon [icon]="item.icon?item.icon:'empty'" size="x-small"></system-icon> {{item.admin_label ? language.getLabel(item.admin_label) : item.name}}</div>
                     </a>
                 </li>
             </ul>

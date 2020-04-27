@@ -1,31 +1,34 @@
 /**
  * @module SpiceImporterModule
  */
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {layout} from '../../../services/layout.service';
 
+/**
+ * an action button to trigger the import
+ */
 @Component({
     selector: 'spice-importer-import-button',
     templateUrl: './src/include/spiceimporter/templates/spiceimporterimportbutton.html'
 })
-export class SpiceImporterImportButton implements OnInit {
+export class SpiceImporterImportButton {
 
-    constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private layout: layout) {
+    constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private layout: layout) {}
 
-    }
-
-    public ngOnInit() {
-        // this.disabled = this.metadata.checkModuleAcl(this.model.module, 'import') ? false : true;
-    }
-
+    /**
+     * navigate to the import route
+     */
     public execute() {
-        this.router.navigate(['/module/' + this.model.module + '/import']);
+        this.router.navigate(['/import/' + this.model.module]);
     }
 
+    /**
+     * gets the disabled state for the import button based on teh acl rights for the user
+     */
     get disabled(): boolean {
         return !this.metadata.checkModuleAcl(this.model.module, 'import') || this.layout.screenwidth == 'small';
     }

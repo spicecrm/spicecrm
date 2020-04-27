@@ -1,7 +1,1 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-function hostReportError(err) {
-    setTimeout(function () { throw err; });
-}
-exports.hostReportError = hostReportError;
-//# sourceMappingURL=hostReportError.js.map
+"use strict";function hostReportError(r){setTimeout(function(){throw r},0)}Object.defineProperty(exports,"__esModule",{value:!0}),exports.hostReportError=hostReportError;

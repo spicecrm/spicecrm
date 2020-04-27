@@ -1,1 +1,2 @@
-<span>{{language.getLabel('LBL_EDIT')}}</span>
+<system-button-icon *ngIf="displayasicon" icon="edit"></system-button-icon>
+<span *ngIf="!displayasicon"><system-label label="LBL_EDIT"></system-label></span>

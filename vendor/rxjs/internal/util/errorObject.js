@@ -1,4 +1,1 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.errorObject = { e: {} };
-//# sourceMappingURL=errorObject.js.map
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.errorObject={e:{}};

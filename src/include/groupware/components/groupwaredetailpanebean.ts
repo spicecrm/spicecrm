@@ -15,7 +15,7 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: 'groupware-detail-pane-bean',
     templateUrl: './src/include/groupware/templates/groupwaredetailpanebean.html',
-    providers: [view]
+    providers: [view, model]
 })
 export class GroupwareDetailPaneBean implements OnInit {
 
@@ -40,6 +40,11 @@ export class GroupwareDetailPaneBean implements OnInit {
     }
 
     public ngOnInit() {
+
+        this.model.module = this.bean.module;
+        this.model.id = this.bean.id;
+        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.bean.data);
+
         // get the fieldconfig
         let componentconfig = this.metadata.getComponentConfig(
             'GlobalHeaderSearchResultsItem', // todo create its own config if needed

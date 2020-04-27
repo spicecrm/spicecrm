@@ -1,0 +1,79 @@
+/**
+ * @module GlobalComponents
+ */
+import {
+    AfterViewInit, ComponentFactoryResolver, Component, Input, NgModule, ViewChild, ViewContainerRef, EventEmitter,
+    OnInit, Output
+} from '@angular/core';
+import {model} from '../../../services/model.service';
+import {view} from '../../../services/view.service';
+import {favorite} from '../../../services/favorite.service';
+import {language} from '../../../services/language.service';
+import {metadata} from '../../../services/metadata.service';
+
+@Component({
+    selector: 'spice-favorites-item',
+    templateUrl: './src/include/spicefavorites/templates/spicefavoritesitem.html',
+    providers: [model, view]
+})
+export class SpiceFavoritesItem implements OnInit {
+
+    /**
+     * thjt eitem that is passed in with the data for the favorite
+     */
+    @Input() private item: any = {};
+
+    /**
+     * the main fieldset that is rendered in the upper line. If none is found teh summary_text is rendered
+     */
+    private mainfieldset: string;
+
+    /**
+     * the sub fieldset rendered in the sub-line
+     */
+    private subfieldsetfields: any[];
+
+    constructor(private model: model, private language: language, private metadata: metadata, private view: view, private favorite: favorite) {
+        this.view.displayLabels = false;
+    }
+
+    /**
+     * initialize the model and load the config
+     */
+    public ngOnInit() {
+        // initialize the moedl
+        this.initializeModel();
+
+        // load the config
+        this.loadConfig();
+
+    }
+
+    /**
+     * initializes the model from the input item
+     */
+    private initializeModel() {
+        this.model.module = this.item.module_name;
+        this.model.id = this.item.item_id;
+        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.item.data);
+    }
+
+    /**
+     * loads the componentconfig and sets the variables
+     */
+    private loadConfig() {
+
+        // get the fieldconfig
+        let componentconfig = this.metadata.getComponentConfig('GlobalHeaderSearchResultsItem', this.model.module);
+
+        this.mainfieldset = componentconfig.mainfieldset;
+        if (componentconfig && componentconfig.subfieldset) this.subfieldsetfields = this.metadata.getFieldSetItems(componentconfig.subfieldset);
+    }
+
+    /**
+     * delete favorite
+     */
+    private deleteFavorite() {
+        this.favorite.deleteFavorite(this.model.module, this.model.id);
+    }
+}

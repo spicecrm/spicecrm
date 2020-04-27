@@ -2,7 +2,7 @@
     <nav role="navigation" aria-label="Breadcrumbs">
         <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
             <li class="slds-breadcrumb__item slds-text-title_caps">
-                <a href="javascript:void(0);" (click)="goModule()">{{language.getModuleName( module )}}</a>
+                <a href="javascript:void(0);" (click)="goModule()"><system-label-modulename [module]=" module "></system-label-modulename></a>
             </li>
             <li class="slds-breadcrumb__item slds-text-title_caps">
                 <a href="javascript:void(0);" (click)="goModel()">{{model.data.summary_text}}</a>
@@ -15,9 +15,9 @@
         </div>
     </div>
     <div class="slds-col slds-align-bottom">
-        <p class="slds-text-body--small">{{relatedmodels.items.length}} {{language.getLabel('LBL_OF')}} {{relatedmodels.count}} {{language.getLabel('LBL_ITEMS')}} • {{language.getLabel('LBL_SORTEDBY')}} {{language.getFieldDisplayName(related, relatedmodels.sortfield)}}   • {{language.getLabel('LBL_LASTUPDATE')}} {{relatedmodels.getLastLoadTime()}}</p>
+        <p class="slds-text-body--small">{{relatedmodels.items.length}} <system-label label="LBL_OF"></system-label> {{relatedmodels.count}} <system-label label="LBL_ITEMS"></system-label> • <system-label label="LBL_SORTEDBY"></system-label> <system-label-fieldname [module]="related" [field]="relatedmodels.sortfield"></system-label-fieldname>   • <system-label label="LBL_LASTUPDATE"></system-label> {{relatedmodels.getLastLoadTime()}}</p>
     </div>
 </div>
-<div tobottom #tablecontent (scroll)="onScroll($event)">
+<div system-to-bottom #tablecontent (scroll)="onScroll($event)">
     <object-relatedlist-table [listfields]="listfields" ></object-relatedlist-table>
 </div>

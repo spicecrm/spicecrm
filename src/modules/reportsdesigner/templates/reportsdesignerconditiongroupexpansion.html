@@ -1,0 +1,50 @@
+<div class="slds-grid slds-p-around--x-small" style="box-shadow: inset -1px 1px 6px 0 #aaa;">
+    <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small slds-size--1-of-1">
+        <div class="slds-form-element__control">
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label"><system-label label="LBL_USER_EDITABLE"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="whereCondition.usereditable">
+                                <option value="yes"><system-label label="LBL_YES"></system-label></option>
+                                <option value="no"><system-label label="LBL_NO"></system-label></option>
+                                <option value="yfo"><system-label label="LBL_VALUE_ONLY"></system-label></option>
+                                <option value="yo1"><system-label label="LBL_REPORTS_ALLOW_EDIT_ON_OFF"></system-label></option>
+                                <option value="yo2"><system-label label="LBL_REPORTS_ALLOW_EDIT_ON_ON"></system-label></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label"><system-label label="LBL_GROUPING"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <input type="text" [(ngModel)]="whereCondition.grouping" class="slds-input" [disabled]="true">
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label"><system-label label="LBL_SEQUENCE"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <input type="text" [(ngModel)]="whereCondition.sequence" class="slds-input">
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label"><system-label label="LBL_CONTEXT"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <input type="text" [(ngModel)]="whereCondition.context" class="slds-input" [disabled]="contextUsed">
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-1">
+                    <label class="slds-form-element__label"><system-label label="LBL_REFERENCE"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <input type="text" [(ngModel)]="whereCondition.reference" class="slds-input" [disabled]="referenceDisabled">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>

@@ -17,10 +17,10 @@ import {Router, Route, CanActivate} from "@angular/router";
 // for the dynamic routes
 // import {loginCheck} from "../services/login.service";
 
-
 declare var System: any;
 declare var SystemJS: any;
 declare var SystemDynamicRouteContainer: any;
+declare var SystemNavigationCollector: any;
 declare var _;
 
 @Injectable()
@@ -174,6 +174,7 @@ export class metadata {
         }
     }
 
+    /*
     private addRoute(path: string, component: string) {
         let module = this.componentDirectory[component].module;
 
@@ -189,6 +190,7 @@ export class metadata {
                             this.router.config.push({
                                 path: path,
                                 component: factory.componentType,
+                                canActivate: [aclCheck]
                             });
                             return true;
                         }
@@ -196,6 +198,7 @@ export class metadata {
                 });
             });
     }
+    */
 
     /*
     * dynamically add routes from this.routes with a route container hat will handle the dynamic routes
@@ -208,11 +211,20 @@ export class metadata {
             .then((type: any) => {
                 this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
                     componentfactory.componentFactories.some(factory => {
-                        if (factory.componentType.name === "SystemDynamicRouteContainer") {
+                        // if (factory.componentType.name === "SystemDynamicRouteContainer") {
+                        if (factory.componentType.name === "SystemNavigationCollector") {
                             for (let route of this.routes) {
                                 this.router.config.unshift({
                                     path: route.path,
                                     component: factory.componentType,
+                                    canActivate: [aclCheck]
+                                });
+
+                                // add the same for the tabbed browser
+                                this.router.config.unshift({
+                                    path: 'tab/:tabid/' + route.path,
+                                    component: factory.componentType,
+                                    canActivate: [aclCheck]
                                 });
                             }
                             return true;
@@ -456,8 +468,8 @@ export class metadata {
         }
 
         retComponentSets.sort((a, b) => {
-            if ( !a.name ) return 1;
-            return a.name.localeCompare( b.name );
+            if (!a.name) return 1;
+            return a.name.localeCompare(b.name);
         });
 
         return retComponentSets;
@@ -692,7 +704,7 @@ export class metadata {
      * @param field the name of the field
      * @return true or false
      */
-    public hasField( module: string, field: string ): boolean {
+    public hasField(module: string, field: string): boolean {
         return true && this.fieldDefs[module] && this.fieldDefs[module][field];
     }
 
@@ -745,11 +757,26 @@ export class metadata {
     }
 
     /**
+     * gets the module by the sysmoduleid
+     *
+     * @param sysmoudleid
+     */
+    public getModuleById(sysmoudleid: string): string {
+        for (let module in this.moduleDefs) {
+            if(this.moduleDefs[module].id == sysmoudleid){
+                return module;
+            }
+        }
+
+        return '';
+    }
+
+    /**
      * returns the name of the icon to be used for the module
      *
      * @param module the name of the module
      */
-    public getModuleIcon(module) {
+    public getModuleIcon(module: string) {
         try {
             return this.moduleDefs[module].icon;
         } catch (e) {
@@ -757,7 +784,12 @@ export class metadata {
         }
     }
 
-    public getModuleSingular(module) {
+    /**
+     * returns the singular label for a module
+     *
+     * @param module
+     */
+    public getModuleSingular(module: string) {
         try {
             return this.moduleDefs[module].singular;
         } catch (e) {
@@ -765,7 +797,12 @@ export class metadata {
         }
     }
 
-    public getModuleFromSingular(singular) {
+
+    /**
+     * returns the module from the singualr
+     * @param singular
+     */
+    public getModuleFromSingular(singular: string) {
         let module = "";
         for (let thismodule in this.moduleDefs) {
             if (this.moduleDefs[thismodule].singular == singular) {
@@ -775,6 +812,11 @@ export class metadata {
         return module;
     }
 
+    /**
+     * returns if a module is active in the tracker
+     *
+     * @param module
+     */
     public getModuleTrackflag(module): boolean {
         try {
             return parseInt(this.moduleDefs[module].track, 10) ? true : false;
@@ -878,14 +920,22 @@ export class metadata {
      * @param module
      * @param listtype
      */
-    public deleteModuleListType(module: string, listtype: string){
+    public deleteModuleListType(module: string, listtype: string) {
         let typeIndex = this.moduleDefs[module].listtypes.findIndex(ltype => ltype.id == listtype);
-        if(typeIndex >= 0){
+        if (typeIndex >= 0) {
             this.moduleDefs[module].listtypes.splice(typeIndex, 1);
         }
         return this.moduleDefs[module].listtypes;
     }
 
+    /**
+     * returns the ggregate settings for a module
+     *
+     * @param module
+     */
+    public getModuleAggregates(module: string) {
+        return this.moduleDefs[module].ftsaggregates;
+    }
 
     /**
      * returns the field defs for a given module
@@ -980,6 +1030,18 @@ export class metadata {
     }
 
     /**
+     get module by component
+     */
+    public getSystemModuleByComponent(comp) {
+        for (let component in this.componentDirectory) {
+            if (component == comp) {
+                return this.componentDirectory[component].module;
+            }
+        }
+        return null;
+    }
+
+    /**
      get components from Repository
      */
     public getSystemComponents(module?) {
@@ -1056,6 +1118,10 @@ export class metadata {
         return this.getComponentConfig(component, module);
     }
 
+    public getRawActionSets() {
+        return this.actionSets;
+    }
+
     /*
      * get the action set
      */
@@ -1063,7 +1129,7 @@ export class metadata {
         let retActionSets: any[] = [];
 
         for (let actionset in this.actionSets) {
-            if (module !== "" && (this.actionSets[actionset].module !== module && this.actionSets[actionset].module !== "*")) {
+            if (module !== "" && (this.actionSets[actionset].module !== module)) {
                 continue;
             }
 
@@ -1071,7 +1137,9 @@ export class metadata {
                 id: actionset,
                 name: this.actionSets[actionset].name,
                 module: this.actionSets[actionset].module,
-                type: this.actionSets[actionset].type
+                type: this.actionSets[actionset].type,
+                package: this.actionSets[actionset].package,
+                actions: this.actionSets[actionset].actions
             });
         }
 
@@ -1091,6 +1159,77 @@ export class metadata {
             return this.actionSets[actionset].actions;
         } catch (e) {
             return [];
+        }
+    }
+
+
+    public setActionset(actionset_id, params) {
+        this.actionSets[actionset_id].name = params.name;
+        this.actionSets[actionset_id].package = params.package;
+    }
+
+
+    public setActionSet(actionset_id, params) {
+        this.actionSets[actionset_id] = {
+            id: actionset_id,
+            module: params.module,
+            name: params.name,
+            package: params.package,
+            version: params.version,
+            actions: params.actions,
+            type: params.type
+        };
+    }
+
+    public setActionSetItems(actionset_id, actions) {
+        this.actionSets[actionset_id].actions = actions;
+    }
+
+    public addActionset(id, module, name, type = "custom", items = []) {
+        this.actionSets[id] = {
+            items: items,
+            module: module,
+            name: name,
+            type: type
+        };
+    }
+
+    public removeActionset(id) {
+        delete this.actionSets[id];
+    }
+
+    public removeActionsetItem(parent, item) {
+        let remIndex = false;
+        this.actionSets[parent].items.some((curitem, curindex) => {
+            if (curitem.id == item.id) {
+                remIndex = curindex;
+                return true;
+            }
+        });
+
+        if (remIndex !== false) {
+            this.actionSets[parent].items.splice(remIndex, 1);
+            let i = 0;
+            for (let thisitem of this.actionSets[parent].items) {
+                thisitem.sequence = i;
+                i++;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * returns the name of a actionset
+     *
+     * @param actionset the id of the actionset
+     */
+    public getActionsetName(actionset) {
+        try {
+            return this.actionSets[actionset].name;
+        } catch (e) {
+            return "";
         }
     }
 
@@ -1231,11 +1370,13 @@ export class metadata {
     * for the route handling
      */
 
-    public getRouteComponent(route) {
-        let component = "";
-        this.routes.some(routeDetails => {
+    /**
+     * returns the details for a given route
+     * @param route
+     */
+    public getRouteDetails(route) {
+        return this.routes?.find(routeDetails => {
             if (routeDetails.path == route) {
-                component = routeDetails.component;
                 return true;
             } else if (route.split("/").length == routeDetails.path.split("/").length) {
                 let routeArray = route.split("/");
@@ -1251,13 +1392,34 @@ export class metadata {
                 }
 
                 if (matched) {
-                    component = routeDetails.component;
                     return true;
                 }
-
             }
         });
-        return component;
+    }
+
+    public getRouteComponent(route) {
+        return this.routes ? this.routes.find(routeDetails => {
+            if (routeDetails.path == route) {
+                return true;
+            } else if (route.split("/").length == routeDetails.path.split("/").length) {
+                let routeArray = route.split("/");
+                let matchArray = routeDetails.path.split("/");
+                let matched = true;
+
+                let i = 0;
+                while (i < routeArray.length && matched) {
+                    if (matchArray[i].substr(0, 1) !== ":" && matchArray[i] !== routeArray[i]) {
+                        matched = false;
+                    }
+                    i++;
+                }
+
+                if (matched) {
+                    return true;
+                }
+            }
+        })?.component : false;
     }
 
     /*

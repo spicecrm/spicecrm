@@ -32,11 +32,6 @@ declare var _: any;
 })
 export class SpiceKanban implements OnInit, OnDestroy {
     /**
-     * reference to the kanban container
-     */
-    @ViewChild('kanbanContainer', {read: ViewContainerRef, static: true}) private kanbanContainer: ViewContainerRef;
-
-    /**
      * reference to the utility bar if one is rendered
      */
     @ViewChild('kanbanUtilityBar', {read: ViewContainerRef, static: false}) private kanbanUtilityBar: ViewContainerRef;
@@ -65,7 +60,10 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * holds the info on the stages to be displayed
      */
     private stages: any[] = [];
-
+    /**
+     * collects all of the fields and their operation type
+     */
+    private sumfields: any[] = [];
     /**
      * hidden statges that are rendered in teh utility bar
      */
@@ -76,12 +74,12 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     public currencies: any[] = [];
 
+    private loadLabel: boolean = false;
+
     constructor(private broadcast: broadcast, private model: model, private modellist: modellist, private configuration: configurationService, private metadata: metadata, private userpreferences: userpreferences, private language: language, private currency: currency) {
 
         this.componentconfig = this.metadata.getComponentConfig('SpiceKanban', this.modellist.module);
-
         this.currencies = this.currency.getCurrencies();
-
     }
 
     /**
@@ -109,20 +107,47 @@ export class SpiceKanban implements OnInit, OnDestroy {
             // push the bucket item
             bucketitems.push({
                 bucket: stage.stagedata.secondary_stage ? stage.stagedata.stage + ' ' + stage.stagedata.secondary_stage : stage.stage,
-                value: 0,
+                values: {},
                 items: 0
             });
+
         }
 
+        // builds the sumfields array
+        if(this.componentconfig.sumfield) {
+            let configs = this.componentconfig.sumfield.split(",");
+            for (let config of configs) {
+                // catch whitespace
+                config = config.trim();
+                if (config.includes(":")) {
+                    this.sumfields.push({
+                        name: config.substr(0, config.indexOf(':')),
+                        function: config.substr(config.indexOf(':') + 1),
+                    });
+                } else {
+                    this.sumfields.push({
+                        name: config,
+                        function: "sum",
+                    });
+                }
+        }
+
+
+        }
+
+
         if (_.isEmpty(this.modellist.buckets)) {
+
             this.modellist.buckets = {
                 bucketfield: this.confdata.statusfield,
-                buckettotal: this.componentconfig.sumfield,
+                buckettotal: this.sumfields, // [{field: 'amount', function: 'sum'}, {field: 'probabilty', function: 'avg'}]
                 bucketitems: bucketitems
             };
 
             this.modellist.getListData();
+
         }
+
 
         // set limit to 10 .. since this is retrieved bper stage
         this.modellist.loadlimit = 25;
@@ -141,7 +166,9 @@ export class SpiceKanban implements OnInit, OnDestroy {
 
         // reset buckets
         this.modellist.buckets = {};
+
     }
+
 
     /**
      * reads draganddrop from the config and returns it
@@ -165,7 +192,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      *
      * @param stage the stage
      */
-    private getStageData(stage): any {
+    public getStageData(stage): any {
         let stagedata = this.stages.find(thisStage => stage == thisStage.stage);
         return stagedata.stagedata;
     }
@@ -190,6 +217,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      *
      * @param stagedata
      */
+
     private getStageCount(stagedata) {
         try {
             let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
@@ -204,13 +232,19 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * get the sum for the stage bucket
      *
      * @param stagedata
+     * @param aggregatefield
      */
-    private getStageSum(stagedata) {
+    private getStageSum(stagedata, aggregatefield) {
         try {
+            let aggname = "_bucket_agg_" + aggregatefield.name;
             let stage = stagedata.secondary_stage ? stagedata.stage + ' ' + stagedata.secondary_stage : stagedata.stage;
             let item = this.modellist.buckets.bucketitems.find(bucketitem => bucketitem.bucket == stage);
-
-            return item && item.value ? item.value : 0;
+            for(let prop in item.values) {
+                let value = item.values[prop];
+                if(prop == aggname) {
+                    return item.values ? value : 0;
+                }
+            }
         } catch (e) {
             return 0;
         }
@@ -242,26 +276,39 @@ export class SpiceKanban implements OnInit, OnDestroy {
     }
 
     /**
-     * react to the scroll event and if possible reload the list
-     *
-     * @param e
+     * returns ture if there are any visible items for the displayed stages
      */
-    private onScroll(e) {
-        let element = this.kanbanContainer.element.nativeElement;
-        if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
-
-            // check if there are still buckets that have potentially more items
-            let loadmore = false;
+    get hasVisibleItems() {
+        let visible = false;
+        if (!!this.modellist.buckets && !!this.modellist.buckets.bucketitems) {
             for (let bucket of this.modellist.buckets.bucketitems) {
-                if (bucket.total > bucket.items) {
-                    loadmore = true;
+                if (this.stages.findIndex(st => st.stage == bucket.bucket) >= 0 && bucket.items > 0) {
+                    visible = true;
                     break;
                 }
             }
+        }
+        return visible;
+    }
 
-            if (loadmore) {
-                this.modellist.loadMoreList();
+    /**
+     * checks if there are more records to load
+     */
+    private loadmore() {
+        // no further load if we are loading already
+        if (this.modellist.isLoading) return false;
+
+        // check if there are still buckets that have potentially more items
+        let loadmore = false;
+        for (let bucket of this.modellist.buckets.bucketitems) {
+            if (this.stages.findIndex(st => st.stage == bucket.bucket) >= 0 && bucket.total > bucket.items) {
+                loadmore = true;
+                break;
             }
+        }
+
+        if (loadmore) {
+            this.modellist.loadMoreList();
         }
     }
 
@@ -278,20 +325,24 @@ export class SpiceKanban implements OnInit, OnDestroy {
         }
     }
 
+
     /**
      * helper to get the currency symbol
+     * @param aggregatefield
      */
-    private getCurrencySymbol(): string {
-        let currencySymbol: string;
-        let currencyid = -99;
+    private getCurrencySymbol(aggregatefield): string {
+        if (this.metadata.getFieldType(this.modellist.module, aggregatefield.name) == 'currency') {
+            let currencySymbol: string;
+            let currencyid = -99;
+            this.currencies.some(currency => {
+                if (currency.id == currencyid) {
+                    currencySymbol = currency.symbol;
+                    return true;
+                }
+            });
+            return currencySymbol;
+        }
 
-        this.currencies.some(currency => {
-            if (currency.id == currencyid) {
-                currencySymbol = currency.symbol;
-                return true;
-            }
-        });
-        return currencySymbol;
     }
 
     /**
@@ -307,7 +358,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
                 from: event.item.data[this.confdata.statusfield],
                 to: event.container.data.stage
             };
-
             event.item.data[this.confdata.statusfield] = event.container.data.stage;
         }
     }
@@ -319,7 +369,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     private handleHiddenDrop(event: CdkDragDrop<any>) {
         if (event.item.data[this.confdata.statusfield] != event.container.data.stage) {
-
             // initialize the model
             this.model.module = this.modellist.module;
             this.model.initialize();
@@ -365,4 +414,15 @@ export class SpiceKanban implements OnInit, OnDestroy {
             return {};
         }
     }
+
+    /**
+     * returns the label of the spicekanbansumfield
+     *
+     * @param aggregatefield
+     */
+    private getTitle(aggregatefield) {
+        return this.language.getLabel("LBL_" + aggregatefield.name.toUpperCase());
+
+    }
+
 }

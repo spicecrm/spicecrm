@@ -1,7 +1,7 @@
 /**
  * @module SystemComponents
  */
-import {Component, EventEmitter, forwardRef, Input, Output} from '@angular/core';
+import {Component, EventEmitter, forwardRef, Input, Output, ChangeDetectorRef} from '@angular/core';
 import {language} from "../../services/language.service";
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
@@ -25,8 +25,11 @@ declare var _;
     ]
 })
 export class SystemCheckbox implements ControlValueAccessor {
+
     private id = _.uniqueId();  // needed to use inside the template for html ids... without, the click events will get confused...
+
     private _value: any = "1"; // the value used for the "value" attribute of the checkbox itself
+
     get value() {
         return this._value;
     }
@@ -54,6 +57,12 @@ export class SystemCheckbox implements ControlValueAccessor {
         return this._checked;
     }
 
+    /**
+     * set to true to render the checkbox without the NGContent. This is useful if you want to display the checkbox without any tzext and the adjacent elements are messing up the layout
+     * ToDo: check if we can assess if ngcontent has been ppassed in ..
+     */
+    @Input() private hidelabel: boolean = false;
+
     @Input()
     set checked(val: boolean) {
         this._checked = val;
@@ -69,7 +78,8 @@ export class SystemCheckbox implements ControlValueAccessor {
     @Output('uncheck') private uncheck$ = new EventEmitter();
 
     constructor(
-        private language: language
+        private language: language,
+        private cdRef: ChangeDetectorRef
     ) {
 
     }
@@ -113,5 +123,6 @@ export class SystemCheckbox implements ControlValueAccessor {
         } else if (!this.model_value && this.checked) {
             this.checked = false;
         }
+        this.cdRef.detectChanges();
     }
 }

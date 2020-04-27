@@ -8,19 +8,19 @@
             </select>
         </div>
         <div class="slds-form-element__control slds-p-horizontal--xx-small">
-            <system-checkbox [(ngModel)]="mailboxesEmails.unreadonly">{{language.getLabel('LBL_UNREAD_ONLY')}}</system-checkbox>
+            <system-checkbox [(ngModel)]="mailboxesEmails.unreadonly"><system-label label="LBL_UNREAD_ONLY"></system-label></system-checkbox>
         </div>
         <div class="slds-form-element__control slds-p-horizontal--xx-small">
             <select class="slds-select" [(ngModel)]="emailopenness">
-                <option value="all">{{language.getLabel('LBL_EMAILS_ALL')}}</option>
-                <option value="open">{{language.getLabel('LBL_EMAILS_OPEN')}}</option>
-                <option value="user_closed">{{language.getLabel('LBL_EMAILS_USER_CLOSED')}}</option>
-                <option value="system_closed">{{language.getLabel('LBL_EMAILS_SYSTEM_CLOSED')}}</option>
+                <option value="all"><system-label label="LBL_EMAILS_ALL"></system-label></option>
+                <option value="open"><system-label label="LBL_EMAILS_OPEN"></system-label></option>
+                <option value="user_closed"><system-label label="LBL_EMAILS_USER_CLOSED"></system-label></option>
+                <option value="system_closed"><system-label label="LBL_EMAILS_SYSTEM_CLOSED"></system-label></option>
             </select>
         </div>
         <div class="slds-p-horizontal--xx-small">
             <ul class="slds-list_horizontal slds-has-dividers_left slds-has-block-links_space">
-                <li class="slds-item">{{mailboxesEmails.emails.length}} {{language.getLabel('LBL_OF')}} {{mailboxesEmails.totalcount}} {{language.getLabel('LBL_ITEMS')}}</li>
+                <li class="slds-item">{{mailboxesEmails.emails.length}} <system-label label="LBL_OF"></system-label> {{mailboxesEmails.totalcount}} <system-label label="LBL_ITEMS"></system-label></li>
                 <li class="slds-item"><system-utility-icon [icon]="mailboxesEmails.source == 'db' ? 'database' : 'feed'" size="xx-small"></system-utility-icon></li>
             </ul>
         </div>
@@ -28,11 +28,11 @@
     <div class="slds-col--bump-left slds-button-group">
         <button class="slds-button slds-button--neutral" [disabled]="!buttonenabled" (click)="reloadList()">
             <system-button-icon class="slds-button__icon--left" icon="refresh"></system-button-icon>
-            <span>{{language.getLabel('LBL_REFRESH')}}</span>
+            <span><system-label label="LBL_REFRESH"></system-label></span>
         </button>
         <button class="slds-button slds-button--neutral" [disabled]="!buttonenabled" (click)="fetchEmails()">
             <system-button-icon class="slds-button__icon--left" icon="email"></system-button-icon>
-            <span>{{language.getLabel('LBL_FETCH_EMAILS')}}</span>
+            <span><system-label label="LBL_FETCH_EMAILS"></system-label></span>
         </button>
     </div>
 </div>

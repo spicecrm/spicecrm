@@ -1,15 +1,16 @@
-<header class="slds-modal__header slds-theme--shade">
-    <button *ngIf="!hiddenCloseButton" class="slds-button slds-button_icon slds-modal__close slds-button--icon-inverse" (click)="close.emit(true)">
-        <system-button-icon [icon]="'close'" [size]="'large'"></system-button-icon>
-        <span class="slds-assistive-text">{{language.getLabel('LBL_CLOSE')}}</span>
+<header class="slds-modal__header slds-theme--shade" [ngStyle]="headerStyle">
+    <button *ngIf="!hiddenCloseButton && !isSmall" class="slds-button slds-button_icon slds-modal__close slds-button--icon-inverse" (click)="close.emit(true)">
+        <system-button-icon icon="close" size="large"></system-button-icon>
+        <span class="slds-assistive-text"><system-label label="LBL_CLOSE"></system-label></span>
+    </button>
+    <button *ngIf="!hiddenCloseButton && isSmall" class="slds-button slds-button_icon slds-is-absolute" style="top: 3px; right: 3px;" (click)="close.emit(true)">
+        <system-button-icon icon="close"></system-button-icon>
+        <span class="slds-assistive-text"><system-label label="LBL_CLOSE"></system-label></span>
     </button>
     <div class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center">
         <div class="slds-media__figure slds-m-right_x-small">
             <span *ngIf="module" class="slds-icon_container">
                 <system-icon [module]="module" size="small"></system-icon>
-            </span>
-            <span *ngIf="icon" class="slds-icon_container">
-                <system-icon [icon]="module" [sprite]="sprite" size="small"></system-icon>
             </span>
         </div>
         <h2 class="slds-text-heading_medium slds-hyphenate">
@@ -19,4 +20,5 @@
             <ng-content select="system-modal-header-right"></ng-content>
         </div>
     </div>
+    <ng-content select="system-modal-header-tagline"></ng-content>
 </header>

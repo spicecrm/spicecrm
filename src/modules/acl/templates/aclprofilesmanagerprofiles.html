@@ -4,7 +4,7 @@
         <button class="slds-button slds-button--icon-border" (click)="addProfile()"><system-button-icon icon="new"></system-button-icon></button>
     </div>
 </div>
-<div tobottom>
+<div system-to-bottom>
     <div *ngIf="loading; else profilesdisplay" class="slds-p-around--medium slds-align--absolute-center">
         <system-spinner></system-spinner>
     </div>
@@ -13,7 +13,7 @@
             <thead>
             <tr class="slds-text-title_caps">
                 <th scope="col" class="slds-truncate">
-                    <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
+                    <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
                 </th>
                 <th scope="col" style="width: 3rem;"></th>
             </tr>

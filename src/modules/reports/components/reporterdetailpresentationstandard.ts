@@ -2,127 +2,101 @@
  * @module ModuleReports
  */
 import {
-    Component, AfterViewInit, OnInit, ViewChild, ViewContainerRef
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Injector,
+    OnDestroy,
+    OnInit,
+    QueryList,
+    ViewChildren
 } from '@angular/core';
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
+import {modal} from '../../../services/modal.service';
+import {toast} from '../../../services/toast.service';
 import {backend} from '../../../services/backend.service';
 import {reporterconfig} from '../services/reporterconfig';
+import {SystemResizeDirective} from "../../../directives/directives/systemresize";
+import {Subscription} from "rxjs";
 
 /**
  * renders the standard view for a report which is a simple column based view
  */
 @Component({
     selector: 'reporter-detail-presentation-standard',
-    templateUrl: './src/modules/reports/templates/reporterdetailpresentationstandard.html'
+    templateUrl: './src/modules/reports/templates/reporterdetailpresentationstandard.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit {
-
-    @ViewChild('tablecontent', {read: ViewContainerRef, static: true}) private tablecontent: ViewContainerRef;
-    @ViewChild('tableheader', {read: ViewContainerRef, static: true}) private tableheader: ViewContainerRef;
-    @ViewChild('tablefooter', {read: ViewContainerRef, static: true}) private tablefooter: ViewContainerRef;
-
-    private presParams: any = {};
-    private presData: any = {};
-    private fieldsData: any = {};
-    private totalWidth: number = 0;
-    private showFooter: boolean = true;
-
-    private currentPage: number = 1;
-
-    private isLoading: boolean = true;
-
-    private sortData: any = {
-        sortField: '',
-        sortDirection: ''
-    }
-
-    constructor(private language: language, private model: model, private backend: backend, private reporterconfig: reporterconfig) {
-        this.reporterconfig.refresh$.subscribe(event => {
-            this.getPresentation();
-        });
-    }
-
-
-    public ngOnInit() {
-        this.presParams = this.model.getField('presentation_params');
-    }
-
-    public ngAfterViewInit() {
-        this.getPresentation();
-    }
-
-
-    private isSortable(field) {
-        return field.sort && field.sort != '-';
-    }
+export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit, OnDestroy {
 
     /**
-     * gets additonalö display classes for the header field
-     *
-     * @param field
+     * holds the presentation params decoded as set in the report
      */
-    private displayClasses(field) {
-        let classes = [];
+    public presParams: any = {};
+    /**
+     * holds the presentation Data as returned form the backend
+     */
+    public presData: any = {};
+    /**
+     * save the report fields data
+     */
+    public fieldsData: any = {};
+    /**
+     * save the report fields data
+     */
+    public fieldsDisplayClasses: any = {};
+    /**
+     * save total with of the reports fields
+     */
+    public totalWidth: number = 0;
+    /**
+     * save show/hide footer boolean
+     */
+    public showFooter: boolean = true;
+    /**
+     * indicates that the view is loading
+     */
+    public isLoading: boolean = true;
+    /**
+     * hold the current set sort data with the field and the sort direction
+     */
+    public sortData: any = {
+        sortField: '',
+        sortDirection: ''
+    };
+    /**
+     * save the display fields for template
+     */
+    public displayFields: any[] = [];
 
-        if (this.isSortable(field)) {
-            classes.push('slds-is-sortable');
-            if (field.fieldid == this.sortData.sortField) {
-                classes.push('slds-is-sorted');
-                if (this.sortData.sortDirection == 'asc') {
-                    classes.push('slds-is-sorted_asc');
-                }
-            }
-        }
+    /**
+     * holds the resize directive elements - table header
+     */
+    @ViewChildren(SystemResizeDirective) protected resizeElements: QueryList<SystemResizeDirective>;
+    /**
+     * save the current page number for pagination
+     */
+    private currentPage: number = 1;
+    /**
+     * holds any subscription
+     */
+    private subscriptions = new Subscription();
 
-        switch (field.type) {
-            case 'currency':
-            case 'currencyint':
-                classes.push('slds-grid--align-end')
-                break;
-            case 'enum':
-                classes.push('slds-grid--align-center')
-                break;
-        }
-
-        return classes.join(' ');
-    }
-
-    private toggleSearch(field) {
-        if (this.isSortable(field)) {
-            if (this.sortData.sortField == field.fieldid) {
-                if (this.sortData.sortDirection == 'asc') {
-                    this.sortData.sortDirection = 'desc';
-                } else {
-                    this.sortData.sortField = '';
-                    this.sortData.sortDirection = '';
-                }
+    constructor(public language: language,
+                public model: model,
+                public modal: modal,
+                public injector: Injector,
+                public backend: backend,
+                public reporterconfig: reporterconfig,
+                public cdRef: ChangeDetectorRef,
+                public toast: toast) {
+        this.subscriptions.add(
+            this.reporterconfig.refresh$.subscribe(event => {
                 this.getPresentation();
-            } else {
-                this.sortData.sortField = field.fieldid;
-                this.sortData.sortDirection = 'asc';
-                this.getPresentation();
-            }
-        }
-    }
-
-    // todo : fix this for scrolling with a fixed table header
-    private getContainerStyle(): any {
-        let recth = this.tableheader.element.nativeElement.getBoundingClientRect();
-        if (this.showFooter) {
-            let rectf = this.tablefooter.element.nativeElement.getBoundingClientRect();
-            return {
-                height: 'calc(100% - ' + (recth.height + rectf.height) + 'px)'
-            };
-        } else {
-            return {
-                height: 'calc(100% - ' + recth.height + 'px)'
-            };
-        }
-    }
-
-    private onScroll(e) {
-
+            })
+        );
     }
 
     /**
@@ -136,6 +110,9 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
         }
     }
 
+    /**
+     * returns a formatted string for the records from and to that are to be displayed
+     */
     get displayRecords() {
         let startRecords = (this.currentPage - 1) * this.listEntries + 1;
         let endRecords = this.currentPage * this.listEntries;
@@ -143,14 +120,50 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
         return startRecords + ' - ' + (endRecords > this.presData.count ? this.presData.count : endRecords);
     }
 
-    get totalRecords() {
-        return this.presData.count;
+    /**
+     * checks if the user has edit right on the report
+     */
+    get canSave() {
+        return this.model.checkAccess('edit');
     }
 
-    private getPresentation() {
-        this.isLoading = true;
+    /**
+     * check function if the previous button should be disabled
+     */
+    get prevDisabled() {
+        return this.currentPage <= 1;
+    }
 
-        // build wherecondition
+    /**
+     * check function if the next button should be disabled
+     */
+    get nextDisabled() {
+        return this.currentPage * this.listEntries >= this.presData.count;
+    }
+
+    public ngOnInit() {
+        this.presParams = this.model.getField('presentation_params');
+    }
+
+    public ngAfterViewInit() {
+        this.getPresentation();
+    }
+
+    /**
+     * unsubscribe from any subscriptions
+     */
+    public ngOnDestroy(): void {
+        this.subscriptions.unsubscribe();
+    }
+
+    /**
+     * fetches the presentation with the set dynamic filters
+     */
+    public getPresentation() {
+        this.isLoading = true;
+        this.cdRef.detectChanges();
+
+        // build where conditions
         let whereConditions: any[] = [];
         for (let userFilter of this.reporterconfig.userFilters) {
             whereConditions.push({
@@ -167,8 +180,8 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
             start: (this.currentPage - 1) * this.listEntries,
             limit: this.listEntries,
             whereConditions: JSON.stringify(whereConditions),
-            parentbeanId: this.model.getField('parentBeanId'),
-            parentbeanModule: this.model.getField('parentBeanModule'),
+            parentbeanId: (this.model as any).parentBeanId,
+            parentbeanModule: (this.model as any).parentBeanModule,
             sort: undefined
         };
 
@@ -181,73 +194,205 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
 
         this.backend.postRequest(`KReporter/${this.model.id}/presentation/dynamicoptions`, {}, body).subscribe((presData: any) => {
 
-            // get field width
-            this.totalWidth = 0;
-            for (let field of presData.reportmetadata.fields) {
-                this.fieldsData[field.fieldid] = field;
-                this.totalWidth += field.width;
+            this.presData = [];
+            this.cdRef.detectChanges();
+
+            if (!presData) return;
+
+            // get field width if not previous set
+            if (this.totalWidth == 0) {
+                for (let field of presData.reportmetadata.fields) {
+                    this.fieldsData[field.fieldid] = field;
+                    this.fieldsDisplayClasses[field.fieldid] = this.generateFieldDisplayClass(field);
+                    this.totalWidth += field.width;
+                }
             }
 
             this.presData = presData;
 
+            this.setDisplayFields();
+            this.processPresData();
+
             this.isLoading = false;
+            this.cdRef.detectChanges();
         });
     }
 
-    private getFields() {
-        try {
-            return this.presData.reportmetadata.fields.filter(field => field.display == 'yes');
-        } catch (e) {
-            return [];
-        }
+    /**groupByValue
+     * public method that can be overwritten
+     */
+    public processPresData() {
+        return;
     }
 
-    private getRecords() {
-        try {
-            return this.presData.records;
-        } catch (e) {
-            return [];
-        }
-    }
-
-    private getFieldWidth(fieldid) {
-        return Math.round(this.fieldsData[fieldid].width / this.totalWidth * 100) + '%';
+    /*
+    * A function that defines how to track changes for items in the iterable (ngForOf).
+    * https://angular.io/api/common/NgForOf#properties
+    * @param index
+    * @param item
+    * @return index
+    */
+    public trackByFn(index, item) {
+        return item.id;
     }
 
     /**
-     * a helper function to determine the sort icon based on the set sort criteria
+     * set presentation fields from report metadata
      */
-    private getSortIcon(fieldid): string {
-        return 'arrowdown';
-        //    return 'arrowup';
+    private setDisplayFields() {
+
+        this.displayFields = [];
+        this.cdRef.detectChanges();
+
+        if (!this.presData.reportmetadata || !this.presData.reportmetadata.fields) return;
+
+        this.displayFields = this.presData.reportmetadata.fields
+            .filter(field => field.display == 'yes')
+            .sort((a, b) => !!a.sequence && !!b.sequence ? parseInt(a.sequence, 10) > parseInt(b.sequence, 10) ? 1 : -1 : 0);
+
+        this.cdRef.detectChanges();
+
     }
 
-    get prevDisbaled() {
-        return this.currentPage <= 1;
+    /**
+     * generate additional display classes for the header field
+     * @param field
+     */
+    private generateFieldDisplayClass(field) {
+        let classes = [];
+
+        if (!!field.sort && field.sort != '-') {
+            classes.push('slds-is-sortable');
+            if (field.fieldid == this.sortData.sortField) {
+                classes.push('slds-is-sorted');
+                if (this.sortData.sortDirection == 'asc') {
+                    classes.push('slds-is-sorted_asc');
+                }
+            }
+        }
+
+        switch (field.type) {
+            case 'currency':
+            case 'currencyint':
+                classes.push('slds-grid--align-end');
+                break;
+            case 'enum':
+                classes.push('slds-grid--align-center');
+                break;
+        }
+
+        return classes.join(' ');
     }
 
+    /**
+     * toggles the sort field
+     *
+     * @param field
+     */
+    private toggleSort(field) {
+        if (field.sort == 'sortable') {
+            if (this.sortData.sortField == field.fieldid) {
+                if (this.sortData.sortDirection == 'asc') {
+                    this.sortData.sortDirection = 'desc';
+                } else {
+                    this.sortData.sortField = '';
+                    this.sortData.sortDirection = '';
+                }
+                this.getPresentation();
+            } else {
+                this.sortData.sortField = field.fieldid;
+                this.sortData.sortDirection = 'asc';
+                this.getPresentation();
+            }
+        }
+    }
 
+    /**
+     * handles the resize event and recalculates the width of the various columns
+     */
+    private onresize() {
+        let elementWidths = {};
+        let totalwidth = 0;
+
+        this.resizeElements.forEach(element => {
+            let elementWidth = element.getElementWidth();
+            totalwidth += elementWidth;
+            elementWidths[element.resizeid] = element.getElementWidth();
+        });
+
+        for (let fieldid in this.fieldsData) {
+            if (!this.fieldsData.hasOwnProperty(fieldid)) continue;
+            this.fieldsData[fieldid].width = Math.round((elementWidths[fieldid] / totalwidth) * 100);
+        }
+
+        this.totalWidth = 100;
+    }
+
+    /**
+     * saves the current layout
+     */
+    private saveLayout() {
+        if (this.model.checkAccess('edit')) {
+            let layoutdata = [];
+            for (let field of this.model.getField('listfields').filter(field => field.display != 'hidden')) {
+                layoutdata.push({
+                    dataIndex: field.fieldid,
+                    width: this.fieldsData[field.fieldid].width,
+                    sequence: parseInt(this.fieldsData[field.fieldid].sequence, 10),
+                    isHidden: this.fieldsData[field.fieldid].display != 'yes'
+                });
+            }
+            this.backend.postRequest('KReporter/core/savelayout/' + this.model.id, {}, {layout: layoutdata}).subscribe(result => {
+                if (result.success) {
+                    this.toast.sendToast('Layout saved');
+                }
+            });
+        }
+    }
+
+    /**
+     * navigate tot he first page
+     */
     private firstPage() {
         this.currentPage = 1;
         this.getPresentation();
     }
 
+    /**
+     * navigate to the previous page
+     */
     private prevPage() {
         this.currentPage--;
         this.getPresentation();
     }
 
-    get nextDisabled() {
-        return this.currentPage * this.listEntries >= this.presData.count;
-    }
-
+    /**
+     * navigate to the next page
+     */
     private nextPage() {
         this.currentPage++;
         this.getPresentation();
     }
 
+    /**
+     * navigate to the last page
+     */
     private lastPage() {
-        this.currentPage = Math.ceil(this.totalRecords / this.listEntries);
+        this.currentPage = Math.ceil(this.presData.count / this.listEntries);
         this.getPresentation();
+    }
+
+    /**
+     * opens the select fields modal
+     */
+    private selectFields() {
+        this.modal.openModal('ReporterDetailSelectFieldsModal', true, this.injector).subscribe(modalref => {
+            modalref.instance.presentationFields = this.presData.reportmetadata.fields;
+            modalref.instance.dataChanged$.subscribe(res => {
+                if (res) {
+                    this.setDisplayFields();
+                }
+            });
+        });
     }
 }

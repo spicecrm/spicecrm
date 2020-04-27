@@ -14,7 +14,7 @@
             <input #focus class="slds-input" type="text" [(ngModel)]="value"/>
             <div class="slds-col_bump-left slds-grid slds-grid--vertical-align-center">
                 <system-tooltip class="slds-m-left--x-small" *ngIf="isvalid" [tooltiptext]="vatInfo"></system-tooltip>
-                <button class="slds-button slds-button--neutral slds-m-left--x-small" [disabled]="!cancheck" (click)="validate()">{{language.getLabel('LBL_CHECK')}}</button>
+                <button class="slds-button slds-button--neutral slds-m-left--x-small" [disabled]="!cancheck" (click)="validate()"><system-label label="LBL_CHECK"></system-label></button>
             </div>
         </ng-container>
         <ng-template #validating>

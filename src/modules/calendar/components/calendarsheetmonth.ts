@@ -21,15 +21,12 @@ import {broadcast} from '../../../services/broadcast.service';
 import {navigation} from '../../../services/navigation.service';
 import {backend} from '../../../services/backend.service';
 import {calendar} from '../services/calendar.service';
+import {Subscription} from "rxjs";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
-/**
-* @ignore
-*/
-declare var _: any;
 
 @Component({
     selector: 'calendar-sheet-month',
@@ -40,13 +37,14 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     @Output() public navigateday: EventEmitter<any> = new EventEmitter<any>();
     @ViewChild('calendarsheet', {read: ViewContainerRef, static: true}) private calendarsheet: ViewContainerRef;
     @Input() private setdate: any = {};
-    @Input('userscalendars') private usersCalendars: any[] = [];
     @Input('googleisvisible') private googleIsVisible: boolean = true;
     private currentGrid: any[] = [];
     private offsetHeight: number = 20;
     private ownerEvents: any[] = [];
     private userEvents: any[] = [];
     private googleEvents: any[] = [];
+    private subscription: Subscription = new Subscription();
+
 
     constructor(private language: language,
                 private broadcast: broadcast,
@@ -56,6 +54,14 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 private renderer: Renderer2,
                 private cdr: ChangeDetectorRef,
                 private calendar: calendar) {
+        this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
+                this.getUserEvents(calendar);
+            })
+        );
+        this.subscription.add(this.calendar.usersCalendarsLoad$.subscribe(() => {
+                this.getUsersEvents();
+            })
+        );
     }
 
     get allEvents() {
@@ -79,10 +85,9 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         this.buildGrid();
         if (changes.setdate) {
             this.getEvents();
-        }
-
-        if (changes.usersCalendars || changes.setdate) {
-            this.getUsersEvents();
+            if (this.calendar.usersCalendarsLoaded) {
+                this.getUsersEvents();
+            }
         }
         if (changes.googleIsVisible || changes.setdate) {
             this.getGoogleEvents();
@@ -91,6 +96,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
     public ngOnDestroy() {
         this.cdr.detach();
+        this.subscription.unsubscribe();
     }
 
     private trackByFn(index, item) {
@@ -108,6 +114,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     private endDate() {
         return new moment(this.startDate()).endOf('month');
     }
+
     private getSheetDays(): any[] {
         let sheetDays = [];
         let i = 0;
@@ -131,10 +138,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         this.calendar.loadEvents(this.startDate(), this.endDate())
             .subscribe(events => {
                 if (events.length > 0) {
-                    events.forEach(event => {
-                        event.start = this.resetTime(event.start);
-                        event.end = this.resetTime(event.end);
-                    });
                     this.ownerEvents = events;
                     this.arrangeEvents();
                 }
@@ -151,12 +154,25 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         this.calendar.loadGoogleEvents(this.startDate(), this.endDate())
             .subscribe(events => {
                 if (events.length > 0) {
-                    events = events.map(event => {
-                        event.start = this.resetTime(event.start);
-                        event.end = this.resetTime(event.end);
-                        return event;
-                    });
                     this.googleEvents = events;
+                    this.arrangeEvents();
+                }
+            });
+    }
+
+    private getUserEvents(calendar) {
+        this.userEvents = this.userEvents.filter(event => event.data.assigned_user_id != calendar.id &&
+            (!event.data.meeting_user_status_accept || !event.data.meeting_user_status_accept.beans[calendar.id]));
+
+        this.arrangeEvents();
+        if (this.calendar.isMobileView || !calendar.visible) {
+            return;
+        }
+
+        this.calendar.loadUserEvents(this.startDate(), this.endDate(), calendar.id)
+            .subscribe(events => {
+                if (events.length > 0) {
+                    this.userEvents = [...this.userEvents, ...events];
                     this.arrangeEvents();
                 }
             });
@@ -172,24 +188,15 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         this.calendar.loadUsersEvents(this.startDate(), this.endDate())
             .subscribe(events => {
                 if (events.length > 0) {
-                    events.forEach(event => {
-                        event.start = this.resetTime(event.start);
-                        event.end = this.resetTime(event.end);
-                        this.userEvents.push(event);
-                        this.arrangeEvents();
-                    });
+                    this.userEvents = [...this.userEvents, ...events];
+                    this.arrangeEvents();
                 }
             });
     }
 
-    private resetTime(event) {
-        event = moment(event.hour(0).minute(0).second(0)).format('YYYY-MM-DD HH:mm:ss');
-        return moment(event);
-    }
-
     private arrangeEvents() {
         for (let w = 0; w < this.currentGrid.length; w++) {
-            this.currentGrid[w].forEach(day => day.items = []);
+            this.currentGrid[w].forEach(day => day.events = []);
             for (let event of this.allEvents) {
                 if (!event.hasOwnProperty("weeksI")) {
                     event.weeksI = [];
@@ -200,33 +207,26 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                     for (let eventDay = moment(event.start); eventDay.diff(event.end) <= 0; eventDay.add(1, 'days')) {
                         if (eventDay.date() == day.day && day.month == eventDay.month()) {
 
-                            if (!day.items.some(itemsEvent => itemsEvent.id == event.id)) {
-                                day.items.push(event);
+                            if (!day.events.some(itemsEvent => itemsEvent.id == event.id)) {
+                                day.events.push(event);
                             }
                             if (event.weeksI.indexOf(w) == -1) {
                                 event.weeksI.push(w);
                             }
                         }
                     }
-                    day.items = day.items.filter(event => (event.hasOwnProperty("visible") && event.visible) || !event.hasOwnProperty("visible"));
-                    day.items.sort((a, b) => {
-                        if (a.start.isBefore(b.start)) {
-                            return -1;
-                        } else if (a.start.diff(a.end, 'days') < b.start.diff(b.end, 'days')) {
-                            return -1;
-                        }
-                        return 0;
-                    });
+                    day.events = day.events.filter(event => (event.hasOwnProperty("visible") && event.visible) || !event.hasOwnProperty("visible"));
+                    day.events.sort((a, b) => a.start.isSame(b.start, 'day') && (a.start.isAfter(b.start, 'hour') || (a.start.isSame(b.start, 'hour') && a.start.isAfter(b.start, 'minute'))) ? 1 : -1);
                 }
             }
             this.allEvents.forEach(event => {
                 let itemIdx = null;
                 this.currentGrid[w].forEach(day => {
-                    day.items.forEach((item, idx) => {
+                    day.events.forEach((item, idx) => {
                         if (item.id == event.id) {
                             if (itemIdx != null && event.end.diff(event.start, 'days') > 0) {
-                                day.items.splice(idx, 1);
-                                day.items.splice(itemIdx, 0, event);
+                                day.events.splice(idx, 1);
+                                day.events.splice(itemIdx, 0, event);
                             } else {
                                 itemIdx = idx;
                             }
@@ -324,11 +324,11 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         let sheetContainer = this.calendarsheet.element.nativeElement;
 
         this.currentGrid[weekI].forEach((day, dIndex) => {
-            if (day.items.indexOf(event) > -1) {
+            if (day.events.indexOf(event) > -1) {
                 eDays++;
                 startI = startI == null ? dIndex : startI;
                 endI = dIndex;
-                eventI = eventI == null ? day.items.indexOf(event) : eventI;
+                if (!eventI) eventI = day.events.indexOf(event);
                 visible = eventI >= this.maxEventsPerBox ? "none" : visible;
             }
         });
@@ -350,8 +350,8 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             'border-radius': '50%',
             'line-height': '1rem',
             'text-align': 'center',
-            'width': '1rem',
-            'height': '1rem',
+            'width': '1.1rem',
+            'height': '1.1rem',
             'display': 'block',
             'color': isToday ? '#fff' : 'inherit',
             'background-color': isToday ? this.calendar.todayColor : 'inherit',

@@ -456,7 +456,7 @@ export class backend {
             {headers: this.getHeaders(), params: this.prepareParams(params)}
         ).subscribe(
             (res) => {
-                responseSubject.next(true);
+                responseSubject.next(res ? res : true);
                 responseSubject.complete();
             },
             (err) => {
@@ -759,9 +759,9 @@ export class backend {
         return responseSubject.asObservable();
     }
 
-    public save(module: string, id: string, cdata: any, progress: BehaviorSubject<number> = null): Observable<any[]> {
+    public save(module: string, id: string, cdata: any, progress: BehaviorSubject<number> = null, templateId: string = null ): Observable<any[]> {
         let responseSubject = new Subject<any[]>();
-        this.postRequestWithProgress("module/" + module + "/" + id, {}, this.modelutilities.spiceModel2backend(module, cdata), null, progress)
+        this.postRequestWithProgress("module/" + module + "/" + id, { templateId: templateId }, this.modelutilities.spiceModel2backend(module, cdata), null, progress )
             .subscribe(
                 (response: any) => {
                     responseSubject.next(this.modelutilities.backendModel2spice(module, response));
@@ -779,7 +779,7 @@ export class backend {
 
         this.deleteRequest("module/" + module + "/" + id)
             .subscribe((res) => {
-                responseSubject.next(true);
+                responseSubject.next(res ? res : true);
                 responseSubject.complete();
             });
         return responseSubject.asObservable();

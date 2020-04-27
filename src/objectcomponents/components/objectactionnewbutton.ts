@@ -13,9 +13,17 @@ import {language} from "../../services/language.service";
 })
 export class ObjectActionNewButton implements OnInit {
 
+    /**
+     * set to true to disanble the button .. based on the ACL Check fdor the model
+     */
     public disabled: boolean = true;
 
-    constructor(public language: language, public metadata: metadata, public model: model, @SkipSelf() private parentmodel: model) {
+    /**
+     * if set to true didpslay teh button as icon
+     */
+    public displayasicon: boolean = false;
+
+    constructor(public language: language, public metadata: metadata, public model: model, @SkipSelf() public parentmodel: model) {
 
     }
 

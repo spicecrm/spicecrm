@@ -1,13 +1,1 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var InnerSubscriber_1 = require("../InnerSubscriber");
-var subscribeTo_1 = require("./subscribeTo");
-function subscribeToResult(outerSubscriber, result, outerValue, outerIndex, destination) {
-    if (destination === void 0) { destination = new InnerSubscriber_1.InnerSubscriber(outerSubscriber, outerValue, outerIndex); }
-    if (destination.closed) {
-        return;
-    }
-    return subscribeTo_1.subscribeTo(result)(destination);
-}
-exports.subscribeToResult = subscribeToResult;
-//# sourceMappingURL=subscribeToResult.js.map
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var InnerSubscriber_1=require("../InnerSubscriber"),subscribeTo_1=require("./subscribeTo"),Observable_1=require("../Observable");function subscribeToResult(e,r,s,b,u){if(void 0===u&&(u=new InnerSubscriber_1.InnerSubscriber(e,s,b)),!u.closed)return r instanceof Observable_1.Observable?r.subscribe(u):subscribeTo_1.subscribeTo(r)(u)}exports.subscribeToResult=subscribeToResult;

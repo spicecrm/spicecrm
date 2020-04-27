@@ -1,23 +1,23 @@
 <system-modal size="large">
-    <system-modal-header [hiddenCloseButton]="true">{{language.getLabel('LBL_OPTIMISTICLOCKING_CONFLICT')}}</system-modal-header>
+    <system-modal-header [hiddenCloseButton]="true"><system-label label="LBL_OPTIMISTICLOCKING_CONFLICT"></system-label></system-modal-header>
     <system-modal-content margin="none">
         <div class="slds-p-around--small">
-            <div class="slds-text-heading--label">{{language.getLabel('MSG_OPTIMISTIC_LOCKING')}}</div>
-            <div class="slds-p-vertical--xx-small">{{language.getLabel('MSG_OPTIMISTIC_LOCKING','', 'long')}}</div>
+            <div class="slds-text-heading--label"><system-label label="MSG_OPTIMISTIC_LOCKING"></system-label></div>
+            <div class="slds-p-vertical--xx-small"><system-label label="MSG_OPTIMISTIC_LOCKING" length="long"></system-label></div>
         </div>
         <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-no-row-hover">
             <thead>
                 <tr class="slds-line-height_reset">
                     <th class="slds-text-title_caps" scope="col" colspan="2">
-                        <div class="slds-truncate">{{language.getLabel('LBL_FIELD')}}</div>
+                        <div class="slds-truncate"><system-label label="LBL_FIELD"></system-label></div>
                     </th>
                     <th class="slds-text-title_caps" scope="col">
-                        <div class="slds-truncate">{{language.getLabel('LBL_CURRENT_VALUE')}}</div>
+                        <div class="slds-truncate"><system-label label="LBL_CURRENT_VALUE"></system-label></div>
                     </th>
                     <th class="slds-text-title_caps" scope="col" style="width: 3.25rem;">
                     </th>
                     <th class="slds-text-title_caps" scope="col">
-                        <div class="slds-truncate">{{language.getLabel('LBL_NEW_VALUE')}}</div>
+                        <div class="slds-truncate"><system-label label="LBL_NEW_VALUE"></system-label></div>
                     </th>
                 </tr>
             </thead>
@@ -74,6 +74,6 @@
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="edit()">öffnen zum weiteren Bearbeiten</button>
-        <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+        <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
     </system-modal-footer>
 </system-modal>

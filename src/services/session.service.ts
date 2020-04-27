@@ -5,6 +5,7 @@ import {Injectable} from '@angular/core';
 import {HttpHeaders} from "@angular/common/http";
 import {loggerService} from './logger.service';
 import {broadcast} from './broadcast.service';
+import { metadata } from './metadata.service';
 
 declare var moment: any;
 
@@ -27,6 +28,7 @@ interface authDataIf {
     googleToken: string;
     userimage: string;
     companycode_id: string;
+    obtainGDPRconsent: boolean;
 }
 
 /**
@@ -51,7 +53,8 @@ export class session {
         portalOnly: false,
         googleToken: '',
         userimage: '',
-        companycode_id: ''
+        companycode_id: '',
+        obtainGDPRconsent: false
     };
 
     /**
@@ -103,7 +106,7 @@ export class session {
      *
      * @param key
      */
-    public clearSessionData(key){
+    public clearSessionData(key) {
         sessionStorage.removeItem(key);
     }
     /**
@@ -166,6 +169,7 @@ export class session {
         this.authData.dev = false;
         this.authData.renewPass = false;
         this.authData.companycode_id = '';
+        this.authData.obtainGDPRconsent = false;
 
         this.sessionData = {};
 

@@ -1,0 +1,14 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+    <ng-container *ngIf="value">{{selected_item?.name}} ({{selected_item?.language}})</ng-container>
+</field-generic-display>
+<div *ngIf="isEditMode()" class="slds-form-element">
+    <div class="slds-form-element__control" [ngClass]="getFieldClass()">
+        <div class="slds-select_container slds-m-vertical--xx-small">
+            <select class="slds-select" [disabled]="isDisabled" [(ngModel)]="value">
+                <option *ngFor="let item of items" [ngValue]="item.id">{{item.name}} ({{item.language}})</option>
+            </select>
+        </div>
+        <field-messages [fieldname]="fieldname"></field-messages>
+    </div>
+</div>

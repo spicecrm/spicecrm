@@ -21,13 +21,13 @@
         </button>
     </div>
     <div *ngIf="!value" class="slds-file-selector slds-file-selector_files">
-        <div class="slds-file-selector__dropzone" spiceDropFileArea (filesDrop)="onDrop($event)">
+        <div class="slds-file-selector__dropzone" (system-drop-file)="onDrop($event)">
             <input #fileupload type="file" class="slds-file-selector__input slds-assistive-text" [id]="fieldid"
                    (change)="uploadFile()">
             <label class="slds-file-selector__body" [attr.for]="fieldid">
             <span class="slds-file-selector__button slds-button slds-button_neutral">
-            <system-button-icon [icon]="'upload'"></system-button-icon>{{language.getLabel('LBL_UPLOAD_FILES')}}</span>
-                <span class="slds-file-selector__text slds-medium-show">{{language.getLabel('LBL_OR')}} {{language.getLabel('LBL_DROP_FILES')}}</span>
+            <system-button-icon [icon]="'upload'"></system-button-icon><system-label label="LBL_UPLOAD_FILES"></system-label></span>
+                <span class="slds-file-selector__text slds-medium-show"><system-label label="LBL_OR"></system-label> <system-label label="LBL_DROP_FILES"></system-label></span>
             </label>
         </div>
     </div>

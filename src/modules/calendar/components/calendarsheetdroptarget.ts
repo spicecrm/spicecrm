@@ -1,82 +1,70 @@
 /**
  * @module ModuleCalendar
  */
-import {Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, Output} from '@angular/core';
-import {model} from '../../../services/model.service';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input} from '@angular/core';
 import {calendar} from '../services/calendar.service';
-import {take} from "rxjs/operators";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
     selector: 'calendar-sheet-drop-target',
-    template: '',
-    providers: [model]
+    templateUrl: './src/modules/calendar/templates/calendarsheetdroptarget.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarSheetDropTarget {
 
-    @Input() private hour: any = '';
-    @Input() private set hourPart(value: number) {
-        this.minutes = value ? 15* value : 0;
-    }
-    @Input() private day: any = undefined;
+    /**
+     * @input day: moment
+     */
+    @Input() private day: any;
+    /**
+     * @input hour: number
+     */
+    @Input() private hour: number = 0;
 
     private minutes: number = 0;
 
-    constructor(private calendar: calendar, private model: model, private elementRef: ElementRef) {
+    constructor(private calendar: calendar, private cdr: ChangeDetectorRef, public elementRef: ElementRef) {
     }
 
-    get content() {
-        return this.hour + ' ' + this.day;
+    /**
+     * @return date: moment
+     */
+    get date() {
+        return this.day ? moment(this.day.date) : this.calendar.calendarDate;
     }
 
-    @HostListener('click')
+    /**
+     * @Input hourPart: number
+     * @param value: number
+     * @set minutes
+     */
+    @Input()
+    private set hourPart(value: number) {
+        this.minutes = value ? 15 * value : 0;
+    }
+
+    /**
+     * @call ChangeDetectorRef.detach
+     */
+    public ngAfterViewInit() {
+        this.cdr.detach();
+    }
+
+    /**
+     * @emit date by pickerDate$
+     * @emit date by addingEvent$
+     */
     private addEvent() {
-        let date = this.day ? new moment(this.day.date) : this.calendar.calendarDate;
+        const date = moment(this.date);
         date.hour(this.hour).minute(this.minutes).second(0);
         if (this.calendar.asPicker) {
             this.calendar.pickerDate$.emit(date);
         } else {
             this.calendar.addingEvent$.emit(date);
         }
-    }
-
-    @HostListener('dragover', ['$event'])
-    private dragOver(event) {
-        event.preventDefault();
-        event.stopPropagation();
-    }
-
-    @HostListener('dragenter')
-    @HostListener('mouseenter')
-    private activateHoverStyle() {
-        this.elementRef.nativeElement.style.cursor = 'pointer';
-        this.elementRef.nativeElement.innerText = `${this.hour}:${(this.minutes == 0 ? '00' : this.minutes)}`;
-        this.elementRef.nativeElement.classList.add('slds-text-align--center');
-        this.elementRef.nativeElement.classList.add('slds-theme--shade');
-    }
-
-    @HostListener('mouseleave')
-    @HostListener('dragleave')
-    private deactivateHoverStyle() {
-        this.elementRef.nativeElement.style.cursor = 'initial';
-        this.elementRef.nativeElement.innerText = '';
-        this.elementRef.nativeElement.classList.remove('slds-text-align--center');
-        this.elementRef.nativeElement.classList.remove('slds-theme--shade');
-    }
-
-    @HostListener('drop', ['$event'])
-    private drop(e) {
-        this.deactivateHoverStyle();
-        this.calendar.eventDrop$.emit({
-            day: this.day,
-            hour: this.hour,
-            minutes: this.minutes
-        });
-        e.preventDefault();
-        e.stopPropagation();
     }
 }

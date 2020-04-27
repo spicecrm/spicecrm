@@ -3,35 +3,27 @@
         <field-container field="name"></field-container>
     </div>
     <ng-container *ngIf="isExpanded">
-        <div class="slds-form-element">
-            <div class="slds-form-element">
-                <field-container [field]="'mailbox_id'" [fieldconfig]="{scope: 'outboundsingle'}"></field-container>
-            </div>
-        </div>
-        <div class="slds-form-element">
-            <field-container field="to_addrs_names" [fieldconfig]="{fieldtype:'emailrecipients', addresstype: 'to'}"></field-container>
-        </div>
-        <div class="slds-form-element">
-            <field-container field="cc_addrs_names" [fieldconfig]="{fieldtype:'emailrecipients', addresstype: 'cc'}"></field-container>
-        </div>
-        <div class="slds-form-element">
-            <div class="slds-form-element">
-                <field-container field="emailtemplate_id" [fieldconfig]="{fieldtype:'emailtemplate'}"></field-container>
-            </div>
-        </div>
-        <div class="slds-form-element">
-            <div class="slds-form-element__control">
-                <field-html [fieldname]="'body'"></field-html>
-            </div>
-        </div>
-        <div class="slds-form-element">
-            <field-container [field]="'parent_name'"></field-container>
-        </div>
+        <object-record-fieldset [fieldset]="formFieldSet" [direction]="'vertical'"></object-record-fieldset>
         <object-relatedlist-files></object-relatedlist-files>
-        <div class="slds-form-element">
-            <button class="slds-button slds-button--neutral" (click)="cancel()">{{language.getLabel('LBL_CANCEL')}}
-            </button>
-            <button class="slds-button slds-button--brand .slds-button-space-left slds-float--right" (click)="send()">{{language.getLabel('LBL_SEND')}}</button>
+        <div class="slds-p-vertical--x-small slds-grid">
+            <div class="slds-button-group" role="group">
+                <button class="slds-button slds-button--neutral" (click)="cancel()" [title]="language.getLabel('LBL_CANCEL')">
+                    <system-button-icon icon="close"></system-button-icon>
+                    <span class="slds-assistive-text"><system-label label="LBL_CANCEL"></system-label></span>
+                </button>
+                <button class="slds-button slds-button--neutral" (click)="expand()" [title]="language.getLabel('LBL_EXPAND')">
+                    <system-button-icon icon="expand"></system-button-icon>
+                    <span class="slds-assistive-text"><system-label label="LBL_EXPAND"></system-label></span>
+                </button>
+                <button class="slds-button slds-button--neutral" (click)="dock()" [title]="language.getLabel('LBL_DOCK')">
+                    <system-button-icon icon="dock_panel"></system-button-icon>
+                    <span class="slds-assistive-text"><system-label label="LBL_DOCK"></system-label></span>
+                </button>
+            </div>
+            <div class="slds-col--bump-left slds-grid slds-grid--vertical-align-center">
+                <object-record-messages-badge side="right"></object-record-messages-badge>
+                <button class="slds-button slds-button--brand .slds-button-space-left slds-float--right" (click)="send()"><system-label label="LBL_SEND"></system-label></button>
+            </div>
         </div>
     </ng-container>
 </div>

@@ -7,6 +7,7 @@ import {
 import {loginService} from '../../services/login.service';
 import {configurationService} from '../../services/configuration.service';
 import {session} from '../../services/session.service';
+import {broadcast} from '../../services/broadcast.service';
 import {cookie} from '../../services/cookie.service';
 import {language} from '../../services/language.service';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
@@ -77,6 +78,7 @@ export class GlobalLogin {
                 private session: session,
                 private cookie: cookie,
                 private language: language,
+                private broadcast: broadcast,
                 private sanitizer: DomSanitizer,
                 private changeDetectorRef: ChangeDetectorRef
     ) {
@@ -93,23 +95,27 @@ export class GlobalLogin {
                 headers
             }).subscribe(
                 (res: any) => {
-                    let repsonse = res;
-                    this.session.authData.sessionId = repsonse.id;
-                    this.session.authData.userId = repsonse.userid;
-                    this.session.authData.userName = repsonse.user_name;
-                    this.session.authData.userimage = repsonse.user_image;
-                    this.session.authData.first_name = repsonse.first_name;
-                    this.session.authData.last_name = repsonse.last_name;
-                    this.session.authData.display_name = repsonse.display_name;
-                    this.session.authData.email = repsonse.email;
-                    this.session.authData.admin = repsonse.admin == 1 ? true : false;
-                    this.session.authData.dev = repsonse.dev == 1 ? true : false;
-                    this.session.authData.renewPass = repsonse.renewPass === '1' ? true : false;
+                    let response = res;
+                    this.session.authData.sessionId = response.id;
+                    this.session.authData.userId = response.userid;
+                    this.session.authData.userName = response.user_name;
+                    this.session.authData.userimage = response.user_image;
+                    this.session.authData.first_name = response.first_name;
+                    this.session.authData.last_name = response.last_name;
+                    this.session.authData.display_name = response.display_name;
+                    this.session.authData.email = response.email;
+                    this.session.authData.admin = response.admin == 1 ? true : false;
+                    this.session.authData.dev = response.dev == 1 ? true : false;
+                    this.session.authData.renewPass = response.renewPass === '1' ? true : false;
+                    this.session.authData.obtainGDPRconsent = response.obtainGDPRconsent;
 
                     // set the backendurl
                     // this.configuration.data.backendUrl = backendurl;
 
                     if (!this.session.authData.renewPass) {
+                        // broadcast taht we have a login
+                        this.broadcast.broadcastMessage('login');
+
                         this.loginService.load();
                     }
                 },

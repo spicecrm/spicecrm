@@ -1,13 +1,1 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var Observable_1 = require("../Observable");
-exports.EMPTY = new Observable_1.Observable(function (subscriber) { return subscriber.complete(); });
-function empty(scheduler) {
-    return scheduler ? emptyScheduled(scheduler) : exports.EMPTY;
-}
-exports.empty = empty;
-function emptyScheduled(scheduler) {
-    return new Observable_1.Observable(function (subscriber) { return scheduler.schedule(function () { return subscriber.complete(); }); });
-}
-exports.emptyScheduled = emptyScheduled;
-//# sourceMappingURL=empty.js.map
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var Observable_1=require("../Observable");function empty(e){return e?emptyScheduled(e):exports.EMPTY}function emptyScheduled(r){return new Observable_1.Observable(function(e){return r.schedule(function(){return e.complete()})})}exports.EMPTY=new Observable_1.Observable(function(e){return e.complete()}),exports.empty=empty;

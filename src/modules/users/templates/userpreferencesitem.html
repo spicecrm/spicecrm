@@ -1,5 +1,5 @@
 <div class="slds-form-element slds-p-around--x-small">
-    <label class="slds-form-element__label">{{ language.getLabel(itemlabel) }}</label>
+    <label class="slds-form-element__label"><system-label [label]="itemlabel"></system-label></label>
     <ng-content *ngIf="!view.isEditMode()" select="user-preferences-item-display"></ng-content>
     <ng-content *ngIf="view.isEditMode()" select="user-preferences-item-edit"></ng-content>
 </div>

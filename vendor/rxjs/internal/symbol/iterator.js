@@ -1,12 +1,1 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-function getSymbolIterator() {
-    if (typeof Symbol !== 'function' || !Symbol.iterator) {
-        return '@@iterator';
-    }
-    return Symbol.iterator;
-}
-exports.getSymbolIterator = getSymbolIterator;
-exports.iterator = getSymbolIterator();
-exports.$$iterator = exports.iterator;
-//# sourceMappingURL=iterator.js.map
+"use strict";function getSymbolIterator(){return"function"==typeof Symbol&&Symbol.iterator?Symbol.iterator:"@@iterator"}Object.defineProperty(exports,"__esModule",{value:!0}),exports.getSymbolIterator=getSymbolIterator,exports.iterator=getSymbolIterator(),exports.$$iterator=exports.iterator;

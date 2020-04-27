@@ -151,10 +151,10 @@ import /*embed*/ {ObjectRecordTabbedDetails} from './components/objectrecordtabb
 import /*embed*/ {ObjectRecordTabbedDetailsTab} from './components/objectrecordtabbeddetailstab';
 import /*embed*/ {ObjectRecordDetailsRelatedListTab} from './components/objectrecorddetailsrelatedlisttab';
 
+import /*embed*/ {ObjectModalModuleLookupHeader} from './components/objectmodalmodulelookupheader';
+import /*embed*/ {ObjectModalModuleLookupAggregates} from './components/objectmodalmodulelookupaggregates';
 import /*embed*/ {ObjectModalModuleLookup} from './components/objectmodalmodulelookup';
 import /*embed*/ {ObjectSelectButton} from './components/objectselectbutton';
-
-
 
 import /*embed*/ {ObjectMergeButton} from './components/objectmergebutton';
 
@@ -164,8 +164,6 @@ import /*embed*/ {ObjectAddress} from './components/objectaddress';
 import /*embed*/ {ObjectGDPRModal} from './components/objectgdprmodal';
 
 import /*embed*/ {ObjectRowItemComponent} from "./components/objectrowitem";
-import /*embed*/ {ObjectActionOutputBeanModal} from "./components/objectactionoutputbeanmodal";
-import /*embed*/ {ObjectActionOutputBeanButton} from "./components/objectactionoutputbeanbutton";
 import /*embed*/ {ObjectActionVCardButton} from "./components/objectactionvcardbutton";
 
 
@@ -194,36 +192,7 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectFields,
         SystemComponents,
         DirectivesModule,
-        RouterModule.forRoot([
-            // {path: 'module/Home', component: ModuleHome, canActivate: [loginCheck]},
-            {
-                path: 'module/:module',
-                    component: ObjectListViewContainer,
-                canActivate: [loginCheck, canNavigateAway, aclCheck],
-                data: {aclaction: 'list'}
-            },
-            /*
-            {
-                path: 'module/:module/historysummary/:id',
-                component: ObjectActivitiyTimelineSummary,
-                canActivate: [loginCheck, aclCheck],
-                data: {aclaction: 'view'}
-            },
-            */
-            {
-                path: 'module/:module/:id',
-                component: ObjectRecordViewContainer,
-                canActivate: [loginCheck, canNavigateAway, aclCheck],
-                data: {aclaction: 'view'}
-            },
-            {path: 'module/:module/:id/:related/:link', component: ObjectRelatedlistAll, canActivate: [loginCheck]},
-            {
-                path: 'module/:module/:id/:related/:link/:fieldset',
-                component: ObjectRelatedlistAll,
-                canActivate: [loginCheck, aclCheck],
-                data: {aclaction: 'view'}
-            }
-        ])],
+        RouterModule],
     declarations: [
         ObjectListViewContainer,
         ObjectListView,
@@ -340,6 +309,8 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectRecordTabbedDetailsTab,
         ObjectRecordDetailsRelatedListTab,
         ObjectModalModuleLookup,
+        ObjectModalModuleLookupHeader,
+        ObjectModalModuleLookupAggregates,
         ObjectSelectButton,
         ObjectReminderButton,
         ObjectActionBeanToMailButton,
@@ -353,8 +324,6 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectRecordFieldsetHorizontalList,
         ObjectRecordFieldsetContainer,
         ObjectRowItemComponent,
-        ObjectActionOutputBeanModal,
-        ObjectActionOutputBeanButton,
         ObjectActionVCardButton,
         ObjectStatusNetworkButton,
         ObjectStatusNetworkButtonItem,
@@ -393,6 +362,7 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectRelatedCard,
         ObjectRelatedCardHeader,
         ObjectRelatedCardFooter,
+        ObjectRelatedCardTile,
         ObjectRecordDetails,
         ObjectRecordDetailsFooter,
         ObjectEditModalDialogContainer,
@@ -406,7 +376,11 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectListViewHeaderDetails,
         ObjectListHeaderSort,
         ObjectRelatedlistFiles,
-        ObjectKeyValuesPipe
+        ObjectKeyValuesPipe,
+        ObjectPageHeaderTags,
+        ObjectModalModuleLookup,
+        ObjectModalModuleLookupHeader,
+        ObjectModalModuleLookupAggregates
     ]
 })
 export class ObjectComponents {

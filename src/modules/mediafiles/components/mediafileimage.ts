@@ -7,36 +7,111 @@ import {mediafiles} from '../../../services/mediafiles.service';
 @Component({
     selector: 'media-file-image',
     templateUrl: './src/modules/mediafiles/templates/mediafileimage.html',
-    providers: [ mediafiles ],
-    styles: [
-        'img.withFrameHeight { position:absolute; top:0; left:0; bottom:0; right:0; margin:auto; }'
-    ]
+    providers: [ mediafiles ]
 })
 export class MediaFileImage implements OnChanges {
 
+    /**
+     * The GUID of the media file.
+     */
     @Input() public media_id: string;
-    @Input() public variant: string;
-    @Input() public classImage: string = '';
-    @Input() public classOuter: string = '';
-    @Input() public styleImage: string = '';
-    @Input() public align: string = '';
-    @Input() public size: number = null;
-    @Input() public width: number = null;
-    @Input() public height: number = null;
-    @Input() public frameWidth: number = null;
-    @Input() public frameHeight: number = null;
-    @Input() public frameSize: number = null;
-    @Input() public displayInline: boolean = false;
-    @Input() public title: string = '';
-    @Input() public alttext: string = '';
 
+    /**
+     * Variant of the image:
+     *
+     * th ... Thumbnail
+     * mw ... Image, maximal width is given
+     * mwh ... Image, maximal width and maximal height is given
+     */
+    @Input() public variant: string;
+
+    /**
+     * Specific pixel size, in case it is a thumbnail (square).
+     */
+    @Input() public size: number = null;
+
+    /**
+     * Specific pixel width (in case it is a image, not a thumbnail).
+     */
+    @Input() public width: number = null;
+
+    /**
+     * Specific pixel height (in case it is a image, not a thumbnail).
+     */
+    @Input() public height: number = null;
+
+    /**
+     * Ability to specify css classes for the image tag.
+     */
+    @Input() public classImage = '';
+
+    /**
+     * Ability to specify css classes for the surrounding span tag.
+     */
+    @Input() public classOuter = '';
+
+    /**
+     * Ability to horizontal align the surrounding span tag.
+     */
+    @Input() public align = '';
+
+    /**
+     * The pixel width of the frame within the image can find space (in case it is a image, not a thumbnail).
+     * When not specified it will get determined by measuring the parent element of the component.
+     */
+    @Input() public frameWidth: number = null;
+
+    /**
+     * The pixel height of the frame within the image can find space (in case it is a image, not a thumbnail).
+     * When not specified it will get determined by measuring the parent element of the component.
+     */
+    @Input() public frameHeight: number = null;
+
+    /**
+     * The pixel size of the frame within the thumbnail can find space.
+     * When not specified it will get determined by measuring the parent element of the component.
+     */
+    @Input() public frameSize: number = null;
+
+    /**
+     * Display the image tag inline or as block.
+     */
+    @Input() public displayInline = false;
+
+    /**
+     * Title for the image tag.
+     */
+    @Input() public title = '';
+
+    /**
+     * Alternate text of the image.
+     */
+    @Input() public alttext = '';
+
+    /**
+     * The url for the image tag.
+     */
     private imageUrl: any;
 
-    private dimensions: any = {};
+    /**
+     * CSS width and height of the image element (pixel).
+     */
+    private dimensions = { width: undefined, height: undefined };
 
-    private isFirstChange: boolean = true;
+    /**
+     * For ngOnChanges, indicator for first change.
+     */
+    private isFirstChange = true;
+
+    /**
+     * Holds the initial value of "variant" (the component does not accept later changes of the input value "variant").
+     */
     private variantStatic: string;
-    private lastMediaId: string = '';
+
+    /**
+     * Holds the (last) media id to notice possible change of it.
+     */
+    private lastMediaId = '';
 
     private withFrameHeight = true;
 
@@ -44,53 +119,69 @@ export class MediaFileImage implements OnChanges {
 
     public ngOnChanges() {
 
+        // The component does not accept later changes of the input value "variant".
         if ( this.isFirstChange ) {
             this.isFirstChange = false;
             this.variantStatic = this.variant;
         }
 
-        if( this.variantStatic === 'mw' || this.variantStatic === 'mwh' ) {
+        if ( this.variantStatic === 'mw' || this.variantStatic === 'mwh' ) {
 
+            // Set the CSS width and CSS height for the image tag:
             if ( this.width != null ) this.dimensions.width = this.width;
             if ( this.height != null ) this.dimensions.height = this.height;
 
-            if ( this.frameWidth === null ) this.frameWidth = this.determineWidthOfImage();
-            if ( this.variantStatic === 'mwh' && this.frameHeight === null ) this.frameHeight = this.determineHeightOfImage();
+            // Set the frame dimensions:
+            if ( this.frameWidth === null ) this.frameWidth = this.determineMaxWidthOfImage();
+            if ( this.variantStatic === 'mwh' && this.frameHeight === null ) this.frameHeight = this.determineMaxHeightOfImage();
             if ( this.variantStatic === 'mw' ) this.withFrameHeight = false;
 
         } else { // this.variant === 'th'
 
+            // Set the CSS width and CSS height for the image tag:
             if ( this.size != null ) this.dimensions.height = this.dimensions.width = this.size;
-            if ( this.frameSize === null ) this.frameSize = this.determineWidthOfImage();
+            // Set the frame dimension:
+            if ( this.frameSize === null ) this.frameSize = this.determineMaxWidthOfImage();
 
         }
 
-        if ( this.lastMediaId !== this.media_id ) {
-            if( this.media_id ) {
-                let sizes4variant;
-                switch( this.variantStatic ) {
-                    case 'mw':
-                        sizes4variant = this.frameWidth;
-                        break;
-                    case 'mwh':
-                        sizes4variant = this.frameWidth + '/' + this.frameHeight;
-                        break;
-                    case 'th':
-                        sizes4variant = this.frameSize;
-                }
-                this.mediafiles.getImageVariant( this.media_id, this.variantStatic + '/' + sizes4variant ).subscribe( url => {
-                    this.imageUrl = url;
-                } );
-            } else this.imageUrl = '';
-
+        if ( this.media_id ) {
+            if ( this.lastMediaId !== this.media_id ) this.showImage();
+            else this.imageUrl = '';
         }
 
     }
 
+    /**
+     * Retrieve and show the image/thumbnail.
+     */
+    private showImage(): void {
+        let sizes4variant;
+        switch ( this.variantStatic ) {
+            case 'mw':
+                sizes4variant = this.frameWidth;
+                break;
+            case 'mwh':
+                sizes4variant = this.frameWidth + '/' + this.frameHeight;
+                break;
+            case 'th':
+                sizes4variant = this.frameSize;
+        }
+        this.mediafiles.getImageVariant( this.media_id, this.variantStatic + '/' + sizes4variant ).subscribe( url => {
+            this.imageUrl = url;
+        } );
+    }
+
+    /**
+     * Does the CSS to display the image inline or as block.
+     */
     get styleDisplay() {
         return this.displayInline ? 'inline-block':'block';
     }
 
+    /**
+     * Does the CSS for the alignment (left, right, center).
+     */
     get styleOuter() {
         switch ( this.align ) {
             case 'left': return {'margin-left':0,'margin-right':'auto'};
@@ -100,6 +191,23 @@ export class MediaFileImage implements OnChanges {
         }
     }
 
+    /**
+     * Get the CSS style for the image tag.
+     */
+    get styleImg() {
+        let style: any = { ...this.dimensions };
+        // When the frame has a specific height, center the image tag inside the frame vertically:
+        if ( this.withFrameHeight ) {
+            style.position = 'absolute';
+            style.top = style.left = style.bottom = style.right = 0;
+            style.margin = 'auto';
+        }
+        return style;
+    }
+
+    /**
+     * Get the netto height of the parent element, less the border width and the padding.
+     */
     private getWidthOfParent() {
         return Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).width.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).paddingLeft.replace( /px$/, '' ))
@@ -107,10 +215,17 @@ export class MediaFileImage implements OnChanges {
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).borderLeftWidth.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).borderRightWidth.replace( /px$/, '' ));
     }
-    private determineWidthOfImage() {
+
+    /**
+     * Determine the maximal width of the image. Depending on the width of the parent.
+     */
+    private determineMaxWidthOfImage() {
         return Math.round( this.getWidthOfParent() );
     }
 
+    /**
+     * Get the netto height of the parent element, less the border width and the padding.
+     */
     private getHeightOfParent() {
         return Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).height.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).paddingTop.replace( /px$/, '' ))
@@ -118,7 +233,11 @@ export class MediaFileImage implements OnChanges {
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).borderTopWidth.replace( /px$/, '' ))
             - Number( getComputedStyle( this.elRef.nativeElement.parentElement, null ).borderBottomWidth.replace( /px$/, '' ));
     }
-    private determineHeightOfImage() {
+
+    /**
+     * Determine the maximal height of the image, depending on the height of the parent.
+     */
+    private determineMaxHeightOfImage() {
         return Math.round( this.getHeightOfParent() );
     }
 

@@ -1,0 +1,52 @@
+<system-modal  title="LBL_EMAIL_SCHEDULES">
+    <system-modal-header (close)="close()">
+    </system-modal-header>
+    <system-modal-content>
+        <div class="slds-tabs_scoped">
+            <ul class="slds-tabs_scoped__nav" role="tablist">
+                <li class="slds-tabs_scoped__item" title="Emails" role="presentation" [ngClass]="{'slds-is-active': activetab=='emails'}">
+                    <a class="slds-tabs_scoped__link" href="javascript:void(0);"  role="tab" (click)="activetab='emails'" aria-controls="tab-scoped-1" id="tab-scoped-1__item">{{this.language.getLabel('LBL_EMAILS')}}</a>
+                </li>
+                <li class="slds-tabs_scoped__item" title="Recipients" role="presentation" [ngClass]="{'slds-is-active': activetab=='recipients'}">
+                    <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='recipients'" aria-controls="tab-scoped-2" id="tab-scoped-2__item">{{this.language.getLabel('LBL_RECIPIENTS')}}</a>
+                </li>
+            </ul>
+            <div id="tab-scoped-1" *ngIf="activetab=='emails'" class="slds-tabs_scoped__content" role="tabpanel" aria-labelledby="tab-scoped-1__item">
+                <system-dynamic-component component="CampaignTaskEmailPanel"></system-dynamic-component>
+            </div>
+            <div id="tab-scoped-2" *ngIf="activetab=='recipients'" class="slds-tabs_scoped__content" role="tabpanel" aria-labelledby="tab-scoped-2__item">
+                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                    <thead>
+                    <tr class="slds-text-title_caps">
+                        <th scope="col" class="slds-resizable">
+                            <div class="slds-truncate"><system-label label="LBL_LINK"></system-label></div>
+
+                        </th>
+                        <th scope="col" class="slds-resizable">
+                            <div class="slds-truncate"><system-label label="LBL_COUNT"></system-label></div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let link of linkedBeans" [class.slds-disabled-text]="link.disabled">
+                        <td>
+                            <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small ">
+                                <system-checkbox [disabled]="link.disabled"  [(ngModel)]="link.selected"></system-checkbox>
+                            <div class="slds-truncate"> <system-icon [addclasses]="link.disabled ? 'slds-icon_disabled' : null" [size]="'small'" [module]="link.module"></system-icon></div>
+                            <div class="slds-truncate"><system-label [label]="link.vname"></system-label></div></div>
+                        </td>
+                        <td>
+                            <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small">
+                                <div class="slds-truncate">{{link.count}}</div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button (click)="saveSchedule()" class="slds-button slds-button--brand"><system-label label="LBL_SAVE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

@@ -26,8 +26,8 @@
             </div>
         </div>
         <div class="slds-modal__footer">
-            <button class="slds-button slds-button--neutral" (click)="cancelDialog()">{{language.getLabel('LBL_CANCEL')}}</button>
-            <button class="slds-button slds-button--brand" [disabled]="fieldsetname == ''" (click)="add()">{{language.getLabel('LBL_SAVE')}}</button>
+            <button class="slds-button slds-button--neutral" (click)="cancelDialog()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button class="slds-button slds-button--brand" [disabled]="fieldsetname == ''" (click)="add()"><system-label label="LBL_SAVE"></system-label></button>
         </div>
     </div>
 </div>

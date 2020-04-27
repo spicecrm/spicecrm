@@ -5,6 +5,6 @@
         <div *ngIf="isLoaded" class="slds-m-bottom--x-small slds-m-horizontal--x-small slds-text-font_monospace" style="overflow-wrap:break-word">{{line.fullText}}</div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="closeModal()">{{language.getLabel('LBL_CLOSE')}}</button>
+        <button class="slds-button slds-button--neutral" (click)="closeModal()"><system-label label="LBL_CLOSE"></system-label></button>
     </system-modal-footer>
 </system-modal>

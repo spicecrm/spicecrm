@@ -1,0 +1,7 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [title]="value" [fieldid]="fieldid">
+    <img *ngIf="value" [src]="'data:image/jpg;base64,'+value">
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="css_classes">
+    <system-input-media [(ngModel)]="value" class="slds-height_full" [mimetype]="'image/jpeg'"></system-input-media>
+</div>
