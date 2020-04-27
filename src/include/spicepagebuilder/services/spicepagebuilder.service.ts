@@ -46,17 +46,60 @@ export class SpicePageBuilderService {
             type: 'text',
             style: {
                 'padding': '4px',
-                'height': '200px',
                 'width': '100%',
                 'background-color': '#e7e7e7',
             },
-            content: 'Write Text Here'
+            content: 'Write text here...',
+            icon: 'text'
         },
         {
             type: 'image',
             style: {},
-            src: ''
+            src: '',
+            icon: 'image'
         },
+        {
+            type: 'divider',
+            style: {
+                'margin-top': '8px',
+                'padding-top': '8px',
+                'border-top-width': '1px',
+                'border-top-style': 'solid',
+                'border-top-color': '#dddbda'
+            },
+            icon: 'dash'
+        },
+        {
+            type: 'spacer',
+            style: {
+                'height': '100px',
+                'width': '100%',
+                'background-color': 'unset',
+            },
+            icon: 'steps'
+        },
+        {
+            type: 'button',
+            text: 'New Button',
+            url: '',
+            style: {
+                'border-radius': '4px 4px 4px 4px',
+                'background-color': '#ca1b21',
+                'color': '#fff',
+                'padding': '4px 4px 4px 4px',
+                'cursor': 'pointer',
+                'width': '100px',
+                'text-align': 'center'
+            },
+            icon: 'link'
+        },
+        {
+            type: 'code',
+            content: 'Write code here...',
+            style: {
+            },
+            icon: 'insert_tag_field'
+        }
 
     ];
 

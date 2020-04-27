@@ -3,70 +3,139 @@
         Editing {{element.type}}
     </system-modal-header>
     <system-modal-content [grow]="true">
-        <div style="height: 50%">
-            <system-section titlelabel="Element Content" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
-                <div class="slds-grid slds-size--1-of-1 slds-height_full slds-p-around--xx-small" [ngSwitch]="element.type">
-                    <quill-editor *ngSwitchCase="'text'" [(ngModel)]="element.content" class="slds-size--1-of-1"></quill-editor>
-                    <div *ngSwitchCase="'image'" class="slds-grid slds-height_full slds-size--1-of-1">
-                        <div class="slds-form-element slds-grid slds-grid--vertical slds-size--1-of-2 slds-p-right--xx-small">
+        <div class="slds-height_full slds-size--1-of-1">
+            <div style="height: 50%">
+                <system-section titlelabel="Element Content" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
+                    <div class="slds-grid slds-size--1-of-1 slds-height_full slds-p-around--xx-small" [ngSwitch]="element.type">
+                        <div *ngSwitchCase="'code'" class="slds-form-element slds-grid slds-grid--vertical slds-size--1-of-1">
+                            <div class="slds-grid slds-grid--align-spread slds-m-bottom--xx-small">
+                                <span class="slds-form-element__label">
+                                    HTML Code
+                                </span>
+                                <button [disabled]="!beautifyLoaded" class="slds-button slds-button--icon-border slds-button--neutral" (click)="beautify()" system-title="LBL_BEAUTIFY">
+                                    <system-button-icon icon="right_align_text"></system-button-icon>
+                                </button>
+                            </div>
+                            <div class="slds-form-element__control slds-grid slds-grow">
+                                <textarea class="slds-textarea" [(ngModel)]="element.content" style="resize: none;"></textarea>
+                            </div>
+                        </div>
+                        <div *ngSwitchCase="'button'" class="slds-size--1-of-1">
+                            <div class="slds-grid">
+                                <div class="slds-form-element slds-size--1-of-2 slds-p-horizontal--xxx-small">
+                                    <label class="slds-form-element__label">
+                                        <system-label label="LBL_TEXT"></system-label>
+                                    </label>
+                                    <div class="slds-form-element__control">
+                                        <input type="text" [(ngModel)]="element.text" class="slds-input">
+                                    </div>
+                                </div>
+                                <div class="slds-form-element slds-size--1-of-2 slds-p-horizontal--xxx-small">
+                                    <label class="slds-form-element__label">
+                                        <system-label label="LBL_URL"></system-label>
+                                    </label>
+                                    <div class="slds-form-element__control">
+                                        <input type="text" [(ngModel)]="element.url" class="slds-input">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-grid">
+                                <spice-page-builder-input-color [(ngModel)]="element.style['background-color']" label="LBL_BACKGROUND_COLOR"
+                                                                class="slds-p-horizontal--xxx-small slds-size--1-of-2 "></spice-page-builder-input-color>
+                                <spice-page-builder-input-color [(ngModel)]="element.style['color']" label="LBL_COLOR"
+                                                                class="slds-p-horizontal--xxx-small slds-size--1-of-2 "></spice-page-builder-input-color>
+                            </div>
+                            <div class="slds-grid">
+                                <spice-page-builder-input-text [(ngModel)]="element.style.width" label="LBL_WIDTH" suffix="px"
+                                                               class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                                <spice-page-builder-input-text [(ngModel)]="element.style['border-radius']" label="LBL_RADIUS" suffix="px"
+                                                               class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                            </div>
+                        </div>
+                        <div *ngSwitchCase="'divider'" class="slds-size--1-of-1">
+                            <div class="slds-grid">
+                                <spice-page-builder-input-color [(ngModel)]="element.style['border-top-color']" label="LBL_COLOR"
+                                                                class="slds-p-horizontal--xxx-small slds-size--1-of-2 "></spice-page-builder-input-color>
+                                <spice-page-builder-input-text [(ngModel)]="dividerSpacing" label="LBL_SPACING" suffix="px"
+                                                               class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                            </div>
+                            <div class="slds-grid">
+                                <spice-page-builder-input-text [(ngModel)]="element.style['border-top-width']" label="LBL_THICKNESS" suffix="px"
+                                                               class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                            </div>
+                        </div>
+                        <div *ngSwitchCase="'spacer'" class="slds-size--1-of-1">
+                            <div class="slds-grid">
+                                <spice-page-builder-input-text [(ngModel)]="element.style.height" label="LBL_SPACING" suffix="px"
+                                                               class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                            </div>
+                        </div>
+                        <quill-editor *ngSwitchCase="'text'" [(ngModel)]="element.content" class="slds-size--1-of-1"></quill-editor>
+                        <div *ngSwitchCase="'image'" class="slds-grid slds-height_full slds-size--1-of-1">
+                            <div class="slds-form-element slds-grid slds-grid--vertical slds-size--1-of-2 slds-p-right--xx-small">
                             <span class="slds-form-element__label">
                                 Image File
                             </span>
-                            <div class="slds-form-element__control slds-grow">
-                                <div class="slds-file-selector slds-file-selector_images slds-height_full">
-                                    <div class="slds-file-selector__dropzone slds-height_full">
-                                        <label class="slds-file-selector__body">
+                                <div class="slds-form-element__control slds-grow">
+                                    <div class="slds-file-selector slds-file-selector_images slds-height_full">
+                                        <div class="slds-file-selector__dropzone slds-height_full">
+                                            <label class="slds-file-selector__body">
                                             <span (click)="openMediaFilePicker()" class="slds-file-selector__button slds-button slds-button_neutral" style="cursor: pointer">
                                                 <system-button-icon icon="upload"></system-button-icon>
                                                 <span>
                                                     <system-label label="LBL_UPLOAD_IMAGE"></system-label>
                                                 </span>
                                             </span>
-                                            <span class="slds-file-selector__text slds-medium-show">
+                                                <span class="slds-file-selector__text slds-medium-show">
                                                 or Drop Image
                                             </span>
-                                        </label>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div *ngIf="!!element.src" class="slds-height_full slds-size--1-of-2 slds-grid slds-grid--vertical slds-p-left--xx-small">
+                            <div *ngIf="!!element.src" class="slds-height_full slds-size--1-of-2 slds-grid slds-grid--vertical slds-p-left--xx-small">
                             <span class="slds-form-element__label">
                                 Preview
                             </span>
-                            <div class="slds-grow slds-p-around--x-small slds-text-align--center" style="min-height: 0; border: 1px solid #ddd; border-radius: 4px;">
-                                <img [src]="element.src" alt="Spice Image" style="max-height: 100%">
+                                <div class="slds-grow slds-p-around--x-small slds-text-align--center" style="min-height: 0; border: 1px solid #ddd; border-radius: 4px;">
+                                    <img [src]="element.src" alt="Spice Image" style="max-height: 100%">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </system-section>
-        </div>
-        <div style="height: 50%">
-            <system-section titlelabel="Element Style" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
-                <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small">
-                    <div class="slds-size--1-of-1 slds-grid slds-wrap">
-                        <ng-container *ngFor="let styleAttribute of spicePageBuilderService.defaultStyleAttributes" [ngSwitch]="styleAttribute.type">
-                            <ng-container>
-                                <spice-page-builder-input-text *ngSwitchCase="'text'" [(ngModel)]="element.style[styleAttribute.name]" [label]="styleAttribute.name"
-                                                               [suffix]="styleAttribute.suffix" class="slds-size--1-of-2"></spice-page-builder-input-text>
+                </system-section>
+            </div>
+            <div style="height: 50%">
+                <system-section titlelabel="Element Style" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
+                    <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small">
+                        <div class="slds-size--1-of-1 slds-grid slds-wrap">
+                            <ng-container *ngFor="let styleAttribute of spicePageBuilderService.defaultStyleAttributes" [ngSwitch]="styleAttribute.type">
+                                <ng-container>
+                                    <spice-page-builder-input-text *ngSwitchCase="'text'" [(ngModel)]="element.style[styleAttribute.name]" [label]="styleAttribute.name"
+                                                                   [suffix]="styleAttribute.suffix" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                                </ng-container>
+                                <ng-container>
+                                    <spice-page-builder-input-sides *ngSwitchCase="'sides'" [(ngModel)]="element.style[styleAttribute.name]" [label]="styleAttribute.name"
+                                                                    [suffix]="styleAttribute.suffix" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-sides>
+                                </ng-container>
+                                <ng-container>
+                                    <spice-page-builder-input-color *ngSwitchCase="'color'" [(ngModel)]="element.style[styleAttribute.name]" [label]="styleAttribute.name"
+                                                                    class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-color>
+                                </ng-container>
                             </ng-container>
-                            <ng-container>
-                                <spice-page-builder-input-sides *ngSwitchCase="'sides'" [(ngModel)]="element.style[styleAttribute.name]" [label]="styleAttribute.name"
-                                                                [suffix]="styleAttribute.suffix" class="slds-size--1-of-2"></spice-page-builder-input-sides>
-                            </ng-container>
-                            <ng-container>
-                                <spice-page-builder-input-color *ngSwitchCase="'color'" [(ngModel)]="element.style[styleAttribute.name]" [label]="styleAttribute.name"
-                                                                class="slds-size--1-of-2"></spice-page-builder-input-color>
-                            </ng-container>
-                        </ng-container>
+                        </div>
                     </div>
-                </div>
-            </system-section>
+                </system-section>
+            </div>
         </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
-        <button class="slds-button slds-button--brand" (click)="confirm()"><system-label label="LBL_SAVE"></system-label></button>
+        <button class="slds-button slds-button--neutral" (click)="cancel()">
+            <system-label label="LBL_CANCEL"></system-label>
+        </button>
+        <button class="slds-button slds-button--brand" (click)="confirm()">
+            <system-label label="LBL_SAVE"></system-label>
+        </button>
     </system-modal-footer>
 </system-modal>

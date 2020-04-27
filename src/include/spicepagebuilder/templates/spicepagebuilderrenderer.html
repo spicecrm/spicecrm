@@ -1,4 +1,4 @@
-<div class="slds-grid slds-scrollable--y slds-height_full slds-p-around--large" (click)="spicePageBuilderService.editingElement = undefined">
+<div class="slds-grid slds-scrollable--y slds-height_full slds-p-around--large">
     <div class="slds-grid slds-size--1-of-1 slds-height_full" [ngStyle]="spicePageBuilderService.page.style">
         <spice-page-builder-renderer-container *ngFor="let container of spicePageBuilderService.page.containers; trackBy: trackByFn" [container]="container" class="slds-grid slds-height_full slds-grow"></spice-page-builder-renderer-container>
         <div *ngIf="spicePageBuilderService.page.containers?.length == 0" class="slds-align--absolute-center slds-height_full slds-size--1-of-1 slds-text-title--caps">

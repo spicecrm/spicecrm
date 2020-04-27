@@ -5,12 +5,14 @@
                 <system-icon icon="text" sprite="utility" size="x-small" divClass="slds-current-color"></system-icon>
             </div>
             <div class="slds-media__body">
-                <h2> Text </h2>
+                <h2>
+                    Text
+                </h2>
             </div>
         </div>
     </div>
-    <article class="spice-drop-zone-content">
-        <div [innerHTML]="sanitizedContent" [ngStyle]="text.style"></div>
+    <article (dblclick)="edit()" class="spice-drop-zone-content">
+        <div [innerHTML]="sanitizedContent" [ngStyle]="element.style"></div>
     </article>
     <div class="spice-drop-zone-actions">
         <div class="slds-button-group" role="group">
