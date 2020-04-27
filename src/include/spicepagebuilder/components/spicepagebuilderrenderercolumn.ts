@@ -74,7 +74,7 @@ export class SpicePageBuilderRendererColumn implements AfterViewInit {
 
             switch (event.item.data.type) {
                 case 'image':
-                    this.openMediaFilePicker().subscribe(src => {
+                    this.spicePageBuilderService.openMediaFilePicker().subscribe(src => {
                         if (!!src) {
                             const image = {...event.item.data};
                             image.src = src;
@@ -115,39 +115,6 @@ export class SpicePageBuilderRendererColumn implements AfterViewInit {
             this.spicePageBuilderService.dragPlaceholderNode = undefined;
         }
      */   this.dragEntered = true;
-    }
-
-    /**
-     * open media file picker modal and return the src of the image
-     * @return src: string
-     */
-    private openMediaFilePicker(): Observable<string> {
-
-        const response: Subject<string> = new Subject();
-
-        this.modal.openModal('MediaFilePicker').subscribe(componentRef => {
-            componentRef.instance.answer.subscribe(image => {
-
-                if (!image) {
-                    response.next(undefined);
-                    response.complete();
-                }
-
-                if (image.upload) {
-                    this.modal.openModal('MediaFileUploader').subscribe(uploadComponentRef => {
-                        uploadComponentRef.instance.answer.subscribe(uploadimage => {
-                            response.next(!uploadimage ? undefined : 'https://cdn.spicecrm.io/' + uploadimage);
-                            response.complete();
-                        });
-                    });
-                } else {
-                    response.next(!image.id ? undefined : 'https://cdn.spicecrm.io/' + image.id);
-                    response.complete();
-                }
-            });
-        });
-
-        return response.asObservable();
     }
 
     /**
