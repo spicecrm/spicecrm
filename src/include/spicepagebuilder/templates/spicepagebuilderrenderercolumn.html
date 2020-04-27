@@ -4,15 +4,31 @@
      (cdkDropListDropped)="onDrop($event)"
      class="slds-grid slds-grid--vertical spice-page-builder-renderer-drop-list">
     <ng-container *ngFor="let element of column.elements; trackBy: trackByFn" [ngSwitch]="element.type">
-        <spice-page-builder-renderer-image *ngSwitchCase="'image'" [image]="element"
+        <spice-page-builder-renderer-image *ngSwitchCase="'image'" [element]="element"
                                            (delete$)="onContentDelete(element)" cdkDrag
                                            [cdkDragData]="element"
                                            class="slds-grid slds-grow slds-drag--preview"
                                            style="width: 100%"></spice-page-builder-renderer-image>
-        <spice-page-builder-renderer-text *ngSwitchCase="'text'" [text]="element"
+        <spice-page-builder-renderer-text *ngSwitchCase="'text'" [element]="element"
                                           (delete$)="onContentDelete(element)" cdkDrag [cdkDragData]="element"
                                           class="slds-grid slds-grow slds-drag--preview"
                                           style="width: 100%"></spice-page-builder-renderer-text>
+        <spice-page-builder-renderer-divider *ngSwitchCase="'divider'" [element]="element"
+                                          (delete$)="onContentDelete(element)" cdkDrag [cdkDragData]="element"
+                                          class="slds-grid slds-grow slds-drag--preview"
+                                          style="width: 100%"></spice-page-builder-renderer-divider>
+        <spice-page-builder-renderer-spacer *ngSwitchCase="'spacer'" [element]="element"
+                                          (delete$)="onContentDelete(element)" cdkDrag [cdkDragData]="element"
+                                          class="slds-grid slds-grow slds-drag--preview"
+                                          style="width: 100%"></spice-page-builder-renderer-spacer>
+        <spice-page-builder-renderer-button *ngSwitchCase="'button'" [element]="element"
+                                          (delete$)="onContentDelete(element)" cdkDrag [cdkDragData]="element"
+                                          class="slds-grid slds-grow slds-drag--preview"
+                                          style="width: 100%"></spice-page-builder-renderer-button>
+        <spice-page-builder-renderer-code *ngSwitchCase="'code'" [element]="element"
+                                          (delete$)="onContentDelete(element)" cdkDrag [cdkDragData]="element"
+                                          class="slds-grid slds-grow slds-drag--preview"
+                                          style="width: 100%"></spice-page-builder-renderer-code>
     </ng-container>
     <div *ngIf="!dragEntered && column.elements?.length == 0"
          class="slds-align--absolute-center slds-size--1-of-1" style="height: 200px">

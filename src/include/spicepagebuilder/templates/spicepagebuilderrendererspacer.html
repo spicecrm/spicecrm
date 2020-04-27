@@ -2,17 +2,17 @@
     <div class="spice-drop-zone-label">
         <div class="slds-media slds-media_center">
             <div class="slds-media__figure">
-                <system-icon icon="image" sprite="utility" size="x-small" divClass="slds-current-color"></system-icon>
+                <system-icon icon="text" sprite="utility" size="x-small" divClass="slds-current-color"></system-icon>
             </div>
             <div class="slds-media__body">
                 <h2>
-                    Image
+                    Spacer
                 </h2>
             </div>
         </div>
     </div>
-    <article (dblclick)="edit()" [ngStyle]="element.style" class="spice-drop-zone-content">
-        <img [src]="element.src" alt="SpiceCRM image" style="max-height: 100%">
+    <article (dblclick)="edit()" class="spice-drop-zone-content">
+        <div [ngStyle]="element.style"></div>
     </article>
     <div class="spice-drop-zone-actions">
         <div class="slds-button-group" role="group">

@@ -1,9 +1,11 @@
 <div class="slds-grid slds-grid--vertical slds-height_full slds-p-around--x-small slds-scrollable--y">
     <div style="height: 50%">
         <system-section titlelabel="Sections" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
-            <div cdkDropList (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragExit($event)" cdkDropListSortingDisabled [cdkDropListEnterPredicate]="noReturnPredicate" [cdkDropListData]="sections"
+            <div cdkDropList (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragExit($event)" cdkDropListSortingDisabled [cdkDropListEnterPredicate]="noReturnPredicate"
+                 [cdkDropListData]="sections"
                  class="slds-grid slds-size--1-of-1 slds-grid--vertical slds-height_full slds-p-bottom--small spice-page-builder-panel-drop-list">
-                <div *ngFor="let section of sections; trackBy: trackByFn" cdkDrag [cdkDragData]="section" class="slds-grow slds-p-around--xx-small slds-grid slds-grid--vertical slds-drag--preview spice-drag-placeholder-visible">
+                <div *ngFor="let section of sections; trackBy: trackByFn" cdkDrag [cdkDragData]="section"
+                     class="slds-grow slds-p-around--xx-small slds-grid slds-grid--vertical slds-drag--preview spice-drag-placeholder-visible">
                     <div>
                         {{section.columns?.length}} Columns
                     </div>
@@ -17,10 +19,15 @@
     <div style="height: 50%">
         <system-section titlelabel="Content Elements" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
             <div cdkDropList (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragExit($event)" [id]="spicePageBuilderService.contentListId" cdkDropListSortingDisabled
-                 [cdkDropListEnterPredicate]="noReturnPredicate" [cdkDropListData]="spicePageBuilderService.contentElements" class="slds-grid slds-size--1-of-1 slds-p-around--xx-small slds-wrap spice-page-builder-panel-drop-list" style="height: fit-content">
-                <div *ngFor="let contentElement of spicePageBuilderService.contentElements; trackBy: trackByFn" cdkDrag [cdkDragData]="contentElement" class="slds-p-around--xxx-small slds-drag--preview">
-                    <div class="slds-p-around--x-small slds-card slds-height_full" style="cursor: move">
-                        <system-utility-icon [icon]="contentElement.type" size="large" class="slds-height_full slds-align--absolute-center"></system-utility-icon>
+                 [cdkDropListEnterPredicate]="noReturnPredicate" [cdkDropListData]="spicePageBuilderService.contentElements"
+                 class="slds-grid slds-size--1-of-1 slds-p-around--xx-small slds-wrap spice-page-builder-panel-drop-list" style="height: fit-content">
+                <div *ngFor="let contentElement of spicePageBuilderService.contentElements; trackBy: trackByFn" cdkDrag [cdkDragData]="contentElement" [title]="contentElement.type"
+                     class="slds-p-around--xxx-small slds-drag--preview" style="cursor: move">
+                    <div class="slds-p-around--x-small slds-card slds-height_full slds-align--absolute-center slds-grid slds-grid--vertical">
+                        <system-utility-icon [icon]="contentElement.icon" size="large"></system-utility-icon>
+                        <div>
+                            {{contentElement.type}}
+                        </div>
                     </div>
                 </div>
             </div>
