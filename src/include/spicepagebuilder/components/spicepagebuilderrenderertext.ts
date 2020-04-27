@@ -1,16 +1,7 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    EventEmitter,
-    Injector,
-    Input,
-    OnInit,
-    Output
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, OnInit} from '@angular/core';
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {modal} from "../../../services/modal.service";
@@ -46,13 +37,6 @@ export class SpicePageBuilderRendererText extends SpicePageBuilderRendererElemen
     }
 
     /**
-     * sanitize the html content
-     */
-    private sanitizeContent() {
-        this.sanitizedContent = this.domSanitizer.bypassSecurityTrustHtml(this.element.content);
-    }
-
-    /**
      * handle edit changes
      * @param res
      */
@@ -60,5 +44,12 @@ export class SpicePageBuilderRendererText extends SpicePageBuilderRendererElemen
         this.element.content = res.content;
         this.sanitizeContent();
         super.handleEditResponse(res);
+    }
+
+    /**
+     * sanitize the html content
+     */
+    private sanitizeContent() {
+        this.sanitizedContent = this.domSanitizer.bypassSecurityTrustHtml(this.element.content);
     }
 }

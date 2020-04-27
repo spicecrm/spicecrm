@@ -12,9 +12,9 @@
         </div>
     </div>
     <article (dblclick)="edit()" class="spice-drop-zone-content">
-        <div [ngStyle]="element.style">
+        <a [ngStyle]="element.style" [href]="element.url" style="pointer-events: none">
             {{element.text}}
-        </div>
+        </a>
     </article>
     <div class="spice-drop-zone-actions">
         <div class="slds-button-group" role="group">

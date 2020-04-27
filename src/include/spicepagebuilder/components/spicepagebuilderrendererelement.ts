@@ -18,7 +18,7 @@ export class SpicePageBuilderRendererElement {
     /**
      * containers to be rendered
      */
-    @Input() public element: { type, style, content?, src?, text? };
+    @Input() public element: { type, style, content?, src?, text?, url? };
     /**
      * emit when delete button clicked
      */
