@@ -11,6 +11,9 @@ import {ObjectFields}      from '../../objectfields/objectfields';
 import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
 import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
+import {DirectivesModule}      from '../../directives/directives';
+
+import /*embed*/ {ACLTerritoryTypeI} from "./interfaces/moduleaclterritories.interfaces";
 
 import /*embed*/ {ACLTerritoriesNamePipe} from "./pipes/aclterritoriesname.pipe";
 import /*embed*/ {fieldTerritorySecondaryPipe} from "./pipes/aclterritoriesfieldssecondary.pipe";
@@ -51,6 +54,7 @@ import /*embed*/ {fieldTerritorySearchModal} from "./components/fieldterritoryse
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
+        DirectivesModule
     ],
     declarations: [
         ACLTerritoriesNamePipe,

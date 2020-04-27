@@ -1,4 +1,4 @@
-<div class="slds-scrollable" style="height: 100%;">
+<div>
     <div class="slds-p-around--small slds-border--bottom">
         <h2 class="slds-text-heading_medium"><system-label label="LBL_TYPES"></system-label></h2>
     </div>
@@ -6,12 +6,14 @@
         <system-spinner></system-spinner>
     </div>
     <ng-template #typesdisplay>
-        <div class="slds-p-around--medium slds-border--bottom slds-grid slds-grid--vertical-align-center" [ngClass]="{'slds-theme--shade': _selectedType.id == type.id}" *ngFor="let type of types">
-            <div class="slds-text-link_faux" (click)="selectType(type)">{{type.name}}</div>
-            <system-button-icon class="slds-col--bump-left" icon="delete" (click)="deleteType(type)"></system-button-icon>
-        </div>
-        <div class="slds-p-around--medium slds-align--absolute-center">
-            <button class="slds-button slds-button--neutral" (click)="addType()"><system-label label="LBL_ADD"></system-label></button>
+        <div system-to-bottom>
+            <div class="slds-p-horizontal--medium slds-p-vertical--x-small slds-border--bottom slds-grid slds-grid--vertical-align-center" [ngClass]="{'slds-theme--shade': _selectedType.id == type.id}" *ngFor="let type of types">
+                <div class="slds-text-link_faux" (click)="selectType(type)">{{type.name}}</div>
+                <system-button-icon class="slds-col--bump-left" icon="delete" (click)="deleteType(type)"></system-button-icon>
+            </div>
+            <div class="slds-p-around--medium slds-align--absolute-center">
+                <button class="slds-button slds-button--neutral" (click)="addType()"><system-label label="LBL_ADD"></system-label></button>
+            </div>
         </div>
     </ng-template>
 </div>

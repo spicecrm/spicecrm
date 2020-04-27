@@ -1,4 +1,4 @@
-<div class="slds-scrollable" style="height: 100%;">
+<div>
     <div class="slds-p-around--small slds-border--bottom">
         <h2 class="slds-text-heading_medium"><system-label label="LBL_ELEMENTS"></system-label></h2>
     </div>
@@ -6,15 +6,16 @@
         <system-spinner></system-spinner>
     </div>
     <ng-template #typeelementsdisplay>
-        <div class="slds-p-around--medium slds-border--bottom slds-grid slds-grid--vertical-align-center"
-             *ngFor="let typeelement of typeelements">
-            <div>
-                {{typeelement.name}}
+        <div system-to-bottom>
+            <div class="slds-p-horizontal--medium slds-p-vertical--x-small slds-border--bottom slds-grid slds-grid--vertical-align-center" *ngFor="let typeelement of typeelements">
+                <div>
+                    {{typeelement.name}}
+                </div>
+                <system-button-icon class="slds-col--bump-left" icon="delete" (click)="deleteTypeElement(typeelement)"></system-button-icon>
             </div>
-            <system-button-icon class="slds-col--bump-left" icon="delete" (click)="deleteTypeElement(typeelement)"></system-button-icon>
-        </div>
-        <div *ngIf="activeType" class="slds-p-around--medium slds-align--absolute-center">
-            <button class="slds-button slds-button--neutral" (click)="addTypeElement()"><system-label label="LBL_ADD"></system-label></button>
+            <div *ngIf="activeType" class="slds-p-around--medium slds-align--absolute-center">
+                <button class="slds-button slds-button--neutral" (click)="addTypeElement()"><system-label label="LBL_ADD"></system-label></button>
+            </div>
         </div>
     </ng-template>
 </div>
