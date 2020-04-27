@@ -67,6 +67,9 @@ import /*embed*/ {GlobalAppLauncherDialog} from "./components/globalapplauncherd
 import /*embed*/ {GlobalAppLauncherDialogRoleTile} from "./components/globalapplauncherdialogroletile";
 
 import /*embed*/ {GlobalNavigationTabbed} from "./components/globalnavigationtabbed";
+import /*embed*/ {GlobalNavigationTabbedBrowser} from "./components/globalnavigationtabbedbrowser";
+import /*embed*/ {GlobalNavigationTabbedBrowserModal} from "./components/globalnavigationtabbedbrowsermodal";
+import /*embed*/ {GlobalNavigationTabbedBrowserModalTab} from "./components/globalnavigationtabbedbrowsermodaltab";
 import /*embed*/ {GlobalNavigationTabbedMenuModules} from "./components/globalnavigationtabbedmenumodules";
 import /*embed*/ {GlobalNavigationTabbedMenuModuleMenu} from "./components/globalnavigationtabbedmenumodulemenu";
 import /*embed*/ {GlobalNavigationTabbedMenuTab} from "./components/globalnavigationtabbedmenutab";
@@ -94,6 +97,8 @@ import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
 import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobtainimportantpreferences';
 import /*embed*/ {GlobalObtainGDPRConsent} from './components/globalobtaingdprconsent';
 import /*embed*/ {GlobalObtainGDPRConsentContainer} from './components/globalobtaingdprconsentcontainer';
+import /*embed*/ {GlobalHeaderImage} from './components/globalheaderimage';
+import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
 
 
 /**
@@ -177,9 +182,14 @@ import /*embed*/ {GlobalObtainGDPRConsentContainer} from './components/globalobt
         GlobalNavigationTabbedMenuModuleMenu,
         GlobalNavigationTabbedMenuTab,
         GlobalNavigationTabbedMoreTab,
+        GlobalNavigationTabbedBrowser,
+        GlobalNavigationTabbedBrowserModal,
+        GlobalNavigationTabbedBrowserModalTab,
         GlobalNavigationTabbedSubtabs,
         GlobalNavigationTabbedSubtabItem,
-        GlobalNavigationTabbedSubTabMoreTab
+        GlobalNavigationTabbedSubTabMoreTab,
+        GlobalHeaderImage,
+        GlobalLoginImage
     ],
     entryComponents: [
         GlobalHeader,

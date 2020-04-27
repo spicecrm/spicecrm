@@ -1,9 +1,10 @@
 /**
  * @module SystemComponents
  */
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { language } from '../../services/language.service';
+import { SystemInputMedia } from './systeminputmedia';
 
 @Component({
     selector: 'system-image-modal',
@@ -32,9 +33,18 @@ export class SystemImageModal {
     @Input() public droppedFiles: FileList = null;
 
     /**
+     * Setter for the image data. Extracts the mimetype and the pure base64 image data.
+     */
+    @Input() public set imageData( val: string ) {
+        let dummmy = val.split(';',2);
+        this.mimetype = dummmy[0];
+        this.imageData_onlyBase64code = dummmy[1].slice(7);
+    }
+
+    /**
      * The data of the image (base64, leaded by the file format, delimited by '|').
      */
-    private imageData: string = null;
+    private imageData_onlyBase64code: string = null;
 
     /**
      * Observable for submitting the image.
@@ -47,9 +57,19 @@ export class SystemImageModal {
     private answerSubject: Subject<boolean|string> = null;
 
     /**
+     * The mimetype of the image.
+     */
+    public mimetype: string;
+
+    /**
      * Reference for the modal.
      */
     private self: any;
+
+    /**
+     * reference to the image upload component
+     */
+    @ViewChild(SystemInputMedia) private systemInputMedia: SystemInputMedia;
 
     constructor( private language: language ) {
         this.answerSubject = new Subject();
@@ -69,7 +89,7 @@ export class SystemImageModal {
      * Is allowed to save (click save button)?
      */
     private get canSave(): boolean {
-        return !!this.imageData;
+        return !!this.imageData_onlyBase64code;
     }
 
     /**
@@ -77,7 +97,7 @@ export class SystemImageModal {
      */
     private save(): void {
         if ( !this.canSave ) return;
-        this.answerSubject.next( this.imageData );
+        this.answerSubject.next( this.systemInputMedia.mediaMetaData.mimetype + ';base64,' + this.imageData_onlyBase64code );
         this.answerSubject.complete();
         this.self.destroy();
     }
