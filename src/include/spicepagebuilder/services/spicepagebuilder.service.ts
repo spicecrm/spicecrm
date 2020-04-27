@@ -1,5 +1,7 @@
 import {Injectable} from "@angular/core";
 import {CdkDropList} from "@angular/cdk/drag-drop";
+import {Observable, Subject} from "rxjs";
+import {modal} from "../../../services/modal.service";
 
 /** @ignore */
 declare var _;
@@ -73,12 +75,8 @@ export class SpicePageBuilderService {
      * holds the drop list group reference
      */
     public dropListGroup: any;
-    /**
-     * holds the current editing element to be edited in the panel
-     */
-    public editingElement: any;
 
-    constructor() {
+    constructor(private modal: modal) {
         this.contentListId = _.uniqueId('panel-drop-list-');
     }
 
@@ -91,5 +89,38 @@ export class SpicePageBuilderService {
             this.dropListGroup._items.add(dropList);
             this.dropListGroup._items.forEach(list => list._group = this.dropListGroup);
         }
+    }
+
+    /**
+     * open media file picker modal and return the src of the image
+     * @return src: string
+     */
+    public openMediaFilePicker(): Observable<string> {
+
+        const response: Subject<string> = new Subject();
+
+        this.modal.openModal('MediaFilePicker').subscribe(componentRef => {
+            componentRef.instance.answer.subscribe(image => {
+
+                if (!image) {
+                    response.next(undefined);
+                    response.complete();
+                }
+
+                if (image.upload) {
+                    this.modal.openModal('MediaFileUploader').subscribe(uploadComponentRef => {
+                        uploadComponentRef.instance.answer.subscribe(uploadimage => {
+                            response.next(!uploadimage ? undefined : 'https://cdn.spicecrm.io/' + uploadimage);
+                            response.complete();
+                        });
+                    });
+                } else {
+                    response.next(!image.id ? undefined : 'https://cdn.spicecrm.io/' + image.id);
+                    response.complete();
+                }
+            });
+        });
+
+        return response.asObservable();
     }
 }

@@ -5,8 +5,40 @@
     <system-modal-content [grow]="true">
         <div style="height: 50%">
             <system-section titlelabel="Element Content" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
-                <div class="slds-grid slds-size--1-of-1 slds-height_full slds-p-around--xx-small">
-                    <quill-editor *ngIf="element.type == 'text'" [(ngModel)]="element.content" class="slds-size--1-of-1"></quill-editor>
+                <div class="slds-grid slds-size--1-of-1 slds-height_full slds-p-around--xx-small" [ngSwitch]="element.type">
+                    <quill-editor *ngSwitchCase="'text'" [(ngModel)]="element.content" class="slds-size--1-of-1"></quill-editor>
+                    <div *ngSwitchCase="'image'" class="slds-grid slds-height_full slds-size--1-of-1">
+                        <div class="slds-form-element slds-grid slds-grid--vertical slds-size--1-of-2 slds-p-right--xx-small">
+                            <span class="slds-form-element__label">
+                                Image File
+                            </span>
+                            <div class="slds-form-element__control slds-grow">
+                                <div class="slds-file-selector slds-file-selector_images slds-height_full">
+                                    <div class="slds-file-selector__dropzone slds-height_full">
+                                        <label class="slds-file-selector__body">
+                                            <span (click)="openMediaFilePicker()" class="slds-file-selector__button slds-button slds-button_neutral" style="cursor: pointer">
+                                                <system-button-icon icon="upload"></system-button-icon>
+                                                <span>
+                                                    <system-label label="LBL_UPLOAD_IMAGE"></system-label>
+                                                </span>
+                                            </span>
+                                            <span class="slds-file-selector__text slds-medium-show">
+                                                or Drop Image
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!!element.src" class="slds-height_full slds-size--1-of-2 slds-grid slds-grid--vertical slds-p-left--xx-small">
+                            <span class="slds-form-element__label">
+                                Preview
+                            </span>
+                            <div class="slds-grow slds-p-around--x-small slds-text-align--center" style="min-height: 0; border: 1px solid #ddd; border-radius: 4px;">
+                                <img [src]="element.src" alt="Spice Image" style="max-height: 100%">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </system-section>
         </div>
@@ -15,16 +47,16 @@
                 <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small">
                     <div class="slds-size--1-of-1 slds-grid slds-wrap">
                         <ng-container *ngFor="let styleAttribute of spicePageBuilderService.defaultStyleAttributes" [ngSwitch]="styleAttribute.type">
-                            <ng-container *ngSwitchCase="'text'">
-                                <spice-page-builder-input-text *ngIf="element.style[styleAttribute.name]" [(ngModel)]="element.style[styleAttribute.name]" [label]="styleAttribute.name"
+                            <ng-container>
+                                <spice-page-builder-input-text *ngSwitchCase="'text'" [(ngModel)]="element.style[styleAttribute.name]" [label]="styleAttribute.name"
                                                                [suffix]="styleAttribute.suffix" class="slds-size--1-of-2"></spice-page-builder-input-text>
                             </ng-container>
-                            <ng-container *ngSwitchCase="'sides'">
-                                <spice-page-builder-input-sides *ngIf="element.style[styleAttribute.name]" [(ngModel)]="element.style[styleAttribute.name]" [label]="styleAttribute.name"
+                            <ng-container>
+                                <spice-page-builder-input-sides *ngSwitchCase="'sides'" [(ngModel)]="element.style[styleAttribute.name]" [label]="styleAttribute.name"
                                                                 [suffix]="styleAttribute.suffix" class="slds-size--1-of-2"></spice-page-builder-input-sides>
                             </ng-container>
-                            <ng-container *ngSwitchCase="'color'">
-                                <spice-page-builder-input-color *ngIf="element.style[styleAttribute.name]" [(ngModel)]="element.style[styleAttribute.name]" [label]="styleAttribute.name"
+                            <ng-container>
+                                <spice-page-builder-input-color *ngSwitchCase="'color'" [(ngModel)]="element.style[styleAttribute.name]" [label]="styleAttribute.name"
                                                                 class="slds-size--1-of-2"></spice-page-builder-input-color>
                             </ng-container>
                         </ng-container>
