@@ -1,4 +1,4 @@
-<div class="slds-scrollable" style="height: 100%;">
+<div >
     <div class="slds-p-around--small slds-border--bottom">
         <h2 class="slds-text-heading_medium"><system-label label="LBL_ELEMENTS"></system-label></h2>
     </div>
@@ -6,13 +6,15 @@
         <system-spinner></system-spinner>
     </div>
     <ng-template #elementsdisplay>
-        <div class="slds-grid slds-grid--vertical-align-center slds-p-around--medium slds-border--bottom" [ngClass]="{'slds-theme--shade': _selectedElement.id == element.id}" *ngFor="let element of elements" >
-            <div class="slds-text-link_faux" (click)="selectElement(element)">{{element.name}}</div>
-            <system-button-icon class="slds-col--bump-left" icon="delete" (click)="deleteElement(element)"></system-button-icon>
-        </div>
-        <div class="slds-p-around--medium slds-align--absolute-center">
-            <button class="slds-button slds-button--neutral" (click)="addElement()"><system-label label="LBL_ADD"></system-label>
-            </button>
+        <div system-to-bottom>
+            <div class="slds-grid slds-grid--vertical-align-center slds-p-horizontal--medium slds-p-vertical--x-small slds-border--bottom" [ngClass]="{'slds-theme--shade': _selectedElement.id == element.id}" *ngFor="let element of elements" >
+                <div class="slds-text-link_faux" (click)="selectElement(element)">{{element.name}}</div>
+                <system-button-icon class="slds-col--bump-left" icon="delete" (click)="deleteElement(element)"></system-button-icon>
+            </div>
+            <div class="slds-p-around--medium slds-align--absolute-center">
+                <button class="slds-button slds-button--neutral" (click)="addElement()"><system-label label="LBL_ADD"></system-label>
+                </button>
+            </div>
         </div>
     </ng-template>
 </div>
