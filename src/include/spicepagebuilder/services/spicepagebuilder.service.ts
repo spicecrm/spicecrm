@@ -72,22 +72,20 @@ export class SpicePageBuilderService {
         {
             type: 'spacer',
             style: {
-                'height': '100px',
-                'width': '100%',
-                'background-color': 'unset',
+                height: '100px',
+                width: '100%'
             },
             icon: 'steps'
         },
         {
             type: 'button',
             text: 'New Button',
-            url: '',
+            url: '#',
             style: {
                 'border-radius': '4px 4px 4px 4px',
                 'background-color': '#ca1b21',
-                'color': '#fff',
+                'color': '#ffffff',
                 'padding': '4px 4px 4px 4px',
-                'cursor': 'pointer',
                 'width': '100px',
                 'text-align': 'center'
             },
