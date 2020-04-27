@@ -1,11 +1,24 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewChild} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    ViewChild
+} from '@angular/core';
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
-import {CdkDrag, CdkDragDrop, CdkDragEnter, CdkDragExit, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop";
+import {
+    CdkDrag,
+    CdkDragDrop,
+    CdkDragEnter,
+    CdkDragExit,
+    CdkDropList,
+    moveItemInArray
+} from "@angular/cdk/drag-drop";
 import {modal} from "../../../services/modal.service";
-import {Observable, Subject} from "rxjs";
 
 /**
  * Parse and renders renderer container
@@ -17,13 +30,13 @@ import {Observable, Subject} from "rxjs";
 })
 export class SpicePageBuilderRendererColumn implements AfterViewInit {
     /**
-     * holds the drag entered value
-     */
-    private dragEntered: boolean = false;
-    /**
      * containers to be rendered
      */
     @Input() protected readonly column: { type, elements, style };
+    /**
+     * holds the drag entered value
+     */
+    private dragEntered: boolean = false;
     /**
      * read drop list dom element to be added to the group
      */
@@ -78,18 +91,24 @@ export class SpicePageBuilderRendererColumn implements AfterViewInit {
                         if (!!src) {
                             const image = {...event.item.data};
                             image.src = src;
-                            event.container.data.elements.push(image);
+                            delete image.icon;
+                            this.column.elements.splice(
+                                event.currentIndex, 0, image
+                            );
                             this.cdRef.detectChanges();
                         }
                     });
                     break;
                 default:
-                    event.container.data.elements.push(
-                        JSON.parse(JSON.stringify(event.item.data))
+                    const element = JSON.parse(JSON.stringify(event.item.data));
+                    delete element.icon;
+
+                    this.column.elements.splice(
+                        event.currentIndex, 0, element
                     );
             }
         } else {
-            moveItemInArray(event.container.data.elements, event.previousIndex, event.currentIndex);
+            moveItemInArray(this.column.elements, event.previousIndex, event.currentIndex);
         }
         this.dragEntered = false;
     }
@@ -99,10 +118,7 @@ export class SpicePageBuilderRendererColumn implements AfterViewInit {
      * @param event
      */
     private onDragExit(event: CdkDragExit) {
-       /* const placeholderNode: any = event.item.getPlaceholderElement().cloneNode(true);
-        this.spicePageBuilderService.dragPlaceholderNode = placeholderNode;
-        event.container.element.nativeElement.insertBefore(placeholderNode, event.item.getPlaceholderElement());
-      */  this.dragEntered = false;
+        this.dragEntered = false;
     }
 
     /**
@@ -110,11 +126,7 @@ export class SpicePageBuilderRendererColumn implements AfterViewInit {
      * @param event
      */
     private onDragEnter(event: CdkDragEnter) {
-      /*  if (this.spicePageBuilderService.dragPlaceholderNode && event.container.element.nativeElement.contains(this.spicePageBuilderService.dragPlaceholderNode)) {
-            event.container.element.nativeElement.removeChild(this.spicePageBuilderService.dragPlaceholderNode);
-            this.spicePageBuilderService.dragPlaceholderNode = undefined;
-        }
-     */   this.dragEntered = true;
+        this.dragEntered = true;
     }
 
     /**

@@ -1,6 +1,13 @@
-<div [ngStyle]="container.style" cdkDropList #dropList="cdkDropList" (cdkDropListEntered)="dragEntered = true" (cdkDropListExited)="dragEntered = false" (cdkDropListDropped)="onDrop($event)" [cdkDropListEnterPredicate]="sectionPredicate" [cdkDropListData]="container" style="height: 100%; width: 100%" class="spice-page-builder-renderer-drop-list">
-    <spice-page-builder-renderer-section *ngFor="let section of container.sections; trackBy: trackByFn" [ngStyle]="section.style" [cdkDragData]="section" (delete$)="onSectionDelete(section)" [section]="section" cdkDrag class="spice-display-block slds-drag--preview"></spice-page-builder-renderer-section>
-    <div *ngIf="!dragEntered && container.sections?.length == 0" class="slds-align--absolute-center slds-height_full slds-size--1-of-1 slds-text-title--caps">
+<div [ngStyle]="container.style" cdkDropList #dropList="cdkDropList" (cdkDropListEntered)="dragEntered = true"
+     (cdkDropListExited)="dragEntered = false" (cdkDropListDropped)="onDrop($event)"
+     [cdkDropListEnterPredicate]="sectionPredicate" [cdkDropListData]="container"
+     style="height: 100%; width: 100%" class="spice-page-builder-renderer-drop-list">
+    <spice-page-builder-renderer-section *ngFor="let section of container.sections; trackBy: trackByFn"
+                                         [ngStyle]="section.style" [cdkDragData]="section"
+                                         (delete$)="onSectionDelete(section)" [section]="section" cdkDrag
+                                         class="spice-display-block slds-drag--preview"></spice-page-builder-renderer-section>
+    <div *ngIf="!dragEntered && container.sections?.length == 0"
+         class="slds-align--absolute-center slds-height_full slds-size--1-of-1 slds-text-title--caps">
         Drop Section Here
     </div>
 </div>

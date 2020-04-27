@@ -1,16 +1,7 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    EventEmitter,
-    Injector,
-    Input,
-    OnInit,
-    Output
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Injector, Input, OnInit, Output} from '@angular/core';
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {modal} from "../../../services/modal.service";
@@ -20,11 +11,11 @@ import {SpicePageBuilderRendererElement} from "./spicepagebuilderrendererelement
  * Parse and renders renderer container
  */
 @Component({
-    selector: 'spice-page-builder-renderer-text',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderrenderertext.html',
+    selector: 'spice-page-builder-renderer-code',
+    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderrenderercode.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SpicePageBuilderRendererText extends SpicePageBuilderRendererElement implements OnInit {
+export class SpicePageBuilderRendererCode extends SpicePageBuilderRendererElement implements OnInit {
     /**
      * hold the sanitized content html
      */
@@ -50,15 +41,5 @@ export class SpicePageBuilderRendererText extends SpicePageBuilderRendererElemen
      */
     private sanitizeContent() {
         this.sanitizedContent = this.domSanitizer.bypassSecurityTrustHtml(this.element.content);
-    }
-
-    /**
-     * handle edit changes
-     * @param res
-     */
-    public handleEditResponse(res) {
-        this.element.content = res.content;
-        this.sanitizeContent();
-        super.handleEditResponse(res);
     }
 }

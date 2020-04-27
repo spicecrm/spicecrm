@@ -15,13 +15,13 @@ import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from "@angular/cdk/d
 })
 export class SpicePageBuilderRendererContainer implements AfterViewInit {
     /**
-     * holds the drag entered value
-     */
-    private dragEntered: boolean = false;
-    /**
      * containers to be rendered
      */
     @Input() protected readonly container: { type, sections, style };
+    /**
+     * holds the drag entered value
+     */
+    private dragEntered: boolean = false;
     /**
      * read drop list dom element to be added to the group
      */
@@ -74,10 +74,11 @@ export class SpicePageBuilderRendererContainer implements AfterViewInit {
                 this.spicePageBuilderService.dragPlaceholderNode = undefined;
             }
             const section = JSON.parse(JSON.stringify(event.item.data));
-            section.columns.map(column => column);
-            event.container.data.sections.push(section);
+            this.container.sections.splice(
+                event.currentIndex, 0, section
+            );
         } else {
-            moveItemInArray(event.container.data.sections, event.previousIndex, event.currentIndex);
+            moveItemInArray(this.container.sections, event.previousIndex, event.currentIndex);
 
         }
     }
