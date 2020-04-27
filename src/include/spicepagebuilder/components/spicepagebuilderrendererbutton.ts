@@ -1,7 +1,7 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Injector, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector} from '@angular/core';
 import {DomSanitizer} from "@angular/platform-browser";
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {modal} from "../../../services/modal.service";
@@ -23,5 +23,14 @@ export class SpicePageBuilderRendererButton extends SpicePageBuilderRendererElem
                 public cdRef: ChangeDetectorRef,
                 public spicePageBuilderService: SpicePageBuilderService) {
         super(domSanitizer, modal, injector, cdRef, spicePageBuilderService);
+    }
+
+    /**
+     * handle edit changes
+     */
+    public handleEditResponse(res) {
+        this.element.url = res.url;
+        this.element.text = res.text;
+        super.handleEditResponse(res);
     }
 }
