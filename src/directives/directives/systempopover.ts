@@ -10,7 +10,7 @@ import {footer} from "../../services/footer.service";
  * a generic popover directive that can be tied to an element and pass in an injector and a componentset to be rendered in the popover
  */
 @Directive({
-    selector: '[systemPopOver]',
+    selector: '[system-pop-over]',
 })
 export class SystemPopOverDirective implements OnDestroy {
     /**
@@ -40,7 +40,7 @@ export class SystemPopOverDirective implements OnDestroy {
      *
      * @param provided_model
      */
-    @Input('systemPopOver')
+    @Input('system-pop-over')
     set popoverSettings(popoverSettings: { injector: any, component: string, componentset: any }) {
         this._popoverSettings.injector = popoverSettings.injector;
         this._popoverSettings.componentset = popoverSettings.componentset;
@@ -84,8 +84,7 @@ export class SystemPopOverDirective implements OnDestroy {
         this.metadata.addComponent('SystemPopover', this.footer.footercontainer, this._popoverSettings.injector).subscribe(
             popover => {
                 popover.instance.parentElementRef = this.elementRef;
-                popover.componentset = this._popoverSettings.componentset;
-                popover.component = this._popoverSettings.component;
+                popover.instance.componentset = this._popoverSettings.componentset;
 
                 this.popoverCmp = popover.instance;
             }

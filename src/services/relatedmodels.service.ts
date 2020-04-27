@@ -78,7 +78,7 @@ export class relatedmodels implements OnDestroy {
     /**
      * inidcates if the servic eis currently retrieving data from teh backend
      */
-    public isloading = true;
+    public isloading = false;
 
     /**
      * inidcates if the servic eis currently retrieving data from teh backend
@@ -430,7 +430,7 @@ export class relatedmodels implements OnDestroy {
     /**
      * helper method to reset the items
      */
-    private resetData() {
+    public resetData() {
         this.items = [];
     }
 

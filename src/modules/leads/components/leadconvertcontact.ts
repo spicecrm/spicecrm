@@ -15,15 +15,15 @@ import {view} from '../../../services/view.service';
     providers: [view, model]
 })
 export class LeadConvertContact implements AfterViewInit, OnInit {
-    @ViewChild('detailcontainer', {read: ViewContainerRef, static: true}) detailcontainer: ViewContainerRef;
+    @ViewChild('detailcontainer', {read: ViewContainerRef, static: true}) public detailcontainer: ViewContainerRef;
 
-    @Input() lead: model = undefined;
-    @Output() contact: EventEmitter<model> = new EventEmitter<model>();
+    @Input() public lead: model = undefined;
+    @Output() public contact: EventEmitter<model> = new EventEmitter<model>();
 
-    initialized: boolean = false;
-    componentSet: string = '';
-    componentconfig: any = {};
-    componentRefs: any = [];
+    public initialized: boolean = false;
+    public componentSet: string = '';
+    public componentconfig: any = {};
+    public componentRefs: any = [];
 
     constructor(private view: view, private metadata: metadata, private model: model) {
         this.model.module = 'Contacts';
@@ -33,7 +33,9 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
         this.view.setEditMode();
     }
 
-    ngOnInit() {
+    public ngOnInit() {
+        // console.log(this.model.data);
+
         this.lead.data$.subscribe(data => {
 
             this.model.data.degree1 = data.degree1;
@@ -45,6 +47,14 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
             this.model.data.title = data.title;
             this.model.data.department = data.department;
             this.model.data.email1 = data.email1;
+            // SPICE-276 form is now using multiple e-mail address field type
+            if( data.emailaddresses) {
+                for (let item of this.model.data.emailaddresses) {
+                    item.email_address = data.email1;
+                }
+            }
+
+            // this.model.data.emailaddresses = data.emailaddresses;
             this.model.data.phone_work = data.phone_work;
             this.model.data.phone_mobile = data.phone_mobile;
             this.model.data.phone_fax = data.phone_fax;
@@ -64,12 +74,12 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
         this.contact.emit(this.model);
     }
 
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
         this.initialized = true;
         this.buildContainer();
     }
 
-    buildContainer() {
+    public buildContainer() {
         // Close any already open dialogs
         // this.container.clear();
         for (let component of this.componentRefs) {
@@ -79,7 +89,7 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
         let componentconfig = this.metadata.getComponentConfig('ObjectRecordDetails', this.model.module);
         for (let panel of this.metadata.getComponentSetObjects(componentconfig.componentset)) {
             this.metadata.addComponent(panel.component, this.detailcontainer).subscribe(componentRef => {
-                componentRef.instance['componentconfig'] = panel.componentconfig;
+                componentRef.instance.componentconfig = panel.componentconfig;
                 this.componentRefs.push(componentRef);
             });
         }

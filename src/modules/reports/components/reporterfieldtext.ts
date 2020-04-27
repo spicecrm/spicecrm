@@ -1,36 +1,49 @@
 /**
  * @module ModuleReports
  */
-import {
-    Component
-} from '@angular/core';
-import {DomSanitizer} from "@angular/platform-browser";
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 
-
+/**
+ * display formatted report record value with text
+ */
 @Component({
     selector: 'reporter-field-text',
-    templateUrl: './src/modules/reports/templates/reporterfieldtext.html'
+    templateUrl: './src/modules/reports/templates/reporterfieldtext.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReporterFieldText {
-
     /**
-     * the complete record
+     * report full record
      */
     private record: any = {};
-
     /**
-     * the field
+     * report field
      */
     private field: any = {};
+    /**
+     * display value
+     */
+    private value: SafeHtml = '';
 
     constructor(private sanitizer: DomSanitizer) {
     }
 
-    get sanitizedValue() {
-        try {
-            return this.sanitizer.bypassSecurityTrustHtml(this.record[this.field.fieldid].replace(/(?:\r\n|\r|\n)/g, '<br>'));
-        } catch (e) {
-            return '';
+    /**
+     * call to set the display value
+     */
+    public ngOnInit() {
+        this.setFormattedFieldValue();
+    }
+
+    /**
+     * set formatted field value
+     */
+    private setFormattedFieldValue() {
+
+        if (!!this.record[this.field.fieldid]) {
+            this.value = this.sanitizer.bypassSecurityTrustHtml(this.record[this.field.fieldid].replace(/(?:\r\n|\r|\n)/g, '<br>'));
+
         }
     }
 }

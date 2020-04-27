@@ -1,17 +1,72 @@
-<div class="slds-panel slds-grid slds-grid_vertical slds-nowrap slds-panel_filters" style="height:100%; width: 500px;">
+<div class="slds-panel slds-grid slds-grid_vertical slds-nowrap slds-panel_filters slds-height_full" style="width: 500px; box-shadow: 0 10px 10px #888;">
     <div class="slds-form slds-form_stacked slds-grow slds-scrollable_y slds-grid slds-grid_vertical">
         <div class="slds-filters">
             <div class="slds-filters__header slds-grid slds-has-divider_bottom-space">
-                <h2 class="slds-align-middle slds-text-heading_small">{{language.getLabel('LBL_FILTER')}}</h2>
-                <button class="slds-button slds-button--neutral slds-col_bump-left" (click)="saveFilter()">
-                    {{language.getLabel('LBL_APPLY')}}
-                </button>
+                <h2 class="slds-align-middle slds-text-heading_small"><system-label label="LBL_FILTER"></system-label></h2>
+                <div class="slds-button-group slds-col_bump-left">
+                    <button class="slds-button slds-button--neutral" (click)="applyFilter()">
+                        <system-label label="LBL_APPLY"></system-label>
+                    </button>
+                    <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-button_last" system-dropdown-trigger>
+                        <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-haspopup="true" [disabled]="!displaySavedFilters" [title]="language.getLabel('LBL_MORE')" >
+                            <system-button-icon icon="down"></system-button-icon>
+                            <span class="slds-assistive-text"><system-label label="LBL_MORE"></system-label></span>
+                        </button>
+                        <div class="slds-dropdown slds-dropdown_right slds-dropdown_actions">
+                            <ul class="slds-dropdown__list" role="menu">
+                                <li class="slds-dropdown__item" role="presentation">
+                                    <a href="javascript:void(0);" role="menuitem" tabindex="0" (click)="handleSave()">
+                                        <span class="slds-truncate">
+                                            <system-label label="LBL_SAVE"></system-label>
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="slds-dropdown__item" role="presentation">
+                                    <a href="javascript:void(0);" role="menuitem" tabindex="-1" (click)="saveFilterAs()">
+                                        <span class="slds-truncate" [class.slds-disabled-text]="!selectedFilterId">
+                                            <system-label label="LBL_SAVE_AS"></system-label>
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div *ngIf="displaySavedFilters" class="slds-filters__header slds-has-divider_bottom-space">
-                <reporter-filter-saved-filters  [reportid]="model.id"></reporter-filter-saved-filters>
+                <reporter-filter-saved-filters #savedFiltersContainer [reportId]="model.id" (selectFilterChange)="setSelectedFilterId($event)"></reporter-filter-saved-filters>
             </div>
             <div class="slds-filters__body">
                 <reporter-filter-item *ngFor="let whereCondition of whereConditions" [wherecondition]="whereCondition"></reporter-filter-item>
+            </div>
+        </div>
+    </div>
+</div>
+<div #popover [ngStyle]="popoverStyle">
+    <div *ngIf="showPopover" @animatepopover class="slds-popover slds-nubbin--right" role="dialog">
+        <div class="slds-popover__body">
+            <fieldset class="slds-form--stacked">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label">
+                        <system-label label="LBL_NAME"></system-label>
+                    </label>
+                    <div class="slds-form-element__control">
+                        <input type="text" [(ngModel)]="filter.name" class="slds-input">
+                    </div>
+                </div>
+                <div *ngIf="isAdmin" class="slds-m-top--small">
+                    <system-checkbox [(ngModel)]="filter.is_global">
+                        <system-label label="LBL_GLOBAL"></system-label>
+                    </system-checkbox>
+                </div>
+            </fieldset>
+            <div class="spicecrm-popup-buttoncontainer">
+                <button type="button" class="slds-button slds-button--brand slds-button-space-left"
+                        (click)="confirmSave()"><system-label label="LBL_SAVE"></system-label>
+                </button>
+                <button type="button" class="slds-button slds-button--neutral slds-button-space-left"
+                        (click)="closePopover()"><system-label label="LBL_CLOSE"></system-label>
+                </button>
             </div>
         </div>
     </div>

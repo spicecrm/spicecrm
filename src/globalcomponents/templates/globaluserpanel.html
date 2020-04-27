@@ -7,36 +7,25 @@
     </div>
     <div class="slds-theme--shade slds-p-around--small slds-border--top slds-border--bottom">
         <ul class="slds-list--horizontal slds-has-dividers--left">
-            <li class="slds-item"><a href="javascript:void(0);" class="slds-text-link--reset" (click)="goDetails()">{{language.getLabel('LBL_DETAILS')}}</a>
+            <li class="slds-item"><a href="javascript:void(0);" class="slds-text-link--reset" (click)="goDetails()"><system-label label="LBL_DETAILS"></system-label></a>
             </li>
-            <li class="slds-item"><a href="javascript:void(0);" class="slds-text-link--reset" (click)="changePassword()">{{language.getLabel('LBL_CHANGE_PASSWORD')}}</a>
+            <li class="slds-item"><a href="javascript:void(0);" class="slds-text-link--reset" (click)="changePassword()"><system-label label="LBL_CHANGE_PASSWORD"></system-label></a>
             </li>
         </ul>
     </div>
-    <!--div class="OptionsSeparator">{{language.getLabel('LBL_OPTIONS')}}</div-->
+    <!--div class="OptionsSeparator"><system-label label="LBL_OPTIONS"></system-label></div-->
     <div class="slds-p-around--small slds-form--stacked">
-        <div class="slds-form-element">
-            <label class="slds-form-element__label" for="{{compId}}-select-lang">{{language.getLabel('LBL_SELECT_LANGUAGE')}}</label>
-            <div class="slds-form-element__control">
-                <div class="slds-select_container">
-                    <select [disabled]="getAvialableLanguages().length <= 1" class="slds-select" [(ngModel)]="currentlanguage" id="{{compId}}-select-lang">
-                        <option *ngFor="let language of getAvialableLanguages()" [value]="language.language">
-                            {{language.text}}
-                        </option>
-                    </select>
-                </div>
-            </div>
-        </div>
+        <system-language-selector (selected)="close()"></system-language-selector>
         <div class="slds-p-top--x-small">
             <div class="slds-form-element">
-                <label class="slds-form-element__label" for="{{compId}}-select-tz">{{language.getLabel('LBL_SELECT_TIMEZONE')}}</label>
+                <label class="slds-form-element__label" for="{{compId}}-select-tz"><system-label label="LBL_SELECT_TIMEZONE"></system-label></label>
                 <system-input-timezone [(ngModel)]="currentTz" id="{{compId}}-select-tz"></system-input-timezone>
             </div>
         </div>
     </div>
     <div class="slds-theme--shade slds-p-around--x-small slds-grid">
         <div>
-            {{language.getLabel('LBL_LOGGED_ON_SYSTEM')}}: {{config.data.display}}
+            <system-label label="LBL_LOGGED_ON_SYSTEM"></system-label>: {{config.data.display}}
         </div>
         <div class="slds-col--bump-left">
             <system-utility-icon icon="logout" size="x-small" [title]="language.getLabel('LBL_LOGOFF')" (click)="logoff()"></system-utility-icon>

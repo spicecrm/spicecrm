@@ -2,8 +2,9 @@
  * @module ObjectComponents
  */
 import {AfterViewInit, Component, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
+import {navigation} from '../../services/navigation.service';
+import {navigationtab} from '../../services/navigationtab.service';
 import {broadcast} from '../../services/broadcast.service';
 
 @Component({
@@ -17,14 +18,15 @@ export class ObjectListViewContainer implements AfterViewInit, OnDestroy {
     private componentRefs: any = [];
     private componentSubscriptions: any[] = [];
 
-    constructor(private activatedRoute: ActivatedRoute, private metadata: metadata, private broadcast: broadcast) {
+    constructor(private metadata: metadata, private broadcast: broadcast, private navigation: navigation, private navigationtab: navigationtab) {
         // subscribe to route params.module changes
-        this.activatedRoute.params.subscribe(params => {
-            this.moduleName = params.module;
+        this.navigationtab.activeRoute$.subscribe(route=>{
+            this.moduleName = route.params.module;
             if (this.initialized) {
                 this.buildContainer();
             }
         });
+
         // subscribe to applauncher.setrole
         this.componentSubscriptions.push(this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);

@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -13,13 +13,13 @@ import {Subscription} from "rxjs";
     selector: 'field-generic',
     templateUrl: './src/objectfields/templates/fieldgeneric.html'
 })
-export class fieldGeneric implements OnInit, OnDestroy {
+export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
     /**
      * identifies the focus element. If the field is set to edit mode a specific field can be set to be focused
      *
      * in case there are e.g. multiple inut elements define the most important one in the template
      */
-    @ViewChild('focus', {read: ViewContainerRef, static: true}) public focuselement: ViewContainerRef;
+    @ViewChild('focus', {read: ViewContainerRef, static: false}) public focuselement: ViewContainerRef;
 
     /**
      * the fielsname
@@ -46,6 +46,9 @@ export class fieldGeneric implements OnInit, OnDestroy {
      */
     public fieldlength: number = 999;
 
+    /**
+     * holds any subscription a field might have
+     */
     public subscriptions: Subscription = new Subscription();
 
     constructor(
@@ -140,6 +143,12 @@ export class fieldGeneric implements OnInit, OnDestroy {
         let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
         if (fieldDefs && fieldDefs.len) {
             this.fieldlength = fieldDefs.len;
+        }
+    }
+
+    public ngAfterViewInit(): void {
+        if (this.view.isEditMode() && this.view.editfieldname && this.view.editfieldname == this.fieldname) {
+            this.setFocus();
         }
     }
 

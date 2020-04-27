@@ -1,0 +1,29 @@
+<div class="slds-page-header">
+    <div class="slds-grid">
+        <div class="slds-col slds-has-flexi-truncate">
+            <div class="slds-media slds-no-space slds-grow">
+                <system-icon [module]="moduleName" (click)="goToModule()"></system-icon>
+                <div class="slds-media__body">
+                    <p class="slds-text-title--caps slds-line-height--reset">
+                        <a (click)="goToModule()"><system-label-modulename [module]="moduleName"></system-label-modulename></a>
+                    </p>
+                    <div>
+                        <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
+                            <ng-container *ngIf="!fieldset">{{model.data.summary_text}}</ng-container>
+                            <div *ngIf="fieldset" class="slds-grid" [system-view-provider]="{displayLabels: false, editable: false}">
+                                <field-container *ngFor="let fieldsetitem of fieldsetitems" [field]="fieldsetitem.field" [fieldconfig]="fieldsetitem.fieldconfig" fielddisplayclass="slds-p-right--small"></field-container>
+                            </div>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-m-horizontal--x-small slds-show--medium slds-button-group">
+            <reporter-integration-export-button [integrationParams]="integrationParams"></reporter-integration-export-button>
+            <reporter-integration-tools-button [integrationParams]="integrationParams"></reporter-integration-tools-button>
+            <reporter-filter-button [whereConditions]="whereConditions" (filter)="toggleFilters($event)"></reporter-filter-button>
+        </div>
+        <object-action-container [actionset]="actionSet"></object-action-container>
+    </div>
+    <object-page-header-tags></object-page-header-tags>
+</div>

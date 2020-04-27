@@ -30,6 +30,10 @@ import /*embed*/ {FieldsetManagerFieldDetails} from "./components/fieldsetmanage
 import /*embed*/ {FieldsetManagerAddDialog} from "./components/fieldsetmanageradddialog";
 import /*embed*/ {FieldsetManagerEditDialog} from "./components/fieldsetmanagereditdialog";
 
+import /*embed*/ {ActionsetManager} from "./components/actionsetmanager";
+import /*embed*/ {ActionsetManagerActionDetails} from "./components/actionsetmanageractiondetails";
+import /*embed*/ {ActionsetManagerAddDialog} from "./components/actionsetmanageradddialog";
+
 import /*embed*/ {ComponentsetManager} from "./components/componentsetmanager";
 import /*embed*/ {ComponentsetManagerComponentsetDetails} from "./components/componentsetmanagercomponentsetdetails";
 
@@ -51,6 +55,8 @@ import /*embed*/ {MailboxesMailgunTrafficManager} from "./components/mailboxesma
 import /*embed*/ {MailboxesSendgridTrafficManager} from "./components/mailboxessendgridtrafficmanager";
 import /*embed*/ {MailboxesTwillioTrafficManager} from "./components/mailboxestwilliotrafficmanager";
 import /*embed*/ {MailboxesA1TrafficManager} from "./components/mailboxesa1trafficmanager";
+import /*embed*/ {MailboxesEWSTrafficManager} from "./components/mailboxesewstrafficmanager";
+import /*embed*/ {MailboxesEWSSelectFoldersModal} from "./components/mailboxesewsselectfoldersmodal";
 import /*embed*/ {MailboxManagerAddDialog} from "./components/mailboxmanageradddialog";
 import /*embed*/ {MailboxesIMAPSMTPSelectFoldersModal} from "./components/mailboxesimapsmtpselectfoldersmodal";
 import /*embed*/ {ServiceCategoryManagerComponent} from "./components/servicecategorymanager";
@@ -123,6 +129,9 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         FieldsetManagerAddDialog,
         FieldsetManagerEditDialog,
         FieldsetManagerCopyDialog,
+        ActionsetManager,
+        ActionsetManagerActionDetails,
+        ActionsetManagerAddDialog,
         ComponentsetManager,
         ComponentsetManagerComponentsetDetails,
         WorkbenchHeader,
@@ -155,11 +164,13 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         MailboxesmanagerTestModal,
         MailboxesmanagerTestIMAPModal,
         MailboxesImapSmtpTrafficManager,
+        MailboxesIMAPSMTPSelectFoldersModal,
         MailboxesMailgunTrafficManager,
         MailboxesSendgridTrafficManager,
         MailboxesTwillioTrafficManager,
         MailboxesA1TrafficManager,
-        MailboxesIMAPSMTPSelectFoldersModal,
+        MailboxesEWSTrafficManager,
+        MailboxesEWSSelectFoldersModal,
         MailboxesTransportManager,
         SortPipe,
         ServiceCategoryManagerComponent,

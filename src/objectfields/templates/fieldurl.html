@@ -1,7 +1,7 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
     <div class="slds-grid slds-grid--vertical-align-center slds-text-link_reset" (click)="navigateTo()">
-        <system-icon *ngIf="url" [icon]="'web_link'" [sprite]="'action'" [size]="'x-small'"></system-icon>
+        <system-utility-icon *ngIf="url" class="slds-m-right--xx-small" icon="world" size="x-small"></system-utility-icon>
         <div class="slds-truncate">{{url}}</div>
     </div>
 </field-generic-display>

@@ -90,6 +90,9 @@ export class ObjectListItem implements OnInit, OnDestroy {
 
         // register to listfield changes
         this.subscriptions.push(this.modellist.listfield$.subscribe(data => this.cdref.detectChanges()));
+
+        // trigger change detection on list service
+        this.subscriptions.push(this.modellist.selectionChanged$.subscribe(data => this.cdref.detectChanges()));
     }
 
     /**

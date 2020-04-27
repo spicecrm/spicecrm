@@ -1,7 +1,7 @@
 /**
  * @module services
  */
-import {Injectable} from "@angular/core";
+import {EventEmitter, Injectable} from "@angular/core";
 import {Subject, Observable} from "rxjs";
 
 import {configurationService} from "./configuration.service";
@@ -9,34 +9,95 @@ import {session} from "./session.service";
 import {backend} from "./backend.service";
 import {toast} from "./toast.service";
 import {language} from "./language.service";
+import {broadcast} from "./broadcast.service";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
+/**
+ * handles the model attachments. Can be instantiated in the contect of a model with an id and allows the dsplay as well as manipulation of attachments
+ */
 @Injectable()
 export class modelattachments {
+    /**
+     * the module of the parent object this is linked to
+     */
     public module: string = "";
+
+    /**
+     * the id of the parent bean
+     */
     public id: string = "";
-    public items: any = [];
+
+    /**
+     * the toal attachment count
+     */
     public count: number = 0;
+
+    /**
+     * the files loaded
+     */
     public files: any[] = [];
+
+    /**
+     * inidcates that the list of files is being loaded
+     */
     public loading: boolean = false;
 
-    private serviceSubscriptions: any[] = [];
+    /**
+     * an emitter that emits when the atatchments are loaded
+     */
+    public loaded$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     constructor(
         private backend: backend,
         private configurationService: configurationService,
         private session: session,
         private toast: toast,
+        private broadcast: broadcast,
         private language: language
     ) {
     }
 
-    public getAttachments() {
-        this.resetData();
+    /**
+     * returns the count of the attachments
+     */
+    public getCount(): Observable<any> {
+        let retSubject = new Subject();
+        this.backend.getRequest("module/" + this.module + "/" + this.id + "/attachment/count").subscribe(
+            response => {
+                // set the count
+                this.count = response.count;
+
+                retSubject.next(this.count);
+                retSubject.complete();
+            },
+            error => {
+                retSubject.complete();
+            });
+        return retSubject.asObservable();
+    }
+
+    /**
+     * broadcasts the number of open workflows found
+     */
+    private broadcastAttachmentCount() {
+        this.broadcast.broadcastMessage('attachments.loaded', {
+            module: this.module,
+            id: this.id,
+            attachmentcount: this.count
+        });
+    }
+
+    /**
+     * loads the attachments
+     */
+    public getAttachments(): Observable<any> {
+        let retSubject = new Subject();
+
+        this.files = [];
         this.loading = true;
         this.backend.getRequest("module/" + this.module + "/" + this.id + "/attachment/ui").subscribe(
             response => {
@@ -44,14 +105,39 @@ export class modelattachments {
                     response[attId].date = new moment(response[attId].date);
                     this.files.push(response[attId]);
                 }
+
+                // set the count
+                this.count = this.files.length;
+
+                // broadcast the count
+                this.broadcastAttachmentCount();
+
                 this.loading = false;
                 // this.files = response;
+
+                // close the subject
+                retSubject.next(this.files);
+                retSubject.complete();
+
+                // emit on the service
+                this.loaded$.emit(true);
             },
             error => {
                 this.loading = false;
+
+                // close the subject
+                retSubject.error(error);
+                retSubject.complete();
             });
+
+        return retSubject.asObservable();
     }
 
+    /**
+     * returns the human readable file size fort the display
+     *
+     * @param filesize
+     */
     public humanFileSize(filesize) {
         let thresh = 1024;
         let bytes: number = filesize;
@@ -67,50 +153,11 @@ export class modelattachments {
         return bytes.toFixed(1) + " " + units[u];
     }
 
-    /*
-    * deprecated: replaces by uploadAttachmentsBase64
-    */
-    public uploadAttachments(files): Observable<any> {
-        if (files.length === 0) {
-            return;
-        }
-
-        let retSub = new Subject<any>();
-
-        // let params: Array<string> = [];
-        // params.push("sessionid=" + this.session.authData.sessionId);
-
-        let data = new FormData();
-        data.append("file", files[0], files[0].name);
-
-        let request = new XMLHttpRequest();
-        let resp: any = {};
-        request.onreadystatechange = (scope: any = this) => {
-            if (request.readyState == 4) {
-                try {
-                    let retVal = JSON.parse(request.response);
-                    retSub.next({files: retVal});
-                    retSub.complete();
-                } catch (e) {
-                    resp = {
-                        status: "error",
-                        data: "Unknown error occurred: [" + request.responseText + "]"
-                    };
-                }
-            }
-        };
-
-        request.upload.addEventListener("progress", (e: any) => {
-            retSub.next({progress: {total: e.total, loaded: e.loaded}});
-        }, false);
-
-        request.open("POST", this.configurationService.getBackendUrl() + "/module/" + this.module + "/" + this.id + "/attachment/ui", true);
-        request.setRequestHeader("OAuth-Token", this.session.authData.sessionId);
-        request.send(data);
-
-        return retSub.asObservable();
-    }
-
+    /**
+     * upload files from teh files passed back from a drop or a file select input
+     *
+     * @param files
+     */
     public uploadAttachmentsBase64(files): Observable<any> {
         if (files.length === 0) {
             return;
@@ -141,6 +188,10 @@ export class modelattachments {
                 uploadprogress: 0
             };
             this.files.unshift(newfile);
+
+            // broadcast the count
+            this.count++;
+            this.broadcastAttachmentCount();
 
             this.readFile(file).subscribe(filecontent => {
                 let request = new XMLHttpRequest();
@@ -179,7 +230,7 @@ export class modelattachments {
                 let fileBody = {
                     file: file.filecontent,
                     filename: file.name,
-                    filemimetype: file.type ? file.type :'application/octet-stream'
+                    filemimetype: file.type ? file.type : 'application/octet-stream'
                 };
 
                 request.send(JSON.stringify(fileBody));
@@ -189,6 +240,92 @@ export class modelattachments {
         return retSub.asObservable();
     }
 
+    /**
+     * upload a file from  a base 64 string directly
+     *
+     * @param filecontent
+     * @param filename
+     * @param filetype
+     */
+    public uploadFileBase64(filecontent: string, filename: string, filetype: string): Observable<any> {
+
+        let retSub = new Subject<any>();
+        let maxSize = this.configurationService.getSystemParamater('upload_maxsize');
+
+        // check max filesize
+        if (maxSize && atob(filecontent).length > maxSize) {
+            this.toast.sendToast(this.language.getLabelFormatted('LBL_EXCEEDS_MAX_UPLOADFILESIZE', [filename, this.humanFileSize(maxSize)]), 'error');
+            return;
+        }
+
+        let newfile = {
+            date: new moment(),
+            file: '',
+            file_mime_type: filetype ? filetype : 'application/octet-stream',
+            filesize: atob(filecontent).length,
+            filename: filename,
+            id: '',
+            text: '',
+            thumbnail: '',
+            user_id: '1',
+            user_name: 'admin',
+            uploadprogress: 0
+        };
+        this.files.unshift(newfile);
+
+        // broadcast the count
+        this.count++;
+        this.broadcastAttachmentCount();
+
+        let request = new XMLHttpRequest();
+        let resp: any = {};
+        request.onreadystatechange = (scope: any = this) => {
+            if (request.readyState == 4) {
+                try {
+                    let retVal = JSON.parse(request.response);
+
+                    newfile.id = retVal[0].id;
+                    newfile.thumbnail = retVal[0].thumbnail;
+                    newfile.user_id = retVal[0].user_id;
+                    newfile.user_name = retVal[0].user_name;
+                    delete (newfile.uploadprogress);
+
+                    retSub.next({files: retVal});
+                    retSub.complete();
+                } catch (e) {
+                    resp = {
+                        status: "error",
+                        data: "Unknown error occurred: [" + request.responseText + "]"
+                    };
+                }
+            }
+        };
+
+        request.upload.addEventListener("progress", e => {
+            newfile.uploadprogress = Math.round(e.loaded / e.total * 100);
+            retSub.next({progress: {total: e.total, loaded: e.loaded}});
+        }, false);
+
+        request.open("POST", this.configurationService.getBackendUrl() + "/module/" + this.module + "/" + this.id + "/attachment", true);
+        request.setRequestHeader("OAuth-Token", this.session.authData.sessionId);
+        request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+        let fileBody = {
+            file: filecontent,
+            filename: filename,
+            filemimetype: filetype ? filetype : 'application/octet-stream'
+        };
+
+        request.send(JSON.stringify(fileBody));
+
+        return retSub.asObservable();
+    }
+
+
+    /**
+     * loads the file locally using the HTML5 FileReader
+     * @param file
+     */
     private readFile(file): Observable<any> {
         let responseSubject = new Subject<any>();
         let reader = new FileReader();
@@ -206,12 +343,22 @@ export class modelattachments {
         return responseSubject.asObservable();
     }
 
+    /**
+     * delete an attachment
+     *
+     * @param id
+     */
     public deleteAttachment(id) {
         this.backend.deleteRequest("module/" + this.module + "/" + this.id + "/attachment/" + id)
             .subscribe(res => {
                 this.files.some((item, index) => {
                     if (item.id == id) {
                         this.files.splice(index, 1);
+
+                        // broadcast the count
+                        this.count--;
+                        this.broadcastAttachmentCount();
+
                         return true;
                     }
                 });
@@ -219,6 +366,12 @@ export class modelattachments {
     }
 
 
+    /**
+     * doanloads an attachment int he local browser
+     *
+     * @param id
+     * @param name
+     */
     public downloadAttachment(id, name?) {
         this.backend.getRequest("/module/" + this.module + "/" + this.id + "/attachment/" + id).subscribe(fileData => {
             let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
@@ -244,6 +397,12 @@ export class modelattachments {
         return retSubject.asObservable();
     }
 
+    /**
+     * helper to convert a base64 string to a BLOB the browser can use
+     * @param b64Data
+     * @param contentType
+     * @param sliceSize
+     */
     private b64toBlob(b64Data, contentType = '', sliceSize = 512) {
 
         let byteCharacters = atob(b64Data);
@@ -267,12 +426,6 @@ export class modelattachments {
     }
 
     public openAttachment(id, name?) {
-        /*let params: Array<string> = [];
-        params.push("sessionid=" + this.session.authData.sessionId);
-        window.open(
-            this.configurationService.getBackendUrl() + "/module/" + this.module + "/" + this.id + "/attachment/" + id + "/download?" + params.join("&"),
-            "_blank" // <- open in a new window
-        );*/
         this.backend.getRequest("/module/" + this.module + "/" + this.id + "/attachment/" + id).subscribe(fileData => {
             let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
             let blobUrl = URL.createObjectURL(blob);
@@ -280,7 +433,4 @@ export class modelattachments {
         });
     }
 
-    public resetData() {
-        this.items = [];
-    }
 }

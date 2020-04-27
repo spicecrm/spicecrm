@@ -2,18 +2,20 @@
  * @module ModuleCalendar
  */
 import {
-    AfterViewInit,
     Component,
     EventEmitter,
     Input,
-    OnChanges,
-    Output,
+    OnChanges, OnDestroy,
+    Output, QueryList,
     SimpleChanges,
-    ViewChild,
+    ViewChild, ViewChildren,
     ViewContainerRef
 } from '@angular/core';
 import {language} from '../../../services/language.service';
 import {calendar} from '../services/calendar.service';
+import {CdkDragEnd} from "@angular/cdk/drag-drop";
+import {CalendarSheetDropTarget} from "./calendarsheetdroptarget";
+import {Subscription} from "rxjs";
 
 /**
  * @ignore
@@ -24,28 +26,51 @@ declare var moment: any;
     selector: 'calendar-sheet-three-days',
     templateUrl: './src/modules/calendar/templates/calendarsheetthreedays.html'
 })
-export class CalendarSheetThreeDays implements OnChanges {
+export class CalendarSheetThreeDays implements OnChanges, OnDestroy {
 
-    @Output() public navigateday: EventEmitter<any> = new EventEmitter<any>();
     public sheetDays: any[] = [];
-    @ViewChild('headercontainer', {read: ViewContainerRef, static: true}) private headerContainer: ViewContainerRef;
+    protected sheetHours: any[] = [];
+    @ViewChildren(CalendarSheetDropTarget) private dropTargets: QueryList<CalendarSheetDropTarget>;
+    @ViewChild('sheetContainer', {read: ViewContainerRef, static: true}) private sheetContainer: ViewContainerRef;
     @ViewChild('scrollcontainer', {read: ViewContainerRef, static: true}) private scrollContainer: ViewContainerRef;
+    /**
+     * @Input setdate: moment
+     */
     @Input() private setdate: any = {};
+    /**
+     * @Input usersCalendars: {id: string, name: string, visible: boolean, color: string}
+     */
     @Input('userscalendars') private usersCalendars: any[] = [];
+    /**
+     * @Input googleIsVisible: boolean
+     */
     @Input('googleisvisible') private googleIsVisible: boolean = true;
-    @Input('calendarcontent') private calendarContent: any = undefined;
-    private sheetHours: any[] = [];
+    /**
+     * @output navigateday: EventEmitter<moment>
+     */
+    @Output() private navigateday: EventEmitter<any> = new EventEmitter<any>();
+
     private ownerEvents: any[] = [];
     private ownerMultiEvents: any[] = [];
     private userEvents: any[] = [];
     private userMultiEvents: any[] = [];
     private googleEvents: any[] = [];
     private googleMultiEvents: any[] = [];
+    private subscription: Subscription = new Subscription();
 
     constructor(private language: language,
                 private calendar: calendar) {
         this.buildHours();
         this.sheetDays = this.buildSheetDays();
+
+        this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
+                this.getUserEvents(calendar);
+            })
+        );
+        this.subscription.add(this.calendar.usersCalendarsLoad$.subscribe(() => {
+                this.getUsersEvents();
+            })
+        );
     }
 
     get offset() {
@@ -106,14 +131,17 @@ export class CalendarSheetThreeDays implements OnChanges {
         this.sheetDays = this.buildSheetDays();
         if (changes.setdate) {
             this.getEvents();
-        }
-
-        if (changes.usersCalendars || changes.setdate) {
-            this.getUsersEvents();
+            if (this.calendar.usersCalendarsLoaded) {
+                this.getUsersEvents();
+            }
         }
         if (changes.googleIsVisible || changes.setdate) {
             this.getGoogleEvents();
         }
+    }
+
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     /*
@@ -138,19 +166,19 @@ export class CalendarSheetThreeDays implements OnChanges {
     * @return void
     */
     private arrangeMultiEvents() {
-        this.sheetDays.forEach(day => day.items = []);
+        this.sheetDays.forEach(day => day.events = []);
         for (let event of this.allMultiEvents) {
             for (let day of this.sheetDays) {
                 for (let eventDay = moment(event.start); eventDay.diff(event.end) <= 0; eventDay.add(1, 'days')) {
-                    if (eventDay.date() == day.date.date() && !day.items.some(itemsEvent => itemsEvent.id == event.id)) {
-                        day.items.push(event);
+                    if (eventDay.date() == day.date.date() && !day.events.some(itemsEvent => itemsEvent.id == event.id)) {
+                        day.events.push(event);
                     }
                 }
             }
         }
         this.sheetDays.forEach(day => {
-            day.items = day.items.filter(event => (event.hasOwnProperty("visible") && event.visible) || !event.hasOwnProperty("visible"));
-            day.items.sort((a, b) => {
+            day.events = day.events.filter(event => (event.hasOwnProperty("visible") && event.visible) || !event.hasOwnProperty("visible"));
+            day.events.sort((a, b) => {
                 if (a.start.isBefore(b.start)) {
                     return -1;
                 } else if (a.start.diff(a.end, 'days') < b.start.diff(b.end, 'days')) {
@@ -162,11 +190,11 @@ export class CalendarSheetThreeDays implements OnChanges {
         this.allMultiEvents.forEach(event => {
             let itemIdx = null;
             this.sheetDays.forEach(day => {
-                day.items.forEach((item, idx) => {
+                day.events.forEach((item, idx) => {
                     if (item.id == event.id) {
                         if (itemIdx != null && event.end.diff(event.start, 'days') > 0) {
-                            day.items.splice(idx, 1);
-                            day.items.splice(itemIdx, 0, event);
+                            day.events.splice(idx, 1);
+                            day.events.splice(itemIdx, 0, event);
                         } else {
                             itemIdx = idx;
                         }
@@ -242,6 +270,38 @@ export class CalendarSheetThreeDays implements OnChanges {
     /*
     * @return void
     */
+    private getUserEvents(calendar) {
+        this.userEvents = this.userEvents.filter(event => event.data.assigned_user_id != calendar.id &&
+            (!event.data.meeting_user_status_accept || !event.data.meeting_user_status_accept.beans[calendar.id]));
+
+        this.userMultiEvents = this.userMultiEvents.filter(event => event.data.assigned_user_id != calendar.id &&
+            (!event.data.meeting_user_status_accept || !event.data.meeting_user_status_accept.beans[calendar.id]));
+        this.arrangeMultiEvents();
+
+        if (this.calendar.isMobileView || !calendar.visible) {
+            return;
+        }
+
+        this.calendar.loadUserEvents(this.startDate, this.endDate, calendar.id)
+            .subscribe(events => {
+                if (events.length > 0) {
+                    events = this.correctHours(events);
+                    events = this.filterEvents(events);
+                    events.forEach(event => {
+                        if (!event.isMulti) {
+                            this.userEvents.push(event);
+                        } else {
+                            this.userMultiEvents.push(event);
+                            this.arrangeMultiEvents();
+                        }
+                    });
+                }
+            });
+    }
+
+    /*
+    * @return void
+    */
     private getUsersEvents() {
         this.userEvents = [];
         this.userMultiEvents = [];
@@ -307,23 +367,21 @@ export class CalendarSheetThreeDays implements OnChanges {
     * @return style
     */
     private getEventStyle(event) {
-        let day = this.buildSheetDays().find(day => day.day == event.start.day()) || 0;
-        let startminutes = (event.start.hour() - this.calendar.startHour) * 60 + event.start.minute();
-        let endminutes = (event.end.hour() - this.calendar.startHour) * 60 + event.end.minute();
-        let scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
-        let sheetWidth = this.calendarContent.clientWidth - this.calendar.sidebarWidth - scrollOffset;
-        let itemWidth = ((sheetWidth - this.sheetTimeWidth) / 3) / (event.maxOverlay > 0 ? event.maxOverlay : 1);
-        let left = this.sheetTimeWidth + ((sheetWidth - this.sheetTimeWidth) / 3 * day.index) + (itemWidth * event.displayIndex);
-        let top = this.calendar.sheetHourHeight / 60 * startminutes;
-        let height = this.calendar.sheetHourHeight / 60 * (endminutes - startminutes);
+        const day = this.buildSheetDays().find(day => day.day == event.start.day()) || 0;
+        const startminutes = (event.start.hour() - this.calendar.startHour) * 60 + event.start.minute();
+        const endminutes = (event.end.hour() - this.calendar.startHour) * 60 + event.end.minute();
+        const scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
+        const sheetWidth = this.sheetContainer.element.nativeElement.clientWidth - scrollOffset;
+        const itemWidth = ((sheetWidth - this.sheetTimeWidth) / 3) / (event.maxOverlay > 0 ? event.maxOverlay : 1);
+        const left = this.sheetTimeWidth + ((sheetWidth - this.sheetTimeWidth) / 3 * day.index) + (itemWidth * event.displayIndex);
+        const top = this.calendar.sheetHourHeight / 60 * startminutes;
+        const height = this.calendar.sheetHourHeight / 60 * (endminutes - startminutes);
 
         return {
-            'left': left + 'px',
-            'width': itemWidth + 'px',
-            'top': top + 'px',
-            'height': height + 'px',
-            'z-index': event.resizing ? 20 : 15,
-            'border-bottom': event.resizing ? '1px dotted #fff' : 0
+            left: left + 'px',
+            width: itemWidth + 'px',
+            top: top + 'px',
+            height: height + 'px'
         };
     }
 
@@ -333,19 +391,19 @@ export class CalendarSheetThreeDays implements OnChanges {
     */
     private getMultiEventStyle(event): any {
         let eventI = null;
-        let scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
-        let sheetWidth = this.calendarContent.clientWidth - this.calendar.sidebarWidth - scrollOffset;
-        let multiEventsContainerWidth = (sheetWidth - this.sheetTimeWidth) / 3;
-        let startDate = new moment(this.setdate).hour(0).minute(0).second(0);
-        let endDate = new moment(startDate).add(moment.duration(3, 'd'));
-        let startDateDifference = ((+event.start.diff(startDate, 'days') > 0) ? +event.start.diff(startDate, 'days') : 0);
-        let endDateDifference = (+event.end.diff(endDate, 'days') > 0) ? 0 : Math.abs(+event.end.diff(endDate, 'days'));
-        let left = startDateDifference * multiEventsContainerWidth;
-        let width = (3 - (startDateDifference + endDateDifference)) * multiEventsContainerWidth;
+        const scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
+        const sheetWidth = this.sheetContainer.element.nativeElement.clientWidth - scrollOffset;
+        const multiEventsContainerWidth = (sheetWidth - this.sheetTimeWidth) / 3;
+        const startDate = new moment(this.setdate).hour(0).minute(0).second(0);
+        const endDate = new moment(startDate).add(moment.duration(3, 'd'));
+        const startDateDifference = ((+event.start.diff(startDate, 'days') > 0) ? +event.start.diff(startDate, 'days') : 0);
+        const endDateDifference = (+event.end.diff(endDate, 'days') > 0) ? 0 : Math.abs(+event.end.diff(endDate, 'days'));
+        const left = startDateDifference * multiEventsContainerWidth;
+        const width = (3 - (startDateDifference + endDateDifference)) * multiEventsContainerWidth;
 
         this.sheetDays.some(day => {
-            if (day.items.indexOf(event) > -1) {
-                eventI = day.items.indexOf(event);
+            if (day.events.indexOf(event) > -1) {
+                eventI = day.events.indexOf(event);
                 return true;
             }
         });
@@ -364,7 +422,7 @@ export class CalendarSheetThreeDays implements OnChanges {
     private getMultiEventsContainerStyle() {
         let eventsHeight = 1;
         for (let day of this.sheetDays) {
-            eventsHeight = day.items.length > eventsHeight ? day.items.length : eventsHeight;
+            eventsHeight = day.events.length > eventsHeight ? day.events.length : eventsHeight;
         }
         return {height: (this.calendar.multiEventHeight * eventsHeight) + 'px'};
     }
@@ -388,7 +446,7 @@ export class CalendarSheetThreeDays implements OnChanges {
     */
     private getDaysContainerStyle() {
         let scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
-        let sheetWidth = this.calendarContent.clientWidth - this.calendar.sidebarWidth - scrollOffset;
+        const sheetWidth = this.sheetContainer.element.nativeElement.clientWidth - scrollOffset;
         return {
             width: (sheetWidth - this.sheetTimeWidth) + 'px'
         };
@@ -416,5 +474,13 @@ export class CalendarSheetThreeDays implements OnChanges {
         }
         let navigateDate = moment(dow);
         this.navigateday.emit(navigateDate);
+    }
+
+    /**
+     * @param dragEvent: CdkDragEnd
+     * @call calendar.onEventDrop and pass the dropTargets reference for this sheet
+     */
+    private onEventDrop(dragEvent: CdkDragEnd) {
+        this.calendar.onEventDrop(dragEvent, this.dropTargets);
     }
 }

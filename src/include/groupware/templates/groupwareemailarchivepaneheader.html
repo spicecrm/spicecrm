@@ -1,0 +1,30 @@
+<div class="slds-page-header slds-page-header_record-home">
+    <div class="slds-page-header__row">
+        <div class="slds-page-header__col-title">
+            <div class="slds-media">
+                <system-icon module="Emails"></system-icon>
+                <div class="slds-media__body">
+                    <div class="slds-page-header__name">
+                        <div class="slds-page-header__name-title">
+                            <h1>
+                                <span class="slds-page-header__title slds-truncate"><system-label-modulename module="Emails" [singular]="true"></system-label-modulename></span>
+                            </h1>
+                        </div>
+                    </div>
+                    <p class="slds-page-header__name-meta"><system-label [label]="isArchived ? 'LBL_ARCHIVED' : 'LBL_NOT_ARCHIVED'"></system-label></p>
+                </div>
+            </div>
+        </div>
+        <div class="slds-page-header__col-actions">
+            <div class="slds-page-header__controls">
+                <div class="slds-page-header__control">
+                    <ul class="slds-button-group-list">
+                        <li>
+                            <button class="slds-button slds-button_neutral" [disabled]="!canArchive" (click)="archive()"><system-label label="LBL_ARCHIVE"></system-label></button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

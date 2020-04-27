@@ -27,11 +27,21 @@ import /*embed*/ {ActivityCloseCreateModal} from "./components/activityclosecrea
 
 import /*embed*/ {ActivitiesPopoverAddBar} from "./components/activitiespopoveraddbar";
 import /*embed*/ {ActivitiesPopoverAddBarButton} from "./components/activitiespopoveraddbarbutton";
-import /*embed*/ {fieldActivitiesAddActions} from "./components/fieldactivitiesaddactions";
-import /*embed*/ {fieldActivitiesAddActionsButton} from "./components/fieldactivitiesaddactionsbutton";
-import /*embed*/ {fieldActivitiesTaskWithCloseCheckbox} from "./components/fieldactivitiestaskwithclosecheckbox";
+import /*embed*/ {fieldActivitiesAddActions} from "./fields/fieldactivitiesaddactions";
+import /*embed*/ {fieldActivitiesAddActionsButton} from "./fields/fieldactivitiesaddactionsbutton";
+import /*embed*/ {fieldActivitiesTaskWithCloseCheckbox} from "./fields/fieldactivitiestaskwithclosecheckbox";
+
+import /*embed*/ {ActivityParticipationPanel} from "./components/activityparticipationpanel";
+import /*embed*/ {fieldActivityParticipationPanel} from "./fields/fieldactivityparticipationpanel";
+import /*embed*/ {ActivityParticipationPanelHeader} from "./components/activityparticipationpanelheader";
+import /*embed*/ {ActivityParticipationPanelParticipant} from "./components/activityparticipationpanelparticipant";
+import /*embed*/ {ActivityParticipationStatus} from "./components/activityparticipationstatus";
+import /*embed*/ {fieldActivityParticipationStatus} from "./fields/fieldactivityparticipationstatus";
+import /*embed*/ {fieldActivityCurrentUserParticipationStatus} from "./fields/fieldactivitycurrentuserparticipationstatus";
 
 import /*embed*/ {ActivityTimeline} from './components/activitytimeline';
+import /*embed*/ {ActivityTimelineTabbed} from './components/activitytimelinetabbed';
+import /*embed*/ {ActivityTimelineDropZoneWrapper} from './components/activitytimelinedropzonewrapper';
 import /*embed*/ {ActivityTimelineFilter} from "./components/activitytimelinefilter";
 import /*embed*/ {ActivityTimelineContainer} from './components/activitytimelinecontainer';
 import /*embed*/ {ActivityTimelineItemContainer} from './components/activitytimelineitemcontainer';
@@ -73,7 +83,16 @@ import /*embed*/ {ActivityTimelineSummaryAggregates} from './components/activity
         fieldActivitiesAddActions,
         fieldActivitiesAddActionsButton,
         fieldActivitiesTaskWithCloseCheckbox,
+        fieldActivityParticipationPanel,
+        ActivityParticipationPanel,
+        ActivityParticipationPanelHeader,
+        ActivityParticipationPanelParticipant,
+        ActivityParticipationStatus,
+        fieldActivityParticipationStatus,
+        fieldActivityCurrentUserParticipationStatus,
         ActivityTimeline,
+        ActivityTimelineTabbed,
+        ActivityTimelineDropZoneWrapper,
         ActivityTimelineFilter,
         ActivityTimelineContainer,
         ActivityTimelineItemContainer,

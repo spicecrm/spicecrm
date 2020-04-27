@@ -8,7 +8,7 @@
                 {{aggregate.count}}
             </div>
             <div>
-                {{language.getModuleName(aggregate.module)}}
+                <system-label-modulename [module]="aggregate.module"></system-label-modulename>
             </div>
         </li>
         <li *ngFor="let aggregate of yearaggregates" class="slds-item slds-grid slds-grid--vertical-align-center">

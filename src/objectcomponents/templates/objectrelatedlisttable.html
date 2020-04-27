@@ -4,13 +4,13 @@
             <th *ngIf="isSequenced" class="slds-cell-shrink" scope="col"></th>
             <ng-container *ngIf="isSequenced">
                 <th *ngFor="let item of listfields" class="slds-resizable" scope="col">
-                    <span class="slds-th__action slds-truncate">{{language.getFieldDisplayName(module, item.field, item.fieldconfig, 'short')}}</span>
+                    <span class="slds-th__action slds-truncate"><system-label-fieldname [module]="module" [field]="item.field" [fieldconfig]="item.fieldconfig" length="short"></system-label-fieldname></span>
                 </th>
             </ng-container>
             <ng-container *ngIf="!isSequenced">
                 <th *ngFor="let item of listfields" class=" slds-is-sortable slds-resizable" scope="col">
                     <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" (click)="setSortField(item)">
-                        <span class="slds-truncate">{{language.getFieldDisplayName(module, item.field, item.fieldconfig, 'short')}}</span>
+                        <span class="slds-truncate"><system-label-fieldname [module]="module" [field]="item.field" [fieldconfig]="item.fieldconfig" length="short"></system-label-fieldname></span>
                         <system-utility-icon *ngIf="isSortable(item)" [icon]="getSortIcon(item)"  [size]="'xx-small'"></system-utility-icon>
                     </a>
                 </th>

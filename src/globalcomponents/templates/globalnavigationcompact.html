@@ -29,7 +29,7 @@
         <div class="slds-grid slds-grid--vertical-align-center slds-p-left--small slds-p-vertical--xx-small">
             <system-icon [module]="activeItem" size="x-small" divClass=""></system-icon>
             <a href="javascript:void(0);" class="slds-p-left--small slds-text-heading_small">
-                <span class="slds-truncate" style="font-weight: bold;">{{language.getModuleName(activeItem)}}</span>
+                <span class="slds-truncate" style="font-weight: bold;"><system-label-modulename [module]="activeItem"></system-label-modulename></span>
             </a>
         </div>
         <ul role="menu" (click)="closeMenu()">
@@ -41,7 +41,7 @@
             <div *ngFor="let item of menuItems; trackBy: trackByFn" (click)="navigateTo(item)" class="slds-grid slds-grid--vertical-align-center slds-p-vertical--x-small  slds-p-left--small">
                 <system-icon [module]="item" size="x-small" divClass=""></system-icon>
                 <a href="javascript:void(0);" class="slds-p-left--small slds-text-heading_small">
-                    <span class="slds-truncate">{{language.getModuleName(item)}}</span>
+                    <span class="slds-truncate"><system-label-modulename [module]="item"></system-label-modulename></span>
                 </a>
             </div>
         </div>

@@ -9,7 +9,7 @@ import {
     Component,
     SystemJsNgModuleLoader,
     Renderer2,
-    enableProdMode
+    enableProdMode, ViewChild
 } from "@angular/core";
 import {FormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
@@ -54,6 +54,7 @@ import {libloader} from "./services/libloader.service";
 
 import {GlobalLogin} from "./globalcomponents/components/globallogin";
 import {SystemDynamicRouteInterceptor} from "./systemcomponents/components/systemdynamicrouteinterceptor";
+import {GlobalHeader} from "./globalcomponents/components/globalheader";
 
 // declarations for TS
 /**
@@ -77,10 +78,15 @@ moment.defaultFormat = "YYYY-MM-DD HH:mm:ss";
  */
 @Component({
     selector: "spicecrm",
-    template: "<global-header></global-header><div [ngStyle]='outletstyle'><router-outlet></router-outlet></div><global-footer></global-footer>"
+    template: "<global-header></global-header><div [ngStyle]='outletstyle'><router-outlet></router-outlet><system-navigation-manager></system-navigation-manager></div><global-footer></global-footer>"
 })
 export class SpiceUI {
-    constructor(private layout: layout, private render: Renderer2) {
+    /**
+     * reference to the module menu item
+     */
+    @ViewChild(GlobalHeader) private globalHeader: GlobalHeader;
+
+    constructor(private render: Renderer2) {
         // stop just dropping files on the app
         this.render.listen('window', 'dragover', e => {
             e.preventDefault();
@@ -97,7 +103,7 @@ export class SpiceUI {
      */
     get outletstyle() {
         return {
-            'margin-top': this.layout.headerheight + 'px'
+            'margin-top': (this.globalHeader ? this.globalHeader.headerHeight : 0) + 'px'
         };
     }
 }

@@ -1,4 +1,4 @@
-<div class="slds-media__body slds-dropdown-trigger slds-dropdown-trigger--click" dropdowntriggersimple>
+<div class="slds-media__body slds-dropdown-trigger slds-dropdown-trigger--click" system-dropdown-trigger-simple>
     <div class="slds-grid slds-grid--vertical-align-center slds-truncate slds-p-right--small">
         <h1 class="slds-page-header__title slds-show--medium slds-p-right--xx-small">{{modellist.getListTypeName()}}</h1>
         <system-utility-icon icon="down" size="x-small"></system-utility-icon>
@@ -6,7 +6,7 @@
     <div class="slds-dropdown slds-dropdown--left slds-dropdown--medium">
         <ul class="slds-dropdown__list" role="menu">
             <li class="slds-dropdown__header slds-has-divider--bottom" role="separator">
-                <span class="slds-text-title--caps">{{language.getLabel('LBL_LIST_TYPES')}}</span>
+                <span class="slds-text-title--caps"><system-label label="LBL_LIST_TYPES"></system-label></span>
             </li>
             <li class="slds-dropdown__item" [ngClass]="{'slds-is-selected': modellist.listtype == 'all'}" role="presentation" (click)="setListType('all')">
                 <a href="javascript:void(0);" role="menuitemcheckbox">

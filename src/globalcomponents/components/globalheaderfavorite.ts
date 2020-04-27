@@ -1,82 +1,86 @@
 /**
  * @module GlobalComponents
  */
-import {Component, Renderer2, ElementRef} from '@angular/core';
+import {Component, Renderer2, ElementRef, ViewChild, ViewContainerRef} from '@angular/core';
 import {favorite} from '../../services/favorite.service';
 import {language} from '../../services/language.service';
-import {popup} from '../../services/popup.service';
 import {metadata} from '../../services/metadata.service';
+import {modal} from '../../services/modal.service';
+import {navigation} from '../../services/navigation.service';
 import {NavigationStart, Router} from '@angular/router';
 
 @Component({
     selector: 'global-header-favorite',
-    templateUrl: './src/globalcomponents/templates/globalheaderfavorite.html',
-    providers: [popup],
-    styles: [
-        ':host >>> .spicecrm-favorite--inactive svg {fill: transparent; stroke: grey;}',
-        ':host >>> .slds-button.spicecrm-favorite--inactive:focus  svg {fill: transparent; stroke: grey;}',
-        ':host >>> .slds-button.spicecrm-favorite--inactive:not(:disabled):hover svg {fill: transparent; stroke: #CA1B21;}',
-    ]
+    templateUrl: './src/globalcomponents/templates/globalheaderfavorite.html'
 })
 export class GlobalHeaderFavorite {
+
+    /**
+     * the reference to the fav button. This is used to blur the button after the fav has been set
+     */
+    @ViewChild('favbutton', {read: ViewContainerRef, static: false}) private favbutton: ViewContainerRef;
+
+    /**
+     * the listener for the dropdown triger. Listens if any click is outside of the element
+     */
     private clickListener: any;
+
+    /**
+     * a boolean value to be set if the menu with the favorites should be shown
+     */
     private showFavorites: boolean = false;
 
     constructor(
         private metadata: metadata,
         private favorite: favorite,
+        private navigation: navigation,
         private router: Router,
-        private popup: popup,
         private renderer: Renderer2,
         private elementRef: ElementRef,
-        private language: language
+        private language: language,
+        private modal: modal
     ) {
-        this.router.events.subscribe((event: any) => {
-            if (event instanceof NavigationStart) {
-                this.favorite.disable();
-            }
-        });
-
-        popup.closePopup$.subscribe(close => {
-            this.showFavorites = false;
-            if (this.clickListener) {
-                this.clickListener();
-            }
-        });
+        this.navigation.activeTab$.subscribe(activetab => this.handleNavigationChange());
     }
 
     get canShowFavorites() {
         return this.metadata.getActiveRole().showfavorites && this.metadata.getActiveRole().showfavorites != '0';
     }
 
+    /**
+     * returns if there are no favorites
+     */
     get nofavorites() {
         return this.favorite.favorites.length == 0;
     }
 
-    private isDisabled() {
-        return !this.favorite.isEnabled;
-    }
-
-    get isfavorite() {
-        return this.favorite.isFavorite;
-    }
-
-    private getFavoriteActive() {
-        if (this.favorite.isFavorite) {
-            return 'spicecrm-favorite--active';
+    private handleNavigationChange() {
+        let activeTab = this.navigation.activeTabObject;
+        let routeData = this.metadata.getRouteDetails(activeTab.path.replace('tab/:tabid/', ''));
+        if (routeData.path == 'module/:module/:id') {
+            this.favorite.enable(activeTab.params.module, activeTab.params.id);
         } else {
-            return 'spicecrm-favorite--inactive';
+            this.favorite.disable();
         }
     }
 
+    /**
+     * toggles the favorite and removes the focus from the button
+     */
     private toggleFavorite() {
         if (this.favorite.isFavorite) {
             this.favorite.deleteFavorite();
         } else {
             this.favorite.setFavorite();
         }
+
+        // remove the focus from the button
+        this.favbutton.element.nativeElement.blur();
     }
 
+    /**
+     * closes the favorites dropdown .. fired when the seleciton changes
+     */
     private closeFavorites() {
         this.showFavorites = false;
     }
@@ -89,6 +93,7 @@ export class GlobalHeaderFavorite {
         } else if (this.clickListener) {
             this.clickListener();
         }
+
     }
 
     public onClick(event: MouseEvent): void {
@@ -97,5 +102,9 @@ export class GlobalHeaderFavorite {
             this.showFavorites = false;
             this.clickListener();
         }
+    }
+
+    private openEditModal(){
+        this.modal.openModal('SpiceFavoritesEditModal');
     }
 }

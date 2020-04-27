@@ -1,0 +1,40 @@
+<td>
+    <system-utility-icon *ngIf="isLinked" icon="linked" size="x-small" colorclass="slds-icon-text-success"></system-utility-icon>
+    <system-utility-icon *ngIf="!isLinked" icon="unlinked" size="x-small" colorclass="slds-icon-text-light"></system-utility-icon>
+</td>
+<td>
+    <div class="slds-truncate" [title]="path">
+        {{path}}
+    </div>
+</td>
+<td>
+    <div class="slds-truncate" [title]="language.getLabel(listItem.name)">
+        <system-label [label]="listItem.name"></system-label>
+    </div>
+</td>
+<td>
+   <div class="slds-truncate" [title]="listItem.unionfieldpath">
+        {{listItem.unionfieldpath}}
+    </div>
+<td>
+   <div class="slds-truncate" [title]="listItem.unionfielddisplaypath">
+        {{listItem.unionfielddisplaypath}}
+    </div>
+</td>
+<td>
+   <div class="slds-truncate" [title]="language.getLabel(listItem.unionfielddisplayname)">
+       <system-label [label]="listItem.unionfielddisplayname"></system-label>
+    </div>
+</td>
+<td>
+    <div *ngIf="listItem.joinid" class="slds-form-element">
+        <div class="slds-form-element__control">
+            <input type="text" [(ngModel)]="listItem.fixedvalue" class="slds-input">
+        </div>
+    </div>
+</td>
+<td class="slds-cell-shrink slds-text-align--center" data-cdk-drag-placholder-container>
+    <button *ngIf="listItem.joinid" (click)="unlinkField()" [disabled]="!isLinked" class="slds-button slds-button--icon">
+        <system-button-icon icon="remove_link"></system-button-icon>
+    </button>
+</td>

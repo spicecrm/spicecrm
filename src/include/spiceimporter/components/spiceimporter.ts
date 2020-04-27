@@ -1,11 +1,11 @@
 /**
  * @module SpiceImporterModule
  */
-import {AfterViewInit, ChangeDetectorRef, Component, ViewChild, ViewContainerRef} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
-import {navigation} from '../../../services/navigation.service';
+import {navigationtab} from '../../../services/navigationtab.service';
 import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {toast} from '../../../services/toast.service';
@@ -27,7 +27,7 @@ declare var _: any;
         ':host >>> .slds-progress__marker:focus global-button-icon svg {fill:#FD595D}',
     ]
 })
-export class SpiceImporter implements AfterViewInit {
+export class SpiceImporter implements OnInit {
     @ViewChild('contentcontainer', {read: ViewContainerRef, static: true}) private contentcontainer: ViewContainerRef;
 
     private importSteps: any[] = ['select', 'map', 'fixed', 'check', 'result'];
@@ -41,7 +41,7 @@ export class SpiceImporter implements AfterViewInit {
                 private language: language,
                 private metadata: metadata,
                 private model: model,
-                private navigation: navigation,
+                private navigationtab: navigationtab,
                 private router: Router,
                 private backend: backend,
                 private toast: toast,
@@ -49,10 +49,7 @@ export class SpiceImporter implements AfterViewInit {
                 private activatedRoute: ActivatedRoute) {
 
         // get the bean details
-        this.activatedRoute.params.subscribe(params => {
-            this.model.module = params.module;
-        });
-
+        this.model.module = this.navigationtab.activeRoute.params.module;
         if (!this.metadata.checkModuleAcl(this.model.module, 'import')) {
             this.toast.sendToast(this.language.getLabel('MSG_NOT_AUTHORIZED_TO_IMPORT') + ' ' + this.language.getModuleName(this.model.module), 'error');
             this.router.navigate(['/module/' + this.model.module]);
@@ -73,9 +70,9 @@ export class SpiceImporter implements AfterViewInit {
         return this.spiceImporter.currentImportStep;
     }
 
-    public ngAfterViewInit() {
+    public ngOnInit() {
         // set the navigation paradigm
-        this.navigation.setActiveModule(this.model.module);
+        this.navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_IMPORT'), displaymodule: this.model.module});
 
         // get saved imports
         this.backend.getRequest('/modules/SpiceImports/savedImports/' + this.model.module).subscribe(res => {
@@ -278,7 +275,6 @@ export class SpiceImporter implements AfterViewInit {
         return this.spiceImporter.currentImportStep == this.importSteps.length - 1;
 
 
-
     }
 
     private import() {
@@ -327,7 +323,7 @@ export class SpiceImporter implements AfterViewInit {
             'idField',
             'fixedFields',
             'importDuplicateAction',
-            );
+        );
         objectImport.fixedFieldsValues = this.model.data;
         objectImport.module = this.model.module;
 

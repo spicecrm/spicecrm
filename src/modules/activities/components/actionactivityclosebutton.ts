@@ -1,11 +1,12 @@
 /**
- * @module ObjectComponents
+ * @module ModuleActivities
  */
-import {Component, OnInit, ViewContainerRef} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {modal} from "../../../services/modal.service";
+import {Subscription} from "rxjs";
 
 /**
  * This component shows the closebutton of an activity
@@ -14,15 +15,32 @@ import {modal} from "../../../services/modal.service";
     selector: 'action-activity-close-button',
     templateUrl: './src/modules/activities/templates/actionactivityclosebutton.html'
 })
-export class ActionActivityCloseButton implements OnInit {
+export class ActionActivityCloseButton implements OnInit, OnDestroy {
 
     /**
      * only "disabled" is in use !
      */
     public hidden: boolean = false;
 
+    /**
+     * if set to true didpslay teh button as icon
+     */
+    public displayasicon: boolean = false;
+
+    /**
+     * if the button shoudl be disabled
+     */
     public disabled: boolean = true;
+
+    /**
+     * the component config
+     */
     public componentconfig: any;
+
+    /**
+     * holds the components subscriptions
+     */
+    private subscriptions: Subscription = new Subscription();
 
     constructor(
         private language: language,
@@ -42,13 +60,25 @@ export class ActionActivityCloseButton implements OnInit {
         }
 
         this.handleDisabled(this.model.isEditing ? 'edit' : 'display');
-        this.model.mode$.subscribe(mode => {
-            this.handleDisabled(mode);
-        });
 
-        this.model.data$.subscribe(data => {
-            this.handleDisabled(this.model.isEditing ? 'edit' : 'display');
-        });
+        this.subscriptions.add(
+            this.model.mode$.subscribe(mode => {
+                this.handleDisabled(mode);
+            })
+        );
+
+        this.subscriptions.add(
+            this.model.data$.subscribe(data => {
+                this.handleDisabled(this.model.isEditing ? 'edit' : 'display');
+            })
+        );
+    }
+
+    /**
+     * unsubscribe from various subscrioptions on destroy
+     */
+    public ngOnDestroy(): void {
+        this.subscriptions.unsubscribe();
     }
 
     /**
@@ -69,6 +99,12 @@ export class ActionActivityCloseButton implements OnInit {
             }
         });
     }
+
+    /**
+     * handles the setting of the disbaled attribute
+     *
+     * @param mode
+     */
     private handleDisabled(mode) {
         if (this.model.data.acl && !this.model.checkAccess('edit')) {
 

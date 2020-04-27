@@ -1,1 +1,2 @@
-<span >{{language.getLabel('LBL_REMOVE')}}</span>
+<system-button-icon *ngIf="displayasicon" icon="remove_link"></system-button-icon>
+<span *ngIf="!displayasicon"><system-label label="LBL_REMOVE"></system-label></span>

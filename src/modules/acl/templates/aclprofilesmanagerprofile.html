@@ -4,11 +4,11 @@
 <ng-template #objectlist>
     <div class="slds-tabs_scoped">
         <ul class="slds-tabs_scoped__nav" role="tablist">
-            <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': activetab=='profiles'}" title="Profiles" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='profiles'">{{language.getLabel('LBL_SPICEACLOBJECTS')}}</a></li>
-            <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': activetab=='users'}" title="Users" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='users'">{{language.getLabel('LBL_USERS')}}</a></li>
-            <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': activetab=='details'}" title="DETAILS" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='details'">{{language.getLabel('LBL_DETAILS')}}</a></li>
+            <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': activetab=='profiles'}" title="Profiles" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='profiles'"><system-label label="LBL_SPICEACLOBJECTS"></system-label></a></li>
+            <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': activetab=='users'}" title="Users" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='users'"><system-label label="LBL_USERS"></system-label></a></li>
+            <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': activetab=='details'}" title="DETAILS" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='details'"><system-label label="LBL_DETAILS"></system-label></a></li>
         </ul>
-        <div tobottom *ngIf="activetab=='profiles'">
+        <div system-to-bottom *ngIf="activetab=='profiles'">
             <div *ngIf="loadingobjects; else objectsdisplay" class="slds-p-around--medium slds-align--absolute-center">
                 <system-spinner></system-spinner>
             </div>
@@ -17,10 +17,10 @@
                     <thead>
                     <tr class="slds-text-title_caps">
                         <th scope="col">
-                            <div class="slds-truncate">{{language.getLabel('LBL_NAME')}}</div>
+                            <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
                         </th>
                         <th scope="col">
-                            <div class="slds-truncate">{{language.getLabel('LBL_MODULE')}}</div>
+                            <div class="slds-truncate"><system-label label="LBL_MODULE"></system-label></div>
                         </th>
                         <th scope="col" style="width: 3rem;"></th>
                     </tr>
@@ -50,7 +50,7 @@
                 </div>
             </ng-template>
         </div>
-        <div tobottom *ngIf="activetab=='users'">
+        <div system-to-bottom *ngIf="activetab=='users'">
             <div *ngIf="loadingusers; else usersdisplay" class="slds-p-around--medium slds-align--absolute-center">
                 <system-spinner></system-spinner>
             </div>
@@ -63,7 +63,7 @@
                         <thead>
                         <tr class="slds-text-title_caps">
                             <th scope="col">
-                                <div class="slds-truncate">{{language.getLabel('LBL_USER_NAME')}}</div>
+                                <div class="slds-truncate"><system-label label="LBL_USER_NAME"></system-label></div>
                             </th>
                             <th scope="col" style="width: 3rem;"></th>
                         </tr>
@@ -92,19 +92,19 @@
         <div *ngIf="activetab=='details'">
             <div class="slds-p-around--x-small">
                 <div class="slds-form-element">
-                    <label class="slds-form-element__label">{{language.getLabel('LBL_NAME')}}</label>
+                    <label class="slds-form-element__label"><system-label label="LBL_NAME"></system-label></label>
                     <div class="slds-form-element__control">
                         <input  class="slds-input" type="text" [(ngModel)]="profile.name" />
                     </div>
                 </div>
                 <div class="slds-form-element">
-                    <label class="slds-form-element__label">{{language.getLabel('LBL_DESCRIPTION')}}</label>
+                    <label class="slds-form-element__label"><system-label label="LBL_DESCRIPTION"></system-label></label>
                     <div class="slds-form-element__control">
                         <textarea class="slds-textarea" [(ngModel)]="profile.description"></textarea>
                     </div>
                 </div>
                 <div class="slds-p-vertical--x-small slds-align--absolute-center">
-                    <button class="slds-button slds-button--brand" (click)="save()">{{language.getLabel('LBL_SAVE')}}</button>
+                    <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
                 </div>
             </div>
         </div>

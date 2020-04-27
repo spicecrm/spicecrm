@@ -1,1 +1,2 @@
-<span >{{language.getLabel('LBL_OPEN')}}</span>
+<system-button-icon *ngIf="displayasicon" icon="open"></system-button-icon>
+<span *ngIf="!displayasicon"><system-label label="LBL_OPEN"></system-label></span>

@@ -1,6 +1,6 @@
 <div class="slds-box slds-m-around--x-small" style="padding: 0px">
     <object-record-fieldset [fieldset]="fieldset" [direction]="'vertical'"></object-record-fieldset>
     <div *ngIf="view.isEditMode()" class="slds-text-align_right slds-m-around--x-small">
-        <a href="javascript:void(0);" class="slds-text-link_reset"(click)="deleteAddress()">{{language.getLabel('LBL_DELETE')}}</a>
+        <a href="javascript:void(0);" class="slds-text-link_reset"(click)="deleteAddress()"><system-label label="LBL_DELETE"></system-label></a>
     </div>
 </div>

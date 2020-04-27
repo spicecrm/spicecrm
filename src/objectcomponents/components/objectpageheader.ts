@@ -25,14 +25,13 @@ export class ObjectPageHeader implements OnInit {
 
     public componentconfig: any = {};
     private actionSet: string = '';
-    private fieldset: string = '';
-    private fieldsetitems: any[];
+    public fieldset: string = '';
 
     get moduleName() {
         return this.model.module;
     }
 
-    constructor(private language: language, private router: Router, private model: model, private metadata: metadata) {
+    constructor(public language: language, public router: Router, public model: model, public metadata: metadata) {
 
     }
 
@@ -43,12 +42,9 @@ export class ObjectPageHeader implements OnInit {
         // set the actionset & fiedset
         this.actionSet = componentconfig.actionset;
         this.fieldset = componentconfig.fieldset;
-        if (this.fieldset) {
-            this.fieldsetitems = this.metadata.getFieldSetFields(this.fieldset);
-        }
     }
 
-    private goToModule() {
+    public goToModule() {
         this.router.navigate(['/module/' + this.moduleName]);
     }
 

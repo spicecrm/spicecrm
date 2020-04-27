@@ -4,7 +4,7 @@
                <system-spinner *ngIf="fts.runningmodulesearch" [size]="20" class="slds-p-right--x-small"></system-spinner>
                <system-icon *ngIf="!fts.runningmodulesearch" icon="search" size="small" sprite="utility"></system-icon>
                <div class="slds-media__body">
-                    <div class="slds-lookup__result-text">{{language.getLabel('LBL_SEARCH')}} "{{searchTerm}}" {{searchModuleName}}</div>
+                    <div class="slds-lookup__result-text"><system-label label="LBL_SEARCH"></system-label> "{{searchTerm}}" {{searchModuleName}}</div>
                </div>
            </span>
     </li>

@@ -4,16 +4,19 @@
             <button class="slds-button slds-button_icon" (click)="toggleexpand()" [disabled]="cantexpand">
                 <system-button-icon icon="switch" addclasses="slds-timeline__details-action-icon"></system-button-icon>
             </button>
-            <system-icon [module]="model.module" size="small" divClass="slds-icon_container slds-timeline__icon"></system-icon>
+            <system-icon [module]="model.module" [title]="language.getModuleName(model.module, true)" size="small" divClass="slds-icon_container slds-timeline__icon"></system-icon>
         </div>
         <div class="slds-media__body">
             <div class="slds-grid slds-grid_align-spread slds-timeline__trigger">
-                <div class="slds-grid slds-grid_vertical-align-center slds-truncate_container_75 slds-no-space slds-text-title_bold"  [viewprovider]="{displayLabels: false}">
-                    <h3 class="slds-truncate">
+                <div class="slds-grid slds-grid_vertical-align-center slds-truncate_container_75 slds-no-space slds-text-title_bold"  [system-view-provider]="{displayLabels: false}">
+                    <h3 class="slds-truncate slds-grid slds-grid--vertical-align-center">
                         <object-record-fieldset-horizontal-list *ngIf="headerFieldSet; else noheaderfieldset" [fieldset]="headerFieldSet"></object-record-fieldset-horizontal-list>
                         <ng-template #noheaderfieldset>
-                            <div modelPopOver>{{subject}}</div>
+                            <div system-model-popover>{{subject}}</div>
                         </ng-template>
+                        <div *ngIf="displayattachments" class="slds-p-horizontal--xx-small">
+                            <system-dynamic-component *ngIf="displayattachments" component="SpiceAttachmentsCount" ></system-dynamic-component>
+                        </div>
                     </h3>
                 </div>
                 <div class="slds-timeline__actions slds-timeline__actions_inline">
@@ -22,11 +25,12 @@
                     <object-action-menu class="slds-show--medium" *ngIf="showtoolset" [buttonsize]="'x-small'" [actionset]="actionset"></object-action-menu>
                 </div>
             </div>
-            <div class="slds-m-horizontal_xx-small" [viewprovider]="{displayLabels: false}">
+            <div class="slds-m-horizontal_xx-small" [system-view-provider]="{displayLabels: false}">
                 <object-record-fieldset-horizontal-list *ngIf="subheaderFieldSet" [fieldset]="subheaderFieldSet"></object-record-fieldset-horizontal-list>
             </div>
-            <article class="slds-box slds-timeline__item_details slds-theme_shade slds-m-top_x-small slds-m-horizontal_xx-small">
+            <article *ngIf="isopen" class="slds-box slds-timeline__item_details slds-theme_shade slds-m-top_x-small slds-m-horizontal_xx-small">
                 <object-record-fieldset [fieldset]="formFieldSet" direction="vertical" fielddisplayclass="slds-truncate" fieldpadding="none"></object-record-fieldset>
+                <system-dynamic-component *ngIf="hasattachments" component="SpiceAttachmentsList"></system-dynamic-component>
             </article>
         </div>
     </div>

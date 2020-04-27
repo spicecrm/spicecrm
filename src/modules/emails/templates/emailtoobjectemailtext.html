@@ -5,7 +5,7 @@
         <ul class="slds-dropdown__list" role="menu">
             <li *ngFor="let field of target_module_fields" class="slds-dropdown__item" role="presentation">
                 <a href="javascript:void(0);" role="menuitem" tabindex="0" (click)="setField(field)">
-                    <span class="slds-truncate" >{{language.getFieldDisplayName(target_module_name, field)}}</span>
+                    <span class="slds-truncate" ><system-label-fieldname [module]="target_module_name" [field]="field"></system-label-fieldname></span>
                 </a>
             </li>
         </ul>

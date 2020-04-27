@@ -26,6 +26,7 @@ import /*embed*/ { AdministrationQuotaManager } from './components/administratio
 import /*embed*/ { AdministrationQuotaManagerField } from './components/administrationquotamanagerfield';
 
 
+import /*embed*/ { AdministrationFTSStatus } from './components/administrationftsstatus';
 import /*embed*/ { AdministrationFTSManager } from './components/administrationftsmanager';
 import /*embed*/ { AdministrationFTSManagerFields } from './components/administrationftsmanagerfields';
 import /*embed*/ { AdministrationFTSManagerFieldsList } from './components/administrationftsmanagerfieldslist';
@@ -72,6 +73,7 @@ import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryMana
         AdministrationConfiguratorItemRole,
         AdministrationQuotaManager,
         AdministrationQuotaManagerField,
+        AdministrationFTSStatus,
         AdministrationFTSManager,
         AdministrationFTSManagerModuleAdd,
         AdministrationFTSManagerFields,

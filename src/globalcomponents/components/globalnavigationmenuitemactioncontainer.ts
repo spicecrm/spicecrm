@@ -9,7 +9,7 @@ import {
     AfterViewInit,
     ViewChild,
     ViewContainerRef,
-    NgZone
+    NgZone, ChangeDetectorRef
 } from "@angular/core";
 import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
@@ -62,21 +62,30 @@ export class GlobalNavigationMenuItemActionContainer implements AfterViewInit {
      */
     private stableSub: any;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private ngZone: NgZone) {
+    constructor(private language: language, private metadata: metadata, private model: model, private ngZone: NgZone, private cdr: ChangeDetectorRef) {
     }
 
+    /**
+     * returns the id of the action item
+     */
     get id() {
         return this.actionitem.id;
     }
 
+    /**
+     * getter for the disabled state of the embedded component
+     */
     get disabled() {
-        if (this.stable && this.componentref) {
+        if (this.componentref) {
             return this.componentref.instance.disabled ? true : false;
         } else {
             return true;
         }
     }
 
+    /**
+     * getter for the hidden state of the embedded component
+     */
     get hidden() {
         if (this.stable && this.componentref) {
             return this.componentref.instance.hidden ? true : false;
@@ -97,14 +106,9 @@ export class GlobalNavigationMenuItemActionContainer implements AfterViewInit {
 
             // add the componentn and handle visibility
             this.componentref = componentref;
-        });
-
-
-        // ugly workaround to detect once the first stable
-        // change detection run is done and then start returning the poroper disabled valued
-        this.stableSub = this.ngZone.onStable.subscribe(stable => {
-            this.stable = true;
-            this.stableSub.unsubscribe();
+            // use ChangeDetectorRef.detectChanges to force the app to detect the changes
+            // this prevents angular change detection error "ExpressionChangedAfterItHasBeenCheckedError"
+            this.cdr.detectChanges();
         });
     }
 

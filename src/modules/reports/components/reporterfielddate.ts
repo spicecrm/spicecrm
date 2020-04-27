@@ -1,44 +1,55 @@
 /**
  * @module ModuleReports
  */
-import {
-    Component
-} from '@angular/core';
-import {model} from '../../../services/model.service';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {userpreferences} from '../../../services/userpreferences.service';
 
-/**
- * @ignore
- */
+/** @ignore */
 declare var moment: any;
 
+/**
+ * display formatted report record value with date
+ */
 @Component({
     selector: 'reporter-field-date',
-    templateUrl: './src/modules/reports/templates/reporterfielddate.html'
+    templateUrl: './src/modules/reports/templates/reporterfielddate.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ReporterFieldDate {
-
+export class ReporterFieldDate implements OnInit {
+    /**
+     * report full record
+     */
     private record: any = {};
+    /**
+     * report field
+     */
     private field: any = {};
+    /**
+     * display value
+     */
+    private value: string = '';
 
     constructor(private userpreferences: userpreferences) {
 
     }
 
-    get fieldvalue() {
-        try {
-            if (this.record[this.field.fieldid]) {
-                let date = new moment.utc(this.record[this.field.fieldid]);
-                if (date.isValid()) {
-                    return date.format(this.userpreferences.getDateFormat());
-                } else {
-                    return '';
-                }
-            } else {
-                return '';
+    /**
+     * call to set the display value
+     */
+    public ngOnInit() {
+        this.setFormattedFieldValue();
+    }
+
+    /**
+     * set formatted field value
+     */
+    private setFormattedFieldValue() {
+
+        if (this.record[this.field.fieldid]) {
+            let date = new moment.utc(this.record[this.field.fieldid]);
+            if (date.isValid()) {
+                this.value = date.format(this.userpreferences.getDateFormat());
             }
-        } catch (e) {
-            return '';
         }
     }
 }
