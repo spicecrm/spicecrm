@@ -22,7 +22,7 @@ import {Subject, Observable} from 'rxjs';
         ':host >>> .slds-progress__marker:focus global-button-icon svg {fill:#FD595D}',
     ]
 })
-export class LeadConvert implements AfterViewInit , AfterContentInit {
+export class LeadConvert implements AfterViewInit {
 
 
     private moduleName = 'Leads';
@@ -54,25 +54,15 @@ export class LeadConvert implements AfterViewInit , AfterContentInit {
         this.headerFieldSets = [componentconfig.fieldset];
     }
 
-    public ngAfterContentInit() {
-
-        // get the bean details
-        this.model.module = this.moduleName;
-        this.model.id = this.navigationtab.activeRoute.params.id;
-        this.model.getData(true, 'detailview').toPromise();
-        this.navigationtab.setTabInfo({displayname: this.model.data.summary_text, displaymodule: 'Leads'});
-
-    }
 
     public ngAfterViewInit() {
 
         // get the bean details
-        // this.model.module = this.moduleName;
-        // this.model.id = this.navigationtab.activeRoute.params.id;
-        //
-        // this.model.getData(true, 'detailview').subscribe(data => {
-        //    this.navigationtab.setTabInfo({displayname: data.summary_text, displaymodule: 'Leads'});
-        // });
+        this.model.module = this.moduleName;
+        this.model.id = this.navigationtab.activeRoute.params.id;
+        this.model.getData(true, 'detailview').subscribe(data => {
+            this.navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_CONVERT_LEAD')+': '+ this.model.data.summary_text, displaymodule: 'Leads'});
+        });
     }
 
 
@@ -195,6 +185,9 @@ export class LeadConvert implements AfterViewInit , AfterContentInit {
             this.toast.sendToast(this.language.getLabel('LBL_LEAD') + ' ' + this.model.data.summary_text + ' ' + this.language.getLabel('LBL_CONVERTED'), 'success', '', 30);
             // go back to the lead
             this.gotoLead();
+
+            // close the tab
+            this.navigationtab.closeTab();
         });
     }
 
