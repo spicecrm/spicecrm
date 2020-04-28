@@ -2,7 +2,7 @@
 /* sticky headers */
 .spice-table_header-fixed thead th {
     position: sticky;
-    top: 0px;
+    top: 0;
     z-index: 1;
     border-bottom: 1px solid var(--color-grey-5);
 }
@@ -16,7 +16,7 @@
 .spice-table_footer-fixed tfoot,
 .spice-table_footer-fixed tfoot td {
     position: sticky;
-    bottom: 0px;
+    bottom: 0;
     z-index: 1;
     border-top: 1px solid var(--color-grey-5);
 }
