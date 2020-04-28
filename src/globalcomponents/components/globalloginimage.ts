@@ -32,7 +32,7 @@ export class GlobalLoginImage {
     constructor( private sanitizer: DomSanitizer, private configuration: configurationService, private cdRef: ChangeDetectorRef ) {
 
         // Set the image url in case there is a CRM config for that:
-        if ( this.configuration.hasCapabilityConfig('spiceTheme') ) this.setImageUrl();
+        if ( this.configuration.hasCapabilityConfig('spice_theme') ) this.setImageUrl();
 
         // Update the image url in case the configuration data has changed:
         this.subscription = this.configuration.loaded$.subscribe( () => this.setImageUrl() );
@@ -41,8 +41,8 @@ export class GlobalLoginImage {
 
     private setImageUrl(): void {
         // Update the image url in case the configuration data has changed an there is a specific login image defined.
-        if ( this.configuration.getCapabilityConfig('spiceTheme').loginImage ) {
-            this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl( 'data:'+this.configuration.getCapabilityConfig('spiceTheme').loginImage );
+        if ( this.configuration.getCapabilityConfig('spice_theme').loginImage ) {
+            this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl( 'data:'+this.configuration.getCapabilityConfig('spice_theme').loginImage );
         } else {
             this.imageUrl = this.defaultImageUrl;
         }
