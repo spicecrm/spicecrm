@@ -41,8 +41,8 @@ export class GlobalLoginImage {
 
     private setImageUrl(): void {
         // Update the image url in case the configuration data has changed an there is a specific login image defined.
-        if ( this.configuration.getCapabilityConfig('spice_theme').loginImage ) {
-            this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl( 'data:'+this.configuration.getCapabilityConfig('spice_theme').loginImage );
+        if ( this.configuration.getCapabilityConfig('spice_theme').login_image ) {
+            this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl( 'data:'+this.configuration.getCapabilityConfig('spice_theme').login_image );
         } else {
             this.imageUrl = this.defaultImageUrl;
         }
