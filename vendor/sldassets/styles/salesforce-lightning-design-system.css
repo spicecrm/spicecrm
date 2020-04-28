@@ -7661,11 +7661,11 @@ a.slds-button--inverse:focus{
   pointer-events:none;
 }
 .slds-select_container:before{
-  border-bottom:5px solid var(--color-background-inverse);
+  border-bottom:5px solid var(--color-background-border-inverse);
   top:calc((1.75rem / 2) - 6px);
 }
 .slds-select_container:after{
-  border-top:5px solid var(--color-background-inverse);
+  border-top:5px solid var(--color-background-border-inverse);
   bottom:calc((1.75rem / 2) - 6px);
 }
 
@@ -9416,7 +9416,7 @@ a.slds-button--inverse:focus{
 }
 .slds-popover_walkthrough,
 .slds-popover--walkthrough{
-  border-color:var(--color-background-inverse);
+  border-color:var(--color-background-border-inverse);
   color:var(--color-white);
   background:#032e61;
   border-color:#032e61;
@@ -9639,7 +9639,7 @@ a.slds-button--inverse:focus{
   width:20rem;
   min-height:2rem;
   z-index:6000;
-  background-color:var(--color-background-inverse);
+  background-color:var(--color-background-border-inverse);
   display:inline-block;
 }
 .slds-tooltip__body{
@@ -9651,7 +9651,7 @@ a.slds-button--inverse:focus{
 .slds-popover--tooltip{
   width:auto;
   max-width:20rem;
-  background:#16325c;
+  background:var(--color-background-alt-inverse);
   border:0;
 }
 .slds-popover_tooltip .slds-popover__body,
@@ -9931,8 +9931,8 @@ a.slds-button--inverse:focus{
   overflow-y:auto;
 }
 .slds-dropdown_inverse, .slds-dropdown--inverse{
-  background:var(--color-background-inverse);
-  border-color:var(--color-background-inverse);
+  background:var(--color-background-border-inverse);
+  border-color:var(--color-background-border-inverse);
 }
 .slds-dropdown_inverse .slds-dropdown__item > a, .slds-dropdown--inverse .slds-dropdown__item > a{
   color:var(--color-white);
@@ -11109,11 +11109,11 @@ a.slds-button--inverse:focus{
   background:var(--brand-primary);
 }
 .slds-utility-bar__action:hover, .slds-utility-bar__action:focus{
-  background:rgba(21, 137, 238, 0.1);
+  background:var(--brand-primary-transparent);
   color:inherit;
 }
 .slds-utility-bar__action.slds-is-active{
-  background:rgba(21, 137, 238, 0.1);
+  background:var(--brand-primary-transparent);
   color:inherit;
 }
 .slds-utility-bar__action.slds-is-active:after{
@@ -11135,7 +11135,7 @@ a.slds-button--inverse:focus{
   color:var(--color-white);
 }
 .slds-has-notification .slds-utility-bar__action:hover, .slds-has-notification .slds-utility-bar__action:focus{
-  background:#16325c;
+  background:var(--color-background-alt-inverse);
 }
 .slds-has-notification .slds-utility-bar__action:focus:after{
   background:#c9c7c5;
@@ -11728,7 +11728,7 @@ a.slds-button--inverse:focus{
 .slds-context-bar__item:not(.slds-no-hover):hover, .slds-context-bar__item.slds-is-active{
   outline:0;
   border-radius:0;
-  background-color:rgba(21, 137, 238, 0.1);
+  background-color:var(--brand-primary-transparent);
   text-decoration:none;
   cursor:pointer;
 }
@@ -11769,7 +11769,7 @@ a.slds-button--inverse:focus{
     background-color:var(--color-white);
   }
   100%{
-    background-color:rgba(21, 137, 238, 0.1);
+    background-color:var(--brand-primary-transparent);
   }
 }
 @keyframes bkAnim{
@@ -11777,7 +11777,7 @@ a.slds-button--inverse:focus{
     background-color:var(--color-white);
   }
   100%{
-    background-color:rgba(21, 137, 238, 0.1);
+    background-color:var(--brand-primary-transparent);
   }
 }
 .slds-context-bar__item.slds-is-active:before{
@@ -11829,13 +11829,13 @@ a.slds-button--inverse:focus{
   }
 }
 .slds-context-bar__item.slds-is-active:hover{
-  border-bottom-color:rgba(21, 137, 238, 0.1);
+  border-bottom-color:var(--brand-primary-transparent);
 }
 .slds-context-bar__item.slds-has-focus:before, .slds-context-bar__item.slds-has-focus:after, .slds-context-bar__item.slds-has-focus:hover:before, .slds-context-bar__item.slds-has-focus:hover:after{
   height:4px;
 }
 .slds-context-bar__item.slds-has-notification{
-  background:rgba(21, 137, 238, 0.1);
+  background:var(--brand-primary-transparent);
 }
 @-webkit-keyframes error-pulse{
   0%{
@@ -12314,7 +12314,7 @@ a.slds-button--inverse:focus{
   display:-ms-flexbox;
   display:flex;
   height:3.125rem;
-  background:#16325c;
+  background:var(--color-background-alt-inverse);
   color:var(--color-white);
 }
 .slds-builder-header__item{
@@ -13553,8 +13553,8 @@ a.slds-button--inverse:focus{
   padding-bottom:1rem;
 }
 .slds-path-coach .slds-path__mark-current{
-  background-color:var(--color-background-inverse);
-  border-color:var(--color-background-inverse);
+  background-color:var(--color-background-border-inverse);
+  border-color:var(--color-background-border-inverse);
 }
 
 .slds-tabs_path,
@@ -13667,7 +13667,7 @@ a.slds-button--inverse:focus{
 }
 .slds-tabs_path .slds-is-active,
 .slds-tabs--path .slds-is-active{
-  background-color:var(--color-background-inverse);
+  background-color:var(--color-background-border-inverse);
 }
 .slds-tabs_path .slds-is-active .slds-tabs_path__link,
 .slds-tabs_path .slds-is-active .slds-tabs--path__link,
@@ -13677,19 +13677,19 @@ a.slds-button--inverse:focus{
 }
 .slds-tabs_path .slds-is-active:hover,
 .slds-tabs--path .slds-is-active:hover{
-  background-color:#16325c;
+  background-color:var(--color-background-alt-inverse);
 }
 .slds-tabs_path .slds-is-active:hover + .slds-tabs_path__item:before,
 .slds-tabs_path .slds-is-active:hover + .slds-tabs--path__item:before,
 .slds-tabs--path .slds-is-active:hover + .slds-tabs_path__item:before,
 .slds-tabs--path .slds-is-active:hover + .slds-tabs--path__item:before{
-  background-color:#16325c;
+  background-color:var(--color-background-alt-inverse);
 }
 .slds-tabs_path .slds-is-active + .slds-tabs_path__item:before,
 .slds-tabs_path .slds-is-active + .slds-tabs--path__item:before,
 .slds-tabs--path .slds-is-active + .slds-tabs_path__item:before,
 .slds-tabs--path .slds-is-active + .slds-tabs--path__item:before{
-  background-color:var(--color-background-inverse);
+  background-color:var(--color-background-border-inverse);
 }
 .slds-tabs_path .slds-is-active .slds-tabs_path__title,
 .slds-tabs_path .slds-is-active .slds-tabs--path__title,
@@ -17004,7 +17004,7 @@ a.slds-button--inverse:focus{
   margin-bottom:0;
 }
 .slds-sub-tabs__item.slds-active, .slds-sub-tabs__item.slds-is-open{
-  background:rgba(21, 137, 238, 0.1);
+  background:var(--brand-primary-transparent);
 }
 .slds-sub-tabs__item:after{
   content:none;
@@ -17158,7 +17158,7 @@ a.slds-button--inverse:focus{
 .slds-navigation-list-vertical .slds-is-active .slds-navigation-list--vertical__action,
 .slds-navigation-list--vertical .slds-is-active .slds-navigation-list-vertical__action,
 .slds-navigation-list--vertical .slds-is-active .slds-navigation-list--vertical__action{
-  background-color:rgba(21, 137, 238, 0.1);
+  background-color:var(--brand-primary-transparent);
   border-color:#dddbda;
   border-left-color:var(--brand-primary);
 }
@@ -17236,7 +17236,7 @@ a.slds-button--inverse:focus{
   content:"";
 }
 .slds-nav-vertical__item:hover:before, .slds-nav-vertical__item.slds-is-active:before{
-  background:rgba(21, 137, 238, 0.1);
+  background:var(--brand-primary-transparent);
 }
 .slds-nav-vertical__action{
   position:relative;
@@ -17579,7 +17579,7 @@ a.slds-button--inverse:focus{
 .slds-trial-header{
   color:var(--color-white);
   height:3.125rem;
-  background:var(--color-background-inverse);
+  background:var(--color-background-border-inverse);
   padding:0 1rem;
 }
 .slds-trial-header .slds-icon{
@@ -19226,7 +19226,7 @@ a.slds-button--inverse:focus{
 }
 
 .slds-tree [role=treeitem][aria-selected=true] > .slds-tree__item{
-  background:rgba(21, 137, 238, 0.1);
+  background:var(--brand-primary-transparent);
   -webkit-box-shadow:var(--brand-primary) 4px 0 0 inset;
           box-shadow:var(--brand-primary) 4px 0 0 inset;
 }
@@ -22210,7 +22210,7 @@ a.slds-button--inverse:focus{
   margin-left:0.5rem;
   margin-right:0.5rem;
   border-radius:50%;
-  background-color:#16325c;
+  background-color:var(--color-background-alt-inverse);
 }
 .slds-has-divider_right:last-child, .slds-has-divider--right:last-child{
   margin-right:0;
@@ -22245,7 +22245,7 @@ a.slds-button--inverse:focus{
   margin-left:0.5rem;
   margin-right:0.5rem;
   border-radius:50%;
-  background-color:#16325c;
+  background-color:var(--color-background-alt-inverse);
 }
 .slds-has-divider_left:first-child, .slds-has-divider--left:first-child{
   margin-right:0;
@@ -22273,7 +22273,7 @@ a.slds-button--inverse:focus{
   margin-left:0.5rem;
   margin-right:0.5rem;
   border-radius:50%;
-  background-color:#16325c;
+  background-color:var(--color-background-alt-inverse);
 }
 .slds-list_horizontal.slds-has-dividers > .slds-list__item:last-child,
 .slds-list--horizontal.slds-has-dividers > .slds-list__item:last-child{
@@ -22324,7 +22324,7 @@ a.slds-button--inverse:focus{
   margin-left:0.5rem;
   margin-right:0.5rem;
   border-radius:50%;
-  background-color:#16325c;
+  background-color:var(--color-background-alt-inverse);
 }
 .slds-has-dividers_left > .slds-list__item:first-child,
 .slds-has-dividers--left > .slds-list__item:first-child,
@@ -22361,7 +22361,7 @@ a.slds-button--inverse:focus{
   margin-left:0.5rem;
   margin-right:0.5rem;
   border-radius:50%;
-  background-color:#16325c;
+  background-color:var(--color-background-alt-inverse);
 }
 .slds-has-dividers_right > .slds-list__item:last-child,
 .slds-has-dividers--right > .slds-list__item:last-child,
@@ -22594,8 +22594,8 @@ a.slds-button--inverse:focus{
 }
 .slds-theme_inverse, .slds-theme--inverse{
   color:var(--color-white);
-  background-color:var(--color-background-inverse);
-  border-color:var(--color-background-inverse);
+  background-color:var(--color-background-border-inverse);
+  border-color:var(--color-background-border-inverse);
 }
 .slds-theme_inverse a:not(.slds-button--neutral), .slds-theme--inverse a:not(.slds-button--neutral){
   color:var(--color-white);
@@ -22615,8 +22615,8 @@ a.slds-button--inverse:focus{
 }
 .slds-theme_alt-inverse, .slds-theme--alt-inverse{
   color:var(--color-white);
-  background-color:#16325c;
-  border-color:#16325c;
+  background-color:var(--color-background-alt-inverse);
+  border-color:var(--color-background-alt-inverse);
 }
 .slds-theme_alt-inverse a:not(.slds-button--neutral), .slds-theme--alt-inverse a:not(.slds-button--neutral){
   color:var(--color-white);
