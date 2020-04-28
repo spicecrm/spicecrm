@@ -44,8 +44,9 @@ export class AdministrationMenu {
             return true;
         }
 
-        // this.navigation.setActiveModule('Administration');
-        this.navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_ADMINISTRATION'), displayicon: 'settings'});
+        // set the admin label for teh component
+        let adminLabel = this.administration.getItemLabel(itemid);
+        this.navigationtab.setTabInfo({displayname: this.language.getLabel(adminLabel ? adminLabel : 'LBL_ADMINISTRATION'), displayicon: 'settings'});
 
         // start the navigation
         this.administration.navigateto(itemid);
