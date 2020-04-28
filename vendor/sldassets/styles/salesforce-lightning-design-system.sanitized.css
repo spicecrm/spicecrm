@@ -6687,8 +6687,8 @@ a.slds-button--inverse:focus {
   overflow-y: auto;
 }
 .slds-dropdown_inverse {
-  background: var(--color-background-inverse);
-  border-color: var(--color-background-inverse);
+  background: var(--color-background-border-inverse);
+  border-color: var(--color-background-border-inverse);
 }
 .slds-dropdown_inverse .slds-dropdown__item > a {
   color: var(--color-white);
@@ -8265,7 +8265,7 @@ a.slds-button--inverse:focus {
 }
 
 .slds-tree [role="treeitem"][aria-selected="true"] > .slds-tree__item {
-  background: rgba(21, 137, 238, 0.1);
+  background: var(--brand-primary-transparent);
   -webkit-box-shadow: var(--brand-primary) 4px 0 0 inset;
   box-shadow: var(--brand-primary) 4px 0 0 inset;
 }
@@ -8446,7 +8446,7 @@ a.slds-button--inverse:focus {
 }
 .slds-nav-vertical__item:hover:before,
 .slds-nav-vertical__item.slds-is-active:before {
-  background: rgba(21, 137, 238, 0.1);
+  background: var(--brand-primary-transparent);
 }
 .slds-nav-vertical__action {
   position: relative;
@@ -10407,7 +10407,7 @@ a.slds-button--inverse:focus {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
   border-radius: 50%;
-  background-color: #16325c;
+  background-color: var(--color-background-alt-inverse);
 }
 .slds-has-divider_right:last-child {
   margin-right: 0;
@@ -10442,7 +10442,7 @@ a.slds-button--inverse:focus {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
   border-radius: 50%;
-  background-color: #16325c;
+  background-color: var(--color-background-alt-inverse);
 }
 .slds-has-divider_left:first-child {
   margin-right: 0;
@@ -10484,7 +10484,7 @@ a.slds-button--inverse:focus {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
   border-radius: 50%;
-  background-color: #16325c;
+  background-color: var(--color-background-alt-inverse);
 }
 .slds-has-dividers_left > .slds-list__item:first-child,
 .slds-has-dividers_left > .slds-item:first-child {
@@ -10513,7 +10513,7 @@ a.slds-button--inverse:focus {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
   border-radius: 50%;
-  background-color: #16325c;
+  background-color: var(--color-background-alt-inverse);
 }
 .slds-has-dividers_right > .slds-list__item:last-child,
 .slds-has-dividers_right > .slds-item:last-child {
@@ -10703,8 +10703,8 @@ a.slds-button--inverse:focus {
 }
 .slds-theme_inverse {
   color: var(--color-white);
-  background-color: var(--color-background-inverse);
-  border-color: var(--color-background-inverse);
+  background-color: var(--color-background-border-inverse);
+  border-color: var(--color-background-border-inverse);
 }
 
 .slds-theme--inverse a:not(.slds-button--neutral) {
@@ -10729,8 +10729,8 @@ a.slds-button--inverse:focus {
 }
 .slds-theme_alt-inverse {
   color: var(--color-white);
-  background-color: #16325c;
-  border-color: #16325c;
+  background-color: var(--color-background-alt-inverse);
+  border-color: var(--color-background-alt-inverse);
 }
 
 .slds-theme--alt-inverse a:not(.slds-button--neutral) {
