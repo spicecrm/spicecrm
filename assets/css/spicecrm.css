@@ -6,6 +6,8 @@
 @import "./imports/spicemaps.css";
 @import "./imports/spicehtmltext.css";
 @import "./imports/spicecdk.css";
+@import "./imports/spicetables.css";
+@import "./imports/spicescrollbar.css";
 
 :root {
     --contrast-color: #CA1B21;
@@ -234,14 +236,6 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 .slds-tree [role=treeitem][aria-selected=true] > .slds-tree__item {
     background: #ecebea;
     box-shadow: var(--contrast-color) 4px 0 0 inset;
-}
-
-/* for the sticky table header */
-.slds-table--header-fixed thead th {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    border-bottom: 1px solid #dddbda;
 }
 
 /* for tables: resizable columns */
