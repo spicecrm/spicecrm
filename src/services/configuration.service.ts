@@ -288,8 +288,8 @@ export class configurationService {
     }
 
     public updateTheme() {
-        if ( this.data.backendextensions.spiceTheme && this.data.backendextensions.spiceTheme.config ) {
-            let theme = this.data.backendextensions.spiceTheme.config;
+        if ( this.data.backendextensions.spice_theme && this.data.backendextensions.spice_theme.config ) {
+            let theme = this.data.backendextensions.spice_theme.config;
             if ( theme['color-brand-primary'] ) document.documentElement.style.setProperty( '--brand-primary', theme['color-brand-primary'] );
         }
     }
