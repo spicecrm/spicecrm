@@ -41,6 +41,7 @@ import /*embed*/ {GlobalHeaderWorkbench} from "./components/globalheaderworkbenc
 import /*embed*/ {GlobalHeaderReload} from "./components/globalheaderreload";
 import /*embed*/ {GlobalFooter} from "./components/globalfooter";
 import /*embed*/ {GlobalLogin} from "./components/globallogin";
+import /*embed*/ {GlobalLoginLoading} from "./components/globalloginloading";
 import /*embed*/ {GlobalSetup} from "./components/globalsetup";
 import /*embed*/ {GlobalLoginForgotPassword} from "./components/globalloginforgotpassword";
 import /*embed*/ {GlobalLoginResetPassword} from "./components/globalloginresetpassword";
@@ -151,6 +152,7 @@ import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
         GlobalNavigationMenuMore,
         GlobalNavigationCompact,
         GlobalLogin,
+        GlobalLoginLoading,
         GlobalSetup,
         GlobalLoginForgotPassword,
         GlobalLoginResetPassword,
