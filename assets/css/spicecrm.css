@@ -47,19 +47,6 @@ input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 1000px white inset;
 }
 
-/* strombo: delete! */
-.required {
-    float: left;
-    padding-right: 2px;
-    color: rgb(194, 57, 52);
-    font-weight: 700;
-}
-
-/* strombo: delete! */
-.slds-global-header_container {
-    z-index: 999;
-}
-
 /* Separator / horizontal line at the beginning of a timeline activity. */
 .spiceActivitiyTimelineHeader::before {
     position: absolute;
@@ -138,39 +125,11 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     background-color: transparent;
 }
 
-/* background-color of tooltips */
-/* strombo: delete */
-/*
-.slds-popover--tooltip, .slds-popover_tooltip {
-    background: #002D31;
-}
- */
-
 /* background color of vertical navigation/menu items */
 /* strombo: ??? ... original slds is brand-primary-transparent, not #ddd */
 .slds-nav-vertical__item.slds-is-active:before, .slds-nav-vertical__item:hover:before {
     background: #ddd;
 }
-
-/* background color of navigation tabs */
-/* strombo: delete */
-/*
-.slds-context-bar__item.slds-is-active, .slds-context-bar__item:not(.slds-no-hover):hover {
-    background-color: rgba(155, 155, 155, .1);
-}
-.slds-context-bar__item.slds-is-active {
-    animation: bkAnim 135ms cubic-bezier(.39, .575, .565, 1) both
-}
-@keyframes spiceAnim {
-    50% {
-        background-color: #fff
-    }
-    100% {
-        background-color: rgba(155, 155, 155, .1);
-    }
-}
-
- */
 
 /* capitalize first letter in buttons */
 .slds-button span {
@@ -187,17 +146,6 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     overflow: auto;
     height: 300px;
 }
-
-/* strombo: delete! */
-/*
-.slds-timeline__item_expandable .slds-media__figure {
-    z-index: auto;
-}
-.slds-timeline__item_expandable:before {
-    height: calc(100% - 30px);
-    top: 30px;
-}
-*/
 
 /* align text justified */
 /* not a slds class, but related to slds classes slds-text-align_left, slds-text-align_center or slds-text-align_right */
