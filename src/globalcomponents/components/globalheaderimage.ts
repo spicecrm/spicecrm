@@ -44,8 +44,8 @@ export class GlobalHeaderImage {
      */
     private setImageUrl(): void {
         // Update the image url in case the configuration data has changed an there is a specific header image defined.
-        if( this.configuration.getCapabilityConfig( 'spice_theme' ).headerImage ) {
-            this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl( 'data:' + this.configuration.getCapabilityConfig( 'spice_theme' ).headerImage );
+        if( this.configuration.getCapabilityConfig( 'spice_theme' ).header_image ) {
+            this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl( 'data:' + this.configuration.getCapabilityConfig( 'spice_theme' ).header_image );
         } else {
             this.imageUrl = this.defaultImageUrl;
         }
