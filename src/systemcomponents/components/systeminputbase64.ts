@@ -28,7 +28,7 @@ export class SystemInputBase64 {
     private _value: string = '';
 
     get value() {
-        if(this.value && this.value != '') {
+        if(this._value && this._value != '') {
             try {
                 return decodeURIComponent(window.atob(this._value));
             } catch (e) {
