@@ -117,7 +117,7 @@ export class sapIdocsManager {
                     if (object.deleted == '0') {
                         changed.push({
                             type: objecttype,
-                            action: 'N',
+                            action: 'I',
                             data: object
                         });
                     }
