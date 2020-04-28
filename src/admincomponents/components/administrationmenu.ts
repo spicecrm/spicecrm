@@ -44,10 +44,10 @@ export class AdministrationMenu {
             return true;
         }
 
-        // set the tab info back to administration in case the current opened tba changed it
+        // this.navigation.setActiveModule('Administration');
         this.navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_ADMINISTRATION'), displayicon: 'settings'});
 
-        // trigger admin navigation
+        // start the navigation
         this.administration.navigateto(itemid);
     }
 
