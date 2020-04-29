@@ -5,14 +5,14 @@
                 <system-icon icon="text" sprite="utility" size="x-small" divClass="slds-current-color"></system-icon>
             </div>
             <div class="slds-media__body">
-                <h2>
-                    Divider
+                <h2 class="slds-truncate">
+                    <system-label label="LBL_ELEMENT"></system-label>
                 </h2>
             </div>
         </div>
     </div>
     <article (dblclick)="edit()" class="spice-drop-zone-content">
-        <div [ngStyle]="element.style"></div>
+        <div [ngStyle]="style"></div>
     </article>
     <div class="spice-drop-zone-actions">
         <div class="slds-button-group" role="group">

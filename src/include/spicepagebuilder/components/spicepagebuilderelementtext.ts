@@ -1,21 +1,44 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, Input, OnInit} from '@angular/core';
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {modal} from "../../../services/modal.service";
-import {SpicePageBuilderRendererElement} from "./spicepagebuilderrendererelement";
+import {AttributeObjectI, TextI} from "../interfaces/spicepagebuilder.interfaces";
+import {SpicePageBuilderElement} from "./spicepagebuilderelement";
 
 /**
  * Parse and renders renderer container
  */
 @Component({
-    selector: 'spice-page-builder-renderer-text',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderrenderertext.html',
+    selector: 'spice-page-builder-element-text',
+    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderelementtext.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SpicePageBuilderRendererText extends SpicePageBuilderRendererElement implements OnInit {
+export class SpicePageBuilderElementText extends SpicePageBuilderElement implements OnInit {
+    /**
+     * containers to be rendered
+     */
+    @Input() public element: TextI;
+    /**
+     * interface attribute list for the element to loop through
+     */
+    public readonly attributesList: AttributeObjectI[] = [
+        {name: 'color', type: 'color'},
+        {name: 'background-color', type: 'color'},
+        {name: 'font-family', type: ''},
+        {name: 'font-size', type: ''},
+        {name: 'font-style', type: ''},
+        {name: 'font-weight', type: ''},
+        {name: 'line-height', type: ''},
+        {name: 'letter-spacing', type: ''},
+        {name: 'height', type: 'text'},
+        {name: 'text-decoration', type: ''},
+        {name: 'text-transform', type: ''},
+        {name: 'align', type: ''},
+        {name: 'padding', type: 'sides'},
+    ];
     /**
      * hold the sanitized content html
      */

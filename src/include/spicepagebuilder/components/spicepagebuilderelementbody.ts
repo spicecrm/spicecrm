@@ -1,7 +1,7 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {BodyI} from "../interfaces/spicepagebuilder.interfaces";
 
@@ -9,24 +9,28 @@ import {BodyI} from "../interfaces/spicepagebuilder.interfaces";
  * Parse and renders the html page design
  */
 @Component({
-    selector: 'spice-page-builder-renderer',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderrenderer.html',
+    selector: 'spice-page-builder-element-body',
+    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderelementbody.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SpicePageBuilderRenderer implements OnInit {
+export class SpicePageBuilderElementBody implements OnInit {
     /**
      * body element to be rendered in the view
      */
-    private body: BodyI;
+    @Input() protected body: BodyI;
+    /**
+     * hold the body style object
+     */
+    private style = {};
 
     constructor(private spicePageBuilderService: SpicePageBuilderService) {
     }
 
     /**
-     * set the body element
+     * call to generate body style from attributes
      */
     public ngOnInit() {
-        this.setBodyElement();
+        this.generateStyle();
     }
 
     /**
@@ -41,10 +45,12 @@ export class SpicePageBuilderRenderer implements OnInit {
     }
 
     /**
-     * set body element
+     * generate body style object
      */
-    private setBodyElement() {
-        if (!this.spicePageBuilderService.page || !this.spicePageBuilderService.page.children) return;
-        this.body = this.spicePageBuilderService.page.children.find(child => child.tagName == 'body');
+    private generateStyle() {
+        this.style = {
+            'background-color': this.body.attributes['background-color'],
+            'width': this.body.attributes.width
+        };
     }
 }
