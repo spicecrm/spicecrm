@@ -10,10 +10,6 @@
 @import "./imports/spicescrollbar.css";
 
 :root {
-    --contrast-color: #CA1B21;
-}
-
-:root {
     --color-white: white;
     --color-grey-3: #f3f2f2;
     --color-grey-5: #dddbda;
