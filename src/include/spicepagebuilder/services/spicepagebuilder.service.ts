@@ -2,6 +2,8 @@ import {Injectable} from "@angular/core";
 import {CdkDropList} from "@angular/cdk/drag-drop";
 import {Observable, Subject} from "rxjs";
 import {modal} from "../../../services/modal.service";
+import {ColumnI, ContainerElementI, PanelElementI, SectionI} from "../interfaces/spicepagebuilder.interfaces";
+import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
 
 /** @ignore */
 declare var _;
@@ -17,105 +19,151 @@ export class SpicePageBuilderService {
      */
     public dragPlaceholderNode: Node;
     /**
+     * hold the drag placeholder node to keep element in place while dragging
+     */
+    public defaultPlaceholderHeight: number = 200;
+    /**
      * hold the current hovered item type
      */
     public isMouseIn: 'section' | 'content';
     /**
      * page structure object
      */
-    public page: { containers, style, type } = {
-        style: {'background-color': 'grey'},
-        type: 'page',
-        containers: [
+    public page: ContainerElementI = {
+        tagName: 'page',
+        attributes: {},
+        children: [
             {
-                type: 'container',
-                style: {
-                    'background-color': '#C7FFD6',
-                    'padding': '8px',
-                    'display': 'block',
+                tagName: 'body',
+                attributes: {
+                    'background-color': '#ffffff',
+                    'width': '600px'
                 },
-                sections: []
+                children: [
+                    {
+                        tagName: 'container',
+                        attributes: {},
+                        children: []
+                    }
+                ]
             }
         ]
     };
     /**
      * hold the available content elements
      */
-    public readonly contentElements: any[] = [
+    public readonly panelElements: PanelElementI[] = [
         {
-            type: 'text',
-            style: {
+            tagName: 'text',
+            label: 'LBL_TEXT',
+            content: 'Write text here...',
+            icon: 'text',
+            attributes: {
                 'padding': '4px',
                 'width': '100%',
-                'background-color': '#e7e7e7',
-            },
-            content: 'Write text here...',
-            icon: 'text'
+                'background-color': '#e7e7e7'
+            }
         },
         {
-            type: 'image',
-            style: {},
-            src: '',
-            icon: 'image'
+            tagName: 'image',
+            label: 'LBL_IMAGE',
+            icon: 'image',
+            attributes: {}
         },
         {
-            type: 'divider',
-            style: {
+            tagName: 'divider',
+            label: 'LBL_DIVIDER',
+            icon: 'dash',
+            attributes: {
                 'margin-top': '8px',
                 'padding-top': '8px',
                 'border-top-width': '1px',
                 'border-top-style': 'solid',
                 'border-top-color': '#dddbda'
-            },
-            icon: 'dash'
+            }
         },
         {
-            type: 'spacer',
-            style: {
+            tagName: 'spacer',
+            label: 'LBL_SPACER',
+            icon: 'steps',
+            attributes: {
                 height: '100px',
                 width: '100%'
-            },
-            icon: 'steps'
+            }
         },
         {
-            type: 'button',
-            text: 'New Button',
-            url: '#',
-            style: {
-                'border-radius': '4px 4px 4px 4px',
+            tagName: 'button',
+            label: 'LBL_BUTTON',
+            content: 'New Button',
+            icon: 'link',
+            attributes: {
+                'border-radius': '4px',
                 'background-color': '#ca1b21',
                 'color': '#ffffff',
-                'padding': '4px 4px 4px 4px',
+                'padding': '4px',
                 'width': '100px',
-                'text-align': 'center'
-            },
-            icon: 'link'
+                'text-align': 'center',
+                'url': '#',
+            }
         },
         {
-            type: 'code',
+            tagName: 'code',
+            label: 'LBL_HTML_CODE',
             content: 'Write code here...',
-            style: {
-            },
-            icon: 'insert_tag_field'
+            icon: 'insert_tag_field',
+            attributes: {}
         }
 
     ];
-
     /**
-     * default style attributes definition
+     * holds the panel default section
      */
-    public defaultStyleAttributes: Array<{ name, type, suffix? }> = [
-        {name: 'padding', type: 'sides', suffix: 'px'},
-        {name: 'margin', type: 'sides', suffix: 'px'},
-        {name: 'height', type: 'text', suffix: 'px'},
-        {name: 'background-color', type: 'color'},
-        {name: 'color', type: 'color'},
+    public readonly panelDefaultSection: SectionI = {
+        tagName: 'section',
+        attributes:
+            {
+                'background-color': '#c1dfff'
+            },
+        children: []
+    };
+    /**
+     * holds the panel default column
+     */
+    public readonly panelDefaultColumn: ColumnI = {
+        tagName: 'column',
+        children: [],
+        attributes: {
+            padding: '4px',
+        }
+    };
+    /**
+     * align radio options
+     */
+    public alignOptions: InputRadioOptionI[] = [
+        {
+            title: 'LBL_LEFT_ALIGN',
+            icon: 'left_align_text',
+            value: 'left',
+        },
+        {
+            title: 'LBL_CENTER_ALIGN',
+            icon: 'center_align_text',
+            value: 'center',
+        },
+        {
+            title: 'LBL_RIGHT_ALIGN',
+            icon: 'right_align_text',
+            value: 'right',
+        }
     ];
-
     /**
      * holds the drop list group reference
      */
     public dropListGroup: any;
+    /**
+     * holds the default suffix
+     */
+    public defaultSuffix: 'px' | 'rem' = 'px';
 
     constructor(private modal: modal) {
         this.contentListId = _.uniqueId('panel-drop-list-');

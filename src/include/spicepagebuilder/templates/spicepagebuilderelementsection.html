@@ -1,28 +1,24 @@
-<div class="spice-drop-zone" [class.slds-is-hovered]="spicePageBuilderService.isMouseIn == 'content'" (mouseenter)="setIsMouseIn(true)" (mouseleave)="setIsMouseIn(false)" tabindex="-1">
+<div [class.slds-is-hovered]="spicePageBuilderService.isMouseIn == 'section'" (mouseenter)="setIsMouseIn(true)" (mouseleave)="setIsMouseIn(false)" tabindex="-1" class="spice-drop-zone">
     <div class="spice-drop-zone-label">
         <div class="slds-media slds-media_center">
             <div class="slds-media__figure">
-                <system-icon icon="text" sprite="utility" size="x-small" divClass="slds-current-color"></system-icon>
+                <system-icon icon="full_width_view" sprite="utility" size="x-small" divClass="slds-current-color"></system-icon>
             </div>
             <div class="slds-media__body">
-                <h2>
-                    Button
+                <h2 class="slds-truncate">
+                    <system-label label="LBL_SECTION"></system-label>
                 </h2>
             </div>
         </div>
     </div>
-    <article (dblclick)="edit()" class="spice-drop-zone-content">
-        <a [ngStyle]="element.style" [href]="element.url" style="pointer-events: none">
-            {{element.text}}
-        </a>
+    <article class="spice-drop-zone-content slds-grid">
+        <spice-page-builder-element-column *ngFor="let column of section.children; trackBy: trackByFn" [column]="column"
+                                            class="spice-display-block slds-grow slds-height_full"></spice-page-builder-element-column>
     </article>
     <div class="spice-drop-zone-actions">
         <div class="slds-button-group" role="group">
             <button cdkDragHandle class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_MOVE">
                 <system-button-icon icon="move" addclasses="slds-icon"></system-button-icon>
-            </button>
-            <button (click)="edit()" class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_CLOSE">
-                <system-button-icon icon="edit" addclasses="slds-icon"></system-button-icon>
             </button>
             <button (click)="delete$.emit()" class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_CLOSE">
                 <system-button-icon icon="close" addclasses="slds-icon"></system-button-icon>
@@ -30,6 +26,5 @@
         </div>
     </div>
 </div>
-
 
 

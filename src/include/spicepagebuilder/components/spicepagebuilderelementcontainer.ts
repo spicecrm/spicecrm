@@ -1,23 +1,24 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {AfterViewInit, ChangeDetectionStrategy, Component, Input, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop";
+import {ContainerI} from "../interfaces/spicepagebuilder.interfaces";
 
 /**
  * Parse and renders renderer container
  */
 @Component({
-    selector: 'spice-page-builder-renderer-container',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderrenderercontainer.html',
+    selector: 'spice-page-builder-element-container',
+    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderelementcontainer.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SpicePageBuilderRendererContainer implements AfterViewInit {
+export class SpicePageBuilderElementContainer implements OnInit, AfterViewInit {
     /**
      * containers to be rendered
      */
-    @Input() protected readonly container: { type, sections, style };
+    @Input() protected readonly container: ContainerI;
     /**
      * holds the drag entered value
      */
@@ -26,8 +27,19 @@ export class SpicePageBuilderRendererContainer implements AfterViewInit {
      * read drop list dom element to be added to the group
      */
     @ViewChild('dropList', {read: CdkDropList, static: false}) private dropList: CdkDropList;
+    /**
+     * hold the style object for the element
+     */
+    private style = {};
 
     constructor(private spicePageBuilderService: SpicePageBuilderService) {
+    }
+
+    /**
+     * call to generate body style from attributes
+     */
+    public ngOnInit() {
+        this.generateStyle();
     }
 
     /**
@@ -50,7 +62,16 @@ export class SpicePageBuilderRendererContainer implements AfterViewInit {
 
     /** Predicate method that only allows sections to be dropped into a list. */
     protected sectionPredicate(item: CdkDrag<any>) {
-        return item.data.type == 'section';
+        return item.data.tagName == 'section';
+    }
+
+    /**
+     * generate body style object
+     */
+    private generateStyle() {
+        this.style = {
+            'background-color': this.container.attributes['background-color']
+        };
     }
 
     /**
@@ -58,7 +79,7 @@ export class SpicePageBuilderRendererContainer implements AfterViewInit {
      * @param section
      */
     private onSectionDelete(section) {
-        this.container.sections = this.container.sections.filter(item => item != section);
+        this.container.children = this.container.children.filter(item => item != section);
     }
 
     /**
@@ -74,12 +95,12 @@ export class SpicePageBuilderRendererContainer implements AfterViewInit {
                 this.spicePageBuilderService.dragPlaceholderNode = undefined;
             }
             const section = JSON.parse(JSON.stringify(event.item.data));
-            this.container.sections.splice(
+            this.container.children.splice(
                 event.currentIndex, 0, section
             );
+            this.dragEntered = false;
         } else {
-            moveItemInArray(this.container.sections, event.previousIndex, event.currentIndex);
-
+            moveItemInArray(this.container.children, event.previousIndex, event.currentIndex);
         }
     }
 }

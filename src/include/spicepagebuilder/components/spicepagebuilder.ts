@@ -17,13 +17,26 @@ import {CdkDropListGroup} from "@angular/cdk/drag-drop";
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilder implements AfterViewInit {
+    /**
+     * drop list reference to manage adding new lists
+     */
     @ViewChild(CdkDropListGroup, {read: CdkDropListGroup, static: false}) private dropListGroup;
 
     constructor(private language: language, private navigationtab: navigationtab, private spicePageBuilderService: SpicePageBuilderService) {
         this.setNavigationTabInfo();
     }
 
+    /**
+     * call to set drop list group reference
+     */
     public ngAfterViewInit() {
+        this.setDropListReference();
+    }
+
+    /**
+     * set drop list group reference
+     */
+    private setDropListReference() {
         this.spicePageBuilderService.dropListGroup = this.dropListGroup;
     }
 

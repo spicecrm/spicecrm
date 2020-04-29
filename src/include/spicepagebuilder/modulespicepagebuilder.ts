@@ -12,19 +12,20 @@ import /*embed*/ {SpicePageBuilderService} from './services/spicepagebuilder.ser
 import /*embed*/ {SpicePageBuilderInputText} from './components/spicepagebuilderinputtext';
 import /*embed*/ {SpicePageBuilderInputSides} from './components/spicepagebuilderinputsides';
 import /*embed*/ {SpicePageBuilderInputColor} from './components/spicepagebuilderinputcolor';
-import /*embed*/ {SpicePageBuilderRendererElement} from './components/spicepagebuilderrendererelement';
-import /*embed*/ {SpicePageBuilderRendererImage} from './components/spicepagebuilderrendererimage';
-import /*embed*/ {SpicePageBuilderRendererText} from './components/spicepagebuilderrenderertext';
-import /*embed*/ {SpicePageBuilderRendererDivider} from './components/spicepagebuilderrendererdivider';
-import /*embed*/ {SpicePageBuilderRendererSpacer} from './components/spicepagebuilderrendererspacer';
-import /*embed*/ {SpicePageBuilderRendererButton} from './components/spicepagebuilderrendererbutton';
-import /*embed*/ {SpicePageBuilderRendererCode} from './components/spicepagebuilderrenderercode';
-import /*embed*/ {SpicePageBuilderRendererColumn} from './components/spicepagebuilderrenderercolumn';
-import /*embed*/ {SpicePageBuilderRendererSection} from './components/spicepagebuilderrenderersection';
-import /*embed*/ {SpicePageBuilderRendererContainer} from './components/spicepagebuilderrenderercontainer';
-import /*embed*/ {SpicePageBuilderPanelEditor} from './components/spicepagebuilderpaneleditor';
-import /*embed*/ {SpicePageBuilderPanel} from './components/spicepagebuilderpanel';
+import /*embed*/ {SpicePageBuilderElement} from './components/spicepagebuilderelement';
+import /*embed*/ {SpicePageBuilderElementImage} from './components/spicepagebuilderElementimage';
+import /*embed*/ {SpicePageBuilderElementText} from './components/spicepagebuilderElementtext';
+import /*embed*/ {SpicePageBuilderElementDivider} from './components/spicepagebuilderElementdivider';
+import /*embed*/ {SpicePageBuilderElementSpacer} from './components/spicepagebuilderElementspacer';
+import /*embed*/ {SpicePageBuilderElementButton} from './components/spicepagebuilderElementbutton';
+import /*embed*/ {SpicePageBuilderElementCode} from './components/spicepagebuilderElementcode';
+import /*embed*/ {SpicePageBuilderElementColumn} from './components/spicepagebuilderElementcolumn';
+import /*embed*/ {SpicePageBuilderElementSection} from './components/spicepagebuilderElementsection';
+import /*embed*/ {SpicePageBuilderElementContainer} from './components/spicepagebuilderElementcontainer';
+import /*embed*/ {SpicePageBuilderElementBody} from './components/spicepagebuilderElementbody';
 import /*embed*/ {SpicePageBuilderRenderer} from './components/spicepagebuilderrenderer';
+import /*embed*/ {SpicePageBuilderPanel} from './components/spicepagebuilderpanel';
+import /*embed*/ {SpicePageBuilderEditor} from './components/spicepagebuildereditor';
 import /*embed*/ {SpicePageBuilder} from './components/spicepagebuilder';
 
 import {FormsModule} from "@angular/forms";
@@ -36,21 +37,23 @@ import {QuillEditorModule} from "../quilleditor/quilleditor";
     declarations: [
         SpicePageBuilder,
         SpicePageBuilderPanel,
-        SpicePageBuilderRendererElement,
+        SpicePageBuilderRenderer,
+        SpicePageBuilderElement,
         SpicePageBuilderInputText,
         SpicePageBuilderInputSides,
         SpicePageBuilderInputColor,
-        SpicePageBuilderPanelEditor,
-        SpicePageBuilderRenderer,
-        SpicePageBuilderRendererContainer,
-        SpicePageBuilderRendererSection,
-        SpicePageBuilderRendererColumn,
-        SpicePageBuilderRendererImage,
-        SpicePageBuilderRendererText,
-        SpicePageBuilderRendererDivider,
-        SpicePageBuilderRendererSpacer,
-        SpicePageBuilderRendererButton,
-        SpicePageBuilderRendererCode,
+        SpicePageBuilderEditor,
+        SpicePageBuilderElement,
+        SpicePageBuilderElementContainer,
+        SpicePageBuilderElementBody,
+        SpicePageBuilderElementSection,
+        SpicePageBuilderElementColumn,
+        SpicePageBuilderElementImage,
+        SpicePageBuilderElementText,
+        SpicePageBuilderElementDivider,
+        SpicePageBuilderElementSpacer,
+        SpicePageBuilderElementButton,
+        SpicePageBuilderElementCode,
     ],
     exports: [
         SpicePageBuilder

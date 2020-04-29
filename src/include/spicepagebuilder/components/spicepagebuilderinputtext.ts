@@ -3,6 +3,7 @@
  */
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef, Input} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
+import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 
 /**
  * render four input fields to handle editing style attributes like margin or padding
@@ -25,10 +26,6 @@ export class SpicePageBuilderInputText implements ControlValueAccessor {
      */
     @Input() private label: string = '';
     /**
-     * name of the style attribute
-     */
-    @Input() private suffix: string = '';
-    /**
      * holds the sides value
      */
     private value: number = 0;
@@ -42,7 +39,7 @@ export class SpicePageBuilderInputText implements ControlValueAccessor {
      */
     private onChange: (modelValue: any) => void;
 
-    constructor(private cdRef: ChangeDetectorRef) {
+    constructor(private cdRef: ChangeDetectorRef, private spicePageBuilderService: SpicePageBuilderService) {
     }
 
     /**
@@ -79,7 +76,7 @@ export class SpicePageBuilderInputText implements ControlValueAccessor {
      */
     private emitJoinedValue() {
         this.onChange(
-            this.value + this.suffix
+            this.value + this.spicePageBuilderService.defaultSuffix
         );
     }
 }

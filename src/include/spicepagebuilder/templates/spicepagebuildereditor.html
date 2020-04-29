@@ -1,0 +1,23 @@
+<system-modal>
+    <system-modal-header (close)="cancel()">
+        <system-label label="LBL_EDIT"></system-label> <system-label [label]="element.label"></system-label>
+    </system-modal-header>
+    <system-modal-content [grow]="true">
+        <div class="slds-height_full slds-size--1-of-1" [ngSwitch]="element.tagName">
+            <spice-page-builder-element-text *ngSwitchCase="'text'" [element]="element" [isEditMode]="true"></spice-page-builder-element-text>
+            <spice-page-builder-element-image *ngSwitchCase="'image'" [element]="element" [isEditMode]="true"></spice-page-builder-element-image>
+            <spice-page-builder-element-button *ngSwitchCase="'button'" [element]="element" [isEditMode]="true"></spice-page-builder-element-button>
+            <spice-page-builder-element-divider *ngSwitchCase="'divider'" [element]="element" [isEditMode]="true"></spice-page-builder-element-divider>
+            <spice-page-builder-element-spacer *ngSwitchCase="'spacer'" [element]="element" [isEditMode]="true"></spice-page-builder-element-spacer>
+            <spice-page-builder-element-code *ngSwitchCase="'code'" [element]="element" [isEditMode]="true"></spice-page-builder-element-code>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="cancel()">
+            <system-label label="LBL_CANCEL"></system-label>
+        </button>
+        <button class="slds-button slds-button--brand" (click)="confirm()">
+            <system-label label="LBL_SAVE"></system-label>
+        </button>
+    </system-modal-footer>
+</system-modal>
