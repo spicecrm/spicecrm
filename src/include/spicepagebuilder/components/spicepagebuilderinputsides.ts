@@ -3,6 +3,8 @@
  */
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef, Input} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
+import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
+import {EditorAttributeI} from "../interfaces/spicepagebuilder.interfaces";
 
 /**
  * render four input fields to handle editing style attributes like margin or padding
@@ -25,10 +27,6 @@ export class SpicePageBuilderInputSides implements ControlValueAccessor {
      */
     @Input() private label: string = '';
     /**
-     * name of the style attribute
-     */
-    @Input() private suffix: string = '';
-    /**
      * holds the sides value
      */
     private value: { top, right, bottom, left } = {top: 0, right: 0, bottom: 0, left: 0};
@@ -42,7 +40,7 @@ export class SpicePageBuilderInputSides implements ControlValueAccessor {
      */
     private onChange: (modelValue: any) => void;
 
-    constructor(private cdRef: ChangeDetectorRef) {
+    constructor(private cdRef: ChangeDetectorRef, private spicePageBuilderService: SpicePageBuilderService) {
     }
 
     /**
@@ -86,8 +84,9 @@ export class SpicePageBuilderInputSides implements ControlValueAccessor {
      * emit joined value
      */
     private emitJoinedValue() {
+        const suffix = this.spicePageBuilderService.defaultSuffix;
         this.onChange(
-            `${this.value.top + this.suffix} ${this.value.right + this.suffix} ${this.value.bottom + this.suffix} ${this.value.left + this.suffix}`
+            `${this.value.top + suffix} ${this.value.right + suffix} ${this.value.bottom + suffix} ${this.value.left + suffix}`
         );
     }
 }

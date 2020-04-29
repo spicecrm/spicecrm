@@ -4,6 +4,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {CdkDragEnter, CdkDragExit} from "@angular/cdk/drag-drop";
+import {ColumnI, SectionI} from "../interfaces/spicepagebuilder.interfaces";
 
 /**
  * render a set of tools and configurations to be used for building pages
@@ -17,7 +18,7 @@ export class SpicePageBuilderPanel {
     /**
      * available sections
      */
-    protected sections: Array<{ type, columns, style }> = [];
+    protected sections: SectionI[] = [];
 
     constructor(private spicePageBuilderService: SpicePageBuilderService) {
     }
@@ -38,21 +39,17 @@ export class SpicePageBuilderPanel {
 
         while (counterSection <= 4) {
             let counterColumn = 1;
-            let columns = [];
+            let columns: ColumnI[] = [];
 
             while (counterColumn <= counterSection) {
-                columns.push({type: 'column', style: {padding: '8px'}, elements: []});
+                columns.push(
+                    JSON.parse(JSON.stringify(this.spicePageBuilderService.panelDefaultColumn))
+                );
                 counterColumn++;
             }
-            this.sections.push({
-                type: 'section',
-                style:
-                    {
-                        'background-color': '#C1DFFF',
-                        'margin-bottom': '.5rem'
-                    },
-                columns
-            });
+            const section: SectionI = JSON.parse(JSON.stringify(this.spicePageBuilderService.panelDefaultSection));
+            section.children = columns;
+            this.sections.push(section);
             counterSection++;
         }
     }

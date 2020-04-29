@@ -1,38 +1,25 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {
-    AfterViewInit,
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    Input,
-    ViewChild
-} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
-import {
-    CdkDrag,
-    CdkDragDrop,
-    CdkDragEnter,
-    CdkDragExit,
-    CdkDropList,
-    moveItemInArray
-} from "@angular/cdk/drag-drop";
+import {CdkDrag, CdkDragDrop, CdkDragEnter, CdkDragExit, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop";
 import {modal} from "../../../services/modal.service";
+import {ColumnI, PanelElementI} from "../interfaces/spicepagebuilder.interfaces";
 
 /**
  * Parse and renders renderer container
  */
 @Component({
-    selector: 'spice-page-builder-renderer-column',
-    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderrenderercolumn.html',
+    selector: 'spice-page-builder-element-column',
+    templateUrl: './src/include/spicepagebuilder/templates/spicepagebuilderelementcolumn.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SpicePageBuilderRendererColumn implements AfterViewInit {
+export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
     /**
      * containers to be rendered
      */
-    @Input() protected readonly column: { type, elements, style };
+    @Input() protected readonly column: ColumnI;
     /**
      * holds the drag entered value
      */
@@ -41,10 +28,21 @@ export class SpicePageBuilderRendererColumn implements AfterViewInit {
      * read drop list dom element to be added to the group
      */
     @ViewChild('dropList', {read: CdkDropList, static: false}) private dropList: CdkDropList;
+    /**
+     * hold the style object for the element
+     */
+    private style = {};
 
     constructor(private spicePageBuilderService: SpicePageBuilderService,
                 private modal: modal,
                 private cdRef: ChangeDetectorRef) {
+    }
+
+    /**
+     * call to generate body style from attributes
+     */
+    public ngOnInit() {
+        this.generateStyle();
     }
 
     public ngAfterViewInit(): void {
@@ -64,7 +62,25 @@ export class SpicePageBuilderRendererColumn implements AfterViewInit {
 
     /** Predicate method that only allows sections to be dropped into a list. */
     protected contentPredicate(item: CdkDrag) {
-        return item.data.type != 'section';
+        return item.data.tagName != 'section';
+    }
+
+    /**
+     * generate body style object
+     */
+    private generateStyle() {
+        this.style = {
+            'background-color': this.column.attributes['background-color'],
+            'border': this.column.attributes.border,
+            'border-top': this.column.attributes['border-top'],
+            'border-right': this.column.attributes['border-right'],
+            'border-bottom': this.column.attributes['border-bottom'],
+            'border-left': this.column.attributes['border-left'],
+            'border-radius': this.column.attributes['border-radius'],
+            'width': this.column.attributes.width,
+            'vertical-align': this.column.attributes['vertical-align'],
+            'padding': this.column.attributes.padding,
+        };
     }
 
     /**
@@ -85,14 +101,14 @@ export class SpicePageBuilderRendererColumn implements AfterViewInit {
                 event.previousContainer.data.elements = event.previousContainer.data.elements.filter(item => item != event.item.data);
             }
 
-            switch (event.item.data.type) {
+            switch (event.item.data.tagName) {
                 case 'image':
                     this.spicePageBuilderService.openMediaFilePicker().subscribe(src => {
                         if (!!src) {
-                            const image = {...event.item.data};
-                            image.src = src;
+                            const image: PanelElementI = {...event.item.data};
+                            image.attributes.src = src;
                             delete image.icon;
-                            this.column.elements.splice(
+                            this.column.children.splice(
                                 event.currentIndex, 0, image
                             );
                             this.cdRef.detectChanges();
@@ -100,15 +116,15 @@ export class SpicePageBuilderRendererColumn implements AfterViewInit {
                     });
                     break;
                 default:
-                    const element = JSON.parse(JSON.stringify(event.item.data));
+                    const element: PanelElementI = JSON.parse(JSON.stringify(event.item.data));
                     delete element.icon;
 
-                    this.column.elements.splice(
+                    this.column.children.splice(
                         event.currentIndex, 0, element
                     );
             }
         } else {
-            moveItemInArray(this.column.elements, event.previousIndex, event.currentIndex);
+            moveItemInArray(this.column.children, event.previousIndex, event.currentIndex);
         }
         this.dragEntered = false;
     }
@@ -134,6 +150,6 @@ export class SpicePageBuilderRendererColumn implements AfterViewInit {
      * @param element
      */
     private onContentDelete(element) {
-        this.column.elements = this.column.elements.filter(item => item != element);
+        this.column.children = this.column.children.filter(item => item != element);
     }
 }
