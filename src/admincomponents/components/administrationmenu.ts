@@ -6,6 +6,7 @@ import {
     Output
 } from '@angular/core';
 import {language} from '../../services/language.service';
+import {navigationtab} from '../../services/navigationtab.service';
 import {administration} from "../services/administration.service";
 
 @Component({
@@ -16,7 +17,8 @@ export class AdministrationMenu {
 
     constructor(
         private language: language,
-        private administration: administration,
+        private navigationtab: navigationtab,
+        private administration: administration
     ) {
 
     }
@@ -42,6 +44,11 @@ export class AdministrationMenu {
             return true;
         }
 
+        // set the admin label for teh component
+        let adminLabel = this.administration.getItemLabel(itemid);
+        this.navigationtab.setTabInfo({displayname: this.language.getLabel(adminLabel ? adminLabel : 'LBL_ADMINISTRATION'), displayicon: 'settings'});
+
+        // start the navigation
         this.administration.navigateto(itemid);
     }
 

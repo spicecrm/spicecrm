@@ -15,23 +15,12 @@ import {broadcast} from "../../../services/broadcast.service";
 })
 export class ACLTerritorriesElementmanager {
 
-    @ViewChild('elementmanagercontent', {read: ViewContainerRef, static: true}) elementmanagercontent: ViewContainerRef;
-
-    activeElement: string = '';
+    private activeElement: string = '';
 
     constructor(private backend: backend, private navigation: navigation, private elementRef: ElementRef) {
-        // set theenavigation paradigm
-        // this.navigation.setActiveModule('Tasks');
     }
 
-    get contentStyle(){
-        let rect = this.elementmanagercontent.element.nativeElement.getBoundingClientRect();
-        return {
-            height: 'calc(100vh - ' + rect.top + 'px'
-        }
-    }
-
-    setActiveElement(element){
+    private setActiveElement(element){
         this.activeElement = element;
     }
 

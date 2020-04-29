@@ -1,7 +1,7 @@
 <div>
     <aclterritorries-manager-header displaylabel="LBL_TYPES"></aclterritorries-manager-header>
 </div>
-<div #typemanagercontent class="slds-grid" [ngStyle]="contentStyle">
+<div #typemanagercontent class="slds-grid">
     <aclterritorries-typesmanager-types class="slds-size--1-of-3 slds-border--right" (selectedType)="setType($event)"></aclterritorries-typesmanager-types>
     <aclterritorries-typesmanager-type-elements class="slds-size--2-of-3" [activeType]="activeType"></aclterritorries-typesmanager-type-elements>
 </div>

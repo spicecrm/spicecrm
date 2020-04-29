@@ -14,10 +14,8 @@
                         <div *ngIf="presentedCategories" #inputField class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open':listIsExpanded}">
                             <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
                                 <input type="text" class="slds-input slds-combobox__input" id="input-categorypool" autocomplete="off" (keyup)="change($event)" (blur)="changeFocus(false)" (focus)="changeFocus(true,$event)">
-                                <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right" title="Description of icon when needed">
-                                    <svg class="slds-icon slds-icon slds-icon_x-small slds-icon-text-default">
-                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#search"></use>
-                                    </svg>
+                                <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right">
+                                    <system-utility-icon size="x-small" icon="search"></system-utility-icon>
                                     <span class="slds-assistive-text"><system-label label="LBL_SEARCH"></system-label></span>
                                 </span>
                             </div>

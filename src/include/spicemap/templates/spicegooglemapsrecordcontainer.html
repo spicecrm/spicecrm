@@ -1,0 +1,10 @@
+<ng-container *ngIf="hasGeoData; else hasNoGeoDataContainer">
+    <spice-google-maps-record [componentconfig]="componentconfig"></spice-google-maps-record>
+</ng-container>
+<ng-template #hasNoGeoDataContainer>
+    <div class="slds-grid slds-grid_vertical-align-center slds-height_full slds-grid--align-center slds-p-around--large">
+        <system-illustration-no-data>
+            <system-label label="MSG_RECORD_HAS_NO_GEO_DATA"></system-label>
+        </system-illustration-no-data>
+    </div>
+</ng-template>

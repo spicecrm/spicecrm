@@ -29,7 +29,7 @@ export class QuestionsetCategoryPool implements OnInit, OnDestroy {
 
     private clickListener: any;
 
-    @ViewChild('inputField', {read: ViewContainerRef, static: true}) private inputField: ViewContainerRef;
+    @ViewChild('inputField', {read: ViewContainerRef, static: false}) private inputField: ViewContainerRef;
 
     constructor(private language: language, private model: model, private view: view, private backend: backend, private renderer: Renderer2 ) { }
 
@@ -106,7 +106,7 @@ export class QuestionsetCategoryPool implements OnInit, OnDestroy {
     }
 
     public onClick( event: MouseEvent ): void {
-        if ( ! this.inputField.element.nativeElement.contains( event.target ) ) { // not clicked inside?
+        if ( 0 && ! this.inputField.element.nativeElement.contains( event.target ) ) { // not clicked inside?
             this.listIsExpanded = false;
             this.clickListener();
         }

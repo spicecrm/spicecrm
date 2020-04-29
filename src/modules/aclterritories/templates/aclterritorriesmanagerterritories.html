@@ -1,64 +1,58 @@
-<div class="slds-scrollable" style="height: 100%;">
-    <div class="slds-p-around--small slds-border--bottom slds-grid slds-grid--vertical-align-center">
-        <div class="slds-form-element">
-            <div class="slds-form-element__control">
-                <div class="slds-select_container">
-                    <select class="slds-select" [disabled]="types.length == 0" [(ngModel)]="activeType" (change)="typeChanged($event)">
-                        <option *ngFor="let type of types" [value]="type.id">{{type.name}}</option>
-                    </select>
-                </div>
+<div class="slds-p-around--small slds-border--bottom slds-grid slds-grid--vertical-align-center">
+    <div class="slds-form-element">
+        <div class="slds-form-element__control">
+            <div class="slds-select_container">
+                <select class="slds-select" [disabled]="types.length == 0" [(ngModel)]="activeType" (change)="typeChanged($event)">
+                    <option *ngFor="let type of types" [value]="type.id">{{type.name}}</option>
+                </select>
             </div>
         </div>
-        <div class="slds-form-element slds-p-left--xx-small">
-            <div class="slds-form-element__control">
-                <input type="text" class="slds-input" [disabled]="!activeType" [(ngModel)]="searchterm" [placeholder]="language.getLabel('LBL_SEARCH')" (keyup)="onKeyUp($event)"/>
-            </div>
+    </div>
+    <div class="slds-form-element slds-p-left--xx-small">
+        <div class="slds-form-element__control">
+            <input type="text" class="slds-input" [disabled]="!activeType" [(ngModel)]="searchterm" [placeholder]="language.getLabel('LBL_SEARCH')" (keyup)="onKeyUp($event)"/>
         </div>
-        <button class="slds-col--bump-left slds-button slds-button--brand" [disabled]="!activeType" (click)="addTerritory()"><system-label label="LBL_ADD"></system-label></button>
     </div>
-    <div *ngIf="loading; else typesdisplay" class="slds-p-around--medium slds-align--absolute-center">
-        <system-spinner></system-spinner>
-    </div>
-    <ng-template #typesdisplay>
-        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
-            <thead>
-                <tr class="slds-text-title_caps">
-                    <th scope="col">
-                        <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
-                    </th>
-                    <th scope="col">
-                        <div class="slds-truncate"><system-label label="LBL_ASSIGNED_USER_NAME"></system-label></div>
-                    </th>
-                    <th scope="col" style="width: 3rem;"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let territory of territorieslist" (click)="selectTerritory(territory)" [ngClass]="{'slds-theme--shade': territory.id == activeTerritoryId}">
-
-                    <td>
-                        <div class="slds-truncate">{{territory.name}}</div>
-                    </td>
-                    <td>
-                        <div class="slds-truncate">{{territory.assigned_user_name}}</div>
-                    </td>
-                    <td style="width: 3rem;">
-                        <div class="slds-grid slds-grid--vertical-align-center">
-                            <div class="slds-p-horizontal--xx-small">
-                                <system-utility-icon *ngIf="territory.usagecount > 0" icon="lock" size="x-small" addclasses="slds-icon slds-icon-text-default"></system-utility-icon>
-                                <system-utility-icon *ngIf="territory.usagecount == 0" icon="unlock" size="x-small" addclasses="slds-icon slds-icon-text-light"></system-utility-icon>
-                            </div>
-                            <div class="slds-p-horizontal--xx-small">
-                                <system-utility-icon *ngIf="territory.inactive == 1" icon="light_bulb" size="x-small" addclasses="slds-icon slds-icon-text-light"></system-utility-icon>
-                                <system-utility-icon *ngIf="territory.inactive == 0" icon="light_bulb" size="x-small" addclasses="slds-icon slds-icon-text-warning"></system-utility-icon>
-                            </div>
-                            <div class="slds-p-horizontal--xx-small">
-                                <system-utility-icon *ngIf="territory.inactive == 1" icon="delete" size="x-small" addclasses="slds-icon slds-icon-text-default" (click)="deleteTerritory(territory)"></system-utility-icon>
-                                <system-utility-icon *ngIf="territory.inactive == 0" icon="delete" size="x-small" addclasses="slds-icon slds-icon-text-light"></system-utility-icon>
-                            </div>
+    <button class="slds-col--bump-left slds-button slds-button--brand" [disabled]="!activeType" (click)="addTerritory()"><system-label label="LBL_ADD"></system-label></button>
+</div>
+<div system-to-bottom [system-overlay-loading-spinner]="loading">
+    <table class="slds-table slds-table--header-fixed slds-table_bordered slds-table_cell-buffer">
+        <thead>
+            <tr class="slds-text-title_caps">
+                <th scope="col">
+                    <div class="slds-truncate slds-p-vertical--xx-small"><system-label label="LBL_NAME"></system-label></div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate slds-p-vertical--xx-small"><system-label label="LBL_ASSIGNED_TO"></system-label></div>
+                </th>
+                <th scope="col" style="width: 3rem;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let territory of territorieslist" (click)="selectTerritory(territory)" [ngClass]="{'slds-theme--shade': territory.id == activeTerritoryId}">
+                <td>
+                    <div class="slds-truncate">{{territory.name}}</div>
+                </td>
+                <td>
+                    <div class="slds-truncate">{{territory.assigned_user_name}}</div>
+                </td>
+                <td style="width: 3rem;">
+                    <div class="slds-grid slds-grid--vertical-align-center">
+                        <div class="slds-p-horizontal--xx-small">
+                            <system-utility-icon *ngIf="territory.usagecount > 0" icon="lock" size="x-small" addclasses="slds-icon slds-icon-text-default"></system-utility-icon>
+                            <system-utility-icon *ngIf="territory.usagecount == 0" icon="unlock" size="x-small" addclasses="slds-icon slds-icon-text-light"></system-utility-icon>
                         </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </ng-template>
+                        <div class="slds-p-horizontal--xx-small">
+                            <system-utility-icon *ngIf="territory.inactive == 1" icon="light_bulb" size="x-small" addclasses="slds-icon slds-icon-text-light"></system-utility-icon>
+                            <system-utility-icon *ngIf="territory.inactive == 0" icon="light_bulb" size="x-small" addclasses="slds-icon slds-icon-text-warning"></system-utility-icon>
+                        </div>
+                        <div class="slds-p-horizontal--xx-small">
+                            <system-utility-icon *ngIf="territory.inactive == 1" icon="delete" size="x-small" addclasses="slds-icon slds-icon-text-default" (click)="deleteTerritory(territory)"></system-utility-icon>
+                            <system-utility-icon *ngIf="territory.inactive == 0" icon="delete" size="x-small" addclasses="slds-icon slds-icon-text-light"></system-utility-icon>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>

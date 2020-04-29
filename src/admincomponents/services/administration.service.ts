@@ -39,7 +39,7 @@ export class administration implements OnDestroy {
     private admincomponent: any = {
         component: 'AdministrationHomeScreen',
         componentconfig: {}
-    }
+    };
 
     /**
      * the behaviour subject for component changes
@@ -115,6 +115,23 @@ export class administration implements OnDestroy {
         this.admincomponent$.next(this.admincomponent);
     }
 
+    /**
+     * returns the admin label for the item with the given id
+     *
+     * @param itemid
+     */
+    public getItemLabel(itemid: string): string {
+        let adminaction;
+        this.adminNavigation.some(block => {
+                adminaction = block.groupcomponents.find(comp => comp.id == itemid);
+                if (adminaction) {
+                    return true;
+                }
+            }
+        );
+
+        return adminaction.admin_label;
+    }
 
     /**
      * navigate to a block and item
