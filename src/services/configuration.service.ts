@@ -222,10 +222,19 @@ export class configurationService {
                 }
                 this.initialized = true;
                 this.reloading = false;
+
+                // set the favicon
+                // ToDo: move to separate theming service
+                this.setFavIcon();
             },
             (err: any) => {
                 this.reloading = false;
                 this.initialized = true;
+
+                // set the favicon
+                // ToDo: move to separate theming service
+                this.setFavIcon();
+
                 // this.toast.sendToast('error connecting to Backend', 'error', 'please contact your System administrator');
             });
         return sysinfo;
@@ -301,6 +310,19 @@ export class configurationService {
         if ( this.data.backendextensions.spice_theme && this.data.backendextensions.spice_theme.config ) {
             let theme = this.data.backendextensions.spice_theme.config;
             if ( theme['color-brand-primary'] ) document.documentElement.style.setProperty( '--brand-primary', theme['color-brand-primary'] );
+        }
+    }
+
+    /**
+     * sets the favicon
+     */
+    private setFavIcon() {
+        let icon = document.querySelectorAll( "link[ rel ~= 'icon' i]" )[0];
+        let config = this.getCapabilityConfig('spice_theme');
+        if(config.icon_image) {
+            icon.setAttribute('href', 'data:'+config.icon_image);
+        } else {
+            icon.setAttribute('href', './config/favicon');
         }
     }
 
