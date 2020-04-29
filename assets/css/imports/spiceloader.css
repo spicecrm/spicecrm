@@ -18,11 +18,11 @@
 
 .loaderspinner .over circle {
     stroke-dasharray: 150;
-    stroke: #ddd;
+    stroke: var(--color-grey-5);
 }
 
 .loaderspinner .bag circle {
-    stroke: #777;
+    stroke: var(--color-grey-9);
 }
 
 .loderRotate {
