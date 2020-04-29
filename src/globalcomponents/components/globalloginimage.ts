@@ -1,7 +1,7 @@
 /**
  * @module GlobalComponents
  */
-import { ChangeDetectionStrategy, Component, ChangeDetectorRef } from '@angular/core';
+import {ChangeDetectionStrategy, Component, ChangeDetectorRef, OnDestroy, AfterViewInit} from '@angular/core';
 import { configurationService } from '../../services/configuration.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
@@ -9,9 +9,9 @@ import { Subscription } from 'rxjs';
 @Component({
     selector: 'global-login-image',
     templateUrl: './src/globalcomponents/templates/globalloginimage.html',
-    // changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GlobalLoginImage {
+export class GlobalLoginImage implements OnDestroy, AfterViewInit {
 
     /**
      * The default image url.
@@ -27,16 +27,24 @@ export class GlobalLoginImage {
     /**
      * Subscription to configuration service.
      */
-    private subscription: Subscription;
+    private subscriptions: Subscription = new Subscription();
 
     constructor( private sanitizer: DomSanitizer, private configuration: configurationService, private cdRef: ChangeDetectorRef ) {
+    }
 
+    public ngAfterViewInit(): void {
         // Set the image url in case there is a CRM config for that:
         if ( this.configuration.hasCapabilityConfig('spice_theme') ) this.setImageUrl();
 
         // Update the image url in case the configuration data has changed:
-        this.subscription = this.configuration.loaded$.subscribe( () => this.setImageUrl() );
+        this.subscriptions.add(this.configuration.loaded$.subscribe( () => this.setImageUrl()));
+    }
 
+    /**
+     * Unsubscribe from the configuration service when the component is destroyed.
+     */
+    public ngOnDestroy(): void {
+        this.subscriptions.unsubscribe();
     }
 
     private setImageUrl(): void {
@@ -46,14 +54,7 @@ export class GlobalLoginImage {
         } else {
             this.imageUrl = this.defaultImageUrl;
         }
-        // this.cdRef.detectChanges();
-    }
-
-    /**
-     * Unsubscribe from the configuration service when the component is destroyed.
-     */
-    public ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        this.cdRef.detectChanges();
     }
 
 }
