@@ -5,11 +5,11 @@
 }
 
 .spice-calendar-event-has-dark-color {
-    color: #fff;
+    color: var(--color-white);
 }
 
 .spice-calendar-event-has-dark-color:hover {
-    color: #eee;
+    color: var(--color-grey-3);
 }
 
 .spice-calendar-drop-target {
@@ -27,6 +27,6 @@
     cursor: pointer;
     visibility: visible;
     opacity: 1;
-    background-color: #f3f2f2;
+    background-color: var(--color-grey-3);
     text-align: center;
 }

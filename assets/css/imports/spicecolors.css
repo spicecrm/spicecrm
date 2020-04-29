@@ -9,7 +9,7 @@
 /* As hex codes */
 
 .color-primary-0 {
-    color: var(--contrast-color);
+    color: var(--brand-primary);
 }
 
 /* Main Primary color */

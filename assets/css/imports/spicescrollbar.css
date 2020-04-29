@@ -29,7 +29,7 @@
 .slds-scrollable--y::-webkit-scrollbar-track,
 .spice-scrollbar::-webkit-scrollbar-track,
 .spice-scrollbar-thin::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: var(--color-grey-3);
 }
 
 /* Handle */
@@ -37,15 +37,15 @@
 .slds-scrollable--x::-webkit-scrollbar-thumb,
 .slds-scrollable--y::-webkit-scrollbar-thumb,
 .spice-scrollbar::-webkit-scrollbar-thumb {
-    background: #aaa;
-    border-top: 2px solid #f1f1f1;
-    border-bottom: 2px solid #f1f1f1;
+    background: var(--color-grey-7);
+    border-top: 2px solid var(--color-grey-3);
+    border-bottom: 2px solid var(--color-grey-3);
 }
 
 .spice-scrollbar-thin::-webkit-scrollbar-thumb {
-    background: #aaa;
-    border-top: 1px solid #f1f1f1;
-    border-bottom: 1px solid #f1f1f1;
+    background: var(--color-grey-7);
+    border-top: 1px solid var(--color-grey-3);
+    border-bottom: 1px solid var(--color-grey-3);
 }
 
 /* Handle on hover */
@@ -54,7 +54,7 @@
 .slds-scrollable--y::-webkit-scrollbar-thumb:hover,
 .spice-scrollbar::-webkit-scrollbar-thumb:hover,
 .spice-scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background: #888;
+    background: var(--color-grey-9);
 }
 
 /* Buttons */

@@ -52,8 +52,8 @@
 
 .spice-free-drag-preview.cdk-drag-dragging:before {
     content: ' ';
-    border-top: 2px solid var(--contrast-color);
-    border-left: 2px solid var(--contrast-color);
+    border-top: 2px solid var(--brand-primary);
+    border-left: 2px solid var(--brand-primary);
     width: 10px;
     height: 10px;
     margin: -3px;
@@ -66,6 +66,6 @@
 }
 
 .slds-utility-bar__item .cdk-drop-list-dragging {
-    background: var(--contrast-color);
+    background: var(--brand-primary);
     color: #fff;
 }
