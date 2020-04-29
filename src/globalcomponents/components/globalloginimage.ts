@@ -1,7 +1,7 @@
 /**
  * @module GlobalComponents
  */
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ChangeDetectorRef } from '@angular/core';
 import { configurationService } from '../../services/configuration.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs';
 @Component({
     selector: 'global-login-image',
     templateUrl: './src/globalcomponents/templates/globalloginimage.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GlobalLoginImage {
 
@@ -29,7 +29,7 @@ export class GlobalLoginImage {
      */
     private subscription: Subscription;
 
-    constructor( private sanitizer: DomSanitizer, private configuration: configurationService ) {
+    constructor( private sanitizer: DomSanitizer, private configuration: configurationService, private cdRef: ChangeDetectorRef ) {
 
         // Set the image url in case there is a CRM config for that:
         if ( this.configuration.hasCapabilityConfig('spice_theme') ) this.setImageUrl();
@@ -46,6 +46,7 @@ export class GlobalLoginImage {
         } else {
             this.imageUrl = this.defaultImageUrl;
         }
+        // this.cdRef.detectChanges();
     }
 
     /**
