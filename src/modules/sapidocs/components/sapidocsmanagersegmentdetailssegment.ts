@@ -65,5 +65,15 @@ export class SAPIDOCsManagerSegmentDetailsSegment implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * sets the bool value to the field
+     * 
+     * @param fieldname
+     * @param fieldvalue
+     */
+    private setboolfield(fieldname, fieldvalue){
+        this.segment[fieldname] = fieldvalue ? '1' : '0';
+    }
+
 }
 

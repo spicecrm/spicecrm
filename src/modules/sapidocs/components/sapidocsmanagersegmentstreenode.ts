@@ -54,8 +54,22 @@ export class SAPIDOCsManagerSegmentsTreeNode implements OnInit {
         return this.segmentrelation.segment_id ? this.sapIdocsManager.getSegments(this.segmentrelation.segment_id) : [];
     }
 
-    get segment(): sapIDOCSegmentI{
+    get segment(): sapIDOCSegmentI {
         return this.segmentrelation.segment_id ? this.sapIdocsManager.getSegmentById(this.segmentrelation.segment_id) : undefined;
+    }
+
+    /**
+     * returns if the current segment is inactive
+     */
+    get segmentstyle() {
+
+        if (this.segment.active == '0') {
+            return {
+                'text-decoration': 'line-through'
+            };
+        }
+
+        return {};
     }
 
     public ngOnInit(): void {

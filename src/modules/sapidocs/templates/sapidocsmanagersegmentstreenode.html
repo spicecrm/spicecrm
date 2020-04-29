@@ -4,7 +4,7 @@
             <system-button-icon icon="chevronright"></system-button-icon>
         </button>
         <span class="slds-has-flexi-truncate">
-            <span class="slds-tree__item-label slds-truncate">{{segment.sap_segment}}</span>
+            <span class="slds-tree__item-label slds-truncate" [ngStyle]="segmentstyle">{{segment.sap_segment}}</span>
         </span>
         <button class="slds-button slds-button_icon slds-m-right_x-small" (click)="addSegment()">
             <system-button-icon icon="new"></system-button-icon>

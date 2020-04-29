@@ -14,6 +14,17 @@
         </div>
     </div>
     <div class="slds-grid slds-grid_vertical-align-center slds-m-top--x-small slds-gutters_direct-xx-small">
+        <div class="slds-col slds-size--1-of-2 slds-form-element slds-m-top--large slds-p-vertical--xx-small">
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <system-checkbox [ngModel]="segment.active == '1'" (ngModelChange)="setboolfield('active', $event)"></system-checkbox>
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_SAPIDOC_SEGMENTACTIVE"></system-label>
+                </label>
+                <system-icon-help-text [helpText]="language.getLabel('LBL_SAPIDOC_SEGMENTACTIVE', '', 'long')"></system-icon-help-text>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid slds-grid_vertical-align-center slds-m-top--x-small slds-gutters_direct-xx-small">
         <div class="slds-form-element slds-col slds-size--1-of-2">
             <label class="slds-form-element__label"><system-label label="LBL_SAPIDOC_SPLIT_FIELD"></system-label></label>
             <system-icon-help-text [helpText]="language.getLabel('LBL_SAPIDOC_SPLIT_FIELD', '', 'long')"></system-icon-help-text>
