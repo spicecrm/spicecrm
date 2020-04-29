@@ -27,6 +27,11 @@ export class configurationService {
     public initialized: boolean = false;
 
     /**
+     * set to true if the sysinfo is getting reloaded
+     */
+    public reloading: boolean = false;
+
+    /**
      * holds the sites from the frontend config
      */
     public sites: any[] = [];
@@ -129,7 +134,7 @@ export class configurationService {
                         }
                     }
 
-                    this.initialized = true;
+                    // this.initialized = true;
                 }
             );
 
@@ -205,6 +210,7 @@ export class configurationService {
      * calls sysinfo on the backend and stores the data
      */
     public getSysinfo() {
+        this.reloading = true;
         let sysinfo = this.http.get(this.getBackendUrl() + '/sysinfo');
         sysinfo.subscribe(
             (res: any) => {
@@ -214,8 +220,12 @@ export class configurationService {
                     this.data.systemparameters = res.systemsettings;
                     this.loaded$.emit(true);
                 }
+                this.initialized = true;
+                this.reloading = false;
             },
             (err: any) => {
+                this.reloading = false;
+                this.initialized = true;
                 // this.toast.sendToast('error connecting to Backend', 'error', 'please contact your System administrator');
             });
         return sysinfo;

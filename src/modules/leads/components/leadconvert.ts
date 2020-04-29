@@ -1,7 +1,7 @@
 /**
  * @module ModuleLeads
  */
-import {Component, AfterViewInit} from '@angular/core';
+import {Component, AfterContentInit, AfterViewInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {navigationtab} from '../../../services/navigationtab.service';
@@ -54,14 +54,14 @@ export class LeadConvert implements AfterViewInit {
         this.headerFieldSets = [componentconfig.fieldset];
     }
 
+
     public ngAfterViewInit() {
 
         // get the bean details
         this.model.module = this.moduleName;
         this.model.id = this.navigationtab.activeRoute.params.id;
-
         this.model.getData(true, 'detailview').subscribe(data => {
-            this.navigationtab.setTabInfo({displayname: data.summary_text, displaymodule: 'Leads'});
+            this.navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_CONVERT_LEAD')+': '+ this.model.data.summary_text, displaymodule: 'Leads'});
         });
     }
 
@@ -153,28 +153,28 @@ export class LeadConvert implements AfterViewInit {
                 action: 'createAccount',
                 label: 'LBL_LEADCONVERT_CREATEACCOUNT',
                 status: 'initial'
-            })
+            });
         }
 
         this.createSaveActions.push({
             action: 'createContact',
             label: 'LBL_LEADCONVERT_CREATECONTACT',
             status: 'initial'
-        })
+        });
 
         if (this.createOpportunity) {
             this.createSaveActions.push({
                 action: 'createOpportunity',
                 label: 'LBL_LEADCONVERT_CREATEOPPORTUNITY',
                 status: 'initial'
-            })
+            });
         }
 
         this.createSaveActions.push({
             action: 'convertLead',
             label: 'LBL_LEADCONVERT_CONVERTLEAD',
             status: 'initial'
-        })
+        });
 
         this.showSaveModal = true;
 
@@ -185,6 +185,9 @@ export class LeadConvert implements AfterViewInit {
             this.toast.sendToast(this.language.getLabel('LBL_LEAD') + ' ' + this.model.data.summary_text + ' ' + this.language.getLabel('LBL_CONVERTED'), 'success', '', 30);
             // go back to the lead
             this.gotoLead();
+
+            // close the tab
+            this.navigationtab.closeTab();
         });
     }
 
@@ -201,7 +204,7 @@ export class LeadConvert implements AfterViewInit {
                 nextAction = item.action;
                 return true;
             }
-        })
+        });
 
         if (nextAction) {
             this.processConvertAction(nextAction);

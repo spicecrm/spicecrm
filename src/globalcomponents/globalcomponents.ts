@@ -41,6 +41,7 @@ import /*embed*/ {GlobalHeaderWorkbench} from "./components/globalheaderworkbenc
 import /*embed*/ {GlobalHeaderReload} from "./components/globalheaderreload";
 import /*embed*/ {GlobalFooter} from "./components/globalfooter";
 import /*embed*/ {GlobalLogin} from "./components/globallogin";
+import /*embed*/ {GlobalLoginLoading} from "./components/globalloginloading";
 import /*embed*/ {GlobalSetup} from "./components/globalsetup";
 import /*embed*/ {GlobalLoginForgotPassword} from "./components/globalloginforgotpassword";
 import /*embed*/ {GlobalLoginResetPassword} from "./components/globalloginresetpassword";
@@ -67,6 +68,9 @@ import /*embed*/ {GlobalAppLauncherDialog} from "./components/globalapplauncherd
 import /*embed*/ {GlobalAppLauncherDialogRoleTile} from "./components/globalapplauncherdialogroletile";
 
 import /*embed*/ {GlobalNavigationTabbed} from "./components/globalnavigationtabbed";
+import /*embed*/ {GlobalNavigationTabbedBrowser} from "./components/globalnavigationtabbedbrowser";
+import /*embed*/ {GlobalNavigationTabbedBrowserModal} from "./components/globalnavigationtabbedbrowsermodal";
+import /*embed*/ {GlobalNavigationTabbedBrowserModalTab} from "./components/globalnavigationtabbedbrowsermodaltab";
 import /*embed*/ {GlobalNavigationTabbedMenuModules} from "./components/globalnavigationtabbedmenumodules";
 import /*embed*/ {GlobalNavigationTabbedMenuModuleMenu} from "./components/globalnavigationtabbedmenumodulemenu";
 import /*embed*/ {GlobalNavigationTabbedMenuTab} from "./components/globalnavigationtabbedmenutab";
@@ -148,6 +152,7 @@ import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
         GlobalNavigationMenuMore,
         GlobalNavigationCompact,
         GlobalLogin,
+        GlobalLoginLoading,
         GlobalSetup,
         GlobalLoginForgotPassword,
         GlobalLoginResetPassword,
@@ -179,6 +184,9 @@ import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
         GlobalNavigationTabbedMenuModuleMenu,
         GlobalNavigationTabbedMenuTab,
         GlobalNavigationTabbedMoreTab,
+        GlobalNavigationTabbedBrowser,
+        GlobalNavigationTabbedBrowserModal,
+        GlobalNavigationTabbedBrowserModalTab,
         GlobalNavigationTabbedSubtabs,
         GlobalNavigationTabbedSubtabItem,
         GlobalNavigationTabbedSubTabMoreTab,
