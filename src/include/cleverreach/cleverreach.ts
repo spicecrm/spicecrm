@@ -13,13 +13,13 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import {ProspectListsToCleverReachButton} from "./components/prospectliststocleverreachbutton";
-import {ProspectListsToCleverReachModal} from "./components/prospectliststocleverreachmodal";
-import {CreateMailingButton} from "./components/createmailingbutton";
-import {CreateMailingModal} from "./components/createmailingmodal";
+import /*embed*/ {ProspectListsToCleverReachButton} from "./components/prospectliststocleverreachbutton";
+import /*embed*/ {ProspectListsToCleverReachModal} from "./components/prospectliststocleverreachmodal";
+import /*embed*/ {CreateMailingButton} from "./components/createmailingbutton";
+import /*embed*/ {CreateMailingModal} from "./components/createmailingmodal";
 
-import {GetStatsButton} from "./components/getstatsbutton";
-import {MailingStatsPanel} from "./components/mailingstatspanel";
+import /*embed*/ {GetStatsButton} from "./components/getstatsbutton";
+import /*embed*/ {MailingStatsPanel} from "./components/mailingstatspanel";
 
 @NgModule({
     imports: [

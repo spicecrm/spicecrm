@@ -14,8 +14,8 @@ import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
 import /*embed*/ {DialogMailPanel} from "./components/dialogmailpanel";
-import {ProspectListsToDialogMailButton} from "./components/prospectliststodialogmailbutton";
-import {ProspectListsToDialogMailModal} from "./components/prospectliststodialogmailmodal";
+import /*embed*/ {ProspectListsToDialogMailButton} from "./components/prospectliststodialogmailbutton";
+import /*embed*/ {ProspectListsToDialogMailModal} from "./components/prospectliststodialogmailmodal";
 
 @NgModule({
     imports: [
