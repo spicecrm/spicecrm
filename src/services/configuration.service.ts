@@ -16,7 +16,7 @@ import {HttpClient} from "@angular/common/http";
 declare var _: any;
 
 /**
- * holds aplication configuration
+ * holds application configuration
  */
 @Injectable()
 export class configurationService {
