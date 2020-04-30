@@ -7661,11 +7661,11 @@ a.slds-button--inverse:focus{
   pointer-events:none;
 }
 .slds-select_container:before{
-  border-bottom:5px solid var(--color-background-border-inverse);
+  border-bottom:5px solid var(--color-border-inverse);
   top:calc((1.75rem / 2) - 6px);
 }
 .slds-select_container:after{
-  border-top:5px solid var(--color-background-border-inverse);
+  border-top:5px solid var(--color-border-inverse);
   bottom:calc((1.75rem / 2) - 6px);
 }
 
@@ -9416,7 +9416,7 @@ a.slds-button--inverse:focus{
 }
 .slds-popover_walkthrough,
 .slds-popover--walkthrough{
-  border-color:var(--color-background-border-inverse);
+  border-color:var(--color-border-inverse);
   color:var(--color-white);
   background:#032e61;
   border-color:#032e61;
@@ -9639,7 +9639,7 @@ a.slds-button--inverse:focus{
   width:20rem;
   min-height:2rem;
   z-index:6000;
-  background-color:var(--color-background-border-inverse);
+  background-color:var(--color-background-inverse);
   display:inline-block;
 }
 .slds-tooltip__body{
@@ -9931,8 +9931,8 @@ a.slds-button--inverse:focus{
   overflow-y:auto;
 }
 .slds-dropdown_inverse, .slds-dropdown--inverse{
-  background:var(--color-background-border-inverse);
-  border-color:var(--color-background-border-inverse);
+  background:var(--color-background-inverse);
+  border-color:var(--color-border-inverse);
 }
 .slds-dropdown_inverse .slds-dropdown__item > a, .slds-dropdown--inverse .slds-dropdown__item > a{
   color:var(--color-white);
@@ -13553,8 +13553,8 @@ a.slds-button--inverse:focus{
   padding-bottom:1rem;
 }
 .slds-path-coach .slds-path__mark-current{
-  background-color:var(--color-background-border-inverse);
-  border-color:var(--color-background-border-inverse);
+  background-color:var(--color-background-inverse);
+  border-color:var(--color-border-inverse);
 }
 
 .slds-tabs_path,
@@ -13667,7 +13667,7 @@ a.slds-button--inverse:focus{
 }
 .slds-tabs_path .slds-is-active,
 .slds-tabs--path .slds-is-active{
-  background-color:var(--color-background-border-inverse);
+  background-color:var(--color-background-inverse);
 }
 .slds-tabs_path .slds-is-active .slds-tabs_path__link,
 .slds-tabs_path .slds-is-active .slds-tabs--path__link,
@@ -13689,7 +13689,7 @@ a.slds-button--inverse:focus{
 .slds-tabs_path .slds-is-active + .slds-tabs--path__item:before,
 .slds-tabs--path .slds-is-active + .slds-tabs_path__item:before,
 .slds-tabs--path .slds-is-active + .slds-tabs--path__item:before{
-  background-color:var(--color-background-border-inverse);
+  background-color:var(--color-background-inverse);
 }
 .slds-tabs_path .slds-is-active .slds-tabs_path__title,
 .slds-tabs_path .slds-is-active .slds-tabs--path__title,
@@ -17579,7 +17579,7 @@ a.slds-button--inverse:focus{
 .slds-trial-header{
   color:var(--color-white);
   height:3.125rem;
-  background:var(--color-background-border-inverse);
+  background:var(--color-background-inverse);
   padding:0 1rem;
 }
 .slds-trial-header .slds-icon{
@@ -22594,8 +22594,8 @@ a.slds-button--inverse:focus{
 }
 .slds-theme_inverse, .slds-theme--inverse{
   color:var(--color-white);
-  background-color:var(--color-background-border-inverse);
-  border-color:var(--color-background-border-inverse);
+  background-color:var(--color-background-inverse);
+  border-color:var(--color-border-inverse);
 }
 .slds-theme_inverse a:not(.slds-button--neutral), .slds-theme--inverse a:not(.slds-button--neutral){
   color:var(--color-white);

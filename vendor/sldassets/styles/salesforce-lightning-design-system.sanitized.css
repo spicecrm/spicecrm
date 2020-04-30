@@ -6687,8 +6687,8 @@ a.slds-button--inverse:focus {
   overflow-y: auto;
 }
 .slds-dropdown_inverse {
-  background: var(--color-background-border-inverse);
-  border-color: var(--color-background-border-inverse);
+  background: var(--color-background-inverse);
+  border-color: var(--color-border-inverse);
 }
 .slds-dropdown_inverse .slds-dropdown__item > a {
   color: var(--color-white);
@@ -10703,8 +10703,8 @@ a.slds-button--inverse:focus {
 }
 .slds-theme_inverse {
   color: var(--color-white);
-  background-color: var(--color-background-border-inverse);
-  border-color: var(--color-background-border-inverse);
+  background-color: var(--color-background-inverse);
+  border-color: var(--color-border-inverse);
 }
 
 .slds-theme--inverse a:not(.slds-button--neutral) {

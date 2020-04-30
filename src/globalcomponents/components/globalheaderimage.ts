@@ -32,7 +32,7 @@ export class GlobalHeaderImage {
     constructor( private sanitizer: DomSanitizer, private configuration: configurationService ) {
 
         // Set the image url in case there is a CRM config for that:
-        if ( this.configuration.hasCapabilityConfig('spice_theme') ) this.setImageUrl();
+        if ( this.configuration.hasCapabilityConfig('theme') ) this.setImageUrl();
 
         // Update the image url in case the configuration data has changed:
         this.subscription = this.configuration.loaded$.subscribe( () => this.setImageUrl() );
@@ -44,8 +44,8 @@ export class GlobalHeaderImage {
      */
     private setImageUrl(): void {
         // Update the image url in case the configuration data has changed an there is a specific header image defined.
-        if( this.configuration.getCapabilityConfig( 'spice_theme' ).header_image ) {
-            this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl( 'data:' + this.configuration.getCapabilityConfig( 'spice_theme' ).header_image );
+        if( this.configuration.getCapabilityConfig( 'theme' ).header_image ) {
+            this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl( 'data:' + this.configuration.getCapabilityConfig( 'theme' ).header_image );
         } else {
             this.imageUrl = this.defaultImageUrl;
         }
