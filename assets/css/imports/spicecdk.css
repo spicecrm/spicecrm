@@ -59,13 +59,11 @@
     margin: -3px;
 }
 
-
-
 .slds-utility-bar__item .cdk-drag-placeholder {
     display: none;
 }
 
 .slds-utility-bar__item .cdk-drop-list-dragging {
     background: var(--brand-primary);
-    color: #fff;
+    color: var(--color-white);
 }
