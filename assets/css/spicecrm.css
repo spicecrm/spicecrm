@@ -16,6 +16,7 @@
 :root {
     --color-white: white;
     --color-grey-3: #f3f2f2;
+    --color-gray-4: #ecebea;
     --color-grey-5: #dddbda;
     --color-grey-7: #aaaaaa;
     --color-grey-9: #706e6b;
@@ -28,12 +29,14 @@
     --brand-accessible-active: #b3191e;
     --brand-header-contrast-cool: #a61419;
     --brand-text-link: #002D31;
-    --color-background-border-inverse: #751b1e;
+    --color-background-inverse: #751b1e;
+    --color-border-inverse: #751b1e;
     --color-background-success: #444;
     --color-background-success-dark: #222;
     --color-text-link-active: #222;
     --color-progressbar_item-completed: #080707;
     --color-background-alt-inverse: #002D31;
+    --color-border-brand: #CA1B21;
 }
 
 html {
@@ -235,8 +238,8 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 
 /* tree items: stronger emphasis and left border in contrast color (instead brand primary) */
 .slds-tree [role=treeitem][aria-selected=true] > .slds-tree__item {
-    background: #ecebea;
-    box-shadow: var(--contrast-color) 4px 0 0 inset;
+    background: var(--color-gray-4);
+    box-shadow: var(--color-border-brand) 4px 0 0 inset;
 }
 
 /* for tables: resizable columns */
