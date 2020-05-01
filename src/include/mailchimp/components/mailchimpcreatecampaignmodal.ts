@@ -1,5 +1,5 @@
 /**
- * @module CleverReachModule
+ * @module MailChimpModule
  */
 
 import {Component, OnInit, Injector} from '@angular/core';
