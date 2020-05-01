@@ -1,7 +1,7 @@
 /**
  * @module GlobalComponents
  */
-import { ChangeDetectionStrategy, Component, ChangeDetectorRef } from '@angular/core';
+import {ChangeDetectionStrategy, Component, ChangeDetectorRef, OnDestroy, AfterViewInit} from '@angular/core';
 import { configurationService } from '../../services/configuration.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
     templateUrl: './src/globalcomponents/templates/globalloginimage.html',
     // changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GlobalLoginImage {
+export class GlobalLoginImage implements OnDestroy, AfterViewInit {
 
     /**
      * The default image url.
@@ -27,33 +27,34 @@ export class GlobalLoginImage {
     /**
      * Subscription to configuration service.
      */
-    private subscription: Subscription;
+    private subscriptions: Subscription = new Subscription();
 
     constructor( private sanitizer: DomSanitizer, private configuration: configurationService, private cdRef: ChangeDetectorRef ) {
-
-        // Set the image url in case there is a CRM config for that:
-        if ( this.configuration.hasCapabilityConfig('spiceTheme') ) this.setImageUrl();
-
-        // Update the image url in case the configuration data has changed:
-        this.subscription = this.configuration.loaded$.subscribe( () => this.setImageUrl() );
-
     }
 
-    private setImageUrl(): void {
-        // Update the image url in case the configuration data has changed an there is a specific login image defined.
-        if ( this.configuration.getCapabilityConfig('spiceTheme').loginImage ) {
-            this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl( 'data:'+this.configuration.getCapabilityConfig('spiceTheme').loginImage );
-        } else {
-            this.imageUrl = this.defaultImageUrl;
-        }
-        // this.cdRef.detectChanges();
+    public ngAfterViewInit(): void {
+        // Set the image url in case there is a CRM config for that:
+        if ( this.configuration.hasCapabilityConfig('spice_theme') ) this.setImageUrl();
+
+        // Update the image url in case the configuration data has changed:
+        this.subscriptions.add(this.configuration.loaded$.subscribe( () => this.setImageUrl()));
     }
 
     /**
      * Unsubscribe from the configuration service when the component is destroyed.
      */
     public ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        this.subscriptions.unsubscribe();
+    }
+
+    private setImageUrl(): void {
+        // Update the image url in case the configuration data has changed an there is a specific login image defined.
+        if ( this.configuration.getCapabilityConfig('spice_theme').login_image ) {
+            this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl( 'data:'+this.configuration.getCapabilityConfig('spice_theme').login_image );
+        } else {
+            this.imageUrl = this.defaultImageUrl;
+        }
+        this.cdRef.detectChanges();
     }
 
 }
