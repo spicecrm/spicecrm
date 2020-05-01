@@ -1,3 +1,7 @@
+/**
+ * @module CleverReachModule
+ */
+
 import {Component, Injector} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';

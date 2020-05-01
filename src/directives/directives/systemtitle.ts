@@ -1,5 +1,5 @@
 /**
- * @module directives
+ * @module DirectivesModule
  */
 import {Directive, ElementRef, Input, OnDestroy, SimpleChanges} from '@angular/core';
 import {Subscription} from "rxjs";
