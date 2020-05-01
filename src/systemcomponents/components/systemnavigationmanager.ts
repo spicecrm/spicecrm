@@ -1,3 +1,6 @@
+/**
+ * @module SystemComponents
+ */
 import {Component} from '@angular/core';
 import {navigation} from '../../services/navigation.service';
 import {session} from '../../services/session.service';
