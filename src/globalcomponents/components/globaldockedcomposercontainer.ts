@@ -5,6 +5,7 @@ import {
     Component,
 } from '@angular/core';
 import {dockedComposer} from '../../services/dockedcomposer.service';
+import {telephony} from '../../services/telephony.service';
 
 /**
  * the container in teh footer for the global docked composers
@@ -19,7 +20,7 @@ import {dockedComposer} from '../../services/dockedcomposer.service';
 })
 export class GlobalDockedComposerContainer {
 
-    constructor(private dockedComposer: dockedComposer) {
+    constructor(private dockedComposer: dockedComposer, private telephony: telephony) {
 
     }
 
@@ -28,7 +29,7 @@ export class GlobalDockedComposerContainer {
      * if there are no composers the composer is hidden since it causes issues with the clickability of elements at the bottom
      */
     get isVisible() {
-        return this.dockedComposer.composers.length > 0 || this.dockedComposer.calls.length > 0;
+        return this.dockedComposer.composers.length > 0 || this.telephony.calls.length > 0;
     }
 
     /**
@@ -37,7 +38,7 @@ export class GlobalDockedComposerContainer {
      * @param composerindex the index of the composer
      */
     private getComposerStyle(composerindex): any {
-        if (composerindex >= this.dockedComposer.maxComposers - this.dockedComposer.calls.length) {
+        if (composerindex >= this.dockedComposer.maxComposers - this.telephony.calls.length) {
             return {
                 display: 'none'
             };
@@ -48,6 +49,6 @@ export class GlobalDockedComposerContainer {
      * a simple getter to determine if the overflow shoudl be shown
      */
     get displayOverflow(): boolean {
-        return this.dockedComposer.composers.length + this.dockedComposer.calls.length > this.dockedComposer.maxComposers ? true : false;
+        return this.dockedComposer.composers.length + this.telephony.calls.length > this.dockedComposer.maxComposers ? true : false;
     }
 }
