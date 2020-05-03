@@ -39,7 +39,7 @@ export interface sapIDOCFieldI {
     required: '0'|'1';
     segment_id: string;
     custom_field_function?: string;
-    mapping_rule?: string;
+    mapping_rule?: 'regular'|'array'|'exclusive'|'merge';
     mapping_order?: string;
     mapping_field_default?: string;
     mapping_field_prefix?: string;

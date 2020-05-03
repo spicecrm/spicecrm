@@ -30,6 +30,8 @@ import /*embed*/ {SAPIDOCsManagerFieldAddModal} from "./components/sapidocsmanag
 import /*embed*/ {SAPIDOCsMonitor} from "./components/sapidocsmonitor";
 import /*embed*/ {SAPIDOCsViewer} from "./components/sapidocsviewer";
 import /*embed*/ {SAPIDOCsViewerButton} from "./components/sapidocsviewerbutton";
+import /*embed*/ {SAPIDOCsListHeaderActionsProcessButton} from "./components/sapidocslistheaderactionsprocessbutton";
+import /*embed*/ {SAPIDOCsListHeaderActionsProcessModal} from "./components/sapidocslistheaderactionsprocessmodal";
 
 @NgModule({
     imports: [
@@ -56,7 +58,9 @@ import /*embed*/ {SAPIDOCsViewerButton} from "./components/sapidocsviewerbutton"
         SAPIDOCsManagerFieldAddModal,
         SAPIDOCsMonitor,
         SAPIDOCsViewerButton,
-        SAPIDOCsViewer
+        SAPIDOCsViewer,
+        SAPIDOCsListHeaderActionsProcessButton,
+        SAPIDOCsListHeaderActionsProcessModal
     ],
 })
 export class ModuleSAPIDOCs {}

@@ -41,7 +41,8 @@ export class SAPIDOCsManagerFieldAddModal implements OnInit {
             required: '1',
             sap_field: '',
             mapping_field: '',
-            segment_id: this.sapIdocsManager.selectedsegment
+            segment_id: this.sapIdocsManager.selectedsegment,
+            mapping_rule: 'regular'
         };
     }
 

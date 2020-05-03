@@ -6,20 +6,35 @@ import {modellist} from "../../../services/modellist.service";
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
+import {toast} from "../../../services/toast.service";
 import {libloader} from "../../../services/libloader.service";
 
 declare var html_beautify: any;
 
+/**
+ * a modal that displays an IDOC formatted properly and allows reprocessing the IDOC
+ */
 @Component({
     templateUrl: './src/modules/sapidocs/templates/sapidocsviewer.html'
 })
 export class SAPIDOCsViewer implements AfterViewInit {
 
+    /**
+     * reference to self as the modal
+     */
     private self: any;
 
+    /**
+     * the xml string to be rendered
+     */
     private xml: string;
 
-    constructor(private backend: backend, private metadata: metadata, private modellist: modellist, private model: model, private libloader: libloader, private renderer: Renderer2) {
+    /**
+     * indicator when an idoc is beoing processed
+     */
+    private processing: boolean = false;
+
+    constructor(private backend: backend, private metadata: metadata, private toast: toast, private modellist: modellist, private model: model, private libloader: libloader, private renderer: Renderer2) {
         this.formatIdoc();
     }
 
@@ -64,8 +79,20 @@ export class SAPIDOCsViewer implements AfterViewInit {
         this.self.destroy();
     }
 
-    private processIDOC(){
-        this.backend.postRequest('modules/SAPIdocs/'+this.model.id+'/process');
+    /**
+     * processes the idoc
+     */
+    private processIDOC() {
+        this.processing = true;
+        this.backend.postRequest(`modules/SAPIdocs/${this.model.id}/process`).subscribe(
+            success => {
+                this.processing = false;
+                this.toast.sendToast('IDOC processed', 'info');
+            },
+            error => {
+                this.processing = false;
+                this.toast.sendToast('IDOC not processed', 'error');
+            });
     }
 
 }

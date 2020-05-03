@@ -44,7 +44,7 @@ export class SAPIDOCsManagerSegmentDetailsFields implements OnDestroy {
     /**
      * adds a field
      */
-    private add(){
+    private add() {
         this.modal.openModal('SAPIDOCsManagerFieldAddModal', true, this.injector).subscribe(componentRef => {
             componentRef.instance.added.subscribe((added: sapIDOCFieldI) => {
                 // get the children
@@ -72,7 +72,11 @@ export class SAPIDOCsManagerSegmentDetailsFields implements OnDestroy {
      * @param field
      */
     private sortBy(field) {
-        this.segmentFields.sort((a, b) => a[field].toLowerCase() > b[field].toLowerCase() ? 1 : -1);
+        this.segmentFields.sort((a, b) => {
+            if(!b[field]) return 1;
+            if(!a[field]) return -1;
+            return a[field].toLowerCase() > b[field].toLowerCase() ? 1 : -1;
+        });
     }
 
 }

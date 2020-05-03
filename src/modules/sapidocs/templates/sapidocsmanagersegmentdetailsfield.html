@@ -72,7 +72,14 @@
         </label>
         <system-icon-help-text [helpText]="language.getLabel('LBL_SAPIDOC_MAPPING_RULE', '', 'long')"></system-icon-help-text>
         <div class="slds-form-element__control">
-            <input type="text" class="slds-input" [(ngModel)]="field.mapping_rule"/>
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="field.mapping_rule">
+                    <option value="regular">regular</option>
+                    <option value="array">array</option>
+                    <option value="exclusive">exclusive</option>
+                    <option value="merge">merge</option>
+                </select>
+            </div>
         </div>
     </div>
     <div class="slds-form-element slds-p-vertical--xx-small">
