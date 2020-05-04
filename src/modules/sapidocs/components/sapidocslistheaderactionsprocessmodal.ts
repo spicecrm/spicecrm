@@ -45,11 +45,18 @@ export class SAPIDOCsListHeaderActionsProcessModal implements OnInit {
 
     public ngOnInit(): void {
         this.count = this.modellist.getSelectedIDs().length;
-        this.processIDOCs().then(ret => {
+        if(this.count > 0) {
+            this.processIDOCs().then(ret => {
+                this.close();
+            });
+        } else {
             this.close();
-        });
+        }
     }
 
+    /**
+     * process the idocs sequentially
+     */
     private async processIDOCs(): Promise<boolean> {
         let ret = new Subject<boolean>();
         let selectedIds = this.modellist.getSelectedIDs();
@@ -80,7 +87,7 @@ export class SAPIDOCsListHeaderActionsProcessModal implements OnInit {
     }
 
     /**
-     * processes the idoc
+     * processes a single idoc
      */
     private async processIDOC(idocid): Promise<boolean> {
         let sub = new Subject<boolean>();
@@ -96,12 +103,18 @@ export class SAPIDOCsListHeaderActionsProcessModal implements OnInit {
         return sub.toPromise();
     }
 
+    /**
+     * returns the style for the process bar with the progress percentage
+     */
     get progressBarStyle() {
         return {
             width: this.percentage + '%'
         };
     }
 
+    /**
+     * calculates the completion percentage
+     */
     get percentage() {
         return this.count > 0 ? Math.floor(this.processed / this.count * 100) : 0;
     }

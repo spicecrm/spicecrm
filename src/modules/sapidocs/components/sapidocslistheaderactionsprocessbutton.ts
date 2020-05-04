@@ -22,11 +22,6 @@ import {modal} from '../../../services/modal.service';
 })
 export class SAPIDOCsListHeaderActionsProcessButton {
 
-    /**
-     * only "hidden" is used
-     */
-    public disabled: boolean = false;
-
     constructor(
         private language: language,
         private metadata: metadata,
@@ -34,7 +29,15 @@ export class SAPIDOCsListHeaderActionsProcessButton {
         private modellist: modellist,
         private modal: modal,
         private injector: Injector
-    ) {}
+    ) {
+    }
+
+    /**
+     * only enable if items are selected
+     */
+    get disabled(): boolean {
+        return this.modellist.getSelectedCount() == 0;
+    }
 
     /**
      * returns the number of sleected items or all in the modellist
