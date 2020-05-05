@@ -298,7 +298,7 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 
 /* radio button groups: white color for icons in radio buttons */
 .slds-radio_button-group .slds-radio_button [type=radio]:checked + label svg {
-    fill: #fff;
+    fill: var(--color-white);
 }
 
 field-generic-display .slds-button--icon {
