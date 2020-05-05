@@ -1,3 +1,6 @@
+/**
+ * @module ModuleSpiceMap
+ */
 
 /**
  * used in the direction service route

@@ -1,4 +1,8 @@
 /**
+ * @module SystemComponents
+ */
+
+/**
  * used for input radio group input
  */
 export interface InputRadioOptionI {
