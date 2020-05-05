@@ -345,6 +345,10 @@ export class configurationService {
         for ( let colorname of allColors ) {
             document.documentElement.style.setProperty( '--'+colorname, colorsOfTheme[colorname] ? colorsOfTheme[colorname] : null );
         }
+
+        // color brand-primary may be set also by css file. we need it now to set the theme color in meta tag:
+        let colorBrandPrimary = document.documentElement.style.getPropertyValue( '--brand-primary' );
+        if ( colorBrandPrimary ) document.querySelector('meta[name="theme-color"]').setAttribute('content', colorBrandPrimary );
     }
 
     /**
