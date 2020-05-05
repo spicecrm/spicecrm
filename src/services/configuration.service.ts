@@ -339,7 +339,7 @@ export class configurationService {
             colorsOfTheme = JSON.parse( theme.colors );
         } catch (e) {
             colorsOfTheme = {};
-            console.warn("Color configuration of theme is invalid or empty.", [theme.colors] );
+            // console.warn("Color configuration of theme is invalid or empty.", [theme.colors] );
         }
         // Set all possible colors, either with the value of the config or with null. In case of null the browser uses the value set in the css file.
         for ( let colorname of allColors ) {
