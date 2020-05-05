@@ -1,7 +1,7 @@
 /**
  * a set of system specific directives
  *
- * @module directives
+ * @module DirectivesModule
  */
 import {CommonModule} from "@angular/common";
 import {NgModule} from "@angular/core";

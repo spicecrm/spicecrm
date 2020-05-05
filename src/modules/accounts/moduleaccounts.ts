@@ -19,6 +19,8 @@ import /*embed*/ { accountHierarchy } from "./services/accounthierarchy.service"
 import /*embed*/ {AccountsKPIsOverview} from "./components/accountskpisoverview";
 import /*embed*/ {AccountCCDetails} from "./components/accountccdetails";
 import /*embed*/ {AccountCCDetailsTab} from "./components/accountccdetailstab";
+import /*embed*/ {AccountTerritoryDetailsTab} from "./components/accountterritorydetailstab";
+import /*embed*/ {AccountTerritoryDetails} from "./components/accountterritorydetails";
 import /*embed*/ {ContactCCDetails} from "./components/contactccdetails";
 import /*embed*/ {ContactCCDetailsTab} from "./components/contactccdetailstab";
 import /*embed*/ {AccountsContactsManager} from "./components/accountscontactsmanager";
@@ -41,6 +43,8 @@ import /*embed*/ {AccountHierarchyNode} from "./components/accounthierarchynode"
         AccountsKPIsOverview,
         AccountCCDetails,
         AccountCCDetailsTab,
+        AccountTerritoryDetailsTab,
+        AccountTerritoryDetails,
         ContactCCDetails,
         ContactCCDetailsTab,
         AccountsContactsManager,
