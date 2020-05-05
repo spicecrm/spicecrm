@@ -1,0 +1,21 @@
+<system-modal size="small">
+    <system-modal-header [hiddenCloseButton]="true"><system-label label="LBL_PROCESS_IDOCS"></system-label></system-modal-header>
+    <system-modal-content>
+        <div>
+            <div class="slds-grid slds-grid_align-spread slds-p-bottom_x-small" id="progress-bar-label-id-6">
+                <span>Processing {{processed}} of {{count}} IDOCS</span>
+                <span aria-hidden="true">
+                  <strong>{{percentage}}% Complete</strong>
+                </span>
+            </div>
+            <div class="slds-progress-bar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="25" role="progressbar">
+                <span class="slds-progress-bar__value" [ngStyle]="progressBarStyle">
+                  <span class="slds-assistive-text">Progress: {{percentage}}%</span>
+                </span>
+            </div>
+        </div>
+    </system-modal-content>
+    <!--system-modal-footer>
+        <button class="slds-button slds-button--brand" (click)="close()"><system-label label="LBL_CLOSE"></system-label></button>
+    </system-modal-footer-->
+</system-modal>

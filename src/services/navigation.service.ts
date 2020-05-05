@@ -641,6 +641,27 @@ export class navigation {
     }
 
     /**
+     * clones a tab and adds it to the scope
+     *
+     * @param tabid
+     */
+    public cloneTab(tabid) {
+        let activeTab = this.getTabById(tabid);
+        let newtabid = this.helper.generateGuid();
+        this.objectTabs.unshift({
+            id: newtabid,
+            parentid: undefined,
+            path: activeTab.path,
+            url: activeTab.url,
+            params: {...activeTab.params},
+            active: false,
+            pinned: false,
+            enablesubtabs: activeTab.enablesubtabs
+        });
+        this.activeTab = newtabid;
+    }
+
+    /**
      * set the tab info
      *
      * @param tabid

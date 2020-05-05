@@ -1,0 +1,34 @@
+<div class="slds-m-vertical--xx-small slds-box slds-grid slds-grid--vertical" >
+    <table class="slds-table slds-table--fixed-layout slds-max-medium-table_stacked-horizontal slds-table--bordered">
+        <thead>
+            <tr class="slds-text-title--caps">
+                <th scope="col">
+                    <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" (click)="sortBy('sap_field')">
+                        <span class="slds-truncate"><system-label label="LBL_SAPIDOC_SAP_FIELD"></system-label></span>
+                    </a>
+                </th>
+                <th scope="col">
+                    <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset"  (click)="sortBy('mapping_field')">
+                        <span class="slds-truncate"><system-label label="LBL_SAPIDOC_MAPPING_FIELD"></system-label></span>
+                    </a>
+                </th>
+                <th scope="col">
+                    <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                        <span class="slds-truncate"><system-label label="LBL_SAPIDOC_IDENTIFIER"></system-label></span>
+                    </a>
+                </th>
+                <th style="width:2.25rem">
+                    <button class="slds-button slds-button--icon" (click)="add()"><system-button-icon icon="new"></system-button-icon></button>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let segmentField of segmentFields" [ngClass]="{'slds-is-selected': segmentField.id == sapIdocsManager.selectedfield}" (click)="selectField(segmentField.id)">
+                <td>{{segmentField.sap_field}}</td>
+                <td>{{segmentField.mapping_field}}</td>
+                <td><system-checkbox disabled [ngModel]="segmentField.identifier == 1"></system-checkbox></td>
+                <td><button class="slds-button slds-button--icon" (click)="delete(segmentField.id)"><system-button-icon icon="delete"></system-button-icon></button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

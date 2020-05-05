@@ -1,3 +1,7 @@
+/**
+ * @module QuillEditorModule
+ */
+
 import {CommonModule} from '@angular/common';
 import {ModuleWithProviders, NgModule} from '@angular/core';
 

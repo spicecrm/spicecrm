@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import {dockedComposer} from '../../services/dockedcomposer.service';
 import {language} from '../../services/language.service';
+import {telephony} from '../../services/telephony.service';
 
 @Component({
     selector: 'global-docked-composer-overflow',
@@ -18,7 +19,7 @@ export class GlobalDockedComposerOverflow implements OnDestroy {
     private showHiddenComposers: boolean = false;
     private clickListener: any;
 
-    constructor(private renderer: Renderer2, private elementRef: ElementRef, private dockedComposer: dockedComposer, private language: language) {
+    constructor(private renderer: Renderer2, private elementRef: ElementRef, private dockedComposer: dockedComposer, private telephony: telephony, private language: language) {
 
     }
 
@@ -29,7 +30,7 @@ export class GlobalDockedComposerOverflow implements OnDestroy {
     }
 
     get hiddenCount() {
-        return this.dockedComposer.composers.length + this.dockedComposer.calls.length - this.dockedComposer.maxComposers;
+        return this.dockedComposer.composers.length + this.telephony.calls.length - this.dockedComposer.maxComposers;
     }
 
     private toggleHiddenComoposers() {
@@ -53,7 +54,7 @@ export class GlobalDockedComposerOverflow implements OnDestroy {
 
 
     get overflowComposers() {
-        return this.dockedComposer.composers.slice(this.dockedComposer.maxComposers - this.dockedComposer.calls.length);
+        return this.dockedComposer.composers.slice(this.dockedComposer.maxComposers - this.telephony.calls.length);
     }
 
     private displayLabel(composer) {

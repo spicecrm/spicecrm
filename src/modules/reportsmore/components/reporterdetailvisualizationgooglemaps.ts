@@ -149,19 +149,32 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnD
     }
 
     /**
-     * generate marker color
+     * generate marker icon
      * @param color
+     * @param letter
      */
-    protected generateMarkerColor(color: string) {
-        return {
-            path: `M 0,0 L -43.3,-75 A 50 50 1 1 1 43.30,-75 L 0,0 z`,
-            strokeColor: '#fff',
-            strokeWeight: 1,
-            fillOpacity: 1,
-            scale: .25,
-            anchor: {x: 4.5, y: 5},
-            fillColor: color.indexOf('#') == 0 ? color : '#' + color
-        };
+    protected generateMarkerIcon(color: string, letter?: string) {
+        const colorHex = color.indexOf('#') == 0 ? color : '#' + color;
+        const textColor = color.indexOf('ffffff') > -1 ? '#404040' : '#ffffff';
+        if (!letter) {
+            return {
+                path: `M 0,0 L -43.3,-75 A 50 50 1 1 1 43.30,-75 L 0,0 z`,
+                strokeColor: textColor,
+                strokeWeight: 1,
+                fillOpacity: 1,
+                scale: .25,
+                anchor: {x: 4.5, y: 5},
+                fillColor: colorHex
+            };
+        } else {
+            return `data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20style%3D%22transform%3A%20scale%28.88%29%22%20%20width%3D%2243%22%20height%3D%2243%22%20viewBox%3D%220%200%2043%2043%22%3E%3Cpath%20fill%3D%22${
+                colorHex.replace('#','%23')
+            }%22%20stroke%3D%22%23fff%22%20stroke-width%3D%221%22%20d%3D%22M34.305%2016.234c0%208.83-15.148%2028.158-15.148%2028.158S3.507%2025.065%203.507%2016.1c0-8.505%206.894-14.304%2015.4-14.304%208.504%200%2015.398%205.933%2015.398%2014.438z%22%20%2F%3E%3Ctext%20fill%3D%22${
+                textColor.replace('#','%23')
+            }%22%20style%3D%22font-family%3AArial%3Bfont-size%3A%2020px%22%20x%3D%2213%22%20y%3D%2222%22%3E${
+                letter[0]
+            }%3C%2Ftext%3E%3C%2Fsvg%3E`;
+        }
     }
 
     /**
@@ -290,8 +303,8 @@ export class ReporterDetailVisualizationGoogleMaps implements AfterViewInit, OnD
                 position: {lat: +item.latitude, lng: +item.longitude},
             };
 
-            if (!!item.colorLabel) {
-                markerData.icon = this.generateMarkerColor(item.colorLabel);
+            if (!!item.color) {
+                markerData.icon = this.generateMarkerIcon(item.color, item.text);
             }
 
             // set popup window content

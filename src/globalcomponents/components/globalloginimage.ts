@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs';
 @Component({
     selector: 'global-login-image',
     templateUrl: './src/globalcomponents/templates/globalloginimage.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GlobalLoginImage implements OnDestroy, AfterViewInit {
 
