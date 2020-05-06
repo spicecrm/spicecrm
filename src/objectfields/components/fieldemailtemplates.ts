@@ -73,8 +73,9 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
             this.isLoaded = true;
         } else {
             let params = {
-                limit: '-99',
-                fields: ['id', 'type', 'for_bean']
+                start: 0,
+                limit: 500,
+                listid: 'all'
             };
             this.backend.getRequest('module/EmailTemplates', params).subscribe(
                 (data: any) => {

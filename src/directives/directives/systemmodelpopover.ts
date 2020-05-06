@@ -50,7 +50,7 @@ export class SystemModelPopOverDirective implements OnInit, OnDestroy {
      * if the modelpopover shoudl be enabled or not
      * this allows to add the directive but disable it by a parameter on the component if e.g. the popover shoudl be displayed conditional
      */
-    @Input() private modelPopOver: boolean = true;
+    @Input('system-model-popover') private modelPopOver: boolean = true;
 
     /**
      * the popover that is rendered

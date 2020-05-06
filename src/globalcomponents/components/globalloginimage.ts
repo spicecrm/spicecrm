@@ -34,7 +34,7 @@ export class GlobalLoginImage implements OnDestroy, AfterViewInit {
 
     public ngAfterViewInit(): void {
         // Set the image url in case there is a CRM config for that:
-        if ( this.configuration.hasCapabilityConfig('spice_theme') ) this.setImageUrl();
+        if ( this.configuration.hasCapabilityConfig('theme') ) this.setImageUrl();
 
         // Update the image url in case the configuration data has changed:
         this.subscriptions.add(this.configuration.loaded$.subscribe( () => this.setImageUrl()));
@@ -49,8 +49,8 @@ export class GlobalLoginImage implements OnDestroy, AfterViewInit {
 
     private setImageUrl(): void {
         // Update the image url in case the configuration data has changed an there is a specific login image defined.
-        if ( this.configuration.getCapabilityConfig('spice_theme').login_image ) {
-            this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl( 'data:'+this.configuration.getCapabilityConfig('spice_theme').login_image );
+        if ( this.configuration.getCapabilityConfig('theme').login_image ) {
+            this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl( 'data:'+this.configuration.getCapabilityConfig('theme').login_image );
         } else {
             this.imageUrl = this.defaultImageUrl;
         }

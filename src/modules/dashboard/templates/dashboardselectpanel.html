@@ -12,7 +12,7 @@
                 <input type="text" class="slds-input" [(ngModel)]="dashboardFilter">
             </div>
         </div>
-        <ul system-to-bottom class="spicecrm-scrollbar">
+        <ul system-to-bottom class="spice-scrollbar">
             <li class="slds-nav-vertical__item" [ngClass]="getActiveClass(dashboard.id)" *ngFor="let dashboard of dashboards; trackBy: trackByFn" (click)="setDashboard(dashboard)">
                 <div class="slds-nav-vertical__action slds-text-link_reset" >{{dashboard.name}}</div>
             </li>
