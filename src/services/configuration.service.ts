@@ -307,7 +307,7 @@ export class configurationService {
     }
 
     public updateThemeColors() {
-        if ( !this.hasCapabilityConfig('theme') ) return;
+        // if ( !this.hasCapabilityConfig('theme') ) return;
 
         /* list of colors that can be used for theming */
         let allColors = [   'color-white',
