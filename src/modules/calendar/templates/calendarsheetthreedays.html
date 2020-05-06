@@ -25,9 +25,9 @@
                 </div>
             </div>
         </div>
-        <div #scrollcontainer aria-hidden="true" class="spicecrm-scrollbar" style="overflow: scroll; visibility: hidden; flex: none"></div>
+        <div #scrollcontainer aria-hidden="true" class="spice-scrollbar" style="overflow: scroll; visibility: hidden; flex: none"></div>
     </div>
-    <div class="slds-scrollable spicecrm-scrollbar slds-is-relative slds-grow calendar-event-drag-boundary"  style="overflow-y: scroll;">
+    <div class="slds-scrollable spice-scrollbar slds-is-relative slds-grow calendar-event-drag-boundary"  style="overflow-y: scroll;">
         <ng-container>
             <div *ngFor="let sheetHour of sheetHours; let index = index; trackBy: trackByIndexFn" class="slds-grid">
                 <div [ngStyle]="timeColStyle">
