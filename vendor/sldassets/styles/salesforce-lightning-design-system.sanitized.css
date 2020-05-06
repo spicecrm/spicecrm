@@ -474,7 +474,7 @@ img {
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
-    var(--color-white)-space: nowrap;
+    white-space: nowrap;
   }
 }
 .slds-accordion__section {
@@ -617,7 +617,7 @@ img {
   font-weight: 700;
   line-height: normal;
   color: var(--color-grey-13);
-  var(--color-white)-space: nowrap;
+  white-space: nowrap;
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
   display: inline-flex;
@@ -1059,7 +1059,7 @@ img {
   text-decoration: none;
   color: var(--brand-accessible);
   -webkit-appearance: none;
-  var(--color-white)-space: normal;
+  white-space: normal;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -2148,7 +2148,7 @@ a.slds-button--inverse:focus {
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
-  var(--color-white)-space: nowrap;
+  white-space: nowrap;
   display: block;
   margin-bottom: 0.125rem;
 }
@@ -2347,7 +2347,7 @@ a.slds-button--inverse:focus {
 .slds-table th,
 .slds-table td {
   padding: 0.25rem 0.5rem;
-  var(--color-white)-space: nowrap;
+  white-space: nowrap;
   position: relative;
 }
 .slds-table th {
@@ -2384,7 +2384,7 @@ a.slds-button--inverse:focus {
   color: var(--color-text-link-active);
 }
 .slds-table .slds-cell-wrap {
-  var(--color-white)-space: normal;
+  white-space: normal;
   overflow-wrap: break-word;
   word-wrap: break-word;
 }
@@ -2462,7 +2462,7 @@ a.slds-button--inverse:focus {
 .slds-table_fixed-layout {
   table-layout: fixed;
   width: 100%;
-  var(--color-white)-space: nowrap;
+  white-space: nowrap;
 }
 .slds-table_fixed-layout thead {
   background-color: var(--color-white);
@@ -2553,7 +2553,7 @@ a.slds-button--inverse:focus {
   -webkit-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
-  var(--color-white)-space: normal;
+  white-space: normal;
 }
 
 .slds-table_column-2-wrap tbody tr > *:nth-child(2) .slds-truncate {
@@ -2562,7 +2562,7 @@ a.slds-button--inverse:focus {
   -webkit-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
-  var(--color-white)-space: normal;
+  white-space: normal;
 }
 
 .slds-table_column-3-wrap tbody tr > *:nth-child(3) .slds-truncate {
@@ -2571,7 +2571,7 @@ a.slds-button--inverse:focus {
   -webkit-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
-  var(--color-white)-space: normal;
+  white-space: normal;
 }
 
 .slds-table_column-4-wrap tbody tr > *:nth-child(4) .slds-truncate {
@@ -2580,7 +2580,7 @@ a.slds-button--inverse:focus {
   -webkit-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
-  var(--color-white)-space: normal;
+  white-space: normal;
 }
 
 .slds-table_column-5-wrap tbody tr > *:nth-child(5) .slds-truncate {
@@ -2589,7 +2589,7 @@ a.slds-button--inverse:focus {
   -webkit-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
-  var(--color-white)-space: normal;
+  white-space: normal;
 }
 
 .slds-table_column-6-wrap tbody tr > *:nth-child(6) .slds-truncate {
@@ -2598,7 +2598,7 @@ a.slds-button--inverse:focus {
   -webkit-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
-  var(--color-white)-space: normal;
+  white-space: normal;
 }
 
 .slds-table_column-7-wrap tbody tr > *:nth-child(7) .slds-truncate {
@@ -2607,7 +2607,7 @@ a.slds-button--inverse:focus {
   -webkit-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
-  var(--color-white)-space: normal;
+  white-space: normal;
 }
 
 .slds-table_column-8-wrap tbody tr > *:nth-child(8) .slds-truncate {
@@ -2616,7 +2616,7 @@ a.slds-button--inverse:focus {
   -webkit-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
-  var(--color-white)-space: normal;
+  white-space: normal;
 }
 
 .slds-table_column-9-wrap tbody tr > *:nth-child(9) .slds-truncate {
@@ -2625,7 +2625,7 @@ a.slds-button--inverse:focus {
   -webkit-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
-  var(--color-white)-space: normal;
+  white-space: normal;
 }
 
 .slds-table_column-10-wrap tbody tr > *:nth-child(10) .slds-truncate {
@@ -2634,7 +2634,7 @@ a.slds-button--inverse:focus {
   -webkit-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
-  var(--color-white)-space: normal;
+  white-space: normal;
 }
 
 .slds-table_column-11-wrap tbody tr > *:nth-child(11) .slds-truncate {
@@ -2643,7 +2643,7 @@ a.slds-button--inverse:focus {
   -webkit-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
-  var(--color-white)-space: normal;
+  white-space: normal;
 }
 
 .slds-table_column-12-wrap tbody tr > *:nth-child(12) .slds-truncate {
@@ -2652,7 +2652,7 @@ a.slds-button--inverse:focus {
   -webkit-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
-  var(--color-white)-space: normal;
+  white-space: normal;
 }
 
 .slds-table_column-13-wrap tbody tr > *:nth-child(13) .slds-truncate {
@@ -2661,7 +2661,7 @@ a.slds-button--inverse:focus {
   -webkit-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
-  var(--color-white)-space: normal;
+  white-space: normal;
 }
 
 .slds-table_column-14-wrap tbody tr > *:nth-child(14) .slds-truncate {
@@ -2670,7 +2670,7 @@ a.slds-button--inverse:focus {
   -webkit-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
-  var(--color-white)-space: normal;
+  white-space: normal;
 }
 
 .slds-table_column-15-wrap tbody tr > *:nth-child(15) .slds-truncate {
@@ -2679,7 +2679,7 @@ a.slds-button--inverse:focus {
   -webkit-hyphens: none;
   -ms-hyphens: none;
   hyphens: none;
-  var(--color-white)-space: normal;
+  white-space: normal;
 }
 
 [class*="slds-table_column-"] tr td .slds-truncate {
@@ -2694,8 +2694,8 @@ a.slds-button--inverse:focus {
   bottom: 0;
   right: 0;
   width: 50%;
-  background: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), color-stop(69%, var(--color-white)));
-  background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, var(--color-white) 69%);
+  background: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), color-stop(69%, white));
+  background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, white 69%);
 }
 
 [class*="slds-table_column-"] tr:hover td .slds-truncate:after {
@@ -6744,7 +6744,7 @@ a.slds-button--inverse:focus {
   align-items: center;
   padding: 0.5rem 0.75rem;
   color: var(--color-grey-13);
-  var(--color-white)-space: nowrap;
+  white-space: nowrap;
   cursor: pointer;
 }
 .slds-dropdown__item > a:hover,
@@ -6884,7 +6884,7 @@ a.slds-button--inverse:focus {
   background-color: transparent;
 }
 .slds-pill__label {
-  var(--color-white)-space: nowrap;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -6956,7 +6956,7 @@ a.slds-button--inverse:focus {
   padding-right: calc(1rem + 0.25rem + 2px);
   border: 1px solid #dddbda;
   border-radius: 0.25rem;
-  var(--color-white)-space: nowrap;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   -webkit-box-flex: 1;
@@ -7145,7 +7145,7 @@ a.slds-button--inverse:focus {
   -webkit-box-align: start;
   -ms-flex-align: start;
   align-items: flex-start;
-  var(--color-white)-space: nowrap;
+  white-space: nowrap;
   position: relative;
   padding: 0.5rem 0.5rem 0.25rem 0.5rem;
   border-top-left-radius: 0.25rem;
@@ -7240,7 +7240,7 @@ a.slds-button--inverse:focus {
   border-radius: 0.25rem 0.25rem 0 0;
 }
 .slds-rich-text-editor__textarea .ql-editor {
-  var(--color-white)-space: pre-wrap;
+  white-space: pre-wrap;
   word-wrap: break-word;
   -webkit-user-select: text;
   -moz-user-select: text;
@@ -7327,7 +7327,7 @@ a.slds-button--inverse:focus {
   display: inline-block;
   margin-right: 0.3em;
   text-align: right;
-  var(--color-white)-space: nowrap;
+  white-space: nowrap;
   width: 1.2em;
 }
 .slds-rich-text-editor__textarea li:not(.ql-direction-rtl):before {
@@ -7960,7 +7960,7 @@ a.slds-button--inverse:focus {
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
-  var(--color-white)-space: nowrap;
+  white-space: nowrap;
   display: block;
   text-decoration: none;
   cursor: pointer;
@@ -10633,7 +10633,7 @@ a.slds-button--inverse:focus {
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
-  var(--color-white)-space: nowrap;
+  white-space: nowrap;
 }
 .slds-truncate_container_25 {
   max-width: 25%;
@@ -11051,7 +11051,7 @@ a.slds-button--inverse:focus {
   font-family: Consolas, Menlo, Monaco, Courier, monospace;
 }
 .slds-color__text_gray-1 {
-  color: var(--color-white) !important;
+  color: white !important;
 }
 .slds-color__text_gray-2 {
   color: #fafaf9 !important;
@@ -11087,7 +11087,7 @@ a.slds-button--inverse:focus {
   color: #2b2826 !important;
 }
 .slds-color__background_gray-1 {
-  background-color: var(--color-white) !important;
+  background-color: white !important;
 }
 .slds-color__background_gray-2 {
   background-color: #fafaf9 !important;
@@ -11123,7 +11123,7 @@ a.slds-button--inverse:focus {
   background-color: #2b2826 !important;
 }
 .slds-color__border_gray-1 {
-  border-color: var(--color-white) !important;
+  border-color: white !important;
 }
 .slds-color__border_gray-2 {
   border-color: #fafaf9 !important;
@@ -11159,7 +11159,7 @@ a.slds-button--inverse:focus {
   border-color: #2b2826 !important;
 }
 .slds-color__fill_gray-1 {
-  fill: var(--color-white) !important;
+  fill: white !important;
 }
 .slds-color__fill_gray-2 {
   fill: #fafaf9 !important;
@@ -14000,7 +14000,7 @@ a.slds-button--inverse:focus {
   overflow: hidden !important;
   clip: rect(0 0 0 0) !important;
   text-transform: none !important;
-  var(--color-white)-space: nowrap !important;
+  white-space: nowrap !important;
 }
 .slds-assistive-text_focus:focus {
   margin: inherit !important;
@@ -14232,7 +14232,7 @@ a.slds-button--inverse:focus {
   -webkit-line-clamp: 3;
   overflow: hidden;
   text-overflow: ellipsis;
-  var(--color-white)-space: normal;
+  white-space: normal;
 }
 .slds-line-clamp_small {
   display: -webkit-box;
@@ -14240,7 +14240,7 @@ a.slds-button--inverse:focus {
   -webkit-line-clamp: 3;
   overflow: hidden;
   text-overflow: ellipsis;
-  var(--color-white)-space: normal;
+  white-space: normal;
 }
 .slds-line-clamp_medium {
   display: -webkit-box;
@@ -14248,7 +14248,7 @@ a.slds-button--inverse:focus {
   -webkit-line-clamp: 5;
   overflow: hidden;
   text-overflow: ellipsis;
-  var(--color-white)-space: normal;
+  white-space: normal;
 }
 .slds-line-clamp_large {
   display: -webkit-box;
@@ -14256,7 +14256,7 @@ a.slds-button--inverse:focus {
   -webkit-line-clamp: 7;
   overflow: hidden;
   text-overflow: ellipsis;
-  var(--color-white)-space: normal;
+  white-space: normal;
 }
 
 /*! HTML5 Boilerplate v5.2.0 | MIT License | https://html5boilerplate.com/ */
