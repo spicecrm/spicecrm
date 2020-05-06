@@ -92,7 +92,7 @@ export class MediaFilesTile implements OnInit {
     get thumbnail() {
         let thumbnail = this.model.getField('thumbnail');
         if (thumbnail) {
-            return this.sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + thumbnail);
+            return this.sanitizer.bypassSecurityTrustResourceUrl('data:'+this.model.getField('filetype')+';base64,' + thumbnail);
         }
         return false;
     }
