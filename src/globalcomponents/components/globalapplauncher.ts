@@ -4,6 +4,7 @@
 import {
     Component
 } from '@angular/core';
+import {Router} from "@angular/router";
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {modal} from '../../services/modal.service';
@@ -20,7 +21,7 @@ import {modal} from '../../services/modal.service';
 })
 export class GlobalAppLauncher {
 
-    constructor(private metadata: metadata, private modal: modal, private language: language) {
+    constructor(private metadata: metadata, private modal: modal, private language: language, private router: Router) {
 
     }
 
@@ -41,5 +42,9 @@ export class GlobalAppLauncher {
      */
     private showAppLauncher() {
         this.modal.openModal('GlobalAppLauncherDialog');
+    }
+
+    private navigateHome(){
+        this.router.navigate(['module/Home']);
     }
 }
