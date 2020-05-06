@@ -1,0 +1,21 @@
+
+.quill-rich-text-editor-view-container .ql-editor {
+    padding: 0 !important;
+}
+
+.quill-rich-text-editor-view-container .ql-container {
+    border: 0 !important;
+}
+
+.ql-formats:not(:last-child){
+    border-right: 1px solid var(--color-grey-9);
+    margin-right: 5px;
+    padding-right: 5px;
+}
+
+.ql-container {
+    -webkit-box-flex: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    min-height: 0;
+}

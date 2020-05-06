@@ -21,7 +21,7 @@
                     <div (click)="onclick()" class="slds-grow">&nbsp;</div>
                     <system-utility-icon (click)="onclick()" [icon]="dropdownIcon" size="xx-small" class="slds-col--bump-left slds-p-right--xx-small"></system-utility-icon>
                 </div>
-                <div class="slds-dropdown slds-dropdown_fluid spicecrm-scrollbar" role="listbox" [ngClass]="dropdownLength">
+                <div class="slds-dropdown slds-dropdown_fluid spice-scrollbar" role="listbox" [ngClass]="dropdownLength">
                     <ul *ngIf="grouped" class="slds-listbox slds-listbox_vertical" role="group">
                         <ng-container *ngFor="let listGroup of parsedListItems; trackBy: trackByFn">
                             <li role="presentation" class="slds-listbox__item">
