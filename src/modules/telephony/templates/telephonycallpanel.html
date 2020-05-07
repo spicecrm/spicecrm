@@ -1,0 +1,14 @@
+<div class="slds-align_absolute-center slds-height_full slds-size_1-of-1">
+    <div class="slds-text-align_center slds-align-middle">
+        <ng-container *ngIf="!searching">
+                <span class="slds-avatar slds-avatar_large">
+                    <img [src]="calldata.relateddata.salutation == 'Mr.' ? 'sldassets/images/avatar1.jpg' : 'sldassets/images/avatar2.jpg'"/>
+                </span>
+            <h3 class="slds-text-heading_large">{{calldata.relateddata.full_name}}</h3>
+            <ul class="slds-list_horizontal slds-has-dividers_right slds-text-body_small">
+                <li class="slds-item">{{calldata.relateddata.account_name}}</li>
+            </ul>
+        </ng-container>
+        <p class="slds-text-heading_medium slds-m-top_medium">{{calldata.msisdn}}</p>
+    </div>
+</div>

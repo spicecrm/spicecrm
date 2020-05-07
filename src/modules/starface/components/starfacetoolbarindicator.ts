@@ -19,6 +19,7 @@ import {Observable, Subject, Subscription} from "rxjs";
 import {telephony} from "../../../services/telephony.service";
 import {telephonyCallI} from "../../../services/interfaces.service";
 
+declare var moment: any;
 
 @Component({
     templateUrl: './src/modules/starface/templates/starfacetoolbarindicator.html'
@@ -127,7 +128,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
     /**
      * get the preferences and check if we have a username set
      */
-    private setPreferences(){
+    private setPreferences() {
         this.modal.openModal('StarfacePreferences').subscribe(componentRef => {
             componentRef.instance.saved$.subscribe(saved => {
                 this.getPreferences().subscribe(username => {
@@ -149,8 +150,8 @@ export class StarfaceToolbarIndicator implements OnDestroy {
 
                 // subscribe to the termination of the call
                 this.subscriptions.add(
-                    this.telephony.initiateCall$.subscribe(msisdn => {
-                        this.initiateCall(msisdn);
+                    this.telephony.initiateCall$.subscribe(calldata => {
+                        this.initiateCall(calldata.msisdn, calldata.relatedmodule, calldata.relatedid, calldata.relateddata);
                     })
                 );
 
@@ -251,6 +252,17 @@ export class StarfaceToolbarIndicator implements OnDestroy {
         let call = this.telephony.calls.find(c => c.callid == eventData.id);
         if (call) {
             call.status = this.translateStatus(eventData.state);
+
+            // in case we get to connetced set start
+            if (eventData.state == 'CONNECTED' && !call.start) {
+                call.start = moment();
+            }
+
+            // in case we get a hangup log the end date
+            if (eventData.state == 'HANGUP' && !call.end) {
+                call.end = moment();
+            }
+
         } else {
             this.addCall(eventData);
         }
@@ -300,7 +312,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
      * @param relatedmodule
      * @param relatedrecord
      */
-    private initiateCall(msisdn: string, relatedmodule?: string, relatedrecord?: string) {
+    private initiateCall(msisdn: string, relatedmodule?: string, relatedid?: string, relateddata?: any) {
 
         // create a call and push to the telphony service
         let callid = this.modelutilities.generateGuid();
@@ -309,7 +321,10 @@ export class StarfaceToolbarIndicator implements OnDestroy {
             status: 'initial',
             callid: undefined,
             msisdn: msisdn,
-            direction: 'outbound'
+            direction: 'outbound',
+            relatedid: relatedid,
+            relatedmodule: relatedmodule,
+            relateddata: relateddata
         };
         this.telephony.calls.push(call);
 

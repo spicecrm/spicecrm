@@ -7,7 +7,7 @@
           </span>
             </div>
             <div class="slds-media__body">
-                <h2 class="slds-truncate">{{calldata.direction}} Call {{calldata.status}}</h2>
+                <h2 class="slds-truncate">{{calldata.direction}} Call {{calldata.status}} <telephony-call-duration *ngIf="calldata.start" [calldata]="calldata"></telephony-call-duration></h2>
             </div>
         </div>
         <div class="slds-col_bump-left slds-shrink-none">
@@ -20,7 +20,7 @@
         </div>
     </header>
     <div class="slds-grow">
-        <system-dynamic-component component="TelephonyCallPanel" [componentattributes]="{calldata: calldata}"></system-dynamic-component>
+        <system-dynamic-component [component]="panelcomponent" [componentattributes]="{calldata: calldata}"></system-dynamic-component>
     </div>
     <footer class="slds-docked-composer__footer slds-shrink-none">
         <button class="slds-button slds-button--neutral slds-col_bump-left" [disabled]="!canEndCall" (click)="endCall()"><system-button-icon icon="end_call"></system-button-icon> <system-label label="LBL_END"></system-label></button>

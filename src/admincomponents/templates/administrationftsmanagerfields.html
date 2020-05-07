@@ -224,9 +224,12 @@
                 </div>
             </fieldset>
             <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
-                <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_EMAIL_SETTINGS"></system-label></legend>
-                <div class="slds-form-element__control">
+                <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_EMAIL_PHONE_SETTINGS"></system-label></legend>
+                <div class="slds-form-element__control slds-size--1-of-2">
                     <system-checkbox [(ngModel)]="fieldDetails.email"><system-label label="LBL_EMAIL_SEARCH"></system-label><system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ENABLE_EMAIL')"></system-icon-help-text></system-checkbox>
+                </div>
+                <div class="slds-form-element__control slds-size--1-of-2">
+                    <system-checkbox [(ngModel)]="fieldDetails.phonesearch"><system-label label="LBL_PHONE_SEARCH"></system-label><system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ENABLE_PHONE')"></system-icon-help-text></system-checkbox>
                 </div>
             </fieldset>
             <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">

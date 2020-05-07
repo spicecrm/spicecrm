@@ -6,19 +6,19 @@ import {
     Input,
     ViewChild,
     ViewContainerRef,
-    OnInit
+    ChangeDetectorRef, OnDestroy
 } from '@angular/core';
-import {dockedComposer} from '../../services/dockedcomposer.service';
-import {language} from '../../services/language.service';
-import {backend} from '../../services/backend.service';
-import {telephony} from '../../services/telephony.service';
-import {telephonyCallI} from "../../services/interfaces.service";
+import {language} from '../../../services/language.service';
+import {backend} from '../../../services/backend.service';
+import {telephony} from '../../../services/telephony.service';
+import {telephonyCallI} from "../../../services/interfaces.service";
+
+declare var moment: any;
 
 @Component({
-    selector: 'global-docked-composer-call',
-    templateUrl: './src/globalcomponents/templates/globaldockedcomposercall.html'
+    templateUrl: './src/modules/telephony/templates/telephonydockedcall.html'
 })
-export class GlobalDockedComposerCall {
+export class TelephonyDockedCall {
 
     @ViewChild('containercontent', {read: ViewContainerRef, static: true}) private containercontent: ViewContainerRef;
 
@@ -26,7 +26,9 @@ export class GlobalDockedComposerCall {
 
     private isClosed: boolean = false;
 
-    constructor(private backend: backend, private dockedComposer: dockedComposer, private telephony: telephony, private language: language, private ViewContainerRef: ViewContainerRef) {
+    private panelcomponent: string = 'TelephonyCallSearching';
+
+    constructor(private backend: backend, private telephony: telephony, private language: language, private cdref: ChangeDetectorRef, private ViewContainerRef: ViewContainerRef) {
 
     }
 
@@ -45,6 +47,23 @@ export class GlobalDockedComposerCall {
         return 'call';
     }
 
+    public ngOnInit() {
+        if (this.calldata.relatedid) {
+            this.panelcomponent = 'TelephonyCallPanel';
+        } else {
+            this.backend.postRequest('search/phonenumber', {}, {
+                searchterm: this.calldata.msisdn
+            }).subscribe(results => {
+                if (results.length == 1) {
+                    this.calldata.relatedmodule = results[0].module;
+                    this.calldata.relatedid = results[0].id;
+                    this.calldata.relateddata = results[0].data;
+
+                    this.panelcomponent = 'TelephonyCallPanel';
+                }
+            });
+        }
+    }
 
     /**
      * close the composer and remove the call
