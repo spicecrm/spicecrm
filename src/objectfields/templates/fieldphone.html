@@ -1,7 +1,7 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [title]="value" [fieldid]="fieldid">
     <div class="slds-grid slds-grid--vertical-align-center">
-        <div *ngIf="telehonyActive && value" (click)="initiateCall()" class="slds-p-right--x-small slds-text-link--reset">
+        <div *ngIf="telehonyActive && value" (click)="initiateCall($event)" class="slds-p-right--x-small slds-text-link--reset">
             <system-utility-icon icon="outbound_call" size="xx-small"></system-utility-icon>
         </div>
         <div class="slds-truncate"><a *ngIf="value" [href]="'tel:'+value">{{value}}</a></div>
