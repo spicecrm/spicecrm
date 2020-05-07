@@ -44,7 +44,7 @@ export class AccountTerritoryDetails implements OnInit {
     * @return object Account Company Code Details
     * */
     private getCCDetails(): any {
-        return _.toArray(this.model.data.accountccdetails.beans);
+        return this.model.data?.accountccdetails?.beans ? _.toArray(this.model.data.accountccdetails.beans) : [];
     }
 
     /*
