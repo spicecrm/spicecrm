@@ -1,8 +1,12 @@
-<div class="slds-align_absolute-center slds-p-vertical--x-large">
+<div class="slds-p-around--medium slds-p-bottom--large" [system-overlay-loading-spinner]="loading">
     <h2 class="slds-text-heading--medium slds-p-vertical--small slds-p-horizontal--x-small">
         System Requirements
     </h2>
+ <ul>
+     <li *ngFor="let requirement of requirements | keyvalue"><system-utility-icon [icon]="requirement.value ? 'check' : 'error'"></system-utility-icon> {{requirement.key}}</li>
+ </ul>
+    <div class="slds-p-vertical--small slds-text-align--right">
+        <button class="slds-button slds-button--brand" (click)="spiceinstaller.next(spiceinstaller.steps[1])">next</button>
+    </div>
 </div>
-<div class="slds-align_absolute-center slds-p-vertical--x-large">
-<button class="slds-button slds-button--brand"(click)="checkSystem()">check system requirements</button>
-</div>
+
