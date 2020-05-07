@@ -1,20 +1,29 @@
-<div class="slds-grid slds-grid_vertical slds-p-around--medium ">
+<div class="slds-grid slds-grid_vertical slds-p-around--medium">
+
     <h2 class="slds-p-around--medium slds-text-heading_medium">Backend Configuration Settings:</h2>
-    <ul class="slds-p-around--medium" *ngFor="let setting of configBody.backendconfig| keyvalue">
+    <ul class="slds-p-around--medium" *ngFor="let setting of spiceinstaller.configObject.backendconfig| keyvalue">
         <li>{{setting.key}}: {{setting.value}}</li>
     </ul>
     <h2 class="slds-p-around--medium slds-text-heading_medium">Database Configuration Settings:</h2>
-    <ul class="slds-p-around--medium" *ngFor="let setting of configBody.database| keyvalue">
+    <ul class="slds-p-around--medium" *ngFor="let setting of spiceinstaller.configObject.database| keyvalue">
         <li>{{setting.key}}: {{setting.value}}</li>
     </ul>
-    <ul class="slds-p-around--medium" *ngFor="let setting of configBody.dboptions| keyvalue">
+    <ul class="slds-p-around--medium" *ngFor="let setting of spiceinstaller.configObject.dboptions| keyvalue">
         <li>{{setting.key}}: {{setting.value}}</li>
     </ul>
     <h2 class="slds-p-around--medium slds-text-heading_medium">FTS Configuration Settings:</h2>
-    <ul class="slds-p-around--medium" *ngFor="let setting of configBody.fts| keyvalue">
+    <ul class="slds-p-around--medium" *ngFor="let setting of spiceinstaller.configObject.fts| keyvalue">
         <li>{{setting.key}}: {{setting.value}}</li>
     </ul>
-    <div class="slds-align--absolute-center slds--align-bottom">
+    <h2 class="slds-p-around--medium slds-text-heading_medium">Credentials:</h2>
+    <ul class="slds-p-around--medium" *ngFor="let setting of spiceinstaller.configObject.credentials| keyvalue">
+        <li>{{setting.key}}: {{setting.value}}</li>
+    </ul>
+    <h2 class="slds-p-around--medium slds-text-heading_medium">Language:</h2>
+    <ul class="slds-p-around--medium" *ngFor="let setting of spiceinstaller.configObject.language| keyvalue">
+        <li>{{setting.key}}: {{setting.value}}</li>
+    </ul>
+    <div class="slds-p-vertical--small slds-text-align--right">
         <button class="slds-button slds-button--brand" (click)="install()">begin installation</button>
     </div>
 </div>

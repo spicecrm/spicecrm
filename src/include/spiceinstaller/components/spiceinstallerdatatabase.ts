@@ -4,10 +4,7 @@
 
 import {Component} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Router} from '@angular/router';
-import {configurationService} from '../../../services/configuration.service';
 import {toast} from '../../../services/toast.service';
-import {backend} from "../../../services/backend.service";
 import {spiceinstaller} from "../services/spiceinstaller.service";
 
 
@@ -17,86 +14,71 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 })
 
 export class SpiceInstallerDatabase {
-    hostNameCondition: boolean = true;
-    userNameCondition: boolean = true;
-    dbNameCondition: boolean = true;
-    private db_host_name: string = '';
-    private db_host_instance: string = '';
-    private db_user_name: string = '';
-    private db_password: string = '';
-    private db_name: string = '';
-    private db_type: string = 'mysql';
-    private db_port: string = '';
-    private db_manager: string = '';
-    private persistent: boolean = true;
-    private autofree: boolean = false;
-    private debug: number = 0;
-    private ssl: boolean = false;
-    private collation: string = 'utf8_general_ci';
-    private configBody: any = {};
+
+    private hostNameCondition: boolean = true;
+    private userNameCondition: boolean = true;
+    private dbNameCondition: boolean = true;
+    
+    private loading: boolean = false;
 
     constructor(
         private toast: toast,
         private http: HttpClient,
-        private router: Router,
-        private configurationService: configurationService,
-        private backend: backend,
         private spiceinstaller: spiceinstaller
     ) {
-        this.spiceinstaller.currentStep(3);
-        this.spiceinstaller.configBody$.subscribe(data => {
-            this.configBody = data;
-        });
+
     }
 
+    /**
+     * checks if a connection with the database is possible with the inserted input,
+     * saves the configuration
+     */
     private checkDB() {
-        if (this.db_type == 'mysql') {
-            this.db_host_instance = 'SQLEXPRESS';
-            this.db_manager = 'MysqliManager'
+
+        if (this.spiceinstaller.db_type == 'mysqli') {
+            this.spiceinstaller.db_host_instance = 'SQLEXPRESS';
+            this.spiceinstaller.db_manager = 'MysqliManager'
         }
         let body = {
-            db_host_name: this.db_host_name,
-            db_host_instance: this.db_host_instance,
-            db_user_name: this.db_user_name,
-            db_password: this.db_password,
-            db_name: this.db_name,
-            db_type: this.db_type,
-            db_port: this.db_port,
-            db_manager: this.db_manager
+            db_host_name: this.spiceinstaller.db_host_name,
+            db_host_instance: this.spiceinstaller.db_host_instance,
+            db_user_name: this.spiceinstaller.db_user_name,
+            db_password: this.spiceinstaller.db_password,
+            db_name: this.spiceinstaller.db_name,
+            db_type: this.spiceinstaller.db_type,
+            db_port: this.spiceinstaller.db_port,
+            db_manager: this.spiceinstaller.db_manager
         };
-
-        this.hostNameCondition = this.db_host_name.length > 0;
-        this.userNameCondition = this.db_user_name.length > 0;
-        this.dbNameCondition = this.db_name.length > 0;
+        this.hostNameCondition = this.spiceinstaller.db_host_name.length > 0;
+        this.userNameCondition = this.spiceinstaller.db_user_name.length > 0;
+        this.dbNameCondition = this.spiceinstaller.db_name.length > 0;
 
         if (this.hostNameCondition && this.userNameCondition && this.dbNameCondition) {
-            this.http.post(`${this.configBody.backendconfig.backendUrl}/KREST/spiceinstaller/checkdb`, body).subscribe(
+            this.loading = true;
+            this.http.post(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/KREST/spiceinstaller/checkdb`, body).subscribe(
                 (response: any) => {
+                    this.loading = false;
                     var res = response;
                     if (!res.success) {
                         for (let e in res.errors) {
-                            this.toast.sendAlert('Error with: ' + e, 'error');
+                            this.toast.sendAlert('Error with: ' + res.errors[e], 'error');
                         }
                     } else {
-                        this.toast.sendToast('successful connection with database', 'success');
-                        let dbConfig = {
-                            database: res.config,
-                            dboptions: {
-                                persistance: this.persistent,
-                                autofree: this.autofree,
-                                debug: this.debug,
-                                ssl: this.ssl,
-                                collation: this.collation
-                            }
-                        };
-                        const config = Object.assign(this.configBody, dbConfig);
-                        this.spiceinstaller.configBody(config);
-                        this.spiceinstaller.steps[3].completed = true;
+
+                        this.spiceinstaller.configObject['database'] = res.config;
+                        this.spiceinstaller.configObject['dboptions'] = {
+                            persistance: this.spiceinstaller.persistent,
+                            autofree: this.spiceinstaller.autofree,
+                            debug: this.spiceinstaller.debug,
+                            ssl: this.spiceinstaller.ssl,
+                            collation: this.spiceinstaller.collation
+                        }
+                        this.spiceinstaller.selectedStep.completed = true;
+                        this.spiceinstaller.steps[3] = this.spiceinstaller.selectedStep;
+                        this.spiceinstaller.next(this.spiceinstaller.steps[3]);
                     }
                 });
         }
-
-
     }
 
 }

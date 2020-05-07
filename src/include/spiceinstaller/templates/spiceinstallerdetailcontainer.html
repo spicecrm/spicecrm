@@ -1,83 +1,32 @@
 <div *ngFor="let step of spiceinstaller.steps; let i = index">
-    <div *ngIf="step.id == 'setbackend' && step.visible" class="slds-grid slds-grid_vertical">
+    <div *ngIf="step.id == 'setbackend' && spiceinstaller.selectedStep.id == 'setbackend'"
+         class="slds-grid slds-grid_vertical">
         <spice-installer-set-backend></spice-installer-set-backend>
-        <div class="slds-align--absolute-center slds-align--bottom" style="height: 20%">
-            <button [disabled]="!step.completed" (click)="next(i)" class="slds-button slds-button-icon">
-                <system-button-icon icon="chevronright"></system-button-icon>
-            </button>
-        </div>
     </div>
-    <div *ngIf="step.id == 'systemcheck' && step.visible" class="slds-grid slds-grid_vertical">
+    <div *ngIf="step.id == 'systemcheck' && spiceinstaller.selectedStep.id == 'systemcheck'"
+         class="slds-grid slds-grid_vertical">
         <spice-installer-systemcheck></spice-installer-systemcheck>
-        <div class="slds-align--absolute-center slds--align-bottom" style="height: 20%">
-            <button (click)="previous(i)" class="slds-button slds-button-icon">
-                <system-button-icon icon="chevronleft"></system-button-icon>
-            </button>
-            <button [disabled]="!step.completed" (click)="next(i)" class="slds-button slds-button-icon">
-                <system-button-icon icon="chevronright"></system-button-icon>
-            </button>
-        </div>
     </div>
-    <div *ngIf="step.id == 'licence' && step.visible" class="slds-grid slds-grid_vertical">
+    <div *ngIf="step.id == 'licence' && spiceinstaller.selectedStep.id == 'licence'"
+         class="slds-grid slds-grid_vertical">
         <spice-installer-licence></spice-installer-licence>
-        <div class="slds-align--absolute-center slds--align-bottom">
-            <button (click)="previous(i)" class="slds-button slds-button-icon">
-                <system-button-icon icon="chevronleft"></system-button-icon>
-            </button>
-            <button [disabled]="!step.completed" (click)="next(i)" class="slds-button slds-button-icon">
-                <system-button-icon icon="chevronright"></system-button-icon>
-            </button>
-        </div>
     </div>
-    <div *ngIf="step.id == 'database' && step.visible" class="slds-grid slds-grid_vertical">
+    <div *ngIf="step.id == 'database' && spiceinstaller.selectedStep.id == 'database'"
+         class="slds-grid slds-grid_vertical">
         <spice-installer-database></spice-installer-database>
-        <div class="slds-align--absolute-center slds--align-bottom">
-            <button (click)="previous(i)" class="slds-button slds-button-icon">
-                <system-button-icon icon="chevronleft"></system-button-icon>
-            </button>
-            <button [disabled]="!step.completed" (click)="next(i)" class="slds-button slds-button-icon">
-                <system-button-icon icon="chevronright"></system-button-icon>
-            </button>
-        </div>
     </div>
-    <div *ngIf="step.id == 'fts' && step.visible" class="slds-grid slds-grid_vertical">
+    <div *ngIf="step.id == 'fts' && spiceinstaller.selectedStep.id == 'fts'" class="slds-grid slds-grid_vertical">
         <spice-installer-fts></spice-installer-fts>
-        <div class="slds-align--absolute-center slds--align-bottom">
-            <button (click)="previous(i)" class="slds-button slds-button-icon">
-                <system-button-icon icon="chevronleft"></system-button-icon>
-            </button>
-            <button [disabled]="!step.completed" (click)="next(i)" class="slds-button slds-button-icon">
-                <system-button-icon icon="chevronright"></system-button-icon>
-            </button>
-        </div>
     </div>
-    <div *ngIf="step.id == 'reference' && step.visible" class="slds-grid slds-grid_vertical">
-        <spice-installer-reference></spice-installer-reference>
-        <div class="slds-align--absolute-center slds-align-bottom">
-            <button (click)="previous(i)" class="slds-button slds-button-icon">
-                <system-button-icon icon="chevronleft"></system-button-icon>
-            </button>
-            <button [disabled]="!step.completed" (click)="next(i)" class="slds-button slds-button-icon">
-                <system-button-icon icon="chevronright"></system-button-icon>
-            </button>
-        </div>
+    <div *ngIf="step.id == 'credentials' && spiceinstaller.selectedStep.id == 'credentials'"
+         class="slds-grid slds-grid_vertical">
+        <spice-installer-credentials></spice-installer-credentials>
     </div>
-    <div *ngIf="step.id == 'review' && step.visible" class="slds-grid slds-grid_vertical">
+    <div *ngIf="step.id == 'setlanguage' && spiceinstaller.selectedStep.id == 'setlanguage'"
+         class="slds-grid slds-grid_vertical">
+        <spice-installer-set-language></spice-installer-set-language>
+    </div>
+    <div *ngIf="step.id == 'review' && spiceinstaller.selectedStep.id == 'review'" class="slds-grid slds-grid_vertical">
         <spice-installer-review></spice-installer-review>
-        <div class="slds-align--absolute-center slds-align-bottom">
-            <button (click)="previous(i)" class="slds-button slds-button-icon">
-                <system-button-icon icon="chevronleft"></system-button-icon>
-            </button>
-        </div>
     </div>
 </div>
-<div class="slds-align--absolute-center slds-align-bottom">
-    testing buttons
-    <button class="slds-button slds-button-icon">
-        <system-button-icon icon="chevronleft"></system-button-icon>
-    </button>
-    <button class="slds-button slds-button-icon">
-        <system-button-icon icon="chevronright"></system-button-icon>
-    </button>
-</div>
-
