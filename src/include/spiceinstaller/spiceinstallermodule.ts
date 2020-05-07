@@ -19,8 +19,14 @@ import /*embed*/ {SpiceInstallerDatabase} from "./components/spiceinstallerdatat
 import /*embed*/ {SpiceInstallerFTS} from "./components/spiceinstallerfts";
 import /*embed*/ {SpiceInstallerSystemCheck} from "./components/spiceinstallersystemcheck";
 import /*embed*/ {SpiceInstallerLicence} from "./components/spiceinstallerlicence";
-import /*embed*/ {SpiceInstallerReference} from "./components/spiceinstallerreference";
+import /*embed*/ {SpiceInstallerCredentials} from "./components/spiceinstallercredentials";
+import /*embed*/ {SpiceInstallerSetLanguage} from "./components/spiceinstallersetlanguage";
 import /*embed*/ {SpiceInstallerReview} from "./components/spiceinstallerreview";
+import /*embed*/ {SpiceinstallerMySQLi} from "./components/spiceinstallermysqli";
+import /*embed*/ {SpiceinstallerPostgreSQL} from "./components/spiceinstallerpgsql";
+
+
+
 
 
 @NgModule({
@@ -46,8 +52,11 @@ import /*embed*/ {SpiceInstallerReview} from "./components/spiceinstallerreview"
         SpiceInstallerSystemCheck,
         SpiceInstallerLicence,
         SpiceInstallerDatabase,
+        SpiceinstallerMySQLi,
+        SpiceinstallerPostgreSQL,
         SpiceInstallerFTS,
-        SpiceInstallerReference,
+        SpiceInstallerCredentials,
+        SpiceInstallerSetLanguage,
         SpiceInstallerReview
     ],
     providers: [spiceinstaller]

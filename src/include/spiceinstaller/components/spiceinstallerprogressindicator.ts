@@ -2,17 +2,7 @@
  * @module SpiceInstaller
  */
 
-import {
-    Component
-} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {Router} from '@angular/router';
-import {loginService} from '../../../services/login.service';
-import {configurationService} from '../../../services/configuration.service';
-import {session} from '../../../services/session.service';
-import {toast} from '../../../services/toast.service';
-import {language} from '../../../services/language.service';
-import {backend} from "../../../services/backend.service";
+import {AfterViewInit, Component, ChangeDetectorRef} from '@angular/core';
 import {spiceinstaller} from "../services/spiceinstaller.service";
 
 
@@ -21,17 +11,27 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
     templateUrl: './src/include/spiceinstaller/templates/spiceinstallerprogressindicator.html',
 })
 
-export class SpiceInstallerProgressIndicator {
+export class SpiceInstallerProgressIndicator implements AfterViewInit{
 
     constructor(
-        private toast: toast,
-        private http: HttpClient,
-        private router: Router,
-        private configurationService: configurationService,
-        private backend: backend,
-        private spiceinstaller: spiceinstaller
+        private spiceinstaller: spiceinstaller,
+        private changeDetector: ChangeDetectorRef
     ) {
     }
 
+    public ngAfterViewInit() {
+        this.changeDetector.detectChanges();
+    }
+
+    /**
+     * passes the clicked step as an object whose component is then rendered in the container
+     * @param step
+     */
+    private render(step) {
+        if(step.completed) {
+            this.spiceinstaller.selectedStep = step;
+        }
+
+    }
 
 }

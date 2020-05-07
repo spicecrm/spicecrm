@@ -4,10 +4,7 @@
 
 import {Component} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Router} from '@angular/router';
-import {configurationService} from '../../../services/configuration.service';
 import {toast} from '../../../services/toast.service';
-import {backend} from "../../../services/backend.service";
 import {spiceinstaller} from "../services/spiceinstaller.service";
 
 
@@ -18,42 +15,35 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 
 export class SpiceInstallerSystemCheck {
     private configBody: any = {};
-
+    private loading: boolean = false;
+    private requirements: any = [];
     constructor(
         private toast: toast,
         private http: HttpClient,
-        private router: Router,
-        private configurationService: configurationService,
-        private backend: backend,
         private spiceinstaller: spiceinstaller
     ) {
-        this.spiceinstaller.selectedStep = {
-            id: 'systemcheck',
-            name: 'System Requirements',
-            visible: true,
-            completed: false,
-        };
-        this.spiceinstaller.currentStep(1);
-        this.spiceinstaller.configBody$.subscribe(data => {
-            this.configBody = data;
-        });
+
+        this.checkSystem();
     }
 
 
     private checkSystem() {
-        this.http.get(`${this.configBody.backendconfig.backendUrl}/KREST/spiceinstaller/check`).subscribe(result => {
+        this.loading = true;
+        this.http.get(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/KREST/spiceinstaller/check`).subscribe(result => {
+            this.loading = false;
             if (result) {
                 let check = false;
+                this.requirements = result;
                 for (let i in result) {
                     if (result[i] != true) {
-                        this.toast.sendAlert('error in: ' + result[i]);
+                        check = false;
                     } else {
                         check = true;
                     }
                 }
                 if (check) {
-                    this.toast.sendToast('systemcheck was successful', 'success');
-                    this.spiceinstaller.steps[1].completed = true;
+                    this.spiceinstaller.selectedStep.completed = true
+                    this.spiceinstaller.dbdrivers = this.requirements.dbdrivers;
                 }
             } else {
                 this.toast.sendToast('error', "error");

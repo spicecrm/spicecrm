@@ -1,62 +1,24 @@
-<div class="slds-box">
+<div class="slds-p-around--medium">
     <h2 class="slds-text-heading--medium slds-p-vertical--small slds-p-horizontal--x-small">
         Database Configuration
     </h2>
-    <div class="slds-form-element slds-p-vertical--small" [ngClass]="{'slds-has-error': !hostNameCondition}">
-        <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Host Name</label>
-        <div class="slds-form-element__control">
-            <input type="text" class="slds-input" [(ngModel)]="db_host_name"/>
-            <div *ngIf="!hostNameCondition" class="slds-form-element__help">This field is required</div>
-        </div>
-    </div>
-    <div class="slds-form-element slds-p-vertical--small" [ngClass]="{'slds-has-error': !userNameCondition}">
-        <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>User Name</label>
-        <div class="slds-form-element__control">
-            <input type="text" class="slds-input" [(ngModel)]="db_user_name"/>
-            <div *ngIf="!userNameCondition" class="slds-form-element__help">This field is required</div>
-        </div>
-    </div>
-    <div class="slds-form-element slds-p-vertical--small">
-        <label class="slds-form-element__label"><abbr class="slds-required"></abbr>Password</label>
-        <div class="slds-form-element__control">
-            <input type="text" class="slds-input" [(ngModel)]="db_password"/>
-        </div>
-    </div>
-    <div class="slds-form-element slds-p-vertical--small">
-        <label class="slds-form-element__label"><abbr class="slds-required"></abbr>Port</label>
-        <div class="slds-form-element__control">
-            <input type="text" class="slds-input" [(ngModel)]="db_port"/>
-        </div>
-    </div>
-    <div class="slds-form-element slds-p-vertical--small" [ngClass]="{'slds-has-error': !dbNameCondition}">
-        <label class="slds-form-element__label"><abbr class="slds-required">*</abbr>Database Name</label>
-        <div class="slds-form-element__control">
-            <input type="text" class="slds-input" [(ngModel)]="db_name"/>
-            <div *ngIf="!dbNameCondition" class="slds-form-element__help">This field is required</div>
-        </div>
-    </div>
     <div class="slds-form-element slds-p-vertical--small">
         <label class="slds-form-element__label">Database Type</label>
         <div class="slds-form-element__control">
             <div class="slds-select_container">
-                <select class="slds-select" [(ngModel)]="db_type">
-                    <option value="mysql">MySQL</option>
+                <select class="slds-select" [(ngModel)]="spiceinstaller.db_type">
+                    <option *ngFor="let type of this.spiceinstaller.dbdrivers" value="{{type.extension}}">{{type.name}}</option>
                 </select>
             </div>
         </div>
     </div>
-    <div class="slds-form-element slds-p-vertical--small">
-        <label class="slds-form-element__label">Collation</label>
-        <div class="slds-form-element__control">
-            <div class="slds-select_container">
-                <select class="slds-select" [(ngModel)]="collation">
-                    <option value="utf8_general_ci">utf8</option>
-                    <option value="utf8mb4_0900_ai_ci">utf8mb4</option>
-                </select>
-            </div>
-        </div>
+    <div *ngIf="spiceinstaller.db_type == 'mysql'">
+        <spice-installer-mysqli></spice-installer-mysqli>
     </div>
-    <div class="slds-align_absolute-center slds-p-vertical--small">
-        <button class="slds-button slds-button--brand" (click)="checkDB()">check</button>
+    <div *ngIf="spiceinstaller.db_type == 'pgsql'">
+        <spice-installer-pgsql></spice-installer-pgsql>
+    </div>
+    <div class="slds-p-vertical--small slds-text-align--right">
+        <button class="slds-button slds-button--brand" (click)="checkDB()">next</button>
     </div>
 </div>
