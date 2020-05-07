@@ -22,9 +22,6 @@ declare var gapi: any;
 
 import {loginService, loginCheck} from "../services/login.service";
 import {metadata} from "../services/metadata.service";
-import {VersionManagerService} from "../services/versionmanager.service";
-
-import /*embed*/ {MenuService} from "./services/menu.service";
 
 import /*embed*/ {GlobalHeader} from "./components/globalheader";
 import /*embed*/ {GlobalHeaderTop} from "./components/globalheadertop";
@@ -93,7 +90,6 @@ import /*embed*/ {GlobalSearchModuleItem} from "./components/globalsearchmodulei
 
 import /*embed*/ {GlobalNewsFeed} from "./components/globalnewsfeed";
 import /*embed*/ {GlobalNewsFeedItem} from "./components/globalnewsfeeditem";
-
 
 import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
 import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobtainimportantpreferences';
@@ -220,13 +216,7 @@ import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
     ]
 })
 export class GlobalComponents {
-    public readonly version = "1.0";
-    public readonly build_date = "/*build_date*/";
 
-    constructor(
-        public metadata: metadata,
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
+    constructor() {
     }
 }

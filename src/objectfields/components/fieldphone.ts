@@ -32,6 +32,6 @@ export class fieldPhone extends fieldGeneric {
      * triggers the calling of an msisdn
      */
     private initiateCall() {
-        this.telephony.initiateCall(this.value);
+        this.telephony.initiateCall(this.value, {relatedmodule: this.model.module, relatedid: this.model.id, relateddata: this.model.data});
     }
 }
