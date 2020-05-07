@@ -31,7 +31,8 @@ export class fieldPhone extends fieldGeneric {
     /**
      * triggers the calling of an msisdn
      */
-    private initiateCall() {
+    private initiateCall(e: MouseEvent) {
+        e.stopPropagation();
         this.telephony.initiateCall(this.value);
     }
 }
