@@ -18,14 +18,12 @@ import {telephonyCallI} from "../../services/interfaces.service";
     selector: 'global-docked-composer-call',
     templateUrl: './src/globalcomponents/templates/globaldockedcomposercall.html'
 })
-export class GlobalDockedComposerCall implements OnInit {
+export class GlobalDockedComposerCall {
 
     @ViewChild('containercontent', {read: ViewContainerRef, static: true}) private containercontent: ViewContainerRef;
 
     @Input() public calldata: telephonyCallI;
 
-    private searching: boolean = true;
-    private contact: any = {};
     private isClosed: boolean = false;
 
     constructor(private backend: backend, private dockedComposer: dockedComposer, private telephony: telephony, private language: language, private ViewContainerRef: ViewContainerRef) {
@@ -47,19 +45,6 @@ export class GlobalDockedComposerCall implements OnInit {
         return 'call';
     }
 
-    public ngOnInit() {
-        this.backend.postRequest('search', {}, {
-            modules: 'Contacts',
-            searchterm: this.calldata.msisdn
-        }).subscribe(results => {
-            try {
-                this.contact = results.Contacts.hits[0]._source;
-                this.searching = false;
-            } catch (err) {
-                this.searching = false;
-            }
-        });
-    }
 
     /**
      * close the composer and remove the call
