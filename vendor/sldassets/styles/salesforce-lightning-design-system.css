@@ -691,7 +691,7 @@ img{
   font-weight:700;
   line-height:normal;
   color:var(--color-grey-13);
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
   display:-webkit-inline-box;
   display:-ms-inline-flexbox;
   display:inline-flex;
@@ -870,7 +870,7 @@ img{
   text-decoration:none;
   color:var(--brand-accessible);
   -webkit-appearance:none;
-  var(--color-white)-space:normal;
+  white-space:normal;
   -webkit-user-select:none;
      -moz-user-select:none;
       -ms-user-select:none;
@@ -1829,8 +1829,8 @@ a.slds-button--inverse:focus{
   right:0;
   bottom:0;
   left:0;
-  background:-webkit-gradient(linear, left bottom, left top, from(black), color-stop(1%, rgba(0, 0, 0, 0.9)), color-stop(99%, rgba(0, 0, 0, 0))), -webkit-gradient(linear, left top, right top, color-stop(1%, var(--color-white)), to(rgba(255, 255, 255, 0)));
-  background:linear-gradient(to top, black, rgba(0, 0, 0, 0.9) 1%, rgba(0, 0, 0, 0) 99%), linear-gradient(to right, var(--color-white) 1%, rgba(255, 255, 255, 0));
+  background:-webkit-gradient(linear, left bottom, left top, from(black), color-stop(1%, rgba(0, 0, 0, 0.9)), color-stop(99%, rgba(0, 0, 0, 0))), -webkit-gradient(linear, left top, right top, color-stop(1%, white), to(rgba(255, 255, 255, 0)));
+  background:linear-gradient(to top, black, rgba(0, 0, 0, 0.9) 1%, rgba(0, 0, 0, 0) 99%), linear-gradient(to right, white 1%, rgba(255, 255, 255, 0));
 }
 .slds-color-picker__range-indicator{
   -webkit-transform:translate3d(-0.375rem, 0.375rem, 0);
@@ -4845,7 +4845,7 @@ a.slds-button--inverse:focus{
     max-width:100%;
     overflow:hidden;
     text-overflow:ellipsis;
-    var(--color-white)-space:nowrap;
+    white-space:nowrap;
   }
 }
 .slds-accordion__section{
@@ -5986,7 +5986,7 @@ a.slds-button--inverse:focus{
   display:inline-block;
   font-size:0.8125rem;
   max-width:26.25rem;
-  var(--color-white)-space:pre-line;
+  white-space:pre-line;
 }
 .slds-chat-message__text a{
   color:var(--brand-accessible-active);
@@ -8410,7 +8410,7 @@ a.slds-button--inverse:focus{
   max-width:100%;
   overflow:hidden;
   text-overflow:ellipsis;
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
   font-size:0.75rem;
   padding-right:0.5rem;
 }
@@ -9985,7 +9985,7 @@ a.slds-button--inverse:focus{
           align-items:center;
   padding:0.5rem 0.75rem;
   color:var(--color-grey-13);
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
   cursor:pointer;
 }
 .slds-dropdown__item > a:hover, .slds-dropdown__item > a:focus{
@@ -10365,7 +10365,7 @@ a.slds-button--inverse:focus{
   max-width:100%;
   overflow:hidden;
   text-overflow:ellipsis;
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
   display:block;
   margin-bottom:0.125rem;
 }
@@ -10783,8 +10783,8 @@ a.slds-button--inverse:focus{
   overflow:visible;
 }
 .slds-datepicker td.slds-is-selected-multi.slds-is-today > .slds-day{
-  -webkit-box-shadow:var(--color-white) 0 0 0 1px inset;
-          box-shadow:var(--color-white) 0 0 0 1px inset;
+  -webkit-box-shadow:white 0 0 0 1px inset;
+          box-shadow:white 0 0 0 1px inset;
 }
 .slds-datepicker td.slds-is-selected-multi + .slds-is-selected-multi > .slds-day:before{
   content:"";
@@ -10808,7 +10808,7 @@ a.slds-button--inverse:focus{
 }
 .slds-datepicker_time__list > li,
 .slds-datepicker--time__list > li{
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
   padding:0.5rem;
   padding-left:2rem;
   padding-right:2rem;
@@ -10827,7 +10827,7 @@ a.slds-button--inverse:focus{
   display:flex;
   padding:0 0.75rem;
   height:inherit;
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
   border-bottom-left-radius:0.25rem;
   border-bottom-right-radius:0.25rem;
 }
@@ -10956,7 +10956,7 @@ a.slds-button--inverse:focus{
   background:var(--color-white);
   padding:0 0.75rem;
   height:inherit;
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
   border-bottom-left-radius:0;
   border-bottom-right-radius:0;
 }
@@ -11719,7 +11719,7 @@ a.slds-button--inverse:focus{
   -webkit-box-align:stretch;
       -ms-flex-align:stretch;
           align-items:stretch;
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
   position:relative;
   max-width:15rem;
   -webkit-transition:background-color 0.25s cubic-bezier(0.39, 0.575, 0.565, 1);
@@ -12326,7 +12326,7 @@ a.slds-button--inverse:focus{
   -webkit-box-align:center;
       -ms-flex-align:center;
           align-items:center;
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
 }
 .slds-builder-header__item + .slds-builder-header__item{
   border-left:1px solid currentColor;
@@ -13359,7 +13359,7 @@ a.slds-button--inverse:focus{
   background-color:transparent;
 }
 .slds-pill__label{
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
@@ -13431,7 +13431,7 @@ a.slds-button--inverse:focus{
   padding-right:calc(1rem + 0.25rem + 2px);
   border:1px solid #dddbda;
   border-radius:0.25rem;
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
   -webkit-box-flex:1;
@@ -13792,7 +13792,7 @@ a.slds-button--inverse:focus{
   max-width:100%;
   overflow:hidden;
   text-overflow:ellipsis;
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
 }
 
 .slds-tabs_path__stage,
@@ -14251,7 +14251,7 @@ a.slds-button--inverse:focus{
   max-width:100%;
   overflow:hidden;
   text-overflow:ellipsis;
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
   -webkit-transform:translate3d(0, 0, 0);
           transform:translate3d(0, 0, 0);
 }
@@ -14658,15 +14658,15 @@ a.slds-button--inverse:focus{
   color:var(--color-progressbar_item-completed);
 }
 .slds-progress__item.slds-is-active .slds-progress__marker{
-  -webkit-box-shadow:var(--color-white) 0 0 0 4px;
-          box-shadow:var(--color-white) 0 0 0 4px;
+  -webkit-box-shadow:white 0 0 0 4px;
+          box-shadow:white 0 0 0 4px;
 }
 .slds-progress__item.slds-is-active .slds-progress__marker:hover, .slds-progress__item.slds-is-active .slds-progress__marker:focus{
   border-color:var(--brand-accessible);
 }
 .slds-progress__item.slds-is-active .slds-progress__marker:focus{
-  -webkit-box-shadow:var(--color-white) 0 0 0 4px, 0 0 3px 4px var(--brand-accessible);
-          box-shadow:var(--color-white) 0 0 0 4px, 0 0 3px 4px var(--brand-accessible);
+  -webkit-box-shadow:white 0 0 0 4px, 0 0 3px 4px var(--brand-accessible);
+          box-shadow:white 0 0 0 4px, 0 0 3px 4px var(--brand-accessible);
 }
 .slds-progress__item.slds-has-error .slds-progress__marker, .slds-progress__item.slds-has-error .slds-progress__marker:hover, .slds-progress__item.slds-has-error .slds-progress__marker:focus{
   color:#c23934;
@@ -14864,7 +14864,7 @@ a.slds-button--inverse:focus{
   -webkit-box-align:start;
       -ms-flex-align:start;
           align-items:flex-start;
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
   position:relative;
   padding:0.5rem 0.5rem 0.25rem 0.5rem;
   border-top-left-radius:0.25rem;
@@ -14959,7 +14959,7 @@ a.slds-button--inverse:focus{
   border-radius:0.25rem 0.25rem 0 0;
 }
 .slds-rich-text-editor__textarea .ql-editor{
-  var(--color-white)-space:pre-wrap;
+  white-space:pre-wrap;
   word-wrap:break-word;
   -webkit-user-select:text;
      -moz-user-select:text;
@@ -15045,7 +15045,7 @@ a.slds-button--inverse:focus{
   display:inline-block;
   margin-right:0.3em;
   text-align:right;
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
   width:1.2em;
 }
 .slds-rich-text-editor__textarea li:not(.ql-direction-rtl):before{
@@ -16409,7 +16409,7 @@ a.slds-button--inverse:focus{
   max-width:100%;
   overflow:hidden;
   text-overflow:ellipsis;
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
   display:block;
   text-decoration:none;
   cursor:pointer;
@@ -16577,7 +16577,7 @@ a.slds-button--inverse:focus{
   max-width:100%;
   overflow:hidden;
   text-overflow:ellipsis;
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
   display:block;
   text-decoration:none;
   cursor:pointer;
@@ -16770,7 +16770,7 @@ a.slds-button--inverse:focus{
   max-width:100%;
   overflow:hidden;
   text-overflow:ellipsis;
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
   display:block;
   text-decoration:none;
   cursor:pointer;
@@ -16858,7 +16858,7 @@ a.slds-button--inverse:focus{
   max-width:100%;
   overflow:hidden;
   text-overflow:ellipsis;
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
   display:block;
   text-decoration:none;
   cursor:pointer;
@@ -17705,7 +17705,7 @@ a.slds-button--inverse:focus{
   max-width:100%;
   overflow:hidden;
   text-overflow:ellipsis;
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
   display:block;
   margin-bottom:0.125rem;
 }
@@ -18274,7 +18274,7 @@ a.slds-button--inverse:focus{
 .slds-table th,
 .slds-table td{
   padding:0.25rem 0.5rem;
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
   position:relative;
 }
 .slds-table th{
@@ -18307,7 +18307,7 @@ a.slds-button--inverse:focus{
   color:var(--color-text-link-active);
 }
 .slds-table .slds-cell-wrap{
-  var(--color-white)-space:normal;
+  white-space:normal;
   overflow-wrap:break-word;
   word-wrap:break-word;
 }
@@ -18403,7 +18403,7 @@ a.slds-button--inverse:focus{
 .slds-table--fixed-layout{
   table-layout:fixed;
   width:100%;
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
 }
 .slds-table_fixed-layout thead,
 .slds-table--fixed-layout thead{
@@ -18493,7 +18493,7 @@ a.slds-button--inverse:focus{
   -webkit-hyphens:none;
       -ms-hyphens:none;
           hyphens:none;
-  var(--color-white)-space:normal;
+  white-space:normal;
 }
 
 .slds-table_column-2-wrap tbody tr > *:nth-child(2) .slds-truncate{
@@ -18502,7 +18502,7 @@ a.slds-button--inverse:focus{
   -webkit-hyphens:none;
       -ms-hyphens:none;
           hyphens:none;
-  var(--color-white)-space:normal;
+  white-space:normal;
 }
 
 .slds-table_column-3-wrap tbody tr > *:nth-child(3) .slds-truncate{
@@ -18511,7 +18511,7 @@ a.slds-button--inverse:focus{
   -webkit-hyphens:none;
       -ms-hyphens:none;
           hyphens:none;
-  var(--color-white)-space:normal;
+  white-space:normal;
 }
 
 .slds-table_column-4-wrap tbody tr > *:nth-child(4) .slds-truncate{
@@ -18520,7 +18520,7 @@ a.slds-button--inverse:focus{
   -webkit-hyphens:none;
       -ms-hyphens:none;
           hyphens:none;
-  var(--color-white)-space:normal;
+  white-space:normal;
 }
 
 .slds-table_column-5-wrap tbody tr > *:nth-child(5) .slds-truncate{
@@ -18529,7 +18529,7 @@ a.slds-button--inverse:focus{
   -webkit-hyphens:none;
       -ms-hyphens:none;
           hyphens:none;
-  var(--color-white)-space:normal;
+  white-space:normal;
 }
 
 .slds-table_column-6-wrap tbody tr > *:nth-child(6) .slds-truncate{
@@ -18538,7 +18538,7 @@ a.slds-button--inverse:focus{
   -webkit-hyphens:none;
       -ms-hyphens:none;
           hyphens:none;
-  var(--color-white)-space:normal;
+  white-space:normal;
 }
 
 .slds-table_column-7-wrap tbody tr > *:nth-child(7) .slds-truncate{
@@ -18547,7 +18547,7 @@ a.slds-button--inverse:focus{
   -webkit-hyphens:none;
       -ms-hyphens:none;
           hyphens:none;
-  var(--color-white)-space:normal;
+  white-space:normal;
 }
 
 .slds-table_column-8-wrap tbody tr > *:nth-child(8) .slds-truncate{
@@ -18556,7 +18556,7 @@ a.slds-button--inverse:focus{
   -webkit-hyphens:none;
       -ms-hyphens:none;
           hyphens:none;
-  var(--color-white)-space:normal;
+  white-space:normal;
 }
 
 .slds-table_column-9-wrap tbody tr > *:nth-child(9) .slds-truncate{
@@ -18565,7 +18565,7 @@ a.slds-button--inverse:focus{
   -webkit-hyphens:none;
       -ms-hyphens:none;
           hyphens:none;
-  var(--color-white)-space:normal;
+  white-space:normal;
 }
 
 .slds-table_column-10-wrap tbody tr > *:nth-child(10) .slds-truncate{
@@ -18574,7 +18574,7 @@ a.slds-button--inverse:focus{
   -webkit-hyphens:none;
       -ms-hyphens:none;
           hyphens:none;
-  var(--color-white)-space:normal;
+  white-space:normal;
 }
 
 .slds-table_column-11-wrap tbody tr > *:nth-child(11) .slds-truncate{
@@ -18583,7 +18583,7 @@ a.slds-button--inverse:focus{
   -webkit-hyphens:none;
       -ms-hyphens:none;
           hyphens:none;
-  var(--color-white)-space:normal;
+  white-space:normal;
 }
 
 .slds-table_column-12-wrap tbody tr > *:nth-child(12) .slds-truncate{
@@ -18592,7 +18592,7 @@ a.slds-button--inverse:focus{
   -webkit-hyphens:none;
       -ms-hyphens:none;
           hyphens:none;
-  var(--color-white)-space:normal;
+  white-space:normal;
 }
 
 .slds-table_column-13-wrap tbody tr > *:nth-child(13) .slds-truncate{
@@ -18601,7 +18601,7 @@ a.slds-button--inverse:focus{
   -webkit-hyphens:none;
       -ms-hyphens:none;
           hyphens:none;
-  var(--color-white)-space:normal;
+  white-space:normal;
 }
 
 .slds-table_column-14-wrap tbody tr > *:nth-child(14) .slds-truncate{
@@ -18610,7 +18610,7 @@ a.slds-button--inverse:focus{
   -webkit-hyphens:none;
       -ms-hyphens:none;
           hyphens:none;
-  var(--color-white)-space:normal;
+  white-space:normal;
 }
 
 .slds-table_column-15-wrap tbody tr > *:nth-child(15) .slds-truncate{
@@ -18619,7 +18619,7 @@ a.slds-button--inverse:focus{
   -webkit-hyphens:none;
       -ms-hyphens:none;
           hyphens:none;
-  var(--color-white)-space:normal;
+  white-space:normal;
 }
 
 [class*=slds-table_column-] tr td .slds-truncate{
@@ -18634,8 +18634,8 @@ a.slds-button--inverse:focus{
   bottom:0;
   right:0;
   width:50%;
-  background:-webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), color-stop(69%, var(--color-white)));
-  background:linear-gradient(to right, rgba(255, 255, 255, 0) 0%, var(--color-white) 69%);
+  background:-webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), color-stop(69%, white));
+  background:linear-gradient(to right, rgba(255, 255, 255, 0) 0%, white 69%);
 }
 
 [class*=slds-table_column-] tr:hover td .slds-truncate:after{
@@ -18730,7 +18730,7 @@ a.slds-button--inverse:focus{
     max-width:100%;
     width:100%;
     clear:both;
-    var(--color-white)-space:normal;
+    white-space:normal;
     overflow:hidden;
     text-align:left;
   }
@@ -18821,7 +18821,7 @@ a.slds-button--inverse:focus{
     max-width:100%;
     width:100%;
     clear:both;
-    var(--color-white)-space:normal;
+    white-space:normal;
     overflow:hidden;
     text-align:left;
   }
@@ -22523,7 +22523,7 @@ a.slds-button--inverse:focus{
   max-width:100%;
   overflow:hidden;
   text-overflow:ellipsis;
-  var(--color-white)-space:nowrap;
+  white-space:nowrap;
 }
 .slds-truncate_container_25,
 .slds-truncate_container--25{
@@ -22929,7 +22929,7 @@ a.slds-button--inverse:focus{
   font-family:Consolas, Menlo, Monaco, Courier, monospace;
 }
 .slds-color__text_gray-1{
-  color:var(--color-white) !important;
+  color:white !important;
 }
 .slds-color__text_gray-2{
   color:#fafaf9 !important;
@@ -22965,7 +22965,7 @@ a.slds-button--inverse:focus{
   color:#2b2826 !important;
 }
 .slds-color__background_gray-1{
-  background-color:var(--color-white) !important;
+  background-color:white !important;
 }
 .slds-color__background_gray-2{
   background-color:#fafaf9 !important;
@@ -23001,7 +23001,7 @@ a.slds-button--inverse:focus{
   background-color:#2b2826 !important;
 }
 .slds-color__border_gray-1{
-  border-color:var(--color-white) !important;
+  border-color:white !important;
 }
 .slds-color__border_gray-2{
   border-color:#fafaf9 !important;
@@ -23037,7 +23037,7 @@ a.slds-button--inverse:focus{
   border-color:#2b2826 !important;
 }
 .slds-color__fill_gray-1{
-  fill:var(--color-white) !important;
+  fill:white !important;
 }
 .slds-color__fill_gray-2{
   fill:#fafaf9 !important;
@@ -26502,7 +26502,7 @@ a.slds-button--inverse:focus{
   overflow:hidden !important;
   clip:rect(0 0 0 0) !important;
   text-transform:none !important;
-  var(--color-white)-space:nowrap !important;
+  white-space:nowrap !important;
 }
 .slds-assistive-text_focus:focus,
 .slds-assistive-text--focus:focus{
@@ -26747,7 +26747,7 @@ a.slds-button--inverse:focus{
   -webkit-line-clamp:3;
   overflow:hidden;
   text-overflow:ellipsis;
-  var(--color-white)-space:normal;
+  white-space:normal;
 }
 .slds-line-clamp_small{
   display:-webkit-box;
@@ -26755,7 +26755,7 @@ a.slds-button--inverse:focus{
   -webkit-line-clamp:3;
   overflow:hidden;
   text-overflow:ellipsis;
-  var(--color-white)-space:normal;
+  white-space:normal;
 }
 .slds-line-clamp_medium{
   display:-webkit-box;
@@ -26763,7 +26763,7 @@ a.slds-button--inverse:focus{
   -webkit-line-clamp:5;
   overflow:hidden;
   text-overflow:ellipsis;
-  var(--color-white)-space:normal;
+  white-space:normal;
 }
 .slds-line-clamp_large{
   display:-webkit-box;
@@ -26771,7 +26771,7 @@ a.slds-button--inverse:focus{
   -webkit-line-clamp:7;
   overflow:hidden;
   text-overflow:ellipsis;
-  var(--color-white)-space:normal;
+  white-space:normal;
 }
 
 /*! HTML5 Boilerplate v5.2.0 | MIT License | https://html5boilerplate.com/ */
