@@ -1,0 +1,107 @@
+
+.loader-logo-image {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 150px;
+    height: 150px;
+    margin-left: -75px;
+    margin-top: -60px;
+}
+
+.loader-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 50px
+}
+
+.loaderspinner .over circle {
+    stroke-dasharray: 150;
+    stroke: var(--color-grey-5);
+}
+
+.loaderspinner .bag circle {
+    stroke: var(--color-grey-9);
+}
+
+.loderRotate {
+    animation-name: spin;
+    animation-duration: 3000ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+.loaderspinner .over {
+    -webkit-animation: spin 3s linear infinite;
+}
+
+.loaderspinner .bag {
+    position: absolute;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+
+/* for the css loader http://cssload.net/en/spinners/4*/
+.cssload-container {
+    width: 100%;
+    text-align: center;
+}
+
+.cssload-double-torus {
+    width: 26px;
+    height: 26px;
+    margin: 0 auto;
+    border: 2px double;
+    border-radius: 50%;
+    border-color: transparent rgba(0, 0, 0, 0.9) rgba(0, 0, 0, 0.9);
+    animation: cssload-spin 1410ms infinite linear;
+    -o-animation: cssload-spin 1410ms infinite linear;
+    -ms-animation: cssload-spin 1410ms infinite linear;
+    -webkit-animation: cssload-spin 1410ms infinite linear;
+    -moz-animation: cssload-spin 1410ms infinite linear;
+}
+
+@keyframes cssload-spin {
+    100% {
+        transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@-o-keyframes cssload-spin {
+    100% {
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@-ms-keyframes cssload-spin {
+    100% {
+        -ms-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes cssload-spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@-moz-keyframes cssload-spin {
+    100% {
+        -moz-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}

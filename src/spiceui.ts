@@ -51,6 +51,7 @@ import {VersionManagerService} from "./services/versionmanager.service";
 import {modal} from "./services/modal.service";
 import {layout} from "./services/layout.service";
 import {libloader} from "./services/libloader.service";
+import {telephony} from "./services/telephony.service";
 
 import {GlobalLogin} from "./globalcomponents/components/globallogin";
 import {SystemDynamicRouteInterceptor} from "./systemcomponents/components/systemdynamicrouteinterceptor";
@@ -133,54 +134,44 @@ export class SpiceUI {
     entryComponents: [],
     bootstrap: [SpiceUI],
     providers: [
-        {provide: LocationStrategy, useClass: HashLocationStrategy},
+        aclCheck,
+        assistant,
         backend,
         broadcast,
-        layout,
-        navigation,
         canNavigateAway,
-        session,
-        metadata,
-        aclCheck,
-        loginCheck,
-        helper,
-        loginService,
-        loader,
         configurationService,
-        language,
-        dockedComposer,
-        fts,
-        recent,
-        SystemJsNgModuleLoader,
-        modelutilities,
-        toast,
-        favorite,
-        reminder,
-        territories,
-        currency,
-        footer,
-        userpreferences,
         cookie,
-        MathExpressionCompilerService,
-        assistant,
-        VersionManagerService,
-        modal,
-        Title,
+        currency,
+        dockedComposer,
+        favorite,
+        footer,
+        fts,
+        helper,
+        language,
+        layout,
+        libloader,
+        loader,
+        {provide: LocationStrategy, useClass: HashLocationStrategy},
         loggerService,
-        libloader
+        loginCheck,
+        loginService,
+        MathExpressionCompilerService,
+        metadata,
+        modal,
+        modelutilities,
+        navigation,
+        recent,
+        reminder,
+        session,
+        telephony,
+        territories,
+        Title,
+        toast,
+        userpreferences,
+        VersionManagerService
     ]
 })
-export class SpiceUIModule {
-    public version = "1.0";
-    public build_date = "/*build_date*/";
-
-    constructor(
-        public metadata: metadata,
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
-    }
-}
+export class SpiceUIModule {}
 
 /**
  * sets the prod mode. THis is enabled in the build workflow for production build

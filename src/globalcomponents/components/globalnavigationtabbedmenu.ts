@@ -11,6 +11,7 @@ import {SystemResizeDirective} from "../../directives/directives/systemresize";
 import {GlobalNavigationTabbedMenuModules} from "./globalnavigationtabbedmenumodules";
 import {GlobalNavigationTabbedMoreTab} from "./globalnavigationtabbedmoretab";
 import {GlobalNavigationTabbedMenuTab} from "./globalnavigationtabbedmenutab";
+import {GlobalNavigationTabbedBrowser} from "./globalnavigationtabbedbrowser";
 import {Subscription} from "rxjs";
 
 @Component({
@@ -36,6 +37,11 @@ export class GlobalNavigationTabbedMenu implements OnDestroy {
      * reference to the more item
      */
     @ViewChild(GlobalNavigationTabbedMoreTab) private menuMore: GlobalNavigationTabbedMoreTab;
+
+    /**
+     * reference to the more item
+     */
+    @ViewChild(GlobalNavigationTabbedBrowser) private menuBrowser: GlobalNavigationTabbedBrowser;
 
     /**
      * timeout function to handle resize event ... to not render after any time the event is triggered but the size is stable for some time
@@ -95,9 +101,11 @@ export class GlobalNavigationTabbedMenu implements OnDestroy {
         // caluclate the width of the various items
         let left = this.elementRef.nativeElement.getBoundingClientRect().left;
         let menuWidth = this.menuModules.tabWidth;
-        let totalWidth = window.innerWidth - left - menuWidth;
+        let browserWidth = this.menuBrowser.tabWidth;
+        let totalWidth = window.innerWidth - left - menuWidth - browserWidth;
 
         // get the width of the more item
+        this.menuMore.elementRef.nativeElement.classList.remove('slds-hide');
         this.menuMore.elementRef.nativeElement.classList.add('slds-hidden');
         this.menuMore.moreObjects = [];
         let moreWidth = this.menuMore.tabWidth;
@@ -109,10 +117,11 @@ export class GlobalNavigationTabbedMenu implements OnDestroy {
 
         let usedWidth = 0;
         let showmore = false;
+
         this.menuTabs.forEach((thisItem, itemIndex) => {
             let itemwidth = thisItem.elementRef.nativeElement.getBoundingClientRect().width;
             usedWidth += itemwidth;
-            if (usedWidth > totalWidth - moreWidth) {
+            if (showmore || (itemIndex + 1 == this.menuTabs.length && usedWidth > totalWidth) || (itemIndex + 1 < this.menuTabs.length &&  usedWidth > totalWidth - moreWidth)) {
                 // special handling for last element
                 // if (showmore || itemIndex + 1 < this.menuTabs.length || itemwidth < moreWidth) {
                 thisItem.elementRef.nativeElement.classList.add('slds-hide');
@@ -123,10 +132,13 @@ export class GlobalNavigationTabbedMenu implements OnDestroy {
                 // }
             }
             thisItem.elementRef.nativeElement.classList.remove('slds-hidden');
+
         });
 
         if (showmore) {
             this.menuMore.elementRef.nativeElement.classList.remove('slds-hidden');
+        } else {
+            this.menuMore.elementRef.nativeElement.classList.add('slds-hide');
         }
 
         return true;

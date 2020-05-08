@@ -1,3 +1,6 @@
+/**
+ * @module ModuleReports
+ */
 import {Component} from "@angular/core";
 import {language} from "../../../services/language.service";
 import {Router} from "@angular/router";

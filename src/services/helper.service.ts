@@ -184,10 +184,12 @@ export class helper {
         if (mimeType) {
             let type: string, subtype: string;
             [type, subtype] = mimeType.split('/');
-            if (!type || !subtype) return 'unknown'; // The function input is not valid, it is not in the format 'type/subtype'.
+            if (!type) return 'unknown'; // The function input is not valid, it is not in the format 'type/subtype'.
             // Check the type part:
             switch (type) {
                 case 'image':
+                case 'png':
+                case 'jpeg':
                     return 'image';
                 case "text":
                     switch (subtype) {

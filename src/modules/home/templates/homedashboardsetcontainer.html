@@ -1,48 +1,26 @@
-<div class="slds-show" role="tabpanel">
-    <div class="slds-tabs_default slds-sub-tabs">
-        <ul class="slds-tabs_default__nav" role="tablist">
-            <li #maintabs *ngFor="let dashboard of dashboardsList" [attr.data-dashboard]="dashboard.name" [class.slds-active]="dashboard.id == activeDashboardId" (click)="setActiveDashboard(dashboard.id)"
-                class="slds-tabs_default__item slds-grid slds-grid_vertical-align-center" role="presentation">
-                <a class="slds-tabs_default__link slds-p-horizontal_xx-small" href="javascript:void(0);" role="tab" tabindex="0" [title]="dashboard.name">
-                    <span class="slds-truncate">{{dashboard.name}}</span>
-                </a>
-            </li>
-            <ng-container *ngIf="isLoading">
-                <li class="slds-p-around--xx-small" style="line-height: 2rem">
-                    <system-stencil></system-stencil>
-                </li>
-                <li class="slds-p-vertical--xx-small slds-p-right--xx-small" style="line-height: 2rem">
-                    <system-stencil></system-stencil>
-                </li>
-                <li class="slds-p-vertical--xx-small slds-p-right--xx-small" style="line-height: 2rem">
-                    <system-stencil></system-stencil>
-                </li>
-                <li class="slds-p-vertical--xx-small" style="line-height: 2rem">
-                    <system-stencil></system-stencil>
-                </li>
-            </ng-container>
-            <li #moreTab class="slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger--hover slds-hidden" aria-haspopup="true">
-                <a href="javascript:void(0);" class="slds-context-bar__label-action slds-tabs--default__link">
-                    <span class="slds-truncate"><system-label label="LBL_MORE"></system-label></span>
-                    <button class="slds-button slds-button--icon slds-context-bar__button">
-                        <system-utility-icon class="slds-p-horizontal--xx-small" icon="down" size="x-small"></system-utility-icon>
-                    </button>
-                </a>
-                <div class="slds-dropdown slds-dropdown--right">
-                    <ul class="slds-dropdown__list" role="menu">
-                        <li #moreTabItems *ngFor="let dashboard of dashboardsList" [attr.data-dashboard]="dashboard.name" [class.slds-active]="dashboard.id == activeDashboardId" (click)="setActiveDashboard(dashboard.id)" [title]="dashboard.name" class="slds-tabs_default__item slds-sub-tabs__item" role="presentation">
-                            <a href="javascript:void(0);" class="slds-tabs_default__link slds-p-horizontal_xx-small" role="menuitem" [title]="dashboard.name">
-                                <span class="slds-truncate">{{dashboard.name}}</span>
-                            </a>
-                        </li>
-                    </ul>
+<div>
+    <div class="slds-p-around--xx-small slds-scrollable--x slds-border--bottom">
+      <div *ngIf="!isLoading; else isLoadingContainer">
+          <system-input-radio-button-group [inputOptions]="dashboardsList" [(ngModel)]="activeDashboardId"></system-input-radio-button-group>
+      </div>
+        <ng-template #isLoadingContainer>
+            <div class="slds-grid">
+                <div class="slds-p-right--xx-small">
+                    <system-stencil style="line-height: 1.6rem"></system-stencil>
                 </div>
-            </li>
-        </ul>
-        <div class="slds-tabs_default__content slds-p-around--none" role="tabpanel">
-            <div #activeDashboardContainer></div>
-        </div>
+                <div class="slds-p-right--xx-small">
+                    <system-stencil style="line-height: 1.6rem"></system-stencil>
+                </div>
+                <div class="slds-p-right--xx-small">
+                    <system-stencil style="line-height: 1.6rem"></system-stencil>
+                </div>
+                <div>
+                    <system-stencil style="line-height: 1.6rem"></system-stencil>
+                </div>
+            </div>
+        </ng-template>
     </div>
+    <div #activeDashboardContainer></div>
 </div>
 
 
