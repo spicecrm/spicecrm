@@ -1,5 +1,5 @@
 /**
- * @module directives
+ * @module DirectivesModule
  */
 import {Directive, ElementRef, EventEmitter, Input, Output, Renderer2} from '@angular/core';
 import {language} from "../../services/language.service";

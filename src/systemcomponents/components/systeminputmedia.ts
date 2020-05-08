@@ -9,7 +9,7 @@ import {
     ElementRef,
     Renderer2,
     ChangeDetectorRef,
-    forwardRef
+    forwardRef, EventEmitter, Output
 } from "@angular/core";
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {language} from "../../services/language.service";
@@ -98,10 +98,14 @@ export class SystemInputMedia implements OnDestroy {
     @Input() private allowMirroring = true;
 
     /**
-     * The format (jpg, png, ...) of the image file when provided from outside.
+     * The mime type (image/jpg, image/png, ...) of the image file when provided from outside.
      */
-    @Input() private fileformat: string;
+    @Input('mimetype') public set _mimetype( value: string ) {
+        this.mediaMetaData.mimetype = value;
+        this.mediaMetaData.fileformat = this.getFileformatFromMimetype( this.mediaMetaData.mimetype ) as string;
+    }
 
+    @Output('mimetype') public mimetype = new EventEmitter<string>();
     /**
      * The reference to the file input field.
      */
@@ -135,7 +139,7 @@ export class SystemInputMedia implements OnDestroy {
     /**
      * The message code of the last toast in case of a file type error.
      */
-    private filetypeErrorMessageCode: string = null;
+    private fileformatErrorMessageCode: string = null;
 
     /**
      * The file delivered from the browser - via clipboard or file selection.
@@ -302,7 +306,7 @@ export class SystemInputMedia implements OnDestroy {
 
                 pastedItem.getAsString((url: string) => {
                     if (this.stringLooksLikeUrl(url)) {
-                        this.resetFiletypeError();
+                        this.resetFileNotAllowedError();
                         this.isLoading = true;
                         this.cd.detectChanges();
                         this.http.get('proxy/?useurl=' + btoa(url), {
@@ -312,9 +316,8 @@ export class SystemInputMedia implements OnDestroy {
                             this.isLoading = false;
                             this.cd.detectChanges();
                             this.fileFromBrowser = null;
-                            const type = this.getFiletypeFromMimetype(data.body.type);
-                            if (type === false || !this.checkFiletype(type)) { // We only accept a file with these image extensions
-                                this.showFiletypeError(type);
+                            if ( !this.checkMimetype( data.body.type )) { // We only accept a file with these mime types
+                                this.showFileNotAllowedError( data.body.type );
                                 return;
                             }
                             this.mediaBase64 = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(data.body));
@@ -322,9 +325,9 @@ export class SystemInputMedia implements OnDestroy {
                             this.resetMediaMetaData();
                             this.resetModificationStati();
                             this.isImported = true;
-                            this.mediaMetaData.fileformat = type.toString();
                             this.mediaMetaData.filename = url.substring(url.lastIndexOf('/') + 1);
                             this.mediaMetaData.mimetype = data.body.type;
+                            this.mediaMetaData.fileformat = this.getFileformatFromMimetype( data.body.type );
                         }, err => {
                             this.isLoading = false;
                         });
@@ -333,14 +336,13 @@ export class SystemInputMedia implements OnDestroy {
 
             } else {
 
-                this.resetFiletypeError();
+                this.resetFileNotAllowedError();
                 const blob = pastedItem.getAsFile();
-                const type = this.getFiletypeFromMimetype(blob);
-                if (type === false || !this.checkFiletype(type)) { // We only accept a file with these image extensions
-                    this.showFiletypeError(type);
+                if ( !this.checkMimetype( blob.type )) { // We only accept a file with these image extensions
+                    this.showFileNotAllowedError( blob.type );
                     return;
                 }
-                this.mediaMetaData.fileformat = type.toString();
+                this.mediaMetaData.fileformat = this.getFileformatFromMimetype( blob );
                 this.mediaMetaData.mimetype = blob.type;
                 this.resetModificationStati();
                 this.isImported = true;
@@ -482,34 +484,34 @@ export class SystemInputMedia implements OnDestroy {
      * Get the file type from the mime type.
      * @param fileOrMimetype A file or a string with the mime type.
      */
-    private getFiletypeFromMimetype(fileOrMimetype: File | string): boolean | string {
-        const filetype = typeof fileOrMimetype === 'object' ? fileOrMimetype.type : fileOrMimetype;
-        if (!/^image\/\w+/.test(filetype)) return false;
-        return filetype.split('/').pop();
+    private getFileformatFromMimetype(fileOrMimetype: File | string): string {
+        const mimetype = typeof fileOrMimetype === 'object' ? fileOrMimetype.type : fileOrMimetype;
+        if (!/^image\/\w+/.test(mimetype)) return '';
+        return mimetype.split('/').pop();
     }
 
     /**
-     * Check if the file type is allowed.
-     * @param type The file type.
+     * Check if the mimetype is allowed.
+     * @param type The mimetype.
      */
-    private checkFiletype(type): boolean {
-        return type === 'jpeg' || type === 'png' || type === 'gif';
+    private checkMimetype( type ): boolean {
+        return type === 'image/jpeg' || type === 'image/png' || type === 'image/gif';
     }
 
     /**
      * Show an error toast in case the file is not an image file or the file type is not allowed.
      * @param type The (possibly not allowed) file type.
      */
-    private showFiletypeError(type: string | boolean): void {
-        if (this.filetypeErrorMessageCode) this.toast.clearToast(this.filetypeErrorMessageCode);
-        this.filetypeErrorMessageCode = this.toast.sendToast('Not an image file or file type ' + (type ? '"' + type + '"' : '') + ' not supported.', 'error', null, false, this.filetypeErrorMessageCode);
+    private showFileNotAllowedError( mimetype: string | boolean ): void {
+        if (this.fileformatErrorMessageCode) this.toast.clearToast(this.fileformatErrorMessageCode);
+        this.fileformatErrorMessageCode = this.toast.sendToast('Not an image file or file type ' + ( mimetype ? '"' + mimetype + '"' : '' ) + ' not supported.', 'error', null, false, this.fileformatErrorMessageCode);
     }
 
     /**
      * Remove the toast of the last file type error.
      */
-    private resetFiletypeError() {
-        if (this.filetypeErrorMessageCode) this.toast.clearToast(this.filetypeErrorMessageCode);
+    private resetFileNotAllowedError() {
+        if (this.fileformatErrorMessageCode) this.toast.clearToast(this.fileformatErrorMessageCode);
     }
 
     /**
@@ -528,15 +530,14 @@ export class SystemInputMedia implements OnDestroy {
      * The handler when a new file has been imported (dropped or selected).
      */
     private fileSelectedOrDropped(): void {
-        this.resetFiletypeError();
-        const type = this.getFiletypeFromMimetype(this.fileFromBrowser);
-        if (type === false || (type !== 'jpeg' && type !== 'png' && type !== 'gif')) { // We only accept a file with these image extensions
-            this.showFiletypeError(this.getFileExtension(this.fileFromBrowser));
+        this.resetFileNotAllowedError();
+        if ( !this.checkMimetype( this.fileFromBrowser.type )) { // We only accept a file with these image extensions
+            this.showFileNotAllowedError( this.getFileExtension( this.fileFromBrowser ));
             this.fileFromBrowser = null;
             return;
         }
         this.resetMediaMetaData();
-        this.mediaMetaData.fileformat = type;
+        this.mediaMetaData.fileformat = this.getFileformatFromMimetype(this.fileFromBrowser);
         this.mediaMetaData.filename = this.fileFromBrowser.name;
         this.mediaMetaData.mimetype = this.fileFromBrowser.type;
         this.getMediaFromFileSystem();
@@ -584,7 +585,7 @@ export class SystemInputMedia implements OnDestroy {
                 imageSmoothingEnabled: true,
                 imageSmoothingQuality: 'high'
             }) // height: this.metaData.height, width:this.metaData.width,
-                .toDataURL('image/' + this.mediaMetaData.fileformat, this.mediaMetaData.fileformat === 'jpeg' ? this.jpegCompressionLevel : undefined);
+                .toDataURL(this.mediaMetaData.mimetype, this.mediaMetaData.mimetype === 'image/jpeg' ? this.jpegCompressionLevel : undefined);
         } else image = this.mediaBase64.toString();
         return image.substring(image.indexOf('base64,') + 7);
     }
@@ -729,7 +730,7 @@ export class SystemInputMedia implements OnDestroy {
     }
 
     public ngOnDestroy(): void {
-        if (this.filetypeErrorMessageCode) this.toast.clearToast(this.filetypeErrorMessageCode); // In case there is a open toast.
+        if (this.fileformatErrorMessageCode) this.toast.clearToast(this.fileformatErrorMessageCode); // In case there is a open toast.
         this.unlistenPasteEvent(); // Don´t leave event listening.
     }
 
@@ -815,8 +816,8 @@ export class SystemInputMedia implements OnDestroy {
     }
 
     private emitChange() {
-        if ( this.mediaMetaData.fileformat ) this.onChange( this.mediaMetaData.fileformat+'|'+this.getImage() );
-        else this.onChange(null);
+        this.mimetype.emit( this.mediaMetaData.mimetype );
+        this.onChange( this.getImage() );
     }
 
     /**
@@ -876,10 +877,7 @@ export class SystemInputMedia implements OnDestroy {
      */
     public writeValue( value: string ): void {
         if ( value && value != '' ) {
-            // The image comes in the format 'filetype|base64filedata', like 'jpeg|/9j/4AAQSkZJRgABA...'
-            let positionOfDelimiter = value.indexOf('|');
-            this.mediaMetaData.fileformat = value.substring( 0, positionOfDelimiter );
-            this.mediaBase64 = this.sanitizer.bypassSecurityTrustResourceUrl('data:image/' + this.mediaMetaData.fileformat + ';base64,'+value.substring( positionOfDelimiter + 1 ));
+            this.mediaBase64 = this.sanitizer.bypassSecurityTrustResourceUrl('data:' + this.mediaMetaData.mimetype + ';base64,' + value );
             this.calcTargetSize();
         }
         this.resetModificationStati();

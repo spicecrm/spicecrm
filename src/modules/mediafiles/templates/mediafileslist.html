@@ -1,0 +1,8 @@
+<div (system-to-bottom)="onScroll()" style="min-height: 250px">
+    <div class="slds-grid slds-wrap" [ngStyle]="containerStyle">
+        <media-files-tile *ngFor="let listItem of modellist.listData.list" [data]="listItem"></media-files-tile>
+    </div>
+    <div *ngIf="!modellist.isLoading && modellist.listData.totalcount == 0" class="slds-align--absolute-center" style="height: calc(100% - 35px)">
+        <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
+    </div>
+</div>

@@ -1,5 +1,5 @@
 /**
- * @module directives
+ * @module DirectivesModule
  */
 import {Directive, Input} from '@angular/core';
 import {model} from "../../services/model.service";

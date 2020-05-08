@@ -7,5 +7,5 @@
     </li>
     <li *ngIf="modellist.isSorted" class="slds-item"><system-label label="LBL_SORTEDBY"></system-label> {{modellist.getSortFields()}}</li>
     <li class="slds-item slds-show--medium"><system-label label="LBL_LASTUPDATE"></system-label> {{modellist.getLastLoadTime()}}</li>
-    <li class="slds-item"><system-utility-icon [icon]="modellist.listData.source == 'db' ? 'database' : 'feed'" size="xx-small"></system-utility-icon></li>
+    <li class="slds-item"><system-utility-icon [icon]="modellist.listData.source == 'db' ? 'database' : 'feed'" [title]="modellist.listData.source == 'db' ? 'Database' : 'Search Engine'" size="xx-small"></system-utility-icon></li>
 </ul>
