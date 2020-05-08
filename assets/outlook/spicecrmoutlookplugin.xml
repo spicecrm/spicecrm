@@ -164,6 +164,15 @@
                     <bt:String id="paneReadSuperTipDescription" DefaultValue="Allows you to archive an email in SpiceCRM by selecting the contacts and other objects to link to as well as selecting attachments"/>
                 </bt:LongStrings>
             </Resources>
+            <WebApplicationInfo>
+                <Id>86ef5dc7-a8d2-477a-994a-7e78cd8f3d74</Id>
+                <Resource>api://spicecrm.onmicrosoft.com/d66e9f2d-eee5-4b57-8199-f8a5648ae333</Resource>
+                <Scopes>
+                    <Scope>user.read</Scope>
+                    <Scope>files.read</Scope>
+                    <Scope>profile</Scope>
+                </Scopes>
+            </WebApplicationInfo>
         </VersionOverrides>
     </VersionOverrides>
 </OfficeApp>

@@ -85,7 +85,7 @@ export class OutlookMeetingAddContainer {
      *
      * @param module
      */
-    set module(module) {
+    @Input('module') set module(module) {
         this._module = module;
 
         if (module && this._module) {

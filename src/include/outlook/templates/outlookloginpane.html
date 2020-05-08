@@ -6,7 +6,7 @@
             </div>
             <div class="slds-box--border" *ngIf="!loginService.session.authData.sessionId && promptUser">
                 <div class="slds-p-around--medium">
-                    <form *ngIf="!showForgotPass" (submit)="login($event)">
+                    <form *ngIf="!showForgotPass" (submit)="login()">
                         <div class="slds-form-element slds-m-vertical--small">
                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
                                 <input type="text" name="username" autocomplete  [(ngModel)]="username" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="1"/>
@@ -15,28 +15,6 @@
                         <div class="slds-form-element slds-m-vertical--small">
                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
                                 <input type="password" name="password" autocomplete  [(ngModel)]="password" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="2"/>
-                            </div>
-                        </div>
-                        <div *ngIf="sites.length > 1" class="slds-form-element slds-m-vertical--small">
-                            <div class="slds-form-element__control">
-                                <div class="slds-select_container slds-m-vertical--xx-small">
-                                    <select name="currentsite" class="slds-select slds-p-horizontal--large" [ngModel]="currentSiteId" (change)="setSite($event)">
-                                        <option *ngFor="let site of sites" [value]="site.id">
-                                            {{site.display}}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div *ngIf="getLanguages().length > 1" class="slds-form-element slds-m-vertical--small">
-                            <div class="slds-form-element__control">
-                                <div class="slds-select_container slds-m-vertical--xx-small">
-                                    <select class="slds-select slds-p-horizontal--large" name="selectLang" [(ngModel)]="selectedlanguage">
-                                        <option *ngFor="let lang of getLanguages()" [value]="lang.language">
-                                            {{lang.text}}
-                                        </option>
-                                    </select>
-                                </div>
                             </div>
                         </div>
                         <button type="submit" value="Submit" class="slds-button slds-button--brand slds-button_stretch" tabindex="0">Login</button>
