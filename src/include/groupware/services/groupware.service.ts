@@ -294,4 +294,9 @@ export abstract class GroupwareService {
      * returns the custom properties on the object
      */
     public abstract getCustomProperties();
+
+    /**
+     * returns an access token for the authenitcation verification
+     */
+    public abstract getAccessToken();
 }
