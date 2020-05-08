@@ -42,7 +42,10 @@ export class AdministrationMain implements AfterViewInit {
         private navigationtab: navigationtab,
     ) {
         // this.navigation.setActiveModule('Administration');
-        this.navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_ADMINISTRATION'), displayicon: 'settings'});
+        this.navigationtab.setTabInfo({
+            displayname: this.language.getLabel('LBL_ADMINISTRATION'),
+            displayicon: 'settings'
+        });
     }
 
     /**

@@ -16,14 +16,12 @@
             </div>
             <div class="slds-form-element slds-m-top--small">
                 <label class="slds-form-element__label" for="text-input-id-1"><system-label label="LBL_COMPONENT"></system-label></label>
-                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right slds-input-has-icon_group-right">
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                     <input type="text" id="text-input-id-1" class="slds-input" placeholder="" [(ngModel)]="objRepo.component" />
-                    <div class="slds-input__icon-group slds-input__icon-group_right">
-                        <button class="slds-button slds-button--icon" title="add item" (click)="copyObject()">
-                            <system-utility-icon [icon]="'redo'" [size]="'xx-small'"
-                                                 [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
-                        </button>
-                    </div>
+                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" title="add item" (click)="copyObject()">
+                        <system-utility-icon [icon]="'redo'" [size]="'xx-small'"
+                                             [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
+                    </button>
                 </div>
             </div>
 

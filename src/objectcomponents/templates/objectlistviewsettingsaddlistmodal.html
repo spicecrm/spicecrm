@@ -1,6 +1,6 @@
 <system-modal>
     <system-modal-header (close)="close()">
-        <system-label label="LBL_'+modalmode.toUpperCase()+'LIST"></system-label>
+        <system-label [label]="'LBL_'+modalmode.toUpperCase()+'LIST'"></system-label>
     </system-modal-header>
     <system-modal-content>
         <div class="slds-form--stacked">

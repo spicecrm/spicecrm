@@ -6,6 +6,7 @@ import {language} from '../../../services/language.service';
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
+import {configurationService} from "../../../services/configuration.service";
 import {backend} from "../../../services/backend.service";
 
 declare var _;
@@ -27,12 +28,13 @@ export class ProductUOMConversions implements OnInit {
                 private metadata: metadata,
                 private model: model,
                 private backend: backend,
+                private configuration: configurationService,
                 private view: view) {
     }
 
     get uomConversions() {
         let conversions = this.model.getField('uomconversions');
-        return conversions && conversions.beans ? _.toArray(conversions.beans).filter(bean => bean.deleted == '0') : [];
+        return conversions && conversions.beans ? _.toArray(conversions.beans).filter(bean => bean.deleted == '0' || bean.deleted === false) : [];
     }
 
     get baseUom() {
@@ -93,15 +95,11 @@ export class ProductUOMConversions implements OnInit {
         this.fieldBaseUomId = fieldDefs && fieldDefs.id_name ? fieldDefs.id_name : this.fieldBaseUomId;
     }
 
+    /**
+     * loads the uomunits from the configureation service
+     */
     private getUomUnits() {
-        let fields = ['id', 'label', 'dimensions'];
-        let params = {limit: -1};
-        this.backend.getList('UOMUnits', [{sortfield:'name', dortdirection: 'ASC'}], fields, params)
-            .subscribe((res: any) => {
-                if (res && res.list) {
-                    this.uomUnits = res.list;
-                }
-            });
+        this.uomUnits = this.configuration.getData('uomunits');
     }
 
     private cloneParentConversions() {

@@ -1,0 +1,41 @@
+<system-card>
+    <system-card-header icon="metrics" cardtitel="{{language.getLabel('LBL_CLEVERREACH')}} {{language.getLabel('LBL_ANALYTICS')}}">
+    <button class="slds-button slds-button--icon" (click)="reloadData()">
+        <system-button-icon [icon]="'refresh'"></system-button-icon>
+    </button>
+    </system-card-header>
+    <system-card-body class="slds-scrollable" style="display: block">
+        <system-spinner *ngIf="isLoading"></system-spinner>
+<!--        <div id="piechart" style="width: 900px; height: 500px;"></div>-->
+        <table *ngIf="!isLoading" class="slds-table slds-max-medium-table_stacked-horizontal slds-table--bordered slds-no-row-hover">
+            <thead>
+            <tr class="slds-text-title--caps">
+                <th scope="col">
+                    <span class="slds-truncate">{{language.getLabel('LBL_METRIC')}}</span>
+                </th>
+                <th scope="col">
+                    <span class="slds-truncate">{{language.getLabel('LBL_VALUE')}}</span>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="slds-hint-parent">
+                <td>{{language.getLabel('LBL_OPENED')}}:</td>
+                <td>{{mailingStats.opens}}</td>
+            </tr>
+            <tr class="slds-hint-parent">
+                <td>{{language.getLabel('LBL_CLICKS')}}:</td>
+                <td>{{mailingStats.clicks}}</td>
+            </tr>
+            <tr class="slds-hint-parent">
+                <td>{{language.getLabel('LBL_DROPOUTS')}}:</td>
+                <td>{{mailingStats.dropouts}}</td>
+            </tr>
+            <tr class="slds-hint-parent">
+                <td>{{language.getLabel('LBL_BOUNCES')}}:</td>
+                <td>{{mailingStats.bounces}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </system-card-body>
+</system-card>

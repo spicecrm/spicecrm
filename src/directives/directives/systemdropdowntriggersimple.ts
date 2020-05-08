@@ -1,3 +1,6 @@
+/**
+ * @module DirectivesModule
+ */
 import {
     Directive,
     HostListener,

@@ -49,7 +49,7 @@ export class CampaignTaskActivateButton {
             return;
         }
 
-        this.disabled  =this.model.isEditing || this.model.data.activated === true ? true : false;
+        this.disabled = this.model.isEditing || this.model.data.activated === true ? true : false;
     }
 
     public execute() {

@@ -11,9 +11,11 @@ export class PotentialsOpportunityAllocationsCCFilterPipe implements PipeTransfo
 
     public transform(values, companycode) {
         let retValues = [];
-        for (let value of values) {
-            if (value.companycode_id == companycode) {
-                retValues.push(value);
+        if(values) {
+            for (let value of values) {
+                if (value.companycode_id == companycode) {
+                    retValues.push(value);
+                }
             }
         }
         return retValues;

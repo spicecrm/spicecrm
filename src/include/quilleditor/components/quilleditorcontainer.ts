@@ -1,3 +1,7 @@
+/**
+ * @module QuillEditorModule
+ */
+
 import {isPlatformServer} from '@angular/common';
 import {DomSanitizer} from '@angular/platform-browser';
 

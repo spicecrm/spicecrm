@@ -1,5 +1,10 @@
+/**
+ * @module QuillEditorModule
+ */
+
 import {Component} from '@angular/core';
 import {SystemRichTextSourceModal} from "../../../systemcomponents/components/systemrichtextsourcemodal";
+
 
 /**
  * render a quill rich text editor and handle its changes

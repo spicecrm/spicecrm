@@ -1,3 +1,7 @@
+/**
+ * @module QuillEditorModule
+ */
+
 export type QuillToolbarConfigT = Array<Array<string | {
     indent?: string
     list?: string

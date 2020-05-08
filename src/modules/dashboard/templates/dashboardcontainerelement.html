@@ -1,4 +1,4 @@
-<div [ngStyle]="getBoxStyle()" class="slds-box--border slds-theme--default spicecrm-scrollbar-thin" [ngClass]="containerClass" (mousedown)="onMousedown('content', $event)">
+<div [ngStyle]="getBoxStyle()" class="slds-box--border slds-theme--default spice-scrollbar-thin" [ngClass]="containerClass" (mousedown)="onMousedown('content', $event)">
     <div style="width: 100%; height: 100%" [style.overflow]="view.isEditMode() ? 'hidden': 'initial'">
         <div *ngIf="isAuthorized" #containerelement></div>
         <div *ngIf="!isAuthorized" class="slds-align_absolute-center" style="height: 100%">

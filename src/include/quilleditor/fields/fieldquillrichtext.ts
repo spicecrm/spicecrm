@@ -1,6 +1,7 @@
 /**
- * @module ObjectFields
+ * @module QuillEditorModule
  */
+
 import {ChangeDetectionStrategy, Component, NgZone, OnInit} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
