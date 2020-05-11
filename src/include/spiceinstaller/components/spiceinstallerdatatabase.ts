@@ -49,6 +49,10 @@ export class SpiceInstallerDatabase {
             db_port: this.spiceinstaller.db_port,
             db_manager: this.spiceinstaller.db_manager
         };
+        if(this.spiceinstaller.dbaccessuser == 'existinguser') {
+            body.db_user_name = this.spiceinstaller.ext_db_user_name;
+            body.db_password = this.spiceinstaller.ext_db_password;
+        }
         this.hostNameCondition = this.spiceinstaller.db_host_name.length > 0;
         this.userNameCondition = this.spiceinstaller.db_user_name.length > 0;
         this.dbNameCondition = this.spiceinstaller.db_name.length > 0;
@@ -64,7 +68,6 @@ export class SpiceInstallerDatabase {
                             this.toast.sendAlert('Error with: ' + res.errors[e], 'error');
                         }
                     } else {
-
                         this.spiceinstaller.configObject['database'] = res.config;
                         this.spiceinstaller.configObject['dboptions'] = {
                             persistance: this.spiceinstaller.persistent,
@@ -72,6 +75,12 @@ export class SpiceInstallerDatabase {
                             debug: this.spiceinstaller.debug,
                             ssl: this.spiceinstaller.ssl,
                             collation: this.spiceinstaller.collation
+                        }
+                        if(this.spiceinstaller.dbaccessuser == 'newdbuser') {
+                            this.spiceinstaller.configObject['databaseuser'] = {
+                                db_user_name: this.spiceinstaller.new_db_user_name,
+                                db_password: this.spiceinstaller.new_db_password
+                            }
                         }
                         this.spiceinstaller.selectedStep.completed = true;
                         this.spiceinstaller.steps[3] = this.spiceinstaller.selectedStep;

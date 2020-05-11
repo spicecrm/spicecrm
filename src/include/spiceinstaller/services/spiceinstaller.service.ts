@@ -42,7 +42,7 @@ export class spiceinstaller {
      */
     public dbdrivers: any = [];
     /**
-     * database
+     * database defaults
      */
     public db_host_name: string = '';
     public db_host_instance: string = '';
@@ -57,6 +57,19 @@ export class spiceinstaller {
     public debug: number = 0;
     public ssl: boolean = false;
     public collation: string = 'utf8_general_ci';
+    public dbaccessuser: string = 'admin';
+    /**
+     * existing or new user for database access
+     */
+    public new_db_user_name: string = '';
+    public new_db_password: string = '';
+    public ext_db_user_name: string = '';
+    public ext_db_password: string = '';
+    /**
+     * postgresql additional parameters
+     */
+    public lc_collate: string = 'en_US.UTF-8';
+    public lc_ctype: string = 'en_US.UTF-8';
 
     /**
      * fts
@@ -81,6 +94,7 @@ export class spiceinstaller {
         this.configObject = {
             backendconfig: {},
             database: {},
+            databaseuser: {},
             dboptions: {},
             fts: {},
             credentials: {},
