@@ -16,6 +16,9 @@ export class SAPIDOCsManagerIDOCTypeAddModal implements OnInit {
     private segmentRelation: sapIDOCSegmentRelationI;
     private segment: sapIDOCSegmentI;
 
+    @Input() private idoctyp: string = '';
+    @Input() private mestyp: string = '';
+
     constructor(private sapIdocsManager: sapIdocsManager, private helper: helper) {
 
     }
@@ -29,7 +32,6 @@ export class SAPIDOCsManagerIDOCTypeAddModal implements OnInit {
      */
     private initializeType() {
         let segmentId = this.helper.generateGuid();
-        5
         this.segmentRelation = {
             id: this.helper.generateGuid(),
             deleted: '0',

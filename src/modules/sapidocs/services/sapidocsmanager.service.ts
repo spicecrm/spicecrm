@@ -8,6 +8,7 @@ import {backend} from "../../../services/backend.service";
 import {helper} from "../../../services/helper.service";
 import {BehaviorSubject} from "rxjs";
 import {
+    sapIDOCTypeI,
     sapIDOCSegmentI,
     sapIDOCSegmentRelationI,
     sapIDOCFieldI
@@ -138,8 +139,23 @@ export class sapIdocsManager {
     /**
      * returns the segment relations
      */
-    public getIdocTypes(): sapIDOCSegmentRelationI[] {
-        return this.segmentrelations ? this.segmentrelations.filter(segment => segment.parent_segment_id == null) : [];
+    public getIdocTypes(): sapIDOCTypeI[] {
+        let idocTypes: sapIDOCTypeI[] = [];
+        let rootSegments = this.segmentrelations ? this.segmentrelations.filter(segment => segment.parent_segment_id == null) : [];
+        for (let rootSegment of rootSegments) {
+            let idocType = idocTypes.find(id => id.idoctyp == rootSegment.idoctyp && id.mestyp == rootSegment.mestyp);
+            if (!idocType) {
+                idocType = {
+                    idoctyp: rootSegment.idoctyp,
+                    mestyp: rootSegment.mestyp,
+                    segments: [rootSegment]
+                };
+                idocTypes.push(idocType);
+            } else {
+                idocType.segments.push(rootSegment);
+            }
+        }
+        return idocTypes;
     }
 
     public addIdocType(idoctype: sapIDOCSegmentRelationI, segment: sapIDOCSegmentI) {
