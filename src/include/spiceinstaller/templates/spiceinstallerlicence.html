@@ -629,13 +629,13 @@
                 <a href="http://www.gnu.org/licenses/">gnu.org/licenses</a>.</p>
         </div>
     </div>
-    <div class="slds-p-vertical--medium">
+    <div class="slds-grid slds-p-vertical--medium">
         <system-checkbox [(ngModel)]="spiceinstaller.selectedStep.completed"></system-checkbox>
         <span>agree to Terms & Conditions</span>
     </div>
 
     <div class="slds-p-vertical--small slds-text-align--right">
-        <button class="slds-button slds-button--brand" (click)="spiceinstaller.next(spiceinstaller.steps[2])">next</button>
+        <button class="slds-button slds-button--brand" [disabled]="!spiceinstaller.selectedStep.completed" (click)="spiceinstaller.next(spiceinstaller.steps[2])">next</button>
     </div>
 
 </div>

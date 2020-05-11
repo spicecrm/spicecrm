@@ -35,10 +35,16 @@ export class SpiceInstallerDatabase {
      */
     private checkDB() {
 
-        if (this.spiceinstaller.db_type == 'mysqli') {
-            this.spiceinstaller.db_host_instance = 'SQLEXPRESS';
-            this.spiceinstaller.db_manager = 'MysqliManager'
+        switch(this.spiceinstaller.db_type) {
+            case 'mysql':
+                this.spiceinstaller.db_host_instance = 'SQLEXPRESS';
+                this.spiceinstaller.db_manager = 'MysqliManager';
+                break;
+            case 'pgsql' :
+                this.spiceinstaller.db_manager = 'PostgreSQLManager';
+                break;
         }
+
         let body = {
             db_host_name: this.spiceinstaller.db_host_name,
             db_host_instance: this.spiceinstaller.db_host_instance,
@@ -47,7 +53,9 @@ export class SpiceInstallerDatabase {
             db_name: this.spiceinstaller.db_name,
             db_type: this.spiceinstaller.db_type,
             db_port: this.spiceinstaller.db_port,
-            db_manager: this.spiceinstaller.db_manager
+            db_manager: this.spiceinstaller.db_manager,
+            lc_collate: this.spiceinstaller.lc_collate,
+            lc_ctype: this.spiceinstaller.lc_ctype
         };
         if(this.spiceinstaller.dbaccessuser == 'existinguser') {
             body.db_user_name = this.spiceinstaller.ext_db_user_name;
