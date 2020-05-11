@@ -14,12 +14,9 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 })
 
 export class SpiceinstallerMySQLi {
-
     private hostNameCondition: boolean = true;
     private userNameCondition: boolean = true;
     private dbNameCondition: boolean = true;
-
-    private loading: boolean = false;
 
     constructor(
         private toast: toast,
