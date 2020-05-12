@@ -12,7 +12,7 @@ import {GroupwareService} from '../../../include/groupware/services/groupware.se
 export class OutlookMeetingEditPane {
 
     /**
-     * the outlöook meeting id
+     * the outlook meeting id
      */
     private meetingid: string;
 
