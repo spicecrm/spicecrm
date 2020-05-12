@@ -356,11 +356,13 @@ export class configurationService {
      */
     private setFavIcon() {
         let icon = document.querySelectorAll( "link[ rel ~= 'icon' i]" )[0];
-        let config = this.getCapabilityConfig('theme');
-        if(config.icon_image) {
-            icon.setAttribute('href', 'data:'+config.icon_image);
-        } else {
-            icon.setAttribute('href', './config/favicon');
+        if(icon) {
+            let config = this.getCapabilityConfig('theme');
+            if (config.icon_image) {
+                icon.setAttribute('href', 'data:' + config.icon_image);
+            } else {
+                icon.setAttribute('href', './config/favicon');
+            }
         }
     }
 
