@@ -36,9 +36,12 @@ export class SystemImageModal {
      * Setter for the image data. Extracts the mimetype and the pure base64 image data.
      */
     @Input() public set imageData( val: string ) {
-        let dummmy = val.split(';',2);
-        this.mimetype = dummmy[0];
-        this.imageData_onlyBase64code = dummmy[1].slice(7);
+        this.mimetype = this.imageData_onlyBase64code = '';
+        if ( val ) {
+            let dummmy = val.split( ';', 2 );
+            this.mimetype = dummmy[0];
+            this.imageData_onlyBase64code = dummmy[1].slice( 7 );
+        }
     }
 
     /**
