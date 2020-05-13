@@ -58,6 +58,7 @@ import {cookie} from "../../services/cookie.service";
 import {VersionManagerService} from "../../services/versionmanager.service";
 import {modal} from "../../services/modal.service";
 import {layout} from "../../services/layout.service";
+import {telephony} from "../../services/telephony.service";
 import {loggerService} from "../../services/logger.service";
 import {SystemDynamicRouteInterceptor} from "../../systemcomponents/components/systemdynamicrouteinterceptor";
 
@@ -141,6 +142,7 @@ declare var Office: any;
         footer,
         userpreferences,
         cookie,
+        telephony,
         MathExpressionCompilerService,
         VersionManagerService,
         modal,
