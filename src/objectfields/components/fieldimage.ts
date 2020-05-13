@@ -90,7 +90,7 @@ export class fieldImage extends fieldGeneric implements OnInit, AfterViewInit {
     private editImage( droppedFiles: FileList = null ): void {
         this.modalservice.openModal('SystemImageModal').subscribe( modalRef => {
 
-            if ( this.field_defs.maxWidth ) modalRef.instance.maxWidth = this.field_defs.maxHeight;
+            if ( this.field_defs.maxWidth ) modalRef.instance.maxWidth = this.field_defs.maxWidth;
             if ( this.field_defs.maxHeight ) modalRef.instance.maxHeight = this.field_defs.maxHeight;
 
             let modalTitle = this.labelComponent.label; // As window title use the label from the field.
