@@ -1,4 +1,4 @@
 <ng-container *ngIf="customProperties">
-    <outlook-meeting-add-container *ngIf="!id" [module]="module" [customProperties]="customProperties"></outlook-meeting-add-container>
-    <outlook-meeting-edit-container *ngIf="id" [module]="module" [id]="id"></outlook-meeting-edit-container>
+    <outlook-calendaritem-add-container *ngIf="!id" [module]="module" [customProperties]="customProperties"></outlook-calendaritem-add-container>
+    <outlook-calendaritem-edit-container *ngIf="id" [module]="module" [id]="id"></outlook-calendaritem-edit-container>
 </ng-container>

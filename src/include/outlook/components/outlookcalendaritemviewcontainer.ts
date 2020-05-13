@@ -9,11 +9,11 @@ import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
 
 @Component({
-    selector: 'outlook-meeting-view-container',
-    templateUrl: './src/include/outlook/templates/outlookmeetingviewcontainer.html',
+    selector: 'outlook-calendaritem-view-container',
+    templateUrl: './src/include/outlook/templates/outlookcalendaritemviewcontainer.html',
     providers: [model, view]
 })
-export class OutlookMeetingViewContainer implements OnInit {
+export class OutlookCalendarItemViewContainer implements OnInit {
 
     /**
      * the custom properties of the object
@@ -52,7 +52,7 @@ export class OutlookMeetingViewContainer implements OnInit {
     }
 
     private getConfiguration() {
-        let componentconfig = this.metadata.getComponentConfig('OutlookMeetingViewContainer', this.module);
+        let componentconfig = this.metadata.getComponentConfig('OutlookCalendarItemViewContainer', this.module);
         this.componentset = componentconfig.componentset;
     }
 

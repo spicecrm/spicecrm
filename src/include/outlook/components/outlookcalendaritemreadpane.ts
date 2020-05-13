@@ -1,20 +1,22 @@
+
 /**
  * @module Outlook
  */
 
 import {Component} from "@angular/core";
 
-import {GroupwareService} from '../../../include/groupware/services/groupware.service';
+
+import {GroupwareService} from "../../../include/groupware/services/groupware.service";
 
 @Component({
-    templateUrl: './src/include/outlook/templates/outlookmeetingeditpane.html'
+    templateUrl: './src/include/outlook/templates/outlookcalendaritemreadpane.html'
 })
-export class OutlookMeetingEditPane {
+export class OutlookCalendarItemReadPane {
 
     /**
-     * the outlöook meeting id
+     * the outlook calendar item id
      */
-    private meetingid: string;
+    private calendaritemid: string;
 
     /**
      * the module this is linked to
@@ -35,21 +37,14 @@ export class OutlookMeetingEditPane {
         private groupware: GroupwareService,
     ) {
         this.groupware.getCalenderItemId().subscribe(id => {
-            this.meetingid = id;
+            this.calendaritemid = id;
         });
 
-        /*
-        this.groupware.getAccessToken().subscribe(token => {
-            console.log(token);
-        })
-        */
-
         this.groupware.getCustomProperties().subscribe(props => {
-
-            this.module = props.get('_module');
-            this.id = props.get('_id');
-
             this.customProperties = props;
+
+            this.module = this.customProperties.get('_module');
+            this.id = this.customProperties.get('_id');
 
             // this.module = 'Meetings';
             // this.id = '105b119a-81c6-f039-e6c0-57bc0c7540e9';

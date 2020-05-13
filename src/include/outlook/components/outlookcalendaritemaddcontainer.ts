@@ -20,11 +20,11 @@ declare var _: any;
  * a comtaner that allows adding the required information to link a mailtitem object to a crm object
  */
 @Component({
-    selector: 'outlook-meeting-add-container',
-    templateUrl: './src/include/outlook/templates/outlookmeetingaddcontainer.html',
+    selector: 'outlook-calendaritem-add-container',
+    templateUrl: './src/include/outlook/templates/outlookcalendaritemaddcontainer.html',
     providers: [model, view]
 })
-export class OutlookMeetingAddContainer {
+export class OutlookCalendarItemAddContainer {
 
     /**
      * the custom prperties of the mailbox item
@@ -93,7 +93,7 @@ export class OutlookMeetingAddContainer {
         this._module = module;
 
         if (module && this._module) {
-            let componentconfig = this.metadata.getComponentConfig('OutlookMeetingAddContainer', module);
+            let componentconfig = this.metadata.getComponentConfig('OutlookCalendarItemAddContainer', module);
             this.fieldset = componentconfig.fieldset;
 
             this.model.module = module;
