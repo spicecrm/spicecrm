@@ -57,6 +57,13 @@ export class fieldSAPAddress extends fieldAddress {
     }
 
     /**
+     * a getter for the country
+     */
+    get country() {
+        return this.model.data[this.addresskey + 'address_country'];
+    }
+
+    /**
      * a setter for the country
      *
      * @param value
