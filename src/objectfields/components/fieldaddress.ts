@@ -32,7 +32,7 @@ export class fieldAddress extends fieldGeneric {
     /**
      * builds a formatted address form all elements and renders it on the screen
      */
-    private buildAddress() {
+    public buildAddress() {
         let address = '';
         let address_arr = [];
         if (this.model.data[this.addresskey + 'address_attn']) {
@@ -59,9 +59,10 @@ export class fieldAddress extends fieldGeneric {
      *
      * @param address is handed over from the Event Emitter from the autocomplete component
      */
-    private addressSelected(address) {
+    public addressSelected(address) {
         this.street = address.street;
         this.city = address.city;
+        this.district = address.district;
         this.postalcode = address.postalcode;
         this.state = address.state;
         this.country = address.country;
@@ -92,6 +93,8 @@ export class fieldAddress extends fieldGeneric {
         this.model.setField(this.addresskey + 'address_street', value);
     }
 
+
+
     /**
      * a getter for the attn field
      */
@@ -121,6 +124,22 @@ export class fieldAddress extends fieldGeneric {
      */
     set city(value) {
         this.model.setField(this.addresskey + 'address_city', value);
+    }
+
+    /**
+     * a setter for the city field
+     *
+     * @param value
+     */
+    set district(value) {
+        this.model.setField(this.addresskey + 'address_district', value);
+    }
+
+    /**
+     * a getter for the city field
+     */
+    get district() {
+        return this.model.data[this.addresskey + 'address_district'];
     }
 
     /**
