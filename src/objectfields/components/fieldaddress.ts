@@ -64,8 +64,8 @@ export class fieldAddress extends fieldGeneric {
         this.city = address.city;
         this.district = address.district;
         this.postalcode = address.postalcode;
-        this.state = address.state;
         this.country = address.country;
+        this.state = address.state;
         this.latitude = address.latitude;
         this.longitude = address.longitude;
     }
