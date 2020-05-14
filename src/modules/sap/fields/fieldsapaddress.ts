@@ -57,6 +57,16 @@ export class fieldSAPAddress extends fieldAddress {
     }
 
     /**
+     * a setter for the country
+     *
+     * @param value
+     */
+    set country(value) {
+        this.model.setField(this.addresskey + 'address_country', value);
+        this.state = '';
+    }
+
+    /**
      * a getter for the street
      */
     get street_number() {
