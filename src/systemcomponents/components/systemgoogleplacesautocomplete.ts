@@ -104,7 +104,10 @@ export class SystemGooglePlacesAutocomplete {
         this.backend.getRequest('googleapi/places/' + placeid).subscribe((res: any) => {
             let address = {
                 street: res.address.street,
+                street_name: res.address.street_name,
+                street_number: res.address.street_number,
                 city: res.address.city,
+                district: res.address.district,
                 postalcode: res.address.postalcode,
                 state: res.address.state,
                 country: res.address.country,
