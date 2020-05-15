@@ -25,7 +25,7 @@
                         <button (click)="openSearchModal()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"><system-button-icon [icon]="'search'"></system-button-icon></button>
                     </div>
                 </div>
-                <div class="slds-dropdown slds-dropdown--length-5 slds-dropdown_fluid" role="listbox">
+                <div class="slds-dropdown slds-dropdown_fluid" role="listbox">
                     <field-territory-recent *ngIf="!territorySearchTerm" (selectedTerritory)="setTerritory($event)"></field-territory-recent>
                     <field-territory-search *ngIf="territorySearchTerm" [searchterm]="territorySearchTerm" (selectedTerritory)="setTerritory($event)"></field-territory-search>
                 </div>

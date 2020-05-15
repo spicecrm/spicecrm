@@ -39,10 +39,19 @@ export class fieldTerritory extends fieldGeneric implements OnInit, OnDestroy {
 
     public ngOnInit() {
         let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
+
+        // if we have a new model determine a default territory
+        if (this.model.isNew) {
+            let searchterritories = this.territories.searchTerritories(this.model.module, '', 2, [], 'create');
+            if (searchterritories.length == 1) {
+                this.value = searchterritories[0].id;
+                this.model.setField(this.fieldname + '_name', searchterritories[0].name);
+            }
+        }
     }
 
     public ngOnDestroy(): void {
-        if(this.clickListener) this.clickListener();
+        if (this.clickListener) this.clickListener();
     }
 
     public onClick(event: MouseEvent): void {
