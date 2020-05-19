@@ -15,9 +15,7 @@
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                     <input id="year" class="slds-input slds-text-align--right" size="4" type="text" maxlength="4" system-trim-input [(ngModel)]="period.begin.year" (change)="changedYear()"/>
                     <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="period.begin.year='';changedYear()" >
-                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
-                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
-                        </svg>
+                        <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                     </button>
                 </div>
             </div>
@@ -74,9 +72,7 @@
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                     <input [disabled]="!period.type" id="duration" class="slds-input slds-text-align--right" size="2" type="text" system-trim-input [(ngModel)]="period.duration" (change)="sanitizeDuration()"/>
                     <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right">
-                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
-                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
-                        </svg>
+                        <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                     </button>
                 </div>
             </div>
@@ -90,9 +86,7 @@
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                     <input id="url" class="slds-input" type="text" system-trim-input [(ngModel)]="filter.url" />
                     <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.url=''">
-                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
-                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
-                        </svg>
+                        <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                     </button>
                 </div>
             </div>
@@ -114,9 +108,7 @@
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                     <input id="status" class="slds-input" type="text" system-trim-input size="3" [(ngModel)]="filter.status" />
                     <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.status=''">
-                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
-                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
-                        </svg>
+                        <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                     </button>
                 </div>
             </div>
@@ -138,9 +130,7 @@
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                     <input id="routeArguments" class="slds-input" type="text" system-trim-input [(ngModel)]="filter.routeArgs" />
                     <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.routeArgs=''">
-                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
-                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
-                        </svg>
+                        <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                     </button>
                 </div>
             </div>
@@ -150,9 +140,7 @@
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                     <input id="urlParameters" class="slds-input" type="text" system-trim-input [(ngModel)]="filter.urlParams" />
                     <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.urlParams=''">
-                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
-                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
-                        </svg>
+                        <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                     </button>
                 </div>
             </div>
@@ -162,9 +150,7 @@
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                     <input id="postParameters" class="slds-input" type="text" system-trim-input [(ngModel)]="filter.postParams" />
                     <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.postParams=''">
-                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
-                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
-                        </svg>
+                        <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                     </button>
                 </div>
             </div>
@@ -190,9 +176,7 @@
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                     <input id="ipAddress" class="slds-input" type="text" system-trim-input [(ngModel)]="filter.ipAddress" />
                     <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.ipAddress=''">
-                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
-                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
-                        </svg>
+                        <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                     </button>
                 </div>
             </div>
@@ -202,9 +186,7 @@
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                     <input id="sessionId" class="slds-input" type="text" system-trim-input [(ngModel)]="filter.sessionId" />
                     <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.sessionId=''">
-                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
-                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
-                        </svg>
+                        <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                     </button>
                 </div>
             </div>
@@ -214,9 +196,7 @@
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                     <input id="limit" class="slds-input slds-text-align--right" type="text" size="8" system-trim-input [(ngModel)]="limit" />
                     <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="limit=''">
-                        <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
-                            <use xlink:href="./sldassets/icons/utility-sprite/svg/symbols.svg#clear" xmlns:xlink="http://www.w3.org/1999/xlink" />
-                        </svg>
+                        <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                     </button>
                 </div>
             </div>

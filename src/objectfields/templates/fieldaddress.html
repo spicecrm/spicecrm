@@ -7,45 +7,55 @@
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
     <fieldset>
         <div class="slds-form-element__group">
-                <system-googleplaces-autocomplete (address)="addressSelected($event)"></system-googleplaces-autocomplete>
-                <div class="slds-form-element slds-size--1-of-1">
-                    <label class="slds-form-element__label"><system-label label="LBL_ATTN"></system-label></label>
-                    <div class="slds-form-element__control">
-                        <input type="text" class="slds-input" [(ngModel)]="attn" [ngModelOptions]="modelOptions"/>
-                    </div>
-                </div>
-                <div class="slds-form-element slds-size--1-of-1">
+            <system-googleplaces-autocomplete (address)="addressSelected($event)"></system-googleplaces-autocomplete>
+            <div class="slds-grid slds-gutters_direct-xx-small">
+                <div class="slds-form-element slds-col slds-size--5-of-6">
                     <label class="slds-form-element__label"><system-label label="LBL_STREET"></system-label></label>
                     <div class="slds-form-element__control">
                         <input #focus type="text" class="slds-input" [(ngModel)]="street" [ngModelOptions]="modelOptions"/>
                     </div>
                 </div>
+                <div class="slds-form-element slds-col slds-size--1-of-6 ">
+                    <label class="slds-form-element__label"><system-label label="LBL_STREET_NUMBER" length="short"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <input #focus type="text" class="slds-input" [(ngModel)]="street_number" [ngModelOptions]="modelOptions"/>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element slds-size--1-of-1">
+                <label class="slds-form-element__label"><system-label label="LBL_ATTN"></system-label></label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [(ngModel)]="attn" [ngModelOptions]="modelOptions"/>
+                </div>
+            </div>
             <div class="slds-grid">
-                <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <div class="slds-form-element slds-size--1-of-5 slds-p-right--xx-small">
                     <label class="slds-form-element__label"><system-label label="LBL_POSTALCODE"></system-label></label>
                     <div class="slds-form-element__control">
                         <input type="text" class="slds-input" [(ngModel)]="postalcode" [ngModelOptions]="modelOptions"/>
                     </div>
                 </div>
-                <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <div class="slds-form-element slds-size--2-of-5 slds-p-left--xx-small">
                     <label class="slds-form-element__label"><system-label label="LBL_CITY"></system-label></label>
                     <div class="slds-form-element__control">
                         <input type="text" class="slds-input" [(ngModel)]="city" [ngModelOptions]="modelOptions"/>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--2-of-5 slds-p-left--xx-small">
+                    <label class="slds-form-element__label"><system-label label="LBL_DISTRICT"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [(ngModel)]="district" [ngModelOptions]="modelOptions"/>
                     </div>
                 </div>
             </div>
             <div class="slds-grid">
                 <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
                     <label class="slds-form-element__label"><system-label label="LBL_STATE"></system-label></label>
-                    <div class="slds-form-element__control">
-                        <input type="text" class="slds-input" [(ngModel)]="state" [ngModelOptions]="modelOptions"/>
-                    </div>
+                    <system-input-state [(ngModel)]="state" [country]="country"></system-input-state>
                 </div>
                 <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
                     <label class="slds-form-element__label"><system-label label="LBL_COUNTRY"></system-label></label>
-                    <div class="slds-form-element__control">
-                        <input type="text" class="slds-input" [(ngModel)]="country" [ngModelOptions]="modelOptions"/>
-                    </div>
+                    <system-input-country [(ngModel)]="country"></system-input-country>
                 </div>
             </div>
         </div>

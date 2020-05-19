@@ -1,12 +1,12 @@
-<div class="slds-grid slds-wrap spice-h-full">
-    <div class="slds-p-horizontal--small slds-size--1-of-4 slds-border--right spice-h-full">
+<div class="slds-grid slds-wrap slds-height_full">
+    <div class="slds-p-horizontal--small slds-size--1-of-4 slds-border--right slds-height_full">
         <div class="slds-text-body--regular slds-box slds-m-top--small slds-text-color--weak" style="padding: .25rem">
             <system-button-icon class="slds-m-right--xx-small" size="small" [icon]="'lock'"></system-button-icon>
             {{ spiceImport.stepLongText }}
         </div>
     </div>
     <div *ngIf="spiceImport.fileHeader?.length > 0"
-         class="slds-size--3-of-4 spice-h-full">
+         class="slds-size--3-of-4 slds-height_full">
         <table class="slds-table slds-table--bordered slds-table--cell-buffer"
                style="border-top: none">
             <thead>

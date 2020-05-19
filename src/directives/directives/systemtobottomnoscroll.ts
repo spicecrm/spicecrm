@@ -1,5 +1,5 @@
 /**
- * @module directives
+ * @module DirectivesModule
  */
 import {
     Directive,

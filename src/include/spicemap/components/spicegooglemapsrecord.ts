@@ -237,7 +237,7 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
      * @return  listAggregates
      */
     get listAggregates(): any[] {
-        return _.toArray(this.modelList.searchAggregates).filter(aggregate => aggregate !== 'tags');
+        return this.modelList.moduleAggregates;
     }
 
     /**
