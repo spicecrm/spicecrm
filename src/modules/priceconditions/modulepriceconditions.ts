@@ -15,6 +15,8 @@ import /*embed*/ {priceconditonsconfiguration} from './services/priceconditonsco
 
 import /*embed*/ {PriceConditionsAccountsPanel} from './components/priceconditionsaccountspanel';
 import /*embed*/ {PriceConditionsConditionsList} from './components/priceconditionsconditionslist';
+import /*embed*/ {PriceConditionsByDetermination} from './components/priceconditionsbydetermination';
+import /*embed*/ {PriceConditionsByDeterminationList} from './components/priceconditionsbydeterminationlist';
 
 @NgModule({
     imports: [
@@ -28,7 +30,9 @@ import /*embed*/ {PriceConditionsConditionsList} from './components/priceconditi
     ],
     declarations: [
         PriceConditionsAccountsPanel,
-        PriceConditionsConditionsList
+        PriceConditionsConditionsList,
+        PriceConditionsByDetermination,
+        PriceConditionsByDeterminationList
     ]
 })
 export class ModulePriceConditions {}

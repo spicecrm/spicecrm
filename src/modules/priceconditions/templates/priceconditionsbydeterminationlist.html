@@ -1,0 +1,22 @@
+<table class="slds-table slds-table_cell-buffer slds-table_bordered">
+    <thead>
+    <tr class="slds-line-height_reset">
+        <th *ngFor="let determinationfield of determinationfields" class="" scope="col">
+            <div class="slds-truncate">{{determinationfield.name}}</div>
+        </th>
+        <th *ngFor="let conditiontype of conditiontypes" scope="col">
+            <div class="slds-truncate slds-text-align--right">{{conditiontype.name}}</div>
+        </th>
+    </tr>
+    </thead>
+    <tbody [system-view-provider]="{editable: false, displayLabels: false}">
+    <tr *ngFor="let determinationkey of determinationkeys" class="slds-hint-parent">
+        <td *ngFor="let determinationfield of determinationfields">
+            <div class="slds-truncate">{{getValueFromKey(determinationkey, determinationfield)}}</div>
+        </td>
+        <th *ngFor="let conditiontype of conditiontypes" scope="col">
+            <div class="slds-truncate slds-text-align--right">{{getConditionValue(determinationkey,conditiontype)}}</div>
+        </th>
+    </tr>
+    </tbody>
+</table>
