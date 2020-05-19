@@ -1,18 +1,42 @@
 @import url('https://fonts.googleapis.com/css?family=Titillium+Web');
 
-:root {
-    --contrast-color: #CA1B21;
-}
+@import "./imports/spiceloader.css";
+@import "./imports/spicequill.css";
+@import "./imports/spicecalendar.css";
+@import "./imports/spicemaps.css";
+@import "./imports/spicehtmltext.css";
+@import "./imports/spicecdk.css";
+@import "./imports/spicetables.css";
+@import "./imports/spicescrollbar.css";
 
-/*
-body, .x-body {
-    font-family: 'Titillium Web', sans-serif;
+:root {
+    --color-white: white;
+    --color-grey-3: #f3f2f2;
+    --color-gray-4: #ecebea;
+    --color-grey-5: #dddbda;
+    --color-grey-7: #aaaaaa;
+    --color-grey-9: #706e6b;
+    --color-grey-13: #080707;
+    --brand-background-primary: #fafaf9;
+    --brand-primary: #CA1B21;
+    --brand-primary-active: #b3191e;
+    --brand-primary-transparent: rgba(155, 155, 155, .1);
+    --brand-accessible: #CA1B21;
+    --brand-accessible-active: #b3191e;
+    --brand-header-contrast-cool: #a61419;
+    --brand-text-link: #002D31;
+    --color-background-inverse: #751b1e;
+    --color-border-inverse: #751b1e;
+    --color-background-success: #4bca81;
+    --color-background-success-dark: #04844b;
+    --color-text-link-active: #222;
+    --color-progressbar_item-completed: #080707;
+    --color-background-alt-inverse: #002D31;
+    --color-border-brand: #CA1B21;
 }
-*/
 
 html {
     font-family: 'Titillium Web', sans-serif;
-    background: #fafaf9;
 }
 
 /* hide spin buttons in number fields */
@@ -20,143 +44,12 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
     display: none;
 }
 
-.spiceLoadingLogo {
-    /*width: 200px;
-    height: 200px;*/
-    /*position: absolute;
-    top: calc(40% - 320px);
-    left: calc(25% - 100px);
-    text-align: center;*/
-}
-
-.loader-logo-image {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 150px;
-    height: 150px;
-    margin-left: -75px;
-    margin-top: -60px;
-}
-
-.loader-text {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 50px
-}
-
-.loaderspinner .over circle {
-    stroke-dasharray: 150;
-    stroke: #ddd;
-}
-
-.loaderspinner .bag circle {
-    stroke: #777;
-}
-
-.spiceRotate {
-    animation-name: wag;
-    animation-duration: 3000ms;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-    transform-origin: bottom;
-}
-
-.loderRotate {
-    animation-name: spin;
-    animation-duration: 3000ms;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-}
-
-.loaderspinner .over {
-    -webkit-animation: spin 3s linear infinite;
-}
-
-.loaderspinner .bag {
-    position: absolute;
-}
-
-
-@keyframes wag {
-    0% {
-        transform: rotate(0deg);
-    }
-    33% {
-        transform: rotate(10deg)
-    }
-    66% {
-        transform: rotate(-10deg);
-    }
-    100% {
-        transform: rotate(0deg);
-    }
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
+/* Keeps the <input> elements of the login form unchanged (white) also when its values are autofilled by the browser. */
 input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0px 1000px white inset;
+    -webkit-box-shadow: 0 0 0 1000px white inset;
 }
 
-.required {
-    float: left;
-    padding-right: 2px;
-    color: rgb(194, 57, 52);
-    font-weight: 700;
-}
-
-.slds-global-header_container {
-    z-index: 999;
-}
-
-global-login {
-    display: flex;
-}
-
-.spiceContent {
-    margin-top: 90px;
-}
-
-global-user-panel {
-    position: absolute;
-}
-
-.userProfilePanel {
-    position: fixed;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    right: 5px;
-    top: 60px;
-    z-index: 100;
-    background: #fff;
-    filter: drop-shadow(0px 2px 3px rgba(0, 0, 0, 0.16));
-    min-width: 350px;
-}
-
-.userProfilePanel .pointer {
-    z-index: 1;
-    width: calc(1.25rem + .0625rem);
-    height: calc(1.25rem + .0625rem);
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
-    border-top: 1px solid #d8dde6;
-    border-left: 1px solid #d8dde6;
-    background: #fff;
-    position: absolute;
-    top: -11px;
-    right: 16px;
-}
-
+/* Separator / horizontal line at the beginning of a timeline activity. */
 .spiceActivitiyTimelineHeader::before {
     position: absolute;
     right: 0;
@@ -167,818 +60,88 @@ global-user-panel {
     content: ' ';
 }
 
-
-.spicecrm-fieldbody {
-    /*padding: 5px 0px*/;
+/* strombo: ??? */
+.spice-fieldbody {
+    /*padding: 5px 0*/;
     min-height: 29px;
 }
 
-.spicecrm-fieldminheight {
-    /*padding: 5px 0px*/;
+/* Keep fields when in display mode in the same size as when in edit mode. */
+.spice-fieldminheight {
+    /*padding: 5px 0*/;
     min-height: 34px;
 }
 
-.panelChevron {
-    height: 10px;
-    width: 10px;
-    margin-right: 10px;
-    margin-top: 2px;
-    border-top: 2px solid black;
-    border-right: 2px solid black;
-    transform: rotate(135deg);
-    float: left;
-    transition: 0.5s;
-}
-
-/* subpanel card tile sizes*/
-.spicecrm-card-size {
-    width: 100%;
-}
-
-@media only screen and (min-width: 1200px) {
-    .spicecrm-card-size {
-        width: 50%;
-    }
-}
-
-@media only screen and (min-width: 1800px) {
-    .spicecrm-card-size {
-        width: 33%;
-    }
-}
-
-.spicecrm-admin-main {
-    display: flex;
-    height: calc(100vh - 90px);
-}
-
-.spicecrm-admin-menu {
-    width: 200px;
-}
-
-.spicecrm-admin-content {
-    width: calc(100% - 200px);
-    height: 100%;
-    padding: 10px;
-}
-
-/* filter panel */
+/* filter panel: position it to the right side and overlay the record list. */
 object-listview-filter-panel {
-    height: 100%;
-    position: fixed;
-    right: 0px;
+    right: 0;
     z-index: 90;
-    width: 320px;
-    transition: right 0.5s;
 }
 
+/* filter panel: expand it to the full height of the record list and give it a shadow on the left side to differentiate it from the record list in the background. */
 object-listview-filter-panel .slds-panel {
-    height: 100%;
+    height: 100%; /* strombo: height does nothing because overwritten by inline style */
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .40)
 }
 
+/* aggregates panel: position it to the right side and overlay the record list. */
 object-listview-aggregates-panel {
-    height: 100%;
-    position: fixed;
-    right: 0px;
+    right: 0;
     z-index: 90;
-    width: 320px;
-    transition: right 0.5s;
 }
 
+/* aggregates panel: expand it to the full height of the record list and give it a shadow on the left side to differentiate it from the record list in the background. */
 object-listview-aggregates-panel .slds-panel {
     height: 100%;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .40)
 }
 
+/* in non-tabbed navigation menu: horizontal arrangement of text and icon. */
 global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-more li.slds-dropdown-trigger {
     display: flex;
 }
 
-.spicecrm-popup-buttoncontainer {
-    min-height: 2rem;
-    margin-top: 1rem;
-}
+/* SLDS OVERRIDES */
 
-.spicecrm-popup-buttoncontainer button {
-    float: right;
-}
-
-/* global search */
-.spicecrm-globalsearch-container {
-    display: flex;
-}
-
-.spicecrm-globalsearch-menu {
-    width: 250px;
-    border-right: 1px solid #d8dde6;
-    background-color: #f7f9fb;
-}
-
-.spicecrm-globalsearch-results {
-    width: calc(100% - 250px);
-    background-color: #f7f9fb;
-    height: 100%;
-    overflow-y: auto;
-}
-
-table,
-.slds-table tr,
-tr.slds-hint-parent td,
-tr[global-search-module-item] td {
-    font-size: 13px !important;
-}
-
-.spicecrm-globalsearch-results div[global-search-module]:last-child {
-    margin-bottom: 0px;
-}
-
-/* todo: get color codes right and with scss variables */
-div[global-search-module] div.slds-page-header {
-    border-top: 1px solid #d8dde6;
-    background-color: #fff;
-}
-
-/* for the css loader http://cssload.net/en/spinners/4*/
-
-.cssload-container {
-    width: 100%;
-    /*height: 26px;*/
-    text-align: center;
-    /*margin: 10px 0px;*/
-}
-
-.cssload-double-torus {
-    width: 26px;
-    height: 26px;
-    margin: 0 auto;
-    border: 2px double;
-    border-radius: 50%;
-    border-color: transparent rgba(0, 0, 0, 0.9) rgba(0, 0, 0, 0.9);
-    animation: cssload-spin 1410ms infinite linear;
-    -o-animation: cssload-spin 1410ms infinite linear;
-    -ms-animation: cssload-spin 1410ms infinite linear;
-    -webkit-animation: cssload-spin 1410ms infinite linear;
-    -moz-animation: cssload-spin 1410ms infinite linear;
-}
-
-@keyframes cssload-spin {
-    100% {
-        transform: rotate(360deg);
-        transform: rotate(360deg);
-    }
-}
-
-@-o-keyframes cssload-spin {
-    100% {
-        -o-transform: rotate(360deg);
-        transform: rotate(360deg);
-    }
-}
-
-@-ms-keyframes cssload-spin {
-    100% {
-        -ms-transform: rotate(360deg);
-        transform: rotate(360deg);
-    }
-}
-
-@-webkit-keyframes cssload-spin {
-    100% {
-        -webkit-transform: rotate(360deg);
-        transform: rotate(360deg);
-    }
-}
-
-@-moz-keyframes cssload-spin {
-    100% {
-        -moz-transform: rotate(360deg);
-        transform: rotate(360deg);
-    }
-}
-
-/* for the coach spiceprocess */
-.spicecrm-processicon {
-    fill: #fff;
-    margin-top: 5px;
-}
-
-/* slds overrides */
-
+/* animate icon on collapsible tab */
+/* ToDo: replace by angular animation */
 .slds-section__title-action-icon {
     transition: 0.5s;
 }
 
-/* Color override */
-/* CSS - Cascading Style Sheet */
-/* Palette color codes */
-/* Palette URL: http://paletton.com/#uid=75C0x0krJpAdHFWkLv+w8fKKea5 */
-
-/* Feel free to copy&paste color codes to your application */
-
-/* As hex codes */
-
-.color-primary-0 {
-    color: var(--contrast-color);
-}
-
-/* Main Primary color */
-.color-primary-1 {
-    color: #FD9194
-}
-
-.color-primary-2 {
-    color: #FD595D
-}
-
-.color-primary-3 {
-    color: #7C0003
-}
-
-.color-primary-4 {
-    color: #500002
-}
-
-.color-secondary-1-0 {
-    color: #CC6E1B
-}
-
-/* Main Secondary color (1) */
-.color-secondary-1-1 {
-    color: #FFC592
-}
-
-.color-secondary-1-2 {
-    color: #FFA75A
-}
-
-.color-secondary-1-3 {
-    color: #7D3B00
-}
-
-.color-secondary-1-4 {
-    color: #502600
-}
-
-.color-secondary-2-0 {
-    color: #12737C
-}
-
-/* Main Secondary color (2) */
-.color-secondary-2-1 {
-    color: #6DB6BD
-}
-
-.color-secondary-2-2 {
-    color: #38939B
-}
-
-.color-secondary-2-3 {
-    color: #01464C
-}
-
-.color-secondary-2-4 {
-    color: #002D31
-}
-
-.color-complement-0 {
-    color: #1DA516
-}
-
-/* Main Complement color */
-.color-complement-1 {
-    color: #84DF80
-}
-
-.color-complement-2 {
-    color: #4FCF49
-}
-
-.color-complement-3 {
-    color: #056600
-}
-
-.color-complement-4 {
-    color: #034100
-}
-
-/* As RGBa codes */
-
-.rgba-primary-0 {
-    color: rgba(202, 27, 31, 1)
-}
-
-/* Main Primary color */
-.rgba-primary-1 {
-    color: rgba(253, 145, 148, 1)
-}
-
-.rgba-primary-2 {
-    color: rgba(253, 89, 93, 1)
-}
-
-.rgba-primary-3 {
-    color: rgba(124, 0, 3, 1)
-}
-
-.rgba-primary-4 {
-    color: rgba(80, 0, 2, 1)
-}
-
-.rgba-secondary-1-0 {
-    color: rgba(204, 110, 27, 1)
-}
-
-/* Main Secondary color (1) */
-.rgba-secondary-1-1 {
-    color: rgba(255, 197, 146, 1)
-}
-
-.rgba-secondary-1-2 {
-    color: rgba(255, 167, 90, 1)
-}
-
-.rgba-secondary-1-3 {
-    color: rgba(125, 59, 0, 1)
-}
-
-.rgba-secondary-1-4 {
-    color: rgba(80, 38, 0, 1)
-}
-
-.rgba-secondary-2-0 {
-    color: rgba(18, 115, 124, 1)
-}
-
-/* Main Secondary color (2) */
-.rgba-secondary-2-1 {
-    color: rgba(109, 182, 189, 1)
-}
-
-.rgba-secondary-2-2 {
-    color: rgba(56, 147, 155, 1)
-}
-
-.rgba-secondary-2-3 {
-    color: rgba(1, 70, 76, 1)
-}
-
-.rgba-secondary-2-4 {
-    color: rgba(0, 45, 49, 1)
-}
-
-.rgba-complement-0 {
-    color: rgba(29, 165, 22, 1)
-}
-
-/* Main Complement color */
-.rgba-complement-1 {
-    color: rgba(132, 223, 128, 1)
-}
-
-.rgba-complement-2 {
-    color: rgba(79, 207, 73, 1)
-}
-
-.rgba-complement-3 {
-    color: rgba(5, 102, 0, 1)
-}
-
-.rgba-complement-4 {
-    color: rgba(3, 65, 0, 1)
-}
-
-/* Generated by Paletton.com © 2002-2014 */
-/* http://paletton.com */
-
-a, a:focus, a:hover {
-    /* todo: find proper color */
-    color: #444;
-}
-
-.slds-button:focus {
-    box-shadow: 0 0 3px #01464C;
-}
-
-.slds-button_dual-stateful.slds-is-pressed,
-.slds-button_dual-stateful.slds-is-pressed:active,
-.slds-button_dual-stateful.slds-is-pressed:focus,
-.slds-button_dual-stateful.slds-is-pressed:hover {
-    background-color: var(--contrast-color);
-    border-color: var(--contrast-color);
-}
-
-.slds-button--icon-border.slds-is-selected:focus,
-.slds-button--icon-border.slds-is-selected:active,
-.slds-button--icon-border.slds-is-selected,
-.slds-button--icon-border.slds-is-selected:not([disabled]):hover,
-.slds-button--brand, .slds-button--brand:active, .slds-button--brand:focus {
-    background-color: var(--contrast-color);
-    border-color: var(--contrast-color);
-}
-
-.slds-button--icon-more:not([disabled]):hover .slds-button__icon {
-    fill: var(--contrast-color);
-}
-
-field-generic-display:hover .slds-button--icon {
-    color: #5B5B5B;
-}
-
-field-generic-display .slds-button--icon {
-    color: #eeeeee;
-}
-
-.spice-hover-button.slds-button--icon {
-    color: #eeeeee;
-}
-
-.spice-hover-button.slds-button--icon:hover {
-    color: #5B5B5B;
-}
-
-/*
-.slds-button:not([disabled]):focus, .slds-button:not([disabled]):hover {
-    color: #CA1B21;
-}
-*/
-.slds-button--brand:not([disabled]):focus, .slds-button--brand:not([disabled]):hover {
-    color: #FFF;
-}
-
-/*
-.slds-button:not([disabled]):focus svg, .slds-button:not([disabled]):hover svg {
-    fill: #CA1B21;
-}
-*/
-.slds-button--brand:not([disabled]):focus svg, .slds-button--brand:not([disabled]):hover svg {
-    fill: currentColor;
-}
-
-.slds-button--icon-border.slds-is-selected {
-    border: 1px solid var(--contrast-color);
-}
-
-.slds-button--brand:not([disabled]):hover {
-    color: #FFF;
-    background-color: var(--contrast-color);
-    font-weight: bold;
-}
-
-.slds-button:focus {
-    box-shadow: 0 0 3px #a7161a;
-}
-
-.slds-tabs--default__item.slds-active:after,
-.slds-tabs--default__item.slds-is-active:after,
-.slds-tabs--default__item:hover:after {
-    background-color: var(--contrast-color);
-}
-
-.slds-active .slds-tabs--scoped__link,
-.slds-button,
-.slds-navigation-list--vertical .slds-is-active {
-    color: #5B5B5B;
-}
-
-/* add a white border at the bootom of the active tab li */
-.slds-tabs--scoped__item.slds-active{
-    border-bottom: 1px solid white;
-}
-
-.slds-button.slds-active {
-    color: var(--contrast-color);
-}
-
-.slds-button:active:not([disabled]),
-.slds-button:hover:not([disabled]),
-.slds-button:focus:not([disabled]) {
-    color: var(--contrast-color);
-}
-
-.slds-button.slds-button--brand,
-.slds-button.slds-button--icon-inverse,
-.slds-button.slds-button--brand:active:not([disabled]),
-.slds-button.slds-button--brand:hover:not([disabled]),
-.slds-button.slds-button--brand:focus:not([disabled]){
-    color: #fff;
-}
-
-.slds-button_outline-brand {
-    border-color: var(--contrast-color);
-}
-
-.slds-button--icon-border.slds-is-selected,
-.slds-button--icon-container.slds-is-selected,
-.slds-button_icon-border-filled.slds-is-selected,
-.slds-button_icon-border.slds-is-selected,
-.slds-button_icon-container.slds-is-selected,
-.slds-button--icon-border.slds-is-selected:focus,
-.slds-button--icon-border.slds-is-selected:hover:not([disabled]),
-.slds-button--icon-container.slds-is-selected:focus,
-.slds-button--icon-container.slds-is-selected:hover:not([disabled]),
-.slds-button_icon-border-filled.slds-is-selected:focus,
-.slds-button_icon-border-filled.slds-is-selected:hover:not([disabled]),
-.slds-button_icon-border.slds-is-selected:focus,
-.slds-button_icon-border.slds-is-selected:hover:not([disabled]),
-.slds-button_icon-container.slds-is-selected:focus,
-.slds-button_icon-container.slds-is-selected:hover:not([disabled]) {
-    background-color: var(--contrast-color);
-    border-color: var(--contrast-color);
-}
-
-/* special rule for the action container since the first child is an empty div
-object-action-container .slds-button-group .slds-button:nth-child(2) {
-    border-radius: .25rem 0 0 .25rem;
-}
-*/
-
-.slds-navigation-list--vertical .slds-is-active .slds-navigation-list--vertical__action {
-    border-left-color: var(--contrast-color);
-}
-
-.slds-radio--button [type=radio]:checked + .slds-radio--button__label:hover,
-.slds-radio--button [type=radio]:checked + .slds-radio--button__label {
-    background-color: var(--contrast-color);
-}
-
-/* forms */
-.slds-input:active, .slds-input:focus,
-.slds-select:active, .slds-select:focus,
-.slds-checkbox [type=checkbox]:focus + .slds-checkbox--faux, .slds-checkbox [type=checkbox]:focus + .slds-checkbox__label .slds-checkbox--faux, .slds-checkbox [type=checkbox]:focus ~ .slds-checkbox--faux {
-    border-color: #12737C;
-    box-shadow: 0 0 3px #01464C;
-}
-
-.slds-checkbox [type=checkbox]:checked + .slds-checkbox--faux:after,
-.slds-checkbox [type=checkbox]:checked + .slds-checkbox__label .slds-checkbox--faux:after,
-.slds-checkbox [type=checkbox]:checked + .slds-checkbox__label .slds-checkbox_faux:after,
-.slds-checkbox [type=checkbox]:checked + .slds-checkbox_faux:after,
-.slds-checkbox [type=checkbox]:checked ~ .slds-checkbox--faux:after,
-.slds-checkbox [type=checkbox]:checked ~ .slds-checkbox_faux:after,
-.slds-checkbox [type=checkbox]:checked + .slds-checkbox--faux:after,
-.slds-checkbox [type=checkbox]:checked + .slds-checkbox__label .slds-checkbox--faux:after,
-.slds-checkbox [type=checkbox]:checked ~ .slds-checkbox--faux:after {
-    border-bottom: 2px solid var(--contrast-color);
-    border-left: 2px solid var(--contrast-color);
-}
-
-.slds-checkbox--button [type=checkbox]:checked + .slds-checkbox--button__label, .slds-checkbox--button [type=checkbox]:checked + .slds-checkbox--faux, .slds-checkbox--button [type=checkbox]:checked + .slds-checkbox_button__label, .slds-checkbox--button [type=checkbox]:checked + .slds-checkbox_faux, .slds-checkbox--button [type=checkbox]:checked ~ .slds-checkbox--faux, .slds-checkbox--button [type=checkbox]:checked ~ .slds-checkbox_faux, .slds-checkbox_button [type=checkbox]:checked + .slds-checkbox--button__label, .slds-checkbox_button [type=checkbox]:checked + .slds-checkbox--faux, .slds-checkbox_button [type=checkbox]:checked + .slds-checkbox_button__label, .slds-checkbox_button [type=checkbox]:checked + .slds-checkbox_faux, .slds-checkbox_button [type=checkbox]:checked ~ .slds-checkbox--faux, .slds-checkbox_button [type=checkbox]:checked ~ .slds-checkbox_faux {
-    background-color: var(--contrast-color);
-}
-
-.slds-checkbox--button [type=checkbox]:checked + .slds-checkbox--button__label:focus, .slds-checkbox--button [type=checkbox]:checked + .slds-checkbox--button__label:hover, .slds-checkbox--button [type=checkbox]:checked + .slds-checkbox--faux:focus, .slds-checkbox--button [type=checkbox]:checked + .slds-checkbox--faux:hover, .slds-checkbox--button [type=checkbox]:checked + .slds-checkbox_button__label:focus, .slds-checkbox--button [type=checkbox]:checked + .slds-checkbox_button__label:hover, .slds-checkbox--button [type=checkbox]:checked + .slds-checkbox_faux:focus, .slds-checkbox--button [type=checkbox]:checked + .slds-checkbox_faux:hover, .slds-checkbox--button [type=checkbox]:checked ~ .slds-checkbox--faux:focus, .slds-checkbox--button [type=checkbox]:checked ~ .slds-checkbox--faux:hover, .slds-checkbox--button [type=checkbox]:checked ~ .slds-checkbox_faux:focus, .slds-checkbox--button [type=checkbox]:checked ~ .slds-checkbox_faux:hover, .slds-checkbox_button [type=checkbox]:checked + .slds-checkbox--button__label:focus, .slds-checkbox_button [type=checkbox]:checked + .slds-checkbox--button__label:hover, .slds-checkbox_button [type=checkbox]:checked + .slds-checkbox--faux:focus, .slds-checkbox_button [type=checkbox]:checked + .slds-checkbox--faux:hover, .slds-checkbox_button [type=checkbox]:checked + .slds-checkbox_button__label:focus, .slds-checkbox_button [type=checkbox]:checked + .slds-checkbox_button__label:hover, .slds-checkbox_button [type=checkbox]:checked + .slds-checkbox_faux:focus, .slds-checkbox_button [type=checkbox]:checked + .slds-checkbox_faux:hover, .slds-checkbox_button [type=checkbox]:checked ~ .slds-checkbox--faux:focus, .slds-checkbox_button [type=checkbox]:checked ~ .slds-checkbox--faux:hover, .slds-checkbox_button [type=checkbox]:checked ~ .slds-checkbox_faux:focus, .slds-checkbox_button [type=checkbox]:checked ~ .slds-checkbox_faux:hover {
-    background-color: var(--contrast-color);
-}
-
-.slds-checkbox--toggle [type=checkbox]:checked + .slds-checkbox--faux:focus, .slds-checkbox--toggle [type=checkbox]:checked + .slds-checkbox--faux:hover, .slds-checkbox--toggle [type=checkbox]:checked + .slds-checkbox--faux_container .slds-checkbox--faux:focus, .slds-checkbox--toggle [type=checkbox]:checked + .slds-checkbox--faux_container .slds-checkbox--faux:hover, .slds-checkbox--toggle [type=checkbox]:checked + .slds-checkbox_faux:focus, .slds-checkbox--toggle [type=checkbox]:checked + .slds-checkbox_faux:hover, .slds-checkbox--toggle [type=checkbox]:checked + .slds-checkbox_faux_container .slds-checkbox_faux:focus, .slds-checkbox--toggle [type=checkbox]:checked + .slds-checkbox_faux_container .slds-checkbox_faux:hover, .slds-checkbox--toggle [type=checkbox]:checked ~ .slds-checkbox--faux:focus, .slds-checkbox--toggle [type=checkbox]:checked ~ .slds-checkbox--faux:hover, .slds-checkbox--toggle [type=checkbox]:checked ~ .slds-checkbox_faux:focus, .slds-checkbox--toggle [type=checkbox]:checked ~ .slds-checkbox_faux:hover, .slds-checkbox_toggle [type=checkbox]:checked + .slds-checkbox--faux:focus, .slds-checkbox_toggle [type=checkbox]:checked + .slds-checkbox--faux:hover, .slds-checkbox_toggle [type=checkbox]:checked + .slds-checkbox--faux_container .slds-checkbox--faux:focus, .slds-checkbox_toggle [type=checkbox]:checked + .slds-checkbox--faux_container .slds-checkbox--faux:hover, .slds-checkbox_toggle [type=checkbox]:checked + .slds-checkbox_faux:focus, .slds-checkbox_toggle [type=checkbox]:checked + .slds-checkbox_faux:hover, .slds-checkbox_toggle [type=checkbox]:checked + .slds-checkbox_faux_container .slds-checkbox_faux:focus, .slds-checkbox_toggle [type=checkbox]:checked + .slds-checkbox_faux_container .slds-checkbox_faux:hover, .slds-checkbox_toggle [type=checkbox]:checked ~ .slds-checkbox--faux:focus, .slds-checkbox_toggle [type=checkbox]:checked ~ .slds-checkbox--faux:hover, .slds-checkbox_toggle [type=checkbox]:checked ~ .slds-checkbox_faux:focus, .slds-checkbox_toggle [type=checkbox]:checked ~ .slds-checkbox_faux:hover {
-    background-color: var(--contrast-color);
-}
-
-.slds-checkbox--toggle [type=checkbox]:checked + .slds-checkbox--faux, .slds-checkbox--toggle [type=checkbox]:checked + .slds-checkbox--faux_container .slds-checkbox--faux, .slds-checkbox--toggle [type=checkbox]:checked + .slds-checkbox_faux, .slds-checkbox--toggle [type=checkbox]:checked + .slds-checkbox_faux_container .slds-checkbox_faux, .slds-checkbox--toggle [type=checkbox]:checked ~ .slds-checkbox--faux, .slds-checkbox--toggle [type=checkbox]:checked ~ .slds-checkbox_faux, .slds-checkbox_toggle [type=checkbox]:checked + .slds-checkbox--faux, .slds-checkbox_toggle [type=checkbox]:checked + .slds-checkbox--faux_container .slds-checkbox--faux, .slds-checkbox_toggle [type=checkbox]:checked + .slds-checkbox_faux, .slds-checkbox_toggle [type=checkbox]:checked + .slds-checkbox_faux_container .slds-checkbox_faux, .slds-checkbox_toggle [type=checkbox]:checked ~ .slds-checkbox--faux, .slds-checkbox_toggle [type=checkbox]:checked ~ .slds-checkbox_faux {
-    border-color: var(--contrast-color);
-    background-color: var(--contrast-color);
-}
-
-.slds-checkbox_toggle [type="checkbox"]:checked:focus + .slds-checkbox_faux,
-.slds-checkbox_toggle [type="checkbox"]:checked:focus + .slds-checkbox--faux,
-.slds-checkbox_toggle [type="checkbox"]:checked:focus ~ .slds-checkbox_faux,
-.slds-checkbox_toggle [type="checkbox"]:checked:focus ~ .slds-checkbox--faux,
-.slds-checkbox_toggle [type="checkbox"]:checked:focus + .slds-checkbox_faux_container .slds-checkbox_faux,
-.slds-checkbox_toggle [type="checkbox"]:checked:focus + .slds-checkbox--faux_container .slds-checkbox--faux,
-.slds-checkbox--toggle [type="checkbox"]:checked:focus + .slds-checkbox_faux,
-.slds-checkbox--toggle [type="checkbox"]:checked:focus + .slds-checkbox--faux,
-.slds-checkbox--toggle [type="checkbox"]:checked:focus ~ .slds-checkbox_faux,
-.slds-checkbox--toggle [type="checkbox"]:checked:focus ~ .slds-checkbox--faux,
-.slds-checkbox--toggle [type="checkbox"]:checked:focus + .slds-checkbox_faux_container .slds-checkbox_faux,
-.slds-checkbox--toggle [type="checkbox"]:checked:focus + .slds-checkbox--faux_container .slds-checkbox--faux{
-    background-color: var(--contrast-color);
-}
-
-/* for the progress indicator */
-.slds-path__nav .slds-is-active,
-.slds-path__nav .slds-is-active:after,
-.slds-path__nav .slds-is-active:before,
-.slds-path__nav .slds-is-active:first-child:after,
-.slds-path__nav .slds-is-active:first-child:before,
-.slds-tabs--path .slds-is-current,
-.slds-tabs--path .slds-is-current + .slds-is-incomplete:before {
-    background-color: var(--contrast-color);
-}
-
-.slds-path__nav .slds-is-active:hover,
-.slds-path__nav .slds-is-active:hover:after,
-.slds-path__nav .slds-is-active:hover:before,
-.slds-tabs--path .slds-is-current:hover,
-.slds-tabs--path .slds-is-current:hover + .slds-is-incomplete:before {
-    background-color: #7C0003;
-}
-
-.slds-path__nav .slds-is-complete,
-.slds-path__nav .slds-is-complete:after,
-.slds-path__nav .slds-is-complete:before,
-.slds-tabs--path .slds-is-complete,
-.slds-tabs--path .slds-is-active + .slds-tabs--path__item.slds-is-current:before,
-.slds-tabs--path__item + .slds-is-complete:before, .slds-tabs--path__item + .slds-is-current:before {
-    background-color: #2D2D2D;
-}
-
-
-.slds-path__nav .slds-is-complete:hover,
-.slds-path__nav .slds-is-complete:hover:after,
-.slds-path__nav .slds-is-complete:hover:before,
-.slds-tabs--path .slds-is-complete:hover,
-.slds-tabs--path .slds-is-active:hover + .slds-tabs--path__item.slds-is-current:before,
-.slds-tabs--path__item:hover + .slds-is-complete:before, .slds-tabs--path__item:hover + .slds-is-current:before {
-    background-color: #111;
-}
-
-
-.slds-path__nav .slds-is-won,
-.slds-path__nav .slds-is-won:after,
-.slds-path__nav .slds-is-won:before,
-.slds-path__nav .slds-is-won:hover,
-.slds-path__nav .slds-is-won:hover:after,
-.slds-path__nav .slds-is-won:hover:before {
-    background-color: #228b22;
-    color: #fff;
-}
-
-.slds-path__nav .slds-is-current:after,
-.slds-path__nav .slds-is-current:before {
-    /*background-image: linear-gradient(90deg,#2D2D2D,#2D2D2D .125rem,transparent .125rem),linear-gradient(90deg,#2D2D2D,#2D2D2D .125rem,transparent .125rem),linear-gradient(#2D2D2D,#2D2D2D .125rem,transparent .125rem);*/
-    color: var(--contrast-color);
-}
-
-.slds-path__nav .slds-is-current.slds-is-lost .slds-path__link {
-    color: white;
-}
-
-.slds-path__nav .slds-is-current:hover:after,
-.slds-path__nav .slds-is-current:hover:before {
-    /*background-image: linear-gradient(90deg,#CA1B21,#CA1B21 .125rem,transparent .125rem),linear-gradient(90deg,#CA1B21,#CA1B21 .125rem,transparent .125rem),linear-gradient(#CA1B21,#CA1B21 .125rem,transparent .125rem);*/
-    color: var(--contrast-color);
-}
-
-.slds-path__nav .slds-is-current:hover:after, .slds-path__nav .slds-is-current:hover:before {
-    background-image: none;
-}
-
-/*
-.slds-tabs--path .slds-is-incomplete .slds-tabs--path__link{
-    color: #bbb;
-}
-*/
-.slds-tabs--path .slds-is-incomplete:hover .slds-tabs--path__link {
-    color: #fff;
-}
-
-.slds-tabs--path .slds-is-incomplete.slds-is-active,
-.slds-tabs--path .slds-is-incomplete.slds-is-active + .slds-tabs--path__item:before {
-    background-color: #d8dde6;
-}
-
-.slds-tabs--path .slds-is-incomplete.slds-is-active .slds-tabs--path__link {
-    color: #111;
-}
-
-
-.slds-context-bar {
-    border-bottom: 3px solid var(--contrast-color);
-}
-
-.slds-context-bar__item:not(.slds-no-hover):not(.slds-is-active):hover {
-    /*border-bottom: 3px solid #FD595D;*/
-}
-
-.slds-context-bar__item.slds-is-active:after, .slds-context-bar__item.slds-is-active:before {
-    background: var(--contrast-color);
-}
-
+/* a 1 pixel gap between tab and bold horizontal line. */
 .slds-context-bar__item:before {
     bottom: 1px;
 }
 
-.slds-progress__item.slds-is-active .slds-progress__marker, .slds-progress__item.slds-is-completed .slds-progress__marker {
-    border-color: var(--contrast-color);
-}
-
-.slds-progress__item.slds-is-active .slds-progress__marker:focus, .slds-progress__item.slds-is-active .slds-progress__marker:hover {
-    border-color: var(--contrast-color);
-}
-
-.slds-progress-bar .slds-progress-bar__value {
-    background: #FD595D;
-}
-
-.slds-progress__item.slds-is-active .slds-progress__marker:focus {
-    box-shadow: #fff 0 0 0 4px, 0 0 3px 4px #FD595D;
-}
-
-.slds-box--border.slds-has-error {
+/* a red border for the invalid input fields. */
+.slds-box--border.slds-has-error, .slds-box_border.slds-has-error {
     background-color: #fff;
     border-color: #c23934;
     box-shadow: #c23934 0 0 0 1px inset;
     background-clip: padding-box;
 }
-.slds-radio [type=radio]:checked + .slds-radio--faux:after, .slds-radio [type=radio]:checked + .slds-radio__label .slds-radio--faux:after, .slds-radio [type=radio]:checked ~ .slds-radio--faux:after {
-    background-color: var(--contrast-color);
-}
 
+/* strombo: ??? */
 .slds-context-bar__dropdown-trigger .slds-dropdown:before {
     background-color: transparent;
 }
 
-.slds-dropdown--actions a, .slds-dropdown_actions a {
-    color: #002D31;
-}
-
-.slds-popover--tooltip, .slds-popover_tooltip {
-    background: #002D31;
-}
-
+/* background color of vertical navigation/menu items */
+/* strombo: ??? ... original slds is brand-primary-transparent, not #ddd */
 .slds-nav-vertical__item.slds-is-active:before, .slds-nav-vertical__item:hover:before {
     background: #ddd;
 }
 
-.slds-nav-vertical__item.slds-is-active .slds-nav-vertical__action, .slds-nav-vertical__action:hover {
-    box-shadow: inset 0.25rem 0 0 var(--contrast-color);
-}
-
-/*
- generic classes
- */
-.spice-h-full {
-    height: 100%;
-    overflow-y: auto;
-}
-
-.slds-docked-composer__header {
-    border-bottom-color: var(--contrast-color);
-}
-
-.slds-context-bar__item.slds-is-active, .slds-context-bar__item:not(.slds-no-hover):hover {
-    background-color: rgba(155, 155, 155, .1);
-}
-
-.slds-context-bar__item.slds-is-active {
-    animation: spiceAnim 135ms cubic-bezier(.39, .575, .565, 1) both
-}
-
-@keyframes spiceAnim {
-    50% {
-        background-color: #fff
-    }
-    100% {
-        background-color: rgba(155, 155, 155, .1);
-    }
-}
-
-.slds-active .slds-tabs--scoped__link, .slds-active .slds-tabs_scoped__link, .slds-is-active .slds-tabs--scoped__link, .slds-is-active .slds-tabs_scoped__link,
-.slds-tabs--default__item.slds-active, .slds-tabs--default__item.slds-is-active, .slds-tabs_default__item.slds-active, .slds-tabs_default__item.slds-is-active,
-.slds-tabs--default__item.slds-active .slds-tabs--default__link:hover {
-    color: #111
-}
-
-.slds-tabs--default__item:hover:after, .slds-tabs_default__item:hover:after,
-.slds-tabs--default__item.slds-active:after, .slds-tabs--default__item.slds-is-active:after, .slds-tabs_default__item.slds-active:after, .slds-tabs_default__item.slds-is-active:after {
-    background-color: var(--contrast-color);
-}
-
-.slds-progress__item.slds-is-completed .slds-progress__marker--icon, .slds-progress__item.slds-is-completed .slds-progress__marker_icon {
-    color: var(--contrast-color);
-}
-
-.slds-radio [type=radio]:checked + .slds-radio--faux:after, .slds-radio [type=radio]:checked + .slds-radio__label .slds-radio--faux:after, .slds-radio [type=radio]:checked + .slds-radio__label .slds-radio_faux:after, .slds-radio [type=radio]:checked + .slds-radio_faux:after, .slds-radio [type=radio]:checked ~ .slds-radio--faux:after, .slds-radio [type=radio]:checked ~ .slds-radio_faux:after {
-    background-color: var(--contrast-color);
-}
-
-.slds-theme--inverse, .slds-theme_inverse {
-    background-color: var(--contrast-color);
-    border-color: var(--contrast-color);
-}
-
-.slds-tree .slds-is-selected {
-    box-shadow: var(--contrast-color) 4px 0 0 inset;
-}
-
-.slds-listbox__icon-selected {
-    fill: var(--contrast-color);
-}
-
-.slds-listbox__option.slds-is-selected .slds-listbox__option-icon {
-    color: var(--contrast-color);
-}
-
+/* capitalize first letter in buttons */
 .slds-button span {
     display: inline-block;
 }
-
 .slds-button span::first-letter {
     text-transform: capitalize;
 }
 
-/* rich text editor */
+/* container for the rich text editor */
 .slds-rich-text-area__content {
     max-height: none;
     resize: vertical;
@@ -986,50 +149,42 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     height: 300px;
 }
 
-.slds-timeline__item_expandable .slds-media__figure {
-    z-index: auto;
-}
-
-.slds-timeline__item_expandable:before {
-    height: calc(100% - 30px);
-    top: 30px;
-}
-
-.slds-text-align--justify {
+/* align text justified */
+/* not a slds class, but related to slds classes slds-text-align_left, slds-text-align_center or slds-text-align_right */
+.slds-text-align_justify, .slds-text-align--justify {
     text-align: justify;
 }
 
+/* maximize element height to 100 % */
+/* not a slds class, but related to slds class slds-size_full */
 .slds-height_full {
     height: 100%;
 }
 
+/* strombo: ??? really necessary? slds-is-absolute already exists */
 .slds-is-absolute__top {
     position: absolute;
-    top: 0px;
+    top: 0;
 }
 
 /* for illustrations */
 .slds-illustration .slds-illustration__stroke-primary {
     stroke: #aaa;
 }
-
 .slds-illustration .slds-illustration__fill-primary {
     fill: #bbb;
 }
-
 .slds-illustration .slds-illustration__stroke-secondary {
     stroke: #ccc;
 }
-
 .slds-illustration .slds-illustration__fill-secondary {
     fill: #eee;
 }
 
-/* override for teh input icon gropup */
+/* override for the input icon group */
 .slds-input__icon-group_right {
     top: .5rem;
 }
-
 
 /* responsive tables */
 /* reduce padding */
@@ -1041,288 +196,30 @@ object-action-container .slds-button-group .slds-button:nth-child(2) {
     }
 }
 
-/* Style Definition for HTML fields */
-
-.html-text h1, .html-text h2, .html-text h3, .html-text h4, .html-text h5, .html-text h6 {
-    margin: 0.75rem 0;
-    line-height: 1.25;
-}
-
-.html-text h1 {
-    font-size: 1.25rem;
-}
-
-.html-text h2 {
-    font-size: 1rem;
-    color: #000;
-}
-
-.html-text h3, .html-text h4, .html-text h5, .html-text h6 {
-    font-size: 0.75rem;
-    color: #000;
-    line-height: 1.25;
-}
-
-.html-text b, .html-text strong {
-    font-weight: 700;
-}
-
-.html-text i, .html-text em {
-    font-style: italic;
-}
-
-.html-text p, .html-text ul {
-    margin: 0.75rem 0;
-}
-
-.html-text *:first-child {
-    margin-top: 0;
-}
-
-.html-text *:last-child {
-    margin-bottom: 0;
-}
-
-.html-text a {
-    color: #444;
-    text-decoration: underline;
-}
-
-.html-text a:hover {
-    color: #000;
-    text-decoration: none;
-}
-
-.html-text ul {
-    list-style: disc outside;
-}
-
-.html-text ol {
-    list-style: decimal outside;
-}
-
-.html-text li {
-    margin-left: 1.75rem;
-}
-
-.html-text .align-right {
-    text-align: right;
-}
-
-.html-text .align-left {
-    text-align: left;
-}
-
-.html-text .align-center {
-    text-align: center;
-}
-
-.html-text .align-justify {
-    text-align: justify;
-}
-
-
-/* SpiceCRM Scrollbar */
-/* for firefox and*/
-.slds-scrollable,
-.slds-scrollable--x,
-.slds-scrollable--y {
-    scrollbar-width: thin;
-}
-
-/* width normal */
-.slds-scrollable::-webkit-scrollbar,
-.slds-scrollable--x::-webkit-scrollbar,
-.slds-scrollable--y::-webkit-scrollbar,
-.spicecrm-scrollbar::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-    /* for firefox and*/
-    scrollbar-width: thin;
-}
-
-/* width thin */
-.spicecrm-scrollbar-thin::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
-}
-
-/* Track */
-.slds-scrollable::-webkit-scrollbar-track,
-.slds-scrollable--x::-webkit-scrollbar-track,
-.slds-scrollable--y::-webkit-scrollbar-track,
-.spicecrm-scrollbar::-webkit-scrollbar-track,
-.spicecrm-scrollbar-thin::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-/* Handle */
-.slds-scrollable::-webkit-scrollbar-thumb,
-.slds-scrollable--x::-webkit-scrollbar-thumb,
-.slds-scrollable--y::-webkit-scrollbar-thumb,
-.spicecrm-scrollbar::-webkit-scrollbar-thumb {
-    background: #aaa;
-    border-top: 2px solid #f1f1f1;
-    border-bottom: 2px solid #f1f1f1;
-}
-
-.spicecrm-scrollbar-thin::-webkit-scrollbar-thumb {
-    background: #aaa;
-    border-top: 1px solid #f1f1f1;
-    border-bottom: 1px solid #f1f1f1;
-}
-
-/* Handle on hover */
-.slds-scrollable::-webkit-scrollbar-thumb:hover,
-.slds-scrollable--x::-webkit-scrollbar-thumb:hover,
-.slds-scrollable--y::-webkit-scrollbar-thumb:hover,
-.spicecrm-scrollbar::-webkit-scrollbar-thumb:hover,
-.spicecrm-scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background: #888;
-}
-
-/* Buttons */
-.slds-scrollable::-webkit-scrollbar-button:single-button,
-.slds-scrollable--x::-webkit-scrollbar-button:single-button,
-.slds-scrollable--y::-webkit-scrollbar-button:single-button,
-.spicecrm-scrollbar::-webkit-scrollbar-button:single-button,
-.spicecrm-scrollbar-thin::-webkit-scrollbar-button:single-button {
-    display: none;
-}
-
-.slds-modal__footer .slds-button-group .slds-button + .slds-button {
-    margin-left: 0px;
-}
-
-.cdk-drop-list-dragging .cdk-drag {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-/* Animate an item that has been dropped. */
-.cdk-drag-animating {
-    transition: transform 300ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.slds-drag--preview.cdk-drag-placeholder,
-.slds-kanban-drag--preview.cdk-drag-placeholder {
-    opacity: 0;
-}
-
-.cdk-drag-preview {
-    opacity: 0;
-}
-
-.slds-drag--preview.cdk-drag-preview {
-    opacity: 1;
-    box-sizing: border-box;
-    border-radius: 4px;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-    0 8px 10px 1px rgba(0, 0, 0, 0.14),
-    0 3px 14px 2px rgba(0, 0, 0, 0.12);
-    z-index: 11000 !important;
-}
-
-.slds-kanban-drag--preview.cdk-drag-preview {
-    opacity: 0.8;
-    box-sizing: border-box;
-    border-radius: 4px;
-    z-index: 11000 !important;
-}
-
-.slds-kanban-drag--preview.cdk-drag-preview .slds-tile {
-    transform: rotate(5deg);
-    transform-origin: 0 0;
-    background: #FAFAF9;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-    0 8px 10px 1px rgba(0, 0, 0, 0.14),
-    0 3px 14px 2px rgba(0, 0, 0, 0.12);
-    transition: 500ms;
-}
-
-.spice-free-drag-preview.cdk-drag-dragging {
-    opacity: 0.7;
-    z-index: 9999;
-    box-shadow: 4px 4px 5px 0;
-}
-
-.spice-free-drag-preview.cdk-drag-dragging:before {
-    content: ' ';
-    border-top: 2px solid var(--contrast-color);
-    border-left: 2px solid var(--contrast-color);
-    width: 10px;
-    height: 10px;
-    margin: -3px;
-}
-
-.spice-calendar-event {
-    padding-bottom: .125rem;
-    position: absolute;
-    display: block;
-}
-
-.spice-calendar-event-has-dark-color {
-    color: #fff;
-}
-
-.spice-calendar-event-has-dark-color:hover {
-    color: #eee;
-}
-
-.slds-utility-bar__item .cdk-drag-placeholder {
-    display: none;
-}
-
-.slds-utility-bar__item .cdk-drop-list-dragging {
-    background: var(--contrast-color);
-    color: #fff;
-}
-
-/* sticky headers */
-.spice-table_header-fixed thead th {
-    position: sticky;
-    top: 0px;
-    z-index: 1;
-    border-bottom: 1px solid #dddbda;
-}
-
-.spice-table_header-fixed tbody tr:first-child td,
-.spice-table_header-fixed tbody tr:first-child th {
-    border: 0;
-}
-
-/* sticky headers */
-.spice-table_footer-fixed tfoot,
-.spice-table_footer-fixed tfoot td {
-    position: sticky;
-    bottom: 0px;
-    z-index: 1;
-    border-top: 1px solid #dddbda;
-}
-
+/* in tabbed navigation: emphasize the active sub tab */
 .slds-sub-tabs__item.slds-active, .slds-sub-tabs__item.slds-is-open {
     background: rgba(155, 155, 155, .1) !important;
 }
 
+/* makes the placeholder of a <input> or <select> field distinguishable from the value(s) */
 ::placeholder {
     font-style: italic;
-    opacity: 1; /* Firefox */
+    opacity: 1; /* for firefox, because all placeholders in firefox have an opacity value applied to them */
 }
 
 /* spicetags */
-
-ul.spice-taglist li {
+.spice-taglist li {
     display: inline;
 }
-
-ul.spice-taglist {
+.spice-taglist {
     margin: 0 -0.5rem -0.5rem 0;
 }
-
-ul.spice-taglist span.slds-badge {
+.spice-taglist span.slds-badge {
     display: inline-block;
     margin: 0 0.5rem 0.5rem 0;
 }
 
+/* position an element vertically centered */
 .spice-vertically-centered {
     display: inline-block;
     top: 50%;
@@ -1330,89 +227,22 @@ ul.spice-taglist span.slds-badge {
     position: relative;
 }
 
+/* in tabbed navigation: make tab width suitable to the content (text and dropdown button) */
 .slds-context-bar__item_tab {
     width: initial;
 }
 
+/* tree items: stronger emphasis and left border in contrast color (instead brand primary) */
 .slds-tree [role=treeitem][aria-selected=true] > .slds-tree__item {
-    background: #ecebea;
-    box-shadow: var(--contrast-color) 4px 0 0 inset;
+    background: var(--color-gray-4);
+    box-shadow: var(--color-border-brand) 4px 0 0 inset;
 }
 
-/* for the sticky table header*/
-.slds-table--header-fixed thead th {
-    position: sticky;
-    top: 0px;
-    z-index: 50;
-    border-bottom: 1px solid #dddbda;
-}
-
+/* for tables: resizable columns */
 .slds-table th.slds-resizable {
     overflow: hidden;
     resize: horizontal;
     min-width: 75px;
-}
-
-.spice-calendar-drop-target {
-    display: block;
-    width: 100%;
-    height: 50%;
-}
-
-.spice-calendar-drop-target div {
-    cursor: initial;
-    visibility: hidden;
-    opacity: 0
-}
-.spice-calendar-drop-target:hover div {
-    cursor: pointer;
-    visibility: visible;
-    opacity: 1;
-    background-color: #f3f2f2;
-    text-align: center;
-}
-.slds-radio--button [type=radio]:checked+.slds-radio--button__label,
-.slds-radio--button [type=radio]:checked+.slds-radio--faux,
-.slds-radio--button [type=radio]:checked+.slds-radio_button__label,
-.slds-radio--button [type=radio]:checked+.slds-radio_faux,
-.slds-radio--button [type=radio]:checked~.slds-radio--faux,
-.slds-radio--button [type=radio]:checked~.slds-radio_faux,
-.slds-radio_button [type=radio]:checked+.slds-radio--button__label,
-.slds-radio_button [type=radio]:checked+.slds-radio--faux,
-.slds-radio_button [type=radio]:checked+.slds-radio_button__label,
-.slds-radio_button [type=radio]:checked+.slds-radio_faux,
-.slds-radio_button [type=radio]:checked~.slds-radio--faux,
-.slds-radio_button [type=radio]:checked~.slds-radio_faux {
-    background-color: var(--contrast-color);
-}
-
-
-
-.slds-radio--button [type=radio]:checked + .slds-radio--button__label:focus,
-.slds-radio--button [type=radio]:checked + .slds-radio--button__label:hover,
-.slds-radio--button [type=radio]:checked + .slds-radio--faux:focus,
-.slds-radio--button [type=radio]:checked + .slds-radio--faux:hover,
-.slds-radio--button [type=radio]:checked + .slds-radio_button__label:focus,
-.slds-radio--button [type=radio]:checked + .slds-radio_button__label:hover,
-.slds-radio--button [type=radio]:checked + .slds-radio_faux:focus,
-.slds-radio--button [type=radio]:checked + .slds-radio_faux:hover,
-.slds-radio--button [type=radio]:checked ~ .slds-radio--faux:focus,
-.slds-radio--button [type=radio]:checked ~ .slds-radio--faux:hover,
-.slds-radio--button [type=radio]:checked ~ .slds-radio_faux:focus,
-.slds-radio--button [type=radio]:checked ~ .slds-radio_faux:hover,
-.slds-radio_button [type=radio]:checked + .slds-radio--button__label:focus,
-.slds-radio_button [type=radio]:checked + .slds-radio--button__label:hover,
-.slds-radio_button [type=radio]:checked + .slds-radio--faux:focus,
-.slds-radio_button [type=radio]:checked + .slds-radio--faux:hover,
-.slds-radio_button [type=radio]:checked + .slds-radio_button__label:focus,
-.slds-radio_button [type=radio]:checked + .slds-radio_button__label:hover,
-.slds-radio_button [type=radio]:checked + .slds-radio_faux:focus,
-.slds-radio_button [type=radio]:checked + .slds-radio_faux:hover,
-.slds-radio_button [type=radio]:checked ~ .slds-radio--faux:focus,
-.slds-radio_button [type=radio]:checked ~ .slds-radio--faux:hover,
-.slds-radio_button [type=radio]:checked ~ .slds-radio_faux:focus,
-.slds-radio_button [type=radio]:checked ~ .slds-radio_faux:hover {
-    background-color: #b5181e;
 }
 
 .spice-collapsible-tab-grow {
@@ -1438,13 +268,14 @@ ul.spice-taglist span.slds-badge {
     min-height: 0;
 }
 
+/* mark an element as selected (not only slds boxes) */
 .spice-box-is-selected {
     background-color: #e6e5e5;
     box-shadow: 0 0 1px #777;
     border-radius: .2rem;
 }
 
-/* Vertical button groups */
+/* arrange a button group vertical */
 .spice-button-group-vertical .slds-button:first-child:not(:last-child) {
     border-radius: 0.25rem 0.25rem 0 0;
 }
@@ -1465,69 +296,20 @@ ul.spice-taglist span.slds-badge {
     margin-left: 0;
 }
 
-.spice-google-maps-legend {
-    margin-right: 60px;
-    width: 200px;
-    min-height: 200px;
-    background-color: #fff;
-    box-shadow: 0 0 8px #999;
-    display: flex;
-    flex-direction: column;
-    height: calc(100% - 30px);
-    top: 10px;
-}
-
-.spice-google-maps-legend-color-box {
-    width: 24px;
-    height: 100%;
-    text-align: center;
-    line-height: 24px;
-    font-size: 1rem;
-    color: #fff;
-}
-
-.spice-google-maps-control-recenter {
-    background-color: #fff;
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: #0000004d 0 1px 4px -1px;
-    cursor: pointer;
-}
-
-.spice-google-maps-control-recenter-icon {
-    background-image: url(//maps.gstatic.com/tactile/mylocation/mylocation-sprite-2x.png);
-    background-position: 0 0;
-    background-size: 180px 18px;
-    width: 18px;
-    height: 18px;
-    transform: scale(1.3);
-}
-
+/* radio button groups: white color for icons in radio buttons */
 .slds-radio_button-group .slds-radio_button [type=radio]:checked + label svg {
-    fill: #fff;
+    fill: var(--color-white);
 }
 
-.quill-rich-text-editor-view-container .ql-editor {
-    padding: 0 !important;
+field-generic-display .slds-button--icon {
+    color: var(--color-grey-3);
 }
 
-.quill-rich-text-editor-view-container .ql-container {
-    border: 0 !important;
+/* required for replaced colors to manage design */
+.slds-button {
+    color: var(--color-grey-9);
 }
 
-.ql-formats:not(:last-child){
-    border-right: 1px solid #999;
-    margin-right: 5px;
-    padding-right: 5px;
-}
-
-.ql-container {
-    -webkit-box-flex: 1;
-    -ms-flex-positive: 1;
-    flex-grow: 1;
-    min-height: 0;
+.slds-button.slds-button--brand {
+    color: var(--color-white);
 }

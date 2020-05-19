@@ -61,6 +61,8 @@ import /*embed*/ {SystemInputMultiEnum} from "./components/systeminputmultienum"
 import /*embed*/ {SystemInputInteger} from "./components/systeminputinteger";
 import /*embed*/ {SystemInputActionset} from "./components/systeminputactionset";
 import /*embed*/ {SystemInputComponentset} from "./components/systeminputcomponentset";
+import /*embed*/ {SystemInputCountry} from "./components/systeminputcountry";
+import /*embed*/ {SystemInputCountryCode} from "./components/systeminputcountrycode";
 import /*embed*/ {SystemInputDatePicker} from "./components/systeminputdatepicker";
 import /*embed*/ {SystemInputDate} from "./components/systeminputdate";
 import /*embed*/ {SystemInputDelayed} from "./components/systeminputdelayed";
@@ -74,6 +76,7 @@ import /*embed*/ {SystemInputPassword} from "./components/systeminputpassword";
 import /*embed*/ {SystemInputRadio} from "./components/systeminputradio";
 import /*embed*/ {SystemInputRadioButtonGroup} from "./components/systeminputradiobuttongroup";
 import /*embed*/ {SystemInputRelate} from "./components/systeminputrelate";
+import /*embed*/ {SystemInputState} from "./components/systeminputstate";
 import /*embed*/ {SystemInputTags} from "./components/systeminputtags";
 import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
 import /*embed*/ {SystemInputCompanycodes} from "./components/systeminputcompanycodes";
@@ -201,6 +204,8 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemInputMultiEnum,
         SystemInputActionset,
         SystemInputComponentset,
+        SystemInputCountry,
+        SystemInputCountryCode,
         SystemInputDate,
         SystemInputDatePicker,
         SystemInputDelayed,
@@ -214,6 +219,7 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemInputRadio,
         SystemInputRadioButtonGroup,
         SystemInputRelate,
+        SystemInputState,
         SystemInputTags,
         SystemInputTime,
         SystemInputCompanycodes,
@@ -325,6 +331,8 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemInputMultiEnum,
         SystemInputActionset,
         SystemInputComponentset,
+        SystemInputCountry,
+        SystemInputCountryCode,
         SystemInputDate,
         SystemInputDatePicker,
         SystemInputDelayed,
@@ -338,6 +346,7 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemInputRadio,
         SystemInputRadioButtonGroup,
         SystemInputRelate,
+        SystemInputState,
         SystemInputTags,
         SystemInputTime,
         SystemInputCompanycodes,
@@ -394,7 +403,8 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemImageModal,
         SystemNavigationCollector,
         SystemNavigationManager,
-        SystemComponentContainer,
+        SystemInputCountry,
+        SystemInputState,
     ]
 })
 export class SystemComponents {
