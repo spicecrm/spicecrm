@@ -1,0 +1,15 @@
+<div *ngIf="!loading" class="slds-p-around--medium">
+    <div class="slds-grid slds-grid--align-spread">
+        <h2 class="slds-text-heading--medium ">
+            <system-label [label]="'LBL_CURRENCY'"></system-label>
+        </h2>
+
+    </div>
+
+    <div class="slds-p-vertical--small">
+        <system-currency [currencies]="currencies"></system-currency>
+    </div>
+    <add-currency-item (new)="reload($event)"></add-currency-item>
+    <currency-list [currencies]="currencies"></currency-list>
+</div>
+
