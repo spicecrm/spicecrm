@@ -120,37 +120,13 @@ export class PriceConditionsByDetermination {
         });
     }
 
+    /**
+     * sets the active determination type
+     *
+     * @param determinationtypeid
+     */
     private setDeterminationType(determinationtypeid) {
         this.activedeterminationtype = determinationtypeid;
-    }
-
-
-    /**
-     * gets the name for the condition
-     *
-     * @param priceconditiontype_id
-     */
-    private getDeterminationTypeName(determinationtype_id) {
-        if (this.priceconditonsconfiguration.config.conditiontypes) {
-            let ct = this.priceconditonsconfiguration.config.determinations.find(t => t.id == determinationtype_id);
-            if (ct) return ct.name;
-        }
-
-        return determinationtype_id;
-    }
-
-    /**
-     * gets the label for the condition
-     *
-     * @param priceconditiontype_id
-     */
-    private getDeterminationTypeLabel(determinationtype_id) {
-        if (this.priceconditonsconfiguration.config.conditiontypes) {
-            let ct = this.priceconditonsconfiguration.config.determinations.find(t => t.id == determinationtype_id);
-            if (ct) return ct.label ? ct.label : ct.name;
-        }
-
-        return determinationtype_id;
     }
 
     /**
