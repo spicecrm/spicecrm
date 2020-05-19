@@ -107,7 +107,7 @@ export class PriceConditionsByDetermination {
             for(let determinationtype of determinationtypes){
                 this.determinationtypes.push(this.priceconditonsconfiguration.config.determinations.find(d => d.id == determinationtype));
             }
-            this.determinationtypes.sort((a, b) => a > b ? 1 : -1);
+            this.determinationtypes.sort((a, b) => a.sortindex > b.sortindex ? 1 : -1);
 
 
             // set the first one to active
