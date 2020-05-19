@@ -1,43 +1,64 @@
 /**
  * @module ModuleACLTerritories
  */
-import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {model} from '../../../services/model.service';
-import {modellist} from '../../../services/modellist.service';
+import {Component} from '@angular/core';
 import {backend} from '../../../services/backend.service';
-import {navigation} from '../../../services/navigation.service';
-import {broadcast} from "../../../services/broadcast.service";
+import {navigationtab} from '../../../services/navigationtab.service';
+import {language} from '../../../services/language.service';
 
-
+/**
+ * a manager component in the admin section for the sales territories
+ */
 @Component({
     templateUrl: './src/modules/aclterritories/templates/aclterritorriesmanager.html',
 })
 export class ACLTerritorriesManager {
 
-    @ViewChild('managercontent', {read: ViewContainerRef, static: true}) elementmanagercontent: ViewContainerRef;
 
-    activeTerritoryId: string = '';
-    activeTerritoryData: any = {};
-    activeTerritoryType: string = '';
+    /**
+     * the id of the current active territory
+     */
+    private activeTerritoryId: string = '';
 
-    constructor(private backend: backend, private navigation: navigation, private elementRef: ElementRef) {
+    /**
+     * the data of the current active territory
+     */
+    private activeTerritoryData: any = {};
 
+    /**
+     * the currently active territory type
+     */
+    private activeTerritoryType: string = '';
+
+    constructor(private language: language, private navigationtab: navigationtab, private backend: backend) {
+        this.setTabTitle();
     }
 
-    get contentStyle(){
-        let rect = this.elementmanagercontent.element.nativeElement.getBoundingClientRect();
-        return {
-            height: 'calc(100vh - ' + rect.top + 'px'
-        }
+    /**
+     * sets the tab title
+     */
+    private setTabTitle() {
+        this.navigationtab.setTabInfo({
+            displayicon: 'settings',
+            displayname: this.language.getLabel('LBL_SPICEACLTERRITORIES')
+        });
     }
 
-    setTerritory(territory){
+    /**
+     * listens to the change event on the territories list
+     *
+     * @param territory
+     */
+    private setTerritory(territory){
         this.activeTerritoryId = territory.id;
         this.activeTerritoryData = territory;
     }
 
-    setType(type){
+    /**
+     * listens to the change event on the territories selector
+     * @param type
+     */
+    private setType(type){
         this.activeTerritoryType = type;
     }
 

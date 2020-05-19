@@ -1,0 +1,13 @@
+<div class="slds-grid slds-grid--align-spread slds-grid--vertical-align-center slds-border--bottom">
+    <h4 class="slds-tree__group-header slds-p-around--x-small "><system-label label="LBL_SEGMENT_DETAILS"></system-label></h4>
+    <system-utility-icon class="slds-p-horizontal--x-small" *ngIf="segment" (click)="delete($event)" icon="delete" size="x-small"></system-utility-icon>
+</div>
+<div *ngIf="segment" system-to-bottom class="slds-p-around--x-small slds-border--left" >
+    <sapidocs-manager-segment-details-segmentrelation></sapidocs-manager-segment-details-segmentrelation>
+    <sapidocs-manager-segment-details-segment></sapidocs-manager-segment-details-segment>
+    <sapidocs-manager-segment-details-fields style="height: 50%;"></sapidocs-manager-segment-details-fields>
+    <sapidocs-manager-segment-details-field system-to-bottom></sapidocs-manager-segment-details-field>
+</div>
+<div *ngIf="!segment" class="slds-align--absolute-center slds-border--left" system-to-bottom>
+    <system-label label="LBL_SELECT_SEGMENT"></system-label>
+</div>

@@ -1,0 +1,161 @@
+/**
+ * @module ModulePriceConditions
+ */
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {animate, state, style, transition, trigger} from "@angular/animations";
+import {metadata} from '../../../services/metadata.service';
+import {model} from '../../../services/model.service';
+import {backend} from '../../../services/backend.service';
+import {language} from '../../../services/language.service';
+import {configurationService} from '../../../services/configuration.service';
+
+import {priceconditonsconfiguration} from '../services/priceconditonsconfiguration.service';
+
+declare var _: any;
+
+@Component({
+    templateUrl: './src/modules/priceconditions/templates/priceconditionsaccountspanel.html',
+    providers: [priceconditonsconfiguration],
+    animations: [
+        trigger('conditionscard', [
+            transition(':enter', [
+                style({opacity: 0, height: '0px', overflow: 'hidden'}),
+                animate('.5s', style({height: '*', opacity: 1})),
+                style({overflow: 'unset'})
+            ]),
+            transition(':leave', [
+                style({overflow: 'hidden'}),
+                animate('.5s', style({height: '0px', opacity: 0}))
+            ])
+        ]),
+        trigger('animateicon', [
+            state('open', style({ transform: 'scale(1, 1)'})),
+            state('closed', style({ transform: 'scale(1, -1)'})),
+            transition('open => closed', [
+                animate('.5s'),
+            ]),
+            transition('closed => open', [
+                animate('.5s'),
+            ])
+        ])
+    ]
+})
+export class PriceConditionsAccountsPanel implements OnInit {
+
+    /**
+     * inidcates that the panel is loading
+     */
+    private loading: boolean = true;
+
+    /**
+     * all loaded conditions
+     */
+    private conditions: any[] = [];
+
+    /**
+     * the list of conditiontypes
+     */
+    private conditiontypes: any[] = [];
+
+    /**
+     * the current active condition type
+     */
+    private activeconditiontype: string;
+
+    /**
+     * for the collapsible panel if the panel is open
+     */
+    private _isopen: boolean = true;
+
+    constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private backend: backend, private configuration: configurationService, private priceconditonsconfiguration: priceconditonsconfiguration) {
+    }
+
+    public ngOnInit(): void {
+        this.loadConditions();
+    }
+
+    /**
+     * toggle Open or Close the panel
+     */
+    private toggleOpen(e: MouseEvent) {
+        e.stopPropagation();
+        this._isopen = !this._isopen;
+    }
+
+
+    /**
+     * loads the conditions for the accounnt on the backend
+     */
+    private loadConditions() {
+        this.backend.getRequest(`module/PriceConditions/list/${this.model.module}/${this.model.id}`).subscribe(conditions => {
+            this.conditions = conditions;
+
+            // determine the conditiontypes we have
+            /**
+             for (let condition of conditions) {
+                if (this.conditiontypes.indexOf(condition.priceconditiontype_id) < 0) {
+                    this.conditiontypes.push(condition.priceconditiontype_id);
+                }
+            }*/
+
+
+            this.conditiontypes = _.uniq(this.conditions.map(d => d.priceconditiontype_id));
+
+            // set the first one to active
+            if (this.conditiontypes.length > 0) {
+                this.setConditionType(this.conditiontypes[0]);
+            }
+
+            // set loading to false
+            this.loading = false;
+        });
+    }
+
+    private setConditionType(conditiontypeid) {
+        this.activeconditiontype = conditiontypeid;
+    }
+
+    /**
+     * gets the name for the condition
+     *
+     * @param priceconditiontype_id
+     */
+    private getConditionTypeName(priceconditiontype_id) {
+        if (this.priceconditonsconfiguration.config.conditiontypes) {
+            let ct = this.priceconditonsconfiguration.config.conditiontypes.find(t => t.id == priceconditiontype_id);
+            if (ct) return ct.name;
+        }
+
+        return priceconditiontype_id;
+    }
+
+    /**
+     * gets the label for the condition
+     *
+     * @param priceconditiontype_id
+     */
+    private getConditionTypeLabel(priceconditiontype_id) {
+        if (this.priceconditonsconfiguration.config.conditiontypes) {
+            let ct = this.priceconditonsconfiguration.config.conditiontypes.find(t => t.id == priceconditiontype_id);
+            if (ct) return ct.label ? ct.label : ct.name;
+        }
+
+        return priceconditiontype_id;
+    }
+
+    /**
+     * a helper to get if we have related models and the state is open
+     */
+    get isopen() {
+        return this._isopen;
+    }
+
+    get activedeterminations() {
+        return _.uniq(this.conditions.filter(c => c.priceconditiontype_id == this.activeconditiontype).map(d => d.priceconditiontypedetermination_id));
+    }
+
+    private conditonsForDeterminationId(determinationid) {
+        return this.conditions.filter(c => c.priceconditiontype_id == this.activeconditiontype && c.priceconditiontypedetermination_id == determinationid);
+    }
+}

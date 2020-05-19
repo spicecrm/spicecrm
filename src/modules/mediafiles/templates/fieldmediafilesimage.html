@@ -3,5 +3,5 @@
     <img *ngIf="value" [src]="'data:image/jpg;base64,'+value">
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-m-vertical--xx-small" [ngClass]="css_classes">
-    <system-input-media [(ngModel)]="value" class="slds-height_full"></system-input-media>
+    <system-input-media [(ngModel)]="value" class="slds-height_full" [mimetype]="'image/jpeg'"></system-input-media>
 </div>

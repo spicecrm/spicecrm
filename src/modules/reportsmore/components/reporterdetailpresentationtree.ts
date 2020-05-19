@@ -78,7 +78,10 @@ export class ReporterDetailPresentationTree extends ReporterDetailPresentationSt
                 this.fieldsData[column.dataIndex] = column;
 
                 if (treeStopReached) {
-                    this.treeDisplayFields.push(column);
+                    // KPP-124 do not display hidden fields in tree
+                    if(column.hidden !== true) {
+                        this.treeDisplayFields.push(column);
+                    }
                 } else {
                     this.groupFields.push(column);
                 }

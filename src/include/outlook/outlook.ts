@@ -58,6 +58,7 @@ import {cookie} from "../../services/cookie.service";
 import {VersionManagerService} from "../../services/versionmanager.service";
 import {modal} from "../../services/modal.service";
 import {layout} from "../../services/layout.service";
+import {telephony} from "../../services/telephony.service";
 import {loggerService} from "../../services/logger.service";
 import {SystemDynamicRouteInterceptor} from "../../systemcomponents/components/systemdynamicrouteinterceptor";
 
@@ -74,11 +75,11 @@ import /*embed*/ {OutlookPane} from './components/outlookpane';
 import /*embed*/ {OutlookPaneFooter} from './components/outlookpanefooter';
 import /*embed*/ {OutlookSettingsPane} from './components/outlooksettingspane';
 import /*embed*/ {OutlookLoginPane} from "./components/outlookloginpane";
-import /*embed*/ {OutlookMeetingEditPane} from "./components/outlookmeetingeditpane";
-import /*embed*/ {OutlookMeetingReadPane} from "./components/outlookmeetingreadpane";
-import /*embed*/ {OutlookMeetingAddContainer} from "./components/outlookmeetingaddcontainer";
-import /*embed*/ {OutlookMeetingViewContainer} from "./components/outlookmeetingviewcontainer";
-import /*embed*/ {OutlookMeetingEditContainer} from "./components/outlookmeetingeditcontainer";
+import /*embed*/ {OutlookCalendarItemEditPane} from "./components/outlookcalendaritemeditpane";
+import /*embed*/ {OutlookCalendarItemReadPane} from "./components/outlookcalendaritemreadpane";
+import /*embed*/ {OutlookCalendarItemAddContainer} from "./components/outlookcalendaritemaddcontainer";
+import /*embed*/ {OutlookCalendarItemViewContainer} from "./components/outlookcalendaritemviewcontainer";
+import /*embed*/ {OutlookCalendarItemEditContainer} from "./components/outlookcalendaritemeditcontainer";
 
 declare var Office: any;
 
@@ -104,11 +105,11 @@ declare var Office: any;
         OutlookPaneFooter,
         OutlookSettingsPane,
         OutlookLoginPane,
-        OutlookMeetingEditPane,
-        OutlookMeetingReadPane,
-        OutlookMeetingAddContainer,
-        OutlookMeetingViewContainer,
-        OutlookMeetingEditContainer
+        OutlookCalendarItemEditPane,
+        OutlookCalendarItemReadPane,
+        OutlookCalendarItemAddContainer,
+        OutlookCalendarItemViewContainer,
+        OutlookCalendarItemEditContainer
     ],
     bootstrap: [OutlookPane],
     providers: [
@@ -141,6 +142,7 @@ declare var Office: any;
         footer,
         userpreferences,
         cookie,
+        telephony,
         MathExpressionCompilerService,
         VersionManagerService,
         modal,

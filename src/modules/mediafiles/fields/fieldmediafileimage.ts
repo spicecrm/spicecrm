@@ -191,7 +191,7 @@ export class fieldMediaFileImage extends fieldGeneric implements OnInit, AfterVi
      */
     private getImage(): void {
 
-        this.mediafiles.getMediaFile( 1, '', this.fieldconfig.noImagePicker || false, this.fieldconfig.noMetaData || false, this.fieldconfig.category ).subscribe( (answer) => {
+        this.mediafiles.getMediaFile( this.fieldconfig.noImagePicker || false, this.fieldconfig.noMetaData || false, this.fieldconfig.category ).subscribe( (answer) => {
             if ( answer ) {
                 this.value = answer;
                 this.loadImages();

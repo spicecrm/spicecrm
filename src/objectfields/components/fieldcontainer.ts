@@ -16,7 +16,7 @@ export class fieldContainer implements AfterViewInit {
 
     @Input() private field: string;
     @Input() private fieldconfig: any = {};
-    @Input() private fielddisplayclass = 'slds-text-body--regular slds-truncate slds-m-vertical--small spicecrm-fieldbody';
+    @Input() private fielddisplayclass = 'slds-text-body--regular slds-truncate slds-m-vertical--small spice-fieldbody';
 
     constructor(
         protected model: model,

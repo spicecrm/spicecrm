@@ -13,7 +13,7 @@
                 </li>
             </ul>
             <div *ngIf="activeTab == 'tree'" class="slds-tabs--default__content slds-show slds-p-vertical--none" role="tabpanel" style="background-color: #fafaf9">
-                <div [ngStyle]="treeContainerStyle" class="slds-scrollable--y spicecrm-scrollbar">
+                <div [ngStyle]="treeContainerStyle" class="slds-scrollable--y spice-scrollbar">
                     <system-tree
                             *ngIf="selectedBook && documents.length > 0 && !isLoading"
                             [sourceList]="documents"
@@ -22,7 +22,7 @@
                     <div *ngIf="isLoading && selectedBook" class="slds-m-top--small">
                         <system-spinner></system-spinner>
                     </div>
-                    <div *ngIf="selectedBook && documents.length == 0 && !isLoading" class="slds-align--absolute-center spice-h-full slds-text-heading--medium">
+                    <div *ngIf="selectedBook && documents.length == 0 && !isLoading" class="slds-align--absolute-center slds-height_full slds-text-heading--medium">
                         <span><system-label label="MSG_NO_RECORDS_FOUND"></system-label></span>
                     </div>
                 </div>

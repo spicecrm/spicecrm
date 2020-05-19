@@ -121,6 +121,7 @@ export class GlobalNavigationTabbedSubtabs implements OnDestroy {
         let totalWidth = window.innerWidth - left;
 
         // get the width of the more item
+        this.subMenuMore.elementRef.nativeElement.classList.remove('slds-hide');
         this.subMenuMore.elementRef.nativeElement.classList.add('slds-hidden');
         this.subMenuMore.moreObjects = [];
         let moreWidth = this.subMenuMore.tabWidth;
@@ -135,7 +136,7 @@ export class GlobalNavigationTabbedSubtabs implements OnDestroy {
         this.subMenuTabs.forEach((thisItem, itemIndex) => {
             let itemwidth = thisItem.elementRef.nativeElement.getBoundingClientRect().width;
             usedWidth += itemwidth;
-            if (usedWidth > totalWidth - moreWidth) {
+            if (showmore || (itemIndex + 1 == this.subMenuTabs.length && usedWidth > totalWidth) || (itemIndex + 1 < this.subMenuTabs.length &&  usedWidth > totalWidth - moreWidth)) {
                 // special handling for last element
                 // if (showmore || itemIndex + 1 < this.menuTabs.length || itemwidth < moreWidth) {
                 thisItem.elementRef.nativeElement.classList.add('slds-hide');
@@ -150,6 +151,8 @@ export class GlobalNavigationTabbedSubtabs implements OnDestroy {
 
         if (showmore) {
             this.subMenuMore.elementRef.nativeElement.classList.remove('slds-hidden');
+        } else {
+            this.subMenuMore.elementRef.nativeElement.classList.add('slds-hide');
         }
 
         return true;
