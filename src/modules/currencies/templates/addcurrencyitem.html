@@ -1,0 +1,31 @@
+<div class="slds-p-vertical--small">
+    <h2 class="slds-text-title--caps"><system-label [label]="'LBL_ADD'"></system-label></h2>
+</div>
+<div class="slds-grid slds-grid--align-spread slds-p-vertical--xx-small slds-">
+    <div class="slds-form-element">
+        <system-label [label]="'LBL_NAME'"></system-label>
+        <div class="slds-form-element__control">
+            <input type="text" class="slds-input" [(ngModel)]="name"/>
+        </div>
+    </div>
+    <div class="slds-form-element">
+        <system-label [label]="'LBL_ISO'"></system-label>
+        <div class="slds-form-element__control">
+            <input type="text" class="slds-input" [(ngModel)]="iso"/>
+        </div>
+    </div>
+    <div class="slds-form-element">
+        <system-label [label]="'LBL_SYMBOL'"></system-label>
+        <div class="slds-form-element__control">
+            <input type="text" class="slds-input" [(ngModel)]="symbol"/>
+        </div>
+    </div>
+    <div class="slds-form-element">
+        <system-label [label]="'LBL_CONVERSION_RATE'"></system-label>
+        <div class="slds-form-element__control">
+            <input type="text" class="slds-input" [(ngModel)]="conversion_rate"/>
+        </div>
+    </div>
+    <button class="slds-button slds-button-icon slds-m-right_x-small" (click)="addCurrencyItem()"><system-button-icon icon="add"></system-button-icon></button>
+</div>
+

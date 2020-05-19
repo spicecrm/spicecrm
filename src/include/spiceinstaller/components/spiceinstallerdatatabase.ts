@@ -43,6 +43,9 @@ export class SpiceInstallerDatabase {
             case 'pgsql' :
                 this.spiceinstaller.db_manager = 'PostgreSQLManager';
                 break;
+            case 'sqlsrv':
+                this.spiceinstaller.db_manager = 'SqlsrvManager';
+                break;
         }
 
         let body = {

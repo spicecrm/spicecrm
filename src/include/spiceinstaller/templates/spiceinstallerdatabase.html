@@ -12,7 +12,7 @@
             </div>
         </div>
     </div>
-    <div *ngIf="spiceinstaller.db_type == 'mysql'">
+    <div *ngIf="spiceinstaller.db_type != 'pgsql'">
         <spice-installer-mysqli></spice-installer-mysqli>
     </div>
     <div *ngIf="spiceinstaller.db_type == 'pgsql'">
