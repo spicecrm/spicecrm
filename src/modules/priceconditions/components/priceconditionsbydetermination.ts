@@ -54,11 +54,6 @@ export class PriceConditionsByDetermination {
     private conditions: any[] = [];
 
     /**
-     * the list of conditiontypes
-     */
-    private conditiontypes: any[] = [];
-
-    /**
      * the list of determinationtypes
      */
     private determinationtypes: any[] = [];
@@ -107,12 +102,17 @@ export class PriceConditionsByDetermination {
             }*/
 
 
-            this.conditiontypes = _.uniq(this.conditions.map(d => d.priceconditiontype_id));
-            this.determinationtypes = _.uniq(this.conditions.map(d => d.priceconditiontypedetermination_id));
+            this.determinationtypes = [];
+            let determinationtypes = _.uniq(this.conditions.map(d => d.priceconditiontypedetermination_id));
+            for(let determinationtype of determinationtypes){
+                this.determinationtypes.push(this.priceconditonsconfiguration.config.determinations.find(d => d.id == determinationtype));
+            }
+            this.determinationtypes.sort((a, b) => a > b ? 1 : -1);
+
 
             // set the first one to active
             if (this.determinationtypes.length > 0) {
-                this.setDeterminationType(this.determinationtypes[0]);
+                this.setDeterminationType(this.determinationtypes[0].id);
             }
 
             // set loading to false
@@ -124,33 +124,6 @@ export class PriceConditionsByDetermination {
         this.activedeterminationtype = determinationtypeid;
     }
 
-    /**
-     * gets the name for the condition
-     *
-     * @param priceconditiontype_id
-     */
-    private getConditionTypeName(priceconditiontype_id) {
-        if (this.priceconditonsconfiguration.config.conditiontypes) {
-            let ct = this.priceconditonsconfiguration.config.conditiontypes.find(t => t.id == priceconditiontype_id);
-            if (ct) return ct.name;
-        }
-
-        return priceconditiontype_id;
-    }
-
-    /**
-     * gets the label for the condition
-     *
-     * @param priceconditiontype_id
-     */
-    private getConditionTypeLabel(priceconditiontype_id) {
-        if (this.priceconditonsconfiguration.config.conditiontypes) {
-            let ct = this.priceconditonsconfiguration.config.conditiontypes.find(t => t.id == priceconditiontype_id);
-            if (ct) return ct.label ? ct.label : ct.name;
-        }
-
-        return priceconditiontype_id;
-    }
 
     /**
      * gets the name for the condition

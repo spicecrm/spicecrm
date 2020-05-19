@@ -15,14 +15,14 @@
         </header>
     </div>
     <div @conditionscard *ngIf="isopen">
-        <div *ngIf="!loading && conditiontypes.length > 0; else noconditions" class="slds-card__body slds-size--1-of-1">
+        <div *ngIf="!loading && determinationtypes.length > 0; else noconditions" class="slds-card__body slds-size--1-of-1">
             <div class="slds-vertical-tabs">
                 <ul class="slds-vertical-tabs__nav" role="tablist" aria-orientation="vertical">
-                    <li *ngFor="let determinationtype of determinationtypes" class="slds-vertical-tabs__nav-item" role="presentation" [ngClass]="{'slds-is-active': determinationtype == activedeterminationtype}" (click)="setDeterminationType(determinationtype)">
+                    <li *ngFor="let determinationtype of determinationtypes" class="slds-vertical-tabs__nav-item" role="presentation" [ngClass]="{'slds-is-active': determinationtype.id == activedeterminationtype}" (click)="setDeterminationType(determinationtype.id)">
                         <a class="slds-vertical-tabs__link" href="javascript:void(0)" role="tab" tabindex="0"
                            aria-selected="true" aria-controls="slds-vertical-tabs-0" id="slds-vertical-tabs-0__nav">
                             <span class="slds-vertical-tabs__left-icon"></span>
-                            <span class="slds-truncate"><system-label [label]="getDeterminationTypeLabel(determinationtype)"></system-label>&nbsp;({{getDeterminationTypeName(determinationtype)}})</span>
+                            <span class="slds-truncate"><system-label [label]="determinationtype.label"></system-label>&nbsp({{determinationtype.name}})</span>
                             <span class="slds-vertical-tabs__right-icon"></span>
                         </a>
                     </li>
