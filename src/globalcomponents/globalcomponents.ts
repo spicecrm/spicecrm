@@ -26,6 +26,7 @@ import {VersionManagerService} from "../services/versionmanager.service";
 
 import /*embed*/ {MenuService} from "./services/menu.service";
 
+import /*embed*/ {GlobalCopyright} from "./components/globalcopyright";
 import /*embed*/ {GlobalHeader} from "./components/globalheader";
 import /*embed*/ {GlobalHeaderTop} from "./components/globalheadertop";
 import /*embed*/ {GlobalHeaderSearch} from "./components/globalheadersearch";
@@ -125,6 +126,7 @@ import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
         ])
     ],
     declarations: [
+        GlobalCopyright,
         GlobalNewsFeed,
         GlobalNewsFeedItem,
         GlobalHeader,
@@ -196,6 +198,7 @@ import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
         GlobalLoginImage
     ],
     entryComponents: [
+        GlobalCopyright,
         GlobalHeader,
         GlobalNavigationMenuItem,
         GlobalNavigationMenuItemNew,
@@ -210,6 +213,7 @@ import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
         GlobalDockedComposer,
         GlobalDockedComposerContainer],
     exports: [
+        GlobalCopyright,
         GlobalNewsFeed,
         GlobalHeader,
         GlobalFooter,
