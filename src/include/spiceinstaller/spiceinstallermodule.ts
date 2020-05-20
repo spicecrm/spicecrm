@@ -6,7 +6,7 @@ import {FormsModule}   from "@angular/forms";
 import {DirectivesModule} from "../../directives/directives";
 import {NgModule} from "@angular/core";
 import {RouterModule} from "@angular/router";
-import {spiceinstaller} from "./services/spiceinstaller.service";
+import /*embed*/ {spiceinstaller} from "./services/spiceinstaller.service";
 import {VersionManagerService} from "../../services/versionmanager.service";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
