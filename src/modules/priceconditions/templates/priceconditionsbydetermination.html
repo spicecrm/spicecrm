@@ -1,4 +1,4 @@
-<div class="slds-vertical-tabs">
+<div class="slds-vertical-tabs slds-m-around--x-small" style="min-height: 300px;">
     <ul class="slds-vertical-tabs__nav" role="tablist" aria-orientation="vertical">
         <li *ngFor="let determinationtype of determinationtypes" class="slds-vertical-tabs__nav-item" role="presentation" [ngClass]="{'slds-is-active': determinationtype.id == activedeterminationtype}" (click)="setDeterminationType(determinationtype.id)">
             <a class="slds-vertical-tabs__link" href="javascript:void(0)" role="tab" tabindex="0"

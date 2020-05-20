@@ -22,14 +22,14 @@
             </div>
         </header>
     </div>
-    <div @conditionscard *ngIf="isopen" style="min-height: 300px;">
-        <div *ngIf="!loading && conditions.length > 0; else noconditions" class="slds-card__body slds-size--1-of-1">
+    <div @conditionscard *ngIf="isopen">
+        <div *ngIf="!loading && conditions.length > 0; else noconditions" class="slds-card__body slds-height_full slds-size--1-of-1">
             <price-conditions-by-condition *ngIf="activeView=='condition'" [conditions]="conditions"></price-conditions-by-condition>
             <price-conditions-by-determination *ngIf="activeView=='determination'" [conditions]="conditions"></price-conditions-by-determination>
         </div>
         <ng-template #noconditions>
-            <div class="slds-p-around--large slds-align--absolute-center" [system-overlay-loading-spinner]="loading">
-                <system-illustration-no-records></system-illustration-no-records>
+            <div class="slds-p-around--large slds-height_full slds-align--absolute-center" style="min-height: 300px;" [system-overlay-loading-spinner]="loading">
+                <system-illustration-no-records *ngIf="!loading"></system-illustration-no-records>
             </div>
         </ng-template>
     </div>
