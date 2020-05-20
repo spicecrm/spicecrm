@@ -12,25 +12,20 @@
                 </h2>
                 <system-utility-icon class="slds-m-horizontal--xx-small" icon="up" size="x-small" (click)="toggleOpen($event)" [@animateicon]="isopen? 'open' : 'closed'"></system-utility-icon>
             </div>
-        </header>
-    </div>
-    <div @conditionscard *ngIf="isopen">
-        <div *ngIf="!loading && conditiontypes.length > 0; else noconditions" class="slds-card__body slds-size--1-of-1">
-            <div class="slds-vertical-tabs">
-                <ul class="slds-vertical-tabs__nav" role="tablist" aria-orientation="vertical">
-                    <li *ngFor="let conditiontype of conditiontypes" class="slds-vertical-tabs__nav-item" role="presentation" [ngClass]="{'slds-is-active': conditiontype == activeconditiontype}" (click)="setConditionType(conditiontype)">
-                        <a class="slds-vertical-tabs__link" href="javascript:void(0)" role="tab" tabindex="0"
-                           aria-selected="true" aria-controls="slds-vertical-tabs-0" id="slds-vertical-tabs-0__nav">
-                            <span class="slds-vertical-tabs__left-icon"></span>
-                            <span class="slds-truncate"><system-label [label]="getConditionTypeLabel(conditiontype)"></system-label>&nbsp;({{getConditionTypeName(conditiontype)}})</span>
-                            <span class="slds-vertical-tabs__right-icon"></span>
-                        </a>
-                    </li>
-                </ul>
-                <div class="slds-vertical-tabs__content slds-show slds-p-around--xx-small" role="tabpanel" aria-labelledby="slds-vertical-tabs-0__nav">
-                    <price-conditions-conditions-list *ngFor="let determination of activedeterminations" [determinationid]="determination" [conditiontypeid]="activeconditiontype" [conditions]="conditonsForDeterminationId(determination)"></price-conditions-conditions-list>
+            <div *ngIf="!loading && conditions.length > 0" class="slds-form-element__control">
+                <div class="slds-form-element">
+                    <select [(ngModel)]="activeView" class="slds-select">
+                        <option value="determination"><system-label label="LBL_DETERMINATION"></system-label></option>
+                        <option value="condition"><system-label label="LBL_CONDITION"></system-label></option>
+                    </select>
                 </div>
             </div>
+        </header>
+    </div>
+    <div @conditionscard *ngIf="isopen" style="min-height: 300px;">
+        <div *ngIf="!loading && conditions.length > 0; else noconditions" class="slds-card__body slds-size--1-of-1">
+            <price-conditions-by-condition *ngIf="activeView=='condition'" [conditions]="conditions"></price-conditions-by-condition>
+            <price-conditions-by-determination *ngIf="activeView=='determination'" [conditions]="conditions"></price-conditions-by-determination>
         </div>
         <ng-template #noconditions>
             <div class="slds-p-around--large slds-align--absolute-center" [system-overlay-loading-spinner]="loading">

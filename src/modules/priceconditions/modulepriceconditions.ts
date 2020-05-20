@@ -14,6 +14,7 @@ import {DirectivesModule} from '../../directives/directives';
 import /*embed*/ {priceconditonsconfiguration} from './services/priceconditonsconfiguration.service';
 
 import /*embed*/ {PriceConditionsAccountsPanel} from './components/priceconditionsaccountspanel';
+import /*embed*/ {PriceConditionsByCondition} from './components/priceconditionsbycondition';
 import /*embed*/ {PriceConditionsConditionsList} from './components/priceconditionsconditionslist';
 import /*embed*/ {PriceConditionsByDetermination} from './components/priceconditionsbydetermination';
 import /*embed*/ {PriceConditionsByDeterminationList} from './components/priceconditionsbydeterminationlist';
@@ -30,6 +31,7 @@ import /*embed*/ {PriceConditionsByDeterminationList} from './components/priceco
     ],
     declarations: [
         PriceConditionsAccountsPanel,
+        PriceConditionsByCondition,
         PriceConditionsConditionsList,
         PriceConditionsByDetermination,
         PriceConditionsByDeterminationList

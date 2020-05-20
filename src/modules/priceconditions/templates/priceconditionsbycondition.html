@@ -1,0 +1,15 @@
+<div class="slds-vertical-tabs slds-height_full">
+    <ul class="slds-vertical-tabs__nav" role="tablist" aria-orientation="vertical">
+        <li *ngFor="let conditiontype of conditiontypes" class="slds-vertical-tabs__nav-item" role="presentation" [ngClass]="{'slds-is-active': conditiontype.id == activeconditiontype}" (click)="setConditionType(conditiontype.id)">
+            <a class="slds-vertical-tabs__link" href="javascript:void(0)" role="tab" tabindex="0"
+               aria-selected="true" aria-controls="slds-vertical-tabs-0" id="slds-vertical-tabs-0__nav">
+                <span class="slds-vertical-tabs__left-icon"></span>
+                <span class="slds-truncate"><system-label [label]="conditiontype.label"></system-label>&nbsp;({{conditiontype.name}})</span>
+                <span class="slds-vertical-tabs__right-icon"></span>
+            </a>
+        </li>
+    </ul>
+    <div class="slds-vertical-tabs__content slds-show slds-p-around--xx-small" role="tabpanel" aria-labelledby="slds-vertical-tabs-0__nav">
+        <price-conditions-conditions-list *ngFor="let determination of activedeterminations" [determinationid]="determination" [conditiontypeid]="activeconditiontype" [conditions]="conditonsForDeterminationId(determination)"></price-conditions-conditions-list>
+    </div>
+</div>
