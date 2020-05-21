@@ -104,28 +104,10 @@ export class GlobalLoginGoogle {
                 this.loginService.authData.userName = "";
                 this.loginService.authData.password = "";
                 // this.session.authData.sessionId = user_token;
-                this.loginService.login().subscribe(
-                    (res) => {
-                        this.synchronize();
-                    },
-                    (err) => {
-                        console.log(err);
-                    },
-                );
+                this.loginService.login();
             })
             .catch((error: { error: string }) => {
                 console.log(JSON.stringify(error, undefined, 2));
             });
-    }
-
-    public synchronize() {
-        this.backend.getRequest('/google/calendar/sync').subscribe(
-            (res) => {
-                console.log('Successfully Synchronized');
-            },
-            (err) => {
-                console.log('Synchronization Error');
-            },
-        );
     }
 }
