@@ -486,6 +486,10 @@ export class navigation {
      * @param tabId
      */
     private parentTabId(tabId) {
+        // if we are on main no parenttab id can be found
+        if(tabId == 'main') return null;
+
+        // otherwise search tabs
         return this.objectTabs.find(tab => tab.id == tabId).parentid;
     }
 
