@@ -10,6 +10,7 @@ import {configurationService} from '../../../services/configuration.service';
 import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 
 import {Router} from '@angular/router';
+import {Subscription} from 'rxjs';
 
 @Component({
     selector: 'field-salesdoc-types',
@@ -19,8 +20,15 @@ export class fieldSalesdocTypes extends fieldGeneric {
 
     public options: any[] = [];
 
+    /**
+     * Keep the language subscription the unsubscribe at component end.
+     */
+    private languageSubscription: Subscription = new Subscription();
+
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private configuration: configurationService) {
         super(model, view, language, metadata, router);
+        // Keep the language subscription the unsubscribe at component end:
+        this.languageSubscription = this.language.currentlanguage$.subscribe( () => this.translateAndSortOptions() );
     }
 
     public ngOnInit() {
@@ -53,10 +61,27 @@ export class fieldSalesdocTypes extends fieldGeneric {
     public getOptions() {
         let salesdocTypes = this.configuration.getData('salesdoctypes');
 
-        if(this.fieldconfig.withoutdisplayonly){
+        if(this.fieldconfig.withoutdisplayonly) {
             this.options = salesdocTypes.filter(salesdocType => salesdocType.displayonly == 0);
         } else {
             this.options = salesdocTypes;
         }
+        this.translateAndSortOptions();
     }
+
+    /**
+     * translates (and sorts) the salesdocstypes
+     */
+    public translateAndSortOptions() {
+        this.options.forEach( option => option.vnameTrans = this.language.getLabel(option.vname));
+        this.language.sortObjects( this.options, 'vnameTrans');
+    }
+
+    /**
+     * Unsubscribe from language service.
+     */
+    public ngOnDestroy() {
+        this.languageSubscription.unsubscribe();
+    }
+
 }
