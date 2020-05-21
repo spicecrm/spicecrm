@@ -70,12 +70,10 @@ export class GlobalLoginGoogle {
                 success => {
                     // load the google API
                     gapi.load("auth2", () => {
-                        let calendar_config = JSON.parse(
-                            this.configuration.data.backendextensions.google_oauth.config.calendarconfig
-                        );
+                        let clientid =   this.configuration.data.backendextensions.google_oauth.config.clientid;
                         // this.clientId = calendar_config.web.client_id;
                         this.auth2 = gapi.auth2.init({
-                            client_id: calendar_config.web.client_id,
+                            client_id: clientid,
                             cookiepolicy: "single_host_origin",
                             scope: this.scope
                         });
