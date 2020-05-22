@@ -56,9 +56,9 @@ import {GlobalLogin} from "./globalcomponents/components/globallogin";
 import {SystemDynamicRouteInterceptor} from "./systemcomponents/components/systemdynamicrouteinterceptor";
 import {GlobalHeader} from "./globalcomponents/components/globalheader";
 // spiceinstaller
-import {SpiceInstallerModule} from "./include/spiceinstaller/spiceinstallermodule";
-import {spiceinstaller} from "./include/spiceinstaller/services/spiceinstaller.service";
-import {SpiceInstaller} from "./include/spiceinstaller/components/spiceinstaller";
+import {SpiceInstallerModule} from './include/spiceinstaller/spiceinstallermodule';
+import {spiceinstaller} from './include/spiceinstaller/services/spiceinstaller.service';
+import {SpiceInstaller} from './include/spiceinstaller/components/spiceinstaller';
 
 
 // declarations for TS
