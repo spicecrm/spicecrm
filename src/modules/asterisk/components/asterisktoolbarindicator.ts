@@ -12,6 +12,7 @@ import {toast} from '../../../services/toast.service';
 import {language} from '../../../services/language.service';
 import {backend} from "../../../services/backend.service";
 import {dockedComposer} from '../../../services/dockedcomposer.service';
+import {telephony} from '../../../services/telephony.service';
 
 @Component({
     templateUrl: './src/modules/asterisk/templates/asterisktoolbarindicator.html'
@@ -30,7 +31,7 @@ export class AsteriskToolbarIndicator implements OnDestroy {
         direction: ''
     };
 
-    constructor(private language: language, private backend: backend, private toast: toast, private dockedComposer: dockedComposer) {
+    constructor(private language: language, private backend: backend, private toast: toast, private dockedComposer: dockedComposer, private telephony: telephony) {
         this.backend.getRequest('asterisk/userext').subscribe(resp => {
             if (resp.extension) {
                 this.extension = resp.extension;
@@ -104,15 +105,17 @@ export class AsteriskToolbarIndicator implements OnDestroy {
         switch (message.event) {
             case 'OUTBOUND':
             case 'RING':
-                this.dockedComposer.calls.push(this.activeCall);
+                this.telephony.calls.push(this.activeCall);
                 break;
         }
     }
 
     private simulatecall() {
+        /*
         this.activeCall.callevent = 'RING';
         this.activeCall.callid = '66475757';
         this.activeCall.callnumber = '43676898238847';
-        this.dockedComposer.calls.push(this.activeCall);
+        this.telephony.calls.push(this.activeCall);
+         */
     }
 }

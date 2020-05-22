@@ -1,4 +1,4 @@
-<div #listcontainer (scroll)="onScroll($event)" class="slds-p-vertical_xx-small slds-scrollable--y spicecrm-scrollbar" [ngStyle]="listStyle">
+<div #listcontainer (scroll)="onScroll($event)" class="slds-p-vertical_xx-small slds-scrollable--y spice-scrollbar" [ngStyle]="listStyle">
     <div *ngIf="!isLoading && listItems.length == 0"
          class="slds-text-align_center slds-p-vertical--medium">
         <span><system-label label="LBL_NO_ENTRIES"></system-label></span>

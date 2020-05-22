@@ -51,6 +51,7 @@ import {VersionManagerService} from "./services/versionmanager.service";
 import {modal} from "./services/modal.service";
 import {layout} from "./services/layout.service";
 import {libloader} from "./services/libloader.service";
+import {telephony} from "./services/telephony.service";
 
 import {GlobalLogin} from "./globalcomponents/components/globallogin";
 import {SystemDynamicRouteInterceptor} from "./systemcomponents/components/systemdynamicrouteinterceptor";
@@ -140,7 +141,8 @@ export class SpiceUI {
     entryComponents: [],
     bootstrap: [SpiceUI],
     providers: [
-        {provide: LocationStrategy, useClass: HashLocationStrategy},
+        aclCheck,
+        assistant,
         backend,
         broadcast,
         layout,
@@ -154,7 +156,8 @@ export class SpiceUI {
         loginService,
         loader,
         configurationService,
-        language,
+        cookie,
+        currency,
         dockedComposer,
         fts,
         recent,
@@ -166,16 +169,33 @@ export class SpiceUI {
         territories,
         currency,
         footer,
-        userpreferences,
-        cookie,
+        fts,
+        helper,
+        language,
+        layout,
+        libloader,
+        loader,
+        {provide: LocationStrategy, useClass: HashLocationStrategy},
+        loggerService,
+        loginCheck,
+        loginService,
         MathExpressionCompilerService,
-        assistant,
-        VersionManagerService,
+        metadata,
         modal,
+        modelutilities,
+        navigation,
+        recent,
+        reminder,
+        session,
+        telephony,
+        territories,
         Title,
         loggerService,
         libloader,
-        spiceinstaller
+        spiceinstaller,
+        toast,
+        userpreferences,
+        VersionManagerService
     ]
 })
 export class SpiceUIModule {

@@ -7,7 +7,7 @@
                         <li *ngFor="let groupField of groupFields" class="slds-item"><system-label [label]="groupField.text"></system-label></li>
                     </ul>
                 </th>
-                <th *ngFor="let treeDisplayField of treeDisplayFields" scope="col" [style.width.%]="fieldsData[treeDisplayField.dataIndex].width">
+                <th *ngFor="let treeDisplayField of treeDisplayFields" scope="col">
                     <a  href="javascript:void(0);" class="slds-th__action slds-text-link--reset slds-grid"  [ngClass]="fieldsDisplayClasses[treeDisplayField]">
                         <div class="slds-truncate slds-p-around--x-small" system-title="treeDisplayField.text">
                             <system-label [label]="treeDisplayField.text"></system-label>

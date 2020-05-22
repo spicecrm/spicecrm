@@ -1,0 +1,67 @@
+/* SpiceCRM Scrollbar */
+/* for firefox and*/
+.slds-scrollable,
+.slds-scrollable--x,
+.slds-scrollable--y {
+    scrollbar-width: thin;
+}
+
+/* width normal */
+.slds-scrollable::-webkit-scrollbar,
+.slds-scrollable--x::-webkit-scrollbar,
+.slds-scrollable--y::-webkit-scrollbar,
+.spice-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    /* for firefox and*/
+    scrollbar-width: thin;
+}
+
+/* width thin */
+.spice-scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+/* Track */
+.slds-scrollable::-webkit-scrollbar-track,
+.slds-scrollable--x::-webkit-scrollbar-track,
+.slds-scrollable--y::-webkit-scrollbar-track,
+.spice-scrollbar::-webkit-scrollbar-track,
+.spice-scrollbar-thin::-webkit-scrollbar-track {
+    background: var(--color-grey-3);
+}
+
+/* Handle */
+.slds-scrollable::-webkit-scrollbar-thumb,
+.slds-scrollable--x::-webkit-scrollbar-thumb,
+.slds-scrollable--y::-webkit-scrollbar-thumb,
+.spice-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--color-grey-7);
+    border-top: 2px solid var(--color-grey-3);
+    border-bottom: 2px solid var(--color-grey-3);
+}
+
+.spice-scrollbar-thin::-webkit-scrollbar-thumb {
+    background: var(--color-grey-7);
+    border-top: 1px solid var(--color-grey-3);
+    border-bottom: 1px solid var(--color-grey-3);
+}
+
+/* Handle on hover */
+.slds-scrollable::-webkit-scrollbar-thumb:hover,
+.slds-scrollable--x::-webkit-scrollbar-thumb:hover,
+.slds-scrollable--y::-webkit-scrollbar-thumb:hover,
+.spice-scrollbar::-webkit-scrollbar-thumb:hover,
+.spice-scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: var(--color-grey-9);
+}
+
+/* Buttons */
+.slds-scrollable::-webkit-scrollbar-button:single-button,
+.slds-scrollable--x::-webkit-scrollbar-button:single-button,
+.slds-scrollable--y::-webkit-scrollbar-button:single-button,
+.spice-scrollbar::-webkit-scrollbar-button:single-button,
+.spice-scrollbar-thin::-webkit-scrollbar-button:single-button {
+    display: none;
+}

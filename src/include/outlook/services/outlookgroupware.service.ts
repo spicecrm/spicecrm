@@ -119,14 +119,14 @@ export class OutlookGroupware extends GroupwareService {
         let toAddresses = [];
         toAddresses.push(Office.context.mailbox.item.from.emailAddress);
         for (let address of Office.context.mailbox.item.to) {
-            if(includeown || address.emailAddress != Office.context.mailbox.userProfile.emailAddress){
+            if (includeown || address.emailAddress != Office.context.mailbox.userProfile.emailAddress) {
                 toAddresses.push(address.emailAddress);
             }
         }
 
         let ccAddresses = [];
         for (let address of Office.context.mailbox.item.cc) {
-            if(includeown || address.emailAddress != Office.context.mailbox.userProfile.emailAddress) {
+            if (includeown || address.emailAddress != Office.context.mailbox.userProfile.emailAddress) {
                 ccAddresses.push(address.emailAddress);
             }
         }
@@ -168,6 +168,20 @@ export class OutlookGroupware extends GroupwareService {
         let retSubject = new Subject<any>();
         Office.context.mailbox.item.loadCustomPropertiesAsync(cProps => {
             retSubject.next(cProps.value);
+            retSubject.complete();
+        });
+        return retSubject.asObservable();
+    }
+
+    public getAccessToken(): Observable<any> {
+        let retSubject = new Subject<any>();
+        Office.context.auth.getAccessTokenAsync({forMSGraphAccess: true}, token => {
+            if (token.status == 'succeeded') {
+                this.backend.getRequest('spicecrmexchange/validate/' + token.value + '?XDEBUG_SESSION_START=PHPSTORM').subscribe(res => {
+                    console.log(res);
+                });
+            }
+            retSubject.next(token);
             retSubject.complete();
         });
         return retSubject.asObservable();

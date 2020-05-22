@@ -64,7 +64,7 @@ export class SystemDynamicComponent implements AfterViewInit, OnChanges {
      * after view init add the component via the metadata service
      */
     public ngAfterViewInit() {
-        if(!this.initialized){
+        if (!this.initialized) {
             this.renderComponent();
         }
     }
@@ -75,7 +75,7 @@ export class SystemDynamicComponent implements AfterViewInit, OnChanges {
      * @param changes
      */
     public ngOnChanges(changes: SimpleChanges): void {
-        if(this.container && changes.component) {
+        if (this.container && changes.component) {
             if (this._component) {
                 this._component.destroy();
                 this._component = undefined;
@@ -98,8 +98,8 @@ export class SystemDynamicComponent implements AfterViewInit, OnChanges {
                 }
 
                 // set additonal attributes
-                if(this.componentattributes){
-                    for(let attrib in this.componentattributes){
+                if (this.componentattributes) {
+                    for (let attrib in this.componentattributes) {
                         componentref.instance[attrib] = this.componentattributes[attrib];
                     }
                 }

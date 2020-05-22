@@ -1,0 +1,43 @@
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_TABS"></system-label></system-modal-header>
+    <system-modal-content margin="none">
+        <table class="slds-table slds-table--header-fixed slds-table_cell-buffer">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th scope="col">
+                        <div class="slds-truncate slds-p-vertical--xx-small"><system-label label="LBL_TAB"></system-label></div>
+                    </th>
+                    <th scope="col" style="width: 5.5rem;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let tab of maintabs">
+                    <tr class="slds-hint-parent">
+                        <td>
+                            <global-navigation-tabbed-browser-modal-tab [tab]="tab" (activate)="activateTab($event)"></global-navigation-tabbed-browser-modal-tab>
+                        </td>
+                        <td class="slds-p-horizontal--none slds-text-align--center">
+                            <global-navigation-tabbed-browser-modal-tab-actions [tab]="tab"></global-navigation-tabbed-browser-modal-tab-actions>
+                        </td>
+                    </tr>
+                    <ng-container *ngFor="let subtab of subtabs(tab.id)" >
+                        <tr class="slds-hint-parent">
+                            <td>
+                                <global-navigation-tabbed-browser-modal-tab [tab]="subtab" [subtab]="true" (activate)="activateTab($event)"></global-navigation-tabbed-browser-modal-tab>
+                            </td>
+                            <td class="slds-p-horizontal--none slds-text-align--center">
+                                <global-navigation-tabbed-browser-modal-tab-actions [tab]="subtab"></global-navigation-tabbed-browser-modal-tab-actions>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </ng-container>
+            </tbody>
+        </table>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <div>{{tabs}} <system-label label="LBL_TABS"></system-label> / {{models}} <system-label label="LBL_MODELS"></system-label></div>
+            <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_OK"></system-label></button>
+        </div>
+    </system-modal-footer>
+</system-modal>
