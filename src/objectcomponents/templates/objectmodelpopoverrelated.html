@@ -2,7 +2,7 @@
     <dt class="slds-m-bottom_small">
         <div class="slds-media slds-media_center">
             <div class="slds-media__figure">
-            <system-icon [module]="module" size="small"></system-icon>
+            <system-icon [module]="relatedmodels.relatedModule" size="small"></system-icon>
             </div>
             <div class="slds-media__body">
                 <p class="slds-text-heading_small slds-hyphenate"><system-label [label]="panelTitle"></system-label><ng-container *ngIf="!relatedmodels.isloading">&nbsp;({{relatedmodels.count}})</ng-container></p>

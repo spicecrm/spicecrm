@@ -1,7 +1,7 @@
 /**
  * @module SystemComponents
  */
-import {Component, EventEmitter, forwardRef, Input, Output} from '@angular/core';
+import {Component, EventEmitter, forwardRef, Input, Output, ChangeDetectorRef} from '@angular/core';
 import {language} from "../../services/language.service";
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
@@ -78,7 +78,8 @@ export class SystemCheckbox implements ControlValueAccessor {
     @Output('uncheck') private uncheck$ = new EventEmitter();
 
     constructor(
-        private language: language
+        private language: language,
+        private cdRef: ChangeDetectorRef
     ) {
 
     }
@@ -122,5 +123,6 @@ export class SystemCheckbox implements ControlValueAccessor {
         } else if (!this.model_value && this.checked) {
             this.checked = false;
         }
+        this.cdRef.detectChanges();
     }
 }

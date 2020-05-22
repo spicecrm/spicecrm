@@ -23,7 +23,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         switch (end($uri)) {
             case 'stylesheet':
                 header('Content-Type: text/css');
-                $genericCss = file_get_contents ( __DIR__.'/../assets/css/spicecrm.css' );
+                // $genericCss = file_get_contents ( __DIR__.'/../assets/css/spicecrm.css' );
                 $customCss = @file_get_contents ( __DIR__.'/assets/css/spicecrm.css' );
 
                 # @import statements have to be at the beginning of a CSS file. So we collect any @import statements of the custom CSS file to deliver these lines first.
@@ -31,7 +31,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 $customCss = preg_replace_callback('/^\s*@import\s+.*$/im', function( $matches ) use (&$imports) { $imports[] = $matches[0]; return ''; }, $customCss );
                 echo implode( "\n", $imports );
 
-                echo $genericCss."\n\n\n";
+                // echo $genericCss."\n\n\n";
 
                 if ( isset( $customCss{0} )) echo "/***** Custom Stylesheet ***************/\n\n\n".$customCss;
                 else echo "/* NO Custom Stylesheet */\n";

@@ -13,10 +13,10 @@
         </div>
     </a>
     <div *ngIf="!ismain" class="slds-col_bump-left slds-p-left_none slds-p-right_none slds-grid">
-        <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-x-small slds-m-around--none" (click)="pintab()">
+        <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-x-small slds-m-around--none" (click)="pintab()" system-title="LBL_PIN_TAB">
             <system-button-icon [icon]="pinned ? 'pinned' : 'pin'"></system-button-icon>
         </button>
-        <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-x-small" tabindex="0" (click)="closeSubTab()">
+        <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-x-small" tabindex="0" (click)="closeSubTab()" system-title="LBL_CLOSE_TAB">
             <system-button-icon icon="close"></system-button-icon>
         </button>
     </div>

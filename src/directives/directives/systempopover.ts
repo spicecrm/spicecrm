@@ -1,5 +1,5 @@
 /**
- * @module directives
+ * @module DirectivesModule
  */
 import {Directive, Input, HostListener, OnDestroy, ElementRef, OnInit, Optional} from '@angular/core';
 

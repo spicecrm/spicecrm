@@ -37,7 +37,7 @@
         </ul>
     </div>
     <div #containermiddle [ngStyle]="containerMiddleStyle" class="slds-grid">
-        <div class="slds-has-divider--bottom-space slds-scrollable--y spicecrm-scrollbar" style="width: 100%;">
+        <div class="slds-has-divider--bottom-space slds-scrollable--y spice-scrollbar" style="width: 100%;">
             <div *ngFor="let item of menuItems; trackBy: trackByFn" (click)="navigateTo(item)" class="slds-grid slds-grid--vertical-align-center slds-p-vertical--x-small  slds-p-left--small">
                 <system-icon [module]="item" size="x-small" divClass=""></system-icon>
                 <a href="javascript:void(0);" class="slds-p-left--small slds-text-heading_small">
