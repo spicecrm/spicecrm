@@ -79,7 +79,7 @@ export class mediafiles {
         return this._getImage(mediaId, 'sq/' + size);
     }
 
-
+    /*
     public uploadFile(files): Observable<any> {
 
         if (files.length === 0) return;
@@ -118,8 +118,9 @@ export class mediafiles {
 
         return retSub.asObservable();
     }
+    */
 
-    public getMediaFile(mediatype: number, filetype: string, noImagePicker = false, noMetaData = false, category: string): Observable<any> {
+    public getMediaFile( noImagePicker = false, noMetaData = false, category: string): Observable<any> {
 
         let retSubject = new Subject();
         if (noImagePicker) {
@@ -130,7 +131,7 @@ export class mediafiles {
                 }
             });
         } else {
-            this.pickMediaFile(mediatype, filetype).subscribe((answer) => {
+            this.pickMediaFile().subscribe((answer) => {
                 if (answer.id) {
                     retSubject.next(answer.id);
                     retSubject.complete();
@@ -147,11 +148,9 @@ export class mediafiles {
         return retSubject.asObservable();
     }
 
-    private pickMediaFile(mediatype: number, filetype: string): Observable<any> {
+    private pickMediaFile(): Observable<any> {
         let retSubject = new Subject();
         this.modalservice.openModal('MediaFilePicker').subscribe(picker => {
-            picker.instance.mediatype = mediatype;
-            picker.instance.filetype = filetype;
             picker.instance.answer.subscribe(answer => {
                 retSubject.next(answer); // return the answer
                 retSubject.complete();

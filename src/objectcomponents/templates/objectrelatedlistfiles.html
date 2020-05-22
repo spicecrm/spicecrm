@@ -19,7 +19,7 @@
     </div>
     <div class="slds-card__body" @displaycard *ngIf="isopen">
         <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
-            <div object-related-card-file *ngFor="let file of modelattachments.files" [file]="file" class="slds-tile slds-media slds-card__tile slds-p-horizontal--small slds-size--1-of-1 spicecrm-card-size slds-hint-parent"></div>
+            <div object-related-card-file *ngFor="let file of modelattachments.files" [file]="file" class="slds-tile slds-media slds-card__tile slds-p-horizontal--small slds-size--1-of-1 slds-hint-parent"></div>
         </div>
         <div *ngIf="modelattachments.loading" class="slds-p-around--large slds-align--absolute-center">
             <system-spinner></system-spinner>
