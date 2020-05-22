@@ -1,5 +1,5 @@
 /**
- * @module SpiceImporterModule
+ * @module ModuleExchange
  */
 import {Component, OnInit} from '@angular/core';
 
