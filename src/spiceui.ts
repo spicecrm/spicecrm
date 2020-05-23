@@ -52,6 +52,7 @@ import {modal} from "./services/modal.service";
 import {layout} from "./services/layout.service";
 import {libloader} from "./services/libloader.service";
 import {telephony} from "./services/telephony.service";
+import {socket} from "./services/socket.service";
 
 import {GlobalLogin} from "./globalcomponents/components/globallogin";
 import {SystemDynamicRouteInterceptor} from "./systemcomponents/components/systemdynamicrouteinterceptor";
@@ -163,6 +164,7 @@ export class SpiceUI {
         recent,
         reminder,
         session,
+        socket,
         telephony,
         territories,
         Title,
@@ -171,7 +173,11 @@ export class SpiceUI {
         VersionManagerService
     ]
 })
-export class SpiceUIModule {}
+export class SpiceUIModule {
+    constructor(private socket: socket) {
+
+    }
+}
 
 /**
  * sets the prod mode. THis is enabled in the build workflow for production build
