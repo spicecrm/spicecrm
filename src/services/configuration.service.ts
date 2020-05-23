@@ -209,7 +209,7 @@ export class configurationService {
     /**
      * calls sysinfo on the backend and stores the data
      */
-    public getSysinfo() {
+    public  getSysinfo() {
         this.reloading = true;
         let sysinfo = this.http.get(this.getBackendUrl() + '/sysinfo');
         sysinfo.subscribe(
@@ -218,6 +218,8 @@ export class configurationService {
                     this.data.languages = res.languages;
                     this.data.backendextensions = res.extensions;
                     this.data.systemparameters = res.systemsettings;
+                    this.data.socket_frontend = res.socket_frontend;
+                    this.data.unique_key = res.unique_key;
                     this.loaded$.emit(true);
                 }
                 this.initialized = true;
