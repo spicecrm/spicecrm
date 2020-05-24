@@ -68,6 +68,13 @@ export class socket {
         }
     }
 
+    /**
+     * returns if the socket is connected
+     */
+    get isConnected() {
+        return this.socketconnected
+    }
+
     private disconnect() {
         if (this.socket) {
             this.socket.disconnect();
