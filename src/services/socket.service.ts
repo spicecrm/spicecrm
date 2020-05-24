@@ -8,6 +8,7 @@ import {navigation} from "../services/navigation.service";
 import {backend} from "../services/backend.service";
 import {modelutilities} from "../services/modelutilities.service";
 import {session} from "../services/session.service";
+import {Subscription} from "rxjs";
 
 declare var io: any;
 
@@ -18,12 +19,13 @@ export class socket {
      * the url for the socket connection from the backend
      */
     private socketurl: string;
+    private socketid: string;
 
     private socket: any;
 
     private socketconnected: boolean = false;
 
-    public modelupdate$: EventEmitter<any> = new EventEmitter<any>();
+    private subscriptions: Subscription = new Subscription();
 
     constructor(
         private configuration: configurationService,
@@ -33,6 +35,8 @@ export class socket {
         private backend: backend,
         private modelutilities: modelutilities
     ) {
+
+
         this.broadcast.message$.subscribe(data => {
             if (data.messagetype === 'login') {
                 this.initialize();
@@ -41,7 +45,6 @@ export class socket {
                 this.disconnect();
             }
         });
-
     }
 
     /**
@@ -56,8 +59,11 @@ export class socket {
         }
 
         // get the scoketurl
-        this.socketurl = this.configuration.data.socket_frontend;
-        if (this.socketurl) {
+        let config = this.configuration.getCapabilityConfig('socket');
+        this.socketurl = config.socket_frontend;
+        this.socketid = config.socket_id;
+
+        if (this.socketurl && this.socketid) {
             this.connectSocket();
         }
     }
@@ -66,6 +72,8 @@ export class socket {
         if (this.socket) {
             this.socket.disconnect();
             this.socket.destroy();
+            this.socketurl = undefined;
+            this.socketid = undefined;
             this.socket = null;
         }
     }
@@ -79,7 +87,7 @@ export class socket {
             return false;
         }
 
-        this.socket = io(`${this.socketurl}?room=beanupdates`);
+        this.socket = io(`${this.socketurl}?sysid=${this.socketid}&room=beanupdates&token=${this.session.authData.sessionId}`);
         this.socket.on('connect', (socket) => {
             this.socketconnected = true;
         });
@@ -89,9 +97,7 @@ export class socket {
         this.socket.on('message', (data) => {
             this.handleMessage(data);
         });
-
     }
-
 
     /**
      * handle the event from the socket
@@ -102,17 +108,24 @@ export class socket {
      * @param eventData
      */
     private handleMessage(eventData: any) {
-        if (eventData.message.s != this.session.authData.sessionId) {
-            console.log(eventData);
-            if (this.navigation.modelregister.find(m => m.model.id == eventData.message.i && m.model.module == eventData.message.m)) {
-                this.backend.get(eventData.message.m, eventData.message.i).subscribe(data => {
-                    this.broadcast.broadcastMessage("model.save", {
-                        id: eventData.message.i,
-                        module: eventData.message.m,
-                        data: this.modelutilities.backendModel2spice(eventData.message.m, data)
-                    });
-                });
-            }
+        switch (eventData.type) {
+            case 'error':
+                console.log(eventData.message.error);
+                break;
+            case 'message':
+                if (eventData.message.s != this.session.authData.sessionId) {
+                    if (this.navigation.modelregister.find(m => m.model.id == eventData.message.i && m.model.module == eventData.message.m)) {
+                        this.backend.get(eventData.message.m, eventData.message.i).subscribe(data => {
+                            this.broadcast.broadcastMessage("model.save", {
+                                id: eventData.message.i,
+                                module: eventData.message.m,
+                                data: this.modelutilities.backendModel2spice(eventData.message.m, data)
+                            });
+                        });
+                    }
+                }
+                break;
         }
+
     }
 }
