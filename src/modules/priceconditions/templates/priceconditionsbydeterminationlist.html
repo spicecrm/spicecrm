@@ -5,7 +5,7 @@
             <div class="slds-truncate">{{determinationfield.name}}</div>
         </th>
         <th *ngFor="let conditiontype of conditiontypes" scope="col">
-            <div class="slds-truncate slds-text-align--right">{{conditiontype.name}}</div>
+            <div class="slds-truncate slds-text-align--right" [system-title]="conditiontype.label ? conditiontype.label : conditiontype.name">{{conditiontype.name}}</div>
         </th>
     </tr>
     </thead>
