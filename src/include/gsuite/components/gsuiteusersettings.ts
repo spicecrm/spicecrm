@@ -1,5 +1,5 @@
 /**
- * @module ModuleExchange
+ * @module ModuleGSuite
  */
 import {Component, OnInit} from '@angular/core';
 
@@ -14,24 +14,19 @@ import {configurationService} from '../../../services/configuration.service';
 declare var _: any;
 
 @Component({
-    templateUrl: './src/include/exchange/templates/exchangeusersettings.html',
+    templateUrl: './src/include/gsuite/templates/gsuiteusersettings.html',
 })
-export class ExchangeUserSettings implements OnInit {
+export class GSuiteUserSettings implements OnInit {
 
     /**
      * holds the folders that can be subscribed to
      */
-    private subscriptionOptions: any[] = ['contacts', 'calendar', 'tasks'];
+    private subscriptionScopes: string[] = ['Calendar'];
 
     /**
-     * a list of actrive subscriptions
+     * a list of active subscriptions
      */
     private subscriptions: any[] = [];
-
-    /**
-     * holds an array wuith modules that can be synced with Exchange
-     */
-    private modules: any[] = [];
 
     /**
      * the config for the user
@@ -53,8 +48,7 @@ export class ExchangeUserSettings implements OnInit {
      * loads the config from the backend
      */
     private getConfig() {
-        this.backend.getRequest(`spicecrmexchange/config/${this.model.id}`).subscribe(response => {
-            this.modules = response.modules;
+        this.backend.getRequest(`/google/calendar/config/${this.model.id}`).subscribe(response => {
             this.userconfig = response.userconfig;
             this.subscriptions = response.subscriptions;
         });
@@ -85,8 +79,8 @@ export class ExchangeUserSettings implements OnInit {
      *
      * @param sysmoduleid
      */
-    private isActive(sysmoduleid: string) {
-        return this.userconfig && this.userconfig.findIndex(r => r.sysmodule_id == sysmoduleid) >= 0;
+    private isActive(scope: string) {
+        return this.userconfig && this.userconfig.findIndex(r => r.scope == scope) >= 0;
     }
 
     /**
@@ -95,22 +89,22 @@ export class ExchangeUserSettings implements OnInit {
      * @param sysmoduleid
      * @param e
      */
-    private toggleActive(sysmoduleid: string, e: MouseEvent) {
+    private toggleActive(scope: string, e: MouseEvent) {
         if (e) {
-            this.backend.postRequest('spicecrmexchange/config/' + this.model.id + '/' + sysmoduleid).subscribe(res => {
+            this.backend.postRequest(`/google/calendar/notifications/${this.model.id}/${scope}`).subscribe(res => {
                 this.userconfig = res.userconfig;
                 this.subscriptions = res.subscriptions;
 
                 // set the user config
-                this.configuration.setData('exchangeuserconfig', this.userconfig);
+                this.configuration.setData('gsuiteuserconfig', this.userconfig);
             });
         } else {
-            this.backend.deleteRequest('spicecrmexchange/config/' + this.model.id + '/' + sysmoduleid).subscribe(res => {
+            this.backend.deleteRequest(`/google/calendar/notifications/${this.model.id}/${scope}`).subscribe(res => {
                 this.userconfig = res.userconfig;
                 this.subscriptions = res.subscriptions;
 
                 // set the user config
-                this.configuration.setData('exchangeuserconfig', this.userconfig);
+                this.configuration.setData('gsuiteuserconfig', this.userconfig);
             });
         }
     }

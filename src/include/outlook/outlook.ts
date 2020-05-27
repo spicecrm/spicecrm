@@ -20,7 +20,6 @@ import {FormsModule} from '@angular/forms';
 import {RouterModule, Routes, Router, ActivatedRoute} from '@angular/router';
 import {Subject, Observable} from 'rxjs';
 
-
 // spicecrm generic modules
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
@@ -60,8 +59,8 @@ import {modal} from "../../services/modal.service";
 import {layout} from "../../services/layout.service";
 import {telephony} from "../../services/telephony.service";
 import {loggerService} from "../../services/logger.service";
+import {socket} from "../../services/socket.service";
 import {SystemDynamicRouteInterceptor} from "../../systemcomponents/components/systemdynamicrouteinterceptor";
-
 
 import {ModuleGroupware} from "../../include/groupware/groupware";
 import {GroupwareService} from '../../include/groupware/services/groupware.service';
@@ -115,38 +114,39 @@ declare var Office: any;
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         {provide: GroupwareService, useClass: OutlookGroupware},
-        OutlookConfiguration,
+        aclCheck,
         backend,
         broadcast,
-        layout,
-        navigation,
-        session,
-        metadata,
-        aclCheck,
+        configurationService,
+        cookie,
+        currency,
+        dockedComposer,
+        favorite,
+        footer,
+        fts,
         helper,
+        language,
+        layout,
+        libloader,
+        loader,
+        loggerService,
         loginCheck,
         loginService,
-        loader,
-        libloader,
-        configurationService,
-        language,
-        dockedComposer,
-        fts,
-        recent,
-        modelutilities,
-        toast,
-        favorite,
-        reminder,
-        territories,
-        currency,
-        footer,
-        userpreferences,
-        cookie,
-        telephony,
         MathExpressionCompilerService,
-        VersionManagerService,
+        metadata,
         modal,
-        loggerService
+        navigation,
+        modelutilities,
+        OutlookConfiguration,
+        recent,
+        reminder,
+        session,
+        socket,
+        territories,
+        telephony,
+        toast,
+        userpreferences,
+        VersionManagerService
     ]
 })
 export class Outlook {

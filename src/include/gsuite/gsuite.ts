@@ -1,5 +1,5 @@
 /**
- * @module ModuleExchange
+ * @module ModuleGSuite
  */
 import {CommonModule} from "@angular/common";
 import {NgModule} from '@angular/core';
@@ -11,7 +11,7 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 
 // import embedding components
-import /*embed*/ {ExchangeUserSettings} from "./components/exchangeusersettings";
+import /*embed*/ {GSuiteUserSettings} from "./components/gsuiteusersettings";
 
 @NgModule({
     imports: [
@@ -22,8 +22,8 @@ import /*embed*/ {ExchangeUserSettings} from "./components/exchangeusersettings"
         ObjectComponents
     ],
     declarations: [
-        ExchangeUserSettings
+        GSuiteUserSettings
     ]
 })
-export class ModuleExchange {
+export class ModuleGSuite {
 }
