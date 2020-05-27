@@ -13,6 +13,7 @@ import {modal} from "../../services/modal.service";
 import {cookie} from "../../services/cookie.service";
 import {userpreferences} from '../../services/userpreferences.service';
 import {toast} from '../../services/toast.service';
+import {socket} from '../../services/socket.service';
 
 declare var _: any;
 
@@ -43,7 +44,8 @@ export class GlobaUserPanel {
         private modalservice: modal,
         private cookie: cookie,
         private userprefs: userpreferences,
-        private toastservice: toast
+        private toastservice: toast,
+        private socket: socket
     ) {
 
     }
