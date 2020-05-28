@@ -33,7 +33,7 @@ export class PriceConditionsConditionsList implements OnInit {
     /**
      * the type of the condiiton
      */
-    private conditiontype: 'A'|'P' = 'A';
+    private conditiontype: 'A' | 'P' = 'A';
 
     /**
      * holds the fields for the determination strategy as per the determination_id
@@ -54,7 +54,7 @@ export class PriceConditionsConditionsList implements OnInit {
     /**
      * loads the conditon type (Amount or Percent)
      */
-    private determineConditionType(){
+    private determineConditionType() {
         this.conditiontype = this.priceconditonsconfiguration.config.conditiontypes.find(t => t.id == this.conditiontypeid).valuetype;
     }
 
@@ -79,7 +79,7 @@ export class PriceConditionsConditionsList implements OnInit {
             let detElement = this.priceconditonsconfiguration.config.conditionelements.find(e => e.id == determinationelement.priceconditionelement_id);
             if (detElement) {
                 // only push oif we are not for the module
-                if(detElement.element_module != this.model.module) {
+                if (detElement.element_module != this.model.module) {
                     detElement.element_length = parseInt(detElement.element_length, 10);
                     detElement.element_start = start;
                     this.determinationfields.push(detElement);
@@ -97,9 +97,9 @@ export class PriceConditionsConditionsList implements OnInit {
      */
     private getValueFromKey(key, element) {
         let val = key.substring(element.element_start, element.element_start + element.element_length);
-        if(element.element_domain){
+        if (element.element_domain && this.language.languagedata.applist[element.element_domain]) {
             let textval = this.language.languagedata.applist[element.element_domain][val];
-            if(textval) val = textval;
+            if (textval) val = textval;
         }
         return val;
     }

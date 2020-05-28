@@ -1,7 +1,7 @@
 <object-related-card [componentconfig]="componentconfig">
     <ng-container *ngIf="aclAccess; else noaccess">
         <div *ngFor="let relateditem of relatedmodels.items" class="slds-p-around--xx-small slds-size--1-of-1">
-            <spice-path-related-list-tile class="slds-box slds-box--x-small slds-media slds-card__tile" [componentset]="componentconfig.componentset" [data]="relateditem" [module]="module"></spice-path-related-list-tile>
+            <spice-path-related-list-tile class="slds-box slds-box--x-small slds-media slds-card__tile" [componentset]="componentconfig.componentset" [data]="relateditem" [module]="relatedmodels.relatedModule"></spice-path-related-list-tile>
         </div>
     </ng-container>
     <ng-template #noaccess>
