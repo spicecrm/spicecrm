@@ -1,8 +1,7 @@
 /**
  * @module SpiceInstaller
  */
-import {Injectable, EventEmitter} from '@angular/core';
-import {BehaviorSubject, Observable, Subscription} from "rxjs";
+import {EventEmitter, Injectable} from '@angular/core';
 
 /**
  * the object to pass when a step is selected
@@ -20,13 +19,7 @@ export class spiceinstaller {
      * an array of all the installer steps as objects
      */
     public steps: any = [];
-
-    /**
-     * the selected step object and its event emitter for tracking the change
-     */
-    private _selectedStep: stepObject;
     public selectedStep$: EventEmitter<stepObject> = new EventEmitter<stepObject>();
-
     /**
      * backend config
      */
@@ -70,7 +63,6 @@ export class spiceinstaller {
      */
     public lc_collate: string = 'en_US.UTF-8';
     public lc_ctype: string = 'en_US.UTF-8';
-
     /**
      * fts
      */
@@ -90,6 +82,7 @@ export class spiceinstaller {
      */
     public language: string = 'en_us';
     public configObject: any = {};
+
     constructor() {
         this.configObject = {
             backendconfig: {},
@@ -158,6 +151,10 @@ export class spiceinstaller {
         ];
     }
 
+    /**
+     * the selected step object and its event emitter for tracking the change
+     */
+    private _selectedStep: stepObject;
 
     /**
      * getter for the selected step object

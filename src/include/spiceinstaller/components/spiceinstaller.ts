@@ -13,7 +13,6 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 })
 
 export class SpiceInstaller {
-    private disabled: boolean = false;
 
     constructor(
         private spiceinstaller: spiceinstaller

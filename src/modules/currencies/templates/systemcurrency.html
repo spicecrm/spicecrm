@@ -1,6 +1,6 @@
 <system-spinner *ngIf="loading"></system-spinner>
-<div *ngIf="!loading">
-    <div class="slds-p-vertical--small">
+<div *ngIf="!loading && prefCurrency.hasOwnProperty('name')">
+    <div class="slds-p-around--medium">
         <h2 class="slds-text-title--caps">System Currency</h2>
     </div>
 <table class="slds-table slds-table--bordered slds-table--cell-buffer">

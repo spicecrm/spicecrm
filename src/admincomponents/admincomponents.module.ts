@@ -55,6 +55,7 @@ import /*embed*/ { AdministrationSchedulerScheduleButton } from './components/ad
 
 import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryManagerItem, AdministrationDictionaryManagerItemField } from './components/administrationdictionarymanager';
 import /*embed*/ {AdministrationGeneralSettings} from "./components/administrationgeneralsettings";
+import /*embed*/ {AdministrationLanguages} from "./components/administrationlanguages";
 
 
 @NgModule({
@@ -98,7 +99,8 @@ import /*embed*/ {AdministrationGeneralSettings} from "./components/administrati
         AdministrationHomeScreen,
         AdministrationHomeScreenCard,
         AdministrationHomeScreenCardItem,
-        AdministrationGeneralSettings
+        AdministrationGeneralSettings,
+        AdministrationLanguages
     ],
     entryComponents: [
         AdministrationMain,

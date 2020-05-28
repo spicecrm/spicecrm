@@ -3,7 +3,6 @@
  */
 
 import {Component} from '@angular/core';
-import {toast} from '../../../services/toast.service';
 import {spiceinstaller} from "../services/spiceinstaller.service";
 
 
@@ -17,7 +16,6 @@ export class SpiceInstallerLicence {
     private author: string = '';
 
     constructor(
-        private toast: toast,
         private spiceinstaller: spiceinstaller
     ) {
 

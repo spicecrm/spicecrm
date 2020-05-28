@@ -2,9 +2,7 @@
  * @module SpiceInstaller
  */
 
-import {
-    Component, EventEmitter, Output
-} from '@angular/core';
+import {Component} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Router} from '@angular/router';
 import {configurationService} from '../../../services/configuration.service';
@@ -32,22 +30,24 @@ export class SpiceInstallerSetBackEnd {
     }
 
 
-    testConnection(){
+    testConnection() {
         this.checking = true;
-        this.http.get('config/check', {params: {url: btoa(this.spiceinstaller.systemurl)} }).subscribe(
-            (res : any) => {
+        this.http.get('config/check', {params: {url: btoa(this.spiceinstaller.systemurl)}}).subscribe(
+            (res: any) => {
                 var response = res;
-                if(response.success != true){
+                if (response.success != true) {
                     this.toast.sendToast(response.message, 'error');
                     this.checking = false;
-                } else if(response.message == "spiceinstaller") {
-                    this.spiceinstaller.configObject['backendconfig'] = {id: this.spiceinstaller.systemid,
+                } else if (response.message == "spiceinstaller") {
+                    this.spiceinstaller.configObject['backendconfig'] = {
+                        id: this.spiceinstaller.systemid,
                         display: this.spiceinstaller.systemname,
                         backendUrl: this.spiceinstaller.systemurl,
                         proxy: this.spiceinstaller.systemproxy,
                         developerMode: this.spiceinstaller.systemdevmode,
                         loginProgressBar: this.spiceinstaller.systemloginprogressbar,
-                        allowForgotPass: this.spiceinstaller.systemallowforgotpass};
+                        allowForgotPass: this.spiceinstaller.systemallowforgotpass
+                    };
                     this.spiceinstaller.selectedStep.completed = true;
                     this.spiceinstaller.steps[0] = this.spiceinstaller.selectedStep;
                     this.spiceinstaller.next(this.spiceinstaller.steps[0]);
@@ -59,11 +59,11 @@ export class SpiceInstallerSetBackEnd {
                 switch (err.status) {
                     case 401:
                         break;
-            }
+                }
             });
     }
 
-    saveConnection(){
+    saveConnection() {
         this.checking = true;
 
         let body = {
@@ -76,11 +76,11 @@ export class SpiceInstallerSetBackEnd {
             allowForgotPass: this.spiceinstaller.systemallowforgotpass
         };
         this.http.post('config/set', body, {}).subscribe(
-            (res : any) => {
+            (res: any) => {
                 var response = res;
-                if(response.success == true){
+                if (response.success == true) {
                     this.configurationService.setSiteData(response.site);
-                   this.router.navigate(['/login']);
+                    this.router.navigate(['/login']);
                 } else {
                     this.checking = false;
                 }
