@@ -9,22 +9,16 @@ import {fieldGeneric} from '../../../objectfields/components/fieldgeneric';
 import {Router} from '@angular/router';
 import {view} from '../../../services/view.service';
 
-declare var moment: any;
-
 /**
- * renders a bullet, indicating the existence of product warranty
+ * renders a bullet, in slds success color or grey, depending on the boolean value of the field
  */
 @Component({
-    templateUrl: './src/modules/servicecomponents/templates/fieldwarrantyindicator.html',
+    templateUrl: './src/modules/servicecomponents/templates/fieldbooleanbullet.html',
 })
-export class fieldWarrantyIndicator extends fieldGeneric {
+export class fieldBooleanBullet extends fieldGeneric {
 
     constructor( public model: model, public view: view, public language: language, public metadata: metadata, public router: Router ) {
         super( model, view, language, metadata, router );
-    }
-
-    get hasWarranty(): boolean {
-        return moment.isMoment( this.value ) && this.value.isSameOrAfter( moment(), 'day');
     }
 
 }

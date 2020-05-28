@@ -36,6 +36,7 @@ import /*embed*/ {ServiceActivitiyTimelineAddServiceNote} from "./components/ser
 import /*embed*/ {ServiceTicketRelatedTickets} from "./components/serviceticketrelatedtickets";
 import /*embed*/ {ServiceTicketRelatedTicketsTiles} from "./components/serviceticketrelatedticketstiles";
 import /*embed*/ {fieldWarrantyIndicator} from './fields/fieldwarrantyindicator';
+import /*embed*/ { fieldBooleanBullet } from './fields/fieldbooleanbullet';
 
 
 @NgModule({
@@ -73,7 +74,8 @@ import /*embed*/ {fieldWarrantyIndicator} from './fields/fieldwarrantyindicator'
         ServiceActivitiyTimelineAddServiceNote,
         ServiceTicketRelatedTickets,
         ServiceTicketRelatedTicketsTiles,
-        fieldWarrantyIndicator
+        fieldWarrantyIndicator,
+        fieldBooleanBullet
     ]
 })
 export class ServiceComponentsModule {
