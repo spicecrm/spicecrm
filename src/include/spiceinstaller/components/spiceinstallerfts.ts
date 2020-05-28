@@ -14,12 +14,15 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 })
 
 export class SpiceInstallerFTS {
-    private configBody: any = {};
-
+    /**
+     * condition booleans
+     */
     private serverCondition: boolean = true;
     private portCondition: boolean = true;
     private prefixCondition: boolean = true;
-
+    /**
+     * loading boolean
+     */
     private loading: boolean = false;
 
     constructor(

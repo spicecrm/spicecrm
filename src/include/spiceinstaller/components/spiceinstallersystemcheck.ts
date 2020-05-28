@@ -14,7 +14,6 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 })
 
 export class SpiceInstallerSystemCheck {
-    private configBody: any = {};
     private loading: boolean = false;
     private requirements: any = [];
     constructor(

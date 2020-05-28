@@ -1,11 +1,12 @@
-<div *ngIf="!loading" class="slds-p-around--medium">
+<div *ngIf="!loading">
+    <div class="slds-p-around--medium">
     <div class="slds-grid slds-grid--align-spread">
         <h2 class="slds-text-heading--medium ">
             <system-label [label]="'LBL_CURRENCY'"></system-label>
         </h2>
 
     </div>
-
+    </div>
     <div class="slds-p-vertical--small">
         <system-currency [currencies]="currencies"></system-currency>
     </div>

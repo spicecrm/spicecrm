@@ -36,13 +36,7 @@ import /*embed*/ {SpiceinstallerPostgreSQL} from "./components/spiceinstallerpgs
         DirectivesModule,
         SystemComponents,
         RouterModule.forRoot([
-            // {path: "login", component: GlobalLogin},
             {path: "install", component: SpiceInstaller}
-            /*
-            {path: "recent", component: GlobalRecentItems, canActivate: [loginCheck]},
-            {path: "search", component: GlobalSearch, canActivate: [loginCheck]},
-            {path: "search/:searchterm", component: GlobalSearch, canActivate: [loginCheck]},
-            */
         ])],
     declarations: [
         SpiceInstaller,
