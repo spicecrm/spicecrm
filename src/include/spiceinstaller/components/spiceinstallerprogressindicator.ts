@@ -2,7 +2,7 @@
  * @module SpiceInstaller
  */
 
-import {AfterViewInit, Component, ChangeDetectorRef} from '@angular/core';
+import {Component} from '@angular/core';
 import {spiceinstaller} from "../services/spiceinstaller.service";
 
 
@@ -11,16 +11,11 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
     templateUrl: './src/include/spiceinstaller/templates/spiceinstallerprogressindicator.html',
 })
 
-export class SpiceInstallerProgressIndicator implements AfterViewInit{
+export class SpiceInstallerProgressIndicator {
 
     constructor(
         private spiceinstaller: spiceinstaller,
-        private changeDetector: ChangeDetectorRef
     ) {
-    }
-
-    public ngAfterViewInit() {
-        this.changeDetector.detectChanges();
     }
 
     /**
@@ -28,7 +23,7 @@ export class SpiceInstallerProgressIndicator implements AfterViewInit{
      * @param step
      */
     private render(step) {
-        if(step.completed) {
+        if (step.completed) {
             this.spiceinstaller.selectedStep = step;
         }
 

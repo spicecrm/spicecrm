@@ -25,12 +25,10 @@ export class SpiceInstallerReview implements AfterViewInit{
         private configurationService: configurationService,
         private spiceinstaller: spiceinstaller
     ) {
-        window.console.log(this.spiceinstaller.configObject);
 
     }
 
     public ngAfterViewInit() {
-        console.log('after');
         this.spiceinstaller.selectedStep.completed = true;
         this.spiceinstaller.steps[7] = this.spiceinstaller.selectedStep;
     }

@@ -17,7 +17,6 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 })
 
 export class SpiceInstallerSetLanguage {
-    private configBody: any = {};
     private languages: any = [];
     private loading: boolean = false;
     constructor(

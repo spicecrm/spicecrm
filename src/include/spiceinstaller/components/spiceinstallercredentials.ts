@@ -3,8 +3,6 @@
  */
 
 import {Component} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {toast} from '../../../services/toast.service';
 import {spiceinstaller} from "../services/spiceinstaller.service";
 
 
@@ -14,25 +12,35 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 })
 
 export class SpiceInstallerCredentials {
-    private configBody: any = {};
 
+    /**
+     * coondition booleans
+     */
     private usernameCondition: boolean = true;
     private passwordCondition: boolean = true;
+    private rpPasswordCondition: boolean = true;
     private surnameCondition: boolean = true;
+    /**
+     * repeated password variable holder and Regexp for password
+     */
+    private rpPassword: string = '';
+    private pwRegexp: RegExp = new RegExp("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,})")
 
     constructor(
-        private toast: toast,
-        private http: HttpClient,
         private spiceinstaller: spiceinstaller
     ) {
     }
 
+    /**
+     * set user with provided inputs
+     */
     private saveUser() {
         this.usernameCondition = this.spiceinstaller.username.length > 0;
-        this.passwordCondition = this.spiceinstaller.password.length > 0;
+        this.passwordCondition = this.spiceinstaller.password.length > 0 && this.pwRegexp.test(this.spiceinstaller.password);
+        this.rpPasswordCondition = this.rpPassword == this.spiceinstaller.password;
         this.surnameCondition = this.spiceinstaller.surname.length > 0;
 
-        if (this.usernameCondition && this.passwordCondition && this.surnameCondition) {
+        if (this.usernameCondition && this.passwordCondition && this.rpPasswordCondition && this.surnameCondition) {
 
             this.spiceinstaller.configObject['credentials'] = {
                 username: this.spiceinstaller.username,

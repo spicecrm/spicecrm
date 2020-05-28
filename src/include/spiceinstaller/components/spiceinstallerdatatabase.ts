@@ -14,7 +14,9 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 })
 
 export class SpiceInstallerDatabase {
-
+    /**
+     * condition booleans
+     */
     private hostNameCondition: boolean = true;
     private userNameCondition: boolean = true;
     private dbNameCondition: boolean = true;
