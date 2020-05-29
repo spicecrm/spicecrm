@@ -143,7 +143,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
     /**
      * get the preferences and check if we have a username set
      */
-    private setPreferences(){
+    private setPreferences() {
         this.modal.openModal('StarfacePreferences').subscribe(componentRef => {
             componentRef.instance.saved$.subscribe(saved => {
                 this.getPreferences().subscribe(username => {
@@ -157,6 +157,11 @@ export class StarfaceToolbarIndicator implements OnDestroy {
      * login to the UC
      */
     private login() {
+        // unsubscribe from all subscriptions
+        this.subscriptions.unsubscribe();
+        this.subscriptions = new Subscription();
+
+        // set status to connecting
         this.starfacestatus = "connecting";
         this.backend.postRequest('StarFaceVOIP/login').subscribe(res => {
             if (res.login) {
@@ -204,6 +209,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
         }
         this.disconnectSocket();
         this.telephony.isActive = false;
+        this.subscriptions.unsubscribe();
     }
 
     private keepalive() {

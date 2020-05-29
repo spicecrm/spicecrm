@@ -205,6 +205,8 @@ export class navigation {
 
         // create the bheavious subject and set to the main tab
         this.activeTab$ = new BehaviorSubject('main');
+
+        this.setTabTitle();
     }
 
     private setSessionData() {
@@ -273,6 +275,9 @@ export class navigation {
         // emit the new active tab
         this.activeTab$.next(tab.id);
 
+        // sets the tab title
+        this.setTabTitle();
+
         // set the browser location accordingly without triggering the router
         this.router.navigate([tab.url]);
         // this.location.replaceState(tab.url);
@@ -315,11 +320,11 @@ export class navigation {
         // this.activeId = id;
         this.activeModule$.emit(activemodule);
 
-        this.title.setTitle(this.systemName + " " + (summaryText !== "" ? summaryText : activemodule));
+        this.title.setTitle(this.systemName + " / " + (summaryText !== "" ? summaryText : activemodule));
     }
 
     private get systemName() {
-        return this.configurationService.data.display ? this.configurationService.data.display : "SpiceCRM";
+        return this.configurationService.systemName;
     }
 
     /**
@@ -382,6 +387,9 @@ export class navigation {
 
                     // check for the activetab
                     this.activeTab$.next(this.activeTab);
+
+                    // set the tab title
+                    this.setTabTitle();
                 }
                 break;
             default:
@@ -487,7 +495,7 @@ export class navigation {
      */
     private parentTabId(tabId) {
         // if we are on main no parenttab id can be found
-        if(tabId == 'main') return null;
+        if (tabId == 'main') return null;
 
         // otherwise search tabs
         return this.objectTabs.find(tab => tab.id == tabId).parentid;
@@ -642,6 +650,25 @@ export class navigation {
     public setActiveTab(tabid) {
         this.activeTab = tabid;
         this.activeTab$.next(this.activeTab);
+
+        // set the tab title
+        this.setTabTitle();
+    }
+
+    private setTabTitle() {
+        // sets the browser title
+        let tab = this.getTabById(this.activeTab);
+
+        let displayname = '';
+        if(tab.displayname){
+            displayname = tab.displayname;
+        } else if(tab.displaymodule){
+            displayname = this.language.getModuleName(tab.displaymodule);
+        } else if (this.activeModule){
+            displayname = this.language.getModuleName(this.activeModule);
+        }
+
+        this.title.setTitle(this.systemName + (displayname ?  ` / ${displayname}`: ''));
     }
 
     /**

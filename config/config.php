@@ -133,6 +133,68 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 $file = file_get_contents($filepath);
                 echo( str_replace('<serverurl>', $serverurl, $file) );
                 break;
+
+            case 'systemdetails':
+                // CR1000421: read file header of every app + vendor/@angular/core.umd.min.js + slsassets/styles/salesforce-lightening-design-system.css
+                // get angular version
+                $systemdetails['angular']['name'] = 'angular';
+                // get path to folder
+                $path = dirname(__FILE__);
+                $path = str_replace('/config', '/vendor', $path);
+                $path = realpath($path.'/@angular/core.umd.min.js');
+                $file = file_get_contents($path);
+                // find version in header: * @license Angular v
+                preg_match("/\s\*\s@license\sAngular\sv(.*)/", $file, $matches, PREG_OFFSET_CAPTURE);
+                $systemdetails['angular']['release'] = $matches[1][0];
+
+
+                // get lightening design version
+                $systemdetails['lighteningdesign']['name'] = 'lighteningdesign';
+                // get path to folder
+                $path = dirname(__FILE__);
+                $path = str_replace('/config', '/sldassets', $path);
+                $path = realpath($path.'/styles/salesforce-lightning-design-system.css');
+                $file = file_get_contents($path);
+                // find version in header: *! Lightning Design System 2.11.7 *
+                preg_match("@/\*!\sLightning Design System\s(.*)\*/@", $file, $matches, PREG_OFFSET_CAPTURE);
+                $systemdetails['lighteningdesign']['release'] = $matches[1][0];
+
+
+                // get path to app folder
+                $path = dirname(__FILE__);
+                $path = str_replace('/config', '/app', $path);
+                $path = realpath($path);
+                // prepare patterns to check in file header text
+                $patterns = ['release', 'date', 'build'];
+                // create Iterator
+                $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::SELF_FIRST);
+                // loop results
+                foreach($objects as $name => $object){
+                    $pathinfo = pathinfo($object->getPathname());
+                    if(!is_dir($object->getPathname()) && $pathinfo['extension'] == 'js'){
+                        $file = file_get_contents($object->getPathname());
+                        // find file header
+                        preg_match("@/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*\*/@", $file, $matches, PREG_OFFSET_CAPTURE);
+                        // check content of file header
+                        $lines = preg_split('/\r\n|\r|\n/', $matches[0][0]);
+                        $systemdetails[$pathinfo['filename']]['name'] = $pathinfo['filename'];
+
+                        // loop lines and fill $systemdetails
+                        foreach($lines as $line){
+                            foreach($patterns as $pattern){
+                                if(preg_match('/'.$pattern.':/', $line)){
+                                    $lineinfo = explode($pattern.': ', $line);
+                                    $systemdetails[$pathinfo['filename']][$pattern] = trim($lineinfo[1]);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // return $systemdetails
+                echo json_encode($systemdetails);
+                break;
+
             case 'gsuite':
                 // define the extension dir and the archive name
                 $gSuiteExtensionDir = dirname(__DIR__) . "/assets/gsuite/";

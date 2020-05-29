@@ -74,6 +74,7 @@ export class PriceConditionsByDeterminationList implements OnChanges {
 
     private getUniqueKeys() {
         this.determinationkeys = _.uniq(this.conditions.map(d => d.pricecondition_key));
+        this.determinationkeys.sort();
     }
 
     /**
@@ -105,7 +106,7 @@ export class PriceConditionsByDeterminationList implements OnChanges {
      */
     private getValueFromKey(key, element) {
         let val = key.substring(element.element_start, element.element_start + element.element_length);
-        if (element.element_domain) {
+        if (element.element_domain && this.language.languagedata.applist[element.element_domain]) {
             let textval = this.language.languagedata.applist[element.element_domain][val];
             if (textval) val = textval;
         }

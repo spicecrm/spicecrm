@@ -101,6 +101,8 @@ export class PriceConditionsByCondition implements OnInit {
     }
 
     private conditonsForDeterminationId(determinationid) {
-        return this.conditions.filter(c => c.priceconditiontype_id == this.activeconditiontype && c.priceconditiontypedetermination_id == determinationid);
+        let conditions = this.conditions.filter(c => c.priceconditiontype_id == this.activeconditiontype && c.priceconditiontypedetermination_id == determinationid);
+        conditions.sort((a, b) => a.pricecondition_key > b.pricecondition_key ? 1 : -1);
+        return conditions;
     }
 }
