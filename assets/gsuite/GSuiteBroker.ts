@@ -135,11 +135,11 @@ class GSuiteBroker {
 
     /**
      * download email attachment from url and return base64 string
-     * @param attachment
+     * @param downloadUrl
      * @return base64
      */
-    private async downloadEmailAttachment(attachment): Promise<string> {
-        const response = await fetch(attachment.downloadUrl, {method: 'POST'});
+    private async downloadEmailAttachment(downloadUrl: string): Promise<string> {
+        const response = await fetch(downloadUrl, {method: 'POST'});
         const blob = await response.blob();
         const base64 = await this.readFileAsync(blob);
         return JSON.stringify(base64.replace(/^data:.+;base64,/, ''));
@@ -200,7 +200,7 @@ class GSuiteBroker {
      * @param imageSrc
      * @return base64ImageSrc
      */
-    private async downloadImageToBase64(imageSrc): Promise<{base64: string, src: string}> {
+    private async downloadImageToBase64(imageSrc: string): Promise<{base64: string, src: string}> {
         const response = await fetch(imageSrc, {method: 'GET'});
         const blob = await response.blob();
         return {
@@ -213,7 +213,7 @@ class GSuiteBroker {
      * read file async and return promise
      * @param blob
      */
-    private async readFileAsync(blob): Promise<any> {
+    private async readFileAsync(blob: Blob): Promise<any> {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => resolve(reader.result);
