@@ -106,6 +106,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     switch ($info['http_code']) {
                         case '200':
                             $success = true;
+                            $message = $result;
                             break;
                         default:
                             $message = 'http response code ' . $info['http_code'] . ' returned from server';
