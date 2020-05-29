@@ -20,7 +20,7 @@ export class SpiceInstallerDatabase {
     private hostNameCondition: boolean = true;
     private userNameCondition: boolean = true;
     private dbNameCondition: boolean = true;
-    
+
     private loading: boolean = false;
 
     constructor(
@@ -78,7 +78,7 @@ export class SpiceInstallerDatabase {
                     var res = response;
                     if (!res.success) {
                         for (let e in res.errors) {
-                            this.toast.sendAlert('Error with: ' + res.errors[e], 'error');
+                            this.toast.sendAlert('Error: ' + res.errors[e], 'error');
                         }
                     } else {
                         this.spiceinstaller.configObject['database'] = res.config;

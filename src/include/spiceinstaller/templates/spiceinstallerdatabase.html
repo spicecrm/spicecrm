@@ -1,4 +1,4 @@
-<div class="slds-p-around--medium">
+<div class="slds-p-around--medium" [system-overlay-loading-spinner]="loading">
     <h2 class="slds-text-heading--medium slds-p-vertical--small slds-p-horizontal--x-small">
         Database Configuration
     </h2>
@@ -13,10 +13,10 @@
         </div>
     </div>
     <div *ngIf="spiceinstaller.db_type != 'pgsql'">
-        <spice-installer-mysqli></spice-installer-mysqli>
+        <spice-installer-mysqli [dbNameCondition]="dbNameCondition" [hostNameCondition]="hostNameCondition" [userNameCondition]="userNameCondition"></spice-installer-mysqli>
     </div>
     <div *ngIf="spiceinstaller.db_type == 'pgsql'">
-        <spice-installer-pgsql></spice-installer-pgsql>
+        <spice-installer-pgsql [dbNameCondition]="dbNameCondition" [hostNameCondition]="hostNameCondition" [userNameCondition]="userNameCondition"></spice-installer-pgsql>
     </div>
     <div class="slds-p-vertical--small slds-text-align--right">
         <button class="slds-button slds-button--brand" (click)="checkDB()">next</button>
