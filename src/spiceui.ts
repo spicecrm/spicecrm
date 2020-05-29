@@ -52,6 +52,7 @@ import {modal} from "./services/modal.service";
 import {layout} from "./services/layout.service";
 import {libloader} from "./services/libloader.service";
 import {telephony} from "./services/telephony.service";
+import {socket} from "./services/socket.service";
 
 import {GlobalLogin} from "./globalcomponents/components/globallogin";
 import {SystemDynamicRouteInterceptor} from "./systemcomponents/components/systemdynamicrouteinterceptor";
@@ -145,29 +146,12 @@ export class SpiceUI {
         assistant,
         backend,
         broadcast,
-        layout,
-        navigation,
         canNavigateAway,
-        session,
-        metadata,
-        aclCheck,
-        loginCheck,
-        helper,
-        loginService,
-        loader,
         configurationService,
         cookie,
         currency,
         dockedComposer,
-        fts,
-        recent,
-        SystemJsNgModuleLoader,
-        modelutilities,
-        toast,
         favorite,
-        reminder,
-        territories,
-        currency,
         footer,
         fts,
         helper,
@@ -187,6 +171,7 @@ export class SpiceUI {
         recent,
         reminder,
         session,
+        socket,
         telephony,
         territories,
         Title,
@@ -199,14 +184,8 @@ export class SpiceUI {
     ]
 })
 export class SpiceUIModule {
-    public version = "1.0";
-    public build_date = "/*build_date*/";
+    constructor(private socket: socket) {
 
-    constructor(
-        public metadata: metadata,
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
     }
 }
 

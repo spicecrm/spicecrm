@@ -2,7 +2,8 @@
  * @module services
  */
 import {Injectable, EventEmitter, Injector, OnDestroy, Optional} from "@angular/core";
-import {of, BehaviorSubject, Subject, Observable} from "rxjs";
+import {of, BehaviorSubject, Subject, Observable, Subscription} from "rxjs";
+import {Router} from "@angular/router";
 
 import {session} from "./session.service";
 import {modal} from "./modal.service";
@@ -15,7 +16,8 @@ import {metadata} from "./metadata.service";
 import {backend} from "./backend.service";
 import {recent} from "./recent.service";
 import {configurationService} from "./configuration.service";
-import {Router} from "@angular/router";
+import {socket} from "./socket.service";
+
 
 // import {GlobalHeader} from '../globalcomponents/components/globalheader';
 // import {GlobalFooter} from '../globalcomponents/components/globalfooter';
@@ -226,6 +228,8 @@ export class model implements OnDestroy {
      */
     public savingProgress: BehaviorSubject<number> = new BehaviorSubject(1);
 
+    private subscriptions: Subscription = new Subscription();
+
     constructor(
         public backend: backend,
         private broadcast: broadcast,
@@ -239,18 +243,23 @@ export class model implements OnDestroy {
         private modal: modal,
         private navigation: navigation,
         private configuration: configurationService,
-        public injector: Injector
+        public injector: Injector,
+        public socket: socket
     ) {
         this.modelRegisterId = this.navigation.registerModel(this);
 
         this.data$ = new BehaviorSubject(this.data);
-        this.broadcast.message$.subscribe(data => {
-            if (data.messagetype === 'timezone.changed') {
-                this.utils.timezoneChanged(this.data, data.messagedata);
-                this.utils.timezoneChanged(this.backupData, data.messagedata);
-            }
-        });
+
+        this.subscriptions.add(
+            this.broadcast.message$.subscribe(data => {
+                if (data.messagetype === 'timezone.changed') {
+                    this.utils.timezoneChanged(this.data, data.messagedata);
+                    this.utils.timezoneChanged(this.backupData, data.messagedata);
+                }
+            })
+        );
     }
+
 
     get messages(): any[] {
         return this._messages;
@@ -348,7 +357,7 @@ export class model implements OnDestroy {
         if (this.checkAccess("detail")) {
             let objectlink = "/module/" + this.module + "/" + this.id;
             // if we have a tabid and it is not th emain tab add it
-            if(tabid) objectlink = '/tab/'+tabid + '/'+ objectlink;
+            if (tabid) objectlink = '/tab/' + tabid + '/' + objectlink;
             // navigate to the route
             this.router.navigate([objectlink]);
         } else {
@@ -406,6 +415,7 @@ export class model implements OnDestroy {
         );
         return responseSubject.asObservable();
     }
+
 
     /**
      * validates the model
@@ -895,7 +905,7 @@ export class model implements OnDestroy {
             changedData = this.data;
         }
 
-        this.backend.save(this.module, this.id, changedData, this.savingProgress, this.templateId )
+        this.backend.save(this.module, this.id, changedData, this.savingProgress, this.templateId)
             .subscribe(
                 res => {
                     this.data = res;
@@ -917,7 +927,6 @@ export class model implements OnDestroy {
                     if (notify) {
                         this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");
                     }
-
 
 
                     // emit the save$
@@ -1131,7 +1140,7 @@ export class model implements OnDestroy {
         let copyrules = this.metadata.getCopyRules("*", this.module);
         for (let copyrule of copyrules) {
             if (copyrule.tofield && copyrule.fixedvalue) {
-                this.setFixedValue( copyrule.tofield, copyrule.fixedvalue );
+                this.setFixedValue(copyrule.tofield, copyrule.fixedvalue);
             } else if (copyrule.tofield && copyrule.calculatedvalue) {
                 this.setFieldValue(copyrule.tofield, this.getCalculatdValue(copyrule.calculatedvalue));
             }
@@ -1164,7 +1173,7 @@ export class model implements OnDestroy {
         let fieldDef = this.metadata.getFieldDefs(this.module, toField);
 
         // if not found just set the field attribute
-        if(!fieldDef) this.setField(toField, value);
+        if (!fieldDef) this.setField(toField, value);
 
         // handle links
         switch (fieldDef.type) {
@@ -1188,18 +1197,18 @@ export class model implements OnDestroy {
      * @param toField
      * @param value
      */
-    private setFixedValue( toField, value ) {
+    private setFixedValue(toField, value) {
         let fieldDef = this.metadata.getFieldDefs(this.module, toField);
 
         // if no field definition found just set the field attribute
-        if ( !fieldDef ) this.setField( toField, value );
+        if (!fieldDef) this.setField(toField, value);
 
-        switch ( fieldDef.type ) {
+        switch (fieldDef.type) {
             case 'bool':
-                this.setField( toField, ( value === 'true' || value === '1' ) ? true : (( value === 'false' || value === '0' ) ? false : null ));
+                this.setField(toField, (value === 'true' || value === '1') ? true : ((value === 'false' || value === '0') ? false : null));
                 break;
             default:
-                this.setField( toField, value );
+                this.setField(toField, value);
                 break;
         }
     }
@@ -1525,6 +1534,9 @@ export class model implements OnDestroy {
 
     public ngOnDestroy(): void {
         this.navigation.unregisterModel(this.modelRegisterId);
+
+        // unsubscribe from any subscriptions we might have
+        this.subscriptions.unsubscribe();
     }
 
     public isDirty(): boolean {
