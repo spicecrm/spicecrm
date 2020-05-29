@@ -231,7 +231,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
                 // translate the server url in GSuiteBroker.js temp file
                 $gSuiteJsContent = str_replace('<serverurl>', $serverUrl, file_get_contents($gSuiteJsDir));
-                $gSuiteJsContent = str_replace('//# sourceMappingURL=GSuiteBroker.js.map', '', file_get_contents($gSuiteJsDir));
+                $gSuiteJsContent = str_replace('//# sourceMappingURL=GSuiteBroker.js.map', '', $gSuiteJsContent);
                 // write the translated content into the GSuiteBroker.js temp file
                 $zip->addFromString( 'GSuiteBroker.js', $gSuiteJsContent);
 
