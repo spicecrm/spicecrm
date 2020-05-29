@@ -133,6 +133,67 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 $file = file_get_contents($filepath);
                 echo( str_replace('<serverurl>', $serverurl, $file) );
                 break;
+            case 'gsuite':
+                // define the extension dir and the archive name
+                $gSuiteExtensionDir = dirname(__DIR__) . "/assets/gsuite/";
+                $zipFileName = 'GSuiteChromeExtension.zip';
+                $zipFileDir = $gSuiteExtensionDir . $zipFileName;
+                $gSuiteJsDir = $gSuiteExtensionDir . "GSuiteBroker.js";
+
+                // define the serverUrl from the request
+                $serverUrl = str_replace('/config/gsuite', '', "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}");
+                $serverUrl = isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) ? 'https://' : 'http://' . $serverUrl;
+                if(strpos($serverUrl,'?') !== false) $serverUrl = substr($serverUrl, 0, $parampos);
+
+                // Initialize archive object
+                $zip = new ZipArchive();
+                $zip->open($zipFileDir, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+                // get all files in the extension folder
+                $files = new RecursiveIteratorIterator(
+                    new RecursiveDirectoryIterator($gSuiteExtensionDir),
+                    RecursiveIteratorIterator::LEAVES_ONLY
+                );
+
+                foreach ($files as $name => $file) {
+                    // Skip typescript and map files and directories (they would be added automatically)
+                    $ext = pathinfo($name, PATHINFO_EXTENSION);
+                    if ($file->isDir() || strpos($name, 'GSuiteBroker') !== false) continue;
+
+                    $filePath = $file->getRealPath();
+                    $relativePath = substr($filePath, strlen($gSuiteExtensionDir));
+
+                    // Add file to archive
+                    $zip->addFile($filePath, $relativePath);
+                }
+
+                // translate the server url in GSuiteBroker.js temp file
+                $gSuiteJsContent = str_replace('<serverurl>', $serverUrl, file_get_contents($gSuiteJsDir));
+                $gSuiteJsContent = str_replace('//# sourceMappingURL=GSuiteBroker.js.map', '', file_get_contents($gSuiteJsDir));
+                // write the translated content into the GSuiteBroker.js temp file
+                $zip->addFromString( 'GSuiteBroker.js', $gSuiteJsContent);
+
+                // create the zip file
+                $zip->close();
+
+                // set header for the zip file download
+                header('Content-type: application/zip');
+                header("Content-Disposition: attachment; filename=$zipFileName");
+                header("Content-Length: " . filesize($zipFileDir));
+                header("Pragma: public");
+                header("Cache-Control: maxage=1, post-check=0, pre-check=0");
+                header("X-Content-Type-Options: nosniff");
+                header("Expires: 0");
+
+                // clean the output buffer to the browser
+                while (ob_get_level() && @ob_end_clean());
+
+                // read file content to the browser to be downloaded
+                readfile($zipFileDir);
+
+                // delete the zip file
+                unlink($zipFileDir);
+                break;
         }
         break;
     case 'POST':
