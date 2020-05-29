@@ -117,7 +117,7 @@ import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
         ObjectComponents,
         RouterModule.forRoot([
             // {path: "login", component: GlobalLogin},
-            {path: "setup", component: GlobalSetup}
+            //{path: "setsddup", component: GlobalSetup}
             /*
             {path: "recent", component: GlobalRecentItems, canActivate: [loginCheck]},
             {path: "search", component: GlobalSearch, canActivate: [loginCheck]},
