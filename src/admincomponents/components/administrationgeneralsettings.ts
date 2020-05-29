@@ -11,7 +11,7 @@ import {currency} from "../../services/currency.service";
 import {configurationService} from "../../services/configuration.service";
 
 @Component({
-    selector: 'administration-general-sertting',
+    selector: 'administration-general-setting',
     templateUrl: './src/admincomponents/templates/administrationgeneralsettings.html',
 })
 
