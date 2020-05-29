@@ -27,10 +27,10 @@ export class SpiceInstallerSetLanguage {
         private backend: backend,
         private spiceinstaller: spiceinstaller
     ) {
-        //checks the reference
+        // checks the reference
         this.checkReference();
         // loads the languages
-        this.http.get(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/KREST/spiceinstaller/getlanguages`).subscribe((result:any) =>{
+        this.http.get(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/KREST/spiceinstaller/getlanguages`).subscribe((result: any) => {
             this.languages = result.languages;
         });
     }
@@ -52,7 +52,7 @@ export class SpiceInstallerSetLanguage {
      * sets the chosen language and saves it in the configuration body
      */
     private setLanguage() {
-        this.spiceinstaller.configObject['language'] = {language: this.spiceinstaller.language};
+        this.spiceinstaller.configObject.language = {language: this.spiceinstaller.language};
         this.spiceinstaller.selectedStep.completed = true;
         this.spiceinstaller.steps[6] = this.spiceinstaller.selectedStep;
         this.spiceinstaller.next(this.spiceinstaller.steps[6]);

@@ -18,7 +18,7 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 export class SpiceInstallerSetBackEnd {
 
 
-    checking: boolean = false;
+    private checking: boolean = false;
 
     constructor(
         private toast: toast,
@@ -30,7 +30,7 @@ export class SpiceInstallerSetBackEnd {
     }
 
 
-    testConnection() {
+    private testConnection() {
         this.checking = true;
         this.http.get('config/check', {params: {url: btoa(this.spiceinstaller.systemurl)}}).subscribe(
             (res: any) => {
@@ -39,7 +39,7 @@ export class SpiceInstallerSetBackEnd {
                     this.toast.sendToast(response.message, 'error');
                     this.checking = false;
                 } else if (response.message == "spiceinstaller") {
-                    this.spiceinstaller.configObject['backendconfig'] = {
+                    this.spiceinstaller.configObject.backendconfig = {
                         id: this.spiceinstaller.systemid,
                         display: this.spiceinstaller.systemname,
                         backendUrl: this.spiceinstaller.systemurl,
@@ -63,7 +63,7 @@ export class SpiceInstallerSetBackEnd {
             });
     }
 
-    saveConnection() {
+    private saveConnection() {
         this.checking = true;
 
         let body = {
@@ -77,7 +77,7 @@ export class SpiceInstallerSetBackEnd {
         };
         this.http.post('config/set', body, {}).subscribe(
             (res: any) => {
-                var response = res;
+                let response = res;
                 if (response.success == true) {
                     this.configurationService.setSiteData(response.site);
                     this.router.navigate(['/login']);

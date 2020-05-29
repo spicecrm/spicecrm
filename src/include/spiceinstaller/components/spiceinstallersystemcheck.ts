@@ -41,7 +41,7 @@ export class SpiceInstallerSystemCheck {
                     }
                 }
                 if (check) {
-                    this.spiceinstaller.selectedStep.completed = true
+                    this.spiceinstaller.selectedStep.completed = true;
                     this.spiceinstaller.dbdrivers = this.requirements.dbdrivers;
                 }
             } else {

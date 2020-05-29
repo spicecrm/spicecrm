@@ -75,25 +75,25 @@ export class SpiceInstallerDatabase {
             this.http.post(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/KREST/spiceinstaller/checkdb`, body).subscribe(
                 (response: any) => {
                     this.loading = false;
-                    var res = response;
+                    let res = response;
                     if (!res.success) {
                         for (let e in res.errors) {
                             this.toast.sendAlert('Error: ' + res.errors[e], 'error');
                         }
                     } else {
-                        this.spiceinstaller.configObject['database'] = res.config;
-                        this.spiceinstaller.configObject['dboptions'] = {
+                        this.spiceinstaller.configObject.database = res.config;
+                        this.spiceinstaller.configObject.dboptions = {
                             persistance: this.spiceinstaller.persistent,
                             autofree: this.spiceinstaller.autofree,
                             debug: this.spiceinstaller.debug,
                             ssl: this.spiceinstaller.ssl,
                             collation: this.spiceinstaller.collation
-                        }
+                        };
                         if(this.spiceinstaller.dbaccessuser == 'newdbuser') {
-                            this.spiceinstaller.configObject['databaseuser'] = {
+                            this.spiceinstaller.configObject.databaseuser = {
                                 db_user_name: this.spiceinstaller.new_db_user_name,
                                 db_password: this.spiceinstaller.new_db_password
-                            }
+                            };
                         }
                         this.spiceinstaller.selectedStep.completed = true;
                         this.spiceinstaller.steps[3] = this.spiceinstaller.selectedStep;
