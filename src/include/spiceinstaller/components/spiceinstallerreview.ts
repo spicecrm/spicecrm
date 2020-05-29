@@ -2,7 +2,7 @@
  * @module SpiceInstallerModule
  */
 
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Router} from '@angular/router';
 import {configurationService} from '../../../services/configuration.service';
@@ -15,7 +15,7 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
     templateUrl: './src/include/spiceinstaller/templates/spiceinstallerreview.html',
 })
 
-export class SpiceInstallerReview implements AfterViewInit{
+export class SpiceInstallerReview implements AfterViewInit {
     private loading: boolean = false;
 
     constructor(
@@ -40,7 +40,7 @@ export class SpiceInstallerReview implements AfterViewInit{
         this.loading = true;
         this.http.post(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/KREST/spiceinstaller/install`, this.spiceinstaller.configObject).subscribe(
             (response: any) => {
-                var res = response;
+                let res = response;
                 this.loading = false;
                 if (!res.success) {
                     for (let e in res.errors) {
@@ -49,7 +49,7 @@ export class SpiceInstallerReview implements AfterViewInit{
                 } else {
                     this.http.post('config/set', this.spiceinstaller.configObject.backendconfig, {}).subscribe(
                         (res: any) => {
-                            var response = res;
+                            let response = res;
                             if (response.success == true) {
                                 this.configurationService.setSiteData(response.site);
                                 this.router.navigate(['/login']);

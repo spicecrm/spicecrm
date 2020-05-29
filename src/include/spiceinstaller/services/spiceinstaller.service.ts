@@ -23,9 +23,9 @@ export class spiceinstaller {
     /**
      * backend config
      */
-    public systemid: string = '123';
-    public systemname: string = 'spicy';
-    public systemurl: string = 'http://localhost/spicecrm_be_installer';
+    public systemid: string = '000';
+    public systemname: string = 'spice';
+    public systemurl: string = '';
     public systemproxy: number = 0;
     public systemdevmode: boolean = true;
     public systemloginprogressbar: number = 0;
@@ -39,7 +39,7 @@ export class spiceinstaller {
      */
     public db_host_name: string = '';
     public db_host_instance: string = '';
-    public db_user_name: string = ''
+    public db_user_name: string = '';
     public db_password: string = '';
     public db_name: string = '';
     public db_type: string = 'mysql';
@@ -66,8 +66,8 @@ export class spiceinstaller {
     /**
      * fts
      */
-    public server: string = 'localhost';
-    public port: string = '9200';
+    public server: string = '';
+    public port: string = '';
     public prefix: string = 'spicecrm_';
     /**
      * credentials
