@@ -10,6 +10,8 @@ import {DomSanitizer} from "@angular/platform-browser";
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 import {view} from "../../../services/view.service";
+import {modal} from '../../../services/modal.service';
+import {mediafiles} from '../../../services/mediafiles.service';
 
 /**
  * renders a tile for a media file
@@ -18,7 +20,7 @@ import {view} from "../../../services/view.service";
     selector: 'media-files-tile',
     templateUrl: './src/modules/mediafiles/templates/mediafilestile.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [model, view]
+    providers: [mediafiles, model, view]
 })
 export class MediaFilesTile implements OnInit {
 
@@ -42,7 +44,7 @@ export class MediaFilesTile implements OnInit {
      */
     private actionset: string;
 
-    constructor(private metadata: metadata, private model: model, private view: view, private sanitizer: DomSanitizer) {
+    constructor( private metadata: metadata, private model: model, private view: view, private sanitizer: DomSanitizer, private modal: modal, private mediafiles: mediafiles ) {
         // load the config
         this.getConfig();
     }
@@ -95,6 +97,19 @@ export class MediaFilesTile implements OnInit {
             return this.sanitizer.bypassSecurityTrustResourceUrl('data:'+this.model.getField('filetype')+';base64,' + thumbnail);
         }
         return false;
+    }
+
+    /**
+     * Show the image with maximal size in a modal window.
+     */
+    private expand() {
+        this.modal.openModal('SystemImagePreviewModal').subscribe(modalref => {
+            modalref.instance.imgname = this.model.getFieldValue('name');
+            modalref.instance.imgtype = this.model.getFieldValue('filetype');
+            this.mediafiles.getImageBase64( this.model.id ).subscribe( data => {
+                modalref.instance.imgsrc = 'data:' + this.model.getFieldValue('filetype') + ';base64,' + data.img;
+            });
+        });
     }
 
 }
