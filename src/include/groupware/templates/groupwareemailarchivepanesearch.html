@@ -35,7 +35,7 @@
             <input type="text" id="search-term" autoComplete="off" [placeholder]="language.getLabel('LBL_SEARCH_SPICE')" class="slds-input" [(ngModel)]="this.searchTerm" (keyup)="search($event)"/>
         </div>
     </div>
-    <div class="slds-p-vertical--small" system-to-bottom>
+    <div class="slds-p-vertical--small slds-p-right--small" system-to-bottom>
         <groupware-pane-bean *ngFor="let bean of beans" [bean]="bean" [system-model-provider]="{module: bean.module, id: bean.id, data: bean.data}"></groupware-pane-bean>
     </div>
 </div>
