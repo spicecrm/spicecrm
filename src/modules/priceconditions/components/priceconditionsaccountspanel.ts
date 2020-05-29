@@ -41,7 +41,7 @@ declare var _: any;
         ])
     ]
 })
-export class PriceConditionsAccountsPanel implements OnInit {
+export class PriceConditionsAccountsPanel {
 
     /**
      * inidcates that the panel is loading
@@ -68,11 +68,14 @@ export class PriceConditionsAccountsPanel implements OnInit {
      */
     private _isopen: boolean = true;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private backend: backend, private configuration: configurationService, private priceconditonsconfiguration: priceconditonsconfiguration) {
-    }
+    private activeView: 'condition'|'determination' = 'determination';
 
-    public ngOnInit(): void {
-        this.loadConditions();
+    constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private backend: backend, private configuration: configurationService, private priceconditonsconfiguration: priceconditonsconfiguration) {
+        this.priceconditonsconfiguration.loaded$.subscribe(loaded => {
+            if (loaded) {
+                this.loadConditions();
+            }
+        });
     }
 
     /**
@@ -91,22 +94,6 @@ export class PriceConditionsAccountsPanel implements OnInit {
         this.backend.getRequest(`module/PriceConditions/list/${this.model.module}/${this.model.id}`).subscribe(conditions => {
             this.conditions = conditions;
 
-            // determine the conditiontypes we have
-            /**
-             for (let condition of conditions) {
-                if (this.conditiontypes.indexOf(condition.priceconditiontype_id) < 0) {
-                    this.conditiontypes.push(condition.priceconditiontype_id);
-                }
-            }*/
-
-
-            this.conditiontypes = _.uniq(this.conditions.map(d => d.priceconditiontype_id));
-
-            // set the first one to active
-            if (this.conditiontypes.length > 0) {
-                this.setConditionType(this.conditiontypes[0]);
-            }
-
             // set loading to false
             this.loading = false;
         });
@@ -116,46 +103,11 @@ export class PriceConditionsAccountsPanel implements OnInit {
         this.activeconditiontype = conditiontypeid;
     }
 
-    /**
-     * gets the name for the condition
-     *
-     * @param priceconditiontype_id
-     */
-    private getConditionTypeName(priceconditiontype_id) {
-        if (this.priceconditonsconfiguration.config.conditiontypes) {
-            let ct = this.priceconditonsconfiguration.config.conditiontypes.find(t => t.id == priceconditiontype_id);
-            if (ct) return ct.name;
-        }
-
-        return priceconditiontype_id;
-    }
-
-    /**
-     * gets the label for the condition
-     *
-     * @param priceconditiontype_id
-     */
-    private getConditionTypeLabel(priceconditiontype_id) {
-        if (this.priceconditonsconfiguration.config.conditiontypes) {
-            let ct = this.priceconditonsconfiguration.config.conditiontypes.find(t => t.id == priceconditiontype_id);
-            if (ct) return ct.label ? ct.label : ct.name;
-        }
-
-        return priceconditiontype_id;
-    }
 
     /**
      * a helper to get if we have related models and the state is open
      */
     get isopen() {
         return this._isopen;
-    }
-
-    get activedeterminations() {
-        return _.uniq(this.conditions.filter(c => c.priceconditiontype_id == this.activeconditiontype).map(d => d.priceconditiontypedetermination_id));
-    }
-
-    private conditonsForDeterminationId(determinationid) {
-        return this.conditions.filter(c => c.priceconditiontype_id == this.activeconditiontype && c.priceconditiontypedetermination_id == determinationid);
     }
 }
