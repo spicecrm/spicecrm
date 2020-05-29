@@ -2,7 +2,7 @@
  * @module SpiceInstallerModule
  */
 
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {spiceinstaller} from "../services/spiceinstaller.service";
 
 
@@ -12,6 +12,12 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 })
 
 export class SpiceinstallerPostgreSQL {
+    /**
+     * inputs from the parent component
+     */
+    @Input() private hostNameCondition: boolean;
+    @Input() private userNameCondition: boolean;
+    @Input() private dbNameCondition: boolean;
 
     constructor(
         private spiceinstaller: spiceinstaller

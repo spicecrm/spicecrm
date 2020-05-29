@@ -66,7 +66,6 @@ export class CurrencyManager implements OnInit {
                 this.backend.getRequest('currencies').subscribe(data => {
                     if (data) {
                         this.currencies = data;
-                        window.console.log(this.currencies)
                     } else {
                         this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
                     }
