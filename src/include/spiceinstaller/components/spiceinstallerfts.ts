@@ -55,14 +55,14 @@ export class SpiceInstallerFTS {
             this.http.post(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/KREST/spiceinstaller/checkfts`, body).subscribe(
                 (response: any) => {
                     this.loading = false;
-                    var res = response;
+                    let res = response;
                     if (!res.success) {
                         for (let e in res.errors) {
                             this.toast.sendAlert('Error with: ' + res.errors[e], 'error');
                         }
                     } else {
                         this.spiceinstaller.selectedStep.completed = true;
-                        this.spiceinstaller.configObject['fts'] = res.config;
+                        this.spiceinstaller.configObject.fts = res.config;
                         this.spiceinstaller.steps[4] = this.spiceinstaller.selectedStep;
                         this.spiceinstaller.next(this.spiceinstaller.steps[4]);
                     }

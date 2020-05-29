@@ -24,7 +24,7 @@ export class SpiceInstallerCredentials {
      * repeated password variable holder and Regexp for password
      */
     private rpPassword: string = '';
-    private pwRegexp: RegExp = new RegExp("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,})")
+    private pwRegexp: RegExp = new RegExp("(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,})");
 
     constructor(
         private spiceinstaller: spiceinstaller
@@ -42,7 +42,7 @@ export class SpiceInstallerCredentials {
 
         if (this.usernameCondition && this.passwordCondition && this.rpPasswordCondition && this.surnameCondition) {
 
-            this.spiceinstaller.configObject['credentials'] = {
+            this.spiceinstaller.configObject.credentials = {
                 username: this.spiceinstaller.username,
                 password: this.spiceinstaller.password,
                 firstname: this.spiceinstaller.firstname,
