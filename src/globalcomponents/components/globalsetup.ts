@@ -17,79 +17,80 @@ import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
     templateUrl: './src/globalcomponents/templates/globalsetup.html'
 })
 export class GlobalSetup {
-    systemid: string = '000';
-    systemname: string = '';
-    systemurl: string = '';
-    systemproxy: number = 1;
-    systemdevmode: number = 0;
-    systemloginprogressbar: number = 1;
-    systemallowforgotpass: number = 0;
-
-    checking: boolean = false;
-
-    constructor(
-        private toast: toast,
-        private http: HttpClient,
-        private router: Router,
-        private configurationService: configurationService,
-    ) {
-
-    }
-
-    get saveEnabled(){
-        return this.systemname != '' && this.systemurl != '' && !this.checking;
-    }
-
-    testConnection(){
-        this.checking = true;
-        this.http.get('config/check', {params: {url: btoa(this.systemurl)} }).subscribe(
-            (res : any) => {
-                var response = res;
-                if(response.success != true){
-                    this.toast.sendToast(response.message, 'error');
-                    this.checking = false;
-                } else {
-                    this.saveConnection()
-                }
-            },
-            (err: any) => {
-                switch (err.status) {
-                    case 401:
-
-                        break;
-                }
-            });
-    }
-
-    saveConnection(){
-        this.checking = true;
-
-        let body = {
-            id: this.systemid,
-            display: this.systemname,
-            backendUrl: this.systemurl,
-            proxy: this.systemproxy,
-            developerMode: this.systemdevmode,
-            loginProgressBar: this.systemloginprogressbar,
-            allowForgotPass: this.systemloginprogressbar
-        }
-
-        this.http.post('config/set', body, {}).subscribe(
-            (res : any) => {
-                var response = res;
-                if(response.success == true){
-                    this.configurationService.setSiteData(response.site);
-                    this.router.navigate(['/login']);
-                } else {
-                    this.checking = false;
-                }
-            },
-            (err: any) => {
-                switch (err.status) {
-                    case 401:
-
-                        break;
-                }
-            });
-    }
+    // systemid: string = '000';
+    // systemname: string = '';
+    // systemurl: string = '';
+    // systemproxy: number = 1;
+    // systemdevmode: number = 0;
+    // systemloginprogressbar: number = 1;
+    // systemallowforgotpass: number = 0;
+    //
+    // checking: boolean = false;
+    //
+    // constructor(
+    //     private toast: toast,
+    //     private http: HttpClient,
+    //     private router: Router,
+    //     private configurationService: configurationService,
+    // ) {
+    //
+    // }
+    //
+    //
+    // get saveEnabled(){
+    //     return this.systemname != '' && this.systemurl != '' && !this.checking;
+    // }
+    //
+    // testConnection(){
+    //     this.checking = true;
+    //     this.http.get('config/check', {params: {url: btoa(this.systemurl)} }).subscribe(
+    //         (res : any) => {
+    //             var response = res;
+    //             if(response.success != true){
+    //                 this.toast.sendToast(response.message, 'error');
+    //                 this.checking = false;
+    //             } else {
+    //                 this.saveConnection()
+    //             }
+    //         },
+    //         (err: any) => {
+    //             switch (err.status) {
+    //                 case 401:
+    //
+    //                     break;
+    //             }
+    //         });
+    // }
+    //
+    // saveConnection(){
+    //     this.checking = true;
+    //
+    //     let body = {
+    //         id: this.systemid,
+    //         display: this.systemname,
+    //         backendUrl: this.systemurl,
+    //         proxy: this.systemproxy,
+    //         developerMode: this.systemdevmode,
+    //         loginProgressBar: this.systemloginprogressbar,
+    //         allowForgotPass: this.systemloginprogressbar
+    //     }
+    //
+    //     this.http.post('config/set', body, {}).subscribe(
+    //         (res : any) => {
+    //             var response = res;
+    //             if(response.success == true){
+    //                 this.configurationService.setSiteData(response.site);
+    //                 this.router.navigate(['/login']);
+    //             } else {
+    //                 this.checking = false;
+    //             }
+    //         },
+    //         (err: any) => {
+    //             switch (err.status) {
+    //                 case 401:
+    //
+    //                     break;
+    //             }
+    //         });
+    // }
 }
