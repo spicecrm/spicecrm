@@ -54,6 +54,8 @@ import /*embed*/ { AdministrationSchedulerRunButton } from './components/adminis
 import /*embed*/ { AdministrationSchedulerScheduleButton } from './components/administrationschedulerschedulebutton';
 
 import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryManagerItem, AdministrationDictionaryManagerItemField } from './components/administrationdictionarymanager';
+import /*embed*/ {AdministrationGeneralSettings} from "./components/administrationgeneralsettings";
+import /*embed*/ {AdministrationLanguages} from "./components/administrationlanguages";
 
 
 @NgModule({
@@ -96,7 +98,9 @@ import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryMana
         AdministrationFtsManagerIndexModal,
         AdministrationHomeScreen,
         AdministrationHomeScreenCard,
-        AdministrationHomeScreenCardItem
+        AdministrationHomeScreenCardItem,
+        AdministrationGeneralSettings,
+        AdministrationLanguages
     ],
     entryComponents: [
         AdministrationMain,
