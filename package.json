@@ -61,6 +61,7 @@
     "gulp-remove-empty-lines": "^0.1.0",
     "gulp-rename": "~1.4.0",
     "gulp-replace": "~1.0.0",
+    "gulp-swig": "^0.9.1",
     "gulp-tap": "~1.0.1",
     "gulp-typedoc": "^2.2.2",
     "gulp-uglify": "~3.0.2",
