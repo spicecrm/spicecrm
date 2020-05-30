@@ -18,4 +18,34 @@
     -ms-flex-positive: 1;
     flex-grow: 1;
     min-height: 0;
+    padding-bottom: 8px;
+}
+
+.ql-editor {
+    scrollbar-width: thin;
+}
+.ql-editor::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    scrollbar-width: thin;
+}
+.ql-editor::-webkit-scrollbar-track {
+    background: var(--color-grey-3);
+}
+.ql-editor::-webkit-scrollbar-thumb {
+    background: var(--color-grey-7);
+    border-top: 2px solid var(--color-grey-3);
+    border-bottom: 2px solid var(--color-grey-3);
+}
+.ql-editor::-webkit-scrollbar-thumb:hover {
+    background: var(--color-grey-9);
+}
+.ql-editor::-webkit-scrollbar-button:single-button {
+    display: none;
+}
+
+.spice-quill-editor-container {
+    resize: vertical;
+    overflow: hidden;
+    min-height: 150px
 }

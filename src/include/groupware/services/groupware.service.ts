@@ -19,7 +19,7 @@ export abstract class GroupwareService {
     public emailId: string = "";
 
     /**
-     * the outlook item id
+     * the message id
      */
     public _messageId: string = "";
 
@@ -41,17 +41,14 @@ export abstract class GroupwareService {
      */
     public relatedBeans: any[] = [];
     /**
-     * Outlook connection data and attachment list.
-     * todo: that should probably be moved to the OutlookGroupwareService
+     * attachment list.
      */
-    public outlookAttachments = {
-        attachmentToken: '',
-        ewsUrl: '',
-        attachments: [],
+    public attachments: { attachments: any[] } = {
+        attachments: []
     };
 
     constructor(
-        protected backend: backend,
+        public backend: backend,
     ) {
     }
 
@@ -110,7 +107,7 @@ export abstract class GroupwareService {
      * @param id
      */
     public getAttachment(id) {
-        return this.outlookAttachments.attachments.find(element => id == element.id);
+        return this.attachments.attachments.find(element => id == element.id);
     }
 
     /**
@@ -125,65 +122,7 @@ export abstract class GroupwareService {
      * A call to SpiceCRM API to archive the current email.
      * It also saves the relations to the linked beans and attachments, if any were selected.
      */
-    public archiveEmail(): Observable<any> {
-        let retSubject = new Subject();
-
-        this.isArchiving = true;
-
-        this.assembleEmail().subscribe(
-            (email: any) => {
-                let data = {
-                    beans: this.archiveto,
-                    email: email,
-                };
-
-                this.backend.postRequest('module/Emails/groupware/saveemailwithbeans', {}, data).subscribe(
-                    (res) => {
-                        if (this.archiveattachments.length > 0) {
-                            let attachmentData = {
-                                attachmentToken: this.outlookAttachments.attachmentToken,
-                                ewsUrl: this.outlookAttachments.ewsUrl,
-                                outlookAttachments: this.archiveattachments,
-                                email_id: res.email_id,
-                            };
-
-                            this.backend.postRequest('module/Emails/groupware/saveaddinattachments', {}, attachmentData).subscribe(
-                                success => {
-                                    this.isArchiving = false;
-                                    retSubject.next(true);
-                                    retSubject.complete();
-                                },
-                                error => {
-                                    this.isArchiving = false;
-                                    retSubject.error('error archiving attachments');
-                                    retSubject.complete();
-                                }
-                            );
-
-                            this.emailId = res.email_id;
-                        } else {
-                            this.isArchiving = false;
-                            retSubject.next(true);
-                            retSubject.complete();
-                        }
-                    },
-                    error => {
-                        this.isArchiving = false;
-                        retSubject.error('error archiving email');
-                        retSubject.complete();
-                    }
-                );
-            },
-            (err) => {
-                // console.log('Cannot assemble email: ' + err);
-                retSubject.error('error assembling email');
-                retSubject.complete();
-                this.isArchiving = false;
-            }
-        );
-
-        return retSubject.asObservable();
-    }
+    public abstract archiveEmail(): Observable<any>;
 
     /**
      * A call to SpiceCRM API to get an email using the message ID.
@@ -270,12 +209,6 @@ export abstract class GroupwareService {
     public abstract getAttachments(): Observable<any>;
 
     /**
-     * Retrieve an attachment callback token.
-     * todo: this is possibly just outlook specific.
-     */
-    public abstract getAttachmentToken(): Observable<any>;
-
-    /**
      * Retrieves an array of all email addresses (From, To, Cc)
      */
     public abstract getAddressArray();
@@ -294,4 +227,9 @@ export abstract class GroupwareService {
      * returns the custom properties on the object
      */
     public abstract getCustomProperties();
+
+    /**
+     * returns an access token for the authenitcation verification
+     */
+    public abstract getAccessToken();
 }

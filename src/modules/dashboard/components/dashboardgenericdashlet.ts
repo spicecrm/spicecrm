@@ -51,7 +51,6 @@ export class DashboardGenericDashlet implements OnInit {
 
     get tableContainerStyle() {
         return {
-            width: '100%',
             height: `calc(100% - ${this.headercontainer.element.nativeElement.getBoundingClientRect().height}px)`
         };
     }

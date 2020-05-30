@@ -22,7 +22,7 @@ import { fieldLabel } from './fieldlabel';
 import { SystemInputMedia } from '../../systemcomponents/components/systeminputmedia';
 
 @Component( {
-    selector: 'field-simple-image',
+    selector: 'field-image',
     templateUrl: './src/objectfields/templates/fieldimage.html',
 })
 export class fieldImage extends fieldGeneric implements OnInit, AfterViewInit {
@@ -90,14 +90,14 @@ export class fieldImage extends fieldGeneric implements OnInit, AfterViewInit {
     private editImage( droppedFiles: FileList = null ): void {
         this.modalservice.openModal('SystemImageModal').subscribe( modalRef => {
 
-            if ( this.field_defs.maxWidth ) modalRef.instance.maxWidth = this.field_defs.maxHeight;
+            if ( this.field_defs.maxWidth ) modalRef.instance.maxWidth = this.field_defs.maxWidth;
             if ( this.field_defs.maxHeight ) modalRef.instance.maxHeight = this.field_defs.maxHeight;
 
             let modalTitle = this.labelComponent.label; // As window title use the label from the field.
             if ( !modalTitle ) modalTitle = this.language.getLabel('LBL_IMAGE'); // use lbl_image when no label available
             modalRef.instance.title = modalTitle;
 
-            modalRef.instance.imageData = this.value;
+            if ( this.value ) modalRef.instance.imageData = this.value;
 
             modalRef.instance.answer.subscribe( imageData => {
                 if ( imageData !== false ) this.value = imageData;
