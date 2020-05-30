@@ -74,7 +74,6 @@ export class configurationService {
 
         if (storedSites) {
             this.sites = JSON.parse(atob(storedSites));
-
             let selectedsite = this.cookie.getValue('spiceuibackend');
             let siteFound = false;
             this.sites.some(site => {
@@ -100,13 +99,12 @@ export class configurationService {
         http.get('config/sites/')
             .subscribe(
                 (data: any) => {
-
                     let dataObject = data;
                     let sites = dataObject.sites;
 
                     // if no site is set naviogate to setup screen
                     if (sites.length == 0) {
-                        this.router.navigate(['/setup']);
+                        this.router.navigate(['/install']);
                     }
 
                     for (let attrname in dataObject.general) {
