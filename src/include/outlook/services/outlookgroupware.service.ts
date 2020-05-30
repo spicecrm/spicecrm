@@ -4,6 +4,7 @@
 import {Injectable} from "@angular/core";
 import {GroupwareService} from "../../../include/groupware/services/groupware.service";
 import {Observable, Subject, of} from "rxjs";
+import {OutlookAttachmentI} from "../interfaces/outlook.interfaces";
 
 declare var Office: any;
 declare var _: any;
@@ -14,6 +15,14 @@ declare var _: any;
 @Injectable()
 export class OutlookGroupware extends GroupwareService {
 
+    /**
+     * attachment list.
+     */
+    public attachments: OutlookAttachmentI = {
+        attachmentToken: '',
+        ewsUrl: '',
+        attachments: [],
+    };
     public iframeUrl: string = '';
 
     /**
@@ -59,6 +68,71 @@ export class OutlookGroupware extends GroupwareService {
         return responseSubject.asObservable();
     }
 
+
+    /**
+     * A call to SpiceCRM API to archive the current email.
+     * It also saves the relations to the linked beans and attachments, if any were selected.
+     */
+    public archiveEmail(): Observable<any> {
+        let retSubject = new Subject();
+
+        this.isArchiving = true;
+
+        this.assembleEmail().subscribe(
+            (email: any) => {
+                let data = {
+                    beans: this.archiveto,
+                    email: email,
+                };
+
+                this.backend.postRequest('module/Emails/groupware/saveOutlookEmailWithBeans', {}, data).subscribe(
+                    (res) => {
+                        if (this.archiveattachments.length > 0) {
+                            let attachmentData = {
+                                attachmentToken: this.attachments.attachmentToken,
+                                ewsUrl: this.attachments.ewsUrl,
+                                outlookAttachments: this.archiveattachments,
+                                email_id: res.email_id,
+                            };
+
+                            this.backend.postRequest('module/Emails/groupware/saveOutlookAttachments', {}, attachmentData).subscribe(
+                                success => {
+                                    this.isArchiving = false;
+                                    retSubject.next(true);
+                                    retSubject.complete();
+                                },
+                                error => {
+                                    this.isArchiving = false;
+                                    retSubject.error('error archiving attachments');
+                                    retSubject.complete();
+                                }
+                            );
+
+                            this.emailId = res.email_id;
+                        } else {
+                            this.isArchiving = false;
+                            retSubject.next(true);
+                            retSubject.complete();
+                        }
+                    },
+                    error => {
+                        this.isArchiving = false;
+                        retSubject.error('error archiving email');
+                        retSubject.complete();
+                    }
+                );
+            },
+            (err) => {
+                // console.log('Cannot assemble email: ' + err);
+                retSubject.error('error assembling email');
+                retSubject.complete();
+                this.isArchiving = false;
+            }
+        );
+
+        return retSubject.asObservable();
+    }
+
     /**
      * Load the email attachment data from Outlook including the information about each attachment,
      * as well as the EWS server URL and a temporary attachment token used to download the attachments in the backend.
@@ -66,19 +140,19 @@ export class OutlookGroupware extends GroupwareService {
     public getAttachments(): Observable<any> {
         let responseSubject = new Subject<any>();
 
-        this.outlookAttachments.ewsUrl = Office.context.mailbox.ewsUrl;
+        this.attachments.ewsUrl = Office.context.mailbox.ewsUrl;
 
-        if (this.outlookAttachments.attachmentToken == '') {
+        if (this.attachments.attachmentToken == '') {
             this.getAttachmentToken().subscribe(
                 (res: any) => {
-                    this.outlookAttachments.attachmentToken = res;
+                    this.attachments.attachmentToken = res;
 
                     for (let i = 0; i < Office.context.mailbox.item.attachments.length; i++) {
-                        this.outlookAttachments.attachments[i] = _.clone(Office.context.mailbox.item.attachments[i]);
-                        this.outlookAttachments.attachments[i].selected = false;
+                        this.attachments.attachments[i] = _.clone(Office.context.mailbox.item.attachments[i]);
+                        this.attachments.attachments[i].selected = false;
                     }
 
-                    responseSubject.next(this.outlookAttachments);
+                    responseSubject.next(this.attachments);
                     responseSubject.complete();
                 },
                 (err) => {
@@ -98,7 +172,7 @@ export class OutlookGroupware extends GroupwareService {
     public getAttachmentToken(): Observable<any> {
         let responseSubject = new Subject<any>();
 
-        if (this.outlookAttachments.attachmentToken == '') {
+        if (this.attachments.attachmentToken == '') {
             Office.context.mailbox.getCallbackTokenAsync(res => {
                 if (res.status === Office.AsyncResultStatus.Succeeded) {
                     responseSubject.next(res.value);
@@ -119,14 +193,14 @@ export class OutlookGroupware extends GroupwareService {
         let toAddresses = [];
         toAddresses.push(Office.context.mailbox.item.from.emailAddress);
         for (let address of Office.context.mailbox.item.to) {
-            if(includeown || address.emailAddress != Office.context.mailbox.userProfile.emailAddress){
+            if (includeown || address.emailAddress != Office.context.mailbox.userProfile.emailAddress) {
                 toAddresses.push(address.emailAddress);
             }
         }
 
         let ccAddresses = [];
         for (let address of Office.context.mailbox.item.cc) {
-            if(includeown || address.emailAddress != Office.context.mailbox.userProfile.emailAddress) {
+            if (includeown || address.emailAddress != Office.context.mailbox.userProfile.emailAddress) {
                 ccAddresses.push(address.emailAddress);
             }
         }
@@ -168,6 +242,20 @@ export class OutlookGroupware extends GroupwareService {
         let retSubject = new Subject<any>();
         Office.context.mailbox.item.loadCustomPropertiesAsync(cProps => {
             retSubject.next(cProps.value);
+            retSubject.complete();
+        });
+        return retSubject.asObservable();
+    }
+
+    public getAccessToken(): Observable<any> {
+        let retSubject = new Subject<any>();
+        Office.context.auth.getAccessTokenAsync({forMSGraphAccess: true}, token => {
+            if (token.status == 'succeeded') {
+                this.backend.getRequest('spicecrmexchange/validate/' + token.value + '?XDEBUG_SESSION_START=PHPSTORM').subscribe(res => {
+                    console.log(res);
+                });
+            }
+            retSubject.next(token);
             retSubject.complete();
         });
         return retSubject.asObservable();

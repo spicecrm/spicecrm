@@ -40,11 +40,11 @@ import /*embed*/ {ACLTerritorriesModulesmanagerModulesAddModal} from "./componen
 
 import /*embed*/ {ACLObjectsManagerObjectTerritories} from "./components/aclobjectsmanagerobjectterritories";
 import /*embed*/ {ACLObjectsManagerObjectTerritoriesModal} from "./components/aclobjectsmanagerobjectterritoriesmodal";
-import /*embed*/ {fieldTerritorySearch} from "./components/fieldterritorysearch";
-import /*embed*/ {fieldTerritory} from "./components/fieldterritory";
-import /*embed*/ {fieldTerritorySecondary} from "./components/fieldterritorysecondary";
-import /*embed*/ {fieldTerritoryRecent} from "./components/fieldterritoryrecent";
-import /*embed*/ {fieldTerritorySearchModal} from "./components/fieldterritorysearchmodal";
+import /*embed*/ {fieldTerritorySearch} from "./fields/fieldterritorysearch";
+import /*embed*/ {fieldTerritory} from "./fields/fieldterritory";
+import /*embed*/ {fieldTerritorySecondary} from "./fields/fieldterritorysecondary";
+import /*embed*/ {fieldTerritoryRecent} from "./fields/fieldterritoryrecent";
+import /*embed*/ {fieldTerritorySearchModal} from "./fields/fieldterritorysearchmodal";
 
 @NgModule({
     imports: [

@@ -17,6 +17,8 @@ import {configurationService} from "../../../services/configuration.service";
 import {modelutilities} from '../../../services/modelutilities.service';
 import {Observable, Subject, Subscription} from "rxjs";
 import {telephony} from "../../../services/telephony.service";
+import {session} from "../../../services/session.service";
+
 import {telephonyCallI} from "../../../services/interfaces.service";
 
 declare var moment: any;
@@ -41,6 +43,11 @@ export class StarfaceToolbarIndicator implements OnDestroy {
     private socketurl: string;
 
     /**
+     * a unique id for the server to connect to the socket
+     */
+    private socketid: string;
+
+    /**
      * the socket status
      */
     private socketconnected: boolean = false;
@@ -60,7 +67,16 @@ export class StarfaceToolbarIndicator implements OnDestroy {
      */
     private starfacesubscription: boolean = false;
 
-    constructor(private language: language, private configuration: configurationService, private modal: modal, private modelutilities: modelutilities, private backend: backend, private toast: toast, private telephony: telephony) {
+    constructor(
+        private language: language,
+        private configuration: configurationService,
+        private modal: modal,
+        private modelutilities: modelutilities,
+        private backend: backend,
+        private toast: toast,
+        private session: session,
+        private telephony: telephony
+    ) {
         this.initialize();
     }
 
@@ -101,9 +117,9 @@ export class StarfaceToolbarIndicator implements OnDestroy {
      */
     private initialize() {
 
-        // get the scoketurl
-        let starfaceconfig = this.configuration.getCapabilityConfig('starface');
-        this.socketurl = starfaceconfig?.socketurl_frontend;
+        let config = this.configuration.getCapabilityConfig('socket');
+        this.socketurl = config.socket_frontend;
+        this.socketid = config.socket_id;
 
         this.getPreferences().subscribe(username => {
             this.login();
@@ -142,6 +158,11 @@ export class StarfaceToolbarIndicator implements OnDestroy {
      * login to the UC
      */
     private login() {
+        // unsubscribe from all subscriptions
+        this.subscriptions.unsubscribe();
+        this.subscriptions = new Subscription();
+
+        // set status to connecting
         this.starfacestatus = "connecting";
         this.backend.postRequest('StarFaceVOIP/login').subscribe(res => {
             if (res.login) {
@@ -189,6 +210,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
         }
         this.disconnectSocket();
         this.telephony.isActive = false;
+        this.subscriptions.unsubscribe();
     }
 
     private keepalive() {
@@ -218,7 +240,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
             return false;
         }
 
-        this.socket = io(`${this.socketurl}?room=${this.username}`);
+        this.socket = io(`${this.socketurl}?sysid=${this.socketid}&room=${this.username}&token=${this.session.authData.sessionId}`);
         this.socket.on('connect', (socket) => {
             this.socketconnected = true;
         });
