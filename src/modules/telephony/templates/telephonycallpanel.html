@@ -55,7 +55,7 @@
             <div class="slds-docked-composer__toolbar">
                 <telephony-call-panel-save-button [calldata]="calldata"></telephony-call-panel-save-button>
             </div>
-            <textarea [disabled]="calldata.call != ''" style="height: 270px" class="slds-docked-composer__input slds-input_bare slds-text-longform slds-grow slds-size--1-of-1" [(ngModel)]="calldata.note" [placeholder]="language.getLabel('LBL_CALL_NOTES')"></textarea>
+            <textarea [disabled]="calldata.call" style="height: 270px" class="slds-docked-composer__input slds-input_bare slds-text-longform slds-grow slds-size--1-of-1" [(ngModel)]="calldata.note" [placeholder]="language.getLabel('LBL_CALL_NOTES')"></textarea>
         </ng-template>
     </ng-template>
 </div>
