@@ -20,22 +20,21 @@ export class TelephonyCallPanelSaveButton {
      */
     @Input() private calldata: any;
 
-    /**
-     * the note passed in
-     */
-    @Input() private note: string;
 
     constructor(@SkipSelf() private parent: model, private model: model, private view: view) {
 
     }
 
     /**
-     * set to disabled if we do not have an end date
+     * set to disabled if we do not have an end date or the model has an id and the call is saved
      */
     get disabled() {
-        return !this.calldata.end;
+        return !this.calldata.end || this.model.id;
     }
 
+    /**
+     * save the call in the model history
+     */
     private saveCall() {
         this.model.module = 'Calls';
         this.model.initialize(this.parent);
@@ -50,11 +49,13 @@ export class TelephonyCallPanelSaveButton {
             duration_hours: duration.hours(),
             dureation_minutes: duration.minutes(),
             status: 'Held',
-            name: this.note.substring(0, 25) + '...',
-            description: this.note
+            name: this.calldata.note.substring(0, 25) + (this.calldata.note.length > 15 ? '...' : ''),
+            description: this.calldata.note
         });
 
-        this.model.save();
+        this.model.save().subscribe(success => {
+            this.calldata.call = this.model.id;
+        });
 
     }
 

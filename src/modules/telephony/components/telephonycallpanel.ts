@@ -17,8 +17,19 @@ declare var libphonenumber: any;
 })
 export class TelephonyCallPanel implements OnInit {
 
+    /**
+     * the calldata
+     */
     @Input() public calldata: telephonyCallI;
 
+    /**
+     * an array of matche records returned fromt eh phone number search
+     */
+    @Input() public matchedbeans: any[];
+
+    /**
+     * notes on the call
+     */
     private callnotes: string = '';
 
     constructor(private language: language, private model: model) {
@@ -42,6 +53,28 @@ export class TelephonyCallPanel implements OnInit {
         } else {
             return this.calldata.msisdn;
         }
+    }
+
+    /**
+     * select the match
+     *
+     * @param record
+     */
+    private selectMatched(record) {
+        this.model.id = record.id;
+        this.model.module = record.module;
+        this.model.data = this.model.utils.backendModel2spice(this.model.module, record.data);
+
+        this.calldata.relatedid = record.id;
+        this.calldata.relatedmodule = record.module;
+        this.calldata.relateddata = record.data;
+    }
+
+    /**
+     * no match found in the listed items
+     */
+    private noMatch() {
+        this.matchedbeans = [];
     }
 
 }

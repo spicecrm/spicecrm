@@ -9,12 +9,14 @@ import {
     ChangeDetectorRef, OnDestroy
 } from '@angular/core';
 import {language} from '../../../services/language.service';
+import {modal} from '../../../services/modal.service';
 import {backend} from '../../../services/backend.service';
 import {telephony} from '../../../services/telephony.service';
 import {telephonyCallI} from "../../../services/interfaces.service";
 import {libloader} from "../../../services/libloader.service";
 
 declare var moment: any;
+declare var libphonenumber: any;
 
 @Component({
     templateUrl: './src/modules/telephony/templates/telephonydockedcall.html'
@@ -31,7 +33,9 @@ export class TelephonyDockedCall {
 
     private panelcomponent: string = 'TelephonyCallSearching';
 
-    constructor(private backend: backend, private libloader: libloader, private telephony: telephony, private language: language, private cdref: ChangeDetectorRef, private ViewContainerRef: ViewContainerRef) {
+    private matchedbeans: any[] = [];
+
+    constructor(private backend: backend, private modal: modal, private libloader: libloader, private telephony: telephony, private language: language, private cdref: ChangeDetectorRef, private ViewContainerRef: ViewContainerRef) {
         this.loadPhoneLib();
     }
 
@@ -66,15 +70,13 @@ export class TelephonyDockedCall {
             this.backend.postRequest('search/phonenumber', {}, {
                 searchterm: this.calldata.msisdn
             }).subscribe(results => {
+                this.matchedbeans = results;
                 if (results.length == 1) {
                     this.calldata.relatedmodule = results[0].module;
                     this.calldata.relatedid = results[0].id;
                     this.calldata.relateddata = results[0].data;
-
-                    this.panelcomponent = 'TelephonyCallPanel';
-                } else if (results.length == 0) {
-                    this.panelcomponent = 'TelephonyCallPanel';
                 }
+                this.panelcomponent = 'TelephonyCallPanel';
             });
         }
     }
@@ -83,7 +85,15 @@ export class TelephonyDockedCall {
      * close the composer and remove the call
      */
     private closeComposer() {
-        this.telephony.removeCallById(this.calldata.id);
+        if (this.calldata.note && !this.calldata.call) {
+            this.modal.prompt('confirm', this.language.getLabel('MSG_CLOSE_CALL_COMPOSER', '', 'long'), this.language.getLabel('MSG_CLOSE_CALL_COMPOSER')).subscribe(resp => {
+                if (resp) {
+                    this.telephony.removeCallById(this.calldata.id);
+                }
+            });
+        } else {
+            this.telephony.removeCallById(this.calldata.id);
+        }
     }
 
     /**
@@ -113,4 +123,17 @@ export class TelephonyDockedCall {
     get canEndCall() {
         return this.calldata.callid && this.calldata.status != 'disconnected' && this.calldata.status != 'error';
     }
+
+
+    /**
+     * gets a formatted MSISDN
+     */
+    get msisdnFormatted() {
+        if (libphonenumber && libphonenumber.parsePhoneNumberFromString) {
+            return libphonenumber.parsePhoneNumberFromString(this.calldata.msisdn, 'AT').formatInternational();
+        } else {
+            return this.calldata.msisdn;
+        }
+    }
+
 }
