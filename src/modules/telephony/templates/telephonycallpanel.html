@@ -25,7 +25,7 @@
             <ng-container *ngIf="!calldata.relatedid && matchedbeans.length == 0">
                 <div class="slds-height_full slds-align_absolute-center">
                     <div class="slds-text-align_center slds-align-middle">
-                        <system-icon [module]="model.module"></system-icon>
+                        <system-icon module="Calls"></system-icon>
                         <div class="slds-text-heading_medium">{{msisdnFormatted}}</div>
                     </div>
                 </div>
@@ -34,10 +34,10 @@
         <ng-template #callconnected>
             <div class="slds-docked-composer__lead">
                 <div class="slds-media">
-                    <system-icon [module]="model.module"></system-icon>
+                    <system-icon [module]="model.module ? model.module : 'Calls'"></system-icon>
                     <div class="slds-media__body">
-                        <ng-container *ngIf="calldata.relateddata; else  nocalldata">
-                            <telephony-call-panel-related-compact *ngIf="calldata.relatedid"></telephony-call-panel-related-compact>
+                        <ng-container *ngIf="model.id; else  nocalldata">
+                            <telephony-call-panel-related-compact *ngIf="model.id"></telephony-call-panel-related-compact>
                         </ng-container>
                         <ng-template #nocalldata>
                             <p class="slds-text-heading_medium">{{msisdnFormatted}}</p>
