@@ -14,4 +14,6 @@ export interface telephonyCallI {
     relatedmodule?: string;
     relatedid?: string;
     relateddata?: any;
+    call?: string;
+    note?: string;
 }
