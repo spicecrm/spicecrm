@@ -7,7 +7,7 @@ import {Router} from '@angular/router';
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {footer} from "../../../services/footer.service";
-import {GroupwareService} from "../../groupware/services/groupware.service";
+import {GroupwareService} from "../../../include/groupware/services/groupware.service";
 import {GSuiteGroupware} from "../services/gsuitegroupware.service";
 
 /**

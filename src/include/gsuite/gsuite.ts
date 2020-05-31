@@ -63,13 +63,12 @@ import {telephony} from "../../services/telephony.service";
 import {socket} from "../../services/socket.service";
 import {SystemDynamicRouteInterceptor} from "../../systemcomponents/components/systemdynamicrouteinterceptor";
 
-
 import {ModuleGroupware} from "../../include/groupware/groupware";
 import {GroupwareService} from '../../include/groupware/services/groupware.service';
-import {GSuiteBrokerService} from '../../include/gsuite/services/gsuitebroker.service';
 
 import /*embed*/ {GSuiteMessageI, GSuiteAttachmentI} from "./interfaces/gsuite.interfaces";
 
+import /*embed*/ {GSuiteBrokerService} from '../../include/gsuite/services/gsuitebroker.service';
 import /*embed*/ {GSuiteGroupware} from "./services/gsuitegroupware.service";
 
 import /*embed*/ {GSuitePane} from './components/gsuitepane';
