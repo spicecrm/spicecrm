@@ -782,9 +782,11 @@ export class navigation {
             if (this.objectTabs[index].active || this.objectTabs.find(tab => tab.active)?.parentid == tabid) {
                 // if we have a parent tab navigate to that .. otherwise to the main tab
                 if (this.objectTabs[index].parentid) {
-                    this.router.navigate([this.objectTabs.find(tab => tab.id == this.objectTabs[index].parentid).url]);
+                    this.setActiveTab(this.objectTabs[index].parentid);
+                    // this.router.navigate([this.objectTabs.find(tab => tab.id == this.objectTabs[index].parentid).url]);
                 } else {
-                    this.router.navigate([this.maintab.url]);
+                    this.setActiveTab('main');
+                    // this.router.navigate([this.maintab.url]);
                 }
             }
 
@@ -799,32 +801,31 @@ export class navigation {
                 this.modelregister.splice(modelIndex, 1);
             }
 
-        }
+            // find any tab that has the id as a parent id
+            index = this.objectTabs.length - 1;
+            while (index >= 0) {
+                // for (let objectTab of this.objectTabs){
+                // if the id matched splice the array otherwise increase the index
+                let objectTab = this.objectTabs[index];
+                if (objectTab.parentid == tabid) {
+                    this.objectTabs.splice(index, 1);
 
-        // find any tab that has the id as a parent id
-        index = this.objectTabs.length - 1;
-        while (index >= 0) {
-            // for (let objectTab of this.objectTabs){
-            // if the id matched splice the array otherwise increase the index
-            let objectTab = this.objectTabs[index];
-            if (objectTab.parentid == tabid) {
-                this.objectTabs.splice(index, 1);
-
-                // tslint:disable:no-conditional-assignment
-                let modelIndex = -1;
-                while ((modelIndex = this.modelregister.findIndex(model => model.tabid == tabid)) >= 0) {
-                    this.modelregister.splice(modelIndex, 1);
+                    // tslint:disable:no-conditional-assignment
+                    let modelIndex = -1;
+                    while ((modelIndex = this.modelregister.findIndex(model => model.tabid == tabid)) >= 0) {
+                        this.modelregister.splice(modelIndex, 1);
+                    }
                 }
+                index--;
+
             }
-            index--;
 
+            // emit the change
+            this.objectTabsChange$.emit(true);
+
+            // set to the session
+            this.setSessionData();
         }
-
-        // emit the change
-        this.objectTabsChange$.emit(true);
-
-        // set to the session
-        this.setSessionData();
     }
 
     public checkActiveRoute(object) {
