@@ -68,10 +68,12 @@ export class fieldAddress extends fieldGeneric {
         let formattedaddress = this.addressFormat;
 
         // check if we have a country format
-        if(this.strict && this.country){
-                let countries = this.configuration.getData('countries');
+        if (this.strict && this.country) {
+            let countries = this.configuration.getData('countries');
+            if(countries) {
                 let countryrecod = countries.countries.find(c => c.cc == this.country);
                 if (countryrecod && countryrecod.addressformat) formattedaddress = countryrecod.addressformat;
+            }
         }
 
         // match the elements and format the country
