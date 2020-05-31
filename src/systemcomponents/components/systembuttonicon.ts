@@ -71,7 +71,7 @@ export class SystemButtonIcon implements OnChanges {
      * loads the SVG ref for the svg in the button
      */
     private getSvgHRef() {
-        return "./sldassets/icons/" + this.getSprite() + "-sprite/svg/symbols.svg#" + this.getIcon();
+        return "./vendor/sldassets/icons/" + this.getSprite() + "-sprite/svg/symbols.svg#" + this.getIcon();
     }
 
     /**

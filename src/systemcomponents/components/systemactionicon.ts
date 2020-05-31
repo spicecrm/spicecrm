@@ -16,7 +16,7 @@ export class SystemActionIcon {
     constructor(private metadata: metadata) {}
 
     get svgHRef() {
-        return './sldassets/icons/action-sprite/svg/symbols.svg#' + this.icon;
+        return './vendor/sldassets/icons/action-sprite/svg/symbols.svg#' + this.icon;
     }
 
     get iconClass(){
