@@ -12,6 +12,7 @@ import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {telephony} from '../../../services/telephony.service';
 import {telephonyCallI} from "../../../services/interfaces.service";
+import {libloader} from "../../../services/libloader.service";
 
 declare var moment: any;
 
@@ -24,12 +25,23 @@ export class TelephonyDockedCall {
 
     @Input() public calldata: telephonyCallI;
 
+    private phonelibloaded: boolean = false;
+
     private isClosed: boolean = false;
 
     private panelcomponent: string = 'TelephonyCallSearching';
 
-    constructor(private backend: backend, private telephony: telephony, private language: language, private cdref: ChangeDetectorRef, private ViewContainerRef: ViewContainerRef) {
+    constructor(private backend: backend, private libloader: libloader, private telephony: telephony, private language: language, private cdref: ChangeDetectorRef, private ViewContainerRef: ViewContainerRef) {
+        this.loadPhoneLib();
+    }
 
+    /**
+     * loads the phone lib
+     */
+    private loadPhoneLib() {
+        this.libloader.loadLib('libphonenumber').subscribe(loaded => {
+            this.phonelibloaded = true;
+        });
     }
 
     get callicon() {
@@ -59,6 +71,8 @@ export class TelephonyDockedCall {
                     this.calldata.relatedid = results[0].id;
                     this.calldata.relateddata = results[0].data;
 
+                    this.panelcomponent = 'TelephonyCallPanel';
+                } else if (results.length == 0) {
                     this.panelcomponent = 'TelephonyCallPanel';
                 }
             });

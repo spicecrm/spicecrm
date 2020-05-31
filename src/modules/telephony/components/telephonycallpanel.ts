@@ -1,29 +1,47 @@
 /**
  * @module ModuleTelephony
  */
-import {Component, EventEmitter, Input, OnDestroy} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit} from '@angular/core';
 
-
-import {toast} from '../../../services/toast.service';
 import {language} from '../../../services/language.service';
-import {backend} from "../../../services/backend.service";
-import {configurationService} from "../../../services/configuration.service";
-import {modelutilities} from '../../../services/modelutilities.service';
-import {Observable, Subject, Subscription} from "rxjs";
-import {telephony} from "../../../services/telephony.service";
+import {model} from "../../../services/model.service";
+
 import {telephonyCallI} from "../../../services/interfaces.service";
 
 declare var _: any;
+declare var libphonenumber: any;
 
 @Component({
-    templateUrl: './src/modules/telephony/templates/telephonycallpanel.html'
+    templateUrl: './src/modules/telephony/templates/telephonycallpanel.html',
+    providers: [model]
 })
-export class TelephonyCallPanel {
+export class TelephonyCallPanel implements OnInit {
 
     @Input() public calldata: telephonyCallI;
 
-    constructor(private language: language, private backend: backend, private toast: toast) {
+    private callnotes: string = '';
 
+    constructor(private language: language, private model: model) {
+
+    }
+
+    public ngOnInit(): void {
+        if (this.calldata.relatedid) {
+            this.model.id = this.calldata.relatedid;
+            this.model.module = this.calldata.relatedmodule;
+            this.model.data = this.model.utils.backendModel2spice(this.model.module, this.calldata.relateddata);
+        }
+    }
+
+    /**
+     * gets a formatted MSISDN
+     */
+    get msisdnFormatted() {
+        if (libphonenumber.parsePhoneNumberFromString) {
+            return libphonenumber.parsePhoneNumberFromString(this.calldata.msisdn, 'AT').formatInternational();
+        } else {
+            return this.calldata.msisdn;
+        }
     }
 
 }

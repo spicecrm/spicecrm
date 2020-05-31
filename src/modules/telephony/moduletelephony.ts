@@ -14,6 +14,9 @@ import {DirectivesModule} from "../../directives/directives";
 import /*embed*/ {TelephonyDockedCall} from "./components/telephonydockedcall";
 import /*embed*/ {TelephonyCallDuration} from "./components/telephonycallduration";
 import /*embed*/ {TelephonyCallSearching} from "./components/telephonycallsearching";
+import /*embed*/ {TelephonyCallPanelRelated} from "./components/telephonycallpanelrelated";
+import /*embed*/ {TelephonyCallPanelRelatedCompact} from "./components/telephonycallpanelrelatedcompact";
+import /*embed*/ {TelephonyCallPanelSaveButton} from "./components/telephonycallpanelsavebutton";
 import /*embed*/ {TelephonyCallPanel} from "./components/telephonycallpanel";
 
 @NgModule({
@@ -30,7 +33,10 @@ import /*embed*/ {TelephonyCallPanel} from "./components/telephonycallpanel";
         TelephonyDockedCall,
         TelephonyCallPanel,
         TelephonyCallSearching,
-        TelephonyCallDuration
+        TelephonyCallDuration,
+        TelephonyCallPanelRelated,
+        TelephonyCallPanelRelatedCompact,
+        TelephonyCallPanelSaveButton
     ]
 })
 export class ModuleTelephony {
