@@ -37,6 +37,7 @@ export class SpiceGoogleMapsRecordContainer implements OnInit, OnDestroy {
                 private broadcast: broadcast,
                 private modelList: modellist,
                 private metadata: metadata) {
+
     }
 
     /**
@@ -67,6 +68,7 @@ export class SpiceGoogleMapsRecordContainer implements OnInit, OnDestroy {
      * set the module for the module list service and activate cache
      */
     private initializeModelList() {
+        this.modelList.usecache = false;
         this.modelList._listcomponent = 'SpiceGoogleMapsRecordContainer';
         this.modelList.module = this.model.module;
     }
