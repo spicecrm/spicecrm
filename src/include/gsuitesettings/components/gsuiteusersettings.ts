@@ -14,7 +14,7 @@ import {configurationService} from '../../../services/configuration.service';
 declare var _: any;
 
 @Component({
-    templateUrl: './src/include/gsuite/templates/gsuiteusersettings.html',
+    templateUrl: './src/include/gsuitesettings/templates/gsuiteusersettings.html',
 })
 export class GSuiteUserSettings implements OnInit {
 
