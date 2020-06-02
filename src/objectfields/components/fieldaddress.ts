@@ -93,8 +93,10 @@ export class fieldAddress extends fieldGeneric {
             let country = this.country;
             if (country) {
                 let countries = this.configuration.getData('countries');
-                let countryrecod = countries.countries.find(c => c.cc == country);
-                if (countryrecod) country = this.language.getLabel(countryrecod.label);
+                if(countries) {
+                    let countryrecod = countries.countries.find(c => c.cc == country);
+                    if (countryrecod) country = this.language.getLabel(countryrecod.label);
+                }
             }
             return country;
         } else {
@@ -111,8 +113,10 @@ export class fieldAddress extends fieldGeneric {
             let state = this.state;
             if (state) {
                 let states = this.configuration.getData('countries');
-                let staterecod = states.states.find(s => s.cc == country && s.sc == state);
-                if (staterecod) state = this.language.getLabel(staterecod.label);
+                if(states) {
+                    let staterecod = states.states.find(s => s.cc == country && s.sc == state);
+                    if (staterecod) state = this.language.getLabel(staterecod.label);
+                }
             }
             return state;
         } else {
