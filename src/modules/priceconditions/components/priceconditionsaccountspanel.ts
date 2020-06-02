@@ -30,8 +30,8 @@ declare var _: any;
             ])
         ]),
         trigger('animateicon', [
-            state('open', style({ transform: 'scale(1, 1)'})),
-            state('closed', style({ transform: 'scale(1, -1)'})),
+            state('open', style({transform: 'scale(1, 1)'})),
+            state('closed', style({transform: 'scale(1, -1)'})),
             transition('open => closed', [
                 animate('.5s'),
             ]),
@@ -41,7 +41,12 @@ declare var _: any;
         ])
     ]
 })
-export class PriceConditionsAccountsPanel {
+export class PriceConditionsAccountsPanel implements OnInit {
+
+    /**
+     *  a componentconfig passed in
+     */
+    private componentconfig: any = {};
 
     /**
      * inidcates that the panel is loading
@@ -68,7 +73,7 @@ export class PriceConditionsAccountsPanel {
      */
     private _isopen: boolean = true;
 
-    private activeView: 'condition'|'determination' = 'determination';
+    private activeView: 'condition' | 'determination' = 'determination';
 
     constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private backend: backend, private configuration: configurationService, private priceconditonsconfiguration: priceconditonsconfiguration) {
         this.priceconditonsconfiguration.loaded$.subscribe(loaded => {
@@ -76,6 +81,17 @@ export class PriceConditionsAccountsPanel {
                 this.loadConditions();
             }
         });
+    }
+
+    /**
+     * an optional actionset rendered to the conmtainer
+     */
+    get actionset() {
+        return this.componentconfig?.actionset;
+    }
+
+    public ngOnInit(): void {
+
     }
 
     /**
