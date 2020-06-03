@@ -205,7 +205,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
                 // define the serverUrl from the request
                 $serverUrl = str_replace('/config/gsuite', '', "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}");
-                $serverUrl = isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) ? 'https://' : 'http://' . $serverUrl;
+                $serverUrl = (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) ? 'https://' : 'http://') . $serverUrl;
                 $paramPos = strpos($serverUrl,'?');
                 if($paramPos !== false) $serverUrl = substr($serverUrl, 0, $paramPos);
 
