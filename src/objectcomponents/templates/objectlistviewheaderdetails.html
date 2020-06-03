@@ -1,9 +1,9 @@
 <ul class="slds-list_horizontal slds-has-dividers_left slds-has-block-links_space">
     <li class="slds-item">
         {{modellist.listData.list.length}}
-        <system-label label="LBL_OF" class="slds-m-horizontal--xxx-small"></system-label>
+        <system-label label="LBL_OF"></system-label>
         {{modellist.listData.totalcount}}
-        <system-label label="LBL_ITEMS" class="slds-m-left--xxx-small"></system-label>
+        <system-label label="LBL_ITEMS"></system-label>
     </li>
     <li *ngIf="modellist.isSorted" class="slds-item"><system-label label="LBL_SORTEDBY"></system-label> {{modellist.getSortFields()}}</li>
     <li class="slds-item slds-show--medium"><system-label label="LBL_LASTUPDATE"></system-label> {{modellist.getLastLoadTime()}}</li>
