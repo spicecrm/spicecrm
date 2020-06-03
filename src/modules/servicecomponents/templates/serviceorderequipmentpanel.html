@@ -1,0 +1,20 @@
+<table class="slds-table slds-table_bordered">
+    <thead>
+    <th style="width: 60px"></th>
+    <th *ngFor="let fieldsetField of fieldsetFields">
+        <field-label class="slds-truncate" addclasses="slds-truncate" [fieldname]="fieldsetField.field" [fieldconfig]="fieldsetField.fieldconfig"></field-label>
+    </th>
+    </thead>
+    <tbody *ngIf="itemcount > 0">
+    <ng-container *ngFor="let item of items.list|serviceorderitempipe">
+        <tr serviceorder-equipment-item [(item)]="item" [parentview]="view" [serviceorder]="model" [relationlinkname]="relation_link_name" ></tr>
+    </ng-container>
+    </tbody>
+    <tbody *ngIf="itemcount == 0">
+    <div class="slds-p-around--medium slds-align--;absolute-center">
+        <system-label label="LBL_NO_ENTRIES"></system-label>
+    </div>
+    </tbody>
+    <tfoot>
+    </tfoot>
+</table>
