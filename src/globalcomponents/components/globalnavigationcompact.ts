@@ -5,7 +5,6 @@ import {
     AfterViewInit, AfterViewChecked, ComponentFactoryResolver, Component, NgModule, ViewChild, ViewContainerRef,
     ElementRef, ChangeDetectorRef, OnDestroy
 } from '@angular/core';
-import {MenuService} from '../services/menu.service';
 import {metadata} from '../../services/metadata.service';
 import {broadcast} from '../../services/broadcast.service';
 import {language} from "../../services/language.service";
@@ -23,7 +22,7 @@ import {take} from "rxjs/operators";
 @Component({
     selector: 'global-navigation-compact',
     templateUrl: './src/globalcomponents/templates/globalnavigationcompact.html',
-    providers: [MenuService, model]
+    providers: [model]
 })
 export class GlobalNavigationCompact implements AfterViewInit, OnDestroy {
 
@@ -40,7 +39,6 @@ export class GlobalNavigationCompact implements AfterViewInit, OnDestroy {
     private subscriptions: Subscription = new Subscription();
 
     constructor(
-        private menuService: MenuService,
         private metadata: metadata,
         private language: language,
         private loginService: loginService,
