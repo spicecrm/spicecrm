@@ -36,6 +36,18 @@ import /*embed*/ {ServiceActivitiyTimelineAddServiceNote} from "./components/ser
 import /*embed*/ {ServiceTicketRelatedTickets} from "./components/serviceticketrelatedtickets";
 import /*embed*/ {ServiceTicketRelatedTicketsTiles} from "./components/serviceticketrelatedticketstiles";
 
+import /*embed*/ {ServiceOrderEffortItem} from "./components/serviceordereffortitem";
+import /*embed*/ {ServiceOrderEffortItemDetails} from "./components/serviceordereffortitemdetails";
+import /*embed*/ {ServiceOrderEffortPanel} from "./components/serviceordereffortpanel";
+import /*embed*/ {ServiceOrderEquipmentItem} from "./components/serviceorderequipmentitem";
+import /*embed*/ {ServiceOrderEquipmentPanel} from "./components/serviceorderequipmentpanel";
+import /*embed*/ {ServiceOrderItemItem} from "./components/serviceorderitemitem";
+import /*embed*/ {ServiceOrderItemPanel} from "./components/serviceorderitempanel";
+import /*embed*/ {ServiceOrderItemPipe} from "./pipes/serviceorderitemspipe";
+import /*embed*/ {ServiceOrderAddTypeSelector} from "./components/serviceorderaddtypeselector";
+
+
+
 
 @NgModule({
     imports: [
@@ -45,7 +57,7 @@ import /*embed*/ {ServiceTicketRelatedTicketsTiles} from "./components/serviceti
         GlobalComponents,
         DirectivesModule,
         ObjectComponents,
-        SystemComponents,
+        SystemComponents
     ],
     declarations: [
         SignServiceOrderModalButtonComponent,
@@ -71,7 +83,16 @@ import /*embed*/ {ServiceTicketRelatedTicketsTiles} from "./components/serviceti
         ServiceTicketAccountDetail,
         ServiceActivitiyTimelineAddServiceNote,
         ServiceTicketRelatedTickets,
-        ServiceTicketRelatedTicketsTiles
+        ServiceTicketRelatedTicketsTiles,
+        ServiceOrderItemPipe,
+        ServiceOrderEffortItem,
+        ServiceOrderEffortItemDetails,
+        ServiceOrderEffortPanel,
+        ServiceOrderEquipmentItem,
+        ServiceOrderEquipmentPanel,
+        ServiceOrderItemItem,
+        ServiceOrderItemPanel,
+        ServiceOrderAddTypeSelector
     ]
 })
 export class ServiceComponentsModule {
