@@ -754,7 +754,7 @@ export class model implements OnDestroy {
 
         // shift to backend format .. no objects like date embedded
         if (withbackup && !this.duplicate) {
-            this.backupData = JSON.stringify(this.data);
+            this.backupData = JSON.parse(JSON.stringify(this.data));
         }
 
         /**
@@ -840,7 +840,7 @@ export class model implements OnDestroy {
         this.navigation.removeModelEditing(this.module, this.id);
 
         if (this.backupData) {
-            this.data = JSON.parse(this.backupData);
+            this.data = this.backupData;
             this.data$.next(this.data);
             this.backupData = null;
             // todo: evaluate all fields because they have changed back???
@@ -869,7 +869,7 @@ export class model implements OnDestroy {
     public getDirtyFields() {
         let d = {};
         for (let property in this.data) {
-            if (property && (!JSON.parse(this.backupData) || _.isObject(this.data[property]) || _.isArray(this.data[property]) || !_.isEqual(this.data[property], JSON.parse(this.backupData)[property]) || this.isFieldARelationLink(property))) {
+            if (property && (!this.backupData || _.isObject(this.data[property]) || _.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
                 d[property] = this.data[property];
             }
         }
@@ -917,7 +917,7 @@ export class model implements OnDestroy {
                         module: this.module,
                         data: this.data,
                         changed: this.getDirtyFields(),
-                        backupdata: JSON.parse(this.backupData)
+                        backupdata: this.backupData
                     });
 
                     // saving is done
@@ -932,7 +932,7 @@ export class model implements OnDestroy {
 
                     // emit the save$
                     // redetermin the dirty fields since the backend call might have changed also additonal fields
-                    this.saved$.emit({changed: this.getDirtyFields(), backupdata: JSON.parse(this.backupData)});
+                    this.saved$.emit({changed: this.getDirtyFields(), backupdata: this.backupData});
 
 
                     // end the edit process
