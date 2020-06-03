@@ -37,7 +37,7 @@ export class CurrencyManager implements OnInit {
     /**
      * gets the currencies from the currency service
      */
-    ngOnInit() {
+   public ngOnInit() {
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
             this.backend.getRequest('currencies').subscribe(data => {
                 if (data) {
