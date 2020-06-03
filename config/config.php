@@ -200,13 +200,14 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 // define the extension dir and the archive name
                 $gSuiteExtensionDir = dirname(__DIR__) . "/assets/gsuite/";
                 $zipFileName = 'GSuiteChromeExtension.zip';
-                $zipFileDir = $gSuiteExtensionDir . $zipFileName;
+                $zipFileDir = sys_get_temp_dir() . $zipFileName;
                 $gSuiteJsDir = $gSuiteExtensionDir . "GSuiteBroker.js";
 
                 // define the serverUrl from the request
                 $serverUrl = str_replace('/config/gsuite', '', "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}");
                 $serverUrl = isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) ? 'https://' : 'http://' . $serverUrl;
-                if(strpos($serverUrl,'?') !== false) $serverUrl = substr($serverUrl, 0, $parampos);
+                $paramPos = strpos($serverUrl,'?');
+                if($paramPos !== false) $serverUrl = substr($serverUrl, 0, $paramPos);
 
                 // Initialize archive object
                 $zip = new ZipArchive();
