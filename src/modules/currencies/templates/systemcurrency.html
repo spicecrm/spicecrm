@@ -1,0 +1,32 @@
+<system-spinner *ngIf="loading"></system-spinner>
+<div *ngIf="!loading && prefCurrency.hasOwnProperty('name')">
+    <div class="slds-p-around--medium">
+        <h2 class="slds-text-title--caps">System Currency</h2>
+    </div>
+<table class="slds-table slds-table--bordered slds-table--cell-buffer">
+    <thead>
+    <tr class="slds-text-title--caps">
+        <th scope="col">
+            <system-label label="LBL_NAME"></system-label>
+        </th>
+        <th scope="col">
+            <system-label label="LBL_ISO"></system-label>
+        </th>
+        <th scope="col">
+            <system-label label="LBL_SYMBOL"></system-label>
+        </th>
+        <th scope="col">
+            <system-label label="LBL_CONVERSION_RATE"></system-label>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr style="vertical-align: middle" class="slds-align-top">
+        <td>{{prefCurrency.name}}</td>
+        <td>{{prefCurrency.iso}}</td>
+        <td>{{prefCurrency.symbol}}</td>
+        <td>{{prefCurrency.conversion_rate}}</td>
+    </tr>
+    </tbody>
+</table>
+</div>

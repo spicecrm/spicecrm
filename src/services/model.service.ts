@@ -754,7 +754,7 @@ export class model implements OnDestroy {
 
         // shift to backend format .. no objects like date embedded
         if (withbackup && !this.duplicate) {
-            this.backupData = {...this.data};
+            this.backupData = JSON.stringify(this.data);
         }
 
         /**
@@ -840,7 +840,7 @@ export class model implements OnDestroy {
         this.navigation.removeModelEditing(this.module, this.id);
 
         if (this.backupData) {
-            this.data = {...this.backupData};
+            this.data = JSON.parse(this.backupData);
             this.data$.next(this.data);
             this.backupData = null;
             // todo: evaluate all fields because they have changed back???
@@ -869,7 +869,7 @@ export class model implements OnDestroy {
     public getDirtyFields() {
         let d = {};
         for (let property in this.data) {
-            if (property && (!this.backupData || _.isObject(this.data[property]) || _.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
+            if (property && (!JSON.parse(this.backupData) || _.isObject(this.data[property]) || _.isArray(this.data[property]) || !_.isEqual(this.data[property], JSON.parse(this.backupData)[property]) || this.isFieldARelationLink(property))) {
                 d[property] = this.data[property];
             }
         }
@@ -917,7 +917,7 @@ export class model implements OnDestroy {
                         module: this.module,
                         data: this.data,
                         changed: this.getDirtyFields(),
-                        backupdata: {...this.backupData}
+                        backupdata: JSON.parse(this.backupData)
                     });
 
                     // saving is done
@@ -929,9 +929,10 @@ export class model implements OnDestroy {
                     }
 
 
+
                     // emit the save$
                     // redetermin the dirty fields since the backend call might have changed also additonal fields
-                    this.saved$.emit({changed: this.getDirtyFields(), backupdata: {...this.backupData}});
+                    this.saved$.emit({changed: this.getDirtyFields(), backupdata: JSON.parse(this.backupData)});
 
 
                     // end the edit process
@@ -1531,6 +1532,36 @@ export class model implements OnDestroy {
         }
         return true;
     }
+
+    /**
+     * remove an array of records from the given link name
+     * add the item to the 'beans_relations_to_delete'-array
+     * @param {string} relation_link_name
+     * @param {any[]} records
+     * @returns {boolean}
+     */
+    public removeRelatedRecords(relation_link_name: string, records: any[]): boolean {
+        if (!this.isFieldARelationLink(relation_link_name)) {
+            return false;
+        }
+
+        if (!this.data[relation_link_name]) {
+            this.data[relation_link_name] = {beans: []};
+        }
+
+        for(let record of records) {
+
+            for (let id in this.data[relation_link_name].beans) {
+                if (record == id) {
+                    delete this.data[relation_link_name].beans[id];
+                    this.data[relation_link_name].beans_relations_to_delete[id] = record;
+                }
+            }
+        }
+
+        return true;
+    }
+
 
     public ngOnDestroy(): void {
         this.navigation.unregisterModel(this.modelRegisterId);

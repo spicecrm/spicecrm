@@ -8,7 +8,7 @@
         </div>
         <div class="slds-media__body">
             <div class="slds-grid slds-grid_align-spread slds-timeline__trigger">
-                <div class="slds-grid slds-grid_vertical-align-center slds-truncate_container_75 slds-no-space slds-text-title_bold"  [system-view-provider]="{displayLabels: false}">
+                <div class="slds-grow slds-grid slds-grid_vertical-align-center slds-truncate_container_75 slds-no-space slds-text-title_bold"  [system-view-provider]="{displayLabels: false}">
                     <h3 class="slds-truncate slds-grid slds-grid--vertical-align-center">
                         <object-record-fieldset-horizontal-list *ngIf="headerFieldSet; else noheaderfieldset" [fieldset]="headerFieldSet"></object-record-fieldset-horizontal-list>
                         <ng-template #noheaderfieldset>
@@ -19,9 +19,10 @@
                         </div>
                     </h3>
                 </div>
+                <div style="border-radius: 10px; height: 18px; min-width: 135px;" class=" slds-timeline__date slds-p-horizontal--x-small" [ngClass]="{'slds-theme--error' : isPast, 'slds-theme--warning' : isToday}">
+                    <div class="slds-align--absolute-center">{{starttime}} | {{startdate}}</div>
+                </div>
                 <div class="slds-timeline__actions slds-timeline__actions_inline">
-                    <system-utility-icon *ngIf="highlightdate" class="slds-p-right--xx-small" addclasses="slds-icon-text-error" icon="warning" size="x-small"></system-utility-icon>
-                    <p class="slds-timeline__date" [ngClass]="{'slds-text-color_error' : highlightdate}">{{starttime}} | {{startdate}}</p>
                     <object-action-menu class="slds-show--medium" *ngIf="showtoolset" [buttonsize]="'x-small'" [actionset]="actionset"></object-action-menu>
                 </div>
             </div>
