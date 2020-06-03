@@ -313,8 +313,3 @@ field-generic-display .slds-button--icon {
 .slds-button.slds-button--brand {
     color: var(--color-white);
 }
-
-/* Lightning sets display to "flex", for incomprehensible reasons. This causes that spaces around inline tags are not displayed - and words to stick together. */
-.slds-has-dividers--left > .slds-item, .slds-has-dividers_left > .slds-item {
-    display: initial;
-}
