@@ -33,6 +33,10 @@ export class fieldPhone extends fieldGeneric {
      */
     private initiateCall(e: MouseEvent) {
         e.stopPropagation();
-        this.telephony.initiateCall(this.value);
+        this.telephony.initiateCall(this.value, {
+            relatedid: this.model.id,
+            relatedmodule: this.model.module,
+            relateddata: this.model.data
+        });
     }
 }
