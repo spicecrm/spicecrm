@@ -46,7 +46,7 @@ export class SystemModelProviderDirective {
         }
 
         if (provided_model.data) {
-            this.model.data = provided_model.data;
+            this.model.data = this.model.utils.backendModel2spice(provided_model.module, provided_model.data);
             this.model.isLoading = false;
             this.model.data$.next(this.model.data);
 

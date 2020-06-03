@@ -8,11 +8,15 @@ import {modal} from "../../../services/modal.service";
 import {language} from "../../../services/language.service";
 import {ObjectActionNewButton} from "../../../objectcomponents/components/objectactionnewbutton";
 
+declare var _: any;
+
 @Component({
     templateUrl: "./src/objectcomponents/templates/objectactionnewbutton.html",
     providers: [model]
 })
 export class SalesdocsNewButton extends ObjectActionNewButton implements OnInit {
+
+    public actionconfig: any = {};
 
     constructor(public language: language, public metadata: metadata, public model: model, @SkipSelf() public parentmodel: model, public modal: modal, private injector: Injector) {
         super(language, metadata, model, parentmodel);
@@ -24,11 +28,18 @@ export class SalesdocsNewButton extends ObjectActionNewButton implements OnInit 
      * execute when the button is clicked
      */
     public execute() {
-        let componentConfig = this.metadata.getComponentConfig('SalesdocsNewButton', this.model.module);
+        if (_.isEmpty(this.actionconfig)) {
+            this.actionconfig = this.metadata.getComponentConfig('SalesdocsNewButton', this.model.module);
+        }
 
         this.model.id = "";
         this.model.initialize(this.parentmodel);
-        this.modal.openModal(componentConfig.modalcomponent ? componentConfig.modalcomponent : 'SalesDocsAddBasics', true, this.injector);
+
+        if (this.actionconfig.defaultsalesdoctype) {
+            this.model.setField('salesdoctype', this.actionconfig.defaultsalesdoctype);
+        }
+
+        this.modal.openModal(this.actionconfig.modalcomponent ? this.actionconfig.modalcomponent : 'SalesDocsAddBasics', true, this.injector);
     }
 
 }

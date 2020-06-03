@@ -22,10 +22,8 @@ declare var gapi: any;
 
 import {loginService, loginCheck} from "../services/login.service";
 import {metadata} from "../services/metadata.service";
-import {VersionManagerService} from "../services/versionmanager.service";
 
-import /*embed*/ {MenuService} from "./services/menu.service";
-
+import /*embed*/ {GlobalCopyright} from "./components/globalcopyright";
 import /*embed*/ {GlobalHeader} from "./components/globalheader";
 import /*embed*/ {GlobalHeaderTop} from "./components/globalheadertop";
 import /*embed*/ {GlobalHeaderSearch} from "./components/globalheadersearch";
@@ -94,7 +92,6 @@ import /*embed*/ {GlobalSearchModuleItem} from "./components/globalsearchmodulei
 import /*embed*/ {GlobalNewsFeed} from "./components/globalnewsfeed";
 import /*embed*/ {GlobalNewsFeedItem} from "./components/globalnewsfeeditem";
 
-
 import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
 import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobtainimportantpreferences';
 import /*embed*/ {GlobalObtainGDPRConsent} from './components/globalobtaingdprconsent';
@@ -116,7 +113,7 @@ import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
         ObjectComponents,
         RouterModule.forRoot([
             // {path: "login", component: GlobalLogin},
-            {path: "setup", component: GlobalSetup}
+            //{path: "setsddup", component: GlobalSetup}
             /*
             {path: "recent", component: GlobalRecentItems, canActivate: [loginCheck]},
             {path: "search", component: GlobalSearch, canActivate: [loginCheck]},
@@ -125,6 +122,7 @@ import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
         ])
     ],
     declarations: [
+        GlobalCopyright,
         GlobalNewsFeed,
         GlobalNewsFeedItem,
         GlobalHeader,
@@ -196,6 +194,7 @@ import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
         GlobalLoginImage
     ],
     entryComponents: [
+        GlobalCopyright,
         GlobalHeader,
         GlobalNavigationMenuItem,
         GlobalNavigationMenuItemNew,
@@ -210,6 +209,7 @@ import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
         GlobalDockedComposer,
         GlobalDockedComposerContainer],
     exports: [
+        GlobalCopyright,
         GlobalNewsFeed,
         GlobalHeader,
         GlobalFooter,
@@ -220,13 +220,7 @@ import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
     ]
 })
 export class GlobalComponents {
-    public readonly version = "1.0";
-    public readonly build_date = "/*build_date*/";
 
-    constructor(
-        public metadata: metadata,
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
+    constructor() {
     }
 }

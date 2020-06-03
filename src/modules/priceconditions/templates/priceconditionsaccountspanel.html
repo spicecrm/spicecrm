@@ -1,0 +1,37 @@
+<div class="slds-card slds-card_boundary slds-m-bottom--medium">
+    <div class="slds-card__header slds-grid slds-grid--vertical-align-center">
+        <header class="slds-media slds-media--center slds-has-flexi-truncate">
+            <system-icon module="PriceConditions" [size]="'small'"></system-icon>
+            <div class="slds-media__body slds-truncate slds-grid slds-grid--vertical-align-center">
+                <h2>
+                    <a href="javascript:void(0);" class="slds-text-link--reset">
+                    <span class="slds-text-heading--small">
+                        <system-label-modulename module="PriceConditions"></system-label-modulename>
+                    </span>
+                    </a>
+                </h2>
+                <system-utility-icon class="slds-m-horizontal--xx-small" icon="up" size="x-small" (click)="toggleOpen($event)" [@animateicon]="isopen? 'open' : 'closed'"></system-utility-icon>
+            </div>
+            <div *ngIf="!loading && conditions.length > 0" class="slds-form-element__control">
+                <div class="slds-form-element">
+                    <select [(ngModel)]="activeView" class="slds-select">
+                        <option value="determination"><system-label label="LBL_DETERMINATION"></system-label></option>
+                        <option value="condition"><system-label label="LBL_CONDITION"></system-label></option>
+                    </select>
+                </div>
+            </div>
+            <object-action-container *ngIf="actionset" [actionset]="actionset"></object-action-container>
+        </header>
+    </div>
+    <div @conditionscard *ngIf="isopen">
+        <div *ngIf="!loading && conditions.length > 0; else noconditions" class="slds-card__body slds-height_full slds-size--1-of-1">
+            <price-conditions-by-condition *ngIf="activeView=='condition'" [conditions]="conditions"></price-conditions-by-condition>
+            <price-conditions-by-determination *ngIf="activeView=='determination'" [conditions]="conditions"></price-conditions-by-determination>
+        </div>
+        <ng-template #noconditions>
+            <div class="slds-p-around--large slds-height_full slds-align--absolute-center" style="min-height: 300px;" [system-overlay-loading-spinner]="loading">
+                <system-illustration-no-records *ngIf="!loading"></system-illustration-no-records>
+            </div>
+        </ng-template>
+    </div>
+</div>

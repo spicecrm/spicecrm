@@ -1,0 +1,6 @@
+<div [class.slds-hide]="!groupware.threadId">
+    <router-outlet></router-outlet><system-navigation-manager></system-navigation-manager>
+</div>
+<gsuite-pane-default *ngIf="!groupware.threadId"></gsuite-pane-default>
+<global-footer></global-footer>
+<gsuite-pane-footer *ngIf="session.authData.sessionId && session.authData.loaded === true && displayBottomBar"></gsuite-pane-footer>

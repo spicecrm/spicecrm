@@ -35,6 +35,8 @@ import /*embed*/ {ServiceTicketAccountDetail} from "./components/serviceticketac
 import /*embed*/ {ServiceActivitiyTimelineAddServiceNote} from "./components/serviceactivitiytimelineaddservicenote";
 import /*embed*/ {ServiceTicketRelatedTickets} from "./components/serviceticketrelatedtickets";
 import /*embed*/ {ServiceTicketRelatedTicketsTiles} from "./components/serviceticketrelatedticketstiles";
+import /*embed*/ {fieldWarrantyIndicator} from './fields/fieldwarrantyindicator';
+import /*embed*/ { fieldBooleanBullet } from './fields/fieldbooleanbullet';
 
 import /*embed*/ {ServiceOrderEffortItem} from "./components/serviceordereffortitem";
 import /*embed*/ {ServiceOrderEffortItemDetails} from "./components/serviceordereffortitemdetails";
@@ -84,6 +86,8 @@ import /*embed*/ {ServiceOrderAddTypeSelector} from "./components/serviceorderad
         ServiceActivitiyTimelineAddServiceNote,
         ServiceTicketRelatedTickets,
         ServiceTicketRelatedTicketsTiles,
+        fieldWarrantyIndicator,
+        fieldBooleanBullet,
         ServiceOrderItemPipe,
         ServiceOrderEffortItem,
         ServiceOrderEffortItemDetails,

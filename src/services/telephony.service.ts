@@ -5,6 +5,8 @@ import {Injectable, EventEmitter} from '@angular/core';
 import {broadcast} from './broadcast.service';
 import {telephonyCallI} from "./interfaces.service";
 
+declare var moment: any;
+
 @Injectable()
 export class telephony {
 
@@ -22,7 +24,7 @@ export class telephony {
     /**
      * emits when a MSISDN should be called
      */
-    public initiateCall$: EventEmitter<string> = new EventEmitter<string>();
+    public initiateCall$: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * emits if a call shoudl be terminated
@@ -47,8 +49,8 @@ export class telephony {
      *
      * @param msidsn
      */
-    public initiateCall(msidsn: string) {
-        this.initiateCall$.emit(msidsn);
+    public initiateCall(msisdn: string, relatedrecord?: any) {
+        this.initiateCall$.emit({msisdn: msisdn, relatedid: relatedrecord.relatedid, relatedmodule: relatedrecord.relatedmodule, relateddata: relatedrecord.relateddata});
     }
 
     /**
