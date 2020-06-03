@@ -8,41 +8,11 @@
                     <calendar_other_calendars_monitor (googleIsVisible$)="handleGoogleIsVisible($event)" [othercalendars]="otherCalendars"></calendar_other_calendars_monitor>
                 </div>
                 <div [ngStyle]="sheetStyle" [ngSwitch]="sheetType" [system-overlay-loading-spinner]="calendar.isLoading">
-                    <calendar-sheet-day
-                            *ngSwitchCase="'Day'"
-                            [googleisvisible]="googleIsVisible"
-                            [setdate]="calendarDate"
-                            style="display: block; height: inherit">
-                    </calendar-sheet-day>
-                    <calendar-sheet-three-days
-                            *ngSwitchCase="'Three_Days'"
-                            [googleisvisible]="googleIsVisible"
-                            [setdate]="calendarDate"
-                            (navigateday)="gotToDayView($event)"
-                            style="display: block; height: inherit">
-                    </calendar-sheet-three-days>
-                    <calendar-sheet-week
-                            *ngSwitchCase="'Week'"
-                            [googleisvisible]="googleIsVisible"
-                            [setdate]="calendarDate"
-                            (navigateday)="gotToDayView($event)"
-                            style="display: block; height: inherit">
-                    </calendar-sheet-week>
-                    <calendar-sheet-month
-                            *ngSwitchCase="'Month'"
-                            [googleisvisible]="googleIsVisible"
-                            [setdate]="calendarDate"
-                            (navigateday)="gotToDayView($event)"
-                            style="display: block; height: inherit">
-                    </calendar-sheet-month>
-                    <calendar-sheet-schedule
-                            *ngSwitchCase="'Schedule'"
-                            [googleisvisible]="googleIsVisible"
-                            [setdate]="calendarDate"
-                            (navigateday)="gotToDayView($event)"
-                            (untildate$)="handleUntilDate($event)"
-                            style="display: block; height: inherit">
-                    </calendar-sheet-schedule>
+                    <calendar-sheet-day *ngSwitchCase="'Day'" [googleIsVisible]="googleIsVisible" [setdate]="calendarDate" style="display: block; height: inherit"></calendar-sheet-day>
+                    <calendar-sheet-three-days *ngSwitchCase="'Three_Days'" [googleIsVisible]="googleIsVisible" [setdate]="calendarDate" style="display: block; height: inherit"></calendar-sheet-three-days>
+                    <calendar-sheet-week *ngSwitchCase="'Week'" [googleIsVisible]="googleIsVisible" [setdate]="calendarDate" style="display: block; height: inherit"></calendar-sheet-week>
+                    <calendar-sheet-month *ngSwitchCase="'Month'" [googleIsVisible]="googleIsVisible" [setdate]="calendarDate" style="display: block; height: inherit"></calendar-sheet-month>
+                    <calendar-sheet-schedule *ngSwitchCase="'Schedule'" [googleIsVisible]="googleIsVisible" [setdate]="calendarDate" (untildate$)="handleUntilDate($event)" style="display: block; height: inherit"></calendar-sheet-schedule>
                 </div>
             </div>
             <div>
