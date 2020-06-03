@@ -147,9 +147,10 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
      * handle the change of listtype
      */
     private switchListtype() {
+        /**
         if (this.modellist.module) {
             this.modellist.reLoadList();
-        }
+        }*/
     }
 
     /**

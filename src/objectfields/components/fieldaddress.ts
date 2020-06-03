@@ -68,10 +68,12 @@ export class fieldAddress extends fieldGeneric {
         let formattedaddress = this.addressFormat;
 
         // check if we have a country format
-        if(this.strict && this.country){
-                let countries = this.configuration.getData('countries');
+        if (this.strict && this.country) {
+            let countries = this.configuration.getData('countries');
+            if(countries) {
                 let countryrecod = countries.countries.find(c => c.cc == this.country);
                 if (countryrecod && countryrecod.addressformat) formattedaddress = countryrecod.addressformat;
+            }
         }
 
         // match the elements and format the country
@@ -91,8 +93,10 @@ export class fieldAddress extends fieldGeneric {
             let country = this.country;
             if (country) {
                 let countries = this.configuration.getData('countries');
-                let countryrecod = countries.countries.find(c => c.cc == country);
-                if (countryrecod) country = this.language.getLabel(countryrecod.label);
+                if(countries) {
+                    let countryrecod = countries.countries.find(c => c.cc == country);
+                    if (countryrecod) country = this.language.getLabel(countryrecod.label);
+                }
             }
             return country;
         } else {
@@ -109,8 +113,10 @@ export class fieldAddress extends fieldGeneric {
             let state = this.state;
             if (state) {
                 let states = this.configuration.getData('countries');
-                let staterecod = states.states.find(s => s.cc == country && s.sc == state);
-                if (staterecod) state = this.language.getLabel(staterecod.label);
+                if(states) {
+                    let staterecod = states.states.find(s => s.cc == country && s.sc == state);
+                    if (staterecod) state = this.language.getLabel(staterecod.label);
+                }
             }
             return state;
         } else {

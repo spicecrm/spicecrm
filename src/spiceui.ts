@@ -57,6 +57,11 @@ import {socket} from "./services/socket.service";
 import {GlobalLogin} from "./globalcomponents/components/globallogin";
 import {SystemDynamicRouteInterceptor} from "./systemcomponents/components/systemdynamicrouteinterceptor";
 import {GlobalHeader} from "./globalcomponents/components/globalheader";
+// spiceinstaller
+import {SpiceInstallerModule} from './include/spiceinstaller/spiceinstallermodule';
+import {spiceinstaller} from './include/spiceinstaller/services/spiceinstaller.service';
+import {SpiceInstaller} from './include/spiceinstaller/components/spiceinstaller';
+
 
 // declarations for TS
 /**
@@ -122,11 +127,13 @@ export class SpiceUI {
         SystemComponents,
         GlobalComponents,
         ObjectComponents,
+        SpiceInstallerModule,
         RouterModule.forRoot(
             [
                 {path: "login", component: GlobalLogin},
                 {path: "", redirectTo: "/module/Home", pathMatch: "full"},
-                {path: '**', component: SystemDynamicRouteInterceptor, canActivate: [loginCheck]}
+                {path: '**', component: SystemDynamicRouteInterceptor, canActivate: [loginCheck]},
+                {path: "install", component: SpiceInstaller}
                 // {path: '**', redirectTo: 'module/Home'/*, canActivate: [loginCheck]*/}
             ]
         )
@@ -168,6 +175,9 @@ export class SpiceUI {
         telephony,
         territories,
         Title,
+        loggerService,
+        libloader,
+        spiceinstaller,
         toast,
         userpreferences,
         VersionManagerService

@@ -38,6 +38,18 @@ import /*embed*/ {ServiceTicketRelatedTicketsTiles} from "./components/serviceti
 import /*embed*/ {fieldWarrantyIndicator} from './fields/fieldwarrantyindicator';
 import /*embed*/ { fieldBooleanBullet } from './fields/fieldbooleanbullet';
 
+import /*embed*/ {ServiceOrderEffortItem} from "./components/serviceordereffortitem";
+import /*embed*/ {ServiceOrderEffortItemDetails} from "./components/serviceordereffortitemdetails";
+import /*embed*/ {ServiceOrderEffortPanel} from "./components/serviceordereffortpanel";
+import /*embed*/ {ServiceOrderEquipmentItem} from "./components/serviceorderequipmentitem";
+import /*embed*/ {ServiceOrderEquipmentPanel} from "./components/serviceorderequipmentpanel";
+import /*embed*/ {ServiceOrderItemItem} from "./components/serviceorderitemitem";
+import /*embed*/ {ServiceOrderItemPanel} from "./components/serviceorderitempanel";
+import /*embed*/ {ServiceOrderItemPipe} from "./pipes/serviceorderitemspipe";
+import /*embed*/ {ServiceOrderAddTypeSelector} from "./components/serviceorderaddtypeselector";
+
+
+
 
 @NgModule({
     imports: [
@@ -47,7 +59,7 @@ import /*embed*/ { fieldBooleanBullet } from './fields/fieldbooleanbullet';
         GlobalComponents,
         DirectivesModule,
         ObjectComponents,
-        SystemComponents,
+        SystemComponents
     ],
     declarations: [
         SignServiceOrderModalButtonComponent,
@@ -75,7 +87,16 @@ import /*embed*/ { fieldBooleanBullet } from './fields/fieldbooleanbullet';
         ServiceTicketRelatedTickets,
         ServiceTicketRelatedTicketsTiles,
         fieldWarrantyIndicator,
-        fieldBooleanBullet
+        fieldBooleanBullet,
+        ServiceOrderItemPipe,
+        ServiceOrderEffortItem,
+        ServiceOrderEffortItemDetails,
+        ServiceOrderEffortPanel,
+        ServiceOrderEquipmentItem,
+        ServiceOrderEquipmentPanel,
+        ServiceOrderItemItem,
+        ServiceOrderItemPanel,
+        ServiceOrderAddTypeSelector
     ]
 })
 export class ServiceComponentsModule {
