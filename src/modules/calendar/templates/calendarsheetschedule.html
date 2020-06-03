@@ -14,19 +14,20 @@
                 <div class="slds-truncate slds-size--1-of-4" style="height: 100%;" [title]="getTime(event.start, event.end, event.isMulti)">
                     {{getTime(event.start, event.end, event.isMulti)}}
                 </div>
-                <div class="slds-size--3-of-4">
-                    <calendar-sheet-event [event]="event" style="position: initial" class="spice-calendar-event"></calendar-sheet-event>
+                <div class="slds-size--3-of-4" [ngSwitch]="event.type">
+                    <calendar-sheet-google-event *ngSwitchCase="'google'" [event]="event" style="position: initial" class="spice-calendar-event"></calendar-sheet-google-event>
+                    <calendar-sheet-event *ngSwitchDefault [event]="event" style="position: initial" class="spice-calendar-event"></calendar-sheet-event>
                 </div>
             </div>
         </div>
     </div>
-    <div *ngIf="!showNoneMsg" class="slds-grid slds-p-around--small">
+    <div *ngIf="!showNoRecordsMsg" class="slds-grid slds-p-around--small">
         <system-label label="MSG_SHOWING_EVENTS_UNTIL"></system-label> {{getUntilDate()}}
         <a style="cursor: pointer" class="slds-text-link slds-m-left--xx-small" (click)="loadMore()">
             <system-label label="LBL_MORE"></system-label>
         </a>
     </div>
-    <div *ngIf="showNoneMsg" class="slds-align_absolute-center slds-m-top--medium">
+    <div *ngIf="showNoRecordsMsg" class="slds-align_absolute-center slds-m-top--medium">
         <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
     </div>
 </div>

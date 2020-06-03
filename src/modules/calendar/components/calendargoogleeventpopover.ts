@@ -6,22 +6,15 @@ import {metadata} from '../../../services/metadata.service';
 import {calendar} from "../services/calendar.service";
 import {language} from "../../../services/language.service";
 
-/**
- * display a list of the overflowed events from month view
- */
 @Component({
-    templateUrl: './src/modules/calendar/templates/calendarmorepopover.html',
+    templateUrl: './src/modules/calendar/templates/calendargoogleeventpopover.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CalendarMorePopover implements AfterViewInit {
+export class CalendarGoogleEventPopover implements AfterViewInit {
     /**
-     * holds the calendar events
+     * holds the google event data
      */
-    public events: any[] = [];
-    /**
-     * the sheet day comes from parent to read the date from
-     */
-    public sheetDay: any = {};
+    public data: any = {};
     /**
      * holds the popover side
      */
@@ -59,28 +52,10 @@ export class CalendarMorePopover implements AfterViewInit {
     }
 
     /**
-     * @return calendar event style
-     */
-    get eventStyle() {
-        return {
-            height: this.calendar.multiEventHeight + 'px',
-            position: 'initial',
-            display: 'block'
-        };
-    }
-
-    /**
-     * @return day short date
-     */
-    get shortDate() {
-        let navigateDate = this.calendar.calendarDate;
-        return navigateDate.month(this.sheetDay.month).date(this.sheetDay.day).format('D MMM,');
-    }
-
-    /**
-     * @return popover style and set the popover sides and position
-     */
+    * @return popover style and set the popover sides and position
+    */
     get popoverStyle() {
+
         if (this.isMobileView) {
             return {left: 0, bottom: 0, width: '100%'};
         }
@@ -110,22 +85,22 @@ export class CalendarMorePopover implements AfterViewInit {
     }
 
     /**
-     * @return nubbin class
-     */
+    * @return nubbin class
+    */
     get nubbinClass() {
         return (this.popoverSide == 'left' ? 'slds-nubbin--right-' : 'slds-nubbin--left-') + this.popoverPosition;
     }
 
     /**
-     * detectChanges to prevent angular change detection error
-     */
+    * detectChanges to prevent angular change detection error
+    */
     public ngAfterViewInit() {
         this.cdr.detectChanges();
     }
 
     /**
      * handle closing the popover
-     */
+    */
     public closePopover(force = false, event?) {
         if (force) {
             if (event && event.relatedTarget.classList.contains('slds-dropdown')) {
@@ -141,29 +116,18 @@ export class CalendarMorePopover implements AfterViewInit {
         }
     }
 
-    /*
-    * A function that defines how to track changes for items in the iterable (ngForOf).
-    * https://angular.io/api/common/NgForOf#properties
-    * @param index
-    * @param item
-    * @return index
-    */
-    private trackByFn(index, item) {
-        return item.id;
-    }
-
     /**
-     * clear hide timeout
-     */
-    private onMouseOver() {
+    * clear hide timeout
+    */
+    private onMouseEnter() {
         if (this.hidePopoverTimeout) {
             window.clearTimeout(this.hidePopoverTimeout);
         }
     }
 
     /**
-     * call to force closing the popover
-     */
+    * call to force closing the popover
+    */
     private onMouseOut(event) {
         this.closePopover(true, event);
     }

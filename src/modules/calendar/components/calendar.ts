@@ -1,16 +1,7 @@
 /**
  * @module ModuleCalendar
  */
-import {
-    AfterViewInit, ChangeDetectorRef,
-    Component,
-    ElementRef,
-    Injector,
-    OnDestroy,
-    Renderer2,
-    ViewChild,
-    ViewContainerRef
-} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Injector, OnDestroy, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {navigation} from '../../../services/navigation.service';
 import {calendar} from '../services/calendar.service';
@@ -22,13 +13,12 @@ import {take} from "rxjs/operators";
 import {metadata} from "../../../services/metadata.service";
 
 /**
- * @ignore
+ * Main container which displays a monitor panel, a header with tools and the calendar selected sheet.
  */
-declare var moment: any;
-
 @Component({
     selector: 'calendar',
     templateUrl: './src/modules/calendar/templates/calendar.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [calendar, model]
 })
 
@@ -149,11 +139,6 @@ export class Calendar implements AfterViewInit, OnDestroy {
 
     private handleGoogleIsVisible(value) {
         this.googleIsVisible = value;
-    }
-
-    private gotToDayView(date) {
-        this.calendar.refresh(date);
-        this.calendar.sheetType = 'Day';
     }
 
     private closeModal() {

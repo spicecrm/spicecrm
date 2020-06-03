@@ -1,18 +1,7 @@
 /**
  * @module ModuleCalendar
  */
-import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    ElementRef,
-    EventEmitter,
-    Input,
-    OnDestroy,
-    OnInit,
-    Output,
-    Renderer2
-} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Output, Renderer2} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {view} from '../../../services/view.service';
@@ -29,36 +18,63 @@ import {CdkDragEnd} from "@angular/cdk/drag-drop";
  */
 declare var moment: any;
 
+/**
+ * Display a calendar event with drag/drop and resize handling
+ */
 @Component({
     selector: 'calendar-sheet-event',
     templateUrl: './src/modules/calendar/templates/calendarsheetevent.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [model, view]
 })
-export class CalendarSheetEvent implements OnInit, OnDestroy {
+export class CalendarSheetEvent implements OnInit, AfterViewInit, OnDestroy {
     /**
-     * @output rearrange: EventEmitter<void>
+     * emit to handle event changes
      */
-    @Output() public rearrange: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public eventChange: EventEmitter<any> = new EventEmitter<any>();
     /**
-     * @output eventDrop: EventEmitter<cdkDragEnded>
+     * emit the event drop to be handled
      */
     @Output() public eventDrop: EventEmitter<any> = new EventEmitter<any>();
-    public fields: any[] = [];
     /**
      * @input event: object
      */
     @Input() public event: any = {};
-
-    private mouseMoveListener: any;
+    /**
+     * holds the mouse up listener to be removed
+     */
     private mouseUpListener: any;
+    /**
+     * holds the previews page y
+     */
     private previewsPageY: any;
+    /**
+     * holds the current page y
+     */
     private currentPageY: any;
+    /**
+     * holds the last move time span
+     */
     private lastMoveTimeSpan: number = 0;
+    /**
+     * holds the event background color
+     */
     private color: string = '';
+    /**
+     * holds the dark color boolean
+     */
     private hasDarkColor: boolean = true;
+    /**
+     * a fieldset id for loading a header fieldset in the event
+     */
     private headerFieldset: string;
+    /**
+     * a fieldset id for loading a body fieldset in the event
+     */
     private subFieldset: string;
+    /**
+     * subscription to be unsubscribed on destroy
+     */
     private subscriptions: Subscription = new Subscription();
 
     constructor(private language: language,
@@ -81,7 +97,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     /**
      * @return startHour: string | undefined
      */
-    get startHour() {
+    get startHour(): string {
         return this.model.data.date_start ? moment(this.model.data.date_start)
             .tz(this.calendar.timeZone)
             .format(this.userpreferences.getTimeFormat()) : undefined;
@@ -90,28 +106,28 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     /**
      * @return class: string
      */
-    get textClass() {
+    get textClass(): string {
         return this.calendar.sheetType != 'Schedule' && this.hasDarkColor ? 'spice-calendar-event-has-dark-color' : '';
     }
 
     /**
      * @return isAbsence: boolean
      */
-    get isAbsence() {
+    get isAbsence(): boolean {
         return this.event.type == 'absence' || this.event.module == 'UserAbsences';
     }
 
     /**
      * @return isDraggable: boolean
      */
-    get isDraggable() {
+    get isDraggable(): boolean {
         return this.canEdit && !this.event.isMulti && this.calendar.sheetType != 'Month';
     }
 
     /**
      * @return canEdit: boolean
      */
-    get canEdit() {
+    get canEdit(): boolean {
         return (this.model.data.acl && this.model.checkAccess('edit')) && this.calendar.sheetType != 'Schedule' &&
             (this.event.type == 'event' || this.event.type == 'absence') && !this.calendar.asPicker && !this.calendar.isMobileView && !this.calendar.isDashlet;
     }
@@ -119,21 +135,19 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     /**
      * @return owner: string = assigned_user_id
      */
-    get owner() {
+    get owner(): string {
         return this.calendar.owner;
     }
 
     /**
      * @return lockAxis: 'y' : undefined
      */
-    get lockAxis() {
+    get lockAxis(): any {
         return this.calendar.sheetType == 'Day' ? 'y' : undefined;
     }
 
     /**
-     * @call setModelDataFromEvent
-     * @call loadFieldset
-     * @call setEventColor
+     * call the initial event methods
      */
     public ngOnInit() {
         this.setModelDataFromEvent();
@@ -142,33 +156,23 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     }
 
     /**
-     * @unsubscribe from subscriptions
+     * emit event change to set its style
+     */
+    public ngAfterViewInit() {
+        this.eventChange.emit();
+    }
+
+    /**
+     * unsubscribe from subscriptions
      */
     public ngOnDestroy() {
         this.subscriptions.unsubscribe();
     }
 
     /**
-     * @call ChangeDetectorRef.detectChanges
-     */
-    private onClick() {
-        this.cdr.detectChanges();
-    }
-
-    /**
-     * @call ChangeDetectorRef.detectChanges
-     */
-    private onDragStart() {
-        this.elementRef.nativeElement.style.zIndex = 9999;
-    }
-
-    /**
-     * @notice this method will be called from the calendar service when its dropTarget param is defined
-     * @param dropTarget: {day: moment, hour: number, minutes: number}
-     * @set event.date_start
-     * @set event.date_end
-     * @set model.data
-     * @call model.save
+     * set the event date from the drop position
+     * @notice this method will be called from the calendar service
+     * @param dropTarget
      */
     public onDrop(dropTarget) {
 
@@ -189,11 +193,12 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         this.event.data[dateEndName] = new moment(this.event.end.format());
         this.model.data = {...this.event.data};
         this.model.save(false);
+
+        this.eventChange.emit();
     }
 
     /**
-     * @param color: string
-     * @return isDarkColor: boolean
+     * check the color darkness by rgb luma
      */
     protected isDarkColor(color) {
         let c = color.indexOf('#') > -1 ? color.substring(1) : color;
@@ -209,8 +214,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     }
 
     /**
-     * @param event: CdkDragEnd
-     * @emit event by eventDrop
+     * emit the event drop and reset the z index
      */
     protected emitDrop(event: CdkDragEnd) {
         this.elementRef.nativeElement.style.zIndex = 'initial';
@@ -218,17 +222,34 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     }
 
     /**
-     * @set headerFieldset
-     * @set subFieldset
+     * detect changes for the dropdown
      */
-    private loadFieldset() {
-        let config = this.metadata.getComponentConfig('CalendarSheetEvent', this.model.module);
-        if (config && config.header_fieldset) this.headerFieldset = config.header_fieldset;
-        if (config && config.sub_fieldset) this.subFieldset = config.sub_fieldset;
+    private onClick() {
+        this.cdr.detectChanges();
     }
 
     /**
-     * @set otherColor
+     * set a higher z index for the event
+     */
+    private onDragStart() {
+        this.elementRef.nativeElement.style.zIndex = 9999;
+    }
+
+    /**
+     * load event fieldsets
+     */
+    private loadFieldset() {
+        let config = this.metadata.getComponentConfig('CalendarSheetEvent', this.model.module);
+        if (config && config.header_fieldset) {
+            this.headerFieldset = config.header_fieldset;
+        }
+        if (config && config.sub_fieldset) {
+            this.subFieldset = config.sub_fieldset;
+        }
+    }
+
+    /**
+     * reset event color on color change
      */
     private subscribeToColorChange() {
         this.subscriptions.add(this.calendar.otherCalendarsColor$.subscribe(res => {
@@ -240,8 +261,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     }
 
     /**
-     * @set model.data
-     * @call setEventColor
+     * reset data on model save
      */
     private subscribeToModelSave() {
         this.subscriptions.add(this.broadcast.message$.subscribe(message => {
@@ -255,6 +275,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
                             this.model.data = this.model.utils.backendModel2spice(this.model.module, data);
                             this.setEventColor();
                         }
+                        this.eventChange.emit();
                         this.cdr.detectChanges();
                         break;
                 }
@@ -263,9 +284,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     }
 
     /**
-     * @set model.module
-     * @set model.id
-     * @set model.data
+     * set model data from event
      */
     private setModelDataFromEvent() {
         this.model.module = this.event.module;
@@ -274,15 +293,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     }
 
     /**
-     * @set previewsPageY
-     * @set currentPageY
-     * @set event.resizing
-     * @set mouseUpListener
-     * @set mouseMoveListener
-     * @call stopPropagation
-     * @call preventDefault
-     * @set event.cancelBubble
-     * @reset event.returnValue
+     * set mouse listeners and the necessary variables for the later calculation
      */
     private onMouseDown(event) {
         if (!this.canEdit) return;
@@ -291,8 +302,8 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         this.currentPageY = event.pageY;
         this.event.resizing = true;
 
-        this.mouseUpListener = this.renderer.listen('document', 'mouseup', () => this.onMouseUp());
-        this.mouseMoveListener = this.renderer.listen('document', 'mousemove', (event) => this.onMouseMove(event));
+        const mouseMoveListener = this.renderer.listen('document', 'mousemove', (event) => this.onMouseMove(event));
+        this.mouseUpListener = this.renderer.listen('document', 'mouseup', () => this.onMouseUp(mouseMoveListener));
 
         // prevent triggering other events
         if (event.stopPropagation) {
@@ -308,9 +319,6 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     /**
      * handle the event end hour changes on mouse move
      * @param mouseEvent
-     * @set currentPageY
-     * @set lastMoveTimeSpan
-     * @set event.end
      */
     private onMouseMove(mouseEvent) {
         this.currentPageY = mouseEvent.pageY;
@@ -325,27 +333,17 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
             } else {
                 this.event.end = eventEnd;
             }
+            this.eventChange.emit();
         }
     }
 
     /**
      * save the event end hour changes on mouse up
-     * @reset mouseUpListener
-     * @reset mouseMoveListener
-     * @set duration_hours
-     * @set duration_minutes
-     * @set event.saving
-     * @call model.save
-     * @emit void by rearrange
-     * @reset previewsPageY
-     * @reset currentPageY
-     * @reset resizing
-     * @reset lastMoveTimeSpan
      */
-    private onMouseUp() {
+    private onMouseUp(mouseMoveListener) {
         this.cdr.reattach();
         this.mouseUpListener();
-        this.mouseMoveListener();
+        mouseMoveListener();
 
         if (this.currentPageY != this.previewsPageY) {
             let durationMinutes = +this.event.data.duration_hours * 60 + +this.event.data.duration_minutes + this.lastMoveTimeSpan * 15;
@@ -361,9 +359,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
                     this.event.saving = false;
                     this.cdr.detectChanges();
                 });
-
-            // emit to rearrange on the sheet
-            this.rearrange.emit();
+            this.eventChange.emit();
         }
         this.previewsPageY = undefined;
         this.currentPageY = undefined;
@@ -374,9 +370,6 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     /**
      * set the default event color if it's not set
      * or set the hex color if it's defined in the color conditions table
-     * @set hasDarkColor
-     * @set color
-     * @return void
      */
     private setEventColor() {
         if (this.calendar.sheetType == 'Schedule') return this.color = 'transparent';
@@ -390,6 +383,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         colorConditions = colorConditions
             .filter(item => item.module == this.model.module)
             .sort((a, b) => +a.priority < +b.priority ? 1 : -1);
+
         for (let colorCondition of colorConditions) {
             if (colorCondition.module_filter != null && colorCondition.module_filter.length > 0) {
                 if (this.model.checkModuleFilterMatch(colorCondition.module_filter)) {
