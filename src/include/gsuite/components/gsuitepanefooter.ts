@@ -48,7 +48,7 @@ export class GSuitePaneFooter implements AfterViewInit, OnDestroy {
      * A list of available actions.
      */
     get actions() {
-        let componentConfig = this.metadata.getComponentConfig('OutlookPane');
+        let componentConfig = this.metadata.getComponentConfig('GSuitePane');
         if (componentConfig.actionset) {
             return this.metadata.getActionSetItems(componentConfig.actionset);
         }
