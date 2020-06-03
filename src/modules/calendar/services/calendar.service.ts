@@ -24,14 +24,25 @@ declare var moment: any;
  */
 declare var _: any;
 
+/**
+ * Handle loading events from backend, manage other calendars, holds some default necessary values for calendar sheets and subscribe to handle model changes.
+ */
 @Injectable()
 export class calendar implements OnDestroy {
-
-    public usersCalendarsLoad$: EventEmitter<any> = new EventEmitter<any>();
-    public userCalendarChange$: EventEmitter<any> = new EventEmitter<any>();
-    public addingEvent$: EventEmitter<any> = new EventEmitter<any>();
-    public pickerDate$: EventEmitter<any> = new EventEmitter<any>();
-    public otherCalendarsColor$: EventEmitter<any> = new EventEmitter<any>();
+    /**
+     * emits when user calendars loads
+     */
+    public usersCalendarsLoad$ = new EventEmitter<void>();
+    /**
+     * emits when a user calendar is refactored
+     */
+    public userCalendarChange$ = new EventEmitter<any>();
+    /**
+     *
+     */
+    public addingEvent$ = new EventEmitter<any>();
+    public pickerDate$ = new EventEmitter<any>();
+    public otherCalendarsColor$ = new EventEmitter<any>();
 
     public modules: any[] = [];
     public usersCalendars: any[] = [];
@@ -301,7 +312,7 @@ export class calendar implements OnDestroy {
             this.backend.getRequest(endPoint + calendar, params)
                 .subscribe(events => {
                     this.calendars[userId] = [];
-                    this.isLoading = false;
+
                     for (let event of events) {
                         if (this.otherCalendars.some(calendar => calendar.name == event.module && !calendar.visible)) continue;
 
@@ -337,6 +348,9 @@ export class calendar implements OnDestroy {
                         }
                         this.calendars[userId].push(event);
                     }
+                    this.isLoading = false;
+                    this.cdr.detectChanges();
+
                     responseSubject.next(this.calendars[userId]);
                     responseSubject.complete();
                 });
@@ -378,7 +392,6 @@ export class calendar implements OnDestroy {
             this.backend.getRequest("google/calendar/getgoogleevents", params)
                 .subscribe(res => {
                     if (res.events && res.events.length > 0) {
-                        this.isLoading = false;
                         for (let event of res.events) {
                             event.start = moment(event.start.dateTime).format('YYYY-MM-DD HH:mm:ss');
                             event.end = moment(event.end.dateTime).format('YYYY-MM-DD HH:mm:ss');
@@ -389,10 +402,13 @@ export class calendar implements OnDestroy {
                             event.data.summary_text = event.summary;
                             event.data.assigned_user_id = null;
                             event.color = this.googleColor;
+                            event.type = 'google';
 
                             this.calendars.google.push(event);
                         }
                     }
+                    this.isLoading = false;
+                    this.cdr.detectChanges();
                     responseSubject.next(this.calendars.google);
                     responseSubject.complete();
                 });
@@ -828,5 +844,14 @@ export class calendar implements OnDestroy {
      */
     private triggerSheetReload(date?) {
         this.calendarDate = moment(date ? date : this.calendardate);
+    }
+
+    /**
+     * go to day view and reload
+     * @param date
+     */
+    public gotToDayView(date) {
+        this.refresh(date);
+        this.sheetType = 'Day';
     }
 }

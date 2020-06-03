@@ -1,7 +1,7 @@
 /**
  * @module ModuleCalendar
  */
-import {Component, ElementRef, HostListener, Input, OnDestroy} from '@angular/core';
+import {Component, ElementRef, HostListener, Injector, Input, OnDestroy} from '@angular/core';
 import {footer} from "../../../services/footer.service";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
@@ -32,6 +32,7 @@ export class CalendarMoreButton implements OnDestroy {
     constructor(private elementRef: ElementRef,
                 private language: language,
                 private footer: footer,
+                private injector: Injector,
                 private metadata: metadata) {
     }
 
@@ -79,7 +80,7 @@ export class CalendarMoreButton implements OnDestroy {
     * @set popoverComponentRef
     */
     private renderPopover() {
-        this.metadata.addComponent('CalendarMorePopover', this.footer.modalcontainer)
+        this.metadata.addComponent('CalendarMorePopover', this.footer.modalcontainer, this.injector)
             .subscribe(
                 popoverRef => {
                     popoverRef.instance.events = this.events.slice().sort((a, b) => a.start.isAfter(b.start) ? 1 : -1);

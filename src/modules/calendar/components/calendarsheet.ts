@@ -13,6 +13,9 @@ import {Subscription} from "rxjs";
  */
 declare var moment: any;
 
+/**
+ * Display calendar events in day view
+ */
 @Component({
     selector: 'calendar-sheet-day',
     templateUrl: './src/modules/calendar/templates/calendarsheetday.html'
@@ -161,17 +164,6 @@ export class CalendarSheetDay implements OnChanges, OnDestroy {
      */
     get dayColStyle() {
         return {width: `calc(100% - ${this.sheetTimeWidth}px)`};
-    }
-
-    /**
-     * @return today style
-     */
-    get isTodayStyle() {
-        let today = new moment();
-        let isToday = today.year() === this.setdate.year() && today.month() === this.setdate.month() && today.date() == this.setdate.date();
-        return {
-            color: isToday ? this.calendar.todayColor : 'inherit'
-        };
     }
 
     /**
@@ -345,9 +337,9 @@ export class CalendarSheetDay implements OnChanges, OnDestroy {
 
     /**
      * display date by input format
-     * @param type
-     * @return date format
-     */
+    * @param type
+    * @return date format
+    */
     private displayDate(type) {
         switch (type) {
             case 'day':
@@ -382,6 +374,17 @@ export class CalendarSheetDay implements OnChanges, OnDestroy {
             width: itemWidth + 'px',
             top: (((this.calendar.sheetHourHeight / 60 * startMinutes)) - 1) + 'px',
             height: (this.calendar.sheetHourHeight / 60 * (endMinutes - startMinutes)) + 'px',
+        };
+    }
+
+    /**
+    * @return style
+    */
+    private isTodayStyle() {
+        let today = new moment();
+        let isToday = today.year() === this.setdate.year() && today.month() === this.setdate.month() && today.date() == this.setdate.date();
+        return {
+            color: isToday ? this.calendar.todayColor : 'inherit'
         };
     }
 
