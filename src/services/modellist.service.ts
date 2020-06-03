@@ -59,6 +59,11 @@ export class modellist implements OnDestroy {
      */
     public listDataChanged$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+    /**
+     * an optional bean for modulefilter (parent-bean over the list)
+     * is given to the custom filter methods
+     */
+    public filtercontextbeanid: string;
 
     /**
      * a behavioural subject for the listtype to catch changes in other components
@@ -1195,6 +1200,8 @@ export class modellist implements OnDestroy {
         aggregates[this.module] = this.selectedAggregates;
 
         this.backend.getList(this.module, this.sortArray, fields, {
+            modulefilter: this.modulefilter,
+            filtercontextbeanid: this.filtercontextbeanid,
             start: 0,
             limit: this.loadlimit,
             listid: this.currentList.id,
@@ -1248,6 +1255,7 @@ export class modellist implements OnDestroy {
         aggregates[this.module] = this.selectedAggregates;
         this.backend.getList(this.module, this.sortArray, this.lastFields, {
             modulefilter: this.modulefilter,
+            filtercontextbeanid: this.filtercontextbeanid,
             start: this.listData.list.length,
             limit: this.loadlimit,
             listid: this.currentList.id,
@@ -1287,6 +1295,7 @@ export class modellist implements OnDestroy {
         aggregates[this.module] = this.selectedAggregates;
         this.backend.getList(this.module, this.sortArray, this.lastFields, {
             modulefilter: this.modulefilter,
+            filtercontextbeanid: this.filtercontextbeanid,
             start: this.listData.list.length,
             limit: this.loadlimit,
             listid: this.currentList.id,
