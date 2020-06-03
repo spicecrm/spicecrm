@@ -200,7 +200,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 // define the extension dir and the archive name
                 $gSuiteExtensionDir = dirname(__DIR__) . "/assets/gsuite/";
                 $zipFileName = 'GSuiteChromeExtension.zip';
-                $zipFileDir = sys_get_temp_dir() . $zipFileName;
+                $zipFileDir = sys_get_temp_dir() . "/$zipFileName";
                 $gSuiteJsDir = $gSuiteExtensionDir . "GSuiteBroker.js";
 
                 // define the serverUrl from the request
