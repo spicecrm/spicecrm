@@ -94,6 +94,8 @@ export class ObjectRecordDetails implements OnInit, OnDestroy {
             return {
                 'box-shadow': '0 2px 4px 4px rgba(0,0,0,.16)',
             };
+        } else {
+            return {};
         }
     }
 
