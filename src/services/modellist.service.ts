@@ -1209,7 +1209,6 @@ export class modellist implements OnDestroy {
             searchgeo: this.searchGeo,
             aggregates: aggregates,
             buckets: this.buckets,
-            modulefilter: this.modulefilter,
             relatefilter: this.relatefilter?.active ? this.relatefilter : null
         }).subscribe((res: any) => {
                 // set the listdata
