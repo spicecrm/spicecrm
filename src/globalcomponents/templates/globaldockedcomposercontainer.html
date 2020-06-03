@@ -1,3 +1,6 @@
 <global-docked-composer-overflow *ngIf="displayOverflow"></global-docked-composer-overflow>
 <global-docked-composer *ngFor="let composer of dockedComposer.composers; let i = index;" [composerindex]="i" [composerdata]="composer" [ngStyle]="getComposerStyle(i)"></global-docked-composer>
-<global-docked-composer-call *ngFor="let call of telephony.calls" [calldata]="call"></global-docked-composer-call>
+<!--global-docked-composer-call *ngFor="let call of telephony.calls" [calldata]="call"></global-docked-composer-call-->
+<ng-container *ngFor="let call of telephony.calls">
+    <system-dynamic-component component="TelephonyDockedCall" [componentattributes]="{calldata: call}"></system-dynamic-component>
+</ng-container>

@@ -72,7 +72,7 @@ export class SystemUtilityIcon implements OnChanges{
      * returns the SVG href
      */
     private getSvgHRef() {
-        return './sldassets/icons/' + this._sprite + '-sprite/svg/symbols.svg#' + this._icon;
+        return './vendor/sldassets/icons/' + this._sprite + '-sprite/svg/symbols.svg#' + this._icon;
     }
 
     /**
