@@ -169,7 +169,7 @@ export class calendar implements OnDestroy {
                 private language: language,
                 private configuration: configurationService,
                 private modelutilities: modelutilities,
-                private cdr: ChangeDetectorRef,
+                private cdRef: ChangeDetectorRef,
                 private userPreferences: userpreferences) {
         this.loadCalendarModules();
         this.loadPreferences();
@@ -394,7 +394,7 @@ export class calendar implements OnDestroy {
         let userId = users.length > 0 ? 'users' : calendar;
         if (forceReload || this.doReload(start, end, userId)) {
             this.isLoading = true;
-            this.cdr.detectChanges();
+            this.cdRef.detectChanges();
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
             let params = {start: start.tz('utc').format(format), end: end.tz('utc').format(format), users};
@@ -442,7 +442,7 @@ export class calendar implements OnDestroy {
                         this.calendars[userId].push(event);
                     }
                     this.isLoading = false;
-                    this.cdr.detectChanges();
+                    this.cdRef.detectChanges();
 
                     responseSubject.next(this.calendars[userId]);
                     responseSubject.complete();
@@ -474,7 +474,7 @@ export class calendar implements OnDestroy {
         }
         if (this.doReload(startDate, endDate, "google")) {
             this.isLoading = true;
-            this.cdr.detectChanges();
+            this.cdRef.detectChanges();
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
             let params = {startdate: startDate.format(format), enddate: endDate.format(format)};
@@ -499,7 +499,7 @@ export class calendar implements OnDestroy {
                         }
                     }
                     this.isLoading = false;
-                    this.cdr.detectChanges();
+                    this.cdRef.detectChanges();
                     responseSubject.next(this.calendars.google);
                     responseSubject.complete();
                 });
@@ -602,11 +602,9 @@ export class calendar implements OnDestroy {
      * @param save boolean
      */
     public setUserCalendars(calendars, save = true) {
-        if (!calendars) {
-            return;
-        }
-
+        if (!calendars) return;
         this.usersCalendars = calendars;
+
         if (save) {
             this.userPreferences.setPreference("Users", this.usersCalendars, true, "Calendar");
         }

@@ -1,7 +1,7 @@
 /**
  * @module ModuleCalendar
  */
-import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Injector, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Injector, Input, NgZone, Output} from '@angular/core';
 import {calendar} from "../services/calendar.service";
 import {footer} from "../../../services/footer.service";
 import {metadata} from "../../../services/metadata.service";
@@ -35,6 +35,7 @@ export class CalendarSheetGoogleEvent {
     constructor(private calendar: calendar,
                 private footer: footer,
                 private metadata: metadata,
+                private zone: NgZone,
                 private injector: Injector,
                 private elementRef: ElementRef) {
     }
@@ -56,7 +57,9 @@ export class CalendarSheetGoogleEvent {
      * set a timeout to render the popover
      */
     private onMouseEnter() {
-        this.showPopoverTimeout = window.setTimeout(() => this.renderPopover(), 500);
+        this.zone.runOutsideAngular(() => {
+            this.showPopoverTimeout = window.setTimeout(() => this.renderPopover(), 500);
+        });
     }
 
     /**
@@ -77,13 +80,15 @@ export class CalendarSheetGoogleEvent {
      */
     private renderPopover() {
         if (this.footer.footercontainer) {
-            this.metadata.addComponent('CalendarGoogleEventPopover', this.footer.footercontainer, this.injector).subscribe(
-                popover => {
-                    popover.instance.parentElementRef = this.elementRef;
-                    popover.instance.event = this.event;
-                    this.popoverComponentRef = popover.instance;
-                }
-            );
+            this.zone.run(() => {
+                this.metadata.addComponent('CalendarGoogleEventPopover', this.footer.footercontainer, this.injector).subscribe(
+                    popover => {
+                        popover.instance.parentElementRef = this.elementRef;
+                        popover.instance.event = this.event;
+                        this.popoverComponentRef = popover.instance;
+                    }
+                );
+            });
         }
     }
 }

@@ -9,7 +9,7 @@
                 <a class="slds-text-body--regular slds-truncate" [style.color]="!googleIsVisible ? '#dddbda' : calendar.googleColor"><system-label label="MY_GOOGLE_CALENDAR"></system-label></a>
             </div>
         </div>
-        <div *ngFor="let usersCalendar of calendar.usersCalendars; trackBy: trackByFn"  class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
+        <div *ngFor="let usersCalendar of usersCalendars; trackBy: trackByFn"  class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
              (mouseenter)="hovered = usersCalendar.id" (mouseleave)="hovered = ''" [class.slds-theme--shade]="hovered == usersCalendar.id">
             <div class="slds-grid" (click)="toggleVisible(usersCalendar.id, 'Users')" style="cursor: pointer">
                 <div class="slds-button slds-button--icon slds-m-right--xx-small slds-p-top--xxx-small" [style.color]="usersCalendar.visible ? usersCalendar.color : '#dddbda'">
