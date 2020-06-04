@@ -1,7 +1,7 @@
 /**
  * @module ModuleCalendar
  */
-import {ChangeDetectionStrategy, Component, EventEmitter, Output, ViewChild, ViewContainerRef} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {fts} from '../../../services/fts.service';
 import {recent} from '../../../services/recent.service';
@@ -21,6 +21,10 @@ declare var _: any;
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarOtherCalendarsMonitor {
+    /**
+     * holds the other user calendars
+     */
+    @Input() private usersCalendars: any[] = [];
     /**
      * emit a boolean to show/hide google events
      */
