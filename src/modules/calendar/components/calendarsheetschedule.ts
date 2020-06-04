@@ -1,7 +1,7 @@
 /**
  * @module ModuleCalendar
  */
-import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {navigation} from '../../../services/navigation.service';
@@ -29,6 +29,10 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
      */
     @Output() public untildate$: EventEmitter<any> = new EventEmitter<any>();
     /**
+     * holds all events contacted
+     */
+    protected eventDays: any[] = [];
+    /**
      * the change date comes from the parent
      */
     @Input() private setdate: any = {};
@@ -36,10 +40,6 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
      * holds a boolean of google events visibility
      */
     @Input() private googleIsVisible: boolean = true;
-    /**
-     * holds all events contacted
-     */
-    private allevents: any[] = [];
     /**
      * holds the owner events
      */
@@ -67,6 +67,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
                 private elementRef: ElementRef,
                 private backend: backend,
                 private session: session,
+                private cdRef: ChangeDetectorRef,
                 private calendar: calendar) {
         this.untilDate = new moment().hour(0).minute(0).second(0).add(1, "M");
 
@@ -81,27 +82,10 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
     }
 
     /**
-     * @return allEvents
-     */
-    get allEvents() {
-        return this.allevents;
-    }
-
-    /**
-     * set all events
-     * @param value
-     */
-    set allEvents(value) {
-        let events = this.groupByDay(this.ownerEvents.concat(this.userEvents, this.googleEvents));
-        events.sort((a, b) => a.date - b.date);
-        this.allevents = events;
-    }
-
-    /**
      * @return boolean show/hide none msg
      */
     get showNoRecordsMsg() {
-        return this.allEvents.length == 0 && this.calendar.isDashlet;
+        return this.eventDays.length == 0 && this.calendar.isDashlet;
     }
 
     /**
@@ -136,6 +120,15 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
     }
 
     /**
+     * assign an array of days that holds the events
+     */
+    private setEventDays() {
+        let events = this.groupByDay(this.ownerEvents.concat(this.userEvents, this.googleEvents));
+        this.eventDays = events.sort((a, b) => a.date - b.date);
+        this.cdRef.detectChanges();
+    }
+
+    /**
      * A function that defines how to track changes for items in the iterable (ngForOf).
      * https://angular.io/api/common/NgForOf#properties
      * @param index
@@ -166,13 +159,6 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
     }
 
     /**
-     * get until date
-     */
-    private getUntilDate() {
-        return this.untilDate.format('MMM D, Y');
-    }
-
-    /**
      * group events by day
      * @param events
      */
@@ -192,6 +178,8 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
                         month: eventDay.month(),
                         day: eventDay.date(),
                         date: moment(eventDay),
+                        dateText: moment(eventDay).format('MMM D, YYYY'),
+                        dayShortText: moment(eventDay).format('ddd'),
                         events: [event]
                     };
                     let dayIndex = -1;
@@ -204,6 +192,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
                     });
 
                     if (days.length > 0 && dayIndex > -1) {
+                        event.timeText = !event.isMulti ? `${event.start.format('HH:mm')} - ${event.end.format('HH:mm')} ` : 'All Day';
                         days[dayIndex].events.push(event);
                     } else {
                         days.push(day);
@@ -219,14 +208,14 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
      */
     private getOwnerEvents() {
         this.ownerEvents = [];
-        this.allEvents = this.allevents.slice();
+        this.setEventDays();
 
         this.calendar.loadEvents(this.startDate, this.untilDate)
             .subscribe(events => {
                 if (events.length > 0) {
                     this.ownerEvents = events;
                 }
-                this.allEvents = this.allevents.slice();
+                this.setEventDays();
             });
     }
 
@@ -237,14 +226,14 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
         this.googleEvents = [];
 
         if (!this.googleIsVisible || this.calendar.isMobileView) {
-            this.allEvents = this.allevents.slice();
+            this.setEventDays();
             return;
         }
 
         this.calendar.loadGoogleEvents(this.startDate, this.untilDate)
             .subscribe(events => {
                 this.googleEvents = events;
-                this.allEvents = this.allevents.slice();
+                this.setEventDays();
             });
     }
 
@@ -255,7 +244,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
         this.userEvents = this.userEvents.filter(event => event.data.assigned_user_id != calendar.id &&
             (!event.data.meeting_user_status_accept || !event.data.meeting_user_status_accept.beans[calendar.id]));
 
-        this.allEvents = this.allevents.slice();
+        this.setEventDays();
 
         if (this.calendar.isMobileView || !calendar.visible) {
             return;
@@ -265,7 +254,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
             .subscribe(events => {
                 if (events.length > 0) {
                     this.userEvents = [...this.userEvents, ...events];
-                    this.allEvents = this.allevents.slice();
+                    this.setEventDays();
                 }
             });
     }
@@ -275,7 +264,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
      */
     private getUsersEvents() {
         this.userEvents = [];
-        this.allEvents = this.allevents.slice();
+        this.setEventDays();
         if (this.calendar.isMobileView) {
             return;
         }
@@ -284,25 +273,9 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
             .subscribe(events => {
                 if (events.length > 0) {
                     this.userEvents = events;
-                    this.allEvents = this.allevents.slice();
+                    this.setEventDays();
                 }
             });
-    }
-
-    /**
-     * get event short day format
-     * @param date
-     */
-    private getShortDay(date) {
-        return new moment(date).format('ddd');
-    }
-
-    /**
-     * get event month day year format
-     * @param date
-     */
-    private getMonthDayYear(date) {
-        return new moment(date).format('MMM D, YYYY');
     }
 
     /**
@@ -311,16 +284,6 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
      */
     private goToDay(date) {
         this.calendar.gotToDayView(date);
-    }
-
-    /**
-     * get event time format
-     * @param start
-     * @param end
-     * @param isMulti
-     */
-    private getTime(start, end, isMulti) {
-        return !isMulti ? `${start.format('HH:mm')} - ${end.format('HH:mm')} ` : 'All Day';
     }
 
     /**

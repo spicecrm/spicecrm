@@ -6,6 +6,9 @@ import {footer} from "../../../services/footer.service";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 
+/**
+ * Displays a button in a month day cell to handle displaying the overflowed events in a modal
+ */
 @Component({
     selector: 'calendar-more-button',
     templateUrl: './src/modules/calendar/templates/calendarmorebutton.html'

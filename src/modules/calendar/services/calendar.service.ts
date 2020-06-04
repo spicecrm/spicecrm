@@ -39,37 +39,108 @@ export class calendar implements OnDestroy {
      */
     public userCalendarChange$ = new EventEmitter<any>();
     /**
-     *
+     *  emit on drop target click
      */
     public addingEvent$ = new EventEmitter<any>();
+    /**
+     * emit on drop target click when the calendar is being used as picker
+     */
     public pickerDate$ = new EventEmitter<any>();
+    /**
+     * emit when a calendar color changed
+     */
     public otherCalendarsColor$ = new EventEmitter<any>();
-
+    /**
+     * holds a list of fts calendar enabled modules
+     */
     public modules: any[] = [];
+    /**
+     * holds the other users calendars
+     */
     public usersCalendars: any[] = [];
+    /**
+     * holds the other calendars
+     */
     public otherCalendars: any[] = [];
-    public calendardate: any = moment();
+    /**
+     * holds the loaded calendar events
+     */
     public calendars: any = {};
+    /**
+     * holds the current start date
+     */
     public currentStart: any = {};
+    /**
+     * holds the current end date
+     */
     public currentEnd: any = {};
-    public sidebarwidth: number = 360;
+    /**
+     * holds the sheet time column with
+     */
     public sheetTimeWidth: number = 50;
+    /**
+     * holds the sheet hour height
+     */
     public sheetHourHeight: number = 80;
+    /**
+     * holds the week start day from user preferences
+     */
     public weekstartday: number = 0;
+    /**
+     * holds the week days count
+     */
     public weekDaysCount: number = 7;
+    /**
+     * holds the start hour from user preferences
+     */
     public startHour: number = 0;
+    /**
+     * holds the end hour from user preferences
+     */
     public endHour: number = 23;
+    /**
+     * holds the today text color
+     */
     public todayColor: string = '#eb7092';
+    /**
+     * holds the absence event color
+     */
     public absenceColor: string = '#727272';
+    /**
+     * holds the default event color
+     */
     public eventColor: string = '#039be5';
+    /**
+     * holds the google event color
+     */
     public googleColor: string = '#db4437';
+    /**
+     * true if the user is logged by google
+     */
     public loggedByGoogle: boolean = false;
+    /**
+     * true if the calendar is used as picker
+     */
     public asPicker: boolean = false;
+    /**
+     * true if the view port is small
+     */
     public isMobileView: boolean = false;
+    /**
+     * true if the calendar sheet is used as dashlet
+     */
     public isDashlet: boolean = false;
+    /**
+     * true while loading the events from backend
+     */
     public isLoading: boolean = false;
-    public sheettype: 'Day' | 'Three_Days' | 'Week' | 'Month' | 'Schedule' = 'Week';
+    /**
+     * holds the system timezone which is loaded from the session
+     */
     public timeZone: any;
+    /**
+     * duration mapping object for moment js
+     */
     public duration: any = {
         Day: 'd',
         Three_Days: 'd',
@@ -77,13 +148,18 @@ export class calendar implements OnDestroy {
         Month: 'M',
         Schedule: 'M',
     };
+    /**
+     * color palette for the other calendars
+     */
     public colorPalette: any[] = [
         'e3abec', 'c2dbf7', '9fd6ff', '9de7da', '9df0c0', 'fff099', 'fed49a',
         'd073e0', '86baf3', '5ebbff', '44d8be', '3be282', 'ffe654', 'ffb758',
         'bd35bd', '5779c1', '5ebbff', '00aea9', '3cba4c', 'f5bc25', 'f99221',
         '580d8c', '001970', '0a2399', '0b7477', '0b6b50', 'b67e11', 'b85d0d',
     ];
-
+    /**
+     * holds the subscriptions to unsubscribe on destroy
+     */
     private subscriptions: Subscription = new Subscription();
 
     constructor(private backend: backend,
@@ -103,34 +179,27 @@ export class calendar implements OnDestroy {
     }
 
     /**
-     * @return user calendar loaded boolean true if we have users
+     * holds the sidebar width
      */
-    get usersCalendarsLoaded(): boolean {
-        return !!this.usersCalendars && this.usersCalendars.length > 0;
+    private _sidebarWidth: number = 360;
+
+    /**
+     * @return sidebar width
+     */
+    get sidebarWidth(): number {
+        return !this.isMobileView && !this.isDashlet ? this._sidebarWidth : 0;
     }
 
     /**
-     * @return sheettype: 'Day' | 'Three_Days' | 'Week' | 'Month' | 'Schedule'
+     * holds the calendar date
      */
-    get sheetType() {
-        return this.sheettype;
-    }
-
-    /**
-     * @param value: 'Day' | 'Three_Days' | 'Week' | 'Month' | 'Schedule'
-     * @set sheettype
-     * @setSessionData sheetType
-     */
-    set sheetType(value) {
-        this.sheettype = value;
-        this.session.setSessionData('sheetType', value);
-    }
+    private _calendarDate: any = moment();
 
     /**
      * @return calendardate: moment
      */
     get calendarDate() {
-        return this.calendardate;
+        return this._calendarDate;
     }
 
     /**
@@ -138,42 +207,64 @@ export class calendar implements OnDestroy {
      * @param value: moment
      */
     set calendarDate(value) {
-        this.calendardate = new moment(value).locale(this.language.currentlanguage.substring(0, 2));
-        this.session.setSessionData('calendarDate', this.calendardate);
+        this._calendarDate = new moment(value).locale(this.language.currentlanguage.substring(0, 2));
+        this.session.setSessionData('calendarDate', this._calendarDate);
     }
 
     /**
-     * @return sidebarWidth: number
+     * holds the current sheet type
      */
-    get sidebarWidth() {
-        return !this.isMobileView && !this.isDashlet ? this.sidebarwidth : 0;
+    public _sheetType: 'Day' | 'Three_Days' | 'Week' | 'Month' | 'Schedule' = 'Week';
+
+    /**
+     * @return current sheet type
+     */
+    get sheetType() {
+        return this._sheetType;
     }
 
     /**
-     * @return multiEventHeight: number
+     * set the sheet type
+     * save the current sheet type to the session
+     * @param value
      */
-    get multiEventHeight() {
+    set sheetType(value) {
+        this._sheetType = value;
+        this.session.setSessionData('sheetType', value);
+    }
+
+    /**
+     * @return user calendar loaded boolean true if we have users calendars
+     */
+    get usersCalendarsLoaded(): boolean {
+        return !!this.usersCalendars && this.usersCalendars.length > 0;
+    }
+
+    /**
+     * @return multi event height
+     */
+    get multiEventHeight(): number {
         return !this.isMobileView ? 25 : 20;
     }
 
     /**
-     * @return ownerId: string
+     * @return owner id
      */
-    get owner() {
+    get owner(): string {
         return this.session.authData.userId;
     }
 
     /**
-     * @return ownerName: string
+     * @return owner name
      */
-    get ownerName() {
+    get ownerName(): string {
         return this.session.authData.userName;
     }
 
     /**
      * @return weekstartday: number
      */
-    get weekStartDay() {
+    get weekStartDay(): number {
         return this.weekstartday;
     }
 
@@ -196,34 +287,34 @@ export class calendar implements OnDestroy {
     }
 
     /**
-    * add a duration to calendar date
-    */
+     * add a duration to calendar date
+     */
     public shiftPlus() {
         let weekDaysCountOffset = 7 - this.weekDaysCount;
-        if (this.sheetType == "Day" && this.calendarDate.day() == this.weekStartDay + (this.weekDaysCount - 1)) {
-            this.calendarDate = new moment(this.calendarDate.add(moment.duration(weekDaysCountOffset, "d")));
+        if (this.sheetType == "Day" && this._calendarDate.day() == this.weekStartDay + (this.weekDaysCount - 1)) {
+            this._calendarDate = new moment(this._calendarDate.add(moment.duration(weekDaysCountOffset, "d")));
         }
-        this.calendarDate = new moment(this.calendarDate.add(moment.duration(this.sheetType == 'Three_Days' ? 3 : 1, this.duration[this.sheetType])));
+        this._calendarDate = new moment(this._calendarDate.add(moment.duration(this.sheetType == 'Three_Days' ? 3 : 1, this.duration[this.sheetType])));
     }
 
     /**
-    * subtract a duration from calendar date
-    */
+     * subtract a duration from calendar date
+     */
     public shiftMinus() {
         let weekDaysCountOffset = 7 - this.weekDaysCount;
-        if (this.sheetType == "Day" && this.calendarDate.day() == this.weekStartDay) {
-            this.calendarDate = new moment(this.calendarDate.subtract(moment.duration(weekDaysCountOffset, "d")));
+        if (this.sheetType == "Day" && this._calendarDate.day() == this.weekStartDay) {
+            this._calendarDate = new moment(this._calendarDate.subtract(moment.duration(weekDaysCountOffset, "d")));
         }
-        this.calendarDate = new moment(this.calendarDate.subtract(moment.duration(this.sheetType == 'Three_Days' ? 3 : 1, this.duration[this.sheetType])));
+        this._calendarDate = new moment(this._calendarDate.subtract(moment.duration(this.sheetType == 'Three_Days' ? 3 : 1, this.duration[this.sheetType])));
     }
 
     /**
-    * check if reload is necessary
-    * @param start: moment
-    * @param end: moment
-    * @param calendar: object
-    * @return boolean
-    */
+     * check if reload is necessary
+     * @param start: moment
+     * @param end: moment
+     * @param calendar: object
+     * @return boolean
+     */
     public doReload(start, end, calendar) {
         let noRecords = !this.calendars[calendar] || (this.calendars[calendar] && this.calendars[calendar].length == 0);
         let dateChanged = !this.currentStart[calendar] || !this.currentEnd[calendar] || !this.currentStart[calendar].isSame(start) || !this.currentEnd[calendar].isSame(end);
@@ -276,7 +367,7 @@ export class calendar implements OnDestroy {
                             event.otherColor = calendarsObject[event.data.assigned_user_id].color;
                             resEvents.push(event);
 
-                        // check if user is participant
+                            // check if user is participant
                         } else if (!!event.data.meeting_user_status_accept) {
                             const userId = visibleUserIds.find(userId => !!event.data.meeting_user_status_accept.beans[userId]);
                             if (!userId) return;
@@ -425,10 +516,10 @@ export class calendar implements OnDestroy {
     }
 
     /**
-    * get events for a specific calendar id
-    * @param calendar id
-    * @return events
-    */
+     * get events for a specific calendar id
+     * @param calendar id
+     * @return events
+     */
     public getEvents(calendar = this.owner) {
         return this.calendars[calendar] ? this.calendars[calendar] : [];
     }
@@ -668,6 +759,15 @@ export class calendar implements OnDestroy {
     }
 
     /**
+     * go to day view and reload
+     * @param date
+     */
+    public gotToDayView(date) {
+        this.refresh(date);
+        this.sheetType = 'Day';
+    }
+
+    /**
      * check if the field has a valid value
      * @param field
      * @return boolean
@@ -805,8 +905,8 @@ export class calendar implements OnDestroy {
 
         let savedCalendarDate = this.session.getSessionData('calendarDate', false);
         let savedSheetType = this.session.getSessionData('sheetType', false);
-        if (savedSheetType) this.sheettype = savedSheetType;
-        if (savedCalendarDate) this.calendardate = new moment(savedCalendarDate);
+        if (savedSheetType) this._sheetType = savedSheetType;
+        if (savedCalendarDate) this._calendarDate = new moment(savedCalendarDate);
         this.triggerSheetReload();
     }
 
@@ -832,7 +932,7 @@ export class calendar implements OnDestroy {
 
     /**
      * subscribe to language change and reload events to apply change
-    */
+     */
     private subscribeToLanguage() {
         let languageSubscriber = this.language.currentlanguage$.subscribe(() => this.triggerSheetReload());
         this.subscriptions.add(languageSubscriber);
@@ -843,15 +943,6 @@ export class calendar implements OnDestroy {
      * @param date: moment
      */
     private triggerSheetReload(date?) {
-        this.calendarDate = moment(date ? date : this.calendardate);
-    }
-
-    /**
-     * go to day view and reload
-     * @param date
-     */
-    public gotToDayView(date) {
-        this.refresh(date);
-        this.sheetType = 'Day';
+        this._calendarDate = moment(date ? date : this._calendarDate);
     }
 }

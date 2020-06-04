@@ -13,6 +13,9 @@ import {Subscription} from "rxjs";
  */
 declare var moment: any;
 
+/**
+ * Display a sheet day view
+ */
 @Component({
     selector: 'calendar-sheet-day',
     templateUrl: './src/modules/calendar/templates/calendarsheetday.html',
