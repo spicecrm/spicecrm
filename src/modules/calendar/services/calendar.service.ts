@@ -12,6 +12,7 @@ import {modal} from "../../../services/modal.service";
 import {language} from "../../../services/language.service";
 import {map, take} from "rxjs/operators";
 import {CdkDragEnd} from "@angular/cdk/drag-drop";
+import {configurationService} from "../../../services/configuration.service";
 
 
 /**
@@ -90,6 +91,7 @@ export class calendar implements OnDestroy {
                 private broadcast: broadcast,
                 private modal: modal,
                 private language: language,
+                private configuration: configurationService,
                 private modelutilities: modelutilities,
                 private cdr: ChangeDetectorRef,
                 private userPreferences: userpreferences) {
@@ -398,9 +400,7 @@ export class calendar implements OnDestroy {
                             event.start = moment(event.start);
                             event.end = moment(event.end);
                             event.isMulti = +event.end.diff(event.start, 'days') > 0;
-                            event.data = {};
-                            event.data.summary_text = event.summary;
-                            event.data.assigned_user_id = null;
+                            event.data = {assigned_user_id: null};
                             event.color = this.googleColor;
                             event.type = 'google';
 
@@ -825,7 +825,7 @@ export class calendar implements OnDestroy {
                     this.usersCalendarsLoad$.emit();
                 }
             });
-        if (this.session.authData.googleToken) {
+        if (this.session.authData.googleToken || (this.configuration.checkCapability('google_oauth') && this.configuration.getCapabilityConfig('google_oauth').serviceaccess)) {
             this.loggedByGoogle = true;
         }
     }

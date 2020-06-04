@@ -3,6 +3,12 @@
     position: absolute;
     display: block;
 }
+.spice-calendar-multi-event-day {
+    padding-bottom: .125rem;
+    position: initial;
+    display: block;
+    width: 100%;
+}
 
 .spice-calendar-event-has-dark-color {
     color: var(--color-white);
