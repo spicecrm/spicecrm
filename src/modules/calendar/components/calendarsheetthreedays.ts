@@ -69,7 +69,8 @@ export class CalendarSheetThreeDays extends CalendarSheetWeek {
                 color: this.isToday(moment(focDate)) ? this.calendar.todayColor : '#000000',
                 dateTextDayShort: moment(focDate).format('ddd'),
                 dateTextDayNumber: moment(focDate).format('D'),
-                items: []});
+                items: []
+            });
             d++;
         }
     }
