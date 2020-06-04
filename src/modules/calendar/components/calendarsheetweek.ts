@@ -1,7 +1,7 @@
 /**
  * @module ModuleCalendar
  */
-import {ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, QueryList, SimpleChanges, ViewChild, ViewChildren, ViewContainerRef} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, QueryList, SimpleChanges, ViewChild, ViewChildren, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {calendar} from '../services/calendar.service';
 import {CdkDragEnd} from "@angular/cdk/drag-drop";
@@ -19,6 +19,7 @@ declare var moment: any;
 @Component({
     selector: 'calendar-sheet-week',
     templateUrl: './src/modules/calendar/templates/calendarsheetweek.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarSheetWeek implements OnChanges, OnDestroy {
     /**
@@ -29,9 +30,18 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      * holds sheet hours
      */
     protected sheetHours: any[] = [];
+    /**
+     * children reference of the drop targets
+     */
     @ViewChildren(CalendarSheetDropTarget) protected dropTargets: QueryList<CalendarSheetDropTarget>;
+    /**
+     * container reference for the main div
+     */
     @ViewChild('sheetContainer', {read: ViewContainerRef, static: true}) protected sheetContainer: ViewContainerRef;
-    @ViewChild('scrollcontainer', {read: ViewContainerRef, static: true}) protected scrollContainer: ViewContainerRef;
+    /**
+     * element reference for the scrollbar
+     */
+    @ViewChild('scrollContainer', {read: ViewContainerRef, static: true}) protected scrollContainer: ViewContainerRef;
     /**
      * the change date comes from the parent
      */
@@ -41,13 +51,17 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      */
     @Input() protected googleIsVisible: boolean = true;
     /**
+     * holds the owner multi events
+     */
+    protected ownerMultiEvents: any[] = [];
+    /**
+     * holds the google multi events
+     */
+    protected googleMultiEvents: any[] = [];
+    /**
      * holds the owner events
      */
     private ownerEvents: any[] = [];
-    /**
-     * holds the owner multi events
-     */
-    private ownerMultiEvents: any[] = [];
     /**
      * holds the users events
      */
@@ -60,10 +74,6 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      * holds the google events
      */
     private googleEvents: any[] = [];
-    /**
-     * holds the google multi events
-     */
-    private googleMultiEvents: any[] = [];
     /**
      * subscription to handle unsubscribe
      */
@@ -93,13 +103,6 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
     }
 
     /**
-     * @return sheetTimeWidth: number
-     */
-    get sheetTimeWidth() {
-        return this.calendar.sheetTimeWidth;
-    }
-
-    /**
      * @return allEvents: [ownerEvents, userEvents, googleEvents]
      */
     get allEvents() {
@@ -111,6 +114,13 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      */
     get allMultiEvents() {
         return this.ownerMultiEvents.concat(this.userMultiEvents, this.googleMultiEvents);
+    }
+
+    /**
+     * @return sheetTimeWidth: number
+     */
+    get sheetTimeWidth() {
+        return this.calendar.sheetTimeWidth;
     }
 
     /**
@@ -200,10 +210,26 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         while (d < this.calendar.weekDaysCount) {
             let focDate = new moment(this.setdate);
             focDate.day(dayIndex);
-            this.sheetDays.push({index: d, date: moment(focDate), day: dayIndex, items: []});
+            this.sheetDays.push({
+                index: d,
+                date: moment(focDate),
+                day: dayIndex,
+                color: this.isToday(moment(focDate)) ? this.calendar.todayColor : '#000000',
+                dateTextDayShort: moment(focDate).format('ddd'),
+                dateTextDayNumber: moment(focDate).format('D'),
+                items: []});
             d++;
             dayIndex++;
         }
+    }
+
+    /**
+     * set all events style
+     */
+    public setEventsStyle() {
+        this.allEvents.forEach(event =>
+            this.setEventStyle(event)
+        );
     }
 
     /**
@@ -227,9 +253,20 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
             top: top + 'px',
             height: height + 'px'
         };
+        this.cdRef.detectChanges();
     }
 
     /**
+     * set all multi events style
+     */
+    public setMultiEventsStyle() {
+        this.allMultiEvents.forEach(event =>
+            this.setMultiEventStyle(event)
+        );
+    }
+
+    /**
+     * set multi event style
      * @param event: object
      * @return style: object
      */
@@ -257,6 +294,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
             height: this.calendar.multiEventHeight + "px",
             top: (this.calendar.multiEventHeight * eventI) + "px",
         };
+        this.cdRef.detectChanges();
     }
 
     /**
@@ -289,17 +327,16 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      */
     public gotoDay(dayOfWeek) {
         if (this.calendar.asPicker) return;
-        this.calendar.gotToDayView(moment(dayOfWeek));
+        this.calendar.gotToDayView(moment(dayOfWeek.format()));
     }
 
     /**
      * @param date: moment
      * @return color: string
      */
-    protected isTodayStyle(date: any) {
+    protected isToday(date: any) {
         let today = new moment();
-        let isToday = today.year() === date.year() && today.month() === date.month() && today.date() == date.date();
-        return isToday ? this.calendar.todayColor : 'inherit';
+        return today.year() === date.year() && today.month() === date.month() && today.date() == date.date();
     }
 
     /**
@@ -382,6 +419,8 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
                     this.ownerEvents = events.filter(event => !event.isMulti);
                     this.ownerMultiEvents = events.filter(event => event.isMulti);
                     this.arrangeMultiEvents();
+                    this.setEventsStyle();
+                    this.setMultiEventsStyle();
                 }
             });
     }
@@ -405,6 +444,8 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
                     this.googleEvents = events.filter(event => !event.isMulti);
                     this.googleMultiEvents = events.filter(event => event.isMulti);
                     this.arrangeMultiEvents();
+                    this.setEventsStyle();
+                    this.setMultiEventsStyle();
                 }
             });
     }
@@ -437,6 +478,8 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
                             this.arrangeMultiEvents();
                         }
                     });
+                    this.setEventsStyle();
+                    this.setMultiEventsStyle();
                 }
             });
     }
@@ -465,6 +508,8 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
                             this.arrangeMultiEvents();
                         }
                     });
+                    this.setEventsStyle();
+                    this.setMultiEventsStyle();
                 }
             });
 

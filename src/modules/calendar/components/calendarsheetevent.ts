@@ -1,7 +1,7 @@
 /**
  * @module ModuleCalendar
  */
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Output, Renderer2} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, Renderer2} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {view} from '../../../services/view.service';
@@ -27,19 +27,23 @@ declare var moment: any;
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [model, view]
 })
-export class CalendarSheetEvent implements OnInit, AfterViewInit, OnDestroy {
+export class CalendarSheetEvent implements OnInit, OnDestroy {
     /**
      * emit to handle event changes
      */
-    @Output() public eventChange: EventEmitter<any> = new EventEmitter<any>();
+    @Output() private eventChange = new EventEmitter<void>();
     /**
      * emit the event drop to be handled
      */
-    @Output() public eventDrop: EventEmitter<any> = new EventEmitter<any>();
+    @Output() private eventDrop = new EventEmitter<any>();
     /**
      * @input event: object
      */
-    @Input() public event: any = {};
+    @Input() private event: any = {};
+    /**
+     * @input event: object
+     */
+    @Input() private sheetContainer: any = {};
     /**
      * holds the mouse up listener to be removed
      */
@@ -83,7 +87,7 @@ export class CalendarSheetEvent implements OnInit, AfterViewInit, OnDestroy {
                 private model: model,
                 private view: view,
                 private broadcast: broadcast,
-                private cdr: ChangeDetectorRef,
+                private cdRef: ChangeDetectorRef,
                 private userpreferences: userpreferences,
                 private metadata: metadata,
                 private elementRef: ElementRef,
@@ -156,13 +160,6 @@ export class CalendarSheetEvent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     /**
-     * emit event change to set its style
-     */
-    public ngAfterViewInit() {
-        this.eventChange.emit();
-    }
-
-    /**
      * unsubscribe from subscriptions
      */
     public ngOnDestroy() {
@@ -189,9 +186,13 @@ export class CalendarSheetEvent implements OnInit, AfterViewInit, OnDestroy {
         let module = this.calendar.modules.find(module => module.name == this.event.module) || {};
         let dateStartName = module.dateStartName || 'date_start';
         let dateEndName = module.dateEndName || 'date_end';
+
         this.event.data[dateStartName] = moment(this.event.start.format());
         this.event.data[dateEndName] = new moment(this.event.end.format());
+
+        this.model.startEdit(true, true);
         this.model.data = {...this.event.data};
+
         this.model.save(false);
 
         this.eventChange.emit();
@@ -225,7 +226,7 @@ export class CalendarSheetEvent implements OnInit, AfterViewInit, OnDestroy {
      * detect changes for the dropdown
      */
     private onClick() {
-        this.cdr.detectChanges();
+        this.cdRef.detectChanges();
     }
 
     /**
@@ -255,7 +256,7 @@ export class CalendarSheetEvent implements OnInit, AfterViewInit, OnDestroy {
         this.subscriptions.add(this.calendar.otherCalendarsColor$.subscribe(res => {
             if (this.event.data.assigned_user_id && res.id == this.event.data.assigned_user_id) {
                 this.event.otherColor = res.color;
-                this.cdr.detectChanges();
+                this.cdRef.detectChanges();
             }
         }));
     }
@@ -274,9 +275,8 @@ export class CalendarSheetEvent implements OnInit, AfterViewInit, OnDestroy {
                         if (id == this.model.id) {
                             this.model.data = this.model.utils.backendModel2spice(this.model.module, data);
                             this.setEventColor();
+                            this.eventChange.emit();
                         }
-                        this.eventChange.emit();
-                        this.cdr.detectChanges();
                         break;
                 }
             }
@@ -297,7 +297,7 @@ export class CalendarSheetEvent implements OnInit, AfterViewInit, OnDestroy {
      */
     private onMouseDown(event) {
         if (!this.canEdit) return;
-        this.cdr.detach();
+        this.cdRef.detach();
         this.previewsPageY = event.pageY;
         this.currentPageY = event.pageY;
         this.event.resizing = true;
@@ -341,7 +341,7 @@ export class CalendarSheetEvent implements OnInit, AfterViewInit, OnDestroy {
      * save the event end hour changes on mouse up
      */
     private onMouseUp(mouseMoveListener) {
-        this.cdr.reattach();
+        this.cdRef.reattach();
         this.mouseUpListener();
         mouseMoveListener();
 
@@ -349,16 +349,17 @@ export class CalendarSheetEvent implements OnInit, AfterViewInit, OnDestroy {
             let durationMinutes = +this.event.data.duration_hours * 60 + +this.event.data.duration_minutes + this.lastMoveTimeSpan * 15;
             this.event.data.duration_hours = Math.floor(durationMinutes / 60);
             this.event.data.duration_minutes = durationMinutes - this.event.data.duration_hours * 60;
+
+            this.model.startEdit(true, true);
             this.model.data.duration_minutes = this.event.data.duration_minutes;
             this.model.data.duration_hours = this.event.data.duration_hours;
 
             // save the event
             this.event.saving = true;
-            this.model.save()
-                .subscribe(() => {
-                    this.event.saving = false;
-                    this.cdr.detectChanges();
-                });
+            this.model.save().subscribe(() => {
+                this.event.saving = false;
+                this.cdRef.detectChanges();
+            });
             this.eventChange.emit();
         }
         this.previewsPageY = undefined;

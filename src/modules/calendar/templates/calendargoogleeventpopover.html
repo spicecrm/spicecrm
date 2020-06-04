@@ -4,14 +4,14 @@
     </button>
     <div #popoverContainer>
         <div class="slds-popover__header" style="padding: .5rem">
-            <header class="slds-text-heading--small slds-m-bottom--x-small">{{data.name}}</header>
+            <header class="slds-text-heading--small slds-m-bottom--x-small">{{event.summary_text}}</header>
             <div class="slds-scrollable--y" style="height: 120px">
                 <dl class="slds-list_horizontal slds-wrap slds-text-body_small">
                     <dt class="slds-item_label slds-text-color_weak slds-truncate">
-                        <system-label label="LBL_DATE"></system-label>
+                        <system-label label="LBL_DESCRIPTION"></system-label>
                     </dt>
                     <dd class="slds-item_detail slds-text-color_weak slds-truncate">
-                        {{data.date}}
+                        {{event.description}}
                     </dd>
                 </dl>
             </div>

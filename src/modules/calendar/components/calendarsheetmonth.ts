@@ -1,7 +1,20 @@
 /**
  * @module ModuleCalendar
  */
-import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnChanges, OnDestroy, Renderer2, SimpleChanges, ViewChild, ViewContainerRef} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    Input,
+    OnChanges,
+    OnDestroy,
+    Renderer2,
+    SimpleChanges,
+    ViewChild,
+    ViewContainerRef
+} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {navigation} from '../../../services/navigation.service';
@@ -20,6 +33,7 @@ declare var moment: any;
 @Component({
     selector: 'calendar-sheet-month',
     templateUrl: './src/modules/calendar/templates/calendarsheetmonth.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     /**
@@ -69,7 +83,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 private elementRef: ElementRef,
                 private backend: backend,
                 private renderer: Renderer2,
-                private cdr: ChangeDetectorRef,
+                private cdRef: ChangeDetectorRef,
                 private calendar: calendar) {
         this.buildSheetDays();
         this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
@@ -122,7 +136,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      * detect changes
      */
     public ngAfterViewInit() {
-        this.cdr.detectChanges();
+        this.cdRef.detectChanges();
     }
 
     /**
@@ -148,7 +162,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      * unsubscribe from subscriptions
      */
     public ngOnDestroy() {
-        this.cdr.detach();
+        this.cdRef.detach();
         this.subscription.unsubscribe();
     }
 
@@ -204,6 +218,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 if (events.length > 0) {
                     this.ownerEvents = events;
                     this.arrangeEvents();
+                    this.setEventsStyle();
                 }
             });
     }
@@ -223,6 +238,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 if (events.length > 0) {
                     this.googleEvents = events;
                     this.arrangeEvents();
+                    this.setEventsStyle();
                 }
             });
     }
@@ -241,6 +257,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 if (events.length > 0) {
                     this.userEvents = [...this.userEvents, ...events];
                     this.arrangeEvents();
+                    this.setEventsStyle();
                 }
             });
     }
@@ -260,12 +277,15 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 if (events.length > 0) {
                     this.userEvents = [...this.userEvents, ...events];
                     this.arrangeEvents();
+                    this.setEventsStyle();
                 }
             });
     }
 
     /**
-     * arrange events by duration
+     * sort events by duration.
+     * assign to each event an array of the week indices where the multi event was found.
+     * filter out the invisible events wich will be pushed to the more popover.
      */
     private arrangeEvents() {
         for (let w = 0; w < this.monthGrid.length; w++) {
@@ -292,6 +312,8 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                     day.events.sort((a, b) => a.start.isSame(b.start, 'day') && (a.start.isAfter(b.start, 'hour') || (a.start.isSame(b.start, 'hour') && a.start.isAfter(b.start, 'minute'))) ? 1 : -1);
                 }
             }
+
+            // resort multi events to be put on the same row in each day of the week.
             this.allEvents.forEach(event => {
                 let itemIdx = null;
                 this.monthGrid[w].forEach(day => {
@@ -414,6 +436,17 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
     }
 
     /**
+     * set all events style
+     */
+    private setEventsStyle() {
+        this.allEvents.forEach(event =>
+            event.weeksI.forEach(week =>
+                this.setEventStyle(event, week)
+            )
+        );
+    }
+
+    /**
      * set event style
      * @param event
      * @param weekI
@@ -443,6 +476,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             height: this.eventHeight + 'px',
             display: visible
         };
+        this.cdRef.detectChanges();
     }
 
     /**

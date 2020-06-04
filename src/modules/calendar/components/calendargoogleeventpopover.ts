@@ -14,7 +14,7 @@ export class CalendarGoogleEventPopover implements AfterViewInit {
     /**
      * holds the google event data
      */
-    public data: any = {};
+    public event: any = {};
     /**
      * holds the popover side
      */
