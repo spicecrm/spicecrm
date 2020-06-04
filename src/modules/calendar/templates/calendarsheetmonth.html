@@ -20,10 +20,19 @@
         <ng-container *ngFor="let sheetDay of sheetDays; trackBy: trackByFnDate">
             <div class="slds-is-absolute slds-border--left" [ngStyle]="getDayDividerStyle(sheetDay.index)"></div>
         </ng-container>
-        <ng-container *ngFor="let event of allEvents; trackBy: trackByFn">
+        <ng-container *ngFor="let event of ownerEvents; trackBy: trackByFn">
             <ng-container *ngFor="let week of event.weeksI; trackBy: trackByFnDate" [ngSwitch]="event.type">
-                <calendar-sheet-google-event *ngSwitchCase="'google'" [event]="event" [ngStyle]="event.style" (eventChange)="setEventStyle(event, week)" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-google-event>
-                <calendar-sheet-event *ngSwitchDefault [event]="event" [ngStyle]="event.style" (eventChange)="setEventStyle(event, week)" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-event>
+                <calendar-sheet-event [event]="event" [ngStyle]="event.style" (eventChange)="setEventsStyle()" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-event>
+            </ng-container>
+        </ng-container>
+        <ng-container *ngFor="let event of userEvents; trackBy: trackByFn">
+            <ng-container *ngFor="let week of event.weeksI; trackBy: trackByFnDate" [ngSwitch]="event.type">
+                <calendar-sheet-event [event]="event" [ngStyle]="event.style" (eventChange)="setEventsStyle()" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-event>
+            </ng-container>
+        </ng-container>
+        <ng-container *ngFor="let event of googleEvents; trackBy: trackByFn">
+            <ng-container *ngFor="let week of event.weeksI; trackBy: trackByFnDate" [ngSwitch]="event.type">
+                <calendar-sheet-google-event [event]="event" [ngStyle]="event.style" style="padding: 1px 0" class="spice-calendar-event"></calendar-sheet-google-event>
             </ng-container>
         </ng-container>
     </div>

@@ -1,7 +1,7 @@
 /**
  * @module ModuleCalendar
  */
-import {Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {navigation} from '../../../services/navigation.service';
@@ -20,7 +20,8 @@ declare var moment: any;
  */
 @Component({
     selector: 'calendar-sheet-schedule',
-    templateUrl: './src/modules/calendar/templates/calendarsheetschedule.html'
+    templateUrl: './src/modules/calendar/templates/calendarsheetschedule.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarSheetSchedule implements OnChanges, OnDestroy {
     /**

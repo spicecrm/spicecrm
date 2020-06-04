@@ -30,7 +30,6 @@ import /*embed*/ {CalendarSheetMonth} from "./components/calendarsheetmonth";
 import /*embed*/ {CalendarSheetSchedule} from "./components/calendarsheetschedule";
 import /*embed*/ {CalendarMorePopover} from "./components/calendarmorepopover";
 import /*embed*/ {CalendarGoogleEventPopover} from "./components/calendargoogleeventpopover";
-import /*embed*/ {CalendarGoogleEventPopoverDirective} from "./directives/calendargoogleeventpopoverdirective";
 import /*embed*/ {CalendarMoreButton} from "./components/calendarmorebutton";
 import /*embed*/ {CalendarAddCalendar} from "./components/calendaraddcalendar";
 import /*embed*/ {CalendarAddModulesModal} from "./components/calendaraddmodulesmodal";
@@ -66,7 +65,6 @@ import /*embed*/ {CalendarThreeDaysDashlet} from "./components/calendarthreedays
         CalendarSheetDropTarget,
         CalendarMorePopover,
         CalendarGoogleEventPopover,
-        CalendarGoogleEventPopoverDirective,
         CalendarMoreButton,
         CalendarAddCalendar,
         CalendarAddModulesModal,

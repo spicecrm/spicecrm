@@ -1,7 +1,7 @@
 /**
  * @module ModuleCalendar
  */
-import {Component, EventEmitter, Input, Output, ViewChild, ViewContainerRef} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {fts} from "../../../services/fts.service";
 import {recent} from "../../../services/recent.service";
@@ -14,7 +14,8 @@ declare var _: any;
 
 @Component({
     selector: 'calendar_other_calendars_monitor',
-    templateUrl: './src/modules/calendar/templates/calendarothercalendarsmonitor.html'
+    templateUrl: './src/modules/calendar/templates/calendarothercalendarsmonitor.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarOtherCalendarsMonitor {
     @Output() public googleIsVisible$: EventEmitter<any> = new EventEmitter<any>();

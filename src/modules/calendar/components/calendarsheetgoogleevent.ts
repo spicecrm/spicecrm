@@ -1,31 +1,86 @@
 /**
  * @module ModuleCalendar
  */
-import {AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Injector, Input, Output} from '@angular/core';
 import {calendar} from "../services/calendar.service";
+import {footer} from "../../../services/footer.service";
+import {metadata} from "../../../services/metadata.service";
 
 @Component({
     selector: 'calendar-sheet-google-event',
     templateUrl: './src/modules/calendar/templates/calendarsheetgoogleevent.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CalendarSheetGoogleEvent implements AfterViewInit {
-    /**
-     * emit to handle event changes
-     */
-    @Output() public eventChange: EventEmitter<any> = new EventEmitter<any>();
+export class CalendarSheetGoogleEvent {
     /**
      * holds the google event data
      */
     @Input() private event;
+    /**
+     * @input event: object
+     */
+    @Input() private sheetContainer: any = {};
+    /**
+     * the popover that is rendered
+     */
+    private popoverComponentRef = null;
+    /**
+     * holds the popover hide timeout
+     */
+    private showPopoverTimeout: any = {};
 
-    constructor(private calendar: calendar) {
+    constructor(private calendar: calendar,
+                private footer: footer,
+                private metadata: metadata,
+                private injector: Injector,
+                private elementRef: ElementRef) {
     }
 
     /**
-     * emit the event change to define its style
+     * clear the timeout and close the popover
      */
-    public ngAfterViewInit() {
-        this.eventChange.emit();
+    public ngOnDestroy() {
+        if (this.showPopoverTimeout) {
+            window.clearTimeout(this.showPopoverTimeout);
+        }
+
+        if (this.popoverComponentRef) {
+            this.popoverComponentRef.closePopover(true);
+        }
+    }
+
+    /**
+     * set a timeout to render the popover
+     */
+    private onMouseEnter() {
+        this.showPopoverTimeout = window.setTimeout(() => this.renderPopover(), 500);
+    }
+
+    /**
+     * close the popover and clear the timeout
+     */
+    private onMouseLeave() {
+        if (this.showPopoverTimeout) {
+            window.clearTimeout(this.showPopoverTimeout);
+        }
+
+        if (this.popoverComponentRef) {
+            this.popoverComponentRef.closePopover();
+        }
+    }
+
+    /**
+     * renders the popover if a footer container if in the footer service
+     */
+    private renderPopover() {
+        if (this.footer.footercontainer) {
+            this.metadata.addComponent('CalendarGoogleEventPopover', this.footer.footercontainer, this.injector).subscribe(
+                popover => {
+                    popover.instance.parentElementRef = this.elementRef;
+                    popover.instance.event = this.event;
+                    this.popoverComponentRef = popover.instance;
+                }
+            );
+        }
     }
 }

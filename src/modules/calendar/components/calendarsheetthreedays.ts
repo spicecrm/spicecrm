@@ -1,7 +1,7 @@
 /**
  * @module ModuleCalendar
  */
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {CalendarSheetWeek} from "./calendarsheetweek";
 
 /**
@@ -14,7 +14,8 @@ declare var moment: any;
  */
 @Component({
     selector: 'calendar-sheet-three-days',
-    templateUrl: './src/modules/calendar/templates/calendarsheetthreedays.html'
+    templateUrl: './src/modules/calendar/templates/calendarsheetthreedays.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarSheetThreeDays extends CalendarSheetWeek {
     /**
@@ -61,7 +62,14 @@ export class CalendarSheetThreeDays extends CalendarSheetWeek {
         while (d < 3) {
             let focDate = new moment(this.setdate);
             focDate = focDate.add(d, 'days');
-            this.sheetDays.push({index: d, date: moment(focDate), day: moment(focDate).day(), items: []});
+            this.sheetDays.push({
+                index: d,
+                date: moment(focDate),
+                day: moment(focDate).day(),
+                color: this.isToday(moment(focDate)) ? this.calendar.todayColor : '#000000',
+                dateTextDayShort: moment(focDate).format('ddd'),
+                dateTextDayNumber: moment(focDate).format('D'),
+                items: []});
             d++;
         }
     }
