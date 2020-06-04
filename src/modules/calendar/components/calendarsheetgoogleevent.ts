@@ -6,6 +6,9 @@ import {calendar} from "../services/calendar.service";
 import {footer} from "../../../services/footer.service";
 import {metadata} from "../../../services/metadata.service";
 
+/**
+ * Display a calendar google event
+ */
 @Component({
     selector: 'calendar-sheet-google-event',
     templateUrl: './src/modules/calendar/templates/calendarsheetgoogleevent.html',

@@ -23,17 +23,49 @@ import {metadata} from "../../../services/metadata.service";
 })
 
 export class Calendar implements AfterViewInit, OnDestroy {
-    public otherCalendars: any[] = [];
+    /**
+     * holds the component config
+     */
     public componentconfig: any = {};
+    /**
+     * holds the google visible boolean
+     */
     public googleIsVisible: boolean = true;
-    @ViewChild('calendarcontainer', {read: ViewContainerRef, static: true}) private calendarContainer: ViewContainerRef;
+    /**
+     * dom reference to the calendar main container div
+     */
+    @ViewChild('calendarContainer', {read: ViewContainerRef, static: true}) private calendarContainer: ViewContainerRef;
+    /**
+     * element reference to the calendar header component
+     */
     @ViewChild(CalendarHeader, {static: true}) private calendarHeader: CalendarHeader;
+    /**
+     * holds the subscriptions to unsubscribe on destroy
+     */
     private subscriptions: Subscription = new Subscription();
+    /**
+     * holds the touch start listener
+     */
     private touchStartListener: any;
+    /**
+     * holds the touch move listener
+     */
     private touchMoveListener: any;
+    /**
+     * holds the resize listener
+     */
     private resizeListener: any;
+    /**
+     * holds the touch down x position
+     */
     private xDown: number = null;
+    /**
+     * holds the touch down y position
+     */
     private yDown: number = null;
+    /**
+     * reference to this component to destroy
+     */
     private self: any = {};
 
     constructor(private language: language,
@@ -46,7 +78,9 @@ export class Calendar implements AfterViewInit, OnDestroy {
                 private metadata: metadata,
                 private injector: Injector,
                 private calendar: calendar) {
+
         this.navigation.setActiveModule('Calendar');
+
         let addingEventSubscriber = this.calendar.addingEvent$.subscribe(res => this.addEvent(res));
         this.subscriptions.add(addingEventSubscriber);
 
@@ -56,54 +90,33 @@ export class Calendar implements AfterViewInit, OnDestroy {
         this.touchStartListener = this.renderer.listen('document', 'touchstart', e => this.handleTouchStart(e));
     }
 
-    get pickerDualMode() {
-        return this.componentconfig.pickerDualMode;
-    }
-
-    get isMobileView() {
-        return this.calendar.isMobileView;
-    }
-
-    get sheetType() {
-        return this.calendar.sheetType;
-    }
-
+    /**
+     * @return sidebar width
+     */
     get sidebarWidth() {
         return this.calendar.sidebarWidth;
     }
 
-    get weekStartDay() {
-        return this.calendar.weekStartDay;
-    }
-
-    get calendarDate() {
-        return this.calendar.calendarDate;
-    }
-
-    get asPicker() {
-        return this.calendar.asPicker;
-    }
-
-    set asPicker(value) {
-        if (value) {
-            this.calendar.sheetType = 'Three_Days';
-            this.calendar.asPicker = value;
-        } else {
-            this.closeModal();
-        }
-    }
-
+    /**
+     * @return sidebar style
+     */
     get sidebarStyle() {
         return {
-            'width': this.calendar.sidebarwidth + 'px',
+            'width': this.calendar.sidebarWidth + 'px',
             'z-index': 1,
         };
     }
 
+    /**
+     * @return main container class
+     */
     get mainContainerClass() {
-        return !this.asPicker ? 'slds-theme--default' : 'slds-modal slds-fade-in-open slds-modal_large';
+        return !this.calendar.asPicker ? 'slds-theme--default' : 'slds-modal slds-fade-in-open slds-modal_large';
     }
 
+    /**
+     * @return sheet style
+     */
     get sheetStyle() {
         return {
             width: `calc(100% - ${this.sidebarWidth}px)`,
@@ -111,12 +124,18 @@ export class Calendar implements AfterViewInit, OnDestroy {
         };
     }
 
+    /**
+     * set is mobile view
+     */
     public ngAfterViewInit() {
         this.calendar.isMobileView = this.calendarContainer.element.nativeElement.getBoundingClientRect().width < 768;
         this.cdr.detectChanges();
 
     }
 
+    /**
+     * remove listeners and unsubscribe from subscriptions
+     */
     public ngOnDestroy() {
         this.subscriptions.unsubscribe();
 
@@ -128,23 +147,42 @@ export class Calendar implements AfterViewInit, OnDestroy {
         }
     }
 
+    /**
+     * set the schedule until date in the calendar header
+     * @param event
+     */
     private handleUntilDate(event) {
         this.calendarHeader.scheduleUntilDate = event;
     }
 
+    /**
+     * close the date picker in the calendar header and refresh
+     * @param event
+     */
     private setDateChanged(event) {
         this.calendarHeader.toggleClosed();
         this.calendar.refresh(event);
     }
 
+    /**
+     * set google is visible boolean value
+     * @param value
+     */
     private handleGoogleIsVisible(value) {
         this.googleIsVisible = value;
     }
 
+    /**
+     * close the modal when the calendar is used a picker
+     */
     private closeModal() {
         this.self.destroy();
     }
 
+    /**
+     * handle calendar touch start to register a touch move listener
+     * @param evt
+     */
     private handleTouchStart(evt) {
         const touches = evt.touches || evt.originalEvent.touches;
         this.xDown = touches[0].clientX;
@@ -152,6 +190,10 @@ export class Calendar implements AfterViewInit, OnDestroy {
         this.touchMoveListener = this.renderer.listen('document', 'touchmove', e => this.handleTouchMove(e));
     }
 
+    /**
+     * shift the calendar date by the touch move direction
+     * @param evt
+     */
     private handleTouchMove(evt) {
         this.touchMoveListener();
 
@@ -171,6 +213,10 @@ export class Calendar implements AfterViewInit, OnDestroy {
         this.yDown = null;
     }
 
+    /**
+     * open the add modules modal when the click event is emitted from the drop target
+     * @param event
+     */
     private addEvent(event) {
         this.model.reset();
         this.modal.openModal('CalendarAddModulesModal', true, this.injector)
@@ -190,5 +236,4 @@ export class Calendar implements AfterViewInit, OnDestroy {
                     });
             });
     }
-
 }

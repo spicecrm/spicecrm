@@ -217,7 +217,8 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
                 color: this.isToday(moment(focDate)) ? this.calendar.todayColor : '#000000',
                 dateTextDayShort: moment(focDate).format('ddd'),
                 dateTextDayNumber: moment(focDate).format('D'),
-                items: []});
+                items: []
+            });
             d++;
             dayIndex++;
         }

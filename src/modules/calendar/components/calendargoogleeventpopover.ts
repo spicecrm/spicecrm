@@ -6,6 +6,9 @@ import {metadata} from '../../../services/metadata.service';
 import {calendar} from "../services/calendar.service";
 import {language} from "../../../services/language.service";
 
+/**
+ * Display a popover to list the google event details
+ */
 @Component({
     templateUrl: './src/modules/calendar/templates/calendargoogleeventpopover.html',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -52,8 +55,8 @@ export class CalendarGoogleEventPopover implements AfterViewInit {
     }
 
     /**
-    * @return popover style and set the popover sides and position
-    */
+     * @return popover style and set the popover sides and position
+     */
     get popoverStyle() {
 
         if (this.isMobileView) {
@@ -85,22 +88,22 @@ export class CalendarGoogleEventPopover implements AfterViewInit {
     }
 
     /**
-    * @return nubbin class
-    */
+     * @return nubbin class
+     */
     get nubbinClass() {
         return (this.popoverSide == 'left' ? 'slds-nubbin--right-' : 'slds-nubbin--left-') + this.popoverPosition;
     }
 
     /**
-    * detectChanges to prevent angular change detection error
-    */
+     * detectChanges to prevent angular change detection error
+     */
     public ngAfterViewInit() {
         this.cdr.detectChanges();
     }
 
     /**
      * handle closing the popover
-    */
+     */
     public closePopover(force = false, event?) {
         if (force) {
             if (event && event.relatedTarget.classList.contains('slds-dropdown')) {
@@ -117,8 +120,8 @@ export class CalendarGoogleEventPopover implements AfterViewInit {
     }
 
     /**
-    * clear hide timeout
-    */
+     * clear hide timeout
+     */
     private onMouseEnter() {
         if (this.hidePopoverTimeout) {
             window.clearTimeout(this.hidePopoverTimeout);
@@ -126,8 +129,8 @@ export class CalendarGoogleEventPopover implements AfterViewInit {
     }
 
     /**
-    * call to force closing the popover
-    */
+     * call to force closing the popover
+     */
     private onMouseOut(event) {
         this.closePopover(true, event);
     }
