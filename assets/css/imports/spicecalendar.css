@@ -9,6 +9,10 @@
     display: block;
     width: 100%;
 }
+.spice-calendar-more-event {
+    position: initial;
+    display: block;
+}
 
 .spice-calendar-event-has-dark-color {
     color: var(--color-white);

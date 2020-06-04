@@ -19,17 +19,17 @@ export class CalendarMorePopover implements AfterViewInit {
      */
     public events: any[] = [];
     /**
+     * holds the nubbin class
+     */
+    public nubbinClass: string = '';
+    /**
+     * holds the popover style
+     */
+    public popoverStyle: any = {};
+    /**
      * the sheet day comes from parent to read the date from
      */
     public sheetDay: any = {};
-    /**
-     * holds the popover side
-     */
-    public popoverSide: 'right' | 'left' = 'right';
-    /**
-     * holds the popover position
-     */
-    public popoverPosition: 'top' | 'bottom' = 'top';
     /**
      * mobile view boolean to fix the display position on active
      */
@@ -59,17 +59,6 @@ export class CalendarMorePopover implements AfterViewInit {
     }
 
     /**
-     * @return calendar event style
-     */
-    get eventStyle() {
-        return {
-            height: this.calendar.multiEventHeight + 'px',
-            position: 'initial',
-            display: 'block'
-        };
-    }
-
-    /**
      * @return day short date
      */
     get shortDate() {
@@ -78,48 +67,11 @@ export class CalendarMorePopover implements AfterViewInit {
     }
 
     /**
-     * @return popover style and set the popover sides and position
-     */
-    get popoverStyle() {
-        if (this.isMobileView) {
-            return {left: 0, bottom: 0, width: '100%'};
-        }
-
-        let rect = this.parentElementRef.nativeElement.getBoundingClientRect();
-        let poprect = this.popoverContainer.element.nativeElement.getBoundingClientRect();
-
-        if (rect.left < poprect.width) {
-            this.popoverSide = 'right';
-        } else {
-            this.popoverSide = 'left';
-        }
-
-        if (rect.top - 30 + poprect.height > window.innerHeight && rect.top - poprect.height + 30 > 0) {
-            this.popoverPosition = 'bottom';
-            return {
-                top: (rect.top - poprect.height + 30) + 'px',
-                left: rect.left < poprect.width ? (rect.left + 100) + 'px' : (rect.left - poprect.width - 30) + 'px'
-            };
-        } else {
-            this.popoverPosition = 'top';
-            return {
-                top: (rect.top - 30) + 'px',
-                left: rect.left < poprect.width ? (rect.left + 100) + 'px' : (rect.left - poprect.width - 30) + 'px'
-            };
-        }
-    }
-
-    /**
-     * @return nubbin class
-     */
-    get nubbinClass() {
-        return (this.popoverSide == 'left' ? 'slds-nubbin--right-' : 'slds-nubbin--left-') + this.popoverPosition;
-    }
-
-    /**
      * detectChanges to prevent angular change detection error
+     * set popover position
      */
     public ngAfterViewInit() {
+        this.setPopoverPosition();
         this.cdr.detectChanges();
     }
 
@@ -139,6 +91,44 @@ export class CalendarMorePopover implements AfterViewInit {
         } else {
             this.hidePopoverTimeout = window.setTimeout(() => this.self.destroy(), 500);
         }
+    }
+
+    /**
+     * set popover style and the popover sides and position
+     */
+    private setPopoverPosition() {
+
+        if (this.isMobileView) {
+            return {left: 0, bottom: 0, width: '100%'};
+        }
+
+        let popoverSide: string;
+        let popoverPosition: string;
+
+        let rect = this.parentElementRef.nativeElement.getBoundingClientRect();
+        let poprect = this.popoverContainer.element.nativeElement.getBoundingClientRect();
+
+        if (rect.left < poprect.width) {
+            popoverSide = 'right';
+        } else {
+            popoverSide = 'left';
+        }
+
+        if (rect.top - 30 + poprect.height > window.innerHeight && rect.top - poprect.height + 30 > 0) {
+            popoverPosition = 'bottom';
+            this.popoverStyle = {
+                top: (rect.top - poprect.height + 30) + 'px',
+                left: rect.left < poprect.width ? (rect.left + 100) + 'px' : (rect.left - poprect.width - 30) + 'px'
+            };
+        } else {
+            popoverPosition = 'top';
+            this.popoverStyle = {
+                top: (rect.top - 30) + 'px',
+                left: rect.left < poprect.width ? (rect.left + 100) + 'px' : (rect.left - poprect.width - 30) + 'px'
+            };
+        }
+
+        this.nubbinClass = (popoverSide == 'left' ? 'slds-nubbin--right-' : 'slds-nubbin--left-') + popoverPosition;
     }
 
     /*

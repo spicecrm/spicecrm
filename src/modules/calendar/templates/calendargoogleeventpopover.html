@@ -10,7 +10,7 @@
                     <dt class="slds-item_label slds-text-color_weak slds-truncate">
                         <system-label label="LBL_DESCRIPTION"></system-label>
                     </dt>
-                    <dd class="slds-item_detail slds-text-color_weak slds-truncate">
+                    <dd [system-title]="event.description" class="slds-item_detail slds-text-color_weak slds-truncate">
                         {{event.description}}
                     </dd>
                 </dl>
