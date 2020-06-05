@@ -355,9 +355,10 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
                 this.getUsersEvents();
             })
         );
-        this.resizeListener = this.renderer.listen('window', 'resize', () =>
-            this.setEventsStyle()
-        );
+        this.resizeListener = this.renderer.listen('window', 'resize', () => {
+            this.setEventsStyle();
+            this.setMultiEventsStyle();
+        });
     }
 
     /**
