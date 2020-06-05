@@ -1,7 +1,7 @@
 /**
  * @module ModuleCalendar
  */
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {CalendarSheetWeek} from "./calendarsheetweek";
 
 /**
@@ -17,7 +17,19 @@ declare var moment: any;
     templateUrl: './src/modules/calendar/templates/calendarsheetthreedays.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CalendarSheetThreeDays extends CalendarSheetWeek {
+export class CalendarSheetThreeDays extends CalendarSheetWeek implements OnInit {
+    /**
+     * day text container class to be set for day text when the calendar is used as dashlet
+     */
+    private dayTextContainerClass: string = '';
+    /**
+     * holds the day text class
+     */
+    private dayTextClass: string = 'slds-text-body--regular';
+    /**
+     * holds the date text class
+     */
+    private dateTextClass: string = 'slds-text-heading--large';
     /**
      * @return startDate: moment
      */
@@ -33,24 +45,14 @@ export class CalendarSheetThreeDays extends CalendarSheetWeek {
     }
 
     /**
-     * @return string day text container class
+     * set classes if the calendar is used as dashlet
      */
-    get dayTextContainerClass() {
-        return this.calendar.isDashlet ? 'slds-grid slds-grid--vertical-align-center' : '';
-    }
-
-    /**
-     * @return string day text class
-     */
-    get dayTextClass() {
-        return this.calendar.isDashlet ? 'slds-text-heading--medium' : 'slds-text-body--regular';
-    }
-
-    /**
-     * @return string date text class
-     */
-    get dateTextClass() {
-        return this.calendar.isDashlet ? 'slds-text-heading--medium' : 'slds-text-heading--large';
+    public ngOnInit() {
+        if (this.calendar.isDashlet) {
+            this.dayTextContainerClass = 'slds-grid slds-grid--vertical-align-center';
+            this.dayTextClass = 'slds-text-heading--medium';
+            this.dateTextClass = 'slds-text-heading--medium';
+        }
     }
 
     /**
@@ -91,12 +93,12 @@ export class CalendarSheetThreeDays extends CalendarSheetWeek {
         const height = this.calendar.sheetHourHeight / 60 * (endminutes - startminutes);
 
         event.style = {
-            left: left + 'px',
-            width: itemWidth + 'px',
-            top: top + 'px',
-            height: height + 'px'
+            'left': left + 'px',
+            'width': itemWidth + 'px',
+            'top': top + 'px',
+            'height': height + 'px',
+            'min-height': this.calendar.multiEventHeight + 'px'
         };
-        this.cdRef.detectChanges();
     }
 
     /**
@@ -127,7 +129,6 @@ export class CalendarSheetThreeDays extends CalendarSheetWeek {
             height: this.calendar.multiEventHeight + "px",
             top: (this.calendar.multiEventHeight * eventI) + "px",
         };
-        this.cdRef.detectChanges();
     }
 
     /**

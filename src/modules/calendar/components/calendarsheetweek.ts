@@ -1,7 +1,20 @@
 /**
  * @module ModuleCalendar
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, QueryList, SimpleChanges, ViewChild, ViewChildren, ViewContainerRef} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnChanges,
+    OnDestroy,
+    QueryList,
+    Renderer2,
+    SimpleChanges,
+    ViewChild,
+    ViewChildren,
+    ViewContainerRef
+} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {calendar} from '../services/calendar.service';
 import {CdkDragEnd} from "@angular/cdk/drag-drop";
@@ -78,21 +91,18 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      * subscription to handle unsubscribe
      */
     private subscription: Subscription = new Subscription();
+    /**
+     * holds the resize listener
+     */
+    private resizeListener: any;
 
     constructor(public language: language,
                 public cdRef: ChangeDetectorRef,
+                private renderer: Renderer2,
                 public calendar: calendar) {
         this.buildHours();
         this.buildSheetDays();
-
-        this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
-                this.getUserEvents(calendar);
-            })
-        );
-        this.subscription.add(this.calendar.usersCalendarsLoad$.subscribe(() => {
-                this.getUsersEvents();
-            })
-        );
+        this.subscribeToChanges();
     }
 
     /**
@@ -142,15 +152,6 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      */
     get dayWidthStyle() {
         return {width: `calc(100% / ${this.calendar.weekDaysCount})`};
-    }
-
-    /**
-     * @return width: string
-     */
-    get daysContainerWidthStyle() {
-        let scrollOffset = this.scrollContainer.element.nativeElement.getBoundingClientRect().width;
-        let sheetWidth = this.sheetContainer.element.nativeElement.clientWidth - scrollOffset;
-        return (sheetWidth - this.sheetTimeWidth);
     }
 
     /**
@@ -231,6 +232,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         this.allEvents.forEach(event =>
             this.setEventStyle(event)
         );
+        this.cdRef.detectChanges();
     }
 
     /**
@@ -249,12 +251,12 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         const height = this.calendar.sheetHourHeight / 60 * (endminutes - startminutes);
 
         event.style = {
-            left: left + 'px',
-            width: itemWidth + 'px',
-            top: top + 'px',
-            height: height + 'px'
+            'left': left + 'px',
+            'width': itemWidth + 'px',
+            'top': top + 'px',
+            'height': height + 'px',
+            'min-height': this.calendar.multiEventHeight + 'px'
         };
-        this.cdRef.detectChanges();
     }
 
     /**
@@ -264,6 +266,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         this.allMultiEvents.forEach(event =>
             this.setMultiEventStyle(event)
         );
+        this.cdRef.detectChanges();
     }
 
     /**
@@ -295,7 +298,6 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
             height: this.calendar.multiEventHeight + "px",
             top: (this.calendar.multiEventHeight * eventI) + "px",
         };
-        this.cdRef.detectChanges();
     }
 
     /**
@@ -338,6 +340,24 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
     protected isToday(date: any) {
         let today = new moment();
         return today.year() === date.year() && today.month() === date.month() && today.date() == date.date();
+    }
+
+    /**
+     * subscribe to user calendar changes
+     * subscribe to resize event to reset the events style
+     */
+    private subscribeToChanges() {
+        this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
+                this.getUserEvents(calendar);
+            })
+        );
+        this.subscription.add(this.calendar.usersCalendarsLoad$.subscribe(() => {
+                this.getUsersEvents();
+            })
+        );
+        this.resizeListener = this.renderer.listen('window', 'resize', () =>
+            this.setEventsStyle()
+        );
     }
 
     /**
