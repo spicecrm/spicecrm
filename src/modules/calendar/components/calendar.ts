@@ -60,6 +60,10 @@ export class Calendar implements AfterViewInit, OnDestroy {
      */
     private xDown: number = null;
     /**
+     * holds the calendar main container class
+     */
+    private mainContainerClass: string = 'slds-theme--default';
+    /**
      * holds the touch down y position
      */
     private yDown: number = null;
@@ -80,14 +84,6 @@ export class Calendar implements AfterViewInit, OnDestroy {
                 private calendar: calendar) {
 
         this.navigation.setActiveModule('Calendar');
-
-        let addingEventSubscriber = this.calendar.addingEvent$.subscribe(res => this.addEvent(res));
-        this.subscriptions.add(addingEventSubscriber);
-
-        this.resizeListener = this.renderer.listen('window', 'resize', () => {
-            this.calendar.isMobileView = this.calendarContainer.element.nativeElement.getBoundingClientRect().width < 768;
-        });
-        this.touchStartListener = this.renderer.listen('document', 'touchstart', e => this.handleTouchStart(e));
     }
 
     /**
@@ -95,23 +91,6 @@ export class Calendar implements AfterViewInit, OnDestroy {
      */
     get sidebarWidth() {
         return this.calendar.sidebarWidth;
-    }
-
-    /**
-     * @return sidebar style
-     */
-    get sidebarStyle() {
-        return {
-            'width': this.calendar.sidebarWidth + 'px',
-            'z-index': 1,
-        };
-    }
-
-    /**
-     * @return main container class
-     */
-    get mainContainerClass() {
-        return !this.calendar.asPicker ? 'slds-theme--default' : 'slds-modal slds-fade-in-open slds-modal_large';
     }
 
     /**
@@ -126,11 +105,19 @@ export class Calendar implements AfterViewInit, OnDestroy {
 
     /**
      * set is mobile view
+     * add touch start listener
+     * subscribe to event adding from drop target
      */
     public ngAfterViewInit() {
-        this.calendar.isMobileView = this.calendarContainer.element.nativeElement.getBoundingClientRect().width < 768;
-        this.cdr.detectChanges();
+        if (this.calendar.asPicker) {
+            this.mainContainerClass = 'slds-modal slds-fade-in-open slds-modal_large';
+        }
+        this.touchStartListener = this.renderer.listen('document', 'touchstart', e => this.handleTouchStart(e));
+        this.handleMobileView();
 
+        this.subscriptions.add(
+            this.calendar.addingEvent$.subscribe(res => this.addEvent(res))
+        );
     }
 
     /**
@@ -145,6 +132,16 @@ export class Calendar implements AfterViewInit, OnDestroy {
         if (this.touchStartListener) {
             this.touchStartListener();
         }
+    }
+
+    /**
+     * add resize listener to set the mobile view boolean
+     */
+    private handleMobileView() {
+        this.resizeListener = this.renderer.listen('window', 'resize', () => {
+            this.calendar.setIsMobileView(this.calendarContainer.element.nativeElement.getBoundingClientRect().width < 768);
+        });
+        this.calendar.setIsMobileView(this.calendarContainer.element.nativeElement.getBoundingClientRect().width < 768);
     }
 
     /**

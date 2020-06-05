@@ -1,9 +1,9 @@
 <div #sheetContainer class="slds-grid slds-grid--vertical" style="height: 100%; width: 100%">
     <div class="slds-grid slds-border--bottom">
-        <div class="slds-align--absolute-center slds-m-around--none slds-p-vertical--x-small slds-text-align--center" [style.width.px]="sheetTimeWidth">
+        <div class="slds-align--absolute-center slds-m-around--none slds-p-vertical--x-small slds-text-align--center" [style.width.px]="calendar.sheetTimeWidth">
             {{offset}}
         </div>
-        <div class="slds-border--right" [style.width.px]="daysContainerWidthStyle">
+        <div class="slds-border--right slds-grow">
             <div class="slds-grid">
                 <div *ngFor="let sheetDay of sheetDays; trackBy: trackByIndexFn" class="slds-border--left" [ngStyle]="dayWidthStyle">
                     <div class="slds-p-top--xx-small" [style.color]="sheetDay.color">
@@ -39,7 +39,7 @@
     </div>
     <div class="slds-scrollable--y slds-is-relative slds-grow calendar-event-drag-boundary" style="overflow-y: scroll;">
         <div *ngFor="let sheetHour of sheetHours; let index = index; trackBy: trackByIndexFn" class="slds-grid">
-            <div [style.width.px]="sheetTimeWidth">
+            <div [style.width.px]="calendar.sheetTimeWidth">
                 <div class="slds-text-align--center slds-border--bottom" [style.height.px]="calendar.sheetHourHeight">{{sheetHour}}:00</div>
             </div>
             <div class="slds-border--left slds-border--bottom slds-grow slds-grid" [style.height.px]="calendar.sheetHourHeight">

@@ -1,7 +1,21 @@
 /**
  * @module ModuleCalendar
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, QueryList, SimpleChanges, ViewChild, ViewChildren, ViewContainerRef} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnChanges,
+    OnDestroy,
+    OnInit,
+    QueryList,
+    Renderer2,
+    SimpleChanges,
+    ViewChild,
+    ViewChildren,
+    ViewContainerRef
+} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {calendar} from '../services/calendar.service';
 import {CdkDragEnd} from "@angular/cdk/drag-drop";
@@ -22,7 +36,7 @@ declare var moment: any;
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class CalendarSheetDay implements OnChanges, OnDestroy {
+export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     /**
      * container reference for the main div
      */
@@ -31,6 +45,18 @@ export class CalendarSheetDay implements OnChanges, OnDestroy {
      * children reference of the drop targets
      */
     @ViewChildren(CalendarSheetDropTarget) protected dropTargets: QueryList<CalendarSheetDropTarget>;
+    /**
+     * day text container class to be set for day text when the calendar is used as dashlet
+     */
+    private dayTextContainerClass: string = '';
+    /**
+     * holds the day text class
+     */
+    private dayTextClass: string = 'slds-text-body--regular';
+    /**
+     * holds the date text class
+     */
+    private dateTextClass: string = 'slds-text-heading--large';
     /**
      * holds the sheet hours
      */
@@ -68,15 +94,27 @@ export class CalendarSheetDay implements OnChanges, OnDestroy {
      */
     private googleEvents: any[] = [];
     /**
+     * holds the resize listener
+     */
+    private resizeListener: any;
+    /**
      * subscription to handle unsubscribe
      */
     private subscription: Subscription = new Subscription();
 
     constructor(private language: language,
                 private cdRef: ChangeDetectorRef,
+                private renderer: Renderer2,
                 private calendar: calendar) {
         this.buildHours();
+        this.subscribeToChanges();
+    }
 
+    /**
+     * subscribe to user calendar changes
+     * subscribe to resize event to reset the events style
+     */
+    private subscribeToChanges() {
         this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
                 this.getUserEvents(calendar);
             })
@@ -84,6 +122,9 @@ export class CalendarSheetDay implements OnChanges, OnDestroy {
         this.subscription.add(this.calendar.usersCalendarsLoad$.subscribe(() => {
                 this.getUsersEvents();
             })
+        );
+        this.resizeListener = this.renderer.listen('window', 'resize', () =>
+            this.setEventsStyle()
         );
     }
 
@@ -123,34 +164,6 @@ export class CalendarSheetDay implements OnChanges, OnDestroy {
     }
 
     /**
-     * @return string day text container class
-     */
-    get dayTextContainerClass() {
-        return this.calendar.isDashlet ? 'slds-grid slds-grid--vertical-align-center' : '';
-    }
-
-    /**
-     * @return string day text class
-     */
-    get dayTextClass() {
-        return this.calendar.isDashlet ? 'slds-text-heading--medium' : 'slds-text-body--regular';
-    }
-
-    /**
-     * @return string date text class
-     */
-    get dateTextClass() {
-        return this.calendar.isDashlet ? 'slds-text-heading--medium' : 'slds-text-heading--large';
-    }
-
-    /**
-     * @return day col style
-     */
-    get dayColStyle() {
-        return {width: `calc(100% - ${this.sheetTimeWidth}px)`};
-    }
-
-    /**
      * @return today style
      */
     get isTodayStyle() {
@@ -178,10 +191,24 @@ export class CalendarSheetDay implements OnChanges, OnDestroy {
     }
 
     /**
+     * set classes if the calendar is used as dashlet
+     */
+    public ngOnInit() {
+        if (this.calendar.isDashlet) {
+            this.dayTextContainerClass = 'slds-grid slds-grid--vertical-align-center';
+            this.dayTextClass = 'slds-text-heading--medium';
+            this.dateTextClass = 'slds-text-heading--medium';
+        }
+    }
+
+    /**
      * unsubscribe from subscriptions
      */
     public ngOnDestroy(): void {
         this.subscription.unsubscribe();
+        if (this.resizeListener) {
+            this.resizeListener();
+        }
     }
 
     /**
@@ -369,10 +396,11 @@ export class CalendarSheetDay implements OnChanges, OnDestroy {
                 const endMinutes = (event.end.hour() - this.calendar.startHour) * 60 + event.end.minute();
                 const itemWidth = ((this.sheetContainer.element.nativeElement.clientWidth - this.sheetTimeWidth)) / (event.maxOverlay > 0 ? event.maxOverlay : 1);
                 event.style = {
-                    left: (this.sheetTimeWidth + (itemWidth * event.displayIndex)) + 'px',
-                    width: itemWidth + 'px',
-                    top: (((this.calendar.sheetHourHeight / 60 * startMinutes)) - 1) + 'px',
-                    height: (this.calendar.sheetHourHeight / 60 * (endMinutes - startMinutes)) + 'px',
+                    'left': (this.sheetTimeWidth + (itemWidth * event.displayIndex)) + 'px',
+                    'width': itemWidth + 'px',
+                    'top': (((this.calendar.sheetHourHeight / 60 * startMinutes)) - 1) + 'px',
+                    'height': (this.calendar.sheetHourHeight / 60 * (endMinutes - startMinutes)) + 'px',
+                    'min-height': this.calendar.multiEventHeight + 'px'
                 };
             }
         );

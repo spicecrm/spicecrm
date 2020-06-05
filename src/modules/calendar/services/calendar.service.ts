@@ -99,6 +99,10 @@ export class calendar implements OnDestroy {
      */
     public endHour: number = 23;
     /**
+     * holds the multi event height
+     */
+    public multiEventHeight: number = 25;
+    /**
      * holds the today text color
      */
     public todayColor: string = '#eb7092';
@@ -238,13 +242,6 @@ export class calendar implements OnDestroy {
      */
     get usersCalendarsLoaded(): boolean {
         return !!this.usersCalendars && this.usersCalendars.length > 0;
-    }
-
-    /**
-     * @return multi event height
-     */
-    get multiEventHeight(): number {
-        return !this.isMobileView ? 25 : 20;
     }
 
     /**
@@ -407,7 +404,11 @@ export class calendar implements OnDestroy {
                     this.calendars[userId] = [];
 
                     for (let event of events) {
-                        if (this.otherCalendars.some(calendar => calendar.name == event.module && !calendar.visible)) continue;
+
+                        if ((userId == this.owner && !!event.data.external_id && !!this.calendars.google && this.calendars.google.some(e => e.id == event.data.external_id)) ||
+                            this.otherCalendars.some(calendar => calendar.name == event.module && !calendar.visible)) {
+                            continue;
+                        }
 
                         switch (event.type) {
                             case 'event':
@@ -486,12 +487,13 @@ export class calendar implements OnDestroy {
                 .subscribe(res => {
                     if (res.events && res.events.length > 0) {
                         for (let event of res.events) {
+                            if (!!this.calendars[this.owner] && this.calendars[this.owner].some(e => e.data.external_id == event.id)) continue;
+
                             event.start = moment(event.start.dateTime).format('YYYY-MM-DD HH:mm:ss');
                             event.end = moment(event.end.dateTime).format('YYYY-MM-DD HH:mm:ss');
                             event.start = moment(event.start);
                             event.end = moment(event.end);
                             event.isMulti = +event.end.diff(event.start, 'days') > 0;
-                            event.data = {assigned_user_id: null};
                             event.color = this.googleColor;
                             event.type = 'google';
 
@@ -766,11 +768,35 @@ export class calendar implements OnDestroy {
     }
 
     /**
+     * remove the google event from calendar if it's been deleted
+     * @param id: string
+     */
+    public removeGoogleEvent(id: string) {
+        this.calendars.google.some((event, index) => {
+            if (event.id == id) {
+                this.calendars.google.splice(index, 1);
+                this.cdRef.detectChanges();
+                return true;
+            }
+        });
+    }
+
+    /**
+     * set is mobile view boolean and set the multi event height
+     * @param bool
+     */
+    public setIsMobileView(bool) {
+        this.isMobileView = bool;
+        this.multiEventHeight = !bool ? 25 : 20;
+        this.cdRef.detectChanges();
+    }
+
+    /**
      * check if the field has a valid value
      * @param field
      * @return boolean
      */
-    protected isValid(field) {
+    protected isValid(field): boolean {
         return field && typeof field === 'object' && field.isValid();
     }
 
@@ -788,7 +814,7 @@ export class calendar implements OnDestroy {
      * @param event: object
      * @return boolean
      */
-    private absenceExists(event) {
+    private absenceExists(event): boolean {
         let found = false;
         for (let prop in this.calendars) {
             if (this.calendars.hasOwnProperty(prop) && this.calendars[prop].some(cEvent => cEvent.id == event.id && cEvent.type == event.type)) {
@@ -840,7 +866,7 @@ export class calendar implements OnDestroy {
                         if (!this.calendars[this.owner]) {
                             return;
                         }
-                        this.deleteEvent(id, module);
+                        this.removeEvent(id, module);
                         break;
                 }
             }
@@ -853,18 +879,18 @@ export class calendar implements OnDestroy {
      * @param id
      * @param module
      * @param data
-     * @param uid
+     * @param calendarId
      * @return boolean
      */
-    private modifyEvent(id, module, data, uid) {
+    private modifyEvent(id: string, module: string, data, calendarId: string) {
         if (!this.isValid(data.date_start) || !this.isValid(data.date_end)) {
             return true;
         }
         if (data.date_start > this.currentEnd && data.date_end < this.currentStart) {
-            this.deleteEvent(id, module);
+            this.removeEvent(id, module);
             return true;
         }
-        let event = this.calendars[uid].find(thisevent => thisevent.data.id == id);
+        let event = this.calendars[calendarId].find(thisevent => thisevent.data.id == id);
         if (event) {
             event.start = data.date_start;
             event.end = data.date_end;
@@ -880,11 +906,12 @@ export class calendar implements OnDestroy {
      * @param id: string
      * @param module: string
      */
-    private deleteEvent(id, module) {
-        this.calendars[this.owner].some(event => {
+    private removeEvent(id: string, module: string) {
+        this.calendars[this.owner].some((event, index) => {
             if (event.data.id == id && module == event.module) {
-                this.calendars[this.owner] = this.calendars[this.owner].filter(e => e.data.id != event.data.id);
+                this.calendars[this.owner].splice(index, 1);
                 this.triggerSheetReload();
+                this.cdRef.detectChanges();
                 return true;
             }
         });
