@@ -16,6 +16,7 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 export class SpiceInstallerSystemCheck {
     private loading: boolean = false;
     private requirements: any = [];
+
     constructor(
         private toast: toast,
         private http: HttpClient,
@@ -28,24 +29,15 @@ export class SpiceInstallerSystemCheck {
 
     private checkSystem() {
         this.loading = true;
-        this.http.get(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/KREST/spiceinstaller/check`).subscribe(result => {
+        this.http.get(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/KREST/spiceinstaller/check`).subscribe((response: any) => {
             this.loading = false;
-            if (result) {
-                let check = false;
-                this.requirements = result;
-                for (let i in result) {
-                    if (result[i] != true) {
-                        check = false;
-                    } else {
-                        check = true;
-                    }
-                }
-                if (check) {
-                    this.spiceinstaller.selectedStep.completed = true;
-                    this.spiceinstaller.dbdrivers = this.requirements.dbdrivers;
-                }
+            let result = response;
+            this.requirements = result.requirements;
+            if (result.success) {
+                this.spiceinstaller.selectedStep.completed = true;
+                this.spiceinstaller.dbdrivers = this.requirements.dbdrivers;
             } else {
-                this.toast.sendToast('error', "error");
+                this.toast.sendToast('error, missing requirements', "error");
             }
         });
     }
