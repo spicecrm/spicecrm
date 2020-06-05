@@ -1,6 +1,5 @@
 <div (click)="onClick()" cdkDrag [cdkDragData]="this" [cdkDragLockAxis]="lockAxis" (cdkDragEnded)="emitDrop($event)" (cdkDragStarted)="onDragStart()"
-     [cdkDragDisabled]="!isDraggable" [class.slds-p-vertical--xx-small]="event.saving" [style.background-color]="color"
-     cdkDragBoundary=".calendar-event-drag-boundary" class="slds-grid slds-m-around--xxx-small spice-free-drag-preview" style="height: 100%;border-radius: 2px;">
+     [cdkDragDisabled]="!isDraggable" [class.slds-p-vertical--xx-small]="event.saving" [style.background-color]="color" cdkDragBoundary=".calendar-event-drag-boundary" class="slds-grid slds-m-around--xxx-small spice-free-drag-preview" style="height: 100%;border-radius: 2px;">
     <abbr *ngIf="event.otherColor" [style.background-color]="event.otherColor" [title]="event.data.assigned_user_name" style="height: calc(100% - 2px); width: 8px; border-radius: 2px; margin: 1px; box-shadow: #4b4b4b 1px 0 1px 0;"></abbr>
     <div [style.width]="event.otherColor ? 'calc(100% - 8px)' : '100%'">
         <ng-container *ngIf="!event.saving; else saving">

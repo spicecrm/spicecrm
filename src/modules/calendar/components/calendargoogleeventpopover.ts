@@ -131,7 +131,7 @@ export class CalendarGoogleEventPopover implements AfterViewInit {
     /**
      * call to force closing the popover
      */
-    private onMouseOut(event) {
+    private onMouseLeave(event) {
         this.closePopover(true, event);
     }
 }

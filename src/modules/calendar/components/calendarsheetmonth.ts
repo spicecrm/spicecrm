@@ -73,6 +73,10 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      */
     private googleEvents: any[] = [];
     /**
+     * holds the resize listener
+     */
+    private resizeListener: any;
+    /**
      * subscription to handle unsubscribe
      */
     private subscription: Subscription = new Subscription();
@@ -86,6 +90,14 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 private cdRef: ChangeDetectorRef,
                 private calendar: calendar) {
         this.buildSheetDays();
+        this.subscribeToChanges();
+    }
+
+    /**
+     * subscribe to user calendar changes
+     * subscribe to resize event to reset the events style
+     */
+    private subscribeToChanges() {
         this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
                 this.getUserEvents(calendar);
             })
@@ -93,6 +105,9 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         this.subscription.add(this.calendar.usersCalendarsLoad$.subscribe(() => {
                 this.getUsersEvents();
             })
+        );
+        this.resizeListener = this.renderer.listen('window', 'resize', () =>
+            this.setEventsStyle()
         );
     }
 
@@ -444,6 +459,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                 this.setEventStyle(event, week)
             )
         );
+        this.cdRef.detectChanges();
     }
 
     /**
@@ -476,7 +492,6 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
             height: this.eventHeight + 'px',
             display: visible
         };
-        this.cdRef.detectChanges();
     }
 
     /**
