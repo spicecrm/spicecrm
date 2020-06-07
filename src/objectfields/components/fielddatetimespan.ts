@@ -113,7 +113,7 @@ export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
         let hours = Math.floor(duration.asHours());
         let minutes = duration.asMinutes() - 60 * hours;
 
-        this.model.setFieldValue(this.fieldhours, hours);
-        this.model.setFieldValue(this.fieldminutes, minutes);
+        this.model.setField(this.fieldhours, hours);
+        this.model.setField(this.fieldminutes, minutes);
     }
 }

@@ -37,7 +37,7 @@ export class ACLObjectsManagerAddObjectModal implements OnInit {
         this.model.module = 'SpiceACLObjects';
         this.model.initialize();
 
-        this.model.setFieldValue('status', 'd');
+        this.model.setField('status', 'd');
 
         // set the view as editable
         this.view.isEditable = true;
@@ -49,7 +49,7 @@ export class ACLObjectsManagerAddObjectModal implements OnInit {
     }
 
     public ngOnInit() {
-        this.model.setFieldValue('sysmodule_id', this.sysmodule_id);
+        this.model.setField('sysmodule_id', this.sysmodule_id);
     }
 
     private close() {

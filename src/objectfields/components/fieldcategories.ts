@@ -99,9 +99,9 @@ export class fieldServiceCategories extends fieldGeneric
         for(let i = 0; i < this.fields.length; i++)
         {
             if( categories[i] )
-                this.model.setFieldValue(this.fields[i], categories[i].id);
+                this.model.setField(this.fields[i], categories[i].id);
             else
-                this.model.setFieldValue(this.fields[i], '');
+                this.model.setField(this.fields[i], '');
         }
         this.search = null;
 
@@ -111,8 +111,8 @@ export class fieldServiceCategories extends fieldGeneric
             let cat = categories[i];
             if( cat.servicequeue_id )
             {
-                this.model.setFieldValue('servicequeue_id', cat.servicequeue_id);
-                this.model.setFieldValue('servicequeue_name', cat.servicequeue_name);
+                this.model.setField('servicequeue_id', cat.servicequeue_id);
+                this.model.setField('servicequeue_name', cat.servicequeue_name);
                 break;
             }
         }

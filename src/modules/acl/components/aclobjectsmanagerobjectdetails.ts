@@ -79,7 +79,7 @@ export class ACLObjectsManagerObjectDetails implements OnInit {
         for (let objectaction of objectactions) {
             if (objectaction.spiceaclaction_id == actionid) {
                 objectactions.splice(i, 1);
-                this.model.setFieldValue('objectactions', objectactions);
+                this.model.setField('objectactions', objectactions);
                 return;
             }
             i++;
