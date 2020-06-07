@@ -80,16 +80,20 @@ export class PotentialsOpportunityAllocationLines implements OnChanges {
         };
 
         // load from backend
-        this.backend.getRequest('module/Accounts/' + this._account_id + '/related/potentials', params).subscribe(accountpotentials => {
-            this.account_potentials = [];
-            for (let id in accountpotentials) {
-                this.account_potentials.push(this.model.utils.backendModel2spice('Potentials', accountpotentials[id]));
+        this.backend.getRequest('module/Accounts/' + this._account_id + '/related/potentials', params).subscribe(
+            accountpotentials => {
+                this.account_potentials = [];
+                for (let id in accountpotentials) {
+                    this.account_potentials.push(this.model.utils.backendModel2spice('Potentials', accountpotentials[id]));
 
-                if (!this.companyCode) this.companyCode = accountpotentials[id].companycode_id;
-            }
-            // set to loaded
-            this.isLoading = false;
-        });
+                    if (!this.companyCode) this.companyCode = accountpotentials[id].companycode_id;
+                }
+                // set to loaded
+                this.isLoading = false;
+            },
+            error => {
+                this.isLoading = false;
+            });
     }
 
     /**
