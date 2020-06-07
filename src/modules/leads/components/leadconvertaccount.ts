@@ -12,27 +12,46 @@ import {fts} from "../../../services/fts.service";
 import {view} from "../../../services/view.service";
 import {language} from '../../../services/language.service';
 
+/**
+ * manages the lead to account conversion giving the user the option to link to an account
+ * also includes the duplicate check to find potential already created accounts
+ */
 @Component({
     selector: "lead-convert-account",
     templateUrl: "./src/modules/leads/templates/leadconvertaccount.html",
     providers: [view, model]
 })
 export class LeadConvertAccount implements AfterViewInit, OnInit {
+    /**
+     * the content conatiner the componentset for the account edit is rendered in
+     */
     @ViewChild("detailcontainer", {read: ViewContainerRef, static: true}) private detailcontainer: ViewContainerRef;
 
-    // outputs for the interaction with the process
+    /**
+     * emits the model that has been created
+     */
     @Output() private account: EventEmitter<model> = new EventEmitter<model>();
-    @Output() private selectedaccount: EventEmitter<any> = new EventEmitter<any>();
 
-    private initialized: boolean = false;
-    private componentSet: string = "";
+
+    /**
+     * the component config
+     */
     private componentconfig: any = {};
+
+    /**
+     * references to the components rendered in the view
+     */
     private componentRefs: any = [];
-    private createAccount: boolean = false;
 
-
+    /**
+     * the account selected if there is one
+     * picked from the matched duplicates
+     */
     public selectedAccount: any = undefined;
 
+    /**
+     * internal value for the checkbox allowing the user to select if he wants to link the lead to an account or not
+     */
     private _linktoaccount: boolean = true;
 
 
@@ -45,10 +64,13 @@ export class LeadConvertAccount implements AfterViewInit, OnInit {
     }
 
     public ngAfterViewInit() {
-        this.initialized = true;
         this.buildContainer();
     }
 
+    /**
+     * initializes the account from the lead using th ecopy rules
+     * Also subscribes to the model data$ and updates the leads account_id and anccunt_linked_name if the model data changes
+     */
     public initializeFromLead() {
         // initialize the model
         this.model.module = "Accounts";
@@ -140,7 +162,6 @@ export class LeadConvertAccount implements AfterViewInit, OnInit {
         });
         this.view.isEditable = false;
 
-        this.selectedaccount.emit(this.model);
     }
 
     /**
@@ -148,7 +169,6 @@ export class LeadConvertAccount implements AfterViewInit, OnInit {
      */
     private unlinkAccount() {
         this.selectedAccount = undefined;
-        this.selectedaccount.emit(undefined);
 
         this.buildContainer();
 

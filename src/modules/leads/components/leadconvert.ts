@@ -1,8 +1,7 @@
 /**
  * @module ModuleLeads
  */
-import {Component, AfterContentInit, AfterViewInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {navigationtab} from '../../../services/navigationtab.service';
 import {model} from '../../../services/model.service';
@@ -11,7 +10,13 @@ import {view} from '../../../services/view.service';
 import {toast} from '../../../services/toast.service';
 import {language} from '../../../services/language.service';
 
-
+/**
+ * a convert component that handles the multi stp converting from lead to
+ *
+ * - Account
+ * - Contact
+ * - Opportunity
+ */
 @Component({
     selector: 'lead-convert',
     templateUrl: './src/modules/leads/templates/leadconvert.html',
@@ -19,22 +24,42 @@ import {language} from '../../../services/language.service';
 })
 export class LeadConvert {
 
+    /**
+     * the module name .. fixed lead
+     */
     private moduleName = 'Leads';
 
+    /**
+     * the contact this is converted to
+     */
     private contact: model = undefined;
+
+    /**
+     * the accpount this is converted to
+     */
     private account: model = undefined;
+
+    /**
+     * the opportunity this gets converted to
+     */
     private opportunity: model = undefined;
 
+    /**
+     * the current convert step
+     */
     private currentConvertStep: number = 0;
 
+    /**
+     * the availabel convert steps
+     *
+     * currently hardcoded .. might make sense to create a generic conmvert method that allows multi step conversion
+     */
     private convertSteps: string[] = ['Account', 'Contact', 'Opportunity'];
 
     constructor(
         private language: language,
         private metadata: metadata,
         private model: model,
-        private router: Router,
-        private activatedRoute: ActivatedRoute,
         private navigationtab: navigationtab,
         private modal: modal,
         private toast: toast,
@@ -44,6 +69,9 @@ export class LeadConvert {
     }
 
 
+    /**
+     * caled when the component initializes loading the lead from teh route data
+     */
     private loadLead() {
         // get the bean details
         this.model.module = this.moduleName;
@@ -57,11 +85,11 @@ export class LeadConvert {
         });
     }
 
-
-    private gotoLead() {
-        this.router.navigate(['/module/Leads/' + this.model.id]);
-    }
-
+    /**
+     * returns the class for the step int he guide
+     *
+     * @param convertStep
+     */
     private getStepClass(convertStep: any) {
         let thisIndex = this.convertSteps.indexOf(convertStep);
         if (thisIndex == this.currentConvertStep) {
@@ -72,6 +100,10 @@ export class LeadConvert {
         }
     }
 
+    /**
+     * rerutns true if the step is completed for the display
+     * @param convertStep
+     */
     private getStepComplete(convertStep: any) {
         let thisIndex = this.convertSteps.indexOf(convertStep);
         if (thisIndex < this.currentConvertStep) {
@@ -80,12 +112,19 @@ export class LeadConvert {
         return false;
     }
 
+
+    /**
+     *determines the width in % for the style of the progress bar
+     */
     private getProgressBarWidth() {
         return {
             width: (this.currentConvertStep / (this.convertSteps.length - 1) * 100) + '%'
         };
     }
 
+    /**
+     * handles the progressing .. checks model validity if the model is new
+     */
     private nextStep() {
         switch (this.currentConvertStep) {
 
@@ -113,20 +152,32 @@ export class LeadConvert {
         }
     }
 
+    /**
+     * moves one step backwards
+     */
     private prevStep() {
         if (this.currentConvertStep > 0) {
             this.currentConvertStep--;
         }
     }
 
+    /**
+     * determines if the next button is shown
+     */
     private showNext() {
         return this.currentConvertStep < this.convertSteps.length - 1;
     }
 
+    /**
+     * detemrines if the save button is shown
+     */
     private showSave() {
         return this.currentConvertStep == this.convertSteps.length - 1;
     }
 
+    /**
+     * converts the lead
+     */
     private convert() {
 
         // build save actions
@@ -181,16 +232,24 @@ export class LeadConvert {
 
 
     /*
-     * setter for the models
+     * sets the contact from the component
      */
     private setContact(contact) {
         this.contact = contact;
     }
 
+    /**
+     * sets the account from the component
+     * @param account
+     */
     private setAccount(account) {
         this.account = account;
     }
 
+    /**
+     * sets the opportunity from the component
+     * @param opportunity
+     */
     private setOpportunity(opportunity) {
         this.opportunity = opportunity;
     }

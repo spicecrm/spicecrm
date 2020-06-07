@@ -9,25 +9,41 @@ import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 
+/**
+ * renders a tab to convert the lead to the contact
+ */
 @Component({
     selector: 'lead-convert-contact',
     templateUrl: './src/modules/leads/templates/leadconvertcontact.html',
     providers: [view, model]
 })
 export class LeadConvertContact implements AfterViewInit, OnInit {
+    /**
+     * reference to the container where the detail view is to be rendered
+     */
     @ViewChild('detailcontainer', {read: ViewContainerRef, static: true}) public detailcontainer: ViewContainerRef;
 
+    /**
+     * the emitter for the contact created or selected
+     */
     @Output() public contact: EventEmitter<model> = new EventEmitter<model>();
 
+    /**
+     * a selected conmtact if picked from the duplicates that have been matched based on the data
+     */
     public selectedContact: any = undefined;
-    private createContact: boolean = true;
 
-    public componentSet: string = '';
+    /**
+     * the component config
+     */
     public componentconfig: any = {};
+
+    /**
+     * the list of compoennts rendered
+     */
     public componentRefs: any = [];
 
     constructor(private view: view, private metadata: metadata, @SkipSelf() private lead: model, private model: model) {
-
         this.view.isEditable = true;
         this.view.setEditMode();
     }
@@ -35,13 +51,17 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
     public ngOnInit() {
         // console.log(this.model.data);
         this.initializeFromLead();
-
     }
 
     public ngAfterViewInit() {
         this.buildContainer();
     }
 
+    /**
+     * initializes the öoad from the lead using the copy rules
+     *
+     * also links to the lead in case the account is changed to link to the account
+     */
     private initializeFromLead() {
         this.model.module = 'Contacts';
         this.model.id = null;
@@ -63,7 +83,7 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
          * subscribe to lead changes to update the account link if set
          */
         this.lead.data$.subscribe(data => {
-            if (data.account_id != this.model.getField('account_id') || data.account_linked_name != this.model.getField('account_linked_name')) {
+            if (!this.selectedContact && data.account_id != this.model.getField('account_id') || data.account_linked_name != this.model.getField('account_linked_name')) {
                 this.model.setFields({
                     account_id: data.account_id,
                     account_name: data.account_linked_name
@@ -86,6 +106,9 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
         this.contact.emit(this.model);
     }
 
+    /**
+     * builds the details container
+     */
     public buildContainer() {
         // Close any already open dialogs
         for (let component of this.componentRefs) {
@@ -109,7 +132,6 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
      */
     private selectContact(contactdata) {
         this.selectedContact = contactdata;
-        this.createContact = false;
 
         this.model.id = contactdata.id;
         this.model.isNew = false;
@@ -124,7 +146,6 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
      */
     private unlinkContact() {
         this.selectedContact = undefined;
-        this.createContact = true;
         this.view.isEditable = true;
 
         // rebuild the container

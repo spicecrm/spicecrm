@@ -7,28 +7,43 @@ import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 import {Observable, Subject} from "rxjs";
 
+/**
+ * a separet modal to display the steps for th elad comversion as well as the progress
+ */
 @Component({
     selector: 'lead-convert-modal',
     templateUrl: './src/modules/leads/templates/leadconvertmodal.html'
 })
 export class LeadConvertModal implements OnInit {
 
+    /**
+     * reference to the modal itsefl
+     */
     private self: any;
 
+    /**
+     * the actions to be performed
+     */
     @Input() private saveactions: any[] = [];
 
+    /**
+     * an event emiter emitting when the conversion was completed
+     */
     @Output() private completed: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-    private convertSubject: Subject<boolean> = undefined;
 
     constructor(private language: language) {
 
     }
 
     public ngOnInit(): void {
-        this.processConvert();
+        this.processConvertActions();
     }
 
+    /**
+     * simple function to return the status icon based on the status of the step
+     *
+     * @param status
+     */
     private getStatusIcon(status) {
         switch (status) {
             case 'initial':
@@ -38,14 +53,9 @@ export class LeadConvertModal implements OnInit {
         }
     }
 
-
-
-    private processConvert(): Observable<boolean> {
-        this.convertSubject = new Subject<boolean>();
-        this.processConvertActions();
-        return this.convertSubject.asObservable();
-    }
-
+    /**
+     * processes the convert action recursively
+     */
     private processConvertActions() {
         let nextAction = '';
         this.saveactions.some(item => {
@@ -58,13 +68,17 @@ export class LeadConvertModal implements OnInit {
         if (nextAction) {
             this.processConvertAction(nextAction);
         } else {
-            this.convertSubject.next(true);
-            this.convertSubject.complete();
             this.completed.emit(true);
             this.self.destroy();
         }
     }
 
+    /**
+     * processes one action with the save and then calls the process action again
+     * until all actions are completed
+     *
+     * @param item
+     */
     private processConvertAction(item) {
         item.model.save().subscribe(data => {
             item.model.data = item.model.utils.backendModel2spice(item.model.module, data);
@@ -72,6 +86,11 @@ export class LeadConvertModal implements OnInit {
         });
     }
 
+    /**
+     * sets the convert action to completed and processes the next one
+     *
+     * @param action
+     */
     private completeConvertAction(action) {
         this.saveactions.find(item => item.action === action).status = 'completed';
 
