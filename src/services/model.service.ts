@@ -195,14 +195,17 @@ export class model implements OnDestroy {
      * indicating that the current model created is a duplicate. this avoids that the model when begin created, creates a new set of backupdata as this woudl limit the data being sent to the backend when saviong the model
      */
     public duplicate: boolean = false;
+
     /**
      * Holds the ID of the template model, in case the model is a duplicate.
      */
     public templateId: string = null;
+
     /**
      * inidctaes thata duplicate check is ongoing
      */
     public duplicateChecking: boolean = false;
+
     /**
      * an array with duplicates the duplicate check on the model returned
      */
@@ -792,13 +795,19 @@ export class model implements OnDestroy {
      * @param value
      */
     public setFieldValue(field, value) {
+        return this.setField(field, value);
+    }
+
+    /**
+     * initializes a single field on the model
+     * similar to the setField but does not trigger the emitter and no duplicate check and no validation
+     *
+     * @param field
+     * @param value
+     */
+    public initializeField(field, value) {
         if (!field) return false;
         this.data[field] = value;
-        this.data$.next(this.data);
-        this.evaluateValidationRules(field, "change");
-
-        // run the duplicate check
-        this.duplicateCheckOnChange([field]);
     }
 
     /**
@@ -808,7 +817,13 @@ export class model implements OnDestroy {
      * @param value
      */
     public setField(field, value) {
-        return this.setFieldValue(field, value);
+        if (!field) return false;
+        this.data[field] = value;
+        this.data$.next(this.data);
+        this.evaluateValidationRules(field, "change");
+
+        // run the duplicate check
+        this.duplicateCheckOnChange([field]);
     }
 
     /**
