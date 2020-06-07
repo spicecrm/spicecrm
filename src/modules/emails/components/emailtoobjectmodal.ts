@@ -89,7 +89,7 @@ export class EmailToObjectModal implements OnInit, AfterViewInit {
     }
 
     private setField(data) {
-        this.model.setFieldValue(data.field, data.value);
+        this.model.setField(data.field, data.value);
     }
 
     private save() {
