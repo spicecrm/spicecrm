@@ -185,7 +185,7 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
      * @param field optional the fieldname
      */
     public isEditable(field: string = this.fieldname): boolean {
-        return this.getStati(field).editable && !this.getStati(field).readonly && !this.getStati(field).disabled && !this.getStati(field).hidden;
+        return (this.model.checkAccess('edit') || this.model.checkAccess('create')) && this.getStati(field).editable && !this.getStati(field).readonly && !this.getStati(field).disabled && !this.getStati(field).hidden;
     }
 
     /**
