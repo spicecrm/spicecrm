@@ -16,30 +16,53 @@ import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {language} from '../../../services/language.service';
 
+/**
+ * the panel to convert the lead to an opportunity
+ */
 @Component({
     selector: 'lead-convert-opportunity',
     templateUrl: './src/modules/leads/templates/leadconvertopportunity.html',
     providers: [view, model]
 })
 export class LeadConvertOpportunity implements AfterViewInit {
+
+    /**
+     * the container ref to render the detailed view in
+     */
     @ViewChild('detailcontainer', {read: ViewContainerRef, static: true}) private detailcontainer: ViewContainerRef;
 
-
+    /**
+     * EventEmitter to emit the created opportunity
+     */
     @Output() public opportunity: EventEmitter<model> = new EventEmitter<model>();
 
-
-    private componentSet: string = '';
+    /**
+     * the component config
+     */
     private componentconfig: any = {};
+
+    /**
+     * reference to the various compoentnes rendered as part of the detailed componentset
+     */
     private componentRefs: any = [];
 
-    // create flag and getter and setter for the checkbox
+    /**
+     * internal boolean flag to allow the user to select if an opportunity shoudl be created
+     */
     private createOpportunity: boolean = false;
 
+    /**
+     * returns if the flag is set
+     */
     get create() {
         return this.createOpportunity;
-        this.opportunity.emit(this.model);
     }
 
+    /**
+     * set the flag and if set emit the model or null to the main cobversion component
+     *
+     * @param value
+     */
     set create(value) {
         this.createOpportunity = value;
 
@@ -66,7 +89,10 @@ export class LeadConvertOpportunity implements AfterViewInit {
         this.buildContainer();
     }
 
-
+    /**
+     * initialize the Opportunity from the Lead
+     * also subscribes to the lead in case the account id changes to get the updated account id to link the opportunity to
+     */
     private initializeFromLead() {
         this.model.module = 'Opportunities';
         this.model.initialize(this.lead);
@@ -96,6 +122,9 @@ export class LeadConvertOpportunity implements AfterViewInit {
         }
     }
 
+    /**
+     * builds the container
+     */
     private buildContainer() {
         // Close any already open dialogs
         // this.container.clear();
