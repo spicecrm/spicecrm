@@ -1,13 +1,14 @@
 /**
  * @module ModuleLeads
  */
-import {Component} from '@angular/core';
+import {Component, Optional} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {toast} from '../../../services/toast.service';
 import {language} from '../../../services/language.service';
 import {modal} from '../../../services/modal.service';
+import {navigationtab} from '../../../services/navigationtab.service';
 
 @Component({
     selector: 'lead-convert-button',
@@ -17,7 +18,7 @@ export class LeadConvertButton {
 
     public disabled: boolean = true;
 
-    constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private toast: toast, private modal: modal) {
+    constructor(private language: language, private metadata: metadata, private model: model, private router: Router, private toast: toast, private modal: modal, @Optional() private navigationtab: navigationtab) {
     }
 
     private execute() {
@@ -35,7 +36,11 @@ export class LeadConvertButton {
                 });
             });
         } else {
-            this.router.navigate(['/module/Leads/' + this.model.id + '/convert']);
+            let routeprefix = '';
+            if (this.navigationtab?.tabid) {
+                routeprefix = '/tab/' + this.navigationtab.tabid;
+            }
+            this.router.navigate([`${routeprefix}/module/Leads/${this.model.id}/convert`]);
         }
     }
 

@@ -19,12 +19,9 @@
             </div>
         </div>
     </div>
-    <div>
-        <object-page-header-detail-row *ngFor="let headerFieldSet of headerFieldSets" [fieldSet]="headerFieldSet"></object-page-header-detail-row>
-    </div>
 </div>
 <div class="slds-grid slds-grid--align-spread slds-p-around--small slds-theme--shade slds-border--bottom">
-        <button class="slds-button slds-button--neutral" (click)="prevStep()"><system-label label="LBL_PREVIOUS"></system-label></button>
+        <button class="slds-button slds-button--neutral" [disabled]="model.isLoading || currentConvertStep == 0" (click)="prevStep()"><system-label label="LBL_PREVIOUS"></system-label></button>
         <div class="slds-progress slds-progress--shade">
             <ol class="slds-progress__list">
                 <li *ngFor="let convertStep of convertSteps" class="slds-progress__item" [ngClass]="getStepClass(convertStep)">
@@ -38,12 +35,13 @@
                 <span class="slds-progress-bar__value" [ngStyle]="getProgressBarWidth()"></span>
             </div>
         </div>
-        <button *ngIf="showNext()" class="slds-button slds-button--neutral" (click)="nextStep()"><system-label label="LBL_NEXT"></system-label></button>
+        <button *ngIf="showNext()" class="slds-button slds-button--neutral" [disabled]="model.isLoading" (click)="nextStep()"><system-label label="LBL_NEXT"></system-label></button>
         <button *ngIf="showSave()" class="slds-button slds-button--brand" (click)="nextStep()"><system-label label="LBL_SAVE"></system-label></button>
 </div>
-<div class="slds-scrollable--y" system-to-bottom>
-    <lead-convert-account [lead]="model" [hidden]="currentConvertStep!==0" (account)="setAccount($event)" (selectedaccount)="setSelectedAccount($event)" (createaccount)="setCreateAccount($event)"></lead-convert-account>
-    <lead-convert-contact [lead]="model" [hidden]="currentConvertStep!==1" (contact)="setContact($event)"></lead-convert-contact>
-    <lead-convert-opportunity [lead]="model" [hidden]="currentConvertStep!==2" (opportunity)="setOpportunity($event)" (createopportunity)="setCreateOpportunity($event)"></lead-convert-opportunity>
+<div class="slds-scrollable--y" system-to-bottom [system-overlay-loading-spinner]="model.isLoading">
+    <ng-container *ngIf="!model.isLoading">
+        <lead-convert-account [hidden]="currentConvertStep!==0" (account)="setAccount($event)" ></lead-convert-account>
+        <lead-convert-contact [hidden]="currentConvertStep!==1" (contact)="setContact($event)"></lead-convert-contact>
+        <lead-convert-opportunity [hidden]="currentConvertStep!==2" (opportunity)="setOpportunity($event)"></lead-convert-opportunity>
+    </ng-container>
 </div>
-<lead-convert-modal *ngIf="showSaveModal" [saveactions]="createSaveActions" (closemodal)="showSaveModal=false"></lead-convert-modal>
