@@ -20,7 +20,7 @@ import /*embed*/ {LeadConvertAccount} from './components/leadconvertaccount';
 import /*embed*/ {LeadConvertOpportunity} from './components/leadconvertopportunity';
 import /*embed*/ {LeadOpenLeadsDashlet} from './components/leadopenleadsdashlet';
 import /*embed*/ {LeadConvertOpportunityModal} from './components/leadconvertopportunitymodal';
-import /*embed*/ {fieldLeadClassification} from './components/fieldleadclassification';
+import /*embed*/ {fieldLeadClassification} from './fields/fieldleadclassification';
 
 @NgModule({
     imports: [

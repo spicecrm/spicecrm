@@ -6,14 +6,13 @@
                 <div class="slds-media__body">
                     <nav role="navigation" aria-label="Breadcrumbs">
                         <ol class="slds-breadcrumb slds-list--horizontal">
-                            <li class="slds-breadcrumb__item slds-text-title--caps"><a href="javascript:void(0);" (click)="gotoLead()"><system-label-modulename [module]="model.module" [singular]="true"></system-label-modulename></a>
+                            <li class="slds-breadcrumb__item slds-text-title--caps"><a href="javascript:void(0);"><system-label-modulename [module]="model.module" [singular]="true"></system-label-modulename></a>
                             </li>
                             <li class="slds-breadcrumb__item slds-text-title--caps"><a href="javascript:void(0);"><system-label label="LBL_CONVERT_LEAD"></system-label></a></li>
                         </ol>
                     </nav>
                     <div>
-                        <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
-                            {{model.data.summary_text}}</h1>
+                        <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">{{model.data.summary_text}}</h1>
                     </div>
                 </div>
             </div>

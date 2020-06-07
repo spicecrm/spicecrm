@@ -7,11 +7,11 @@ import {
 } from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
-import {modelutilities} from "../../../services/modelutilities.service";
-import {fts} from "../../../services/fts.service";
 import {view} from "../../../services/view.service";
-import {language} from '../../../services/language.service';
 
+/**
+ * shows duplicates model from the model service to allow the user to pick a potential duplicate
+ */
 @Component({
     selector: "lead-convert-item-duplicate",
     templateUrl: "./src/modules/leads/templates/leadconvertitemduplicate.html",
@@ -19,9 +19,18 @@ import {language} from '../../../services/language.service';
 })
 export class LeadConvertItemDuplicate {
 
+    /**
+     * the fieldset from the config
+     * this is loaded from ObjectRelatedDuplicateTile
+     *
+     * ToD: Check if we shoudl add a separate configuration for the fieldsets used here
+     */
     private fieldset: string;
 
-    @Output() private accountselected: EventEmitter<any> = new EventEmitter<any>();
+    /**
+     * an eventemitter when an item is selected
+     */
+    @Output() private itemselected: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(private view: view, private model: model, private metadata: metadata) {
 
@@ -52,6 +61,6 @@ export class LeadConvertItemDuplicate {
      * selects the account for usage in the lead
      */
     private useaccount() {
-        this.accountselected.emit(this.model.data);
+        this.itemselected.emit(this.model.data);
     }
 }
