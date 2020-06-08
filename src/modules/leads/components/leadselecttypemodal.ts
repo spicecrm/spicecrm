@@ -36,11 +36,20 @@ export class LeadSelectTypeModal {
     }
 
     /**
+     * simple getter to enable the create button
+     */
+    get cancreate() {
+        return !!this.model.getField('lead_type');
+    }
+
+    /**
      * trigger creating the new lead
      */
     private create() {
-        this.modal.openModal("ObjectEditModal", true, this.injector);
-        this.close();
+        if(this.cancreate) {
+            this.modal.openModal("ObjectEditModal", true, this.injector);
+            this.close();
+        }
     }
 
     /**

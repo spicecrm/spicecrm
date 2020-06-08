@@ -5,6 +5,6 @@
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
-        <button class="slds-button slds-button--brand" (click)="create()"><system-label label="LBL_CREATE"></system-label></button>
+        <button class="slds-button slds-button--brand" [disabled]="!cancreate" (click)="create()"><system-label label="LBL_CREATE"></system-label></button>
     </system-modal-footer>
 </system-modal>
