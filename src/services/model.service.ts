@@ -195,14 +195,17 @@ export class model implements OnDestroy {
      * indicating that the current model created is a duplicate. this avoids that the model when begin created, creates a new set of backupdata as this woudl limit the data being sent to the backend when saviong the model
      */
     public duplicate: boolean = false;
+
     /**
      * Holds the ID of the template model, in case the model is a duplicate.
      */
     public templateId: string = null;
+
     /**
      * inidctaes thata duplicate check is ongoing
      */
     public duplicateChecking: boolean = false;
+
     /**
      * an array with duplicates the duplicate check on the model returned
      */
@@ -754,7 +757,7 @@ export class model implements OnDestroy {
 
         // shift to backend format .. no objects like date embedded
         if (withbackup && !this.duplicate) {
-            this.backupData = JSON.stringify(this.data);
+            this.backupData = JSON.parse(JSON.stringify(this.data));
         }
 
         /**
@@ -792,13 +795,19 @@ export class model implements OnDestroy {
      * @param value
      */
     public setFieldValue(field, value) {
+        return this.setField(field, value);
+    }
+
+    /**
+     * initializes a single field on the model
+     * similar to the setField but does not trigger the emitter and no duplicate check and no validation
+     *
+     * @param field
+     * @param value
+     */
+    public initializeField(field, value) {
         if (!field) return false;
         this.data[field] = value;
-        this.data$.next(this.data);
-        this.evaluateValidationRules(field, "change");
-
-        // run the duplicate check
-        this.duplicateCheckOnChange([field]);
     }
 
     /**
@@ -808,7 +817,13 @@ export class model implements OnDestroy {
      * @param value
      */
     public setField(field, value) {
-        return this.setFieldValue(field, value);
+        if (!field) return false;
+        this.data[field] = value;
+        this.data$.next(this.data);
+        this.evaluateValidationRules(field, "change");
+
+        // run the duplicate check
+        this.duplicateCheckOnChange([field]);
     }
 
     /**
@@ -840,7 +855,7 @@ export class model implements OnDestroy {
         this.navigation.removeModelEditing(this.module, this.id);
 
         if (this.backupData) {
-            this.data = JSON.parse(this.backupData);
+            this.data = this.backupData;
             this.data$.next(this.data);
             this.backupData = null;
             // todo: evaluate all fields because they have changed back???
@@ -869,7 +884,7 @@ export class model implements OnDestroy {
     public getDirtyFields() {
         let d = {};
         for (let property in this.data) {
-            if (property && (!JSON.parse(this.backupData) || _.isObject(this.data[property]) || _.isArray(this.data[property]) || !_.isEqual(this.data[property], JSON.parse(this.backupData)[property]) || this.isFieldARelationLink(property))) {
+            if (property && (!this.backupData || _.isObject(this.data[property]) || _.isArray(this.data[property]) || !_.isEqual(this.data[property], this.backupData[property]) || this.isFieldARelationLink(property))) {
                 d[property] = this.data[property];
             }
         }
@@ -917,7 +932,7 @@ export class model implements OnDestroy {
                         module: this.module,
                         data: this.data,
                         changed: this.getDirtyFields(),
-                        backupdata: JSON.parse(this.backupData)
+                        backupdata: this.backupData
                     });
 
                     // saving is done
@@ -932,7 +947,7 @@ export class model implements OnDestroy {
 
                     // emit the save$
                     // redetermin the dirty fields since the backend call might have changed also additonal fields
-                    this.saved$.emit({changed: this.getDirtyFields(), backupdata: JSON.parse(this.backupData)});
+                    this.saved$.emit({changed: this.getDirtyFields(), backupdata: this.backupData});
 
 
                     // end the edit process

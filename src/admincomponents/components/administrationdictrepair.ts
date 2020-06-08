@@ -1,44 +1,40 @@
 /**
  * @module AdminComponentsModule
  */
-import {Component, Pipe, PipeTransform, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {backend} from '../../services/backend.service';
-import {Observable, Subject} from "rxjs";
+import {toast} from "../../services/toast.service";
+import {language} from "../../services/language.service";
 
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
     selector: 'administration-dict-repair',
     templateUrl: './src/admincomponents/templates/administrationdictrepair.html'
 })
-export class AdministrationDictRepair implements OnInit {
+export class AdministrationDictRepair {
 
-    loading: boolean = true;
-    repairsql: string = '';
-    lastDBError: string = '';
+    private loading: boolean = false;
 
-    constructor(private backend: backend) {
+    private dbErrors: any = [];
+
+    constructor(private backend: backend, private toast: toast, private language: language) {
     }
 
-    ngOnInit(): void {
-        this.getRepairSQL();
-    }
 
-    getRepairSQL(){
+    private doRepair() {
         this.loading = true;
-        this.backend.getRequest('dictionary/repair').subscribe((result:any) => {
-           this.repairsql = result.sql;
-           this.loading = false;
-        });
-    }
-
-    doRepair(){
-        this.backend.postRequest('dictionary/repair',{},{sql: btoa(this.repairsql)}).subscribe((result:any) => {
-            this.lastDBError = result.response;
+        this.backend.postRequest('dictionary/repair').subscribe((result: any) => {
+            if(!result.response) {
+                this.dbErrors = result.errors;
+            } else {
+                this.toast.sendToast(this.language.getLabel('LBL_REPAIR_DATABASE_SYNCED'), 'success');
+            }
+            this.loading = false;
         });
     }
 

@@ -86,7 +86,7 @@ export class ACLObjectsManagerObjectFields {
         for (let thisfield of fields) {
             if (thisfield.field == field) {
                 fields.splice(i, 1);
-                this.model.setFieldValue('fieldcontrols', fields);
+                this.model.setField('fieldcontrols', fields);
                 return;
             }
             i++;
@@ -131,7 +131,7 @@ export class ACLObjectsManagerObjectFields {
                         }
                     }
                     currentfields = newFields;
-                    this.model.setFieldValue('fieldcontrols', currentfields);
+                    this.model.setField('fieldcontrols', currentfields);
                 }
             });
         });
