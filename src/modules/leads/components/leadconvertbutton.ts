@@ -31,6 +31,8 @@ export class LeadConvertButton {
             this.toast.sendToast('Lead already Converted', 'warning');
         } else if (this.model.getFieldValue('account_id')) {
             this.modal.openModal('LeadConvertOpportunityModal', true, this.injector);
+        } else if (this.model.getField('lead_type') == 'b2c') {
+            this.modal.openModal('LeadConvertConsumerModal', true, this.injector);
         } else {
             let routeprefix = '';
             if (this.navigationtab?.tabid) {
@@ -44,6 +46,6 @@ export class LeadConvertButton {
      * a getter for the disabled attribute used in the actionset that renderes the button
      */
     get disabled() {
-        return  this.model.getFieldValue('status') === 'Converted' || !this.model.checkAccess('edit') ? true : false;
+        return this.model.getFieldValue('status') === 'Converted' || !this.model.checkAccess('edit') ? true : false;
     }
 }

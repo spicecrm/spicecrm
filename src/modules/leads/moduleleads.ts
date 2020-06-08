@@ -20,6 +20,10 @@ import /*embed*/ {LeadConvertAccount} from './components/leadconvertaccount';
 import /*embed*/ {LeadConvertOpportunity} from './components/leadconvertopportunity';
 import /*embed*/ {LeadOpenLeadsDashlet} from './components/leadopenleadsdashlet';
 import /*embed*/ {LeadConvertOpportunityModal} from './components/leadconvertopportunitymodal';
+import /*embed*/ {LeadNewButton} from './components/leadnewbutton';
+import /*embed*/ {LeadSelectTypeModal} from './components/leadselecttypemodal';
+import /*embed*/ {LeadConvertConsumerModal} from './components/leadconvertconsumermodal';
+
 import /*embed*/ {fieldLeadClassification} from './fields/fieldleadclassification';
 
 @NgModule({
@@ -33,7 +37,8 @@ import /*embed*/ {fieldLeadClassification} from './fields/fieldleadclassificatio
         DirectivesModule
     ],
     declarations: [
-
+        LeadNewButton,
+        LeadSelectTypeModal,
         LeadConvertButton,
         LeadConvertModal,
         LeadConvert,
@@ -43,6 +48,7 @@ import /*embed*/ {fieldLeadClassification} from './fields/fieldleadclassificatio
         LeadConvertOpportunity,
         LeadOpenLeadsDashlet,
         LeadConvertOpportunityModal,
+        LeadConvertConsumerModal,
         fieldLeadClassification
     ],
 })
