@@ -66,8 +66,8 @@ export class ProductUOMConversions implements OnInit {
     private setBaseUom(id) {
         let unit = this.uomUnits.find(unit => unit.id == id);
         if (!unit) return;
-        this.model.setFieldValue(this.fieldBaseUom, unit.label);
-        this.model.setFieldValue(this.fieldBaseUomId, unit.id);
+        this.model.setField(this.fieldBaseUom, unit.label);
+        this.model.setField(this.fieldBaseUomId, unit.id);
     }
 
     private filteredUomUnits(conversion) {

@@ -25,7 +25,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
 
     public ngOnInit() {
         if (!this.model.getField('emailaddresses')) {
-            this.model.setField(
+            this.model.initializeField(
                 'emailaddresses',
                 [{
                     id: this.model.generateGuid(),

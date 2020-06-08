@@ -42,7 +42,7 @@ export class KnowledgeReleaseAllButton {
                 this.backend.postRequest(`module/KnowledgeDocument/${this.model.id}/release/all`).subscribe(
                     res => {
                         if (res && res.released) {
-                            this.model.setFieldValue('status', 'Released');
+                            this.model.setField('status', 'Released');
                             this.knowledgeService.documentsList.forEach(doc => {
                                 if (doc.id == this.model.id || res.ids[doc.id]) {
                                     doc.name = doc.name.replace(/\(.*\)/g, '') + ' (Released)';

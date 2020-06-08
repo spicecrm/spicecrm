@@ -19,14 +19,19 @@ import {SystemLoadingModal} from "../../../systemcomponents/components/systemloa
 
 @Component({
     selector: 'lead-convert-opportunity-modal',
-    templateUrl: './src/modules/leads/templates/leadconvertopportunitymodal.html',
+    templateUrl: './src/modules/leads/templates/leadconvertconsumermodal.html',
     providers: [model, view]
 })
-export class LeadConvertOpportunityModal implements OnInit, AfterViewInit {
+export class LeadConvertConsumerModal implements OnInit, AfterViewInit {
 
-    @ViewChild('detailcontainer', {read: ViewContainerRef, static: true})  private detailcontainer: ViewContainerRef;
-
+    /**
+     * reference to the modal itself
+     */
     private self: any = {};
+
+    /**
+     * ebent emitter when the conversion is completed
+     */
     @Output() private converted: EventEmitter<any> = new EventEmitter<any>();
 
     /**
@@ -35,7 +40,7 @@ export class LeadConvertOpportunityModal implements OnInit, AfterViewInit {
     private componentSet: string;
 
     constructor(private language: language, @SkipSelf() private lead: model, private model: model, private metadata: metadata, private view: view, private modal: modal) {
-        this.model.module = 'Opportunities';
+        this.model.module = 'Consumers';
         this.view.isEditable = true;
         this.view.setEditMode();
     }
@@ -44,28 +49,31 @@ export class LeadConvertOpportunityModal implements OnInit, AfterViewInit {
         this.model.initialize(this.lead);
     }
 
-    public ngAfterViewInit(){
+    public ngAfterViewInit() {
         let componentconfig = this.metadata.getComponentConfig('ObjectRecordDetails', this.model.module);
         this.componentSet = componentconfig.componentset;
     }
 
+    /**
+     * close the modal
+     */
     private close() {
         this.self.destroy();
     }
 
     /**
-     * converts the lead to an opportunity
+     * converts the lead to a consumer
      */
     private convert() {
-        if ( !this.model.validate() ) return;
+        if (!this.model.validate()) return;
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
-            loadingModalRef.instance.messagelabel = 'creating Opportunity';
-            this.model.save().subscribe(done => {
+            loadingModalRef.instance.messagelabel = 'creating Consumer';
+            this.model.save().subscribe(consumer => {
                 loadingModalRef.instance.messagelabel = 'updating Lead';
                 this.lead.setField('status', 'Converted');
-                this.lead.setField('opportunity_id', this.model.id);
-                this.lead.setField('opportunity_name', this.model.getFieldValue('name'));
-                this.lead.save().subscribe(leadsaved => {
+                this.lead.setField('consumer_id', this.model.id);
+                this.lead.save().subscribe(leaddata => {
+                    this.lead.data = this.lead.utils.backendModel2spice('Leads', leaddata);
                     loadingModalRef.instance.self.destroy();
                     this.close();
                 });

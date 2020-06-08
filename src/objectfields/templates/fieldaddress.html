@@ -9,7 +9,7 @@
         <div class="slds-form-element__group">
             <system-googleplaces-autocomplete (address)="addressSelected($event)"></system-googleplaces-autocomplete>
             <div class="slds-grid slds-gutters_direct-xx-small">
-                <div class="slds-form-element slds-col slds-size--5-of-6">
+                <div class="slds-form-element slds-col slds-size--4-of-6">
                     <label class="slds-form-element__label"><system-label label="LBL_STREET"></system-label></label>
                     <div class="slds-form-element__control">
                         <input #focus type="text" class="slds-input" [(ngModel)]="street" [ngModelOptions]="modelOptions"/>
@@ -19,6 +19,12 @@
                     <label class="slds-form-element__label"><system-label label="LBL_STREET_NUMBER" length="short"></system-label></label>
                     <div class="slds-form-element__control">
                         <input #focus type="text" class="slds-input" [(ngModel)]="street_number" [ngModelOptions]="modelOptions"/>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-col slds-size--1-of-6 ">
+                    <label class="slds-form-element__label"><system-label label="LBL_STREET_NUMBER_SUFFIX" length="short"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <input #focus type="text" class="slds-input" [(ngModel)]="street_number_suffix" [ngModelOptions]="modelOptions"/>
                     </div>
                 </div>
             </div>

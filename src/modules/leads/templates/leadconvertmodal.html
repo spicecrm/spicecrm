@@ -1,18 +1,11 @@
-<div role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
-    <div class="slds-modal__container">
-        <div class="slds-modal__header">
-            <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close">
-                <svg class="slds-button__icon slds-button__icon--large" aria-hidden="true" (click)="close()">
-                    <use xlink:href="./vendor/sldassets/icons/utility-sprite/svg/symbols.svg#close"></use>
-                </svg>
-            </button>
-            <h2 class="slds-text-heading--medium"><system-label label="LBL_CONVERT_LEAD"></system-label></h2>
-        </div>
-        <div class="slds-modal__content slds-p-around--medium">
-            <div class="slds-grid slds-grid--align-spread slds-p-vertical--small " *ngFor="let saveaction of saveactions; let i = index ;" [ngClass]="{'slds-border--bottom' : itemBorder(i)}">
-                <div class="slds-truncate"><system-label [label]="saveaction.label"></system-label></div>
-                <div>{{getStatusLabel(saveaction.status)}}</div>
+<system-modal>
+    <system-modal-header><system-label label="LBL_CONVERT_LEAD"></system-label></system-modal-header>
+    <system-modal-content>
+        <div class="slds-grid slds-grid--align-spread slds-p-vertical--small slds-has-divider--bottom" *ngFor="let saveaction of saveactions">
+            <div class="slds-truncate"><system-label [label]="saveaction.label"></system-label></div>
+            <div>
+                <system-utility-icon [icon]="getStatusIcon(saveaction.status)" size="x-small"></system-utility-icon>
             </div>
         </div>
-    </div>
-</div>
+    </system-modal-content>
+</system-modal>
