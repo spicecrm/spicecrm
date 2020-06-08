@@ -119,9 +119,9 @@ export class fieldSelectTree extends fieldGeneric {
         for(let i = 0; i < this.fields.length; i++) {
             if( sel_fields[i] ) {
                 let value = sel_fields[i].keyname != "" ? sel_fields[i].keyname : sel_fields[i].name;
-                this.model.setFieldValue(this.fields[i], value);
+                this.model.setField(this.fields[i], value);
             } else {
-                this.model.setFieldValue(this.fields[i], '');
+                this.model.setField(this.fields[i], '');
             }
         }
         this.search = null;

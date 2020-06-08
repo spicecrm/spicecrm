@@ -23,6 +23,8 @@ export class SpiceInstallerDatabase {
 
     private loading: boolean = false;
 
+    private charset: string = '';
+
     constructor(
         private toast: toast,
         private http: HttpClient,
@@ -37,7 +39,7 @@ export class SpiceInstallerDatabase {
      */
     private checkDB() {
 
-        switch(this.spiceinstaller.db_type) {
+        switch (this.spiceinstaller.db_type) {
             case 'mysql':
                 this.spiceinstaller.db_host_instance = 'SQLEXPRESS';
                 this.spiceinstaller.db_manager = 'MysqliManager';
@@ -47,6 +49,15 @@ export class SpiceInstallerDatabase {
                 break;
             case 'sqlsrv':
                 this.spiceinstaller.db_manager = 'SqlsrvManager';
+                break;
+        }
+
+        switch (this.spiceinstaller.collation) {
+            case 'utf8mb4_general_ci':
+                this.charset = 'utf8mb4';
+                break;
+            case 'utf8_general_ci':
+                this.charset = 'utf8';
                 break;
         }
 
@@ -62,10 +73,11 @@ export class SpiceInstallerDatabase {
             lc_collate: this.spiceinstaller.lc_collate,
             lc_ctype: this.spiceinstaller.lc_ctype
         };
-        if(this.spiceinstaller.dbaccessuser == 'existinguser') {
+        if (this.spiceinstaller.dbaccessuser == 'existinguser') {
             body.db_user_name = this.spiceinstaller.ext_db_user_name;
             body.db_password = this.spiceinstaller.ext_db_password;
         }
+
         this.hostNameCondition = this.spiceinstaller.db_host_name.length > 0;
         this.userNameCondition = this.spiceinstaller.db_user_name.length > 0;
         this.dbNameCondition = this.spiceinstaller.db_name.length > 0;
@@ -87,9 +99,10 @@ export class SpiceInstallerDatabase {
                             autofree: this.spiceinstaller.autofree,
                             debug: this.spiceinstaller.debug,
                             ssl: this.spiceinstaller.ssl,
-                            collation: this.spiceinstaller.collation
+                            collation: this.spiceinstaller.collation,
+                            charset: this.charset
                         };
-                        if(this.spiceinstaller.dbaccessuser == 'newdbuser') {
+                        if (this.spiceinstaller.dbaccessuser == 'newdbuser') {
                             this.spiceinstaller.configObject.databaseuser = {
                                 db_user_name: this.spiceinstaller.new_db_user_name,
                                 db_password: this.spiceinstaller.new_db_password

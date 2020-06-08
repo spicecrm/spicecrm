@@ -159,7 +159,7 @@ export class fieldTime extends fieldGeneric {
             this.value = setTime;
 
             // set the data so rules and emitter get triggered
-            this.model.setFieldValue(this.fieldname, setTime);
+            this.model.setField(this.fieldname, setTime);
 
             // this.isValid = true;
             this.clearFieldError();
