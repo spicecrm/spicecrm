@@ -26,7 +26,20 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
     private formFieldSet: string = '';
     private isInitialized: boolean = false;
 
-    constructor(public metadata: metadata, public elementRef: ElementRef, renderer: Renderer2, public activitiytimeline: activitiytimeline, public model: model, public view: view, public language: language, public modal: modal, public dockedComposer: dockedComposer, public ViewContainerRef: ViewContainerRef, public backend: backend, private session: session) {
+    constructor(
+        public metadata: metadata,
+        public elementRef: ElementRef,
+        public renderer: Renderer2,
+        public activitiytimeline: activitiytimeline,
+        public model: model,
+        public view: view,
+        public language: language,
+        public modal: modal,
+        public dockedComposer: dockedComposer,
+        public ViewContainerRef: ViewContainerRef,
+        public backend: backend,
+        private session: session
+    ) {
         super(metadata, activitiytimeline, model, view, language, modal, dockedComposer, ViewContainerRef);
     }
 
@@ -114,8 +127,36 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
         }
     }
 
+    /**
+     * checks if the email can be sent
+     */
+    get canSend() {
+        let receipientaddresses = this.model.getField('recipient_addresses');
+        return receipientaddresses ? receipientaddresses.some(r => r.address_type == 'to') : false;
+    }
 
+
+    /**
+     * attepmt to send the email and prompüt the user if the subject and body is empty
+      */
     private send() {
+        if (this.canSend) {
+            if(!this.model.getField('name') && !this.model.getField('body')){
+                this.modal.prompt("confirm", this.language.getLabel('LBL_EMAIL_SEND_EMPTY', null, 'long'), this.language.getLabel('LBL_EMAIL_SEND_EMPTY')).subscribe(resp => {
+                    if(resp){
+                        this.doSend();
+                    }
+                });
+            } else {
+                this.doSend();
+            }
+        }
+    }
+
+    /**
+     * save and send the email
+     */
+    private doSend(){
         this.model.data.to_be_sent = true;
         this.save();
     }

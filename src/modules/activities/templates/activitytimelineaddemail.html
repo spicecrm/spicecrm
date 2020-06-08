@@ -1,4 +1,4 @@
-<div class="slds-p-around--xx-small">
+<div class="slds-p-around--xx-small" [system-overlay-loading-spinner]="model.isSaving">
     <div class="slds-form-element slds-p-horizontal--xx-small" (click)="onFocus()">
         <field-container field="name"></field-container>
     </div>
@@ -23,7 +23,7 @@
             </div>
             <div class="slds-col--bump-left slds-grid slds-grid--vertical-align-center">
                 <object-record-messages-badge side="right"></object-record-messages-badge>
-                <button class="slds-button slds-button--brand .slds-button-space-left slds-float--right" (click)="send()"><system-label label="LBL_SEND"></system-label></button>
+                <button class="slds-button slds-button--brand .slds-button-space-left slds-float--right" [disabled]="!canSend" (click)="send()"><system-label label="LBL_SEND"></system-label></button>
             </div>
         </div>
     </ng-container>
