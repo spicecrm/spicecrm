@@ -12,8 +12,8 @@ import {modal} from '../../../services/modal.service';
     templateUrl: './src/modules/currencies/templates/currencylist.html'
 })
 
-export class CurrencyList{
-    @Input() currencies: any = [];
+export class CurrencyList implements OnInit {
+    @Input() private currencies: any = [];
     constructor(
         private metadata: metadata,
         private language: language,
@@ -23,6 +23,12 @@ export class CurrencyList{
 
     }
 
+    /**
+     * just to prevent the default currency from popping up in the list two times
+     */
+    public ngOnInit() {
+        this.currencies.shift();
+    }
 
 }
 
