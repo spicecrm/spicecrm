@@ -47,6 +47,7 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
         // SPICEUI-2
         this.model.id = this.model.generateGuid();
         this.model.initializeModel();
+        this.model.startEdit();
 
         // set the parent data
         this.model.data.parent_type = this.activitiytimeline.parent.module;

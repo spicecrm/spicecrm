@@ -4,7 +4,8 @@
     </div>
     <ng-container *ngIf="isExpanded">
         <object-record-fieldset [fieldset]="formFieldSet" [direction]="'vertical'"></object-record-fieldset>
-        <object-relatedlist-files></object-relatedlist-files>
+        <!--object-relatedlist-files></object-relatedlist-files-->
+        <system-dynamic-component component="SpiceAttachmentsPanel"></system-dynamic-component>
         <div class="slds-p-vertical--x-small slds-grid">
             <div class="slds-button-group" role="group">
                 <button class="slds-button slds-button--neutral" (click)="cancel()" [title]="language.getLabel('LBL_CANCEL')">
