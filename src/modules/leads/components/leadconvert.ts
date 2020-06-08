@@ -125,7 +125,7 @@ export class LeadConvert {
     /**
      * handles the progressing .. checks model validity if the model is new
      */
-    private nextStep() {
+    public nextStep() {
         switch (this.currentConvertStep) {
 
             case 0:
