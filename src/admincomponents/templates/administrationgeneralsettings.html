@@ -48,13 +48,19 @@
                     </select>
                 </div>
             </div>
-            <div *ngIf="setting.name == 'default_currency' " class="slds-form-element__control">
-                <div class="slds-select_container">
-                    <select class="slds-select" [(ngModel)]="setting.value">
-                        <option *ngFor="let currency of currencies" value="{{currency.id}}">{{currency.name}}({{currency.symbol}})</option>
-                    </select>
-                </div>
-            </div>
+<!--            <div *ngIf="setting.name == 'default_currency_iso4217' " class="slds-form-element__control">-->
+<!--                <input  type="text" class="slds-input" [(ngModel)]="setting.value" />-->
+<!--            </div>-->
+<!--            <div *ngIf="setting.name == 'default_currency_name' " class="slds-form-element__control">-->
+<!--                <input  type="text" class="slds-input" [(ngModel)]="setting.value" />-->
+<!--            </div>-->
+<!--            <div *ngIf="setting.name == 'default_currency_symbol' " class="slds-form-element__control">-->
+<!--                <input  type="text" class="slds-input" [(ngModel)]="setting.value" />-->
+<!--            </div>-->
+<!--            <div *ngIf="setting.name == 'default_currency_significant_digits' " class="slds-form-element__control">-->
+<!--                <input  type="text" class="slds-input" [(ngModel)]="setting.value" />-->
+<!--            </div>-->
+
         </td>
     </tr>
     </tbody>

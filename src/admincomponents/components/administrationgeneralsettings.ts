@@ -51,7 +51,7 @@ export class AdministrationGeneralSettings implements OnInit {
     /**
      * backend get request for the contents of the config table, loads the currencies
      */
-    ngOnInit() {
+    public ngOnInit() {
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
             this.backend.getRequest('admin/generalsettings').subscribe(data => {
                 if (data.status) {
@@ -72,8 +72,8 @@ export class AdministrationGeneralSettings implements OnInit {
      */
     private save() {
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
-            this.backend.postRequest('admin/writesettings', {}, this.settings).subscribe( response => {
-                if(response.status) {
+            this.backend.postRequest('admin/writesettings', {}, this.settings).subscribe(response => {
+                if (response.status) {
                     this.toast.sendToast(this.language.getLabel('LBL_SUCCESS'), 'success');
                 } else {
                     this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
