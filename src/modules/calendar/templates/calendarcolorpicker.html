@@ -6,7 +6,7 @@
         <div class="slds-color-picker slds-color-picker_swatches-only">
             <div class="slds-color-picker__selector">
                 <ul class="slds-color-picker__swatches" role="menu">
-                    <li *ngFor="let color of colors" class="slds-color-picker__swatch" role="presentation">
+                    <li *ngFor="let color of calendar.colorPalette" class="slds-color-picker__swatch" role="presentation">
                         <a class="slds-color-picker__swatch-trigger slds-is-selected" role="menuitem" (click)="pickColor(color)">
                             <span class="slds-swatch" [style.background-color]="'#' + color">
                                 <span class="slds-assistive-text">#{{color}}</span>
