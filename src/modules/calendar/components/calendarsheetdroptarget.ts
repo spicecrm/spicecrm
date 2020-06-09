@@ -9,6 +9,9 @@ import {calendar} from '../services/calendar.service';
  */
 declare var moment: any;
 
+/**
+ * Display the input hour part and emit the click inside to add an event in place
+ */
 @Component({
     selector: 'calendar-sheet-drop-target',
     templateUrl: './src/modules/calendar/templates/calendarsheetdroptarget.html',
@@ -17,14 +20,16 @@ declare var moment: any;
 export class CalendarSheetDropTarget {
 
     /**
-     * @input day: moment
+     * holds the moment day
      */
     @Input() private day: any;
     /**
-     * @input hour: number
+     * holds the hour
      */
     @Input() private hour: number = 0;
-
+    /**
+     * holds the minutes
+     */
     private minutes: number = 0;
 
     constructor(private calendar: calendar, private cdr: ChangeDetectorRef, public elementRef: ElementRef) {
@@ -38,9 +43,7 @@ export class CalendarSheetDropTarget {
     }
 
     /**
-     * @Input hourPart: number
-     * @param value: number
-     * @set minutes
+     * set the hour part from parent input
      */
     @Input()
     private set hourPart(value: number) {
@@ -48,15 +51,14 @@ export class CalendarSheetDropTarget {
     }
 
     /**
-     * @call ChangeDetectorRef.detach
+     * detach change detection to improve performance
      */
     public ngAfterViewInit() {
         this.cdr.detach();
     }
 
     /**
-     * @emit date by pickerDate$
-     * @emit date by addingEvent$
+     * handle the mouse click and emit the date
      */
     private addEvent() {
         const date = moment(this.date);
