@@ -7,17 +7,17 @@ import {calendar} from "../services/calendar.service";
 import {language} from "../../../services/language.service";
 
 /**
- * display a list of the overflowed events from month view
+ * Display a popover to list the google event details
  */
 @Component({
-    templateUrl: './src/modules/calendar/templates/calendarmorepopover.html',
+    templateUrl: './src/modules/calendar/templates/calendargoogleeventpopover.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CalendarMorePopover implements AfterViewInit {
+export class CalendarGoogleEventPopover implements AfterViewInit {
     /**
-     * holds the calendar events
+     * holds the google event data
      */
-    public events: any[] = [];
+    public event: any = {};
     /**
      * holds the nubbin class
      */
@@ -26,10 +26,6 @@ export class CalendarMorePopover implements AfterViewInit {
      * holds the popover style
      */
     public popoverStyle: any = {};
-    /**
-     * the sheet day comes from parent to read the date from
-     */
-    public sheetDay: any = {};
     /**
      * mobile view boolean to fix the display position on active
      */
@@ -56,14 +52,6 @@ export class CalendarMorePopover implements AfterViewInit {
                 private language: language,
                 private renderer: Renderer2,
                 private cdr: ChangeDetectorRef) {
-    }
-
-    /**
-     * @return day short date
-     */
-    get shortDate() {
-        let navigateDate = this.calendar.calendarDate;
-        return navigateDate.month(this.sheetDay.month).date(this.sheetDay.day).format('D MMM,');
     }
 
     /**
@@ -131,21 +119,10 @@ export class CalendarMorePopover implements AfterViewInit {
         this.nubbinClass = (popoverSide == 'left' ? 'slds-nubbin--right-' : 'slds-nubbin--left-') + popoverPosition;
     }
 
-    /*
-    * A function that defines how to track changes for items in the iterable (ngForOf).
-    * https://angular.io/api/common/NgForOf#properties
-    * @param index
-    * @param item
-    * @return index
-    */
-    private trackByFn(index, item) {
-        return item.id;
-    }
-
     /**
      * clear hide timeout
      */
-    private onMouseOver() {
+    private onMouseEnter() {
         if (this.hidePopoverTimeout) {
             window.clearTimeout(this.hidePopoverTimeout);
         }
@@ -154,7 +131,7 @@ export class CalendarMorePopover implements AfterViewInit {
     /**
      * call to force closing the popover
      */
-    private onMouseOut(event) {
+    private onMouseLeave(event) {
         this.closePopover(true, event);
     }
 }
