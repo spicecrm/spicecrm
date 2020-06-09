@@ -7,14 +7,13 @@ import {navigation} from '../../../services/navigation.service';
 import {calendar} from '../services/calendar.service';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
-/**
-* @ignore
-*/
-declare var _: any;
 
+/**
+ * Display a schedule view to be rendered in a dashboard as dashlet
+ */
 @Component({
     selector: 'calendar-schedule-dashlet',
     templateUrl: './src/modules/calendar/templates/calendarscheduledashlet.html',
@@ -22,8 +21,13 @@ declare var _: any;
 })
 
 export class CalendarScheduleDashlet {
-
+    /**
+     * holds the schedule until date
+     */
     public scheduleUntilDate: any = {};
+    /**
+     * dom reference for the header container
+     */
     @ViewChild('headercontainer', {read: ViewContainerRef, static: true}) private headerContainer: ViewContainerRef;
 
     constructor(private language: language,

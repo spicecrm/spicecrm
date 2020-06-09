@@ -1,17 +1,7 @@
 /**
  * @module ModuleCalendar
  */
-import {
-    Component,
-    ElementRef,
-    EventEmitter,
-    Input,
-    OnChanges, OnDestroy,
-    Output,
-    SimpleChanges,
-    ViewChild,
-    ViewContainerRef
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {navigation} from '../../../services/navigation.service';
@@ -21,31 +11,54 @@ import {calendar} from '../services/calendar.service';
 import {Subscription} from "rxjs";
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
-/**
-* @ignore
-*/
-declare var _: any;
 
+/**
+ * Display calendar events in schedule view
+ */
 @Component({
     selector: 'calendar-sheet-schedule',
-    templateUrl: './src/modules/calendar/templates/calendarsheetschedule.html'
+    templateUrl: './src/modules/calendar/templates/calendarsheetschedule.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarSheetSchedule implements OnChanges, OnDestroy {
-
-    @Output() public navigateday: EventEmitter<any> = new EventEmitter<any>();
+    /**
+     * emit the until date change
+     */
     @Output() public untildate$: EventEmitter<any> = new EventEmitter<any>();
-    @ViewChild('calendarsheet', {read: ViewContainerRef, static: true}) private calendarsheet: ViewContainerRef;
+    /**
+     * holds all events contacted
+     */
+    protected eventDays: any[] = [];
+    /**
+     * the change date comes from the parent
+     */
     @Input() private setdate: any = {};
-    @Input('userscalendars') private usersCalendars: any[] = [];
-    @Input('googleisvisible') private googleIsVisible: boolean = true;
-    private allevents: any[] = [];
+    /**
+     * holds a boolean of google events visibility
+     */
+    @Input() private googleIsVisible: boolean = true;
+    /**
+     * holds the owner events
+     */
     private ownerEvents: any[] = [];
+    /**
+     * holds the users events
+     */
     private userEvents: any[] = [];
+    /**
+     * holds the google events
+     */
     private googleEvents: any[] = [];
+    /**
+     * holds the until date
+     */
     private untilDate: any = {};
+    /**
+     * subscription to handle unsubscribe
+     */
     private subscription: Subscription = new Subscription();
 
     constructor(private language: language,
@@ -54,6 +67,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
                 private elementRef: ElementRef,
                 private backend: backend,
                 private session: session,
+                private cdRef: ChangeDetectorRef,
                 private calendar: calendar) {
         this.untilDate = new moment().hour(0).minute(0).second(0).add(1, "M");
 
@@ -67,29 +81,28 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
         );
     }
 
-    get allEvents() {
-        return this.allevents;
+    /**
+     * @return boolean show/hide none msg
+     */
+    get showNoRecordsMsg() {
+        return this.eventDays.length == 0 && this.calendar.isDashlet;
     }
 
-    get showNoneMsg() {
-        return this.allEvents.length == 0 && this.calendar.isDashlet;
-    }
-
-    // tslint:disable-next-line:adjacent-overload-signatures
-    set allEvents(value) {
-        let events = this.groupByDay(this.ownerEvents.concat(this.userEvents, this.googleEvents));
-        events.sort((a, b) => a.date - b.date);
-        this.allevents = events;
-    }
-
+    /**
+     * @return start date
+     */
     get startDate() {
         return new moment(this.setdate).hour(0).minute(0).second(0);
     }
 
+    /**
+     * handle input changes to load events
+     * @param changes
+     */
     public ngOnChanges(changes: SimpleChanges) {
         if (changes.setdate) {
             this.setUntilDate();
-            this.getEvents();
+            this.getOwnerEvents();
             if (this.calendar.usersCalendarsLoaded) {
                 this.getUsersEvents();
             }
@@ -99,27 +112,56 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
         }
     }
 
+    /**
+     * unsubscribe from subscriptions
+     */
     public ngOnDestroy(): void {
         this.subscription.unsubscribe();
     }
 
+    /**
+     * assign an array of days that holds the events
+     */
+    private setEventDays() {
+        let events = this.groupByDay(this.ownerEvents.concat(this.userEvents, this.googleEvents));
+        this.eventDays = events.sort((a, b) => a.date - b.date);
+        this.cdRef.detectChanges();
+    }
+
+    /**
+     * A function that defines how to track changes for items in the iterable (ngForOf).
+     * https://angular.io/api/common/NgForOf#properties
+     * @param index
+     * @param item
+     * @return item.id
+     */
     private trackByFn(index, item) {
         return item.id;
     }
 
+    /**
+     * A function that defines how to track changes for items in the iterable (ngForOf).
+     * https://angular.io/api/common/NgForOf#properties
+     * @param index
+     * @param item
+     * @return index
+     */
     private trackByFnDate(index, item) {
         return index;
     }
 
+    /**
+     * set until date
+     */
     private setUntilDate() {
         this.untilDate = moment(this.setdate).add(1, "M");
         this.untildate$.emit(this.untilDate);
     }
 
-    private getUntilDate() {
-        return this.untilDate.format('MMM D, Y');
-    }
-
+    /**
+     * group events by day
+     * @param events
+     */
     private groupByDay(events) {
         let days = [];
         let date = new moment(this.setdate).hour(0).minute(0).second(0);
@@ -136,6 +178,8 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
                         month: eventDay.month(),
                         day: eventDay.date(),
                         date: moment(eventDay),
+                        dateText: moment(eventDay).format('MMM D, YYYY'),
+                        dayShortText: moment(eventDay).format('ddd'),
                         events: [event]
                     };
                     let dayIndex = -1;
@@ -148,6 +192,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
                     });
 
                     if (days.length > 0 && dayIndex > -1) {
+                        event.timeText = !event.isMulti ? `${event.start.format('HH:mm')} - ${event.end.format('HH:mm')} ` : 'All Day';
                         days[dayIndex].events.push(event);
                     } else {
                         days.push(day);
@@ -158,39 +203,48 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
         return days;
     }
 
-    private getEvents() {
+    /**
+     * load owner events from service and rearrange the multi events
+     */
+    private getOwnerEvents() {
         this.ownerEvents = [];
-        this.allEvents = this.allevents.slice();
+        this.setEventDays();
 
         this.calendar.loadEvents(this.startDate, this.untilDate)
             .subscribe(events => {
                 if (events.length > 0) {
                     this.ownerEvents = events;
                 }
-                this.allEvents = this.allevents.slice();
+                this.setEventDays();
             });
     }
 
+    /**
+     * load google events from service and rearrange the multi events
+     */
     private getGoogleEvents() {
         this.googleEvents = [];
 
         if (!this.googleIsVisible || this.calendar.isMobileView) {
-            this.allEvents = this.allevents.slice();
+            this.setEventDays();
             return;
         }
 
         this.calendar.loadGoogleEvents(this.startDate, this.untilDate)
             .subscribe(events => {
                 this.googleEvents = events;
-                this.allEvents = this.allevents.slice();
+                this.setEventDays();
             });
     }
 
+    /**
+     * load other user events from service and rearrange the multi events
+     */
     private getUserEvents(calendar) {
         this.userEvents = this.userEvents.filter(event => event.data.assigned_user_id != calendar.id &&
             (!event.data.meeting_user_status_accept || !event.data.meeting_user_status_accept.beans[calendar.id]));
 
-        this.allEvents = this.allevents.slice();
+        this.setEventDays();
 
         if (this.calendar.isMobileView || !calendar.visible) {
             return;
@@ -200,14 +254,17 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
             .subscribe(events => {
                 if (events.length > 0) {
                     this.userEvents = [...this.userEvents, ...events];
-                    this.allEvents = this.allevents.slice();
+                    this.setEventDays();
                 }
             });
     }
 
+    /**
+     * load other users events from service and rearrange the multi events
+     */
     private getUsersEvents() {
         this.userEvents = [];
-        this.allEvents = this.allevents.slice();
+        this.setEventDays();
         if (this.calendar.isMobileView) {
             return;
         }
@@ -216,31 +273,26 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
             .subscribe(events => {
                 if (events.length > 0) {
                     this.userEvents = events;
-                    this.allEvents = this.allevents.slice();
+                    this.setEventDays();
                 }
             });
     }
 
-    private getShortDay(date) {
-        return new moment(date).format('ddd');
-    }
-
-    private getMonthDayYear(date) {
-        return new moment(date).format('MMM D, YYYY');
-    }
-
+    /**
+     * navigate to day
+     * @param date
+     */
     private goToDay(date) {
-        this.navigateday.emit(date);
+        this.calendar.gotToDayView(date);
     }
 
-    private getTime(start, end, isMulti) {
-        return !isMulti ? `${start.format('HH:mm')} - ${end.format('HH:mm')} ` : 'All Day';
-    }
-
+    /**
+     * load more events
+     */
     private loadMore() {
         this.untilDate = moment(this.untilDate).add(1, "M");
         this.untildate$.emit(this.untilDate);
-        this.getEvents();
+        this.getOwnerEvents();
         this.getGoogleEvents();
         this.getUsersEvents();
     }
