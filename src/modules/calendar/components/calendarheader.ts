@@ -1,7 +1,7 @@
 /**
  * @module ModuleCalendar
  */
-import {Component, ElementRef, EventEmitter, OnDestroy, Output, Renderer2} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, OnDestroy, Output, Renderer2} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {navigation} from '../../../services/navigation.service';
 import {calendar} from '../services/calendar.service';
@@ -11,21 +11,33 @@ import {modelutilities} from "../../../services/modelutilities.service";
  * @ignore
  */
 declare var moment: any;
-/**
- * @ignore
- */
-declare var _: any;
 
 @Component({
     selector: 'calendar-header',
     templateUrl: './src/modules/calendar/templates/calendarheader.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class CalendarHeader implements OnDestroy {
+    /**
+     * show/hide date picker
+     */
     public openPicker: boolean = false;
+    /**
+     * holds schedule sheet until date
+     */
     public scheduleUntilDate: any = {};
+    /**
+     * holds the click event listener
+     */
     private clickListener: any;
+    /**
+     * show/hide calendar sheet type select menu
+     */
     private showTypeSelector: boolean = false;
+    /**
+     * emit when a calendar date is picked
+     */
     @Output() private datePicked: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(private language: language,
@@ -37,56 +49,18 @@ export class CalendarHeader implements OnDestroy {
         this.scheduleUntilDate = new moment().minute(0).second(0).add(1, "M");
     }
 
-    get modules() {
-        return this.calendar.modules;
-    }
-
-    get sheetType() {
-        return this.calendar.sheetType;
-    }
-
-    get isMobileView() {
-        return this.calendar.isMobileView;
-    }
-
-    get weekStartDay() {
-        return this.calendar.weekStartDay;
-    }
-
-    get weekDaysCount() {
-        return this.calendar.weekDaysCount;
-    }
-
-    get calendarDate() {
-        return this.calendar.calendarDate;
-    }
-
-    get asPicker() {
-        return this.calendar.asPicker;
-    }
-
-    get pickerClass() {
-        return !this.openPicker || !this.isMobileView ? 'slds-hidden' : '';
-    }
-
-    get titleClass() {
-        return this.isMobileView ? 'slds-m-bottom--xx-small' : '';
-    }
-
-    get headerClass() {
-        return this.isMobileView ? 'slds-p-around--x-small' : '';
-    }
-
-    get typeDropdownClass() {
-        return this.showTypeSelector ? 'slds-is-open' : '';
-    }
-
+    /**
+     * remove click listener
+     */
     public ngOnDestroy() {
         if (this.clickListener) {
             this.clickListener();
         }
     }
 
+    /**
+     * close picker and remove listener
+     */
     public toggleClosed() {
         this.openPicker = false;
         if (this.clickListener) {
@@ -94,20 +68,33 @@ export class CalendarHeader implements OnDestroy {
         }
     }
 
+    /**
+     * emit date picked to parent
+     * @param event
+     */
     private handleDatePicked(event) {
         this.datePicked.emit(event);
     }
 
+    /**
+     * shift date forward
+     */
     private shiftPlus() {
         this.calendar.shiftPlus();
     }
 
+    /**
+     * shift date backward
+     */
     private shiftMinus() {
         this.calendar.shiftMinus();
     }
 
+    /**
+     * @return calendar header
+     */
     private getCalendarHeader() {
-        const focDate = new moment(this.calendarDate);
+        const focDate = new moment(this.calendar.calendarDate);
         switch (this.calendar.sheetType) {
             case 'Week':
                 return `${this.getFirstDayOfWeek()} - ${this.getLastDayOfWeek()}`;
@@ -122,61 +109,103 @@ export class CalendarHeader implements OnDestroy {
         }
     }
 
+    /**
+     * @return compact calendar header
+     */
     private getCompactCalendarHeader() {
-        const focDate = new moment(this.calendarDate);
+        const focDate = new moment(this.calendar.calendarDate);
         return focDate.format('MMM, YYYY');
     }
 
+    /**
+     * @return week number display
+     */
     private getWeekNumberDisplay() {
-        let focDate = new moment(this.calendarDate);
+        let focDate = new moment(this.calendar.calendarDate);
         return `${this.language.getLabel('LBL_WEEK')} ${focDate.format('w')}`;
     }
 
+    /**
+     * @return first day of week
+     */
     private getFirstDayOfWeek() {
-        let focDate = new moment(this.calendarDate);
-        focDate.day(this.weekStartDay);
+        let focDate = new moment(this.calendar.calendarDate);
+        focDate.day(this.calendar.weekStartDay);
         return focDate.format('MMM D');
     }
 
+    /**
+     * @return last day of week
+     */
     private getLastDayOfWeek() {
-        let focDate = new moment(this.calendarDate);
-        focDate.day(this.weekDaysCount);
+        let focDate = new moment(this.calendar.calendarDate);
+        focDate.day(this.calendar.weekDaysCount);
         return focDate.format('MMM D');
     }
 
+    /**
+     * toggle show/hide type selector
+     */
     private toggleTypeSelector() {
         this.showTypeSelector = !this.showTypeSelector;
     }
 
+    /**
+     * set calendar sheet type
+     * @param sheetType
+     */
     private setType(sheetType) {
         this.calendar.sheetType = sheetType;
         this.calendar.refresh();
         this.showTypeSelector = false;
     }
 
+    /**
+     * go to today
+     */
     private goToday() {
         this.calendar.calendarDate = new moment();
     }
 
-    private zoomin() {
+    /**
+     * zoom sheet cells in
+     */
+    private zoomIn() {
         this.calendar.sheetHourHeight += 10;
     }
 
-    private zoomout() {
+    /**
+     * zoom sheet cells out
+     */
+    private zoomOut() {
         this.calendar.sheetHourHeight -= 10;
     }
 
-    private resetzoom() {
+    /**
+     * reset sheet cells zoom
+     */
+    private resetZoom() {
         this.calendar.sheetHourHeight = 80;
     }
 
-    private toggleOpen(picker, button) {
+    /**
+     * toggle open picker and add click listener to handle close
+     * @param picker
+     * @param button
+     */
+    private toggleOpenPicker(picker, button) {
         this.openPicker = !this.openPicker;
         if (this.openPicker) {
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event, picker, button));
         }
     }
 
+    /**
+     * handle document click to close the picker
+     * @param event
+     * @param picker
+     * @param button
+     */
     private onDocumentClick(event: MouseEvent, picker, button) {
         if (this.openPicker && !picker.contains(event.target) && !button.contains(event.target)) {
             this.openPicker = false;
@@ -184,7 +213,11 @@ export class CalendarHeader implements OnDestroy {
         }
     }
 
-    private toggleVisibleModules(module) {
+    /**
+     * toggle visible calendar module
+     * @param module
+     */
+    private toggleVisibleModule(module) {
         let found = this.calendar.otherCalendars.some(calendar => {
             if (calendar.name == module) {
                 calendar.visible = !calendar.visible;
@@ -202,6 +235,10 @@ export class CalendarHeader implements OnDestroy {
         }
     }
 
+    /**
+     * get module icon style
+     * @param module
+     */
     private getIconStyle(module) {
         return this.calendar.otherCalendars.some(calendar => module == calendar.name && !calendar.visible) ? {'-webkit-filter': 'grayscale(1)','filter': 'grayscale(1)'} : {};
     }
