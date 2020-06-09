@@ -21,6 +21,7 @@ export class CurrencyManager implements OnInit {
     private currencies: any = [];
     private loading: boolean = true;
 
+
     constructor(
         private metadata: metadata,
         private language: language,
@@ -35,7 +36,7 @@ export class CurrencyManager implements OnInit {
     }
 
     /**
-     * gets the currencies from the currency service
+     * gets the currencies from backend
      */
    public ngOnInit() {
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
@@ -60,12 +61,17 @@ export class CurrencyManager implements OnInit {
         });
     }
 
+    /**
+     * reload the currencies when the event emitter has been emitted
+     * @param event
+     */
     private reload(event) {
         if(event) {
             this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
                 this.backend.getRequest('currencies').subscribe(data => {
                     if (data) {
                         this.currencies = data;
+                        this.currencies.shift();
                     } else {
                         this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
                     }
