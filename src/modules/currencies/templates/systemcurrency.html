@@ -1,20 +1,39 @@
 <system-spinner *ngIf="loading"></system-spinner>
 <div *ngIf="!loading" class="slds-p-around--medium">
-    <div >
+    <div>
         <h2 class="slds-text-title--caps">System Currency</h2>
     </div>
     <div *ngIf="!editMode && defaultCurrency">
-        {{defaultCurrency.name}} ({{defaultCurrency.symbol}})<system-button-icon icon="edit" class="slds-p-left--small" (click)="edit()"></system-button-icon>
+        {{defaultCurrency.name}} ({{defaultCurrency.symbol}})
+        <system-button-icon icon="edit" class="slds-p-left--small" (click)="edit()"></system-button-icon>
     </div>
-    <div *ngIf="editMode">
-        <div class="slds-form-element__control slds-grid slds-grid--vertical-align-center">
-            <div class="slds-select_container">
-                <select class="slds-select" [(ngModel)]="selectedCurrency">
-                    <option *ngFor="let currency of currencies" [ngValue]="currency" >{{currency.name}}({{currency.symbol}})</option>
-                </select>
+
+    <div *ngIf="editMode" class="slds-grid slds-grid--align-spread slds-p-vertical--xx-small">
+        <div class="slds-form-element">
+            <system-label [label]="'LBL_NAME'"></system-label>
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" [(ngModel)]="name"/>
             </div>
-            <system-button-icon icon="save" class="slds-p-left--small" (click)="savePreference()"></system-button-icon>
         </div>
+        <div class="slds-form-element">
+            <system-label [label]="'LBL_ISO'"></system-label>
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" [(ngModel)]="iso"/>
+            </div>
+        </div>
+        <div class="slds-form-element">
+            <system-label [label]="'LBL_SYMBOL'"></system-label>
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" [(ngModel)]="symbol"/>
+            </div>
+        </div>
+        <button class="slds-button slds-button-icon slds-m-right_x-small" (click)="cancel()">
+            <system-button-icon icon="close"></system-button-icon>
+        </button>
+        <button class="slds-button slds-button-icon slds-m-right_x-small" (click)="savePreference()">
+            <system-button-icon icon="save"></system-button-icon>
+        </button>
     </div>
+
 
 </div>

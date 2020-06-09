@@ -45,7 +45,6 @@ export class AddCurrencyItem {
             name: this.name,
             iso: this.iso,
             symbol: this.symbol,
-            conversion_rate: this.conversion_rate
         };
         this.backend.postRequest('currencies/add', {}, body).subscribe(res => {
             if (!res.status) {
