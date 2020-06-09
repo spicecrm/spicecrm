@@ -1,7 +1,9 @@
 <div class="slds-p-around--medium">
-    <h2 class="slds-text-title--caps"><system-label [label]="'LBL_ADD'"></system-label></h2>
+    <h2 class="slds-text-title--caps"><system-label [label]="'LBL_ADD'">
+    </system-label><system-button-icon [icon]="show ? 'chevrondown' : 'chevronright'" class="slds-p-left--small" (click)="toggleShow()"></system-button-icon>
+    </h2>
 
-<div class="slds-grid slds-grid--align-spread slds-p-vertical--xx-small slds-">
+<div *ngIf="show" class="slds-grid slds-grid--align-spread slds-p-vertical--xx-small">
     <div class="slds-form-element">
         <system-label [label]="'LBL_NAME'"></system-label>
         <div class="slds-form-element__control">
