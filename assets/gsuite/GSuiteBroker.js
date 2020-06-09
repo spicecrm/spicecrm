@@ -91,7 +91,7 @@ var GSuiteBroker = (function () {
     };
     GSuiteBroker.prototype.messageViewHandler = function (MessageView) {
         return __awaiter(this, void 0, void 0, function () {
-            var responseObject, recipients;
+            var responseObject, recipients, sender;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -100,7 +100,10 @@ var GSuiteBroker = (function () {
                         return [4, MessageView.getRecipientsFull()];
                     case 1:
                         recipients = _a.sent();
-                        responseObject.response.emailAddresses = recipients.map(function (addr) { return addr.emailAddress; });
+                        return [4, MessageView.getSender().emailAddress];
+                    case 2:
+                        sender = _a.sent();
+                        responseObject.response.emailAddresses = __spreadArrays(recipients.map(function (addr) { return addr.emailAddress; }), [sender]);
                         window.frames.SpiceCRM.postMessage(responseObject, '*');
                         return [2];
                 }
@@ -209,24 +212,24 @@ var GSuiteBroker = (function () {
                     case 1:
                         threadId = _a.sent();
                         data.response = [];
-                        return [4, Promise.all(this.threadView.getMessageViews().map(function (message) { return __awaiter(_this, void 0, void 0, function () {
-                                var _a, _b, _c;
+                        return [4, Promise.all(this.threadView.getMessageViews().map(function (MessageView) { return __awaiter(_this, void 0, void 0, function () {
+                                var recipients, _a, _b, _c;
                                 return __generator(this, function (_d) {
                                     switch (_d.label) {
-                                        case 0:
+                                        case 0: return [4, MessageView.getRecipientsFull()];
+                                        case 1:
+                                            recipients = _d.sent();
                                             _b = (_a = data.response).push;
                                             _c = {};
-                                            return [4, this.parseMessageBody(message.getBodyElement().innerHTML)];
-                                        case 1:
-                                            _c.body = _d.sent();
-                                            return [4, this.getEmailAddresses()];
+                                            return [4, this.parseMessageBody(MessageView.getBodyElement().innerHTML)];
                                         case 2:
-                                            _c.to = _d.sent(),
-                                                _c.date = message.getDateString();
-                                            return [4, message.getSender().emailAddress];
+                                            _c.body = _d.sent(),
+                                                _c.to = recipients.map(function (addr) { return addr.emailAddress; }),
+                                                _c.date = MessageView.getDateString();
+                                            return [4, MessageView.getSender().emailAddress];
                                         case 3:
                                             _c.from = _d.sent();
-                                            return [4, message.getMessageIDAsync()];
+                                            return [4, MessageView.getMessageIDAsync()];
                                         case 4:
                                             _b.apply(_a, [(_c.message_id = _d.sent(),
                                                     _c.thread_id = threadId,
@@ -313,14 +316,24 @@ var GSuiteBroker = (function () {
                 switch (_a.label) {
                     case 0:
                         emailAddresses = [];
-                        return [4, Promise.all(this.threadView.getMessageViewsAll().map(function (message) { return __awaiter(_this, void 0, void 0, function () {
-                                var recipients;
+                        return [4, Promise.all(this.threadView.getMessageViewsAll().map(function (MessageView) { return __awaiter(_this, void 0, void 0, function () {
+                                var recipients, sender;
                                 return __generator(this, function (_a) {
                                     switch (_a.label) {
-                                        case 0: return [4, message.getRecipientsFull()];
+                                        case 0: return [4, MessageView.getRecipientsFull()];
                                         case 1:
                                             recipients = _a.sent();
-                                            emailAddresses = __spreadArrays(emailAddresses, recipients.map(function (addr) { return addr.emailAddress; }));
+                                            return [4, MessageView.getSender().emailAddress];
+                                        case 2:
+                                            sender = _a.sent();
+                                            recipients.forEach(function (addr) {
+                                                if (emailAddresses.indexOf(addr.emailAddress) < 0) {
+                                                    emailAddresses.push(addr.emailAddress);
+                                                }
+                                            });
+                                            if (recipients.indexOf(sender) < 0) {
+                                                emailAddresses.push(sender);
+                                            }
                                             return [2];
                                     }
                                 });
