@@ -72,7 +72,8 @@ class GSuiteBroker {
 
         const responseObject = {source: 'GSuite', messageType: 'messageUpdate', response: {attachments: [], emailAddresses: []}};
         const recipients = await MessageView.getRecipientsFull();
-        responseObject.response.emailAddresses = recipients.map(addr => addr.emailAddress);
+        const sender = await MessageView.getSender().emailAddress;
+        responseObject.response.emailAddresses = [...recipients.map(addr => addr.emailAddress), sender];
         (window as any).frames.SpiceCRM.postMessage(responseObject, '*');
 
     }
@@ -155,14 +156,16 @@ class GSuiteBroker {
         const threadId = await this.threadView.getThreadIDAsync();
         data.response = [];
 
-        await Promise.all(this.threadView.getMessageViews().map(async message => {
+        await Promise.all(this.threadView.getMessageViews().map(async MessageView => {
+
+                const recipients = await MessageView.getRecipientsFull();
 
                 data.response.push({
-                    body: await this.parseMessageBody(message.getBodyElement().innerHTML),
-                    to: await this.getEmailAddresses(),
-                    date: message.getDateString(),
-                    from: await message.getSender().emailAddress,
-                    message_id: await message.getMessageIDAsync(),
+                    body: await this.parseMessageBody(MessageView.getBodyElement().innerHTML),
+                    to: recipients.map(addr => addr.emailAddress),
+                    date: MessageView.getDateString(),
+                    from: await MessageView.getSender().emailAddress,
+                    message_id: await MessageView.getMessageIDAsync(),
                     thread_id: threadId,
                     subject: this.threadView.getSubject(),
                 });
@@ -200,7 +203,7 @@ class GSuiteBroker {
      * @param imageSrc
      * @return base64ImageSrc
      */
-    private async downloadImageToBase64(imageSrc: string): Promise<{base64: string, src: string}> {
+    private async downloadImageToBase64(imageSrc: string): Promise<{ base64: string, src: string }> {
         const response = await fetch(imageSrc, {method: 'GET'});
         const blob = await response.blob();
         return {
@@ -229,12 +232,17 @@ class GSuiteBroker {
     private async getEmailAddresses(): Promise<any> {
         let emailAddresses = [];
         await Promise.all(
-            this.threadView.getMessageViewsAll().map(async message => {
-                const recipients = await message.getRecipientsFull();
-                emailAddresses = [
-                    ...emailAddresses,
-                    ...recipients.map(addr => addr.emailAddress)
-                ];
+            this.threadView.getMessageViewsAll().map(async MessageView => {
+                const recipients = await MessageView.getRecipientsFull();
+                const sender = await MessageView.getSender().emailAddress;
+                recipients.forEach(addr => {
+                    if (emailAddresses.indexOf(addr.emailAddress) < 0) {
+                        emailAddresses.push(addr.emailAddress);
+                    }
+                });
+                if (recipients.indexOf(sender) < 0) {
+                    emailAddresses.push(sender);
+                }
             })
         );
         return emailAddresses;
