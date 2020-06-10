@@ -1,0 +1,24 @@
+<div class="slds-grid slds-grid--vertical slds-size--1-of-1">
+    <div class="slds-grid slds-border--bottom slds-size--1-of-1" [style.height.px]="calendar.multiEventHeight">
+        <div class="slds-size--1-of-4 slds-p-horizontal--xx-small">
+            <system-label label="LBL_NAME"></system-label>
+        </div>
+        <div #periodsContainer class="slds-grid slds-border--left slds-size--3-of-4">
+            <div *ngFor="let part of periodDuration; trackBy: trackByIndexFn" [system-title]="part" [style.width.px]="periodUnitWidth" class="slds-border--right slds-p-around--xx-small slds-truncate slds-height_full">
+                {{part}}:00
+            </div>
+        </div>
+    </div>
+    <div *ngFor="let record of records; trackBy: trackByItemFn" class="slds-grid slds-border--bottom slds-size--1-of-1" [style.height.px]="calendar.multiEventHeight">
+        <div class="slds-size--1-of-4 slds-p-around--xx-small" [system-model-provider]="{id: record.id, module: recordModule, data: record}">
+            <object-record-fieldset-horizontal-list *ngIf="!!recordFieldset; else summaryContainer" [fieldset]="recordFieldset"></object-record-fieldset-horizontal-list>
+            <ng-template #summaryContainer>
+                <span system-model-popover class="slds-text-link--reset">{{record.name}}</span>
+            </ng-template>
+        </div>
+        <div class="slds-grid slds-border--left slds-size--3-of-4 slds-is-relative slds-text-color--inverse">
+            <div *ngFor="let p of periodDuration; trackBy: trackByIndexFn" [style.width.px]="periodUnitWidth" class="slds-border--right slds-height_full"></div>
+            <spice-timeline-event *ngFor="let event of record.events; trackBy: trackByItemFn" [event]="event" [ngStyle]="event.style" class="slds-truncate slds-p-around--xx-small"></spice-timeline-event>
+        </div>
+    </div>
+</div>
