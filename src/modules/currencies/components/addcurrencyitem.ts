@@ -18,8 +18,6 @@ export class AddCurrencyItem {
     private name: string;
     private iso: string;
     private symbol: string;
-    private conversion_rate: string;
-
     private show: boolean = false;
 
     constructor(
