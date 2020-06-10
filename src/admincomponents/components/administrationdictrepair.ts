@@ -25,7 +25,9 @@ export class AdministrationDictRepair {
     constructor(private backend: backend, private toast: toast, private language: language) {
     }
 
-
+    /**
+     * execute db repair and save the response
+     */
     private doRepair() {
         this.loading = true;
         this.backend.postRequest('dictionary/repair').subscribe((result: any) => {
