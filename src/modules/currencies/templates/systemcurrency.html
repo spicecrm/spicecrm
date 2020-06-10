@@ -1,32 +1,20 @@
 <system-spinner *ngIf="loading"></system-spinner>
-<div *ngIf="!loading && prefCurrency">
-    <div class="slds-p-around--medium">
+<div *ngIf="!loading" class="slds-p-around--medium">
+    <div >
         <h2 class="slds-text-title--caps">System Currency</h2>
     </div>
-<table class="slds-table slds-table--bordered slds-table--cell-buffer">
-    <thead>
-    <tr class="slds-text-title--caps">
-        <th scope="col">
-            <system-label label="LBL_NAME"></system-label>
-        </th>
-        <th scope="col">
-            <system-label label="LBL_ISO"></system-label>
-        </th>
-        <th scope="col">
-            <system-label label="LBL_SYMBOL"></system-label>
-        </th>
-        <th scope="col">
-            <system-label label="LBL_CONVERSION_RATE"></system-label>
-        </th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr style="vertical-align: middle" class="slds-align-top">
-        <td>{{prefCurrency.name}}</td>
-        <td>{{prefCurrency.iso}}</td>
-        <td>{{prefCurrency.symbol}}</td>
-        <td>{{prefCurrency.conversion_rate}}</td>
-    </tr>
-    </tbody>
-</table>
+    <div *ngIf="!editMode && defaultCurrency">
+        {{defaultCurrency.name}} ({{defaultCurrency.symbol}})<system-button-icon icon="edit" class="slds-p-left--small" (click)="edit()"></system-button-icon>
+    </div>
+    <div *ngIf="editMode">
+        <div class="slds-form-element__control slds-grid slds-grid--vertical-align-center">
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="selectedCurrency">
+                    <option *ngFor="let currency of currencies" [ngValue]="currency" >{{currency.name}}({{currency.symbol}})</option>
+                </select>
+            </div>
+            <system-button-icon icon="save" class="slds-p-left--small" (click)="savePreference()"></system-button-icon>
+        </div>
+    </div>
+
 </div>
