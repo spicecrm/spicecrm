@@ -1,0 +1,4 @@
+<object-record-fieldset-horizontal-list *ngIf="!!fieldset; else summaryContainer" [fieldset]="fieldset"></object-record-fieldset-horizontal-list>
+<ng-template #summaryContainer>
+    <span system-model-popover class="slds-text-link--reset">{{event.data.summary_text}}</span>
+</ng-template>
