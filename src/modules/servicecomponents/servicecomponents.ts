@@ -48,6 +48,10 @@ import /*embed*/ {ServiceOrderItemPanel} from "./components/serviceorderitempane
 import /*embed*/ {ServiceOrderItemPipe} from "./pipes/serviceorderitemspipe";
 import /*embed*/ {ServiceOrderAddTypeSelector} from "./components/serviceorderaddtypeselector";
 
+import /*embed*/ {ServicePlanner} from "./components/serviceplanner";
+import {ModuleSpiceTimeline} from "../../include/spicetimeline/spicetimeline";
+import {ModuleSpiceMap} from "../../include/spicemap/spicemap";
+
 
 
 
@@ -59,7 +63,9 @@ import /*embed*/ {ServiceOrderAddTypeSelector} from "./components/serviceorderad
         GlobalComponents,
         DirectivesModule,
         ObjectComponents,
-        SystemComponents
+        SystemComponents,
+        ModuleSpiceTimeline,
+        ModuleSpiceMap
     ],
     declarations: [
         SignServiceOrderModalButtonComponent,
@@ -96,7 +102,8 @@ import /*embed*/ {ServiceOrderAddTypeSelector} from "./components/serviceorderad
         ServiceOrderEquipmentPanel,
         ServiceOrderItemItem,
         ServiceOrderItemPanel,
-        ServiceOrderAddTypeSelector
+        ServiceOrderAddTypeSelector,
+        ServicePlanner
     ]
 })
 export class ServiceComponentsModule {
