@@ -8,7 +8,6 @@ import {backend} from '../../services/backend.service';
 import {modal} from '../../services/modal.service';
 import {toast} from "../../services/toast.service";
 import {currency} from "../../services/currency.service";
-import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: 'administration-general-setting',
@@ -43,7 +42,6 @@ export class AdministrationGeneralSettings implements OnInit {
         private modal: modal,
         private toast: toast,
         private currency: currency,
-        private configuration: configurationService
     ) {
 
     }

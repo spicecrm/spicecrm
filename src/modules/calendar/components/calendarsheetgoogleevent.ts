@@ -9,6 +9,9 @@ import {take} from "rxjs/operators";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
 
+/** @ignore */
+declare var moment: any;
+
 /**
  * Display a calendar google event
  */
@@ -107,9 +110,15 @@ export class CalendarSheetGoogleEvent {
                     .subscribe(module => {
                         if (module) {
                             this.model.module = module.name;
+                            const diffMinutes = this.event.end.diff(this.event.start, 'minutes');
+                            const durationHours = Math.floor(diffMinutes / 60);
+                            const durationMinutes = diffMinutes - durationHours * 60;
+
                             let presets: any = {
                                 [module.dateStartFieldName]: this.event.start,
                                 [module.dateEndFieldName]: this.event.end,
+                                duration_minutes: durationMinutes,
+                                duration_hours: durationHours,
                                 name: this.event.summary,
                                 description: this.event.description,
                                 location: this.event.location,
