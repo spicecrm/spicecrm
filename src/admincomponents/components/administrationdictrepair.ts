@@ -19,19 +19,24 @@ declare var moment: any;
 export class AdministrationDictRepair {
 
     private loading: boolean = false;
-
+    private sqlresult: string = '';
     private dbErrors: any = [];
 
     constructor(private backend: backend, private toast: toast, private language: language) {
     }
 
-
+    /**
+     * execute db repair and save the response
+     */
     private doRepair() {
         this.loading = true;
         this.backend.postRequest('dictionary/repair').subscribe((result: any) => {
-            if(!result.response) {
+            if (!result.response) {
                 this.dbErrors = result.errors;
+            } else if (result.synced) {
+                this.toast.sendToast(this.language.getLabel('LBL_REPAIR_DATABASE_ALREADY_SYNCED'), 'success');
             } else {
+                this.sqlresult = result.sql;
                 this.toast.sendToast(this.language.getLabel('LBL_REPAIR_DATABASE_SYNCED'), 'success');
             }
             this.loading = false;
