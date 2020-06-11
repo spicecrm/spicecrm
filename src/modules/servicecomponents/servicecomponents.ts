@@ -37,7 +37,8 @@ import /*embed*/ {ServiceActivitiyTimelineAddServiceNote} from "./components/ser
 import /*embed*/ {ServiceTicketRelatedTickets} from "./components/serviceticketrelatedtickets";
 import /*embed*/ {ServiceTicketRelatedTicketsTiles} from "./components/serviceticketrelatedticketstiles";
 import /*embed*/ {fieldWarrantyIndicator} from './fields/fieldwarrantyindicator';
-import /*embed*/ { fieldBooleanBullet } from './fields/fieldbooleanbullet';
+import /*embed*/ {fieldBooleanBullet} from './fields/fieldbooleanbullet';
+import /*embed*/ {fieldServiceQueue} from './fields/fieldServiceQueue';
 
 import /*embed*/ {ServiceOrderEffortItem} from "./components/serviceordereffortitem";
 import /*embed*/ {ServiceOrderEffortItemDetails} from "./components/serviceordereffortitemdetails";
@@ -63,6 +64,9 @@ import /*embed*/ {ServiceOrderAddTypeSelector} from "./components/serviceorderad
         SystemComponents
     ],
     declarations: [
+        fieldWarrantyIndicator,
+        fieldBooleanBullet,
+        fieldServiceQueue,
         SignServiceOrderModalButtonComponent,
         SignServiceOrderModalComponent,
         ServiceOrderSummaryComponent,
@@ -88,8 +92,6 @@ import /*embed*/ {ServiceOrderAddTypeSelector} from "./components/serviceorderad
         ServiceActivitiyTimelineAddServiceNote,
         ServiceTicketRelatedTickets,
         ServiceTicketRelatedTicketsTiles,
-        fieldWarrantyIndicator,
-        fieldBooleanBullet,
         ServiceOrderItemPipe,
         ServiceOrderEffortItem,
         ServiceOrderEffortItemDetails,
