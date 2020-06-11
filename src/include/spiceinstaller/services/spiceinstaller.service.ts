@@ -72,10 +72,10 @@ export class spiceinstaller {
     /**
      * credentials
      */
-    public username: string = '';
+    public username: string = 'admin';
     public password: string = '';
     public firstname: string = '';
-    public surname: string = '';
+    public surname: string = 'Administrator';
     public email: string = '';
     /**
      * language
@@ -92,7 +92,7 @@ export class spiceinstaller {
             fts: {},
             credentials: {},
             language: {}
-        }
+        },
         this._selectedStep = {
             id: 'setbackend',
             name: 'Set Backend',
