@@ -18,8 +18,6 @@ export class AddCurrencyItem {
     private name: string;
     private iso: string;
     private symbol: string;
-    private conversion_rate: string;
-
     private show: boolean = false;
 
     constructor(
@@ -45,7 +43,6 @@ export class AddCurrencyItem {
             name: this.name,
             iso: this.iso,
             symbol: this.symbol,
-            conversion_rate: this.conversion_rate
         };
         this.backend.postRequest('currencies/add', {}, body).subscribe(res => {
             if (!res.status) {
