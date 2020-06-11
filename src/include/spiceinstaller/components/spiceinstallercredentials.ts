@@ -14,7 +14,7 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 export class SpiceInstallerCredentials {
 
     /**
-     * coondition booleans
+     * condition booleans
      */
     private usernameCondition: boolean = true;
     private passwordCondition: boolean = true;

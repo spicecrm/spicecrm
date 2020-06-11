@@ -24,7 +24,7 @@ export class CurrencyList implements OnInit {
     }
 
     /**
-     * just to prevent the default currency from popping up in the list two times
+     * just to prevent the default currency from popping up in the list for no reason
      */
     public ngOnInit() {
         this.currencies.shift();
