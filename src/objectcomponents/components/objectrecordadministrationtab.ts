@@ -68,12 +68,25 @@ export class ObjectRecordAdministrationTab implements OnInit {
     }
 
     /**
+     * get the type settings for the territory from the territories service for the module
+     */
+    private getTypeParameters() {
+        return this.territories.getModuleParamaters(this.model.module);
+    }
+
+    /**
      * a simple getter that returns true if the module is territory managed
      */
     get territorymanaged() {
         return this.territories.checkModuleManaged(this.model.module);
     }
 
+    /**
+     * simple getter to return if the current module manages multiple territories
+     */
+    get multipleterritories(){
+        return this.getTypeParameters().multipleobjects == 1 ? true : false;
+    }
 
     /**
      * simple getter to return if the current module manages multiple users

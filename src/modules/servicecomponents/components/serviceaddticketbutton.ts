@@ -6,6 +6,9 @@ import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
 
+/**
+ * @deprecated: shoudl no longer be used - moved to actionset
+ */
 @Component({
     selector: 'service-add-ticket-button',
     templateUrl: './src/modules/servicecomponents/templates/serviceaddticketbutton.html',
