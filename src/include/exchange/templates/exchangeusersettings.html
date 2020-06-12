@@ -52,7 +52,7 @@
                     <div class="slds-truncate">{{subscription.folder_id}}</div>
                 </td>
                 <td>
-                    <div class="slds-truncate">{{subscription.last_active}}</div>
+                    <div class="slds-truncate slds-badge" [ngClass]="{'slds-theme--error': timedout(subscription.last_active)}">{{subscription.last_active}}</div>
                 </td>
                 <td>
                     <div class="slds-truncate">{{subscription.subscriptionid}}</div>
