@@ -12,6 +12,7 @@ import {configurationService} from '../../../services/configuration.service';
  * @ignore
  */
 declare var _: any;
+declare var moment: any;
 
 @Component({
     templateUrl: './src/include/exchange/templates/exchangeusersettings.html',
@@ -29,6 +30,13 @@ export class ExchangeUserSettings implements OnInit {
     private subscriptions: any[] = [];
 
     /**
+     * the timeout for the subscritpion in munutes
+     * withing that timeframe we always ecpet an update on the subscription from the server
+     * if it is not we will indicate that the subscription is dead and needs to be renewed
+     */
+    private subscriptiontimeout: number;
+
+    /**
      * holds an array wuith modules that can be synced with Exchange
      */
     private modules: any[] = [];
@@ -39,7 +47,10 @@ export class ExchangeUserSettings implements OnInit {
     private userconfig: any[] = [];
 
     constructor(private metadata: metadata, private model: model, private backend: backend, private configuration: configurationService) {
-
+        let ewsconfig = this.configuration.getCapabilityConfig('ewsconfig');
+        if (ewsconfig && ewsconfig.subscriptiontimeout) {
+            this.subscriptiontimeout = parseInt(ewsconfig.subscriptiontimeout, 10);
+        }
     }
 
     /**
@@ -58,6 +69,16 @@ export class ExchangeUserSettings implements OnInit {
             this.userconfig = response.userconfig;
             this.subscriptions = response.subscriptions;
         });
+    }
+
+    /**
+     * returns if the last date + the
+     * @param lastdate
+     */
+    private timedout(lastdate) {
+        let now = new moment();
+        let last = new moment(lastdate).add(this.subscriptiontimeout, 'm');
+        return last.isBefore(now);
     }
 
 
