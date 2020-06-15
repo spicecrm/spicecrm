@@ -1,24 +1,90 @@
-<div class="slds-grid slds-grid--vertical slds-size--1-of-1">
-    <div class="slds-grid slds-border--bottom slds-size--1-of-1" [style.height.px]="calendar.multiEventHeight">
-        <div class="slds-size--1-of-4 slds-p-horizontal--xx-small">
-            <system-label label="LBL_NAME"></system-label>
+<div class="slds-grid slds-grid--vertical slds-height_full slds-size--1-of-1">
+    <div class="slds-grid slds-size--1-of-1 slds-page-header" style="border-bottom-left-radius: 0; border-bottom-right-radius: 0; padding: .5rem;">
+        <div class="slds-col slds-grid">
+            <div  class="slds-dropdown-trigger slds-dropdown-trigger--click slds-m-left--xx-small" [class.slds-is-open]="pickerIsOpen">
+                <button class="slds-button slds-button--icon-border" (click)="toggleOpenPicker()">
+                    <system-utility-icon icon="event" size="x-small"></system-utility-icon>
+                </button>
+                <div class="slds-dropdown slds-dropdown_left">
+                    <system-input-date-picker [setDate]="currentDate" [weekStartDay]="0" (datePicked)="setDate($event)"></system-input-date-picker>
+                </div>
+            </div>
+            <div class="slds-page-header__title slds-m-horizontal--x-small slds-align-middle slds-truncate">
+                {{headerDateText}}
+            </div>
         </div>
-        <div #periodsContainer class="slds-grid slds-border--left slds-size--3-of-4">
-            <div *ngFor="let part of periodDuration; trackBy: trackByIndexFn" [system-title]="part" [style.width.px]="periodUnitWidth" class="slds-border--right slds-p-around--xx-small slds-truncate slds-height_full">
-                {{part}}:00
+        <div class="slds-button-group" role="group">
+            <button class="slds-button slds-button--icon-border" (click)="shiftMinus()">
+                <system-button-icon icon="chevronleft"></system-button-icon>
+            </button>
+            <button class="slds-button slds-button--icon-border" (click)="shiftPlus()">
+                <system-button-icon icon="chevronright"></system-button-icon>
+            </button>
+        </div>
+        <div class="slds-button-group slds-m-left--x-small" role="group">
+            <button class="slds-button slds-button--icon-border" (click)="zoomOut()" [disabled]="periodUnitWidth <= 30">
+                <system-button-icon [icon]="'zoomout'"></system-button-icon>
+            </button>
+            <button class="slds-button slds-button--icon-border" (click)="resetZoom()" [disabled]="periodUnitWidth == defaultPeriodUnitWidth">
+                <system-button-icon [icon]="'undo'"></system-button-icon>
+            </button>
+            <button class="slds-button slds-button--icon-border" (click)="zoomIn()" [disabled]="periodUnitWidth >= 140">
+                <system-button-icon [icon]="'zoomin'"></system-button-icon>
+            </button>
+        </div>
+        <div class="slds-dropdown-trigger slds-dropdown-trigger--click slds-m-left--xx-small" system-dropdown-trigger>
+            <button class="slds-button slds-button--neutral slds-p-horizontal--x-small">
+                <system-label [label]="'LBL_'+ periodUnit|uppercase "></system-label>
+                <system-button-icon [icon]="'down'"></system-button-icon>
+            </button>
+            <div class="slds-dropdown slds-dropdown--right slds-dropdown--x-small">
+                <ul class="slds-dropdown__list" role="menu">
+                    <li class="slds-dropdown__item" role="presentation">
+                        <a href="javascript:void(0);" role="menuitem" (click)="setPeriodUnit('day')">
+                            <span class="slds-truncate"><system-label label="LBL_DAY"></system-label></span>
+                        </a>
+                    </li>
+                    <li class="slds-dropdown__item" role="presentation" (click)="setPeriodUnit('week')">
+                        <a href="javascript:void(0);" role="menuitem">
+                            <span class="slds-truncate"><system-label label="LBL_WEEK"></system-label></span>
+                        </a>
+                    </li>
+                    <li class="slds-dropdown__item" role="presentation" (click)="setPeriodUnit('month')">
+                        <a href="javascript:void(0);" role="menuitem">
+                            <span class="slds-truncate"><system-label label="LBL_MONTH"></system-label></span>
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
-    <div *ngFor="let record of records; trackBy: trackByItemFn" class="slds-grid slds-border--bottom slds-size--1-of-1" [style.height.px]="calendar.multiEventHeight">
-        <div class="slds-size--1-of-4 slds-p-around--xx-small" [system-model-provider]="{id: record.id, module: recordModule, data: record}">
-            <object-record-fieldset-horizontal-list *ngIf="!!recordFieldset; else summaryContainer" [fieldset]="recordFieldset"></object-record-fieldset-horizontal-list>
-            <ng-template #summaryContainer>
-                <span system-model-popover class="slds-text-link--reset">{{record.name}}</span>
-            </ng-template>
+    <div #contentContainer class="slds-grid slds-grid--vertical slds-grow slds-scrollable--x" style="width: 100%; min-height: 0">
+        <div class="slds-grid" [style.height.px]="eventHeight" [style.width.px]="periodContainerWidth">
+            <div class="slds-size--1-of-4 slds-p-around--xx-small slds-border--bottom">
+                <system-label label="LBL_NAME"></system-label>
+            </div>
+            <div class="slds-grid slds-border--left slds-grow slds-border--bottom">
+                <div *ngFor="let part of periodDuration; trackBy: trackByIndexFn" [system-title]="part" [style.width.px]="periodUnitWidth" class="slds-border--right slds-p-around--xx-small slds-truncate slds-height_full">
+                    {{part}}
+                </div>
+            </div>
         </div>
-        <div class="slds-grid slds-border--left slds-size--3-of-4 slds-is-relative slds-text-color--inverse">
-            <div *ngFor="let p of periodDuration; trackBy: trackByIndexFn" [style.width.px]="periodUnitWidth" class="slds-border--right slds-height_full"></div>
-            <spice-timeline-event *ngFor="let event of record.events; trackBy: trackByItemFn" [event]="event" [ngStyle]="event.style" class="slds-truncate slds-p-around--xx-small"></spice-timeline-event>
+        <div class="slds-grow slds-scrollable--y" style="min-height: 0" [style.width.px]="periodContainerWidth">
+            <div *ngFor="let record of records; trackBy: trackByItemFn" class="slds-grid slds-border--bottom slds-size--1-of-1" [style.height.px]="eventHeight">
+                <div class="slds-size--1-of-4 slds-p-around--xx-small">
+                    <object-record-fieldset-horizontal-list *ngIf="!!recordFieldset; else summaryContainer" [fieldset]="recordFieldset" [system-model-provider]="{id: record.id, module: recordModule, data: record}"></object-record-fieldset-horizontal-list>
+                    <ng-template #summaryContainer>
+                        <span system-model-popover module="Users" [id]="record.id" class="slds-text-link--reset">{{record.name}}</span>
+                    </ng-template>
+                </div>
+                <div class="slds-grid slds-border--left slds-grow slds-is-relative slds-text-color--inverse">
+                    <div *ngFor="let p of periodDuration; trackBy: trackByIndexFn" [style.width.px]="periodUnitWidth" class="slds-border--right slds-height_full"></div>
+                    <spice-timeline-event *ngFor="let event of record.events; trackBy: trackByItemFn" [event]="event" [ngStyle]="event.style" class="slds-truncate slds-p-around--xx-small"></spice-timeline-event>
+                </div>
+            </div>
         </div>
+        <system-illustration-no-records *ngIf="records?.length == 0" class="slds-align--absolute-center slds-p-around--medium">
+            <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
+        </system-illustration-no-records>
     </div>
 </div>
