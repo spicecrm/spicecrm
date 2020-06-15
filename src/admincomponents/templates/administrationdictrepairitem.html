@@ -1,0 +1,16 @@
+<tr *ngIf="!loading" style="vertical-align: middle" class="slds-align-top">
+    <td>
+        <system-utility-icon icon="custom_apps" size="x-small"></system-utility-icon>
+    </td>
+    <td>
+        <system-label label="LBL_REPAIR_DATABASE"></system-label>
+    </td>
+    <td>Repairs and rebuilds DB, Extensions, Vardefs, Spice Dashlets etc.</td>
+    <td>
+        <button class="slds-button slds-button--brand slds-button--small" (click)="execute()">
+            <system-label label="LBL_EXECUTE"></system-label>
+        </button>
+    </td>
+</tr>
+<div *ngIf="loading"><system-spinner></system-spinner></div>
+
