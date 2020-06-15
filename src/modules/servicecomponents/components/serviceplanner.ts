@@ -1,17 +1,18 @@
 /**
- * @module ModuleCalendar
+ * @module ServiceComponentsModule
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, Renderer2} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {Subscription} from "rxjs";
 import {modellist} from "../../../services/modellist.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {backend} from "../../../services/backend.service";
 import {metadata} from "../../../services/metadata.service";
+import {model} from "../../../services/model.service";
+import {navigationtab} from "../../../services/navigationtab.service";
+import {session} from "../../../services/session.service";
 
-/**
- * @ignore
- */
+/** @ignore */
 declare var moment: any;
 
 /**
@@ -21,7 +22,7 @@ declare var moment: any;
     selector: 'service-planner',
     templateUrl: './src/modules/servicecomponents/templates/serviceplanner.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [modellist]
+    providers: [modellist, model]
 })
 
 export class ServicePlanner implements OnInit, OnDestroy {
@@ -53,15 +54,22 @@ export class ServicePlanner implements OnInit, OnDestroy {
      * holds the start date
      */
     private startDate: any = moment();
+    /**
+     * holds the system timezone which is loaded from the session
+     */
+    public timeZone: any;
 
     constructor(private language: language,
                 private cdRef: ChangeDetectorRef,
                 private renderer: Renderer2,
                 private broadcast: broadcast,
                 private metadata: metadata,
+                private navigationtab: navigationtab,
                 private backend: backend,
+                private session: session,
                 private modellist: modellist) {
         this.subscribeToChanges();
+        this.navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_SERVICE_PLANNER'), displayicon: 'date_input'});
     }
 
     /**
@@ -70,9 +78,9 @@ export class ServicePlanner implements OnInit, OnDestroy {
      */
     public ngOnInit() {
         this.modellist.module = 'ServiceOrders';
+        this.timeZone = this.session.getSessionData('timezone') || moment.tz.guess();
         const config = this.metadata.getComponentConfig('', this.modellist.module);
         this.usersModuleFilter = config && !!config.modulefilter ? config.modulefilter : undefined;
-        this.setDateRange();
     }
 
     /**
@@ -83,12 +91,13 @@ export class ServicePlanner implements OnInit, OnDestroy {
     }
 
     /**
-     * set date range
+     * set the date range from the timeline component
+     * @param dateRange
      */
-    private setDateRange() {
-        this.startDate = new moment().hours(this.startHour).minutes(0);
-        this.endDate = new moment().add(this.endHour, 'hours');
-        this.getUsersEvents();
+    private setDateRange(dateRange) {
+        this.startDate = new moment(dateRange.start);
+        this.endDate = new moment(dateRange.end);
+        this.getUsersServiceOrders();
     }
 
     /**
@@ -114,7 +123,7 @@ export class ServicePlanner implements OnInit, OnDestroy {
     /**
      * load events from backend
      */
-    private getUsersEvents() {
+    private getUsersServiceOrders() {
 
         const format = "YYYY-MM-DD HH:mm:ss";
         const params = {
@@ -123,8 +132,15 @@ export class ServicePlanner implements OnInit, OnDestroy {
             usersModuleFilter: this.usersModuleFilter
         };
 
-        this.backend.getRequest('module/ServiceOrders/Planner/records', params).subscribe(events => {
-            window.console.log(events);
+        this.backend.getRequest('modules/ServiceOrders/Planner/records', params).subscribe(records => {
+            this.timelineRecords = records.map(record => {
+                record.events = record.serviceOrders.map(order => {
+                    order.start = moment.utc(order.start).tz(this.timeZone);
+                    order.end = moment.utc(order.end).tz(this.timeZone);
+                    return order;
+                });
+                return record;
+            });
         });
     }
 }

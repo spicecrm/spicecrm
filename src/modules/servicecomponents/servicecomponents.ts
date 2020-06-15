@@ -50,10 +50,6 @@ import /*embed*/ {ServiceOrderAddTypeSelector} from "./components/serviceorderad
 
 import /*embed*/ {ServicePlanner} from "./components/serviceplanner";
 import {ModuleSpiceTimeline} from "../../include/spicetimeline/spicetimeline";
-import {ModuleSpiceMap} from "../../include/spicemap/spicemap";
-
-
-
 
 @NgModule({
     imports: [
@@ -65,7 +61,6 @@ import {ModuleSpiceMap} from "../../include/spicemap/spicemap";
         ObjectComponents,
         SystemComponents,
         ModuleSpiceTimeline,
-        ModuleSpiceMap
     ],
     declarations: [
         SignServiceOrderModalButtonComponent,
