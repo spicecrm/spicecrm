@@ -278,7 +278,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
      */
     private zoomIn() {
         this.periodUnitWidth += 10;
-        this.periodContainerWidth += (this.periodUnitWidth * this.periodDuration.length);
+        this.periodContainerWidth += (10 * this.periodDuration.length);
         this.setRecordEventsStyle();
         this.cdRef.detectChanges();
     }
@@ -288,7 +288,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
      */
     private zoomOut() {
         this.periodUnitWidth -= 10;
-        this.periodContainerWidth -= (this.periodUnitWidth * this.periodDuration.length);
+        this.periodContainerWidth -= (10 * this.periodDuration.length);
         this.setRecordEventsStyle();
         this.cdRef.detectChanges();
     }
