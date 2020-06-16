@@ -229,6 +229,19 @@
                     </user-preferences-item-edit>
                 </user-preferences-item>
             </div>
+            <div class="slds-grid slds-grid--align-spread">
+                <user-preferences-item class="slds-size--1-of-4" itemlabel="LBL_DEFAULT_REMINDER_TIME">
+                    <user-preferences-item-display>{{preferences.week_day_start}}</user-preferences-item-display>
+                    <user-preferences-item-edit>
+                        <div class="slds-select_container">
+                            <select class="slds-select" name="reminder_time">
+                                <option value="-" [selected]="!preferences.reminder_time"></option>
+                                <option *ngFor="let time of reminderTimeOptions" value="{{time}}" [selected]="time == preferences.reminder_time">{{time}}</option>
+                            </select>
+                        </div>
+                    </user-preferences-item-edit>
+                </user-preferences-item>
+            </div>
         </system-collapsable-tab>
 
         <system-collapsable-tab [collapsible]="false" tabtitle="LBL_HOME_PREFERENCES">
