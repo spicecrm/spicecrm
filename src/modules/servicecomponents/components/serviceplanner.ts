@@ -11,6 +11,7 @@ import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
 import {navigationtab} from "../../../services/navigationtab.service";
 import {session} from "../../../services/session.service";
+import {view} from "../../../services/view.service";
 
 /** @ignore */
 declare var moment: any;
@@ -22,7 +23,7 @@ declare var moment: any;
     selector: 'service-planner',
     templateUrl: './src/modules/servicecomponents/templates/serviceplanner.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [modellist, model]
+    providers: [modellist, model, view]
 })
 
 export class ServicePlanner implements OnInit, OnDestroy {
@@ -55,6 +56,10 @@ export class ServicePlanner implements OnInit, OnDestroy {
      */
     private startDate: any = moment();
     /**
+     * holds the start date
+     */
+    private isLoading: boolean = false;
+    /**
      * holds the system timezone which is loaded from the session
      */
     public timeZone: any;
@@ -67,9 +72,11 @@ export class ServicePlanner implements OnInit, OnDestroy {
                 private navigationtab: navigationtab,
                 private backend: backend,
                 private session: session,
+                private view: view,
                 private modellist: modellist) {
         this.subscribeToChanges();
         this.navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_SERVICE_PLANNER'), displayicon: 'date_input'});
+        this.view.displayLabels = false;
     }
 
     /**
@@ -125,6 +132,8 @@ export class ServicePlanner implements OnInit, OnDestroy {
      */
     private getUsersServiceOrders() {
 
+        this.timelineRecords = [];
+        this.isLoading = true;
         const format = "YYYY-MM-DD HH:mm:ss";
         const params = {
             start: this.startDate.tz('utc').format(format),
@@ -141,6 +150,12 @@ export class ServicePlanner implements OnInit, OnDestroy {
                 });
                 return record;
             });
-        });
+            this.isLoading = false;
+            this.cdRef.detectChanges();
+        },
+            () => {
+                this.isLoading = false;
+                this.cdRef.detectChanges();
+            });
     }
 }

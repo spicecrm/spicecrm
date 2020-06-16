@@ -1,5 +1,5 @@
 <div class="slds-grid slds-grid--vertical" system-to-bottom-noscroll>
-    <div class="slds-border--bottom" style="height: 50%">
+    <div class="slds-border--bottom" style="height: 50%" [system-overlay-loading-spinner]="isLoading">
         <spice-timeline [records]="timelineRecords" recordModule="Users" (dateChange)="setDateRange($event)"></spice-timeline>
     </div>
     <div style="height: 50%">
