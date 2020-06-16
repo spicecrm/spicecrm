@@ -8,6 +8,7 @@
 @import "./imports/spicecdk.css";
 @import "./imports/spicetables.css";
 @import "./imports/spicescrollbar.css";
+@import "./imports/spicetimeline.css";
 
 :root {
     --color-white: white;
