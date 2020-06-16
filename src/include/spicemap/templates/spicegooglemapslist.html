@@ -6,7 +6,7 @@
             <a *ngIf="canLoadMore" (click)="loadMore()" class="slds-text-link slds-m-left--x-small">
                 <system-label label="LBL_MORE"></system-label>
             </a>
-            <button (click)="toggleSearchAround()" [class.slds-button--brand]="searchAroundActive" system-title="LBL_SEARCH_AROUND" class="slds-button slds-button--icon-border-filled slds-m-left--x-small" style="height: 32px;padding: 0;width: 32px;">
+            <button (click)="toggleSearchAround()" [class.slds-button--brand]="searchAroundActive" system-title="LBL_SEARCH_AROUND" class="slds-button slds-button--icon-border slds-m-left--x-small" style="height: 32px;padding: 0;width: 32px;">
                 <system-button-icon icon="choice" size="medium"></system-button-icon>
             </button>
             <ng-container *ngIf="searchAroundActive">
