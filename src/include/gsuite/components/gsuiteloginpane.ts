@@ -8,8 +8,7 @@ import {configurationService} from '../../../services/configuration.service';
 import {session} from '../../../services/session.service';
 import {cookie} from '../../../services/cookie.service';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-
-declare var _: any;
+import {libloader} from "../../../services/libloader.service";
 
 /**
  * A component that handles the display of the SpiceCRM login form in the GSuite add-in
@@ -42,6 +41,30 @@ export class GSuiteLoginPane {
      * Previously used UI language.
      */
     private lastSelectedLanguage: string = null;
+    /**
+     * holds the google login scope
+     */
+    private scope = [
+        "profile",
+        "email",
+        "https://www.googleapis.com/auth/plus.me",
+        "https://www.googleapis.com/auth/contacts.readonly",
+        "https://www.googleapis.com/auth/admin.directory.user.readonly",
+        "https://www.googleapis.com/auth/calendar",
+        "https://www.googleapis.com/auth/tasks",
+    ].join(" ");
+    /**
+     * holds the auth2 script
+     */
+    public auth2: any;
+    /**
+     * boolean to enable/disable the google login button
+     */
+    private disabled: boolean = true;
+    /**
+     * boolean to show/hide google login button
+     */
+    private googleLoginVisible: boolean = false;
 
     constructor(
         private router: Router,
@@ -49,8 +72,12 @@ export class GSuiteLoginPane {
         private http: HttpClient,
         private configuration: configurationService,
         private session: session,
+        private libloader: libloader,
         private cookie: cookie
     ) {
+        this.configuration.loaded$.subscribe(() => {
+            this.googleInit();
+        });
         if (sessionStorage['OAuth-Token'] && sessionStorage['OAuth-Token'].length > 0) {
             let headers = new HttpHeaders();
             headers = headers.set('OAuth-Token', sessionStorage['OAuth-Token']);
@@ -106,16 +133,49 @@ export class GSuiteLoginPane {
             this.loginService.authData.userName = this.username;
             this.loginService.authData.password = this.password;
             this.loginService.login().subscribe(
-                (res) => {
+                () => {
                     // todo handle login
                 },
-                (err) => {
+                () => {
                     this.goToSettings();
                 }
             );
         }
     }
 
+    /**
+     * load google auth
+     */
+    public googleInit() {
+        if (this.configuration.data.backendextensions.hasOwnProperty("google_oauth") &&
+            this.configuration.data.backendextensions.google_oauth.config != null) {
+
+            this.libloader.loadFromSource(["https://apis.google.com/js/api.js", "https://apis.google.com/js/platform.js"]).subscribe(
+                () => {
+                    gapi.load("auth2", () => {
+                        const authConfig = {
+                            client_id: this.configuration.data.backendextensions.google_oauth.config.clientid,
+                            cookiepolicy: 'single_host_origin',
+                            scope: this.scope
+                        };
+
+                        this.auth2 = gapi.auth2.init(authConfig);
+                        this.googleLoginVisible = true;
+                        this.disabled = false;
+                    });
+                },
+                () => {
+                    this.disabled = true;
+                    window.console.error('Error loading Google Libs');
+                });
+        } else {
+            this.googleLoginVisible = false;
+        }
+    }
+
+    /**
+     * go to setting
+     */
     private goToSettings() {
         this.promptUser = true;
 
@@ -124,4 +184,28 @@ export class GSuiteLoginPane {
             this.configuration.setSiteID(this.selectedsite);
         }
     }
+
+    /**
+     * authenticate the user by google and continue login
+     * @param event
+     */
+    public googleSignInClick(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        Promise.resolve(this.auth2.signIn())
+            .then((googleUser) => {
+                let user_token = googleUser.getAuthResponse().id_token;
+                let access_token = googleUser.getAuthResponse().access_token;
+                this.loginService.oauthToken = user_token;
+                this.loginService.accessToken = access_token;
+                this.loginService.authData.userName = "";
+                this.loginService.authData.password = "";
+                // this.session.authData.sessionId = user_token;
+                this.loginService.login();
+            })
+            .catch((error: { error: string }) => {
+                window.console.error(JSON.stringify(error, undefined, 2));
+            });
+    }
+
 }

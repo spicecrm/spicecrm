@@ -16,6 +16,7 @@ import /*embed*/ {SignServiceOrderModalComponent} from "./components/signservice
 import /*embed*/ {ServiceOrderSummaryComponent} from "./components/serviceordersummary";
 import /*embed*/ {ServiceActivitiyTimelineAddServiceCall} from "./components/serviceactivitiytimelineaddservicecall";
 import /*embed*/ {ServiceAddTicketButton} from "./components/serviceaddticketbutton";
+import /*embed*/ {ServiceAddTicketActionButton} from "./components/serviceaddticketactionbutton";
 import /*embed*/ {ServiceCategoryManagerComponent} from "./components/servicecategorymanager";
 import /*embed*/ {ServiceSelectQueueButton} from "./components/serviceselectqueuebutton";
 import /*embed*/ {ServiceSelectQueueModal} from "./components/serviceselectqueuemodal";
@@ -36,7 +37,8 @@ import /*embed*/ {ServiceActivitiyTimelineAddServiceNote} from "./components/ser
 import /*embed*/ {ServiceTicketRelatedTickets} from "./components/serviceticketrelatedtickets";
 import /*embed*/ {ServiceTicketRelatedTicketsTiles} from "./components/serviceticketrelatedticketstiles";
 import /*embed*/ {fieldWarrantyIndicator} from './fields/fieldwarrantyindicator';
-import /*embed*/ { fieldBooleanBullet } from './fields/fieldbooleanbullet';
+import /*embed*/ {fieldBooleanBullet} from './fields/fieldbooleanbullet';
+import /*embed*/ {fieldServiceQueue} from './fields/fieldServiceQueue';
 
 import /*embed*/ {ServiceOrderEffortItem} from "./components/serviceordereffortitem";
 import /*embed*/ {ServiceOrderEffortItemDetails} from "./components/serviceordereffortitemdetails";
@@ -62,11 +64,15 @@ import /*embed*/ {ServiceOrderAddTypeSelector} from "./components/serviceorderad
         SystemComponents
     ],
     declarations: [
+        fieldWarrantyIndicator,
+        fieldBooleanBullet,
+        fieldServiceQueue,
         SignServiceOrderModalButtonComponent,
         SignServiceOrderModalComponent,
         ServiceOrderSummaryComponent,
         ServiceActivitiyTimelineAddServiceCall,
         ServiceAddTicketButton,
+        ServiceAddTicketActionButton,
         ServiceCategoryManagerComponent,
         ServiceSelectQueueButton,
         ServiceSelectQueueModal,
@@ -86,8 +92,6 @@ import /*embed*/ {ServiceOrderAddTypeSelector} from "./components/serviceorderad
         ServiceActivitiyTimelineAddServiceNote,
         ServiceTicketRelatedTickets,
         ServiceTicketRelatedTicketsTiles,
-        fieldWarrantyIndicator,
-        fieldBooleanBullet,
         ServiceOrderItemPipe,
         ServiceOrderEffortItem,
         ServiceOrderEffortItemDetails,

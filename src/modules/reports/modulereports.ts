@@ -24,6 +24,7 @@ import /*embed*/ {ReporterFilterItemText} from "./components/reporterfilteritemt
 import /*embed*/ {ReporterFilterItemEnum} from "./components/reporterfilteritemenum";
 import /*embed*/ {ReporterFilterItemDate} from "./components/reporterfilteritemdate";
 import /*embed*/ {ReporterFilterItemUser} from "./components/reporterfilteritemuser";
+import /*embed*/ {ReporterFilterItemParent} from "./components/reporterfilteritemparent";
 import /*embed*/ {ReporterFilterItemReference} from "./components/reporterfilteritemreference";
 import /*embed*/ {ReporterFilterItemFunction} from "./components/reporterfilteritemfunction";
 import /*embed*/ {ReporterFilterItemUserSingle} from "./components/reporterfilteritemusersingle";
@@ -87,6 +88,7 @@ declare var moment: any;
         ReporterFilterItemEnum,
         ReporterFilterItemDate,
         ReporterFilterItemUser,
+        ReporterFilterItemParent,
         ReporterFilterItemUserSingle,
         ReporterFilterItemUserMultiple,
         ReporterFilterItemReference,
@@ -125,7 +127,8 @@ declare var moment: any;
         ReporterFilterItemDate,
         ReporterFilterItemUser,
         ReporterFilterItemReference,
-        ReporterFilterItemFunction
+        ReporterFilterItemFunction,
+        ReporterFilterItemParent
     ]
 })
 export class ModuleReports {

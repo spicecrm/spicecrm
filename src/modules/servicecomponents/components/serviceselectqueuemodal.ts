@@ -1,7 +1,7 @@
 /**
  * @module ServiceComponentsModule
  */
-import {Component, EventEmitter} from "@angular/core";
+import {Component, EventEmitter, SkipSelf} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
 import {metadata} from "../../../services/metadata.service";
@@ -23,19 +23,21 @@ export class ServiceSelectQueueModal {
     private selectedqueue: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(
-        private model: model,
+        @SkipSelf() private model: model,
+        private serviceticketnote: model,
         private metadata: metadata,
         private language: language,
         private backend: backend,
     ) {
+        this.parentqueue_id = this.model.getField('servicequeue_id');
         this.backend.getRequest('module/ServiceQueues').subscribe(queues => {
             for (let queue of queues.list) {
                 if (queue.id != this.parentqueue_id) {
-                    this.queues.push(queue)
+                    this.queues.push(queue);
                 }
             }
             this.loading = false;
-        })
+        });
     }
 
     private cancel() {
@@ -44,11 +46,23 @@ export class ServiceSelectQueueModal {
     }
 
     private save() {
-        this.selectedqueue.emit({
-            servicequeue_id: this.selectedqueueid,
-            servicequeue_name: this.getQueueName(this.selectedqueueid),
-            note: this.note
-        })
+        if (!this.model.isEditing) {
+            this.model.setField('servicequeue_id', this.selectedqueueid);
+            this.model.setField('servicequeue_name', this.getQueueName(this.selectedqueueid));
+        } else {
+            this.model.startEdit();
+            this.model.setField('servicequeue_id', this.selectedqueueid);
+            this.model.setField('servicequeue_name', this.getQueueName(this.selectedqueueid));
+            this.model.save();
+        }
+
+        if(this.note){
+            this.serviceticketnote.module = 'ServiceTicketNotes';
+            this.serviceticketnote.initialize(this.model);
+            this.serviceticketnote.setField('description', this.note);
+            this.serviceticketnote.save();
+        }
+
         this.self.destroy();
     }
 

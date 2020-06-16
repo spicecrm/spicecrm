@@ -3,7 +3,7 @@
     <h2 class="slds-text-heading--medium slds-p-bottom--xx-small">{{dashletTitle}} ({{recordcount}} <system-label label="LBL_OF"></system-label> {{recordtotal}})</h2>
 </div>
 <!-- the table - hidden if no records have been found and the dashlet is not loading-->
-<div class="slds-size--1-of-1 slds-scrollable--y" [ngStyle]="tableContainerStyle" (scroll)="onScroll()">
+<div #tablecontainer class="slds-size--1-of-1 slds-scrollable--y" [ngStyle]="tableContainerStyle" (scroll)="onScroll()">
     <table class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal slds-table--header-fixed">
         <thead *ngIf="islarge">
             <tr class="slds-text-title_caps">
