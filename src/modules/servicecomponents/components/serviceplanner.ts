@@ -32,14 +32,6 @@ export class ServicePlanner implements OnInit, OnDestroy {
      */
     protected timelineRecords: any[] = [];
     /**
-     * holds the start hour from user preferences
-     */
-    private startHour: number = 0;
-    /**
-     * holds the end hour from user preferences
-     */
-    private endHour: number = 23;
-    /**
      * holds the users module filter
      */
     private usersModuleFilter: string;
