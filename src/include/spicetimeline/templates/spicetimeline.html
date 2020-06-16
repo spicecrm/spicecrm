@@ -1,4 +1,4 @@
-<div class="slds-grid slds-grid--vertical slds-height_full slds-size--1-of-1">
+<div class="slds-grid slds-grid--vertical slds-height_full slds-size--1-of-1 slds-theme--default">
     <div class="slds-grid slds-size--1-of-1 slds-page-header" style="border-bottom-left-radius: 0; border-bottom-right-radius: 0; padding: .5rem;">
         <div class="slds-col slds-grid">
             <div  class="slds-dropdown-trigger slds-dropdown-trigger--click slds-m-left--xx-small" [class.slds-is-open]="pickerIsOpen">
@@ -28,7 +28,7 @@
             <button class="slds-button slds-button--icon-border" (click)="resetZoom()" [disabled]="periodUnitWidth == defaultPeriodUnitWidth">
                 <system-button-icon [icon]="'undo'"></system-button-icon>
             </button>
-            <button class="slds-button slds-button--icon-border" (click)="zoomIn()" [disabled]="periodUnitWidth >= 140">
+            <button class="slds-button slds-button--icon-border" (click)="zoomIn()" [disabled]="periodUnitWidth >= 400">
                 <system-button-icon [icon]="'zoomin'"></system-button-icon>
             </button>
         </div>
@@ -58,33 +58,39 @@
             </div>
         </div>
     </div>
-    <div #contentContainer class="slds-grid slds-grid--vertical slds-grow slds-scrollable--x" style="width: 100%; min-height: 0">
-        <div class="slds-grid" [style.height.px]="eventHeight" [style.width.px]="periodContainerWidth">
-            <div class="slds-size--1-of-4 slds-p-around--xx-small slds-border--bottom">
-                <system-label label="LBL_NAME"></system-label>
+    <div #contentContainer class="slds-grid slds-grow slds-scrollable" style="width: 100%; min-height: 0">
+        <div class="slds-grid slds-grid--vertical slds-theme--default" style="position: sticky; left: 0; z-index: 1" [ngStyle]="{width: periodDataWidth +'px', 'min-width': periodDataWidth +'px'}">
+            <div [style.height.px]="eventHeight" class="slds-border--bottom slds-border--right slds-grid">
+                <div *ngFor="let headerField of headerFields" [style.width.%]="100 / headerFields.length" class="slds-border--left slds-p-around--xx-small slds-truncate">
+                    {{headerField}}
+                </div>
             </div>
-            <div class="slds-grid slds-border--left slds-grow slds-border--bottom">
+            <div *ngFor="let record of records; trackBy: trackByItemFn" class="slds-grid slds-border--bottom slds-size--1-of-1" [style.height.px]="eventHeight">
+                <div [style.height.px]="eventHeight" class="slds-border--bottom slds-border--right slds-size--1-of-1">
+                    <div *ngIf="recordFieldsetFields?.length > 0; else summaryTemplate" [system-model-provider]="{id: record.id, module: recordModule, data: record}" class="slds-grid slds-height_full">
+                        <field-container *ngFor="let recordFieldsetField of recordFieldsetFields" [field]="recordFieldsetField.field" [fieldconfig]="recordFieldsetField.fieldconfig" [style.width.%]="100 / headerFields.length" class="slds-border--left spice-timeline-record-row-data"></field-container>
+                    </div>
+                    <ng-template #summaryTemplate>
+                        <span system-model-popover module="Users" [id]="record.id" class="slds-text-link--reset">{{record.name}}</span>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid slds-grid--vertical" [style.width.px]="periodTimelineWidth">
+            <div class="slds-grid slds-border--bottom slds-size--1-of-1" [style.height.px]="eventHeight">
                 <div *ngFor="let part of periodDuration; trackBy: trackByIndexFn" [system-title]="part" [style.width.px]="periodUnitWidth" class="slds-border--right slds-p-around--xx-small slds-truncate slds-height_full">
                     {{part}}
                 </div>
             </div>
-        </div>
-        <div class="slds-grow slds-scrollable--y" style="min-height: 0" [style.width.px]="periodContainerWidth">
-            <div *ngFor="let record of records; trackBy: trackByItemFn" class="slds-grid slds-border--bottom slds-size--1-of-1" [style.height.px]="eventHeight">
-                <div class="slds-size--1-of-4 slds-p-around--xx-small">
-                    <object-record-fieldset-horizontal-list *ngIf="!!recordFieldset; else summaryContainer" [fieldset]="recordFieldset" [system-model-provider]="{id: record.id, module: recordModule, data: record}"></object-record-fieldset-horizontal-list>
-                    <ng-template #summaryContainer>
-                        <span system-model-popover module="Users" [id]="record.id" class="slds-text-link--reset">{{record.name}}</span>
-                    </ng-template>
+            <div *ngFor="let record of records; trackBy: trackByItemFn" class="slds-grid slds-border--bottom slds-size--1-of-1 slds-is-relative slds-text-color--inverse" [style.height.px]="eventHeight">
+                <div *ngFor="let part of periodDuration; trackBy: trackByIndexFn" [style.width.px]="periodUnitWidth" [class.slds-theme--shade]="periodUnit === 'day' && recordsUnavailableTimes[record.id] && recordsUnavailableTimes[record.id][part]" class="slds-border--right slds-height_full slds-grid">
+                    <ng-container *ngIf="periodUnit === 'week' && recordsUnavailableTimes[record.id]">
+                        <div *ngFor="let part of hoursArray; trackBy: trackByIndexFn"
+                             [style.width.%]="100 / hoursArray.length" [class.slds-theme--shade]="recordsUnavailableTimes[record.id][part]" class="slds-height_full"></div>
+                    </ng-container>
                 </div>
-                <div class="slds-grid slds-border--left slds-grow slds-is-relative slds-text-color--inverse">
-                    <div *ngFor="let p of periodDuration; trackBy: trackByIndexFn" [style.width.px]="periodUnitWidth" class="slds-border--right slds-height_full"></div>
-                    <spice-timeline-event *ngFor="let event of record.events; trackBy: trackByItemFn" [event]="event" [ngStyle]="event.style" class="slds-truncate slds-p-around--xx-small"></spice-timeline-event>
-                </div>
+                <spice-timeline-event *ngFor="let event of record.events; trackBy: trackByItemFn" [event]="event" [ngStyle]="event.style" class="slds-truncate slds-p-around--xx-small"></spice-timeline-event>
             </div>
         </div>
-        <system-illustration-no-records *ngIf="records?.length == 0" class="slds-align--absolute-center slds-p-around--medium">
-            <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
-        </system-illustration-no-records>
     </div>
 </div>

@@ -16,6 +16,7 @@ import {
     ViewContainerRef
 } from '@angular/core';
 import {metadata} from "../../../services/metadata.service";
+import {language} from "../../../services/language.service";
 
 /** @ignore */
 declare var moment: any;
@@ -41,7 +42,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
     /**
      * holds the period unit width
      */
-    protected defaultPeriodContainerWidth: number = 250;
+    protected defaultPeriodTimelineWidth: number = 250;
     /**
      * holds the period unit width
      */
@@ -49,7 +50,11 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
     /**
      * holds the period unit width
      */
-    protected periodContainerWidth: number = 250;
+    protected periodTimelineWidth: number = 250;
+    /**
+     * holds the period unit width
+     */
+    protected periodDataWidth: number = 250;
     /**
      * holds the sheet hours
      */
@@ -62,6 +67,18 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
      * holds the records main module
      */
     @Input() protected recordModule: string;
+    /**
+     * holds the header fields
+     */
+    protected headerFields: any[] = ['name'];
+    /**
+     * holds the header fields
+     */
+    protected recordFieldsetFields: any[] = [];
+    /**
+     * holds the period unit to render the timeline cells
+     */
+    protected hoursArray: string[] = [];
     /**
      * holds the records main module
      */
@@ -95,10 +112,6 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
      */
     private pickerIsOpen: boolean = false;
     /**
-     * a fieldset id for loading a fieldset in the record row
-     */
-    private recordFieldset: string;
-    /**
      * holds the current date
      */
     private currentDate: any = moment();
@@ -114,16 +127,30 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
      * holds the resize listener
      */
     private resizeListener: any;
+    /**
+     * holds the build of the record unavailable times
+     */
+    private recordsUnavailableTimes: any = {};
 
     constructor(private renderer: Renderer2,
                 private cdRef: ChangeDetectorRef,
+                private language: language,
                 private metadata: metadata) {
         this.loadFieldset();
     }
 
+    /**
+     * call to load fieldset for records module
+     * call to set record events style
+     * @param changes
+     */
     public ngOnChanges(changes: SimpleChanges) {
+        if (!!changes.recordModule) {
+            this.loadFieldset();
+        }
         if (!changes.records) return;
-        this.setRecordEventsStyle();
+        this.setRecordsEventStyle();
+        this.setRecordsUnavailable();
     }
 
     /**
@@ -133,25 +160,8 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
         this.buildPeriodDuration();
         this.setDefaultWidth();
         this.resetZoom();
-        this.setDate(new moment());
+        this.setDate();
         this.addResizeListener();
-    }
-
-    /**
-     * add resize listener to rebuild the period duration
-     */
-    private addResizeListener() {
-        this.resizeListener = this.renderer.listen('window', 'resize', () =>
-            this.setDefaultWidth()
-        );
-    }
-
-    /**
-     * set the default width for the period elements
-     */
-    private setDefaultWidth() {
-        this.defaultPeriodContainerWidth = this.contentContainer.element.nativeElement.getBoundingClientRect().width;
-        this.defaultPeriodUnitWidth = parseFloat((((this.defaultPeriodContainerWidth * 0.75)  - 1) / this.periodDuration.length).toFixed(3));
     }
 
     /**
@@ -185,6 +195,25 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
         return item.id;
     }
 
+    /**
+     * add resize listener to rebuild the period duration
+     */
+    private addResizeListener() {
+        this.resizeListener = this.renderer.listen('window', 'resize', () =>
+            this.setDefaultWidth()
+        );
+    }
+
+    /**
+     * set the default width for the period elements
+     */
+    private setDefaultWidth() {
+        const defaultContainerWidth = this.contentContainer.element.nativeElement.getBoundingClientRect().width;
+        this.periodDataWidth = defaultContainerWidth * 0.25;
+        this.defaultPeriodTimelineWidth = defaultContainerWidth * 0.75;
+        this.defaultPeriodUnitWidth = (this.defaultPeriodTimelineWidth - 1) / this.periodDuration.length;
+    }
+
     private emitDateChange() {
         this.dateChange.emit({
             start: this.startDate,
@@ -197,8 +226,11 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
      */
     private loadFieldset() {
         let config = this.metadata.getComponentConfig('SpiceTimeline', this.recordModule);
-        if (config && config.recordFieldset) {
-            this.recordFieldset = config.recordFieldset;
+        if (!config || !config.recordFieldset) return;
+        const headerFields = this.metadata.getFieldSetFields(config.recordFieldset);
+        if (!!headerFields) {
+            this.recordFieldsetFields = headerFields;
+            this.headerFields = headerFields.map(item => this.language.getFieldDisplayName(this.recordModule, item.field));
         }
     }
 
@@ -218,47 +250,107 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
      */
     private buildPeriodDuration() {
         this.periodDuration = [];
-        let start = 0;
-        let end;
+        let start = new moment(this.currentDate).hour(0);
+        let unit, format;
 
         switch (this.periodUnit) {
             case 'day':
-                end = 23;
+                unit = 'hours';
+                format = 'H:00';
                 break;
             case 'week':
-                end = 6;
+                start = new moment(this.currentDate).day(0);
+                unit = 'days';
+                format = 'ddd D';
                 break;
             case 'month':
-                end = 31;
+                start = new moment(this.currentDate).date(1);
+                unit = 'days';
+                format = 'D';
         }
-        while (start <= end) {
-            this.periodDuration.push(start.toString());
-            start++;
+        const end = new moment(start).endOf(this.periodUnit);
+
+        for (let date = start; date.isBefore(end); date.add(1, unit)) {
+            this.periodDuration.push(date.format(format));
+        }
+
+        this.buildHoursArray();
+    }
+
+    private buildHoursArray() {
+        this.hoursArray = [];
+        const start = new moment().hour(0);
+        const end = new moment(start).endOf('day');
+
+        for (let date = start; date.isBefore(end); date.add(1, 'hours')) {
+            this.hoursArray.push(date.format('H:00'));
         }
     }
 
     /**
      * set record events style
      */
-    private setRecordEventsStyle() {
-        this.records.forEach(record =>
+    private setRecordsEventStyle() {
+        this.records.forEach(record => {
+            const days = {};
+            if (this.periodUnit == 'month') {
+                record.events.forEach(event => {
+                    const eventDay = event.start.date();
+                    if (!days[eventDay]) {
+                        days[eventDay] = [];
+                    }
+                    days[eventDay].push(event.id);
+                });
+            }
             record.events.forEach(event => {
-                const startMinutes = (event.start.hour() - this.startHour) * 60 + event.start.minute();
-                const endMinutes = (event.end.hour() - this.startHour) * 60 + event.end.minute();
+
                 event.style = {
-                    'left': (this.periodUnitWidth / 60) * startMinutes + 'px',
-                    'width': ((this.periodUnitWidth / 60) * (endMinutes - startMinutes)) + 'px',
                     'background-color': this.eventColor,
                     'display': 'block',
                     'height': '80%',
                     'position': 'absolute',
-                    'border-radius': '.25rem',
+                    'border-radius': '.2rem',
                     'top': '10%',
                 };
+                const startMinutes = (event.start.hour() - this.startHour) * 60 + event.start.minute();
+                const endMinutes = (event.end.hour() - this.startHour) * 60 + event.end.minute();
 
-            })
-        );
+                switch (this.periodUnit) {
+                    case 'day':
+                        event.style.left = ((this.periodUnitWidth / 60) * startMinutes) + 'px';
+                        event.style.width = ((this.periodUnitWidth / 60) * (endMinutes - startMinutes)) + 'px';
+                        break;
+                    case 'week':
+                        event.style.left = ((this.periodUnitWidth * event.start.day()) + ((this.periodUnitWidth / 1440) * startMinutes)) + 'px';
+                        event.style.width = ((this.periodUnitWidth / 1440) * (endMinutes - startMinutes)) + 'px';
+                        break;
+                    case 'month':
+                        const eventDay = event.start.date();
+                        event.style.left = ((this.periodUnitWidth * eventDay) + (days[eventDay].indexOf(event.id) * (this.periodUnitWidth / days[eventDay].length))) + 'px';
+                        event.style.width = ((this.periodUnitWidth / days[eventDay].length) -1) + 'px';
+                        break;
+                }
+            });
+        });
         this.cdRef.detectChanges();
+    }
+
+    /**
+     * set the record unavailable array style to grey the unavailable time on the timeline
+     */
+    private setRecordsUnavailable() {
+        this.records.forEach(record => {
+            if (!record.unavailable || !record.unavailable.length) return;
+            this.recordsUnavailableTimes[record.id] = {};
+
+            record.unavailable.forEach(part => {
+                const start = new moment().hour(part.from);
+                const end = new moment().hour(part.to);
+                for (let date = start; date.isSameOrBefore(end); date.add(1, 'hours')) {
+                    this.recordsUnavailableTimes[record.id][date.format('H:00')] = true;
+                }
+            });
+        });
     }
 
     /**
@@ -267,9 +359,10 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
      */
     private setPeriodUnit(value) {
         this.periodUnit = value;
-        this.resetZoom();
         this.buildPeriodDuration();
-        this.setDate(this.startDate);
+        this.setDefaultWidth();
+        this.resetZoom();
+        this.setDate();
         this.setHeaderDateText();
     }
 
@@ -278,8 +371,8 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
      */
     private zoomIn() {
         this.periodUnitWidth += 10;
-        this.periodContainerWidth += (10 * this.periodDuration.length);
-        this.setRecordEventsStyle();
+        this.periodTimelineWidth += (10 * this.periodDuration.length);
+        this.setRecordsEventStyle();
         this.cdRef.detectChanges();
     }
 
@@ -288,8 +381,8 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
      */
     private zoomOut() {
         this.periodUnitWidth -= 10;
-        this.periodContainerWidth -= (10 * this.periodDuration.length);
-        this.setRecordEventsStyle();
+        this.periodTimelineWidth -= (10 * this.periodDuration.length);
+        this.setRecordsEventStyle();
         this.cdRef.detectChanges();
     }
 
@@ -298,8 +391,8 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
      */
     private resetZoom() {
         this.periodUnitWidth = this.defaultPeriodUnitWidth;
-        this.periodContainerWidth = this.defaultPeriodContainerWidth;
-        this.setRecordEventsStyle();
+        this.periodTimelineWidth = this.defaultPeriodTimelineWidth;
+        this.setRecordsEventStyle();
         this.cdRef.detectChanges();
     }
 
@@ -323,16 +416,38 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
      * set current date
      * @param date
      */
-    private setDate(date) {
+    private setDate(date = new moment()) {
+
         this.currentDate = new moment(date);
-        this.startDate = new moment(date);
-        this.endDate = new moment(date).add(moment.duration(1, this.periodUnit + 's'));
+        switch (this.periodUnit) {
+            case 'day':
+                this.startDate = new moment(date).hour(0).minute(0).second(0);
+                break;
+            case 'week':
+                this.startDate = new moment(date).day(0).hour(0).minute(0).second(0);
+                break;
+            case 'month':
+                this.startDate = new moment(date).date(1).hour(0).minute(0).second(0);
+                break;
+        }
+
+        this.endDate = new moment(this.startDate).endOf(this.periodUnit);
         this.setHeaderDateText();
         this.emitDateChange();
         this.pickerIsOpen = false;
     }
 
+    /**
+     * toggle open picker
+     */
     private toggleOpenPicker() {
         this.pickerIsOpen = !this.pickerIsOpen;
+    }
+
+    /**
+     * set today marker on the timeline
+     */
+    private setTodayMarker() {
+
     }
 }
