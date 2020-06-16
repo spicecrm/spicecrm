@@ -53,6 +53,7 @@ export class KRESTLogViewerModal {
                 this.isLoading = false;
                 this.line.postParams = response.line.postParams;
                 this.line.response = response.line.response;
+                this.line.headers = response.line.headers;
                 this.line.fullLoaded = true;
                 console.log('Line geladen',this.line);
             },
