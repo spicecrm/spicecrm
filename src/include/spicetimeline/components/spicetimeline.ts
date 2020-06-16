@@ -17,20 +17,20 @@ import {
 } from '@angular/core';
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
+import {userpreferences} from "../../../services/userpreferences.service";
 
 /** @ignore */
 declare var moment: any;
 
+/**
+ * display the input records in a timeline view
+ */
 @Component({
     selector: 'spice-timeline',
     templateUrl: './src/include/spicetimeline/templates/spicetimeline.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpiceTimeline implements OnChanges, AfterViewInit {
-    /**
-     * holds the week days count
-     */
-    public weekDaysCount: number = 7;
     /**
      * container reference for the main div
      */
@@ -131,10 +131,19 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
      * holds the build of the record unavailable times
      */
     private recordsUnavailableTimes: any = {};
+    /**
+     * holds the only working hours enabled boolean to all user to toggle the working hours duration
+     */
+    private onlyWorkingHoursEnabled: boolean = false;
+    /**
+     * holds the only working hours boolean to render all or working hours
+     */
+    private onlyWorkingHours: boolean = false;
 
     constructor(private renderer: Renderer2,
                 private cdRef: ChangeDetectorRef,
                 private language: language,
+                private userpreferences: userpreferences,
                 private metadata: metadata) {
         this.loadFieldset();
     }
@@ -157,6 +166,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
      * set the period unit width
      */
     public ngAfterViewInit() {
+        this.setOnlyWorkingHoursEnabled();
         this.buildPeriodDuration();
         this.setDefaultWidth();
         this.resetZoom();
@@ -193,6 +203,30 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
      */
     protected trackByItemFn(index, item) {
         return item.id;
+    }
+
+    /**
+     * toggle the only working hours
+     */
+    private toggleOnlyWorkingHours() {
+        this.onlyWorkingHours = !this.onlyWorkingHours;
+        this.startHour = this.onlyWorkingHours ? +this.userpreferences.toUse.calendar_day_start_hour : 0;
+        this.endHour = this.onlyWorkingHours ? +this.userpreferences.toUse.calendar_day_end_hour : 23;
+        this.buildPeriodDuration();
+        this.setDefaultWidth();
+        this.resetZoom();
+        this.setDate();
+    }
+
+    /**
+     * set the only working hours checkbox enabled if they are set in the user preferences
+     */
+    private setOnlyWorkingHoursEnabled() {
+        const start = this.userpreferences.toUse.calendar_day_start_hour;
+        const end = this.userpreferences.toUse.calendar_day_end_hour;
+        if (!!start && start != 0 && !!end && end != 23) {
+            this.onlyWorkingHoursEnabled = true;
+        }
     }
 
     /**
@@ -250,7 +284,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
      */
     private buildPeriodDuration() {
         this.periodDuration = [];
-        let start = new moment(this.currentDate).hour(0);
+        let start = new moment(this.currentDate).hour(this.startHour);
         let unit, format;
 
         switch (this.periodUnit) {
@@ -268,7 +302,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
                 unit = 'days';
                 format = 'D';
         }
-        const end = new moment(start).endOf(this.periodUnit);
+        const end = new moment(start).endOf(this.periodUnit).hour(this.endHour);
 
         for (let date = start; date.isBefore(end); date.add(1, unit)) {
             this.periodDuration.push(date.format(format));
@@ -279,8 +313,8 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
 
     private buildHoursArray() {
         this.hoursArray = [];
-        const start = new moment().hour(0);
-        const end = new moment(start).endOf('day');
+        const start = new moment().hour(this.startHour);
+        const end = new moment(start).hour(this.endHour);
 
         for (let date = start; date.isBefore(end); date.add(1, 'hours')) {
             this.hoursArray.push(date.format('H:00'));
@@ -327,7 +361,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
                     case 'month':
                         const eventDay = event.start.date();
                         event.style.left = ((this.periodUnitWidth * eventDay) + (days[eventDay].indexOf(event.id) * (this.periodUnitWidth / days[eventDay].length))) + 'px';
-                        event.style.width = ((this.periodUnitWidth / days[eventDay].length) -1) + 'px';
+                        event.style.width = ((this.periodUnitWidth / days[eventDay].length) - 1) + 'px';
                         break;
                 }
             });
@@ -421,17 +455,17 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
         this.currentDate = new moment(date);
         switch (this.periodUnit) {
             case 'day':
-                this.startDate = new moment(date).hour(0).minute(0).second(0);
+                this.startDate = new moment(date).hour(this.startHour).minute(0).second(0);
                 break;
             case 'week':
-                this.startDate = new moment(date).day(0).hour(0).minute(0).second(0);
+                this.startDate = new moment(date).day(0).hour(this.startHour).minute(0).second(0);
                 break;
             case 'month':
-                this.startDate = new moment(date).date(1).hour(0).minute(0).second(0);
+                this.startDate = new moment(date).date(1).hour(this.startHour).minute(0).second(0);
                 break;
         }
 
-        this.endDate = new moment(this.startDate).endOf(this.periodUnit);
+        this.endDate = new moment(this.startDate).endOf(this.periodUnit).hour(this.endHour);
         this.setHeaderDateText();
         this.emitDateChange();
         this.pickerIsOpen = false;
@@ -442,12 +476,5 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
      */
     private toggleOpenPicker() {
         this.pickerIsOpen = !this.pickerIsOpen;
-    }
-
-    /**
-     * set today marker on the timeline
-     */
-    private setTodayMarker() {
-
     }
 }

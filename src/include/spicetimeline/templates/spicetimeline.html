@@ -13,6 +13,9 @@
                 {{headerDateText}}
             </div>
         </div>
+        <button (click)="toggleOnlyWorkingHours()" [disabled]="!onlyWorkingHoursEnabled" [class.slds-button--brand]="onlyWorkingHours" system-title="LBL_ONLY_WORKING_HOURS" class="slds-button slds-button--icon-border slds-m-left--xx-small" style="height: 32px;padding: 0;width: 32px;">
+            <system-button-icon icon="clock" size="medium"></system-button-icon>
+        </button>
         <div class="slds-button-group" role="group">
             <button class="slds-button slds-button--icon-border" (click)="shiftMinus()">
                 <system-button-icon icon="chevronleft"></system-button-icon>
