@@ -1,7 +1,7 @@
 /**
  * @module ServiceComponentsModule
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, Renderer2} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {Subscription} from "rxjs";
 import {modellist} from "../../../services/modellist.service";
@@ -12,6 +12,7 @@ import {model} from "../../../services/model.service";
 import {navigationtab} from "../../../services/navigationtab.service";
 import {session} from "../../../services/session.service";
 import {view} from "../../../services/view.service";
+import {map} from "rxjs/operators";
 
 /** @ignore */
 declare var moment: any;
@@ -27,6 +28,10 @@ declare var moment: any;
 })
 
 export class ServicePlanner implements OnInit, OnDestroy {
+    /**
+     * holds the system timezone which is loaded from the session
+     */
+    public timeZone: any;
     /**
      * holds the records that will be passed to the timeline component
      */
@@ -51,10 +56,6 @@ export class ServicePlanner implements OnInit, OnDestroy {
      * holds the start date
      */
     private isLoading: boolean = false;
-    /**
-     * holds the system timezone which is loaded from the session
-     */
-    public timeZone: any;
 
     constructor(private language: language,
                 private cdRef: ChangeDetectorRef,
@@ -94,8 +95,8 @@ export class ServicePlanner implements OnInit, OnDestroy {
      * @param dateRange
      */
     private setDateRange(dateRange) {
-        this.startDate = new moment(dateRange.start);
-        this.endDate = new moment(dateRange.end);
+        this.startDate = new moment(dateRange.start.format());
+        this.endDate = new moment(dateRange.end.format());
         this.getUsersServiceOrders();
     }
 
@@ -108,15 +109,73 @@ export class ServicePlanner implements OnInit, OnDestroy {
             const module = message.messagedata.module;
             const data = message.messagedata.data;
 
-            if (module == 'ServiceOrders') {
-                switch (message.messagetype) {
-                    case "model.save":
-
-                        break;
-                }
+            switch (message.messagetype) {
+                case 'timezone.changed':
+                    this.timeZone = message.messagedata;
+                    this.timelineRecords = this.timelineRecords.map(record => {
+                        record.events = record.events.map(serviceOrder => {
+                            serviceOrder.start = serviceOrder.start.tz(this.timeZone);
+                            serviceOrder.end = serviceOrder.end.tz(this.timeZone);
+                            return serviceOrder;
+                        });
+                        return record;
+                    });
+                    this.cdRef.detectChanges();
+                    break;
+                case 'model.save':
+                    if (module !== 'ServiceOrders') break;
+                    this.handleEventChange(data);
+                    // force detect changes
+                    this.timelineRecords = this.timelineRecords.slice();
+                    break;
+                case 'model.delete':
+                    this.timelineRecords.some(record => {
+                        if (record.id !== data.assigned_user_id) return false;
+                        record.events = record.events.filter(serviceOrder => serviceOrder.id !== data.id);
+                    });
+                    // force detect changes
+                    this.timelineRecords = this.timelineRecords.slice();
+                    break;
             }
         });
         this.subscriptions.add(subscriber);
+    }
+
+    /**
+     * modify event date after drop
+     * @param data
+     * @return boolean true if the event was found
+     */
+    private handleEventChange(data) {
+
+        if (moment(data.date_start) > this.endDate && moment(data.date_end) < this.startDate) {
+            this.timelineRecords.some(record => {
+                if (record.id !== data.assigned_user_id) return false;
+                record.events = record.events.filter(serviceOrder => serviceOrder.id !== data.id);
+                return true;
+            });
+        } else {
+            this.timelineRecords.some(record => {
+                if (record.id !== data.assigned_user_id) return false;
+                const exists = record.events.some(serviceOrder => {
+                    if (serviceOrder.id !== data.id) return false;
+                    serviceOrder.data = {...data};
+                    serviceOrder.start = new moment(moment.utc(data.date_start).tz(this.timeZone).format());
+                    serviceOrder.end = new moment(moment.utc(data.date_end).tz(this.timeZone).format());
+                    return true;
+                });
+                if (exists) return true;
+                record.events.push({
+                    id: data.id,
+                    module: 'ServiceOrders',
+                    start: new moment(moment.utc(data.date_start).tz(this.timeZone).format()),
+                    end: new moment(moment.utc(data.date_end).tz(this.timeZone).format()),
+                    data: {...data}
+                });
+                record.events.sort((a,b) => a.start.isAfter(b.start) ? 1 : -1);
+                return true;
+            });
+        }
     }
 
     /**
@@ -128,23 +187,27 @@ export class ServicePlanner implements OnInit, OnDestroy {
         this.isLoading = true;
         const format = "YYYY-MM-DD HH:mm:ss";
         const params = {
-            start: this.startDate.tz('utc').format(format),
-            end: this.endDate.tz('utc').format(format),
+            start: this.startDate.format(format),
+            end: this.endDate.format(format),
             usersModuleFilter: this.usersModuleFilter
         };
 
-        this.backend.getRequest('modules/ServiceOrders/Planner/records', params).subscribe(records => {
-            this.timelineRecords = records.map(record => {
-                record.events = record.serviceOrders.map(order => {
-                    order.start = moment.utc(order.start).tz(this.timeZone);
-                    order.end = moment.utc(order.end).tz(this.timeZone);
-                    return order;
-                });
-                return record;
-            });
-            this.isLoading = false;
-            this.cdRef.detectChanges();
-        },
+        this.backend.getRequest('modules/ServiceOrders/Planner/records', params)
+            .pipe(
+                map(records => records.map(record => {
+                        record.events = record.events.map(serviceOrder => {
+                            serviceOrder.start = new moment(moment.utc(serviceOrder.start).tz(this.timeZone).format());
+                            serviceOrder.end = new moment(moment.utc(serviceOrder.end).tz(this.timeZone).format());
+                            return serviceOrder;
+                        });
+                        return record;
+                    })
+                )
+            ).subscribe(records => {
+                this.timelineRecords = records;
+                this.isLoading = false;
+                this.cdRef.detectChanges();
+            },
             () => {
                 this.isLoading = false;
                 this.cdRef.detectChanges();
