@@ -15,6 +15,6 @@
 <div *ngIf="itemcount == 0" class="slds-p-around--medium slds-text-align--center">
     <system-label label="LBL_NO_ENTRIES"></system-label>
 </div>
-<div class="slds-p-around--medium" [ngStyle]="{'visibility': editing == '1' ? 'visible' : 'hidden'}">
+<div class="slds-p-around--medium" *ngIf="editing">
     <button type="button" class="slds-button slds-button--neutral" (click)="addItem()"><system-label label="LBL_ADD"></system-label></button>
 </div>
