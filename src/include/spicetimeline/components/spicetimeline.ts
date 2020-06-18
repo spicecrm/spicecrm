@@ -9,6 +9,7 @@ import {
     EventEmitter,
     Input,
     OnChanges,
+    OnDestroy,
     Output,
     Renderer2,
     SimpleChanges,
@@ -18,6 +19,8 @@ import {
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {userpreferences} from "../../../services/userpreferences.service";
+import {broadcast} from "../../../services/broadcast.service";
+import {Subscription} from "rxjs";
 
 /** @ignore */
 declare var moment: any;
@@ -30,7 +33,11 @@ declare var moment: any;
     templateUrl: './src/include/spicetimeline/templates/spicetimeline.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SpiceTimeline implements OnChanges, AfterViewInit {
+export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
+    /**
+     * holds the today text color
+     */
+    public todayColor: string = '#eb7092';
     /**
      * container reference for the main div
      */
@@ -58,7 +65,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
     /**
      * holds the sheet hours
      */
-    protected periodDuration: string[] = [];
+    protected periodDuration: any[] = [];
     /**
      * holds the input timeline records to be rendered
      */
@@ -139,10 +146,23 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
      * holds the only working hours boolean to render all or working hours
      */
     private onlyWorkingHours: boolean = false;
+    /**
+     * holds the today marker style to be rendered over the timeline
+     */
+    private todayHourMarkerStyle: any;
+    /**
+     * holds the today marker interval to be removed on destroy
+     */
+    private todayMarkerHourInterval: any;
+    /**
+     * subscription to handle unsubscribe
+     */
+    private subscriptions: Subscription = new Subscription();
 
     constructor(private renderer: Renderer2,
                 private cdRef: ChangeDetectorRef,
                 private language: language,
+                private broadcast: broadcast,
                 private userpreferences: userpreferences,
                 private metadata: metadata) {
         this.loadFieldset();
@@ -163,35 +183,30 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
     }
 
     /**
-     * set the period unit width
+     * set the only working hours enabled
+     * build the period duration
+     * set the current date and emit the date to parent to load the events for the selected period
+     * reset the default width
+     * add resize listener
+     * add today hour interval
+     * subscribe to broadcast changes
      */
     public ngAfterViewInit() {
         this.setOnlyWorkingHoursEnabled();
-        this.buildPeriodDuration();
-        this.setDefaultWidth();
-        this.resetZoom();
         this.setDate();
         this.addResizeListener();
+        this.addTodayHourInterval();
+        this.subscribeToChanges();
     }
 
     /**
-     * add a duration to calendar date
+     * clear today marker interval und unsubscribe from subscriptions
      */
-    public shiftPlus() {
-        this.startDate = new moment(this.startDate.add(moment.duration(1, this.periodUnit + 's')));
-        this.endDate = new moment(this.endDate.add(moment.duration(1, this.periodUnit + 's')));
-        this.setHeaderDateText();
-        this.emitDateChange();
-    }
-
-    /**
-     * subtract a duration from calendar date
-     */
-    public shiftMinus() {
-        this.startDate = new moment(this.startDate.subtract(moment.duration(1, this.periodUnit + 's')));
-        this.endDate = new moment(this.endDate.subtract(moment.duration(1, this.periodUnit + 's')));
-        this.setHeaderDateText();
-        this.emitDateChange();
+    public ngOnDestroy() {
+        if (this.todayMarkerHourInterval) {
+            window.clearInterval(this.todayMarkerHourInterval);
+        }
+        this.subscriptions.unsubscribe();
     }
 
     /**
@@ -206,16 +221,48 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
     }
 
     /**
+     * subscribe to model and timezone changes and apply the changes in the calendar
+     */
+    private subscribeToChanges() {
+        this.subscriptions.add(
+            this.broadcast.message$.subscribe(message => {
+                if (message.messagetype !== 'timezone.changed') return;
+                this.setTodayHourMarkerStyle();
+                this.setRecordsEventStyle();
+                this.cdRef.detectChanges();
+            })
+        );
+    }
+
+    /**
+     * add a duration to calendar date
+     */
+    private shiftDate(direction: 'add' | 'subtract') {
+        this.startDate = new moment(this.startDate[direction](moment.duration(1, this.periodUnit + 's')));
+        this.endDate = new moment(this.endDate[direction](moment.duration(1, this.periodUnit + 's')));
+        this.buildPeriodDuration();
+        this.setHeaderDateText();
+        this.emitDateChange();
+        this.cdRef.detectChanges();
+    }
+
+    /**
+     * add today hour interval to reposition the marker on minute change
+     */
+    private addTodayHourInterval() {
+        this.todayMarkerHourInterval = window.setInterval(() => this.setTodayHourMarkerStyle(), 60000);
+    }
+
+    /**
      * toggle the only working hours
      */
     private toggleOnlyWorkingHours() {
         this.onlyWorkingHours = !this.onlyWorkingHours;
         this.startHour = this.onlyWorkingHours ? +this.userpreferences.toUse.calendar_day_start_hour : 0;
-        this.endHour = this.onlyWorkingHours ? +this.userpreferences.toUse.calendar_day_end_hour : 23;
-        this.buildPeriodDuration();
-        this.setDefaultWidth();
-        this.resetZoom();
+        this.endHour = this.onlyWorkingHours ? (+this.userpreferences.toUse.calendar_day_end_hour -1) : 23;
         this.setDate();
+        this.buildHoursArray();
+        this.setTodayHourMarkerStyle();
     }
 
     /**
@@ -246,12 +293,16 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
         this.periodDataWidth = defaultContainerWidth * 0.25;
         this.defaultPeriodTimelineWidth = defaultContainerWidth * 0.75;
         this.defaultPeriodUnitWidth = (this.defaultPeriodTimelineWidth - 1) / this.periodDuration.length;
+        this.resetPeriodUnitWidth();
     }
 
+    /**
+     * emit date change to the parent
+     */
     private emitDateChange() {
         this.dateChange.emit({
-            start: this.startDate,
-            end: this.endDate
+            start: new moment(this.startDate.format()),
+            end: new moment(this.endDate.format())
         });
     }
 
@@ -280,11 +331,14 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
     }
 
     /**
-     * build sheet hours
+     * build period duration
+     * call build hours
+     * call set default width
+     * call set today marker hour style
      */
     private buildPeriodDuration() {
         this.periodDuration = [];
-        let start = new moment(this.currentDate).hour(this.startHour);
+        let start = new moment(this.startDate).hour(this.startHour);
         let unit, format;
 
         switch (this.periodUnit) {
@@ -293,30 +347,38 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
                 format = 'H:00';
                 break;
             case 'week':
-                start = new moment(this.currentDate).day(0);
+                start = new moment(this.startDate).day(0);
                 unit = 'days';
                 format = 'ddd D';
                 break;
             case 'month':
-                start = new moment(this.currentDate).date(1);
+                start = new moment(this.startDate).date(1);
                 unit = 'days';
                 format = 'D';
         }
         const end = new moment(start).endOf(this.periodUnit).hour(this.endHour);
 
         for (let date = start; date.isBefore(end); date.add(1, unit)) {
-            this.periodDuration.push(date.format(format));
+            this.periodDuration.push({
+                text: date.format(format),
+                color: this.periodUnit != 'day' && new moment().isSame(date, 'day') ? this.todayColor : '#343434'
+            });
         }
 
         this.buildHoursArray();
+        this.setDefaultWidth();
+        this.setTodayHourMarkerStyle();
     }
 
+    /**
+     * builds the hours array for day and week units
+     */
     private buildHoursArray() {
         this.hoursArray = [];
         const start = new moment().hour(this.startHour);
         const end = new moment(start).hour(this.endHour);
 
-        for (let date = start; date.isBefore(end); date.add(1, 'hours')) {
+        for (let date = start; date.isSameOrBefore(end); date.add(1, 'hours')) {
             this.hoursArray.push(date.format('H:00'));
         }
     }
@@ -330,9 +392,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
             if (this.periodUnit == 'month') {
                 record.events.forEach(event => {
                     const eventDay = event.start.date();
-                    if (!days[eventDay]) {
-                        days[eventDay] = [];
-                    }
+                    if (!days[eventDay]) days[eventDay] = [];
                     days[eventDay].push(event.id);
                 });
             }
@@ -346,8 +406,10 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
                     'border-radius': '.2rem',
                     'top': '10%',
                 };
-                const startMinutes = (event.start.hour() - this.startHour) * 60 + event.start.minute();
-                const endMinutes = (event.end.hour() - this.startHour) * 60 + event.end.minute();
+                let startMinutes = (event.start.hour() - this.startHour) * 60 + event.start.minute();
+                startMinutes = startMinutes < 0 ? 0 : startMinutes;
+                let endMinutes = (event.end.hour() - this.startHour) * 60 + event.end.minute();
+                endMinutes = endMinutes > (this.hoursArray.length * 60) ? (this.hoursArray.length * 60) : endMinutes;
 
                 switch (this.periodUnit) {
                     case 'day':
@@ -355,8 +417,8 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
                         event.style.width = ((this.periodUnitWidth / 60) * (endMinutes - startMinutes)) + 'px';
                         break;
                     case 'week':
-                        event.style.left = ((this.periodUnitWidth * event.start.day()) + ((this.periodUnitWidth / 1440) * startMinutes)) + 'px';
-                        event.style.width = ((this.periodUnitWidth / 1440) * (endMinutes - startMinutes)) + 'px';
+                        event.style.left = ((this.periodUnitWidth * event.start.day()) + ((this.periodUnitWidth / (this.hoursArray.length * 60)) * startMinutes)) + 'px';
+                        event.style.width = (((this.periodUnitWidth / (this.hoursArray.length * 60)) * (endMinutes - startMinutes)) -1) + 'px';
                         break;
                     case 'month':
                         const eventDay = event.start.date();
@@ -389,49 +451,62 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
 
     /**
      * set the period unit
+     * reset the date
      * @param value
      */
     private setPeriodUnit(value) {
         this.periodUnit = value;
-        this.buildPeriodDuration();
-        this.setDefaultWidth();
-        this.resetZoom();
-        this.setDate();
-        this.setHeaderDateText();
+        this.setDate(this.currentDate);
     }
 
     /**
      * zoom sheet cells in
+     * reset the records event style
+     * reset the today marker hour style
      */
     private zoomIn() {
         this.periodUnitWidth += 10;
         this.periodTimelineWidth += (10 * this.periodDuration.length);
         this.setRecordsEventStyle();
+        this.setTodayHourMarkerStyle();
         this.cdRef.detectChanges();
     }
 
     /**
      * zoom sheet cells out
+     * reset the records event style
+     * reset the today marker hour stlye
      */
     private zoomOut() {
         this.periodUnitWidth -= 10;
         this.periodTimelineWidth -= (10 * this.periodDuration.length);
         this.setRecordsEventStyle();
+        this.setTodayHourMarkerStyle();
         this.cdRef.detectChanges();
     }
 
     /**
      * reset sheet cells zoom
+     * reset the records event style
+     * reset the today hour marker style
      */
     private resetZoom() {
-        this.periodUnitWidth = this.defaultPeriodUnitWidth;
-        this.periodTimelineWidth = this.defaultPeriodTimelineWidth;
+        this.resetPeriodUnitWidth();
         this.setRecordsEventStyle();
+        this.setTodayHourMarkerStyle();
         this.cdRef.detectChanges();
     }
 
     /**
-     * set the header date text
+     * reset the period unit width to default
+     */
+    private resetPeriodUnitWidth() {
+        this.periodUnitWidth = this.defaultPeriodUnitWidth;
+        this.periodTimelineWidth = this.defaultPeriodTimelineWidth;
+    }
+
+    /**
+     * set the header date text by period unit
      */
     private setHeaderDateText() {
         switch (this.periodUnit) {
@@ -448,6 +523,10 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
 
     /**
      * set current date
+     * set the start and end date
+     * build the period duration
+     * set the header text
+     * emit the date changes
      * @param date
      */
     private setDate(date = new moment()) {
@@ -466,6 +545,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
         }
 
         this.endDate = new moment(this.startDate).endOf(this.periodUnit).hour(this.endHour);
+        this.buildPeriodDuration();
         this.setHeaderDateText();
         this.emitDateChange();
         this.pickerIsOpen = false;
@@ -476,5 +556,32 @@ export class SpiceTimeline implements OnChanges, AfterViewInit {
      */
     private toggleOpenPicker() {
         this.pickerIsOpen = !this.pickerIsOpen;
+    }
+
+    /**
+     * set the today hour marker style
+     */
+    private setTodayHourMarkerStyle() {
+        const today = new moment();
+        if (!today.isSameOrAfter(this.startDate, 'day') || !today.isSameOrBefore(this.endDate, 'day')) {
+            return this.todayHourMarkerStyle = {display: 'none'};
+        }
+        const todayMinutes = (today.hour() - this.startHour) * 60 + today.minute();
+
+        this.todayHourMarkerStyle = {
+            'width': '3px',
+            'height': '100%',
+            'z-index': '10',
+            'background': this.todayColor,
+            'position': 'absolute'
+        };
+        switch (this.periodUnit) {
+            case 'day':
+                this.todayHourMarkerStyle.left = (((this.periodUnitWidth / 60) * todayMinutes) - 1.5) + 'px';
+                break;
+            case 'week':
+                this.todayHourMarkerStyle.left = (((this.periodUnitWidth * today.day()) + ((this.periodUnitWidth / (this.hoursArray.length * 60)) * todayMinutes)) - 1.5) + 'px';
+                break;
+        }
     }
 }
