@@ -56,6 +56,11 @@ export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
     private sortField: string = 'date_entered';
 
     /**
+     * subscription to the model data
+     */
+    private subscription: any;
+
+    /**
      * to recognize the change of the servicelocation (to load the new equipments)
      */
     private servicelocationId: string = '';
@@ -87,7 +92,7 @@ export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
         // }
         // dont forget destroy
         this.servicelocationId = this.model.getField("servicelocation_id");
-        this.model.data$.subscribe(
+        this.subscription = this.model.data$.subscribe(
             res => {
                 if(res.servicelocation_id == "" || !res.servicelocation_id) {
                     this.clearAllSelectedItems();
@@ -108,7 +113,7 @@ export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
     }
 
     public ngOnDestroy() {
-        this.model.data$.unsubscribe();
+        this.subscription.unsubscribe();
     }
 
     /*
