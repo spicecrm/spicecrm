@@ -1,10 +1,9 @@
-import {Component, OnInit, Injector, ChangeDetectorRef} from "@angular/core";
+import {Component, OnInit, Injector, ChangeDetectorRef, OnDestroy} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
 import {view} from '../../../services/view.service';
 import {modal} from '../../../services/modal.service';
-import {ObjectModalModuleLookup} from "../../../objectcomponents/components/objectmodalmodulelookup";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 import {modellist} from "../../../services/modellist.service";
@@ -14,7 +13,7 @@ import {modellist} from "../../../services/modellist.service";
     templateUrl: "./src/modules/servicecomponents/templates/serviceorderequipmentpanel.html",
     providers: [relatedmodels, modellist]
 })
-export class ServiceOrderEquipmentPanel implements OnInit {
+export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
 
     /**
      * the componentconfig
@@ -57,6 +56,11 @@ export class ServiceOrderEquipmentPanel implements OnInit {
     private sortField: string = 'date_entered';
 
     /**
+     * to recognize the change of the servicelocation (to load the new equipments)
+     */
+    private servicelocationId: string = '';
+
+    /**
      * the used fieldsets
      */
     public currentProductType: string = "";
@@ -77,11 +81,34 @@ export class ServiceOrderEquipmentPanel implements OnInit {
 
         // get the config
         this.componentconfig = this.metadata.getComponentConfig('ServiceOrderEquipmentPanel', this.model.module);
+
+        // this.model.data$.subscribe(data) {
+        //
+        // }
+        // dont forget destroy
+        this.servicelocationId = this.model.getField("servicelocation_id");
+        this.model.data$.subscribe(
+            res => {
+                if(res.servicelocation_id == "" || !res.servicelocation_id) {
+                    this.clearAllSelectedItems();
+                }
+                if(res.servicelocation_id != this.servicelocationId) {
+                    this.servicelocationId = res.servicelocation_id;
+                    if(this.servicelocationId != "" && this.servicelocationId)this.setAllItems();
+                }
+
+            }
+        );
+
     }
     public ngOnInit() {
         this.setComponentConfig();
         this.getFieldsetFields();
-        this.setAllItems();
+        if(this.servicelocationId != "" && this.servicelocationId)this.setAllItems();
+    }
+
+    public ngOnDestroy() {
+        this.model.data$.unsubscribe();
     }
 
     /*
@@ -99,6 +126,7 @@ export class ServiceOrderEquipmentPanel implements OnInit {
     public getFieldsetFields() {
         if (this.componentconfig.fieldset) {
             this.fieldsetFields = this.metadata.getFieldSetFields(this.fieldset);
+            this.fieldsetFields.shift();
         }
     }
 
@@ -107,7 +135,7 @@ export class ServiceOrderEquipmentPanel implements OnInit {
      * build the items and render them in the container
      */
     private setAllItems() {
-
+        this.all_items = {};
         this.modellist.setModule("ServiceEquipments");
         if (this.sortField) {
             this.modellist.setSortField(this.sortField, "DESC", false);
@@ -141,6 +169,20 @@ export class ServiceOrderEquipmentPanel implements OnInit {
     }
 
     /**
+     * clearAllRelationships to the equipments (location changed!) and delete all equipments
+     */
+    private clearAllSelectedItems() {
+        this.all_items = [];
+        this.selected_items = this.model.getRelatedRecords(this.relation_link_name);
+        for (let aitem of this.selected_items) {
+            aitem.selected = false;
+            this.model.removeRelatedRecords(this.relation_link_name, [aitem.id]);
+            this.model.data[this.relation_link_name].beans_relations_to_delete[aitem.id] = aitem;
+        }
+    }
+
+
+    /**
      * returns current items with the selected info
      */
     get items() {
@@ -158,6 +200,8 @@ export class ServiceOrderEquipmentPanel implements OnInit {
                 if (items) {
                     return items.length;
                 }
+            } else {
+                return 0;
             }
         }
     }
@@ -169,7 +213,6 @@ export class ServiceOrderEquipmentPanel implements OnInit {
         return this.view.isEditMode();
     }
 
-
     /*
  * @sort items by sortField: moment.date
  * @return items: any[]
@@ -178,21 +221,4 @@ export class ServiceOrderEquipmentPanel implements OnInit {
         return items.sort((a, b) => a[this.sortField] && b[this.sortField] ? a[this.sortField] > b[this.sortField] ? 1 : -1 : 0);
     }
 
-    private addItem() {
-        this.view.setEditMode();
-        this.openAddModal();
-    }
-
-    private openAddModal() {
-        this.modal.openModal("ObjectModalModuleLookup", true, this.injector).subscribe(selectModal => {
-            selectModal.instance.module = "ServiceEquipments";
-            selectModal.instance.multiselect = true;
-            selectModal.instance.relateFilter = this.equipmentfilter;
-            selectModal.instance.selectedItems.subscribe(items => {
-
-                this.model.addRelatedRecords(this.relation_link_name, items, false);
-                this.view.setEditMode();
-            });
-        });
-    }
 }

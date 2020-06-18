@@ -72,6 +72,7 @@ export class ServiceOrderEquipmentItem implements OnInit  {
      * view mode subscriptions (manage edit/view mode)
      */
     private viewSubscriptions() {
+        this.view.displayLabels = false;
         // link the two views
         this.view.isEditable = this.parentview.isEditable;
         this.view.mode$.subscribe(mode => {
@@ -127,7 +128,13 @@ export class ServiceOrderEquipmentItem implements OnInit  {
         this.item.selected = !this.item.selected;
         if(this.item.selected) {
             this.serviceorder.addRelatedRecords(this.relationlinkname, [this.item], false);
-            delete this.serviceorder.data[this.relationlinkname].beans_relations_to_delete[this.item.id];
+            if(this.serviceorder.data[this.relationlinkname]) {
+                if (this.serviceorder.data[this.relationlinkname].beans_relations_to_delete) {
+                    if (this.serviceorder.data[this.relationlinkname].beans_relations_to_delete[this.item.id]) {
+                        delete this.serviceorder.data[this.relationlinkname].beans_relations_to_delete[this.item.id];
+                    }
+                }
+            }
         } else {
             this.serviceorder.removeRelatedRecords(this.relationlinkname, [this.item.id]);
             this.serviceorder.data[this.relationlinkname].beans_relations_to_delete[this.item.id] = this.item;
