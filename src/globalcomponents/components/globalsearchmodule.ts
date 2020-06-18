@@ -48,7 +48,7 @@ export class GlobalSearchModule implements OnInit {
         this.fts.moduleSearchresults.some(item => {
             if (item.module === this.module) {
                 resultCount = {
-                    total: item.data.total,
+                    total: _.isNumber(item.data.total) ? item.data.total : item.data.total.value,
                     hits: item.data.hits.length
                 };
                 return true;
