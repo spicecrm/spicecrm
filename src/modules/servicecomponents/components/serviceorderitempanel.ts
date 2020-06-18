@@ -4,7 +4,6 @@ import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
 import {view} from '../../../services/view.service';
 import {modal} from '../../../services/modal.service';
-import {ObjectModalModuleLookup} from "../../../objectcomponents/components/objectmodalmodulelookup";
 import {modelutilities} from "../../../services/modelutilities.service";
 
 
@@ -60,16 +59,8 @@ export class ServiceOrderItemPanel implements OnInit {
         private injector: Injector,
         public utils: modelutilities,
     ) {
-
         // get the config
         this.componentconfig = this.metadata.getComponentConfig('ServiceOrderItemPanel', this.model.module);
-
-        // let itemSubscription = this.model.data$.subscribe(data => {
-        //     if (this.buildItems()) {
-        //         if (itemSubscription) itemSubscription.unsubscribe();
-        //     }
-        // });
-
     }
     public ngOnInit() {
         this.setComponentConfig();
@@ -92,9 +83,9 @@ export class ServiceOrderItemPanel implements OnInit {
     public getFieldsetFields() {
         if (this.componentconfig.fieldset) {
             this.fieldsetFields = this.metadata.getFieldSetFields(this.fieldset);
+            this.fieldsetFields.shift();
         }
     }
-
 
     /**
      * build the items and render them in the container
@@ -147,10 +138,6 @@ export class ServiceOrderItemPanel implements OnInit {
         return this.view.isEditMode();
     }
 
-    // public editmodechange(mode) {
-    //     mode=="edit"? this.view.setEditMode(): this.view.setViewMode();
-    // }
-
     /*
  * @sort items by sortField: moment.date
  * @return items: any[]
@@ -198,6 +185,12 @@ export class ServiceOrderItemPanel implements OnInit {
                     itemData.quantity = 1;
                     itemData.parent_type = this.currentProductType;
                     itemData.itemnr = (this.itemcount + 1) * 10;
+
+                    // set default acl to allow editing
+                    itemData.acl = {
+                        create: true,
+                        edit: true
+                    };
 
                     this.model.addRelatedRecords(this.relation_link_name, [itemData], false);
                 }
