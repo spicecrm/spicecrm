@@ -5,7 +5,7 @@ import {
     AfterViewInit,
     ChangeDetectionStrategy,
     Component,
-    EventEmitter,
+    EventEmitter, Injector,
     Input,
     NgZone,
     OnChanges,
@@ -22,14 +22,7 @@ import {libloader} from '../../../services/libloader.service';
 import {metadata} from "../../../services/metadata.service";
 import {footer} from "../../../services/footer.service";
 import {toast} from "../../../services/toast.service";
-import {
-    DirectionResultI,
-    MapCenterI,
-    MapCircleI,
-    MapOptionsI,
-    RecordI,
-    RoutePointI
-} from "../interfaces/spicemap.interfaces";
+import {DirectionResultI, MapCenterI, MapCircleI, MapOptionsI, RecordI, RoutePointI} from "../interfaces/spicemap.interfaces";
 
 /** @ignore */
 declare var _: any;
@@ -149,6 +142,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
         private metadata: metadata,
         private renderer: Renderer2,
         private zone: NgZone,
+        private injector: Injector,
         private toast: toast
     ) {
     }
@@ -815,11 +809,11 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
             const marker = new google.maps.Marker(markerData);
             this.mapBounds.extend(marker.position);
 
-            marker.addListener('click', (e) => {
-                if (this.options.markerWithModelPopover) {
+            if (this.options.markerWithModelPopover) {
+                marker.addListener('click', (e) => {
                     this.zone.run(() => this.renderPopover(item.id, item.module, e));
-                }
-            });
+                });
+            }
 
             this.markers.push(marker);
         });
@@ -888,7 +882,9 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
 
         if (!markerElement) return;
 
-        this.metadata.addComponent('ObjectModelPopover', this.footer.footercontainer).subscribe(
+        const popoverComponent = !this.options.popoverComponent ? 'ObjectModelPopover' : this.options.popoverComponent;
+
+        this.metadata.addComponent(popoverComponent, this.footer.footercontainer, this.injector).subscribe(
             popover => {
                 popover.instance.popoverid = id;
                 popover.instance.popovermodule = module;

@@ -1,40 +1,15 @@
 /**
  * @module ModuleSpiceMap
  */
-import {
-    AfterViewInit,
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    Input,
-    IterableDiffers,
-    OnDestroy,
-    OnInit
-} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, IterableDiffers, OnDestroy, OnInit} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {metadata} from "../../../services/metadata.service";
 import {modellist} from "../../../services/modellist.service";
-import {animate, style, transition, trigger} from "@angular/animations";
 import {MapCenterI, MapOptionsI, RecordComponentConfigI, RecordI} from "../interfaces/spicemap.interfaces";
 import {model} from "../../../services/model.service";
 import {Subscription} from "rxjs";
 import {navigationtab} from "../../../services/navigationtab.service";
 import {broadcast} from "../../../services/broadcast.service";
-
-/** @ignore */
-const ANIMATIONS = [
-    trigger('animatepanel', [
-        transition(':enter', [
-            style({right: '-320px', overflow: 'hidden'}),
-            animate('.5s', style({right: '0px'})),
-            style({overflow: 'unset'})
-        ]),
-        transition(':leave', [
-            style({overflow: 'hidden'}),
-            animate('.5s', style({right: '-320px'}))
-        ])
-    ])
-];
 
 /**
  * renders a list of records on google maps
@@ -42,8 +17,7 @@ const ANIMATIONS = [
 @Component({
     selector: 'spice-google-maps-list',
     templateUrl: './src/include/spicemap/templates/spicegooglemapslist.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    animations: ANIMATIONS
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
 
@@ -83,7 +57,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     /**
      * to be highlighted on the map and re centered
      */
-    protected focusedRecordId: string;
+    public focusedRecordId: string;
 
     constructor(
         public language: language,
@@ -247,6 +221,11 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
         }
 
         this.focusedRecordId = msg.messagedata.modelId;
+        if (msg.messagedata.enableSearchAround) {
+            this.searchAroundActive = false;
+            this.toggleSearchAround();
+        }
+        this.cdRef.detectChanges();
     }
 
     /**
@@ -267,6 +246,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
         this.mapOptions = {
             showCluster: this.componentconfig.showCluster,
             markerWithModelPopover: this.componentconfig.markerWithModelPopover,
+            popoverComponent: this.componentconfig.popoverComponent,
             focusColor: this.componentconfig.focusColor,
             showMyLocation: this.componentconfig.showMyLocation,
         };
