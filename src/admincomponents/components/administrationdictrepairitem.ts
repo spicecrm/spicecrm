@@ -12,7 +12,7 @@ import {modal} from "../../services/modal.service";
     selector: 'administration-dict-repair-item',
     templateUrl: './src/admincomponents/templates/administrationdictrepairitem.html'
 })
-export class AdministrationDictRepairItem implements OnInit {
+export class AdministrationDictRepairItem {
 
     private loading: boolean = false;
     private sql: string = '';
@@ -20,21 +20,19 @@ export class AdministrationDictRepairItem implements OnInit {
     constructor(private backend: backend, private toast: toast, private language: language, private modal: modal, private injector: Injector) {
     }
 
-    /**
-     * execute db repair and save the response
-     */
-    public ngOnInit() {
-        this.loading = true;
-        this.backend.getRequest('dictionary/sql').subscribe(result => {
-            this.loading = false;
-            this.sql = result.sql;
-        });
-    }
-
     public execute() {
-            this.modal.openModal('AdministrationDictRepairModal', true, this.injector).subscribe(modal => {
-                modal.instance.sql = this.sql;
-            });
+        let await = this.modal.await(this.language.getLabel('LBL_LOADING'));
+        this.backend.getRequest('dictionary/sql').subscribe(result => {
+            await.emit(true);
+            this.sql = result.sql;
+            if(result) {
+                this.modal.openModal('AdministrationDictRepairModal', true, this.injector).subscribe(modal => {
+                    modal.instance.sql = this.sql;
+                });
+            }
+        });
+
+
         }
 
 
