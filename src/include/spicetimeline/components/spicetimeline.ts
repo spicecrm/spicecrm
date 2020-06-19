@@ -21,6 +21,7 @@ import {language} from "../../../services/language.service";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {Subscription} from "rxjs";
+import {EventI, RecordI} from "../interfaces/spicetimeline.interfaces";
 
 /** @ignore */
 declare var moment: any;
@@ -65,11 +66,11 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * holds the sheet hours
      */
-    protected periodDuration: any[] = [];
+    protected periodDuration: Array<{text: string, color: string}> = [];
     /**
      * holds the input timeline records to be rendered
      */
-    @Input() protected records: any[] = [];
+    @Input() protected records: RecordI[] = [];
     /**
      * holds the records main module
      */
@@ -77,7 +78,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * holds the header fields
      */
-    protected headerFields: any[] = ['name'];
+    protected headerFields: string[] = ['name'];
     /**
      * holds the header fields
      */
@@ -90,6 +91,10 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
      * holds the records main module
      */
     @Output() private dateChange = new EventEmitter<any>();
+    /**
+     * holds the records main module
+     */
+    @Output() private eventClick = new EventEmitter<EventI>();
     /**
      * holds the period unit to render the timeline cells
      */
@@ -135,7 +140,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
      */
     private resizeListener: any;
     /**
-     * holds the build of the record unavailable times
+     * holds the build of the record unavailable times {'record.id': {'datePart': true}}
      */
     private recordsUnavailableTimes: any = {};
     /**
@@ -236,10 +241,11 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
 
     /**
      * add a duration to calendar date
+     * @param action
      */
-    private shiftDate(direction: 'add' | 'subtract') {
-        this.startDate = new moment(this.startDate[direction](moment.duration(1, this.periodUnit + 's')));
-        this.endDate = new moment(this.endDate[direction](moment.duration(1, this.periodUnit + 's')));
+    private shiftDate(action: 'add' | 'subtract') {
+        this.startDate = new moment(this.startDate[action](moment.duration(1, this.periodUnit + 's')));
+        this.endDate = new moment(this.endDate[action](moment.duration(1, this.periodUnit + 's')));
         this.buildPeriodDuration();
         this.setHeaderDateText();
         this.emitDateChange();
@@ -250,7 +256,10 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
      * add today hour interval to reposition the marker on minute change
      */
     private addTodayHourInterval() {
-        this.todayMarkerHourInterval = window.setInterval(() => this.setTodayHourMarkerStyle(), 60000);
+        this.todayMarkerHourInterval = window.setInterval(() => {
+            this.setTodayHourMarkerStyle();
+            this.cdRef.detectChanges();
+        }, 60000);
     }
 
     /**
@@ -259,7 +268,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
     private toggleOnlyWorkingHours() {
         this.onlyWorkingHours = !this.onlyWorkingHours;
         this.startHour = this.onlyWorkingHours ? +this.userpreferences.toUse.calendar_day_start_hour : 0;
-        this.endHour = this.onlyWorkingHours ? (+this.userpreferences.toUse.calendar_day_end_hour -1) : 23;
+        this.endHour = this.onlyWorkingHours ? (+this.userpreferences.toUse.calendar_day_end_hour - 1) : 23;
         this.setDate();
         this.buildHoursArray();
         this.setTodayHourMarkerStyle();
@@ -387,19 +396,19 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
      * set record events style
      */
     private setRecordsEventStyle() {
-        this.records.forEach(record => {
+        this.records.forEach((record: RecordI) => {
             const days = {};
             if (this.periodUnit == 'month') {
-                record.events.forEach(event => {
+                record.events.forEach((event: EventI) => {
                     const eventDay = event.start.date();
                     if (!days[eventDay]) days[eventDay] = [];
                     days[eventDay].push(event.id);
                 });
             }
-            record.events.forEach(event => {
+            record.events.forEach((event: EventI) => {
 
                 event.style = {
-                    'background-color': this.eventColor,
+                    'background-color': event.color || this.eventColor,
                     'display': 'block',
                     'height': '80%',
                     'position': 'absolute',
@@ -418,7 +427,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
                         break;
                     case 'week':
                         event.style.left = ((this.periodUnitWidth * event.start.day()) + ((this.periodUnitWidth / (this.hoursArray.length * 60)) * startMinutes)) + 'px';
-                        event.style.width = (((this.periodUnitWidth / (this.hoursArray.length * 60)) * (endMinutes - startMinutes)) -1) + 'px';
+                        event.style.width = (((this.periodUnitWidth / (this.hoursArray.length * 60)) * (endMinutes - startMinutes)) - 1) + 'px';
                         break;
                     case 'month':
                         const eventDay = event.start.date();
@@ -435,11 +444,11 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
      * set the record unavailable array style to grey the unavailable time on the timeline
      */
     private setRecordsUnavailable() {
-        this.records.forEach(record => {
+        this.records.forEach((record: RecordI) => {
             if (!record.unavailable || !record.unavailable.length) return;
             this.recordsUnavailableTimes[record.id] = {};
 
-            record.unavailable.forEach(part => {
+            record.unavailable.forEach((part) => {
                 const start = new moment().hour(part.from);
                 const end = new moment().hour(part.to);
                 for (let date = start; date.isSameOrBefore(end); date.add(1, 'hours')) {
@@ -475,7 +484,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * zoom sheet cells out
      * reset the records event style
-     * reset the today marker hour stlye
+     * reset the today marker hour style
      */
     private zoomOut() {
         this.periodUnitWidth -= 10;
@@ -563,7 +572,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
      */
     private setTodayHourMarkerStyle() {
         const today = new moment();
-        if (!today.isSameOrAfter(this.startDate, 'day') || !today.isSameOrBefore(this.endDate, 'day')) {
+        if (this.periodUnit == 'month' || !today.isSameOrAfter(this.startDate, 'day') || !today.isSameOrBefore(this.endDate, 'day')) {
             return this.todayHourMarkerStyle = {display: 'none'};
         }
         const todayMinutes = (today.hour() - this.startHour) * 60 + today.minute();
@@ -583,5 +592,13 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
                 this.todayHourMarkerStyle.left = (((this.periodUnitWidth * today.day()) + ((this.periodUnitWidth / (this.hoursArray.length * 60)) * todayMinutes)) - 1.5) + 'px';
                 break;
         }
+    }
+
+    /**
+     * emit the clicked event
+     * @param event
+     */
+    private emitEvent(event) {
+        this.eventClick.emit(event);
     }
 }
