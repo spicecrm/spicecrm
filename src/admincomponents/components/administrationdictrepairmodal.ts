@@ -14,7 +14,7 @@ import {modal} from "../../services/modal.service";
 })
 export class AdministrationDictRepairModal {
 
-    private loading: boolean = false;
+    private synced:boolean = false;
     private sql: string;
     private dbErrors: any = [];
     private self: any = {};
@@ -33,7 +33,7 @@ export class AdministrationDictRepairModal {
             if (!result.response) {
                 this.dbErrors = result.errors;
             } else if (result.synced) {
-                this.toast.sendToast(this.language.getLabel('LBL_REPAIR_DATABASE_SYNCED'), 'success');
+                this.toast.sendToast(this.language.getLabel('LBL_REPAIR_DATABASE_ALREADY_SYNCED'), 'success');
                 this.close();
             } else {
                 this.toast.sendToast(this.language.getLabel('LBL_REPAIR_DATABASE_SYNCED'), 'success');
