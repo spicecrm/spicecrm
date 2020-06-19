@@ -9,7 +9,7 @@
         <div class="slds-form-element__group">
             <system-googleplaces-autocomplete (address)="addressSelected($event)"></system-googleplaces-autocomplete>
             <div class="slds-grid slds-gutters_direct-xx-small">
-                <div class="slds-form-element slds-col slds-size--4-of-6">
+                <div class="slds-form-element slds-col" [class]="fieldconfig.hidenumbersuffix? 'slds-size--5-of-6': 'slds-size--4-of-6'">
                     <label class="slds-form-element__label"><system-label label="LBL_STREET"></system-label></label>
                     <div class="slds-form-element__control">
                         <input #focus type="text" class="slds-input" [(ngModel)]="street" [ngModelOptions]="modelOptions"/>
@@ -21,14 +21,14 @@
                         <input #focus type="text" class="slds-input" [(ngModel)]="street_number" [ngModelOptions]="modelOptions"/>
                     </div>
                 </div>
-                <div class="slds-form-element slds-col slds-size--1-of-6 ">
+                <div *ngIf="!fieldconfig.hidenumbersuffix" class="slds-form-element slds-col slds-size--1-of-6 ">
                     <label class="slds-form-element__label"><system-label label="LBL_STREET_NUMBER_SUFFIX" length="short"></system-label></label>
                     <div class="slds-form-element__control">
                         <input #focus type="text" class="slds-input" [(ngModel)]="street_number_suffix" [ngModelOptions]="modelOptions"/>
                     </div>
                 </div>
             </div>
-            <div class="slds-form-element slds-size--1-of-1">
+            <div *ngIf="!fieldconfig.hideattn" class="slds-form-element slds-size--1-of-1">
                 <label class="slds-form-element__label"><system-label label="LBL_ATTN"></system-label></label>
                 <div class="slds-form-element__control">
                     <input type="text" class="slds-input" [(ngModel)]="attn" [ngModelOptions]="modelOptions"/>
@@ -41,13 +41,13 @@
                         <input type="text" class="slds-input" [(ngModel)]="postalcode" [ngModelOptions]="modelOptions"/>
                     </div>
                 </div>
-                <div class="slds-form-element slds-size--2-of-5 slds-p-left--xx-small">
+                <div class="slds-form-element slds-p-left--xx-small" [class]="fieldconfig.hidedistrict? 'slds-size--4-of-5': 'slds-size--2-of-5'">
                     <label class="slds-form-element__label"><system-label label="LBL_CITY"></system-label></label>
                     <div class="slds-form-element__control">
                         <input type="text" class="slds-input" [(ngModel)]="city" [ngModelOptions]="modelOptions"/>
                     </div>
                 </div>
-                <div class="slds-form-element slds-size--2-of-5 slds-p-left--xx-small">
+                <div *ngIf="!fieldconfig.hidedistrict"  class="slds-form-element slds-size--2-of-5 slds-p-left--xx-small">
                     <label class="slds-form-element__label"><system-label label="LBL_DISTRICT"></system-label></label>
                     <div class="slds-form-element__control">
                         <input type="text" class="slds-input" [(ngModel)]="district" [ngModelOptions]="modelOptions"/>
@@ -55,11 +55,11 @@
                 </div>
             </div>
             <div class="slds-grid">
-                <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <div *ngIf="!fieldconfig.hidestate"  class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
                     <label class="slds-form-element__label"><system-label label="LBL_STATE"></system-label></label>
                     <system-input-state [(ngModel)]="state" [country]="country"></system-input-state>
                 </div>
-                <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <div class="slds-form-element slds-p-left--xx-small" [class]="fieldconfig.hidestate? 'slds-size--2-of-2': 'slds-size--1-of-2'">
                     <label class="slds-form-element__label"><system-label label="LBL_COUNTRY"></system-label></label>
                     <system-input-country [(ngModel)]="country"></system-input-country>
                 </div>
