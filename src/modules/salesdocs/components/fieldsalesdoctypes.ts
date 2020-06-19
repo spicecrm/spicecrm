@@ -8,9 +8,13 @@ import {language} from '../../../services/language.service';
 import {metadata} from '../../../services/metadata.service';
 import {configurationService} from '../../../services/configuration.service';
 import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
-
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
+
+/**
+ * @ignore
+ */
+declare var _: any;
 
 @Component({
     selector: 'field-salesdoc-types',
@@ -60,13 +64,14 @@ export class fieldSalesdocTypes extends fieldGeneric {
      */
     public getOptions() {
         let salesdocTypes = this.configuration.getData('salesdoctypes');
-
-        if(this.fieldconfig.withoutdisplayonly) {
-            this.options = salesdocTypes.filter(salesdocType => salesdocType.displayonly == 0);
-        } else {
-            this.options = salesdocTypes;
+        if ( _.isArray( salesdocTypes )) {
+            if( this.fieldconfig.withoutdisplayonly ) {
+                this.options = salesdocTypes.filter( salesdocType => salesdocType.displayonly == 0 );
+            } else {
+                this.options = salesdocTypes;
+            }
+            this.translateAndSortOptions();
         }
-        this.translateAndSortOptions();
     }
 
     /**

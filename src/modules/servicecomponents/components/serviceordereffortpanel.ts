@@ -4,9 +4,7 @@ import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
 import {view} from '../../../services/view.service';
 import {modal} from '../../../services/modal.service';
-import {ObjectModalModuleLookup} from "../../../objectcomponents/components/objectmodalmodulelookup";
 import {modelutilities} from "../../../services/modelutilities.service";
-
 
 @Component({
     selector: "serviceorder-effort-panel",
@@ -94,6 +92,7 @@ export class ServiceOrderEffortPanel implements OnInit {
     public getFieldsetFields() {
         if (this.componentconfig.fieldset) {
             this.fieldsetFields = this.metadata.getFieldSetFields(this.fieldset);
+            this.fieldsetFields.shift();
         }
 
         this.fieldsetDetailItems = this.metadata.getFieldSetItems(this.detail_fieldset);
@@ -181,9 +180,14 @@ export class ServiceOrderEffortPanel implements OnInit {
                     itemData.parent_type = this.currentProductType;
                     itemData.itemnr = (this.itemcount + 1) * 10;
 
+                    // set default acl to allow editing
+                    itemData.acl = {
+                        create: true,
+                        edit: true
+                    };
+
                     this.model.addRelatedRecords(this.relation_link_name, [itemData], false);
                 }
-                this.view.setEditMode();
                 this.currentProductType = "";
             });
         });

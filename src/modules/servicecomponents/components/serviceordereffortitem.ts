@@ -63,6 +63,7 @@ export class ServiceOrderEffortItem implements OnInit  {
      * view mode subscriptions (manage edit/view mode)
      */
     private viewSubscriptions() {
+        this.view.displayLabels = false;
         // link the two views
         this.view.isEditable = this.parentview.isEditable;
         this.view.mode$.subscribe(mode => {
@@ -113,6 +114,7 @@ export class ServiceOrderEffortItem implements OnInit  {
     private deleteItem() {
         this.serviceorder.removeRelatedRecords(this.relationlinkname, [this.item.id]);
         this.serviceorder.data[this.relationlinkname].beans_relations_to_delete[this.item.id] = this.item;
+
         // this.item.deleted = true;
     }
 

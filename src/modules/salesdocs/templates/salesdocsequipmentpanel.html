@@ -1,0 +1,26 @@
+<system-collapsable-tab [title]="componentconfig.name" [expanded]="expanded">
+    <table class="slds-table slds-table_bordered slds-p-vertical--x-small slds-p-bottom--none">
+        <thead>
+            <th style="width: 60px"></th>
+            <th *ngFor="let fieldsetField of fieldsetFields">
+                <field-label class="slds-truncate" addclasses="slds-truncate" [fieldname]="fieldsetField.field" [fieldconfig]="fieldsetField.fieldconfig"></field-label>
+            </th>
+        </thead>
+        <tbody *ngIf="hasEquipments()">
+            <ng-container *ngFor="let equipment of availableEquipments">
+                <tr salesdocs-equipment-item [equipment]="equipment" [parentview]="view" [salesDoc]="model" (selectionChanged)="selectionChanged()" [fieldset]="fieldset"></tr>
+            </ng-container>
+        </tbody>
+        <tbody *ngIf="!hasEquipments()">
+            <tr>
+                <td colspan="100">
+                    <div class="slds-p-around_x-small slds-text-align_center">
+                        <system-label label="LBL_NO_ENTRIES"></system-label>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</system-collapsable-tab>
