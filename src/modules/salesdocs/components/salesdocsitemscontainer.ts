@@ -178,12 +178,16 @@ export class SalesDocsItemsContainer {
         itemData.id = this.model.generateGuid();
         itemData.deleted = 0;
         itemData.salesdoc_id = this.model.id;
-        itemData.tax_category = 'V20';
+        // The tax category is temporarily set by a copy rule.
+        // So for this time only one specific tax rate per CRM installation is possible.
+        // ToDo: Work out a tax rate calculation.
+        // itemData.tax_category = 'V20';
         itemData.quantity = 1;
         itemData.itemnr = this.getNextItemNr();
         itemData.itemtype = itemType;
         itemData.date_entered = new moment();
         itemData.date_modified = new moment();
+        console.log('itemType',itemType);
 
         // add to the bean as well
         if (!this.model.data.salesdocitems) {
