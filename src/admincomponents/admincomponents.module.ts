@@ -40,6 +40,7 @@ import /*embed*/ {AdministrationHomeScreenCard} from "./components/administratio
 import /*embed*/ {AdministrationHomeScreenCardItem} from "./components/administrationhomescreencarditem";
 
 import /*embed*/ { AdministrationSystemStats } from './components/administrationsystemstats';
+import /*embed*/ { AdministrationSystemVersions } from './components/administrationsystemversions';
 
 import /*embed*/ { AdministrationSysTrashcanManager } from './components/administrationsystrashcanmanager';
 import /*embed*/ { AdministrationSysTrashcanRecover } from './components/administrationsystrashcanrecover';
@@ -95,6 +96,7 @@ import /*embed*/ {AdministrationLanguages} from "./components/administrationlang
         AdministrationSchedulerRunButton,
         AdministrationSchedulerScheduleButton,
         AdministrationSystemStats,
+        AdministrationSystemVersions,
         AdministrationFtsManagerIndexModal,
         AdministrationHomeScreen,
         AdministrationHomeScreenCard,
