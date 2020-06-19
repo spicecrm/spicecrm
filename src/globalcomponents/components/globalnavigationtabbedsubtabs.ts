@@ -10,7 +10,7 @@ import {
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {navigation, objectTab} from '../../services/navigation.service';
-import {InputNamesRule} from "@angular/cdk/schematics/ng-update/upgrade-rules/input-names-rule";
+
 import {GlobalNavigationTabbedMenuTab} from "./globalnavigationtabbedmenutab";
 import {GlobalNavigationTabbedMoreTab} from "./globalnavigationtabbedmoretab";
 import {GlobalNavigationTabbedSubtabItem} from "./globalnavigationtabbedsubtabitem";
