@@ -360,6 +360,7 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
         this.mapOptions = {
             showCluster: this.componentconfig.showCluster,
             markerWithModelPopover: this.componentconfig.markerWithModelPopover,
+            popoverComponent: this.componentconfig.popoverComponent,
             focusColor: this.componentconfig.focusColor,
             // should be define first by setCenterFromModel
             circle: this.mapOptions.circle,

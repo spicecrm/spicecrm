@@ -38,5 +38,8 @@
             </ng-container>
         </div>
     </div>
-    <object-list style="display: block" class="slds-size--1-of-2 slds-height_full"></object-list>
+    <div class="slds-size--1-of-2 slds-height_full slds-grid slds-grid--vertical">
+        <spice-google-maps-list-header *ngIf="!!componentconfig.showListHeader"></spice-google-maps-list-header>
+        <object-list style="display: block; width: 100%; min-height: 0;" class="slds-grow"></object-list>
+    </div>
 </div>

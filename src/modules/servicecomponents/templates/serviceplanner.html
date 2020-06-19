@@ -1,8 +1,8 @@
 <div class="slds-grid slds-grid--vertical" system-to-bottom-noscroll>
     <div class="slds-border--bottom" style="height: 50%" [system-overlay-loading-spinner]="isLoading">
-        <spice-timeline [records]="timelineRecords" recordModule="Users" (dateChange)="setDateRange($event)"></spice-timeline>
+        <spice-timeline [records]="timelineRecords" recordModule="Users" (dateChange)="setDateRange($event)" (eventClick)="handleEventClick($event)"></spice-timeline>
     </div>
     <div style="height: 50%">
-        <system-dynamic-component component="SpiceGoogleMapsList"></system-dynamic-component>
+        <system-dynamic-component component="SpiceGoogleMapsList" [componentattributes]="{focusedRecordId: servicePlannerService.timelineSelectedEvent?.id}"></system-dynamic-component>
     </div>
 </div>

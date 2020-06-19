@@ -95,7 +95,7 @@
                             <div *ngFor="let hour of hoursArray; trackBy: trackByIndexFn" [style.width.%]="100 / hoursArray.length" [class.slds-theme--shade]="recordsUnavailableTimes[record.id][hour]" class="slds-height_full"></div>
                         </ng-container>
                     </div>
-                    <spice-timeline-event *ngFor="let event of record.events; trackBy: trackByItemFn" [event]="event" [ngStyle]="event.style" class="slds-truncate slds-p-around--xx-small"></spice-timeline-event>
+                    <spice-timeline-event *ngFor="let event of record.events; trackBy: trackByItemFn" [event]="event" [ngStyle]="event.style" (click)="emitEvent(event)" class="slds-truncate slds-p-around--xx-small"></spice-timeline-event>
                 </div>
             </div>
         </div>

@@ -11,6 +11,11 @@ import {DirectivesModule} from '../../directives/directives';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 
+// import interfaces
+import /*embed*/ {ServicePlannerRecordI, ServicePlannerEventI, ServicePlannerDirectionResultI, ServicePlannerRoutePointI} from './interfaces/servicecomponents.interfaces';
+
+import /*embed*/ {ServicePlannerService} from "./services/serviceplanner.service";
+
 import /*embed*/ {SignServiceOrderModalButtonComponent} from "./components/signserviceordermodalbutton";
 import /*embed*/ {SignServiceOrderModalComponent} from "./components/signserviceordermodal";
 import /*embed*/ {ServiceOrderSummaryComponent} from "./components/serviceordersummary";
@@ -49,6 +54,8 @@ import /*embed*/ {ServiceOrderItemPipe} from "./pipes/serviceorderitemspipe";
 import /*embed*/ {ServiceOrderAddTypeSelector} from "./components/serviceorderaddtypeselector";
 
 import /*embed*/ {ServicePlanner} from "./components/serviceplanner";
+import /*embed*/ {ServicePlannerMapsModelPopover} from "./components/serviceplannermapsmodelpopover";
+import /*embed*/ {ServicePlannerMapsModelPopoverDirection} from "./components/serviceplannermapsmodelpopoverdirection";
 import {ModuleSpiceTimeline} from "../../include/spicetimeline/spicetimeline";
 
 @NgModule({
@@ -98,7 +105,9 @@ import {ModuleSpiceTimeline} from "../../include/spicetimeline/spicetimeline";
         ServiceOrderItemItem,
         ServiceOrderItemPanel,
         ServiceOrderAddTypeSelector,
-        ServicePlanner
+        ServicePlanner,
+        ServicePlannerMapsModelPopover,
+        ServicePlannerMapsModelPopoverDirection,
     ]
 })
 export class ServiceComponentsModule {

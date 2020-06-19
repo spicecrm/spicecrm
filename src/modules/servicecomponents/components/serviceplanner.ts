@@ -13,6 +13,8 @@ import {navigationtab} from "../../../services/navigationtab.service";
 import {session} from "../../../services/session.service";
 import {view} from "../../../services/view.service";
 import {map} from "rxjs/operators";
+import {ServicePlannerEventI, ServicePlannerRecordI} from "../interfaces/servicecomponents.interfaces";
+import {ServicePlannerService} from "../services/serviceplanner.service";
 
 /** @ignore */
 declare var moment: any;
@@ -24,18 +26,22 @@ declare var moment: any;
     selector: 'service-planner',
     templateUrl: './src/modules/servicecomponents/templates/serviceplanner.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [modellist, model, view]
+    providers: [ServicePlannerService, modellist, model, view]
 })
 
 export class ServicePlanner implements OnInit, OnDestroy {
     /**
      * holds the system timezone which is loaded from the session
      */
-    public timeZone: any;
+    public timeZone: string;
+    /**
+     * holds the focused event color
+     */
+    public focusColor: string = '#ffc700';
     /**
      * holds the records that will be passed to the timeline component
      */
-    protected timelineRecords: any[] = [];
+    protected timelineRecords: ServicePlannerRecordI[] = [];
     /**
      * holds the users module filter
      */
@@ -66,9 +72,10 @@ export class ServicePlanner implements OnInit, OnDestroy {
                 private backend: backend,
                 private session: session,
                 private view: view,
+                private servicePlannerService: ServicePlannerService,
                 private modellist: modellist) {
         this.subscribeToChanges();
-        this.navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_SERVICE_PLANNER'), displayicon: 'date_input'});
+        this.setTabInfo();
         this.view.displayLabels = false;
     }
 
@@ -91,6 +98,13 @@ export class ServicePlanner implements OnInit, OnDestroy {
     }
 
     /**
+     * set the navigation tab info
+     */
+    private setTabInfo() {
+        this.navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_SERVICE_PLANNER'), displayicon: 'date_input'});
+    }
+
+    /**
      * set the date range from the timeline component
      * @param dateRange
      */
@@ -105,7 +119,6 @@ export class ServicePlanner implements OnInit, OnDestroy {
      */
     private subscribeToChanges() {
         let subscriber = this.broadcast.message$.subscribe(message => {
-            const id = message.messagedata.id;
             const module = message.messagedata.module;
             const data = message.messagedata.data;
 
@@ -129,9 +142,9 @@ export class ServicePlanner implements OnInit, OnDestroy {
                     this.timelineRecords = this.timelineRecords.slice();
                     break;
                 case 'model.delete':
-                    this.timelineRecords.some(record => {
+                    this.timelineRecords.some((record: ServicePlannerRecordI) => {
                         if (record.id !== data.assigned_user_id) return false;
-                        record.events = record.events.filter(serviceOrder => serviceOrder.id !== data.id);
+                        record.events = record.events.filter((serviceOrder: ServicePlannerEventI) => serviceOrder.id !== data.id);
                     });
                     // force detect changes
                     this.timelineRecords = this.timelineRecords.slice();
@@ -149,15 +162,17 @@ export class ServicePlanner implements OnInit, OnDestroy {
     private handleEventChange(data) {
 
         if (moment(data.date_start) > this.endDate && moment(data.date_end) < this.startDate) {
-            this.timelineRecords.some(record => {
+            this.timelineRecords.some((record: ServicePlannerRecordI) => {
                 if (record.id !== data.assigned_user_id) return false;
-                record.events = record.events.filter(serviceOrder => serviceOrder.id !== data.id);
+                record.events = record.events.filter((serviceOrder: ServicePlannerEventI) => serviceOrder.id !== data.id);
                 return true;
             });
         } else {
-            this.timelineRecords.some(record => {
+            this.timelineRecords.some((record: ServicePlannerRecordI) => {
+
                 if (record.id !== data.assigned_user_id) return false;
-                const exists = record.events.some(serviceOrder => {
+
+                const exists = record.events.some((serviceOrder: ServicePlannerEventI) => {
                     if (serviceOrder.id !== data.id) return false;
                     serviceOrder.data = {...data};
                     serviceOrder.start = new moment(moment.utc(data.date_start).tz(this.timeZone).format());
@@ -165,14 +180,16 @@ export class ServicePlanner implements OnInit, OnDestroy {
                     return true;
                 });
                 if (exists) return true;
-                record.events.push({
+
+                const event: ServicePlannerEventI = {
                     id: data.id,
                     module: 'ServiceOrders',
                     start: new moment(moment.utc(data.date_start).tz(this.timeZone).format()),
                     end: new moment(moment.utc(data.date_end).tz(this.timeZone).format()),
                     data: {...data}
-                });
-                record.events.sort((a,b) => a.start.isAfter(b.start) ? 1 : -1);
+                };
+                record.events.push(event);
+                record.events.sort((a, b) => a.start.isAfter(b.start) ? 1 : -1);
                 return true;
             });
         }
@@ -194,8 +211,8 @@ export class ServicePlanner implements OnInit, OnDestroy {
 
         this.backend.getRequest('modules/ServiceOrders/Planner/records', params)
             .pipe(
-                map(records => records.map(record => {
-                        record.events = record.events.map(serviceOrder => {
+                map((records: ServicePlannerRecordI[]) => records.map((record: ServicePlannerRecordI) => {
+                        record.events = record.events.map((serviceOrder: ServicePlannerEventI) => {
                             serviceOrder.start = new moment(moment.utc(serviceOrder.start).tz(this.timeZone).format());
                             serviceOrder.end = new moment(moment.utc(serviceOrder.end).tz(this.timeZone).format());
                             return serviceOrder;
@@ -203,7 +220,7 @@ export class ServicePlanner implements OnInit, OnDestroy {
                         return record;
                     })
                 )
-            ).subscribe(records => {
+            ).subscribe((records: ServicePlannerRecordI[]) => {
                 this.timelineRecords = records;
                 this.isLoading = false;
                 this.cdRef.detectChanges();
@@ -212,5 +229,21 @@ export class ServicePlanner implements OnInit, OnDestroy {
                 this.isLoading = false;
                 this.cdRef.detectChanges();
             });
+    }
+
+    /**
+     * handle the event click
+     * @param event
+     */
+    private handleEventClick(event: ServicePlannerEventI) {
+        this.broadcast.broadcastMessage('map.focus', {
+            modelId: event.id,
+            tabId: 'main',
+            enableSearchAround: true
+        });
+        this.servicePlannerService.timelineSelectedEvent = event;
+        event.color = this.focusColor;
+        // force detect changes
+        this.timelineRecords = this.timelineRecords.slice();
     }
 }
