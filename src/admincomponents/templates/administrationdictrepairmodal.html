@@ -1,12 +1,15 @@
 <system-modal>
-    <system-modal-header (close)="close()"><system-label label="LBL_REPAIR_DICTIONARY"></system-label></system-modal-header>
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_REPAIR_DICTIONARY"></system-label>
+    </system-modal-header>
     <system-modal-content>
         <div *ngIf="sql !=''">
             <div class="slds-form-element">
-                <system-label label="LBL_EXECUTED_SQL"></system-label>
+                <system-label label="LBL_SQL"></system-label>
                 <div class="slds-form-element__control">
                     <textarea disabled class="slds-textarea" style="min-height: 400px;" [ngModel]="sql"></textarea>
                 </div>
+
             </div>
         </div>
         <div *ngIf="dbErrors.length > 0" class="slds-form-element">
@@ -16,11 +19,17 @@
                       [value]="error"></textarea>
             </div>
         </div>
-
+        <div *ngIf="sql == ''" class="slds-form-element__control">
+            <system-label label="LBL_REPAIR_DATABASE_ALREADY_SYNCED"></system-label>
+        </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--brand" (click)="doRepair()"><system-label label="LBL_EXECUTE"></system-label></button>
-        <button class="slds-button slds-button--brand" (click)="copy2clipboard()"><system-label label="LBL_COPY_TO_CLIPBOARD"></system-label></button>
+        <button class="slds-button slds-button--brand" [disabled]="sql == ''" (click)="doRepair()">
+            <system-label label="LBL_EXECUTE"></system-label>
+        </button>
+        <button class="slds-button slds-button--brand" (click)="copy2clipboard()">
+            <system-label label="LBL_COPY_TO_CLIPBOARD"></system-label>
+        </button>
     </system-modal-footer>
 </system-modal>
 
