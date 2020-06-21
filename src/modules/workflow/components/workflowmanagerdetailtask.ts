@@ -18,12 +18,12 @@ import {language} from '../../../services/language.service';
     templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtask.html',
     providers: [model, view]
 })
-export class WorkflowManagerDetailTask implements OnChanges{
+export class WorkflowManagerDetailTask implements OnChanges {
 
-    @Input() tasks: any = {};
-    @Input() currenttask: string = '';
-    @Input() module: string = '';
-    activeTab: string = 'T';
+    @Input() private tasks: any = {};
+    @Input() private currenttask: string = '';
+    @Input() private module: string = '';
+    private activeTab: string = 'T';
 
     constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
         this.model.module = 'WorkflowTaskDefinitions';
@@ -33,13 +33,17 @@ export class WorkflowManagerDetailTask implements OnChanges{
         this.view.displayLabels = false;
     }
 
-    ngOnChanges() {
+    public ngOnChanges() {
         this.tasks.some(task => {
-            if(task.id == this.currenttask){
+            if (task.id == this.currenttask) {
                 this.model.id = task.id;
                 this.model.data = this.modelutilities.backendModel2spice(this.model.module, task);
+                this.model.data.acl = {
+                    create: true,
+                    edit: true
+                };
             }
-        })
+        });
 
 
     }

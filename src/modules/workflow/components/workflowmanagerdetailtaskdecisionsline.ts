@@ -20,24 +20,25 @@ import {footer} from "../../../services/footer.service";
 })
 export class WorkflowManagerDetailTaskDecisionsLine {
 
-    @Input() decision: any = {};
-    @Input() decisions: any = {};
-    @Input() tasks: Array<any> = [];
+    @Input() private decision: any = {};
+    @Input() private decisions: any = {};
+    @Input() private tasks: any[] = [];
 
     constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities, private footer: footer) {
         this.model.module = 'WorkflowTaskDecisions';
 
         // set the view to edit mode
         this.view.isEditable = true;
+        this.view.displayLabels = false;
         this.view.setEditMode();
     }
 
-    ngOnChanges() {
+    public ngOnChanges() {
         this.model.id = this.decision.id;
         this.model.data = this.modelutilities.backendModel2spice(this.model.module, this.decision);
     }
 
-    removeDecision(){
+    private removeDecision() {
         this.metadata.addComponent('SystemConfirmDialog', this.footer.footercontainer).subscribe(componenRef => {
             componenRef.instance.title = 'Delete Decision';
             componenRef.instance.message = 'are you sure you want to delete the decision option?';
@@ -50,7 +51,7 @@ export class WorkflowManagerDetailTaskDecisionsLine {
                             return true;
                         }
                         index++;
-                    })
+                    });
                     // this.decisions.splice(index, 1);
                 }
             });

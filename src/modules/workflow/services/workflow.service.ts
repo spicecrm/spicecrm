@@ -46,7 +46,7 @@ export class workflow {
             this.broadcastOpenCount();
 
             this.loading = false;
-        })
+        });
 
         return retSubject.asObservable();
     }
@@ -68,12 +68,11 @@ export class workflow {
                     wf.worflowtasks = workflow.worflowtasks;
                     return true;
                 }
-            })
+            });
 
             retSubject.next(workflow);
             retSubject.complete();
-
-        })
+        });
         return retSubject.asObservable();
     }
 
@@ -94,7 +93,7 @@ export class workflow {
                     wf.worflowtasks = workflow.workflow.worflowtasks;
                     return true;
                 }
-            })
+            });
 
             retSubject.next(workflow.parent);
             retSubject.complete();

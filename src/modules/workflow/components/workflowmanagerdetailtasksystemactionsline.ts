@@ -19,9 +19,9 @@ import {footer} from "../../../services/footer.service";
 })
 export class WorkflowManagerDetailTaskSystemactionsLine {
 
-    @Input() systemaction: any = {};
-    @Input() systemactions: any = {};
-    @Input() module : string = '';
+    @Input() private systemaction: any = {};
+    @Input() private systemactions: any = {};
+    @Input() private module: string = '';
 
     constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities, private footer: footer) {
         this.model.module = 'WorkflowSystemActions';
@@ -29,14 +29,15 @@ export class WorkflowManagerDetailTaskSystemactionsLine {
         // set the view to edit mode
         this.view.isEditable = true;
         this.view.setEditMode();
+        this.view.displayLabels = false;
     }
 
-    ngOnChanges() {
+    public ngOnChanges() {
         this.model.id = this.systemaction.id;
         this.model.data = this.modelutilities.backendModel2spice(this.model.module, this.systemaction);
     }
 
-    removeDecision(){
+    private removeDecision(){
         this.metadata.addComponent('SystemConfirmDialog', this.footer.footercontainer).subscribe(componenRef => {
             componenRef.instance.title = 'Delete Systemaction';
             componenRef.instance.message = 'are you sure you want to delete the system action?';
@@ -49,8 +50,7 @@ export class WorkflowManagerDetailTaskSystemactionsLine {
                             return true;
                         }
                         index++;
-                    })
-                    // this.systemactions.splice(index, 1);
+                    });
                 }
             });
         });
