@@ -28,10 +28,10 @@ export class ObjectActionDuplicateButton {
      * set to dsiabled when we are not allowed to edit or we are editing or saving already
      */
     get disabled() {
-        if (this.model.data.acl && !this.model.checkAccess('create')) {
+        if (!this.metadata.checkModuleAcl(this.parent.module, 'create')) {
             return true;
         }
-        return this.model.isEditing || this.model.isSaving;
+        return this.parent.isEditing || this.parent.isSaving;
     }
 
     public execute() {
