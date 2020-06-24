@@ -43,6 +43,7 @@ import /*embed*/ {SalesdocsWithReferenceTypeModal} from "./components/salesdocsw
 import /*embed*/ {SalesdocsWithReferenceSelectItemsModal} from "./components/salesdocswithreferenceselectitemsmodal";
 import /*embed*/ {SalesDocsEquipmentPanel } from './components/salesdocsequipmentpanel';
 import /*embed*/ {SalesDocsEquipmentItem } from './components/salesdocsequipmentitem';
+import /*embed*/ {SalesdocsFinalizeButton} from "./components/salesdocsfinalizebutton";
 
 @NgModule({
     imports: [
@@ -85,7 +86,8 @@ import /*embed*/ {SalesDocsEquipmentItem } from './components/salesdocsequipment
         SalesdocsWithReferenceTypeModal,
         SalesdocsWithReferenceSelectItemsModal,
         SalesDocsEquipmentItem,
-        SalesDocsEquipmentPanel
+        SalesDocsEquipmentPanel,
+        SalesdocsFinalizeButton
     ]
 })
 export class ModuleSalesDocs {
