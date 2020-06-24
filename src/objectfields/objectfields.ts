@@ -54,6 +54,7 @@ import /*embed*/ {fieldDateTime} from './components/fielddatetime';
 import /*embed*/ {fieldDateTimeDuration} from './components/fielddatetimeduration';
 import /*embed*/ {fieldDuration} from './components/fieldduration';
 import /*embed*/ {fieldDateTimeSpan} from './components/fielddatetimespan';
+import /*embed*/ {fieldDateSpan} from './components/fielddatespan';
 import /*embed*/ {fieldAddress} from './components/fieldaddress';
 import /*embed*/ {fieldFullName} from './components/fieldfullname';
 import /*embed*/ {fieldTitle} from './components/fieldtitle';
@@ -170,6 +171,7 @@ declare var _: any;
         fieldDateTime,
         fieldDateTimeDuration,
         fieldDuration,
+        fieldDateSpan,
         fieldDateTimeSpan,
         fieldParent,
         fieldModuleFilter,
