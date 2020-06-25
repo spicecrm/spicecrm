@@ -45,11 +45,11 @@ export class fieldDateSpan extends fieldGeneric implements OnInit {
 
 
     get formattedStartDate() {
-        return this.startDate ? new moment(this.startDate).format(this.userpreferences.getDateFormat()) : '';
+        return this.startDate ? moment(this.startDate).format(this.userpreferences.getDateFormat()) : '';
     }
 
     get formattedEndDate() {
-        return this.endDate ? new moment(this.endDate).format(this.userpreferences.getDateFormat()) : '';
+        return this.endDate ? moment(this.endDate).format(this.userpreferences.getDateFormat()) : '';
     }
 
     get startDate() {
