@@ -18,6 +18,7 @@ import {recent} from "./recent.service";
 import {configurationService} from "./configuration.service";
 import {socket} from "./socket.service";
 
+declare var _: any;
 
 // import {GlobalHeader} from '../globalcomponents/components/globalheader';
 // import {GlobalFooter} from '../globalcomponents/components/globalfooter';
@@ -757,7 +758,7 @@ export class model implements OnDestroy {
 
         // shift to backend format .. no objects like date embedded
         if (withbackup && !this.duplicate) {
-            this.backupData = JSON.parse(JSON.stringify(this.data));
+            this.backupData = this.buildBackup(this.data);
         }
 
         /**
@@ -1684,6 +1685,26 @@ export class model implements OnDestroy {
             case 'inmorethandays':
                 return moment(this.getFieldValue(condition.field)).isAfter(new moment().add(+condition.filtervalue, 'd'), 'days');
         }
+    }
+
+    /**
+     * Deep cloning of an object. Minds also moment objects.
+     * @param object The object to clone.
+     */
+    private buildBackup( object ) {
+        let clone = {};
+        _.each( object, ( value, key ) => {
+            if ( _.isObject( value )) {
+                if ( moment.isMoment( value )) {
+                    clone[key] = moment( value );
+                } else {
+                    clone[key] = this.buildBackup( value );
+                }
+            } else {
+                clone[key] = object[key];
+            }
+        });
+        return clone;
     }
 
 }
