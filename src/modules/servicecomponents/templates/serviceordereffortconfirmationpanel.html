@@ -1,6 +1,6 @@
 <table class="slds-table slds-table_bordered">
     <thead>
-        <tr>
+        <tr [system-model-provider]="{module: 'ServiceOrderEfforts'}">
             <th style="width: 30px;" class="slds-is-fixed"></th>
             <th style="width: 90px" class="slds-is-fixed"><system-label label="LBL_ITEM_NR"></system-label></th>
             <th *ngFor="let fieldsetField of fieldsetFields? fieldsetFields: []" class="slds-is-fixed">
@@ -11,7 +11,7 @@
     <tbody *ngIf="itemcount > 0">
         <ng-container *ngFor="let item of items|serviceorderitempipe" [system-model-provider]="{module: 'ServiceOrderEfforts', data: item}">
             <tr serviceorder-effort-confirmation-item [item]="item" [parentview]="view" [serviceorder]="model" [relationlinkname]="relation_link_name"></tr>
-            <tr *ngIf="item.expanded" class="slds-p-left--large slds-p-bottom--small slds-p-vertical_x-small " serviceorder-effort-item-details [item]="item" [parentview]="view" [serviceorder]="model" style=" padding: 0px;"></tr>
+            <!--tr *ngIf="item.expanded" class="slds-p-left--large slds-p-bottom--small slds-p-vertical_x-small " serviceorder-effort-item-details [item]="item" [parentview]="view" [serviceorder]="model" style=" padding: 0px;"></tr-->
         </ng-container>
     </tbody>
 </table>

@@ -8,7 +8,7 @@ import {trigger, transition, animate, style, state} from '@angular/animations';
 @Component({
     selector: "[serviceorder-effort-item-details]",
     templateUrl: "./src/modules/servicecomponents/templates/serviceordereffortitemdetails.html",
-    providers: [model, view],
+    providers: [view],
     animations: [
         trigger('slideInOut', [
             state('open', style({height: '80px'})),
@@ -50,18 +50,8 @@ export class ServiceOrderEffortItemDetails implements OnInit  {
     }
 
     public ngOnInit(): void {
-        this.setItemModelData();
         this.viewSubscriptions();
         this.setConfig();
-    }
-
-    /**
-     * set the model data for the item
-     */
-    private setItemModelData() {
-        this.model.module = 'ServiceOrderEfforts';
-        this.model.id = this.item.id;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.item);
     }
 
     /**
