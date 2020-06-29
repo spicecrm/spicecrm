@@ -55,15 +55,15 @@ export class SpiceGoogleMapsListHeader implements OnInit, OnDestroy {
         return requestfields;
     }
 
-    get relatefilter() {
+    get relateFilter() {
         return this.modellist.relatefilter;
     }
 
     /**
      * returns the relate filter active flag
      */
-    get relatefilterActive() {
-        return this.relatefilter?.active;
+    get relateFilterActive() {
+        return this.relateFilter?.active;
     }
 
     /**
@@ -71,8 +71,8 @@ export class SpiceGoogleMapsListHeader implements OnInit, OnDestroy {
      *
      * @param value
      */
-    set relatefilterActive(value) {
-        this.relatefilter.active = value;
+    set relateFilterActive(value) {
+        this.relateFilter.active = value;
         this.modellist.relatefilter.active = value;
         this.modellist.reLoadList();
     }
