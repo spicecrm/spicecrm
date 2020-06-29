@@ -26,6 +26,8 @@ export interface ServicePlannerEventI {
 export interface ServicePlannerRecordI {
     /** id of the record */
     id: string;
+    /** name of the record */
+    name: string;
     /** events of the record that will be rendered in timeline view */
     events: any;
     /** the date array when a record is unavailable */
