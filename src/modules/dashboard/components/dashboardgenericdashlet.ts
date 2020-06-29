@@ -122,7 +122,6 @@ export class DashboardGenericDashlet implements OnInit {
         let element = this.tablecontainer.element.nativeElement;
         if (element.scrollTop + element.clientHeight >= element.scrollHeight - 5) {
             this.loadMore();
-            console.log('loading more');
         }
     }
 

@@ -70,7 +70,7 @@ export class fieldAddress extends fieldGeneric {
         // check if we have a country format
         if (this.strict && this.country) {
             let countries = this.configuration.getData('countries');
-            if(countries) {
+            if (countries) {
                 let countryrecod = countries.countries.find(c => c.cc == this.country);
                 if (countryrecod && countryrecod.addressformat) formattedaddress = countryrecod.addressformat;
             }
@@ -93,7 +93,7 @@ export class fieldAddress extends fieldGeneric {
             let country = this.country;
             if (country) {
                 let countries = this.configuration.getData('countries');
-                if(countries) {
+                if (countries) {
                     let countryrecod = countries.countries.find(c => c.cc == country);
                     if (countryrecod) country = this.language.getLabel(countryrecod.label);
                 }
@@ -113,7 +113,7 @@ export class fieldAddress extends fieldGeneric {
             let state = this.state;
             if (state) {
                 let states = this.configuration.getData('countries');
-                if(states) {
+                if (states) {
                     let staterecod = states.states.find(s => s.cc == country && s.sc == state);
                     if (staterecod) state = this.language.getLabel(staterecod.label);
                 }
@@ -146,6 +146,15 @@ export class fieldAddress extends fieldGeneric {
      */
     private getAddressLabel() {
         return this.language.getLabel(this.fieldconfig.label);
+    }
+
+    /**
+     * returns the proper fieldname as found in the model
+     *
+     * @param field
+     */
+    private fieldName(field) {
+        return this.addresskey + 'address_' + field;
     }
 
     /**

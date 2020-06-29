@@ -63,7 +63,7 @@ export class CurrencyManager implements OnInit {
 
     /**
      * reload the currencies when the event emitter has been emitted
-     * @param event
+     * @param event: boolean
      */
     private reload(event) {
         if(event) {
