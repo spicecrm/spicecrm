@@ -43,9 +43,9 @@ export class ServicePlanner implements OnInit, OnDestroy {
      */
     protected timelineRecords: ServicePlannerRecordI[] = [];
     /**
-     * holds the users module filter
+     * holds the module filters
      */
-    private usersModuleFilter: string;
+    private moduleFilters = {timelineUsers: null, timelineOrders: null, mapOrders: null};
     /**
      * subscription to handle unsubscribe
      */
@@ -84,10 +84,21 @@ export class ServicePlanner implements OnInit, OnDestroy {
      * get the users module filter from the component config
      */
     public ngOnInit() {
+        this.loadModuleFilters();
         this.modellist.module = 'ServiceOrders';
         this.timeZone = this.session.getSessionData('timezone') || moment.tz.guess();
-        const config = this.metadata.getComponentConfig('', this.modellist.module);
-        this.usersModuleFilter = config && !!config.modulefilter ? config.modulefilter : undefined;
+    }
+
+    /**
+     * loads the module filters for the records
+     */
+    private loadModuleFilters() {
+        const config = this.metadata.getComponentConfig('ServicePlanner', 'ServiceOrders');
+        if (!config) return;
+        this.moduleFilters.timelineUsers = !config.timelineUsersFilter ? null : config.timelineUsersFilter;
+        this.moduleFilters.timelineOrders = !config.timelineOrdersFilter ? null : config.timelineOrdersFilter;
+        this.moduleFilters.mapOrders = !config.mapOrdersFilter ? null : config.mapOrdersFilter;
+        this.modellist.modulefilter = this.moduleFilters.mapOrders;
     }
 
     /**
@@ -206,7 +217,8 @@ export class ServicePlanner implements OnInit, OnDestroy {
         const params = {
             start: this.startDate.format(format),
             end: this.endDate.format(format),
-            usersModuleFilter: this.usersModuleFilter
+            timelineUsersFilter: this.moduleFilters.timelineUsers,
+            timelineOrdersFilter: this.moduleFilters.timelineOrders
         };
 
         this.backend.getRequest('modules/ServiceOrders/Planner/records', params)
