@@ -1,11 +1,11 @@
 <td style="width: 20px">
-    <button class="slds-button slds-button_icon" [disabled]="!editing" (click)="deleteItem()"><system-button-icon [icon]="'close'"></system-button-icon></button>
+    <button class="slds-button slds-button_icon" [disabled]="!candelete" (click)="deleteItem()"><system-button-icon [icon]="'close'"></system-button-icon></button>
     <button class="slds-button slds-button--icon slds-col_bump-left" (click)="toggleDetails()">
         <system-button-icon [icon]="toggleIcon"></system-button-icon>
     </button>
 </td>
 <td>
-    <field-container fieldname="itemnr" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
+    <field-container fieldname="itemnr" [fieldconfig]="{readonly: true}" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
 </td>
 <td *ngFor="let fieldsetItem of fieldsetItems">
     <field-container [fieldname]="fieldsetItem.field" [fieldconfig]="fieldsetItem.fieldconfig" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
