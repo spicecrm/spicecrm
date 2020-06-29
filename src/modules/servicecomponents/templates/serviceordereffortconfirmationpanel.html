@@ -10,7 +10,7 @@
     </thead>
     <tbody *ngIf="itemcount > 0">
     <ng-container *ngFor="let item of items|serviceorderitempipe">
-        <tr serviceorder-effort-item [item]="item" [parentview]="view" [serviceorder]="model" [relationlinkname]="relation_link_name"></tr>
+        <tr serviceorder-effort-confirmation-item [item]="item" [parentview]="view" [serviceorder]="model" [relationlinkname]="relation_link_name"></tr>
         <tr *ngIf="item.expanded" class="slds-p-left--large slds-p-bottom--small slds-p-vertical_x-small " serviceorder-effort-item-details [item]="item" [parentview]="view" [serviceorder]="model" style=" padding: 0px;"></tr>
     </ng-container>
     </tbody>

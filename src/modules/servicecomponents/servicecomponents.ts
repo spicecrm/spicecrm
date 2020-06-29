@@ -49,9 +49,12 @@ import /*embed*/ {ServiceOrderItemItem} from "./components/serviceorderitemitem"
 import /*embed*/ {ServiceOrderItemPanel} from "./components/serviceorderitempanel";
 import /*embed*/ {ServiceOrderItemPipe} from "./pipes/serviceorderitemspipe";
 import /*embed*/ {ServiceOrderAddTypeSelector} from "./components/serviceorderaddtypeselector";
-
-
-
+import /*embed*/ {ServiceOrderConfirmButton} from "./components/serviceorderconfirmbutton";
+import /*embed*/ {ServiceOrderConfirmModal} from "./components/serviceorderconfirmmodal";
+import /*embed*/ {ServiceOrderItemConfirmItem} from "./components/serviceorderitemconfirmitem";
+import /*embed*/ {ServiceOrderItemConfirmationPanel} from "./components/serviceorderitemconfirmationpanel";
+import /*embed*/ {ServiceOrderEffortConfirmationItem} from "./components/serviceordereffortconfirmationitem";
+import /*embed*/ {ServiceOrderEffortConfirmationPanel} from "./components/serviceordereffortconfirmationpanel";
 
 @NgModule({
     imports: [
@@ -100,7 +103,13 @@ import /*embed*/ {ServiceOrderAddTypeSelector} from "./components/serviceorderad
         ServiceOrderEquipmentPanel,
         ServiceOrderItemItem,
         ServiceOrderItemPanel,
-        ServiceOrderAddTypeSelector
+        ServiceOrderAddTypeSelector,
+        ServiceOrderConfirmButton,
+        ServiceOrderConfirmModal,
+        ServiceOrderItemConfirmItem,
+        ServiceOrderItemConfirmationPanel,
+        ServiceOrderEffortConfirmationItem,
+        ServiceOrderEffortConfirmationPanel
     ]
 })
 export class ServiceComponentsModule {

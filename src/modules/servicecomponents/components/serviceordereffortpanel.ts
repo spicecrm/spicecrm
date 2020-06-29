@@ -46,7 +46,7 @@ export class ServiceOrderEffortPanel implements OnInit {
     /**
      * sortfield
      */
-    private sortField: string = 'date_entered';
+    public sortField: string = 'itemnr';
 
     /**
      * the columns to be displayed in detail container
@@ -59,16 +59,15 @@ export class ServiceOrderEffortPanel implements OnInit {
     public currentProductType: string = "";
 
     constructor(
-        private language: language,
-        private model: model,
-        private modal: modal,
-        private metadata: metadata,
-        private view: view,
-        private injector: Injector,
+        public language: language,
+        public model: model,
+        public modal: modal,
+        public metadata: metadata,
+        public view: view,
+        public injector: Injector,
         public utils: modelutilities,
     ) {
-        // get the config
-        this.componentconfig = this.metadata.getComponentConfig('ServiceOrderEffortPanel', this.model.module);
+
     }
     public ngOnInit() {
         this.setComponentConfig();
@@ -79,6 +78,8 @@ export class ServiceOrderEffortPanel implements OnInit {
     * set all variables from the config
     */
     public setComponentConfig() {
+        // get the config
+        this.componentconfig = this.metadata.getComponentConfig('ServiceOrderEffortPanel', this.model.module);
         this.fieldset = this.componentconfig.fieldset;
         this.sortField = this.componentconfig.sortField;
         this.relation_link_name = this.componentconfig.relation_link_name;
@@ -92,7 +93,6 @@ export class ServiceOrderEffortPanel implements OnInit {
     public getFieldsetFields() {
         if (this.componentconfig.fieldset) {
             this.fieldsetFields = this.metadata.getFieldSetFields(this.fieldset);
-            this.fieldsetFields.shift();
         }
 
         this.fieldsetDetailItems = this.metadata.getFieldSetItems(this.detail_fieldset);
@@ -160,7 +160,7 @@ export class ServiceOrderEffortPanel implements OnInit {
         }
     }
 
-    private openAddModal(itemType) {
+    public openAddModal(itemType) {
         this.modal.openModal("ObjectModalModuleLookup", true, this.injector).subscribe(selectModal => {
             selectModal.instance.module = itemType;
             selectModal.instance.multiselect = true;

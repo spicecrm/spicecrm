@@ -34,13 +34,13 @@ export class ServiceOrderEffortItem implements OnInit  {
     /**
      * the columns to be displayed
      */
-    private fieldsetItems: any[] = [];
+    public fieldsetItems: any[] = [];
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private model: model,
-        private view: view
+        public metadata: metadata,
+        public language: language,
+        public model: model,
+        public view: view
     ) {
     }
 
@@ -94,7 +94,7 @@ export class ServiceOrderEffortItem implements OnInit  {
     /**
      * set the configuration
      */
-    private setConfig() {
+    public setConfig() {
         let config = this.metadata.getComponentConfig('ServiceOrderEffortPanel', this.serviceorder.module);
         if (config.fieldset) {
             this.fieldsetItems = this.metadata.getFieldSetItems(config.fieldset);

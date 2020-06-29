@@ -1,6 +1,6 @@
-<td style="width: 20px; padding: 0px;" ></td>
-<td style=" padding: 0px;"></td>
-<td colspan="3" style=" padding: 0px;">
+<td style="width: 20px;"></td>
+<td></td>
+<td colspan="3" class="slds-p-around--none">
     <div [@slideInOut]="item.expanded? 'open': 'closed'" class="slds-p-bottom--medium" *ngFor="let fieldsetItem of fieldsetItems" style="overflow-y: hidden; padding: 0px;">
         <field-container [fieldname]="fieldsetItem.field" [fieldconfig]="fieldsetItem.fieldconfig" fielddisplayclass="slds-truncate "></field-container>
     </div>

@@ -12,14 +12,7 @@ import {modal} from "../../../services/modal.service";
 
 @Component({
     selector: "sign-serviceorder-modal-button",
-    templateUrl: "./src/modules/servicecomponents/templates/signserviceordermodalbutton.html",
-    host: {
-        "class": "slds-button slds-button--neutral",
-        "[style.display]": "getDisplay()"
-    },
-    styles: [
-        ":host {cursor:pointer;}"
-    ]
+    templateUrl: "./src/modules/servicecomponents/templates/signserviceordermodalbutton.html"
 })
 export class SignServiceOrderModalButtonComponent {
     constructor(
@@ -31,7 +24,7 @@ export class SignServiceOrderModalButtonComponent {
     ) {
     }
 
-    private showModal() {
+    private execute() {
         this.modalservice.openModal("SignServiceOrderModalComponent").subscribe(
             cmp => {
                 cmp.instance.setModel(this.model);
@@ -42,11 +35,11 @@ export class SignServiceOrderModalButtonComponent {
         );
     }
 
-    private getDisplay() {
+    get display() {
         if (this.model.data.acl && !this.model.data.acl.edit) {
-            return "none";
+            return false;
         }
 
-        return this.model.isEditing ? "none" : "inherit";
+        return this.model.isEditing ? false : true;
     }
 }

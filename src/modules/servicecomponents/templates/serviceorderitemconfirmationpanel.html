@@ -1,6 +1,6 @@
 <table class="slds-table slds-table_bordered">
     <thead [system-model-provider]="{module: 'ServiceOrderItems'}">
-        <th style="width: 30px" class="slds-is-fixed"></th>
+    <th style="width: 30px" class="slds-is-fixed"></th>
         <th style="width: 90px" class="slds-is-fixed"><system-label label="LBL_ITEM_NR"></system-label></th>
         <th *ngFor="let fieldsetField of fieldsetFields? fieldsetFields: []" class="slds-is-fixed">
             <field-label class="slds-truncate" addclasses="slds-truncate" [fieldname]="fieldsetField.field" [fieldconfig]="fieldsetField.fieldconfig"></field-label>
@@ -8,7 +8,7 @@
     </thead>
     <tbody>
         <ng-container *ngFor="let item of items|serviceorderitempipe">
-            <tr serviceorder-item-item [item]="item" [parentview]="view" [serviceorder]="model" ></tr>
+            <tr serviceorder-item-confirm-item [item]="item" [parentview]="view" [serviceorder]="model" ></tr>
         </ng-container>
     </tbody>
 </table>
