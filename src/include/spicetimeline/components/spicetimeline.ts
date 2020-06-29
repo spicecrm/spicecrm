@@ -21,7 +21,7 @@ import {language} from "../../../services/language.service";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {Subscription} from "rxjs";
-import {EventI, RecordI} from "../interfaces/spicetimeline.interfaces";
+import {DurationPartI, EventI, RecordI} from "../interfaces/spicetimeline.interfaces";
 
 /** @ignore */
 declare var moment: any;
@@ -66,7 +66,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * holds the sheet hours
      */
-    protected periodDuration: Array<{text: string, color: string}> = [];
+    protected periodDuration: DurationPartI[] = [];
     /**
      * holds the input timeline records to be rendered
      */
@@ -83,10 +83,6 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
      * holds the header fields
      */
     protected recordFieldsetFields: any[] = [];
-    /**
-     * holds the period unit to render the timeline cells
-     */
-    protected hoursArray: string[] = [];
     /**
      * holds the records main module
      */
@@ -119,6 +115,10 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
      * holds the end hour from user preferences
      */
     private endHour: number = 23;
+    /**
+     * holds day hours count
+     */
+    private hoursCount: number = 24;
     /**
      * boolean to show/hide date picker
      */
@@ -269,8 +269,9 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
         this.onlyWorkingHours = !this.onlyWorkingHours;
         this.startHour = this.onlyWorkingHours ? +this.userpreferences.toUse.calendar_day_start_hour : 0;
         this.endHour = this.onlyWorkingHours ? (+this.userpreferences.toUse.calendar_day_end_hour - 1) : 23;
+        this.hoursCount = this.endHour - this.startHour;
         this.setDate();
-        this.buildHoursArray();
+        this.buildPeriodDuration();
         this.setTodayHourMarkerStyle();
     }
 
@@ -368,28 +369,35 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
         const end = new moment(start).endOf(this.periodUnit).hour(this.endHour);
 
         for (let date = start; date.isBefore(end); date.add(1, unit)) {
-            this.periodDuration.push({
+            const part: DurationPartI = {
+                fullDate: date.format(),
                 text: date.format(format),
                 color: this.periodUnit != 'day' && new moment().isSame(date, 'day') ? this.todayColor : '#343434'
-            });
+            };
+            if (this.periodUnit == 'week' || this.periodUnit == 'day') {
+                part.hours = this.buildDayHours(date);
+
+            }
+            this.periodDuration.push(part);
         }
 
-        this.buildHoursArray();
         this.setDefaultWidth();
         this.setTodayHourMarkerStyle();
     }
 
     /**
-     * builds the hours array for day and week units
+     * builds the input day hours
+     * @param date
      */
-    private buildHoursArray() {
-        this.hoursArray = [];
-        const start = new moment().hour(this.startHour);
-        const end = new moment(start).hour(this.endHour);
+    private buildDayHours(date) {
+        const hours = [];
+        const start = new moment(date).hour(this.startHour);
+        const end = new moment(date).hour(this.endHour);
 
         for (let date = start; date.isSameOrBefore(end); date.add(1, 'hours')) {
-            this.hoursArray.push(date.format('H:00'));
+            hours.push(date.format());
         }
+        return hours;
     }
 
     /**
@@ -418,7 +426,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
                 let startMinutes = (event.start.hour() - this.startHour) * 60 + event.start.minute();
                 startMinutes = startMinutes < 0 ? 0 : startMinutes;
                 let endMinutes = (event.end.hour() - this.startHour) * 60 + event.end.minute();
-                endMinutes = endMinutes > (this.hoursArray.length * 60) ? (this.hoursArray.length * 60) : endMinutes;
+                endMinutes = endMinutes > (this.hoursCount * 60) ? (this.hoursCount * 60) : endMinutes;
 
                 switch (this.periodUnit) {
                     case 'day':
@@ -426,8 +434,8 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
                         event.style.width = ((this.periodUnitWidth / 60) * (endMinutes - startMinutes)) + 'px';
                         break;
                     case 'week':
-                        event.style.left = ((this.periodUnitWidth * event.start.day()) + ((this.periodUnitWidth / (this.hoursArray.length * 60)) * startMinutes)) + 'px';
-                        event.style.width = (((this.periodUnitWidth / (this.hoursArray.length * 60)) * (endMinutes - startMinutes)) - 1) + 'px';
+                        event.style.left = ((this.periodUnitWidth * event.start.day()) + ((this.periodUnitWidth / (this.hoursCount * 60)) * startMinutes)) + 'px';
+                        event.style.width = (((this.periodUnitWidth / (this.hoursCount * 60)) * (endMinutes - startMinutes)) - 1) + 'px';
                         break;
                     case 'month':
                         const eventDay = event.start.date();
@@ -449,10 +457,10 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
             this.recordsUnavailableTimes[record.id] = {};
 
             record.unavailable.forEach((part) => {
-                const start = new moment().hour(part.from);
-                const end = new moment().hour(part.to);
+                const start = new moment(part.from);
+                const end = new moment(part.to);
                 for (let date = start; date.isSameOrBefore(end); date.add(1, 'hours')) {
-                    this.recordsUnavailableTimes[record.id][date.format('H:00')] = true;
+                    this.recordsUnavailableTimes[record.id][date.format()] = true;
                 }
             });
         });
@@ -589,7 +597,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
                 this.todayHourMarkerStyle.left = (((this.periodUnitWidth / 60) * todayMinutes) - 1.5) + 'px';
                 break;
             case 'week':
-                this.todayHourMarkerStyle.left = (((this.periodUnitWidth * today.day()) + ((this.periodUnitWidth / (this.hoursArray.length * 60)) * todayMinutes)) - 1.5) + 'px';
+                this.todayHourMarkerStyle.left = (((this.periodUnitWidth * today.day()) + ((this.periodUnitWidth / (this.hoursCount * 60)) * todayMinutes)) - 1.5) + 'px';
                 break;
         }
     }

@@ -28,8 +28,24 @@ export interface EventI {
 export interface RecordI {
     /** id of the record */
     id: string;
+    /** name of the record */
+    name: string;
     /** events of the record that will be rendered in timeline view */
     events: any;
     /** the date array when a record is unavailable */
     unavailable: Array<{from: any, to: any}>;
+}
+
+/**
+ * the input record passed from parent to display its data on the left side of the timeline
+ */
+export interface DurationPartI {
+    /** formatted full date of the record */
+    fullDate: string;
+    /** date formatted text by period unit type */
+    text: string;
+    /** events of the record that will be rendered in timeline view */
+    color: string;
+    /** the date array when a record is unavailable */
+    hours?: any;
 }
