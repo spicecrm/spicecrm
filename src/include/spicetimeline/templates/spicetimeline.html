@@ -63,7 +63,7 @@
     </div>
     <div #contentContainer class="slds-grid slds-grow slds-scrollable" style="width: 100%; min-height: 0">
         <div class="slds-grid slds-grid--vertical slds-theme--default" style="position: sticky; left: 0; z-index: 20" [ngStyle]="{width: periodDataWidth +'px', 'min-width': periodDataWidth +'px'}">
-            <div [style.height.px]="eventHeight" class="slds-border--bottom slds-border--right slds-grid">
+            <div [style.height.px]="eventHeight" class="slds-border--bottom slds-border--right slds-grid slds-theme--default" style="top: 0; z-index: 100; position: sticky">
                 <div *ngFor="let headerField of headerFields" [style.width.%]="100 / headerFields.length" class="slds-border--left slds-p-around--xx-small slds-truncate">
                     {{headerField}}
                 </div>
@@ -82,7 +82,7 @@
             </div>
         </div>
         <div class="slds-grid slds-grid--vertical" [style.width.px]="periodTimelineWidth">
-            <div class="slds-grid slds-border--bottom slds-size--1-of-1" [style.height.px]="eventHeight">
+            <div class="slds-grid slds-border--bottom slds-size--1-of-1 slds-theme--default" [style.height.px]="eventHeight" style="top: 0; z-index: 100; position: sticky">
                 <div *ngFor="let part of periodDuration; trackBy: trackByIndexFn" [system-title]="part.text" [ngStyle]="{width: periodUnitWidth +'px', color: part.color}" class="slds-border--right slds-p-around--xx-small slds-truncate slds-height_full">
                     {{part.text}}
                 </div>
