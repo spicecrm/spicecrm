@@ -54,6 +54,7 @@ import /*embed*/ {fieldDateTime} from './components/fielddatetime';
 import /*embed*/ {fieldDateTimeDuration} from './components/fielddatetimeduration';
 import /*embed*/ {fieldDuration} from './components/fieldduration';
 import /*embed*/ {fieldDateTimeSpan} from './components/fielddatetimespan';
+import /*embed*/ {fieldDateSpan} from './components/fielddatespan';
 import /*embed*/ {fieldAddress} from './components/fieldaddress';
 import /*embed*/ {fieldFullName} from './components/fieldfullname';
 import /*embed*/ {fieldTitle} from './components/fieldtitle';
@@ -86,7 +87,6 @@ import /*embed*/ {fieldWorklog} from "./components/fieldworklog";
 import /*embed*/ {FieldModelInfoComponent} from "./components/fieldmodelinfo";
 import /*embed*/ {FieldEnumModulesComponent} from "./components/fieldenummodules";
 import /*embed*/ {fieldGDPR} from "./components/fieldgdpr";
-import /*embed*/ {fieldServiceQueue} from "./components/fieldservicequeue";
 import /*embed*/ {fieldSelectTree,} from "./components/fieldselecttree";
 import /*embed*/ {fieldSelectTreeSearch} from "./components/fieldselecttreesearch";
 import /*embed*/ {fieldSelectTreeTree} from "./components/fieldselecttreetree";
@@ -171,6 +171,7 @@ declare var _: any;
         fieldDateTime,
         fieldDateTimeDuration,
         fieldDuration,
+        fieldDateSpan,
         fieldDateTimeSpan,
         fieldParent,
         fieldModuleFilter,
@@ -209,7 +210,6 @@ declare var _: any;
         FieldEnumModulesComponent,
         FieldModelInfoComponent,
         fieldGDPR,
-        fieldServiceQueue,
         fieldSelectTree,
         fieldSelectTreeSearch,
         fieldSelectTreeTree,

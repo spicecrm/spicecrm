@@ -162,7 +162,7 @@ export class GlobalLogin {
                 error => {
                     this.loggingIn = false;
                 }
-        );
+            );
         }
     }
 
@@ -207,6 +207,13 @@ export class GlobalLogin {
             }
         }
         return langArray;
+    }
+
+    /**
+     * only display the login image when the screenheight is large enough
+     */
+    get displayimage() {
+        return window.innerHeight > 800;
     }
 
     /**

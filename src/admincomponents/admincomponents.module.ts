@@ -40,11 +40,14 @@ import /*embed*/ {AdministrationHomeScreenCard} from "./components/administratio
 import /*embed*/ {AdministrationHomeScreenCardItem} from "./components/administrationhomescreencarditem";
 
 import /*embed*/ { AdministrationSystemStats } from './components/administrationsystemstats';
+import /*embed*/ { AdministrationSystemVersions } from './components/administrationsystemversions';
 
 import /*embed*/ { AdministrationSysTrashcanManager } from './components/administrationsystrashcanmanager';
 import /*embed*/ { AdministrationSysTrashcanRecover } from './components/administrationsystrashcanrecover';
 
 import /*embed*/ { AdministrationDictRepair } from './components/administrationdictrepair';
+import /*embed*/ {AdministrationDictRepairItem} from "./components/administrationdictrepairitem";
+import /*embed*/ {AdministrationDictRepairModal} from "./components/administrationdictrepairmodal";
 
 import /*embed*/ { AdministrationConfigEditor } from './components/administrationconfigeditor';
 
@@ -56,6 +59,7 @@ import /*embed*/ { AdministrationSchedulerScheduleButton } from './components/ad
 import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryManagerItem, AdministrationDictionaryManagerItemField } from './components/administrationdictionarymanager';
 import /*embed*/ {AdministrationGeneralSettings} from "./components/administrationgeneralsettings";
 import /*embed*/ {AdministrationLanguages} from "./components/administrationlanguages";
+
 
 
 @NgModule({
@@ -89,12 +93,15 @@ import /*embed*/ {AdministrationLanguages} from "./components/administrationlang
         AdministrationSysTrashcanManager,
         AdministrationSysTrashcanRecover,
         AdministrationDictRepair,
+        AdministrationDictRepairItem,
+        AdministrationDictRepairModal,
         AdministrationConfigEditor,
         AdministrationSchedulerJobsEnum,
         AdministrationSchedulerJobLog,
         AdministrationSchedulerRunButton,
         AdministrationSchedulerScheduleButton,
         AdministrationSystemStats,
+        AdministrationSystemVersions,
         AdministrationFtsManagerIndexModal,
         AdministrationHomeScreen,
         AdministrationHomeScreenCard,
