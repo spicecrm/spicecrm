@@ -90,9 +90,9 @@
             <div class="slds-is-relative">
                 <div [ngStyle]="todayHourMarkerStyle"></div>
                 <div *ngFor="let record of records; trackBy: trackByItemFn" class="slds-grid slds-border--bottom slds-size--1-of-1 slds-is-relative slds-text-color--inverse" [style.height.px]="eventHeight">
-                    <div *ngFor="let part of periodDuration; trackBy: trackByIndexFn" [style.width.px]="periodUnitWidth" [class.slds-theme--shade]="periodUnit === 'day' && recordsUnavailableTimes[record.id] && recordsUnavailableTimes[record.id][part.text]" class="slds-border--right slds-height_full slds-grid">
+                    <div *ngFor="let part of periodDuration; trackBy: trackByIndexFn" [style.width.px]="periodUnitWidth" [class.slds-theme--shade]="periodUnit === 'day' && recordsUnavailableTimes[record.id] && recordsUnavailableTimes[record.id][part.fullDate]" class="slds-border--right slds-height_full slds-grid">
                         <ng-container *ngIf="periodUnit === 'week' && recordsUnavailableTimes[record.id]">
-                            <div *ngFor="let hour of hoursArray; trackBy: trackByIndexFn" [style.width.%]="100 / hoursArray.length" [class.slds-theme--shade]="recordsUnavailableTimes[record.id][hour]" class="slds-height_full"></div>
+                            <div *ngFor="let hour of part.hours; trackBy: trackByIndexFn" [style.width.%]="100 / part.hours.length" [class.slds-theme--shade]="recordsUnavailableTimes[record.id][hour]" class="slds-height_full"></div>
                         </ng-container>
                     </div>
                     <spice-timeline-event *ngFor="let event of record.events; trackBy: trackByItemFn" [event]="event" [ngStyle]="event.style" (click)="emitEvent(event)" class="slds-truncate slds-p-around--xx-small"></spice-timeline-event>
