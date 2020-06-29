@@ -7,7 +7,7 @@ import {metadata} from "../../../services/metadata.service";
 @Component({
     selector: "[serviceorder-effort-item]",
     templateUrl: "./src/modules/servicecomponents/templates/serviceordereffortitem.html",
-    providers: [model, view]
+    providers: [view]
 })
 export class ServiceOrderEffortItem implements OnInit  {
 
@@ -45,7 +45,7 @@ export class ServiceOrderEffortItem implements OnInit  {
     }
 
     public ngOnInit(): void {
-        this.setItemModelData();
+        // this.setItemModelData();
         this.viewSubscriptions();
         this.setConfig();
     }
