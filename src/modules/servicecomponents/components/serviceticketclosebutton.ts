@@ -25,11 +25,11 @@ export class ServiceTicketCloseButton {
     public disabled = false;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
-        private model: model,
-        private modal: modal,
-        private injector: Injector
+        public language: language,
+        public metadata: metadata,
+        public model: model,
+        public modal: modal,
+        public injector: Injector
     ) {
 
     }
@@ -47,7 +47,6 @@ export class ServiceTicketCloseButton {
                 this.model.edit();
             }
         }
-
 
     }
 
