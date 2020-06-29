@@ -43,7 +43,7 @@ export class fieldQuantity extends fieldFloat implements OnInit {
      * getter for the UOM ID
      */
     get uomid() {
-        return this.model.getField('uom_id');
+        return this.model.getField(this.uomidfield);
     }
 
     /**
@@ -52,7 +52,7 @@ export class fieldQuantity extends fieldFloat implements OnInit {
      * @param value the value
      */
     set uomid(value) {
-        this.model.setField('uom_id', value);
+        this.model.setField(this.uomidfield, value);
     }
 
     /**
@@ -61,10 +61,13 @@ export class fieldQuantity extends fieldFloat implements OnInit {
     get uomLabel() {
         if (this.value) {
             let uom = this.uoms.find(u => u.id == this.uomid);
-            if (uom) return this.language.getLabel(uom.label);
+            if (uom) {
+                return this.language.getLabel(uom.label);
+            } else {
+                // if no found return the value
+                return this.uomid;
+            }
         }
-
-        // if no found return the value
-        return this.uomid;
+        return '';
     }
 }
