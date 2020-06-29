@@ -17,27 +17,27 @@ import {toast} from '../../../services/toast.service';
     templateUrl: './src/modules/workflow/templates/workflowpaneltask.html'
 
 })
-export class WorkflowPanelTask{
+export class WorkflowPanelTask {
 
-    @Input()workflowtask: any = {};
-    @Input()workflow: any = {};
-    comment: string = '';
-    posting: boolean = false;
+    @Input() private workflowtask: any = {};
+    @Input() private workflow: any = {};
+    private comment: string = '';
+    private posting: boolean = false;
 
     constructor(private model: model, private workflowservice: workflow, private language: language, private broadcast: broadcast, private toast: toast, private modelutilities: modelutilities) {
 
     }
 
-    addComment(){
+    private addComment() {
         this.posting = true;
         this.workflowservice.addComment(this.workflowtask.id, this.comment).subscribe(result => {
             this.posting = false;
             this.comment = '';
             this.toast.sendToast('Comment has been saved');
-        })
+        });
     }
 
-    doAction(action){
+    private doAction(action) {
         this.posting = true;
         this.workflowservice.doTaskAction(this.workflowtask.id, action, this.comment).subscribe(parent => {
 
@@ -55,7 +55,7 @@ export class WorkflowPanelTask{
         });
     }
 
-    get showComment(){
-        return this.workflowtask.enablecomments == '1' && parseInt(this.workflowtask.status) > 10 ? true : false;
+    get showComment() {
+        return this.workflowtask.enablecomments == '1' && parseInt(this.workflowtask.status, 10) >= 10;
     }
 }

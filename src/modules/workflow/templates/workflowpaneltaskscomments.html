@@ -1,0 +1,7 @@
+<td class="slds-cell-shrink"></td>
+<td colspan="5" class="slds-p-around--none">
+    <div class="slds-p-around--xx-small" *ngFor="let comment of comments">
+        <div class="slds-p-around--xx-small slds-text-heading--label">{{comment.created_by_name}}/{{startdate(comment.date_entered)}}</div>
+        <div class="slds-p-around--xx-small">{{comment.description}}</div>
+    </div>
+</td>

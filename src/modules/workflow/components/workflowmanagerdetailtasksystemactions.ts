@@ -17,19 +17,23 @@ import {language} from '../../../services/language.service';
     selector: 'workflow-manager-detail-tasksystemactions',
     templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtasksystemactions.html',
 })
-export class WorkflowManagerDetailTaskSystemactions{
+export class WorkflowManagerDetailTaskSystemactions {
 
-    @Input() tasks : any = {};
-    @Input() module : string = '';
+    @Input() private tasks: any = {};
+    @Input() private module: string = '';
 
     constructor(private backend: backend, private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
     }
 
-    addAction(){
+    private addAction() {
         this.model.data.systemactions.push({
             id: this.modelutilities.generateGuid(),
             workflowtaskdefinition_id: this.model.id,
-            deleted: 0
+            deleted: 0,
+            acl: {
+                create: true,
+                edit: true
+            }
         });
     }
 }

@@ -117,8 +117,8 @@ export class ServiceTicketSLAIndicator extends fieldGeneric {
      */
     get status() {
         let dateentered = this.model.getField('date_entered');
-        let sladate = this.sladate;
-        let resdate = this.model.getField(this.resolvedatefield);
+        let sladate = new moment(this.sladate);
+        let resdate = new moment(this.model.getField(this.resolvedatefield));
 
         if (resdate && resdate.isValid && resdate.isValid()) {
             if (sladate.isBefore(resdate)) {
@@ -149,8 +149,8 @@ export class ServiceTicketSLAIndicator extends fieldGeneric {
         }
 
         let curdate = new moment();
-        let dateentered = this.model.getField('date_entered');
-        let sladate = this.sladate;
+        let dateentered = new moment(this.model.getField('date_entered'));
+        let sladate = new moment(this.sladate);
 
         if (sladate.isBefore(curdate)) {
             return 0;

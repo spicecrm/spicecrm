@@ -1,0 +1,23 @@
+<table class="slds-table slds-table_bordered">
+    <thead>
+        <tr>
+            <th style="width: 30px;" class="slds-is-fixed"></th>
+            <th style="width: 90px" class="slds-is-fixed"><system-label label="LBL_ITEM_NR"></system-label></th>
+            <th *ngFor="let fieldsetField of fieldsetFields? fieldsetFields: []" class="slds-is-fixed">
+                <field-label class="slds-truncate" addclasses="slds-truncate" [fieldname]="fieldsetField.field" [fieldconfig]="fieldsetField.fieldconfig"></field-label>
+            </th>
+        </tr>
+    </thead>
+    <tbody *ngIf="itemcount > 0">
+    <ng-container *ngFor="let item of items|serviceorderitempipe">
+        <tr serviceorder-effort-confirmation-item [item]="item" [parentview]="view" [serviceorder]="model" [relationlinkname]="relation_link_name"></tr>
+        <tr *ngIf="item.expanded" class="slds-p-left--large slds-p-bottom--small slds-p-vertical_x-small " serviceorder-effort-item-details [item]="item" [parentview]="view" [serviceorder]="model" style=" padding: 0px;"></tr>
+    </ng-container>
+    </tbody>
+</table>
+<div *ngIf="itemcount == 0" class="slds-p-around--medium slds-text-align--center">
+    <system-label label="LBL_NO_ENTRIES"></system-label>
+</div>
+<div class="slds-p-around--x-small" *ngIf="editing">
+    <button type="button" class="slds-button slds-button--neutral" (click)="addItem()"><system-label label="LBL_ADD"></system-label></button>
+</div>

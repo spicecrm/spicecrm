@@ -4,6 +4,9 @@
         <system-button-icon [icon]="toggleIcon"></system-button-icon>
     </button>
 </td>
+<td>
+    <field-container fieldname="itemnr" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
+</td>
 <td *ngFor="let fieldsetItem of fieldsetItems">
     <field-container [fieldname]="fieldsetItem.field" [fieldconfig]="fieldsetItem.fieldconfig" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
 </td>

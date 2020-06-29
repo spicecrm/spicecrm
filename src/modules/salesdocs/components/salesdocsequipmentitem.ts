@@ -1,0 +1,122 @@
+/**
+ * @module ModuleSalesDocs
+ */
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import {model} from "../../../services/model.service";
+import {language} from "../../../services/language.service";
+import {view} from "../../../services/view.service";
+import {metadata} from "../../../services/metadata.service";
+
+// a little bit based on ServiceOrderEquipmentItem
+
+@Component({
+    selector: '[salesdocs-equipment-item]',
+    templateUrl: "./src/modules/salesdocs/templates/salesdocsequipmentitem.html",
+    providers: [model, view]
+})
+export class SalesDocsEquipmentItem implements OnInit  {
+
+    /**
+     * The service equipment to be displayed.
+     */
+    @Input() private equipment: any = {};
+
+    /**
+     * the SalesDoc model
+     */
+    @Input() private salesDoc: model;
+
+    /**
+     * the view from the parent .. to link the two
+     */
+    @Input() private parentview: view;
+
+    /**
+     * The fieldset ID.
+     */
+    @Input() private fieldset: string;
+
+    /**
+     * the columns to be displayed
+     */
+    private fieldsetItems: any[] = [];
+
+    /**
+     * Event emitter to tell the parent component that the equipment has been selected or unselected.
+     */
+    @Output() private selectionChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    constructor( private metadata: metadata, private language: language, private model: model, private view: view ) { }
+
+    public ngOnInit(): void {
+        this.setEquipmentModelData();
+        this.viewSubscriptions();
+        this.setConfig();
+    }
+
+    /**
+     * set the model data for the service equipment
+     */
+    private setEquipmentModelData() {
+        this.model.module = 'ServiceEquipments';
+        this.model.id = this.equipment.id;
+        this.model.data = this.model.utils.backendModel2spice( this.model.module, this.equipment );
+    }
+
+    /**
+     * view mode subscriptions (manage edit/view mode)
+     */
+    private viewSubscriptions() {
+        // link the two views
+        this.view.isEditable = this.parentview.isEditable;
+        this.view.mode$.subscribe(mode => {
+            // check if we are in the same mode already
+            if (this.parentview.getMode() == mode) return;
+
+            // process the mode change
+            if (mode == 'edit') {
+                this.parentview.setEditMode();
+                this.parentview.displayLinks = false;
+            }
+        });
+        this.parentview.mode$.subscribe(mode => {
+            // check if we are in the same mode already
+            if (this.view.getMode() == mode) return;
+
+            // process the mode change
+            if (mode == 'edit') {
+                this.view.setEditMode();
+                this.view.displayLinks = false;
+            } else {
+                this.view.setViewMode();
+                this.view.displayLinks = true;
+            }
+        });
+    }
+
+    /**
+     * set the configuration
+     */
+    private setConfig() {
+        if ( this.fieldset ) this.fieldsetItems = this.metadata.getFieldSetItems( this.fieldset );
+    }
+
+    /**
+     * Change the selection-flag and emit the information to the parent component.
+     */
+    private changeSelection() {
+        this.equipment.selected = !this.equipment.selected;
+        if ( this.equipment.selected ) {
+            this.salesDoc.addRelatedRecords('serviceequipments', [this.equipment], false );
+            if ( this.salesDoc.data.serviceequipments.beans_relations_to_delete ) {
+                delete this.salesDoc.data.serviceequipments.beans_relations_to_delete[this.equipment.id];
+            }
+        } else {
+            if ( !this.salesDoc.data.serviceequipments.beans_relations_to_delete ) this.salesDoc.data.serviceequipments.beans_relations_to_delete = {};
+            this.salesDoc.removeRelatedRecords('serviceequipments', [this.equipment.id]);
+            this.salesDoc.data.serviceequipments.beans_relations_to_delete[this.equipment.id] = this.equipment;
+        }
+        this.selectionChanged.emit( this.equipment.selected );
+    }
+
+}

@@ -35,13 +35,13 @@ export class ServiceOrderItemItem implements OnInit  {
     /**
      * the columns to be displayed
      */
-    private fieldsetItems: any[] = [];
+    public fieldsetItems: any[] = [];
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private model: model,
-        private view: view
+        public metadata: metadata,
+        public language: language,
+        public model: model,
+        public view: view
     ) {
     }
 
@@ -65,6 +65,9 @@ export class ServiceOrderItemItem implements OnInit  {
      */
     private viewSubscriptions() {
         // link the two views
+
+        this.view.displayLabels = false;
+
         this.view.isEditable = this.parentview.isEditable;
         this.view.mode$.subscribe(mode => {
             // check if we are in the same mode already
@@ -77,16 +80,16 @@ export class ServiceOrderItemItem implements OnInit  {
             }
         });
         this.parentview.mode$.subscribe(mode => {
-            // check if we are in the same mode already
-            if (this.view.getMode() == mode) return;
+                    // check if we are in the same mode already
+                    if (this.view.getMode() == mode) return;
 
-            // process the mode change
-            if (mode == 'edit') {
-                this.view.setEditMode();
-                this.view.displayLinks = false;
-            } else {
-                this.view.setViewMode();
-                this.view.displayLinks = true;
+                    // process the mode change
+                    if (mode == 'edit') {
+                        this.view.setEditMode();
+                        this.view.displayLinks = false;
+                    } else {
+                        this.view.setViewMode();
+                        this.view.displayLinks = true;
             }
         });
     }
@@ -94,7 +97,7 @@ export class ServiceOrderItemItem implements OnInit  {
     /**
      * set the configuration
      */
-    private setConfig() {
+    public setConfig() {
         let config = this.metadata.getComponentConfig('ServiceOrderItemPanel', this.serviceorder.module);
         if (config.fieldset) {
             this.fieldsetItems = this.metadata.getFieldSetItems(config.fieldset);

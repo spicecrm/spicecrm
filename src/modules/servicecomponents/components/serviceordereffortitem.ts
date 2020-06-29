@@ -34,13 +34,13 @@ export class ServiceOrderEffortItem implements OnInit  {
     /**
      * the columns to be displayed
      */
-    private fieldsetItems: any[] = [];
+    public fieldsetItems: any[] = [];
 
     constructor(
-        private metadata: metadata,
-        private language: language,
-        private model: model,
-        private view: view
+        public metadata: metadata,
+        public language: language,
+        public model: model,
+        public view: view
     ) {
     }
 
@@ -63,6 +63,7 @@ export class ServiceOrderEffortItem implements OnInit  {
      * view mode subscriptions (manage edit/view mode)
      */
     private viewSubscriptions() {
+        this.view.displayLabels = false;
         // link the two views
         this.view.isEditable = this.parentview.isEditable;
         this.view.mode$.subscribe(mode => {
@@ -93,7 +94,7 @@ export class ServiceOrderEffortItem implements OnInit  {
     /**
      * set the configuration
      */
-    private setConfig() {
+    public setConfig() {
         let config = this.metadata.getComponentConfig('ServiceOrderEffortPanel', this.serviceorder.module);
         if (config.fieldset) {
             this.fieldsetItems = this.metadata.getFieldSetItems(config.fieldset);
@@ -113,6 +114,7 @@ export class ServiceOrderEffortItem implements OnInit  {
     private deleteItem() {
         this.serviceorder.removeRelatedRecords(this.relationlinkname, [this.item.id]);
         this.serviceorder.data[this.relationlinkname].beans_relations_to_delete[this.item.id] = this.item;
+
         // this.item.deleted = true;
     }
 

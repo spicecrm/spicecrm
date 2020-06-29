@@ -65,8 +65,12 @@ export class SalesDocsItemsAddText {
             // compose the items to be added
             let itemData = {
                 name: this.model.getField('name'),
-                description: this.model.getField('description')
-            }
+                description: this.model.getField('description'),
+                acl: {
+                    create: true,
+                    edit: true
+                }
+            };
 
             this.additem.emit(itemData);
 

@@ -3,25 +3,25 @@
         <thead>
             <tr class="slds-text-title_caps">
                 <th scope="col">
-                    <div class="slds-truncate"><field-label [fieldname]="'sequence'" [fieldconfig]="{label:'WorkflowDefinitions:LBL_SEQUENCE'}"></field-label></div>
+                    <div class="slds-truncate"><system-label label="LBL_SEQUENCE"></system-label></div>
                 </th>
                 <th scope="col">
-                    <div class="slds-truncate"><field-label [fieldname]="'name'" [fieldconfig]="{label:'WorkflowDefinitions:LBL_NAME'}"></field-label></div>
+                    <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
                 </th>
                 <th scope="col">
-                    <div class="slds-truncate"><field-label [fieldname]="'tasktype'" [fieldconfig]="{label:'WorkflowDefinitions:LBL_TYPE'}"></field-label></div>
+                    <div class="slds-truncate"><system-label label="LBL_TYPE"></system-label></div>
                 </th>
                 <th scope="col">
-                    <div class="slds-truncate"><field-label [fieldname]="'primarytask'" [fieldconfig]="{label:'WorkflowDefinitions:LBL_PRIMARY'}"></field-label></div>
+                    <div class="slds-truncate"><system-label label="LBL_PRIMARY"></system-label></div>
                 </th>
                 <th scope="col">
-                    <div class="slds-truncate"><field-label [fieldname]="'closetask'" [fieldconfig]="{label:'WorkflowDefinitions:LBL_TASK_CLOSE_TASK_W_WORKFLOW'}"></field-label></div>
+                    <div class="slds-truncate"><system-label label="LBL_TASK_CLOSE_TASK_W_WORKFLOW"></system-label></div>
                 </th>
                 <th scope="col">
-                    <div class="slds-truncate"><field-label [fieldname]="'previoustask'" [fieldconfig]="{label:'WorkflowDefinitions:LBL_PREVIOUSTASK'}"></field-label></div>
+                    <div class="slds-truncate"><system-label label="LBL_PREVIOUSTASK"></system-label></div>
                 </th>
                 <th scope="col">
-                    <div class="slds-truncate"><field-label [fieldname]="'nexttask'" [fieldconfig]="{label:'WorkflowDefinitions:LBL_NEXTTASK'}"></field-label></div>
+                    <div class="slds-truncate"><system-label label="LBL_NEXTTASK"></system-label></div>
                 </th>
                 <th class="slds-cell-shrink"></th>
             </tr>
@@ -32,7 +32,7 @@
                     <div class="slds-align--absolute-center slds-p-around--small">No Tasks defined</div>
                 </td>
             </tr>
-            <tr *ngFor="let task of tasks|notdeleted" workflow-manager-detail-tasks-line [task]="task" [ngClass]="{'slds-is-selected': task.id == selectedTask}" (click)="selectedTask = task.id" [tasks]="tasks"></tr>
+            <tr *ngFor="let task of tasks|workflowmanagernotdeletedpipe" workflow-manager-detail-tasks-line [task]="task" [ngClass]="{'slds-is-selected': task.id == selectedTask}" (click)="selectedTask = task.id" [tasks]="tasks"></tr>
         </tbody>
         <tfoot class="slds-border--top slds-theme--shade">
             <tr>

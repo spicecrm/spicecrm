@@ -13,25 +13,31 @@ import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 
 
-
 @Component({
     selector: 'workflow-manager-detail-taskdecisions',
     templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtaskdecisions.html',
 })
-export class WorkflowManagerDetailTaskDecisions{
+export class WorkflowManagerDetailTaskDecisions {
 
-    @Input() tasks : any = {};
+    @Input() private tasks: any = {};
 
-    constructor( private backend: backend, private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
-        console.log(this.model.data.decisions);
+    constructor(private backend: backend, private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
+
     }
 
-    addDecision(){
+    /**
+     * adds a new decision
+     */
+    private addDecision() {
         this.model.data.decisions.push({
             id: this.modelutilities.generateGuid(),
             workflowtaskdefinition_id: this.model.id,
             deleted: 0,
             name: 'new Decision',
+            acl: {
+                create: true,
+                edit: true
+            }
         });
     }
 }

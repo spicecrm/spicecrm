@@ -7,8 +7,9 @@ import {
 
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
-import {workflow} from '../services/workflow.service';
-import {broadcast} from '../../../services/broadcast.service';
+import {userpreferences} from '../../../services/userpreferences.service';
+
+declare var moment: any;
 
 @Component({
     selector: 'workflow-panel-item',
@@ -19,9 +20,9 @@ export class WorkflowPanelItem {
 
     @Input() private workflow: any = {};
 
-    private hidebody: boolean = false
+    private hidebody: boolean = false;
 
-    constructor(private model: model, private language: language, private broadcast: broadcast) {
+    constructor(private userpreferences: userpreferences) {
     }
 
     private toggleHidden() {
@@ -30,6 +31,10 @@ export class WorkflowPanelItem {
 
     get toggleicon() {
         return this.hidebody ? 'chevrondown' : 'chevronup';
+    }
+
+    get startdate() {
+        return this.userpreferences.formatDateTime(this.workflow.date_entered);
     }
 
 }
