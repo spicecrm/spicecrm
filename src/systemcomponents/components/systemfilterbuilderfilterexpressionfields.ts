@@ -110,7 +110,7 @@ export class SystemFilterBuilderFilterExpressionFields implements OnInit, Contro
             // no relate fields if no module is set or the relate is non db
             if(fields[field].type == 'relate') {
                 if(!fields[field].module) continue;
-                if(fields[fields[field].id_name].source == 'non-db') continue;
+                if(fields[field].id_name && fields[fields[field].id_name] && fields[fields[field].id_name].source == 'non-db') continue;
             }
 
             // no id fields
