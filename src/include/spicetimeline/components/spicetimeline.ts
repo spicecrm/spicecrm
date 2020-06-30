@@ -432,7 +432,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
                 switch (this.periodUnit) {
                     case 'day':
                         event.style.left = ((this.periodUnitWidth / 60) * startMinutes) + 'px';
-                        event.style.width = ((this.periodUnitWidth / 60) * (endMinutes - startMinutes)) + 'px';
+                        event.style.width = (((this.periodUnitWidth / 60) * (endMinutes - startMinutes)) -1) + 'px';
                         break;
                     case 'week':
                         event.style.left = ((this.periodUnitWidth * event.start.day()) + ((this.periodUnitWidth / (this.hoursCount * 60)) * startMinutes)) + 'px';
