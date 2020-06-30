@@ -304,6 +304,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
         this.defaultPeriodTimelineWidth = defaultContainerWidth * 0.75;
         this.defaultPeriodUnitWidth = (this.defaultPeriodTimelineWidth - 1) / this.periodDuration.length;
         this.resetPeriodUnitWidth();
+        this.cdRef.detectChanges();
     }
 
     /**
@@ -463,6 +464,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
                     this.recordsUnavailableTimes[record.id][date.format()] = true;
                 }
             });
+            this.cdRef.detectChanges();
         });
     }
 
