@@ -265,7 +265,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
 
         if (!isFixed) {
             this.setCircleListeners();
-            this.map.fitBounds(this[circleKeyName].getBounds());
+            this.map.setCenter(mapCenter);
         }
     }
 
