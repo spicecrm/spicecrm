@@ -62,7 +62,7 @@
         </div>
     </div>
     <div #contentContainer class="slds-grid slds-grow slds-scrollable" style="width: 100%; min-height: 0">
-        <div class="slds-grid slds-grid--vertical slds-theme--default" style="position: sticky; left: 0; z-index: 20" [ngStyle]="{width: periodDataWidth +'px', 'min-width': periodDataWidth +'px'}">
+        <div class="slds-grid slds-grid--vertical slds-theme--default" style="position: sticky; left: 0; z-index: 101" [ngStyle]="{width: periodDataWidth +'px', 'min-width': periodDataWidth +'px'}">
             <div [style.height.px]="eventHeight" class="slds-border--bottom slds-border--right slds-grid slds-theme--default" style="top: 0; z-index: 100; position: sticky">
                 <div *ngFor="let headerField of headerFields" [style.width.%]="100 / headerFields.length" class="slds-border--left slds-p-around--xx-small slds-truncate">
                     {{headerField}}
