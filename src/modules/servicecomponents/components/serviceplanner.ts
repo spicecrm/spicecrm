@@ -85,8 +85,19 @@ export class ServicePlanner implements OnInit, OnDestroy {
      */
     public ngOnInit() {
         this.loadModuleFilters();
-        this.modellist.module = 'ServiceOrders';
         this.timeZone = this.session.getSessionData('timezone') || moment.tz.guess();
+        this.initializeModelList();
+    }
+
+    /**
+     * set the module for the module list service and disable cache
+     */
+    private initializeModelList() {
+        this.modellist.usecache = false;
+        // set the module in an embedded mode so not the full list is loaded
+        this.modellist.setModule('ServiceOrders', true);
+        this.modellist.listcomponent = 'SpiceGoogleMapsList';
+        this.modellist.reLoadList(true);
     }
 
     /**
