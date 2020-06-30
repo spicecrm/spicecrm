@@ -9,6 +9,7 @@ import {language} from "../../../services/language.service";
 import {ServicePlannerDirectionResultI, ServicePlannerRoutePointI} from "../interfaces/servicecomponents.interfaces";
 import {ServicePlannerService} from "../services/serviceplanner.service";
 import {metadata} from "../../../services/metadata.service";
+import {modal} from "../../../services/modal.service";
 
 /** @ignore */
 declare var google: any;
@@ -51,6 +52,7 @@ export class ServicePlannerMapsModelPopoverDirection {
                 private userpreferences: userpreferences,
                 private metadata: metadata,
                 private cdRef: ChangeDetectorRef,
+                private modal: modal,
                 private servicePlannerService: ServicePlannerService) {
         this.subscribeToBroadcast();
         this.loadFieldset();
@@ -179,6 +181,7 @@ export class ServicePlannerMapsModelPopoverDirection {
             serviceorder_status: 'planned'
         });
 
+        this.modal.closeAllModals();
         this.model.edit();
     }
 }

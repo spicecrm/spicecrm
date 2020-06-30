@@ -56,7 +56,7 @@ export class SpiceMapGeoDataField implements OnInit {
     private emitBroadcastMessage() {
         const data = {
             tabId: this.navigation.activeTabObject.id,
-            modelId: this.model.id
+            record: this.model.data
         };
         this.broadcast.broadcastMessage('map.focus', data);
     }

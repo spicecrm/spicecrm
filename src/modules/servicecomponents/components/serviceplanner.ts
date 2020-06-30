@@ -162,6 +162,7 @@ export class ServicePlanner implements OnInit, OnDestroy {
                     this.handleEventChange(data);
                     // force detect changes
                     this.timelineRecords = this.timelineRecords.slice();
+                    this.modellist.reLoadList(true);
                     break;
                 case 'model.delete':
                     this.timelineRecords.some((record: ServicePlannerRecordI) => {
@@ -260,10 +261,12 @@ export class ServicePlanner implements OnInit, OnDestroy {
      */
     private handleEventClick(event: ServicePlannerEventI) {
         this.broadcast.broadcastMessage('map.focus', {
-            modelId: event.id,
-            tabId: 'main',
-            enableSearchAround: true
+            record: event,
+            tabId: 'main'
         });
+        if (this.servicePlannerService.timelineSelectedEvent) {
+            this.servicePlannerService.timelineSelectedEvent.color = null;
+        }
         this.servicePlannerService.timelineSelectedEvent = event;
         event.color = this.focusColor;
         // force detect changes

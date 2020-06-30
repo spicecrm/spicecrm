@@ -215,15 +215,30 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
      * @param msg
      */
     public handleBroadcastMessage(msg: { messagedata: any, messagetype: string }) {
-        if (msg.messagetype != 'map.focus' || !msg.messagedata || !msg.messagedata.modelId || (msg.messagedata.tabId == 'main' && !!this.navigationtab.tabid) ||
+        if (msg.messagetype != 'map.focus' || !msg.messagedata || !msg.messagedata.record || (msg.messagedata.tabId == 'main' && !!this.navigationtab.tabid) ||
             (msg.messagedata.tabId != 'main' && this.navigationtab.tabid != msg.messagedata.tabId)) {
             return;
         }
 
-        this.focusedRecordId = msg.messagedata.modelId;
-        if (msg.messagedata.enableSearchAround) {
-            this.searchAroundActive = false;
-            this.toggleSearchAround();
+        const focusedRecord = this.records.find((record: RecordI) => record.id == msg.messagedata.record.id);
+        if (!focusedRecord) {
+            this.mapOptions.circle = {
+                center: {
+                    lat: msg.messagedata.record.data[this.latName],
+                    lng: msg.messagedata.record.data[this.lngName],
+                },
+                draggable: true,
+                editable: true,
+                radius: null,
+                radiusPercentage: this.componentconfig.radiusPercentage,
+                color: this.componentconfig.circleColor
+            };
+
+            this.searchAroundActive = true;
+            this.startRadiusEditing(true);
+            this.setMapOptionChanged('circle');
+        } else {
+            this.focusedRecordId = focusedRecord.id;
         }
         this.cdRef.detectChanges();
     }
