@@ -75,7 +75,7 @@
                             <field-container *ngFor="let recordFieldsetField of recordFieldsetFields" [field]="recordFieldsetField.field" [fieldconfig]="recordFieldsetField.fieldconfig" [style.width.%]="100 / headerFields.length" class="slds-border--left spice-timeline-record-row-data"></field-container>
                         </div>
                         <ng-template #summaryTemplate>
-                            <span system-model-popover module="Users" [id]="record.id" class="slds-text-link--reset">{{record.name}}</span>
+                            <span system-model-popover module="Users" [id]="record.id" class="slds-text-link--reset slds-p-horizontal--xx-small">{{record.name}}</span>
                         </ng-template>
                     </div>
                 </div>
