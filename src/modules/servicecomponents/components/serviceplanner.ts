@@ -15,6 +15,7 @@ import {view} from "../../../services/view.service";
 import {map} from "rxjs/operators";
 import {ServicePlannerEventI, ServicePlannerRecordI} from "../interfaces/servicecomponents.interfaces";
 import {ServicePlannerService} from "../services/serviceplanner.service";
+import {navigation} from "../../../services/navigation.service";
 
 /** @ignore */
 declare var moment: any;
@@ -71,6 +72,7 @@ export class ServicePlanner implements OnInit, OnDestroy {
                 private navigationtab: navigationtab,
                 private backend: backend,
                 private session: session,
+                private navigation: navigation,
                 private view: view,
                 private servicePlannerService: ServicePlannerService,
                 private modellist: modellist) {
@@ -262,7 +264,7 @@ export class ServicePlanner implements OnInit, OnDestroy {
     private handleEventClick(event: ServicePlannerEventI) {
         this.broadcast.broadcastMessage('map.focus', {
             record: event,
-            tabId: 'main'
+            tabId: this.navigation.activeTabObject.id
         });
         if (this.servicePlannerService.timelineSelectedEvent) {
             this.servicePlannerService.timelineSelectedEvent.color = null;

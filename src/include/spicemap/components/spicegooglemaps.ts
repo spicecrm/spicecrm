@@ -365,13 +365,16 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
 
         if (!this.focusedMarker) return;
 
-        if (!this.focusedRecordId) {
-            this.focusedMarker.setMap(null);
+        if (!!this.markerCluster) {
             this.markerCluster.removeMarker(this.focusedMarker);
             this.markerCluster.addMarker(this.focusedMarker);
-            return this.focusedMarker = undefined;
         }
-        this.focusedMarker.setIcon(null);
+        this.focusedMarker.setIcon(
+            !!this.focusedMarker.defaultColor ? this.generateMarkerColor(this.focusedMarker.defaultColor) : null
+        );
+
+
+        this.focusedMarker = undefined;
     }
 
     /**
@@ -807,6 +810,7 @@ export class SpiceGoogleMaps implements OnChanges, AfterViewInit, OnDestroy {
                 markerData.icon = this.generateMarkerColor(item.color);
             }
             const marker = new google.maps.Marker(markerData);
+            marker.defaultColor = item.color;
             this.mapBounds.extend(marker.position);
 
             if (this.options.markerWithModelPopover) {
