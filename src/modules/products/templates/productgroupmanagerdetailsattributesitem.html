@@ -11,7 +11,7 @@
                 </h2>
             </div>
         </header>
-        <system-utility-icon class="slds-m-horizontal--xx-small" icon="up" size="x-small" (click)="toggleOpen()" [ngStyle]="iconStyle" style="transition: .5s;"></system-utility-icon>
+        <system-utility-icon class="slds-m-horizontal--xx-small" icon="up" size="x-small" (click)="toggleOpen($event)" [ngStyle]="iconStyle" style="transition: .5s;"></system-utility-icon>
     </div>
     <div [class.slds-hidden]="!isOpen" [style.height]="!isOpen ? '0':'initial'" class="slds-card__body slds-m-bottom--none">
         <div class="slds-grid slds-p-bottom--small slds-p-top--small slds-wrap">
