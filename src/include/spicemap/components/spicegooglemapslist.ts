@@ -8,8 +8,8 @@ import {modellist} from "../../../services/modellist.service";
 import {MapCenterI, MapOptionsI, RecordComponentConfigI, RecordI} from "../interfaces/spicemap.interfaces";
 import {model} from "../../../services/model.service";
 import {Subscription} from "rxjs";
-import {navigationtab} from "../../../services/navigationtab.service";
 import {broadcast} from "../../../services/broadcast.service";
+import {navigation} from "../../../services/navigation.service";
 
 /**
  * renders a list of records on google maps
@@ -47,6 +47,10 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
      */
     public subscriptions: Subscription = new Subscription();
     /**
+     * to be highlighted on the map and re centered
+     */
+    public focusedRecordId: string;
+    /**
      * map options will be passed to the spice google maps
      */
     protected mapOptions: MapOptionsI = {};
@@ -54,10 +58,6 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
      * List of records to be displayed on the map as markers
      */
     protected records: RecordI[] = [];
-    /**
-     * to be highlighted on the map and re centered
-     */
-    public focusedRecordId: string;
 
     constructor(
         public language: language,
@@ -66,7 +66,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
         public iterableDiffers: IterableDiffers,
         public cdRef: ChangeDetectorRef,
         public model: model,
-        public navigationtab: navigationtab,
+        public navigation: navigation,
         public broadcast: broadcast
     ) {
     }
@@ -211,15 +211,16 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     }
 
     /**
-     * set the focused record from geo data field broadcast
+     * set the focused record from map.focus broadcast message
+     * or recenter the map and start the search around if the message record is not found on the map
      * @param msg
      */
     public handleBroadcastMessage(msg: { messagedata: any, messagetype: string }) {
-        if (msg.messagetype != 'map.focus' || !msg.messagedata || !msg.messagedata.record || (msg.messagedata.tabId == 'main' && !!this.navigationtab.tabid) ||
-            (msg.messagedata.tabId != 'main' && this.navigationtab.tabid != msg.messagedata.tabId)) {
+        if (msg.messagetype != 'map.focus' || !msg.messagedata || !msg.messagedata.record || this.navigation.activeTab != msg.messagedata.tabId) {
             return;
         }
-
+        this.focusedRecordId = undefined;
+        this.cdRef.detectChanges();
         const focusedRecord = this.records.find((record: RecordI) => record.id == msg.messagedata.record.id);
         if (!focusedRecord) {
             this.mapOptions.circle = {
