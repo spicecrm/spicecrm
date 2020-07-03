@@ -65,10 +65,9 @@ export class ProductGroupManagerDetailsAttributesItem implements OnInit, AfterVi
         this.router.navigate(["module/ProductAttributes/" + this.attribute.id]);
     }
 
-    private toggleOpen() {
+    private toggleOpen(event: MouseEvent) {
         this.isOpen = !this.isOpen;
         if (this.isOpen) this.relatedmodels.getData();
-
-
+        event.stopPropagation();
     }
 }
