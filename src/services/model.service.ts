@@ -1069,6 +1069,8 @@ export class model implements OnDestroy {
         this.data.assigned_user_name = this.session.authData.userName;
         this.data.modified_by_id = this.session.authData.userId;
         this.data.modified_by_name = this.session.authData.userName;
+        this.data.created_by_id = this.session.authData.userId;
+        this.data.created_by_name = this.session.authData.userName;
         this.data.date_entered = new moment();
         this.data.date_modified = new moment();
 
