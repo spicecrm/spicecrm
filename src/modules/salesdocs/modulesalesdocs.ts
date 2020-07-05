@@ -11,8 +11,17 @@ import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
 
+/**
+ * pipes
+ */
 import /*embed*/ {SalesDocsItemsParentPipe} from './pipes/salesdocsitemsparentpipe';
 
+/**
+ * fields
+  */
+import /*embed*/ {fieldSalesdocTypes} from './fields/fieldsalesdoctypes';
+import /*embed*/ {fieldSalesdocItemTypes} from './fields/fieldsalesdocitemtypes';
+import /*embed*/ {fieldSalesdocTaxCategories} from './fields/fieldsalesdoctaxcategories';
 import /*embed*/ {SalesDocsItemsContainer} from './components/salesdocsitemscontainer';
 import /*embed*/ {SalesDocsItemHeader} from "./components/salesdocsitemheader";
 import /*embed*/ {SalesDocsItemFooter} from "./components/salesdocsitemfooter";
@@ -23,9 +32,6 @@ import /*embed*/ {SalesDocsItemsAddProductGroup} from './components/salesdocsite
 import /*embed*/ {SalesDocsItemsAddProductVariant} from "./components/salesdocsitemsaddproductvariant";
 import /*embed*/ {SalesDocsItemsAddText} from "./components/salesdocsitemsaddtext";
 import /*embed*/ {SalesDocsPrintButton} from './components/salesdocsprintbutton';
-import /*embed*/ {fieldSalesdocTypes} from './components/fieldsalesdoctypes';
-import /*embed*/ {fieldSalesdocItemTypes} from './components/fieldsalesdocitemtypes';
-import /*embed*/ {fieldSalesdocTaxCategories} from './components/fieldsalesdoctaxcategories';
 import /*embed*/ {SalesDocsItemsDeletedPipe} from './pipes/salesdocsitemsdeletedpipe';
 import /*embed*/ {SalesDocsItemsParentSelector} from './components/salesdocsitemsparentselector';
 import /*embed*/ {SalesdocsNewButton} from "./components/salesdocsnewbutton";
@@ -43,6 +49,8 @@ import /*embed*/ {SalesdocsWithReferenceTypeModal} from "./components/salesdocsw
 import /*embed*/ {SalesdocsWithReferenceSelectItemsModal} from "./components/salesdocswithreferenceselectitemsmodal";
 import /*embed*/ {SalesDocsEquipmentPanel } from './components/salesdocsequipmentpanel';
 import /*embed*/ {SalesDocsEquipmentItem } from './components/salesdocsequipmentitem';
+import /*embed*/ {SalesVoucherRedeemButton } from './components/salesvoucherredeembutton';
+import /*embed*/ {SalesVoucherRedeemModal } from './components/salesvoucherredeemmodal';
 
 @NgModule({
     imports: [
@@ -85,7 +93,9 @@ import /*embed*/ {SalesDocsEquipmentItem } from './components/salesdocsequipment
         SalesdocsWithReferenceTypeModal,
         SalesdocsWithReferenceSelectItemsModal,
         SalesDocsEquipmentItem,
-        SalesDocsEquipmentPanel
+        SalesDocsEquipmentPanel,
+        SalesVoucherRedeemButton,
+        SalesVoucherRedeemModal
     ]
 })
 export class ModuleSalesDocs {

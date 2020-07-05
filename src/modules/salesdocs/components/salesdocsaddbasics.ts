@@ -58,7 +58,7 @@ export class SalesDocsAddBasics {
             // The field "salesdocparty" in the module SalesDocs wants "I" (for Individual) instead of "C". Here is the mapping:
             let salesdocType = this.model.getField('salesdoctype');
             let typeData = this.configuration.getData('salesdoctypes').find( typeRecord => typeRecord.name === salesdocType );
-            editModalRef.instance.model.setField('salesdocparty', typeData.salesdocparty === 'C' ? 'I' : typeData.salesdocparty );
+            editModalRef.instance.model.setField('salesdocparty', typeData.salesdocparty ? typeData.salesdocparty : 'C');
         });
     }
 

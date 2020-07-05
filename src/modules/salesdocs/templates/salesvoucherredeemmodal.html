@@ -1,0 +1,21 @@
+<system-modal>
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_REDEEM_SALESVOUCHER"></system-label>
+    </system-modal-header>
+    <system-modal-content [system-overlay-loading-spinner]="model.isSaving" margin="none">
+        <system-componentset [componentset]="componentset"></system-componentset>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
+            <div class="slds-badge slds-theme--success" [ngClass]="{'slds-theme--error': overspent}" ><system-label label="LBL_VALUE_OPEN"></system-label>:&nbsp;<system-display-number [number]="parent.getField('voucher_value_open')" [currency_id]="parent.getField('currency_id')"></system-display-number></div>
+            <div>
+                <button class="slds-button slds-button--neutral" (click)="close()">
+                    <system-label label="LBL_CANCEL"></system-label>
+                </button>
+                <button class="slds-button slds-button--brand" [disabled]="overspent" (click)="save()">
+                    <system-label label="LBL_SAVE"></system-label>
+                </button>
+            </div>
+        </div>
+    </system-modal-footer>
+</system-modal>
