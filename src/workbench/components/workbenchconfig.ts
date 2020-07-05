@@ -25,8 +25,8 @@ export class WorkbenchConfig implements OnChanges {
     @Input() public component: string = "";
     @Input() public configValues: any = {};
 
-    public configOptions: Array<any> = [];
-    public optionsElements: Array<any> = [];
+    public configOptions: any[] = [];
+    public optionsElements: any[] = [];
 
     constructor(
         private backend: backend,
