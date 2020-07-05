@@ -8,19 +8,28 @@ import {Subscription} from "rxjs";
 import {backend} from "../../../services/backend.service";
 
 /**
- * @ignore
+ * display and manage the group attributes
  */
-declare var moment: any;
-
 @Component({
     selector: 'product-variants-attributes',
     templateUrl: './src/modules/products/templates/productvariantsattributes.html'
 })
 export class ProductVariantsAttributes implements OnDestroy {
-
+    /***
+     * holds the group attributes
+     */
     public attributes: any[] = [];
-    private productId: string = '';
+    /**
+     * holds the parent id
+     */
+    private parentId: string = '';
+    /**
+     * holds the loading boolean
+     */
     private isLoading: boolean = false;
+    /**
+     * subscription to unsubscribe on destroy
+     */
     private subscription: Subscription = new Subscription();
 
     constructor(private language: language, private model: model, private backend: backend) {
@@ -29,14 +38,25 @@ export class ProductVariantsAttributes implements OnDestroy {
         });
     }
 
+    /**
+     * unsubscribe from subscriptions
+     */
     public ngOnDestroy() {
         this.subscription.unsubscribe();
     }
 
+    /**
+     * call to load the attributes
+     */
     public ngOnInit() {
         this.loadAttributes(this.model.data);
+        this.loadAttributeValues();
     }
 
+    /**
+     * load the attributes from backend
+     * @param data
+     */
     private loadAttributes(data) {
         let parentField;
         let type;
@@ -51,19 +71,27 @@ export class ProductVariantsAttributes implements OnDestroy {
                 break;
         }
 
-        let newProductId = data[parentField];
-        if (newProductId && newProductId.length > 0 && newProductId != this.productId) {
+        const parentFieldId = data[parentField];
+        if (!!parentFieldId && parentFieldId != this.parentId) {
             this.isLoading = true;
-            this.productId = newProductId;
-            this.backend.getRequest(`${type}/${newProductId}/productattributes/direct`)
+            this.parentId = parentFieldId;
+            this.backend.getRequest(`${type}/${parentFieldId}/productattributes/direct`)
                 .subscribe(attributes => {
-                    this.attributes = attributes;
-                    this.attributes.sort((a,b) => +a.sort_sequence > +b.sort_sequence ? 1 : -1);
+                    this.attributes = attributes.sort((a, b) => +a.sort_sequence > +b.sort_sequence ? 1 : -1);
                     this.isLoading = false;
                 }, err => this.isLoading = false);
-        } else if (!newProductId) {
-            this.productId = '';
+        } else if (!parentFieldId) {
+            this.parentId = '';
             this.attributes = [];
+        }
+    }
+
+    /**
+     * load the attribute values
+     */
+    private loadAttributeValues() {
+        if (!this.model.data.productattributevalues) {
+            this.model.data.productattributevalues = {beans: {}};
         }
     }
 }
