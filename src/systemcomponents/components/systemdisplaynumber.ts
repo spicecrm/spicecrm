@@ -54,7 +54,7 @@ export class SystemDisplayNumber implements OnChanges {
      * gets the fornmatted value
      */
     get value() {
-        if (this.number) {
+        if (this.number || this.number == 0) {
             return this.userpreferences.formatMoney(this.number);
         }
     }
