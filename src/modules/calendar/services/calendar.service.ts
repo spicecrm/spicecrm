@@ -805,7 +805,9 @@ export class calendar implements OnDestroy {
      */
     private loadCalendarModules() {
         this.backend.getRequest('calendar/modules').subscribe(modules => {
-            if (modules) this.modules = modules;
+            if (!modules) return;
+            this.modules = modules;
+            this.cdRef.detectChanges();
         });
     }
 

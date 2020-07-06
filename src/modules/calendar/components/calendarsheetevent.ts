@@ -59,7 +59,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
     /**
      * holds the last move time span
      */
-    private lastMoveTimeSpan: number = 0;
+    private oldDuration: number = 0;
     /**
      * holds the event background color
      */
@@ -173,6 +173,8 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
      */
     public onDrop(dropTarget) {
 
+        const durationMinutes = this.event.end.diff(this.event.start, 'minutes');
+
         if (dropTarget.day) {
             this.event.start = moment(dropTarget.day.date);
         }
@@ -181,14 +183,16 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         this.event.start.hour(dropTarget.hour).minute(dropTarget.minutes).seconds(0);
 
         // calculate the end date
-        this.event.end = moment(this.event.start.format()).add(this.event.data.duration_minutes + 60 * this.event.data.duration_hours, 'm');
+        this.event.end = moment(this.event.start).add(durationMinutes, 'minutes');
+        this.event.data.duration_hours = Math.floor(durationMinutes / 60);
+        this.event.data.duration_minutes = durationMinutes - (this.event.data.duration_hours * 60);
 
-        let module = this.calendar.modules.find(module => module.name == this.event.module) || {};
-        let dateStartName = module.dateStartName || 'date_start';
-        let dateEndName = module.dateEndName || 'date_end';
+        const module = this.calendar.modules.find(module => module.name == this.event.module) || {};
+        const dateStartName = module.dateStartFieldName || 'date_start';
+        const dateEndName = module.dateEndFieldName || 'date_end';
 
         this.event.data[dateStartName] = moment(this.event.start.format());
-        this.event.data[dateEndName] = new moment(this.event.end.format());
+        this.event.data[dateEndName] = moment(this.event.end.format());
 
         this.model.startEdit(true, true);
         this.model.data = {...this.event.data};
@@ -300,6 +304,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         this.cdRef.detach();
         this.previewsPageY = event.pageY;
         this.currentPageY = event.pageY;
+        this.oldDuration = this.event.end.diff(this.event.start, 'minutes');
         this.event.resizing = true;
 
         const mouseMoveListener = this.renderer.listen('document', 'mousemove', (event) => this.onMouseMove(event));
@@ -322,17 +327,14 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
      */
     private onMouseMove(mouseEvent) {
         this.currentPageY = mouseEvent.pageY;
-        const moved = (this.currentPageY - this.previewsPageY);
-        const span = Math.floor(moved / 15);
-        if (this.lastMoveTimeSpan !== span) {
-            this.lastMoveTimeSpan = span;
-            let eventEnd = new moment(this.event.start).add((this.event.data.duration_hours * 60) + this.event.data.duration_minutes + (this.lastMoveTimeSpan * 15), 'm');
-            if (this.event.start.hours() === eventEnd.hours() && this.event.start.minutes() === eventEnd.minutes() || eventEnd.hours() < this.event.start.hours()) {
-                this.event.end = new moment(this.event.start).add(15, 'm');
-                this.lastMoveTimeSpan = this.lastMoveTimeSpan - (((this.event.data.duration_hours * 60) + this.event.data.duration_minutes + (this.lastMoveTimeSpan * 15)) / 15) + 1;
-            } else {
-                this.event.end = eventEnd;
-            }
+        const hourPart = (this.calendar.sheetHourHeight / 4);
+        const isMoveForward = (this.currentPageY - this.previewsPageY) > hourPart;
+        const isMoveBackward = (this.currentPageY - this.previewsPageY) < -Math.abs(hourPart);
+        const durationAction = isMoveForward ? 'add' : isMoveBackward ? 'subtract' : null;
+
+        if (durationAction) {
+            this.previewsPageY = this.currentPageY;
+            this.event.end[durationAction](15, 'minutes');
             this.eventChange.emit();
         }
     }
@@ -345,14 +347,18 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         this.mouseUpListener();
         mouseMoveListener();
 
-        if (this.currentPageY != this.previewsPageY) {
-            let durationMinutes = +this.event.data.duration_hours * 60 + +this.event.data.duration_minutes + this.lastMoveTimeSpan * 15;
+        const durationMinutes = this.event.end.diff(this.event.start, 'minutes');
+
+        if (this.oldDuration != durationMinutes) {
             this.event.data.duration_hours = Math.floor(durationMinutes / 60);
-            this.event.data.duration_minutes = durationMinutes - this.event.data.duration_hours * 60;
+            this.event.data.duration_minutes = durationMinutes - (this.event.data.duration_hours * 60);
 
             this.model.startEdit(true, true);
             this.model.data.duration_minutes = this.event.data.duration_minutes;
             this.model.data.duration_hours = this.event.data.duration_hours;
+            const module = this.calendar.modules.find(module => module.name == this.event.module) || {};
+            const dateEndName = module.dateEndFieldName || 'date_end';
+            this.model.data[dateEndName] = moment(this.event.end.format());
 
             // save the event
             this.event.saving = true;
@@ -365,7 +371,7 @@ export class CalendarSheetEvent implements OnInit, OnDestroy {
         this.previewsPageY = undefined;
         this.currentPageY = undefined;
         this.event.resizing = false;
-        this.lastMoveTimeSpan = 0;
+        this.oldDuration = 0;
     }
 
     /**
