@@ -1,9 +1,9 @@
 <system-section titlelabel="LBL_ATTRIBUTES">
-    <product-variants-attributes-table *ngIf="productId" [attributes]="attributes"></product-variants-attributes-table>
+    <product-variants-attributes-table *ngIf="parentId" [attributes]="attributes"></product-variants-attributes-table>
     <table *ngIf="isLoading" class="slds-table">
         <tbody system-table-stencils [columns]="2" [rows]="3"></tbody>
     </table>
-    <div *ngIf="productId?.length == 0 && !isLoading" class="slds-align_absolute-center">
+    <div *ngIf="!parentId && !isLoading" class="slds-align_absolute-center">
         <system-label label="MSG_SELECT_PRODUCT_GROUP"></system-label>
     </div>
 </system-section>

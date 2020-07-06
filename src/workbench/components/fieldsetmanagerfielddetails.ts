@@ -22,7 +22,7 @@ export class FieldsetManagerFieldDetails implements OnChanges {
 
     @Input() public field: any = {};
     private currentField: any = {};
-    private fieldtypes: Array<string> = [];
+    private fieldtypes: string[] = [];
 
     private component: string = "";
     public configValues: any = {};
@@ -58,12 +58,13 @@ export class FieldsetManagerFieldDetails implements OnChanges {
             this.currentField = {};
         }
     }
+
     get configValuesLabel() {
         // let ret: any = {};
         // ret = this.configValues;
         let ret = null;
-        if("label" in this.configValues) {
-            if(this.configValues.label != null) {
+        if ("label" in this.configValues) {
+            if (this.configValues.label != null) {
                 ret = {name: this.configValues.label};
             }
         }
@@ -71,14 +72,16 @@ export class FieldsetManagerFieldDetails implements OnChanges {
         // this.configValues.name = this.configValues.label
         return ret;
     }
+
     set configValuesLabel(val) {
-        if(val != null) {
+        if (val != null) {
             this.configValues.label = val.name;
-        }else {
+        } else {
             this.configValues.label = null;
         }
 
     }
+
     public configValuesLabelEmit(val) {
         this.configValuesLabel = val;
     }
@@ -89,6 +92,7 @@ export class FieldsetManagerFieldDetails implements OnChanges {
         // ret.option = this.language.getAppLanglabel('LBL_LABEL');
         return ret;
     }
+
     private getFieldConfig() {
         if (this.configValues.fieldtype) {
             let fieldComponent = this.metadata.getFieldTypeComponent(this.configValues.fieldtype);
@@ -106,6 +110,6 @@ export class FieldsetManagerFieldDetails implements OnChanges {
 
     private selectFieldType() {
         this.component = this.metadata.getFieldTypeComponent(this.configValues.fieldtype);
-        this.configValues = Object.assign({}, this.configValues);
+        // this.configValues = Object.assign({}, this.configValues);
     }
 }

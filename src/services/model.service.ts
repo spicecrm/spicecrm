@@ -1069,6 +1069,8 @@ export class model implements OnDestroy {
         this.data.assigned_user_name = this.session.authData.userName;
         this.data.modified_by_id = this.session.authData.userId;
         this.data.modified_by_name = this.session.authData.userName;
+        this.data.created_by_id = this.session.authData.userId;
+        this.data.created_by_name = this.session.authData.userName;
         this.data.date_entered = new moment();
         this.data.date_modified = new moment();
 
@@ -1196,12 +1198,17 @@ export class model implements OnDestroy {
         switch (fieldDef.type) {
             case 'link':
                 if (_.isObject(value) && value.beans) {
-                    let newLink = {beans: {}};
-                    for (let relid in value.beans) {
-                        newLink.beans[this.utils.generateGuid()] = {...value.beans[relid]};
+                    const newLink = {beans: {}};
+                    for (let relId in value.beans) {
+                        if (!value.beans.hasOwnProperty(relId)) continue;
+
+                        const newId = this.utils.generateGuid();
+                        newLink.beans[newId] = {...value.beans[relId]};
+                        newLink.beans[newId].id = newId;
                     }
                     this.setField(toField, newLink);
                 }
+                break;
             default:
                 this.setField(toField, value);
                 break;
