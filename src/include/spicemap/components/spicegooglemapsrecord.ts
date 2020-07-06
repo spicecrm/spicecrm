@@ -23,9 +23,9 @@ import {backend} from "../../../services/backend.service";
 import {session} from "../../../services/session.service";
 import {userpreferences} from "../../../services/userpreferences.service";
 import {broadcast} from "../../../services/broadcast.service";
-import {navigationtab} from "../../../services/navigationtab.service";
 import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
 import {toast} from "../../../services/toast.service";
+import {navigation} from "../../../services/navigation.service";
 
 /** @ignore */
 declare var _: any;
@@ -119,11 +119,11 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
         public elementRef: ElementRef,
         public renderer: Renderer2,
         public broadcast: broadcast,
-        public navigationtab: navigationtab,
+        public navigation: navigation,
         public toast: toast,
         private userpreferences: userpreferences,
     ) {
-        super(language, modelList, metadata, iterableDiffers, cdRef, model, navigationtab, broadcast);
+        super(language, modelList, metadata, iterableDiffers, cdRef, model, navigation, broadcast);
     }
 
     /**
