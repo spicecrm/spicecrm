@@ -43,6 +43,7 @@ import /*embed*/ {SystemComponentMissing} from "./components/systemcomponentmiss
 import /*embed*/ {SystemComponentSet} from "./components/systemcomponentset";
 import /*embed*/ {SystemConfirmDialog} from "./components/systemconfirmdialog";
 import /*embed*/ {SystemCustomIcon} from "./components/systemcustomicon";
+import /*embed*/ {SystemDisplayNumber} from "./components/systemdisplaynumber";
 import /*embed*/ {SystemDynamicComponent} from "./components/systemdynamiccomponent";
 import /*embed*/ {SystemDynamicRouteContainer} from "./components/systemdynamicroutecontainer";
 import /*embed*/ {SystemDynamicRouteInterceptor} from "./components/systemdynamicrouteinterceptor";
@@ -186,6 +187,7 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemComponentSet,
         SystemConfirmDialog,
         SystemCustomIcon,
+        SystemDisplayNumber,
         SystemDynamicComponent,
         SystemDynamicRouteContainer,
         SystemDynamicRouteInterceptor,
@@ -312,6 +314,7 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemComponentMissing,
         SystemComponentSet,
         SystemCustomIcon,
+        SystemDisplayNumber,
         SystemDynamicComponent,
         SystemFilterBuilderFilterExpression,
         SystemFilterBuilderFilterExpressionFields,
