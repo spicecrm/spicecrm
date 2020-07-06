@@ -847,20 +847,21 @@ export class calendar implements OnDestroy {
                         }
 
                         if (isOtherUser) uid = 'users';
-                        if (!this.modifyEvent(id, module, data, uid)) {
-                            if (this.isValid(data.date_end) && this.isValid(data.date_start)) {
-                                this.calendars[uid].push({
-                                    id: id,
-                                    module: module,
-                                    type: 'event',
-                                    start: data.date_start,
-                                    end: data.date_end,
-                                    isMulti: +data.date_end.diff(data.date_start, 'days') > 0,
-                                    data: data
-                                });
-                                this.triggerSheetReload();
-                            }
+                        const isModified = this.modifyEvent(id, module, data, uid);
+
+                        if (!isModified && this.isValid(data.date_end) && this.isValid(data.date_start)) {
+                            this.calendars[uid].push({
+                                id: id,
+                                module: module,
+                                type: 'event',
+                                start: data.date_start,
+                                end: data.date_end,
+                                isMulti: +data.date_end.diff(data.date_start, 'days') > 0,
+                                data: data
+                            });
                         }
+                        this.triggerSheetReload();
+                        this.cdRef.markForCheck();
                         break;
                     case "model.delete":
                         if (!this.calendars[this.owner]) {
@@ -911,7 +912,7 @@ export class calendar implements OnDestroy {
             if (event.data.id == id && module == event.module) {
                 this.calendars[this.owner].splice(index, 1);
                 this.triggerSheetReload();
-                this.cdRef.detectChanges();
+                this.cdRef.markForCheck();
                 return true;
             }
         });

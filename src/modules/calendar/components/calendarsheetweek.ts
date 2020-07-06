@@ -484,7 +484,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         this.arrangeMultiEvents();
 
         if (this.calendar.isMobileView || !calendar.visible) {
-            return;
+            return this.cdRef.detectChanges();
         }
 
         this.calendar.loadUserEvents(this.startDate, this.endDate, calendar.id)
