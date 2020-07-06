@@ -489,10 +489,10 @@ export class calendar implements OnDestroy {
                         for (let event of res.events) {
                             if (!!this.calendars[this.owner] && this.calendars[this.owner].some(e => e.data.external_id == event.id)) continue;
 
-                            event.start = moment(event.start.dateTime).format('YYYY-MM-DD HH:mm:ss');
-                            event.end = moment(event.end.dateTime).format('YYYY-MM-DD HH:mm:ss');
-                            event.start = moment(event.start);
-                            event.end = moment(event.end);
+                            event.start = moment(event.start.dateTime || event.start.date).format('YYYY-MM-DD HH:mm:ss');
+                            event.end = moment(event.end.dateTime || event.end.date).format('YYYY-MM-DD HH:mm:ss');
+                            event.start = moment(event.start).second(1);
+                            event.end = moment(event.end).second(1);
                             event.isMulti = +event.end.diff(event.start, 'days') > 0;
                             event.color = this.googleColor;
                             event.type = 'google';
@@ -805,7 +805,9 @@ export class calendar implements OnDestroy {
      */
     private loadCalendarModules() {
         this.backend.getRequest('calendar/modules').subscribe(modules => {
-            if (modules) this.modules = modules;
+            if (!modules) return;
+            this.modules = modules;
+            this.cdRef.detectChanges();
         });
     }
 
@@ -847,20 +849,21 @@ export class calendar implements OnDestroy {
                         }
 
                         if (isOtherUser) uid = 'users';
-                        if (!this.modifyEvent(id, module, data, uid)) {
-                            if (this.isValid(data.date_end) && this.isValid(data.date_start)) {
-                                this.calendars[uid].push({
-                                    id: id,
-                                    module: module,
-                                    type: 'event',
-                                    start: data.date_start,
-                                    end: data.date_end,
-                                    isMulti: +data.date_end.diff(data.date_start, 'days') > 0,
-                                    data: data
-                                });
-                                this.triggerSheetReload();
-                            }
+                        const isModified = this.modifyEvent(id, module, data, uid);
+
+                        if (!isModified && this.isValid(data.date_end) && this.isValid(data.date_start)) {
+                            this.calendars[uid].push({
+                                id: id,
+                                module: module,
+                                type: 'event',
+                                start: data.date_start,
+                                end: data.date_end,
+                                isMulti: +data.date_end.diff(data.date_start, 'days') > 0,
+                                data: data
+                            });
                         }
+                        this.triggerSheetReload();
+                        this.cdRef.markForCheck();
                         break;
                     case "model.delete":
                         if (!this.calendars[this.owner]) {
@@ -911,7 +914,7 @@ export class calendar implements OnDestroy {
             if (event.data.id == id && module == event.module) {
                 this.calendars[this.owner].splice(index, 1);
                 this.triggerSheetReload();
-                this.cdRef.detectChanges();
+                this.cdRef.markForCheck();
                 return true;
             }
         });

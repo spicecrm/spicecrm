@@ -39,8 +39,6 @@ import /*embed*/ {ComponentsetManagerComponentsetDetails} from "./components/com
 
 import /*embed*/ {ComponentsetManagerAddDialog} from "./components/componentsetmanageradddialog";
 import /*embed*/ {ComponentsetManagerEditDialog} from "./components/componentsetmanagereditdialog";
-import /*embed*/ {ComponentConfigManager} from "./components/componentconfigmanager";
-import /*embed*/ {ComponentConfigManagerComponentDetails} from "./components/componentconfigmanagercomponentdetails";
 import /*embed*/ {ValidationRulesManager, MaybeJsonPipe} from "./components/validationrulesmanager";
 import /*embed*/ {ValidationRulesConditions} from "./components/validationrulesconditions";
 import /*embed*/ {ValidationRulesActions} from "./components/validationrulesactions";
@@ -148,8 +146,6 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         WorkbenchConfigOptionMethod,
         ComponentsetManagerAddDialog,
         ComponentsetManagerEditDialog,
-        ComponentConfigManager,
-        ComponentConfigManagerComponentDetails,
         ValidationRulesManager,
         ValidationRulesConditions,
         ValidationRulesActions,
@@ -157,7 +153,6 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         LanguageTranslationsManager,
         LanguageLabelManagerComponent,
         LanguageLabelModal,
-        ComponentConfigManagerComponentDetails,
         MailboxesManager,
         MailboxesTransportsEnum,
         LanguageLabelModal,
@@ -215,7 +210,6 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         WorkbenchConfigOptionModulefilter,
         WorkbenchConfigOptionComponentset,
         WorkbenchConfigOptionActionset,
-        ComponentConfigManager,
         ModuleConfigManager,
         WorkbenchConfig,
         ObjectRepositoryManager,
