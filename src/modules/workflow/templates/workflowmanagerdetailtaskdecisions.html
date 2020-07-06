@@ -4,14 +4,12 @@
             <tr class="slds-text-title_caps">
                 <th>
                     <div class="slds-truncate">
-                        <field-label [fieldname]="'name'"
-                                     [fieldconfig]="{label:'WorkflowDefinitions:LBL_TASK_DECISION_HEADER_NAME'}"></field-label>
+                        <system-label label="LBL_NAME"></system-label>
                     </div>
                 </th>
                 <th>
                     <div class="slds-truncate">
-                        <field-label [fieldname]="'nextworkflowtaskdefinition_id'"
-                                     [fieldconfig]="{label:'WorkflowDefinitions:LBL_TASK_DECISION_HEADER_NEXT_KWORKFLOWTASKDEFINITION_ID'}"></field-label>
+                        <system-label label="LBL_NEXTTASK"></system-label>
                     </div>
                 </th>
                 <th class="slds-cell-shrink"></th>
@@ -20,10 +18,10 @@
         <tbody>
         <tr>
             <td *ngIf="model.data.decisions == 0" colspan="3">
-                <div class="slds-align--absolute-center slds-p-around--small">... no Decisions defined ...</div>
+                <system-illustration-no-records></system-illustration-no-records>
             </td>
         </tr>
-            <tr *ngFor="let decision of model.data.decisions|notdeleted" workflow-manager-detail-taskdecisions-line [decision]="decision" [decisions]="model.data.decisions" [tasks]="tasks"></tr>
+            <tr *ngFor="let decision of model.data.decisions|workflowmanagernotdeletedpipe" workflow-manager-detail-taskdecisions-line [decision]="decision" [decisions]="model.data.decisions" [tasks]="tasks"></tr>
         </tbody>
         <tfoot class="slds-border--top slds-theme--shade">
         <tr>

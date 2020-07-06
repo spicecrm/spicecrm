@@ -1,0 +1,32 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+    <system-spinner *ngIf="is_loading_items" size="12"></system-spinner>
+    <ul *ngIf="!is_loading_items" class="slds-list_dotted">
+        <li *ngFor="let item of value">{{getItemByProductID(item.product_id).name}} ({{item.quantity}})</li>
+    </ul>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-grid">
+    <system-spinner *ngIf="is_loading_items"></system-spinner>
+    <table *ngIf="!is_loading_items" class="slds-table slds-table_bordered">
+        <thead>
+            <tr>
+                <!--th scope="col">#</th-->
+                <th scope="col">
+                    <div>{{language.getLabel('LBL_CATALOG')}}</div>
+                    <!--div class="slds-form-element__control slds-m-top--xxx-small">
+                        <input type="text" class="slds-input" [(ngModel)]="filterKey" style="font-weight: initial">
+                    </div-->
+                </th>
+                <th scope="col" style="vertical-align: top">{{language.getLabel('LBL_QUANTITY')}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of filteredItems; let i = index">
+                <!--td>{{i+1}}</td-->
+                <td>{{item.name}}</td>
+                <td><input [disabled]="!item.active" class="slds-input slds-text-align--right " type="number" min="0" max="99" [(ngModel)]="item.quantity" (change)="convertItemsToValue()" /></td>
+            </tr>
+        </tbody>
+    </table>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

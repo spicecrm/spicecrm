@@ -17,7 +17,6 @@ import {language} from '../../../services/language.service';
 import {toast} from "../../../services/toast.service";
 
 
-
 @Component({
     selector: 'workflow-manager-detail',
     templateUrl: './src/modules/workflow/templates/workflowmanagerdetail.html',
@@ -33,13 +32,15 @@ export class WorkflowManagerDetail implements OnChanges {
 
     private fieldset: string = '';
 
-    constructor(                private backend: backend,
-                private metadata: metadata,
-                private model: model,
-                private view: view,
-                private language: language,
-                private utils: modelutilities,
-                private toast: toast,) {
+    constructor(
+        private backend: backend,
+        private metadata: metadata,
+        private model: model,
+        private view: view,
+        private language: language,
+        private utils: modelutilities,
+        private toast: toast
+    ) {
 
         this.view.isEditable = true;
         this.view.setEditMode();
@@ -50,13 +51,18 @@ export class WorkflowManagerDetail implements OnChanges {
         }
 
         this.model.module = 'WorkflowDefinitions';
+        this.model.initialize();
     }
 
     public ngOnChanges() {
         if (this.modeldata.id) {
             // this.model.module = this.module;
             this.model.id = this.modeldata.id;
-            this.model.data = this.modeldata;
+            this.model.data = this.model.utils.backendModel2spice('WorkflowDefinitions', this.modeldata);
+            this.model.data.acl = {
+                create: true,
+                edit: true
+            };
         }
     }
 

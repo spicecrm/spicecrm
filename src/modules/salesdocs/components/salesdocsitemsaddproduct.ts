@@ -56,7 +56,12 @@ export class SalesDocsItemsAddProduct extends ObjectModalModuleLookup {
 
     private productSelected(product) {
 
-        let itemData = {};
+        let itemData = {
+            acl: {
+                create: true,
+                edit: true
+            }
+        };
 
         // get generic copy rules
         let copyrules = this.metadata.getCopyRules("*", this.module);

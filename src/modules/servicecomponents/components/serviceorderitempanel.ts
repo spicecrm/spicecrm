@@ -4,7 +4,6 @@ import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
 import {view} from '../../../services/view.service';
 import {modal} from '../../../services/modal.service';
-import {ObjectModalModuleLookup} from "../../../objectcomponents/components/objectmodalmodulelookup";
 import {modelutilities} from "../../../services/modelutilities.service";
 
 
@@ -38,12 +37,12 @@ export class ServiceOrderItemPanel implements OnInit {
     /**
      * the columns to be displayed
      */
-    private fieldsetFields: any[] = [];
+    public fieldsetFields: any[] = [];
 
     /**
      * sortfield
      */
-    private sortField: string = 'date_entered';
+    public sortField: string = 'date_entered';
 
     /**
      * the used fieldsets
@@ -51,27 +50,19 @@ export class ServiceOrderItemPanel implements OnInit {
     public currentProductType: string = "";
 
     constructor(
-        private language: language,
+        public language: language,
         // @SkipSelf() private parent: model,
-        private model: model,
-        private modal: modal,
-        private metadata: metadata,
-        private view: view,
-        private injector: Injector,
+        public model: model,
+        public modal: modal,
+        public metadata: metadata,
+        public view: view,
+        public injector: Injector,
         public utils: modelutilities,
     ) {
 
-        // get the config
-        this.componentconfig = this.metadata.getComponentConfig('ServiceOrderItemPanel', this.model.module);
-
-        // let itemSubscription = this.model.data$.subscribe(data => {
-        //     if (this.buildItems()) {
-        //         if (itemSubscription) itemSubscription.unsubscribe();
-        //     }
-        // });
-
     }
     public ngOnInit() {
+
         this.setComponentConfig();
         this.getFieldsetFields();
     }
@@ -80,8 +71,11 @@ export class ServiceOrderItemPanel implements OnInit {
     * set all variables from the config
     */
     public setComponentConfig() {
+        // get the config
+        this.componentconfig = this.metadata.getComponentConfig('ServiceOrderItemPanel', this.model.module);
+
         this.fieldset = this.componentconfig.fieldset;
-        this.sortField = this.componentconfig.sortField;
+        this.sortField = 'itemnr';
         this.relation_link_name = this.componentconfig.relation_link_name;
         this.product_filter = this.componentconfig.product_filter;
         this.productvariant_filter = this.componentconfig.productvariant_filter;
@@ -93,25 +87,6 @@ export class ServiceOrderItemPanel implements OnInit {
         if (this.componentconfig.fieldset) {
             this.fieldsetFields = this.metadata.getFieldSetFields(this.fieldset);
         }
-    }
-
-
-    /**
-     * build the items and render them in the container
-     */
-    private buildItems(): boolean {
-        if (!this.model.data[this.relation_link_name]) return false;
-
-        this.items = [];
-        for (let itemid in this.model.data[this.relation_link_name].beans) {
-            this.items.push(this.model.data[this.relation_link_name].beans[itemid]);
-        }
-
-        this.items.sort((a, b) => {
-            return a.itemnr > b.itemnr ? 1 : -1;
-        });
-
-        return true;
     }
 
     /*
@@ -147,14 +122,10 @@ export class ServiceOrderItemPanel implements OnInit {
         return this.view.isEditMode();
     }
 
-    // public editmodechange(mode) {
-    //     mode=="edit"? this.view.setEditMode(): this.view.setViewMode();
-    // }
-
     /*
- * @sort items by sortField: moment.date
- * @return items: any[]
- */
+     * @sort items by sortField: moment.date
+     * @return items: any[]
+     */
     private sortItems(items) {
         return items.sort((a, b) => a[this.sortField] && b[this.sortField] ? a[this.sortField] > b[this.sortField] ? 1 : -1 : 0);
     }
@@ -179,7 +150,7 @@ export class ServiceOrderItemPanel implements OnInit {
         }
     }
 
-    private openAddModal(itemType) {
+    public openAddModal(itemType) {
         this.modal.openModal("ObjectModalModuleLookup", true, this.injector).subscribe(selectModal => {
             selectModal.instance.module = itemType;
             selectModal.instance.multiselect = true;
@@ -198,6 +169,12 @@ export class ServiceOrderItemPanel implements OnInit {
                     itemData.quantity = 1;
                     itemData.parent_type = this.currentProductType;
                     itemData.itemnr = (this.itemcount + 1) * 10;
+
+                    // set default acl to allow editing
+                    itemData.acl = {
+                        create: true,
+                        edit: true
+                    };
 
                     this.model.addRelatedRecords(this.relation_link_name, [itemData], false);
                 }

@@ -39,8 +39,6 @@ import /*embed*/ {ComponentsetManagerComponentsetDetails} from "./components/com
 
 import /*embed*/ {ComponentsetManagerAddDialog} from "./components/componentsetmanageradddialog";
 import /*embed*/ {ComponentsetManagerEditDialog} from "./components/componentsetmanagereditdialog";
-import /*embed*/ {ComponentConfigManager} from "./components/componentconfigmanager";
-import /*embed*/ {ComponentConfigManagerComponentDetails} from "./components/componentconfigmanagercomponentdetails";
 import /*embed*/ {ValidationRulesManager, MaybeJsonPipe} from "./components/validationrulesmanager";
 import /*embed*/ {ValidationRulesConditions} from "./components/validationrulesconditions";
 import /*embed*/ {ValidationRulesActions} from "./components/validationrulesactions";
@@ -54,6 +52,7 @@ import /*embed*/ {MailboxesmanagerTestIMAPModal} from "./components/mailboxesman
 import /*embed*/ {MailboxesMailgunTrafficManager} from "./components/mailboxesmailguntrafficmanager";
 import /*embed*/ {MailboxesSendgridTrafficManager} from "./components/mailboxessendgridtrafficmanager";
 import /*embed*/ {MailboxesTwillioTrafficManager} from "./components/mailboxestwilliotrafficmanager";
+import /*embed*/ {MailboxesA1SmsTrafficManager} from "./components/mailboxesa1smstrafficmanager";
 import /*embed*/ {MailboxesA1TrafficManager} from "./components/mailboxesa1trafficmanager";
 import /*embed*/ {MailboxesEWSTrafficManager} from "./components/mailboxesewstrafficmanager";
 import /*embed*/ {MailboxesEWSSelectFoldersModal} from "./components/mailboxesewsselectfoldersmodal";
@@ -147,8 +146,6 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         WorkbenchConfigOptionMethod,
         ComponentsetManagerAddDialog,
         ComponentsetManagerEditDialog,
-        ComponentConfigManager,
-        ComponentConfigManagerComponentDetails,
         ValidationRulesManager,
         ValidationRulesConditions,
         ValidationRulesActions,
@@ -156,7 +153,6 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         LanguageTranslationsManager,
         LanguageLabelManagerComponent,
         LanguageLabelModal,
-        ComponentConfigManagerComponentDetails,
         MailboxesManager,
         MailboxesTransportsEnum,
         LanguageLabelModal,
@@ -168,6 +164,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         MailboxesMailgunTrafficManager,
         MailboxesSendgridTrafficManager,
         MailboxesTwillioTrafficManager,
+        MailboxesA1SmsTrafficManager,
         MailboxesA1TrafficManager,
         MailboxesEWSTrafficManager,
         MailboxesEWSSelectFoldersModal,
@@ -213,7 +210,6 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         WorkbenchConfigOptionModulefilter,
         WorkbenchConfigOptionComponentset,
         WorkbenchConfigOptionActionset,
-        ComponentConfigManager,
         ModuleConfigManager,
         WorkbenchConfig,
         ObjectRepositoryManager,

@@ -1,4 +1,4 @@
-/*! Lightning Design System 2.11.7 */
+/*! Lightning Design System 2.12.2 */
 @charset "UTF-8";
 @font-face {
   font-family: "Salesforce Sans";
@@ -1276,7 +1276,7 @@ a.slds-button--inverse:focus {
 .slds-button_inverse:disabled,
 .slds-button_icon-border-inverse[disabled],
 .slds-button_icon-border-inverse:disabled {
-  color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.5);
 }
 .slds-button_destructive {
   padding-left: 1rem;
@@ -1538,6 +1538,9 @@ a.slds-button--inverse:focus {
   margin: 0 0 0.75rem;
 }
 .slds-card__header-title {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   font-size: 1rem;
   line-height: 1.25;
 }
@@ -2384,7 +2387,7 @@ a.slds-button--inverse:focus {
   color: #00396b;
 }
 .slds-table .slds-cell-wrap {
-  white-space: normal;
+  white-space: pre-line;
   overflow-wrap: break-word;
   word-wrap: break-word;
 }
@@ -2524,12 +2527,16 @@ a.slds-button--inverse:focus {
 }
 .slds-th__action-button {
   position: absolute;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
   top: 50%;
   right: 0.25rem;
-  margin-top: -0.5rem;
 }
 .slds-has-button-menu .slds-th__action {
-  padding-right: 1.5rem;
+  padding-right: 2rem;
+}
+.slds-has-button-menu .slds-th__action-button {
+  right: 0.75rem;
 }
 .slds-is-sortable__icon {
   width: 0.75rem;
@@ -2705,39 +2712,70 @@ a.slds-button--inverse:focus {
 .slds-table_resizable-cols thead th {
   padding: 0;
 }
-.slds-is-resizable .slds-th__action:hover,
-.slds-is-resizable .slds-th__action:focus {
-  -webkit-box-shadow: #dddbda -0.25rem 0 0 inset;
-  box-shadow: #dddbda -0.25rem 0 0 inset;
+.slds-table_resizable-cols thead th:last-of-type .slds-resizable__handle {
+  width: 0.75rem;
+  right: 0;
+}
+.slds-table_resizable-cols thead th:last-of-type .slds-resizable__handle .slds-resizable__divider:before,
+.slds-table_resizable-cols thead th:last-of-type .slds-resizable__handle .slds-resizable__divider:after {
+  right: 0;
 }
 .slds-resizable {
   max-width: 100%;
 }
 .slds-resizable__handle {
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 0.25rem;
+  width: 1.5rem;
   height: 100%;
-  background: #0070d2;
-  display: block;
-  cursor: col-resize;
-  opacity: 0;
-  z-index: 5000;
-}
-.slds-resizable__handle:hover,
-.slds-resizable__handle:focus,
-.slds-resizable__handle:active {
-  opacity: 1;
+  position: absolute;
+  top: 0;
+  right: -0.75rem;
 }
 .slds-resizable__divider {
   position: absolute;
   right: 0;
-  height: 100vh;
-  width: 1px;
-  background: #0070d2;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: col-resize;
+  z-index: 5000;
 }
-.slds-resizable__input:focus ~ .slds-resizable__handle {
+.slds-resizable__divider:before,
+.slds-resizable__divider:after {
+  height: 100%;
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0.75rem;
+}
+.slds-resizable__divider:before {
+  background-color: #b0adab;
+  height: 100%;
+  width: 1px;
+}
+.slds-resizable__divider:after {
+  background-color: #0070d2;
+  width: 1px;
+  height: 100vh;
+  opacity: 0;
+}
+.slds-resizable__divider:hover:before,
+.slds-resizable__divider:focus:before,
+.slds-resizable__divider:active:before {
+  background-color: #0070d2;
+  width: 0.25rem;
+}
+.slds-resizable__divider:hover:after,
+.slds-resizable__divider:focus:after,
+.slds-resizable__divider:active:after {
+  opacity: 1;
+}
+.slds-resizable__input:focus ~ .slds-resizable__handle .slds-resizable__divider:before {
+  background-color: #0070d2;
+  width: 0.25rem;
+}
+.slds-resizable__input:focus ~ .slds-resizable__handle .slds-resizable__divider:after {
   opacity: 1;
 }
 .slds-table_joined table,
@@ -5031,6 +5069,10 @@ a.slds-button--inverse:focus {
   background-color: #6bbd6e;
 }
 
+.slds-icon-standard-work-contract {
+  background-color: #00a1e0;
+}
+
 .slds-icon-standard-resource-skill {
   background-color: #45c173;
 }
@@ -5039,8 +5081,16 @@ a.slds-button--inverse:focus {
   background-color: #54698d;
 }
 
+.slds-icon-standard-segments {
+  background-color: #f28b00;
+}
+
 .slds-icon-standard-goals {
   background-color: #56aadf;
+}
+
+.slds-icon-standard-case-wrap-up {
+  background-color: #f2cf5b;
 }
 
 .slds-icon-standard-investment-account {
@@ -5095,6 +5145,10 @@ a.slds-button--inverse:focus {
   background-color: #f88962;
 }
 
+.slds-icon-standard-work-plan-template {
+  background-color: #449488;
+}
+
 .slds-icon-standard-shift {
   background-color: #eb7092;
 }
@@ -5107,8 +5161,16 @@ a.slds-button--inverse:focus {
   background-color: #54698d;
 }
 
+.slds-icon-standard-reply-text {
+  background-color: #f88965;
+}
+
 .slds-icon-standard-answer-private {
   background-color: #f2cf5b;
+}
+
+.slds-icon-standard-asset-downtime-period {
+  background-color: #317a92;
 }
 
 .slds-icon-standard-opportunity-contact-role {
@@ -5199,6 +5261,10 @@ a.slds-button--inverse:focus {
   background-color: #2a739e;
 }
 
+.slds-icon-standard-work-plan-rule {
+  background-color: #449488;
+}
+
 .slds-icon-standard-loop {
   background-color: #ff9a3c;
 }
@@ -5209,6 +5275,10 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-work-capacity-limit {
   background-color: #0079bc;
+}
+
+.slds-icon-standard-employee-organization {
+  background-color: #00a1e0;
 }
 
 .slds-icon-standard-constant {
@@ -5241,6 +5311,10 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-answer-best {
   background-color: #f2cf5b;
+}
+
+.slds-icon-standard-asset-action {
+  background-color: #317a92;
 }
 
 .slds-icon-standard-orders {
@@ -5285,6 +5359,10 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-thanks-loading {
   background-color: #b8c3ce;
+}
+
+.slds-icon-standard-job-family {
+  background-color: #00a1e0;
 }
 
 .slds-icon-standard-service-appointment-capacity-usage {
@@ -5343,6 +5421,10 @@ a.slds-button--inverse:focus {
   background-color: #3c97dd;
 }
 
+.slds-icon-standard-einstein-replies {
+  background-color: #f88965;
+}
+
 .slds-icon-standard-coaching {
   background-color: #f67594;
 }
@@ -5381,6 +5463,10 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-cms {
   background-color: #88c651;
+}
+
+.slds-icon-standard-call-coaching {
+  background-color: #3c97dd;
 }
 
 .slds-icon-standard-salesforce-cms {
@@ -5451,6 +5537,10 @@ a.slds-button--inverse:focus {
   background-color: #30c85a;
 }
 
+.slds-icon-standard-cancel-checkout {
+  background-color: #969492;
+}
+
 .slds-icon-standard-resource-capacity {
   background-color: #45c173;
 }
@@ -5475,6 +5565,10 @@ a.slds-button--inverse:focus {
   background-color: #f88960;
 }
 
+.slds-icon-standard-job-position {
+  background-color: #00a1e0;
+}
+
 .slds-icon-standard-sobject-collection {
   background-color: #54698d;
 }
@@ -5485,6 +5579,10 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-client {
   background-color: #00d2be;
+}
+
+.slds-icon-standard-scheduling-constraints {
+  background-color: #eb7092;
 }
 
 .slds-icon-standard-screen {
@@ -5509,6 +5607,10 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-customer-360 {
   background-color: #032e61;
+}
+
+.slds-icon-standard-employee-job {
+  background-color: #00a1e0;
 }
 
 .slds-icon-standard-resource-absence {
@@ -5591,8 +5693,20 @@ a.slds-button--inverse:focus {
   background-color: #0079bc;
 }
 
+.slds-icon-standard-expense-report-entry {
+  background-color: #3a3180;
+}
+
+.slds-icon-standard-employee {
+  background-color: #00a1e0;
+}
+
 .slds-icon-standard-omni-supervisor {
   background-color: #8a76f0;
+}
+
+.slds-icon-standard-asset-object {
+  background-color: #317a92;
 }
 
 .slds-icon-standard-product {
@@ -5621,6 +5735,10 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-reward {
   background-color: #e9696e;
+}
+
+.slds-icon-standard-employee-contact {
+  background-color: #00a1e0;
 }
 
 .slds-icon-standard-performance {
@@ -5659,6 +5777,10 @@ a.slds-button--inverse:focus {
   background-color: #7e8be4;
 }
 
+.slds-icon-standard-customer-lifecycle-analytics {
+  background-color: #9274df;
+}
+
 .slds-icon-standard-case {
   background-color: #f2cf5b;
 }
@@ -5673,6 +5795,10 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-queue {
   background-color: #54698d;
+}
+
+.slds-icon-standard-schedule-objective {
+  background-color: #2a739e;
 }
 
 .slds-icon-standard-contract-line-item {
@@ -5783,12 +5909,20 @@ a.slds-button--inverse:focus {
   background-color: #f2cf5b;
 }
 
+.slds-icon-standard-webcart {
+  background-color: #04844b;
+}
+
 .slds-icon-standard-report {
   background-color: #2ecbbe;
 }
 
 .slds-icon-standard-groups {
   background-color: #779ef2;
+}
+
+.slds-icon-standard-data-model {
+  background-color: #eb7092;
 }
 
 .slds-icon-standard-dashboard {
@@ -5835,12 +5969,20 @@ a.slds-button--inverse:focus {
   background-color: #2a739e;
 }
 
+.slds-icon-standard-work-plan-template-entry {
+  background-color: #449488;
+}
+
 .slds-icon-standard-hierarchy {
   background-color: #34becd;
 }
 
 .slds-icon-standard-partner-marketing-budget {
   background-color: #0eb58a;
+}
+
+.slds-icon-standard-asset-action-source {
+  background-color: #317a92;
 }
 
 .slds-icon-standard-skill-requirement {
@@ -5907,8 +6049,20 @@ a.slds-button--inverse:focus {
   background-color: #3c97dd;
 }
 
+.slds-icon-standard-work-plan {
+  background-color: #449488;
+}
+
+.slds-icon-standard-shift-template {
+  background-color: #eb7092;
+}
+
 .slds-icon-standard-merge {
   background-color: #f2cf5b;
+}
+
+.slds-icon-standard-expense {
+  background-color: #3a3180;
 }
 
 .slds-icon-standard-dataset {
@@ -6011,6 +6165,10 @@ a.slds-button--inverse:focus {
   background-color: #969492;
 }
 
+.slds-icon-standard-work-step {
+  background-color: #449488;
+}
+
 .slds-icon-standard-picklist-type {
   background-color: #969492;
 }
@@ -6051,8 +6209,16 @@ a.slds-button--inverse:focus {
   background-color: #6ca1e9;
 }
 
+.slds-icon-standard-shift-preferences {
+  background-color: #eb7092;
+}
+
 .slds-icon-standard-password {
   background-color: #969492;
+}
+
+.slds-icon-standard-expense-report {
+  background-color: #3a3180;
 }
 
 .slds-icon-standard-branch-merge {
@@ -6065,6 +6231,10 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-dropbox {
   background-color: #52aef9;
+}
+
+.slds-icon-standard-employee-job-position {
+  background-color: #00a1e0;
 }
 
 .slds-icon-standard-file {
@@ -6123,6 +6293,14 @@ a.slds-button--inverse:focus {
   background-color: #3c97dd;
 }
 
+.slds-icon-standard-activations {
+  background-color: #b070e6;
+}
+
+.slds-icon-standard-scheduling-policy {
+  background-color: #eb7092;
+}
+
 .slds-icon-standard-channel-program-history {
   background-color: #0eb58a;
 }
@@ -6149,6 +6327,10 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-category {
   background-color: #027e46;
+}
+
+.slds-icon-standard-data-streams {
+  background-color: #ef6e64;
 }
 
 .slds-icon-standard-textbox {
@@ -6187,6 +6369,10 @@ a.slds-button--inverse:focus {
   background-color: #2a739e;
 }
 
+.slds-icon-standard-asset-state-period {
+  background-color: #317a92;
+}
+
 .slds-icon-standard-call {
   background-color: #f2cf5b;
 }
@@ -6223,6 +6409,10 @@ a.slds-button--inverse:focus {
   background-color: #54698d;
 }
 
+.slds-icon-standard-employee-asset {
+  background-color: #00a1e0;
+}
+
 .slds-icon-standard-stage-collection {
   background-color: #ff9a3c;
 }
@@ -6249,6 +6439,10 @@ a.slds-button--inverse:focus {
 
 .slds-icon-standard-household {
   background-color: #00afa0;
+}
+
+.slds-icon-standard-work-step-template {
+  background-color: #449488;
 }
 .slds-icon {
   width: 2rem;
@@ -14232,7 +14426,15 @@ a.slds-button--inverse:focus {
   -webkit-line-clamp: 3;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: normal;
+  white-space: pre-line;
+}
+.slds-line-clamp_x-small {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: pre-line;
 }
 .slds-line-clamp_small {
   display: -webkit-box;
@@ -14240,7 +14442,7 @@ a.slds-button--inverse:focus {
   -webkit-line-clamp: 3;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: normal;
+  white-space: pre-line;
 }
 .slds-line-clamp_medium {
   display: -webkit-box;
@@ -14248,7 +14450,7 @@ a.slds-button--inverse:focus {
   -webkit-line-clamp: 5;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: normal;
+  white-space: pre-line;
 }
 .slds-line-clamp_large {
   display: -webkit-box;
@@ -14256,7 +14458,7 @@ a.slds-button--inverse:focus {
   -webkit-line-clamp: 7;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: normal;
+  white-space: pre-line;
 }
 
 /*! HTML5 Boilerplate v5.2.0 | MIT License | https://html5boilerplate.com/ */

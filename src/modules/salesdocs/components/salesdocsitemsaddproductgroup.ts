@@ -55,6 +55,10 @@ export class SalesDocsItemsAddProductGroup extends ObjectModalModuleLookup {
             parent_name: productgroup.name,
             productgroup_name: productgroup.name,
             name: productgroup.name,
+            acl: {
+                create: true,
+                edit: true
+            }
         };
 
         this.additem.emit(itemData);

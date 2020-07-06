@@ -1,7 +1,9 @@
 <div class="slds-p-around--medium">
-    <h2 class="slds-text-title--caps"><system-label [label]="'LBL_ADD'"></system-label></h2>
+    <h2 class="slds-text-title--caps"><system-label [label]="'LBL_ADD'">
+    </system-label><system-button-icon [icon]="show ? 'chevrondown' : 'chevronright'" class="slds-p-left--small" (click)="toggleShow()"></system-button-icon>
+    </h2>
 
-<div class="slds-grid slds-grid--align-spread slds-p-vertical--xx-small slds-">
+<div *ngIf="show" class="slds-grid slds-grid--align-spread slds-p-vertical--xx-small">
     <div class="slds-form-element">
         <system-label [label]="'LBL_NAME'"></system-label>
         <div class="slds-form-element__control">
@@ -18,12 +20,6 @@
         <system-label [label]="'LBL_SYMBOL'"></system-label>
         <div class="slds-form-element__control">
             <input type="text" class="slds-input" [(ngModel)]="symbol"/>
-        </div>
-    </div>
-    <div class="slds-form-element">
-        <system-label [label]="'LBL_CONVERSION_RATE'"></system-label>
-        <div class="slds-form-element__control">
-            <input type="text" class="slds-input" [(ngModel)]="conversion_rate"/>
         </div>
     </div>
     <button class="slds-button slds-button-icon slds-m-right_x-small" (click)="addCurrencyItem()"><system-button-icon icon="add"></system-button-icon></button>

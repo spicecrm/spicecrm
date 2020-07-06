@@ -17,10 +17,18 @@ import {language} from '../../../services/language.service';
     providers:[view]
 
 })
-export class WorkflowPanelTasksItem {
+export class WorkflowPanelTasksItem implements OnInit{
 
     constructor(private model: model, private language: language, private view: view) {
         this.view.displayLabels = false;
+    }
+
+    public ngOnInit(): void {
+        this.model.data._displayComments = false;
+    }
+
+    private toggleComments(){
+        this.model.data._displayComments = !this.model.data._displayComments;
     }
 
     /**

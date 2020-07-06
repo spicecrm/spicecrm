@@ -1,20 +1,17 @@
 <table class="slds-table slds-table_bordered">
     <thead>
-    <th style="width: 60px"></th>
-    <th *ngFor="let fieldsetField of fieldsetFields">
+    <th style="width: 30px" class="slds-is-fixed"></th>
+    <th style="width: 90px" class="slds-is-fixed"><system-label label="LBL_ITEM_NR"></system-label></th>
+    <th *ngFor="let fieldsetField of fieldsetFields? fieldsetFields: []" class="slds-is-fixed">
         <field-label class="slds-truncate" addclasses="slds-truncate" [fieldname]="fieldsetField.field" [fieldconfig]="fieldsetField.fieldconfig"></field-label>
     </th>
     </thead>
     <tbody *ngIf="itemcount > 0">
-    <ng-container *ngFor="let item of items.list|serviceorderitempipe">
-        <tr serviceorder-equipment-item [(item)]="item" [parentview]="view" [serviceorder]="model" [relationlinkname]="relation_link_name" ></tr>
-    </ng-container>
+        <ng-container *ngFor="let item of items.list|serviceorderitempipe">
+            <tr serviceorder-equipment-item [(item)]="item" [parentview]="view" [serviceorder]="model" [relationlinkname]="relation_link_name" ></tr>
+        </ng-container>
     </tbody>
-    <tbody *ngIf="itemcount == 0">
-    <div class="slds-p-around--medium slds-align--;absolute-center">
-        <system-label label="LBL_NO_ENTRIES"></system-label>
-    </div>
-    </tbody>
-    <tfoot>
-    </tfoot>
 </table>
+<div *ngIf="itemcount == 0" class="slds-p-around--medium slds-text-align--center">
+    <system-label label="LBL_PLEASE_SELECT_SERVICELOCATION"></system-label>
+</div>

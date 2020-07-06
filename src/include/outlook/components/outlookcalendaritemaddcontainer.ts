@@ -146,6 +146,10 @@ export class OutlookCalendarItemAddContainer {
         for (let fieldSetField of fieldSetFields) {
             let fieldData = this.metadata.getFieldDefs(this.model.module, fieldSetField.field);
             switch (fieldData.type) {
+                case 'relate':
+                    fields.push(fieldSetField.field);
+                    fields.push(fieldData.id_name);
+                    break;
                 case 'parent':
                     fields.push(fieldSetField.field);
                     fields.push(fieldData.type_name);

@@ -1,11 +1,10 @@
 /**
  * @module ServiceComponentsModule
  */
-import {Component} from "@angular/core";
+import {Component, SkipSelf, Injector} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {metadata} from "../../../services/metadata.service";
 import {modal} from "../../../services/modal.service";
-import {SignServiceOrderModalComponent} from "./signserviceordermodal";
 import {language} from "../../../services/language.service";
 import {ServiceSelectQueueModal} from "./serviceselectqueuemodal";
 
@@ -20,6 +19,7 @@ export class ServiceSelectQueueButton {
         private metadata: metadata,
         private language: language,
         private modal: modal,
+        private injector: Injector
     ) {
 
     }
@@ -37,25 +37,7 @@ export class ServiceSelectQueueButton {
 
     private showModal() {
         if (this.canChange) {
-            this.modal.openModal('ServiceSelectQueueModal').subscribe(
-                cmp => {
-                    cmp.instance.parentqueue_id = this.model.getField('servicequeue_id');
-                    cmp.instance.displaynote = true;
-                    cmp.instance.selectedqueue.subscribe(response => {
-                        if (response != false) {
-                            if (!this.model.isEditing) {
-                                this.model.setField('servicequeue_id', response.servicequeue_id);
-                                this.model.setField('servicequeue_name', response.servicequeue_name);
-                            } else {
-                                this.model.startEdit();
-                                this.model.setField('servicequeue_id', response.servicequeue_id);
-                                this.model.setField('servicequeue_name', response.servicequeue_name);
-                                this.model.save();
-                            }
-                        }
-                    });
-                }
-            );
+            this.modal.openModal('ServiceSelectQueueModal', true, this.injector);
         }
     }
 

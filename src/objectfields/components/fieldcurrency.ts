@@ -45,6 +45,15 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
         }
     }
 
+    get currencyId(){
+        let currencyid = -99;
+        if (this.currencyidfield) {
+            if (!this.model.data[this.currencyidfield]) return '';
+            else currencyid = this.model.data[this.currencyidfield];
+        }
+        return currencyid;
+    }
+
     /**
      * helper to get the currency symbol
      */
@@ -73,6 +82,7 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
         if (fieldval === undefined) return '';
         let val = parseFloat(fieldval);
         if (isNaN(val)) return '';
+        return val;
         return this.userpreferences.formatMoney(val);
     }
 

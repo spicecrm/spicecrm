@@ -3,11 +3,21 @@ import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
 import {view} from "../../../services/view.service";
 import {metadata} from "../../../services/metadata.service";
+import {trigger, transition, animate, style, state} from '@angular/animations';
 
 @Component({
     selector: "[serviceorder-effort-item-details]",
     templateUrl: "./src/modules/servicecomponents/templates/serviceordereffortitemdetails.html",
-    providers: [model, view]
+    providers: [view],
+    animations: [
+        trigger('slideInOut', [
+            state('open', style({height: '80px'})),
+            state('closed', style({height: '0px'})),
+            transition('open <=> closed', [
+                animate('200ms')
+            ])
+        ])
+    ]
 })
 export class ServiceOrderEffortItemDetails implements OnInit  {
 
@@ -40,18 +50,8 @@ export class ServiceOrderEffortItemDetails implements OnInit  {
     }
 
     public ngOnInit(): void {
-        this.setItemModelData();
         this.viewSubscriptions();
         this.setConfig();
-    }
-
-    /**
-     * set the model data for the item
-     */
-    private setItemModelData() {
-        this.model.module = 'ServiceOrderEfforts';
-        this.model.id = this.item.id;
-        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.item);
     }
 
     /**
@@ -59,6 +59,9 @@ export class ServiceOrderEffortItemDetails implements OnInit  {
      */
     private viewSubscriptions() {
         // link the two views
+
+        this.view.displayLabels = false;
+
         this.view.isEditable = this.parentview.isEditable;
         this.view.mode$.subscribe(mode => {
             // check if we are in the same mode already
@@ -68,9 +71,6 @@ export class ServiceOrderEffortItemDetails implements OnInit  {
             if (mode == 'edit') {
                 this.parentview.setEditMode();
                 this.parentview.displayLinks = false;
-            } else {
-                this.parentview.setViewMode();
-                this.parentview.displayLinks = true;
             }
         });
         this.parentview.mode$.subscribe(mode => {
@@ -87,6 +87,7 @@ export class ServiceOrderEffortItemDetails implements OnInit  {
             }
         });
     }
+
 
     /**
      * set the configuration

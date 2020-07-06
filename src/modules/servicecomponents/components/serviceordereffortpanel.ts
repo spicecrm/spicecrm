@@ -4,9 +4,7 @@ import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
 import {view} from '../../../services/view.service';
 import {modal} from '../../../services/modal.service';
-import {ObjectModalModuleLookup} from "../../../objectcomponents/components/objectmodalmodulelookup";
 import {modelutilities} from "../../../services/modelutilities.service";
-
 
 @Component({
     selector: "serviceorder-effort-panel",
@@ -48,7 +46,7 @@ export class ServiceOrderEffortPanel implements OnInit {
     /**
      * sortfield
      */
-    private sortField: string = 'date_entered';
+    public sortField: string = 'itemnr';
 
     /**
      * the columns to be displayed in detail container
@@ -61,16 +59,15 @@ export class ServiceOrderEffortPanel implements OnInit {
     public currentProductType: string = "";
 
     constructor(
-        private language: language,
-        private model: model,
-        private modal: modal,
-        private metadata: metadata,
-        private view: view,
-        private injector: Injector,
+        public language: language,
+        public model: model,
+        public modal: modal,
+        public metadata: metadata,
+        public view: view,
+        public injector: Injector,
         public utils: modelutilities,
     ) {
-        // get the config
-        this.componentconfig = this.metadata.getComponentConfig('ServiceOrderEffortPanel', this.model.module);
+
     }
     public ngOnInit() {
         this.setComponentConfig();
@@ -81,6 +78,8 @@ export class ServiceOrderEffortPanel implements OnInit {
     * set all variables from the config
     */
     public setComponentConfig() {
+        // get the config
+        this.componentconfig = this.metadata.getComponentConfig('ServiceOrderEffortPanel', this.model.module);
         this.fieldset = this.componentconfig.fieldset;
         this.sortField = this.componentconfig.sortField;
         this.relation_link_name = this.componentconfig.relation_link_name;
@@ -161,7 +160,7 @@ export class ServiceOrderEffortPanel implements OnInit {
         }
     }
 
-    private openAddModal(itemType) {
+    public openAddModal(itemType) {
         this.modal.openModal("ObjectModalModuleLookup", true, this.injector).subscribe(selectModal => {
             selectModal.instance.module = itemType;
             selectModal.instance.multiselect = true;
@@ -181,9 +180,14 @@ export class ServiceOrderEffortPanel implements OnInit {
                     itemData.parent_type = this.currentProductType;
                     itemData.itemnr = (this.itemcount + 1) * 10;
 
+                    // set default acl to allow editing
+                    itemData.acl = {
+                        create: true,
+                        edit: true
+                    };
+
                     this.model.addRelatedRecords(this.relation_link_name, [itemData], false);
                 }
-                this.view.setEditMode();
                 this.currentProductType = "";
             });
         });
