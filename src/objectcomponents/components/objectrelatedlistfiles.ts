@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, AfterViewInit, ViewChild, ViewContainerRef, Renderer2} from "@angular/core";
+import {Component, AfterViewInit, ViewChild, ViewContainerRef, Renderer2, Input} from "@angular/core";
 import {
     trigger,
     state,
@@ -56,6 +56,11 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
     @ViewChild("fileupload", {read: ViewContainerRef, static: true}) private fileupload: ViewContainerRef;
 
     /**
+     * an object array with base64 files
+     */
+    @Input() public files: any[] = [];
+
+    /**
      * @ignore
      *
      * passed in component config
@@ -89,6 +94,10 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      * initializes the model attachments service and loads the attachments
      */
     private loadFiles() {
+        // set input base64 files
+        if(this.files.length > 0) {
+            this.doupload(this.files);
+        }
         this.modelattachments.getAttachments();
     }
 
