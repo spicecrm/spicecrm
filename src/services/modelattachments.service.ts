@@ -167,7 +167,6 @@ export class modelattachments {
         let maxSize = this.configurationService.getSystemParamater('upload_maxsize');
 
         for (let file of files) {
-
             // check max filesize
             if (maxSize && file.size > maxSize) {
                 this.toast.sendToast(this.language.getLabelFormatted('LBL_EXCEEDS_MAX_UPLOADFILESIZE', [file.name, this.humanFileSize(maxSize)]), 'error');
@@ -193,51 +192,67 @@ export class modelattachments {
             this.count++;
             this.broadcastAttachmentCount();
 
-            this.readFile(file).subscribe(filecontent => {
-                let request = new XMLHttpRequest();
-                let resp: any = {};
-                request.onreadystatechange = (scope: any = this) => {
-                    if (request.readyState == 4) {
-                        try {
-                            let retVal = JSON.parse(request.response);
-
-                            newfile.id = retVal[0].id;
-                            newfile.thumbnail = retVal[0].thumbnail;
-                            newfile.user_id = retVal[0].user_id;
-                            newfile.user_name = retVal[0].user_name;
-                            delete (newfile.uploadprogress);
-
-                            retSub.next({files: retVal});
-                            retSub.complete();
-                        } catch (e) {
-                            resp = {
-                                status: "error",
-                                data: "Unknown error occurred: [" + request.responseText + "]"
-                            };
-                        }
-                    }
-                };
-
-                request.upload.addEventListener("progress", e => {
-                    newfile.uploadprogress = Math.round(e.loaded / e.total * 100);
-                    retSub.next({progress: {total: e.total, loaded: e.loaded}});
-                }, false);
-
-                request.open("POST", this.configurationService.getBackendUrl() + "/module/" + this.module + "/" + this.id + "/attachment", true);
-                request.setRequestHeader("OAuth-Token", this.session.authData.sessionId);
-                request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-
-                let fileBody = {
-                    file: file.filecontent,
-                    filename: file.name,
-                    filemimetype: file.type ? file.type : 'application/octet-stream'
-                };
-
-                request.send(JSON.stringify(fileBody));
-            });
+            if (file.contentBase64) {
+                this.uploadForUploadAttachmentsBase64(newfile, retSub, file);
+            } else {
+                this.readFile(file).subscribe(() => {
+                    this.uploadForUploadAttachmentsBase64(newfile, retSub, file);
+                });
+            }
         }
 
         return retSub.asObservable();
+    }
+
+
+    /**
+     * upload part of "uploadAttachmentsBase64" function
+     *
+     * @param newfile
+     * @param retSub
+     * @param file
+     */
+    public uploadForUploadAttachmentsBase64(newfile, retSub, file) {
+        let request = new XMLHttpRequest();
+        let resp: any = {};
+        request.onreadystatechange = (scope: any = this) => {
+            if (request.readyState == 4) {
+                try {
+                    let retVal = JSON.parse(request.response);
+
+                    newfile.id = retVal[0].id;
+                    newfile.thumbnail = retVal[0].thumbnail;
+                    newfile.user_id = retVal[0].user_id;
+                    newfile.user_name = retVal[0].user_name;
+                    delete (newfile.uploadprogress);
+
+                    retSub.next({files: retVal});
+                    retSub.complete();
+                } catch (e) {
+                    resp = {
+                        status: "error",
+                        data: "Unknown error occurred: [" + request.responseText + "]"
+                    };
+                }
+            }
+        };
+
+        request.upload.addEventListener("progress", e => {
+            newfile.uploadprogress = Math.round(e.loaded / e.total * 100);
+            retSub.next({progress: {total: e.total, loaded: e.loaded}});
+        }, false);
+
+        request.open("POST", this.configurationService.getBackendUrl() + "/module/" + this.module + "/" + this.id + "/attachment", true);
+        request.setRequestHeader("OAuth-Token", this.session.authData.sessionId);
+        request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+        let fileBody = {
+            file: file.contentBase64,
+            filename: file.name,
+            filemimetype: file.type ? file.type : 'application/octet-stream'
+        };
+
+        request.send(JSON.stringify(fileBody));
     }
 
     /**
@@ -342,6 +357,7 @@ export class modelattachments {
         reader.readAsDataURL(file);
         return responseSubject.asObservable();
     }
+
 
     /**
      * delete an attachment
