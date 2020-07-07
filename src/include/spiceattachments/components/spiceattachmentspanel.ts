@@ -13,7 +13,8 @@ import {
     Renderer2,
     Injector,
     Optional,
-    SkipSelf
+    SkipSelf,
+    AfterViewInit
 } from '@angular/core';
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
@@ -32,15 +33,20 @@ declare var moment: any;
  */
 @Component({
     templateUrl: './src/include/spiceattachments/templates/spiceattachmentspanel.html',
-    providers: [modelattachments],
+    providers: [modelattachments]
 })
-export class SpiceAttachmentsPanel {
+export class SpiceAttachmentsPanel implements AfterViewInit {
 
 
     /**
      * the fileupload elelent
      */
     @ViewChild("fileupload", {read: ViewContainerRef, static: false}) private fileupload: ViewContainerRef;
+
+    /**
+     * an object array with base64 files
+     */
+    public files: any[] = [];
 
     /**
      * emits when the attachments are loaded
@@ -93,11 +99,15 @@ export class SpiceAttachmentsPanel {
         });
     }
 
-    /**
-     * @ignore
-     */
+    private loadInputFiles() {
+        // set input base64 files
+        if(this.files.length > 0) {
+            this.doupload(this.files);
+        }
+    }
+
     public ngAfterViewInit() {
-        if (!this.model.isNew) setTimeout(() => this.loadFiles(), 10);
+        setTimeout(() => this.loadInputFiles(), 10);
     }
 
     /**
