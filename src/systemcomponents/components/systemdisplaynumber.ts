@@ -28,7 +28,7 @@ export class SystemDisplayNumber implements OnChanges {
     /**
      * the number to be displayed
      */
-    @Input() private number: number;
+    @Input() private number: any;
 
     /**
      * the field
@@ -54,7 +54,7 @@ export class SystemDisplayNumber implements OnChanges {
      * gets the fornmatted value
      */
     get value() {
-        if (this.number || this.number == 0) {
+        if ((this.number && this.number != '') || this.number === 0) {
             return this.userpreferences.formatMoney(this.number);
         }
     }
