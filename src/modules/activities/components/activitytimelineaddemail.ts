@@ -166,6 +166,7 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
             this.model.data.to_be_sent = false;
             this.initializeEmail();
             this.determineToAddr();
+            this.model.endEdit();
         });
     }
 }
