@@ -65,7 +65,10 @@ export class DashboardContainerHeader {
 
     private saveComponents() {
         this.backend.postRequest('dashboards/' + this.model.id, {}, this.dashboardlayout.dashboardElements)
-            .subscribe(()=> this.view.setViewMode());
+            .subscribe(()=> {
+                this.view.setViewMode();
+                this.model.endEdit();
+            });
     }
 
     private cancel() {
