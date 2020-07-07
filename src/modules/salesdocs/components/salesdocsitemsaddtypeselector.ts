@@ -62,6 +62,11 @@ export class SalesDocsItemsAddTypeSelector implements OnInit {
         } else {
             this.availableItemTypes = [];
         }
+
+        // if we only have one item .. emit this right away and do not prompt the user
+        if (this.availableItemTypes.length == 1) {
+            this.add();
+        }
     }
 
     /**
