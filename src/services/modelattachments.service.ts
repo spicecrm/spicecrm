@@ -192,7 +192,7 @@ export class modelattachments {
             this.count++;
             this.broadcastAttachmentCount();
 
-            if (file.contentBase64) {
+            if (file.filecontent) {
                 this.uploadForUploadAttachmentsBase64(newfile, retSub, file);
             } else {
                 this.readFile(file).subscribe(() => {
@@ -247,7 +247,7 @@ export class modelattachments {
         request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
         let fileBody = {
-            file: file.contentBase64,
+            file: file.filecontent,
             filename: file.name,
             filemimetype: file.type ? file.type : 'application/octet-stream'
         };
