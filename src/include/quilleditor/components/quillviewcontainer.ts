@@ -106,7 +106,7 @@ export class QuillViewContainer implements AfterViewInit, OnChanges {
      */
     private setEditorContent(): any {
 
-        if (!this.quillEditor || !this.content) return;
+        if (!this.quillEditor) return;
         this.quillEditor.setContents(
             this.quillEditor.clipboard.convert(this.getCleanHtml())
         );
@@ -117,6 +117,7 @@ export class QuillViewContainer implements AfterViewInit, OnChanges {
      * get clean html value by ensuring the encode/decode the code snippets
      */
     private getCleanHtml() {
+        if (!this.content) return '';
         const regexp = /(?<=<pre class="ql-syntax" spellcheck="false">)[\s\S]*?(?=<\/pre>)/g;
         const match = regexp.exec(
             this.decodeHTMLEntities(this.content)
