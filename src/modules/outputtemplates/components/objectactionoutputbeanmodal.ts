@@ -315,7 +315,7 @@ export class ObjectActionOutputBeanModal {
             type: "application/" + this.selected_format
 
         });
-        this.file.contentBase64 = fileParts[0];
+        this.file.filecontent = fileParts[0];
         let indexname = "files";
         this.filelist[indexname] = [this.file];
         this.resetEmailComponent();
