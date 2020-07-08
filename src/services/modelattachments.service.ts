@@ -192,18 +192,59 @@ export class modelattachments {
             this.count++;
             this.broadcastAttachmentCount();
 
-            if (file.filecontent) {
+            this.readFile(file).subscribe(() => {
                 this.uploadForUploadAttachmentsBase64(newfile, retSub, file);
-            } else {
-                this.readFile(file).subscribe(() => {
-                    this.uploadForUploadAttachmentsBase64(newfile, retSub, file);
-                });
-            }
+            });
+
         }
 
         return retSub.asObservable();
     }
 
+    /**
+     * uploads  set of files based on an array with the files where the filecontent is the base64 encoded string
+     *
+     * @param files
+     */
+    public uploadAttachmentsBase64FromArray(files): Observable<any> {
+        if (files.length === 0) {
+            return;
+        }
+
+        let retSub = new Subject<any>();
+        let maxSize = this.configurationService.getSystemParamater('upload_maxsize');
+
+        for (let file of files) {
+            // check max filesize
+            if (maxSize && file.size > maxSize) {
+                this.toast.sendToast(this.language.getLabelFormatted('LBL_EXCEEDS_MAX_UPLOADFILESIZE', [file.name, this.humanFileSize(maxSize)]), 'error');
+                continue;
+            }
+
+            let newfile = {
+                date: new moment(),
+                file: '',
+                file_mime_type: file.type ? file.type : 'application/octet-stream',
+                filesize: file.size,
+                filename: file.name,
+                id: '',
+                text: '',
+                thumbnail: '',
+                user_id: '1',
+                user_name: 'admin',
+                uploadprogress: 0
+            };
+            this.files.unshift(newfile);
+
+            // broadcast the count
+            this.count++;
+            this.broadcastAttachmentCount();
+
+            this.uploadForUploadAttachmentsBase64(newfile, retSub, file);
+        }
+
+        return retSub.asObservable();
+    }
 
     /**
      * upload part of "uploadAttachmentsBase64" function

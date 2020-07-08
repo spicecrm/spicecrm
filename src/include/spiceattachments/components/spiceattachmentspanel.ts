@@ -44,9 +44,9 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
     @ViewChild("fileupload", {read: ViewContainerRef, static: false}) private fileupload: ViewContainerRef;
 
     /**
-     * an object array with base64 files
+     * an object array with base64 files that shoudl be loaded when the panel initializes itself
      */
-    public files: any[] = [];
+    public uploadfiles: any[] = [];
 
     /**
      * emits when the attachments are loaded
@@ -96,18 +96,19 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
     private loadFiles() {
         this.modelattachments.getAttachments().subscribe(loaded => {
             this.attachmentsLoaded.emit(true);
+            this.loadInputFiles();
         });
     }
 
+    /**
+     * loads files that are to be added dynamically in the call from a compoinent adding a base64 file
+     */
     private loadInputFiles() {
-        // set input base64 files
-        if(this.files.length > 0) {
-            this.doupload(this.files);
-        }
+        this.modelattachments.uploadAttachmentsBase64FromArray(this.uploadfiles);
     }
 
     public ngAfterViewInit() {
-        setTimeout(() => this.loadInputFiles(), 10);
+        setTimeout(() => this.loadFiles(), 10);
     }
 
     /**
