@@ -1,0 +1,113 @@
+/**
+ * @module ObjectComponents
+ */
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {model} from '../../../services/model.service';
+import {metadata} from '../../../services/metadata.service';
+import {language} from '../../../services/language.service';
+import {modal} from "../../../services/modal.service";
+import {view} from "../../../services/view.service";
+import {session} from "../../../services/session.service";
+
+@Component({
+    selector: 'object-action-output-bean-modal-email-content',
+    templateUrl: './src/modules/outputtemplates/templates/objectactionoutputbeanmodalemailcontent.html',
+    providers: [view, model]
+})
+export class ObjectActionOutputBeanModalEmailContent {
+
+    /**
+     * the fieldset
+     */
+    @Input() public fieldset: any = null;
+
+    /**
+     * the filelist
+     */
+    @Input() public filelist: any = {};
+
+    /**
+     * the parent model
+     */
+    @Input() public parent: any = {};
+
+    /**
+     * email sent
+     */
+    @Output() public email_sent: EventEmitter<string> = new EventEmitter<string>();
+
+    /**
+     * inidcates that we are sending
+     */
+    private sending: boolean = false;
+
+    constructor(
+        private language: language,
+        private model: model,
+        private metadata: metadata,
+        private modal: modal,
+        private view: view,
+        private session: session
+    ) {
+    }
+
+    public ngOnInit() {
+        this.setModelData();
+        this.setViewData();
+    }
+
+    /**
+     * set all email-model data
+     * set copy rules from parent
+     */
+    private setModelData() {
+        this.model.module = "Emails";
+
+        this.model.initialize(this.parent);
+        this.model.data.parent_type = this.parent.module;
+        this.model.data.parent_id = this.parent.data.id;
+        this.model.data.parent_name = this.parent.data.name;
+        this.model.isNew = true;
+        this.model.data.assigned_user_id = this.session.authData.userId;
+        this.model.data.assigned_user_name = this.session.authData.userName;
+        this.model.data.modified_by_id = this.session.authData.userId;
+        this.model.data.modified_by_name = this.session.authData.userName;
+        this.model.data.date_entered = new Date();
+        this.model.data.date_modified = new Date();
+        this.model.startEdit();
+    }
+
+    /**
+     * if it is allowed: go to edit mode
+     */
+    private setViewData() {
+        this.view.setEditMode();
+        this.view.isEditable = true;
+    }
+
+
+
+    public sendEmail() {
+        this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {
+            modalRef.instance.messagelabel = 'LBL_SENDING';
+
+            this.sending = true;
+            this.model.setField('type', 'out');
+            this.model.setField('to_be_sent', '1');
+            this.model.setField('from_addr', this.model.data.from_addr_name);
+            this.model.setField('to_addrs', this.model.data.to_addrs_names);
+
+            this.model.save().subscribe(
+                success => {
+                    modalRef.instance.self.destroy();
+                    // emit that the email has been sent
+                    this.email_sent.emit();
+                },
+                error => {
+                    modalRef.instance.self.destroy();
+                    this.sending = false;
+                }
+            );
+        });
+    }
+}

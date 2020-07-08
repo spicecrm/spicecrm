@@ -64,7 +64,7 @@ export class SalesDocsItemsAddProduct extends ObjectModalModuleLookup {
         };
 
         // get generic copy rules
-        let copyrules = this.metadata.getCopyRules("*", this.module);
+        let copyrules = this.metadata.getCopyRules("*", 'SalesDocItems');
         for (let copyrule of copyrules) {
             if (copyrule.tofield && copyrule.fixedvalue) {
                 itemData[copyrule.tofield] = copyrule.fixedvalue;
