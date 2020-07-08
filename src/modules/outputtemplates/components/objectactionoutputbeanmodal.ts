@@ -91,7 +91,11 @@ export class ObjectActionOutputBeanModal {
      * the pdf file
      */
     public file: File;
-    public filelist: any = [];
+
+    /**
+     * list of files thazt shoudl eb added to the email when adding the wmail from the preview
+     */
+    public filelist: any[] = [];
 
     /**
      * flag to show the email-content
@@ -307,17 +311,12 @@ export class ObjectActionOutputBeanModal {
      * set the filelist for the email attachment panel and reset the email-content
      */
     private setEmailAttachmentData() {
-        let fileParts = [this.contentForHandBack];
-        let builder = new Blob(fileParts, {type : 'application/' + this.selected_format}); // the blob
-
-        let fileName = this.model.module + '_' + this.model.data.summary_text + '.' + this.selected_format;
-        this.file = new File([builder], this.model.module + '_' + this.model.data.summary_text + '.' + this.selected_format, {
-            type: "application/" + this.selected_format
-
-        });
-        this.file.filecontent = fileParts[0];
-        let indexname = "files";
-        this.filelist[indexname] = [this.file];
+        this.filelist = [{
+            size: this.contentForHandBack.length,
+            name: this.model.module + '_' + this.model.data.summary_text + '.' + this.selected_format,
+            type: "application/" + this.selected_format,
+            filecontent: this.contentForHandBack
+        }];
         this.resetEmailComponent();
     }
 

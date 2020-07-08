@@ -14,12 +14,10 @@
                         <option value="pdf">PDF</option>
                     </select>
                 </ng-container>
-                <button *ngIf="this.metadata.checkModuleAcl('Emails', 'create')" [disabled]="!selected_template || loading_output || selected_format === 'html'" class="slds-button slds-button--neutral slds-m-left--small" [ngClass]="{'slds-button--brand' : expanded}" (click)="openEmailArea()"><system-button-icon icon="email"></system-button-icon></button>
+                <button *ngIf="this.metadata.checkModuleAcl('Emails', 'create')" [disabled]="!selected_template || loading_output || selected_format === 'html'" class="slds-button slds-button--icon slds-button--icon-border slds-m-left--small" [ngClass]="{'slds-is-selected' : expanded}" (click)="openEmailArea()"><system-button-icon icon="email"></system-button-icon></button>
             </div>
             <div class="slds-grid" style="height: 70vh;">
-
                 <div class="slds-p-around--small" style="height: 100%; width: 200%" [@slideInOut]="expanded? 'open': 'closed'">
-
                     <div class="slds-m-top--small slds-border--top slds-border--right slds-border--left slds-border--bottom" style="width: 100%; height: calc(100% - 50px);">
                         <iframe *ngIf="selected_format === 'html' && !loading_output && selected_template" frameBorder="0" style="width: 100%;height: 100%;" [srcdoc]="sanitizedTemplated"></iframe>
                         <object *ngIf="selected_format === 'pdf' && !loading_output && blobUrl" [data]="blobUrl" type="application/pdf" width="100%" height="100%"></object>
