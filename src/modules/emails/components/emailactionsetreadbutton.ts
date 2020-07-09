@@ -12,7 +12,7 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: 'email-action-set-read-button',
-    templateUrl: './src/objectcomponents/templates/emailactionsetreadbutton.html'
+    templateUrl: './src/modules/emails/templates/emailactionsetreadbutton.html'
 })
 export class EmailActionSetReadButton {
 
