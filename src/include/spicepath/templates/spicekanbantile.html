@@ -1,13 +1,16 @@
 <div class="slds-tile slds-box--border slds-theme--default">
     <div class="slds-p-around--x-small" [system-overlay-loading-spinner]="model.isSaving">
-        <div class="slds-grid slds-grid--align-spread">
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <div *ngIf="hasNotification" class="slds-p-right--x-small">
+                <system-utility-icon icon="warning" addclasses="slds-icon-text-warning" size="x-small"></system-utility-icon>
+            </div>
             <ng-container *ngIf="headerFieldset; else noheaderfieldset">
                 <object-record-fieldset-horizontal-list [fieldset]="headerFieldset"></object-record-fieldset-horizontal-list>
             </ng-container>
             <ng-template #noheaderfieldset>
                 <h3 class="slds-truncate" (click)="goDetail()"><a href="javascript:void(0);">{{model.getField('summary_text')}}</a></h3>
             </ng-template>
-            <object-action-menu buttonsize="x-small"></object-action-menu>
+            <object-action-menu class="slds-col_bump-left" buttonsize="x-small"></object-action-menu>
         </div>
         <div class="slds-tile__detail slds-text-body--small">
             <div class="slds-p-vertical--x-small">
