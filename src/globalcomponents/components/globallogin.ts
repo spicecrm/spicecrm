@@ -269,7 +269,7 @@ export class GlobalLogin {
      * a helper functions that returns if the sidebar in teh login screen shoudl be shown or not
      */
     get showSidebar() {
-        return window.innerWidth >= 1024;
+        return this.configuration.data.displayloginsidebar !== false && window.innerWidth >= 1024;
     }
 
     /**
