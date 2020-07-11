@@ -997,6 +997,9 @@ export class modellist implements OnDestroy {
             list: [],
             totalcount: 0
         };
+
+        // emit that the data changed
+        this.listDataChanged$.next(true);
     }
 
     /**
@@ -1182,10 +1185,11 @@ export class modellist implements OnDestroy {
     public loadList(fields: any[], quiet: boolean = false): Observable<boolean> {
         let retSub = new Subject<boolean>();
         if (!quiet) {
-            this.resetListData();
-
             // set the service to loading state
             this.isLoading = true;
+
+            // reset the list data
+            this.resetListData();
         } else {
             // just reset the bucket items if we have any
             if (this.buckets && this.buckets.bucketitems) {
