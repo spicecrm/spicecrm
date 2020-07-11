@@ -3,6 +3,7 @@
  */
 import {Component, Input} from '@angular/core';
 import {model} from '../../../services/model.service';
+import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {modal} from "../../../services/modal.service";
 import {relatedmodels} from "../../../services/relatedmodels.service";
@@ -25,6 +26,7 @@ export class SpiceTextsAddButton {
                 private modal: modal,
                 private configurationService: configurationService,
                 private language: language,
+                private metadata: metadata,
                 private relatedModels: relatedmodels) {
         this.model.module = 'SpiceTexts';
     }
@@ -32,6 +34,10 @@ export class SpiceTextsAddButton {
     get sysTextIds() {
         let sysTextIds = this.configurationService.getData('systextids');
         return sysTextIds ? _.values(sysTextIds).filter(text => text.module == this.parent.module) : [];
+    }
+
+    get canAdd(){
+        return this.metadata.checkModuleAcl('SpiceTexts', 'create') && !this.allTranslated;
     }
 
     get allTranslated() {
