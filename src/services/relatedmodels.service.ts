@@ -306,6 +306,10 @@ export class relatedmodels implements OnDestroy {
                 // complete the Observable
                 responseSubject.next(true);
                 responseSubject.complete();
+            },
+            error => {
+                // set loaded
+                this.isloading = false;
             }
         );
 
