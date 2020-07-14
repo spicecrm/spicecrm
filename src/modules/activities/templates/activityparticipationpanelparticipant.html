@@ -1,6 +1,6 @@
 <td>
     <div class="slds-grid slds-grid--vertical-align-center">
-        <system-utility-icon *ngIf="editmode" class="slds-m-right--xx-small" icon="close" size="xx-small" (click)="removeItem()"></system-utility-icon>
+        <system-utility-icon *ngIf="editmode" class="slds-m-right--xx-small" icon="close" size="xx-small" (click)="removeItem($event)"></system-utility-icon>
         <system-icon [module]="model.module" size="xx-small"></system-icon>
     </div>
 </td>
