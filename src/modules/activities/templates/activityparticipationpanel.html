@@ -4,7 +4,7 @@
             <tr class="slds-line-height_reset" activity-participation-panel-header [fieldset]="fieldset"></tr>
         </thead>
         <tbody>
-            <tr activity-participation-panel-participant *ngFor="let participant of participants;trackBy:participantid" [participant]="participant" [editmode]="editmode" [fieldset]="fieldset" (remove)="removeParticipant(participant)"></tr>
+            <tr activity-participation-panel-participant *ngFor="let participant of participants; trackBy:participantid;" [participant]="participant" [editmode]="editmode" [fieldset]="fieldset" (remove)="removeParticipant(participant)"></tr>
         </tbody>
     </table>
 </div>

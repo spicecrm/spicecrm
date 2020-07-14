@@ -64,8 +64,10 @@ export class ActivityParticipationPanelParticipant implements OnInit {
 
     /**
      * handles the click on teh remove button and emits the event
+     * @param event
      */
-    private removeItem() {
+    private removeItem(event) {
+        event.stopPropagation();
         if (this.editmode) {
             this.remove.emit(true);
         }
