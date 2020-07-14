@@ -5,6 +5,9 @@ import { Component, Input, OnInit, AfterViewInit, ViewChild } from '@angular/cor
 import { language } from '../../services/language.service';
 import { Observable ,  Subject } from 'rxjs';
 
+/** @ignore */
+declare var _;
+
 /**
  * renders a prompt to the user with a copuple of options
  */
@@ -33,7 +36,10 @@ export class SystemPrompt implements OnInit, AfterViewInit {
      * theme according to lightning design -> https://www.lightningdesignsystem.com/utilities/themes/
      */
     @Input() private theme: string;
-
+    /**
+     * the value to be set
+     */
+    protected radioGroupName: string;
     /**
      * ???
      */
@@ -42,7 +48,12 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     /**
      * an array of options .. if sent rather than an input in the type input a select option is rendered
      */
-    @Input() private options: string[] = null;
+    @Input() private options: Array<{value: string, display: string}>;
+
+    /**
+     * if true display the input options as radio group
+     */
+    @Input() private optionsAsRadio: boolean = false;
 
     /**
      * the observabkle for the answer
@@ -77,6 +88,7 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     constructor( private language: language ) {
         this.answerSubject = new Subject<any>();
         this.answer = this.answerSubject.asObservable();
+        this.radioGroupName = _.uniqueId('system-prompt-group-name-');
     }
 
     get splitText(): string[] {

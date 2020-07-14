@@ -179,7 +179,7 @@ export class ReportsDesignerTree {
         this.cdr.detectChanges();
         this.backend.getRequest('/dictionary/browser/' + forModule + '/fields')
             .subscribe(items => {
-                this.reportModuleFields[rootModule] = items.filter(item => item.type != 'relate' && item.source == 'non-db');
+                this.reportModuleFields[rootModule] = items.filter(item => item.type != 'relate' && item.source != 'non-db');
                 this.isLoadingModuleFields = false;
             });
     }

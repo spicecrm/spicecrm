@@ -8,11 +8,23 @@
                 <div *ngFor="let line of splitText">{{line}}</div>
             </div>
             <div *ngIf="type === 'input'" class="slds-form-element slds-m-vertical_medium">
-                <div class="slds-form-element__control">
-                    <input *ngIf="!options" #inputField class="slds-input" type="text" [(ngModel)]="value" />
-                    <select *ngIf="options" #inputField class="slds-select" [(ngModel)]="value" style="width:inherit;max-width:100%">
-                        <option *ngFor="let option of options;let i=index" [selected]="i==value" [value]="i">{{option}}</option>
-                    </select>
+                <div #inputField class="slds-form-element__control">
+                    <input *ngIf="!options" class="slds-input" type="text" [(ngModel)]="value" />
+                    <ng-container *ngIf="options">
+                        <div *ngIf="!optionsAsRadio; else radioGroupContainer" class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="value">
+                                <option *ngFor="let option of options" [value]="option.value">
+                                    {{option.display}}
+                                </option>
+                            </select>
+                        </div>
+                        <ng-template #radioGroupContainer>
+                            <system-input-radio *ngFor="let option of options" [name]="radioGroupName" [value]="option.value" [(ngModel)]="value" style="display: block">
+                                {{option.display}}
+                            </system-input-radio>
+                        </ng-template>
+                    </ng-container>
+
                 </div>
             </div>
         </div>
