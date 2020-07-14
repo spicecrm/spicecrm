@@ -117,10 +117,12 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
      * expand the panel and initialize the email model
      */
     private onFocus() {
-        this.isExpanded = true;
-        this.initializeEmail();
-        this.determineRecipientAddress();
-        this.setEditMode();
+        if(!this.isExpanded) {
+            this.isExpanded = true;
+            this.initializeEmail();
+            this.determineRecipientAddress();
+            this.setEditMode();
+        }
     }
 
     /**
