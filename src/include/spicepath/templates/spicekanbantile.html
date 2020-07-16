@@ -5,7 +5,7 @@
                 <system-utility-icon icon="warning" addclasses="slds-icon-text-warning" size="x-small"></system-utility-icon>
             </div>
             <ng-container *ngIf="headerFieldset; else noheaderfieldset">
-                <object-record-fieldset-horizontal-list [fieldset]="headerFieldset"></object-record-fieldset-horizontal-list>
+                <object-record-fieldset-horizontal-list [fieldset]="headerFieldset" class="slds-truncate"></object-record-fieldset-horizontal-list>
             </ng-container>
             <ng-template #noheaderfieldset>
                 <h3 class="slds-truncate" (click)="goDetail()"><a href="javascript:void(0);">{{model.getField('summary_text')}}</a></h3>
