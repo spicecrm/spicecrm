@@ -25,6 +25,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
     private relateType: string = '';
     private relateSearchOpen: boolean = false;
     private relateSearchTerm: string = '';
+    private isAuthorized: boolean = true;
 
     /**
      * a relateFilter
@@ -40,7 +41,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
         public elementRef: ElementRef,
         public modal: modal,
         public backend: backend,
-        public toast: toast
+        public toast: toast,
     ) {
         super(model, view, language, metadata, router);
     }
@@ -82,7 +83,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
         this.relateIdField = fieldDefs.id_name;
         this.relateNameField = this.fieldname;
         this.relateType = fieldDefs.module;
-
+        this.isAuthorized = this.metadata.checkModuleAcl(fieldDefs.module, 'list');
         this.handleRelateFIlterField();
 
     }
