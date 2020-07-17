@@ -28,16 +28,9 @@ export class fieldCurrencies extends fieldGeneric {
     }
 
     private getCurrencySymbol() {
-        let currencySymbol = '';
-
-        if (!this.model.data[this.fieldname]) return currencySymbol;
-
         let currencyid = -99;
-        if (this.fieldname) {
-            this.model.data[this.fieldname];
-        }
 
+        if (this.model.data[this.fieldname]) currencyid = this.model.data[this.fieldname];
         return this.currency.getCurrencySmbol(currencyid);
-
     }
 }
