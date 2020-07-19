@@ -16,6 +16,7 @@ import {toast} from "./toast.service";
  * @ignore
  */
 declare var moment: any;
+declare var _: any;
 
 interface geoSearch {
     radius: number;
@@ -442,17 +443,19 @@ export class modellist implements OnDestroy {
      * @param listcomponent
      */
     set listcomponent(listcomponent) {
-        this._listcomponent = listcomponent;
-        this.listcomponent$.next(listcomponent);
+        if(this._listcomponent != listcomponent) {
+            this._listcomponent = listcomponent;
+            this.listcomponent$.next(listcomponent);
 
-        // set it to the preferences when we are on a general list
-        if (this.currentList.id == 'all' || this.currentList.id == 'owner') {
-            this.userpreferences.setPreference('defaultlisttype', listcomponent, false, 'SpiceUI_' + this.module);
+            // set it to the preferences when we are on a general list
+            if (this.currentList.id == 'all' || this.currentList.id == 'owner') {
+                this.userpreferences.setPreference('defaultlisttype', listcomponent, false, 'SpiceUI_' + this.module);
+            }
+
+            // reset current list fielddefs and redetermine its fields from the component config
+
+            this.determineListFields();
         }
-
-        // reset current list fielddefs and redetermine its fields from the component config
-        this.currentList.fielddefs = undefined;
-        this.determineListFields();
     }
 
     /**
@@ -565,7 +568,7 @@ export class modellist implements OnDestroy {
         }
 
         // determine the listfields
-        this.determineListFields();
+        this.determineListFields(listType);
 
         // set the user preferences
         if (setPreference) {
@@ -609,7 +612,7 @@ export class modellist implements OnDestroy {
     /**
      * build the listfields based on the listtype
      */
-    private determineListFields() {
+    private determineListFields(listtype?) {
         this._listfields = [];
 
         // check if we have fielddefs
