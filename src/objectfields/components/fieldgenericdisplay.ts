@@ -60,7 +60,7 @@ export class fieldGenericDisplay {
      */
     get link() {
         try {
-            return this.view.displayLinks && this.fieldconfig.link && this.model.data.acl.detail;
+            return this.view.displayLinks && this.fieldconfig.link && this.model.checkAccess('detail');
         } catch (e) {
             return false;
         }
