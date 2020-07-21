@@ -1,43 +1,55 @@
 /**
  * @module ObjectComponents
  */
-import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
-import { metadata } from '../../../services/metadata.service';
-import { model } from '../../../services/model.service';
-import { modellist } from '../../../services/modellist.service';
-import { language } from '../../../services/language.service';
-import { modal } from '../../../services/modal.service';
-import { backend } from '../../../services/backend.service';
+import {Component, Input, OnInit, EventEmitter, Output, SkipSelf} from '@angular/core';
+import {metadata} from '../../../services/metadata.service';
+import {model} from '../../../services/model.service';
+import {modellist} from '../../../services/modellist.service';
+import {language} from '../../../services/language.service';
+import {modal} from '../../../services/modal.service';
+import {backend} from '../../../services/backend.service';
 
-import { objectmerge } from '../services/objectmerge.service';
+import {objectmerge} from '../services/objectmerge.service';
 import {SystemLoadingModal} from "../../../systemcomponents/components/systemloadingmodal";
 
 @Component({
     selector: 'object-merge-modal',
     templateUrl: './src/include/spicemerge/templates/objectmergemodal.html',
-    providers: [model, modellist, objectmerge],
-    styles: [
-        ':host >>> .slds-progress__marker global-button-icon svg {fill:#CA1B1F}',
-        ':host >>> .slds-progress__marker:hover global-button-icon svg {fill:#FD595D}',
-        ':host >>> .slds-progress__marker:active global-button-icon svg {fill:#FD595D}',
-        ':host >>> .slds-progress__marker:focus global-button-icon svg {fill:#FD595D}',
-    ]
+    providers: [model, modellist, objectmerge]
 })
-export class ObjectMergeModal implements OnInit{
+export class ObjectMergeModal implements OnInit {
 
-    @Input() mergemodels: Array<any> = [];
-    @Output() merged$: EventEmitter<boolean> = new EventEmitter<boolean>();
+    /**
+     * a lit of models to be merged
+     */
+    @Input() private mergemodels: any[] = [];
 
-    currentMergeStep: number = 0;
-    mergeSteps: Array<any> = ['records', 'fields', 'execute'];
-    parentmodel: any = {};
-    self: any = {};
+    /**
+     * an event emitter that the merge has happened
+     * ToDo: check if that is still required
+     */
+    @Output() private merged$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor( private language: language, private metadata: metadata, private objectmerge: objectmerge, private model: model,  private modellist: modellist,  private backend: backend, private modal: modal ) {
+    /**
+     * the current merge step
+     */
+    private currentMergeStep: number = 0;
+
+    /**
+     * the merge steps available
+     */
+    private mergeSteps: string[] = ['records', 'fields', 'execute'];
+
+    /**
+     * reference to self
+     */
+    private self: any;
+
+    constructor(private language: language, private metadata: metadata, private objectmerge: objectmerge, @SkipSelf() private parentmodel: model,private model: model, private modellist: modellist, private backend: backend, private modal: modal) {
 
     }
 
-    ngOnInit(){
+    public ngOnInit() {
 
         // set the model data
         this.model.id = this.parentmodel.id;
@@ -46,7 +58,8 @@ export class ObjectMergeModal implements OnInit{
 
 
         // set the modellist module
-        this.modellist.module = this.model.module;
+        this.modellist._module = this.model.module;
+        this.modellist.setListType('all', false, [], false);
 
         // set the master id
         this.objectmerge.setModule(this.model.module);
@@ -63,21 +76,27 @@ export class ObjectMergeModal implements OnInit{
         this.modellist.listData.list.push(this.model.data);
 
         // add the other models to the list
-        for(let mergemodel of this.mergemodels) {
+        for (let mergemodel of this.mergemodels) {
             this.modellist.listData.list.push(mergemodel);
         }
 
     }
 
-    closeModal(){
+    /**
+     * closes the modal
+     */
+    private closeModal() {
         this.self.destroy();
     }
 
-    getCurrentStep() {
+    /**
+     *
+     */
+    private getCurrentStep() {
         return this.mergeSteps[this.currentMergeStep];
     }
 
-    getStepClass(convertStep) {
+    private getStepClass(convertStep) {
         let thisIndex = this.mergeSteps.indexOf(convertStep);
         if (thisIndex == this.currentMergeStep) {
             return 'slds-is-active';
@@ -87,7 +106,7 @@ export class ObjectMergeModal implements OnInit{
         }
     }
 
-    getStepComplete(convertStep) {
+    private getStepComplete(convertStep) {
         let thisIndex = this.mergeSteps.indexOf(convertStep);
         if (thisIndex < this.currentMergeStep) {
             return true;
@@ -95,14 +114,14 @@ export class ObjectMergeModal implements OnInit{
         return false;
     }
 
-    getProgressBarWidth() {
+    get progressBarWidth() {
         return {
             width: (this.currentMergeStep / (this.mergeSteps.length - 1) * 100) + '%'
-        }
+        };
     }
 
-    nextStep() {
-        if(this.currentMergeStep < this.mergeSteps.length - 1) {
+    private nextStep() {
+        if (this.currentMergeStep < this.mergeSteps.length - 1) {
             switch (this.currentMergeStep) {
                 default:
                     this.currentMergeStep++;
@@ -110,29 +129,30 @@ export class ObjectMergeModal implements OnInit{
             }
         } else {
 
-            //grab fields to override with other beans
+            // grab fields to override with other beans
             let fields = {};
-            for(let field of this.objectmerge.mergeFields){
-                if(this.objectmerge.mergeSource[field.name] != this.objectmerge.masterId)
+            for (let field of this.objectmerge.mergeFields) {
+                if (this.objectmerge.mergeSource[field.name] != this.objectmerge.masterId)
                     fields[field.name] = this.objectmerge.mergeSource[field.name];
             }
 
-            //grab bean ids from selected beans in list
+            // grab bean ids from selected beans in list
             let toDeleteBeanIds = [];
-            for(let toDeleteBean of this.modellist.listData.list){
-                if(toDeleteBean.id != this.objectmerge.masterId)
+            for (let toDeleteBean of this.modellist.listData.list) {
+                if (toDeleteBean.id != this.objectmerge.masterId) {
                     toDeleteBeanIds.push(toDeleteBean.id);
+                }
             }
 
             //
             this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
                 modalRef.instance.messagelabel = 'LBL_MERGING';
-                this.backend.postRequest('module/'+this.model.module + '/' + this.objectmerge.masterId + '/merge_bean', {}, {"fields": fields, "toDeleteBeanIds": toDeleteBeanIds}).subscribe(restdata => {
+                this.backend.postRequest('module/' + this.model.module + '/' + this.objectmerge.masterId + '/merge_bean', {}, {fields, toDeleteBeanIds}).subscribe(restdata => {
                     // close the loading modal
                     modalRef.instance.self.destroy();
-                    if(this.model.id != this.objectmerge.masterId){
+                    if (this.model.id != this.objectmerge.masterId) {
                         this.model.id = this.objectmerge.masterId;
-                        this.model.goDetail()
+                        this.model.goDetail();
                     } else {
                         this.merged$.emit(true);
                         this.merged$.complete();
@@ -141,29 +161,31 @@ export class ObjectMergeModal implements OnInit{
                     // close the modal
                     this.closeModal();
                 });
-            })
+            });
         }
     }
 
-    prevDisabled(){
-       return this.currentMergeStep === 0;
+    get prevDisabled() {
+        return this.currentMergeStep === 0;
     }
 
-    nextDisabled(){
+    get nextDisabled() {
         switch (this.currentMergeStep) {
             case 0:
-                if(this.modellist.getSelectedCount() > 1)
+                if (this.modellist.getSelectedCount() > 1) {
                     return false;
-                else
+                } else {
                     return true;
+                }
             default:
                 return false;
         }
     }
 
-    prevStep() {
-        if (this.currentMergeStep > 0)
+    private prevStep() {
+        if (this.currentMergeStep > 0) {
             this.currentMergeStep--;
+        }
     }
 
 
