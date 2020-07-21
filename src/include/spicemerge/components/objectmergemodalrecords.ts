@@ -16,7 +16,7 @@ import {language} from '../../../services/language.service';
 })
 export class ObjectMergeModalRecords {
 
-    listFields: Array<any> = [];
+    private listFields: any[] = [];
 
     constructor(private language: language, private metadata: metadata, private model: model, private modellist: modellist) {
         let componentconfig = this.metadata.getComponentConfig('ObjectMergeModalRecords', this.model.module);

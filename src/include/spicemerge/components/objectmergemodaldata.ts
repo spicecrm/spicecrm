@@ -1,44 +1,46 @@
 /**
  * @module ObjectComponents
  */
-import { Component} from '@angular/core';
-import { metadata } from '../../../services/metadata.service';
-import { modellist } from '../../../services/modellist.service';
-import { language } from '../../../services/language.service';
-import { view } from '../../../services/view.service';
+import {Component} from '@angular/core';
+import {metadata} from '../../../services/metadata.service';
+import {modellist} from '../../../services/modellist.service';
+import {language} from '../../../services/language.service';
+import {view} from '../../../services/view.service';
 
-import { objectmerge } from '../services/objectmerge.service';
+import {objectmerge} from '../services/objectmerge.service';
 
 @Component({
     selector: 'object-merge-modal-data',
     templateUrl: './src/include/spicemerge/templates/objectmergemodaldata.html',
     providers: [view]
 })
-export class ObjectMergeModalData{
+export class ObjectMergeModalData {
 
-    modelFields: any = {};
+    private modelFields: any = {};
 
-    constructor( private language: language, private metadata: metadata, private modellist: modellist, private objectmerge: objectmerge ) {
+    constructor(private language: language, private metadata: metadata, private modellist: modellist, private objectmerge: objectmerge) {
 
     }
 
-    getSelected(){
+    private getSelected() {
         let selItems = [];
-        for(let listItem of this.modellist.listData.list){
-            if(listItem.selected)
+        for (let listItem of this.modellist.listData.list) {
+            if (listItem.selected) {
                 selItems.push(listItem);
+            }
         }
         return selItems;
     }
 
-    selectAllFields(id){
+    private selectAllFields(id) {
         this.objectmerge.setAllfieldSources(id);
     }
 
-    showField(field){
-        for(let selected of this.getSelected()){
-            if(selected[field.name] != '')
+    private showField(field) {
+        for (let selected of this.getSelected()) {
+            if (selected[field.name] != '') {
                 return true;
+            }
         }
         return false;
     }

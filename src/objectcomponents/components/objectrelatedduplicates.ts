@@ -34,7 +34,12 @@ export class ObjectRelatedDuplicates implements AfterViewInit {
     }
 
     private merged(merged) {
-        if (merged) this.checkDuplicates();
+        // wait a little bit allowingf the Elastic index to index properly
+        if (merged) {
+            setTimeout(() => {
+                this.checkDuplicates();
+            }, 1000);
+        }
     }
 
     get showMergeButton() {
