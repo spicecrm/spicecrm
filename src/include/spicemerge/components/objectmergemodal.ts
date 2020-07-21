@@ -132,14 +132,15 @@ export class ObjectMergeModal implements OnInit {
             // grab fields to override with other beans
             let fields = {};
             for (let field of this.objectmerge.mergeFields) {
-                if (this.objectmerge.mergeSource[field.name] != this.objectmerge.masterId)
+                if (this.objectmerge.mergeSource[field.name] != this.objectmerge.masterId) {
                     fields[field.name] = this.objectmerge.mergeSource[field.name];
+                }
             }
 
             // grab bean ids from selected beans in list
             let toDeleteBeanIds = [];
             for (let toDeleteBean of this.modellist.listData.list) {
-                if (toDeleteBean.id != this.objectmerge.masterId) {
+                if (toDeleteBean.id != this.objectmerge.masterId && toDeleteBean.selected) {
                     toDeleteBeanIds.push(toDeleteBean.id);
                 }
             }
