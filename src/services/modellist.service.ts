@@ -553,7 +553,7 @@ export class modellist implements OnDestroy {
      * @param listType
      * @param setPreference
      */
-    public setListType(listType: string, setPreference = true, sortArray = []): void {
+    public setListType(listType: string, setPreference = true, sortArray = [], loadlist: boolean = true): void {
 
         // close filters and aggegarts if they are being displayed
         this.displayAggregates = false;
@@ -605,7 +605,9 @@ export class modellist implements OnDestroy {
         this.listtype$.next(listType);
 
         // get the list data
-        this.getListData();
+        if(loadlist) {
+            this.getListData();
+        }
     }
 
 
