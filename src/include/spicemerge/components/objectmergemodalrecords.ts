@@ -16,22 +16,24 @@ import {language} from '../../../services/language.service';
 })
 export class ObjectMergeModalRecords {
 
-    listFields: Array<any> = [];
+    private listFields: any[] = [];
 
     constructor(private language: language, private metadata: metadata, private model: model, private modellist: modellist) {
         let componentconfig = this.metadata.getComponentConfig('ObjectMergeModalRecords', this.model.module);
         let allFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
         for (let listField of allFields) {
-            if (listField.fieldconfig.default !== false)
+            if (listField.fieldconfig.default !== false) {
                 this.listFields.push(listField);
+            }
         }
     }
 
-    disableSelect(data) {
-        if (data.id == this.model.id)
+    private disableSelect(data) {
+        if (data.id == this.model.id) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
 }
