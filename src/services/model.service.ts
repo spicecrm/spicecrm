@@ -336,7 +336,14 @@ export class model implements OnDestroy {
      */
     public checkAccess(access): boolean {
         if (this.data && this.data.acl) {
-            return this.data.acl[access];
+            // legacy handling for view & detail
+            // ToDo: clean this up and make view or detail in general
+            if (access == 'detail' || access == 'view') {
+                return this.data.acl.detail || this.data.acl.view;
+            } else {
+                return this.data.acl[access];
+            }
+
         } else {
             return false;
         }
@@ -943,7 +950,6 @@ export class model implements OnDestroy {
                     if (notify) {
                         this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");
                     }
-
 
 
                     // emit the save$
@@ -1572,7 +1578,7 @@ export class model implements OnDestroy {
             this.data[relation_link_name] = {beans: []};
         }
 
-        for(let record of records) {
+        for (let record of records) {
 
             for (let id in this.data[relation_link_name].beans) {
                 if (record == id) {
@@ -1698,14 +1704,14 @@ export class model implements OnDestroy {
      * Deep cloning of an object. Minds also moment objects.
      * @param object The object to clone.
      */
-    private buildBackup( object ) {
+    private buildBackup(object) {
         let clone = {};
-        _.each( object, ( value, key ) => {
-            if ( _.isObject( value )) {
-                if ( moment.isMoment( value )) {
-                    clone[key] = moment( value );
+        _.each(object, (value, key) => {
+            if (_.isObject(value)) {
+                if (moment.isMoment(value)) {
+                    clone[key] = moment(value);
                 } else {
-                    clone[key] = this.buildBackup( value );
+                    clone[key] = this.buildBackup(value);
                 }
             } else {
                 clone[key] = object[key];

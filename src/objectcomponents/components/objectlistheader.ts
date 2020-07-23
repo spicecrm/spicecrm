@@ -1,12 +1,13 @@
 /**
  * @module ObjectComponents
  */
-import {Component, Input, ElementRef, QueryList, ViewChildren} from '@angular/core';
+import {Component, Input, ElementRef, QueryList, ViewChildren, ChangeDetectorRef, OnDestroy} from '@angular/core';
 import {language} from '../../services/language.service';
 import {modellist} from '../../services/modellist.service';
 import {view} from '../../services/view.service';
 import {SystemResizeDirective} from "../../directives/directives/systemresize";
 import {layout} from "../../services/layout.service";
+import {Subscription} from "rxjs";
 
 /**
  * renders the header row for a list view table
@@ -16,7 +17,7 @@ import {layout} from "../../services/layout.service";
     templateUrl: './src/objectcomponents/templates/objectlistheader.html',
     providers: [view]
 })
-export class ObjectListHeader {
+export class ObjectListHeader implements OnDestroy{
 
     @ViewChildren(SystemResizeDirective) private resizeElements: QueryList<SystemResizeDirective>;
 
@@ -35,8 +36,23 @@ export class ObjectListHeader {
      */
     @Input() private showRowActionMenu: boolean = true;
 
-    constructor(private modellist: modellist, private language: language, private view: view, private elementRef: ElementRef, private layout: layout) {
+    /**
+     * keep all suibscriptions
+     */
+    private subscriptions: Subscription = new Subscription();
+
+    constructor(private modellist: modellist, private language: language, private view: view, private elementRef: ElementRef, private layout: layout, private cdref: ChangeDetectorRef) {
         this.view.labels = 'short';
+
+        // register to listfield changes
+        this.subscriptions.add(this.modellist.listfield$.subscribe(data => this.cdref.detectChanges()));
+    }
+
+    /**
+     * unsubscribe all subscritopions on Destroy
+     */
+    public ngOnDestroy(): void {
+        this.subscriptions.unsubscribe();
     }
 
     /**

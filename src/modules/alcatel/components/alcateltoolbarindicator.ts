@@ -12,6 +12,7 @@ declare var io: any;
 import {toast} from '../../../services/toast.service';
 import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
+import {session} from '../../../services/session.service';
 import {backend} from "../../../services/backend.service";
 import {configurationService} from "../../../services/configuration.service";
 import {modelutilities} from '../../../services/modelutilities.service';
@@ -38,6 +39,11 @@ export class AlcatelToolbarIndicator implements OnDestroy {
      * the url for the socket connection from the backend
      */
     private socketurl: string;
+
+    /**
+     * a unique id for the server to connect to the socket
+     */
+    private socketid: string;
 
     /**
      * the socket status
@@ -67,6 +73,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
         private modelutilities: modelutilities,
         private telephony: telephony,
         private toast: toast,
+        private session: session
     ) {
         this.initialize();
     }
@@ -109,8 +116,10 @@ export class AlcatelToolbarIndicator implements OnDestroy {
     private initialize() {
 
         // get the scoketurl
-        let alcatelconfig = this.configuration.getCapabilityConfig('alcatel');
-        this.socketurl = alcatelconfig?.socketurl_frontend;
+
+        let config = this.configuration.getCapabilityConfig('socket');
+        this.socketurl = config.socket_frontend;
+        this.socketid = config.socket_id;
 
         this.getPreferences().subscribe(username => {
             this.login();
@@ -157,8 +166,8 @@ export class AlcatelToolbarIndicator implements OnDestroy {
 
                 // subscribe to the termination of the call
                 this.subscriptions.add(
-                    this.telephony.initiateCall$.subscribe(msisdn => {
-                        this.initiateCall(msisdn);
+                    this.telephony.initiateCall$.subscribe(calldata => {
+                        this.initiateCall(calldata.msisdn, calldata.relatedmodule, calldata.relatedid, calldata.relateddata);
                     })
                 );
 
@@ -168,10 +177,6 @@ export class AlcatelToolbarIndicator implements OnDestroy {
                         this.terminateCall(call);
                     })
                 );
-
-                this.keepAlive = setInterval(() => {
-                    this.keepalive();
-                }, 45000);
 
                 // set the subscription status
                 this.alcatelsubscription = res.subscription;
@@ -198,24 +203,6 @@ export class AlcatelToolbarIndicator implements OnDestroy {
         this.telephony.isActive = false;
     }
 
-    private keepalive() {
-        this.backend.postRequest('alcatel/keepalive').subscribe(
-            res => {
-                if (res.status != 'success') {
-                    this.alcatelstatus = 'disconnected';
-                    clearInterval(this.keepAlive);
-                    this.login();
-                }
-            },
-            error => {
-                // disconnect
-                this.disconnect();
-
-                // trigger login
-                this.login();
-            });
-    }
-
     /**
      * connect to the socket
      */
@@ -225,7 +212,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
             return false;
         }
 
-        this.socket = io(`${this.socketurl}?room=${this.username}`);
+        this.socket = io(`${this.socketurl}?sysid=${this.socketid}&room=alcatel${this.username}&token=${this.session.authData.sessionId}`);
         this.socket.on('connect', (socket) => {
             this.socketconnected = true;
         });
@@ -308,7 +295,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
      * @param relatedmodule
      * @param relatedrecord
      */
-    private initiateCall(msisdn: string, relatedmodule?: string, relatedrecord?: string) {
+    private initiateCall(msisdn: string, relatedmodule?: string, relatedid?: string, relateddata?: any) {
 
         // create a call and push to the telphony service
         let callid = this.modelutilities.generateGuid();
@@ -317,7 +304,10 @@ export class AlcatelToolbarIndicator implements OnDestroy {
             status: 'initial',
             callid: undefined,
             msisdn: msisdn,
-            direction: 'outbound'
+            direction: 'outbound',
+            relatedid: relatedid,
+            relatedmodule: relatedmodule,
+            relateddata: relateddata
         };
         this.telephony.calls.push(call);
 
