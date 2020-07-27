@@ -177,9 +177,9 @@ export class SpeechRecognition implements OnInit {
         }
 
         this.recognizing = false;
-
         this.textfield.element.nativeElement.value =
-            this.part1fromField + this.theText + this.part2fromField;
+           this.part1fromField + this.theText + this.part2fromField;
+        this.textfield.element.nativeElement.dispatchEvent( new Event('change') );
 
         this.self.destroy();
 
