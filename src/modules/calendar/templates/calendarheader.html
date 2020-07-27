@@ -22,7 +22,7 @@
         </div>
         <div class="slds-align-top slds-col slds-grid slds-no-flex slds-col--bump-left">
             <div class="slds-m-right--medium slds-grid">
-                <system-icon *ngFor="let module of calendar.modules" [module]="module.name" [ngStyle]="getIconStyle(module.name)" (click)="toggleVisibleModule(module.name)" size="medium" divClass="slds-m-right--xx-small" style="cursor: pointer"></system-icon>
+                <system-icon *ngFor="let module of modules" [module]="module.name" [ngStyle]="getIconStyle(module.name)" (click)="toggleVisibleModule(module.name)" size="medium" divClass="slds-m-right--xx-small" style="cursor: pointer"></system-icon>
             </div>
             <div *ngIf="!calendar.isMobileView || calendar.asPicker" class="slds-button-group" role="group">
                 <button class="slds-button slds-button--icon-border" (click)="shiftMinus()">
@@ -88,5 +88,5 @@
     </div>
 </div>
 <div #pickerontainer [class.slds-hidden]="!openPicker || !calendar.isMobileView" aria-hidden="false" class="slds-datepicker slds-dropdown slds-dropdown_left" role="dialog">
-    <system-input-date-picker *ngIf="openPicker" [setDate]="calendarDate" [weekStartDay]="calendar.weekStartDay" (datePicked)="handleDatePicked($event)"></system-input-date-picker>
+    <system-input-date-picker *ngIf="openPicker" [setDate]="calendar.calendarDate" [weekStartDay]="calendar.weekStartDay" (datePicked)="handleDatePicked($event)"></system-input-date-picker>
 </div>
