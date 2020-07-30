@@ -1,6 +1,6 @@
 <system-modal  title="LBL_EMAIL_SCHEDULES">
     <system-modal-header (close)="close()"><system-label label="LBL_EMAIL_SCHEDULE"></system-label></system-modal-header>
-    <system-modal-content>
+    <system-modal-content [grow]="true" margin="none">
         <system-dynamic-component component="CampaignTaskEmailPanel"></system-dynamic-component>
     </system-modal-content>
     <system-modal-footer>
