@@ -1,2 +1,2 @@
-<field-generic-display *ngIf="!editmode" [editable]="editable">{{value}} {{uom}}</field-generic-display>
-<system-input-number *ngIf="editmode" [(ngModel)]="value" [precision]="precision" [min]="valueFrom" [max]="valueTo"></system-input-number>
+<field-generic-display *ngIf="!isEditMode" [editable]="editable">{{value}} {{uom}}</field-generic-display>
+<system-input-number *ngIf="isEditMode" [(ngModel)]="value" [precision]="precision" [min]="valueFrom" [max]="valueTo"></system-input-number>
