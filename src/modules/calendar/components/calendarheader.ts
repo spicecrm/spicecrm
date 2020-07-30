@@ -1,7 +1,7 @@
 /**
  * @module ModuleCalendar
  */
-import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, OnDestroy, Output, Renderer2} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, Renderer2} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {navigation} from '../../../services/navigation.service';
 import {calendar} from '../services/calendar.service';
@@ -35,6 +35,10 @@ export class CalendarHeader implements OnDestroy {
      * show/hide calendar sheet type select menu
      */
     private showTypeSelector: boolean = false;
+    /**
+     * holds the calendar fts moduels
+     */
+    @Input() private modules: any[] = [];
     /**
      * emit when a calendar date is picked
      */

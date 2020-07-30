@@ -26,9 +26,7 @@ export class ACLObjectsManagerObjectFieldvalues {
         this.view.isEditable = true;
         this.view.setEditMode();
 
-        //this.model.data$.subscribe(data => {
-            this.handleType();
-        //});
+        this.handleType();
 
         // get the config
         let componentconfig = this.metadata.getComponentConfig('ACLObjectsManagerObjectFieldvalues', 'SpiceACLObjects');
