@@ -1,7 +1,7 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
     <system-spinner *ngIf="is_loading_items" size="12"></system-spinner>
-    <ul *ngIf="!is_loading_items" class="slds-list_dotted">
+    <ul *ngIf="!is_loading_items && value?.length" class="slds-list_dotted">
         <li *ngFor="let item of value">{{getItemByProductID(item.product_id).name}} ({{item.quantity}})</li>
     </ul>
 </field-generic-display>
