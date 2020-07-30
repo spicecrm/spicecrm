@@ -1,5 +1,5 @@
 <system-modal size="small">
-    <system-modal-header (close)="close()">Select Item Type</system-modal-header>
+    <system-modal-header (close)="close()"><system-label label="LBL_SELECT_ITEMTYPE"></system-label></system-modal-header>
     <system-modal-content>
         <fieldset class="slds-form-element">
             <div *ngFor="let itemtype of availableItemTypes" class="slds-form-element__control">

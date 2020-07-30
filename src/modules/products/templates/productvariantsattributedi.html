@@ -1,8 +1,8 @@
-<div *ngIf="editmode" class="slds-form-element__control">
+<div *ngIf="isEditMode" class="slds-form-element__control">
     <div class="slds-select_container">
         <select class="slds-select" [(ngModel)]="value" [disabled]="attribute.attr_usage == 'none'">
             <option *ngFor="let attributevalue of attributeValues">{{attributevalue}}</option>
         </select>
     </div>
 </div>
-<field-generic-display *ngIf="!editmode" [editable]="editable">{{value}}</field-generic-display>
+<field-generic-display *ngIf="!isEditMode" [editable]="editable">{{value}}</field-generic-display>

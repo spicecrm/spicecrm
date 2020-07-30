@@ -1,7 +1,7 @@
 <div #calendarContainer [ngClass]="mainContainerClass" [class.slds-text-body--small]="calendar.isMobileView" [attr.role]="!calendar.asPicker ? 'none' : 'dialog'" [system-to-bottom-noscroll]="!calendar.asPicker" style="height: 100%">
     <div [class.slds-modal__container]="calendar.asPicker" style="height: inherit">
         <div class="slds-grid slds-grid--vertical" style="height: inherit">
-            <calendar-header (datePicked)="setDateChanged($event)" style="display: block"></calendar-header>
+            <calendar-header [modules]="calendar.modules" (datePicked)="setDateChanged($event)" style="display: block"></calendar-header>
             <div class="slds-grid slds-theme_default slds-border--right slds-grow" style="min-height: 100px">
                 <div *ngIf="!calendar.isMobileView" [style.width.px]="calendar.sidebarWidth" class="slds-border--right slds-p-around--xx-small slds-scrollable--y slds-size--1-of-1 slds-theme--default" style="height: 100%; z-index: 1">
                     <system-input-date-picker [setDate]="calendar.calendarDate" [dual]="componentconfig.pickerDualMode" [showTodayButton]="false" [weekStartDay]="calendar.weekStartDay" (datePicked)="setDateChanged($event)"></system-input-date-picker>

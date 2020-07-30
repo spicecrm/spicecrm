@@ -116,6 +116,9 @@ export class SystemFilterBuilderFilterExpressionFields implements OnInit, Contro
             // no id fields
             if(fields[field].type == 'id') continue;
 
+            // no non-db fields
+            if(fields[field].source == 'non-db' && fields[field].type != 'relate') continue;
+
             this.fields.push(fields[field]);
         }
 
