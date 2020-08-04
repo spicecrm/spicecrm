@@ -192,7 +192,7 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
      * fallback to the metadata
      */
     private getLookuplinks(): any[] {
-        let linknames: string[] = ['contacts', 'users'];
+        let linknames: string[] = ['contacts', 'users', 'consumers'];
         let links = [];
         for (let linkname of linknames) {
             links.push({name: linkname, module: this.metadata.getFieldDefs(this.model.module, linkname).module});
