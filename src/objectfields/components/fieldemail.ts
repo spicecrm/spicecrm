@@ -135,7 +135,7 @@ export class fieldEmail extends fieldGeneric {
      */
     private sendEmail() {
         if (this.value.length > 0) {
-            window.location.assign('mailto:' + this.value);
+            window.open('mailto:' + this.value);
         }
     }
 }
