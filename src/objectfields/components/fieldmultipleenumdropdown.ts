@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component} from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -9,13 +9,15 @@ import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 
+declare var _: any;
+
 @Component({
     selector: 'field-multiple-enum-dropdown',
     templateUrl: './src/objectfields/templates/fieldmultipleenumdropdown.html'
 })
-export class fieldMultipleEnumDropdown extends fieldGeneric {
-    private valuearray: any[] = [];
-    private viewmodevalue: string = '';
+export class fieldMultipleEnumDropdown extends fieldGeneric implements OnDestroy {
+    private valueArray = [];
+    private viewModeValueText = '';
 
     constructor(
         public model: model,
@@ -25,30 +27,67 @@ export class fieldMultipleEnumDropdown extends fieldGeneric {
         public router: Router
     ) {
         super(model, view, language, metadata, router);
+        this.subscriptions.add(
+            // Detect changement of model data.
+            this.model.data$.subscribe(
+                () => {
+                    this.createValueArray();
+                    this.createViewModeValueText();
+                }
+            )
+        );
+        this.subscriptions.add(
+            // Detect changement of the current language to change the selected options (in view mode).
+            this.language.currentlanguage$.subscribe( () => {
+                this.createViewModeValueText();
+            })
+        );
     }
 
+    /**
+     * Provide the possible options for the select field.
+     */
     get listItems() {
         return this.language.getFieldDisplayOptions(this.model.module, this.fieldname);
     }
 
-    get viewModeValue() {
-        if (this.viewmodevalue.length == 0 && this.value) {
-            let languageOptions = this.language.getFieldDisplayOptions(this.model.module, this.fieldname);
-            this.viewmodevalue = this.fieldValueArray.map(item => languageOptions[item]).join(', ');
-        }
-        return this.viewmodevalue;
-    }
-
+    /**
+     * Set the value field with the selected options delivered from systemmultipleselect.
+     */
     private setFieldValue(valueArray) {
-        window.console.log(valueArray);
         this.value = valueArray.map(item => `^${item}^`).join(',');
+        this.createValueArray();
+        this.createViewModeValueText();
     }
 
-    get fieldValueArray() {
-        if (this.valuearray.length == 0 && this.value) {
-            return this.valuearray = this.value.replace(/\^/g, '').split(',');
-        }
-        return this.valuearray;
+    /**
+     * Create the array of selected options, from the field "value" (type text).
+     */
+    private createValueArray() {
+        this.valueArray = this.value ? this.value.replace(/\^/g, '').split(',') : [];
     }
+
+    /**
+     * Create the text variant of the selected options.
+     */
+    private createViewModeValueText() {
+        let languageOptions = this.language.getFieldDisplayOptions(this.model.module, this.fieldname);
+        this.viewModeValueText = this.valueArray.map( item => languageOptions[item]).join(', ');
+    }
+
+    /**
+     * Display the options grouped? Default (undefined) is true, for backward compatibility reasons.
+     */
+    get grouped() {
+        return ( this.fieldconfig.grouped === undefined || this.fieldconfig.grouped === true ) ? true : false;
+    }
+
+    /**
+     * unsubscribe from various subscriptions on destroy
+     */
+    public ngOnDestroy(): void {
+        this.subscriptions.unsubscribe();
+    }
+
 }
 
