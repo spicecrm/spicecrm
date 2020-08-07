@@ -15,6 +15,9 @@ import {ObjectFields} from "../objectfields/objectfields";
 import {ObjectComponents} from "../objectcomponents/objectcomponents";
 import {GlobalComponents} from "../globalcomponents/globalcomponents";
 
+// Pipes
+import /*embed*/ {DomainManagerFieldsPipe} from "./pipes/domainmanagerfieldspipe";
+
 // COMPONENTs
 import /*embed*/ {DomainManager} from "./components/domainmanager";
 import /*embed*/ {DomainManagerFieldDetails} from "./components/domainmanagerfielddetails";
@@ -116,6 +119,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         GlobalComponents
     ],
     declarations: [
+        DomainManagerFieldsPipe,
         DomainManager,
         DomainManagerFieldDetails,
         DictionaryManager,
