@@ -1,36 +1,36 @@
 <div class="slds-form-element slds-m-vertical--xxx-small">
-    <label class="slds-form-element__label">Name</label>
+    <label class="slds-form-element__label"><system-label label="LBL_NAME"></system-label></label>
     <div class="slds-form-element__control">
         <input type="text" class="slds-input" [(ngModel)]="field.name"/>
     </div>
 </div>
 <div class="slds-form-element slds-m-vertical--xxx-small">
-    <label class="slds-form-element__label">Source</label>
+    <label class="slds-form-element__label"><system-label label="LBL_DBTYPE"></system-label></label>
     <div class="slds-form-element__control">
-        <input type="text" class="slds-input" [(ngModel)]="field.source"/>
+        <input type="text" class="slds-input" [(ngModel)]="field.dbtype"/>
     </div>
 </div>
 <div class="slds-form-element slds-m-vertical--xxx-small">
-    <label class="slds-form-element__label">Type</label>
+    <label class="slds-form-element__label"><system-label label="LBL_TYPE"></system-label></label>
     <div class="slds-form-element__control">
-        <input type="text" class="slds-input" [(ngModel)]="field.field_type"/>
+        <input type="text" class="slds-input" [(ngModel)]="field.fieldtype"/>
     </div>
 </div>
 <div class="slds-form-element slds-m-vertical--xxx-small">
-    <label class="slds-form-element__label">DB Type</label>
+    <label class="slds-form-element__label"><system-label label="LBL_LENGTH"></system-label></label>
     <div class="slds-form-element__control">
-        <input type="text" class="slds-input" [(ngModel)]="field.db_type"/>
+        <input type="text" class="slds-input" [(ngModel)]="field.len"/>
     </div>
 </div>
 <div class="slds-form-element slds-m-vertical--xxx-small">
-    <label class="slds-form-element__label">Length</label>
+    <label class="slds-form-element__label"><system-label label="LBL_REQUIRED"></system-label></label>
     <div class="slds-form-element__control">
-        <input type="text" class="slds-input" [(ngModel)]="field.field_len"/>
+        <system-checkbox [(ngModel)]="required">required</system-checkbox>
     </div>
 </div>
 <div class="slds-form-element slds-m-vertical--xxx-small">
-    <label class="slds-form-element__label">Precision</label>
+    <label class="slds-form-element__label"><system-label label="LBL_COMMENT"></system-label></label>
     <div class="slds-form-element__control">
-        <input type="text" class="slds-input" [(ngModel)]="field.field_precision"/>
+        <textarea class="slds-textarea" [(ngModel)]="field.comment"></textarea>
     </div>
 </div>

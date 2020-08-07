@@ -17,58 +17,45 @@ import {language} from '../../services/language.service';
 })
 export class DomainManager {
 
-    currentDomain: string = "";
-    domains: Array<any> = [];
-    currentField: string = '';
+
+    /**
+     * the loaded list of domains
+     */
+    private domaindefinitions: any[] = [];
+
+    /**
+     * the loaded domain fields
+     */
+    private domainfields: any[] = [];
+
+    /**
+     * the currently seleted domain element
+     */
+    private currentDomainDefinition: string;
+
+    /**
+     * the urrently selected domain field
+     */
+    private currentDomainField: string;
+
+    private tabScope: 'details'|'validations' = 'details';
 
     constructor(private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities, private broadcast: broadcast, private toast: toast) {
+        this.loadDomains();
+    }
 
-        this.backend.getRequest('dictionary/domains').subscribe(domains => {
-            this.domains = domains;
+    /**
+     * load the domains
+     */
+    private loadDomains(){
+        this.backend.getRequest('system/dictionary/domains').subscribe(res => {
+            this.domaindefinitions = res.domaindefinitions;
+            this.domainfields = res.domainfields;
         });
-
     }
 
-    reset() {
-        this.currentField = '';
+    get currentField() {
+        return this.domainfields.find(field => field.id == this.currentDomainField);
     }
 
-    selectItem(id) {
-        this.currentField = id;
-    }
-
-    isSelected(id) {
-        return this.currentField === id;
-    }
-
-    getDomainFields() {
-        let domainFields = [];
-        this.domains.some(domain => {
-            if (domain.id == this.currentDomain) {
-                domainFields = domain.technicalFields;
-                return true;
-            }
-        });
-        return domainFields;
-    }
-
-    showDetails() {
-        return this.currentDomain && this.currentField;
-    }
-
-    getCurrentField() {
-        let field = {};
-        this.domains.some(domain => {
-            if (domain.id == this.currentDomain) {
-                domain.technicalFields.some(tfield => {
-                    if (tfield.id === this.currentField) {
-                        field = tfield;
-                        return true;
-                    }
-                })
-                return true;
-            }
-        });
-        return field;
-    }
 }
