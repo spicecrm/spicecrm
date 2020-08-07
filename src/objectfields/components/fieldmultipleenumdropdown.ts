@@ -9,8 +9,6 @@ import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 
-declare var _: any;
-
 @Component({
     selector: 'field-multiple-enum-dropdown',
     templateUrl: './src/objectfields/templates/fieldmultipleenumdropdown.html'
