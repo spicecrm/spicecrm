@@ -54,10 +54,15 @@ export class SystemMultipleSelect implements OnChanges, ControlValueAccessor {
     private onTouched: () => void;
 
     constructor(private elementRef: ElementRef, private renderer: Renderer2, private language: language) {
+        // Listen to a possible press of the ESC key.
+        window.addEventListener('keyup', (event) => {
+            if ( event.keyCode === 27 && this.isOpen ) this.isOpen = false;
+        });
     }
 
     get showEmptyText(): boolean {
-        return this.valueArray.filter(value => value.includes(this.groupSeparator)).length == 0;
+        if ( this.grouped ) return this.valueArray.filter(value => value.includes(this.groupSeparator)).length == 0;
+        else return this.valueArray.length == 0;
     }
 
     get listClass(): string {
@@ -197,17 +202,23 @@ export class SystemMultipleSelect implements OnChanges, ControlValueAccessor {
     }
 
     private removeItem(index, value) {
-        const itemGroup = value.split(this.groupSeparator)[0];
         this.valueArray.splice(index, 1);
-        if (!this.groupHasItems(itemGroup)) {
-            const itemGroupIndex = this.valueArray.indexOf(itemGroup);
-            this.valueArray.splice(itemGroupIndex, 1);
+        if ( this.grouped ) {
+            const itemGroup = value.split(this.groupSeparator)[0];
+            if (!this.groupHasItems(itemGroup)) {
+                const itemGroupIndex = this.valueArray.indexOf(itemGroup);
+                this.valueArray.splice(itemGroupIndex, 1);
+            }
         }
         this.setSelectedCountText();
         this.onChange(this.valueArray);
     }
 
     private setSelectedCountText(): void {
-        this.selectedCountText = this.valueArray.filter(value => value.includes(this.groupSeparator)).length + ' selected items';
+        if ( this.grouped ) {
+            this.selectedCountText = this.valueArray.filter( value => value.includes( this.groupSeparator ) ).length + ' selected items';
+        } else {
+            this.selectedCountText = this.valueArray.length + ' selected items';
+        }
     }
 }

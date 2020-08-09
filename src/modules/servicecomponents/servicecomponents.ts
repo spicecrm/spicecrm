@@ -64,6 +64,9 @@ import /*embed*/ {ServicePlanner} from "./components/serviceplanner";
 import /*embed*/ {ServicePlannerMapsModelPopover} from "./components/serviceplannermapsmodelpopover";
 import /*embed*/ {ServicePlannerMapsModelPopoverDirection} from "./components/serviceplannermapsmodelpopoverdirection";
 import {ModuleSpiceTimeline} from "../../include/spicetimeline/spicetimeline";
+import /*embed*/ {ServiceDocSignatureButton} from "./components/servicedocsignaturebutton";
+import /*embed*/ {ServiceDocSignatureContent} from "./components/servicedocsignaturecontent";
+import /*embed*/ {ServiceDocSignatureModal} from "./components/servicedocsignaturemodal";
 
 @NgModule({
     imports: [
@@ -123,6 +126,9 @@ import {ModuleSpiceTimeline} from "../../include/spicetimeline/spicetimeline";
         ServicePlanner,
         ServicePlannerMapsModelPopover,
         ServicePlannerMapsModelPopoverDirection,
+        ServiceDocSignatureButton,
+        ServiceDocSignatureContent,
+        ServiceDocSignatureModal
     ]
 })
 export class ServiceComponentsModule {
