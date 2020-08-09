@@ -16,7 +16,7 @@
     <div [ngStyle]="{width: signature_width+'px'}">
         <div class="slds-float_left">
             <canvas #canvas [width]="signature_width" [height]="signature_height" style="border: 1px solid;" (mouseup)="convert()" (touchend)="convert()"></canvas>
-            <div style="position: absolute; bottom: 3px; right: 3px;">
+            <div style="position: relative; bottom: 3px; right: 3px;">
                 <button class="slds-button slds-button--icon" (click)="undo()" title="undo">
                     <system-button-icon [icon]="'back'"></system-button-icon>
                 </button>
