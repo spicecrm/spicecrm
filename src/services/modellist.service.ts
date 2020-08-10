@@ -292,6 +292,16 @@ export class modellist implements OnDestroy {
             // reset the list data
             this.resetListData();
 
+            // set the aggergates for the module
+            this.moduleAggregates = [];
+            for (let moduleAggregate of this.metadata.getModuleAggregates(module)) {
+                this.moduleAggregates.push({...moduleAggregate});
+            }
+            this.moduleAggregates.sort((a, b) => {
+                if (!a.priority && !b.priority) return 0;
+                return (!a.priority || a.priority > b.priority) ? 1 : -1;
+            });
+
             // if we are in embedded mode stop processing and return
             if(embedded) return;
 
@@ -312,15 +322,7 @@ export class modellist implements OnDestroy {
                 this.reLoadList(true);
             }
 
-            // set the aggergates for the module
-            this.moduleAggregates = [];
-            for (let moduleAggregate of this.metadata.getModuleAggregates(module)) {
-                this.moduleAggregates.push({...moduleAggregate});
-            }
-            this.moduleAggregates.sort((a, b) => {
-                if (!a.priority && !b.priority) return 0;
-                return (!a.priority || a.priority > b.priority) ? 1 : -1;
-            });
+
         }
     }
 
