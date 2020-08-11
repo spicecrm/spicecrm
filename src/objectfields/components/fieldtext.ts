@@ -38,6 +38,7 @@ export class fieldText extends fieldGeneric implements OnInit {
     }
 
     public ngOnInit() {
+        console.log('value',this.value);
         if (window.webkitSpeechRecognition) {
             this.speechRecognition = this.fieldconfig.speechRecognition; // boolean
             this.speechRecognition = true; // for debugging
@@ -80,6 +81,13 @@ export class fieldText extends fieldGeneric implements OnInit {
         this.modalservice.openModal('SpeechRecognition', false).subscribe(modal => {
             modal.instance.textfield = this.textField;
         });
+    }
+
+    /**
+     * After a change of the textfield value, save the new value to the model.
+     */
+    private change( $event ) {
+        if ( $event.target.value ) this.value = $event.target.value;
     }
 
 }
