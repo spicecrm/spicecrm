@@ -82,6 +82,7 @@ import /*embed*/ {SystemInputTags} from "./components/systeminputtags";
 import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
 import /*embed*/ {SystemInputCompanycodes} from "./components/systeminputcompanycodes";
 import /*embed*/ {SystemInputBackendMethod} from "./components/systeminputbackendmethod";
+import /*embed*/ {SystemInstallerComponent} from "./components/systeminstallercomponent";
 import /*embed*/ {SystemLabel} from "./components/systemlabel";
 import /*embed*/ {SystemLabelFieldname} from "./components/systemlabelfieldname";
 import /*embed*/ {SystemLabelModulename} from "./components/systemlabelmodulename";
@@ -227,6 +228,7 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemInputCompanycodes,
         SystemInputBackendMethod,
         SystemInputBase64,
+        SystemInstallerComponent,
         SystemLabel,
         SystemLabelFieldname,
         SystemLabelModulename,
