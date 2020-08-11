@@ -4,7 +4,7 @@
 import {Injectable, EventEmitter, Output} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 
-import {Subject, Observable} from 'rxjs';
+import {Subject, Observable, BehaviorSubject} from 'rxjs';
 
 /**
  * @ignore
@@ -14,7 +14,7 @@ declare var moment: any;
 @Injectable()
 export class mailboxesEmails {
 
-    @Output('mailboxesLoaded') public mailboxesLoaded$: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output('mailboxesLoaded') public mailboxesLoaded$: BehaviorSubject<boolean>;
 
     /**
      * the default limit for the emails to be loaded at once
@@ -74,6 +74,8 @@ export class mailboxesEmails {
     constructor(
         private backend: backend
     ) {
+        this.mailboxesLoaded$ = new BehaviorSubject<boolean>(false);
+
         // load the mailboxes
         this.getMailboxes();
     }
@@ -141,7 +143,7 @@ export class mailboxesEmails {
                     });
                 }
                 // send an event here and catch it in mailboxmanagerheader
-                this.mailboxesLoaded$.emit(true);
+                this.mailboxesLoaded$.next(true);
             }
         );
 

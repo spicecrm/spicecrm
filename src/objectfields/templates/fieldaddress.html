@@ -16,7 +16,7 @@
                     </div>
                     <field-messages [fieldname]="fieldName('street')"></field-messages>
                 </div>
-                <div class="slds-form-element slds-col slds-size--1-of-6 ">
+                <div *ngIf="!fieldconfig.hidestreetnumber" class="slds-form-element slds-col slds-size--1-of-6 ">
                     <field-label [fieldname]="fieldName('street_number')" labellength="short"></field-label>
                     <div class="slds-form-element__control">
                         <input #focus type="text" class="slds-input" [(ngModel)]="street_number" [ngModelOptions]="modelOptions"/>
