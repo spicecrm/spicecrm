@@ -4,6 +4,7 @@
 import {Component, OnInit} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {metadata} from '../../../services/metadata.service';
+import {navigationtab} from '../../../services/navigationtab.service';
 import {mailboxesEmails} from '../services/mailboxesemail.service';
 import {ActivatedRoute} from '@angular/router';
 
@@ -49,10 +50,10 @@ export class MailboxManagerHeader implements OnInit {
 
 
     constructor(
-        private activatedRoute: ActivatedRoute,
         private language: language,
         private mailboxesEmails: mailboxesEmails,
-        private metadata: metadata
+        private metadata: metadata,
+        private navigationtab: navigationtab,
     ) {
 
         // load default settings for the openness selection and the unread only flag
@@ -69,20 +70,16 @@ export class MailboxManagerHeader implements OnInit {
      * initialize
      */
     public ngOnInit() {
-        let routeSubscribe = this.activatedRoute.params.subscribe(
-            (params) => {
-                this.mailbox = params.id;
-
-                // catch an event from mailboxesEmails service once the mailboxes are actually loaded
-                this.mailboxesEmails.mailboxesLoaded$.subscribe(
-                    (loaded) => {
-                        if (loaded === true) {
-                            this.mailbox = params.id;
-                        }
+        if(this.navigationtab.activeRoute.params.id) {
+            // catch an event from mailboxesEmails service once the mailboxes are actually loaded
+            this.mailboxesEmails.mailboxesLoaded$.subscribe(
+                (loaded) => {
+                    if (loaded === true) {
+                        this.mailbox = this.navigationtab.activeRoute.params.id;
                     }
-                );
-            }
-        );
+                }
+            );
+        }
     }
 
     /**
@@ -102,6 +99,8 @@ export class MailboxManagerHeader implements OnInit {
         if (mailbox) {
             this.mailboxesEmails.activeMailBox = this.mailboxesEmails.mailboxes.find(mb => mb.id == mailbox);
             this.mailboxesEmails.loadMessages();
+
+            this.navigationtab.setTabInfo({displayname: this.mailboxesEmails.activeMailBox.name, displaymodule:'Mailboxes'});
         } else {
             this.mailboxesEmails.activeMailBox = {};
         }
