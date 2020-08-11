@@ -49,7 +49,7 @@ export class ObjectListViewAggregate {
      * gets the name of the aggregate
      */
     get aggregatename() {
-        return this.aggregate.indexfieldname?.replace('>', '');
+        return this.aggregate.indexfieldname?.replace(/>/g, '');
     }
 
     /**
