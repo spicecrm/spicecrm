@@ -5,7 +5,7 @@
                 <h4 class="slds-align-middle slds-text-heading--small"><system-label label="LBL_FILTER"></system-label></h4>
                 <div class="slds-button-group" [ngClass]="{'slds-hidden': !isChanged}">
                     <button class="slds-button slds-button--icon slds-button_icon-border-filled" (click)="cancel()"><system-button-icon icon="close"></system-button-icon></button>
-                    <button class="slds-button slds-button--icon slds-button_icon-border-filled slds-button--brand" (click)="save()"><system-button-icon icon="check"></system-button-icon></button>
+                    <button class="slds-button slds-button--icon slds-button_icon-border-filled slds-is-selected" (click)="save()"><system-button-icon icon="check"></system-button-icon></button>
                 </div>
             </div>
             <div class="slds-p-around--xx-small">
