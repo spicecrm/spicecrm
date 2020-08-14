@@ -62,7 +62,7 @@ export class metadata {
     }
 
     get moduleDirectory() {
-        if (this.configuration.getData('modules').length == 0) {
+        if (!this.configuration.getData('modules')) {
             return {
                 id: "766AADDE-FB86-4F9C-9939-9A7B03288CAE",
                 module: "SpiceInstaller",
@@ -75,13 +75,14 @@ export class metadata {
     }
 
     get componentDirectory() {
-        if (this.configuration.getData('components').length == 0) {
+        if (!this.configuration.getData('components')) {
+            console.log("leer");
             return {
                 component: "SpiceInstaller",
                 componentconfig: [],
                 deprecated: "0",
                 module: "766AADDE-FB86-4F9C-9939-9A7B03288CAE",
-                path: 'app/include/spiceinstaller/components/spiceinstaller'
+                path: 'src/include/spiceinstaller/components/spiceinstaller'
             };
         } else {
             return this.configuration.getData('components');

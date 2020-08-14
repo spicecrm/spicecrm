@@ -53,10 +53,11 @@ import {layout} from "./services/layout.service";
 import {libloader} from "./services/libloader.service";
 import {telephony} from "./services/telephony.service";
 import {socket} from "./services/socket.service";
+import {SystemInstallerComponent} from "./systemcomponents/components/systeminstallercomponent";
 import {GlobalLogin} from "./globalcomponents/components/globallogin";
 import {SystemDynamicRouteInterceptor} from "./systemcomponents/components/systemdynamicrouteinterceptor";
 import {GlobalHeader} from "./globalcomponents/components/globalheader";
-import {SystemInstallerComponent} from "./systemcomponents/components/systeminstallercomponent";
+
 
 // declarations for TS
 /**
@@ -124,10 +125,10 @@ export class SpiceUI {
         ObjectComponents,
         RouterModule.forRoot(
             [
+                {path: "install", component: SystemInstallerComponent},
                 {path: "login", component: GlobalLogin},
                 {path: "", redirectTo: "/module/Home", pathMatch: "full"},
                 {path: '**', component: SystemDynamicRouteInterceptor, canActivate: [loginCheck]},
-                {path: "install", component: SystemInstallerComponent}
                 // {path: '**', redirectTo: 'module/Home'/*, canActivate: [loginCheck]*/}
             ]
         )
@@ -171,7 +172,6 @@ export class SpiceUI {
         Title,
         loggerService,
         libloader,
-        //spiceinstaller,
         toast,
         userpreferences,
         VersionManagerService
