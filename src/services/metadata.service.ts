@@ -15,6 +15,7 @@ import {session} from "./session.service";
 import {broadcast} from "./broadcast.service";
 import {configurationService} from "./configuration.service";
 import {CanActivate, Router} from "@angular/router";
+import {SpiceInstaller} from "../include/spiceinstaller/components/spiceinstaller";
 
 // for the dynamic routes
 // import {loginCheck} from "../services/login.service";
@@ -62,33 +63,28 @@ export class metadata {
     }
 
     get moduleDirectory() {
-        if (!this.configuration.getData('modules')) {
-            return {
+        let module = {
+            SpiceInstaller: {
                 id: "766AADDE-FB86-4F9C-9939-9A7B03288CAE",
-                module: "SpiceInstaller",
+                module: "SpiceInstallerModule",
                 path: "app/include/spiceinstaller/spiceinstallermodule"
-            };
-        } else {
-            return this.configuration.getData('modules');
-        }
+            }
+        };
+        return !this.configuration.getData('modules') ? module : this.configuration.getData('modules');
 
     }
 
     get componentDirectory() {
-        if (!this.configuration.getData('components')) {
-            console.log("leer");
-            return {
+        let component = {
+            SpiceInstaller: {
                 component: "SpiceInstaller",
                 componentconfig: [],
                 deprecated: "0",
-                module: "766AADDE-FB86-4F9C-9939-9A7B03288CAE",
-                path: 'src/include/spiceinstaller/components/spiceinstaller'
-            };
-        } else {
-            console.log(this.configuration.getData('components'));
-            return this.configuration.getData('components');
-        }
-
+                module: "SpiceInstaller",
+                path: 'app/include/spiceinstaller/components/spiceinstaller'
+            }
+        };
+        return !this.configuration.getData('components') ? component : this.configuration.getData('components');
     }
 
     get componentSets() {
