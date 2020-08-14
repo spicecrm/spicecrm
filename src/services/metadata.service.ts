@@ -85,6 +85,7 @@ export class metadata {
                 path: 'src/include/spiceinstaller/components/spiceinstaller'
             };
         } else {
+            console.log(this.configuration.getData('components'));
             return this.configuration.getData('components');
         }
 
