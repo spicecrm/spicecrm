@@ -357,6 +357,7 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemInputCompanycodes,
         SystemInputBackendMethod,
         SystemInputBase64,
+        SystemInstallerComponent,
         SystemLabel,
         SystemLabelFieldname,
         SystemLabelModulename,
