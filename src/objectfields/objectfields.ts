@@ -115,6 +115,7 @@ import /*embed*/ {fieldPhone} from "./components/fieldphone";
 import /*embed*/ {fieldActionset} from "./components/fieldactionset";
 import /*embed*/ {fieldSlider} from "./components/fieldslider";
 import /*embed*/ {fieldImage} from './components/fieldimage';
+import /*embed*/ {fieldCompound} from './components/fieldcompound';
 
 /**
  * @ignore
@@ -129,7 +130,7 @@ declare var _: any;
         CommonModule,
         FormsModule,
         SystemComponents,
-        DirectivesModule,
+        DirectivesModule
     ],
     declarations: [
         fieldSet,
@@ -237,7 +238,8 @@ declare var _: any;
         fieldActionset,
         fieldImage,
         fieldActionset,
-        fieldSlider
+        fieldSlider,
+        fieldCompound
     ],
     exports: [
         fieldSet,
@@ -254,7 +256,6 @@ declare var _: any;
         fieldLookupSearch,
         fieldLookupSearchAdd,
         fieldTags,
-
     ]
 })
 export class ObjectFields {
