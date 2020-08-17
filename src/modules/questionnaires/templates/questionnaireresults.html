@@ -1,6 +1,6 @@
 <div class="slds-grid slds-grid--align-spread">
     <div *ngIf="noParticipation" style="width:100%">
-        <div class="slds-text-align--center slds-text-heading--small slds-p-top--small">No questionnaire participation yet.</div>
+        <div class="slds-text-align--center slds-text-heading--small slds-p-top--small"><system-label [label]="'MSG_NO_QUESTIONNAIRE_PARTICIPATION_YET'"></system-label></div>
         <!--
         <div class="slds-text-align--center slds-m-top--medium">
             You can fill out the questionnaire instead of the person concerned.<br>
@@ -11,9 +11,9 @@
     <div class="slds-col--bump-left"><button *ngIf="!isLoading" class="slds-button slds-button_icon" (click)="reload()"><system-button-icon [icon]="'refresh'"></system-button-icon></button></div>
 </div>
 
-<system-spinner *ngIf="isLoading"></system-spinner>
+<system-spinner *ngIf="isLoading && !noParticipation"></system-spinner>
 
-<div *ngIf="!isLoading" class="slds-p-bottom--medium">
+<div *ngIf="!isLoading && !noParticipation" class="slds-p-bottom--medium">
     <div *ngFor="let questionset of questionsets; first as isFirst" [class.slds-p-top--medium]="!isFirst">
         <questionset-render [questionsetIdOrObject] = "questionset.id" [participation_id] = "questionset.participationId" [noEdit] = "true" [inModal] = "false"></questionset-render>
     </div>
