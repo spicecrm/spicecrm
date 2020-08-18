@@ -17,7 +17,7 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 
 export class SpiceInstallerReview implements AfterViewInit {
     private loading: boolean = false;
-
+    private mapped: any;
     constructor(
         private toast: toast,
         private http: HttpClient,
