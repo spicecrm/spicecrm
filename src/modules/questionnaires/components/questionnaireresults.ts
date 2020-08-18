@@ -33,6 +33,12 @@ export class QuestionnaireResults implements OnInit {
                 this.questionsets = data.questionsets;
                 this.noParticipation = false;
             }
+        },
+        error => {
+            if ( error.status === 404 ) {
+                this.noParticipation = true;
+                this.questionsets.length = 0;
+            }
         });
     }
 
