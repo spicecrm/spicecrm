@@ -2,9 +2,10 @@
     <h2 class="slds-text-heading--medium slds-p-vertical--small slds-p-horizontal--x-small">
         System Requirements
     </h2>
- <ul>
-     <li *ngFor="let requirement of requirements | keyvalue"><system-utility-icon [icon]="requirement.value ? 'check' : 'error'"></system-utility-icon> {{requirement.key}}</li>
- </ul>
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+        <tbody>
+        <tr *ngFor="let requirement of requirements | keyvalue"><td><div class="slds-truncate"><system-utility-icon [icon]="requirement.value ? 'check' : 'error'"></system-utility-icon></div></td><td><div class="slds-truncate"> {{requirement.key}}</div></td></tr>
+        </tbody></table>
     <div class="slds-p-vertical--small slds-text-align--right">
         <button class="slds-button slds-button--brand" (click)="spiceinstaller.next(spiceinstaller.steps[1])">next</button>
     </div>
