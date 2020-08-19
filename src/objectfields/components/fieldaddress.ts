@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {Router} from "@angular/router";
 
 import {model} from "../../services/model.service";
@@ -20,7 +20,7 @@ import {backend} from "../../services/backend.service";
     selector: 'field-address',
     templateUrl: './src/objectfields/templates/fieldaddress.html'
 })
-export class fieldAddress extends fieldGeneric implements OnInit {
+export class fieldAddress extends fieldGeneric {
 
     /**
      * set to true if the address inpout shoudl be strict according to the dropdown values
@@ -49,9 +49,6 @@ export class fieldAddress extends fieldGeneric implements OnInit {
         let uiconfig = this.configuration.getCapabilityConfig('spiceui');
         if (uiconfig.addressmode == 'strict') this.strict = true;
         if (uiconfig.addressformat) this.addressFormat = uiconfig.addressformat;
-    }
-
-    public ngOnInit() {
         this.getAddressConfig();
     }
 
