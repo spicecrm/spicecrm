@@ -82,10 +82,12 @@
                         <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" tabindex="-1"><system-label label="LBL_VALIDATION"></system-label></a>
                     </li>
                 </ul>
-                <div class="slds-tabs_scoped__content slds-show" [ngClass]="{'slds-hide': tabScope != 'details'}" role="tabpanel" system-to-bottom-noscroll>
+                <div class="slds-tabs_scoped__content slds-show slds-p-around--none" [ngClass]="{'slds-hide': tabScope != 'details'}" role="tabpanel" system-to-bottom-noscroll>
                     <domainmanager-field-details [field]="currentField"></domainmanager-field-details>
                 </div>
-                <div class="slds-tabs_scoped__content slds-show" [ngClass]="{'slds-hide': tabScope != 'validations'}" role="tabpanel" system-to-bottom-noscroll>Validations</div>
+                <div class="slds-tabs_scoped__content slds-show slds-p-around--none" [ngClass]="{'slds-hide': tabScope != 'validations'}" role="tabpanel" system-to-bottom-noscroll>
+                    <domainmanager-field-validation [field]="currentField"></domainmanager-field-validation>
+                </div>
             </div>
             <ng-template #selectfield>
                 <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">

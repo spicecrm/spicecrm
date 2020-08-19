@@ -10,23 +10,13 @@ import {broadcast} from '../../services/broadcast.service';
 import {toast} from '../../services/toast.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
+import {domainmanager} from '../services/domainmanager.service';
 
 @Component({
     templateUrl: './src/workbench/templates/domainmanager.html',
-    providers: [metadata]
+    providers: [metadata, domainmanager]
 })
 export class DomainManager {
-
-
-    /**
-     * the loaded list of domains
-     */
-    private domaindefinitions: any[] = [];
-
-    /**
-     * the loaded domain fields
-     */
-    private domainfields: any[] = [];
 
     /**
      * the currently seleted domain element
@@ -38,20 +28,20 @@ export class DomainManager {
      */
     private currentDomainField: string;
 
-    private tabScope: 'details'|'validations' = 'details';
+    /**
+     * the scope for the tabbed view
+     */
+    private tabScope: 'details' | 'validations' = 'details';
 
-    constructor(private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities, private broadcast: broadcast, private toast: toast) {
-        this.loadDomains();
+    constructor(private domainmanager: domainmanager, private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities, private broadcast: broadcast, private toast: toast) {
     }
 
-    /**
-     * load the domains
-     */
-    private loadDomains(){
-        this.backend.getRequest('system/dictionary/domains').subscribe(res => {
-            this.domaindefinitions = res.domaindefinitions;
-            this.domainfields = res.domainfields;
-        });
+    get domaindefinitions() {
+        return this.domainmanager.domaindefinitions
+    }
+
+    get domainfields() {
+        return this.domainmanager.domainfields
     }
 
     get currentField() {
