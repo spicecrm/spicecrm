@@ -93,12 +93,12 @@ export class spiceinstaller {
             credentials: {},
             language: {}
         },
-        this._selectedStep = {
-            id: 'setbackend',
-            name: 'Set Backend',
-            visible: true,
-            completed: false,
-        };
+            this._selectedStep = {
+                id: 'setbackend',
+                name: 'Set Backend',
+                visible: true,
+                completed: false,
+            };
         this.steps = [
             {
                 id: 'setbackend',
@@ -189,4 +189,25 @@ export class spiceinstaller {
         }
     }
 
+    /**
+     * makes a human readable label out of an object/array key
+     * @param key
+     */
+    public keyToLabel(key: string) {
+        let label = key.charAt(0).toUpperCase() + key.slice(1);
+
+        if (key.includes('dir')) {
+            label = label.replace('dir', 'directory');
+        }
+        if (key.includes('_')) {
+            label = label.split('_').join(' ');
+        }
+        if (key.match(/(?=[A-Z])/)) {
+            label = label.split(/(?=[A-Z])/).join(' ');
+        }
+        if (key.includes('db')) {
+            label = label.replace('Db', 'Database');
+        }
+        return label;
+    }
 }

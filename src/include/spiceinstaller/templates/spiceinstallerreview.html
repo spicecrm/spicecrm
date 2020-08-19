@@ -5,7 +5,7 @@
         <tr><td><h2 class="slds-text-heading_medium">Backend Configuration Settings:</h2></td><td></td></tr>
     <tr class="slds-hint-parent" *ngFor="let setting of spiceinstaller.configObject.backendconfig| keyvalue">
         <td>
-            <div class="slds-truncate">{{setting.key}}</div>
+            <div class="slds-truncate">{{spiceinstaller.keyToLabel(setting.key)}}</div>
         </td>
         <td>
             <div class="slds-truncate">{{setting.value}}</div>
@@ -14,7 +14,7 @@
         <tr><td><h2 class="slds-text-heading_medium">Database Configuration Settings:</h2></td><td></td></tr>
     <tr class="slds-hint-parent" *ngFor="let setting of spiceinstaller.configObject.database| keyvalue">
         <td>
-            <div class="slds-truncate">{{setting.key}}</div>
+            <div class="slds-truncate">{{spiceinstaller.keyToLabel(setting.key)}}</div>
         </td>
         <td>
             <div class="slds-truncate">{{setting.value}}</div>
@@ -22,7 +22,7 @@
     </tr>
     <tr class="slds-hint-parent" *ngFor="let setting of spiceinstaller.configObject.dboptions| keyvalue">
         <td>
-            <div class="slds-truncate">{{setting.key}}</div>
+            <div class="slds-truncate">{{spiceinstaller.keyToLabel(setting.key)}}</div>
         </td>
         <td>
             <div class="slds-truncate">{{setting.value}}</div>
@@ -31,7 +31,7 @@
         <tr><td><h2 class="slds-text-heading_medium">FTS Configuration Settings:</h2></td><td></td></tr>
     <tr class="slds-hint-parent" *ngFor="let setting of spiceinstaller.configObject.fts| keyvalue">
         <td>
-            <div class="slds-truncate">{{setting.key}}</div>
+            <div class="slds-truncate">{{spiceinstaller.keyToLabel(setting.key)}}</div>
         </td>
         <td>
             <div class="slds-truncate">{{setting.value}}</div>
@@ -40,7 +40,7 @@
         <tr><td><h2 class="slds-text-heading_medium">Credentials:</h2></td><td></td></tr>
     <tr class="slds-hint-parent" *ngFor="let setting of spiceinstaller.configObject.credentials| keyvalue">
         <td>
-            <div class="slds-truncate">{{setting.key}}</div>
+            <div class="slds-truncate">{{spiceinstaller.keyToLabel(setting.key)}}</div>
         </td>
         <td>
             <div class="slds-truncate">{{setting.value}}</div>
@@ -49,7 +49,7 @@
         <tr><td><h2 class="slds-text-heading_medium">Language:</h2></td><td></td></tr>
     <tr class="slds-hint-parent" *ngFor="let setting of spiceinstaller.configObject.language| keyvalue">
         <td>
-            <div class="slds-truncate">{{setting.key}}</div>
+            <div class="slds-truncate">{{spiceinstaller.keyToLabel(setting.key)}}</div>
         </td>
         <td>
             <div class="slds-truncate">{{setting.value}}</div>
