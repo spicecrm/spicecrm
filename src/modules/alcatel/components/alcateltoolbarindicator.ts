@@ -7,6 +7,8 @@ import {Component, OnDestroy} from '@angular/core';
  * @ignore
  */
 declare var io: any;
+declare var moment: any;
+
 // declare var libphonenumber: any;
 
 import {toast} from '../../../services/toast.service';
@@ -242,10 +244,18 @@ export class AlcatelToolbarIndicator implements OnDestroy {
      * @param eventData
      */
     private handleCallEvent(eventData: any) {
-        console.log(eventData);
         let call = this.telephony.calls.find(c => c.callid == eventData.id);
         if (call) {
             call.status = this.translateStatus(eventData.state);
+            // in case we get to connetced set start
+            if (eventData.state == 'CONNECTED' && !call.start) {
+                call.start = moment();
+            }
+
+            // in case we get a hangup log the end date
+            if (eventData.state == 'HANGUP' && !call.end) {
+                call.end = moment();
+            }
         } else {
             this.addCall(eventData);
         }
