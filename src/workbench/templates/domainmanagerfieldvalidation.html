@@ -1,0 +1,83 @@
+<div *ngIf="field.sysdomainfieldvalidation_id; else novalidation">
+    <div class="slds-grid slds-gutters_direct-xx-small slds-p-around--x-small">
+        <div class="slds-col slds-size--1-of-4 slds-form-element">
+            <label class="slds-form-element__label">Name</label>
+            <div class="slds-form-element__control">
+                <input type="text" [(ngModel)]="validation.name" class="slds-input"/>
+            </div>
+        </div>
+        <div class="slds-col slds-size--1-of-4 slds-form-element">
+            <label class="slds-form-element__label">Type</label>
+            <div class="slds-form-element__control">
+                <input type="text" [(ngModel)]="validation.validation_type" class="slds-input"/>
+            </div>
+        </div>
+        <div class="slds-col slds-size--1-of-4 slds-form-element">
+            <label class="slds-form-element__label">Version</label>
+            <div class="slds-form-element__control">
+                <input type="text" [(ngModel)]="validation.version" class="slds-input"/>
+            </div>
+        </div>
+        <div class="slds-col slds-size--1-of-4 slds-form-element">
+            <label class="slds-form-element__label">package</label>
+            <div class="slds-form-element__control">
+                <input type="text" [(ngModel)]="validation.package" class="slds-input"/>
+            </div>
+        </div>
+    </div>
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th class="" scope="col">
+                    <div class="slds-truncate">min</div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate">max</div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate">label</div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate">sequence</div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate">comment</div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate">version</div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate">package</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="slds-hint-parent" *ngFor="let validationvalue of validationvalues">
+                <td>
+                    <input type="text" [(ngModel)]="validationvalue.minvalue" class="slds-input"/>
+                </td>
+                <td>
+                    <input type="text" [(ngModel)]="validationvalue.maxvalue" class="slds-input"/>
+                </td>
+                <td>
+                    <system-input-label [(ngModel)]="validationvalue.label"></system-input-label>
+                </td>
+                <td>
+                    <input type="text" [(ngModel)]="validationvalue.sequence" class="slds-input"/>
+                </td>
+                <td>
+                    <input type="text" [(ngModel)]="validationvalue.comment" class="slds-input"/>
+                </td>
+                <td>
+                    <input type="text" [(ngModel)]="validationvalue.version" class="slds-input"/>
+                </td>
+                <td>
+                    <input type="text" [(ngModel)]="validationvalue.package" class="slds-input"/>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<ng-template #novalidation>
+    <div>no validation selected</div>
+</ng-template>

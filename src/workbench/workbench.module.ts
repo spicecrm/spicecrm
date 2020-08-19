@@ -18,9 +18,13 @@ import {GlobalComponents} from "../globalcomponents/globalcomponents";
 // Pipes
 import /*embed*/ {DomainManagerFieldsPipe} from "./pipes/domainmanagerfieldspipe";
 
+// Services
+import /*embed*/ {domainmanager} from "./services/domainmanager.service";
+
 // COMPONENTs
 import /*embed*/ {DomainManager} from "./components/domainmanager";
 import /*embed*/ {DomainManagerFieldDetails} from "./components/domainmanagerfielddetails";
+import /*embed*/ {DomainManagerFieldValidation} from "./components/domainmanagerfieldvalidation";
 
 import /*embed*/ {DictionaryManager} from "./components/dictionarymanager";
 import /*embed*/ {DictionaryManagerItem} from "./components/dictionarymanageritem";
@@ -122,6 +126,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         DomainManagerFieldsPipe,
         DomainManager,
         DomainManagerFieldDetails,
+        DomainManagerFieldValidation,
         DictionaryManager,
         DictionaryManagerItem,
         DictionaryManagerItemString,
@@ -229,13 +234,4 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         SortPipe
     ]
 })
-export class WorkbenchModule {
-    private readonly version = "1.0";
-    private readonly build_date = "/*build_date*/";
-
-    constructor(
-        private vms: VersionManagerService,
-    ) {
-        vms.registerModule(this);
-    }
-}
+export class WorkbenchModule {}
