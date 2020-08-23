@@ -40,6 +40,11 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
                 operator: 'equals',
                 name: 'LBL_EQUALS',
                 value1: 'text'
+            },
+            {
+                operator: 'notequals',
+                name: 'LBL_NOTEQUALS',
+                value1: 'text'
             }, {
                 operator: 'starts',
                 name: 'LBL_STARTS',
@@ -86,6 +91,11 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
                 operator: 'equals',
                 name: 'LBL_EQUALS',
                 value1: 'integer'
+            },
+            {
+                operator: 'notequals',
+                name: 'LBL_NOTEQUALS',
+                value1: 'text'
             }, {
                 operator: 'greater',
                 name: 'LBL_OP_GREATER',
@@ -218,6 +228,11 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
             {
                 operator: 'equals',
                 name: 'LBL_EQUALS',
+                value1: 'enum'
+            },
+            {
+                operator: 'notequals',
+                name: 'LBL_NOTEQUALS',
                 value1: 'enum'
             }, {
                 operator: 'oneof',
