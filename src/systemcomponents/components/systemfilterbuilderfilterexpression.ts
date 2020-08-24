@@ -38,12 +38,12 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
         default: [
             {
                 operator: 'equals',
-                name: 'LBL_EQUALS',
+                name: 'LBL_OP_EQUALS',
                 value1: 'text'
             },
             {
                 operator: 'notequals',
-                name: 'LBL_NOTEQUALS',
+                name: 'LBL_OP_NOTEQUAL',
                 value1: 'text'
             }, {
                 operator: 'starts',
@@ -89,12 +89,12 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
         numeric: [
             {
                 operator: 'equals',
-                name: 'LBL_EQUALS',
+                name: 'LBL_OP_EQUALS',
                 value1: 'integer'
             },
             {
                 operator: 'notequals',
-                name: 'LBL_NOTEQUALS',
+                name: 'LBL_OP_NOTEQUAL',
                 value1: 'text'
             }, {
                 operator: 'greater',
@@ -227,12 +227,12 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
         enum: [
             {
                 operator: 'equals',
-                name: 'LBL_EQUALS',
+                name: 'LBL_OP_EQUALS',
                 value1: 'enum'
             },
             {
                 operator: 'notequals',
-                name: 'LBL_NOTEQUALS',
+                name: 'LBL_OP_NOTEQUAL',
                 value1: 'enum'
             }, {
                 operator: 'oneof',
@@ -249,7 +249,7 @@ export class SystemFilterBuilderFilterExpression implements OnInit {
         relate: [
             {
                 operator: 'equalr',
-                name: 'LBL_EQUALS',
+                name: 'LBL_OP_EQUALS',
                 value1: 'relate'
             }, {
                 operator: 'emptyr',
