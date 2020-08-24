@@ -1,1 +1,1 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var AsapAction_1=require("./AsapAction"),AsapScheduler_1=require("./AsapScheduler");exports.asap=new AsapScheduler_1.AsapScheduler(AsapAction_1.AsapAction);
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var AsapAction_1=require("./AsapAction"),AsapScheduler_1=require("./AsapScheduler");exports.asapScheduler=new AsapScheduler_1.AsapScheduler(AsapAction_1.AsapAction),exports.asap=exports.asapScheduler;
