@@ -1,0 +1,42 @@
+<!--<div class="slds-form-element slds-p-vertical&#45;&#45;small">-->
+<!--    <div class="slds-form-element__control">-->
+<!--        <div class="slds-select_container">-->
+<!--            <select class="slds-select" [(ngModel)]="">-->
+<!--                <option *ngFor="" value=""></option>-->
+<!--            </select>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<div class="slds-grid slds-gutters">
+    <div class="slds-col slds-size_1-of-3">
+        <field-enum [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig"></field-enum>
+    </div>
+    <div *ngFor="let vat of vatids" class="slds-col slds-size_2-of-3">
+        <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+        <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <div class="slds-truncate">{{vat.vat_id}}</div>
+                <div class="slds-p-left--small">
+                    <system-tooltip class="slds-m-left--x-small" *ngIf="isvalid" [tooltiptext]="vatInfo"></system-tooltip>
+                </div>
+            </div>
+        </field-generic-display>
+        <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-grid slds-grid--align-spread"
+             [ngClass]="getFieldClass()">
+            <div class="slds-grid slds-size--1-of-1">
+                <ng-container *ngIf="!isvalidating; else validating">
+                    <input #focus class="slds-input" type="text" [(ngModel)]="value"/>
+                    <div class="slds-col_bump-left slds-grid slds-grid--vertical-align-center">
+                        <system-tooltip class="slds-m-left--x-small" *ngIf="isvalid" [tooltiptext]="vatInfo"></system-tooltip>
+                        <button class="slds-button slds-button--neutral slds-m-left--x-small" [disabled]="!cancheck" (click)="validate()"><system-label label="LBL_CHECK"></system-label></button>
+                    </div>
+                </ng-container>
+                <ng-template #validating>
+                    <input #focus class="slds-input slds-size--1-of-1" type="text" value="{{language.getLabel('LBL_VALIDATING')}}" disabled>
+                </ng-template>
+            </div>
+            <field-messages [fieldname]="fieldname"></field-messages>
+        </div>
+
+    </div>
+</div>
