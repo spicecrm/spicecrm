@@ -693,7 +693,8 @@ export class metadata {
      * @param module the name of the module
      */
     public getModuleDefs(module) {
-        return this.moduleDefs[module];
+        // changed so it can use the moduel name or the sysmoduleid
+        return this.moduleDefs[module] ? this.moduleDefs[module] : this.moduleDefs[this.getModuleById(module)];
     }
 
     /**
