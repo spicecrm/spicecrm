@@ -1,0 +1,45 @@
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="MSG_USER_DEACTIVATE"></system-label></system-modal-header>
+    <system-modal-content margin="none">
+        <div class="slds-p-around--small">
+            <system-label label="MSG_USER_DEACTIVATE" length="long"></system-label>
+            <div  class="slds-p-top--small slds-grid slds-grid--vertical-align-center">
+                <system-checkbox class="slds-p-right--small" [(ngModel)]="reassignRecords"><system-label label="MSG_REASSIGN_RECORDS"></system-label></system-checkbox>
+                <user-deactivate-select-user style="min-width: 300px;" [ngClass]="{'slds-hidden': !reassignRecords}"></user-deactivate-select-user>
+            </div>
+        </div>
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="slds-text-align_right" scope="col" style="width:3.25rem">
+
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" system-title="LBL_MODULE"><system-label label="LBL_MODULE"></system-label></div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" system-title="LBL_COUNT"><system-label label="LBL_COUNT"></system-label></div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="slds-hint-parent" *ngFor="let object of objects">
+                    <td>
+                        <system-checkbox [disabled]="!reassignRecords || object.count == 0" [(ngModel)]="object.reassign"></system-checkbox>
+                    </td>
+                    <td>
+                        <div class="slds-truncate"><system-label-modulename [module]="object.sysmoduleid"></system-label-modulename></div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{object.count}}</div>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody system-table-stencils columns="2" [select]="true" [tools]="false" rows="5" *ngIf="loading"></tbody>
+        </table>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button disabled class="slds-button slds-button--brand" (click)="close()"><system-label label="LBL_DEACTIVATE"></system-label></button>
+    </system-modal-footer>
+</system-modal>
