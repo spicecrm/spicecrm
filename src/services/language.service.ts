@@ -277,7 +277,7 @@ export class language {
             let module_defs = this.metadata.getModuleDefs(module);
             if (singular) {
                 if (module_defs.singular_label) {
-                    return this.getAppLanglabel(module_defs.singular_label, labellength);
+                    return this.getLabel(module_defs.singular_label, '', labellength);
                 }
 
                 if (this.languagedata.applist.moduleListSingular[module]) {
@@ -285,7 +285,7 @@ export class language {
                 }
             } else {
                 if (module_defs.module_label) {
-                    return this.getAppLanglabel(module_defs.module_label, labellength);
+                    return this.getLabel(module_defs.module_label, '', labellength);
                 }
             }
             return this.languagedata.applist.moduleList[module];
