@@ -53,7 +53,7 @@ import /*embed*/ {AccountVATIDField} from "./components/accountvatidfield";
         AccountsContactsManagerList,
         AccountHierarchy,
         AccountHierarchyNode,
-        AccountVATIDField
+        AccountVATIDField,
     ],
     providers: [
         ACManagerService

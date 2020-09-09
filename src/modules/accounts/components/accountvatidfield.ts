@@ -9,82 +9,193 @@ import {metadata} from '../../../services/metadata.service';
 import {backend} from '../../../services/backend.service';
 import {toast} from '../../../services/toast.service';
 import {Router} from '@angular/router';
-
 import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
-import {fieldEnum} from "../../../objectfields/components/fieldenum";
-import {relatedmodels} from "../../../services/relatedmodels.service";
 
 
 @Component({
     selector: 'account-vatid-field',
     templateUrl: './src/modules/accounts/templates/accountvatidfield.html',
-    providers: [relatedmodels],
 })
 
 export class AccountVATIDField extends fieldGeneric implements OnInit {
-
     isvalidating: boolean = false;
-    vatids: any = [];
-    constructor(public model: model, public relatedmodels: relatedmodels, public view: view, public language: language, public metadata: metadata, public router: Router, private backend: backend, private toast: toast) {
+    options: any = [];
+
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private backend: backend, private toast: toast) {
         super(model, view, language, metadata, router);
-
+        // for the language options
+        this.subscriptions.add(
+            this.language.currentlanguage$.subscribe((language) => {
+                this.getOptions();
+            })
+        );
     }
 
+    get emptyVATIDS() {
+        return this.getAccountVATIDs().length > 0;
+    }
+
+    /**
+     * loads vatids array and options array, initializes field if none is found
+     */
     public ngOnInit() {
-        this.model.module = 'Accounts';
-        window.console.log(this.model.data);
-        this.relatedmodels.module = this.model.module;
-        this.relatedmodels.id = this.model.id;
-        this.relatedmodels.relatedModule = 'AccountVATIDs';
-        this.loadRelated();
-
+        this.getOptions();
+        if (!this.model.getField('accountvatids')) {
+            this.model.initializeField(
+                'accountvatids',
+                {
+                    beans: {},
+                    beans_relations_to_delete: {}
+                });
+        }
+        this.getAccountVATIDs();
     }
 
-    private loadRelated() {
-        this.relatedmodels.loaditems = -99;
-        this.relatedmodels.getData().subscribe(response => {
-            if (response) {
-                window.console.log(this.relatedmodels.items);
-                this.vatids = this.relatedmodels.items;
+    /**
+     * gets the options for the country dropdown
+     */
+    public getOptions() {
+        let retArray = [];
+        let options = this.language.getFieldDisplayOptions('AccountVATIDs', 'country');
+        for (let optionVal in options) {
+            retArray.push({
+                value: optionVal,
+                display: options[optionVal]
+            });
+        }
+        this.options = retArray;
+        if (this.fieldconfig.sortdirection) {
+            switch (this.fieldconfig.sortdirection.toLowerCase()) {
+                case 'desc':
+                    this.options.sort((a, b) => a.display.toLowerCase() < b.display.toLowerCase() ? 1 : -1);
+                    break;
+                case 'asc':
+                    this.options.sort((a, b) => a.display.toLowerCase() > b.display.toLowerCase() ? 1 : -1);
             }
-        });
-    }
-    get vatDetailsField() {
-        return this.fieldconfig['vatdetails'] ? this.fieldconfig['vatdetails'] : 'vat_details';
+        }
     }
 
-    public validate() {
+    /**
+     * gets the colors for the visualisation of vatid_status
+     * @param beanid
+     */
+    public getColor(beanid) {
+        let color = 'gray';
+        switch (this.model.getField('accountvatids').beans[beanid].vatid_status) {
+            case 'valid':
+                color = "green";
+                break;
+            case 'not_valid':
+                color = "red";
+                break;
+        }
+        return {'background-color': color};
+    }
+
+    /**
+     * returns an array with all the beans for the link accountvatids
+     * @return array
+     */
+    public getAccountVATIDs() {
+        let vatids = [];
+        if(this.model.getField('accountvatids')) {
+            let beans = this.model.getField('accountvatids');
+            for (let i in beans.beans) {
+                if (beans.beans[i].deleted != 1) {
+                    vatids.push(beans.beans[i]);
+                }
+            }
+        }
+
+        return vatids;
+    }
+
+    /**
+     * backend request to validate code
+     * @param countrycode string
+     * @param vatid string
+     * @param beanid string
+     */
+    public validate(countrycode, vatid, beanid) {
         this.isvalidating = true;
-        // `/module/EmailSchedules/checkRelated/${this.model.module}/${this.model.id}`
-        this.backend.getRequest('module/AccountVATIDs/VIES/' + this.model.data).subscribe((response: any) => {
+        this.backend.getRequest('module/AccountVATIDs/' + countrycode + vatid).subscribe((response: any) => {
             if (response.status == 'success') {
                 if (response.data.valid !== true) {
                     this.toast.sendToast(this.language.getLabel('ERR_INVALID_VAT'), 'error');
+                    this.model.getField('accountvatids').beans[beanid].vatid_status = 'not_valid';
+                } else {
+                    this.model.getField('accountvatids').beans[beanid].verification_details = JSON.stringify(response.data);
+                    this.model.getField('accountvatids').beans[beanid].vatid_status = 'valid';
                 }
-                this.model.data.vat_details = JSON.stringify(response.data);
             } else {
                 this.toast.sendToast(this.language.getLabel('ERR_CHECK_VAT'), 'error');
+
             }
             this.isvalidating = false;
         });
     }
 
-    get cancheck() {
-        if (this.model.data[this.fieldname] && this.model.data[this.fieldname].length > 3)
+    /**
+     *
+     * @param vat_id string
+     * @return boolean
+     * @private
+     */
+    private canCheck(vat_id) {
+        return vat_id.length > 3;
+    }
+
+    /**
+     * adds a new entry to the accountvatids beans and reloads the vatids array
+     *
+     */
+    private add() {
+        let id = this.model.generateGuid();
+        this.model.getField('accountvatids').beans[id] = {
+            id: id,
+            account_id: this.model.id,
+            account_name: this.model.displayname,
+            vat_id: '',
+            vatid_status: '',
+            country: ''
+        };
+        this.getAccountVATIDs();
+    }
+
+
+    /**
+     * sets the deleted flag to true for the selected bean, reloads the array
+     * @param beanid string
+     * @private
+     */
+    private delete(beanid) {
+        this.model.getField('accountvatids').beans[beanid].deleted = 1;
+        this.getAccountVATIDs();
+    }
+
+    /**
+     * check if the vatid is valid
+     * @param beanid string
+     * @private
+     */
+    private isvalid(beanid) {
+        if (this.model.getField('accountvatids').beans[beanid]['vatid_status'] == 'valid') {
             return true;
-        else
+        } else {
             return false;
+        }
+
     }
 
-    get isvalid() {
-        if (!this.model.data[this.vatDetailsField]) return false;
-
-        let vatInfo = JSON.parse(this.model.data[this.vatDetailsField]);
-        return vatInfo.valid;
-    }
-
-    get vatInfo() {
-        let vatInfo = JSON.parse(this.model.data[this.vatDetailsField]);
+    /**
+     *  returns a string with vat information
+     * @param beanid string
+     * @return string
+     * @private
+     */
+    private vatInfo(beanid) {
+        let vatInfo = JSON.parse(this.model.getField('accountvatids').beans[beanid].verification_details);
         return vatInfo.name + '\n' + vatInfo.address;
     }
+
 }
