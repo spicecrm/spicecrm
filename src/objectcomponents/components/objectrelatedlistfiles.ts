@@ -86,8 +86,6 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      * @param modalservice
      */
     constructor(private modelattachments: modelattachments, private language: language, private model: model, private renderer: Renderer2, private toast: toast, private footer: footer, private metadata: metadata, private modalservice: modal) {
-        this.modelattachments.module = this.model.module;
-        this.modelattachments.id = this.model.id;
     }
 
     /**
@@ -105,7 +103,13 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      * @ignore
      */
     public ngAfterViewInit() {
+        this.setModelData();
         setTimeout(() => this.loadFiles(), 10);
+    }
+
+    private setModelData() {
+        this.modelattachments.module = this.model.module;
+        this.modelattachments.id = this.model.id;
     }
 
     /**
