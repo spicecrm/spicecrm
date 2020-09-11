@@ -110,7 +110,7 @@ export class language {
 
         this.http.get(
             this.configurationService.getBackendUrl() + '/language/'+this.currentlanguage,
-            {headers: this.session.getSessionHeader(), observe: "response"}
+            {headers: this.session.getSessionHeader(), observe: "response", params: {setPreferences: '1'}}
         ).subscribe(
             (res: any) => {
                 let response = res.body;
