@@ -3,7 +3,10 @@
  */
 import {Component} from "@angular/core";
 import {model} from "../../../services/model.service";
+import {modal} from "../../../services/modal.service";
+import {language} from "../../../services/language.service";
 import {backend} from "../../../services/backend.service";
+import {toast} from "../../../services/toast.service";
 
 @Component({
     templateUrl: "./src/modules/users/templates/userdeactivatemodal.html"
@@ -29,19 +32,19 @@ export class UserDeactivateModal {
     /**
      * boolean to indicate that teh records shopudl be reassigned
      */
-    private reassignRecords: boolean = true;
+    private reassignRecords: boolean = false;
+
+    /**
+     * the total number of records to be reassigned
+     */
+    private totalrecords: number = 0;
 
     /**
      * the userid to reassign the records to
      */
-    private reassignUserId: string = '';
+    private newuserid: string = '';
 
-    /**
-     * the name of the user to reassign the records to
-     */
-    private reassignUserName: string = '';
-
-    constructor(private model: model, private backend: backend) {
+    constructor(private model: model, private modal: modal, private language: language, private backend: backend, private toast: toast) {
         this.getUserObjects();
     }
 
@@ -51,19 +54,69 @@ export class UserDeactivateModal {
     private getUserObjects() {
         this.backend.getRequest(`/module/Users/${this.model.id}/deactivate`).subscribe(
             res => {
-                for(let moduleid in res){
+                for (let moduleid in res) {
                     this.objects.push({
                         sysmoduleid: moduleid,
                         count: parseInt(res[moduleid].totalcount, 10),
                         reassign: parseInt(res[moduleid].totalcount, 10) > 0
                     });
+
+                    // count the total records
+                    this.totalrecords += parseInt(res[moduleid].totalcount, 10);
                 }
 
+                // set the reassign if we found records
+                if (this.totalrecords > 0) this.reassignRecords = true;
+
+                // set the loading flag
                 this.loading = false;
             },
             error => {
                 this.loading = false;
             });
+    }
+
+    /**
+     * determine if records can be reassigned .. so if we foudn records.
+     */
+    get canReassign() {
+        return this.totalrecords > 0;
+    }
+
+    get canSubmit() {
+        if (this.reassignRecords && !this.newuserid) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private deactivate() {
+        let modules = [];
+
+        // define an empty body. If newuserid is set create the body
+        let body: any = {};
+        if (this.newuserid) {
+            body.modules = [];
+            for (let object of this.objects.filter(o => o.reassign)) {
+                modules.push(object.sysmoduleid);
+            }
+            body.newuserid = this.newuserid;
+        }
+
+        // create apsinner for the user indicating the process and submit the request
+        let spinner = this.modal.await(this.language.getLabel('LBL_DEACTIVATING'));
+        this.backend.postRequest(`/module/Users/${this.model.id}/deactivate`, {}, body).subscribe(
+            res => {
+                this.model.getData();
+                spinner.emit(true);
+                this.close();
+            },
+            err => {
+                spinner.emit(true);
+                this.toast.sendToast('an Error occured deactivating the User', 'error');
+            }
+        );
     }
 
     /**
