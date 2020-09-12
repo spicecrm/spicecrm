@@ -204,8 +204,14 @@ export class modelutilities {
             case "between":
                 // do something
                 break;
+            case "empty":
+                return !(val1.length > 0);
+            case "nempty":
+                return val1.length > 0;
             case "contain":
                 return (val1.indexOf(val2) !== -1);
+            case "ncontain":
+                return !(val1.indexOf(val2) !== -1);
             case "greaterequal":
                 return (val1 >= val2);
             case "greater":
