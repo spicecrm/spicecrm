@@ -52,6 +52,8 @@ export class QuestionsManagerEditMulti implements OnInit {
 
     private addOption(): void {
         let newOptionId: string = this.model.generateGuid();
+        if ( !this.model.data.questionoptions ) this.model.data.questionoptions = {};
+        if ( !this.model.data.questionoptions.beans ) this.model.data.questionoptions.beans = {};
         this.model.data.questionoptions.beans[newOptionId] = {
             id: newOptionId,
             question_id: this.model.id,
