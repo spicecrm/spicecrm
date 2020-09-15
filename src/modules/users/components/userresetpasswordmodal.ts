@@ -2,6 +2,7 @@
  * @module ModuleUsers
  */
 import {Component} from "@angular/core";
+import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
@@ -15,7 +16,6 @@ import {session} from "../../../services/session.service";
 export class UserResetPasswordModal {
 
     public self: any = undefined;
-    public userId: string = '';
     private password: string = undefined;
     private repeatPassword: string = undefined;
     private pwdCheck: RegExp = new RegExp("//");
@@ -29,6 +29,7 @@ export class UserResetPasswordModal {
     private canSendByEmail: boolean = true;
 
     constructor(
+        private model: model,
         private language: language,
         private modelutilities: modelutilities,
         private toast: toast,
@@ -110,7 +111,7 @@ export class UserResetPasswordModal {
         }
         this.backend.postRequest("user/password/new", {}, {
             newpwd: this.password,
-            userId: this.userId,
+            userId: this.model.id,
             SystemGeneratedPassword: this.autoGenerate,
             sendByEmail: this.sendByEmail
         }).subscribe(res => {
