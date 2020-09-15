@@ -4,8 +4,8 @@
         <div class="slds-p-around--small">
             <system-label label="MSG_USER_DEACTIVATE" length="long"></system-label>
             <div  class="slds-p-top--small slds-grid slds-grid--vertical-align-center">
-                <system-checkbox class="slds-p-right--small" [(ngModel)]="reassignRecords"><system-label label="MSG_REASSIGN_RECORDS"></system-label></system-checkbox>
-                <user-deactivate-select-user style="min-width: 300px;" [ngClass]="{'slds-hidden': !reassignRecords}"></user-deactivate-select-user>
+                <system-checkbox [disabled]="!canReassign" class="slds-p-right--small" [(ngModel)]="reassignRecords"><system-label label="MSG_REASSIGN_RECORDS"></system-label> ({{totalrecords}})</system-checkbox>
+                <user-deactivate-select-user style="min-width: 300px;" [ngClass]="{'slds-hidden': !reassignRecords}" (userid$)="newuserid = $event"></user-deactivate-select-user>
             </div>
         </div>
         <table class="slds-table slds-table_cell-buffer slds-table_bordered">
@@ -40,6 +40,6 @@
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
-        <button disabled class="slds-button slds-button--brand" (click)="close()"><system-label label="LBL_DEACTIVATE"></system-label></button>
+        <button [disabled]="!canSubmit" class="slds-button slds-button--brand" (click)="deactivate()"><system-label label="LBL_DEACTIVATE"></system-label></button>
     </system-modal-footer>
 </system-modal>

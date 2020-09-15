@@ -2,7 +2,7 @@
  * @module ModuleUsers
  */
 import {
-    Component, Input, OnDestroy
+    Component, Input, OnDestroy, EventEmitter, Output
 } from "@angular/core";
 import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
@@ -22,11 +22,20 @@ declare var moment: any;
 export class UserDeactivateSelectUser implements OnDestroy {
 
 
+    /**
+     * holds the components subscriptions
+     */
     private subscriptions: Subscription = new Subscription();
 
+    /**
+     * the current selected item
+     */
     private selectedItem: any;
 
-    private module = 'Users';
+    /**
+     * an emitter for the userid
+     */
+    @Output() private  userid$: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(private language: language, private metadata: metadata, private model: model, private modal: modal) {
 
@@ -39,17 +48,18 @@ export class UserDeactivateSelectUser implements OnDestroy {
 
     get placeholder() {
         // return default placeholder
-        return this.language.getModuleCombinedLabel('LBL_SEARCH', this.module);
+        return this.language.getModuleCombinedLabel('LBL_SEARCH', 'Users');
     }
 
     private searchWithModal() {
         this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
-            selectModal.instance.module = this.module;
+            selectModal.instance.module = 'Users';
             selectModal.instance.multiselect = false;
             this.subscriptions.add(
                 selectModal.instance.selectedItems.subscribe(items => {
                     if (items.length) {
                         this.selectedItem = items[0];
+                        this.userid$.emit(this.selectedItem.id);
                     }
                 })
             );
