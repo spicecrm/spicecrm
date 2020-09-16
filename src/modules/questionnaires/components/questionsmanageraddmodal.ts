@@ -86,10 +86,12 @@ export class QuestionsManagerAddModal implements OnInit {
         let emptyRows = false;
         if ( this.questionset.data.questiontype === 'multi' ) this.refQuestionsManagerEditMulti.doBeforeSavingQuestion();
         if ( this.questionset.data.questiontype === 'single' || this.questionset.data.questiontype === 'multi' ) {
-            for( let i in this.model.data.questionoptions.beans ) {
-                if( this.model.data.questionoptions.beans[i].name === '' && this.model.data.questionoptions.beans[i].deleted != 1 ) {
-                    emptyRows = true;
-                    break;
+            if ( this.model.data.questionoptions && this.model.data.questionoptions.beans ) {
+                for( let i in this.model.data.questionoptions.beans ) {
+                    if( this.model.data.questionoptions.beans[i].name === '' && this.model.data.questionoptions.beans[i].deleted != 1 ) {
+                        emptyRows = true;
+                        break;
+                    }
                 }
             }
         }
