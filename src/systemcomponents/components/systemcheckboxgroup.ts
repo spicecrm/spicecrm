@@ -1,7 +1,7 @@
 /**
  * @module SystemComponents
  */
-import {Component, EventEmitter, forwardRef, Host, Input, OnChanges} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, forwardRef} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 
 /**
@@ -17,7 +17,9 @@ declare var _;
  */
 @Component({
     selector: 'system-checkbox-group',
-    template: `<ng-content></ng-content>`,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    template: `
+        <ng-content></ng-content>`,
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -26,166 +28,77 @@ declare var _;
         }
     ]
 })
-export class SystemCheckboxGroup implements ControlValueAccessor {
-    private onChange: (m: any) => void;
-    private onTouched: (m: any) => void;
-    public model$ = new EventEmitter();
-    private _model: any;
+export class SystemCheckboxGroup implements ControlValueAccessor, AfterViewInit {
+    /**
+     * emit value to children to set checked value
+     */
+    public valueEmitter = new EventEmitter<void>();
+    /**
+     * save on change function for ControlValueAccessor
+     */
+    private onChange: (value: string[]) => void;
+    /**
+     * save on touched function for ControlValueAccessor
+     */
+    private onTouched: () => void;
 
-    /*
-    get model() {
-        return this._model;
-    }
-    set model(value: any) {
-        this._model = value;
-        this.onChange(this._model);
-        this.model$.emit(this._model);
-    }
-   */
-
-    public writeValue(value: any): void {
-        this._model = value;
-        this.model$.emit(this._model);
+    constructor(private cdRef: ChangeDetectorRef) {
     }
 
+    private _value: string[];
+
+    /**
+     * @return ng model value
+     */
+    get value(): string[] {
+        return this._value;
+    }
+
+    /**
+     * call ControlValueAccessor functions to update and emit changes
+     * @param value
+     */
+    set value(value: string[]) {
+        this.onChange(value);
+        this.writeValue(value);
+    }
+
+    /**
+     * write local value by ControlValueAccessor
+     * @param value
+     */
+    public writeValue(value: string[]): void {
+        this._value = value || [];
+        this.valueEmitter.emit();
+    }
+
+    /**
+     * register on change ControlValueAccessor
+     * @param fn
+     */
     public registerOnChange(fn: any): void {
-        this.onChange = fn;
+        this.onChange = (val) => fn(val);
     }
 
+    /**
+     * register on touched function by ControlValueAccessor
+     * @param fn
+     */
     public registerOnTouched(fn: any): void {
         this.onTouched = fn;
     }
 
-    public toggleValue(value: any) {
-        if (this.contains(value)) {
-            this.remove(value);
-        } else {
-            this.add(value);
-        }
+    /**
+     * detach the change detection from the view
+     */
+    public ngAfterViewInit() {
+        this.cdRef.detach();
     }
 
     /**
-     *
-     * @param value any if value is an array, each element inside has to be set to be true
-     * @returns {boolean}
+     * re attach the component to the change detection
      */
-    public contains(value: any): boolean {
-        if (this._model instanceof Array) {
-            // if value is an array, check if each member is represented
-            if (value instanceof Array) {
-                for (let subvalue of value) {
-                    if (this._model.indexOf(subvalue) == -1) {
-                        return false;
-                    }
-                }
-                return true;
-            } else {
-                return this._model.indexOf(value) > -1;
-            }
-        } else if (!!this._model) {
-            return this._model === value;
-        }
-
-        return false;
-    }
-
-    /**
-     *
-     * @param value any if it is an array, each element inside will be added
-     */
-    public add(value: any) {
-        if (!(this._model instanceof Array)) {
-            this._model = [];
-        }
-
-        if (value instanceof Array) {
-            for (let subvalue of value) {
-                if (!this.contains(subvalue)) {
-                    this._model.push(subvalue);
-                }
-            }
-        } else {
-            if (!this.contains(value)) {
-                this._model.push(value);
-            }
-        }
-
-        this.model$.emit(this._model);
-        this.onChange(this._model);
-    }
-
-    /**
-     *
-     * @param value any if it is an array, each element inside will be removed
-     */
-    public remove(value: any) {
-        if (value instanceof Array) {
-            for (let subvalue of value) {
-                let idx = this._model.indexOf(subvalue);
-                if (idx >= 0) {
-                    this._model.splice(idx, 1);
-                }
-            }
-        } else {
-            let idx = this._model.indexOf(value);
-            if (idx >= 0) {
-                this._model.splice(idx, 1);
-            }
-        }
-
-        this.model$.emit(this._model);
-        this.onChange(this._model);
-    }
-}
-
-@Component({
-    selector: 'system-checkbox-group-checkbox',
-    template: `
-        <span class="slds-checkbox slds-truncate">
-            <input type="checkbox" id="checkbox-group-checkbox-{{id}}"
-                   [attr.aria-labelledby]="'checkbox-group-checkbox-button-label-'+id+' check-group-header'"
-                   [disabled]="disabled" [checked]="checked" (click)="toggle()"/>
-            <label class="slds-checkbox__label" for="checkbox-group-checkbox-{{id}}"
-                   id="checkbox-group-checkbox-button-label-{{id}}">
-                <span class="slds-checkbox_faux"></span>
-                <span class="slds-form-element__label"><ng-content></ng-content></span>
-            </label>
-        </span>`
-})
-export class SystemCheckboxGroupCheckbox implements OnChanges {
-    public id = _.uniqueId();  // needed to use inside the template for html ids... without, the click events will get confused...
-    @Input() public value: any;
-    @Input() public disabled = false;
-    private _checked = false;
-    get checked(): boolean {
-        return this._checked;
-    }
-
-    @Input()
-    set checked(val: boolean) {
-        this._checked = val;
-    }
-
-    constructor(
-        @Host() private grp: SystemCheckboxGroup
-    ) {
-        this.grp.model$.subscribe(
-            next => {
-                this.ngOnChanges();
-            }
-        );
-    }
-
-    private toggle() {
-        this.checked = !this.checked;
-        if (this.checked) {
-            this.grp.add(this.value);
-        } else {
-            this.grp.remove(this.value);
-        }
-    }
-
-    public ngOnChanges() {
-        this._checked = this.grp.contains(this.value);
+    public ngOnDestroy() {
+        this.cdRef.reattach();
     }
 }
