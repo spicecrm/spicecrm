@@ -57,7 +57,7 @@ export class fieldAddress extends fieldGeneric {
      */
     public getAddressConfig() {
         this.backend.getRequest('configurator/editor/address').subscribe(data => {
-            this.config_address_format = JSON.parse(data.address_format);
+            this.config_address_format = !data ? {} : JSON.parse(data.address_format);
         });
     }
 
