@@ -248,6 +248,7 @@ export class MediaFileImage implements OnChanges {
     private openImagePreview() {
         this.modal.openModal('SystemImagePreviewModal').subscribe(modalref => {
             this.mediafiles.getImageBase64( this.media_id ).subscribe( data => {
+                modalref.instance.imgtype = data.filetype;
                 modalref.instance.imgsrc = 'data:' + data.filetype  + ';base64,' + data.img;
             });
         });
