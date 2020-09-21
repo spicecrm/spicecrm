@@ -173,6 +173,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
                 let sameDay = date.year() == eventDay.year() && date.month() == eventDay.month() && date.date() == eventDay.date();
 
                 if (eventDay.isAfter(date) || sameDay) {
+                    event.timeText = !event.isMulti ? `${event.start.format('HH:mm')} - ${event.end.format('HH:mm')} ` : 'All Day';
                     let day = {
                         year: eventDay.year(),
                         month: eventDay.month(),
@@ -192,8 +193,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
                     });
 
                     if (days.length > 0 && dayIndex > -1) {
-                        event.timeText = !event.isMulti ? `${event.start.format('HH:mm')} - ${event.end.format('HH:mm')} ` : 'All Day';
-                        days[dayIndex].events.push(event);
+                        days[dayIndex].events.push({...event});
                     } else {
                         days.push(day);
                     }
