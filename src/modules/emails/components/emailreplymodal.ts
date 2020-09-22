@@ -81,11 +81,16 @@ export class EmailReplyModal implements OnInit {
          this.model.initializeModel(this.parent);
          // set the from-addresses to to-addresses and vice versa
          this.model.data.recipient_addresses = [];
+
+
          for(let address of this.parent.data.recipient_addresses) {
              if(address.address_type == "from") {
                  let toaddress = {...address};
                  toaddress.address_type = "to";
                  this.model.data.recipient_addresses.push(toaddress);
+             } else if(address.address_type != "from" && address.address_type != "to") {
+                 let addaddress = {...address};
+                 this.model.data.recipient_addresses.push(addaddress);
              }
          }
 
