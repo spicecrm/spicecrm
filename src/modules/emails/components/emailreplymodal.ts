@@ -79,16 +79,15 @@ export class EmailReplyModal implements OnInit {
      */
     public ngOnInit() {
          this.model.initializeModel(this.parent);
-         this.model.setField('parent_type', this.parent.module);
-         this.model.setField('parent_id', this.parent.data.id);
-
          // set the from-addresses to to-addresses and vice versa
-         for(let address of this.model.data.recipient_addresses) {
-             if(address.address_type == "from" || address.address_type == "to") {
-                 let addrtype = address.address_type == "from" ? "to": "from";
-                 address.address_type = addrtype;
+         for(let address of this.parent.data.recipient_addresses) {
+             if(address.address_type == "from") {
+                 address.address_type = "to";
+                 this.model.data.recipient_addresses.push(address);
              }
          }
+
+
 
          // set the email-history into the body
          this.model.setField('body', '<br><br><br>' + this.buildHistoryText());
