@@ -80,7 +80,7 @@ export class spiceinstaller {
     /**
      * language
      */
-    public language: string = 'en_us';
+    public language: any = {language_code: 'en_us', language_name: 'English (US)'};
     public configObject: any = {};
 
     constructor() {
@@ -91,7 +91,6 @@ export class spiceinstaller {
             dboptions: {},
             fts: {},
             credentials: {},
-            language: {}
         },
             this._selectedStep = {
                 id: 'setbackend',
