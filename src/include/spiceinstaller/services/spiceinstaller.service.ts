@@ -25,7 +25,8 @@ export class spiceinstaller {
      */
     public systemid: string = '000';
     public systemname: string = 'spice';
-    public systemurl: string = '';
+    // public systemurl: string = '';
+    public systemurl: string = 'http://localhost/spicecrm_be_factory';
     public systemproxy: number = 0;
     public systemdevmode: boolean = true;
     public systemloginprogressbar: number = 0;
@@ -37,13 +38,21 @@ export class spiceinstaller {
     /**
      * database defaults
      */
-    public db_host_name: string = '';
+    public db_host_name: string = '35.234.84.49';
     public db_host_instance: string = '';
-    public db_user_name: string = '';
-    public db_password: string = '';
-    public db_name: string = '';
+    public db_user_name: string = 'spicecrm';
+    public db_password: string = 'spicecrm';
+    public db_name: string = '//35.234.84.49/xe';
     public db_type: string = 'mysql';
-    public db_port: string = '';
+    public db_port: string = '1521';
+
+    // public db_host_name: string = '';
+    // public db_host_instance: string = '';
+    // public db_user_name: string = '';
+    // public db_password: string = '';
+    // public db_name: string = '';
+    // public db_type: string = 'mysql';
+    // public db_port: string = '';
     public db_manager: string = '';
     public persistent: boolean = true;
     public autofree: boolean = false;
@@ -64,10 +73,17 @@ export class spiceinstaller {
     public lc_collate: string = 'en_US.UTF-8';
     public lc_ctype: string = 'en_US.UTF-8';
     /**
+     * oracle additional parameters
+     */
+
+    public db_schema: string = 'SpiceCRM';
+    /**
      * fts
      */
-    public server: string = '';
-    public port: string = '';
+    // public server: string = '';
+    // public port: string = '';
+    public server: string = 'localhost';
+    public port: string = '9200';
     public prefix: string = 'spicecrm_';
     /**
      * credentials
