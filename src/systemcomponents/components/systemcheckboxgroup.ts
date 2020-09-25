@@ -69,6 +69,7 @@ export class SystemCheckboxGroup implements ControlValueAccessor, AfterViewInit 
      */
     public writeValue(value: string[]): void {
         this._value = value || [];
+        this.cdRef.detectChanges();
         this.valueEmitter.emit();
     }
 
