@@ -208,6 +208,10 @@ export class modelutilities {
                 return !(val1.length > 0);
             case "nempty":
                 return val1.length > 0;
+            case "notnull":
+                return val1 !== null;
+            case "null":
+                return val1 === null;
             case "contain":
                 return (val1.indexOf(val2) !== -1);
             case "ncontain":
