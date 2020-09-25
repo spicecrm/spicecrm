@@ -88,7 +88,10 @@ export class SpiceInstallerSetBackEnd {
             (err: any) => {
                 switch (err.status) {
                     case 401:
-
+                        this.toast.sendAlert(err.message, 'error');
+                        break;
+                    case 500:
+                        this.toast.sendAlert(err.message, 'error');
                         break;
                 }
             });
