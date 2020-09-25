@@ -63,6 +63,14 @@ export class SpiceInstallerReview implements AfterViewInit {
                             }
                         });
                 }
+            },
+            (error: any) => {
+                this.loading = false;
+                switch (error.status) {
+                    case 500:
+                        this.toast.sendAlert(error.message, 'error');
+                        break;
+                }
             });
     }
 }
