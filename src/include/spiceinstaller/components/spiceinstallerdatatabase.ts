@@ -50,6 +50,10 @@ export class SpiceInstallerDatabase {
             case 'sqlsrv':
                 this.spiceinstaller.db_manager = 'SqlsrvManager';
                 break;
+            case 'oci8':
+                this.spiceinstaller.db_host_instance = 'SQLEXPRESS';
+                this.spiceinstaller.db_manager = 'OCI8Manager';
+                break;
         }
 
         switch (this.spiceinstaller.collation) {
@@ -70,6 +74,7 @@ export class SpiceInstallerDatabase {
             db_type: this.spiceinstaller.db_type,
             db_port: this.spiceinstaller.db_port,
             db_manager: this.spiceinstaller.db_manager,
+            db_schema: this.spiceinstaller.db_schema,
             lc_collate: this.spiceinstaller.lc_collate,
             lc_ctype: this.spiceinstaller.lc_ctype
         };
@@ -111,6 +116,14 @@ export class SpiceInstallerDatabase {
                         this.spiceinstaller.selectedStep.completed = true;
                         this.spiceinstaller.steps[3] = this.spiceinstaller.selectedStep;
                         this.spiceinstaller.next(this.spiceinstaller.steps[3]);
+                    }
+                },
+                (error: any) => {
+                    this.loading = false;
+                    switch (error.status) {
+                        case 500:
+                            this.toast.sendAlert(error.message, 'error');
+                            break;
                     }
                 });
         }
