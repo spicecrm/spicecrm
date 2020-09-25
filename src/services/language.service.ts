@@ -299,6 +299,7 @@ export class language {
      * @param module
      */
     public getModuleCombinedLabel(label, module) {
+        if(!module) return 'no module defined';
         if (this.languagedata.applang[label + '_' + module.toUpperCase()]) {
             return this.getLabel(label + '_' + module.toUpperCase());
         } else {
