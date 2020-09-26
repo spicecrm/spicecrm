@@ -16,6 +16,11 @@ export class ReportsDesignerCondition {
     * @input whereCondition: object
      */
     @Input() private whereCondition: any = {};
+    /**
+     * true if the operator contains oneof
+     * @private
+     */
+    private isMultiSelect: boolean = false;
 
     constructor(private language: language,
                 private model: model,

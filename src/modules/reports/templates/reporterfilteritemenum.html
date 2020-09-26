@@ -7,12 +7,14 @@
         </div>
     </div>
     <ng-template #checkboxContainer>
-        <system-checkbox-group [(ngModel)]="value" (ngModelChange)="changeValue($event)" class="slds-grid slds-wrap">
-            <div *ngFor="let enumOption of enumOptions" [title]="enumOption.display" class="slds-large-size--1-of-3 slds-medium-size--1-of-1 slds-truncate">
-                <system-checkbox-group-checkbox [value]="enumOption.value">
-                    <span class="slds-m-left--xx-small">{{enumOption.display}}</span>
-                </system-checkbox-group-checkbox>
-            </div>
+        <system-checkbox-group [(ngModel)]="value" class="slds-grid slds-wrap">
+            <ng-container *ngFor="let enumOption of enumOptions">
+                <div *ngIf="!!enumOption.value" [title]="enumOption.display" class="slds-large-size--1-of-3 slds-medium-size--1-of-1 slds-truncate">
+                    <system-checkbox-group-checkbox [value]="enumOption.value">
+                        <span class="slds-m-left--xx-small">{{enumOption.display}}</span>
+                    </system-checkbox-group-checkbox>
+                </div>
+            </ng-container>
         </system-checkbox-group>
     </ng-template>
 </div>
