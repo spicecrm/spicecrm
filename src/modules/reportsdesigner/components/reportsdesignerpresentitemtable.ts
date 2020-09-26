@@ -1,7 +1,7 @@
 /**
  * @module ModuleReportsDesigner
  */
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
@@ -12,6 +12,10 @@ import {ReportsDesignerService} from "../services/reportsdesigner.service";
     templateUrl: './src/modules/reportsdesigner/templates/reportsdesignerpresentitemtable.html'
 })
 export class ReportsDesignerPresentItemTable {
+    /**
+     * show/hide function field
+     */
+    @Input() private showFunction: boolean = false;
 
     constructor(public language: language, public model: model, private reportsDesignerService: ReportsDesignerService) {
     }

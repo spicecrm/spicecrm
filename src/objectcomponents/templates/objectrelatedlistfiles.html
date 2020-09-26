@@ -10,6 +10,27 @@
                 </h2>
                 <system-utility-icon *ngIf="modelattachments.files.length > 0" class="slds-m-horizontal--xx-small" icon="up" size="x-small" (click)="toggleOpen($event)" [@animateicon]="isopen? 'open' : 'closed'"></system-utility-icon>
             </div>
+            <div class="slds-form-element slds-grid slds-grid--vertical-align-center">
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left-right">
+                    <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
+                    <input type="text" class="slds-input" [ngModel]="filterTerm" (ngModelChange)="setFilteredFiles('input', $event)">
+                </div>
+            </div>
+            <div class="slds-form-element slds-p-horizontal--x-small slds-grid slds-grid--vertical-align-center">
+                <div system-title="LBL_CATEGORIES" class="slds-m-horizontal--xx-small">
+                    <system-utility-icon icon="tile_card_list" size="x-small"></system-utility-icon>
+                </div>
+                <div class="slds-select_container slds-m-vertical--xx-small">
+                    <select class="slds-select" [ngModel]="selectedCategoryId" (ngModelChange)="setFilteredFiles('category', $event)" style="min-width: 70px;">
+                        <option value="*">
+                            <system-label label="LBL_ALL"></system-label>
+                        </option>
+                        <option *ngFor="let category of categories" [value]="category.id">
+                            <system-label [label]="category.label"></system-label>
+                        </option>
+                    </select>
+                </div>
+            </div>
         </header>
         <div class="slds-no-flex slds-button-group" role="group">
             <button *ngIf="!componentconfig.disableupload" class="slds-button slds-button--neutral" (click)="selectFile()"><system-label label="LBL_UPLOAD"></system-label></button>
@@ -19,7 +40,7 @@
     </div>
     <div class="slds-card__body" @displaycard *ngIf="isopen">
         <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
-            <div object-related-card-file *ngFor="let file of modelattachments.files" [file]="file" class="slds-tile slds-media slds-card__tile slds-p-horizontal--small slds-size--1-of-1 slds-large-size--1-of-3 slds-hint-parent"></div>
+            <div object-related-card-file *ngFor="let file of filteredFiles" [file]="file" class="slds-tile slds-media slds-card__tile slds-p-horizontal--small slds-size--1-of-1 slds-large-size--1-of-3 slds-hint-parent"></div>
         </div>
         <div *ngIf="modelattachments.loading" class="slds-p-around--large slds-align--absolute-center">
             <system-spinner></system-spinner>

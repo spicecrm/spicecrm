@@ -1,7 +1,7 @@
 /**
  * @module ModuleActivities
  */
-import {Component, ElementRef, OnInit, Renderer2} from '@angular/core';
+import {Component, ElementRef, OnInit, Renderer2, OnDestroy} from '@angular/core';
 import {Router} from '@angular/router';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
@@ -15,7 +15,7 @@ import {relateFilter} from "../../../services/modellist.service";
 @Component({
     templateUrl: './src/modules/activities/templates/fieldactivityparticipationpanel.html'
 })
-export class fieldActivityParticipationPanel extends fieldGeneric implements OnInit {
+export class fieldActivityParticipationPanel extends fieldGeneric implements OnInit, OnDestroy  {
 
     /**
      * the index of the type of lookup (index of the aray above
@@ -83,9 +83,10 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
 
         // subscribe to model $data and build the participants .. replacing the setter
         this.subscriptions.add(this.model.data$.subscribe(modelData => {
-            // set the participants
-            this.setParticipants();
-
+            if(this.lookuplinks.length > 0) {
+                // set the participants
+                this.setParticipants();
+            }
             // update the relate filter
             this.updateRelateFilter();
         }));
@@ -108,6 +109,7 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
     public ngOnInit() {
         // build the lookup links
         this.lookuplinks = this.getLookuplinks();
+        this.setParticipants();
 
         if (!this.fieldconfig.fieldset) {
             this.fieldset = this.metadata.getComponentConfig('fieldActivityParticipationPanel').fieldset;
@@ -119,6 +121,10 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
         if (this.fieldconfig.relatefilterfield) {
             this.createRelateFilter();
         }
+    }
+
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
     }
 
     /**
