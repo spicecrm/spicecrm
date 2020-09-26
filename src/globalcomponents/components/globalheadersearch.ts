@@ -27,7 +27,8 @@ export class GlobalHeaderSearch {
 
 
     get searchmodule() {
-        return this.language.getModuleName(this._searchmodule);
+        // return this.language.getModuleName(this._searchmodule);
+        return this._searchmodule;
     }
 
     set searchmodule(module) {

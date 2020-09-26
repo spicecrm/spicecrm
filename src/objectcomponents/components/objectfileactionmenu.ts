@@ -1,10 +1,9 @@
 /**
  * @module ObjectComponents
  */
-import {Component, ElementRef, Input} from "@angular/core";
+import {Component, ElementRef, Injector, Input} from "@angular/core";
 import {language} from "../../services/language.service";
 import {modelattachments} from "../../services/modelattachments.service";
-import {popup} from "../../services/popup.service";
 import {broadcast} from "../../services/broadcast.service";
 import {modal} from '../../services/modal.service';
 
@@ -19,7 +18,12 @@ export class ObjectFileActionMenu {
 
     @Input() private file: any;
 
-    constructor(private broadcast: broadcast, private modelattachments: modelattachments, private language: language, private elementRef: ElementRef, private modalservice: modal) {
+    constructor(private broadcast: broadcast,
+                private modelattachments: modelattachments,
+                private language: language,
+                private elementRef: ElementRef,
+                private modalservice: modal,
+                private injector: Injector) {
 
     }
 
@@ -49,5 +53,22 @@ export class ObjectFileActionMenu {
      */
     private downloadFile() {
         this.modelattachments.downloadAttachment(this.file.id, this.file.name);
+    }
+
+    /**
+     * open edit modal and fill in the input data
+     * @private
+     */
+    private edit() {
+        this.modalservice.openModal('SpiceAttachmentsEditModal', true, this.injector).subscribe(
+            modalRef => {
+                modalRef.instance.attachment = this.file;
+                modalRef.instance.inputData = {
+                    text: this.file.text,
+                    display_name: this.file.display_name,
+                    category_ids: !this.file.category_ids ? [] : this.file.category_ids.split(',')
+                };
+            }
+        );
     }
 }

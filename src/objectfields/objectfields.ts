@@ -251,6 +251,7 @@ declare var _: any;
         fieldHtml,
         FieldMessagesComponent,
         FieldModuleLookupComponent,
+        fieldNotAuthorized,
         fieldLookup,
         fieldLookupRecent,
         fieldLookupSearch,
