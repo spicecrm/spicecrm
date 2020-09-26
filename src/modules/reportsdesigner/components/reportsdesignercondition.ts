@@ -31,6 +31,8 @@ export class ReportsDesignerCondition {
 
         switch (this.whereCondition.type) {
             case 'enum':
+            case 'multienum':
+            case 'radioenum':
                 switch (this.whereCondition.operator) {
                     case 'equals':
                     case 'notequal':

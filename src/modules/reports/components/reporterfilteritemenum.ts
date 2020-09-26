@@ -45,17 +45,34 @@ export class ReporterFilterItemEnum implements OnInit, OnDestroy {
         return isMulti;
     }
 
+    /**
+     * for multiselect change detection
+     * @param value
+     */
+    public changeValue(value) {
+        if (this.isMultiSelect) {
+            this.valueArray = value;
+            this.wherecondition[this.field] = this.valueArray;
+            this.wherecondition[this.field + 'key'] = this.valueArray.join(',');
+        }
+    }
+
     get value() {
+        if (this.isMultiSelect) {
+            this.wherecondition[this.field] = this.valueArray;
+            this.wherecondition[this.field + 'key'] = this.valueArray.join(',');
+        }
         return this.valueArray;
     }
 
     set value(value) {
+        let _valuekey = value;
         if (this.isMultiSelect) {
             this.valueArray = value;
-            value = value.join(',');
+            _valuekey = value.join(',');
         }
         this.wherecondition[this.field] = value;
-        this.wherecondition[this.field + 'key'] = this.wherecondition[this.field];
+        this.wherecondition[this.field + 'key'] = _valuekey;
     }
 
     public ngOnInit() {
@@ -103,5 +120,9 @@ export class ReporterFilterItemEnum implements OnInit, OnDestroy {
                 this.enumOptions = options.map(option => ({value: option.value, display: option.text}));
             });
         }
+    }
+
+    private trackByFn(index, item) {
+        return index;
     }
 }
