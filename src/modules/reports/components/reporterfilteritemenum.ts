@@ -14,13 +14,14 @@ import {Subscription} from "rxjs";
 export class ReporterFilterItemEnum implements OnInit, OnDestroy {
 
     @Input() private field: string = '';
+    @Input() private isMultiSelect: boolean = false;
     @Input() private wherecondition: any = {};
 
     private fieldName: string;
     private moduleName: string;
 
     private enumOptions: any[] = [];
-    private valueArray: any = [];
+    private _value: any = [];
     private subscription: Subscription = new Subscription();
 
     constructor(private metadata: metadata, private language: language, private backend: backend) {
@@ -33,25 +34,13 @@ export class ReporterFilterItemEnum implements OnInit, OnDestroy {
         return this.enumOptions.length == 0;
     }
 
-    get isMultiSelect() {
-        let isMulti = false;
-        switch (this.wherecondition.operator) {
-            case 'oneof':
-            case 'oneofnot':
-            case 'oneofnotornull':
-                isMulti = true;
-                break;
-        }
-        return isMulti;
-    }
-
     get value() {
-        return this.valueArray;
+        return this._value;
     }
 
     set value(value) {
         if (this.isMultiSelect) {
-            this.valueArray = value;
+            this._value = value;
             value = value.join(',');
         }
         this.wherecondition[this.field] = value;
@@ -90,7 +79,7 @@ export class ReporterFilterItemEnum implements OnInit, OnDestroy {
 
     private initializeValueArray() {
         const value = this.wherecondition[this.field + 'key'] ? this.wherecondition[this.field + 'key'] : this.wherecondition[this.field];
-        this.valueArray = value.length > 2 ? this.isMultiSelect ? value.split(',') : [value] : [];
+        this._value = this.isMultiSelect ? (!!value ? value.split(',') : []) : value;
     }
 
     private getEnumOptions() {
@@ -103,5 +92,12 @@ export class ReporterFilterItemEnum implements OnInit, OnDestroy {
                 this.enumOptions = options.map(option => ({value: option.value, display: option.text}));
             });
         }
+    }
+
+    /**
+     * initialize value on changes
+     */
+    public ngOnChanges() {
+        this.initializeValueArray();
     }
 }
