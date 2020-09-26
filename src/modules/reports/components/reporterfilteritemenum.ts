@@ -14,13 +14,14 @@ import {Subscription} from "rxjs";
 export class ReporterFilterItemEnum implements OnInit, OnDestroy {
 
     @Input() private field: string = '';
+    @Input() private isMultiSelect: boolean = false;
     @Input() private wherecondition: any = {};
 
     private fieldName: string;
     private moduleName: string;
 
     private enumOptions: any[] = [];
-    private valueArray: any = [];
+    private _value: any = [];
     private subscription: Subscription = new Subscription();
 
     constructor(private metadata: metadata, private language: language, private backend: backend) {
@@ -33,46 +34,18 @@ export class ReporterFilterItemEnum implements OnInit, OnDestroy {
         return this.enumOptions.length == 0;
     }
 
-    get isMultiSelect() {
-        let isMulti = false;
-        switch (this.wherecondition.operator) {
-            case 'oneof':
-            case 'oneofnot':
-            case 'oneofnotornull':
-                isMulti = true;
-                break;
-        }
-        return isMulti;
-    }
-
-    /**
-     * for multiselect change detection
-     * @param value
-     */
-    public changeValue(value) {
-        if (this.isMultiSelect) {
-            this.valueArray = value;
-            this.wherecondition[this.field] = this.valueArray;
-            this.wherecondition[this.field + 'key'] = this.valueArray.join(',');
-        }
-    }
 
     get value() {
-        if (this.isMultiSelect) {
-            this.wherecondition[this.field] = this.valueArray;
-            this.wherecondition[this.field + 'key'] = this.valueArray.join(',');
-        }
-        return this.valueArray;
+        return this._value;
     }
 
     set value(value) {
-        let _valuekey = value;
         if (this.isMultiSelect) {
-            this.valueArray = value;
-            _valuekey = value.join(',');
+            this._value = value;
+            value = value.join(',');
         }
         this.wherecondition[this.field] = value;
-        this.wherecondition[this.field + 'key'] = _valuekey;
+        this.wherecondition[this.field + 'key'] = this.wherecondition[this.field];
     }
 
     public ngOnInit() {
@@ -107,7 +80,7 @@ export class ReporterFilterItemEnum implements OnInit, OnDestroy {
 
     private initializeValueArray() {
         const value = this.wherecondition[this.field + 'key'] ? this.wherecondition[this.field + 'key'] : this.wherecondition[this.field];
-        this.valueArray = value.length > 2 ? this.isMultiSelect ? value.split(',') : [value] : [];
+        this._value = this.isMultiSelect ? (!!value ? value.split(',') : []) : value;
     }
 
     private getEnumOptions() {
@@ -122,7 +95,10 @@ export class ReporterFilterItemEnum implements OnInit, OnDestroy {
         }
     }
 
-    private trackByFn(index, item) {
-        return index;
+    /**
+     * initialize value on changes
+     */
+    public ngOnChanges() {
+        this.initializeValueArray();
     }
 }
