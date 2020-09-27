@@ -4,23 +4,27 @@
             <system-label label="LBL_NAME"></system-label>
         </label>
         <div class="slds-form-element__control">
-            <input type="text" class="slds-input" [(ngModel)]="field.name"/>
+            <input type="text" disabled class="slds-input" [(ngModel)]="field.name"/>
         </div>
     </div>
     <div class="slds-form-element slds-m-vertical--xxx-small">
         <label class="slds-form-element__label">
             <system-label label="LBL_DBTYPE"></system-label>
         </label>
-        <div class="slds-form-element__control">
-            <input type="text" class="slds-input" [(ngModel)]="field.dbtype"/>
-        </div>
+            <div class="slds-select_container">
+                <select disabled class="slds-select" [(ngModel)]="field.dbtype">
+                    <option *ngFor="let dbtype of domainmanager.dbtypes" [value]="dbtype">{{dbtype}}</option>
+                </select>
+            </div>
     </div>
     <div class="slds-form-element slds-m-vertical--xxx-small">
         <label class="slds-form-element__label">
             <system-label label="LBL_TYPE"></system-label>
         </label>
-        <div class="slds-form-element__control">
-            <input type="text" class="slds-input" [(ngModel)]="field.fieldtype"/>
+        <div class="slds-select_container">
+            <select class="slds-select" [(ngModel)]="field.fieldtype">
+                <option *ngFor="let fieldtype of domainmanager.fieldtypes" [value]="fieldtype">{{fieldtype}}</option>
+            </select>
         </div>
     </div>
     <div class="slds-form-element slds-m-vertical--xxx-small">

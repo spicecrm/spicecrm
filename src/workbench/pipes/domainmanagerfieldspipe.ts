@@ -15,6 +15,6 @@ export class DomainManagerFieldsPipe implements PipeTransform {
     public transform(values, domaindefinitionid) {
         let retvalues = [];
 
-        return values.filter(field => field.sysdomaindefinition_id == domaindefinitionid);
+        return values.filter(field => field.sysdomaindefinition_id == domaindefinitionid && field.deleted == 0);
     }
 }
