@@ -3,11 +3,11 @@
  */
 import {
     Component,
-    Input, OnChanges, SimpleChanges
+    Input, OnChanges, SimpleChanges, Injector
 } from '@angular/core';
-import {backend} from '../../services/backend.service';
-import {metadata} from '../../services/metadata.service';
+import {modelutilities} from '../../services/modelutilities.service';
 import {language} from '../../services/language.service';
+import {modal} from '../../services/modal.service';
 import {domainmanager} from '../services/domainmanager.service';
 
 @Component({
@@ -18,7 +18,9 @@ export class DomainManagerFieldValidation implements OnChanges {
 
     @Input() private field: any = {};
 
-    constructor(private domainmanager: domainmanager, private language: language) {
+    private nowDragging: boolean = false;
+
+    constructor(private domainmanager: domainmanager, private language: language, private modelutilities: modelutilities, private modal: modal, private injector: Injector) {
 
     }
 
@@ -31,7 +33,71 @@ export class DomainManagerFieldValidation implements OnChanges {
     }
 
     get validationvalues() {
-        return this.domainmanager.getValdiationValuesdById(this.field.sysdomainfieldvalidation_id);
+        return this.domainmanager.getValdiationValuesdById(this.field.sysdomainfieldvalidation_id).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
     }
 
+    private addValidationValue(e: MouseEvent) {
+        e.stopPropagation();
+        this.domainmanager.domainfieldvalidationvalues.push({
+            id: this.modelutilities.generateGuid(),
+            sysdomainfieldvalidation_id: this.field.sysdomainfieldvalidation_id,
+            scope: 'g',
+            sequence: this.validationvalues.length
+        });
+    }
+
+    /**
+     * deletes the record with the given ID
+     *
+     * ToDo: add prompt
+     *
+     * @param id
+     */
+    private deleteValidation(e: MouseEvent, id: string) {
+        e.preventDefault();
+        let index = this.domainmanager.domainfieldvalidationvalues.findIndex(v => v.id == id);
+        if (index >= 0) {
+            this.domainmanager.domainfieldvalidationvalues.splice(index, 1);
+        }
+    }
+
+    /**
+     * handles the drop event and resets the sequence fiels
+     * @param event
+     */
+    private drop(event) {
+        // get the values and reshuffle
+        let values = this.validationvalues;
+        let previousItem = values.splice(event.previousIndex, 1);
+        values.splice(event.currentIndex, 0, previousItem[0]);
+
+        // reindex the array resetting the sequence
+        let i = 0;
+        for (let item of values) {
+            item.sequence = i;
+            i++;
+        }
+    }
+
+    /**
+     * unlinks the validation
+     */
+    private unlinkValidation() {
+        this.field.sysdomainfieldvalidation_id = null;
+    }
+
+    /**
+     * select a validation
+     */
+    private selectValidation() {
+        this.modal.openModal('DomainManagerSelectValidation', true, this.injector);
+
+    }
+    /**
+     * add a validation
+     */
+    private addValidation() {
+        this.modal.openModal('DomainManagerAddValidation', true, this.injector);
+
+    }
 }

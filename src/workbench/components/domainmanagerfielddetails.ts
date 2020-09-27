@@ -8,6 +8,7 @@ import {
 import {backend} from '../../services/backend.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
+import {domainmanager} from '../services/domainmanager.service';
 
 @Component({
     selector: 'domainmanager-field-details',
@@ -17,15 +18,14 @@ export class DomainManagerFieldDetails {
 
     @Input() private field: any = {};
 
-
-    constructor(private backend: backend, private metadata: metadata, private language: language) {
+    constructor(private backend: backend, private metadata: metadata, private language: language, private domainmanager: domainmanager) {
 
     }
 
     /**
      * getter for required since that is returned as int and not as boolean
      */
-    get required(){
+    get required() {
         return this.field.required == '1' ? true : false;
     }
 
@@ -34,7 +34,7 @@ export class DomainManagerFieldDetails {
      *
      * @param isrequired
      */
-    set required(isrequired){
+    set required(isrequired) {
         this.field.required = isrequired ? '1' : '0';
     }
 
