@@ -150,12 +150,12 @@ export class domainmanager {
         for (let dtable in this.metadata.fieldDefs) {
             let table = this.metadata.fieldDefs[dtable];
             for (let field in table) {
-                if (table[field].options && table[field].type.includes('enum') && !this.domaindefinitions.find(d => d.name == table[field].options)) {
+                if (table[field].options && table[field].type.includes('enum') && !this.domaindefinitions.find(d => d.name == field)) {
 
                     let definitionId = this.modelutilities.generateGuid();
                     this.domaindefinitions.push({
                         id: definitionId,
-                        name: table[field].options,
+                        name: field,
                         scope: 'g',
                         fieldtype: table[field].type,
                         status: 'd',
@@ -173,7 +173,7 @@ export class domainmanager {
 
                     this.domainfields.push({
                         id: this.modelutilities.generateGuid(),
-                        name: table[field].options,
+                        name: field,
                         dbtype: table[field].type == 'enum' ? 'varchar' : 'text',
                         len: table[field].len ? table[field].len : '255',
                         sysdomaindefinition_id: definitionId,

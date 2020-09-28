@@ -10,15 +10,19 @@ import {language} from '../../services/language.service';
 import {modal} from '../../services/modal.service';
 import {domainmanager} from '../services/domainmanager.service';
 
+/**
+ * a component rendering the validation details as part of a domain field
+ */
 @Component({
     selector: 'domainmanager-field-validation',
     templateUrl: './src/workbench/templates/domainmanagerfieldvalidation.html'
 })
 export class DomainManagerFieldValidation implements OnChanges {
 
+    /**
+     * the field
+     */
     @Input() private field: any = {};
-
-    private nowDragging: boolean = false;
 
     constructor(private domainmanager: domainmanager, private language: language, private modelutilities: modelutilities, private modal: modal, private injector: Injector) {
 
