@@ -34,6 +34,7 @@ export class ReporterFilterItemEnum implements OnInit, OnDestroy {
         return this.enumOptions.length == 0;
     }
 
+
     get value() {
         return this._value;
     }

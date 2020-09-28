@@ -17,20 +17,26 @@ import {domainmanager} from '../services/domainmanager.service';
  * a component allowing the management of the domaisn in the dictionary defined in the system
  */
 @Component({
-    templateUrl: './src/workbench/templates/domainmanager.html',
-    providers: [metadata, domainmanager]
+    selector: 'domain-manager-field-tabs',
+    templateUrl: './src/workbench/templates/domainmanagerfieldtabs.html'
 })
-export class DomainManager {
+export class DomainManagerFieldTabs {
+
+    /**
+     * the scope for the tabbed view
+     */
+    private tabScope: 'details' | 'validations' = 'details';
 
     constructor(private domainmanager: domainmanager, private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities, private broadcast: broadcast, private toast: toast, private modal: modal, private injector: Injector) {
 
     }
 
-    /**
-     * save the changes if there are any
-     */
-    private save() {
-        this.domainmanager.save();
+    get domainfields() {
+        return this.domainmanager.domainfields;
+    }
+
+    get currentField() {
+        return this.domainfields.find(field => field.id == this.domainmanager.currentDomainField);
     }
 
 }
