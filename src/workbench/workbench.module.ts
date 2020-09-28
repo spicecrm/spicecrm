@@ -21,9 +21,13 @@ import /*embed*/ {DomainManagerFieldsPipe} from "./pipes/domainmanagerfieldspipe
 
 // Services
 import /*embed*/ {domainmanager} from "./services/domainmanager.service";
+import /*embed*/ {dictionarymanager} from "./services/dictionarymanager.service";
 
 // COMPONENTs
 import /*embed*/ {DomainManager} from "./components/domainmanager";
+import /*embed*/ {DomainManagerDefinitions} from "./components/domainmanagerdefinitions";
+import /*embed*/ {DomainManagerFields} from "./components/domainmanagerfields";
+import /*embed*/ {DomainManagerFieldTabs} from "./components/domainmanagerfieldtabs";
 import /*embed*/ {DomainManagerFieldDetails} from "./components/domainmanagerfielddetails";
 import /*embed*/ {DomainManagerFieldValidation} from "./components/domainmanagerfieldvalidation";
 import /*embed*/ {DomainManagerAddDefinitionModal} from "./components/domainmanageradddefinitionmodal";
@@ -132,6 +136,9 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
     declarations: [
         DomainManagerFieldsPipe,
         DomainManager,
+        DomainManagerDefinitions,
+        DomainManagerFields,
+        DomainManagerFieldTabs,
         DomainManagerFieldDetails,
         DomainManagerFieldValidation,
         DomainManagerAddDefinitionModal,

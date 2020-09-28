@@ -7,6 +7,9 @@ import {
 import {modelutilities} from '../../services/modelutilities.service';
 import {domainmanager} from '../services/domainmanager.service';
 
+/**
+ * a modal window to add a new validation to a domain field
+ */
 @Component({
     templateUrl: './src/workbench/templates/domainmanageraddvalidation.html'
 })
