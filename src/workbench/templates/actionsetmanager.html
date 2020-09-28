@@ -85,28 +85,16 @@
     </div>
     <div class="slds-grid">
         <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-top--x-small slds-border--right">
-            <div class="slds-tree_container" role="application" style="max-width: none;">
-                <ul class="slds-tree" role="tree" aria-labelledby="treeheading">
-                    <li *ngFor="let currentActionSetItem of currentActionSet.actions" role="treeitem" (click)="selectItem(currentActionSetItem)" [attr.aria-selected]="currentActionSetItem.id == selectedItemID ? true : false">
-                        <div class="slds-tree__item slds-grid  slds-grid--vertical-align-center">
-                            <div style="white-space:nowrap;">
-                                <a href="javascript:void(0);" role="presentation" class="slds-truncate">{{getDisplayName(currentActionSetItem)}}</a>
-                            </div>
-                            <div class="slds-col_bump-left">
-                                <button [disabled]="!view.isEditMode()" class="slds-button slds-button--icon || customModeGlobalField" title="unlink item" (click)="deleteItem(currentActionSetItem)">
-                                    <system-button-icon [icon]="'delete'"></system-button-icon>
-                                </button>
-                                <button [disabled]="!view.isEditMode() || currentActionSetItem.sequence + 1 == currentActionSet.actions.length" class="slds-button slds-button--icon" title="move down" (click)="move(currentActionSetItem, 'down')">
-                                    <system-button-icon [icon]="'down'"></system-button-icon>
-                                </button>
-
-                                <button [disabled]="!view.isEditMode() || currentActionSetItem.sequence == 0" class="slds-button slds-button--icon" title="move up" (click)="move(currentActionSetItem, 'up')">
-                                    <system-button-icon [icon]="'up'"></system-button-icon>
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
+            <div class="slds-tree_container" role="application" style="max-width: none;" class="dragboundary" cdkDropList (cdkDropListDropped)="drop($event)">
+                <div *ngFor="let currentActionSetItem of currentActionSet.actions" class="slds-p-vertical--xx-small slds-grid slds-grid--align-spread slds-grid--vertical-align-center" (click)="selectItem(currentActionSetItem)" [ngClass]="{'slds-theme--shade' : currentActionSetItem.id == selectedItemID}" cdkDrag cdkDragBoundary=".dragboundary">
+                    <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
+                    <a href="javascript:void(0);" role="presentation" class="slds-truncate">{{getDisplayName(currentActionSetItem)}}</a>
+                    <div class="slds-col--bump-left">
+                        <button [disabled]="!view.isEditMode()" class="slds-button slds-button--icon" title="unlink item" (click)="deleteItem(currentActionSetItem)">
+                            <system-button-icon [icon]="'delete'"></system-button-icon>
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="slds-p-around--small slds-align--absolute-center slds-border--top slds-m-top--small">
                 <button [disabled]="!view.isEditMode()" class="slds-button slds-button--icon" title="add item" (click)="addActionsetItem()">
