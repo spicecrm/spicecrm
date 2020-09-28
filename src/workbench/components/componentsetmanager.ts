@@ -12,10 +12,10 @@ import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 
 import {Subject} from 'rxjs';
-import { ComponentsetManagerEditDialog } from './componentsetmanagereditdialog';
-import { modal } from '../../services/modal.service';
-import { ComponentsetManagerAddDialog } from './componentsetmanageradddialog';
-import { view } from '../../services/view.service';
+import {ComponentsetManagerEditDialog} from './componentsetmanagereditdialog';
+import {modal} from '../../services/modal.service';
+import {ComponentsetManagerAddDialog} from './componentsetmanageradddialog';
+import {view} from '../../services/view.service';
 import {configurationService} from '../../services/configuration.service';
 
 @Component({
@@ -24,21 +24,21 @@ import {configurationService} from '../../services/configuration.service';
 })
 export class ComponentsetManager {
 
-    edit_mode: string = "custom";
-    allowBarButtons: boolean = true;
+    private edit_mode: string = "custom";
+    private allowBarButtons: boolean = true;
     // crNoneActive: boolean = false;
 
-    change_request_required: boolean = false;
+    private change_request_required: boolean = false;
 
-    sysModules: Array<any> = [];
-    currentModule: string = '*';
-    currentComponentSet: string = '';
-    currentComponentSetItems: Array<any> = [];
-    selectedId: string = '';
-    selectedComponent: any = {};
+    private sysModules: any[] = [];
+    private currentModule: string = '*';
+    private currentComponentSet: string = '';
+    private currentComponentSetItems: any[] = [];
+    private selectedId: string = '';
+    private selectedComponent: any = {};
 
-    showAddDialog: boolean = false;
-    showComponentsetDetails: boolean = false;
+    private showAddDialog: boolean = false;
+    private showComponentsetDetails: boolean = false;
 
     constructor(private backend: backend,
                 private metadata: metadata,
@@ -61,118 +61,123 @@ export class ComponentsetManager {
     }
 
 
-    checkMode() {
+    private checkMode() {
         this.edit_mode = this.configurationService.getCapabilityConfig('core').edit_mode;
         this.change_request_required = this.configurationService.getCapabilityConfig('systemdeployment').change_request_required ? true : false;
 
-        if(!(this.edit_mode == 'none' || this.edit_mode == 'custom' || this.edit_mode == 'all')){
+        if (!(this.edit_mode == 'none' || this.edit_mode == 'custom' || this.edit_mode == 'all')) {
             this.edit_mode = 'custom';
         }
 
-        if(this.change_request_required){
+        if (this.change_request_required) {
             this.backend.getRequest('systemdeploymentcrs/active').subscribe(crresponse => {
                 if (crresponse.id == "") {
                     this.setNoneMode();
                     // this.crNoneActive = true;
                     this.toast.sendToast(this.language.getLabel('LBL_ACTIVATE_CR_WARNING'), 'warning', null, 3);
-                }else{
+                } else {
                     // this.crNoneActive = false;
-                    if(this.edit_mode == "all"){
+                    if (this.edit_mode == "all") {
                         this.setAllMode();
-                    }else if(this.edit_mode == "custom"){
+                    } else if (this.edit_mode == "custom") {
                         this.setCustomMode();
-                    }else{
+                    } else {
                         this.setNoneMode();
                     }
                 }
-            })
-        }else{
+            });
+        } else {
             // this.crNoneActive = false;
-            if(this.edit_mode == "all"){
+            if (this.edit_mode == "all") {
                 this.setAllMode();
-            }else if(this.edit_mode == "custom"){
+            } else if (this.edit_mode == "custom") {
                 this.setCustomMode();
-            }else{
+            } else {
                 this.setNoneMode();
             }
         }
     }
 
-    setNoneMode(){
+    private setNoneMode() {
         this.view.setViewMode();
         this.allowBarButtons = false;
     }
-    setCustomMode(){
-        if(this.componentSetType == "custom"){
+
+    private setCustomMode() {
+        if (this.componentSetType == "custom") {
             this.view.setEditMode();
-        }else{
+        } else {
             this.view.setViewMode();
         }
     }
-    setAllMode(){
+
+    private setAllMode() {
         this.view.setEditMode();
     }
-
-
 
 
     get showDetailIcon() {
         return this.showComponentsetDetails ? 'chevronup' : 'chevrondown';
     }
 
-    toggleDetail() {
+    private toggleDetail() {
         this.showComponentsetDetails = !this.showComponentsetDetails;
     }
 
     get componentSetType() {
-        if (this.currentComponentSet)
+        if (this.currentComponentSet) {
             return this.metadata.getComponentSet(this.currentComponentSet).type;
-        else
+        } else {
             return '';
+        }
     }
 
-    get currentComponentSetPackage(){
+    get currentComponentSetPackage() {
         return this.metadata.getComponentSet(this.currentComponentSet).package;
     }
-    set currentComponentSetPackage(newPackage){
+
+    set currentComponentSetPackage(newPackage) {
         let componentset = this.metadata.getComponentSet(this.currentComponentSet);
         componentset.package = newPackage;
     }
+
     get currentComponentSetName() {
         return this.metadata.getComponentSet(this.currentComponentSet).name;
     }
-    set currentComponentSetName(newName){
+
+    set currentComponentSetName(newName) {
         let componentset = this.metadata.getComponentSet(this.currentComponentSet);
         componentset.name = newName;
     }
+
     private componentDeprecated(component) {
         let object = this.metadata.getSystemComponents(component.module).find(x => x.component === component.component);
-        if(object.deprecated == '1') {
+        if (object.deprecated == '1') {
             return true;
         } else {
             return false;
         }
     }
 
-    getComponentSetItemName(componentsetItem){
-        if(componentsetItem.componentconfig.name){
-            return '(' + this.language.getAppLanglabel(componentsetItem.componentconfig.name) + ')';
+    private getComponentSetItemName(componentsetItem) {
+        if (componentsetItem.componentconfig.name) {
+            return `(${this.language.getLabel(componentsetItem.componentconfig.name)})`;
         }
 
-        if(componentsetItem.componentconfig.object){
-            return '(' + this.language.getModuleName(componentsetItem.componentconfig.object) + ')';
+        if (componentsetItem.componentconfig.object) {
+            return `(${this.language.getModuleName(componentsetItem.componentconfig.object)})`;
         }
     }
 
-    getComponentSets(type = undefined) {
-        if(!type) {
+    private getComponentSets(type?) {
+        if (!type) {
             return this.metadata.getComponentSets(this.currentModule);
         } else {
             let retArray = [];
             let componentsets = this.metadata.getComponentSets(this.currentModule);
 
-            for(let componentset of componentsets){
-                if(componentset.type == type){
+            for (let componentset of componentsets) {
+                if (componentset.type == type) {
                     retArray.push(componentset);
                 }
             }
@@ -180,54 +185,56 @@ export class ComponentsetManager {
             return retArray;
         }
     }
-    getComponentSetItems() {
+
+    private getComponentSetItems() {
         return this.currentComponentSet ? this.metadata.getComponentSetObjects(this.currentComponentSet) : [];
     }
 
-    selectItem(item) {
+    private selectItem(item) {
         this.selectedId = item.id;
         this.selectedComponent = item;
     }
 
-    isSelected(id) {
+    private isSelected(id) {
         return id == this.selectedId;
     }
 
-    getComponentsetConfig() {
-        if (this.selectedComponent.componentconfig)
+    private getComponentsetConfig() {
+        if (this.selectedComponent.componentconfig) {
             return JSON.stringify(this.selectedComponent.componentconfig);
+        }
     }
 
-    reset() {
+    private reset() {
         this.selectedId = '';
         this.selectedComponent = {};
         this.currentComponentSet = '';
     }
 
-    selectComponentSet() {
+    private selectComponentSet() {
         this.checkMode();
         this.selectedId = '';
         this.selectedComponent = {};
     }
 
-    addComponent() {
+    private addComponent() {
         this.showAddDialog = true;
-        this.modalservice.openModal('ComponentsetManagerAddDialog').subscribe( modal => {
+        this.modalservice.openModal('ComponentsetManagerAddDialog').subscribe(modal => {
             modal.instance.module = this.currentModule;
             modal.instance.parent = this.currentComponentSet;
         });
     }
 
-    addComponentset() {
+    private addComponentset() {
         this.reset();
         this.editComponentset();
     }
 
-    editComponentset() {
-        this.modalservice.openModal( 'ComponentsetManagerEditDialog' ).subscribe( modal => {
+    private editComponentset() {
+        this.modalservice.openModal('ComponentsetManagerEditDialog').subscribe(modal => {
             modal.instance.componentset = this.currentComponentSet;
             modal.instance.edit_mode = this.edit_mode;
-            modal.instance.closedialog.subscribe( componentset => {
+            modal.instance.closedialog.subscribe(componentset => {
                 if (componentset !== false) {
                     if (this.currentComponentSet === '') {
                         let id = this.modelutilities.generateGuid();
@@ -243,72 +250,27 @@ export class ComponentsetManager {
         });
     }
 
-    deleteComponent(item) {
+    /**
+     * deletes a componentset item by the id
+     * @param item
+     */
+    private deleteComponent(item) {
         let componentsetItems = this.metadata.getComponentSetObjects(this.currentComponentSet);
-
-        // get the current index in the array
-        let currentIndex = 0;
-        componentsetItems.some((someitem, someindex) => {
-            if (someitem.id == item.id) {
-                currentIndex = someindex;
-                componentsetItems.splice(currentIndex, 1);
-                return true;
-            }
-        });
+        componentsetItems.splice(componentsetItems.findIndex(c => c.id == item.id), 1);
     }
 
-    moveDown(item) {
+    /**
+     * handles the drop event and rearranges the array
+     * @param event
+     */
+    private drop(event) {
         let componentsetItems = this.metadata.getComponentSetObjects(this.currentComponentSet);
+        componentsetItems.splice(event.currentIndex, 0, componentsetItems.splice(event.previousIndex, 1)[0]);
 
-        // get the current ind ex in the array
-        let currentIndex = 0;
-        componentsetItems.some((someitem, someindex) => {
-            if (someitem.id == item.id) {
-                currentIndex = someindex;
-                return true;
-            }
-        });
-        if (currentIndex < componentsetItems.length - 1) {
-            // shuffle
-            let currentItem = componentsetItems.splice(currentIndex, 1);
-            componentsetItems.splice(currentIndex + 1, 0, currentItem[0]);
-
-            // renumber
-            let i = 0;
-            for (let item of componentsetItems) {
-                item.sequence = i;
-                i++;
-            }
-        }
     }
 
-    moveUp(item) {
-        let componentsetItems = this.metadata.getComponentSetObjects(this.currentComponentSet);
 
-        // get the current ind ex in the array
-        let currentIndex = 0;
-        componentsetItems.some((someitem, someindex) => {
-            if (someitem.id == item.id) {
-                currentIndex = someindex;
-                return true;
-            }
-        });
-
-        if (currentIndex > 0) {
-            // shuffle
-            let currentItem = componentsetItems.splice(currentIndex, 1);
-            componentsetItems.splice(currentIndex - 1, 0, currentItem[0]);
-
-            // renumber
-            let i = 0;
-            for (let item of componentsetItems) {
-                item.sequence = i;
-                i++;
-            }
-        }
-    }
-
-    saveChanges() {
+    private saveChanges() {
 
         this.backend.getRequest('spiceui/core/components').subscribe((res: any) => {
 
@@ -327,7 +289,7 @@ export class ComponentsetManager {
                     changedComponentsets[componentset] = rawComponetsets[componentset];
                 }
 
-                delete(res.componentsets[componentset]);
+                delete (res.componentsets[componentset]);
             }
 
             deletedComponentsets = res.componentsets;
@@ -343,10 +305,8 @@ export class ComponentsetManager {
                 this.toast.sendToast('changes saved');
             });
 
-        })
+        });
     }
-
-
 
 
 }
