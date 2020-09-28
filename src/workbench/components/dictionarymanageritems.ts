@@ -16,10 +16,10 @@ import {dictionarymanager} from '../services/dictionarymanager.service';
 
 
 @Component({
-    templateUrl: './src/workbench/templates/dictionarymanager.html',
-    providers: [dictionarymanager]
+    selector: 'dictionary-manager-items',
+    templateUrl: './src/workbench/templates/dictionarymanageritems.html',
 })
-export class DictionaryManager {
+export class DictionaryManagerItems {
 
     constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private language: language,  private modal: modal, private injector: Injector, private modelutilities: modelutilities) {
 
@@ -28,8 +28,12 @@ export class DictionaryManager {
     /**
      * gets all non deleted entries sorted by name
      */
-    get dictionarydefinitions() {
-        return this.dictionarymanager.dictionarydefinitions.filter(d => d.deleted == 0).sort((a, b) => a.name > b.name ? 1 : -1);
+    get dictionaryitems() {
+
+        // return an empty array when no DictionaryDefinition is set
+        if(!this.dictionarymanager.currentDictionaryDefinition) return [];
+
+        return this.dictionarymanager.dictionaryitems.filter(d => d.deleted == 0 && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).sort((a, b) => parseInt(a.sequence, 10) > parseInt(b.sequence, 10) ? 1 : -1);
     }
 
 
@@ -47,9 +51,9 @@ export class DictionaryManager {
     /**
      * react to the click to add a new dictionary definition
      */
-    private addDictionaryDefinition(event: MouseEvent) {
+    private addDictionaryItem(event: MouseEvent) {
         event.stopPropagation();
-        this.modal.openModal('DictionaryManagerAddDefinitionModal', true, this.injector);
+        this.modal.openModal('DictionaryManagerAddItemModal', true, this.injector);
     }
 
     /**
@@ -58,11 +62,11 @@ export class DictionaryManager {
      * @param event
      * @param id
      */
-    private deleteDictionaryDefinition(event: MouseEvent, id: string) {
+    private deleteDictionaryItem(event: MouseEvent, id: string) {
         event.stopPropagation();
         this.modal.prompt('confirm', this.language.getLabel('MSG_DELETE_RECORD', '', 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(answer => {
             if (answer) {
-                let di = this.dictionarymanager.dictionarydefinitions.find(f => f.id == id).deleted = 1;
+                let di = this.dictionarymanager.dictionaryitems.find(f => f.id == id).deleted = 1;
 
                 /*
                 for (let f of this.domainmanager.domainfields.filter(f => f.sysdomaindefinition_id == id)) {
@@ -75,6 +79,25 @@ export class DictionaryManager {
                 }
             }
         });
+    }
+
+
+    /**
+     * handles the drop event and resets the sequence fiels
+     * @param event
+     */
+    private drop(event) {
+        // get the values and reshuffle
+        let values = this.dictionaryitems;
+        let previousItem = values.splice(event.previousIndex, 1);
+        values.splice(event.currentIndex, 0, previousItem[0]);
+
+        // reindex the array resetting the sequence
+        let i = 0;
+        for (let item of values) {
+            item.sequence = i;
+            i++;
+        }
     }
 
 }
