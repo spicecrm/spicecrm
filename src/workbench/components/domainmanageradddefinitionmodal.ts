@@ -8,6 +8,9 @@ import {metadata} from '../../services/metadata.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {domainmanager} from '../services/domainmanager.service';
 
+/**
+ * a modal component to alow the user to add a new Domain Definition. Called from teh Domain Manager
+ */
 @Component({
     templateUrl: './src/workbench/templates/domainmanageradddefinitionmodal.html',
 })
@@ -28,8 +31,6 @@ export class DomainManagerAddDefinitionModal {
         deleted: 0,
         status: 'd'
     };
-
-
 
     constructor(private domainmanager: domainmanager, private metadata: metadata, private modelutilities: modelutilities) {
 
@@ -62,6 +63,4 @@ export class DomainManagerAddDefinitionModal {
             this.close();
         }
     }
-
-
 }

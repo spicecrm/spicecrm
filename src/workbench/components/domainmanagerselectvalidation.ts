@@ -6,6 +6,9 @@ import {
 } from '@angular/core';
 import {domainmanager} from '../services/domainmanager.service';
 
+/**
+ * a modal to select a validation defined in the system and add it to a domain field
+ */
 @Component({
     templateUrl: './src/workbench/templates/domainmanagerselectvalidation.html'
 })

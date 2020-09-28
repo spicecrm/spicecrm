@@ -6,125 +6,14 @@
 </workbench-header>
 <div class="slds-grid">
     <div class="slds-size--1-of-3" system-to-bottom>
-        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--header-fixed">
-            <thead>
-            <tr class="slds-line-height_reset">
-                <th style="width:2.5rem" scope="col"></th>
-                <th class="" scope="col">
-                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_DOMAIN"></system-label></div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_TYPE"></system-label></div>
-                </th>
-                <th style="width:2rem" scope="col"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="slds-hint-parent" [ngClass]="{'slds-is-selected':domainmanager.currentDomainDefinition == domaindefinition.id}"  *ngFor="let domaindefinition of domaindefinitions" (click)="setCurrentDomainDefintion(domaindefinition.id)">
-                <td>
-                    <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="domaindefinition.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                    <system-utility-icon [colorclass]="domainmanager.getStatusColor(domaindefinition.status)" class="slds-p-right--xx-small" size="xx-small" icon="light_bulb"></system-utility-icon>
-                </td>
-                <td data-label="Domain" >
-                    <div class="slds-truncate">{{domaindefinition.name}}</div>
-                </td>
-                <td data-label="Type">
-                    <div class="slds-truncate">{{domaindefinition.fieldtype}}</div>
-                </td>
-                <td class="slds-align--absolute-center" style="width: 2rem;">
-                    <system-utility-icon size="xx-small" icon="delete" (click)="deleteDomainDefinition($event, domaindefinition.id)"></system-utility-icon>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <div class="slds-align--absolute-center slds-p-around--small">
-            <system-utility-icon (click)="addDomainDefinition($event)" icon="new" size="x-small"></system-utility-icon>
-        </div>
+        <domain-manager-definitions></domain-manager-definitions>
     </div>
     <div class="slds-size--2-of-3 slds-theme--default slds-border--left" system-to-bottom-noscroll>
         <div style="height: 50%">
-            <ng-container *ngIf="domainmanager.currentDomainDefinition; else selectdomain">
-                <table  class="slds-table slds-table_cell-buffer slds-table_bordered">
-                    <thead>
-                    <tr class="slds-line-height_reset">
-                        <th style="width:2.5rem" scope="col"></th>
-                        <th class="" scope="col">
-                            <div class="slds-truncate"><system-label label="LBL_FIELD"></system-label></div>
-                        </th>
-                        <th class="" scope="col">
-                            <div class="slds-truncate"><system-label label="LBL_DBTYPE"></system-label></div>
-                        </th>
-                        <th class="" scope="col">
-                            <div class="slds-truncate"><system-label label="LBL_TYPE"></system-label></div>
-                        </th>
-                        <th class="" scope="col">
-                            <div class="slds-truncate"><system-label label="LBL_LENGTH"></system-label></div>
-                        </th>
-                        <th class="" scope="col">
-                            <div class="slds-truncate"><system-label label="LBL_REQUIRED"></system-label></div>
-                        </th>
-                        <th style="width:2rem" scope="col"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr class="slds-hint-parent" [ngClass]="{'slds-is-selected': domainmanager.currentDomainField == domainfield.id}"  *ngFor="let domainfield of domainfields|domainmanagerfieldspipe: domainmanager.currentDomainDefinition" (click)="domainmanager.currentDomainField = domainfield.id">
-                        <td>
-                            <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="domainfield.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                            <system-utility-icon [colorclass]="domainmanager.getStatusColor(domainfield.status)" class="slds-p-right--xx-small" size="xx-small" icon="light_bulb"></system-utility-icon>
-                        </td>
-                        <td data-label="Domain">
-                            <div class="slds-truncate">{{domainfield.name}}</div>
-                        </td>
-                        <td data-label="Type">
-                            <div class="slds-truncate">{{domainfield.dbtype}}</div>
-                        </td>
-                        <td data-label="Type">
-                            <div class="slds-truncate">{{domainfield.fieldtype}}</div>
-                        </td>
-                        <td data-label="Type">
-                            <div class="slds-truncate">{{domainfield.len}}</div>
-                        </td>
-                        <td data-label="Type" class="slds-p-vertical--none">
-                            <system-checkbox disabled [ngModel]="domainfield.required == '1'"></system-checkbox>
-                        </td>
-                        <td class="slds-align--absolute-center" style="width: 2rem;">
-                            <system-utility-icon size="xx-small" icon="delete" (click)="deleteDomainField($event, domainfield.id)"></system-utility-icon>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-                <div class="slds-align--absolute-center slds-p-around--small">
-                    <system-utility-icon (click)="addDomainField($event)" icon="new" size="x-small"></system-utility-icon>
-                </div>
-            </ng-container>
-            <ng-template #selectdomain>
-                <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
-                    <system-label label="LBL_SELECT_A_DOMAIN"></system-label>
-                </div>
-            </ng-template>
+            <domain-manager-fields></domain-manager-fields>
         </div>
         <div style="height: 50%" class="slds-p-around--xx-small">
-            <div class="slds-tabs_scoped" *ngIf="domainmanager.currentDomainField; else selectfield">
-                <ul class="slds-tabs_scoped__nav" role="tablist">
-                    <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': tabScope == 'details'}" title="Item One" role="presentation" (click)="tabScope = 'details'">
-                        <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" tabindex="0"><system-label label="LBL_DETAILS"></system-label></a>
-                    </li>
-                    <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': tabScope == 'validations'}" title="Item Two" role="presentation"  (click)="tabScope = 'validations'">
-                        <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" tabindex="-1"><system-label label="LBL_VALIDATION"></system-label></a>
-                    </li>
-                </ul>
-                <div class="slds-tabs_scoped__content slds-show slds-p-around--none" [ngClass]="{'slds-hide': tabScope != 'details'}" role="tabpanel" system-to-bottom-noscroll>
-                    <domainmanager-field-details [field]="currentField"></domainmanager-field-details>
-                </div>
-                <div class="slds-tabs_scoped__content slds-show slds-p-around--none" [ngClass]="{'slds-hide': tabScope != 'validations'}" role="tabpanel" system-to-bottom-noscroll>
-                    <domainmanager-field-validation [field]="currentField"></domainmanager-field-validation>
-                </div>
-            </div>
-            <ng-template #selectfield>
-                <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
-                    <system-label label="LBL_SELECT_A_FIELD"></system-label>
-                </div>
-            </ng-template>
+            <domain-manager-field-tabs></domain-manager-field-tabs>
         </div>
     </div>
 </div>
