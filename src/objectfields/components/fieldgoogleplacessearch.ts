@@ -51,8 +51,11 @@ export class fieldGooglePlacesSearch extends fieldGeneric {
             if (this.fieldconfig.state && details.address.state) {
                 changedFields[this.fieldconfig.state] = details.address.state;
             }
-            if (this.fieldconfig.street && details.address.street) {
-                changedFields[this.fieldconfig.street] = details.address.street;
+            if (this.fieldconfig.street && details.address.street_name) {
+                changedFields[this.fieldconfig.street] = details.address.street_name;
+            }
+            if (this.fieldconfig.street_number && details.address.street_number) {
+                changedFields[this.fieldconfig.street_number] = details.address.street_number;
             }
             if (this.fieldconfig.latitude && details.address.latitude) {
                 changedFields[this.fieldconfig.latitude] = details.address.latitude;
