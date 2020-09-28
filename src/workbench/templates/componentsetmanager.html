@@ -77,36 +77,24 @@
     </div>
     <div class="slds-grid">
         <div class="slds-size--2-of-5 slds-p-horizontal--small slds-p-top--x-small slds-border--right">
-            <div class="slds-tree_container" role="application" style="max-width: none;">
-                <div *ngFor="let currentComponentSetItem of getComponentSetItems()"
-                     class="slds-p-vertical--xx-small slds-grid slds-grid--align-spread slds-grid--vertical-align-center"
-                     (click)="selectItem(currentComponentSetItem)"
-                     [ngClass]="{'slds-theme--shade' : isSelected(currentComponentSetItem.id)}">
-
+            <div class="slds-tree_container" role="application" style="max-width: none;" class="dragboundary" cdkDropList (cdkDropListDropped)="drop($event)">
+                <div *ngFor="let currentComponentSetItem of getComponentSetItems()" class="slds-p-vertical--xx-small slds-grid slds-grid--align-spread slds-grid--vertical-align-center" (click)="selectItem(currentComponentSetItem)" [ngClass]="{'slds-theme--shade' : isSelected(currentComponentSetItem.id)}" cdkDrag cdkDragBoundary=".dragboundary">
+                    <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
                     <a  *ngIf="!componentDeprecated(currentComponentSetItem)" href="javascript:void(0);" role="presentation" class="slds-truncate">
                         {{currentComponentSetItem.component}} {{getComponentSetItemName(currentComponentSetItem)}}
                     </a>
-
                     <div *ngIf="componentDeprecated(currentComponentSetItem)" class="slds-clearfix">
                         <a   href="javascript:void(0);" role="presentation" class="slds-truncate">
                             <system-icon [icon]="'warning'" [sprite]="'utility'" [size]="'x-small'" class="slds-float_left" [addclasses]="'slds-m-vertical--xxx-small slds-m-horizontal--xx-small'"></system-icon>
                             <del class="slds-float_left">{{currentComponentSetItem.component}} {{getComponentSetItemName(currentComponentSetItem)}}</del>
                         </a>
                     </div>
-
                     <div class="slds-col--bump-left">
                         <button [disabled]="!view.isEditMode()" class="slds-button slds-button--icon" title="unlink item" (click)="deleteComponent(currentComponentSetItem)">
                             <system-button-icon [icon]="'delete'"></system-button-icon>
                         </button>
-                        <button [disabled]="!view.isEditMode()" class="slds-button slds-button--icon" title="move down" (click)="moveDown(currentComponentSetItem)">
-                            <system-button-icon [icon]="'down'"></system-button-icon>
-                        </button>
-                        <button [disabled]="!view.isEditMode()" class="slds-button slds-button--icon" title="move up" (click)="moveUp(currentComponentSetItem)">
-                            <system-button-icon [icon]="'up'"></system-button-icon>
-                        </button>
                     </div>
                 </div>
-
             </div>
             <div class="slds-p-around--small slds-align--absolute-center slds-border--top slds-m-top--small">
                 <button [disabled]="!view.isEditMode()" class="slds-button slds-button--icon" title="add item" (click)="addComponent()">
