@@ -25,7 +25,9 @@ export class DomainManagerAddFieldModal {
         name: '',
         fieldtype: '',
         scope: 'g',
-        required: false
+        required: false,
+        deleted: 0,
+        status: 'd'
     };
 
     constructor(private domainmanager: domainmanager, private metadata: metadata, private modelutilities: modelutilities) {

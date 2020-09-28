@@ -32,9 +32,9 @@ import /*embed*/ {DomainManagerSelectValidation} from "./components/domainmanage
 import /*embed*/ {DomainManagerAddValidation} from "./components/domainmanageraddvalidation";
 
 import /*embed*/ {DictionaryManager} from "./components/dictionarymanager";
-import /*embed*/ {DictionaryManagerItem} from "./components/dictionarymanageritem";
-import /*embed*/ {DictionaryManagerItemString} from "./components/dictionarymanageritemstring";
-import /*embed*/ {DictionaryManagerItemDomain} from "./components/dictionarymanageritemdomain";
+import /*embed*/ {DictionaryManagerItems} from "./components/dictionarymanageritems";
+import /*embed*/ {DictionaryManagerAddDefinitionModal} from "./components/dictionarymanageradddefinitionmodal";
+import /*embed*/ {DictionaryManagerAddItemModal} from "./components/dictionarymanageradditemmodal";
 
 import /*embed*/ {FieldsetManager} from "./components/fieldsetmanager";
 import /*embed*/ {FieldsetManagerFieldsetDetails} from "./components/fieldsetmanagerfieldsetdetails";
@@ -139,9 +139,9 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         DomainManagerSelectValidation,
         DomainManagerAddValidation,
         DictionaryManager,
-        DictionaryManagerItem,
-        DictionaryManagerItemString,
-        DictionaryManagerItemDomain,
+        DictionaryManagerItems,
+        DictionaryManagerAddDefinitionModal,
+        DictionaryManagerAddItemModal,
         FieldsetManager,
         FieldsetManagerFieldsetDetails,
         FieldsetManagerFieldDetails,
