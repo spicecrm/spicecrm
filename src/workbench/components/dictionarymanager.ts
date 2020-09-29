@@ -2,82 +2,79 @@
  * @module WorkbenchModule
  */
 import {
-    Component
+    Component, Injector
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
 import {broadcast} from '../../services/broadcast.service';
-import {toast} from '../../services/toast.service';
+import {modal} from '../../services/modal.service';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 
-import {Subject} from 'rxjs';
+
+import {dictionarymanager} from '../services/dictionarymanager.service';
+
 
 @Component({
     templateUrl: './src/workbench/templates/dictionarymanager.html',
-    providers: [metadata]
+    providers: [dictionarymanager]
 })
 export class DictionaryManager {
 
-    currentDictionaryTable: string = "";
-    dictionaryTables: Array<any> = [];
-    dictionaryDomains: Array<any> = [];
-    displayFilters: boolean = false;
-    filters: any = {};
-
-    displayFields: Array<any> = [
-        {name: 'name', type: 'string'},
-        {name: 'sysdictdomains_id', type: 'domain'},
-        {name: 'vname', type: 'string'},
-        {name: 'prefix', type: 'string'},
-        {name: 'duplicate_merge', type: 'string'},
-        {name: 'status', type: 'string'}
-    ];
-
-    constructor(private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities, private broadcast: broadcast, private toast: toast) {
-
-        this.backend.getRequest('dictionary/tables').subscribe(tables => {
-            this.dictionaryTables = tables;
-        })
-
-        this.backend.getRequest('dictionary/domains').subscribe(domains => {
-            this.dictionaryDomains = domains;
-        })
-    }
-
-    getFields() {
+    constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private language: language,  private modal: modal, private injector: Injector, private modelutilities: modelutilities) {
 
     }
 
-    toggleFilter() {
-        this.displayFilters = !this.displayFilters;
+    /**
+     * gets all non deleted entries sorted by name
+     */
+    get dictionarydefinitions() {
+        return this.dictionarymanager.dictionarydefinitions.filter(d => d.deleted == 0).sort((a, b) => a.name > b.name ? 1 : -1);
     }
 
-    clearFilter() {
-        this.filters = {};
+
+    /**
+     * set the current definition to the service
+     *
+     * @param definitionId
+     */
+    private setCurrentDictionaryDefintion(definitionId: string) {
+        this.dictionarymanager.currentDictionaryDefinition = definitionId;
     }
 
-    getEntries() {
-        let retFields = [];
-        this.dictionaryTables.some(table => {
-            if (table.id === this.currentDictionaryTable) {
-                // retFields = table.tablesFields;
-                for(let retField of table.tablesFields) {
-                    let ignoreentry = false;
-                    if (this.displayFilters) {
-                        for (let filterfield in this.filters) {
-                            if (this.filters[filterfield] && retField[filterfield] && retField[filterfield].indexOf(this.filters[filterfield]) == -1)
-                                ignoreentry = true;
-                        }
-                    }
 
-                    if(!ignoreentry)
-                        retFields.push(retField)
+
+    /**
+     * react to the click to add a new dictionary definition
+     */
+    private addDictionaryDefinition(event: MouseEvent) {
+        event.stopPropagation();
+        this.modal.openModal('DictionaryManagerAddDefinitionModal', true, this.injector);
+    }
+
+    /**
+     * prompts the user and delets the dictionary definition
+     *
+     * @param event
+     * @param id
+     */
+    private deleteDictionaryDefinition(event: MouseEvent, id: string) {
+        event.stopPropagation();
+        this.modal.prompt('confirm', this.language.getLabel('MSG_DELETE_RECORD', '', 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(answer => {
+            if (answer) {
+                let di = this.dictionarymanager.dictionarydefinitions.find(f => f.id == id).deleted = 1;
+
+                /*
+                for (let f of this.domainmanager.domainfields.filter(f => f.sysdomaindefinition_id == id)) {
+                    f.deleted = 1;
                 }
+                */
 
-                return true;
+                if (this.dictionarymanager.currentDictionaryDefinition == id) {
+                    this.dictionarymanager.currentDictionaryDefinition == null;
+                }
             }
-        })
-        return retFields;
+        });
     }
+
 }
