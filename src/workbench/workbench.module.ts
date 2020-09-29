@@ -14,15 +14,31 @@ import {DirectivesModule} from "../directives/directives";
 import {ObjectFields} from "../objectfields/objectfields";
 import {ObjectComponents} from "../objectcomponents/objectcomponents";
 import {GlobalComponents} from "../globalcomponents/globalcomponents";
+import {DragDropModule} from '@angular/cdk/drag-drop';
+
+// Pipes
+import /*embed*/ {DomainManagerFieldsPipe} from "./pipes/domainmanagerfieldspipe";
+
+// Services
+import /*embed*/ {domainmanager} from "./services/domainmanager.service";
+import /*embed*/ {dictionarymanager} from "./services/dictionarymanager.service";
 
 // COMPONENTs
 import /*embed*/ {DomainManager} from "./components/domainmanager";
+import /*embed*/ {DomainManagerDefinitions} from "./components/domainmanagerdefinitions";
+import /*embed*/ {DomainManagerFields} from "./components/domainmanagerfields";
+import /*embed*/ {DomainManagerFieldTabs} from "./components/domainmanagerfieldtabs";
 import /*embed*/ {DomainManagerFieldDetails} from "./components/domainmanagerfielddetails";
+import /*embed*/ {DomainManagerFieldValidation} from "./components/domainmanagerfieldvalidation";
+import /*embed*/ {DomainManagerAddDefinitionModal} from "./components/domainmanageradddefinitionmodal";
+import /*embed*/ {DomainManagerAddFieldModal} from "./components/domainmanageraddfieldmodal";
+import /*embed*/ {DomainManagerSelectValidation} from "./components/domainmanagerselectvalidation";
+import /*embed*/ {DomainManagerAddValidation} from "./components/domainmanageraddvalidation";
 
 import /*embed*/ {DictionaryManager} from "./components/dictionarymanager";
-import /*embed*/ {DictionaryManagerItem} from "./components/dictionarymanageritem";
-import /*embed*/ {DictionaryManagerItemString} from "./components/dictionarymanageritemstring";
-import /*embed*/ {DictionaryManagerItemDomain} from "./components/dictionarymanageritemdomain";
+import /*embed*/ {DictionaryManagerItems} from "./components/dictionarymanageritems";
+import /*embed*/ {DictionaryManagerAddDefinitionModal} from "./components/dictionarymanageradddefinitionmodal";
+import /*embed*/ {DictionaryManagerAddItemModal} from "./components/dictionarymanageradditemmodal";
 
 import /*embed*/ {FieldsetManager} from "./components/fieldsetmanager";
 import /*embed*/ {FieldsetManagerFieldsetDetails} from "./components/fieldsetmanagerfieldsetdetails";
@@ -71,6 +87,7 @@ import /*embed*/ {ConfigTransfer} from './components/configtransfer';
 import /*embed*/ {ModuleConfigManager} from "./components/moduleconfigmanager";
 
 import /*embed*/ {WorkbenchHeader} from "./components/workbenchheader";
+import /*embed*/ {WorkbenchHeaderControls} from "./components/workbenchheadercontrols";
 import /*embed*/ {WorkbenchConfig} from "./components/workbenchconfig";
 import /*embed*/ {WorkbenchConfigLabel} from "./components/workbenchconfiglabel";
 import /*embed*/ {ModuleConfigAddDialog} from "./components/moduleconfigadddialog";
@@ -113,15 +130,25 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         DirectivesModule,
         ObjectFields,
         ObjectComponents,
-        GlobalComponents
+        GlobalComponents,
+        DragDropModule
     ],
     declarations: [
+        DomainManagerFieldsPipe,
         DomainManager,
+        DomainManagerDefinitions,
+        DomainManagerFields,
+        DomainManagerFieldTabs,
         DomainManagerFieldDetails,
+        DomainManagerFieldValidation,
+        DomainManagerAddDefinitionModal,
+        DomainManagerAddFieldModal,
+        DomainManagerSelectValidation,
+        DomainManagerAddValidation,
         DictionaryManager,
-        DictionaryManagerItem,
-        DictionaryManagerItemString,
-        DictionaryManagerItemDomain,
+        DictionaryManagerItems,
+        DictionaryManagerAddDefinitionModal,
+        DictionaryManagerAddItemModal,
         FieldsetManager,
         FieldsetManagerFieldsetDetails,
         FieldsetManagerFieldDetails,
@@ -134,6 +161,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         ComponentsetManager,
         ComponentsetManagerComponentsetDetails,
         WorkbenchHeader,
+        WorkbenchHeaderControls,
         WorkbenchConfigLabel,
         WorkbenchConfigOptionDefault,
         WorkbenchConfigOptionFieldset,
@@ -225,13 +253,4 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         SortPipe
     ]
 })
-export class WorkbenchModule {
-    private readonly version = "1.0";
-    private readonly build_date = "/*build_date*/";
-
-    constructor(
-        private vms: VersionManagerService,
-    ) {
-        vms.registerModule(this);
-    }
-}
+export class WorkbenchModule {}

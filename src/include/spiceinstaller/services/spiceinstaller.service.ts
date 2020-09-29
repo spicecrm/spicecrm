@@ -37,6 +37,7 @@ export class spiceinstaller {
     /**
      * database defaults
      */
+
     public db_host_name: string = '';
     public db_host_instance: string = '';
     public db_user_name: string = '';
@@ -64,10 +65,16 @@ export class spiceinstaller {
     public lc_collate: string = 'en_US.UTF-8';
     public lc_ctype: string = 'en_US.UTF-8';
     /**
+     * oracle additional parameters
+     */
+
+    public db_schema: string = 'SpiceCRM';
+    /**
      * fts
      */
+
     public server: string = '';
-    public port: string = '';
+    public port: string = '9200';
     public prefix: string = 'spicecrm_';
     /**
      * credentials
