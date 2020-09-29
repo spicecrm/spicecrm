@@ -39,6 +39,13 @@ export class SpiceInstallerSystemCheck {
             } else {
                 this.toast.sendToast('error, missing requirements', "error");
             }
+        },(err: any) => {
+            this.loading = false;
+            switch (err.status) {
+                case 500:
+                    this.toast.sendAlert(err.message, 'error');
+                    break;
+            }
         });
     }
 
