@@ -14,16 +14,19 @@ import {language} from '../../services/language.service';
 
 import {dictionarymanager} from '../services/dictionarymanager.service';
 
-/**
- * the central dictionary Manager
- */
-@Component({
-    templateUrl: './src/workbench/templates/dictionarymanager.html',
-    providers: [dictionarymanager]
-})
-export class DictionaryManager {
 
-    constructor(private dictionarymanager: dictionarymanager, private metadata: metadata) {
+@Component({
+    selector: 'dictionary-manager-definition-tabs',
+    templateUrl: './src/workbench/templates/dictionarymanagerdefinitiontabs.html',
+})
+export class DictionaryManagerDefinitionTabs {
+
+    /**
+     * define the scope for the tabs
+     */
+    private scope: 'items'|'relationships'|'fields' = 'items';
+
+    constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private language: language,  private modal: modal, private injector: Injector, private modelutilities: modelutilities) {
 
     }
 
