@@ -37,6 +37,10 @@ export class fieldCatalogs extends fieldGeneric {
     ) {
         super(model, view, language, metadata, router);
 
+        this.model.data$.subscribe(data => {
+           this.setItemsFromValue();
+        });
+
         // subscribe to the view to react to a change to edit mode
         this.view.mode$.subscribe(mode => {
             if (mode == 'edit') {
@@ -62,6 +66,30 @@ export class fieldCatalogs extends fieldGeneric {
     public ngOnInit() {
         this.products = this.configurationService.getData('catalogs');
 
+        this.is_loading_items = false;
+
+        if (this.fieldconfig && this.fieldconfig.fieldname_for_template) {
+            let current_val = this.model.data[this.fieldconfig.fieldname_for_template];
+            this.model.data$.subscribe(
+                data => {
+                    let new_val = data[this.fieldconfig.fieldname_for_template];
+                    if (new_val && new_val.id) {
+                        new_val = new_val.id;
+                    }
+
+                    if (current_val != new_val && this.view.isEditMode()) {
+                        this.loadDefaultProductSetupByTemplate(new_val);
+                        current_val = new_val;
+                    }
+                }
+            );
+        }
+
+    }
+
+    private setItemsFromValue() {
+        if (this.items.length > 0) return;
+
         if (!Array.isArray(this.value)) {
             this.value = [];
         }
@@ -85,25 +113,6 @@ export class fieldCatalogs extends fieldGeneric {
         this.items.sort((a, b) => {
             return a.name > b.name ? 1 : -1;
         });
-        this.is_loading_items = false;
-
-        if (this.fieldconfig && this.fieldconfig.fieldname_for_template) {
-            let current_val = this.model.data[this.fieldconfig.fieldname_for_template];
-            this.model.data$.subscribe(
-                data => {
-                    let new_val = data[this.fieldconfig.fieldname_for_template];
-                    if (new_val && new_val.id) {
-                        new_val = new_val.id;
-                    }
-
-                    if (current_val != new_val && this.view.isEditMode()) {
-                        this.loadDefaultProductSetupByTemplate(new_val);
-                        current_val = new_val;
-                    }
-                }
-            );
-        }
-
     }
 
     /*
