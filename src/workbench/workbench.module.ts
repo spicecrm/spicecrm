@@ -16,9 +16,6 @@ import {ObjectComponents} from "../objectcomponents/objectcomponents";
 import {GlobalComponents} from "../globalcomponents/globalcomponents";
 import {DragDropModule} from '@angular/cdk/drag-drop';
 
-// Pipes
-import /*embed*/ {DomainManagerFieldsPipe} from "./pipes/domainmanagerfieldspipe";
-
 // Services
 import /*embed*/ {domainmanager} from "./services/domainmanager.service";
 import /*embed*/ {dictionarymanager} from "./services/dictionarymanager.service";
@@ -36,6 +33,8 @@ import /*embed*/ {DomainManagerSelectValidation} from "./components/domainmanage
 import /*embed*/ {DomainManagerAddValidation} from "./components/domainmanageraddvalidation";
 
 import /*embed*/ {DictionaryManager} from "./components/dictionarymanager";
+import /*embed*/ {DictionaryManagerDefinitions} from "./components/dictionarymanagerdefinitions";
+import /*embed*/ {DictionaryManagerDefinitionTabs} from "./components/dictionarymanagerdefinitiontabs";
 import /*embed*/ {DictionaryManagerItems} from "./components/dictionarymanageritems";
 import /*embed*/ {DictionaryManagerAddDefinitionModal} from "./components/dictionarymanageradddefinitionmodal";
 import /*embed*/ {DictionaryManagerAddItemModal} from "./components/dictionarymanageradditemmodal";
@@ -134,7 +133,6 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         DragDropModule
     ],
     declarations: [
-        DomainManagerFieldsPipe,
         DomainManager,
         DomainManagerDefinitions,
         DomainManagerFields,
@@ -146,6 +144,8 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         DomainManagerSelectValidation,
         DomainManagerAddValidation,
         DictionaryManager,
+        DictionaryManagerDefinitions,
+        DictionaryManagerDefinitionTabs,
         DictionaryManagerItems,
         DictionaryManagerAddDefinitionModal,
         DictionaryManagerAddItemModal,

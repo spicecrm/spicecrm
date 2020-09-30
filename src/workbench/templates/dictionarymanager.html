@@ -1,52 +1,13 @@
-<workbench-header titlelabel="LBL_DOMAIN_MANAGER">
+<workbench-header titlelabel="LBL_DICTIONARY_MANAGER">
     <workbench-header-controls>
         <button class="slds-button slds-button--neutral" (click)="dictionarymanager.save()"><system-label label="LBL_SAVE"></system-label></button>
     </workbench-header-controls>
 </workbench-header>
 <div class="slds-grid">
     <div class="slds-size--1-of-3" system-to-bottom>
-        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--header-fixed">
-            <thead>
-            <tr class="slds-line-height_reset">
-                <th style="width:2.5rem" scope="col"></th>
-                <th class="" scope="col">
-                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_NAME"></system-label></div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_TABLE"></system-label></div>
-                </th>
-                <th class="" scope="col">
-                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_TYPE"></system-label></div>
-                </th>
-                <th style="width:2rem" scope="col"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="slds-hint-parent" [ngClass]="{'slds-is-selected':dictionarymanager.currentDictionaryDefinition == dictionarydefinition.id}"  *ngFor="let dictionarydefinition of dictionarydefinitions" (click)="setCurrentDictionaryDefintion(dictionarydefinition.id)">
-                <td>
-                    <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionarydefinition.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                    <system-utility-icon [colorclass]="dictionarymanager.getStatusColor(dictionarydefinition.status)" class="slds-p-right--xx-small" size="xx-small" icon="light_bulb"></system-utility-icon>
-                </td>
-                <td data-label="Domain" >
-                    <div class="slds-truncate">{{dictionarydefinition.name}}</div>
-                </td>
-                <td data-label="Domain" >
-                    <div class="slds-truncate">{{dictionarydefinition.tablename}}</div>
-                </td>
-                <td data-label="Type">
-                    <div class="slds-truncate">{{dictionarydefinition.sysdictionary_type}}</div>
-                </td>
-                <td class="slds-align--absolute-center" style="width: 2rem;">
-                    <system-utility-icon size="xx-small" icon="delete" (click)="deleteDictionaryDefinition($event, dictionarydefinition.id)"></system-utility-icon>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <div class="slds-align--absolute-center slds-p-around--small">
-            <system-utility-icon (click)="addDictionaryDefinition($event)" icon="new" size="x-small"></system-utility-icon>
-        </div>
+        <dictionary-manager-definitions></dictionary-manager-definitions>
     </div>
     <div class="slds-size--2-of-3 slds-theme--default slds-border--left" system-to-bottom-noscroll>
-        <dictionary-manager-items></dictionary-manager-items>
+        <dictionary-manager-definition-tabs></dictionary-manager-definition-tabs>
     </div>
 </div>
