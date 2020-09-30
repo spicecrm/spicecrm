@@ -158,7 +158,7 @@ export class domainmanager {
                         name: field,
                         scope: 'g',
                         fieldtype: table[field].type,
-                        status: 'd',
+                        status: 'a',
                         deleted: 0
                     });
 
@@ -167,7 +167,8 @@ export class domainmanager {
                         id: validationid,
                         name: table[field].options,
                         validation_type: 'enum',
-                        status: 'd',
+                        scope: 'g',
+                        status: 'a',
                         deleted: 0
                     });
 
@@ -178,7 +179,8 @@ export class domainmanager {
                         len: table[field].len ? table[field].len : '255',
                         sysdomaindefinition_id: definitionId,
                         sysdomainfieldvalidation_id: validationid,
-                        status: 'd',
+                        scope: 'g',
+                        status: 'a',
                         deleted: 0
                     });
 
@@ -191,7 +193,8 @@ export class domainmanager {
                             minvalue: option,
                             sequence: i,
                             comment: options[option],
-                            status: 'd',
+                            scope: 'g',
+                            status: 'a',
                             deleted: 0
                         });
                         i++;
