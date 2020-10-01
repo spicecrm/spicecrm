@@ -38,7 +38,7 @@ export class QuestionnaireInterpretationCategories implements OnInit, OnDestroy 
     }
 
     public ngOnInit(): void {
-        this.backend.getRequest('module/QuestionOptionCategories/getList').subscribe(( response: any ) => {
+        this.backend.getRequest('QuestionOptionCategories/getList').subscribe(( response: any ) => {
             this.allCategories = response;
             this.allCategories.forEach( ( category, i ) => {
                 this.allCategoryNamesUpper[i] = category.name.toUpperCase() + ' [' + category.abbreviation.toUpperCase() + ']';

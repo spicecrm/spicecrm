@@ -50,7 +50,7 @@ export class QuestionsManagerAddModal implements OnInit {
             this.model.initializeModel();
             this.model.data.questionset_id = this.questionset.id;
         }
-        this.backend.getRequest('module/QuestionOptionCategories/getList').subscribe(( response: any ) => {
+        this.backend.getRequest('QuestionOptionCategories/getList').subscribe(( response: any ) => {
             let allCategories = response;
             if ( this.questionset.data.categorypool && this.questionset.data.categorypool != '' ) {
                 let categorypool = this.questionset.data.categorypool.split(',');
