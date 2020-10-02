@@ -10,31 +10,29 @@ import {
 import {view} from "../../services/view.service";
 import {language} from "../../services/language.service";
 
+/**
+ * the details of a component in the componentsetmanager
+ */
 @Component({
     selector: 'componentsetmanager-componentset-details',
     templateUrl: './src/workbench/templates/componentsetmanagercomponentsetdetails.html'
 })
 export class ComponentsetManagerComponentsetDetails implements OnChanges {
 
+    /**
+     * the component as input
+     */
+    @Input() public component: any = {};
 
-    @Input() component: any = {};
+    private configcomponent: string = "";
+    private configValues: any = {};
 
-    configcomponent: string = "";
-    configValues: any = {};
-
-    selectedComponent: any = {};
+    private selectedComponent: any = {};
 
     constructor(private view: view, private language: language,) {
     }
 
-    selectComponent(component) {
-        if (component.id)
-            this.selectedComponent = component;
-        else
-            this.selectedComponent = {};
-    }
-
-    ngOnChanges(changes: SimpleChanges) {
+    public ngOnChanges(changes: SimpleChanges) {
         if (this.component.component) {
             this.selectComponent(this.component);
 
@@ -43,4 +41,12 @@ export class ComponentsetManagerComponentsetDetails implements OnChanges {
         }
     }
 
+
+    private selectComponent(component) {
+        if (component.id) {
+            this.selectedComponent = component;
+        } else {
+            this.selectedComponent = {};
+        }
+    }
 }

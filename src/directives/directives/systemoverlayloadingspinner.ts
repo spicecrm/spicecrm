@@ -1,5 +1,5 @@
 /**
- * @module directives
+ * @module DirectivesModule
  */
 import {Directive, ElementRef, Input, Renderer2} from '@angular/core';
 

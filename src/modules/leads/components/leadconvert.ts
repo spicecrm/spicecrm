@@ -1,85 +1,95 @@
 /**
  * @module ModuleLeads
  */
-import {Component, AfterContentInit, AfterViewInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {navigationtab} from '../../../services/navigationtab.service';
 import {model} from '../../../services/model.service';
+import {modal} from '../../../services/modal.service';
 import {view} from '../../../services/view.service';
 import {toast} from '../../../services/toast.service';
 import {language} from '../../../services/language.service';
-import {Subject, Observable} from 'rxjs';
 
+/**
+ * a convert component that handles the multi stp converting from lead to
+ *
+ * - Account
+ * - Contact
+ * - Opportunity
+ */
 @Component({
     selector: 'lead-convert',
     templateUrl: './src/modules/leads/templates/leadconvert.html',
-    providers: [model, view],
-    styles: [
-        ':host >>> global-button-icon svg {fill:#CA1B1F}',
-        ':host >>> .slds-progress__marker:hover global-button-icon svg {fill:#FD595D}',
-        ':host >>> .slds-progress__marker:active global-button-icon svg {fill:#FD595D}',
-        ':host >>> .slds-progress__marker:focus global-button-icon svg {fill:#FD595D}',
-    ]
+    providers: [model, view]
 })
-export class LeadConvert implements AfterViewInit , AfterContentInit {
+export class LeadConvert {
 
-
+    /**
+     * the module name .. fixed lead
+     */
     private moduleName = 'Leads';
-    private headerFieldSets: any[] = [];
+
+    /**
+     * the contact this is converted to
+     */
     private contact: model = undefined;
+
+    /**
+     * the accpount this is converted to
+     */
     private account: model = undefined;
-    private selectedaccount: any = undefined;
-    private createAccount: boolean = false;
+
+    /**
+     * the opportunity this gets converted to
+     */
     private opportunity: model = undefined;
-    private createOpportunity: boolean = false;
 
-    private createSaveActions: any[] = [];
-    private convertSubject: Subject<boolean> = undefined;
-    private showSaveModal: boolean = false;
-
+    /**
+     * the current convert step
+     */
     private currentConvertStep: number = 0;
+
+    /**
+     * the availabel convert steps
+     *
+     * currently hardcoded .. might make sense to create a generic conmvert method that allows multi step conversion
+     */
     private convertSteps: string[] = ['Account', 'Contact', 'Opportunity'];
 
     constructor(
         private language: language,
         private metadata: metadata,
         private model: model,
-        private router: Router,
-        private activatedRoute: ActivatedRoute,
         private navigationtab: navigationtab,
-        private toast: toast
+        private modal: modal,
+        private toast: toast,
     ) {
-        let componentconfig = this.metadata.getComponentConfig('ObjectPageHeader', 'Leads');
-        this.headerFieldSets = [componentconfig.fieldset];
+
+        this.loadLead();
     }
 
-    public ngAfterContentInit() {
 
+    /**
+     * caled when the component initializes loading the lead from teh route data
+     */
+    private loadLead() {
         // get the bean details
         this.model.module = this.moduleName;
         this.model.id = this.navigationtab.activeRoute.params.id;
-        this.model.getData(true, 'detailview').toPromise();
-        this.navigationtab.setTabInfo({displayname: this.model.data.summary_text, displaymodule: 'Leads'});
-
+        this.model.getData(true, 'detailview').subscribe(data => {
+            this.model.startEdit();
+            this.navigationtab.setTabInfo({
+                displayname: this.language.getLabel('LBL_CONVERT_LEAD') + ': ' + this.model.data.summary_text,
+                displaymodule: 'Leads'
+            });
+        });
     }
 
-    public ngAfterViewInit() {
-
-        // get the bean details
-        // this.model.module = this.moduleName;
-        // this.model.id = this.navigationtab.activeRoute.params.id;
-        //
-        // this.model.getData(true, 'detailview').subscribe(data => {
-        //    this.navigationtab.setTabInfo({displayname: data.summary_text, displaymodule: 'Leads'});
-        // });
-    }
-
-
-    private gotoLead() {
-        this.router.navigate(['/module/Leads/' + this.model.id]);
-    }
-
+    /**
+     * returns the class for the step int he guide
+     *
+     * @param convertStep
+     */
     private getStepClass(convertStep: any) {
         let thisIndex = this.convertSteps.indexOf(convertStep);
         if (thisIndex == this.currentConvertStep) {
@@ -90,6 +100,10 @@ export class LeadConvert implements AfterViewInit , AfterContentInit {
         }
     }
 
+    /**
+     * rerutns true if the step is completed for the display
+     * @param convertStep
+     */
     private getStepComplete(convertStep: any) {
         let thisIndex = this.convertSteps.indexOf(convertStep);
         if (thisIndex < this.currentConvertStep) {
@@ -98,216 +112,145 @@ export class LeadConvert implements AfterViewInit , AfterContentInit {
         return false;
     }
 
+
+    /**
+     *determines the width in % for the style of the progress bar
+     */
     private getProgressBarWidth() {
         return {
             width: (this.currentConvertStep / (this.convertSteps.length - 1) * 100) + '%'
         };
     }
 
-    private nextStep() {
+    /**
+     * handles the progressing .. checks model validity if the model is new
+     */
+    public nextStep() {
         switch (this.currentConvertStep) {
 
             case 0:
-                if (this.createAccount && this.account.validate()) {
+                if (this.account && this.account.isNew && this.account.validate()) {
                     this.currentConvertStep++;
-                } else if (!this.createAccount) {
+                } else {
                     this.currentConvertStep++;
-                }
-                if (this.createAccount) {
-                    this.contact.data.account_id = this.account.id;
-                    this.contact.data.account_name = this.account.data.name;
-                    this.opportunity.data.account_id = this.account.id;
-                    this.opportunity.data.account_name = this.account.data.name;
-                } else if (this.selectedaccount) {
-                    this.contact.data.account_id = this.selectedaccount.id;
-                    this.contact.data.account_name = this.selectedaccount.name;
-                    this.opportunity.data.account_id = this.selectedaccount.id;
-                    this.opportunity.data.account_name = this.selectedaccount.name;
                 }
                 break;
             case 1:
-                if (this.contact.validate()) {
+                if (this.contact.isNew && this.contact.validate()) {
+                    this.currentConvertStep++;
+                } else {
                     this.currentConvertStep++;
                 }
                 break;
             case 2:
-                if (this.createOpportunity && this.opportunity.validate()) {
+                if (this.opportunity && this.opportunity.isNew && this.opportunity.validate()) {
                     this.convert();
-                } else if (!this.createOpportunity) {
+                } else {
                     this.convert();
                 }
                 break;
         }
     }
 
+    /**
+     * moves one step backwards
+     */
     private prevStep() {
         if (this.currentConvertStep > 0) {
             this.currentConvertStep--;
         }
     }
 
+    /**
+     * determines if the next button is shown
+     */
     private showNext() {
         return this.currentConvertStep < this.convertSteps.length - 1;
     }
 
+    /**
+     * detemrines if the save button is shown
+     */
     private showSave() {
         return this.currentConvertStep == this.convertSteps.length - 1;
     }
 
+    /**
+     * converts the lead
+     */
     private convert() {
 
         // build save actions
-        this.createSaveActions = [];
-        if (this.createAccount) {
-            this.createSaveActions.push({
+        let createSaveActions = [];
+
+        if (this.account?.isNew) {
+            createSaveActions.push({
                 action: 'createAccount',
                 label: 'LBL_LEADCONVERT_CREATEACCOUNT',
-                status: 'initial'
+                status: 'initial',
+                model: this.account
             });
         }
 
-        this.createSaveActions.push({
-            action: 'createContact',
-            label: 'LBL_LEADCONVERT_CREATECONTACT',
-            status: 'initial'
-        });
+        if (this.contact?.isNew) {
+            createSaveActions.push({
+                action: 'createContact',
+                label: 'LBL_LEADCONVERT_CREATECONTACT',
+                status: 'initial',
+                model: this.contact
+            });
+        }
 
-        if (this.createOpportunity) {
-            this.createSaveActions.push({
+        if (this.opportunity?.isNew) {
+            createSaveActions.push({
                 action: 'createOpportunity',
                 label: 'LBL_LEADCONVERT_CREATEOPPORTUNITY',
-                status: 'initial'
+                status: 'initial',
+                model: this.opportunity
             });
         }
 
-        this.createSaveActions.push({
+        this.model.setField('status', 'Converted');
+        createSaveActions.push({
             action: 'convertLead',
             label: 'LBL_LEADCONVERT_CONVERTLEAD',
-            status: 'initial'
+            status: 'initial',
+            model: this.model
         });
 
-        this.showSaveModal = true;
+        this.modal.openModal('LeadConvertModal', false).subscribe(modalref => {
+            modalref.instance.saveactions = createSaveActions;
+            modalref.instance.completed.subscribe(completed => {
+                this.toast.sendToast(this.language.getLabel('LBL_LEAD') + ' ' + this.model.data.summary_text + ' ' + this.language.getLabel('LBL_CONVERTED'), 'success', '', 30);
 
-        // process the actions
-        this.processConvert().subscribe(() => {
-            this.showSaveModal = false;
-            // send a toast
-            this.toast.sendToast(this.language.getLabel('LBL_LEAD') + ' ' + this.model.data.summary_text + ' ' + this.language.getLabel('LBL_CONVERTED'), 'success', '', 30);
-            // go back to the lead
-            this.gotoLead();
-        });
-    }
-
-    private processConvert(): Observable<boolean> {
-        this.convertSubject = new Subject<boolean>();
-        this.processConvertActions();
-        return this.convertSubject.asObservable();
-    }
-
-    private processConvertActions() {
-        let nextAction = '';
-        this.createSaveActions.some(item => {
-            if (item.status === 'initial') {
-                nextAction = item.action;
-                return true;
-            }
+                // close the tab
+                this.navigationtab.closeTab();
+            });
         });
 
-        if (nextAction) {
-            this.processConvertAction(nextAction);
-        } else {
-            this.convertSubject.next(true);
-            this.convertSubject.complete();
-        }
     }
 
-    private processConvertAction(action) {
-        switch (action) {
-            case 'createAccount':
-                this.account.save().subscribe(data => {
-                    this.completeConvertAction(action);
-                });
-                break;
-            case 'createContact':
-                // complete the contact
-                if (this.createAccount) {
-                    this.contact.data.account_id = this.account.id;
-                } else if (this.selectedaccount) {
-                    this.contact.data.account_id = this.selectedaccount.id;
-                }
-
-                this.contact.save().subscribe(data => {
-                    this.completeConvertAction(action);
-                });
-                break;
-            case 'createOpportunity':
-                // complete the opportuinity
-                if (this.createAccount) {
-                    this.opportunity.data.account_id = this.account.id;
-                } else if (this.selectedaccount) {
-                    this.opportunity.data.account_id = this.selectedaccount.id;
-                }
-
-                this.opportunity.save().subscribe(data => {
-                    this.completeConvertAction(action);
-                });
-                break;
-            case 'convertLead':
-                // complete the lead
-                if (this.createAccount) {
-                    this.model.data.account_id = this.account.id;
-                } else if (this.selectedaccount) {
-                    this.model.data.account_id = this.selectedaccount.id;
-                }
-                if (this.createOpportunity) {
-                    this.model.data.opportunity_id = this.opportunity.id;
-                }
-                this.model.data.contact_id = this.contact.id;
-                this.model.data.status = 'Converted';
-
-                this.model.save().subscribe(data => {
-                    this.completeConvertAction(action);
-                });
-                break;
-        }
-    }
-
-    private completeConvertAction(action) {
-        this.createSaveActions.some(item => {
-            if (item.action === action) {
-                item.status = 'completed';
-                return true;
-            }
-        });
-
-        // start the next step
-        this.processConvertActions();
-    }
 
     /*
-     * setter for the models
+     * sets the contact from the component
      */
     private setContact(contact) {
         this.contact = contact;
     }
 
+    /**
+     * sets the account from the component
+     * @param account
+     */
     private setAccount(account) {
         this.account = account;
     }
 
-    private setSelectedAccount(accountdata) {
-        this.selectedaccount = accountdata;
-    }
-
-    private setCreateAccount(value) {
-        this.createAccount = value;
-    }
-
+    /**
+     * sets the opportunity from the component
+     * @param opportunity
+     */
     private setOpportunity(opportunity) {
         this.opportunity = opportunity;
-    }
-
-    private setCreateOpportunity(value) {
-        this.createOpportunity = value;
     }
 }

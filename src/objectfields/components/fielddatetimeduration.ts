@@ -13,9 +13,6 @@ import {Router} from '@angular/router';
 /**
 * @ignore
 */
-/**
-* @ignore
-*/
 declare var moment: any;
 
 @Component({
@@ -23,9 +20,15 @@ declare var moment: any;
     templateUrl: './src/objectfields/templates/fielddatetimeduration.html'
 })
 export class fieldDateTimeDuration extends fieldGeneric {
-    private durationHours: Array<string> = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
-    private durationMinutes: Array<string> = ['0', '15', '30', '45'];
-    private isValid: boolean = true;
+    /**
+     * values for the duration in hours
+     */
+    private durationHours: string[] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+
+    /**
+     * values for the duration in minutes
+     */
+    private durationMinutes: string[] = ['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'];
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private userpreferences: userpreferences) {
         super(model, view, language, metadata, router);

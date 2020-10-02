@@ -1,7 +1,7 @@
 /**
  * a set of system specific directives
  *
- * @module directives
+ * @module DirectivesModule
  */
 import {CommonModule} from "@angular/common";
 import {NgModule} from "@angular/core";
@@ -22,6 +22,7 @@ import /*embed*/ {SystemDropFile} from './directives/systemdropfile';
 import /*embed*/ {SystemOverlayLoadingSpinnerDirective} from './directives/systemoverlayloadingspinner';
 import /*embed*/ {SystemResizeDirective} from './directives/systemresize';
 import /*embed*/ {SystemTitleDirective} from './directives/systemtitle';
+import /*embed*/ {SystemPlaceholderDirective} from './directives/systemplaceholder';
 
 /**
  * the angular module that collects all teh directives and can be imported by other modules to use the set of directives
@@ -44,6 +45,7 @@ import /*embed*/ {SystemTitleDirective} from './directives/systemtitle';
         SystemDropFile,
         SystemOverlayLoadingSpinnerDirective,
         SystemResizeDirective,
+        SystemPlaceholderDirective,
         SystemTitleDirective
     ],
     exports: [
@@ -60,12 +62,13 @@ import /*embed*/ {SystemTitleDirective} from './directives/systemtitle';
         SystemDropFile,
         SystemOverlayLoadingSpinnerDirective,
         SystemResizeDirective,
+        SystemPlaceholderDirective,
         SystemTitleDirective
     ]
 })
 export class DirectivesModule {
-    readonly version = '1.0';
-    readonly build_date = '/*build_date*/';
+    public readonly version = '1.0';
+    public readonly build_date = '/*build_date*/';
 
     constructor(
         private vms: VersionManagerService,

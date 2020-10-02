@@ -1,0 +1,10 @@
+<system-modal>
+    <system-modal-header><system-label label="LBL_SELECT_LEAD_TYPE"></system-label></system-modal-header>
+    <system-modal-content>
+        <object-record-fieldset [fieldset]="fieldset"></object-record-fieldset>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" [disabled]="!cancreate" (click)="create()"><system-label label="LBL_CREATE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

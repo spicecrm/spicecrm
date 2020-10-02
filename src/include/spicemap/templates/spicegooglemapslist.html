@@ -2,11 +2,11 @@
     <div [system-overlay-loading-spinner]="isLoading" class="slds-grid slds-grid--vertical slds-height_full slds-size--1-of-2 slds-border--right">
         <spice-google-maps [options]="mapOptions" [records]="records" [focusedRecordId]="focusedRecordId" (radiusChange)="onRadiusChange($event)" (centerChange)="onCenterChange($event)" style="display: block" class="slds-grow"></spice-google-maps>
         <div class="slds-grid slds-grid--vertical-align-center slds-theme--shade slds-p-around--xx-small slds-border--bottom slds-border--top slds-border--left slds-border--right">
-            <span class="slds-truncate">( {{records.length}} ) <system-label label="MSG_RECORDS_FOUND_WITH_GEO_DATA"></system-label></span>
+            <span class="slds-truncate slds-grow">( {{records.length}} ) <system-label label="MSG_RECORDS_FOUND_WITH_GEO_DATA"></system-label></span>
             <a *ngIf="canLoadMore" (click)="loadMore()" class="slds-text-link slds-m-left--x-small">
                 <system-label label="LBL_MORE"></system-label>
             </a>
-            <button (click)="toggleSearchAround()" [class.slds-button--brand]="searchAroundActive" system-title="LBL_SEARCH_AROUND" class="slds-button slds-button--icon-border-filled slds-m-left--x-small" style="height: 32px;padding: 0;width: 32px;">
+            <button (click)="toggleSearchAround()" [class.slds-button--brand]="searchAroundActive" system-title="LBL_SEARCH_AROUND" class="slds-button slds-button--icon-border slds-m-left--x-small" style="height: 32px;padding: 0;width: 32px;">
                 <system-button-icon icon="choice" size="medium"></system-button-icon>
             </button>
             <ng-container *ngIf="searchAroundActive">
@@ -27,7 +27,7 @@
                         </button>
                     </div>
                 </div>
-                <div *ngIf="!editingRadius" class="slds-align-middle slds-m-left--x-small">
+                <div *ngIf="!editingRadius" class="slds-align-middle slds-m-left--x-small slds-grid slds-grow">
                     <span class="slds-truncate">
                         {{mapOptions.circle?.radius + 'km around ' + mapOptions.circle?.center?.address}}
                     </span>
@@ -38,5 +38,17 @@
             </ng-container>
         </div>
     </div>
-    <object-list style="display: block" class="slds-size--1-of-2 slds-height_full"></object-list>
+    <div class="slds-size--1-of-2 slds-height_full slds-grid slds-grid--vertical">
+        <spice-google-maps-list-header *ngIf="!!componentconfig.showListHeader"></spice-google-maps-list-header>
+        <div style="display: block; width: 100%; min-height: 0;" class="slds-grow slds-is-relative">
+            <object-list class="slds-grow slds-height_full slds-size--1-of-1" style="display: block"></object-list>
+            <div @animatepanel *ngIf="modelList.displayAggregates" class="slds-is-absolute slds-panel slds-panel--filters slds-filters__body slds-nowrap  slds-scrollable--y" style="width: 320px; height: 100%; top:0; right: 0;z-index: 99;" [system-model-provider]="{module: modelList.module}">
+                <div class="slds-filters__body slds-grid_vertical">
+                    <div class="slds-m-vertical--xx-small" *ngFor="let aggregate of modelList.moduleAggregates">
+                        <object-listview-aggregate [aggregate]="aggregate"></object-listview-aggregate>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

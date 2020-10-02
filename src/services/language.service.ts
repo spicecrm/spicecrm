@@ -110,7 +110,7 @@ export class language {
 
         this.http.get(
             this.configurationService.getBackendUrl() + '/language/'+this.currentlanguage,
-            {headers: this.session.getSessionHeader(), observe: "response"}
+            {headers: this.session.getSessionHeader(), observe: "response", params: {setPreferences: '1'}}
         ).subscribe(
             (res: any) => {
                 let response = res.body;
@@ -277,7 +277,7 @@ export class language {
             let module_defs = this.metadata.getModuleDefs(module);
             if (singular) {
                 if (module_defs.singular_label) {
-                    return this.getAppLanglabel(module_defs.singular_label, labellength);
+                    return this.getLabel(module_defs.singular_label, '', labellength);
                 }
 
                 if (this.languagedata.applist.moduleListSingular[module]) {
@@ -285,7 +285,7 @@ export class language {
                 }
             } else {
                 if (module_defs.module_label) {
-                    return this.getAppLanglabel(module_defs.module_label, labellength);
+                    return this.getLabel(module_defs.module_label, '', labellength);
                 }
             }
             return this.languagedata.applist.moduleList[module];
@@ -299,6 +299,7 @@ export class language {
      * @param module
      */
     public getModuleCombinedLabel(label, module) {
+        if(!module) return 'no module defined';
         if (this.languagedata.applang[label + '_' + module.toUpperCase()]) {
             return this.getLabel(label + '_' + module.toUpperCase());
         } else {

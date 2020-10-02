@@ -1,0 +1,9 @@
+<button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-x-small slds-m-around--none" (click)="clonetab(tab)" system-title="LBL_CLONE_TAB">
+    <system-button-icon icon="copy"></system-button-icon>
+</button>
+<button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-x-small slds-m-around--none" (click)="pintab(tab)" system-title="LBL_PIN_TAB">
+    <system-button-icon [icon]="tab.pinned ? 'pinned' : 'pin'"></system-button-icon>
+</button>
+<button class="slds-button slds-button--icon slds-col--bump-left" (click)="closetab(tab.id)" system-title="LBL_CLOSE_TAB" >
+    <system-button-icon icon="close"></system-button-icon>
+</button>

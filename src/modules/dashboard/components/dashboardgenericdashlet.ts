@@ -1,19 +1,21 @@
 /**
  * @module ModuleDashboard
  */
-import {Component, ElementRef, OnInit, ViewChild, ViewContainerRef} from "@angular/core";
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewContainerRef} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {view} from "../../../services/view.service";
 import {metadata} from "../../../services/metadata.service";
+import {broadcast} from "../../../services/broadcast.service";
 import {language} from "../../../services/language.service";
 import {backend} from "../../../services/backend.service";
+import {Subscription} from "rxjs";
 
 @Component({
     selector: "dashboard-generic-dashlet",
     templateUrl: "./src/modules/dashboard/templates/dashboardgenericdashlet.html",
     providers: [model, view]
 })
-export class DashboardGenericDashlet implements OnInit {
+export class DashboardGenericDashlet implements OnInit, OnDestroy {
     private loading: boolean = true;
     private records: any[] = [];
     private recordcount: number = 0;
@@ -25,6 +27,8 @@ export class DashboardGenericDashlet implements OnInit {
     private dashletFieldSet: any = undefined;
     private loadLimit: number = 50;
 
+    private subscriptions: Subscription = new Subscription();
+
     @ViewChild("tablecontainer", {read: ViewContainerRef, static: true}) private tablecontainer: ViewContainerRef;
     @ViewChild("headercontainer", {read: ViewContainerRef, static: true}) private headercontainer: ViewContainerRef;
 
@@ -33,8 +37,13 @@ export class DashboardGenericDashlet implements OnInit {
         sortfield: ''
     };
 
-    constructor(private language: language, private metadata: metadata, private backend: backend, private model: model, private elementRef: ElementRef) {
-
+    constructor(private language: language, private metadata: metadata, private backend: backend, private model: model, private broadcast: broadcast, private elementRef: ElementRef) {
+// subscribe to the broadcast service
+        this.subscriptions.add(
+            this.broadcast.message$.subscribe(message => {
+                this.handleMessage(message);
+            })
+        );
     }
 
     get canLoadMore() {
@@ -51,7 +60,6 @@ export class DashboardGenericDashlet implements OnInit {
 
     get tableContainerStyle() {
         return {
-            width: '100%',
             height: `calc(100% - ${this.headercontainer.element.nativeElement.getBoundingClientRect().height}px)`
         };
     }
@@ -102,6 +110,13 @@ export class DashboardGenericDashlet implements OnInit {
         this.loadRecords();
     }
 
+    /**
+     * unsubscribe from any subnscriptions we might have
+     */
+    public ngOnDestroy(): void {
+        this.subscriptions.unsubscribe();
+    }
+
     private loadRecords() {
         let params = this.params;
         if (this.dashletModule) {
@@ -123,7 +138,6 @@ export class DashboardGenericDashlet implements OnInit {
         let element = this.tablecontainer.element.nativeElement;
         if (element.scrollTop + element.clientHeight >= element.scrollHeight - 5) {
             this.loadMore();
-            console.log('loading more');
         }
     }
 
@@ -141,6 +155,36 @@ export class DashboardGenericDashlet implements OnInit {
         }
     }
 
+    /**
+     * handles model updates
+     *
+     * @param message
+     */
+    public handleMessage(message: any) {
+        // only handle if the module is the list module
+        if (message.messagedata.module !== this.dashletModule) {
+            return;
+        }
+
+        switch (message.messagetype) {
+            case 'model.delete':
+                let deletedItemIndex = this.records.findIndex(item => item.id == message.messagedata.id);
+                if (deletedItemIndex >= 0) {
+                    this.records.splice(deletedItemIndex, 1);
+                    this.recordcount--;
+                    this.recordtotal--;
+                }
+                break;
+            case 'model.save':
+                let eventHandled = false;
+                let savedItemIndex = this.records.findIndex(item => item.id == message.messagedata.id);
+                if (savedItemIndex >= 0) {
+                    this.records = [];
+                    this.loadRecords();
+                }
+                break;
+        }
+    }
 
     /**
      * returns if a given fielsd is set sortable in teh fieldconfig

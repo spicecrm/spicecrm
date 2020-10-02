@@ -2,7 +2,7 @@
  * @module ModuleEmails
  */
 
-import {Component, EventEmitter, Output} from "@angular/core";
+import {Component, EventEmitter, OnDestroy, Output} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
 import {modal} from "../../../services/modal.service";
@@ -20,10 +20,15 @@ import {relatedmodels} from "../../../services/relatedmodels.service";
     templateUrl: "./src/modules/emails/templates/emailtoobjectbutton.html",
     providers: [relatedmodels]
 })
-export class EmailToObjectButton {
+export class EmailToObjectButton implements OnDestroy {
     private object_module_name: string;
     private actionconfig; // can be set inside actionsets...
+    private relation_subscription; // can be set inside actionsets...
     @Output() public actionemitter = new EventEmitter();
+    /**
+     * subscription to the model data
+     */
+    private subscription: any;
 
     constructor(
         private language: language,
@@ -32,12 +37,7 @@ export class EmailToObjectButton {
         private modal: modal,
         private relatedmodels: relatedmodels
     ) {
-        // dirty... shouldn't be necessary
-        this.model.data$.subscribe(
-            next => {
-                this.ngOnInit();
-            }
-        );
+
     }
 
     /**
@@ -53,20 +53,36 @@ export class EmailToObjectButton {
                 return true;
             }
         }
-
         return false;
     }
+
 
     public ngOnInit() {
         this.object_module_name = this.actionconfig.module;
 
         if (this.actionconfig.checklink) {
-            this.relatedmodels.module = this.model.module;
-            this.relatedmodels.id = this.model.id;
-            this.relatedmodels.relatedModule = this.actionconfig.module;
-            this.relatedmodels.linkName = this.actionconfig.checklink;
-            this.relatedmodels.getData();
+            this.subscribeToModel();
         }
+    }
+
+    public subscribeToModel() {
+        this.subscription = this.model.data$.subscribe(
+            next => {
+                this.getRelatedData();
+            }
+        );
+    }
+
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+
+    public getRelatedData() {
+        this.relatedmodels.module = this.model.module;
+        this.relatedmodels.id = this.model.id;
+        this.relatedmodels.relatedModule = this.actionconfig.module;
+        this.relatedmodels.linkName = this.actionconfig.checklink;
+        this.relatedmodels.getData();
     }
 
     public execute() {

@@ -4,7 +4,7 @@
 import {
     Component,
     AfterViewInit,
-    ChangeDetectorRef
+    ChangeDetectorRef, Input
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {backend} from '../../services/backend.service';
@@ -20,11 +20,16 @@ import {view} from "../../services/view.service";
 })
 export class WorkbenchConfigOptionModule implements AfterViewInit {
 
-    public configValues: any = [];
+    /**
+     * the config values passed in from the workbench
+     */
+    @Input() public configValues: any;
+
+
     public option: any = {};
     public objtype: string = "";
 
-    private modules: Array<any> = [];
+    private modules: any[] = [];
 
     constructor(private backend: backend,
                 private metadata: metadata,

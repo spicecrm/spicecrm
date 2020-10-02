@@ -53,8 +53,8 @@ export class KRESTLogViewerModal {
                 this.isLoading = false;
                 this.line.postParams = response.line.postParams;
                 this.line.response = response.line.response;
+                this.line.headers = response.line.headers;
                 this.line.fullLoaded = true;
-                console.log('Line geladen',this.line);
             },
             error => {
                 this.toast.sendToast('Error loading line of log file!', 'error', 'Line '+this.line.lnr+' of log file '+this.line.fnr+' couldn´t be fetched.', false );
@@ -81,4 +81,14 @@ export class KRESTLogViewerModal {
         this.closeModal();
     }
 
+    /**
+     * get the headers formatted
+     */
+    private formatted(param) {
+        try {
+            return JSON.stringify(JSON.parse(this.line[param]), null, '\t');
+        } catch (e) {
+            return this.line[param];
+        }
+    }
 }

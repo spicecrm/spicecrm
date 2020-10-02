@@ -67,6 +67,7 @@ export class UserPreferences {
         "week_days_count",
         "calendar_day_start_hour",
         "calendar_day_end_hour",
+        "reminder_time",
         "home_dashboard",
         "home_dashboardset",
         "home_assistant",
@@ -82,6 +83,7 @@ export class UserPreferences {
     private visibilityOptions = ["visible", "hidden"];
     private weekDaysCountList = [5,6,7];
     private dayHoursList = [];
+    private reminderTimeOptions = this.language.getDisplayOptions('reminder_time_options');
 
     private expanded = {loc: true, exp: true, other: true, calendar: true, home: true};
     private exportDelimiterList = [",", ";"];

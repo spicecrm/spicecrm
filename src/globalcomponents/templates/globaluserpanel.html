@@ -1,4 +1,4 @@
-<div class="userProfilePanel">
+<div class="slds-is-fixed slds-box--border slds-dropdown slds-dropdown--right slds-m-right--small slds-m-top--medium">
     <div class="slds-grid slds-p-around--small slds-grid--vertical-align-center">
         <global-user-panel-icon></global-user-panel-icon>
         <div class="slds-m-left--small">
@@ -15,7 +15,7 @@
     </div>
     <!--div class="OptionsSeparator"><system-label label="LBL_OPTIONS"></system-label></div-->
     <div class="slds-p-around--small slds-form--stacked">
-        <system-language-selector (selected)="close()"></system-language-selector>
+        <system-language-selector></system-language-selector>
         <div class="slds-p-top--x-small">
             <div class="slds-form-element">
                 <label class="slds-form-element__label" for="{{compId}}-select-tz"><system-label label="LBL_SELECT_TIMEZONE"></system-label></label>
@@ -24,7 +24,8 @@
         </div>
     </div>
     <div class="slds-theme--shade slds-p-around--x-small slds-grid">
-        <div>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <system-utility-icon class="slds-p-right--xx-small" *ngIf="socket.isConnected" size="xx-small" icon="omni_channel"></system-utility-icon>
             <system-label label="LBL_LOGGED_ON_SYSTEM"></system-label>: {{config.data.display}}
         </div>
         <div class="slds-col--bump-left">

@@ -175,7 +175,7 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
      *
      * @param event the event fired from teh custom action
      */
-    private handleaction(event) {
+    public handleaction(event) {
         this.initializeModule();
         this.view.setEditMode();
         this.isExpanded = false;

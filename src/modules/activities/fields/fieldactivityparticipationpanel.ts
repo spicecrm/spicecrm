@@ -1,7 +1,7 @@
 /**
  * @module ModuleActivities
  */
-import {Component, ElementRef, Renderer2, OnInit, OnDestroy} from '@angular/core';
+import {Component, ElementRef, OnInit, Renderer2, OnDestroy} from '@angular/core';
 import {Router} from '@angular/router';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
@@ -11,28 +11,24 @@ import {broadcast} from '../../../services/broadcast.service';
 import {modal} from '../../../services/modal.service';
 import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
 import {relateFilter} from "../../../services/modellist.service";
-import {Subscription} from "rxjs";
 
 @Component({
     templateUrl: './src/modules/activities/templates/fieldactivityparticipationpanel.html'
 })
-export class fieldActivityParticipationPanel extends fieldGeneric implements OnInit {
-
-    /**
-     * listens to the click
-     */
-    private clickListener: any;
-
-    /**
-     * the links that can be selected with the lookup
-     */
-    private lookuplinks = [];
+export class fieldActivityParticipationPanel extends fieldGeneric implements OnInit, OnDestroy  {
 
     /**
      * the index of the type of lookup (index of the aray above
      */
     public lookupType = 0;
-
+    /**
+     * listens to the click
+     */
+    private clickListener: any;
+    /**
+     * the links that can be selected with the lookup
+     */
+    private lookuplinks = [];
     /**
      * indicate tha the typoe selector is open
      */
@@ -80,26 +76,41 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
 
         super(model, view, language, metadata, router);
 
-        // build the lookup links
-        this.lookuplinks = this.getLookuplinks();
+
 
         // subscriber to the broadcast when new model is added from the model
         this.subscriptions.add(this.broadcast.message$.subscribe((message) => this.handleMessage(message)));
 
         // subscribe to model $data and build the participants .. replacing the setter
         this.subscriptions.add(this.model.data$.subscribe(modelData => {
-            // set the participants
-            this.setParticipants();
-
+            if(this.lookuplinks.length > 0) {
+                // set the participants
+                this.setParticipants();
+            }
             // update the relate filter
             this.updateRelateFilter();
         }));
     }
 
     /**
+     * returns the name for the link resp the module
+     */
+    get lookupTypeName() {
+        return this.language.getModuleName(this.lookuplinks[this.lookupType]?.module);
+    }
+
+    get relateFilterActive() {
+        return this.lookuplinks[this.lookupType]?.module != 'Users';
+    }
+
+    /**
      * load the links and the table fieldset
      */
     public ngOnInit() {
+        // build the lookup links
+        this.lookuplinks = this.getLookuplinks();
+        this.setParticipants();
+
         if (!this.fieldconfig.fieldset) {
             this.fieldset = this.metadata.getComponentConfig('fieldActivityParticipationPanel').fieldset;
         } else {
@@ -112,13 +123,20 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
         }
     }
 
-    /**
-     * returns the name for the link resp the module
-     */
-    get lookupTypeName() {
-        return this.language.getModuleName(this.lookuplinks[this.lookupType].module);
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
     }
 
+    /**
+     * click handler for the
+     * @param event
+     */
+    public onClick(event: MouseEvent): void {
+        const clickedInside = this.elementRef.nativeElement.contains(event.target);
+        if (!clickedInside) {
+            this.closePopups();
+        }
+    }
 
     /**
      * checks if we have a relate filter field and if yes sets the filter accordingly
@@ -182,10 +200,20 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
      * fallback to the metadata
      */
     private getLookuplinks(): any[] {
-        let linknames: string[] = ['contacts', 'users'];
+
+        let linknames: string[] = [];
+        if(this.fieldconfig.linknames) {
+            linknames = this.fieldconfig.linknames.split(',');
+        }
+        if(linknames.length == 0) {
+            linknames = ['contacts', 'users', 'consumers'];
+        }
         let links = [];
         for (let linkname of linknames) {
-            links.push({name: linkname, module: this.metadata.getFieldDefs(this.model.module, linkname).module});
+            linkname = linkname.trim();
+            if(this.metadata.getFieldDefs(this.model.module, linkname)) {
+                links.push({name: linkname, module: this.metadata.getFieldDefs(this.model.module, linkname).module});
+            }
         }
         return links;
     }
@@ -261,17 +289,6 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
     }
 
     /**
-     * click handler for the
-     * @param event
-     */
-    public onClick(event: MouseEvent): void {
-        const clickedInside = this.elementRef.nativeElement.contains(event.target);
-        if (!clickedInside) {
-            this.closePopups();
-        }
-    }
-
-    /**
      * closes all open dropdowns
      */
     private closePopups() {
@@ -287,10 +304,6 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
     private toggleLookupTypeSelect() {
         this.lookuplinkSelectOpen = !this.lookuplinkSelectOpen;
         this.lookupSearchOpen = false;
-    }
-
-    get relateFilterActive() {
-        return this.lookuplinks[this.lookupType].module != 'Users';
     }
 
     /**
@@ -314,16 +327,16 @@ export class fieldActivityParticipationPanel extends fieldGeneric implements OnI
 
     /**
      * removes on of the participants linked
-     * @param item the pill item
+     * @param participant the pill item
      */
     private removeItem(participant) {
+
         if (!this.model.data[participant.link].beans_relations_to_delete) this.model.data[participant.link].beans_relations_to_delete = {};
         this.model.data[participant.link].beans_relations_to_delete[participant.id] = participant;
         delete (this.model.data[participant.link].beans[participant.id]);
 
         // remove th pill
-        let index = this.participants.findIndex(pill => pill.id == participant.id);
-        this.participants.splice(index, 1);
+        this.participants = this.participants.filter(item => item.id != participant.id);
     }
 
     /**

@@ -3,91 +3,133 @@
  */
 import {
     Component, Input, Output, EventEmitter, AfterViewInit, ViewChild, ViewContainerRef,
-    OnInit
+    OnInit, SkipSelf
 } from "@angular/core";
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {fts} from "../../../services/fts.service";
 import {view} from "../../../services/view.service";
-import { language } from '../../../services/language.service';
+import {language} from '../../../services/language.service';
 
+/**
+ * manages the lead to account conversion giving the user the option to link to an account
+ * also includes the duplicate check to find potential already created accounts
+ */
 @Component({
     selector: "lead-convert-account",
     templateUrl: "./src/modules/leads/templates/leadconvertaccount.html",
     providers: [view, model]
 })
 export class LeadConvertAccount implements AfterViewInit, OnInit {
+    /**
+     * the content conatiner the componentset for the account edit is rendered in
+     */
     @ViewChild("detailcontainer", {read: ViewContainerRef, static: true}) private detailcontainer: ViewContainerRef;
 
-    @Input() private  lead: any = {};
-
-    // outputs for the interaction with the process
+    /**
+     * emits the model that has been created
+     */
     @Output() private account: EventEmitter<model> = new EventEmitter<model>();
-    @Output() private createaccount: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @Output() private selectedaccount: EventEmitter<any> = new EventEmitter<any>();
 
-    private initialized: boolean = false;
-    private componentSet: string = "";
+
+    /**
+     * the component config
+     */
     private componentconfig: any = {};
+
+    /**
+     * references to the components rendered in the view
+     */
     private componentRefs: any = [];
-    private createAccount: boolean = false;
 
-
+    /**
+     * the account selected if there is one
+     * picked from the matched duplicates
+     */
     public selectedAccount: any = undefined;
-    public matchedAccounts: Array<any> = [];
 
-    get create() {
-        return this.createAccount;
+    /**
+     * internal value for the checkbox allowing the user to select if he wants to link the lead to an account or not
+     */
+    private _linktoaccount: boolean = true;
+
+
+    constructor(private view: view, private metadata: metadata, @SkipSelf() private lead: model, private model: model, private modelutilities: modelutilities, private fts: fts, private language: language) {
+
     }
 
-    set create(value) {
-        this.createAccount = value;
-        this.createaccount.emit(value);
+    public ngOnInit() {
+        this.initializeFromLead();
     }
 
+    public ngAfterViewInit() {
+        this.buildContainer();
+    }
 
-    constructor(private view: view, private metadata: metadata, private model: model, private modelutilities: modelutilities, private fts: fts, private language: language) {
-
+    /**
+     * initializes the account from the lead using th ecopy rules
+     * Also subscribes to the model data$ and updates the leads account_id and anccunt_linked_name if the model data changes
+     */
+    public initializeFromLead() {
         // initialize the model
         this.model.module = "Accounts";
-        this.model.initializeModel();
 
         // initialize the view
         this.view.isEditable = true;
         this.view.setEditMode();
 
-    }
+        if (this.lead.getField('account_name')) {
+            this.model.id = null;
+            this.model.initialize(this.lead);
+            this._linktoaccount = true;
+        }
 
-    public ngOnInit() {
-        this.lead.data$.subscribe(data => {
-            if (data.account_name) {
+        if (this._linktoaccount) {
+            this.account.emit(this.model);
+        }
 
-                this.fts.searchByModules({searchterm: this.modelutilities.cleanAccountName(data.account_name), modules: ["Accounts"]}).subscribe(res => {
-                    this.matchedAccounts = res.Accounts.hits;
-                    if (this.matchedAccounts.length === 0) {
-                        this.create = true;
-                    }
+        // subscribe to the model data to get the account id and name
+        this.model.data$.subscribe(data => {
+            if(this._linktoaccount && (this.lead.getField('account_id') != data.id || this.lead.getField('account_linked_name') != data.name) ) {
+                this.lead.setFields({
+                    account_id: this.model.id,
+                    account_linked_name: this.model.getField('name')
                 });
-
-                this.model.data.name = data.account_name;
-                this.model.data.website = data.website;
-
-                this.model.data.billing_address_street = data.primary_address_street;
-                this.model.data.billing_address_city = data.primary_address_city;
-                this.model.data.billing_address_postalcode = data.primary_address_postalcode;
-                this.model.data.billing_address_state = data.primary_address_state;
-                this.model.data.billing_address_country = data.primary_address_country;
             }
         });
+
+    }
+
+    /**
+     * getter for the link checkbox
+     */
+    get linktoaccount() {
+        return this._linktoaccount;
         this.account.emit(this.model);
     }
 
-    public ngAfterViewInit() {
-        this.initialized = true;
-        this.buildContainer();
+    /**
+     * setter for the link checkbox
+     *
+     * @param value
+     */
+    set linktoaccount(value) {
+        this._linktoaccount = value;
+
+        if (value == false) {
+            this.account.emit(null);
+            this.lead.setFields({
+                account_id: undefined
+            });
+        } else {
+            this.account.emit(this.model);
+        }
     }
 
+    /**
+     * builds the container and renders the data
+     */
     private buildContainer() {
         // Close any already open dialogs
         for (let component of this.componentRefs) {
@@ -103,13 +145,33 @@ export class LeadConvertAccount implements AfterViewInit, OnInit {
         }
     }
 
-    private selectAccount(event) {
-        this.selectedAccount = event;
-        this.selectedaccount.emit(event);
+    /**
+     * when a duplicate is found and selected
+     *
+     * @param accountdata
+     */
+    private selectAccount(accountdata) {
+        this.selectedAccount = accountdata;
+
+        this.model.id = accountdata.id;
+        this.model.isNew = false;
+        this.model.data = this.model.utils.backendModel2spice('Accounts', accountdata);
+        this.lead.setFields({
+            account_id: this.model.id,
+            account_linked_name: this.model.getField('name')
+        });
+        this.view.isEditable = false;
+
     }
 
+    /**
+     * then the user unlinks the account
+     */
     private unlinkAccount() {
         this.selectedAccount = undefined;
-        this.selectedaccount.emit(undefined);
+
+        this.buildContainer();
+
+        this.initializeFromLead();
     }
 }

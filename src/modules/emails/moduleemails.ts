@@ -27,6 +27,7 @@ import /*embed*/ {EmailSchedulesModal} from "./components/emailschedulesmodal";
 import /*embed*/ {EmailSchedulesRelatedButton} from "./components/emailschedulesrelatedbutton";
 import /*embed*/ {EmailSchedulesRelatedModal} from "./components/emailschedulesrelatedmodal";
 import /*embed*/ {EmailSchedulesView} from "./components/emailschedulesview";
+import /*embed*/ {EmailActionSetReadButton} from "./components/emailactionsetreadbutton";
 
 @NgModule({
     imports: [
@@ -52,7 +53,8 @@ import /*embed*/ {EmailSchedulesView} from "./components/emailschedulesview";
         EmailSchedulesModal,
         EmailSchedulesRelatedButton,
         EmailSchedulesRelatedModal,
-        EmailSchedulesView
+        EmailSchedulesView,
+        EmailActionSetReadButton
     ]
 })
 export class ModuleEmails {

@@ -29,7 +29,7 @@ export class ACLProfilesManagerAddProfileModal {
         this.model.module = 'SpiceACLProfiles';
         this.model.initialize();
 
-        this.model.setFieldValue('status', 'd');
+        this.model.setField('status', 'd');
 
         // set the view as editable
         this.view.isEditable = true;
@@ -41,7 +41,7 @@ export class ACLProfilesManagerAddProfileModal {
     }
 
     public ngOnInit() {
-        this.model.setFieldValue('sysmodule_id', this.sysmodule_id);
+        this.model.setField('sysmodule_id', this.sysmodule_id);
     }
 
     private close() {

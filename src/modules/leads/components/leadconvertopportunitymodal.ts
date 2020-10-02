@@ -8,7 +8,7 @@ import {
     OnInit,
     ViewContainerRef,
     ViewChild,
-    AfterViewInit
+    AfterViewInit, SkipSelf
 } from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
@@ -24,38 +24,39 @@ import {SystemLoadingModal} from "../../../systemcomponents/components/systemloa
 })
 export class LeadConvertOpportunityModal implements OnInit, AfterViewInit {
 
-    @ViewChild('detailcontainer', {read: ViewContainerRef, static: true}) detailcontainer: ViewContainerRef;
+    @ViewChild('detailcontainer', {read: ViewContainerRef, static: true})  private detailcontainer: ViewContainerRef;
 
-    self: any = {};
-    lead: model;
-    @Output() converted: EventEmitter<any> = new EventEmitter<any>();
+    private self: any = {};
+    @Output() private converted: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private language: language, private model: model, private metadata: metadata, private view: view, private modal: modal) {
+    /**
+     * the componentset to be rendered
+     */
+    private componentSet: string;
+
+    constructor(private language: language, @SkipSelf() private lead: model, private model: model, private metadata: metadata, private view: view, private modal: modal) {
         this.model.module = 'Opportunities';
         this.view.isEditable = true;
         this.view.setEditMode();
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.model.initialize(this.lead);
     }
 
-    ngAfterViewInit(){
+    public ngAfterViewInit(){
         let componentconfig = this.metadata.getComponentConfig('ObjectRecordDetails', this.model.module);
-        let componentSet = componentconfig.componentset;
-
-        for (let panel of this.metadata.getComponentSetObjects(componentSet)) {
-            this.metadata.addComponent(panel.component, this.detailcontainer).subscribe(componentRef => {
-                componentRef.instance['componentconfig'] = panel.componentconfig;
-            });
-        }
+        this.componentSet = componentconfig.componentset;
     }
 
-    close() {
+    private close() {
         this.self.destroy();
     }
 
-    convert() {
+    /**
+     * converts the lead to an opportunity
+     */
+    private convert() {
         if ( !this.model.validate() ) return;
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
             loadingModalRef.instance.messagelabel = 'creating Opportunity';
@@ -70,10 +71,6 @@ export class LeadConvertOpportunityModal implements OnInit, AfterViewInit {
                 });
             });
         });
-    }
-
-    onModalEscX() {
-        this.close();
     }
 
 }

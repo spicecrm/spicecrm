@@ -11,26 +11,26 @@ import {backend} from '../../../services/backend.service';
 export class CalendarAddCalendar {
 
     public calendars: any[] = [];
-    addCalendar: EventEmitter<any> = new EventEmitter<any>();
+    private addCalendar: EventEmitter<any> = new EventEmitter<any>();
     private self: any = {};
 
     constructor(private language: language, private backend: backend) {
     }
 
-    getIcon(icon) {
+    private getIcon(icon) {
         return (icon && icon.split(':')[1]) ? icon.split(':')[1] : icon;
     }
 
-    getSprite(icon) {
+    private getSprite(icon) {
         return (icon && icon.split(':')[1]) ? icon.split(':')[0] : 'standard';
     }
 
-    close() {
+    private close() {
         this.addCalendar.emit(false);
         this.self.destroy();
     }
 
-    save(calendar) {
+    private save(calendar) {
         this.addCalendar.emit(calendar);
         this.self.destroy();
     }

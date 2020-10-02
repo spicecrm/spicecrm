@@ -115,11 +115,13 @@ export class ObjectActionDeleteButton implements AfterViewInit, OnDestroy {
         if (this.actionconfig.noredirectoncomplete == true) return;
 
         // reditrect to the list
-        this.router.navigate(['/module/' + this.model.module]);
+        // this.router.navigate(['/module/' + this.model.module]);
 
         // close the tab if we have one
-        if (this.navigationtab) {
+        if (this.navigationtab && this.navigationtab.tabid != 'main') {
             this.navigationtab.closeTab();
+        } else {
+            this.router.navigate(['/module/' + this.model.module]);
         }
     }
 

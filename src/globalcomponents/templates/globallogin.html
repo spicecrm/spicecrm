@@ -1,12 +1,16 @@
-<div class="slds-grid slds-wrap slds-is-absolute slds-size--1-of-1 slds-theme--default" style="height:100vh; top: 0px;">
+<global-login-loading class="slds-size--1-of-1" *ngIf="!configuration.initialized"></global-login-loading>
+<div *ngIf="configuration.initialized"  class="slds-grid slds-wrap slds-is-absolute slds-size--1-of-1 slds-theme--default" style="height:100vh; top: 0px;">
     <div class="slds-align--absolute-center slds-size--1-of-1 slds-large-size--1-of-2">
         <div class="slds-size--1-of-1 slds-medium-size--2-of-3 slds-p-around--medium">
             <!--div class="spiceLoginLogo"-->
-            <div class="slds-align--absolute-center slds-p-vertical--medium">
+            <div *ngIf="displayimage"  class="slds-align--absolute-center slds-p-vertical--medium">
                 <global-login-image></global-login-image>
             </div>
+            <div *ngIf="!displayimage" class="slds-align--absolute-center slds-p-vertical--medium">
+                <global-header-image></global-header-image>
+            </div>
             <div class="slds-box--border slds-theme--shade" *ngIf="!loginService.session.authData.sessionId && promptUser">
-                <div class="slds-p-around--medium">
+                <div class="slds-p-around--medium" [system-overlay-loading-spinner]="configuration.reloading">
                     <form *ngIf="!showForgotPass" (submit)="login()">
                         <div class="slds-form-element slds-m-vertical--small">
                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
@@ -62,7 +66,7 @@
             </ng-container>
         </div>
         <div class="slds-is-absolute" style="bottom: 10px;">
-            © 2015 - 2020 aac services k.s. All rights reserved.
+        <global-copyright></global-copyright>
         </div>
     </div>
     <div *ngIf="promptUser && showSidebar" class="slds-size--1-of-1 slds-large-size--1-of-2 slds-height_full" [class.slds-scrollable--y]="!showExternalSidebar">

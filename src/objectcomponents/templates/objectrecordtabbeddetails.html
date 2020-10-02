@@ -1,4 +1,4 @@
-<div class="slds-tabs--scoped slds-p-bottom--small">
+<div class="slds-tabs--scoped slds-p-bottom--small slds-p-around--xx-small" [ngClass]="{'slds-p-around--small' : componentconfig.inModal}">
     <ul class="slds-tabs--scoped__nav" role="tablist">
         <li *ngFor="let tab of tabs; let tabindex = index"
             class="slds-tabs--scoped__item slds-text-title--caps slds-active"
