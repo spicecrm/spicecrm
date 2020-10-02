@@ -1,0 +1,9 @@
+/* Spice Timeline Stylesheet */
+
+.spice-timeline-record-row-data {
+    padding: .25rem !important;
+}
+.spice-timeline-record-row-data * {
+    margin: 0 !important;
+    padding: 0 !important;
+}

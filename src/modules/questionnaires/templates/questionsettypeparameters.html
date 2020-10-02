@@ -7,7 +7,7 @@
     </h3>
     <div [ngStyle]="getOpenStyle()" class="slds-p-around--x-small">
         <div class="slds-form-element">
-            <field-container [field]="'questiontype'" [fielddisplayclass]="'slds-has-divider--bottom slds-p-vertical--x-small spicecrm-fieldminheight'" [fieldconfig]="questiontypeFieldconfig"></field-container><!-- (change)="change()" -->
+            <field-container [field]="'questiontype'" [fielddisplayclass]="'slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight'" [fieldconfig]="questiontypeFieldconfig"></field-container><!-- (change)="change()" -->
         </div>
         <ng-container [ngSwitch]="model.data.questiontype" >
             <div *ngSwitchCase="'rating'" class="slds-box slds-m-top--medium"><questionset-type-parameters-rating></questionset-type-parameters-rating></div>

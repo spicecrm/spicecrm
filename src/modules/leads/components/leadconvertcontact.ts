@@ -3,85 +3,114 @@
  */
 import {
     Component, Input, Output, EventEmitter, AfterViewInit, ViewChild, ViewContainerRef,
-    OnInit
+    OnInit, SkipSelf
 } from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 
+/**
+ * renders a tab to convert the lead to the contact
+ */
 @Component({
     selector: 'lead-convert-contact',
     templateUrl: './src/modules/leads/templates/leadconvertcontact.html',
     providers: [view, model]
 })
 export class LeadConvertContact implements AfterViewInit, OnInit {
+    /**
+     * reference to the container where the detail view is to be rendered
+     */
     @ViewChild('detailcontainer', {read: ViewContainerRef, static: true}) public detailcontainer: ViewContainerRef;
 
-    @Input() public lead: model = undefined;
+    /**
+     * the emitter for the contact created or selected
+     */
     @Output() public contact: EventEmitter<model> = new EventEmitter<model>();
 
-    public initialized: boolean = false;
-    public componentSet: string = '';
+    /**
+     * a selected conmtact if picked from the duplicates that have been matched based on the data
+     */
+    public selectedContact: any = undefined;
+
+    /**
+     * the component config
+     */
     public componentconfig: any = {};
+
+    /**
+     * the list of compoennts rendered
+     */
     public componentRefs: any = [];
 
-    constructor(private view: view, private metadata: metadata, private model: model) {
-        this.model.module = 'Contacts';
-        this.model.initializeModel();
-
+    constructor(private view: view, private metadata: metadata, @SkipSelf() private lead: model, private model: model) {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
 
     public ngOnInit() {
         // console.log(this.model.data);
+        this.initializeFromLead();
+    }
 
+    public ngAfterViewInit() {
+        this.buildContainer();
+    }
+
+    /**
+     * initializes the öoad from the lead using the copy rules
+     *
+     * also links to the lead in case the account is changed to link to the account
+     */
+    private initializeFromLead() {
+        this.model.module = 'Contacts';
+        this.model.id = null;
+        this.model.isNew = true;
+        this.model.initialize(this.lead);
+        this.model.initializeField(
+            'emailaddresses',
+            [{
+                id: this.model.generateGuid(),
+                bean_id: this.model.id,
+                bean_module: this.model.module,
+                email_address: this.lead.getField('email1'),
+                email_address_id: '',
+                primary_address: '1'
+            }]
+        );
+
+        /**
+         * subscribe to lead changes to update the account link if set
+         */
         this.lead.data$.subscribe(data => {
-
-            this.model.data.degree1 = data.degree1;
-            this.model.data.degree2 = data.degree2;
-            this.model.data.first_name = data.first_name;
-            this.model.data.last_name = data.last_name;
-            this.model.data.salutation = data.salutation;
-            this.model.data.title_dd = data.title_dd;
-            this.model.data.title = data.title;
-            this.model.data.department = data.department;
-            this.model.data.email1 = data.email1;
-            // SPICE-276 form is now using multiple e-mail address field type
-            if( data.emailaddresses) {
-                for (let item of this.model.data.emailaddresses) {
-                    item.email_address = data.email1;
-                }
+            if (!this.selectedContact && data.account_id != this.model.getField('account_id') || data.account_linked_name != this.model.getField('account_linked_name')) {
+                this.model.setFields({
+                    account_id: data.account_id,
+                    account_name: data.account_linked_name
+                });
             }
-
-            // this.model.data.emailaddresses = data.emailaddresses;
-            this.model.data.phone_work = data.phone_work;
-            this.model.data.phone_mobile = data.phone_mobile;
-            this.model.data.phone_fax = data.phone_fax;
-
-            if ( data.business_sector ) this.model.data.business_sector = data.business_sector;
-            if ( data.business_topic ) this.model.data.business_topic = data.business_topic;
-
-            this.model.data.primary_address_street = data.primary_address_street;
-            this.model.data.primary_address_city = data.primary_address_city;
-            this.model.data.primary_address_postalcode = data.primary_address_postalcode;
-            this.model.data.primary_address_state = data.primary_address_state;
-            this.model.data.primary_address_country = data.primary_address_country;
-            this.model.data.primary_address_attn = data.primary_address_attn;
-
         });
+
+        /**
+         * make sure we update the lead with the link
+         */
+        this.model.data$.subscribe(data => {
+            if(this.lead.getField('contact_id') != data.id) {
+                this.lead.setFields({
+                    contact_id: data.id
+                });
+            }
+        });
+
         // emit the model
         this.contact.emit(this.model);
     }
 
-    public ngAfterViewInit() {
-        this.initialized = true;
-        this.buildContainer();
-    }
-
+    /**
+     * builds the details container
+     */
     public buildContainer() {
         // Close any already open dialogs
-        // this.container.clear();
         for (let component of this.componentRefs) {
             component.destroy();
         }
@@ -95,5 +124,34 @@ export class LeadConvertContact implements AfterViewInit, OnInit {
         }
     }
 
+
+    /**
+     * when a duplicate is found and selected
+     *
+     * @param accountdata
+     */
+    private selectContact(contactdata) {
+        this.selectedContact = contactdata;
+
+        this.model.id = contactdata.id;
+        this.model.isNew = false;
+        this.model.data = this.model.utils.backendModel2spice('Contacts', contactdata);
+        this.view.isEditable = false;
+
+        this.contact.emit(this.model);
+    }
+
+    /**
+     * then the user unlinks the account
+     */
+    private unlinkContact() {
+        this.selectedContact = undefined;
+        this.view.isEditable = true;
+
+        // rebuild the container
+        this.buildContainer();
+
+        this.initializeFromLead();
+    }
 
 }

@@ -68,7 +68,11 @@ export class SalesDocsItemsAddProductVariant implements AfterViewInit {
                         name: productvariant.object.getField('name'),
                         uom_id: productvariant.object.getField('base_uom_id'),
                         amount_net_per_uom: productvariant.object.getField('std_price'),
-                        purchase_price: productvariant.object.getField('purchase_price')
+                        purchase_price: productvariant.object.getField('purchase_price'),
+                        acl: {
+                            create: true,
+                            edit: true
+                        }
                     };
 
                     this.additem.emit(itemData);

@@ -83,7 +83,7 @@
                                             <bt:Image size="80" resid="icon80"/>
                                         </Icon>
                                         <Action xsi:type="ShowTaskpane">
-                                            <SourceLocation resid="meetingEditURL"/>
+                                            <SourceLocation resid="calendaritemEditURL"/>
                                         </Action>
                                     </Control>
                                 </Group>
@@ -105,7 +105,7 @@
                                             <bt:Image size="80" resid="icon80"/>
                                         </Icon>
                                         <Action xsi:type="ShowTaskpane">
-                                            <SourceLocation resid="meetingReadURL"/>
+                                            <SourceLocation resid="calendaritemReadURL"/>
                                         </Action>
                                     </Control>
                                 </Group>
@@ -149,8 +149,8 @@
                     <bt:Url id="functionFile" DefaultValue="https://<serverurl>/assets/outlook/function-file.html"/>
                     <bt:Url id="messageReadArchiveUrl" DefaultValue="https://<serverurl>/outlook.html#/groupware/mailitem"/>
                     <bt:Url id="messageReadDetailsUrl" DefaultValue="https://<serverurl>/outlook.html#/groupware/details"/>
-                    <bt:Url id="meetingReadURL" DefaultValue="https://<serverurl>/outlook.html#/outlook/meeting/read"/>
-                    <bt:Url id="meetingEditURL" DefaultValue="https://<serverurl>/outlook.html#/outlook/meeting/edit"/>
+                    <bt:Url id="calendaritemReadURL" DefaultValue="https://<serverurl>/outlook.html#/outlook/calendaritem/read"/>
+                    <bt:Url id="calendaritemEditURL" DefaultValue="https://<serverurl>/outlook.html#/outlook/calendaritem/edit"/>
                 </bt:Urls>
                 <bt:ShortStrings>
                     <bt:String id="groupLabel" DefaultValue="SpiceCRM"/>

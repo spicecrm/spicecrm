@@ -251,7 +251,7 @@ export class relatedmodels implements OnDestroy {
     public getData(silent: boolean = false): Observable<any>  {
         let responseSubject = new Subject<any>();
         // check if we can list per acl
-        if (this.metadata.checkModuleAcl(this.relatedModule, "list") === false) {
+        if (this.metadata.checkModuleAcl(this.relatedModule, "list") === false && this.metadata.checkModuleAcl(this.relatedModule, "listrelated") === false) {
             return of(false);
         }
 
@@ -271,15 +271,7 @@ export class relatedmodels implements OnDestroy {
             sort: this.sort.sortfield ? JSON.stringify(this.sort) : ""
         };
 
-        // check if it is a normal related list, or a filtered list without a relationship
-        let url = "";
-        if (this.isonlyfiltered) {
-            url = "module/" + this.module + "/" + this.id + "/filtered";
-        } else {
-            url = "module/" + this.module + "/" + this.id + "/related/" + this._linkName;
-        }
-
-        this.backend.getRequest(url, params).subscribe(
+        this.backend.getRequest(`module/${this.module}/${this.id}/related/${this._linkName}`, params).subscribe(
             (response: any) => {
 
                 // reset the list .. to make sure nobody added in the meantime ... the new data is the truth
@@ -314,6 +306,10 @@ export class relatedmodels implements OnDestroy {
                 // complete the Observable
                 responseSubject.next(true);
                 responseSubject.complete();
+            },
+            error => {
+                // set loaded
+                this.isloading = false;
             }
         );
 

@@ -123,22 +123,3 @@ export class WorkflowManager {
 
 
 }
-
-
-@Pipe({
-    name: 'notdeleted',
-    pure: false
-})
-export class notdeletedpipe {
-    public transform(values) {
-        let retvalues = [];
-
-        for (let value of values) {
-            if (value.deleted != 1) {
-                retvalues.push(value);
-            }
-        }
-
-        return retvalues;
-    }
-}

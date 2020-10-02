@@ -1,0 +1,9 @@
+<td>
+    <button class="slds-button slds-button_icon" [disabled]="!view.isEditMode()  || !view.isEditable" (click)="deleteItem()"><system-button-icon [icon]="'close'"></system-button-icon></button>
+</td>
+<td>
+    <field-container fieldname="itemnr" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
+</td>
+<td *ngFor="let fieldsetItem of fieldsetItems">
+    <field-container [fieldname]="fieldsetItem.field" [fieldconfig]="fieldsetItem.fieldconfig" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
+</td>

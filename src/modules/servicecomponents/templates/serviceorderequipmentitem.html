@@ -1,0 +1,9 @@
+<td role="gridcell" class="slds-cell-shrink slds-show--medium" style="min-width: 1rem" >
+    <label class="slds-checkbox">
+        <input type="checkbox" [id]="'check_' + item.id" [disabled]="!view.isEditMode()" [ngModel]="item.selected"  (click)="changeSelection()"/>
+        <span class="slds-checkbox--faux"></span>
+    </label>
+</td>
+<td *ngFor="let fieldsetItem of fieldsetItems">
+    <field-container [fieldname]="fieldsetItem.field" [fieldconfig]="fieldsetItem.fieldconfig" fielddisplayclass="slds-truncate slds-p-horizontal--x-small"></field-container>
+</td>

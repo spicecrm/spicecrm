@@ -7,11 +7,9 @@ import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import {view} from '../../../services/view.service';
 
-
 /**
- * @ignore
+ * handle managing the default attribute value
  */
-
 @Component({
     selector: 'product-variants-attribute-vc',
     templateUrl: './src/modules/products/templates/productvariantsattributevc.html'
@@ -19,72 +17,84 @@ import {view} from '../../../services/view.service';
 export class ProductVariantsAttributeVC implements OnInit {
 
     @Input() public attribute: any = {};
-    public attrbutevalueset: any = undefined;
+    public attributeValueId: any = undefined;
 
     constructor(public language: language, public backend: backend, public elementRef: ElementRef, public view: view, public model: model) {
     }
 
     get value() {
-        return this.attrbutevalueset.pratvalue;
+        return this.model.data.productattributevalues.beans[this.attributeValueId].pratvalue;
     }
 
+    /**
+     * set the attribute value
+     * @param value
+     */
     set value(value) {
         let attrValues = this.model.getField('productattributevalues');
-        for (let id in attrValues.beans) {
-            if (attrValues.beans.hasOwnProperty(id) && attrValues.beans[id].productattribute_id === this.attribute.id) {
-                attrValues.beans[id].pratvalue = value;
-                this.attrbutevalueset.pratvalue = value;
-                break;
-            }
-        }
+        attrValues.beans[this.attributeValueId].pratvalue = value;
         this.model.setField('productattributevalues', attrValues);
     }
 
+    /**
+     * @return disabled if attribute in not usable
+     */
     get isDisabled() {
         return this.attribute.attr_usage == 'none';
     }
 
+    /**
+     * @return view is editable
+     */
     get editable() {
         return this.view.isEditable;
     }
 
-    get editmode() {
+    /**
+     * @return view is edit mode
+     */
+    get isEditMode() {
         return this.view.isEditMode();
     }
 
+    /**
+     * set attribute value id
+     */
     public ngOnInit() {
-        this.setAttributeValueSet();
+        this.setAttributeValueId();
     }
 
-    public createAttributeValueSet() {
-        let guid = this.model.generateGuid();
-        this.model.data.productattributevalues.beans[guid] = {
-            id: guid,
+    /**
+     * create the initial attribute value
+     */
+    private createInitialAttributeValue() {
+
+        this.model.data.productattributevalues.beans[this.attributeValueId] = {
+            id: this.attributeValueId,
             productattribute_id: this.attribute.id,
-            pratvalue: this.model.isNew ? this.attribute.value : '',
+            pratvalue: '',
             parent_id: this.model.id,
             parent_type: this.model.module
         };
-        this.attrbutevalueset = this.model.data.productattributevalues.beans[guid];
     }
 
-    private setAttributeValueSet() {
-        let attrValues = this.model.data.productattributevalues;
-        if (attrValues) {
-            for (let id in attrValues.beans) {
-                if (attrValues.beans.hasOwnProperty(id) && attrValues.beans[id].productattribute_id === this.attribute.id) {
-                    this.attrbutevalueset = attrValues.beans[id];
-                    break;
-                }
+    /**
+     * set the attribute value id and clone the attribute value from
+     */
+    private setAttributeValueId() {
+
+        const newId = this.model.generateGuid();
+        const attrValues = this.model.data.productattributevalues;
+
+        for (let id in attrValues.beans) {
+            if (attrValues.beans.hasOwnProperty(id) && attrValues.beans[id].productattribute_id === this.attribute.id) {
+                this.attributeValueId = id;
+                break;
             }
-            if (!this.attrbutevalueset) {
-                this.createAttributeValueSet();
-            }
-        } else {
-            this.model.data.productattributevalues = {
-                beans: {}
-            };
-            this.createAttributeValueSet();
+        }
+        if (!this.attributeValueId) {
+            this.attributeValueId = newId;
+            this.createInitialAttributeValue();
         }
     }
 }

@@ -20,7 +20,6 @@ import {FormsModule} from '@angular/forms';
 import {RouterModule, Routes, Router, ActivatedRoute} from '@angular/router';
 import {Subject, Observable} from 'rxjs';
 
-
 // spicecrm generic modules
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
@@ -48,6 +47,7 @@ import {dockedComposer} from "../../services/dockedcomposer.service";
 import {backend} from "../../services/backend.service";
 import {navigation} from "../../services/navigation.service";
 import {modelutilities} from "../../services/modelutilities.service";
+import {telephony} from "../../services/telephony.service";
 import {toast} from "../../services/toast.service";
 import {favorite} from "../../services/favorite.service";
 import {reminder} from "../../services/reminder.service";
@@ -59,8 +59,8 @@ import {VersionManagerService} from "../../services/versionmanager.service";
 import {modal} from "../../services/modal.service";
 import {layout} from "../../services/layout.service";
 import {loggerService} from "../../services/logger.service";
+import {socket} from "../../services/socket.service";
 import {SystemDynamicRouteInterceptor} from "../../systemcomponents/components/systemdynamicrouteinterceptor";
-
 
 import {ModuleGroupware} from "../../include/groupware/groupware";
 import {GroupwareService} from '../../include/groupware/services/groupware.service';
@@ -74,11 +74,11 @@ import /*embed*/ {OutlookPane} from './components/outlookpane';
 import /*embed*/ {OutlookPaneFooter} from './components/outlookpanefooter';
 import /*embed*/ {OutlookSettingsPane} from './components/outlooksettingspane';
 import /*embed*/ {OutlookLoginPane} from "./components/outlookloginpane";
-import /*embed*/ {OutlookMeetingEditPane} from "./components/outlookmeetingeditpane";
-import /*embed*/ {OutlookMeetingReadPane} from "./components/outlookmeetingreadpane";
-import /*embed*/ {OutlookMeetingAddContainer} from "./components/outlookmeetingaddcontainer";
-import /*embed*/ {OutlookMeetingViewContainer} from "./components/outlookmeetingviewcontainer";
-import /*embed*/ {OutlookMeetingEditContainer} from "./components/outlookmeetingeditcontainer";
+import /*embed*/ {OutlookCalendarItemEditPane} from "./components/outlookcalendaritemeditpane";
+import /*embed*/ {OutlookCalendarItemReadPane} from "./components/outlookcalendaritemreadpane";
+import /*embed*/ {OutlookCalendarItemAddContainer} from "./components/outlookcalendaritemaddcontainer";
+import /*embed*/ {OutlookCalendarItemViewContainer} from "./components/outlookcalendaritemviewcontainer";
+import /*embed*/ {OutlookCalendarItemEditContainer} from "./components/outlookcalendaritemeditcontainer";
 
 declare var Office: any;
 
@@ -104,47 +104,49 @@ declare var Office: any;
         OutlookPaneFooter,
         OutlookSettingsPane,
         OutlookLoginPane,
-        OutlookMeetingEditPane,
-        OutlookMeetingReadPane,
-        OutlookMeetingAddContainer,
-        OutlookMeetingViewContainer,
-        OutlookMeetingEditContainer
+        OutlookCalendarItemEditPane,
+        OutlookCalendarItemReadPane,
+        OutlookCalendarItemAddContainer,
+        OutlookCalendarItemViewContainer,
+        OutlookCalendarItemEditContainer
     ],
     bootstrap: [OutlookPane],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         {provide: GroupwareService, useClass: OutlookGroupware},
-        OutlookConfiguration,
+        aclCheck,
         backend,
         broadcast,
-        layout,
-        navigation,
-        session,
-        metadata,
-        aclCheck,
+        configurationService,
+        cookie,
+        currency,
+        dockedComposer,
+        favorite,
+        footer,
+        fts,
         helper,
+        language,
+        layout,
+        libloader,
+        loader,
+        loggerService,
         loginCheck,
         loginService,
-        loader,
-        libloader,
-        configurationService,
-        language,
-        dockedComposer,
-        fts,
-        recent,
-        modelutilities,
-        toast,
-        favorite,
-        reminder,
-        territories,
-        currency,
-        footer,
-        userpreferences,
-        cookie,
         MathExpressionCompilerService,
-        VersionManagerService,
+        metadata,
         modal,
-        loggerService
+        navigation,
+        modelutilities,
+        OutlookConfiguration,
+        recent,
+        reminder,
+        session,
+        socket,
+        territories,
+        telephony,
+        toast,
+        userpreferences,
+        VersionManagerService
     ]
 })
 export class Outlook {

@@ -1,0 +1,62 @@
+<div class="slds-size_1-of-1 slds-height_full">
+    <!-- multiple matches-->
+    <div *ngIf="!calldata.relatedid && matchedbeans.length > 1; else recordmatched" class="slds-height_full slds-scrollable--y">
+        <div *ngFor="let matchedbean of matchedbeans" [system-model-provider]="{module: matchedbean.module, id: matchedbean.id, data: matchedbean.data}" class="slds-grid slds-p-around--x-small slds-has-divider--bottom">
+            <system-icon class="slds-button" [module]="matchedbean.module" (click)="selectMatched(matchedbean)"></system-icon>
+            <telephony-call-panel-related-compact></telephony-call-panel-related-compact>
+        </div>
+        <div class="slds-m-around--small slds-align--absolute-center">
+            <button class="slds-button slds-button--neutral" (click)="noMatch()"><system-label label="LBL_NOT_LISTED"></system-label></button>
+        </div>
+    </div>
+    <!-- found a matching record -->
+    <ng-template #recordmatched>
+        <div *ngIf="!calldata.start; else callconnected" class="slds-height_full ">
+            <!-- exactly one match-->
+            <ng-container *ngIf="calldata.relatedid">
+                <div class="slds-height_full slds-align_absolute-center">
+                    <div class="slds-text-align_center slds-align-middle">
+                        <system-icon [module]="model.module"></system-icon>
+                        <telephony-call-panel-related></telephony-call-panel-related>
+                    </div>
+                </div>
+            </ng-container>
+            <!-- no match -->
+            <ng-container *ngIf="!calldata.relatedid && matchedbeans.length == 0">
+                <div class="slds-height_full slds-align_absolute-center">
+                    <div class="slds-text-align_center slds-align-middle">
+                        <system-icon module="Calls"></system-icon>
+                        <div class="slds-text-heading_medium">{{msisdnFormatted}}</div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+        <ng-template #callconnected>
+            <div class="slds-docked-composer__lead">
+                <div class="slds-media">
+                    <system-icon [module]="model.module ? model.module : 'Calls'"></system-icon>
+                    <div class="slds-media__body">
+                        <ng-container *ngIf="model.id; else  nocalldata">
+                            <telephony-call-panel-related-compact *ngIf="model.id"></telephony-call-panel-related-compact>
+                        </ng-container>
+                        <ng-template #nocalldata>
+                            <p class="slds-text-heading_medium">{{msisdnFormatted}}</p>
+                            <ul class="slds-list_horizontal slds-has-dividers_right slds-text-body_small">
+                                <li class="slds-item ">create contact</li>
+                                <li class="slds-item ">create lead</li>
+                            </ul>
+                        </ng-template>
+                    </div>
+                </div>
+                <p class="slds-col_bump-left slds-text-heading_large">
+                    <telephony-call-duration [calldata]="calldata"></telephony-call-duration>
+                </p>
+            </div>
+            <div class="slds-docked-composer__toolbar">
+                <telephony-call-panel-save-button [calldata]="calldata"></telephony-call-panel-save-button>
+            </div>
+            <textarea [disabled]="calldata.call" style="height: 270px" class="slds-docked-composer__input slds-input_bare slds-text-longform slds-grow slds-size--1-of-1" [(ngModel)]="calldata.note" [placeholder]="language.getLabel('LBL_CALL_NOTES')"></textarea>
+        </ng-template>
+    </ng-template>
+</div>
+

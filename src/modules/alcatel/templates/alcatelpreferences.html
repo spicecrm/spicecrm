@@ -1,0 +1,33 @@
+<system-modal>
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_ALCATEL_PREFERENCES"></system-label>
+    </system-modal-header>
+    <system-modal-content>
+        <div [system-overlay-loading-spinner]="verifying">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>
+                    <system-label label="LBL_USER_NAME"></system-label>
+                </label>
+                <div class="slds-form-element__control">
+                    <input type="text" autocomplete="off" [(ngModel)]="preferences.username" required class="slds-input"/>
+                </div>
+            </div>
+            <div class="slds-form-element">
+                <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>
+                    <system-label label="LBL_PASSWORD"></system-label>
+                </label>
+                <div class="slds-form-element__control">
+                    <system-input-password [(ngModel)]="preferences.userpass" ></system-input-password>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" [disabled]="verifying" (click)="close()">
+            <system-label label="LBL_CANCEL"></system-label>
+        </button>
+        <button class="slds-button slds-button--brand" [disabled]="!canSet || verifying" (click)="setPreferences()">
+            <system-label label="LBL_SAVE"></system-label>
+        </button>
+    </system-modal-footer>
+</system-modal>

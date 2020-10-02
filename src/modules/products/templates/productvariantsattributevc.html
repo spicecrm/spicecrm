@@ -1,4 +1,4 @@
-<div *ngIf="editmode" class="slds-form-element__control">
+<div *ngIf="isEditMode" class="slds-form-element__control">
     <input type="text" class="slds-input" [(ngModel)]="value" [disabled]="isDisabled">
 </div>
-<field-generic-display *ngIf="!editmode"  [editable]="editable">{{value}}</field-generic-display>
+<field-generic-display *ngIf="!isEditMode"  [editable]="editable">{{value}}</field-generic-display>

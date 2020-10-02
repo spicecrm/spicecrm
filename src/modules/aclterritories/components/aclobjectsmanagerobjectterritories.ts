@@ -95,7 +95,7 @@ export class ACLObjectsManagerObjectTerritories {
                     });
                 }
 
-                this.model.setFieldValue('territoryelementvalues', values);
+                this.model.setField('territoryelementvalues', values);
             });
         });
     }

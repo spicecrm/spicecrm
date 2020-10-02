@@ -1,37 +1,19 @@
-<div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
-    <div class="slds-form-element">
-        <label class="slds-form-element__label">Domain</label>
-        <div class="slds-form-element__control" style="min-width:250px;">
-            <div class="slds-select_container">
-                <select class="slds-select" [(ngModel)]="currentDomain" (change)="reset()">
-                    <option *ngFor="let domain of domains" [value]="domain.id">{{domain.name}}</option>
-                </select>
-            </div>
-        </div>
-    </div>
-    <div class="slds-form-element slds-col--bump-left">
-        <button type="button" class="slds-button slds-button--neutral" ><system-label label="LBL_ADD"></system-label></button>
-        <button type="button" class="slds-button slds-button--brand" ><system-label label="LBL_SAVE"></system-label></button>
-    </div>
-</div>
+<workbench-header titlelabel="LBL_DOMAIN_MANAGER">
+    <workbench-header-controls>
+        <button class="slds-button slds-button--neutral" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+        <button class="slds-button slds-button--neutral" (click)="domainmanager.generateENUMSFromModules()"><system-label label="LBL_GENERATE"></system-label></button>
+    </workbench-header-controls>
+</workbench-header>
 <div class="slds-grid">
-    <div class="slds-size--2-of-5 slds-p-horizontal--small slds-p-top--x-small slds-border--right">
-        <div class="slds-tree_container" role="application" style="max-width: none;">
-            <ul class="slds-tree" role="tree" aria-labelledby="treeheading">
-                <li *ngFor="let domainField of getDomainFields()" role="treeitem" aria-level="1" (click)="selectItem(domainField.id)" [ngClass]="{'slds-theme--shade' : isSelected(domainField.id)}">
-                    <div class="slds-tree__item slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
-                        <a href="javascript:void(0);" role="presentation" class="slds-truncate">{{domainField.name}}</a>
-                        <div>
-                            <button class="slds-button slds-button--icon" title="unlink item">
-                                <system-button-icon [icon]="'remove_link'"></system-button-icon>
-                            </button>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </div>
+    <div class="slds-size--1-of-3" system-to-bottom>
+        <domain-manager-definitions></domain-manager-definitions>
     </div>
-    <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-top--x-small">
-        <domainmanager-field-details *ngIf="showDetails()" [field]="getCurrentField()"></domainmanager-field-details>
+    <div class="slds-size--2-of-3 slds-theme--default slds-border--left" system-to-bottom-noscroll>
+        <div style="height: 50%">
+            <domain-manager-fields></domain-manager-fields>
+        </div>
+        <div style="height: 50%" class="slds-p-around--xx-small">
+            <domain-manager-field-tabs></domain-manager-field-tabs>
+        </div>
     </div>
 </div>

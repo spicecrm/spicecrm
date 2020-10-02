@@ -88,7 +88,7 @@ export class SalesDocsItemsContainer {
     get totalgross() {
         let total = 0;
         for (let item of this.items) {
-            if (item.deleted != 1)  total += parseFloat(item.amount_gross);
+            if (item.deleted != 1) total += parseFloat(item.amount_gross);
         }
         return total;
     }
@@ -96,9 +96,10 @@ export class SalesDocsItemsContainer {
     /**
      * returns the number of not deleted items
      */
-    get itemcount(){
+    get itemcount() {
         return this.items.filter(item => item.deleted != 1).length;
     }
+
     /**
      * recacluates the total document
      */
@@ -159,6 +160,11 @@ export class SalesDocsItemsContainer {
                     let itemTypeDetails = itemTypes.find(thisItemType => thisItemType.name == itemType);
                     if (itemTypeDetails) {
                         this.modal.openModal(itemTypeDetails.addmodalcomponent, true, this.injector).subscribe(addModal => {
+                            // if a filter is set add the filter
+                            if (itemTypeDetails.addmodalfilter) {
+                                addModal.instance.modulefilter = itemTypeDetails.addmodalfilter;
+                            }
+                            // subscribe to the add event
                             addModal.instance.additem.subscribe(item => {
                                 // add the item
                                 this.handleAddItem(item, itemType);
@@ -178,12 +184,16 @@ export class SalesDocsItemsContainer {
         itemData.id = this.model.generateGuid();
         itemData.deleted = 0;
         itemData.salesdoc_id = this.model.id;
-        itemData.tax_category = 'V20';
+        // The tax category is temporarily set by a copy rule.
+        // So for this time only one specific tax rate per CRM installation is possible.
+        // ToDo: Work out a tax rate calculation.
+        // itemData.tax_category = 'V20';
         itemData.quantity = 1;
         itemData.itemnr = this.getNextItemNr();
         itemData.itemtype = itemType;
         itemData.date_entered = new moment();
         itemData.date_modified = new moment();
+        console.log('itemType', itemType);
 
         // add to the bean as well
         if (!this.model.data.salesdocitems) {

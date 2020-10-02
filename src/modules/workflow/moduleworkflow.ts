@@ -5,9 +5,6 @@ import {CommonModule,} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule}   from '@angular/forms';
 
-import {metadata} from '../../services/metadata.service';
-import {VersionManagerService} from '../../services/versionmanager.service';
-
 import { SystemComponents}      from '../../systemcomponents/systemcomponents';
 import { ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import { ObjectFields}      from '../../objectfields/objectfields';
@@ -15,7 +12,12 @@ import { DirectivesModule}      from '../../directives/directives';
 
 import /*embed*/ {workflow} from "./services/workflow.service";
 
-import /*embed*/ {WorkflowManager, notdeletedpipe} from "./components/workflowmanager";
+import /*embed*/ {WorkflowMyOpenTasksPipe} from "./pipes/workflowmyopentaskspipe";
+import /*embed*/ {WorkflowOpenWorkflowsPipe} from "./pipes/workflowopenworkflowspipe";
+import /*embed*/ {WorkflowCompletedWorkflowsPipe} from "./pipes/workflowcompletedworkflowspipe";
+import /*embed*/ {WorkflowManagerNotDeletedPipe} from "./pipes/workflowmanagernotdeletedpipe";
+
+import /*embed*/ {WorkflowManager} from "./components/workflowmanager";
 import /*embed*/ {WorkflowManagerDetail} from "./components/workflowmanagerdetail";
 import /*embed*/ {WorkflowManagerDetailTasks} from "./components/workflowmanagerdetailtasks";
 import /*embed*/ {WorkflowManagerDetailTasksLine} from "./components/workflowmanagerdetailtasksline";
@@ -34,15 +36,16 @@ import /*embed*/ {WorkflowManagerDetailConditions} from "./components/workflowma
 import /*embed*/ {WorkflowManagerDetailConditionsLine} from "./components/workflowmanagerdetailconditionsline";
 import /*embed*/ {WorkflowManagerFieldsdropdown} from "./components/workflowmanagerfieldsdropdown";
 import /*embed*/ {WorkflowPanel} from "./components/workflowpanel";
-import /*embed*/ {WorkflowMyOpenTasksPipe} from "./pipes/workflowmyopentaskspipe";
-import /*embed*/ {WorkflowOpenWorkflowsPipe} from "./pipes/workflowopenworkflowspipe";
+
 import /*embed*/ {WorkflowPanelHeader} from "./components/workflowpanelheader";
 import /*embed*/ {WorkflowPanelItem} from "./components/workflowpanelitem";
 import /*embed*/ {WorkflowPanelTasks} from "./components/workflowpaneltasks";
 import /*embed*/ {WorkflowPanelTasksItem} from "./components/workflowpaneltasksitem";
 import /*embed*/ {WorkflowPanelTask} from "./components/workflowpaneltask";
-import /*embed*/ {WorkflowPanelTaskComments} from "./components/workflowpaneltaskcomments";
+import /*embed*/ {WorkflowPanelTasksComments} from "./components/workflowpaneltaskscomments";
 import /*embed*/ {WorkflowTasksDashlet} from "./components/workflowtasksdashlet";
+
+import /*embed*/ {WorkflowCloseWorkflowButton} from "./components/workflowcloseworkflowbutton";
 
 @NgModule({
     imports: [
@@ -55,7 +58,6 @@ import /*embed*/ {WorkflowTasksDashlet} from "./components/workflowtasksdashlet"
     ],
     declarations: [
         WorkflowManager,
-        notdeletedpipe,
         WorkflowManagerDetail,
         WorkflowManagerDetailTasks,
         WorkflowManagerDetailTasksLine,
@@ -76,24 +78,17 @@ import /*embed*/ {WorkflowTasksDashlet} from "./components/workflowtasksdashlet"
         WorkflowManagerFieldsdropdown,
         WorkflowPanel,
         WorkflowOpenWorkflowsPipe,
+        WorkflowCompletedWorkflowsPipe,
+        WorkflowManagerNotDeletedPipe,
         WorkflowMyOpenTasksPipe,
         WorkflowPanelHeader,
         WorkflowPanelItem,
         WorkflowPanelTasks,
         WorkflowPanelTasksItem,
+        WorkflowPanelTasksComments,
         WorkflowPanelTask,
-        WorkflowPanelTaskComments,
-        WorkflowTasksDashlet
+        WorkflowTasksDashlet,
+        WorkflowCloseWorkflowButton
     ]
 })
-export class ModuleWorkflow {
-    readonly version = '1.0';
-    readonly build_date = '/*build_date*/';
-
-    constructor(
-        public metadata: metadata,
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
-    }
-}
+export class ModuleWorkflow {}

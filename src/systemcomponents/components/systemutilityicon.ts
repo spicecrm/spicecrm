@@ -72,7 +72,7 @@ export class SystemUtilityIcon implements OnChanges{
      * returns the SVG href
      */
     private getSvgHRef() {
-        return './sldassets/icons/' + this._sprite + '-sprite/svg/symbols.svg#' + this._icon;
+        return './vendor/sldassets/icons/' + this._sprite + '-sprite/svg/symbols.svg#' + this._icon;
     }
 
     /**
@@ -87,7 +87,7 @@ export class SystemUtilityIcon implements OnChanges{
      * handles the icon .. if there is a ':' in the icon name the first part is the sprite .. the second is the icon
      */
     get _icon() {
-        if (this.icon.indexOf(':') > 0) {
+        if (this.icon && this.icon.indexOf(':') > 0) {
             return this.icon.split(':')[1];
         } else {
             return this.icon;
@@ -98,7 +98,7 @@ export class SystemUtilityIcon implements OnChanges{
      * handles the sprite .. if there is a ':' in the icon name the first part is the sprite .. default is utility
      */
     get _sprite() {
-        if (this.icon.indexOf(':') > 0) {
+        if (this.icon && this.icon.indexOf(':') > 0) {
             return this.icon.split(':')[0];
         } else {
             return 'utility';
@@ -109,7 +109,7 @@ export class SystemUtilityIcon implements OnChanges{
      * handles the sprite .. if there is a ':' in the icon name the first part is the sprite .. default is utility
      */
     get _size() {
-        if (this.icon.indexOf(':') > 0 && this.icon.split(':').length > 2) {
+        if (this.icon && this.icon.indexOf(':') > 0 && this.icon.split(':').length > 2) {
             return this.icon.split(':')[2];
         }
 

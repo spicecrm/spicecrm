@@ -133,9 +133,13 @@ export class fieldEmail extends fieldGeneric {
     /**
      * navigate to operation system email sender
      */
-    private sendEmail() {
+    private sendEmail(e: MouseEvent) {
+        // avoid double opening
+        e.stopPropagation();
+        e.preventDefault();
+
         if (this.value.length > 0) {
-            window.location.assign('mailto:' + this.value);
+            window.open('mailto:' + this.value);
         }
     }
 }

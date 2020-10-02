@@ -205,6 +205,8 @@ export class navigation {
 
         // create the bheavious subject and set to the main tab
         this.activeTab$ = new BehaviorSubject('main');
+
+        this.setTabTitle();
     }
 
     private setSessionData() {
@@ -273,6 +275,9 @@ export class navigation {
         // emit the new active tab
         this.activeTab$.next(tab.id);
 
+        // sets the tab title
+        this.setTabTitle();
+
         // set the browser location accordingly without triggering the router
         this.router.navigate([tab.url]);
         // this.location.replaceState(tab.url);
@@ -315,11 +320,11 @@ export class navigation {
         // this.activeId = id;
         this.activeModule$.emit(activemodule);
 
-        this.title.setTitle(this.systemName + " " + (summaryText !== "" ? summaryText : activemodule));
+        this.title.setTitle(this.systemName + " / " + (summaryText !== "" ? summaryText : activemodule));
     }
 
     private get systemName() {
-        return this.configurationService.data.display ? this.configurationService.data.display : "SpiceCRM";
+        return this.configurationService.systemName;
     }
 
     /**
@@ -382,6 +387,9 @@ export class navigation {
 
                     // check for the activetab
                     this.activeTab$.next(this.activeTab);
+
+                    // set the tab title
+                    this.setTabTitle();
                 }
                 break;
             default:
@@ -486,6 +494,10 @@ export class navigation {
      * @param tabId
      */
     private parentTabId(tabId) {
+        // if we are on main no parenttab id can be found
+        if (tabId == 'main') return null;
+
+        // otherwise search tabs
         return this.objectTabs.find(tab => tab.id == tabId).parentid;
     }
 
@@ -638,6 +650,46 @@ export class navigation {
     public setActiveTab(tabid) {
         this.activeTab = tabid;
         this.activeTab$.next(this.activeTab);
+
+        // set the tab title
+        this.setTabTitle();
+    }
+
+    private setTabTitle() {
+        // sets the browser title
+        let tab = this.getTabById(this.activeTab);
+
+        let displayname = '';
+        if(tab.displayname){
+            displayname = tab.displayname;
+        } else if(tab.displaymodule){
+            displayname = this.language.getModuleName(tab.displaymodule);
+        } else if (this.activeModule){
+            displayname = this.language.getModuleName(this.activeModule);
+        }
+
+        this.title.setTitle(this.systemName + (displayname ?  ` / ${displayname}`: ''));
+    }
+
+    /**
+     * clones a tab and adds it to the scope
+     *
+     * @param tabid
+     */
+    public cloneTab(tabid) {
+        let activeTab = this.getTabById(tabid);
+        let newtabid = this.helper.generateGuid();
+        this.objectTabs.unshift({
+            id: newtabid,
+            parentid: undefined,
+            path: activeTab.path,
+            url: activeTab.url,
+            params: {...activeTab.params},
+            active: false,
+            pinned: false,
+            enablesubtabs: activeTab.enablesubtabs
+        });
+        this.activeTab = newtabid;
     }
 
     /**
@@ -730,9 +782,11 @@ export class navigation {
             if (this.objectTabs[index].active || this.objectTabs.find(tab => tab.active)?.parentid == tabid) {
                 // if we have a parent tab navigate to that .. otherwise to the main tab
                 if (this.objectTabs[index].parentid) {
-                    this.router.navigate([this.objectTabs.find(tab => tab.id == this.objectTabs[index].parentid).url]);
+                    this.setActiveTab(this.objectTabs[index].parentid);
+                    // this.router.navigate([this.objectTabs.find(tab => tab.id == this.objectTabs[index].parentid).url]);
                 } else {
-                    this.router.navigate([this.maintab.url]);
+                    this.setActiveTab('main');
+                    // this.router.navigate([this.maintab.url]);
                 }
             }
 
@@ -747,32 +801,31 @@ export class navigation {
                 this.modelregister.splice(modelIndex, 1);
             }
 
-        }
+            // find any tab that has the id as a parent id
+            index = this.objectTabs.length - 1;
+            while (index >= 0) {
+                // for (let objectTab of this.objectTabs){
+                // if the id matched splice the array otherwise increase the index
+                let objectTab = this.objectTabs[index];
+                if (objectTab.parentid == tabid) {
+                    this.objectTabs.splice(index, 1);
 
-        // find any tab that has the id as a parent id
-        index = this.objectTabs.length - 1;
-        while (index >= 0) {
-            // for (let objectTab of this.objectTabs){
-            // if the id matched splice the array otherwise increase the index
-            let objectTab = this.objectTabs[index];
-            if (objectTab.parentid == tabid) {
-                this.objectTabs.splice(index, 1);
-
-                // tslint:disable:no-conditional-assignment
-                let modelIndex = -1;
-                while ((modelIndex = this.modelregister.findIndex(model => model.tabid == tabid)) >= 0) {
-                    this.modelregister.splice(modelIndex, 1);
+                    // tslint:disable:no-conditional-assignment
+                    let modelIndex = -1;
+                    while ((modelIndex = this.modelregister.findIndex(model => model.tabid == tabid)) >= 0) {
+                        this.modelregister.splice(modelIndex, 1);
+                    }
                 }
+                index--;
+
             }
-            index--;
 
+            // emit the change
+            this.objectTabsChange$.emit(true);
+
+            // set to the session
+            this.setSessionData();
         }
-
-        // emit the change
-        this.objectTabsChange$.emit(true);
-
-        // set to the session
-        this.setSessionData();
     }
 
     public checkActiveRoute(object) {

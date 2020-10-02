@@ -1,14 +1,8 @@
 /**
  * @module ObjectComponents
  */
-import {Component, AfterViewInit, ViewChild, ViewContainerRef, Renderer2} from "@angular/core";
-import {
-    trigger,
-    state,
-    style,
-    animate,
-    transition
-} from '@angular/animations';
+import {AfterViewInit, Component, Input, Renderer2, ViewChild, ViewContainerRef} from "@angular/core";
+import {animate, state, style, transition, trigger} from '@angular/animations';
 import {model} from "../../services/model.service";
 import {language} from "../../services/language.service";
 import {toast} from "../../services/toast.service";
@@ -16,6 +10,8 @@ import {modelattachments} from "../../services/modelattachments.service";
 import {metadata} from "../../services/metadata.service";
 import {footer} from "../../services/footer.service";
 import {modal} from "../../services/modal.service";
+import {configurationService} from "../../services/configuration.service";
+import {backend} from "../../services/backend.service";
 
 /**
  * a generic component that renders a panel in teh contect of a model. This allows uploading files and also has a drag and drop functionality to cimply drop files over the component and upload the file
@@ -51,24 +47,50 @@ import {modal} from "../../services/modal.service";
 export class ObjectRelatedlistFiles implements AfterViewInit {
 
     /**
+     * an object array with base64 files
+     */
+    @Input() public files: any[] = [];
+    /**
+     * holds the filtered files list
+     * @private
+     */
+    protected filteredFiles: any[] = [];
+    /**
      * the fileupload elelent
      */
     @ViewChild("fileupload", {read: ViewContainerRef, static: true}) private fileupload: ViewContainerRef;
-
     /**
      * @ignore
      *
      * passed in component config
      */
     private componentconfig: any = {};
-
     /**
      * @ignore
      *
      * keeps if the modal is open or not
      */
     private isopen: boolean = true;
-
+    /**
+     * holds the selected category value
+     * @private
+     */
+    private selectedCategoryId: string = '';
+    /**
+     * holds the filter term for files
+     * @private
+     */
+    private filterTerm: string = '';
+    /**
+     * holds the available categories
+     * @private
+     */
+    protected categories: any[] = [];
+    /**
+     * holds the search timeout
+     * @private
+     */
+    private filterTimeout: number;
     /**
      * contructor sets the module and id for the laoder
      * @param modelattachments
@@ -78,25 +100,62 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      * @param toast
      * @param footer
      * @param metadata
+     * @param backend
+     * @param configurationService
      * @param modalservice
      */
-    constructor(private modelattachments: modelattachments, private language: language, private model: model, private renderer: Renderer2, private toast: toast, private footer: footer, private metadata: metadata, private modalservice: modal) {
-        this.modelattachments.module = this.model.module;
-        this.modelattachments.id = this.model.id;
-    }
-
-    /**
-     * initializes the model attachments service and loads the attachments
-     */
-    private loadFiles() {
-        this.modelattachments.getAttachments();
+    constructor(private modelattachments: modelattachments,
+                private language: language,
+                private model: model,
+                private renderer: Renderer2,
+                private toast: toast,
+                private footer: footer,
+                private metadata: metadata,
+                private backend: backend,
+                private configurationService: configurationService,
+                private modalservice: modal) {
     }
 
     /**
      * @ignore
      */
     public ngAfterViewInit() {
+        this.setModelData();
         setTimeout(() => this.loadFiles(), 10);
+    }
+
+    /**
+     * load categories from backend or from configuration data
+      * @private
+     */
+    private loadCategories() {
+        if (!!this.configurationService.getData('spiceattachments_categories')) {
+            return this.categories = this.configurationService.getData('spiceattachments_categories');
+        }
+        this.backend.getRequest('spiceAttachments/categories/' + this.model.module).subscribe(res => {
+            if (!res || !Array.isArray(res)) return;
+            this.categories = res;
+            this.configurationService.setData('spiceattachments_categories', res);
+        });
+    }
+
+    /**
+     * initializes the model attachments service and loads the attachments
+     */
+    private loadFiles() {
+        // set input base64 files
+        if (this.files.length > 0) {
+            this.doupload(this.files);
+        }
+        this.modelattachments.getAttachments().subscribe(res => {
+            this.filteredFiles = res;
+            this.loadCategories();
+        });
+    }
+
+    private setModelData() {
+        this.modelattachments.module = this.model.module;
+        this.modelattachments.id = this.model.id;
     }
 
     /**
@@ -198,5 +257,30 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
                 this.modelattachments.files.push(file);
             });
         });
+    }
+
+    /**
+     * set filtered files by action
+     * @param action
+     * @param value
+     * @private
+     */
+    private setFilteredFiles(action: string, value: string) {
+        switch (action) {
+            case 'category':
+                this.selectedCategoryId = value;
+                this.filteredFiles = value == '*' ? this.modelattachments.files : this.modelattachments.files
+                    .filter(file => !!file.category_ids && file.category_ids.includes(value));
+                break;
+            case 'input':
+                const term = value.toLowerCase();
+                this.filterTerm = value;
+
+                window.clearTimeout(this.filterTimeout);
+                this.filterTimeout = window.setTimeout(() => {
+                    this.filteredFiles = value.length == 0 ? this.modelattachments.files : this.modelattachments.files
+                        .filter(file => file.filename.toLowerCase().includes(term) || (!!file.display_name && file.display_name.toLowerCase().includes(term)) || (!!file.text && file.text.toLowerCase().includes(term)));
+                }, 600);
+        }
     }
 }

@@ -3,6 +3,7 @@
  */
 import {Component, OnInit} from '@angular/core';
 import {model} from '../../services/model.service';
+import {configurationService} from '../../services/configuration.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
@@ -28,7 +29,8 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
         public metadata: metadata,
         public router: Router,
         private backend: backend,
-        private modal: modal
+        private modal: modal,
+        private configuration: configurationService
     ) {
         super(model, view, language, metadata, router);
     }
@@ -64,18 +66,30 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
      * ToDo: swicth to separate route without the old filter style
      */
     public ngOnInit() {
-        let templateFilterParams = {
-            searchfields: JSON.stringify({
-                join: 'AND', conditions: [
-                    {field: 'for_bean', operator: '=', value: this.model.getFieldValue('parent_type')}
-                ]
-            })
+
+        let emailTemplates = this.configuration.getData('EmailTemplates');
+        if (emailTemplates) {
+            this.availableTemplates = emailTemplates.filter(et => et.type == 'email' &&  et.for_bean == this.model.getFieldValue('parent_type'));
+            this.isLoaded = true;
+        } else {
+            let params = {
+                start: 0,
+                limit: 500,
+                listid: 'all'
+            };
+            this.backend.getRequest('module/EmailTemplates', params).subscribe(
+                (data: any) => {
+                    // set the templates
+                    this.configuration.setData('EmailTemplates', data.list);
+
+                    // set the templates internally
+                    this.availableTemplates = data.list.filter(et => et.type == 'email' && et.for_bean == this.model.getFieldValue('parent_type'));
+
+                    this.isLoaded = true;
+                }
+            );
         }
 
-        this.backend.getRequest('module/EmailTemplates', templateFilterParams).subscribe((data: any) => {
-            this.availableTemplates = data.list;
-            this.isLoaded = true;
-        });
     }
 
     /**

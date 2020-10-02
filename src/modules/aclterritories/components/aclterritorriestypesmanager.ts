@@ -1,13 +1,10 @@
 /**
  * @module ModuleACLTerritories
  */
-import {AfterViewInit, ComponentFactoryResolver, Component, ElementRef, NgModule, ViewChild, ViewContainerRef} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {model} from '../../../services/model.service';
-import {modellist} from '../../../services/modellist.service';
+import {Component} from '@angular/core';
+import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
-import {navigation} from '../../../services/navigation.service';
-import {broadcast} from "../../../services/broadcast.service";
+import {navigationtab} from '../../../services/navigationtab.service';
 
 
 @Component({
@@ -15,23 +12,23 @@ import {broadcast} from "../../../services/broadcast.service";
 })
 export class ACLTerritorriesTypesmanager {
 
-    @ViewChild('typemanagercontent', {read: ViewContainerRef, static: true}) elementmanagercontent: ViewContainerRef;
+    private activeType: string = '';
 
-    activeType: string = '';
-
-    constructor(private backend: backend, private navigation: navigation, private elementRef: ElementRef) {
-        // set theenavigation paradigm
-        // this.navigation.setActiveModule('Tasks');
+    constructor(private language: language, private backend: backend, private navigationtab: navigationtab) {
+        this.setTabTitle();
     }
 
-    get contentStyle(){
-        let rect = this.elementmanagercontent.element.nativeElement.getBoundingClientRect();
-        return {
-            height: 'calc(100vh - ' + rect.top + 'px'
-        }
+    /**
+     * sets the tab title
+     */
+    private setTabTitle() {
+        this.navigationtab.setTabInfo({
+            displayicon: 'settings',
+            displayname: this.language.getLabel('LBL_TERRITORY_TYPES')
+        });
     }
 
-    setType(newType){
+    private setType(newType) {
         this.activeType = newType;
     }
 

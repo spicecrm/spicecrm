@@ -5,14 +5,14 @@
         <label class="slds-form-element__label" for="{{componentId}}-val-for-0">Text for Value 0</label>
         <div class="slds-form-element__control">
             <input *ngIf="editing" type="text" id="{{componentId}}-val-for-0" class="slds-input" [(ngModel)]="textForScore0" (change)="writeSettings()"/>
-            <div *ngIf="!editing" class="slds-has-divider--bottom slds-p-vertical--x-small spicecrm-fieldminheight">{{textForScore0}}</div>
+            <div *ngIf="!editing" class="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight">{{textForScore0}}</div>
         </div>
     </div>
     <div class="slds-form-element slds-size--1-of-2 slds-p-left--x-small">
         <label class="slds-form-element__label" for="{{componentId}}-val-for-10">Text for Value 10</label>
         <div class="slds-form-element__control">
             <input *ngIf="editing" type="text" id="{{componentId}}-val-for-10" class="slds-input" [(ngModel)]="textForScore10" (change)="writeSettings()"/>
-            <div *ngIf="!editing" class="slds-has-divider--bottom slds-p-vertical--x-small spicecrm-fieldminheight">{{textForScore10}}</div>
+            <div *ngIf="!editing" class="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight">{{textForScore10}}</div>
         </div>
     </div>
 </div>

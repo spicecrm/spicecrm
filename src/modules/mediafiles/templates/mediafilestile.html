@@ -3,7 +3,7 @@
         <figure>
             <!--a href="javascript:void(0);" class="slds-file__crop"-->
             <div style="height: 165px; width: 294px;" class="slds-align--absolute-center">
-                <img *ngIf="!thumbnail" src="./sldassets/images/placeholder-img@16x9.jpg"/>
+                <img *ngIf="!thumbnail" src="./vendor/sldassets/images/placeholder-img@16x9.jpg"/>
                 <img style="max-height: 100%;max-width: 100%;" *ngIf="thumbnail" [src]="thumbnail" alt="Description of the image" />
             </div>
             <figcaption class="slds-file__title slds-is-relative slds-file__title_card">
@@ -14,6 +14,9 @@
                     <div class="slds-media__body slds-grow slds-truncate">
                         <object-record-fieldset-horizontal-list [fieldset]="fieldset"></object-record-fieldset-horizontal-list>
                     </div>
+                    <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-small slds-m-horizontal--xx-small" (click)="expand()">
+                        <system-button-icon icon="expand" size="small"></system-button-icon>
+                    </button>
                     <object-action-menu *ngIf="!selectbox" buttonsize="small"></object-action-menu>
                 </div>
             </figcaption>

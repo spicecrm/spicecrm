@@ -13,7 +13,7 @@
                 </li>
             </ul>
             <div *ngIf="activeTab == 'tree'" class="slds-tabs--default__content slds-show slds-p-vertical--none" role="tabpanel" style="background-color: #fafaf9">
-                <div [ngStyle]="treeContainerStyle" class="slds-scrollable--y spicecrm-scrollbar">
+                <div [ngStyle]="treeContainerStyle" class="slds-scrollable--y spice-scrollbar">
                     <div *ngIf="selectedBook && documents.length == 0 && !isLoading" class="slds-text-align--center slds-text-heading--small slds-truncate slds-p-top--x-small">
                         <system-label label="MSG_CREATE_FIRST_RECORD"></system-label>
                     </div>
@@ -36,7 +36,7 @@
         </div>
     </div>
     <div class="slds-size--3-of-4">
-        <div [ngStyle]="detailsContainerStyle" class="slds-scrollable--y spicecrm-scrollbar">
+        <div [ngStyle]="detailsContainerStyle" class="slds-scrollable--y spice-scrollbar">
             <knowledge-manager-details [selectedDoc]="selectedDoc"></knowledge-manager-details>
         </div>
     </div>

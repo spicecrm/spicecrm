@@ -35,7 +35,8 @@ import /*embed*/ {SystemCard} from "./components/systemcard";
 import /*embed*/ {SystemCardHeader} from "./components/systemcardheader";
 import /*embed*/ {SystemCardBody} from "./components/systemcardbody";
 import /*embed*/ {SystemCardFooter} from "./components/systemcardfooter";
-import /*embed*/ {SystemCheckboxGroup, SystemCheckboxGroupCheckbox} from "./components/systemcheckboxgroup";
+import /*embed*/ {SystemCheckboxGroup} from "./components/systemcheckboxgroup";
+import /*embed*/ {SystemCheckboxGroupCheckbox} from "./components/systemcheckboxgroupcheckbox";
 import /*embed*/ {SystemCheckbox} from "./components/systemcheckbox";
 import /*embed*/ {SystemCollabsableTab} from "./components/systemcollabsabletab";
 import /*embed*/ {SystemComponentContainer} from "./components/systemcomponentcontainer";
@@ -43,6 +44,7 @@ import /*embed*/ {SystemComponentMissing} from "./components/systemcomponentmiss
 import /*embed*/ {SystemComponentSet} from "./components/systemcomponentset";
 import /*embed*/ {SystemConfirmDialog} from "./components/systemconfirmdialog";
 import /*embed*/ {SystemCustomIcon} from "./components/systemcustomicon";
+import /*embed*/ {SystemDisplayNumber} from "./components/systemdisplaynumber";
 import /*embed*/ {SystemDynamicComponent} from "./components/systemdynamiccomponent";
 import /*embed*/ {SystemDynamicRouteContainer} from "./components/systemdynamicroutecontainer";
 import /*embed*/ {SystemDynamicRouteInterceptor} from "./components/systemdynamicrouteinterceptor";
@@ -61,6 +63,8 @@ import /*embed*/ {SystemInputMultiEnum} from "./components/systeminputmultienum"
 import /*embed*/ {SystemInputInteger} from "./components/systeminputinteger";
 import /*embed*/ {SystemInputActionset} from "./components/systeminputactionset";
 import /*embed*/ {SystemInputComponentset} from "./components/systeminputcomponentset";
+import /*embed*/ {SystemInputCountry} from "./components/systeminputcountry";
+import /*embed*/ {SystemInputCountryCode} from "./components/systeminputcountrycode";
 import /*embed*/ {SystemInputDatePicker} from "./components/systeminputdatepicker";
 import /*embed*/ {SystemInputDate} from "./components/systeminputdate";
 import /*embed*/ {SystemInputDelayed} from "./components/systeminputdelayed";
@@ -74,10 +78,12 @@ import /*embed*/ {SystemInputPassword} from "./components/systeminputpassword";
 import /*embed*/ {SystemInputRadio} from "./components/systeminputradio";
 import /*embed*/ {SystemInputRadioButtonGroup} from "./components/systeminputradiobuttongroup";
 import /*embed*/ {SystemInputRelate} from "./components/systeminputrelate";
+import /*embed*/ {SystemInputState} from "./components/systeminputstate";
 import /*embed*/ {SystemInputTags} from "./components/systeminputtags";
 import /*embed*/ {SystemInputTime} from "./components/systeminputtime";
 import /*embed*/ {SystemInputCompanycodes} from "./components/systeminputcompanycodes";
 import /*embed*/ {SystemInputBackendMethod} from "./components/systeminputbackendmethod";
+import /*embed*/ {SystemInstallerComponent} from "./components/systeminstallercomponent";
 import /*embed*/ {SystemLabel} from "./components/systemlabel";
 import /*embed*/ {SystemLabelFieldname} from "./components/systemlabelfieldname";
 import /*embed*/ {SystemLabelModulename} from "./components/systemlabelmodulename";
@@ -183,6 +189,7 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemComponentSet,
         SystemConfirmDialog,
         SystemCustomIcon,
+        SystemDisplayNumber,
         SystemDynamicComponent,
         SystemDynamicRouteContainer,
         SystemDynamicRouteInterceptor,
@@ -201,6 +208,8 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemInputMultiEnum,
         SystemInputActionset,
         SystemInputComponentset,
+        SystemInputCountry,
+        SystemInputCountryCode,
         SystemInputDate,
         SystemInputDatePicker,
         SystemInputDelayed,
@@ -214,11 +223,13 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemInputRadio,
         SystemInputRadioButtonGroup,
         SystemInputRelate,
+        SystemInputState,
         SystemInputTags,
         SystemInputTime,
         SystemInputCompanycodes,
         SystemInputBackendMethod,
         SystemInputBase64,
+        SystemInstallerComponent,
         SystemLabel,
         SystemLabelFieldname,
         SystemLabelModulename,
@@ -306,6 +317,7 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemComponentMissing,
         SystemComponentSet,
         SystemCustomIcon,
+        SystemDisplayNumber,
         SystemDynamicComponent,
         SystemFilterBuilderFilterExpression,
         SystemFilterBuilderFilterExpressionFields,
@@ -325,6 +337,8 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemInputMultiEnum,
         SystemInputActionset,
         SystemInputComponentset,
+        SystemInputCountry,
+        SystemInputCountryCode,
         SystemInputDate,
         SystemInputDatePicker,
         SystemInputDelayed,
@@ -338,11 +352,13 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemInputRadio,
         SystemInputRadioButtonGroup,
         SystemInputRelate,
+        SystemInputState,
         SystemInputTags,
         SystemInputTime,
         SystemInputCompanycodes,
         SystemInputBackendMethod,
         SystemInputBase64,
+        SystemInstallerComponent,
         SystemLabel,
         SystemLabelFieldname,
         SystemLabelModulename,
@@ -394,6 +410,8 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemImageModal,
         SystemNavigationCollector,
         SystemNavigationManager,
+        SystemInputCountry,
+        SystemInputState,
     ]
 })
 export class SystemComponents {

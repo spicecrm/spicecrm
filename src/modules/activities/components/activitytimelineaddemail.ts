@@ -1,7 +1,7 @@
 /**
  * @module ModuleActivities
  */
-import {Component, ElementRef, OnInit, Renderer2, ViewContainerRef} from '@angular/core';
+import {Component, OnInit, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {model} from '../../../services/model.service';
@@ -19,34 +19,57 @@ import {ActivityTimelineAddItem} from "./activitytimelineadditem";
     providers: [model, view]
 })
 export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements OnInit {
-
-    public fromEmails: any[] = [];
-    private formFields: any[] = [];
-    private fromInbox: string = '';
+    /**
+     * holds the fieldset fields
+     */
+    protected formFields: any[] = [];
+    /**
+     * holds the fieldset id
+     */
     private formFieldSet: string = '';
-    private isInitialized: boolean = false;
 
-    constructor(public metadata: metadata, public elementRef: ElementRef, renderer: Renderer2, public activitiytimeline: activitiytimeline, public model: model, public view: view, public language: language, public modal: modal, public dockedComposer: dockedComposer, public ViewContainerRef: ViewContainerRef, public backend: backend, private session: session) {
+    constructor(
+        public metadata: metadata,
+        public activitiytimeline: activitiytimeline,
+        public model: model,
+        public view: view,
+        public language: language,
+        public modal: modal,
+        public dockedComposer: dockedComposer,
+        public ViewContainerRef: ViewContainerRef,
+        public backend: backend,
+        private session: session
+    ) {
         super(metadata, activitiytimeline, model, view, language, modal, dockedComposer, ViewContainerRef);
     }
 
-    public get firstFormField() {
-        return this.formFields.filter((item, index) => index === 0);
+    /**
+     * checks if the email can be sent
+     */
+    get canSend() {
+        let receipientaddresses = this.model.getField('recipient_addresses');
+        return receipientaddresses ? receipientaddresses.some(r => r.address_type == 'to') : false;
     }
 
+    /**
+     * subscribe to parent
+     * get fieldset fields
+     */
     public ngOnInit() {
-        this.initializeEmail();
-        this.subscribeParent();
+        this.model.module = 'Emails';
         this.setEditMode();
-        this.getFields();
+        this.subscribeParent();
+        this.getFieldsetFields();
     }
 
+    /**
+     * initialize email model
+     */
     private initializeEmail() {
-        this.isInitialized = true;
-        this.model.module = 'Emails';
-        // SPICEUI-2
+
         this.model.id = this.model.generateGuid();
         this.model.initializeModel();
+        this.model.startEdit();
 
         // set the parent data
         this.model.data.parent_type = this.activitiytimeline.parent.module;
@@ -64,7 +87,7 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
     private subscribeParent() {
         this.activitiytimeline.parent.data$.subscribe(data => {
             if (this.model.data.recipient_addresses.length == 0) {
-                this.determineToAddr();
+                this.determineRecipientAddress();
             }
             // if we still have the same model .. update
             if (data.id == this.model.data.parent_id) {
@@ -73,35 +96,39 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
         });
     }
 
+    /**
+     * set view edit mode
+     */
     private setEditMode() {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
 
-    private getFields() {
+    /**
+     * get fieldset fields
+     */
+    private getFieldsetFields() {
         let conf = this.metadata.getComponentConfig('ActivityTimelineAddEmail', this.model.module);
         this.formFieldSet = conf.fieldset;
         this.formFields = this.metadata.getFieldSetItems(conf.fieldset);
     }
 
+    /**
+     * expand the panel and initialize the email model
+     */
     private onFocus() {
-        if (!this.isInitialized) {
-            this.determineToAddr();
-
-            this.backend.getRequest('EmailManager/outbound').subscribe(data => {
-                if (data.length > 0) {
-                    for (let entry of data) {
-                        this.fromEmails.push(entry);
-                    }
-                    this.fromInbox = data[0].id;
-                }
-            });
+        if(!this.isExpanded) {
+            this.isExpanded = true;
+            this.initializeEmail();
+            this.determineRecipientAddress();
+            this.setEditMode();
         }
-        this.isExpanded = true;
     }
 
-    private determineToAddr() {
-        // see if we have an email from the parent
+    /**
+     * determine recipient address from parent
+     */
+    private determineRecipientAddress() {
         if (this.activitiytimeline.parent.data.email1) {
             this.model.data.recipient_addresses = [{
                 parent_type: this.activitiytimeline.parent.module,
@@ -113,18 +140,37 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
         }
     }
 
-
+    /**
+     * attempt to send the email and prompt the user if the subject and body are empty
+     */
     private send() {
-        this.model.data.to_be_sent = true;
-        this.save();
+        if (!this.canSend) return;
+        if (!this.model.getField('name') && !this.model.getField('body')) {
+            this.modal.prompt(
+                "confirm",
+                this.language.getLabel('LBL_EMAIL_SEND_EMPTY', null, 'long'),
+                this.language.getLabel('LBL_EMAIL_SEND_EMPTY')
+            ).subscribe(resp => {
+                if (resp) {
+                    this.save();
+                }
+            });
+        } else {
+            this.save();
+        }
     }
 
+    /**
+     * save the email and reinitialize the email model
+     */
     private save() {
-        this.model.save().subscribe(data => {
+        this.model.data.to_be_sent = true;
+        this.model.save().subscribe(() => {
             this.isExpanded = false;
             this.model.data.to_be_sent = false;
             this.initializeEmail();
-            this.determineToAddr();
+            this.determineRecipientAddress();
+            this.model.endEdit();
         });
     }
 }

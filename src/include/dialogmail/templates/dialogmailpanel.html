@@ -1,0 +1,36 @@
+<system-card>
+    <system-card-header icon="list_email" cardtitel="Dialog Mail"></system-card-header>
+    <system-card-body class="slds-scrollable" style="display: block">
+        <system-spinner *ngIf="isLoading"></system-spinner>
+        <table *ngIf="!isLoading" class="slds-table slds-max-medium-table_stacked-horizontal slds-table--bordered slds-no-row-hover">
+            <thead>
+            <tr class="slds-text-title--caps">
+                <th scope="col">
+                    <span class="slds-truncate">{{language.getLabel('LBL_SUBJECT')}}</span>
+                </th>
+                <th scope="col">
+                    <span class="slds-truncate">{{language.getLabel('LBL_DESCRIPTION')}}</span>
+                </th>
+                <th scope="col">
+                    <span class="slds-truncate">{{language.getLabel('LBL_DATE')}}</span>
+                </th>
+                <th scope="col">
+                    <span class="slds-truncate">{{language.getLabel('LBL_OPENED')}}</span>
+                </th>
+                <th scope="col">
+                    <span class="slds-truncate">{{language.getLabel('LBL_CLICKS')}}</span>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let mailLogItem of dMailList" class="slds-hint-parent">
+                <td>{{mailLogItem.betreff}}</td>
+                <td>{{mailLogItem.bezeichnung}}</td>
+                <td>{{mailLogItem.datum}}</td>
+                <td>{{mailLogItem.geoeffnet}}</td>
+                <td>{{mailLogItem.klicks}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </system-card-body>
+</system-card>

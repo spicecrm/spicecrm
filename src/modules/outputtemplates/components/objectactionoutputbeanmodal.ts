@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import { Component, EventEmitter } from '@angular/core';
+import {Component, Directive, EventEmitter, Input, Output, ViewChild, ViewContainerRef} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
@@ -9,13 +9,39 @@ import {language} from '../../../services/language.service';
 import {modal} from "../../../services/modal.service";
 import {view} from "../../../services/view.service";
 import {backend} from "../../../services/backend.service";
+import {trigger, transition, animate, style, state} from '@angular/animations';
+import {ObjectActionOutputBeanModalEmailContent} from "./objectactionoutputbeanmodalemailcontent";
 
 @Component({
     selector: 'object-action-output-bean-modal',
     templateUrl: './src/modules/outputtemplates/templates/objectactionoutputbeanmodal.html',
     providers: [view],
+    animations: [
+        trigger('slideInOut', [
+            state('open', style({width: '50%'})),
+            state('closed', style({width: '100%'})),
+            transition('open <=> closed', [
+                animate('200ms'),
+            ])
+        ]),
+        trigger('slideInOut2', [
+            state('open', style({width: '50%'})),
+            state('closed', style({width: '0%'})),
+            transition('open <=> closed', [
+                animate('200ms'),
+            ])
+        ]),
+    ]
 })
 export class ObjectActionOutputBeanModal {
+
+
+
+    /**
+     * this is the child component (the email content )
+     */
+    // @ViewChild(ObjectActionOutputBeanModalEmailContent, {static: true}) public emailContent;
+    @ViewChild(ObjectActionOutputBeanModalEmailContent) public emailContent: ObjectActionOutputBeanModalEmailContent;
 
     public modalTitle: string;
     public forcedFormat: 'html'|'pdf';
@@ -55,6 +81,31 @@ export class ObjectActionOutputBeanModal {
     private loading_output: boolean = false;
 
 
+
+    /**
+     * fieldset of the email area
+     */
+    private fieldset_email: string = '';
+
+    /**
+     * the pdf file
+     */
+    public file: File;
+
+    /**
+     * list of files thazt shoudl eb added to the email when adding the wmail from the preview
+     */
+    public filelist: any[] = [];
+
+    /**
+     * flag to show the email-content
+     */
+    private showsendemail: boolean = true;
+    /**
+     * expanded email-content flag
+     */
+    private expanded: boolean = false;
+
     /**
      * the blobURL. This is handled internally. When the data is sent this is created so the object can be rendered in the modal
      */
@@ -67,23 +118,40 @@ export class ObjectActionOutputBeanModal {
         private modal: modal,
         private view: view,
         private backend: backend,
-        private sanitizer: DomSanitizer
+        private sanitizer: DomSanitizer,
+        private viewContainerRef: ViewContainerRef
     ) {
-
+        // get the fieldset of the email area
+        let componentconfig = this.metadata.getComponentConfig('ObjectActionOutputBeanModal');
+        this.fieldset_email = componentconfig.fieldset_email;
     }
 
     public ngOnInit() {
+        this.setModalData();
+        this.setSelectedTemplate();
 
-        // If there is no modal window title given from outside, use the default title:
+        // if no template is set and we only have one select this
+        if (!this.selected_template && this.templates.length == 1) {
+            this.selected_template = this.templates[0];
+            this.rendertemplate();
+        }
+    }
+
+    /**
+     * If there is no modal window title given from outside, use the default title
+     * If there is no button text given from outside, use the default text
+     * Set the output format in case it is given from outside
+     */
+    private setModalData() {
         if ( !this.modalTitle ) this.modalTitle = this.language.getLabel(this.language.getLabel('LBL_OUTPUT_TEMPLATE'));
-
-        // If there is no button text given from outside, use the default text:
         if ( !this.buttonText ) this.buttonText = this.language.getLabel( this.noDownload  ? 'LBL_OK':'LBL_DOWNLOAD' );
-
-        // Set the output format in case it is given from outside:
         if ( this.forcedFormat ) this._selected_format = this.forcedFormat;
+    }
 
-        // see if we have a relate to an output template
+    /**
+     * see if we have a relate to an output template
+     */
+    private setSelectedTemplate() {
         let fields = this.metadata.getModuleFields(this.model.module);
         for (let field in fields) {
             if (fields[field].type == 'relate' && fields[field].module == 'OutputTemplates') {
@@ -93,12 +161,6 @@ export class ObjectActionOutputBeanModal {
                 }
                 break;
             }
-        }
-
-        // if no template is set and we only have one select this
-        if (!this.selected_template && this.templates.length == 1) {
-            this.selected_template = this.templates[0];
-            this.rendertemplate();
         }
     }
 
@@ -117,6 +179,7 @@ export class ObjectActionOutputBeanModal {
 
     set selected_format(format) {
         this._selected_format = format;
+        this.expanded = false;
         this.rendertemplate();
     }
 
@@ -124,6 +187,9 @@ export class ObjectActionOutputBeanModal {
         return this.sanitizer.bypassSecurityTrustHtml(this.compiled_selected_template);
     }
 
+    /**
+     * backend call to render the template and return the content
+     */
     private rendertemplate() {
         this.loading_output = true;
 
@@ -136,7 +202,8 @@ export class ObjectActionOutputBeanModal {
                     pdf => {
                         let blob = this.datatoBlob( atob( pdf.content ) );
                         this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl( URL.createObjectURL( blob ) );
-                        if ( this.handBack ) this.contentForHandBack = pdf.content;
+                        this.contentForHandBack = pdf.content;
+                        this.setEmailAttachmentData();
                         this.loading_output = false;
                     },
                     err => {
@@ -149,7 +216,8 @@ export class ObjectActionOutputBeanModal {
                 this.backend.getRequest(`OutputTemplates/${this.selected_template.id}/compile/${this.model.id}`).subscribe(
                     res => {
                         this.compiled_selected_template = res.content;
-                        if ( this.handBack ) this.contentForHandBack = res.content;
+                        this.contentForHandBack = res.content;
+                        this.setEmailAttachmentData();
                         this.loading_output = false;
                     },
                     err => {
@@ -229,5 +297,52 @@ export class ObjectActionOutputBeanModal {
 
         let blob = new Blob(byteArrays, {type: contentType});
         return blob;
+    }
+
+    // --------------------------------EMAIL SECTION -------------------------------------
+    /**
+     * open/close email-content
+     */
+    private openEmailArea() {
+        this.expanded = !this.expanded;
+    }
+
+    /**
+     * set the filelist for the email attachment panel and reset the email-content
+     */
+    private setEmailAttachmentData() {
+        this.filelist = [{
+            size: this.contentForHandBack.length,
+            name: this.model.module + '_' + this.model.data.summary_text + '.' + this.selected_format,
+            type: "application/" + this.selected_format,
+            filecontent: this.contentForHandBack
+        }];
+        this.resetEmailComponent();
+    }
+
+    /**
+     * reset the objectactionoutputbeanmodalmailcontent component
+     * simple way to reload child from parent
+     */
+    private resetEmailComponent() {
+        this.showsendemail = false;
+
+        setTimeout(() => {
+            this.showsendemail = true;
+        }, 100);
+    }
+
+    /**
+     * the email has been sent and the modal window will destroy itself
+     */
+    public emailSent() {
+        this.close();
+    }
+
+    /**
+     * call the child method that will send the mail
+     */
+    private sendEmail() {
+        this.emailContent.sendEmail();
     }
 }

@@ -1,0 +1,35 @@
+<section class="slds-docked-composer slds-grid slds-grid_vertical slds-m-horizontal--x-small" [ngClass]="{'slds-is-closed': isClosed, 'slds-is-open': !isClosed}" role="dialog">
+    <header class="slds-docked-composer__header slds-grid slds-shrink-none" aria-live="assertive">
+        <div class="slds-media slds-media_center slds-no-space">
+            <div class="slds-media__figure slds-m-right_x-small">
+                <system-icon [icon]="callicon" sprite="utility" size="x-small"></system-icon>
+            </div>
+            <div class="slds-media__body">
+                <ul class="slds-list_horizontal slds-has-dividers_right">
+                    <li class="slds-item">{{calldata.direction}}</li>
+                    <li class="slds-item">{{msisdnFormatted}}</li>
+                    <li class="slds-item">{{calldata.status}}</li>
+                </ul>
+            </div>
+        </div>
+        <div class="slds-col_bump-left slds-shrink-none">
+            <button class="slds-button slds-button_icon slds-button_icon" (click)="toggleClosed()">
+                <system-button-icon [icon]="toggleIcon"></system-button-icon>
+            </button>
+            <button class="slds-button slds-button_icon slds-button_icon" (click)="closeComposer()">
+                <system-button-icon [icon]="'close'"></system-button-icon>
+            </button>
+        </div>
+    </header>
+    <div class="slds-grow">
+        <system-dynamic-component [component]="panelcomponent" [componentattributes]="{calldata: calldata, matchedbeans: matchedbeans}"></system-dynamic-component>
+    </div>
+    <footer class="slds-docked-composer__footer slds-shrink-none">
+        <div class="slds-grid slds-grid--vertical-align-center slds-size--1-of-1">
+            <div class="slds-col_bump-left">
+                <button class="slds-button slds-button--neutral" [disabled]="!canEndCall" (click)="endCall()"><system-button-icon icon="end_call"></system-button-icon> <system-label label="LBL_END"></system-label></button>
+                <button class="slds-button slds-button--brand" (click)="closeComposer()"><system-label label="LBL_CLOSE"></system-label></button>
+            </div>
+        </div>
+    </footer>
+</section>

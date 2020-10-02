@@ -50,13 +50,8 @@ export class QuestionsManagerAddModal implements OnInit {
             this.model.initializeModel();
             this.model.data.questionset_id = this.questionset.id;
         }
-        let params = {
-            fields: JSON.stringify( ['id', 'name', 'abbreviation'] ),
-            sortfield: 'name',
-            limit: -99
-        };
-        this.backend.getRequest('module/QuestionOptionCategories', params).subscribe(( response: any ) => {
-            let allCategories = response.list;
+        this.backend.getRequest('QuestionOptionCategories/getList').subscribe(( response: any ) => {
+            let allCategories = response;
             if ( this.questionset.data.categorypool && this.questionset.data.categorypool != '' ) {
                 let categorypool = this.questionset.data.categorypool.split(',');
                 allCategories.forEach( category => {
@@ -86,10 +81,12 @@ export class QuestionsManagerAddModal implements OnInit {
         let emptyRows = false;
         if ( this.questionset.data.questiontype === 'multi' ) this.refQuestionsManagerEditMulti.doBeforeSavingQuestion();
         if ( this.questionset.data.questiontype === 'single' || this.questionset.data.questiontype === 'multi' ) {
-            for( let i in this.model.data.questionoptions.beans ) {
-                if( this.model.data.questionoptions.beans[i].name === '' && this.model.data.questionoptions.beans[i].deleted != 1 ) {
-                    emptyRows = true;
-                    break;
+            if ( this.model.data.questionoptions && this.model.data.questionoptions.beans ) {
+                for( let i in this.model.data.questionoptions.beans ) {
+                    if( this.model.data.questionoptions.beans[i].name === '' && this.model.data.questionoptions.beans[i].deleted != 1 ) {
+                        emptyRows = true;
+                        break;
+                    }
                 }
             }
         }

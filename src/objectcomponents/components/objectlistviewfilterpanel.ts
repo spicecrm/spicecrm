@@ -18,7 +18,10 @@ declare var _: any;
  */
 @Component({
     selector: 'object-listview-filter-panel',
-    templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanel.html'
+    templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanel.html',
+    host:{
+        class : 'slds-is-fixed'
+    }
 })
 export class ObjectListViewFilterPanel {
 

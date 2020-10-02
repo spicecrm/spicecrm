@@ -3,39 +3,37 @@
     <h2 class="slds-text-heading--medium slds-p-bottom--xx-small">{{dashletTitle}} ({{recordcount}} <system-label label="LBL_OF"></system-label> {{recordtotal}})</h2>
 </div>
 <!-- the table - hidden if no records have been found and the dashlet is not loading-->
-<div class="slds-size--1-of-1" [ngStyle]="tableContainerStyle" [ngClass]="{'slds-table--header-fixed_container': islarge}">
-    <div class="slds-scrollable--y slds-height_full slds-size--1-of-1" #tablecontainer (scroll)="onScroll()">
-        <table  class="slds-table slds-table_bordered slds-max-medium-table--stacked-horizontal" [ngClass]="{'slds-table_header-fixed': islarge}">
-            <thead *ngIf="islarge">
-                <tr class="slds-text-title_caps">
-                    <th scope="col" *ngFor="let field of dashletFields; let isFirst = first; trackBy: trackByFn" [ngClass]="{'slds-is-sortable' : isSortable(field)}">
-                        <div class="slds-truncate slds-cell-fixed">
-                            <ng-container *ngIf="isSortable(field); else nosort">
-                                <a  href="javascript:void(0);" class="slds-th__action slds-text-link--reset" (click)="setSortField(field)">
-                                    <field-label class="slds-truncate" addclasses="slds-truncate" [fieldname]="field.field" [fieldconfig]="field.fieldconfig"></field-label>
-                                    <system-utility-icon [icon]="getSortIcon()" addclasses="slds-is-sortable__icon" size="x-small"></system-utility-icon>
-                                </a>
-                            </ng-container>
-                            <ng-template #nosort>
-                                <field-label [fieldname]="field.field" [fieldconfig]="field.fieldconfig" addclasses="slds-truncate slds-p-vertical--xx-small slds-p-horizontal--x-small"></field-label>
-                            </ng-template>
-                        </div>
-                    </th>
-                </tr>
-            </thead>
-            <tbody >
-                <ng-container *ngFor="let record of records; trackBy: trackByFn">
-                    <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small slds-hide--medium slds-text-title_bold">
-                        {{record.summary_text}}
+<div #tablecontainer class="slds-size--1-of-1 slds-scrollable--y" [ngStyle]="tableContainerStyle" (scroll)="onScroll()">
+    <table class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal slds-table--header-fixed">
+        <thead *ngIf="islarge">
+            <tr class="slds-text-title_caps">
+                <th scope="col" *ngFor="let field of dashletFields; let isFirst = first; trackBy: trackByFn" [ngClass]="{'slds-is-sortable' : isSortable(field)}">
+                    <div class="slds-truncate">
+                        <ng-container *ngIf="isSortable(field); else nosort">
+                            <a  href="javascript:void(0);" class="slds-th__action slds-text-link--reset" (click)="setSortField(field)">
+                                <field-label class="slds-truncate" addclasses="slds-truncate" [fieldname]="field.field" [fieldconfig]="field.fieldconfig"></field-label>
+                                <system-utility-icon [icon]="getSortIcon()" addclasses="slds-is-sortable__icon" size="x-small"></system-utility-icon>
+                            </a>
+                        </ng-container>
+                        <ng-template #nosort>
+                            <field-label [fieldname]="field.field" [fieldconfig]="field.fieldconfig" addclasses="slds-truncate slds-p-vertical--xx-small slds-p-horizontal--x-small"></field-label>
+                        </ng-template>
                     </div>
-                    <tr dashboard-generic-dashlet-row  [module]="dashletModule" [fieldset]="dashletFieldSet" [data]="record"></tr>
-                </ng-container>
-            </tbody>
-            <tbody system-table-stencils [columns]="dashletFields?.length" [select]="false" [tools]="false" [rows]="5" *ngIf="loading"></tbody>
-        </table>
-        <!-- if no records are found dispaly a no record message-->
-        <div *ngIf="!loading && records.length == 0" class="slds-align_absolute-center" style="height: calc(100% - 5px);">
-            <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
-        </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody >
+            <ng-container *ngFor="let record of records; trackBy: trackByFn">
+                <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small slds-hide--medium slds-text-title_bold">
+                    {{record.summary_text}}
+                </div>
+                <tr dashboard-generic-dashlet-row  [module]="dashletModule" [fieldset]="dashletFieldSet" [data]="record"></tr>
+            </ng-container>
+        </tbody>
+        <tbody system-table-stencils [columns]="dashletFields?.length" [select]="false" [tools]="false" [rows]="5" *ngIf="loading"></tbody>
+    </table>
+    <!-- if no records are found dispaly a no record message-->
+    <div *ngIf="!loading && records.length == 0" class="slds-align_absolute-center" style="height: calc(100% - 5px);">
+        <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
     </div>
 </div>

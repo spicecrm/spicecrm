@@ -1,0 +1,69 @@
+<div class="slds-grid slds-grid--align-spread slds-p-around--medium">
+    <h2 class="slds-text-heading--medium ">General Settings</h2>
+    <button class="slds-button slds-button--neutral" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+</div>
+<table class="slds-table slds-table--bordered slds-table--cell-buffer">
+    <thead>
+    <tr class="slds-text-title--caps">
+        <th scope="col">
+            <system-label label="LBL_NAME"></system-label>
+        </th>
+        <th scope="col">
+            <system-label label="LBL_VALUE"></system-label>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr style="vertical-align: middle" class="slds-align-top"  *ngFor="let setting of settings">
+        <td>{{setting.name}}</td>
+        <td>
+            <div *ngIf="setting.name == 'system_name'" class="slds-form-element__control">
+                <input  type="text" class="slds-input" [(ngModel)]="setting.value" />
+            </div>
+            <div *ngIf="setting.name == 'export_delimiter' " class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="setting.value">
+                        <option *ngFor="let exp of options.export_delimiter | keyvalue" value="{{exp.key}}">{{exp.value}}</option>
+                    </select>
+                </div>
+            </div>
+            <div *ngIf="setting.name == 'default_date_format' " class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="setting.value">
+                        <option *ngFor="let date of options.date_formats | keyvalue" value="{{date.key}}">{{date.value}}</option>
+                    </select>
+                </div>
+            </div>
+            <div *ngIf="setting.name == 'default_time_format' " class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="setting.value">
+                        <option *ngFor="let time of options.time_formats | keyvalue" value="{{time.key}}">{{time.value}}</option>
+                    </select>
+                </div>
+            </div>
+            <div *ngIf="setting.name == 'default_charset' " class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="setting.value">
+                        <option *ngFor="let char of options.charsets | keyvalue" value="{{char.key}}">{{char.value}}</option>
+                    </select>
+                </div>
+            </div>
+<!--            <div *ngIf="setting.name == 'default_currency_iso4217' " class="slds-form-element__control">-->
+<!--                <input  type="text" class="slds-input" [(ngModel)]="setting.value" />-->
+<!--            </div>-->
+<!--            <div *ngIf="setting.name == 'default_currency_name' " class="slds-form-element__control">-->
+<!--                <input  type="text" class="slds-input" [(ngModel)]="setting.value" />-->
+<!--            </div>-->
+<!--            <div *ngIf="setting.name == 'default_currency_symbol' " class="slds-form-element__control">-->
+<!--                <input  type="text" class="slds-input" [(ngModel)]="setting.value" />-->
+<!--            </div>-->
+<!--            <div *ngIf="setting.name == 'default_currency_significant_digits' " class="slds-form-element__control">-->
+<!--                <input  type="text" class="slds-input" [(ngModel)]="setting.value" />-->
+<!--            </div>-->
+
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+

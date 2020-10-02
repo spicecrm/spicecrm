@@ -5,7 +5,7 @@
             <system-checkbox [(ngModel)]="productGroupTreeResultsOnly"><system-label label="LBL_RESULTS_ONLY"></system-label></system-checkbox>
         </div>
     </div>
-    <div class="slds-scrollable--y spicecrm-scrollbar" [ngStyle]="treeStyle">
+    <div class="slds-scrollable--y spice-scrollbar" [ngStyle]="treeStyle">
         <ul class="slds-tree" role="tree" aria-labelledby="treeheading" >
             <li *ngFor="let productgroup of productGroupTree; trackBy: trackByFn" role="treeitem" [attr.aria-level]="productgroup.level" [class.slds-theme--shade]="isSelected(productgroup.id)">
                 <div *ngIf="productgroup.type=='ProductGroup' && displayTreeNode(productgroup)" class="slds-tree__item">

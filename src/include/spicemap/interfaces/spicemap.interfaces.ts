@@ -1,3 +1,6 @@
+/**
+ * @module ModuleSpiceMap
+ */
 
 /**
  * used in the direction service route
@@ -57,6 +60,8 @@ export interface MapOptionsI {
     showCluster?: boolean;
     /** activate/deactivate model popover for the marker on click event */
     markerWithModelPopover?: boolean;
+    /** defines the modal component to be rendered as marker popover */
+    popoverComponent?: string;
     /** when the center is set, a circle will be drawn on the map centered by the input latitude and longitude */
     circle?: MapCircleI;
     /** when the center is set, a circle will be drawn on the map centered by the input latitude and longitude */
@@ -93,6 +98,8 @@ export interface RecordComponentConfigI {
     showCluster?: boolean;
     /** activate/deactivate model popover for the marker on click event */
     markerWithModelPopover?: boolean;
+    /** defines the modal component to be rendered as marker popover */
+    popoverComponent?: string;
     /** set the travel model for the direction service */
     directionTravelMode?: 'DRIVING' | 'BICYCLING' | 'TRANSIT' | 'WALKING';
     /** to save the height of the map */
@@ -109,6 +116,8 @@ export interface RecordComponentConfigI {
     focusColor?: string;
     /** a distance unit of measure to be returned by the navigation service result */
     unitSystem?: 'METRIC'|'IMPERIAL';
+    /** show/hide list header */
+    showListHeader?: boolean;
 }
 
 /**

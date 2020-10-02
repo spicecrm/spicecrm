@@ -11,6 +11,9 @@ import {ObjectFields}      from '../../objectfields/objectfields';
 import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
 import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
 import {SystemComponents}      from '../../systemcomponents/systemcomponents';
+import {DirectivesModule}      from '../../directives/directives';
+
+import /*embed*/ {ACLTerritoryTypeI} from "./interfaces/moduleaclterritories.interfaces";
 
 import /*embed*/ {ACLTerritoriesNamePipe} from "./pipes/aclterritoriesname.pipe";
 import /*embed*/ {fieldTerritorySecondaryPipe} from "./pipes/aclterritoriesfieldssecondary.pipe";
@@ -37,11 +40,11 @@ import /*embed*/ {ACLTerritorriesModulesmanagerModulesAddModal} from "./componen
 
 import /*embed*/ {ACLObjectsManagerObjectTerritories} from "./components/aclobjectsmanagerobjectterritories";
 import /*embed*/ {ACLObjectsManagerObjectTerritoriesModal} from "./components/aclobjectsmanagerobjectterritoriesmodal";
-import /*embed*/ {fieldTerritorySearch} from "./components/fieldterritorysearch";
-import /*embed*/ {fieldTerritory} from "./components/fieldterritory";
-import /*embed*/ {fieldTerritorySecondary} from "./components/fieldterritorysecondary";
-import /*embed*/ {fieldTerritoryRecent} from "./components/fieldterritoryrecent";
-import /*embed*/ {fieldTerritorySearchModal} from "./components/fieldterritorysearchmodal";
+import /*embed*/ {fieldTerritorySearch} from "./fields/fieldterritorysearch";
+import /*embed*/ {fieldTerritory} from "./fields/fieldterritory";
+import /*embed*/ {fieldTerritorySecondary} from "./fields/fieldterritorysecondary";
+import /*embed*/ {fieldTerritoryRecent} from "./fields/fieldterritoryrecent";
+import /*embed*/ {fieldTerritorySearchModal} from "./fields/fieldterritorysearchmodal";
 
 @NgModule({
     imports: [
@@ -51,6 +54,7 @@ import /*embed*/ {fieldTerritorySearchModal} from "./components/fieldterritoryse
         GlobalComponents,
         ObjectComponents,
         SystemComponents,
+        DirectivesModule
     ],
     declarations: [
         ACLTerritoriesNamePipe,

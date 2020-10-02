@@ -27,15 +27,16 @@
     </label>
     <div class="slds-grid slds-grow">
         <div [ngSwitch]="itemType" class="slds-grow">
-            <reporter-filter-item-enum *ngSwitchCase="'enum'" [field]="'value'" [wherecondition]="whereCondition"></reporter-filter-item-enum>
+            <reporter-filter-item-enum *ngSwitchCase="'enum' || 'multienum' || 'radioenum'" [field]="'value'" [wherecondition]="whereCondition" [isMultiSelect]="whereCondition.operator.includes('oneof')"></reporter-filter-item-enum>
             <reporter-filter-item-date *ngSwitchCase="'date'" [field]="'valuekey'" [wherecondition]="whereCondition"></reporter-filter-item-date>
             <reporter-filter-item-text *ngSwitchCase="'text'"  [field]="'value'" [wherecondition]="whereCondition"></reporter-filter-item-text>
             <reporter-filter-item-user *ngSwitchCase="'user'" [whereCondition]="whereCondition"></reporter-filter-item-user>
             <reporter-filter-item-reference *ngSwitchCase="'reference'" [whereCondition]="whereCondition"></reporter-filter-item-reference>
             <reporter-filter-item-function *ngSwitchCase="'function'" [whereCondition]="whereCondition"></reporter-filter-item-function>
+            <reporter-filter-item-parent *ngSwitchCase="'parent_assign'" [wherecondition]="whereCondition"></reporter-filter-item-parent>
         </div>
         <div *ngIf="showValueTo" class="slds-size--1-of-2 slds-p-left--xx-small" [ngSwitch]="itemType">
-            <reporter-filter-item-enum *ngSwitchCase="'enum'" [field]="'valueto'" [wherecondition]="whereCondition"></reporter-filter-item-enum>
+            <reporter-filter-item-enum *ngSwitchCase="'enum' || 'multienum' || 'radioenum'" [field]="'valueto'" [wherecondition]="whereCondition"></reporter-filter-item-enum>
             <reporter-filter-item-date *ngSwitchCase="'date'" [field]="'valuetokey'" [wherecondition]="whereCondition"></reporter-filter-item-date>
             <reporter-filter-item-text *ngSwitchCase="'text'"  [field]="'valueto'" [wherecondition]="whereCondition"></reporter-filter-item-text>
         </div>
