@@ -380,7 +380,8 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectPageHeaderTags,
         ObjectModalModuleLookup,
         ObjectModalModuleLookupHeader,
-        ObjectModalModuleLookupAggregates
+        ObjectModalModuleLookupAggregates,
+        ObjectModelPopoverHeader
     ]
 })
 export class ObjectComponents {

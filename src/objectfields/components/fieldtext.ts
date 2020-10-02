@@ -82,4 +82,11 @@ export class fieldText extends fieldGeneric implements OnInit {
         });
     }
 
+    /**
+     * After a change of the textfield value, save the new value to the model.
+     */
+    private change( $event ) {
+        if ( $event.target.value ) this.value = $event.target.value;
+    }
+
 }

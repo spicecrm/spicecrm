@@ -11,65 +11,73 @@ import {
 import {dockedComposer} from '../../services/dockedcomposer.service';
 import {language} from '../../services/language.service';
 import {backend} from '../../services/backend.service';
-import {view} from '../../services/view.service';
-import {metadata} from '../../services/metadata.service';
-import {modal} from '../../services/modal.service';
+import {telephony} from '../../services/telephony.service';
+import {telephonyCallI} from "../../services/interfaces.service";
 
 @Component({
     selector: 'global-docked-composer-call',
     templateUrl: './src/globalcomponents/templates/globaldockedcomposercall.html'
 })
-export class GlobalDockedComposerCall implements OnInit {
+export class GlobalDockedComposerCall {
 
     @ViewChild('containercontent', {read: ViewContainerRef, static: true}) private containercontent: ViewContainerRef;
 
-    @Input() public calldata: any = {};
+    @Input() public calldata: telephonyCallI;
 
-    private searching: boolean = true;
-    private contact: any = {};
     private isClosed: boolean = false;
 
-    constructor(private backend: backend, private dockedComposer: dockedComposer, private language: language, private ViewContainerRef: ViewContainerRef) {
+    constructor(private backend: backend, private dockedComposer: dockedComposer, private telephony: telephony, private language: language, private ViewContainerRef: ViewContainerRef) {
 
     }
 
     get callicon() {
-        if (this.calldata.callevent == 'END') {
+        if (this.calldata.status == 'disconnected') {
             return 'end_call';
         }
 
         switch (this.calldata.direction) {
-            case 'INBOUND':
+            case 'inbound':
                 return 'incoming_call';
-            case 'OUTBOUND':
+            case 'outbound':
                 return 'outbound_call';
         }
 
         return 'call';
     }
 
-    public ngOnInit() {
-        this.backend.postRequest('search', {}, {
-            modules: 'Contacts',
-            searchterm: this.calldata.callnumber
-        }).subscribe(results => {
-            try {
-                this.contact = results.Contacts.hits[0]._source;
-                this.searching = false;
-            } catch (err) {
-                this.searching = false;
-            }
-        });
+
+    /**
+     * close the composer and remove the call
+     */
+    private closeComposer() {
+        this.telephony.removeCallById(this.calldata.id);
     }
 
-    private closeComposer() {
-        let i = 0;
-        this.dockedComposer.calls.some(call => {
-            if (call.callid == this.calldata.callid) {
-                this.dockedComposer.calls.splice(i, 1);
-                return true;
-            }
-            i++;
-        });
+    /**
+     * end the call
+     */
+    private endCall() {
+        this.telephony.terminateCall(this.calldata.id);
+    }
+
+    /**
+     * toggles the closed state for the composer
+     */
+    private toggleClosed() {
+        this.isClosed = !this.isClosed;
+    }
+
+    /**
+     * returns the toggle icon for the docked composer
+     */
+    get toggleIcon() {
+        return this.isClosed ? 'erect_window' : 'minimize_window';
+    }
+
+    /**
+     * returns true if the call can be ended by the user
+     */
+    get canEndCall() {
+        return this.calldata.callid && this.calldata.status != 'disconnected' && this.calldata.status != 'error';
     }
 }

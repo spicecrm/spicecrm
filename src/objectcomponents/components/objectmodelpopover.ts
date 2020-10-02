@@ -34,9 +34,9 @@ export class ObjectModelPopover implements OnInit {
     private widthcorrection = 30;
 
     constructor(
-        private model: model,
-        private view: view,
-        private metadata: metadata,
+        public model: model,
+        public view: view,
+        public metadata: metadata,
     ) {
         this.view.displayLinks = false;
     }

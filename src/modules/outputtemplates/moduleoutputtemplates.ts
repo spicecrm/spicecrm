@@ -15,6 +15,7 @@ import /*embed*/ {OutputTemplatesEditor} from "./components/outputtemplatesedito
 import /*embed*/ {OutputTemplatesPreview} from "./components/outputtemplatespreview";
 import /*embed*/ {OutputTemplatesPreviewSelector} from "./components/outputtemplatespreviewselector";
 import /*embed*/ {ObjectActionOutputBeanButton} from "./components/objectactionoutputbeanbutton";
+import /*embed*/ {ObjectActionOutputBeanModalEmailContent} from "./components/objectactionoutputbeanmodalemailcontent";
 import /*embed*/ {ObjectActionOutputBeanModal} from "./components/objectactionoutputbeanmodal";
 import /*embed*/ {fieldOutputTemplates} from "./fields/fieldoutputtemplates";
 
@@ -35,6 +36,7 @@ import /*embed*/ {fieldOutputTemplates} from "./fields/fieldoutputtemplates";
         OutputTemplatesPreview,
         OutputTemplatesPreviewSelector,
         ObjectActionOutputBeanButton,
+        ObjectActionOutputBeanModalEmailContent,
         ObjectActionOutputBeanModal,
         fieldOutputTemplates
     ]

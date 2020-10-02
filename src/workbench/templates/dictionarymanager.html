@@ -1,59 +1,13 @@
-<div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
-    <div class="slds-form-element">
-        <label class="slds-form-element__label">table</label>
-        <div class="slds-form-element__control" style="min-width:250px;">
-            <div class="slds-select_container">
-                <select class="slds-select" [(ngModel)]="currentDictionaryTable">
-                    <option *ngFor="let dictionaryTable of dictionaryTables" [value]="dictionaryTable.id">
-                        {{dictionaryTable.table_name}}
-                    </option>
-                </select>
-            </div>
-        </div>
+<workbench-header titlelabel="LBL_DICTIONARY_MANAGER">
+    <workbench-header-controls>
+        <button class="slds-button slds-button--neutral" (click)="dictionarymanager.save()"><system-label label="LBL_SAVE"></system-label></button>
+    </workbench-header-controls>
+</workbench-header>
+<div class="slds-grid">
+    <div class="slds-size--1-of-3" system-to-bottom>
+        <dictionary-manager-definitions></dictionary-manager-definitions>
     </div>
-    <div class="slds-form-element slds-col--bump-left">
-        <button type="button" class="slds-button slds-button--neutral"><system-label label="LBL_ADD"></system-label></button>
-        <button type="button" class="slds-button slds-button--brand"><system-label label="LBL_SAVE"></system-label></button>
+    <div class="slds-size--2-of-3 slds-theme--default slds-border--left" system-to-bottom-noscroll>
+        <dictionary-manager-definition-tabs></dictionary-manager-definition-tabs>
     </div>
 </div>
-<table *ngIf="currentDictionaryTable" class="slds-table slds-table--bordered slds-table--cell-buffer">
-    <thead>
-    <tr class="slds-text-title--caps">
-        <th *ngFor="let field of displayFields" scope="col" (click)="sort(field.name)">
-            <div class="slds-truncate slds-p-horizontal--small">
-                {{field.name}}
-            </div>
-        </th>
-        <th scope="col" style="width:2rem;">
-            <div class="slds-button-group slds-float--right" role="group">
-                <button class="slds-button slds-button--icon-border" (click)="toggleFilter()">
-                    <system-button-icon [icon]="'filterList'" [size]="'small'"></system-button-icon>
-                </button>
-            </div>
-        </th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngIf="displayFilters" class="slds-theme--shade">
-        <td *ngFor="let field of displayFields">
-            <div class="slds-form-element">
-                <div class="slds-form-element__control">
-                    <input type="text" class="slds-input" [(ngModel)]="filters[field.name]"/>
-                </div>
-            </div>
-        </td>
-        <td>
-            <div class="slds-button-group slds-float--right" role="group">
-                <button class="slds-button slds-button--icon-border" (click)="clearFilter()">
-                    <system-button-icon [icon]="'clear'" [size]="'small'"></system-button-icon>
-                </button>
-                <button class="slds-button slds-button--icon-border" (click)="toggleFilter()">
-                    <system-button-icon [icon]="'chevronup'" [size]="'small'"></system-button-icon>
-                </button>
-            </div>
-        </td>
-    </tr>
-    <tr dictionarymanager-item *ngFor="let entry of getEntries()" [entry]="entry" [fields]="displayFields" [domains]="dictionaryDomains">
-    </tr>
-    </tbody>
-</table>

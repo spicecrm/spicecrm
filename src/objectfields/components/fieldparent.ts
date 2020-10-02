@@ -26,6 +26,8 @@ export class fieldParent extends fieldGeneric implements OnInit {
 
     private recentItems: any[] = [];
 
+    private parentTypes: string[] = [];
+
     constructor(
         public model: model,
         public view: view,
@@ -68,20 +70,30 @@ export class fieldParent extends fieldGeneric implements OnInit {
     }
 
     public ngOnInit() {
+        // determine the valid types
+        this.determineParentTypes();
+
         // initialize the parenttype
         if (!this.model.data[this.parentTypeField] || this.model.data[this.parentTypeField] == '') {
             this.model.data[this.parentTypeField] = this.parentTypes[0];
         }
     }
 
-    get parentTypes(): string[] {
-        let parenttypes = ['Contacts', 'Accounts', 'Leads'];
+    /**
+     * get the valid parent types from the metadata or the field config
+     */
+    private determineParentTypes() {
+        let parenttypes = [];
 
-        if (this.fieldconfig.parenttypes) {
+        if(this.field_defs.parent_modules){
+            parenttypes = this.field_defs.parent_modules;
+        } else if (this.fieldconfig.parenttypes) {
             parenttypes = this.fieldconfig.parenttypes.replace(/\s/g, '').split(',');
         }
 
-        return parenttypes;
+        parenttypes.sort((a, b) => this.language.getModuleName(a).toLowerCase() > this.language.getModuleName(b).toLowerCase() ? 1 : -1);
+
+        this.parentTypes = parenttypes;
     }
 
     private handleMessage(message: any) {

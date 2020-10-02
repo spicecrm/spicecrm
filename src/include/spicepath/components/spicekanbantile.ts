@@ -11,9 +11,11 @@ import {
     OnInit, SimpleChanges
 } from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
+import {broadcast} from '../../../services/broadcast.service';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 import {modellist} from '../../../services/modellist.service';
+import {Subscription} from "rxjs";
 
 declare var _: any;
 
@@ -50,8 +52,12 @@ export class SpiceKanbanTile implements OnInit, OnDestroy {
      */
     private modelSubscription: any;
 
+    /**
+     * hold various subscriptions for the tile
+     */
+    private subscriptions: Subscription = new Subscription();
 
-    constructor(private modellist: modellist, private model: model, private view: view, private metadata: metadata, private changeDetectorRef: ChangeDetectorRef) {
+    constructor(private modellist: modellist, private model: model, private view: view, private metadata: metadata, private broadcast: broadcast, private changeDetectorRef: ChangeDetectorRef) {
         this.componentconfig = this.metadata.getComponentConfig('SpiceKanbanTile', this.modellist.module);
         this.componentFields = this.metadata.getFieldSetFields(this.componentconfig.fieldset);
 
@@ -109,6 +115,17 @@ export class SpiceKanbanTile implements OnInit, OnDestroy {
             // subscribe to the save handler
             this.subscribeToSave();
         }
+
+        this.subscriptions.add(this.model.data$.subscribe(data => {
+            this.changeDetectorRef.detectChanges();
+        }));
+    }
+
+    /**
+     * returns if the tab shoudl have a notification icon
+     */
+    get hasNotification(){
+        return this.model.getField('has_notification');
     }
 
     /**
@@ -122,8 +139,19 @@ export class SpiceKanbanTile implements OnInit, OnDestroy {
      * subscribe to the model save event. This is required since the change detection is set to push strategy and so we need to react to changes in the component
      */
     private subscribeToSave() {
-        this.modelSubscription = this.model.saved$.subscribe(changeddata => {
 
+        this.modelSubscription = this.model.saved$.subscribe(changeddata => {
+            // detect changes
+            this.changeDetectorRef.detectChanges();
+        });
+    }
+
+    /**
+     * subscribe to broadcast
+     */
+    private subscribeToBroadcast() {
+
+        this.modelSubscription = this.model.saved$.subscribe(changeddata => {
             // detect changes
             this.changeDetectorRef.detectChanges();
         });
@@ -133,6 +161,7 @@ export class SpiceKanbanTile implements OnInit, OnDestroy {
      * unsubscribe from the model so all subscriptions are cancelled
      */
     public ngOnDestroy(): void {
+        this.subscriptions.unsubscribe();
         if (this.modelSubscription) this.modelSubscription.unsubscribe();
     }
 

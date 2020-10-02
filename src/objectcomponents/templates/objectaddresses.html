@@ -11,7 +11,7 @@
                 <object-address *ngFor="let address of addresses" [address]="address" [parent]="model" [fieldset]="componentconfig.fieldset"></object-address>
             </ng-container>
             <div *ngIf="view.isEditMode()" class="slds-box slds-m-around--x-small slds-align--absolute-center" style="padding:0.5rem;">
-                <a href="javascript:void(0);" class="slds-text-link_reset"(click)="addAddress()"><system-label label="LBL_ADD_ADDRESS', 'Addresses"></system-label></a>
+                <a href="javascript:void(0);" class="slds-text-link_reset"(click)="addAddress()"><system-label label="LBL_ADD_ADDRESS"></system-label></a>
             </div>
         </div>
     </div>

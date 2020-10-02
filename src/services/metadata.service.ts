@@ -1,18 +1,21 @@
 /**
  * @module services
  */
-import {Subject, Observable, of} from "rxjs";
+import {Observable, of, Subject} from "rxjs";
 import {
-    Injectable,
+    Compiler,
     ComponentFactoryResolver,
-    NgModuleFactoryLoader,
-    Compiler, EventEmitter, Injector
+    EventEmitter,
+    Injectable,
+    Injector,
+    NgModuleFactoryLoader
 } from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {session} from "./session.service";
 import {broadcast} from "./broadcast.service";
 import {configurationService} from "./configuration.service";
-import {Router, Route, CanActivate} from "@angular/router";
+import {CanActivate, Router} from "@angular/router";
+import {SpiceInstaller} from "../include/spiceinstaller/components/spiceinstaller";
 
 // for the dynamic routes
 // import {loginCheck} from "../services/login.service";
@@ -60,11 +63,28 @@ export class metadata {
     }
 
     get moduleDirectory() {
-        return this.configuration.getData('modules');
+        let module = {
+            SpiceInstaller: {
+                id: "766AADDE-FB86-4F9C-9939-9A7B03288CAE",
+                module: "SpiceInstallerModule",
+                path: "app/include/spiceinstaller/spiceinstallermodule"
+            }
+        };
+        return !this.configuration.getData('modules') ? module : this.configuration.getData('modules');
+
     }
 
     get componentDirectory() {
-        return this.configuration.getData('components');
+        let component = {
+            SpiceInstaller: {
+                component: "SpiceInstaller",
+                componentconfig: [],
+                deprecated: "0",
+                module: "SpiceInstaller",
+                path: 'app/include/spiceinstaller/components/spiceinstaller'
+            }
+        };
+        return !this.configuration.getData('components') ? component : this.configuration.getData('components');
     }
 
     get componentSets() {
@@ -123,83 +143,6 @@ export class metadata {
         return this.configuration.getData('htmlstyles');
     }
 
-    /**
-     * message handler for workbench updates
-     */
-    private handleMessage(message) {
-        switch (message.messagetype) {
-            case "loader.completed":
-                if (message.messagedata == 'loadRepository') {
-                    // set Routes
-                    this.addRoutes();
-                }
-                if (message.messagedata == 'loadModules') {
-                    // set Role
-                    this.roles.some(role => {
-                        if (role.defaultrole == 1) {
-                            this.role = role.id;
-                            return true;
-                        }
-                    });
-
-                    if (this.role === "" && this.roles.length > 0) {
-                        this.role = this.roles[0].id;
-                    }
-                }
-                break;
-            case "metadata.updatefieldsets":
-                for (let fieldset in message.messagedata.add) {
-                    this.fieldSets[fieldset] = message.messagedata.add[fieldset];
-                }
-                for (let fieldset in message.messagedata.update) {
-                    this.fieldSets[fieldset] = message.messagedata.update[fieldset];
-                }
-                for (let fieldset in message.messagedata.delete) {
-                    delete (this.fieldSets[fieldset]);
-                }
-                break;
-            case "metadata.updatecomponentsets":
-                for (let componentset in message.messagedata.add) {
-                    this.componentSets[componentset] = message.messagedata.add[componentset];
-                }
-                for (let componentset in message.messagedata.update) {
-                    this.componentSets[componentset] = message.messagedata.update[componentset];
-                }
-                for (let componentset in message.messagedata.delete) {
-                    delete (this.componentSets[componentset]);
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-    /*
-    private addRoute(path: string, component: string) {
-        let module = this.componentDirectory[component].module;
-
-        System.import(this.moduleDirectory[module].path)
-            .then((fileContents: any) => {
-                return fileContents[this.moduleDirectory[module].module];
-            })
-            .then((type: any) => {
-                this.moduleDirectory[module].factories = {};
-                this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
-                    componentfactory.componentFactories.some(factory => {
-                        if (factory.componentType.name === component) {
-                            this.router.config.push({
-                                path: path,
-                                component: factory.componentType,
-                                canActivate: [aclCheck]
-                            });
-                            return true;
-                        }
-                    });
-                });
-            });
-    }
-    */
-
     /*
     * dynamically add routes from this.routes with a route container hat will handle the dynamic routes
      */
@@ -233,6 +176,32 @@ export class metadata {
                 });
             });
     }
+
+    /*
+    private addRoute(path: string, component: string) {
+        let module = this.componentDirectory[component].module;
+
+        System.import(this.moduleDirectory[module].path)
+            .then((fileContents: any) => {
+                return fileContents[this.moduleDirectory[module].module];
+            })
+            .then((type: any) => {
+                this.moduleDirectory[module].factories = {};
+                this.compiler.compileModuleAndAllComponentsAsync(type).then(componentfactory => {
+                    componentfactory.componentFactories.some(factory => {
+                        if (factory.componentType.name === component) {
+                            this.router.config.push({
+                                path: path,
+                                component: factory.componentType,
+                                canActivate: [aclCheck]
+                            });
+                            return true;
+                        }
+                    });
+                });
+            });
+    }
+    */
 
     /*
      * function to add a Component direct
@@ -437,7 +406,6 @@ export class metadata {
         }
     }
 
-
     public addComponentSet(id, module, name, type = "custom") {
         this.componentSets[id] = {
             name: name,
@@ -498,13 +466,13 @@ export class metadata {
         }
     }
 
-    /*
-     * get the definitiopn for the related links
-     */
-
     public getRawFieldSets() {
         return this.fieldSets;
     }
+
+    /*
+     * get the definitiopn for the related links
+     */
 
     public getFieldSets(module: string = "", filter: string = "") {
         let retFieldsets: any[] = [];
@@ -725,7 +693,8 @@ export class metadata {
      * @param module the name of the module
      */
     public getModuleDefs(module) {
-        return this.moduleDefs[module];
+        // changed so it can use the moduel name or the sysmoduleid
+        return this.moduleDefs[module] ? this.moduleDefs[module] : this.moduleDefs[this.getModuleById(module)];
     }
 
     /**
@@ -763,7 +732,7 @@ export class metadata {
      */
     public getModuleById(sysmoudleid: string): string {
         for (let module in this.moduleDefs) {
-            if(this.moduleDefs[module].id == sysmoudleid){
+            if (this.moduleDefs[module].id == sysmoudleid) {
                 return module;
             }
         }
@@ -796,7 +765,6 @@ export class metadata {
             return module;
         }
     }
-
 
     /**
      * returns the module from the singualr
@@ -1060,7 +1028,6 @@ export class metadata {
         return compArray;
     }
 
-
     /**
      get a components config option
      */
@@ -1162,12 +1129,10 @@ export class metadata {
         }
     }
 
-
     public setActionset(actionset_id, params) {
         this.actionSets[actionset_id].name = params.name;
         this.actionSets[actionset_id].package = params.package;
     }
-
 
     public setActionSet(actionset_id, params) {
         this.actionSets[actionset_id] = {
@@ -1285,7 +1250,6 @@ export class metadata {
         delete this.moduleFilters[filterId];
     }
 
-
     /**
      * checkl if teh user has access to the module.
      *
@@ -1366,10 +1330,6 @@ export class metadata {
         return this.fieldTypeMappings[fieldtype];
     }
 
-    /*
-    * for the route handling
-     */
-
     /**
      * returns the details for a given route
      * @param route
@@ -1397,6 +1357,10 @@ export class metadata {
             }
         });
     }
+
+    /*
+    * for the route handling
+     */
 
     public getRouteComponent(route) {
         return this.routes ? this.routes.find(routeDetails => {
@@ -1470,6 +1434,108 @@ export class metadata {
             return of(sub);
         } else {
             return sub.asObservable();
+        }
+    }
+
+    public isLibLoaded(name): boolean {
+        if (this.scripts[name]) {
+            for (let lib of this.scripts[name]) {
+                if (!lib.loaded) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    public getHtmlStylesheetCode(stylesheetId: string): string {
+        return _.isObject(this.htmlStyleData.stylesheets[stylesheetId]) && _.isString(this.htmlStyleData.stylesheets[stylesheetId].csscode) ? this.htmlStyleData.stylesheets[stylesheetId].csscode : "";
+    }
+
+    public getHtmlFormats(stylesheetId: string): any[] {
+        if (!_.isObject(this.htmlStyleData.stylesheets[stylesheetId])) {
+            console.log("HTML Styling: Unknown style sheet with ID " + stylesheetId + ".");
+            return [];
+        }
+        if (!_.isArray(this.htmlStyleData.stylesheets[stylesheetId].formats)) {
+            this.htmlStyleData.stylesheets[stylesheetId].formats = [];
+        }
+        // Styles are delivered by KREST as string, and must be converted to an array of objects (once). Now? Or has it already been done?
+        if (!this.htmlStyleData.stylesheets[stylesheetId].stylesDecoded) {
+            this.htmlStylesToObjects(stylesheetId);
+        }
+        return this.htmlStyleData.stylesheets[stylesheetId].formats;
+    }
+
+    public getHtmlStylesheetNames(): any[] {
+        let stylesheets = [];
+        for (let sheetId in this.htmlStyleData.stylesheets) {
+            stylesheets.push({
+                id: this.htmlStyleData.stylesheets[sheetId].id,
+                name: this.htmlStyleData.stylesheets[sheetId].name
+            });
+        }
+        return _.sortBy(stylesheets, "name");
+    }
+
+    public getHtmlStylesheetToUse(module: string, fieldname: string) {
+        if (_.isObject(this.htmlStyleData.stylesheetsToUse[module]) && this.htmlStyleData.stylesheetsToUse[module][fieldname]) {
+            return this.htmlStyleData.stylesheetsToUse[module][fieldname];
+        } else {
+            return "";
+        }
+    }
+
+    /**
+     * message handler for workbench updates
+     */
+    private handleMessage(message) {
+        switch (message.messagetype) {
+            case "loader.completed":
+                if (message.messagedata == 'loadRepository') {
+                    // set Routes
+                    this.addRoutes();
+                }
+                if (message.messagedata == 'loadModules') {
+                    // set Role
+                    this.roles.some(role => {
+                        if (role.defaultrole == 1) {
+                            this.role = role.id;
+                            return true;
+                        }
+                    });
+
+                    if (this.role === "" && this.roles.length > 0) {
+                        this.role = this.roles[0].id;
+                    }
+                }
+                break;
+            case "metadata.updatefieldsets":
+                for (let fieldset in message.messagedata.add) {
+                    this.fieldSets[fieldset] = message.messagedata.add[fieldset];
+                }
+                for (let fieldset in message.messagedata.update) {
+                    this.fieldSets[fieldset] = message.messagedata.update[fieldset];
+                }
+                for (let fieldset in message.messagedata.delete) {
+                    delete (this.fieldSets[fieldset]);
+                }
+                break;
+            case "metadata.updatecomponentsets":
+                for (let componentset in message.messagedata.add) {
+                    this.componentSets[componentset] = message.messagedata.add[componentset];
+                }
+                for (let componentset in message.messagedata.update) {
+                    this.componentSets[componentset] = message.messagedata.update[componentset];
+                }
+                for (let componentset in message.messagedata.delete) {
+                    delete (this.componentSets[componentset]);
+                }
+                break;
+            default:
+                break;
         }
     }
 
@@ -1578,19 +1644,6 @@ export class metadata {
         return sub.asObservable();
     }
 
-    public isLibLoaded(name): boolean {
-        if (this.scripts[name]) {
-            for (let lib of this.scripts[name]) {
-                if (!lib.loaded) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        return false;
-    }
-
     private isLibLoading(name): boolean {
         if (this.scripts[name]) {
             for (let lib of this.scripts[name]) {
@@ -1602,25 +1655,6 @@ export class metadata {
         }
 
         return false;
-    }
-
-    public getHtmlStylesheetCode(stylesheetId: string): string {
-        return _.isObject(this.htmlStyleData.stylesheets[stylesheetId]) && _.isString(this.htmlStyleData.stylesheets[stylesheetId].csscode) ? this.htmlStyleData.stylesheets[stylesheetId].csscode : "";
-    }
-
-    public getHtmlFormats(stylesheetId: string): any[] {
-        if (!_.isObject(this.htmlStyleData.stylesheets[stylesheetId])) {
-            console.log("HTML Styling: Unknown style sheet with ID " + stylesheetId + ".");
-            return [];
-        }
-        if (!_.isArray(this.htmlStyleData.stylesheets[stylesheetId].formats)) {
-            this.htmlStyleData.stylesheets[stylesheetId].formats = [];
-        }
-        // Styles are delivered by KREST as string, and must be converted to an array of objects (once). Now? Or has it already been done?
-        if (!this.htmlStyleData.stylesheets[stylesheetId].stylesDecoded) {
-            this.htmlStylesToObjects(stylesheetId);
-        }
-        return this.htmlStyleData.stylesheets[stylesheetId].formats;
     }
 
     private htmlStylesToObjects(stylesheetId) {
@@ -1639,25 +1673,6 @@ export class metadata {
             }
         }
         this.htmlStyleData.stylesheets[stylesheetId].stylesDecoded = true;
-    }
-
-    public getHtmlStylesheetNames(): any[] {
-        let stylesheets = [];
-        for (let sheetId in this.htmlStyleData.stylesheets) {
-            stylesheets.push({
-                id: this.htmlStyleData.stylesheets[sheetId].id,
-                name: this.htmlStyleData.stylesheets[sheetId].name
-            });
-        }
-        return _.sortBy(stylesheets, "name");
-    }
-
-    public getHtmlStylesheetToUse(module: string, fieldname: string) {
-        if (_.isObject(this.htmlStyleData.stylesheetsToUse[module]) && this.htmlStyleData.stylesheetsToUse[module][fieldname]) {
-            return this.htmlStyleData.stylesheetsToUse[module][fieldname];
-        } else {
-            return "";
-        }
     }
 
 }

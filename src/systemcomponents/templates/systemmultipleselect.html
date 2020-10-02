@@ -2,13 +2,13 @@
     <div class="slds-form-element__control">
         <div class="slds-combobox_container">
             <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="listClass" aria-expanded="true" aria-haspopup="listbox" role="combobox">
-                <div *ngIf="!showPills" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                    <input (click)="onclick()" (mouseleave)="onMouseLeave()" (keydown)="$event.preventDefault()" [disabled]="disabled" [placeholder]="selectedCountText" [ngStyle]="inputTagStyle" type="text" autoComplete="off" role="textbox" class="slds-input slds-combobox__input slds-has-focus slds-combobox__input-value"/>
+                <div *ngIf="!showPills" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none" (click)="onclick()">
+                    <input (mouseleave)="onMouseLeave()" (keydown)="$event.preventDefault()" [disabled]="disabled" [placeholder]="selectedCountText" [ngStyle]="inputTagStyle" type="text" autoComplete="off" role="textbox" class="slds-input slds-combobox__input slds-has-focus slds-combobox__input-value"/>
                     <system-utility-icon [icon]="dropdownIcon" addclasses="slds-input__icon slds-input__icon_right"></system-utility-icon>
                 </div>
-                <div *ngIf="showPills" (mouseleave)="onMouseLeave()" class="slds-grid slds-grid--vertical-align-center slds-wrap slds-pill_container">
+                <div *ngIf="showPills" (mouseleave)="onMouseLeave()" class="slds-grid slds-grid--vertical-align-center slds-wrap slds-pill_container" (click)="onclick()">
                     <ng-container *ngFor="let value of valueArray; let index = index; trackBy: trackByFn">
-                        <span *ngIf="value.includes(groupSeparator)" class="slds-pill slds-pill_link" style="max-width: 130px;">
+                        <span *ngIf="!grouped || value.includes(groupSeparator)" class="slds-pill slds-pill_link" style="max-width: 130px;" (click)="$event.stopPropagation()">
                             <a href="javascript:void(0);" class="slds-pill__action">
                                 <span class="slds-pill__label" [title]="listItems[value]">{{listItems[value]}}</span>
                             </a>
@@ -18,10 +18,10 @@
                         </span>
                     </ng-container>
                     <div *ngIf="showEmptyText" (click)="onclick()" class="slds-grow slds-m-left--xx-small" style="cursor: default;">{{selectedCountText}}</div>
-                    <div (click)="onclick()" class="slds-grow">&nbsp;</div>
+                    <div class="slds-grow">&nbsp;</div>
                     <system-utility-icon (click)="onclick()" [icon]="dropdownIcon" size="xx-small" class="slds-col--bump-left slds-p-right--xx-small"></system-utility-icon>
                 </div>
-                <div class="slds-dropdown slds-dropdown_fluid spicecrm-scrollbar" role="listbox" [ngClass]="dropdownLength">
+                <div class="slds-dropdown slds-dropdown_fluid spice-scrollbar" role="listbox" [ngClass]="dropdownLength">
                     <ul *ngIf="grouped" class="slds-listbox slds-listbox_vertical" role="group">
                         <ng-container *ngFor="let listGroup of parsedListItems; trackBy: trackByFn">
                             <li role="presentation" class="slds-listbox__item">

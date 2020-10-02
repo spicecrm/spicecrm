@@ -30,7 +30,7 @@
                         <div class="slds-form-element__control">
                             <div class="slds-select_container">
                                 <select class="slds-select" [(ngModel)]="fieldDetails.indextype">
-                                    <option value=''></option>
+                                    <option [ngValue]="null"></option>
                                     <option value='text'>text</option>
                                     <option value='keyword'>keyword</option>
                                     <option value='date'>date</option>
@@ -79,7 +79,7 @@
                         <div class="slds-form-element__control">
                             <div class="slds-select_container">
                                 <select class="slds-select" [(ngModel)]="fieldDetails.aggregate">
-                                    <option value=''></option>
+                                    <option [ngValue]='null'></option>
                                     <option value='term'>Term</option>
                                     <option value='range'>Range</option>
                                     <option value='datew'>Date Week</option>
@@ -127,7 +127,7 @@
                             <div class="slds-form-element__control">
                                 <div class="slds-select_container">
                                     <select class="slds-select" [(ngModel)]="fieldDetails.aggregatesortby">
-                                        <option value=''></option>
+                                        <option [ngValue]='null'></option>
                                         <option value='_count'>Count (default)</option>
                                         <option value='_key'>Key</option>
                                     </select>
@@ -139,7 +139,7 @@
                             <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_AGGREGATE_SORT')"></system-icon-help-text>
                             <div class="slds-form-element__control">
                                 <select class="slds-select" [(ngModel)]="fieldDetails.aggregatesort">
-                                    <option value=''></option>
+                                    <option [ngValue]='null'></option>
                                     <option value='asc'>asc</option>
                                     <option value='desc'>desc (default)</option>
                                 </select>
@@ -224,9 +224,12 @@
                 </div>
             </fieldset>
             <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
-                <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_EMAIL_SETTINGS"></system-label></legend>
-                <div class="slds-form-element__control">
+                <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_EMAIL_PHONE_SETTINGS"></system-label></legend>
+                <div class="slds-form-element__control slds-size--1-of-2">
                     <system-checkbox [(ngModel)]="fieldDetails.email"><system-label label="LBL_EMAIL_SEARCH"></system-label><system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ENABLE_EMAIL')"></system-icon-help-text></system-checkbox>
+                </div>
+                <div class="slds-form-element__control slds-size--1-of-2">
+                    <system-checkbox [(ngModel)]="fieldDetails.phonesearch"><system-label label="LBL_PHONE_SEARCH"></system-label><system-icon-help-text [helpText]="language.getLabel('HLP_FTS_ENABLE_PHONE')"></system-icon-help-text></system-checkbox>
                 </div>
             </fieldset>
             <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">

@@ -14,8 +14,8 @@
         <object-merge-button *ngIf="showMergeButton" [mergemodels]="duplicates" (merged)="merged($event)"></object-merge-button>
     </div>
     <div class="slds-card__body" [hidden]="hideDuplicates">
-        <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
-            <object-related-duplicate-tile class="slds-size--1-of-1 slds-large-size--1-of-3" *ngFor="let duplicate of duplicates" [system-model-provider]="{module:model.module, data:duplicate}"></object-related-duplicate-tile>
+        <div class="slds-card__body--inner slds-grid slds-wrap slds-gutters_direct-xx-small">
+            <object-related-duplicate-tile class="slds-size--1-of-1 slds-large-size--1-of-3 slds-col" *ngFor="let duplicate of duplicates" [system-model-provider]="{module:model.module, data:duplicate}"></object-related-duplicate-tile>
         </div>
     </div>
 </article>

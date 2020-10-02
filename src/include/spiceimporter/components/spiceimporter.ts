@@ -89,7 +89,7 @@ export class SpiceImporter implements OnInit {
                 if (fields.hasOwnProperty(field)) {
                     let thisField = fields[field];
                     // check if file can be imported
-                    if (thisField.type !== 'link' && thisField.type !== 'relate' && thisField.source !== 'non-db' && thisField.name != 'id') {
+                    if (thisField.type !== 'link' && thisField.type !== 'relate' && (thisField.name == 'email1' || thisField.source !== 'non-db') && thisField.name != 'id') {
                         if (thisField.vname) {
                             thisField.displayname = this.language.getLabel(this.model.module, thisField.vname) + ' (' + thisField.name + ')';
                         } else {

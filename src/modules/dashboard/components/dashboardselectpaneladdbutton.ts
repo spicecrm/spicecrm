@@ -23,14 +23,27 @@ import {dashboardlayout} from '../services/dashboardlayout.service';
     providers: [model]
 })
 export class DashboardSelectPanelAddButton {
+    /**
+     * emit when the dashboard is added to apply the necessary changes from parent
+     * @private
+     */
+    @Output() private dashboardAdded = new EventEmitter<{id: string}>();
 
-    constructor(private model: model) {
+    constructor(private model: model, private modellist: modellist, private dashboardlayout: dashboardlayout) {
         this.model.module = 'Dashboards';
     }
 
+    /**
+     * add open add modal
+     * @private
+     */
     private addDashboard() {
         this.model.reset();
         this.model.module = 'Dashboards';
-        this.model.addModel();
+        this.model.addModel().subscribe(res => {
+            if (!res) return;
+            this.modellist.listData.list.push(res);
+            this.dashboardAdded.emit({id: res.id});
+        });
     }
 }

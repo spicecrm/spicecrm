@@ -2,7 +2,7 @@
 
     <div *ngIf="!view.isEditMode()" class="slds-p-around--xx-small">
         <system-stencil *ngIf="model.isLoading"></system-stencil>
-        <div *ngIf="!model.isLoading" class="slds-has-divider--bottom slds-p-vertical--x-small spicecrm-fieldminheight">
+        <div *ngIf="!model.isLoading" class="slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight">
             <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread" style="min-height:19px;">
                 <div class="slds-truncate" style="width:100%">
                     {{job}}<ng-container *ngIf="job==='url::'">{{url}}</ng-container>

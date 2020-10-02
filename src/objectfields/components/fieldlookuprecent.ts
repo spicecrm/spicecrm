@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
+import {Component, Input, Output, OnInit, EventEmitter, OnChanges} from '@angular/core';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
 import {recent} from '../../services/recent.service';
@@ -13,7 +13,7 @@ import {recent} from '../../services/recent.service';
     selector: 'field-lookup-recent',
     templateUrl: './src/objectfields/templates/fieldlookuprecent.html'
 })
-export class fieldLookupRecent implements OnInit {
+export class fieldLookupRecent implements OnChanges {
 
     /**
      * the module for the recent items
@@ -30,10 +30,19 @@ export class fieldLookupRecent implements OnInit {
 
     }
 
-    public ngOnInit() {
+    /**
+     * redeterine the recent items on Changes
+     */
+    public ngOnChanges() {
         this.getRecent();
     }
 
+    /**
+     * handels when the userr selects an item
+     *
+     * @param event
+     * @param recentItem
+     */
     private setParent(event, recentItem) {
         // stop the event
         event.preventDefault();
@@ -41,6 +50,9 @@ export class fieldLookupRecent implements OnInit {
         this.selectedObject.emit({id: recentItem.data.id, text: recentItem.data.summary_text, data: recentItem.data});
     }
 
+    /**
+     * get the recent items filtered by the module
+     */
     private getRecent() {
         this.recentItems = [];
         let recent = this.recent.getModuleRecent(this.module).subscribe(recentItems => {

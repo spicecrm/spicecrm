@@ -28,7 +28,7 @@
             </system-section>
             <system-section titlelabel="LBL_MODULES">
                 <ul class="slds-grid slds-grid--pull-padded slds-wrap">
-                    <li *ngFor="let module of getModules()" class="slds-p-around--small slds-size--xx-small" (click)="gotoModule(module)">
+                    <li *ngFor="let module of getModules()" class="slds-p-around--small slds-size--xx-small" (click)="gotoModule(module)" [title]="language.getModuleName(module, false, 'long')">
                         <div class="slds-app-launcher__tile-figure slds-app-launcher__tile-figure--small slds-text-link_reset">
                             <system-icon [module]="module" [size]="'large'"></system-icon>
                         </div>

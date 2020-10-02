@@ -1,25 +1,55 @@
 /**
  * @module ModuleCalendar
  */
-import {AfterViewInit, ChangeDetectorRef, Component, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Renderer2, ViewChild, ViewContainerRef} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {calendar} from "../services/calendar.service";
 import {language} from "../../../services/language.service";
 
+/**
+ * display a list of the overflowed events from month view
+ */
 @Component({
     templateUrl: './src/modules/calendar/templates/calendarmorepopover.html',
-    providers: [calendar]
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarMorePopover implements AfterViewInit {
+    /**
+     * holds the calendar events
+     */
     public events: any[] = [];
-    public popoverside: string = 'right';
-    public popoverpos: string = 'top';
-    public isMobileView: boolean = false;
+    /**
+     * holds the nubbin class
+     */
+    public nubbinClass: string = '';
+    /**
+     * holds the popover style
+     */
+    public popoverStyle: any = {};
+    /**
+     * the sheet day comes from parent to read the date from
+     */
     public sheetDay: any = {};
-    public parentElementRef: any = null;
-    public self: any = null;
+    /**
+     * mobile view boolean to fix the display position on active
+     */
+    public isMobileView: boolean = false;
+    /**
+     * reference of the parent element to handle the positioning
+     */
+    public parentElementRef;
+    /**
+     * reference of self for destroy purpose
+     */
+    public self: any;
+    /**
+     * holds the popover hide timeout
+     */
     private hidePopoverTimeout: any = {};
-    @ViewChild('popover', {read: ViewContainerRef, static: true}) private popover: ViewContainerRef;
+    /**
+     * element reference of the popover container to handle its style
+     */
+    @ViewChild('popoverContainer', {read: ViewContainerRef, static: true}) private popoverContainer: ViewContainerRef;
 
     constructor(private metadata: metadata,
                 private calendar: calendar,
@@ -28,75 +58,26 @@ export class CalendarMorePopover implements AfterViewInit {
                 private cdr: ChangeDetectorRef) {
     }
 
-    /*
-    * @return style: object = {height, position, display}
-    */
-    get eventStyle() {
-        return {
-            height: this.calendar.multiEventHeight + 'px',
-            position: 'initial',
-            display: 'block'
-        };
-    }
-
-    /*
-    * @return moment format = "D MMM," of calendarDate
-    */
+    /**
+     * @return day short date
+     */
     get shortDate() {
         let navigateDate = this.calendar.calendarDate;
         return navigateDate.month(this.sheetDay.month).date(this.sheetDay.day).format('D MMM,');
     }
 
-    /*
-    * @correct popover position when it overflows
-    * @set popoverside: 'right' | 'left'
-    * @set popoverpos: 'top' | 'bottom'
-    * @correctionDistance = 30
-    * @return style: object = {top, left, width?}
-    */
-    get popoverStyle() {
-        if (this.isMobileView) {
-            return {left: 0, bottom: 0, width: '100%'};
-        }
-
-        let rect = this.parentElementRef.nativeElement.getBoundingClientRect();
-        let poprect = this.popover.element.nativeElement.getBoundingClientRect();
-
-        if (rect.left < poprect.width) {
-            this.popoverside = 'right';
-        } else {
-            this.popoverside = 'left';
-        }
-
-        if (rect.top - 30 + poprect.height > window.innerHeight && rect.top - poprect.height + 30 > 0) {
-            this.popoverpos = 'bottom';
-            return {
-                top: (rect.top - poprect.height + 30) + 'px',
-                left: rect.left < poprect.width ? (rect.left + 100) + 'px' : (rect.left - poprect.width - 30) + 'px'
-            };
-        } else {
-            this.popoverpos = 'top';
-            return {
-                top: (rect.top - 30) + 'px',
-                left: rect.left < poprect.width ? (rect.left + 100) + 'px' : (rect.left - poprect.width - 30) + 'px'
-            };
-        }
-    }
-
-    /*
-    * @detectChanges to prevent angular change detection error
-    */
+    /**
+     * detectChanges to prevent angular change detection error
+     * set popover position
+     */
     public ngAfterViewInit() {
+        this.setPopoverPosition();
         this.cdr.detectChanges();
     }
 
-    /*
-    * @listen to event.relatedTarget click
-    * @input force: boolean = false
-    * @input event?: MouseEvent
-    * @destroy self
-    * @setTimeout for hidePopoverTimeout = 500ms
-    */
+    /**
+     * handle closing the popover
+     */
     public closePopover(force = false, event?) {
         if (force) {
             if (event && event.relatedTarget.classList.contains('slds-dropdown')) {
@@ -112,6 +93,44 @@ export class CalendarMorePopover implements AfterViewInit {
         }
     }
 
+    /**
+     * set popover style and the popover sides and position
+     */
+    private setPopoverPosition() {
+
+        if (this.isMobileView) {
+            return {left: 0, bottom: 0, width: '100%'};
+        }
+
+        let popoverSide: string;
+        let popoverPosition: string;
+
+        let rect = this.parentElementRef.nativeElement.getBoundingClientRect();
+        let poprect = this.popoverContainer.element.nativeElement.getBoundingClientRect();
+
+        if (rect.left < poprect.width) {
+            popoverSide = 'right';
+        } else {
+            popoverSide = 'left';
+        }
+
+        if (rect.top - 30 + poprect.height > window.innerHeight && rect.top - poprect.height + 30 > 0) {
+            popoverPosition = 'bottom';
+            this.popoverStyle = {
+                top: (rect.top - poprect.height + 30) + 'px',
+                left: rect.left < poprect.width ? (rect.left + 100) + 'px' : (rect.left - poprect.width - 30) + 'px'
+            };
+        } else {
+            popoverPosition = 'top';
+            this.popoverStyle = {
+                top: (rect.top - 30) + 'px',
+                left: rect.left < poprect.width ? (rect.left + 100) + 'px' : (rect.left - poprect.width - 30) + 'px'
+            };
+        }
+
+        this.nubbinClass = (popoverSide == 'left' ? 'slds-nubbin--right-' : 'slds-nubbin--left-') + popoverPosition;
+    }
+
     /*
     * A function that defines how to track changes for items in the iterable (ngForOf).
     * https://angular.io/api/common/NgForOf#properties
@@ -123,30 +142,19 @@ export class CalendarMorePopover implements AfterViewInit {
         return item.id;
     }
 
-    /*
-    * @clearTimeout for hidePopoverTimeout
-    */
+    /**
+     * clear hide timeout
+     */
     private onMouseOver() {
         if (this.hidePopoverTimeout) {
             window.clearTimeout(this.hidePopoverTimeout);
         }
     }
 
-    /*
-    * @input event
-    * @pass event
-    * @closePopover
-    */
+    /**
+     * call to force closing the popover
+     */
     private onMouseOut(event) {
         this.closePopover(true, event);
-    }
-
-    /*
-    * @input event
-    * @pass event
-    * @return class: string
-    */
-    private getNubbinClass() {
-        return (this.popoverside == 'left' ? 'slds-nubbin--right-' : 'slds-nubbin--left-') + this.popoverpos;
     }
 }

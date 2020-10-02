@@ -84,7 +84,13 @@ export class ObjectEditModal implements OnInit {
         private modal: modal,
         private modalwindow: modalwindow
     ) {
+        // view is editable
         this.view.isEditable = true;
+
+        // do not follow links
+        this.view.displayLinks = false;
+
+        // set the edit mode
         this.view.setEditMode();
 
         // start editing

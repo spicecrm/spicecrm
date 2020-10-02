@@ -339,42 +339,14 @@ export class ActionsetManager {
         }
     }
 
-    // move items up and down
-    private move(item, direction) {
-        // get the current sequence in the array
-        let currentIndex = 0;
-        this.currentActionSet.actions.some((someitem, someindex) => {
-            if (someitem.id == item.id) {
-                currentIndex = someindex;
-                return true;
-            }
-        });
+    /**
+     * handles the drop event and rearranges the array
+     * @param event
+     */
+    private drop(event) {
+        this.currentActionSet.actions.splice(event.currentIndex, 0, this.currentActionSet.actions.splice(event.previousIndex, 1)[0]);
 
-        let possible = false;
-        let tosplice = currentIndex - 1;
-
-        if(direction == "up") {
-            possible = currentIndex > 0;
-            tosplice = currentIndex - 1;
-        } else {
-            possible = currentIndex < this.currentActionSet.actions.length;
-            tosplice = currentIndex + 1;
-        }
-
-        if (possible) {
-            // shuffle
-            let currentItem = this.currentActionSet.actions.splice(currentIndex, 1);
-            this.currentActionSet.actions.splice(tosplice, 0, currentItem[0]);
-
-            // renumber
-            let i = 0;
-            for (let item of this.currentActionSet.actions) {
-                item.sequence = i;
-                i++;
-            }
-        }
     }
-
 
     private deleteChanges() {
         if(this.currentActionSet.isnew) {

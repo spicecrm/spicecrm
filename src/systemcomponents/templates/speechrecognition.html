@@ -13,7 +13,7 @@
             <div class="slds-col">
                 <div class="slds-select_container">
                     <select class="slds-select" (change)="changeLang($event)">
-                        <option *ngFor="let lang of languages;let index=i" [value]="lang.id" [selected]="i == selectedLanguage">{{lang.name}}</option>
+                        <option *ngFor="let lang of languages; index as i" [value]="lang.id" [selected]="i == selectedLanguage">{{lang.name}}</option>
                     </select>
                 </div>
             </div>
@@ -31,7 +31,7 @@
                 </button>
                 <button class="slds-button slds-button--brand" (click)="buttonAcceptClose($event)" [disabled]="!dirty || cancelling">
                     <system-button-icon [icon]="'stop'" [position]="'left'"></system-button-icon>
-                    <system-label label="LBL_ACCEPT"></system-label> &amp; <system-label label="LBL_CLOSE"></system-label>
+                    <system-label label="LBL_ACCEPT"></system-label>&nbsp;&amp;&nbsp;<system-label label="LBL_CLOSE"></system-label>
                 </button>
             </div>
         </div>

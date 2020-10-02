@@ -17,7 +17,6 @@
         <object-record-fieldset [fieldset]="headerFieldSet"></object-record-fieldset>
     </div>
     <div class="slds-p-horizontal--xx-small" *ngIf="isExpanded">
-
         <object-record-fieldset [fieldset]="bodyFieldSet" [direction]="'vertical'"></object-record-fieldset>
         <system-dynamic-component *ngIf="allowattachments" component="SpiceAttachmentsPanel"></system-dynamic-component>
         <div class="slds-p-vertical--x-small slds-grid">

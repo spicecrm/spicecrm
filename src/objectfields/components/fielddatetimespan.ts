@@ -31,19 +31,19 @@ export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
     }
 
     get fieldstart() {
-        return this.fieldconfig.field_start ? this.fieldconfig.field_start : 'date_start';
+        return this.fieldconfig.date_start ? this.fieldconfig.date_start : 'date_start';
     }
 
     get fieldend() {
-        return this.fieldconfig.field_end ? this.fieldconfig.field_end : 'date_end';
+        return this.fieldconfig.date_end ? this.fieldconfig.date_end : 'date_end';
     }
 
     get fieldminutes() {
-        return this.fieldconfig.field_minutes ? this.fieldconfig.field_minutes : 'duration_minutes';
+        return this.fieldconfig.duration_minutes ? this.fieldconfig.duration_minutes : 'duration_minutes';
     }
 
     get fieldhours() {
-        return this.fieldconfig.field_hours ? this.fieldconfig.field_hours : 'duration_hours';
+        return this.fieldconfig.duration_hours ? this.fieldconfig.duration_hours : 'duration_hours';
     }
 
     public ngOnInit() {
@@ -113,7 +113,7 @@ export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
         let hours = Math.floor(duration.asHours());
         let minutes = duration.asMinutes() - 60 * hours;
 
-        this.model.setFieldValue(this.fieldhours, hours);
-        this.model.setFieldValue(this.fieldminutes, minutes);
+        this.model.setField(this.fieldhours, hours);
+        this.model.setField(this.fieldminutes, minutes);
     }
 }
