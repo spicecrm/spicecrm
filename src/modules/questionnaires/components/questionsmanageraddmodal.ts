@@ -48,7 +48,8 @@ export class QuestionsManagerAddModal implements OnInit {
             this.model.getData(true);
         } else {
             this.model.initializeModel();
-            this.model.data.questionset_id = this.questionset.id;
+            this.model.setField('questionset_id', this.questionset.id );
+            this.model.setField('id', this.model.id );
         }
         this.backend.getRequest('QuestionOptionCategories/getList').subscribe(( response: any ) => {
             let allCategories = response;
