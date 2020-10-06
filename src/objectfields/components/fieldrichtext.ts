@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, Injector, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
@@ -12,6 +12,7 @@ import {Router} from '@angular/router';
 import {broadcast} from "../../services/broadcast.service";
 import {backend} from "../../services/backend.service";
 import {toast} from "../../services/toast.service";
+import {modal} from "../../services/modal.service";
 
 declare var _;
 
@@ -48,7 +49,9 @@ export class fieldRichText extends fieldGeneric {
                 public backend: backend,
                 public toast: toast,
                 public router: Router,
+                public injector: Injector,
                 public broadcast: broadcast,
+                public modal: modal,
                 public sanitized: DomSanitizer) {
         super(model, view, language, metadata, router);
         this.stylesheets = this.metadata.getHtmlStylesheetNames();
@@ -220,5 +223,23 @@ export class fieldRichText extends fieldGeneric {
                 },
                 error => this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message)
             );
+    }
+
+    /**
+     * open page builder modal
+     * @private
+     */
+    private openPageBuilder() {
+        this.modal.openModal('SpicePageBuilder', true, this.injector).subscribe(modalRef => {
+            if (!!this.value) {
+                modalRef.instance.spicePageBuilderService.page = this.value;
+            }
+            modalRef.instance.spicePageBuilderService.response.subscribe(res => {
+               if (!res) return;
+               this.value = res;
+               modalRef.instance.self.destroy();
+            });
+
+        });
     }
 }

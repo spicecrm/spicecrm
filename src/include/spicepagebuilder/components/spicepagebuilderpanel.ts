@@ -1,7 +1,7 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {CdkDragEnter, CdkDragExit} from "@angular/cdk/drag-drop";
 import {ColumnI, SectionI} from "../interfaces/spicepagebuilder.interfaces";
@@ -15,6 +15,11 @@ import {ColumnI, SectionI} from "../interfaces/spicepagebuilder.interfaces";
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SpicePageBuilderPanel {
+    /**
+     * reference of the parent to allow destroy
+     * @private
+     */
+    @Input() private self: any;
     /**
      * available sections
      */
@@ -91,5 +96,22 @@ export class SpicePageBuilderPanel {
             event.container.element.nativeElement.removeChild(this.spicePageBuilderService.dragPlaceholderNode);
             this.spicePageBuilderService.dragPlaceholderNode = undefined;
         }
+    }
+
+    /**
+     * emit the page data by the service
+     * @private
+     */
+    private save() {
+        this.spicePageBuilderService.emitData();
+    }
+
+    /**
+     * emit the page data by the service
+     * @private
+     */
+    private cancel() {
+        this.spicePageBuilderService.emitData(true);
+        this.self.destroy();
     }
 }

@@ -6,6 +6,7 @@ import {navigationtab} from "../../../services/navigationtab.service";
 import {language} from "../../../services/language.service";
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {CdkDropListGroup} from "@angular/cdk/drag-drop";
+import {BehaviorSubject, Observable} from "rxjs";
 
 /**
  * render spice page builder panel and renderer
@@ -21,9 +22,13 @@ export class SpicePageBuilder implements AfterViewInit {
      * drop list reference to manage adding new lists
      */
     @ViewChild(CdkDropListGroup, {read: CdkDropListGroup, static: false}) private dropListGroup;
+    /**
+     * reference of this component to allow destroy
+     * @public
+     */
+    public self: any;
 
-    constructor(private language: language, private navigationtab: navigationtab, private spicePageBuilderService: SpicePageBuilderService) {
-        this.setNavigationTabInfo();
+    constructor(public spicePageBuilderService: SpicePageBuilderService) {
     }
 
     /**
@@ -38,15 +43,5 @@ export class SpicePageBuilder implements AfterViewInit {
      */
     private setDropListReference() {
         this.spicePageBuilderService.dropListGroup = this.dropListGroup;
-    }
-
-    /**
-     * set the navigation tab info data
-     */
-    private setNavigationTabInfo() {
-        this.navigationtab.setTabInfo({
-            displayname: this.language.getLabel('LBL_PAGE_BUILDER'),
-            displayicon: 'builder'
-        });
     }
 }
