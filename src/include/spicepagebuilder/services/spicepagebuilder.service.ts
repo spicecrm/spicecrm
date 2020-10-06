@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {CdkDropList} from "@angular/cdk/drag-drop";
-import {Observable, Subject} from "rxjs";
+import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {modal} from "../../../services/modal.service";
 import {ColumnI, ContainerElementI, PanelElementI, SectionI} from "../interfaces/spicepagebuilder.interfaces";
 import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
@@ -10,6 +10,10 @@ declare var _;
 
 @Injectable()
 export class SpicePageBuilderService {
+    /**
+     * hold a response subject to emit the data to the page builder modal listener
+     */
+    public response = new BehaviorSubject<any>(null);
     /**
      * hold the unique dom id for the panel drop list
      */
@@ -211,5 +215,13 @@ export class SpicePageBuilderService {
         });
 
         return response.asObservable();
+    }
+
+    /**
+     * emits the page data to the page builder listener
+     */
+    public emitData(isNull?: boolean) {
+        this.response.next(!isNull ? this.page : null);
+        this.response.complete();
     }
 }
