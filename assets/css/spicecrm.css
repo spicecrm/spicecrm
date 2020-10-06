@@ -191,8 +191,11 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 /* reduce padding */
 @media (max-width: 48em) {
     .slds-max-medium-table--stacked-horizontal tr > td:first-child,
+    .slds-max-medium-table_stacked-horizontal tr > td:first-child,
     .slds-max-medium-table--stacked-horizontal td,
+    .slds-max-medium-table_stacked-horizontal td,
     .slds-max-medium-table--stacked-horizontal tr > td:last-child {
+    .slds-max-medium-table_stacked-horizontal tr > td:last-child {
         padding: .5em;
     }
 }
@@ -302,7 +305,8 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     fill: var(--color-white);
 }
 
-field-generic-display .slds-button--icon {
+field-generic-display .slds-button--icon,
+field-generic-display .slds-button_icon {
     color: var(--color-grey-3);
 }
 
@@ -311,7 +315,7 @@ field-generic-display .slds-button--icon {
     color: var(--color-grey-9);
 }
 
-.slds-button.slds-button--brand {
+.slds-button.slds-button--brand, .slds-button.slds-button_brand {
     color: var(--color-white);
 }
 
