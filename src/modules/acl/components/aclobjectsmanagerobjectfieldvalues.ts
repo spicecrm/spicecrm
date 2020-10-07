@@ -58,7 +58,6 @@ export class ACLObjectsManagerObjectFieldvalues {
     }
 
     private setFieldValue(field, valueid, eventtype, event) {
-        console.log(event);
         let fieldValues = this.model.getFieldValue('fieldvalues');
         if (fieldValues && fieldValues.length > 0) {
             for (let fieldvalue of fieldValues) {

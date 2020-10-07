@@ -148,7 +148,6 @@ export class ValidationRulesManager
             return e.id == this._current_rule
         });
         this._current_rule_data = {...data};
-        console.log('resetted to', data, this._backup_rules);
     }
 
     private copyRulesToBackup() {
