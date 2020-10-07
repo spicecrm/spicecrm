@@ -33,7 +33,6 @@ export class MailChimpCreateCampaignButton {
     public disableButton() {
         if (this.model.data.ext_id) {
             this.disabled = true;
-            window.console.log(this.disabled);
             return;
         }
     }

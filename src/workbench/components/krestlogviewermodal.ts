@@ -39,7 +39,6 @@ export class KRESTLogViewerModal {
         // When the full text already has been retrieved from the backend
         // (because this modal for this log line has already been shown)
         // the data is still stored (property "fullText") and we don´t need to do the request again:
-        console.log('Line ZU geladen',this.line);
         this.isLoaded = this.line.fullLoaded && true;
         if ( !this.isLoaded ) this.loadFullData();
     }
@@ -58,7 +57,6 @@ export class KRESTLogViewerModal {
             },
             error => {
                 this.toast.sendToast('Error loading line of log file!', 'error', 'Line '+this.line.lnr+' of log file '+this.line.fnr+' couldn´t be fetched.', false );
-                console.log(error);
                 this.isLoading = false;
             });
     }

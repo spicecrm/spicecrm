@@ -193,7 +193,6 @@ export class SalesDocsItemsContainer {
         itemData.itemtype = itemType;
         itemData.date_entered = new moment();
         itemData.date_modified = new moment();
-        console.log('itemType', itemType);
 
         // add to the bean as well
         if (!this.model.data.salesdocitems) {

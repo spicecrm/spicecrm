@@ -53,7 +53,6 @@ export class SpiceInstallerSetLanguage {
      */
     private setLanguage() {
         this.spiceinstaller.configObject.language = this.spiceinstaller.language;
-        console.log(this.spiceinstaller.configObject);
         this.spiceinstaller.selectedStep.completed = true;
         this.spiceinstaller.steps[6] = this.spiceinstaller.selectedStep;
         this.spiceinstaller.next(this.spiceinstaller.steps[6]);
