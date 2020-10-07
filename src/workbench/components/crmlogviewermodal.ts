@@ -41,7 +41,6 @@ export class CRMLogViewerModal {
             },
             error => {
                 this.toast.sendToast('Error loading line of log file!', 'error', 'Line '+this.line.lnr+' of log file '+this.line.fnr+' couldn´t be fetched.', false );
-                console.log(error);
                 this.isLoading = false;
             });
     }

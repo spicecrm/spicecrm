@@ -41,10 +41,6 @@ export class MailboxesA1TrafficManager implements OnInit {
     }
 
     public testConnection() {
-        this.modal.openModal("MailboxesmanagerTestModal", true, this.ViewContainerRef.injector )
-            .subscribe((modalRef) => {
-                    console.log("test happened");
-                }
-            );
+        this.modal.openModal("MailboxesmanagerTestModal", true, this.ViewContainerRef.injector );
     }
 }
