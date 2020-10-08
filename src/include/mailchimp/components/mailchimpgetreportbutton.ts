@@ -37,7 +37,6 @@ export class MailChimpGetReportButton {
             .subscribe(response => {
                     this.toast.sendToast(this.language.getLabel('LBL_COMPLETED'));
                     this.report = response;
-                    window.console.log(this.report);
                     stopper.emit(true);
                 },
                 (error) => {

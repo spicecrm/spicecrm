@@ -24,7 +24,6 @@ export class DialogMailPanel {
         this.backend.getRequest(`/DialogMail/Contact/${this.model.id}/mails`)
             .subscribe(res => {
                 this.dMailList = res;
-                window.console.log(res);
                 this.isLoading = false;
             });
     }

@@ -38,7 +38,6 @@ export class ProspectListsToDialogMailModal {
 
             this.backend.getRequest(`DialogMail/${this.model.module}/${this.model.id}/initialize`).subscribe(result => {
                 this.statistics = result;
-                window.console.log(this.statistics);
                 loadingRef.instance.self.destroy();
             });
         });
