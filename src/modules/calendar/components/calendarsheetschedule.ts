@@ -124,6 +124,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
      */
     private setEventDays() {
         let events = this.groupByDay(this.ownerEvents.concat(this.userEvents, this.googleEvents));
+        events.forEach(event => event.events.sort((a, b) => a.start - b.start));
         this.eventDays = events.sort((a, b) => a.date - b.date);
         this.cdRef.detectChanges();
     }
