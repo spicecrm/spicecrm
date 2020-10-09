@@ -51,10 +51,10 @@ export class ObjectListViewHeaderListSelector {
             defaultlist = this.componentconfig.lists[0].component;
         }
 
-        // set the list component
-        this.modellist.listcomponent = defaultlist;
-        // }
-
+        // set the default list component if the current list id is all or owner
+        if (this.modellist.currentList && ['all', 'owner'].indexOf(this.modellist.currentList.id) != -1) {
+            this.modellist.listcomponent = defaultlist;
+        }
     }
 
     /**

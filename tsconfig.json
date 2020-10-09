@@ -10,9 +10,6 @@
     "removeComments": true,
     "lib": ["es2015", "dom"]
   },
-  "types": [
-    "hammerjs"
-  ],
   "include" :[
     "src/**/*",
     "dist/**/*"

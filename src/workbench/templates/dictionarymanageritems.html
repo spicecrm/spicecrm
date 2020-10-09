@@ -1,0 +1,47 @@
+<div style="height: 50%">
+    <ng-container *ngIf="dictionarymanager.currentDictionaryDefinition; else selectdefinition">
+        <table  class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th style="width:2.5rem" scope="col"></th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_DOMAIN"></system-label></div>
+                    </th>
+                    <th style="width:2rem" scope="col"></th>
+                </tr>
+            </thead>
+            <tbody class="dragboundary"  cdkDropList (cdkDropListDropped)="drop($event)">
+                <tr class="slds-hint-parent" *ngFor="let dictionaryitem of dictionaryitems" [ngClass]="{'slds-is-selected': dictionarymanager.currentDictionaryDefinition == dictionaryitem.id}" cdkDrag cdkDragBoundary=".dragboundary">
+                    <td>
+                        <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
+                        <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionaryitem.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
+                        <system-utility-icon [colorclass]="dictionarymanager.getStatusColor(dictionaryitem.status)" class="slds-p-right--xx-small" size="xx-small" icon="light_bulb"></system-utility-icon>
+                    </td>
+                    <td data-label="Domain">
+                        <div class="slds-truncate">{{dictionaryitem.name}}</div>
+                    </td>
+                    <td data-label="Type">
+                        <div class="slds-truncate">{{dictionarymanager.getDomainName(dictionaryitem.sysdomaindefinition_id)}}</div>
+                    </td>
+                    <td class="slds-align--absolute-center" style="width: 2rem;">
+                        <system-utility-icon size="xx-small" icon="delete"></system-utility-icon>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="slds-align--absolute-center slds-p-around--small">
+            <system-utility-icon icon="new" size="x-small" (click)="addDictionaryItem($event)" ></system-utility-icon>
+        </div>
+    </ng-container>
+    <ng-template #selectdefinition>
+        <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+            <system-label label="LBL_SELECT_A_DICTIONARYDEFINITION"></system-label>
+        </div>
+    </ng-template>
+</div>
+<div style="height: 50%" class="slds-p-around--xx-small">
+    details
+</div>

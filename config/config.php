@@ -57,10 +57,10 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 $filetype = '';
                 if (file_exists($filepath = __DIR__ . '/assets/images/headerimage.png')) $filetype = 'png';
                 elseif (file_exists($filepath = __DIR__ . '/assets/images/headerimage.gif')) $filetype = 'gif';
-                elseif (file_exists($filepath = __DIR__ . '/assets/images/headerimage.jpg')) $filetype = 'jpg';
+                elseif (file_exists($filepath = __DIR__ . '/assets/images/headerimage.jpg')) $filetype = 'jpeg';
                 elseif (file_exists($filepath = __DIR__ . '/../assets/images/headerimage.png')) $filetype = 'png';
                 elseif (file_exists($filepath = __DIR__ . '/../assets/images/headerimage.gif')) $filetype = 'gif';
-                elseif (file_exists($filepath = __DIR__ . '/../assets/images/headerimage.jpg')) $filetype = 'jpg';
+                elseif (file_exists($filepath = __DIR__ . '/../assets/images/headerimage.jpg')) $filetype = 'jpeg';
                 if ($filetype !== '') {
                     header('Content-Type: image/' . $filetype);
                     readfile($filepath);
@@ -70,8 +70,10 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 $filetype = '';
                 if (file_exists($filepath = __DIR__ . '/assets/images/favicon.ico')) $contenttype = 'image/x-icon';
                 elseif (file_exists($filepath = __DIR__ . '/assets/images/favicon.png')) $contenttype = 'image/png';
+                elseif (file_exists($filepath = __DIR__ . '/assets/images/favicon.jpg')) $contenttype = 'image/jpeg';
                 elseif (file_exists($filepath = __DIR__ . '/../assets/images/favicon.ico')) $contenttype = 'image/x-icon';
                 elseif (file_exists($filepath = __DIR__ . '/../assets/images/favicon.png')) $contenttype = 'image/png';
+                elseif (file_exists($filepath = __DIR__ . '/../assets/images/favicon.jpg')) $contenttype = 'image/jpeg';
                 if ($contenttype !== '') {
                     header('Content-Type: ' . $contenttype);
                     readfile($filepath);

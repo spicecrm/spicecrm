@@ -68,6 +68,16 @@
                 <input class="slds-input" [ngModel]="model.data.settings.imap_trash_dir" disabled >
             </div>
         </div>
+        <div class="slds-grid--vertical slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <div class="slds-form-element">
+                    <label class="slds-truncate slds-form-element__label"><system-label label="LBL_IMAP_DELETE_AFTER_FETCH"></system-label></label>
+                </div>
+                <div class="slds-form-element">
+                    <system-checkbox [disabled]="!view.isEditMode()"id="imap_delete_after_fetch" [(ngModel)]="model.data.settings.imap_delete_after_fetch"></system-checkbox>
+                </div>
+            </div>
+        </div>
         <div class="slds-grid slds-p-vertical--small">
             <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="displayFoldersModal()" [disabled]="!view.isEditMode()"><system-label label="LBL_IMAP_SELECT_FOLDERS"></system-label></button>
         </div>

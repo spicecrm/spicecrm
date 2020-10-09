@@ -8,7 +8,6 @@ import {metadata} from '../../services/metadata.service';
 import {model} from '../../services/model.service';
 
 @Component({
-    selector: 'object-tab-container',
     templateUrl: './src/objectcomponents/templates/objectrelatecontainer.html'
 })
 export class ObjectRelateContainer implements OnInit {

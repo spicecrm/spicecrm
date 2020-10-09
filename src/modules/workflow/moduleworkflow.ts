@@ -45,6 +45,8 @@ import /*embed*/ {WorkflowPanelTask} from "./components/workflowpaneltask";
 import /*embed*/ {WorkflowPanelTasksComments} from "./components/workflowpaneltaskscomments";
 import /*embed*/ {WorkflowTasksDashlet} from "./components/workflowtasksdashlet";
 
+import /*embed*/ {WorkflowCloseWorkflowButton} from "./components/workflowcloseworkflowbutton";
+
 @NgModule({
     imports: [
         CommonModule,
@@ -85,7 +87,8 @@ import /*embed*/ {WorkflowTasksDashlet} from "./components/workflowtasksdashlet"
         WorkflowPanelTasksItem,
         WorkflowPanelTasksComments,
         WorkflowPanelTask,
-        WorkflowTasksDashlet
+        WorkflowTasksDashlet,
+        WorkflowCloseWorkflowButton
     ]
 })
 export class ModuleWorkflow {}

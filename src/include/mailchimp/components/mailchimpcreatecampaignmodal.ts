@@ -43,7 +43,6 @@ export class MailChimpCreateCampaignModal {
                 this.toast.sendToast(this.language.getLabel('LBL_COMPLETED'));
                 this.model.setField('ext_id', response.id);
                 this.model.save();
-                window.console.log(response);
                 this.router.navigate([`/module/${this.model.module}/${this.model.id}`]);
                 this.close();
             },

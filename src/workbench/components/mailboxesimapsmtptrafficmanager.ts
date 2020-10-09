@@ -41,6 +41,7 @@ export class MailboxesImapSmtpTrafficManager {
                 imap_pop3_username: "",
                 imap_sent_dir: "",
                 imap_trash_dir: "",
+                imap_delete_after_fetch: "",
                 smtp_allow_self_signed: "",
                 smtp_auth: "",
                 smtp_encryption: "",

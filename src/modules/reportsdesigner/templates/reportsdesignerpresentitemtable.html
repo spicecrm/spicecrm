@@ -32,6 +32,11 @@
                 <system-label label="LBL_OVERRIDE_TYPE"></system-label>
             </div>
         </th>
+        <th *ngIf="showFunction" scope="col" class="slds-resizable">
+            <div class="slds-truncate" [title]="language.getLabel('LBL_FUNCTION')">
+                <system-label label="LBL_FUNCTION"></system-label>
+            </div>
+        </th>
         <th scope="col" class="slds-resizable">
             <div class="slds-truncate" [title]="language.getLabel('LBL_OVERRIDE_ALIGNMENT')">
                 <system-label label="LBL_OVERRIDE_ALIGNMENT"></system-label>
@@ -111,6 +116,22 @@
                                     <option value="datetutc"><system-label label="LBL_DATE_TO_UTC"></system-label></option>
                                     <option value="bool"><system-label label="LBL_BOOLEAN"></system-label></option>
                                     <option value="text"><system-label label="LBL_TEXT"></system-label></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td *ngIf="showFunction">
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="listField.summaryfunction">
+                                    <option value="-">-</option>
+                                    <option value="sum"><system-label label="LBL_SUM"></system-label></option>
+                                    <option value="count"><system-label label="LBL_COUNT"></system-label></option>
+                                    <option value="avg"><system-label label="LBL_AVERAGE"></system-label></option>
+                                    <option value="min"><system-label label="LBL_MINIMUM"></system-label></option>
+                                    <option value="max"><system-label label="LBL_MAXIMUM"></system-label></option>
                                 </select>
                             </div>
                         </div>

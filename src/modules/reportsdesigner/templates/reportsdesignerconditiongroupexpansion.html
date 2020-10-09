@@ -38,10 +38,16 @@
                 </div>
             </div>
             <div class="slds-grid">
-                <div class="slds-form-element slds-size--1-of-1">
+                <div class="slds-form-element slds-size--1-of-2">
                     <label class="slds-form-element__label"><system-label label="LBL_REFERENCE"></system-label></label>
                     <div class="slds-form-element__control">
                         <input type="text" [(ngModel)]="whereCondition.reference" class="slds-input" [disabled]="referenceDisabled">
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label"><system-label label="LBL_REQUIRED"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <system-checkbox [(ngModel)]="joinType" [hidelabel]="true" [disabled]="!requiredEnabled"></system-checkbox>
                     </div>
                 </div>
             </div>

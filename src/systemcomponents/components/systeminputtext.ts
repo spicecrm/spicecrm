@@ -13,12 +13,12 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
     selector: 'system-input-text',
     templateUrl: './src/systemcomponents/templates/systeminputtext.html',
     providers: [
-    {
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => SystemInputText),
-        multi: true
-    }
-]
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SystemInputText),
+            multi: true
+        }
+    ]
 })
 export class SystemInputText implements ControlValueAccessor {
 
@@ -31,8 +31,7 @@ export class SystemInputText implements ControlValueAccessor {
     private _value: string;
 
 
-    constructor(
-    ) {
+    constructor() {
 
     }
 

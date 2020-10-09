@@ -79,16 +79,22 @@ export class EmailReplyModal implements OnInit {
      */
     public ngOnInit() {
          this.model.initializeModel(this.parent);
-         this.model.setField('parent_type', this.parent.module);
-         this.model.setField('parent_id', this.parent.data.id);
-
          // set the from-addresses to to-addresses and vice versa
-         for(let address of this.model.data.recipient_addresses) {
-             if(address.address_type == "from" || address.address_type == "to") {
-                 let addrtype = address.address_type == "from" ? "to": "from";
-                 address.address_type = addrtype;
+         this.model.data.recipient_addresses = [];
+
+
+         for(let address of this.parent.data.recipient_addresses) {
+             if(address.address_type == "from") {
+                 let toaddress = {...address};
+                 toaddress.address_type = "to";
+                 this.model.data.recipient_addresses.push(toaddress);
+             } else if(address.address_type != "from" && address.address_type != "to") {
+                 let addaddress = {...address};
+                 this.model.data.recipient_addresses.push(addaddress);
              }
          }
+
+
 
          // set the email-history into the body
          this.model.setField('body', '<br><br><br>' + this.buildHistoryText());
@@ -154,7 +160,7 @@ export class EmailReplyModal implements OnInit {
             modalRef.instance.messagelabel = 'LBL_SENDING';
 
             this.sending = true;
-            this.model.setField('type', 'out');
+            this.model.setField('type', 'outbound');
             this.model.setField('to_be_sent', '1');
             this.model.setField('from_addr', this.model.data.from_addr_name);
             this.model.setField('to_addrs', this.model.data.to_addrs_names);

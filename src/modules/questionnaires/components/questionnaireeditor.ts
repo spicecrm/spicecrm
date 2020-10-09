@@ -53,7 +53,7 @@ export class QuestionnaireEditor implements OnInit {
     private loadQuestionsets(): void {
         this.isLoadingQuestionsets = true;
         this.questionsets = [];
-        this.backend.getRequest('module/Questionnaires/'+this.model.id+'/related/questionsets').subscribe( questionsets => {
+        this.backend.getRequest('module/Questionnaires/'+this.model.id+'/related/questionsets', {limit: 999}).subscribe( questionsets => {
             for (let key of Object.keys( questionsets )) this.questionsets.push( questionsets[key] );
             this.sortQuestionsets();
             this.isLoadingQuestionsets = false;

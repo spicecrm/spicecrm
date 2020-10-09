@@ -451,7 +451,7 @@ export class modellist implements OnDestroy {
 
             // set it to the preferences when we are on a general list
             if (this.currentList.id == 'all' || this.currentList.id == 'owner') {
-                this.userpreferences.setPreference('defaultlisttype', listcomponent, false, 'SpiceUI_' + this.module);
+                this.userpreferences.setPreference('defaultlisttype', listcomponent, false, this.module);
             }
 
             // reset current list fielddefs and redetermine its fields from the component config

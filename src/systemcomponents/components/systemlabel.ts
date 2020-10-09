@@ -21,7 +21,7 @@ import {language} from '../../services/language.service';
 export class SystemLabel implements OnChanges, OnDestroy {
 
     /**
-     * teh label to be rendered
+     * the label to be rendered
      */
     @Input() private label: string;
 

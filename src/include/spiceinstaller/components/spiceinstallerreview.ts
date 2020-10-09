@@ -17,7 +17,7 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
 
 export class SpiceInstallerReview implements AfterViewInit {
     private loading: boolean = false;
-
+    private mapped: any;
     constructor(
         private toast: toast,
         private http: HttpClient,
@@ -62,6 +62,14 @@ export class SpiceInstallerReview implements AfterViewInit {
                                     break;
                             }
                         });
+                }
+            },
+            (error: any) => {
+                this.loading = false;
+                switch (error.status) {
+                    case 500:
+                        this.toast.sendAlert(error.message, 'error');
+                        break;
                 }
             });
     }

@@ -1,1 +1,1 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var QueueAction_1=require("./QueueAction"),QueueScheduler_1=require("./QueueScheduler");exports.queue=new QueueScheduler_1.QueueScheduler(QueueAction_1.QueueAction);
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var QueueAction_1=require("./QueueAction"),QueueScheduler_1=require("./QueueScheduler");exports.queueScheduler=new QueueScheduler_1.QueueScheduler(QueueAction_1.QueueAction),exports.queue=exports.queueScheduler;

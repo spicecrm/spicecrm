@@ -1708,7 +1708,9 @@ export class model implements OnDestroy {
         let clone = {};
         _.each(object, (value, key) => {
             if (_.isObject(value)) {
-                if (moment.isMoment(value)) {
+                if (_.isArray(value)) {
+                    clone[key] = value.map(item => this.buildBackup(item));
+                } else if (moment.isMoment(value)) {
                     clone[key] = moment(value);
                 } else {
                     clone[key] = this.buildBackup(value);

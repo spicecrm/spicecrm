@@ -11,6 +11,7 @@ import {metadata} from "../../../services/metadata.service";
 import {configurationService} from "../../../services/configuration.service";
 
 import {fieldAddress} from "../../../objectfields/components/fieldaddress";
+import {backend} from "../../../services/backend.service";
 
 @Component({
     templateUrl: './src/modules/sap/templates/fieldsapaddress.html'
@@ -28,9 +29,10 @@ export class fieldSAPAddress extends fieldAddress {
         public language: language,
         public metadata: metadata,
         public router: Router,
-        public configuration: configurationService
+        public configuration: configurationService,
+        public backend: backend
     ) {
-        super(model, view, language, metadata, router, configuration);
+        super(model, view, language, metadata, router, configuration, backend);
 
 
     }

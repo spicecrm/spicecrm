@@ -4,8 +4,8 @@
         <div *ngIf="!imgsrc" style="height: 50vh;" class="slds-align--absolute-center">
             <system-spinner></system-spinner>
         </div>
-        <div *ngIf="imgsrc" style="max-height: 80vh;" class="slds-text-align--center">
-            <img style="max-height: 100%;" [src]="imgsrc"/>
+        <div *ngIf="imgsrc" class="slds-text-align--center" style="height:100%">
+            <img style="max-height:100%;max-width:100%" [src]="imgsrc"/>
         </div>
     </system-modal-content>
     <system-modal-footer>

@@ -22,6 +22,28 @@ export class ReportsDesignerConditionGroupExpansion implements OnInit {
     }
 
     /**
+     * disable the required checkbox if we are on a root elemet
+     */
+    get requiredEnabled() {
+        return this.whereCondition.path.split('::').length > 2;
+    }
+
+    /**
+     * @param value boolean
+     * @set jointype = 'required' | 'optional'
+     */
+    set joinType(value) {
+        this.whereCondition.jointype = value ? 'required' : 'optional';
+    }
+
+    /**
+     * @return jointype: boolean
+     */
+    get joinType() {
+        return this.whereCondition.jointype == 'required';
+    }
+
+    /**
      * @return jointype: boolean
      */
     get referenceDisabled() {

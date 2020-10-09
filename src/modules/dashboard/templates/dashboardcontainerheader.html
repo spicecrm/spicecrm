@@ -7,10 +7,13 @@
     <div class="slds-col slds-has-flexi-truncate slds-grid slds-grid--vertical-align-center">
         <system-spinner size="16" class="slds-p-right--small" *ngIf="dashboardlayout.isloading"></system-spinner>
         <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
-            {{model.getField('name')}}
+            {{model.data.name}}
         </h1>
         <button *ngIf="editable && model.id" class="slds-button slds-show--large" (click)="editModal()">
-            <system-button-icon [icon]="'edit'"></system-button-icon>
+            <system-button-icon icon="edit"></system-button-icon>
+        </button>
+        <button *ngIf="deletable && model.id" class="slds-button slds-show--large" (click)="deleteDashboard()">
+            <system-button-icon icon="delete"></system-button-icon>
         </button>
     </div>
     <div class="slds-col slds-no-flex slds-grid slds-align-top slds-show--large">

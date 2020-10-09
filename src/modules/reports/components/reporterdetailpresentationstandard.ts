@@ -277,6 +277,8 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
                 classes.push('slds-grid--align-end');
                 break;
             case 'enum':
+            case 'multienum':
+            case 'radioenum':
                 classes.push('slds-grid--align-center');
                 break;
         }
