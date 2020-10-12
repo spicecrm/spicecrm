@@ -101,7 +101,7 @@ export class QuestionsetCategoryPool implements OnInit, OnDestroy {
     }
 
     public onClick( event: MouseEvent ): void {
-        if ( 0 && ! this.inputField.element.nativeElement.contains( event.target ) ) { // not clicked inside?
+        if ( ! this.inputField.element.nativeElement.contains( event.target ) ) { // not clicked inside?
             this.listIsExpanded = false;
             this.clickListener();
         }

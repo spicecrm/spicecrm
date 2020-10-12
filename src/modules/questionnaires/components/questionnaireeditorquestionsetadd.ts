@@ -21,6 +21,7 @@ export class QuestionnaireEditorQuestionsetAdd {
     }
 
     private addQuestionset(): void {
+        this.model.id = ''; // we want addModel() to generate a new bean
         this.model.addModel('', this.questionnaire, null, true )
             .subscribe( newQuestionset => this.newQuestionset.emit( newQuestionset ));
     }
