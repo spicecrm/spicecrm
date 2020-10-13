@@ -40,6 +40,9 @@ export class domainmanager {
      */
     public currentDomainField: string;
 
+    private languagelabels: any[] = [];
+    private languagetranslations: any[] = [];
+
     private loaded: string;
 
     /**
@@ -91,7 +94,14 @@ export class domainmanager {
      * @param validationid
      */
     public getValdiationValuesdById(validationid) {
-        return this.domainfieldvalidationvalues.filter(v => v.sysdomainfieldvalidation_id == validationid);
+        let validationValues = this.domainfieldvalidationvalues.filter(v => v.sysdomainfieldvalidation_id == validationid && v.scope == 'c');
+        let globalValidationValues = this.domainfieldvalidationvalues.filter(v => v.sysdomainfieldvalidation_id == validationid && v.scope != 'c');
+        for(let globalValidationValue of globalValidationValues){
+            if(validationValues.findIndex(v => v.minvalue == globalValidationValue.minvalue) == -1){
+                validationValues.push(globalValidationValue);
+            }
+        }
+        return validationValues;
     }
 
     /**
@@ -114,7 +124,13 @@ export class domainmanager {
      * save the settings
      */
     public save() {
-        let changes = this.determineChangedRecords();
+        let changes: any = this.determineChangedRecords();
+
+        if (this.languagelabels.length > 0) {
+            changes.languagelabels = this.languagelabels;
+            changes.languagetranslations = this.languagetranslations;
+        }
+
         this.backend.postRequest('system/dictionary/domains', {}, changes).subscribe(res => {
 
         });
@@ -147,61 +163,86 @@ export class domainmanager {
     }
 
     public generateENUMSFromModules() {
-        for (let dtable in this.metadata.fieldDefs) {
-            let table = this.metadata.fieldDefs[dtable];
-            for (let field in table) {
-                if (table[field].options && table[field].type.includes('enum') && !this.domaindefinitions.find(d => d.name == field)) {
+        this.backend.getRequest('system/dictionary/domains/appliststrings').subscribe(apl => {
+            for (let dtable in this.metadata.fieldDefs) {
+                let table = this.metadata.fieldDefs[dtable];
+                for (let field in table) {
+                    if (table[field].options && table[field].type.includes('enum') && !this.domaindefinitions.find(d => d.name == dtable.toLowerCase() + '_' + field)) {
 
-                    let definitionId = this.modelutilities.generateGuid();
-                    this.domaindefinitions.push({
-                        id: definitionId,
-                        name: field,
-                        scope: 'g',
-                        fieldtype: table[field].type,
-                        status: 'a',
-                        deleted: 0
-                    });
+                        let definitionId = this.modelutilities.generateGuid();
+                        this.domaindefinitions.push({
+                            id: definitionId,
+                            name: dtable.toLowerCase() + '_' + field,
+                            scope: 'g',
+                            fieldtype: table[field].type,
+                            status: 'a',
+                            deleted: 0
+                        });
 
-                    let validationid = this.modelutilities.generateGuid();
-                    this.domainfieldvalidations.push({
-                        id: validationid,
-                        name: table[field].options,
-                        validation_type: 'enum',
-                        scope: 'g',
-                        status: 'a',
-                        deleted: 0
-                    });
-
-                    this.domainfields.push({
-                        id: this.modelutilities.generateGuid(),
-                        name: field,
-                        dbtype: table[field].type == 'enum' ? 'varchar' : 'text',
-                        len: table[field].len ? table[field].len : '255',
-                        sysdomaindefinition_id: definitionId,
-                        sysdomainfieldvalidation_id: validationid,
-                        scope: 'g',
-                        status: 'a',
-                        deleted: 0
-                    });
-
-                    let options = this.language.languagedata.applist[table[field].options];
-                    let i = 0;
-                    for(let option in options) {
-                        this.domainfieldvalidationvalues.push({
-                            id: this.modelutilities.generateGuid(),
-                            sysdomainfieldvalidation_id: validationid,
-                            minvalue: option,
-                            sequence: i,
-                            comment: options[option],
+                        let validationid = this.modelutilities.generateGuid();
+                        this.domainfieldvalidations.push({
+                            id: validationid,
+                            name: table[field].options,
+                            validation_type: 'enum',
                             scope: 'g',
                             status: 'a',
                             deleted: 0
                         });
-                        i++;
-                    }
-                }
 
+                        this.domainfields.push({
+                            id: this.modelutilities.generateGuid(),
+                            name: field,
+                            dbtype: table[field].type == 'enum' ? 'varchar' : 'text',
+                            len: table[field].len ? table[field].len : '255',
+                            sysdomaindefinition_id: definitionId,
+                            sysdomainfieldvalidation_id: validationid,
+                            scope: 'g',
+                            status: 'a',
+                            deleted: 0
+                        });
+
+                        let options = this.language.languagedata.applist[table[field].options];
+                        let i = 0;
+                        for (let option in options) {
+                            this.domainfieldvalidationvalues.push({
+                                id: this.modelutilities.generateGuid(),
+                                sysdomainfieldvalidation_id: validationid,
+                                label: option ? ('VAL_' + table[field].options + '_' + option).toUpperCase() : '',
+                                minvalue: option,
+                                sequence: i,
+                                comment: '',
+                                scope: 'g',
+                                status: 'a',
+                                deleted: 0
+                            });
+
+                            if (option && !this.language.languagedata.applang[('VAL_' + table[field].options + '_' + option).toUpperCase()]) {
+                                let labelid = this.modelutilities.generateGuid();
+                                this.languagelabels.push({
+                                    id: labelid,
+                                    name: ('VAL_' + table[field].options + '_' + option).toUpperCase()
+                                });
+                                for (let language in apl) {
+                                    if (apl[language][table[field].options] && apl[language][table[field].options][option]) {
+                                        this.languagetranslations.push({
+                                            id: this.modelutilities.generateGuid(),
+                                            syslanguagelabel_id: labelid,
+                                            syslanguage: language,
+                                            translation_default: apl[language][table[field].options][option]
+                                        });
+
+                                        if (language == this.language.currentlanguage) {
+                                            this.language.addLabel(('VAL_' + table[field].options + '_' + option).toUpperCase(), apl[language][table[field].options][option]);
+                                        }
+                                    }
+                                }
+                            }
+                            i++;
+                        }
+                    }
+
+                }
             }
-        }
+        });
     }
 }
