@@ -81,6 +81,7 @@ import /*embed*/ {MailboxesManager} from "./components/mailboxesmanager";
 import /*embed*/ {MailboxesTransportsEnum} from "./components/mailboxestransportsenum";
 import /*embed*/ {MailboxesmanagerTestModal} from "./components/mailboxesmanagertestmodal";
 import /*embed*/ {MailboxesmanagerTestIMAPModal} from "./components/mailboxesmanagertestimapmodal";
+import /*embed*/ {MailboxesGmailTrafficManager} from "./components/mailboxesgmailtrafficmanager";
 import /*embed*/ {MailboxesMailgunTrafficManager} from "./components/mailboxesmailguntrafficmanager";
 import /*embed*/ {MailboxesSendgridTrafficManager} from "./components/mailboxessendgridtrafficmanager";
 import /*embed*/ {MailboxesTwillioTrafficManager} from "./components/mailboxestwilliotrafficmanager";
@@ -219,6 +220,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         MailboxesmanagerTestIMAPModal,
         MailboxesImapSmtpTrafficManager,
         MailboxesIMAPSMTPSelectFoldersModal,
+        MailboxesGmailTrafficManager,
         MailboxesMailgunTrafficManager,
         MailboxesSendgridTrafficManager,
         MailboxesTwillioTrafficManager,
