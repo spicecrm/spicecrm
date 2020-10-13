@@ -31,6 +31,7 @@ import /*embed*/ {DomainManagerAddDefinitionModal} from "./components/domainmana
 import /*embed*/ {DomainManagerAddFieldModal} from "./components/domainmanageraddfieldmodal";
 import /*embed*/ {DomainManagerSelectValidation} from "./components/domainmanagerselectvalidation";
 import /*embed*/ {DomainManagerAddValidation} from "./components/domainmanageraddvalidation";
+import /*embed*/ {DomainManagerAddValidationValueModal} from "./components/domainmanageraddvalidationvaluemodal";
 
 import /*embed*/ {DictionaryManager} from "./components/dictionarymanager";
 import /*embed*/ {DictionaryManagerDefinitions} from "./components/dictionarymanagerdefinitions";
@@ -143,6 +144,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         DomainManagerAddFieldModal,
         DomainManagerSelectValidation,
         DomainManagerAddValidation,
+        DomainManagerAddValidationValueModal,
         DictionaryManager,
         DictionaryManagerDefinitions,
         DictionaryManagerDefinitionTabs,

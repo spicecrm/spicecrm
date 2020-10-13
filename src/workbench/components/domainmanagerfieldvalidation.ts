@@ -40,13 +40,16 @@ export class DomainManagerFieldValidation implements OnChanges {
         return this.domainmanager.getValdiationValuesdById(this.field.sysdomainfieldvalidation_id).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
     }
 
+    /**
+     * adds a validation value
+     *
+     * @param e
+     */
     private addValidationValue(e: MouseEvent) {
         e.stopPropagation();
-        this.domainmanager.domainfieldvalidationvalues.push({
-            id: this.modelutilities.generateGuid(),
-            sysdomainfieldvalidation_id: this.field.sysdomainfieldvalidation_id,
-            scope: 'g',
-            sequence: this.validationvalues.length
+        this.modal.openModal('DomainManagerAddValidationValueModal', true, this.injector).subscribe(modalRef => {
+            modalRef.instance.fieldvalidationvalue.sysdomainfieldvalidation_id = this.field.sysdomainfieldvalidation_id;
+            modalRef.instance.fieldvalidationvalue.sequence = this.validationvalues.length;
         });
     }
 
@@ -62,6 +65,42 @@ export class DomainManagerFieldValidation implements OnChanges {
         let index = this.domainmanager.domainfieldvalidationvalues.findIndex(v => v.id == id);
         if (index >= 0) {
             this.domainmanager.domainfieldvalidationvalues.splice(index, 1);
+        }
+    }
+
+    /**
+     * customize the validation value
+     *
+     * @param e
+     * @param validationValue
+     */
+    private customizeValidationValue(e: MouseEvent, validationValue) {
+        e.stopPropagation();
+        if (validationValue.scope == 'g') {
+            this.modal.prompt('confirm', 'Customize the Domain?', 'Customize').subscribe(resp => {
+                if (resp) {
+                    let newValue = {...validationValue};
+                    newValue.id = this.modelutilities.generateGuid();
+                    newValue.scope = 'c';
+                    this.domainmanager.domainfieldvalidationvalues.push(newValue);
+                }
+            });
+        }
+    }
+
+    /**
+     * toggle the status
+     * @param e
+     * @param validationValue
+     */
+    private setValidationStatus(e: MouseEvent, validationValue) {
+        e.stopPropagation();
+        if (validationValue.status == 'd') {
+            validationValue.status = 'a';
+        } else if (validationValue.status == 'a') {
+            validationValue.status = 'i';
+        } else {
+            validationValue.status = 'a';
         }
     }
 
@@ -97,6 +136,7 @@ export class DomainManagerFieldValidation implements OnChanges {
         this.modal.openModal('DomainManagerSelectValidation', true, this.injector);
 
     }
+
     /**
      * add a validation
      */
