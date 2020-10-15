@@ -34,22 +34,16 @@ export class SpicePageBuilderService {
      * page structure object
      */
     public page: ContainerElementI = {
-        tagName: 'page',
+        tagName: 'mjml',
         attributes: {},
         children: [
             {
-                tagName: 'body',
+                tagName: 'container',
                 attributes: {
                     'background-color': '#ffffff',
                     'width': '600px'
                 },
-                children: [
-                    {
-                        tagName: 'container',
-                        attributes: {},
-                        children: []
-                    }
-                ]
+                children: []
             }
         ]
     };
