@@ -2,7 +2,7 @@
  * @module ObjectFields
  */
 import {Component, Injector, OnDestroy, ViewChild, ViewContainerRef} from '@angular/core';
-import {DomSanitizer} from '@angular/platform-browser';
+import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -26,6 +26,7 @@ export class fieldRichText extends fieldGeneric {
     private useStylesheetSwitcher: boolean;
     private stylesheets: any[];
     private stylesheetToUse: string = '';
+    private parsedHtml: SafeHtml = '';
 
     /**
      *
@@ -232,11 +233,15 @@ export class fieldRichText extends fieldGeneric {
     private openPageBuilder() {
         this.modal.openModal('SpicePageBuilder', true, this.injector).subscribe(modalRef => {
             if (!!this.value) {
-                modalRef.instance.spicePageBuilderService.page = this.value;
+                modalRef.instance.spicePageBuilderService.page = this.model.getField('body_spb');
             }
             modalRef.instance.spicePageBuilderService.response.subscribe(res => {
                if (!res) return;
-               this.value = res;
+               this.model.setField('body_spb', res);
+               this.backend.postRequest('mjml/parseJsonToHtml', {}, {json: this.model.getField('body_spb')}).subscribe(html => {
+                   if (!html) return;
+                   this.parsedHtml = this.sanitized.bypassSecurityTrustHtml(html);
+               });
                modalRef.instance.self.destroy();
             });
 
