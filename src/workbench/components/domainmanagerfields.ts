@@ -28,7 +28,13 @@ export class DomainManagerFields {
     }
 
     get domainfields() {
-        return this.domainmanager.domainfields.filter(f => f.deleted == 0 && f.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
+        let domainfields = this.domainmanager.domainfields.filter(f => f.deleted == 0 && f.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition && f.scope == 'c');
+        for (let domainfield of this.domainmanager.domainfields.filter(f => f.deleted == 0 && f.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition && f.scope != 'c')) {
+            if (domainfields.findIndex(d => d.name == domainfield.name) == -1) {
+                domainfields.push(domainfield);
+            }
+        }
+        return domainfields.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
     }
 
 
@@ -75,6 +81,47 @@ export class DomainManagerFields {
                 }
             }
         });
+    }
+
+    /**
+     * customize the validation value
+     *
+     * @param e
+     * @param validationValue
+     */
+    private customizeDomainField(e: MouseEvent, domainField) {
+        e.stopPropagation();
+        if (domainField.scope == 'g') {
+            this.modal.prompt('confirm', 'Customize the Field?', 'Customize').subscribe(resp => {
+                if (resp) {
+                    let newValue = {...domainField};
+                    newValue.id = this.modelutilities.generateGuid();
+                    newValue.scope = 'c';
+                    this.domainmanager.domainfields.push(newValue);
+                    this.domainmanager.currentDomainField = newValue.id;
+                }
+            });
+        }
+    }
+
+    /**
+     * toggle the status
+     * @param e
+     * @param validationValue
+     */
+    private setStatus(e: MouseEvent, validationValue) {
+        e.stopPropagation();
+        if (validationValue.status == 'd') {
+            validationValue.status = 'a';
+        } else if (validationValue.status == 'a') {
+            validationValue.status = 'i';
+        } else {
+            validationValue.status = 'a';
+        }
+    }
+
+    private trackByFn(index, item) {
+        return item.id;
     }
 
 }
