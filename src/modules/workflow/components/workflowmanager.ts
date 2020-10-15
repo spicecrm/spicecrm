@@ -115,6 +115,8 @@ export class WorkflowManager {
         this.workflowdefinitions.push({
             id: newGuid,
             workflowdefinition_module: this.current_module,
+            workflowdefinition_status: 'active',
+            workflowdefinition_precond: 'a',
             tasks: [],
             conditions: []
         });
