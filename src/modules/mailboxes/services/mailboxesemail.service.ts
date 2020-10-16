@@ -306,7 +306,7 @@ export class mailboxesEmails {
             if (res.list.length > 0) {
 
                 // add the emails
-                this.emails = this.emails.concat(res.list).sort((a,b) => a.date_sent < b.date_sent ? 1 : -1);
+                this.emails = this.emails.concat(res.list);
 
                 // set the source
                 this.source = res.source;
