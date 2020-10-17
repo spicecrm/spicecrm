@@ -11,7 +11,6 @@ import {
 } from '@angular/core';
 import {language} from '../../services/language.service';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {hasOwnProperty} from "tslint/lib/utils";
 
 /** @ignore */
 declare var _;

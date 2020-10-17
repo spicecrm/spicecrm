@@ -39,6 +39,7 @@ import /*embed*/ {ServiceTicketCloseModal} from "./components/serviceticketclose
 import /*embed*/ {ServiceTicketView} from "./components/serviceticketview";
 import /*embed*/ {ServiceTicketDetail} from "./components/serviceticketdetail";
 import /*embed*/ {ServiceTicketContactDetail} from "./components/serviceticketcontactdetail";
+import /*embed*/ {ServiceTicketConsumerDetail} from "./components/serviceticketconsumerdetail";
 import /*embed*/ {ServiceTicketAccountDetail} from "./components/serviceticketaccountdetail";
 import /*embed*/ {ServiceActivitiyTimelineAddServiceNote} from "./components/serviceactivitiytimelineaddservicenote";
 import /*embed*/ {ServiceTicketRelatedTickets} from "./components/serviceticketrelatedtickets";
@@ -108,6 +109,7 @@ import /*embed*/ {ServiceDocSignatureModal} from "./components/servicedocsignatu
         ServiceTicketView,
         ServiceTicketDetail,
         ServiceTicketContactDetail,
+        ServiceTicketConsumerDetail,
         ServiceTicketAccountDetail,
         ServiceActivitiyTimelineAddServiceNote,
         ServiceTicketRelatedTickets,
