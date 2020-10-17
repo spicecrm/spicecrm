@@ -32,6 +32,8 @@ import /*embed*/ {ServiceTicketProlongButton} from "./components/serviceticketpr
 import /*embed*/ {ServiceTicketProlongModal} from "./components/serviceticketprolongmodal";
 import /*embed*/ {ServiceTicketSLAIndicator} from "./components/serviceticketslaindicator";
 import /*embed*/ {ServiceRequestFeedbackButton} from "./components/servicerequestfeedbackbutton";
+import /*embed*/ {ServiceTicketNewButton} from "./components/serviceticketnewbutton";
+import /*embed*/ {ServiceTicketNewModal} from "./components/serviceticketnewmodal";
 import /*embed*/ {ServiceTicketCloseButton} from "./components/serviceticketclosebutton";
 import /*embed*/ {ServiceTicketCloseModal} from "./components/serviceticketclosemodal";
 import /*embed*/ {ServiceTicketView} from "./components/serviceticketview";
@@ -99,6 +101,8 @@ import /*embed*/ {ServiceDocSignatureModal} from "./components/servicedocsignatu
         ServiceTicketProlongModal,
         ServiceTicketSLAIndicator,
         ServiceRequestFeedbackButton,
+        ServiceTicketNewButton,
+        ServiceTicketNewModal,
         ServiceTicketCloseButton,
         ServiceTicketCloseModal,
         ServiceTicketView,
