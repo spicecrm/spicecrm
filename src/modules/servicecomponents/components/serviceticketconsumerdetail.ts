@@ -60,7 +60,7 @@ export class ServiceTicketConsumerDetail implements OnDestroy, OnInit {
      * returns a contactid if one is set on the parent model (the ticket
      */
     get consumerid() {
-        return this.parent.getField('consumer_id');
+        return this.parent.getField('parent_type') == 'Consumers' ? this.parent.getField('parent_id') : this.parent.getField('consumer_id');
     }
 
     /**

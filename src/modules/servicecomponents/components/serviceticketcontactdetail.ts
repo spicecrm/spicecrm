@@ -60,7 +60,7 @@ export class ServiceTicketContactDetail implements OnDestroy, OnInit {
      * returns a contactid if one is set on the parent model (the ticket
      */
     get contactid() {
-        return this.parent.getField('contact_id');
+        return this.parent.getField('parent_type') == 'Contacts' ? this.parent.getField('parent_id') : this.parent.getField('contact_id');
     }
 
     /**
