@@ -43,7 +43,7 @@ export class ObjectRelatedDuplicates implements AfterViewInit {
     }
 
     get showMergeButton() {
-        return this.duplicates.length > 0 && this.model.checkAccess('edit');
+        return this.duplicates?.length > 0 && this.model.checkAccess('edit');
     }
 
     private checkDuplicates() {
