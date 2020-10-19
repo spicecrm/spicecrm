@@ -1186,7 +1186,6 @@ export class model implements OnDestroy {
             if (copyrule.fromfield && copyrule.tofield ) {
                 // this.setFieldValue(copyrule.tofield, parent.getFieldValue(copyrule.fromfield));
                 // this.setFieldValue(copyrule.tofield, parent.data[copyrule.fromfield]);
-                console.log(copyrule.params);
                 this.copyValue(copyrule.tofield, parent.data[copyrule.fromfield], copyrule.params);
             } else if (copyrule.tofield && copyrule.fixedvalue) {
                 this.setFieldValue(copyrule.tofield, copyrule.fixedvalue);
@@ -1202,7 +1201,6 @@ export class model implements OnDestroy {
      */
     private copyValue(toField, value, params) {
         let fieldDef = this.metadata.getFieldDefs(this.module, toField);
-        console.log(params);
         // if not found just set the field attribute
         if (!fieldDef) this.setField(toField, value);
 
