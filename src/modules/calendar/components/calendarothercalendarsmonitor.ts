@@ -189,9 +189,11 @@ export class CalendarOtherCalendarsMonitor {
      */
     private toggleVisible(id, type) {
         switch (type) {
+            case 'Owner':
+                this.calendar.toggleOwnerCalendarVisible();
+                break;
             case 'Users':
                 this.calendar.toggleUserCalendarVisibility(id);
-
                 break;
             case 'Google':
                 this.googleIsVisible = !this.googleIsVisible;

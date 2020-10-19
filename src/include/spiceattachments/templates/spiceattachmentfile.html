@@ -10,6 +10,9 @@
             <a href="javascript:void(0);">{{file.filename}}</a>
         </h3>
         <div *ngIf="!uploading" class="slds-shrink-none">
+            <button  class="slds-button slds-button--icon" (click)="deleteFile()">
+                <system-button-icon icon="clear"></system-button-icon>
+            </button>
             <!--object-file-action-menu [file]="file"></object-file-action-menu-->
         </div>
     </div>

@@ -130,4 +130,10 @@ export class SpiceAttachmentFile {
             }
         }
     }
+    /**
+     * action to delete the file
+     */
+    private deleteFile() {
+        this.modelattachments.deleteAttachment(this.file.id);
+    }
 }
