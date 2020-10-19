@@ -162,9 +162,7 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         this.buildSheetDays();
         if (changes.setdate) {
             this.getOwnerEvents();
-            if (this.calendar.usersCalendarsLoaded) {
-                this.getUsersEvents();
-            }
+            this.getUsersEvents();
         }
         if (changes.googleIsVisible || changes.setdate) {
             this.getGoogleEvents();
@@ -348,11 +346,11 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
      */
     private subscribeToChanges() {
         this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
-                this.getUserEvents(calendar);
-            })
-        );
-        this.subscription.add(this.calendar.usersCalendarsLoad$.subscribe(() => {
-                this.getUsersEvents();
+                if (calendar.id == 'owner') {
+                    this.getOwnerEvents();
+                } else {
+                    this.getUserEvents(calendar);
+                }
             })
         );
         this.resizeListener = this.renderer.listen('window', 'resize', () => {
@@ -432,6 +430,8 @@ export class CalendarSheetWeek implements OnChanges, OnDestroy {
         this.ownerEvents = [];
         this.ownerMultiEvents = [];
         this.arrangeMultiEvents();
+
+        if (!this.calendar.ownerCalendarVisible) return this.cdRef.detectChanges();
 
         this.calendar.loadEvents(this.startDate, this.endDate)
             .subscribe(events => {

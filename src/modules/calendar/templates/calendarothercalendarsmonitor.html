@@ -1,6 +1,17 @@
 <div class="slds-border--bottom">
     <label class="slds-form-element__label slds-text-heading--small slds-p-horizontal--small"><system-label label="LBL_OTHER_CALENDARS"></system-label></label>
     <div class="slds-p-vertical--xx-small">
+        <div class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
+             (mouseenter)="hovered = 'own'" (mouseleave)="hovered = ''" [class.slds-theme--shade]="hovered == 'own'">
+            <div class="slds-grid" (click)="toggleVisible(null, 'Owner')" style="cursor: pointer">
+                <div class="slds-button slds-button--icon slds-m-right--xx-small slds-p-top--xxx-small" [style.color]="calendar.ownerCalendarVisible ? calendar.eventColor : '#dddbda'">
+                    <system-button-icon icon="user" size="small"></system-button-icon>
+                </div>
+                <a class="slds-text-body--regular slds-truncate" [style.color]="calendar.ownerCalendarVisible ? calendar.eventColor : '#dddbda'">
+                    <system-label label="LBL_MY_CALENDAR"></system-label>
+                </a>
+            </div>
+        </div>
         <div *ngIf="calendar.loggedByGoogle" class="slds-form-element slds-grid slds-grid--align-spread slds-p-horizontal--small slds-p-vertical--xxx-small"
              (mouseenter)="hovered = 'google'" (mouseleave)="hovered = ''" [ngClass]="hovered == 'google' ? 'slds-theme--shade' : ''">
             <div class="slds-grid" (click)="toggleVisible(null, 'Google')" style="cursor: pointer">

@@ -10,10 +10,10 @@ import {language} from '../../../services/language.service';
 import {Subscription} from "rxjs";
 
 @Component({
-    templateUrl: './src/modules/servicecomponents/templates/serviceticketcontactdetail.html',
+    templateUrl: './src/modules/servicecomponents/templates/serviceticketconsumerdetail.html',
     providers: [model]
 })
-export class ServiceTicketContactDetail implements OnDestroy, OnInit {
+export class ServiceTicketConsumerDetail implements OnDestroy, OnInit {
 
     /**
      * the componentconfig passed in
@@ -38,10 +38,10 @@ export class ServiceTicketContactDetail implements OnDestroy, OnInit {
     constructor(@SkipSelf() private parent: model, private model: model, private metadata: metadata, private language: language) {
 
         this.subscriptions.add(this.parent.data$.subscribe(ticketdata => {
-            this.loadContact();
+            this.loadConsumer();
         }));
 
-        this.model.module = 'Contacts';
+        this.model.module = 'Consumers';
     }
 
     public ngOnInit(): void {
@@ -59,16 +59,16 @@ export class ServiceTicketContactDetail implements OnDestroy, OnInit {
     /**
      * returns a contactid if one is set on the parent model (the ticket
      */
-    get contactid() {
-        return this.parent.getField('parent_type') == 'Contacts' ? this.parent.getField('parent_id') : this.parent.getField('contact_id');
+    get consumerid() {
+        return this.parent.getField('parent_type') == 'Consumers' ? this.parent.getField('parent_id') : this.parent.getField('consumer_id');
     }
 
     /**
      * loads the contact on change
      */
-    private loadContact() {
-        if (this.contactid && this.contactid != this.model.id) {
-            this.model.id = this.contactid;
+    private loadConsumer() {
+        if (this.consumerid && this.consumerid != this.model.id) {
+            this.model.id = this.consumerid;
             this.model.getData();
         }
     }

@@ -294,7 +294,7 @@ export class mailboxesEmails {
             fields: JSON.stringify(this.requestFields),
             filter: this.generateFilters(),
             limit: this.limit,
-            start: this.emails.length,
+            offset: this.emails.length,
             sortfields: [{
                 sortdirection: "DESC",
                 sortfield: "date_sent"
@@ -306,7 +306,7 @@ export class mailboxesEmails {
             if (res.list.length > 0) {
 
                 // add the emails
-                this.emails = this.emails.concat(res.list)
+                this.emails = this.emails.concat(res.list);
 
                 // set the source
                 this.source = res.source;
