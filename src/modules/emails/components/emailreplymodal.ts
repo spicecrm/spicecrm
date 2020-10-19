@@ -79,6 +79,7 @@ export class EmailReplyModal implements OnInit {
      */
     public ngOnInit() {
          this.model.initializeModel(this.parent);
+         this.model.startEdit(false);
          // set the from-addresses to to-addresses and vice versa
          this.model.data.recipient_addresses = [];
 
