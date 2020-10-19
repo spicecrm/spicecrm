@@ -72,11 +72,11 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
         this.untilDate = new moment().hour(0).minute(0).second(0).add(1, "M");
 
         this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
+            if (calendar.id == 'owner') {
+                this.getOwnerEvents();
+            } else {
                 this.getUserEvents(calendar);
-            })
-        );
-        this.subscription.add(this.calendar.usersCalendarsLoad$.subscribe(() => {
-                this.getUsersEvents();
+            }
             })
         );
     }
@@ -103,9 +103,7 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
         if (changes.setdate) {
             this.setUntilDate();
             this.getOwnerEvents();
-            if (this.calendar.usersCalendarsLoaded) {
-                this.getUsersEvents();
-            }
+            this.getUsersEvents();
         }
         if (changes.googleIsVisible || changes.setdate) {
             this.getGoogleEvents();
@@ -210,6 +208,8 @@ export class CalendarSheetSchedule implements OnChanges, OnDestroy {
     private getOwnerEvents() {
         this.ownerEvents = [];
         this.setEventDays();
+
+        if (!this.calendar.ownerCalendarVisible) return this.cdRef.detectChanges();
 
         this.calendar.loadEvents(this.startDate, this.untilDate)
             .subscribe(events => {
