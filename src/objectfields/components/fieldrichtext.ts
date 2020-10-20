@@ -224,7 +224,7 @@ export class fieldRichText extends fieldGeneric {
             modalRef.instance.spicePageBuilderService.response.subscribe(res => {
                 if (!res) return;
                 this.model.setField('body_spb', res);
-                const loadingModal = this.modal.await('LBL_SAVING');
+                const loadingModal = this.modal.await('LBL_PARSING_HTML');
 
                 this.backend.postRequest('mjml/parseJsonToHtml', {}, {json: this.model.getField('body_spb')}).subscribe(res => {
                     if (!res || !res.html) return;
