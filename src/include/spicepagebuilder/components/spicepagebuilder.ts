@@ -1,12 +1,9 @@
 /**
  * @module ModuleSpicePageBuilder
  */
-import {AfterViewInit, ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
-import {navigationtab} from "../../../services/navigationtab.service";
-import {language} from "../../../services/language.service";
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
 import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {CdkDropListGroup} from "@angular/cdk/drag-drop";
-import {BehaviorSubject, Observable} from "rxjs";
 
 /**
  * render spice page builder panel and renderer
@@ -19,16 +16,21 @@ import {BehaviorSubject, Observable} from "rxjs";
 })
 export class SpicePageBuilder implements AfterViewInit {
     /**
-     * drop list reference to manage adding new lists
-     */
-    @ViewChild(CdkDropListGroup, {read: CdkDropListGroup, static: false}) private dropListGroup;
-    /**
      * reference of this component to allow destroy
      * @public
      */
     public self: any;
+    /**
+     * drop list reference to manage adding new lists
+     */
+    @ViewChild(CdkDropListGroup, {read: CdkDropListGroup, static: false}) private dropListGroup;
+    /**
+     * true when the drop list group ist defined
+     * @private
+     */
+    private dropListGroupDefined: boolean = false;
 
-    constructor(public spicePageBuilderService: SpicePageBuilderService) {
+    constructor(public spicePageBuilderService: SpicePageBuilderService, private cdRef: ChangeDetectorRef) {
     }
 
     /**
@@ -43,5 +45,7 @@ export class SpicePageBuilder implements AfterViewInit {
      */
     private setDropListReference() {
         this.spicePageBuilderService.dropListGroup = this.dropListGroup;
+        this.dropListGroupDefined = true;
+        this.cdRef.detectChanges();
     }
 }
