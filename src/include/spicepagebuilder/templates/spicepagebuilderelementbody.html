@@ -1,8 +1,13 @@
-<div class="slds-grid slds-size--1-of-1 slds-height_full" [ngStyle]="style">
-    <spice-page-builder-element-container *ngFor="let container of body.children; trackBy: trackByFn" [container]="container"
-                                           class="slds-grid slds-height_full slds-grow"></spice-page-builder-element-container>
-    <div *ngIf="body.children?.length == 0" class="slds-align--absolute-center slds-height_full slds-size--1-of-1 slds-text-title--caps">
-        <system-label label="MSG_DROP_CONTAINER_HERE"></system-label>
+<div [ngStyle]="style" cdkDropList #dropList="cdkDropList" (cdkDropListEntered)="dragEntered = true"
+     (cdkDropListExited)="dragEntered = false" (cdkDropListDropped)="onDrop($event)"
+     [cdkDropListEnterPredicate]="sectionPredicate" [cdkDropListData]="body"
+     style="height: 100%; width: 100%" class="spice-page-builder-renderer-drop-list">
+    <spice-page-builder-element-section *ngFor="let section of body.children; trackBy: trackByFn"
+                                         [ngStyle]="section.style" [cdkDragData]="section"
+                                         (delete$)="onSectionDelete(section)" [section]="section" cdkDrag
+                                         class="spice-display-block slds-drag--preview"></spice-page-builder-element-section>
+    <div *ngIf="!dragEntered && body.children?.length == 0" class="slds-align--absolute-center slds-height_full slds-size--1-of-1 slds-text-title--caps slds-truncate">
+        <system-label label="LBL_DROP_SECTION_HERE"></system-label>
     </div>
 </div>
 

@@ -8,11 +8,13 @@
     </button>
 </div>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="false" [fieldconfig]="fieldconfig">
-    <div *ngIf="!asiframe" class="slds-size--1-of-1 slds-rich-text-editor__output" [innerHTML]="htmlValue" style="white-space: normal; resize: vertical; overflow-y: auto;"></div>
-    <iframe *ngIf="asiframe" [src]="sanitizedValue" style="resize: vertical;" [ngStyle]="heightStyle" width="100%" frameborder="0" seamless="true" sandbox></iframe>
+    <div *ngIf="!fieldconfig.asiframe" class="slds-size--1-of-1 slds-rich-text-editor__output" [innerHTML]="htmlValue" style="white-space: normal; resize: vertical; overflow-y: auto;"></div>
+    <iframe *ngIf="fieldconfig.asiframe" [src]="sanitizedValue" style="resize: vertical;" [ngStyle]="heightStyle" width="100%" frameborder="0" seamless="true" sandbox></iframe>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
-    <div [innerHTML]="parsedHtml"></div>
-    <system-richtext-editor [(ngModel)]="value" (save$)="save($event)" [extendedmode]="extendedmode"></system-richtext-editor>
+    <system-richtext-editor *ngIf="!parsedSPBHtml else pageBuilderHtmlContainer" [(ngModel)]="value" (save$)="save($event)" [extendedmode]="!fieldconfig.simplemode"></system-richtext-editor>
+    <ng-template #pageBuilderHtmlContainer>
+        <div [innerHTML]="parsedSPBHtml"></div>
+    </ng-template>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>
