@@ -28,10 +28,7 @@ export class SpicePageBuilderElementCode extends SpicePageBuilderElement impleme
     /**
      * interface attribute list for the element to loop through
      */
-    public readonly attributesList: AttributeObjectI[] = [
-        {name: 'width', type: 'text'},
-        {name: 'background-color', type: 'color'}
-    ];
+    public readonly attributesList: AttributeObjectI[] = [];
     /**
      * is true when the beatify library is loaded
      */
@@ -54,6 +51,7 @@ export class SpicePageBuilderElementCode extends SpicePageBuilderElement impleme
      * call to sanitize the html content
      */
     public ngOnInit() {
+        super.ngOnInit();
         this.sanitizeContent();
         if (!!this.isEditMode) {
             this.loadBeatifyLibrary();

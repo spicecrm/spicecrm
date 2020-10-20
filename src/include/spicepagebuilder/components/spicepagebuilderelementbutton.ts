@@ -25,14 +25,28 @@ export class SpicePageBuilderElementButton extends SpicePageBuilderElement {
      * interface attribute list for the element to loop through
      */
     public readonly attributesList: AttributeObjectI[] = [
-        {name: 'width', type: 'text'},
-        {name: 'border-color', type: 'color'},
-        {name: 'border-style', type: ''},
-        {name: 'border-width', type: 'text'},
-        {name: 'height', type: 'text'},
+        {name: 'href', type: 'text'},
+        {name: 'rel', type: 'text'},
+        {name: 'target', type: 'text'},
+        {name: 'align', type: 'text'},
+        {name: 'width', type: 'textSuffix'},
+        {name: 'container-background-color', type: 'color'},
+        {name: 'border', type: 'text'},
+        {name: 'border-top', type: 'text'},
+        {name: 'border-right', type: 'text'},
+        {name: 'border-bottom', type: 'text'},
+        {name: 'border-left', type: 'text'},
+        {name: 'height', type: 'textSuffix'},
         {name: 'padding', type: 'sides'},
-        {name: 'text-align', type: ''},
-        {name: 'vertical-align', type: ''},
+        {name: 'line-height', type: 'textSuffix'},
+        {name: 'vertical-align', type: 'text'},
+        {name: 'font-size', type: 'textSuffix'},
+        {name: 'font-style', type: 'text'},
+        {name: 'font-weight', type: 'text'},
+        {name: 'letter-spacing', type: 'textSuffix'},
+        {name: 'text-decoration', type: 'text'},
+        {name: 'text-transform', type: 'text'},
+        {name: 'css-class', type: 'text'}
     ];
 
     constructor(public domSanitizer: DomSanitizer,

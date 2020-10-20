@@ -25,8 +25,11 @@ export class SpicePageBuilderElementSpacer extends SpicePageBuilderElement {
      * interface attribute list for the element to loop through
      */
     public readonly attributesList: AttributeObjectI[] = [
-        {name: 'width', type: 'text'},
-        {name: 'background-color', type: 'color'}
+        {name: 'width', type: 'textSuffix'},
+        {name: 'padding', type: 'sides'},
+        {name: 'container-background-color', type: 'color'},
+        {name: 'vertical-align', type: 'text'},
+        {name: 'css-class', type: 'text'}
     ];
 
     constructor(public domSanitizer: DomSanitizer,

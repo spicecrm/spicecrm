@@ -24,11 +24,15 @@ export class SpicePageBuilderInputText implements ControlValueAccessor {
     /**
      * name of the style attribute
      */
+    @Input() private suffix: string;
+    /**
+     * name of the style attribute
+     */
     @Input() private label: string = '';
     /**
      * holds the sides value
      */
-    private value: number = 0;
+    private value: number | string = '';
 
     /**
      * save on touched function for ControlValueAccessor
@@ -76,7 +80,7 @@ export class SpicePageBuilderInputText implements ControlValueAccessor {
      */
     private emitJoinedValue() {
         this.onChange(
-            this.value + this.spicePageBuilderService.defaultSuffix
+            !this.suffix ? this.value : this.value + this.suffix
         );
     }
 }

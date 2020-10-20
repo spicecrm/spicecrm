@@ -26,18 +26,18 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
      */
     public readonly attributesList: AttributeObjectI[] = [
         {name: 'color', type: 'color'},
-        {name: 'background-color', type: 'color'},
-        {name: 'font-family', type: ''},
-        {name: 'font-size', type: ''},
-        {name: 'font-style', type: ''},
-        {name: 'font-weight', type: ''},
-        {name: 'line-height', type: ''},
-        {name: 'letter-spacing', type: ''},
-        {name: 'height', type: 'text'},
-        {name: 'text-decoration', type: ''},
-        {name: 'text-transform', type: ''},
-        {name: 'align', type: ''},
+        {name: 'container-background-color', type: 'color'},
+        {name: 'font-size', type: 'textSuffix'},
+        {name: 'font-style', type: 'text'},
+        {name: 'font-weight', type: 'text'},
+        {name: 'line-height', type: 'textSuffix'},
+        {name: 'letter-spacing', type: 'textSuffix'},
+        {name: 'height', type: 'textSuffix'},
+        {name: 'text-decoration', type: 'text'},
+        {name: 'text-transform', type: 'text'},
+        {name: 'align', type: 'text'},
         {name: 'padding', type: 'sides'},
+        {name: 'css-class', type: 'text'}
     ];
     /**
      * hold the sanitized content html
@@ -56,6 +56,7 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
      * call to sanitize the html content
      */
     public ngOnInit() {
+        super.ngOnInit();
         this.sanitizeContent();
     }
 

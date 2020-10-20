@@ -55,21 +55,17 @@
                         </div>
                     </div>
                     <div class="slds-grid">
-                        <spice-page-builder-input-color [(ngModel)]="element.attributes['background-color']" label="LBL_BACKGROUND_COLOR"
-                                                        class="slds-p-horizontal--xxx-small slds-size--1-of-2 "></spice-page-builder-input-color>
-                        <spice-page-builder-input-color [(ngModel)]="element.attributes['color']" label="LBL_COLOR"
-                                                        class="slds-p-horizontal--xxx-small slds-size--1-of-2 "></spice-page-builder-input-color>
+                        <spice-page-builder-input-color [(ngModel)]="element.attributes['background-color']" label="LBL_BACKGROUND_COLOR" class="slds-p-horizontal--xxx-small slds-size--1-of-2 "></spice-page-builder-input-color>
+                        <spice-page-builder-input-color [(ngModel)]="element.attributes['color']" label="LBL_COLOR" class="slds-p-horizontal--xxx-small slds-size--1-of-2 "></spice-page-builder-input-color>
                     </div>
                     <div class="slds-grid">
-                        <spice-page-builder-input-text [(ngModel)]="element.attributes['border-radius']" label="LBL_RADIUS"
-                                                       class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                        <spice-page-builder-input-text [(ngModel)]="element.attributes['border-radius']" label="LBL_RADIUS" [suffix]="spicePageBuilderService.defaultSuffix" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
                         <div class="slds-form-element slds-size--1-of-2 slds-p-horizontal--xxx-small">
                             <label class="slds-form-element__label">
                                 <system-label label="LBL_TEXT_ALIGN"></system-label>
                             </label>
                             <div class="slds-form-element__control">
-                                <system-input-radio-button-group [(ngModel)]="element.attributes['text-align']"
-                                                                 [inputOptions]="spicePageBuilderService.alignOptions"></system-input-radio-button-group>
+                                <system-input-radio-button-group [(ngModel)]="element.attributes['text-align']" [inputOptions]="spicePageBuilderService.alignOptions"></system-input-radio-button-group>
                             </div>
                         </div>
                     </div>
