@@ -2,10 +2,10 @@
     <label class="slds-form-element__label">
         <system-label [label]="label"></system-label>
     </label>
-    <div class="slds-form-element__control slds-input-has-fixed-addon">
-        <input type="number" [(ngModel)]="value" (ngModelChange)="emitJoinedValue()" maxlength="4" size="4" class="slds-input">
-        <span class="slds-form-element__addon">
-            {{spicePageBuilderService.defaultSuffix}}
+    <div class="slds-form-element__control" [class.slds-input-has-fixed-addon]="!!suffix">
+        <input [type]="!suffix ? 'text' : 'number'" [(ngModel)]="value" (ngModelChange)="emitJoinedValue()" class="slds-input">
+        <span *ngIf="!!suffix" class="slds-form-element__addon">
+            {{suffix}}
         </span>
     </div>
 </div>

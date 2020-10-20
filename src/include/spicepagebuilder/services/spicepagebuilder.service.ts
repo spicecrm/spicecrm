@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {CdkDropList} from "@angular/cdk/drag-drop";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {modal} from "../../../services/modal.service";
-import {ColumnI, ContainerElementI, PanelElementI, SectionI} from "../interfaces/spicepagebuilder.interfaces";
+import {ColumnI, TagElementI, PanelElementI, SectionI} from "../interfaces/spicepagebuilder.interfaces";
 import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
 
 /** @ignore */
@@ -33,7 +33,7 @@ export class SpicePageBuilderService {
     /**
      * page structure object
      */
-    public page: ContainerElementI = {
+    public page: TagElementI = {
         tagName: 'mjml',
         attributes: {},
         children: [
@@ -59,7 +59,7 @@ export class SpicePageBuilderService {
             attributes: {
                 'padding': '4px',
                 'width': '100%',
-                'background-color': '#e7e7e7'
+                'container-background-color': '#ffffff'
             }
         },
         {
@@ -73,11 +73,9 @@ export class SpicePageBuilderService {
             label: 'LBL_DIVIDER',
             icon: 'dash',
             attributes: {
-                'margin-top': '8px',
-                'padding-top': '8px',
-                'border-top-width': '1px',
-                'border-top-style': 'solid',
-                'border-top-color': '#dddbda'
+                'padding': '8px 0',
+                'border-width': '2px',
+                'border-color': '#a2a2a2'
             }
         },
         {
@@ -99,13 +97,13 @@ export class SpicePageBuilderService {
                 'background-color': '#ca1b21',
                 'color': '#ffffff',
                 'padding': '4px',
-                'width': '100px',
+                'width': '150px',
                 'text-align': 'center',
-                'url': '#',
+                'href': '#',
             }
         },
         {
-            tagName: 'code',
+            tagName: 'raw',
             label: 'LBL_HTML_CODE',
             content: 'Write code here...',
             icon: 'insert_tag_field',

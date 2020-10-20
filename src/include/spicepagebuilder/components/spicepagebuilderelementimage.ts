@@ -25,15 +25,22 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
      * interface attribute list for the element to loop through
      */
     public readonly attributesList: AttributeObjectI[] = [
-        {name: 'border', type: ''},
-        {name: 'border-top', type: ''},
-        {name: 'border-right', type: ''},
-        {name: 'border-bottom', type: ''},
-        {name: 'border-left', type: ''},
-        {name: 'border-radius', type: ''},
-        {name: 'height', type: 'text'},
+        {name: 'title', type: 'text'},
+        {name: 'href', type: 'text'},
+        {name: 'alt', type: 'text'},
+        {name: 'fluid-on-mobile', type: 'text'},
+        {name: 'rel', type: 'text'},
+        {name: 'srcset', type: 'text'},
+        {name: 'target', type: 'text'},
+        {name: 'usemap', type: 'text'},
+        {name: 'border', type: 'text'},
+        {name: 'border-radius', type: 'textSuffix'},
+        {name: 'align', type: 'text'},
+        {name: 'height', type: 'textSuffix'},
         {name: 'padding', type: 'sides'},
-        {name: 'width', type: 'text'}
+        {name: 'width', type: 'textSuffix'},
+        {name: 'container-background-color', type: 'color'},
+        {name: 'css-class', type: 'text'}
     ];
 
     constructor(public domSanitizer: DomSanitizer,

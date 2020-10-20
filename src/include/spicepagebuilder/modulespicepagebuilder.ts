@@ -7,6 +7,8 @@ import {NgModule} from '@angular/core';
 import {ObjectFields} from '../../objectfields/objectfields';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 
+import /*embed*/ * as interfaces from './interfaces/spicepagebuilder.interfaces';
+
 import /*embed*/ {SpicePageBuilderService} from './services/spicepagebuilder.service';
 
 import /*embed*/ {SpicePageBuilderInputText} from './components/spicepagebuilderinputtext';

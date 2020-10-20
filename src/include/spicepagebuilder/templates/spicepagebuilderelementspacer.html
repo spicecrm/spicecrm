@@ -32,11 +32,10 @@
 <ng-template #editContainer>
     <div style="height: 50%">
         <system-section titlelabel="LBL_ELEMENT_CONTENT" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
-            <div class="slds-grid slds-size--1-of-1 slds-height_full slds-p-around--xx-small" [ngSwitch]="element.tagName">
+            <div class="slds-grid slds-size--1-of-1 slds-height_full slds-p-around--xx-small">
                 <div class="slds-size--1-of-1">
                     <div class="slds-grid">
-                        <spice-page-builder-input-text [(ngModel)]="element.attributes.height" label="LBL_SPACING"
-                                                       class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                        <spice-page-builder-input-text [(ngModel)]="element.attributes.height" label="LBL_SPACING" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
                     </div>
                 </div>
             </div>
@@ -44,7 +43,7 @@
     </div>
     <div style="height: 50%">
         <system-section titlelabel="LBL_STYLING" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
-            <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small">
+            <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small slds-scrollable--y">
                 <div class="slds-size--1-of-1 slds-grid slds-wrap">
                     <ng-container *ngFor="let attribute of attributesList" [ngSwitch]="attribute.type">
                         <ng-container>
