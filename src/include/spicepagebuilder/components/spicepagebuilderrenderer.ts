@@ -45,6 +45,6 @@ export class SpicePageBuilderRenderer implements OnInit {
      */
     private setBodyElement() {
         if (!this.spicePageBuilderService.page || !this.spicePageBuilderService.page.children) return;
-        this.body = this.spicePageBuilderService.page.children.find(child => child.tagName == 'body');
+        this.body = this.spicePageBuilderService.page.children[0];
     }
 }

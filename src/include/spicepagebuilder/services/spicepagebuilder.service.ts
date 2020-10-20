@@ -38,7 +38,7 @@ export class SpicePageBuilderService {
         attributes: {},
         children: [
             {
-                tagName: 'container',
+                tagName: 'body',
                 attributes: {
                     'background-color': '#ffffff',
                     'width': '600px'
