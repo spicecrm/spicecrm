@@ -48,6 +48,7 @@ import /*embed*/ {fieldWarrantyIndicator} from './fields/fieldwarrantyindicator'
 import /*embed*/ {fieldBooleanBullet} from './fields/fieldbooleanbullet';
 import /*embed*/ {fieldServiceQueue} from './fields/fieldServiceQueue';
 
+import /*embed*/ {ServiceOrderNewButton} from "./components/serviceordernewbutton";
 import /*embed*/ {ServiceOrderEffortItem} from "./components/serviceordereffortitem";
 import /*embed*/ {ServiceOrderEffortItemDetails} from "./components/serviceordereffortitemdetails";
 import /*embed*/ {ServiceOrderEffortPanel} from "./components/serviceordereffortpanel";
@@ -114,6 +115,7 @@ import /*embed*/ {ServiceDocSignatureModal} from "./components/servicedocsignatu
         ServiceActivitiyTimelineAddServiceNote,
         ServiceTicketRelatedTickets,
         ServiceTicketRelatedTicketsTiles,
+        ServiceOrderNewButton,
         ServiceOrderItemPipe,
         ServiceOrderEffortItem,
         ServiceOrderEffortItemDetails,
