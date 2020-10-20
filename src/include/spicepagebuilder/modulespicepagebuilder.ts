@@ -13,16 +13,15 @@ import /*embed*/ {SpicePageBuilderInputText} from './components/spicepagebuilder
 import /*embed*/ {SpicePageBuilderInputSides} from './components/spicepagebuilderinputsides';
 import /*embed*/ {SpicePageBuilderInputColor} from './components/spicepagebuilderinputcolor';
 import /*embed*/ {SpicePageBuilderElement} from './components/spicepagebuilderelement';
-import /*embed*/ {SpicePageBuilderElementImage} from './components/spicepagebuilderElementimage';
-import /*embed*/ {SpicePageBuilderElementText} from './components/spicepagebuilderElementtext';
-import /*embed*/ {SpicePageBuilderElementDivider} from './components/spicepagebuilderElementdivider';
-import /*embed*/ {SpicePageBuilderElementSpacer} from './components/spicepagebuilderElementspacer';
-import /*embed*/ {SpicePageBuilderElementButton} from './components/spicepagebuilderElementbutton';
-import /*embed*/ {SpicePageBuilderElementCode} from './components/spicepagebuilderElementcode';
-import /*embed*/ {SpicePageBuilderElementColumn} from './components/spicepagebuilderElementcolumn';
-import /*embed*/ {SpicePageBuilderElementSection} from './components/spicepagebuilderElementsection';
-import /*embed*/ {SpicePageBuilderElementContainer} from './components/spicepagebuilderElementcontainer';
-import /*embed*/ {SpicePageBuilderElementBody} from './components/spicepagebuilderElementbody';
+import /*embed*/ {SpicePageBuilderElementImage} from './components/spicepagebuilderelementimage';
+import /*embed*/ {SpicePageBuilderElementText} from './components/spicepagebuilderelementtext';
+import /*embed*/ {SpicePageBuilderElementDivider} from './components/spicepagebuilderelementdivider';
+import /*embed*/ {SpicePageBuilderElementSpacer} from './components/spicepagebuilderelementspacer';
+import /*embed*/ {SpicePageBuilderElementButton} from './components/spicepagebuilderelementbutton';
+import /*embed*/ {SpicePageBuilderElementCode} from './components/spicepagebuilderelementcode';
+import /*embed*/ {SpicePageBuilderElementColumn} from './components/spicepagebuilderelementcolumn';
+import /*embed*/ {SpicePageBuilderElementSection} from './components/spicepagebuilderelementsection';
+import /*embed*/ {SpicePageBuilderElementBody} from './components/spicepagebuilderelementbody';
 import /*embed*/ {SpicePageBuilderRenderer} from './components/spicepagebuilderrenderer';
 import /*embed*/ {SpicePageBuilderPanel} from './components/spicepagebuilderpanel';
 import /*embed*/ {SpicePageBuilderEditor} from './components/spicepagebuildereditor';
@@ -44,7 +43,6 @@ import {QuillEditorModule} from "../quilleditor/quilleditor";
         SpicePageBuilderInputColor,
         SpicePageBuilderEditor,
         SpicePageBuilderElement,
-        SpicePageBuilderElementContainer,
         SpicePageBuilderElementBody,
         SpicePageBuilderElementSection,
         SpicePageBuilderElementColumn,
