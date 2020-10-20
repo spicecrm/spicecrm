@@ -1,34 +1,32 @@
 /**
  * container element to be rendered in the view
  */
-export interface ContainerElementI {
+export interface TagElementI {
     tagName: string;
     attributes: any;
     children: any[];
 }
 /**
  * body element that will be rendered in the view
+ * More details: https://mjml.io/documentation/#mj-body
  */
-export interface BodyI extends ContainerElementI {
+export interface BodyI extends TagElementI {
     attributes: {
-        'background-color': string,
-        'width': string
-    };
-}
-/**
- * container element that will be rendered in the view
- */
-export interface ContainerI extends ContainerElementI {
-    attributes: {
-        'background-color': string
+        'background-color'?: string,
+        'width'?: string,
+        'css-class'?: string
     };
 }
 /**
  * section element to be rendered in the view
+ * More details: https://mjml.io/documentation/#mj-section
  */
-export interface SectionI extends ContainerElementI {
+export interface SectionI extends TagElementI {
     attributes: {
         'background-color'?: string,
+        'background-repeat'?: string,
+        'background-size'?: string,
+        'background-url'?: string,
         'border'?: string,
         'border-top'?: string,
         'border-right'?: string,
@@ -36,13 +34,17 @@ export interface SectionI extends ContainerElementI {
         'border-left'?: string,
         'border-radius'?: string,
         'padding'?: string,
+        'css-class'?: string,
+        'direction'?: string,
+        'full-width'?: string,
         'text-align'?: string
     };
 }
 /**
  * column element to be rendered in the view
+ * More details: https://mjml.io/documentation/#mj-column
  */
-export interface ColumnI extends ContainerElementI {
+export interface ColumnI extends TagElementI {
     attributes: {
         'background-color'?: string,
         'border'?: string,
@@ -54,6 +56,7 @@ export interface ColumnI extends ContainerElementI {
         'width'?: string,
         'vertical-align'?: string,
         'padding'?: string,
+        'css-class'?: string
     };
 }
 /**
@@ -68,11 +71,16 @@ export interface ContentElementI {
  */
 export interface DividerI extends ContentElementI {
     attributes: {
-        'border-top-color'?: string,
-        'border-top-style'?: string,
-        'border-top-width'?: string,
+        'container-background-color'?: string,
+        'border-color'?: string,
+        'border-style'?: string,
+        'border-width'?: string,
+        'padding'?: string,
         'padding-top'?: string,
-        'margin-top'?: string,
+        'padding-right'?: string,
+        'padding-bottom	'?: string,
+        'padding-left'?: string,
+        'css-class'?: string,
         'width'?: string
     };
 }
@@ -83,16 +91,30 @@ export interface ButtonI extends ContentElementI {
     content: string;
     attributes: {
         'href': string,
+        'align': string,
         'background-color'?: string,
+        'container-background-color'?: string,
         'color'?: string,
-        'border-color'?: string,
-        'border-style'?: string,
-        'border-width'?: string,
+        'border'?: string,
+        'border-top'?: string,
+        'border-right'?: string,
+        'border-bottom'?: string,
+        'border-left'?: string,
         'border-radius'?: string,
         'height'?: string,
         'padding'?: string,
         'text-align'?: string,
         'vertical-align'?: string,
+        'css-class'?: string,
+        'font-size'?: string,
+        'font-style'?: string,
+        'font-weight'?: string,
+        'letter-spacing'?: string,
+        'line-height'?: string,
+        'rel'?: string,
+        'target'?: string,
+        'text-decoration'?: string,
+        'text-transform'?: string,
         'width'?: string
     };
 }
@@ -102,17 +124,20 @@ export interface ButtonI extends ContentElementI {
 export interface ImageI extends ContentElementI {
     attributes: {
         'href?': string,
+        'align?': string,
         'alt'?: string,
         'src': string,
         'title'?: string,
         'border'?: string,
-        'border-top'?: string,
-        'border-right'?: string,
-        'border-bottom'?: string,
-        'border-left'?: string,
         'border-radius'?: string,
+        'container-background-color'?: string,
         'height'?: string,
         'padding'?: string,
+        'css-class'?: string,
+        'fluid-on-mobile'?: 'true'|'false',
+        'rel'?: string,
+        'srcset'?: string,
+        'target'?: string,
         'width'?: string
     };
 }
@@ -121,8 +146,11 @@ export interface ImageI extends ContentElementI {
  */
 export interface SpacerI extends ContentElementI {
     attributes: {
-        'background-color'?: string,
+        'container-background-color'?: string,
         'height': string,
+        'padding': string,
+        'css-class': string,
+        'vertical-align': string,
         'width'?: string
     };
 }
@@ -133,8 +161,7 @@ export interface TextI extends ContentElementI {
     content: string;
     attributes: {
         'color'?: string,
-        'background-color'?: string,
-        'font-family'?: string,
+        'container-background-color'?: string,
         'font-size'?: string,
         'font-style'?: string,
         'font-weight'?: string,
@@ -145,6 +172,7 @@ export interface TextI extends ContentElementI {
         'text-transform'?: string,
         'align'?: string,
         'padding'?: string,
+        'css-class'?: string
     };
 }
 /**
@@ -174,7 +202,7 @@ export interface EditorAttributeI {
  */
 export interface AttributeObjectI {
     name: string;
-    type: 'color'|'text'|'sides'|'';
+    type: 'color'|'text'|'sides'|'textSuffix';
 }
 
 

@@ -25,8 +25,10 @@ export class SpicePageBuilderElementDivider extends SpicePageBuilderElement {
      * interface attribute list for the element to loop through
      */
     public readonly attributesList: AttributeObjectI[] = [
-        {name: 'width', type: 'text'},
-        {name: 'border-top-style', type: ''}
+        {name: 'container-background-color', type: 'color'},
+        {name: 'border-style', type: 'text'},
+        {name: 'width', type: 'textSuffix'},
+        {name: 'css-class', type: 'text'}
     ];
 
     constructor(public domSanitizer: DomSanitizer,
@@ -41,7 +43,7 @@ export class SpicePageBuilderElementDivider extends SpicePageBuilderElement {
      * @return divider margin top
      */
     get dividerSpacing(): string {
-        return this.element.attributes['margin-top'];
+        return this.element.attributes['padding-top'];
     }
 
     /**
@@ -49,7 +51,7 @@ export class SpicePageBuilderElementDivider extends SpicePageBuilderElement {
      * @param value
      */
     set dividerSpacing(value: string) {
-        this.element.attributes['margin-top'] = value;
         this.element.attributes['padding-top'] = value;
+        this.element.attributes['padding-bottom'] = value;
     }
 }

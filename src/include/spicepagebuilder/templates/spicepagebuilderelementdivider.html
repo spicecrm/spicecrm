@@ -12,7 +12,7 @@
         </div>
     </div>
     <article (dblclick)="edit()" class="spice-drop-zone-content">
-        <div [ngStyle]="style"></div>
+        <hr [ngStyle]="style" style="margin: 0">
     </article>
     <div class="spice-drop-zone-actions">
         <div class="slds-button-group" role="group">
@@ -35,14 +35,12 @@
             <div class="slds-grid slds-size--1-of-1 slds-height_full slds-p-around--xx-small">
                 <div class="slds-size--1-of-1">
                     <div class="slds-grid">
-                        <spice-page-builder-input-color [(ngModel)]="element.attributes['border-top-color']" label="LBL_COLOR"
+                        <spice-page-builder-input-color [(ngModel)]="element.attributes['border-color']" label="LBL_COLOR"
                                                         class="slds-p-horizontal--xxx-small slds-size--1-of-2 "></spice-page-builder-input-color>
-                        <spice-page-builder-input-text [(ngModel)]="dividerSpacing" label="LBL_SPACING"
-                                                       class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                        <spice-page-builder-input-text [(ngModel)]="dividerSpacing" label="LBL_SPACING" [suffix]="spicePageBuilderService.defaultSuffix" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
                     </div>
                     <div class="slds-grid">
-                        <spice-page-builder-input-text [(ngModel)]="element.attributes['border-top-width']" label="LBL_THICKNESS"
-                                                       class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                        <spice-page-builder-input-text [(ngModel)]="element.attributes['border-width']" label="LBL_THICKNESS" [suffix]="spicePageBuilderService.defaultSuffix" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
                     </div>
                 </div>
             </div>
@@ -50,7 +48,7 @@
     </div>
     <div style="height: 50%">
         <system-section titlelabel="LBL_STYLING" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
-            <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small">
+            <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small slds-scrollable--y">
                 <div class="slds-size--1-of-1 slds-grid slds-wrap">
                     <ng-container *ngFor="let styleAttribute of attributesList" [ngSwitch]="styleAttribute.type">
                         <ng-container>
