@@ -331,7 +331,7 @@ field-generic-display .slds-button--icon {
     z-index:8000;
     width: 100%;
 }
-.spice-drop-zone section:focus {
+.spice-drop-zone article:focus {
     outline: 0;
 }
 .spice-drop-zone-label {
