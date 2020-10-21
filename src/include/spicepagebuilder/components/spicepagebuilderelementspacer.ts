@@ -45,10 +45,7 @@ export class SpicePageBuilderElementSpacer extends SpicePageBuilderElement {
      */
     public generateStyle() {
         super.generateStyle([
-            'width',
-            'padding',
-            'vertical-align',
-            'height'
+            'width', 'padding', 'vertical-align', 'height'
         ]);
     }
 }
