@@ -331,6 +331,9 @@ field-generic-display .slds-button--icon {
     z-index:8000;
     width: 100%;
 }
+.spice-drop-zone section:focus {
+    outline: 0;
+}
 .spice-drop-zone-label {
     opacity:0;
     background:#0070d2;
