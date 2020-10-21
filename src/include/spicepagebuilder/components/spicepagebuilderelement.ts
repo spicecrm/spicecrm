@@ -68,10 +68,6 @@ export class SpicePageBuilderElement implements OnInit {
      */
     private generateStyle() {
         this.style = JSON.parse(JSON.stringify(this.element.attributes));
-        if (this.style.hasOwnProperty('container-background-color')) {
-            this.style['background-color'] = this.style['container-background-color'];
-            delete this.style['container-background-color'];
-        }
     }
 
     /**

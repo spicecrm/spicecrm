@@ -73,7 +73,7 @@ export class SpicePageBuilderService {
             label: 'LBL_DIVIDER',
             icon: 'dash',
             attributes: {
-                'padding': '8px 0',
+                'padding': '8px 0 8px 0',
                 'border-width': '2px',
                 'border-color': '#a2a2a2'
             }
