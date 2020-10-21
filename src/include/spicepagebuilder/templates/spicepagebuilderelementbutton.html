@@ -12,8 +12,8 @@
         </div>
     </div>
     <article (dblclick)="edit()" class="spice-drop-zone-content">
-        <div [style.background-color]="style['container-background-color']">
-            <div [ngStyle]="style">
+        <div [ngStyle]="{'background-color': element.attributes['container-background-color'], 'padding': element.attributes['padding']}">
+            <div [ngStyle]="style" [style.padding]="element.attributes['inner-padding']">
                 {{element.content}}
             </div>
         </div>

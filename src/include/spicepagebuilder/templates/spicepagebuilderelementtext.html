@@ -12,7 +12,7 @@
         </div>
     </div>
     <article (dblclick)="edit()" class="spice-drop-zone-content">
-        <div [style.background-color]="style['container-background-color']">
+        <div [style.background-color]="element.attributes['container-background-color']">
             <div [innerHTML]="sanitizedContent" [ngStyle]="style"></div>
         </div>
     </article>

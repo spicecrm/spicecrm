@@ -22,7 +22,7 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
      */
     @Input() public element: ImageI;
     /**
-     * interface attribute list for the element to loop through
+     * list of the editable attributes
      */
     public readonly attributesList: AttributeObjectI[] = [
         {name: 'title', type: 'text'},
@@ -61,4 +61,14 @@ export class SpicePageBuilderElementImage extends SpicePageBuilderElement {
             }
         });
     }
+
+    /**
+     * generate body style object
+     */
+    public generateStyle() {
+        super.generateStyle([
+            'border', 'border-radius', 'align', 'height', 'padding', 'width'
+        ]);
+    }
+
 }

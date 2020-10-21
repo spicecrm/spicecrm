@@ -26,7 +26,7 @@ export class SpicePageBuilderElementCode extends SpicePageBuilderElement impleme
      */
     @Input() public element: HTMLCodeI;
     /**
-     * interface attribute list for the element to loop through
+     * list of the editable attributes
      */
     public readonly attributesList: AttributeObjectI[] = [];
     /**
