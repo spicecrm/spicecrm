@@ -13,7 +13,7 @@
     </div>
     <article (dblclick)="edit()" [ngStyle]="style" class="spice-drop-zone-content">
         <div [style.background-color]="element.attributes['container-background-color']">
-            <img [src]="element.attributes.src" alt="SpiceCRM image" style="max-height: 100%">
+            <img [src]="element.attributes.src" [ngStyle]="style" alt="SpiceCRM image" style="max-height: 100%">
         </div>
     </article>
     <div class="spice-drop-zone-actions">
