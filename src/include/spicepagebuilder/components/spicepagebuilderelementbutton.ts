@@ -38,6 +38,7 @@ export class SpicePageBuilderElementButton extends SpicePageBuilderElement {
         {name: 'border-left', type: 'text'},
         {name: 'height', type: 'textSuffix'},
         {name: 'padding', type: 'sides'},
+        {name: 'inner-padding', type: 'sides'},
         {name: 'line-height', type: 'textSuffix'},
         {name: 'vertical-align', type: 'text'},
         {name: 'font-size', type: 'textSuffix'},

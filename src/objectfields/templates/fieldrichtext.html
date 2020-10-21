@@ -3,8 +3,8 @@
     <button *ngIf="!isEditMode() && isEditable()" class="slds-button slds-button--icon slds-m-left--xx-small spice-hover-button" (click)="setEditMode()">
  <system-button-icon [icon]="'edit'"></system-button-icon>
     </button>
-    <button *ngIf="isEditMode() && isEditable()" class="slds-button slds-button--brand slds-m-left--xx-small slds-m-bottom--xx-small spice-hover-button" (click)="openPageBuilder()">
- <system-label label="LBL_PAGE_BUILDER"></system-label>
+    <button *ngIf="fieldconfig.enablePageBuilder && isEditMode() && isEditable()" class="slds-button slds-button--brand slds-m-left--xx-small slds-m-bottom--xx-small spice-hover-button" (click)="openPageBuilder()">
+        <system-label label="LBL_PAGE_BUILDER"></system-label>
     </button>
 </div>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="false" [fieldconfig]="fieldconfig">

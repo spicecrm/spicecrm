@@ -77,7 +77,7 @@
     </div>
     <div style="height: 50%">
         <system-section titlelabel="LBL_STYLING" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
-            <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small">
+            <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small slds-scrollable--y">
                 <div class="slds-size--1-of-1 slds-grid slds-wrap">
                     <ng-container *ngFor="let styleAttribute of attributesList" [ngSwitch]="styleAttribute.type">
                         <spice-page-builder-input-text *ngSwitchCase="'text'" [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
