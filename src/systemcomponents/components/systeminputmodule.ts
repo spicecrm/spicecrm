@@ -73,7 +73,7 @@ export class SystemInputModule implements ControlValueAccessor, OnDestroy {
     }
 
     private sortModules() {
-        this._modules.sort((a, b) => (this.language.getModuleName(a) || '').toLowerCase() > (this.language.getModuleName(b) || '').toLowerCase() ? 1 : -1);
+        this._modules.sort((a, b) => this.language.getModuleName(a).toLowerCase() > this.language.getModuleName(b).toLowerCase() ? 1 : -1);
     }
 
     /**
