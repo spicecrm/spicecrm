@@ -48,7 +48,7 @@ export class domainmanager {
     /**
      * the dbtypes
      */
-    public dbtypes = ['varchar', 'text', 'date', 'datetime', 'int', 'double', 'bool'];
+    public dbtypes = ['varchar', 'char', 'text', 'date', 'datetime', 'int', 'double', 'bool'];
 
     /**
      * holds the fieldtypes

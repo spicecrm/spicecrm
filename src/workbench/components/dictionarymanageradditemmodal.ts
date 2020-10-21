@@ -37,6 +37,9 @@ export class DictionaryManagerAddItemModal {
                 name: domain.name
             });
         }
+
+        // sort the domain name alphabetically
+        this.domains.sort((a, b) => a.name.localeCompare(b.name) > 0 ? 1 : -1);
     }
 
     /**
