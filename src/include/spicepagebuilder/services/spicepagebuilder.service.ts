@@ -41,7 +41,7 @@ export class SpicePageBuilderService {
                 tagName: 'body',
                 attributes: {
                     'background-color': '#ffffff',
-                    'width': '600px'
+                    'width': '550px'
                 },
                 children: []
             }
@@ -57,6 +57,8 @@ export class SpicePageBuilderService {
             content: 'Write text here...',
             icon: 'text',
             attributes: {
+                'font-size': '13px',
+                'line-height': '14px',
                 'padding': '4px',
                 'width': '100%',
                 'container-background-color': '#ffffff'
@@ -66,15 +68,21 @@ export class SpicePageBuilderService {
             tagName: 'image',
             label: 'LBL_IMAGE',
             icon: 'image',
-            attributes: {}
+            attributes: {
+                align: 'center',
+                padding: '4px',
+                target: '_blank',
+                width: '100%'
+            }
         },
         {
             tagName: 'divider',
             label: 'LBL_DIVIDER',
             icon: 'dash',
             attributes: {
-                'padding': '8px 0 8px 0',
+                'padding': '8px',
                 'border-width': '2px',
+                'width': '100%',
                 'border-color': '#a2a2a2'
             }
         },
@@ -83,8 +91,9 @@ export class SpicePageBuilderService {
             label: 'LBL_SPACER',
             icon: 'steps',
             attributes: {
-                height: '100px',
-                width: '100%'
+                'height': '50px',
+                'vertical-align': 'middle',
+                'width': '100%'
             }
         },
         {
@@ -98,7 +107,12 @@ export class SpicePageBuilderService {
                 'color': '#ffffff',
                 'padding': '4px',
                 'width': '150px',
+                'align': 'center',
+                'font-size': '13px',
                 'text-align': 'center',
+                'line-height': '14px',
+                'target': '_blank',
+                'vertical-align': 'middle',
                 'href': '#',
             }
         },
@@ -116,11 +130,8 @@ export class SpicePageBuilderService {
      */
     public readonly panelDefaultSection: SectionI = {
         tagName: 'section',
-        attributes:
-            {
-                'background-color': '#c1dfff'
-            },
-        children: []
+        children: [],
+        attributes: {}
     };
     /**
      * holds the panel default column
@@ -128,9 +139,7 @@ export class SpicePageBuilderService {
     public readonly panelDefaultColumn: ColumnI = {
         tagName: 'column',
         children: [],
-        attributes: {
-            padding: '4px',
-        }
+        attributes: {}
     };
     /**
      * align radio options
