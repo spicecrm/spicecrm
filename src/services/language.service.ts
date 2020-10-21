@@ -151,7 +151,7 @@ export class language {
         try {
             if (module != '') {
                 if (typeof (this.languagedata.mod) != "undefined" && this.languagedata.mod[module] != undefined && this.languagedata.mod[module][label]) {
-                    return this.languagedata.mod[module][label];
+                    return this.languagedata.mod[module][label] || label;
                 } else {
                     return this.getAppLanglabel(label, length);
                 }
@@ -281,14 +281,14 @@ export class language {
                 }
 
                 if (this.languagedata.applist.moduleListSingular[module]) {
-                    return this.languagedata.applist.moduleListSingular[module];
+                    return this.languagedata.applist.moduleListSingular[module] || module;
                 }
             } else {
                 if (module_defs.module_label) {
                     return this.getLabel(module_defs.module_label, '', labellength);
                 }
             }
-            return this.languagedata.applist.moduleList[module];
+            return this.languagedata.applist.moduleList[module] || module;
         } catch (e) {
             return module;
         }
