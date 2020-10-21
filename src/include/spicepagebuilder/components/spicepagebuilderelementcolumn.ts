@@ -98,7 +98,7 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
 
             // remove the item if it comes from a sibling list
             if (event.previousContainer.id.indexOf('panel-drop-list') == -1) {
-                event.previousContainer.data.elements = event.previousContainer.data.elements.filter(item => item != event.item.data);
+                event.previousContainer.data.children = event.previousContainer.data.children.filter(item => item != event.item.data);
             }
 
             switch (event.item.data.tagName) {
