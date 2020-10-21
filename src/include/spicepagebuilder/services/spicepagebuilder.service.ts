@@ -106,6 +106,7 @@ export class SpicePageBuilderService {
                 'background-color': '#ca1b21',
                 'color': '#ffffff',
                 'padding': '4px',
+                'inner-padding': '4px',
                 'width': '150px',
                 'align': 'center',
                 'font-size': '13px',
