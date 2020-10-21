@@ -12,8 +12,7 @@
         </div>
     </div>
     <article class="spice-drop-zone-content slds-grid">
-        <spice-page-builder-element-column *ngFor="let column of section.children; trackBy: trackByFn" [column]="column"
-                                            class="spice-display-block slds-grow slds-height_full"></spice-page-builder-element-column>
+        <spice-page-builder-element-column *ngFor="let column of section.children; trackBy: trackByFn" [column]="column" [style.width.%]="100 / section.children.length" class="spice-display-block slds-grow slds-height_full"></spice-page-builder-element-column>
     </article>
     <div class="spice-drop-zone-actions">
         <div class="slds-button-group" role="group">
