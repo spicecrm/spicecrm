@@ -3,9 +3,12 @@
         <system-label [label]="label"></system-label>
     </label>
     <div class="slds-form-element__control" [class.slds-input-has-fixed-addon]="!!suffix">
-        <input [type]="!suffix ? 'text' : 'number'" [(ngModel)]="value" (ngModelChange)="emitJoinedValue()" class="slds-input">
-        <span *ngIf="!!suffix" class="slds-form-element__addon">
+        <input *ngIf="!suffix; else inputNumberContainer" type="text" [(ngModel)]="value" (ngModelChange)="emitJoinedValue()" class="slds-input">
+        <ng-template #inputNumberContainer>
+            <input type="number" [(ngModel)]="value" (ngModelChange)="emitJoinedValue()" class="slds-input">
+            <span class="slds-form-element__addon">
             {{suffix}}
         </span>
+        </ng-template>
     </div>
 </div>

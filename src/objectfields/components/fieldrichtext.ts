@@ -219,7 +219,7 @@ export class fieldRichText extends fieldGeneric {
     private openPageBuilder() {
         this.modal.openModal('SpicePageBuilder', true, this.injector).subscribe(modalRef => {
             if (!!this.value) {
-                modalRef.instance.spicePageBuilderService.page = this.model.getField('body_spb');
+                modalRef.instance.spicePageBuilderService.page = JSON.parse(JSON.stringify(this.model.getField('body_spb')));
             }
             modalRef.instance.spicePageBuilderService.response.subscribe(res => {
                 if (!res) return;
@@ -231,6 +231,7 @@ export class fieldRichText extends fieldGeneric {
                     this.parsedSPBHtml = this.sanitized.bypassSecurityTrustHtml(res.html);
                     this.value = res.html;
                     loadingModal.emit(true);
+                    loadingModal.complete();
                 });
                 modalRef.instance.self.destroy();
             });

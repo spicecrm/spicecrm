@@ -99,6 +99,7 @@ export interface ButtonI extends ContentElementI {
         'border-radius'?: string,
         'height'?: string,
         'padding'?: string,
+        'inner-padding'?: string,
         'text-align'?: string,
         'vertical-align'?: string,
         'css-class'?: string,
