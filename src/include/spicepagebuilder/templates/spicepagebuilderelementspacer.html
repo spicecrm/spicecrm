@@ -12,7 +12,7 @@
         </div>
     </div>
     <article (dblclick)="edit()" class="spice-drop-zone-content">
-        <div [ngStyle]="style"></div>
+        <div [ngStyle]="style" [style.background-color]="style['container-background-color']"></div>
     </article>
     <div class="spice-drop-zone-actions">
         <div class="slds-button-group" role="group">
@@ -45,19 +45,11 @@
         <system-section titlelabel="LBL_STYLING" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
             <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small slds-scrollable--y">
                 <div class="slds-size--1-of-1 slds-grid slds-wrap">
-                    <ng-container *ngFor="let attribute of attributesList" [ngSwitch]="attribute.type">
-                        <ng-container>
-                            <spice-page-builder-input-text *ngSwitchCase="'text'" [(ngModel)]="element.attributes[attribute.name]" [label]="attribute.name"
-                                                           class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
-                        </ng-container>
-                        <ng-container>
-                            <spice-page-builder-input-sides *ngSwitchCase="'sides'" [(ngModel)]="element.attributes[attribute.name]" [label]="attribute.name"
-                                                            class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-sides>
-                        </ng-container>
-                        <ng-container>
-                            <spice-page-builder-input-color *ngSwitchCase="'color'" [(ngModel)]="element.attributes[attribute.name]" [label]="attribute.name"
-                                                            class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-color>
-                        </ng-container>
+                    <ng-container *ngFor="let styleAttribute of attributesList" [ngSwitch]="styleAttribute.type">
+                        <spice-page-builder-input-text *ngSwitchCase="'text'" [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                        <spice-page-builder-input-text *ngSwitchCase="'textSuffix'" [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name" [suffix]="spicePageBuilderService.defaultSuffix" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                        <spice-page-builder-input-sides *ngSwitchCase="'sides'" [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-sides>
+                        <spice-page-builder-input-color *ngSwitchCase="'color'" [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-color>
                     </ng-container>
                 </div>
             </div>

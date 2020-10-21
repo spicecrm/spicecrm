@@ -76,10 +76,6 @@ export interface DividerI extends ContentElementI {
         'border-style'?: string,
         'border-width'?: string,
         'padding'?: string,
-        'padding-top'?: string,
-        'padding-right'?: string,
-        'padding-bottom	'?: string,
-        'padding-left'?: string,
         'css-class'?: string,
         'width'?: string
     };
