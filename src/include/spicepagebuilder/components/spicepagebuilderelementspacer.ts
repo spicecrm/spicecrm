@@ -22,7 +22,7 @@ export class SpicePageBuilderElementSpacer extends SpicePageBuilderElement {
      */
     @Input() public element: SpacerI;
     /**
-     * interface attribute list for the element to loop through
+     * list of the editable attributes
      */
     public readonly attributesList: AttributeObjectI[] = [
         {name: 'width', type: 'textSuffix'},
@@ -38,5 +38,17 @@ export class SpicePageBuilderElementSpacer extends SpicePageBuilderElement {
                 public cdRef: ChangeDetectorRef,
                 public spicePageBuilderService: SpicePageBuilderService) {
         super(domSanitizer, modal, injector, cdRef, spicePageBuilderService);
+    }
+
+    /**
+     * generate body style object
+     */
+    public generateStyle() {
+        super.generateStyle([
+            'width',
+            'padding',
+            'vertical-align',
+            'height'
+        ]);
     }
 }

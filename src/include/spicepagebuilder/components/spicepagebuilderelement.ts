@@ -7,6 +7,9 @@ import {SpicePageBuilderService} from "../services/spicepagebuilder.service";
 import {modal} from "../../../services/modal.service";
 import {AttributeObjectI, ContentElementI} from "../interfaces/spicepagebuilder.interfaces";
 
+/** @ignore */
+declare var _;
+
 /**
  * Parse and renders renderer container
  */
@@ -29,7 +32,7 @@ export class SpicePageBuilderElement implements OnInit {
      */
     @Input() public isEditMode: boolean = false;
     /**
-     * interface attribute list for the element to loop through
+     * list of the editable attributes
      */
     public readonly attributesList: AttributeObjectI[] = [
         {name: 'width', type: 'text'},
@@ -65,9 +68,10 @@ export class SpicePageBuilderElement implements OnInit {
 
     /**
      * generate body style object
+     * @param pickList
      */
-    private generateStyle() {
-        this.style = JSON.parse(JSON.stringify(this.element.attributes));
+    public generateStyle(pickList?: string[]) {
+        this.style = JSON.parse(JSON.stringify(!pickList ? this.element.attributes : _.pick(this.element.attributes, pickList)));
     }
 
     /**

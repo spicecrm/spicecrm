@@ -22,7 +22,7 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
      */
     @Input() public element: TextI;
     /**
-     * interface attribute list for the element to loop through
+     * list of the editable attributes
      */
     public readonly attributesList: AttributeObjectI[] = [
         {name: 'color', type: 'color'},
@@ -75,5 +75,15 @@ export class SpicePageBuilderElementText extends SpicePageBuilderElement impleme
      */
     private sanitizeContent() {
         this.sanitizedContent = this.domSanitizer.bypassSecurityTrustHtml(this.element.content);
+    }
+
+    /**
+     * generate body style object
+     */
+    public generateStyle() {
+        super.generateStyle([
+            'color', 'font-size', 'font-style', 'font-weight', 'line-height', 'letter-spacing',
+            'text-decoration', 'text-transform', 'align', 'padding', 'height'
+        ]);
     }
 }
