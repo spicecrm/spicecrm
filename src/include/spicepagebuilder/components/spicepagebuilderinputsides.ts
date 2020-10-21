@@ -72,10 +72,10 @@ export class SpicePageBuilderInputSides implements ControlValueAccessor {
         const splitValue = value.split(' ');
 
         this.value = {
-            top: splitValue[0] ? parseFloat(splitValue[0]) : 0,
-            right: splitValue[1] ? parseFloat(splitValue[1]) : 0,
-            bottom: splitValue[2] ? parseFloat(splitValue[2]) : 0,
-            left: splitValue[3] ? parseFloat(splitValue[3]) : 0
+            top: parseFloat(splitValue[0]),
+            right: parseFloat(splitValue.length == 1 ? value : splitValue[1]),
+            bottom: parseFloat(splitValue.length == 1 ? value : splitValue[2]),
+            left: parseFloat(splitValue.length == 1 ? value : splitValue[3])
         };
         this.cdRef.detectChanges();
     }

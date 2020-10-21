@@ -22,7 +22,7 @@ export class SpicePageBuilderElementButton extends SpicePageBuilderElement {
      */
     @Input() public element: ButtonI;
     /**
-     * interface attribute list for the element to loop through
+     * list of the editable attributes
      */
     public readonly attributesList: AttributeObjectI[] = [
         {name: 'href', type: 'text'},
@@ -64,5 +64,16 @@ export class SpicePageBuilderElementButton extends SpicePageBuilderElement {
     public handleEditResponse(res) {
         this.element.content = res.content;
         super.handleEditResponse(res);
+    }
+
+    /**
+     * generate body style object
+     */
+    public generateStyle() {
+        super.generateStyle([
+            'width', 'border', 'border-top', 'border-right', 'border-bottom', 'border-left', 'border-radius',
+            'height', 'line-height', 'vertical-align', 'font-size', 'font-style', 'font-weight', 'text-align',
+            'letter-spacing', 'text-decoration', 'text-transform', 'background-color', 'align', 'color'
+        ]);
     }
 }

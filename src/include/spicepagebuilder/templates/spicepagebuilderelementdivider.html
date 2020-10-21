@@ -12,8 +12,8 @@
         </div>
     </div>
     <article (dblclick)="edit()" class="spice-drop-zone-content">
-        <div [ngStyle]="{'padding': style['padding'], 'background-color': style['container-background-color'], 'width': style['width']}">
-            <hr [ngStyle]="{'border-width': style['border-width'], 'border-style': style['border-style'], 'border-style': style['border-style']}" style="margin: 0">
+        <div [ngStyle]="{'padding': element.attributes['padding'], 'background-color': element.attributes['container-background-color'], 'width': element.attributes['width']}">
+            <hr [ngStyle]="{'border-width': style['border-width'], 'border-style': style['border-style'], 'border-color': style['border-color']}" style="margin: 0">
         </div>
     </article>
     <div class="spice-drop-zone-actions">

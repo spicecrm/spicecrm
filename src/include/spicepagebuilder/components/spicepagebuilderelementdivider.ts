@@ -22,7 +22,7 @@ export class SpicePageBuilderElementDivider extends SpicePageBuilderElement {
      */
     @Input() public element: DividerI;
     /**
-     * interface attribute list for the element to loop through
+     * list of the editable attributes
      */
     public readonly attributesList: AttributeObjectI[] = [
         {name: 'container-background-color', type: 'color'},
@@ -38,5 +38,14 @@ export class SpicePageBuilderElementDivider extends SpicePageBuilderElement {
                 public cdRef: ChangeDetectorRef,
                 public spicePageBuilderService: SpicePageBuilderService) {
         super(domSanitizer, modal, injector, cdRef, spicePageBuilderService);
+    }
+
+    /**
+     * generate body style object
+     */
+    public generateStyle() {
+        super.generateStyle([
+            'border-color', 'border-style', 'border-width'
+        ]);
     }
 }

@@ -12,7 +12,7 @@
         </div>
     </div>
     <article (dblclick)="edit()" class="spice-drop-zone-content">
-        <div [ngStyle]="style" [style.background-color]="style['container-background-color']"></div>
+        <div [ngStyle]="style" [style.background-color]="element.attributes['container-background-color']"></div>
     </article>
     <div class="spice-drop-zone-actions">
         <div class="slds-button-group" role="group">
