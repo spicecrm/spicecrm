@@ -643,7 +643,12 @@ export class model implements OnDestroy {
         }
 
         let val_left = this.data[condition.fieldname];
-        let val_right = this.evaluateValidationParams(condition.valuations);
+        let val_right = null;
+        if(condition.comparator.match(/regex/g)) {
+            val_right = condition.valuations;
+        } else {
+            val_right = this.evaluateValidationParams(condition.valuations);
+        }
 
         check = modelutilities.compare(val_left, condition.comparator, val_right);
 
@@ -1178,10 +1183,10 @@ export class model implements OnDestroy {
         if (!parent.data.id) parent.data.id = parent.id;
         let copyrules = this.metadata.getCopyRules(parent.module, this.module);
         for (let copyrule of copyrules) {
-            if (copyrule.fromfield && copyrule.tofield) {
+            if (copyrule.fromfield && copyrule.tofield ) {
                 // this.setFieldValue(copyrule.tofield, parent.getFieldValue(copyrule.fromfield));
                 // this.setFieldValue(copyrule.tofield, parent.data[copyrule.fromfield]);
-                this.copyValue(copyrule.tofield, parent.data[copyrule.fromfield]);
+                this.copyValue(copyrule.tofield, parent.data[copyrule.fromfield], copyrule.params);
             } else if (copyrule.tofield && copyrule.fixedvalue) {
                 this.setFieldValue(copyrule.tofield, copyrule.fixedvalue);
             }
@@ -1194,25 +1199,27 @@ export class model implements OnDestroy {
      * @param toField
      * @param value
      */
-    private copyValue(toField, value) {
+    private copyValue(toField, value, params) {
         let fieldDef = this.metadata.getFieldDefs(this.module, toField);
-
         // if not found just set the field attribute
         if (!fieldDef) this.setField(toField, value);
 
         // handle links
+
         switch (fieldDef.type) {
             case 'link':
-                if (_.isObject(value) && value.beans) {
-                    const newLink = {beans: {}};
-                    for (let relId in value.beans) {
-                        if (!value.beans.hasOwnProperty(relId)) continue;
+                if(params.generatenewid) {
+                    if (_.isObject(value) && value.beans) {
+                        const newLink = {beans: {}};
+                        for (let relId in value.beans) {
+                            if (!value.beans.hasOwnProperty(relId)) continue;
 
-                        const newId = this.utils.generateGuid();
-                        newLink.beans[newId] = {...value.beans[relId]};
-                        newLink.beans[newId].id = newId;
+                            const newId = this.utils.generateGuid();
+                            newLink.beans[newId] = {...value.beans[relId]};
+                            newLink.beans[newId].id = newId;
+                        }
+                        this.setField(toField, newLink);
                     }
-                    this.setField(toField, newLink);
                 }
                 break;
             default:

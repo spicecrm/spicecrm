@@ -116,11 +116,11 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      */
     private subscribeToChanges() {
         this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
+            if (calendar.id == 'owner') {
+                this.getOwnerEvents();
+            } else {
                 this.getUserEvents(calendar);
-            })
-        );
-        this.subscription.add(this.calendar.usersCalendarsLoad$.subscribe(() => {
-                this.getUsersEvents();
+            }
             })
         );
         this.resizeListener = this.renderer.listen('window', 'resize', () =>
@@ -181,9 +181,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     public ngOnChanges(changes: SimpleChanges) {
         if (changes.setdate) {
             this.getOwnerEvents();
-            if (this.calendar.usersCalendarsLoaded) {
-                this.getUsersEvents();
-            }
+            this.getUsersEvents();
         }
         if (changes.googleIsVisible || changes.setdate) {
             this.getGoogleEvents();
@@ -260,6 +258,8 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
     private getOwnerEvents() {
         this.ownerEvents = [];
         this.ownerMultiEvents = [];
+
+        if (!this.calendar.ownerCalendarVisible) return this.cdRef.detectChanges();
 
         this.calendar.loadEvents(this.startDate, this.endDate)
             .subscribe(events => {
