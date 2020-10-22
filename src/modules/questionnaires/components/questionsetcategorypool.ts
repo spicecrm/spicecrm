@@ -101,14 +101,14 @@ export class QuestionsetCategoryPool implements OnInit, OnDestroy {
     }
 
     public onClick( event: MouseEvent ): void {
-        if ( 0 && ! this.inputField.element.nativeElement.contains( event.target ) ) { // not clicked inside?
+        if ( ! this.inputField.element.nativeElement.contains( event.target ) ) { // not clicked inside?
             this.listIsExpanded = false;
             this.clickListener();
         }
     }
 
     public ngOnDestroy(): void {
-        if ( this.clickListener && this.clickListener.destroy ) this.clickListener.destroy();
+        if ( this.clickListener ) this.clickListener();
     }
 
     private change( event=null ): void {

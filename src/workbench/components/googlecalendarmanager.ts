@@ -76,7 +76,6 @@ export class GoogleCalendarManager {
     }
 
     public removeMapping(mappingId: string) {
-        console.log(mappingId);
         this.beanMappings.forEach((mapping) => {
             if (mapping.id === mappingId) {
                 mapping.deleted = true;

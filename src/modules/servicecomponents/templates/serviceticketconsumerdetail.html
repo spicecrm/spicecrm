@@ -1,0 +1,7 @@
+<div *ngIf="consumerid" class="slds-box--border slds-m-vertical--small">
+    <div class="slds-theme--shade slds-p-around--x-small slds-grid slds-grid--vertical-align-center">
+        <system-icon [module]="model.module" size="small"></system-icon>
+        <div [system-view-provider]="{editable: false, displayLabels: false}" class="slds-text-heading--small"><object-record-fieldset-horizontal-list [fieldset]="headerfieldset"></object-record-fieldset-horizontal-list></div>
+    </div>
+    <object-record-details [componentSet]="componentset" [readonly]="true"></object-record-details>
+</div>

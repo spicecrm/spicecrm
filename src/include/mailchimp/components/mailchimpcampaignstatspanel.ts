@@ -42,7 +42,6 @@ export class MailChimpCampaignStatsPanel implements OnInit {
         this.backend.getRequest(`/MailChimp/CampaignTasks/${this.model.id}/analytics`)
             .subscribe(response => {
                 this.res = response;
-                window.console.log(this.res);
                 this.isLoading = false;
             },error => console.log(error));
 

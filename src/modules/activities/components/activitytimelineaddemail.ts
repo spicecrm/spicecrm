@@ -86,7 +86,7 @@ export class ActivityTimelineAddEmail extends ActivityTimelineAddItem implements
 
     private subscribeParent() {
         this.activitiytimeline.parent.data$.subscribe(data => {
-            if (this.model.data.recipient_addresses.length == 0) {
+            if (this.model.data.recipient_addresses?.length == 0) {
                 this.determineRecipientAddress();
             }
             // if we still have the same model .. update

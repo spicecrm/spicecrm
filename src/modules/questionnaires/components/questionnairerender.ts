@@ -8,6 +8,11 @@ import {language} from '../../../services/language.service';
 @Component({
     selector: 'questionnaire-render',
     templateUrl: './src/modules/questionnaires/templates/questionnairerender.html',
+    styles: [
+        '::ng-deep .questionnaire-some-words p { margin: 0.5rem 0; }',
+        '::ng-deep .questionnaire-some-words p:first-child { margin-top: 0; }',
+        '::ng-deep .questionnaire-some-words p:last-child { margin-bottom: 0; }'
+    ]
 })
 export class QuestionnaireRender implements OnInit {
 
@@ -28,7 +33,7 @@ export class QuestionnaireRender implements OnInit {
     private loadQuestionsets(): void {
         this.isLoading = true;
         this.questionsets = [];
-        this.backend.getRequest('module/Questionnaires/'+this.questionnaire.id+'/related/questionsets').subscribe( questionsets => {
+        this.backend.getRequest('module/Questionnaires/'+this.questionnaire.id+'/related/questionsets', {limit: 999}).subscribe( questionsets => {
 
             for (let key of Object.keys( questionsets )) this.questionsets.push( questionsets[key] );
             this.questionsets.sort((a, b) => {

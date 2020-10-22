@@ -30,7 +30,7 @@ export class QuestionsManagerEditMulti implements OnInit {
 
     public ngOnInit(): void {
         this.model.data$.subscribe(data => {
-            if ( data.id && !this.isBuilt ) this.buildEntries(); // model data is already available (loaded) AND buildEntries() has not been executed yet (options are not built yet)
+            if ( !this.model.isLoading && !this.isBuilt ) this.buildEntries(); // model data is already available (loaded) AND buildEntries() has not been executed yet (options are not built yet)
         });
     }
 

@@ -3,7 +3,7 @@
 <system-spinner *ngIf="isLoading" class="slds-m-top--large" style="display:block"></system-spinner>
 
 <div *ngIf="!isLoading">
-    <div *ngIf="questionnaire.description" [innerHTML]="questionnaire.description" class="slds-m-bottom--medium"></div>
+    <div *ngIf="questionnaire.textbefore" [innerHTML]="questionnaire.textbefore" class="slds-m-bottom--medium questionnaire-some-words"></div>
     <div *ngIf="questionsets.length; else noQuestionsetsTemplate">
         <div *ngFor="let questionset of questionsets; last as isLast">
             <div class="slds-box" [ngClass]="{'slds-m-bottom--x-small': !isLast}">
@@ -14,5 +14,5 @@
     <ng-template #noQuestionsetsTemplate>
         <p><system-label label="LBL_NO_QUESTIONSETS_TO_DISPLAY"></system-label></p>
     </ng-template>
-    <div *ngIf="questionnaire.textafter" [innerHTML]="questionnaire.textafter" class="slds-m-top--medium"></div>
+    <div *ngIf="questionnaire.textafter" [innerHTML]="questionnaire.textafter" class="slds-m-top--medium questionnaire-some-words"></div>
 </div>
