@@ -25,7 +25,7 @@ export class fieldRichText extends fieldGeneric {
      * holds the spice page builder html code
      * @private
      */
-    private parsedSPBHtml: SafeHtml = '';
+    private parsedHtml: SafeHtml = '';
     /**
      * holds the sanitized value for the iframe
      * @private
@@ -75,15 +75,6 @@ export class fieldRichText extends fieldGeneric {
         super(model, view, language, metadata, router);
         this.modelChangesSubscriber();
         this.stylesheets = this.metadata.getHtmlStylesheetNames();
-    }
-
-    /**
-     * get the html representation of the corresponding value
-     * SPICEUI-88 - to prevent "flickering" of the iframe displaying this value, the value will be cached and should be rebuild on change
-     * @returns {any}
-     */
-    get htmlValue() {
-        return this.sanitized.bypassSecurityTrustHtml(this.value);
     }
 
     get heightStyle() {
@@ -190,7 +181,7 @@ export class fieldRichText extends fieldGeneric {
             match = regexp.exec(this.value);
         }
         if (!this.model.getField('body_spb')) return;
-        this.parsedSPBHtml = this.sanitized.bypassSecurityTrustHtml(this.value);
+        this.parsedHtml = this.sanitized.bypassSecurityTrustHtml(this.value);
         this.setSanitizedValue();
     }
 
@@ -232,7 +223,7 @@ export class fieldRichText extends fieldGeneric {
                         loadingModal.emit(true);
                         return loadingModal.complete();
                     }
-                    this.parsedSPBHtml = this.sanitized.bypassSecurityTrustHtml(res.html);
+                    this.parsedHtml = this.sanitized.bypassSecurityTrustHtml(res.html);
                     this.value = res.html;
                     loadingModal.emit(true);
                     loadingModal.complete();
