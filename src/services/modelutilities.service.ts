@@ -226,6 +226,12 @@ export class modelutilities {
                 return (val1 < val2);
             case "unequal":
                 return (val1 != val2);
+            case "regex":
+                let regex = new RegExp(val2);
+                return regex.test(val1);
+            case "notregex":
+                let notregex = new RegExp(val2);
+                return !notregex.test(val1);
             case "equal":
             default:
                 return (val1 == val2);
