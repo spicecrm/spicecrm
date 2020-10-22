@@ -227,7 +227,11 @@ export class fieldRichText extends fieldGeneric {
                 const loadingModal = this.modal.await('LBL_PARSING_HTML');
 
                 this.backend.postRequest('mjml/parseJsonToHtml', {}, {json: this.model.getField('body_spb')}).subscribe(res => {
-                    if (!res || !res.html) return;
+                    if (!res || !res.html) {
+                        this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+                        loadingModal.emit(true);
+                        return loadingModal.complete();
+                    }
                     this.parsedSPBHtml = this.sanitized.bypassSecurityTrustHtml(res.html);
                     this.value = res.html;
                     loadingModal.emit(true);
