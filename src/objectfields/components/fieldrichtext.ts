@@ -190,7 +190,7 @@ export class fieldRichText extends fieldGeneric {
             match = regexp.exec(this.value);
         }
         if (!this.model.getField('body_spb')) return;
-        this.parsedSPBHtml = this.sanitized.bypassSecurityTrustHtml(this.model.getField('body'));
+        this.parsedSPBHtml = this.sanitized.bypassSecurityTrustHtml(this.value);
         this.setSanitizedValue();
     }
 
