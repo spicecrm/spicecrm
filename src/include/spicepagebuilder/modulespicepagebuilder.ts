@@ -32,7 +32,6 @@ import /*embed*/ {SpicePageBuilder} from './components/spicepagebuilder';
 import {FormsModule} from "@angular/forms";
 import {DirectivesModule} from "../../directives/directives";
 import {DragDropModule} from "@angular/cdk/drag-drop";
-import {QuillEditorModule} from "../quilleditor/quilleditor";
 
 @NgModule({
     declarations: [
@@ -64,8 +63,7 @@ import {QuillEditorModule} from "../quilleditor/quilleditor";
         SystemComponents,
         FormsModule,
         DirectivesModule,
-        DragDropModule,
-        QuillEditorModule
+        DragDropModule
     ]
 })
 export class ModuleSpicePageBuilder {
