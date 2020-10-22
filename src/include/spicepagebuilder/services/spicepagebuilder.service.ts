@@ -60,7 +60,6 @@ export class SpicePageBuilderService {
                 'font-size': '13px',
                 'line-height': '14px',
                 'padding': '4px',
-                'width': '100%',
                 'container-background-color': '#ffffff'
             }
         },
@@ -71,8 +70,7 @@ export class SpicePageBuilderService {
             attributes: {
                 align: 'center',
                 padding: '4px',
-                target: '_blank',
-                width: '100%'
+                target: '_blank'
             }
         },
         {
@@ -92,8 +90,7 @@ export class SpicePageBuilderService {
             icon: 'steps',
             attributes: {
                 'height': '50px',
-                'vertical-align': 'middle',
-                'width': '100%'
+                'vertical-align': 'middle'
             }
         },
         {
