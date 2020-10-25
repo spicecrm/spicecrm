@@ -10,11 +10,14 @@
                     <th class="" scope="col">
                         <div class="slds-truncate"><system-label label="LBL_DOMAIN"></system-label></div>
                     </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_TEMPLATE"></system-label></div>
+                    </th>
                     <th style="width:2rem" scope="col"></th>
                 </tr>
             </thead>
             <tbody class="dragboundary"  cdkDropList (cdkDropListDropped)="drop($event)">
-                <tr class="slds-hint-parent" *ngFor="let dictionaryitem of dictionaryitems" [ngClass]="{'slds-is-selected': dictionarymanager.currentDictionaryDefinition == dictionaryitem.id}" cdkDrag cdkDragBoundary=".dragboundary">
+                <tr class="slds-hint-parent" *ngFor="let dictionaryitem of dictionaryitems" (click)="setActiveId(dictionaryitem.id)" [ngClass]="{'slds-is-selected': dictionarymanager.currentDictionaryItem == dictionaryitem.id}" cdkDrag cdkDragBoundary=".dragboundary">
                     <td>
                         <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
                         <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionaryitem.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
@@ -25,6 +28,9 @@
                     </td>
                     <td data-label="Type">
                         <div class="slds-truncate">{{dictionarymanager.getDomainName(dictionaryitem.sysdomaindefinition_id)}}</div>
+                    </td>
+                    <td data-label="Type">
+                        <div class="slds-truncate">{{dictionarymanager.getTemplateName(dictionaryitem.sysdictionary_ref_id)}}</div>
                     </td>
                     <td class="slds-align--absolute-center" style="width: 2rem;">
                         <system-utility-icon size="xx-small" icon="delete"></system-utility-icon>
@@ -42,6 +48,6 @@
         </div>
     </ng-template>
 </div>
-<div style="height: 50%" class="slds-p-around--xx-small">
-    details
+<div style="height: 50%" class="slds-p-around--xx-small slds-border--top">
+    <dictionary-manager-item-details [dictionaryitem]="dictionaryitem"></dictionary-manager-item-details>
 </div>
