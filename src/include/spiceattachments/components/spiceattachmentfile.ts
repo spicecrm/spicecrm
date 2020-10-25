@@ -72,15 +72,15 @@ export class SpiceAttachmentFile {
         }
 
         if (this.file.file_mime_type) {
-            let fileTypeArray = this.file.file_mime_type.split("/");
+            let fileTypeArray = this.file.file_mime_type.toLowerCase().split("/");
             // check the application
             switch (fileTypeArray[0].trim()) {
                 case "image":
                     this.modal.openModal('SystemImagePreviewModal').subscribe(modalref => {
                         modalref.instance.imgname = this.file.filename;
-                        modalref.instance.imgtype = this.file.file_mime_type;
+                        modalref.instance.imgtype = this.file.file_mime_type.toLowerCase();
                         this.modelattachments.getAttachment(this.file.id).subscribe(file => {
-                            modalref.instance.imgsrc = 'data:' + this.file.file_mime_type + ';base64,' + file;
+                            modalref.instance.imgsrc = 'data:' + this.file.file_mime_type.toLowerCase() + ';base64,' + file;
                         });
                     });
                     break;
@@ -89,7 +89,7 @@ export class SpiceAttachmentFile {
                 case 'video':
                     this.modal.openModal('SystemObjectPreviewModal').subscribe(modalref => {
                         modalref.instance.name = this.file.filename;
-                        modalref.instance.type = this.file.file_mime_type;
+                        modalref.instance.type = this.file.file_mime_type.toLowerCase();
                         this.modelattachments.getAttachment(this.file.id).subscribe(file => {
                             modalref.instance.data = atob(file);
                         });
@@ -100,7 +100,7 @@ export class SpiceAttachmentFile {
                         case 'pdf':
                             this.modal.openModal('SystemObjectPreviewModal').subscribe(modalref => {
                                 modalref.instance.name = this.file.filename;
-                                modalref.instance.type = this.file.file_mime_type;
+                                modalref.instance.type = this.file.file_mime_type.toLowerCase();
                                 this.modelattachments.getAttachment(this.file.id).subscribe(file => {
                                     modalref.instance.data = atob(file);
                                 });
@@ -113,7 +113,7 @@ export class SpiceAttachmentFile {
                                 case 'msg':
                                     this.modal.openModal('EmailPreviewModal', true, this.injector).subscribe(modalref => {
                                         modalref.instance.name = this.file.filename;
-                                        modalref.instance.type = this.file.file_mime_type;
+                                        modalref.instance.type = this.file.file_mime_type.toLowerCase();
                                         modalref.instance.file = this.file;
                                     });
                                     break;
