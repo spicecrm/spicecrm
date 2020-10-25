@@ -42,6 +42,7 @@ export class DictionaryManagerDefinitions {
      */
     private setCurrentDictionaryDefintion(definitionId: string) {
         this.dictionarymanager.currentDictionaryDefinition = definitionId;
+        this.dictionarymanager.currentDictionaryItem = null;
     }
 
 

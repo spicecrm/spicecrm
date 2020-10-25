@@ -21,7 +21,12 @@ import {dictionarymanager} from '../services/dictionarymanager.service';
 })
 export class DictionaryManagerItems {
 
-    constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private language: language,  private modal: modal, private injector: Injector, private modelutilities: modelutilities) {
+    /**
+     * the curretn dictionaryitem
+     */
+    private dictionaryitem: any;
+
+    constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private language: language, private modal: modal, private injector: Injector, private modelutilities: modelutilities) {
 
     }
 
@@ -31,22 +36,10 @@ export class DictionaryManagerItems {
     get dictionaryitems() {
 
         // return an empty array when no DictionaryDefinition is set
-        if(!this.dictionarymanager.currentDictionaryDefinition) return [];
+        if (!this.dictionarymanager.currentDictionaryDefinition) return [];
 
         return this.dictionarymanager.dictionaryitems.filter(d => d.deleted == 0 && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).sort((a, b) => parseInt(a.sequence, 10) > parseInt(b.sequence, 10) ? 1 : -1);
     }
-
-
-    /**
-     * set the current definition to the service
-     *
-     * @param definitionId
-     */
-    private setCurrentDictionaryDefintion(definitionId: string) {
-        this.dictionarymanager.currentDictionaryDefinition = definitionId;
-    }
-
-
 
     /**
      * react to the click to add a new dictionary definition
@@ -99,5 +92,11 @@ export class DictionaryManagerItems {
             i++;
         }
     }
+
+    private setActiveId(id) {
+        this.dictionarymanager.currentDictionaryItem = id;
+        this.dictionaryitem = this.dictionarymanager.dictionaryitems.find(i => i.id == id);
+    }
+
 
 }
