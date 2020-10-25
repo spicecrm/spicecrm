@@ -26,9 +26,19 @@ export class dictionarymanager {
     public dictionaryitems: any[] = [];
 
     /**
+     * the dictionary items
+     */
+    public dictionaryrelations: any[] = [];
+
+    /**
      * the currently seleted domain element
      */
     public currentDictionaryDefinition: string;
+
+    /**
+     * the currently selected item
+     */
+    public currentDictionaryItem: string;
 
     /**
      * the JSON with the loaded definitons to determine the changes
@@ -78,6 +88,20 @@ export class dictionarymanager {
     public getDomainName(domainid) {
         let d = this.domaindefinitions.find(d => d.id == domainid);
         return d ? d.name : domainid;
+    }
+
+    /**
+     * returns the domain name for the given id
+     *
+     * @param domainid
+     */
+    public getTemplateName(refid) {
+        let d = this.dictionarydefinitions.find(d => d.id == refid);
+        return d ? d.name : refid;
+    }
+
+    private setActivItem(id){
+
     }
 
     /**

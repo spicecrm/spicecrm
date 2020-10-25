@@ -37,6 +37,7 @@ import /*embed*/ {DictionaryManager} from "./components/dictionarymanager";
 import /*embed*/ {DictionaryManagerDefinitions} from "./components/dictionarymanagerdefinitions";
 import /*embed*/ {DictionaryManagerDefinitionTabs} from "./components/dictionarymanagerdefinitiontabs";
 import /*embed*/ {DictionaryManagerItems} from "./components/dictionarymanageritems";
+import /*embed*/ {DictionaryManagerItemDetails} from "./components/dictionarymanageritemdetails";
 import /*embed*/ {DictionaryManagerAddDefinitionModal} from "./components/dictionarymanageradddefinitionmodal";
 import /*embed*/ {DictionaryManagerAddItemModal} from "./components/dictionarymanageradditemmodal";
 
@@ -149,6 +150,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         DictionaryManagerDefinitions,
         DictionaryManagerDefinitionTabs,
         DictionaryManagerItems,
+        DictionaryManagerItemDetails,
         DictionaryManagerAddDefinitionModal,
         DictionaryManagerAddItemModal,
         FieldsetManager,
