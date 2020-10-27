@@ -31,7 +31,7 @@
             </div>
             <div class="slds-large-size--1-of-4 slds-p-horizontal--xxx-small slds-form-element__control">
                 <label class="slds-form-element__label"><system-label label="LBL_REQUIRED"></system-label></label>
-                <system-checkbox [(ngModel)]="domainfield.required"></system-checkbox>
+                <system-checkbox [asinteger]="true" [(ngModel)]="domainfield.required"></system-checkbox>
             </div>
             <div class="slds-large-size--1-of-4 slds-p-left--xxx-small slds-form-element__control">
                 <label class="slds-form-element__label"><system-label label="LBL_TYPE"></system-label></label>

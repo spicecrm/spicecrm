@@ -25,13 +25,27 @@ export class DictionaryManagerAddItemModal {
         name: '',
         scope: 'g',
         deleted: 0,
-        status: 'd'
+        status: 'd',
+        sequence: this.dictionarymanager.dictionaryitems.filter(d => d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).length
     };
 
+    /**
+     * the list of the domains
+     */
     private domains: any[] = [];
 
+    /**
+     * the list fo the didsctionary items
+     */
+    private templates: any[] = [];
+
+    /**
+     * the type of the item to be added
+     */
+    private itemtype: 'i' | 't' = 'i';
+
     constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private modelutilities: modelutilities) {
-        for(let domain of this.dictionarymanager.domaindefinitions){
+        for (let domain of this.dictionarymanager.domaindefinitions) {
             this.domains.push({
                 id: domain.id,
                 name: domain.name
@@ -40,6 +54,17 @@ export class DictionaryManagerAddItemModal {
 
         // sort the domain name alphabetically
         this.domains.sort((a, b) => a.name.localeCompare(b.name) > 0 ? 1 : -1);
+
+        // add the other dictioanry items
+        for (let template of this.dictionarymanager.dictionarydefinitions) {
+            this.templates.push({
+                id: template.id,
+                name: template.name
+            });
+        }
+
+        // sort the domain name alphabetically
+        this.templates.sort((a, b) => a.name.localeCompare(b.name) > 0 ? 1 : -1);
     }
 
     /**
@@ -56,14 +81,23 @@ export class DictionaryManagerAddItemModal {
      *
      */
     get canSave() {
-        return this.dictionaryitem.name && this.dictionaryitem.sysdomaindefinition_id && !this.dictionarymanager.dictionaryitems.find(d => d.name == this.dictionaryitem.name && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition);
+        return (this.dictionaryitem.name && this.itemtype == 'i' && this.dictionaryitem.sysdomaindefinition_id && !this.dictionarymanager.dictionaryitems.find(d => d.name == this.dictionaryitem.name && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition)) || (this.itemtype == 't' && this.dictionaryitem.sysdictionary_ref_id && !this.dictionarymanager.dictionaryitems.find(d => d.sysdictionary_ref_id == this.dictionaryitem.sysdictionary_ref_id && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition));
     }
 
     /**
      * saves the modal
      */
     private save() {
-        if(this.canSave) {
+        if (this.canSave) {
+
+            // handle the itemtype and reset the other option
+            if (this.itemtype == 'i') {
+                this.dictionaryitem.sysdictionary_ref_id = null;
+            } else {
+                this.dictionaryitem.name = this.templates.find(t => t.id == this.dictionaryitem.sysdictionary_ref_id).name;
+                this.dictionaryitem.sysdomaindefinition_id = null;
+            }
+
             this.dictionaryitem.id = this.modelutilities.generateGuid();
             this.dictionaryitem.sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
             this.dictionarymanager.dictionaryitems.push(this.dictionaryitem);

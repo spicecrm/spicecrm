@@ -28,7 +28,7 @@ export class DomainManagerAddFieldModal {
         name: '',
         fieldtype: '',
         scope: 'g',
-        required: false,
+        required: 0,
         deleted: 0,
         status: 'd'
     };

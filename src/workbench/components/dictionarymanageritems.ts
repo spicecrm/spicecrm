@@ -60,13 +60,6 @@ export class DictionaryManagerItems {
         this.modal.prompt('confirm', this.language.getLabel('MSG_DELETE_RECORD', '', 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(answer => {
             if (answer) {
                 let di = this.dictionarymanager.dictionaryitems.find(f => f.id == id).deleted = 1;
-
-                /*
-                for (let f of this.domainmanager.domainfields.filter(f => f.sysdomaindefinition_id == id)) {
-                    f.deleted = 1;
-                }
-                */
-
                 if (this.dictionarymanager.currentDictionaryDefinition == id) {
                     this.dictionarymanager.currentDictionaryDefinition == null;
                 }
@@ -93,6 +86,11 @@ export class DictionaryManagerItems {
         }
     }
 
+    /**
+     * sets the current active id
+     *
+     * @param id
+     */
     private setActiveId(id) {
         this.dictionarymanager.currentDictionaryItem = id;
         this.dictionaryitem = this.dictionarymanager.dictionaryitems.find(i => i.id == id);
