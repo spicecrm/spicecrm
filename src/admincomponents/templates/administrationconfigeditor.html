@@ -6,10 +6,10 @@
     <thead>
     <tr class="slds-text-title--caps">
         <th scope="col">
-            name
+            <system-label label="LBL_NAME"></system-label>
         </th>
         <th scope="col">
-            value
+            <system-label label="LBL_VALUE"></system-label>
         </th>
     </tr>
     </thead>
@@ -17,9 +17,12 @@
             <tr style="vertical-align: middle" class="slds-align-top"  *ngFor="let item of items">
                 <td>{{item.name}}</td>
                 <td>
-                    <div class="slds-form-element__control">
-                        <input type="text" class="slds-input" [disabled]="loading" [(ngModel)]="configvalues[item.name]" />
-                    </div>
+                    <ng-container [ngSwitch]="item.type">
+                        <system-checkbox *ngSwitchCase="'bool'" [(ngModel)]="configvalues[item.name]"></system-checkbox>
+                        <div *ngSwitchDefault class="slds-form-element__control">
+                            <input type="text" class="slds-input" [disabled]="loading" [(ngModel)]="configvalues[item.name]" />
+                        </div>
+                    </ng-container>
                 </td>
             </tr>
         </tbody>
