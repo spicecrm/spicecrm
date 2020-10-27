@@ -33,7 +33,7 @@
                         <div class="slds-truncate">{{dictionarymanager.getTemplateName(dictionaryitem.sysdictionary_ref_id)}}</div>
                     </td>
                     <td class="slds-align--absolute-center" style="width: 2rem;">
-                        <system-utility-icon size="xx-small" icon="delete"></system-utility-icon>
+                        <system-utility-icon size="xx-small" icon="delete" (click)="deleteDictionaryItem($event, dictionaryitem.id)"></system-utility-icon>
                     </td>
                 </tr>
             </tbody>

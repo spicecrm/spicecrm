@@ -1,7 +1,9 @@
 <system-modal>
-    <system-modal-header (close)="close()">Add Dictionary Item</system-modal-header>
+    <system-modal-header (close)="close()"><system-label label="LBL_ADD_DICTIONARY_ITEM"></system-label></system-modal-header>
     <system-modal-content>
-        <div class="slds-grid">
+       <system-input-radio name="select" value="i" [(ngModel)]="itemtype">Item</system-input-radio>
+       <system-input-radio name="select" value="t" [(ngModel)]="itemtype">template</system-input-radio>
+        <div *ngIf="itemtype == 'i'" class="slds-grid">
             <div class="slds-form-element__control slds-size--1-of-2 slds-p-right--xxx-small">
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_NAME"></system-label></label>
                 <system-input-text [(ngModel)]="dictionaryitem.name"></system-input-text>
@@ -13,6 +15,14 @@
                         <option *ngFor="let domain of domains" [value]="domain.id">{{domain.name}}</option>
                     </select>
                 </div>
+            </div>
+        </div>
+        <div *ngIf="itemtype == 't'" class="slds-form-element__control">
+            <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_DOMAIN"></system-label></label>
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="dictionaryitem.sysdictionary_ref_id">
+                    <option *ngFor="let template of templates" [value]="template.id">{{template.name}}</option>
+                </select>
             </div>
         </div>
         <div class="slds-grid">
