@@ -267,6 +267,13 @@ export class ComponentsetManager {
         let componentsetItems = this.metadata.getComponentSetObjects(this.currentComponentSet);
         componentsetItems.splice(event.currentIndex, 0, componentsetItems.splice(event.previousIndex, 1)[0]);
 
+        // recalculate the sequence
+        let sequence = 0;
+        for(let componentsetItem of componentsetItems){
+            componentsetItem.sequence = sequence;
+            sequence++;
+        }
+
     }
 
 
