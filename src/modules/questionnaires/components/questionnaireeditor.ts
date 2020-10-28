@@ -1,7 +1,7 @@
 /**
  * @module ModuleQuestionnaire
  */
-import { Component, ViewChild, OnInit } from "@angular/core";
+import { Component, ViewChild, OnInit, EventEmitter } from "@angular/core";
 import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
@@ -22,21 +22,30 @@ export class QuestionnaireEditor implements OnInit {
     private isLoadingQuestionsets = true;
     private changeOrderMode = false;
 
+    private categorypool = {
+        loaded: false,
+        event: new EventEmitter<any>(),
+        list: []
+    };
+
     @ViewChild(QuestionnaireRender, {static:false}) public questionnaireRender;
 
     constructor( private lang: language, private model: model, private backend: backend ) { }
 
     public ngOnInit(): void {
-        if ( this.model.id ) this.loadQuestionsets();
-        else {
+        if ( this.model.id ) {
+            this.loadQuestionsets();
+            this.loadQuestionOptionCategories();
+        } else {
             this.model.data$.subscribe( () => {
                 this.loadQuestionsets();
+                this.loadQuestionOptionCategories();
             });
         }
     }
 
     get isLoading() {
-        return this.model.isLoading && this.isLoadingQuestionsets;
+        return this.model.isLoading || this.isLoadingQuestionsets || !this.categorypool.loaded;
     }
 
     private addQuestionset( newQuestionset ) {
@@ -57,6 +66,24 @@ export class QuestionnaireEditor implements OnInit {
             for (let key of Object.keys( questionsets )) this.questionsets.push( questionsets[key] );
             this.sortQuestionsets();
             this.isLoadingQuestionsets = false;
+        });
+    }
+
+    private loadQuestionOptionCategories(): void {
+        this.backend.getRequest('QuestionOptionCategories/getList').subscribe(( response: any ) => {
+            let allCategories = response;
+            if ( this.model.getField('categorypool') ) {
+                let categorypool = this.model.getField('categorypool').split(',');
+                allCategories.forEach( category => {
+                    for ( let categoryId of categorypool ) {
+                        if ( category.id === categoryId ) {
+                            this.categorypool.list.push( category );
+                        }
+                    }
+                });
+            }
+            this.categorypool.loaded = true;
+            this.categorypool.event.emit();
         });
     }
 

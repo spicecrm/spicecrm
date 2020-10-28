@@ -12,7 +12,7 @@
         <div system-to-bottom class="slds-p-right--medium slds-m-bottom--medium">
             <div *ngFor="let questionset of questionsets; let i=index; trackBy:trackBy; let isLast = last" [class.slds-m-bottom--medium]="!isLast" class="slds-grid">
 
-                <questionset-manager [questionset]="questionset" (changed)="changeQuestionset($event,i)" (deleted)="removeQuestionset(i)" [disabled]="changeOrderMode" style="width:100%"></questionset-manager>
+                <questionset-manager [questionset]="questionset" [categorypool]="categorypool" (changed)="changeQuestionset($event,i)" (deleted)="removeQuestionset(i)" [disabled]="changeOrderMode" style="width:100%"></questionset-manager>
 
                 <div *ngIf="changeOrderMode" class="slds-p-left--xx-small" style="white-space:nowrap">
                     <button class="slds-button slds-button_icon slds-button_icon-border slds-button--icon-border-filled" (click)="questionsetUp(i)" title="{{lang.getLabel('LBL_HOCH')}}" [disabled]="i == 0">

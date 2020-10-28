@@ -14,6 +14,7 @@ import { modal } from '../../../services/modal.service';
 export class QuestionsetManager implements OnInit {
 
     @Input() public questionset: any;
+    @Input() public categorypool: any;
     @Output() public changed = new EventEmitter();
     @Output() public deleted = new EventEmitter();
 

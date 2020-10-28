@@ -19,18 +19,10 @@ export class QuestionsManagerAddModal implements OnInit {
 
     @Input() public questionset: any = {};
     @Input() public questionid = '';
-
-    private categorypool = {
-        loaded: false,
-        event: new EventEmitter<any>(),
-        list: []
-    };
+    @Input() public categorypool: any;
 
     public response: Observable<object> = null;
     private responseSubject: Subject<any> = null;
-
-    // componentconfig = {};
-    // questions = [];
 
     private self: any;
 
@@ -51,21 +43,6 @@ export class QuestionsManagerAddModal implements OnInit {
             this.model.setField('questionset_id', this.questionset.id );
             this.model.setField('id', this.model.id );
         }
-        this.backend.getRequest('QuestionOptionCategories/getList').subscribe(( response: any ) => {
-            let allCategories = response;
-            if ( this.questionset.data.categorypool && this.questionset.data.categorypool != '' ) {
-                let categorypool = this.questionset.data.categorypool.split(',');
-                allCategories.forEach( category => {
-                    for ( let categoryId of categorypool ) {
-                        if ( category.id === categoryId ) {
-                            this.categorypool.list.push( category );
-                        }
-                    }
-                });
-            }
-            this.categorypool.loaded = true;
-            this.categorypool.event.emit();
-        });
     }
 
     private cancelModal(): void {
