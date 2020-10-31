@@ -28,8 +28,17 @@ export class SystemInputText implements ControlValueAccessor {
     private onChange: (value: string) => void;
     private onTouched: () => void;
 
+    /**
+     * the internal value
+     * @private
+     */
     private _value: string;
 
+    /**
+     * optionally set disabled
+     * @private
+     */
+    @Input() private disabled: boolean = false;
 
     constructor() {
 
