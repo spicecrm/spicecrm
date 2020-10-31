@@ -7,6 +7,7 @@ import {
 import {metadata} from '../../services/metadata.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {dictionarymanager} from '../services/dictionarymanager.service';
+import {DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
 
 @Component({
     templateUrl: './src/workbench/templates/dictionarymanageradditemmodal.html',
@@ -21,13 +22,7 @@ export class DictionaryManagerAddItemModal {
     /**
      * the domain definition
      */
-    private dictionaryitem: any = {
-        name: '',
-        scope: 'g',
-        deleted: 0,
-        status: 'd',
-        sequence: this.dictionarymanager.dictionaryitems.filter(d => d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).length
-    };
+    private dictionaryitem: DictionaryItem;
 
     /**
      * the list of the domains
@@ -45,6 +40,20 @@ export class DictionaryManagerAddItemModal {
     private itemtype: 'i' | 't' = 'i';
 
     constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private modelutilities: modelutilities) {
+
+        this.dictionaryitem = {
+            id: this.modelutilities.generateGuid(),
+            sysdictionarydefinition_id: this.dictionarymanager.currentDictionaryDefinition,
+            name: '',
+            non_db: 0,
+            exclude_from_audited: 0,
+            required: 0,
+            scope: this.dictionarymanager.defaultScope,
+            deleted: 0,
+            status: 'd',
+            sequence: this.dictionarymanager.dictionaryitems.filter(d => d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).length
+        };
+
         for (let domain of this.dictionarymanager.domaindefinitions) {
             this.domains.push({
                 id: domain.id,

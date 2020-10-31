@@ -13,6 +13,7 @@ import {language} from '../../services/language.service';
 
 
 import {dictionarymanager} from '../services/dictionarymanager.service';
+import {DictionaryDefinition} from "../interfaces/dictionarymanager.interfaces";
 
 /**
  * list the available dictionary definitions
@@ -30,8 +31,8 @@ export class DictionaryManagerDefinitions {
     /**
      * gets all non deleted entries sorted by name
      */
-    get dictionarydefinitions() {
-        return this.dictionarymanager.dictionarydefinitions.filter(d => d.deleted == 0).sort((a, b) => a.name > b.name ? 1 : -1);
+    get dictionarydefinitions(): DictionaryDefinition[] {
+        return this.dictionarymanager.dictionarydefinitions.filter(d => d.deleted == 0).sort((a, b) => a.name.localeCompare(b.name));
     }
 
 
@@ -66,12 +67,6 @@ export class DictionaryManagerDefinitions {
         this.modal.prompt('confirm', this.language.getLabel('MSG_DELETE_RECORD', '', 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(answer => {
             if (answer) {
                 let di = this.dictionarymanager.dictionarydefinitions.find(f => f.id == id).deleted = 1;
-
-                /*
-                for (let f of this.domainmanager.domainfields.filter(f => f.sysdomaindefinition_id == id)) {
-                    f.deleted = 1;
-                }
-                */
 
                 if (this.dictionarymanager.currentDictionaryDefinition == id) {
                     this.dictionarymanager.currentDictionaryDefinition == null;

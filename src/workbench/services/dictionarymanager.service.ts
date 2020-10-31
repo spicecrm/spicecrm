@@ -6,9 +6,26 @@ import {backend} from '../../services/backend.service';
 import {language} from '../../services/language.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {metadata} from '../../services/metadata.service';
+import {
+    DictionaryDefinition,
+    DictionaryIndex, DictionaryIndexItem,
+    DictionaryItem,
+    Relationship,
+    RelationshipRelateField
+} from "../interfaces/dictionarymanager.interfaces";
 
 @Injectable()
 export class dictionarymanager {
+
+    /**
+     * reserved words in PL(SQL
+     */
+    public reservedWords = ['ALL','ALTER','AND','ANY','ARRAY','AS','ASC','AT','AUTHID','AVG','BEGIN','BETWEEN','BINARY_INTEGER','BODY','BOOLEAN','BULK','BY','CHAR','CHAR_BASE','CHECK','CLOSE','CLUSTER','COALESCE','COLLECT','COMMENT','COMMIT','COMPRESS','CONNECT','CONSTANT','CREATE','CURRENT','CURRVAL','CURSOR','DATE','DAY','DECIMAL','DECLARE','DEFAULT','DELETE','DESC','DISTINCT','DO','DROP','ELSE','ELSIF','END','EXCEPTION','EXCLUSIVE','EXECUTE','EXISTS','EXIT','EXTENDS','EXTRACT','FALSE','FETCH','FLOAT','FOR','FORALL','FROM','FUNCTION','GOTO','GROUP','HAVING','HEAP','HOUR','IF','IMMEDIATE','IN','INDEX','INDICATOR','INSERT','INTEGER','INTERFACE','INTERSECT','INTERVAL','INTO','IS','ISOLATION','JAVA','LEVEL','LIKE','LIMITED','LOCK','LONG','LOOP','MAX','MIN','MINUS','MINUTE','MLSLABEL','MOD','MODE','MONTH','NATURAL','NATURALN','NEW','NEXTVAL','NOCOPY','NOT','NOWAIT','NULL','NULLIF','NUMBER','NUMBER_BASE','OCIROWID','OF','ON','OPAQUE','OPEN','OPERATOR','OPTION','OR','ORDER','ORGANIZATION','OTHERS','OUT','PACKAGE','PARTITION','PCTFREE','PLS_INTEGER','POSITIVE','POSITIVEN','PRAGMA','PRIOR','PRIVATE','PROCEDURE','PUBLIC','RAISE','RANGE','RAW','REAL','RECORD','REF','RELEASE','RETURN','REVERSE','ROLLBACK','ROW','ROWID','ROWNUM','ROWTYPE','SAVEPOINT','SECOND','SELECT','SEPERATE','SET','SHARE','SMALLINT','SPACE','SQL','SQLCODE','SQLERRM','START','STDDEV','SUBTYPE','SUCCESSFUL','SUM','SYNONYM','SYSDATE','TABLE','THEN','TIME','TIMESTAMP','TIMEZONE_ABBR','TIMEZONE_HOUR','TIMEZONE_MINUTE','TIMEZONE_REGION','TO','TRIGGER','TRUE','TYPE','UI','UNION','UNIQUE','UPDATE','USE','USER','VALIDATE','VALUES','VARCHAR','VARCHAR2','VARIANCE','VIEW','WHEN','WHENEVER','WHERE','WHILE','WITH','WORK','WRITE','YEAR','ZONE'];
+
+    /**
+     * sets the allowed change scope
+     */
+    public changescope: 'global' | 'custom' | 'none' = 'global';
 
     /**
      * the loaded list of domains
@@ -18,17 +35,32 @@ export class dictionarymanager {
     /**
      * the loaded list of dictionaryDefinitions
      */
-    public dictionarydefinitions: any[] = [];
+    public dictionarydefinitions: DictionaryDefinition[] = [];
 
     /**
      * the dictionary items
      */
-    public dictionaryitems: any[] = [];
+    public dictionaryitems: DictionaryItem[] = [];
 
     /**
-     * the dictionary items
+     * the dictionary relationships
      */
-    public dictionaryrelations: any[] = [];
+    public dictionaryrelationships: Relationship[] = [];
+
+    /**
+     * the dictionary relationships
+     */
+    public dictionaryrelationshiprelatefields: RelationshipRelateField[] = [];
+
+    /**
+     * the dictionary relationships
+     */
+    public dictionaryindexes: DictionaryIndex[] = [];
+
+    /**
+     * the dictionary relationships
+     */
+    public dictionaryindexitems: DictionaryIndexItem[] = [];
 
     /**
      * the currently seleted domain element
@@ -39,6 +71,16 @@ export class dictionarymanager {
      * the currently selected item
      */
     public currentDictionaryItem: string;
+
+    /**
+     * the currently selected item
+     */
+    public currentDictionaryIndex: string;
+
+    /**
+     * the currently selected relationship
+     */
+    public currentDictionaryRelationship: string;
 
     /**
      * the JSON with the loaded definitons to determine the changes
@@ -58,11 +100,36 @@ export class dictionarymanager {
             this.domaindefinitions = res.domaindefinitions;
             this.dictionarydefinitions = res.dictionarydefinitions;
             this.dictionaryitems = res.dictionaryitems;
+            this.dictionaryrelationships = res.dictionaryrelationships;
+            this.dictionaryrelationshiprelatefields = res.dictionaryrelationshiprelatefields;
+            this.dictionaryindexes = res.dictionaryindexes;
+            this.dictionaryindexitems = res.dictionaryindexitems;
 
             this.loaded = JSON.stringify(res);
         });
     }
 
+    /**
+     * returns based on the scope if an item can be changed
+     * @param scope
+     */
+    public canChange(scope: string) {
+        // if we have all ... we can change
+        if (this.changescope == 'global') return true;
+
+        // if we have custom we can only change custom
+        if (this.changescope == 'custom' && scope == 'c') return true;
+
+        // otherwise no change
+        return false;
+    }
+
+    /**
+     * returns the default scope for the new entries
+     */
+    get  defaultScope() {
+        return this.changescope == 'global' ? 'g' : 'c';
+    }
 
     /**
      * returns a status color
@@ -95,13 +162,29 @@ export class dictionarymanager {
      *
      * @param domainid
      */
-    public getTemplateName(refid) {
+    public getDictionaryDefinitionName(refid) {
         let d = this.dictionarydefinitions.find(d => d.id == refid);
         return d ? d.name : refid;
     }
 
-    private setActivItem(id){
 
+    /**
+     * returns all items (recurisively for a given id
+     *
+     * @param refid
+     */
+    public getDictionaryDefinitionItems(refid) {
+        let itemsArray: any[] = [];
+
+        for (let item of this.dictionaryitems.filter(i => i.sysdictionarydefinition_id == refid).sort((a, b) => a.sequence > b.sequence ? 1 : -1)) {
+            if (item.sysdictionary_ref_id) {
+                itemsArray = itemsArray.concat(this.getDictionaryDefinitionItems(item.sysdictionary_ref_id));
+            } else {
+                itemsArray.push(item);
+            }
+        }
+
+        return itemsArray;
     }
 
     /**
@@ -119,7 +202,11 @@ export class dictionarymanager {
         let loaded = JSON.parse(this.loaded);
         let changed = {
             dictionarydefinitions: [],
-            dictionaryitems: []
+            dictionaryitems: [],
+            dictionaryrelationships: [],
+            dictionaryrelationshiprelatefields: [],
+            dictionaryindexes: [],
+            dictionaryindexitems: []
         };
 
         for (let item in changed) {

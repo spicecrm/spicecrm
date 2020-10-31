@@ -24,7 +24,7 @@ export class DictionaryManagerDefinitionTabs {
     /**
      * define the scope for the tabs
      */
-    private scope: 'items'|'relationships'|'fields' = 'items';
+    private scope: 'items'|'relationships'|'indexes'|'fields' = 'items';
 
     constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private language: language,  private modal: modal, private injector: Injector, private modelutilities: modelutilities) {
 

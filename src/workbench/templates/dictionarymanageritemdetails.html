@@ -14,7 +14,7 @@
             </div>
             <div *ngIf="dictionaryitem.sysdictionary_ref_id" class="slds-form-element__control" class="slds-form-element__control">
                 <label class="slds-form-element__label"><system-label label="LBL_TEMPLATE"></system-label></label>
-                <input type="text" disabled class="slds-input" [ngModel]="dictionarymanager.getTemplateName(dictionaryitem.sysdictionary_ref_id)"/>
+                <input type="text" disabled class="slds-input" [ngModel]="dictionarymanager.getDictionaryDefinitionName(dictionaryitem.sysdictionary_ref_id)"/>
             </div>
         </div>
         <div class="slds-size--1-of-4 slds-form-element__control slds-m-around--xxx-small">
@@ -47,7 +47,7 @@
                 <system-label label="LBL_COMMENT"></system-label>
             </label>
             <div class="slds-form-element__control">
-                <textarea class="slds-textarea" [(ngModel)]="dictionaryitem.comment"></textarea>
+                <textarea class="slds-textarea" [(ngModel)]="dictionaryitem.description"></textarea>
             </div>
         </div>
     </ng-container>
