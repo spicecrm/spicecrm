@@ -29,12 +29,14 @@
         <td data-label="Type">
             <div class="slds-truncate">{{dictionarydefinition.sysdictionary_type}}</div>
         </td>
-        <td class="slds-align--absolute-center" style="width: 2rem;">
-            <system-utility-icon size="xx-small" icon="delete" (click)="deleteDictionaryDefinition($event, dictionarydefinition.id)"></system-utility-icon>
+        <td>
+            <button class="slds-button slds-button--icon" [disabled]="!dictionarymanager.canChange(dictionarydefinition.scope)" (click)="deleteDictionaryDefinition($event, dictionarydefinition.id)">
+                <system-button-icon size="xx-small" icon="delete"></system-button-icon>
+            </button>
         </td>
     </tr>
     </tbody>
 </table>
-<div class="slds-align--absolute-center slds-p-around--small">
+<div *ngIf="dictionarymanager.changescope != 'none'" class="slds-align--absolute-center slds-p-around--small">
     <system-utility-icon (click)="addDictionaryDefinition($event)" icon="new" size="x-small"></system-utility-icon>
 </div>
