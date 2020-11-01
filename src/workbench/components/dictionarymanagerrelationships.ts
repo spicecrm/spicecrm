@@ -36,7 +36,7 @@ export class DictionaryManagerRelationships {
         // return an empty array when no DictionaryDefinition is set
         if (!this.dictionarymanager.currentDictionaryDefinition) return [];
 
-        return this.dictionarymanager.dictionaryrelationships.filter(r => r.deleted == 0 && (r.lhs_sysdictonarydefinition_id == this.dictionarymanager.currentDictionaryDefinition || r.rhs_sysdictonarydefinition_id == this.dictionarymanager.currentDictionaryDefinition)).sort((a, b) => a.name.localeCompare(b.name));
+        return this.dictionarymanager.dictionaryrelationships.filter(r => r.deleted == 0 && (r.lhs_sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition || r.rhs_sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition)).sort((a, b) => a.name.localeCompare(b.name));
     }
 
     /**
@@ -60,6 +60,7 @@ export class DictionaryManagerRelationships {
                 let di = this.dictionarymanager.dictionaryrelationships.find(f => f.id == id).deleted = 1;
                 if (this.dictionarymanager.currentDictionaryRelationship == id) {
                     this.dictionarymanager.currentDictionaryRelationship == null;
+                    this.currentRelationship = null;
                 }
             }
         });
@@ -71,7 +72,7 @@ export class DictionaryManagerRelationships {
      * @param relationship
      */
     private isLeft(relationship: Relationship) {
-        return relationship.lhs_sysdictonarydefinition_id == this.dictionarymanager.currentDictionaryDefinition;
+        return relationship.lhs_sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition;
     }
 
     /**

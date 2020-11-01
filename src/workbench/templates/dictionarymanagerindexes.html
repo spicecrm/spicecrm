@@ -1,4 +1,4 @@
-<div style="height: 50%">
+<div style="height: 30vh">
     <ng-container *ngIf="dictionarymanager.currentDictionaryDefinition; else selectdefinition">
         <table  class="slds-table slds-table_cell-buffer slds-table_bordered">
             <thead>
@@ -47,6 +47,4 @@
         </div>
     </ng-template>
 </div>
-<div style="height: 50%" class="slds-p-around--xx-small slds-border--top">
-    <dictionary-manager-index-details [indexid]="dictionarymanager.currentDictionaryIndex"></dictionary-manager-index-details>
-</div>
+<dictionary-manager-index-details [indexid]="dictionarymanager.currentDictionaryIndex"></dictionary-manager-index-details>

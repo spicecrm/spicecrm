@@ -7,7 +7,7 @@ import {
 import {metadata} from '../../services/metadata.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {dictionarymanager} from '../services/dictionarymanager.service';
-import {DictionaryDefinition} from "../interfaces/dictionarymanager.interfaces";
+import {DictionaryDefinition, DictionaryManagerMessage} from "../interfaces/dictionarymanager.interfaces";
 
 @Component({
     templateUrl: './src/workbench/templates/dictionarymanageradddefinitionmodal.html',
@@ -28,7 +28,7 @@ export class DictionaryManagerAddDefinitionModal {
      * messages collected
      * @private
      */
-    private messages: any[] = [];
+    private messages: DictionaryManagerMessage[] = [];
 
     constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private modelutilities: modelutilities) {
         this.dictionarydefinition = {
@@ -49,6 +49,11 @@ export class DictionaryManagerAddDefinitionModal {
         this.self.destroy();
     }
 
+    /**
+     * returns the messages for a specific field
+     * @param field
+     * @private
+     */
     private getMessages(field) {
         return this.messages.filter(m => m.field == field);
     }
@@ -62,18 +67,31 @@ export class DictionaryManagerAddDefinitionModal {
     get canSave() {
         this.messages = [];
 
+        if (!this.dictionarydefinition.name) {
+            this.messages.push({field: 'name', message: 'name must be entered'});
+        }
+
+        if (!this.dictionarydefinition.sysdictionary_type) {
+            this.messages.push({field: 'sysdictionary_type', message: 'type must be specified'});
+        }
+
+        if (this.dictionarydefinition.sysdictionary_type != 'template' && !this.dictionarydefinition.tablename) {
+            this.messages.push({field: 'tablename', message: 'tablename must be entered'});
+        }
+
         if (this.dictionarymanager.dictionarydefinitions.find(d => d.name == this.dictionarydefinition.name)) {
             this.messages.push({field: 'name', message: 'name exists already'});
         }
-        if (this.dictionarymanager.dictionarydefinitions.find(d => d.tablename == this.dictionarydefinition.tablename)) {
+
+        if (this.dictionarydefinition.tablename && this.dictionarymanager.dictionarydefinitions.find(d => d.tablename == this.dictionarydefinition.tablename)) {
             this.messages.push({field: 'tablename', message: 'table exists already'});
         }
 
-        if(this.dictionarymanager.reservedWords.indexOf(this.dictionarydefinition.tablename.toUpperCase()) >= 0){
+        if (this.dictionarydefinition.tablename && this.dictionarymanager.reservedWords.indexOf(this.dictionarydefinition.tablename.toUpperCase()) >= 0) {
             this.messages.push({field: 'tablename', message: 'tablename cannot be used (reserved word)'});
         }
 
-        return this.dictionarydefinition.name && this.dictionarydefinition.sysdictionary_type && this.messages.length == 0;
+        return this.messages.length == 0;
     }
 
     /**

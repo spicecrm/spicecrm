@@ -16,9 +16,9 @@ import {Relationship} from "../interfaces/dictionarymanager.interfaces";
  * renders a modal to add a one to many relationship
  */
 @Component({
-    templateUrl: './src/workbench/templates/dictionarymanagerrelationshipaddonetomany.html',
+    templateUrl: './src/workbench/templates/dictionarymanagerrelationshipaddmanytomany.html',
 })
-export class DictionaryManagerRelationshipAddOneToMany implements OnInit {
+export class DictionaryManagerRelationshipAddManyToMany implements OnInit {
 
     /**
      * reference to the modal window
@@ -47,7 +47,7 @@ export class DictionaryManagerRelationshipAddOneToMany implements OnInit {
             rhs_sysdictionaryitem_id: '',
             rhs_linkname: '',
             rhs_realname: '',
-            relationship_type: 'one-to-many',
+            relationship_type: 'many-to-many',
             deleted: 0,
             status: 'd'
         };
@@ -68,19 +68,18 @@ export class DictionaryManagerRelationshipAddOneToMany implements OnInit {
      */
     private setDefaults() {
         // build default name and relationship name
-        this.relationship.name = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.relationship.lhs_sysdictionarydefinition_id).tablename.toLowerCase();
         this.relationship.relationship_name = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.relationship.lhs_sysdictionarydefinition_id).tablename.toLowerCase() + '_' + this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.relationship.rhs_sysdictionarydefinition_id).tablename.toLowerCase();
+        this.relationship.name = this.relationship.relationship_name;
 
-        // set the defaults
-        let iditem = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.lhs_sysdictionarydefinition_id).find(i => i.name == 'id');
-        if (iditem) this.relationship.lhs_sysdictionaryitem_id = iditem.id;
-
-        // determine the default link field and link name
-        this.relationship.rhs_linkname = this.dictionarymanager.getDictionaryDefinitionName(this.relationship.lhs_sysdictionarydefinition_id).toLowerCase();
-        this.relationship.rhs_realname = this.dictionarymanager.getDictionaryDefinitionName(this.relationship.lhs_sysdictionarydefinition_id).toLowerCase() + '_name';
-
-        // determine the default lhs link name
+        // set the lhs defaults
+        let liditem = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.lhs_sysdictionarydefinition_id).find(i => i.name == 'id');
+        if (liditem) this.relationship.lhs_sysdictionaryitem_id = liditem.id;
         this.relationship.lhs_linkname = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.relationship.rhs_sysdictionarydefinition_id).tablename.toLowerCase();
+
+        // set the rhs defaults
+        let riditem = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.rhs_sysdictionarydefinition_id).find(i => i.name == 'id');
+        if (riditem) this.relationship.rhs_sysdictionaryitem_id = riditem.id;
+        this.relationship.rhs_linkname = this.dictionarymanager.getDictionaryDefinitionName(this.relationship.lhs_sysdictionarydefinition_id).toLowerCase();
     }
 
     /**
@@ -97,7 +96,7 @@ export class DictionaryManagerRelationshipAddOneToMany implements OnInit {
      *
      * @private
      */
-    private add(){
+    private add() {
         this.dictionarymanager.dictionaryrelationships.push({...this.relationship});
         this.close();
     }

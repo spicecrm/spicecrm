@@ -8,7 +8,7 @@
                 <div class="slds-form-element__help" *ngFor="let message of getMessages('name')">{{message.message}}</div>
             </div>
             <div class="slds-form-element__control slds-size--1-of-2 slds-p-right--xxx-small" [ngClass]="{'slds-has-error': getMessages('tablename').length > 0}">
-                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_TABLE"></system-label></label>
+                <label class="slds-form-element__label"><system-label label="LBL_TABLE"></system-label></label>
                 <system-input-text [(ngModel)]="dictionarydefinition.tablename"></system-input-text>
                 <div class="slds-form-element__help" *ngFor="let message of getMessages('tablename')">{{message.message}}</div>
             </div>
@@ -30,6 +30,7 @@
                         <option value="module">module</option>
                         <option value="metadata">metadata</option>
                         <option value="template">template</option>
+                        <option value="template">relationship</option>
                     </select>
                 </div>
             </div>
