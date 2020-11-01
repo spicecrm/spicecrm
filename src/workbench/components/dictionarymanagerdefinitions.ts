@@ -24,6 +24,20 @@ import {DictionaryDefinition} from "../interfaces/dictionarymanager.interfaces";
 })
 export class DictionaryManagerDefinitions {
 
+    /**
+     * a filter term to filter the list by
+     *
+     * @private
+     */
+    private definitionfilterterm: string;
+
+    /**
+     * a type to filter the list by
+     *
+     * @private
+     */
+    private definitionfiltertype: string;
+
     constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private language: language,  private modal: modal, private injector: Injector, private modelutilities: modelutilities) {
 
     }
@@ -32,9 +46,23 @@ export class DictionaryManagerDefinitions {
      * gets all non deleted entries sorted by name
      */
     get dictionarydefinitions(): DictionaryDefinition[] {
-        return this.dictionarymanager.dictionarydefinitions.filter(d => d.deleted == 0).sort((a, b) => a.name.localeCompare(b.name));
+
+        return this.dictionarymanager.dictionarydefinitions.filter(d => {
+            // no deleted records
+            if(d.deleted != 0) return false;
+            // if we have a type filter apply it
+            if(this.definitionfiltertype && d.sysdictionary_type != this.definitionfiltertype) return false;
+            // if we have aterm filter apply it
+            if(this.definitionfilterterm && !(d.name.toLowerCase().indexOf(this.definitionfilterterm.toLowerCase()) >= 0 || d.tablename.toLowerCase().indexOf(this.definitionfilterterm.toLowerCase()) >= 0)) return false;
+            // otherwise list it
+            return true;
+        }).sort((a, b) => a.name.localeCompare(b.name));
+
     }
 
+    private trackByFn(index, item) {
+        return item.id;
+    }
 
     /**
      * set the current definition to the service
@@ -42,8 +70,12 @@ export class DictionaryManagerDefinitions {
      * @param definitionId
      */
     private setCurrentDictionaryDefintion(definitionId: string) {
-        this.dictionarymanager.currentDictionaryDefinition = definitionId;
-        this.dictionarymanager.currentDictionaryItem = null;
+        if(definitionId != this.dictionarymanager.currentDictionaryDefinition) {
+            this.dictionarymanager.currentDictionaryDefinition = definitionId;
+            this.dictionarymanager.currentDictionaryItem = null;
+            this.dictionarymanager.currentDictionaryIndex = null;
+            this.dictionarymanager.currentDictionaryRelationship = null;
+        }
     }
 
 

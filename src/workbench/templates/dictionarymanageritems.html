@@ -1,5 +1,5 @@
-<div style="height: 50%">
-    <ng-container *ngIf="dictionarymanager.currentDictionaryDefinition; else selectdefinition">
+<ng-container *ngIf="dictionarymanager.currentDictionaryDefinition; else selectdefinition">
+    <div style="height: 30vh;">
         <table  class="slds-table slds-table_cell-buffer slds-table_bordered">
             <thead>
                 <tr class="slds-line-height_reset">
@@ -43,13 +43,13 @@
         <div *ngIf="dictionarymanager.changescope != 'none'" class="slds-align--absolute-center slds-p-around--small">
             <system-utility-icon icon="new" size="x-small" (click)="addDictionaryItem($event)" ></system-utility-icon>
         </div>
-    </ng-container>
-    <ng-template #selectdefinition>
-        <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
-            <system-label label="LBL_SELECT_A_DICTIONARYDEFINITION"></system-label>
-        </div>
-    </ng-template>
-</div>
-<div style="height: 50%" class="slds-p-around--xx-small slds-border--top">
-    <dictionary-manager-item-details [dictionaryitem]="dictionaryitem"></dictionary-manager-item-details>
-</div>
+    </div>
+    <div class="slds-border--top">
+        <dictionary-manager-item-details [dictionaryitem]="dictionaryitem"></dictionary-manager-item-details>
+    </div>
+</ng-container>
+<ng-template #selectdefinition>
+    <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+        <system-label label="LBL_SELECT_A_DICTIONARYDEFINITION"></system-label>
+    </div>
+</ng-template>

@@ -67,8 +67,8 @@ export class DictionaryManagerRelationshipContainerOneToMany implements OnInit {
      */
     private loadItems() {
         // build the left hand and right hand items
-        this.lhs_items = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.lhs_sysdictonarydefinition_id);
-        this.rhs_items = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.rhs_sysdictonarydefinition_id);
+        this.lhs_items = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.lhs_sysdictionarydefinition_id);
+        this.rhs_items = this.dictionarymanager.getDictionaryDefinitionItems(this.relationship.rhs_sysdictionarydefinition_id);
     }
 
     /**

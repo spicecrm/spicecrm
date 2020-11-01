@@ -31,7 +31,7 @@ export class DictionaryManagerRelationshipAdd {
      * the type of the relationship
      * @private
      */
-    private relationshipType: 'one-to-many'|'many-to-many'|'parent' = 'one-to-many';
+    private relationshipType: 'one-to-many'|'many-to-one'|'many-to-many'|'parent' = 'one-to-many';
 
     /**
      * the id of the related dictionaryitem
@@ -54,7 +54,7 @@ export class DictionaryManagerRelationshipAdd {
     private scope: 'c'|'g';
 
     constructor(private dictionarymanager: dictionarymanager, private modal: modal, private injector: Injector) {
-        this.related_ids = this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'module' || d.sysdictionary_type == 'template');
+        this.related_ids = this.dictionarymanager.dictionarydefinitions.filter(d => d.sysdictionary_type == 'module' && d.deleted == 0).sort((a, b) => a.name.localeCompare(b.name));
         this.scope = this.dictionarymanager.defaultScope;
     }
 
@@ -76,9 +76,23 @@ export class DictionaryManagerRelationshipAdd {
        switch(this.relationshipType){
            case 'one-to-many':
                this.modal.openModal('DictionaryManagerRelationshipAddOneToMany', true, this.injector).subscribe(modalRef => {
-                   modalRef.instance.relationship.rhs_sysdictonarydefinition_id = this.related_id;
+                   modalRef.instance.relationship.rhs_sysdictionarydefinition_id = this.related_id;
                    modalRef.instance.relationship.scope = this.scope;
-                   modalRef.instance.relationship.lhs_sysdictonarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
+                   modalRef.instance.relationship.lhs_sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
+               });
+               break;
+           case 'many-to-one':
+               this.modal.openModal('DictionaryManagerRelationshipAddOneToMany', true, this.injector).subscribe(modalRef => {
+                   modalRef.instance.relationship.lhs_sysdictionarydefinition_id = this.related_id;
+                   modalRef.instance.relationship.scope = this.scope;
+                   modalRef.instance.relationship.rhs_sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
+               });
+               break;
+           case 'many-to-many':
+               this.modal.openModal('DictionaryManagerRelationshipAddManyToMany', true, this.injector).subscribe(modalRef => {
+                   modalRef.instance.relationship.rhs_sysdictionarydefinition_id = this.related_id;
+                   modalRef.instance.relationship.scope = this.scope;
+                   modalRef.instance.relationship.lhs_sysdictionarydefinition_id = this.dictionarymanager.currentDictionaryDefinition;
                });
                break;
        }

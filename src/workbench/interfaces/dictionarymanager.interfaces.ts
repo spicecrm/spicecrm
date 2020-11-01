@@ -1,4 +1,13 @@
 /**
+ * a generic interface for messages related to specific fields when creating
+ * dictionary manager records
+ */
+export interface DictionaryManagerMessage {
+    field: string;
+    message: string;
+}
+
+/**
  * the dictionaryItems
  */
 export interface DictionaryDefinition {
@@ -47,17 +56,36 @@ export interface Relationship {
     scope: 'c'|'g';
     status: 'd'|'a'|'i';
     relationship_name: string;
-    lhs_sysdictonarydefinition_id: string;
+    lhs_sysdictionarydefinition_id: string;
     lhs_sysdictionaryitem_id: string;
     lhs_linkname: string;
-    rhs_sysdictonarydefinition_id: string;
+    rhs_sysdictionarydefinition_id: string;
     rhs_sysdictionaryitem_id: string;
     rhs_linkname: string;
     rhs_realname: string;
     relationship_type: 'one-to-many'|'many-to-many'|'parent';
+    join_sysdictionarydefinition_id?: string;
+    join_lhs_sysdictionaryitem_id?: string;
+    join_rhs_sysdictionaryitem_id?: string;
+    relationship_role_column?: string;
+    relationship_role_column_value?: string;
     deleted: number;
     version?: string;
     package?: string;
+}
+
+/**
+ * the relationship relate fields
+ */
+export interface RelationshipField {
+    id: string;
+    scope: 'c'|'g';
+    status: 'd'|'a'|'i';
+    relationship_id: string;
+    relationship_fieldname: string;
+    sysdictionaryitem_id: string;
+    side: 'left'|'right'|'both';
+    deleted: number;
 }
 
 /**
