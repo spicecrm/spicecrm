@@ -67,7 +67,7 @@ export class DictionaryManagerIndexes {
     private getIndexFields(indexid: string): string {
         let indexfields = [];
 
-        for (let field of this.dictionarymanager.dictionaryindexitems.filter(i => i.sysdictionaryindex_id == indexid).sort((a, b) => a.sequence > b.sequence ? 1 : -1)) {
+        for (let field of this.dictionarymanager.dictionaryindexitems.filter(i => i.sysdictionaryindex_id == indexid && i.deleted == 0).sort((a, b) => a.sequence > b.sequence ? 1 : -1)) {
             let name = this.dictionarymanager.dictionaryitems.find(di => di.id == field.sysdictionaryitem_id)?.name;
             if (name) indexfields.push(name);
         }

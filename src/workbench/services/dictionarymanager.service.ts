@@ -13,6 +13,7 @@ import {
     Relationship,
     RelationshipRelateField
 } from "../interfaces/dictionarymanager.interfaces";
+import {DomainDefinition, DomainField} from "../interfaces/domainmanager.interfaces";
 
 @Injectable()
 export class dictionarymanager {
@@ -20,7 +21,7 @@ export class dictionarymanager {
     /**
      * reserved words in PL(SQL
      */
-    public reservedWords = ['ALL','ALTER','AND','ANY','ARRAY','AS','ASC','AT','AUTHID','AVG','BEGIN','BETWEEN','BINARY_INTEGER','BODY','BOOLEAN','BULK','BY','CHAR','CHAR_BASE','CHECK','CLOSE','CLUSTER','COALESCE','COLLECT','COMMENT','COMMIT','COMPRESS','CONNECT','CONSTANT','CREATE','CURRENT','CURRVAL','CURSOR','DATE','DAY','DECIMAL','DECLARE','DEFAULT','DELETE','DESC','DISTINCT','DO','DROP','ELSE','ELSIF','END','EXCEPTION','EXCLUSIVE','EXECUTE','EXISTS','EXIT','EXTENDS','EXTRACT','FALSE','FETCH','FLOAT','FOR','FORALL','FROM','FUNCTION','GOTO','GROUP','HAVING','HEAP','HOUR','IF','IMMEDIATE','IN','INDEX','INDICATOR','INSERT','INTEGER','INTERFACE','INTERSECT','INTERVAL','INTO','IS','ISOLATION','JAVA','LEVEL','LIKE','LIMITED','LOCK','LONG','LOOP','MAX','MIN','MINUS','MINUTE','MLSLABEL','MOD','MODE','MONTH','NATURAL','NATURALN','NEW','NEXTVAL','NOCOPY','NOT','NOWAIT','NULL','NULLIF','NUMBER','NUMBER_BASE','OCIROWID','OF','ON','OPAQUE','OPEN','OPERATOR','OPTION','OR','ORDER','ORGANIZATION','OTHERS','OUT','PACKAGE','PARTITION','PCTFREE','PLS_INTEGER','POSITIVE','POSITIVEN','PRAGMA','PRIOR','PRIVATE','PROCEDURE','PUBLIC','RAISE','RANGE','RAW','REAL','RECORD','REF','RELEASE','RETURN','REVERSE','ROLLBACK','ROW','ROWID','ROWNUM','ROWTYPE','SAVEPOINT','SECOND','SELECT','SEPERATE','SET','SHARE','SMALLINT','SPACE','SQL','SQLCODE','SQLERRM','START','STDDEV','SUBTYPE','SUCCESSFUL','SUM','SYNONYM','SYSDATE','TABLE','THEN','TIME','TIMESTAMP','TIMEZONE_ABBR','TIMEZONE_HOUR','TIMEZONE_MINUTE','TIMEZONE_REGION','TO','TRIGGER','TRUE','TYPE','UI','UNION','UNIQUE','UPDATE','USE','USER','VALIDATE','VALUES','VARCHAR','VARCHAR2','VARIANCE','VIEW','WHEN','WHENEVER','WHERE','WHILE','WITH','WORK','WRITE','YEAR','ZONE'];
+    public reservedWords = ['ALL', 'ALTER', 'AND', 'ANY', 'ARRAY', 'AS', 'ASC', 'AT', 'AUTHID', 'AVG', 'BEGIN', 'BETWEEN', 'BINARY_INTEGER', 'BODY', 'BOOLEAN', 'BULK', 'BY', 'CHAR', 'CHAR_BASE', 'CHECK', 'CLOSE', 'CLUSTER', 'COALESCE', 'COLLECT', 'COMMENT', 'COMMIT', 'COMPRESS', 'CONNECT', 'CONSTANT', 'CREATE', 'CURRENT', 'CURRVAL', 'CURSOR', 'DATE', 'DAY', 'DECIMAL', 'DECLARE', 'DEFAULT', 'DELETE', 'DESC', 'DISTINCT', 'DO', 'DROP', 'ELSE', 'ELSIF', 'END', 'EXCEPTION', 'EXCLUSIVE', 'EXECUTE', 'EXISTS', 'EXIT', 'EXTENDS', 'EXTRACT', 'FALSE', 'FETCH', 'FLOAT', 'FOR', 'FORALL', 'FROM', 'FUNCTION', 'GOTO', 'GROUP', 'HAVING', 'HEAP', 'HOUR', 'IF', 'IMMEDIATE', 'IN', 'INDEX', 'INDICATOR', 'INSERT', 'INTEGER', 'INTERFACE', 'INTERSECT', 'INTERVAL', 'INTO', 'IS', 'ISOLATION', 'JAVA', 'LEVEL', 'LIKE', 'LIMITED', 'LOCK', 'LONG', 'LOOP', 'MAX', 'MIN', 'MINUS', 'MINUTE', 'MLSLABEL', 'MOD', 'MODE', 'MONTH', 'NATURAL', 'NATURALN', 'NEW', 'NEXTVAL', 'NOCOPY', 'NOT', 'NOWAIT', 'NULL', 'NULLIF', 'NUMBER', 'NUMBER_BASE', 'OCIROWID', 'OF', 'ON', 'OPAQUE', 'OPEN', 'OPERATOR', 'OPTION', 'OR', 'ORDER', 'ORGANIZATION', 'OTHERS', 'OUT', 'PACKAGE', 'PARTITION', 'PCTFREE', 'PLS_INTEGER', 'POSITIVE', 'POSITIVEN', 'PRAGMA', 'PRIOR', 'PRIVATE', 'PROCEDURE', 'PUBLIC', 'RAISE', 'RANGE', 'RAW', 'REAL', 'RECORD', 'REF', 'RELEASE', 'RETURN', 'REVERSE', 'ROLLBACK', 'ROW', 'ROWID', 'ROWNUM', 'ROWTYPE', 'SAVEPOINT', 'SECOND', 'SELECT', 'SEPERATE', 'SET', 'SHARE', 'SMALLINT', 'SPACE', 'SQL', 'SQLCODE', 'SQLERRM', 'START', 'STDDEV', 'SUBTYPE', 'SUCCESSFUL', 'SUM', 'SYNONYM', 'SYSDATE', 'TABLE', 'THEN', 'TIME', 'TIMESTAMP', 'TIMEZONE_ABBR', 'TIMEZONE_HOUR', 'TIMEZONE_MINUTE', 'TIMEZONE_REGION', 'TO', 'TRIGGER', 'TRUE', 'TYPE', 'UI', 'UNION', 'UNIQUE', 'UPDATE', 'USE', 'USER', 'VALIDATE', 'VALUES', 'VARCHAR', 'VARCHAR2', 'VARIANCE', 'VIEW', 'WHEN', 'WHENEVER', 'WHERE', 'WHILE', 'WITH', 'WORK', 'WRITE', 'YEAR', 'ZONE'];
 
     /**
      * sets the allowed change scope
@@ -30,7 +31,12 @@ export class dictionarymanager {
     /**
      * the loaded list of domains
      */
-    public domaindefinitions: any[] = [];
+    public domaindefinitions: DomainDefinition[] = [];
+
+    /**
+     * the loaded list of domains
+     */
+    public domainfields: DomainField[] = [];
 
     /**
      * the loaded list of dictionaryDefinitions
@@ -46,6 +52,11 @@ export class dictionarymanager {
      * the dictionary relationships
      */
     public dictionaryrelationships: Relationship[] = [];
+
+    /**
+     * the additonal relationship fields for the n:m relationships
+     */
+    public dictionaryrelationshipfields: any[] = [];
 
     /**
      * the dictionary relationships
@@ -98,6 +109,7 @@ export class dictionarymanager {
         this.backend.getRequest('system/dictionary/definitions').subscribe(res => {
 
             this.domaindefinitions = res.domaindefinitions;
+            this.domainfields = res.domainfields;
             this.dictionarydefinitions = res.dictionarydefinitions;
             this.dictionaryitems = res.dictionaryitems;
             this.dictionaryrelationships = res.dictionaryrelationships;
@@ -127,7 +139,7 @@ export class dictionarymanager {
     /**
      * returns the default scope for the new entries
      */
-    get  defaultScope() {
+    get defaultScope() {
         return this.changescope == 'global' ? 'g' : 'c';
     }
 
@@ -176,7 +188,7 @@ export class dictionarymanager {
     public getDictionaryDefinitionItems(refid) {
         let itemsArray: any[] = [];
 
-        for (let item of this.dictionaryitems.filter(i => i.sysdictionarydefinition_id == refid).sort((a, b) => a.sequence > b.sequence ? 1 : -1)) {
+        for (let item of this.dictionaryitems.filter(i => i.sysdictionarydefinition_id == refid && i.deleted == 0).sort((a, b) => a.sequence > b.sequence ? 1 : -1)) {
             if (item.sysdictionary_ref_id) {
                 itemsArray = itemsArray.concat(this.getDictionaryDefinitionItems(item.sysdictionary_ref_id));
             } else {

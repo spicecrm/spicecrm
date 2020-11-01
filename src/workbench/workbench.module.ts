@@ -17,7 +17,8 @@ import {GlobalComponents} from "../globalcomponents/globalcomponents";
 import {DragDropModule} from '@angular/cdk/drag-drop';
 
 // Interfaces
-import /*embed*/ {DictionaryDefinition, DictionaryItem, Relationship, RelationshipRelateField, DictionaryIndex, DictionaryIndexItem} from "./interfaces/dictionarymanager.interfaces";
+import /*embed*/ {DictionaryManagerMessage, DictionaryDefinition, DictionaryItem, Relationship, RelationshipRelateField, DictionaryIndex, DictionaryIndexItem} from "./interfaces/dictionarymanager.interfaces";
+import /*embed*/ {DomainDefinition, DomainField} from "./interfaces/domainmanager.interfaces";
 
 // Services
 import /*embed*/ {domainmanager} from "./services/domainmanager.service";
@@ -48,9 +49,12 @@ import /*embed*/ {DictionaryManagerRelationshipsDetails} from "./components/dict
 import /*embed*/ {DictionaryManagerRelationshipAdd} from "./components/dictionarymanagerrelationshipadd";
 import /*embed*/ {DictionaryManagerRelationshipAddOneToMany} from "./components/dictionarymanagerrelationshipaddonetomany";
 import /*embed*/ {DictionaryManagerRelationshipContainerOneToMany} from "./components/dictionarymanagerrelationshipcontaineronetomany";
+import /*embed*/ {DictionaryManagerRelationshipAddManyToMany} from "./components/dictionarymanagerrelationshipaddmanytomany";
+import /*embed*/ {DictionaryManagerRelationshipContainerManyToMany} from "./components/dictionarymanagerrelationshipcontainermanytomany";
 import /*embed*/ {DictionaryManagerIndexes} from "./components/dictionarymanagerindexes";
 import /*embed*/ {DictionaryManagerIndexAdd} from "./components/dictionarymanagerindexadd";
 import /*embed*/ {DictionaryManagerIndexDetails} from "./components/dictionarymanagerindexdetails";
+import /*embed*/ {DictionaryManagerFields} from "./components/dictionarymanagerfields";
 
 import /*embed*/ {FieldsetManager} from "./components/fieldsetmanager";
 import /*embed*/ {FieldsetManagerFieldsetDetails} from "./components/fieldsetmanagerfieldsetdetails";
@@ -169,9 +173,12 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         DictionaryManagerRelationshipAdd,
         DictionaryManagerRelationshipAddOneToMany,
         DictionaryManagerRelationshipContainerOneToMany,
+        DictionaryManagerRelationshipAddManyToMany,
+        DictionaryManagerRelationshipContainerManyToMany,
         DictionaryManagerIndexes,
         DictionaryManagerIndexAdd,
         DictionaryManagerIndexDetails,
+        DictionaryManagerFields,
         FieldsetManager,
         FieldsetManagerFieldsetDetails,
         FieldsetManagerFieldDetails,

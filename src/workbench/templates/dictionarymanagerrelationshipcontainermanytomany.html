@@ -59,33 +59,47 @@
     </div>
 </div>
 <div class="slds-grid">
-    <div>
-        <label class="slds-form-element__label"><system-label label="LBL_RHS_REALNAME"></system-label></label>
-        <div class="slds-form-element__control">
-            <input class="slds-input" [(ngModel)]="relationship.rhs_realname"/>
+    <div class="slds-size--1-of-1 slds-p-right--xx-small slds-form-element">
+        <label class="slds-form-element__label"><system-label label="LBL_JOIN_DICTIONARYDEFINITION_ID"></system-label></label>
+        <div class="slds-select_container">
+            <select [(ngModel)]="join_sysdictionarydefinition_id" class="slds-select">
+                <option *ngFor="let relationshipdefinition of dictionarymanager.dictionarydefinitions" [value]="relationshipdefinition.id">{{relationshipdefinition.name}}</option>
+            </select>
         </div>
     </div>
-    <div>
-        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
-            <thead>
-            <tr class="slds-line-height_reset">
-                <th style="width:2.5rem" scope="col"></th>
-                <th class="" scope="col">
-                    <div class="slds-truncate" title=""><system-label label="LBL_ITEM"></system-label></div>
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="slds-hint-parent" *ngFor="let relationshiprelatefield of relationshiprelatefields">
-                <td>
-                    <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="relationshiprelatefield.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                    <system-utility-icon [colorclass]="dictionarymanager.getStatusColor(relationshiprelatefield.status)" class="slds-p-right--xx-small" size="xx-small" icon="light_bulb"></system-utility-icon>
-                </td>
-                <td data-label="item">
-                    <div class="slds-truncate">{{relationshiprelatefield.sysdictionaryitem_id}}</div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+</div>
+<div class="slds-grid">
+    <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element">
+        <label class="slds-form-element__label"><system-label label="LBL_JOIN_LHS_SYSDICTIONARYITEM"></system-label></label>
+        <div class="slds-select_container">
+            <select [disabled]="!join_sysdictionarydefinition_id" [(ngModel)]="relationship.join_lhs_sysdictionaryitem_id" class="slds-select">
+                <option *ngFor="let item of join_items" [value]="item.id">{{item.name}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
+        <label class="slds-form-element__label"><system-label label="LBL_JOIN_RHS_SYSDICTIONARYITEM"></system-label></label>
+        <div class="slds-select_container">
+            <select [disabled]="!join_sysdictionarydefinition_id"  [(ngModel)]="relationship.join_rhs_sysdictionaryitem_id" class="slds-select">
+                <option *ngFor="let item of join_items" [value]="item.id">{{item.name}}</option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="slds-grid">
+    <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element">
+        <label class="slds-form-element__label"><system-label label="LBL_RELATIONSHIP_ROLE_COLUMN"></system-label></label>
+        <div class="slds-select_container">
+            <select [disabled]="!join_sysdictionarydefinition_id" [(ngModel)]="relationship.relationship_role_column" class="slds-select">
+                <option [value]="">-</option>
+                <option *ngFor="let item of join_items" [value]="item.id">{{item.name}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
+        <label class="slds-form-element__label"><system-label label="LBL_RELATIONSHIP_ROLE_COLUMN_VALUE"></system-label></label>
+        <div class="slds-form-element__control">
+            <input [disabled]="!relationship.relationship_role_column" class="slds-input" [(ngModel)]="relationship.relationship_role_column_value"/>
+        </div>
     </div>
 </div>

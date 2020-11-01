@@ -13,20 +13,22 @@
             <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab"><system-label label="LBL_FIELDS"></system-label></a>
         </li>
     </ul>
-    <div class="slds-tabs_scoped__content slds-p-around--none" system-to-bottom-noscroll [ngClass]="{'slds-hide': scope != 'items'}" role="tabpanel">
-        <div class="slds-p-top--xx-small slds-height_full">
+    <div class="slds-tabs_scoped__content slds-p-around--none" [ngClass]="{'slds-hide': scope != 'items'}" role="tabpanel">
+        <div class="slds-height_full">
             <dictionary-manager-items></dictionary-manager-items>
         </div>
     </div>
-    <div class="slds-tabs_scoped__content slds-p-around--none" system-to-bottom-noscroll [ngClass]="{'slds-hide': scope != 'relationships'}" role="tabpanel">
-        <div class="slds-p-top--xx-small slds-height_full">
+    <div class="slds-tabs_scoped__content slds-p-around--none" [ngClass]="{'slds-hide': scope != 'relationships'}" role="tabpanel">
+        <div class="slds-height_full">
             <dictionary-manager-relationships></dictionary-manager-relationships>
         </div>
     </div>
-    <div class="slds-tabs_scoped__content slds-p-around--none" system-to-bottom-noscroll [ngClass]="{'slds-hide': scope != 'indexes'}" role="tabpanel">
-        <div class="slds-p-top--xx-small slds-height_full">
+    <div class="slds-tabs_scoped__content slds-p-around--none" [ngClass]="{'slds-hide': scope != 'indexes'}" role="tabpanel">
+        <div class="slds-height_full">
             <dictionary-manager-indexes></dictionary-manager-indexes>
         </div>
     </div>
-    <div class="slds-tabs_scoped__content slds-p-around--none" system-to-bottom-noscroll [ngClass]="{'slds-hide': scope != 'fields'}" role="tabpanel">Item Three Content</div>
+    <div class="slds-tabs_scoped__content slds-p-around--none"  [ngClass]="{'slds-hide': scope != 'fields'}" role="tabpanel">
+        <dictionary-manager-fields></dictionary-manager-fields>
+    </div>
 </div>
