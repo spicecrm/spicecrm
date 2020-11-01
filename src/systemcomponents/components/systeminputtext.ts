@@ -40,6 +40,8 @@ export class SystemInputText implements ControlValueAccessor {
      */
     @Input() private disabled: boolean = false;
 
+    @Input() private placeholder: string;
+
     constructor() {
 
     }
