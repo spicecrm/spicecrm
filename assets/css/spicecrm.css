@@ -368,3 +368,11 @@ field-generic-display .slds-button_icon {
 .spice-drop-zone.slds-is-hovered > .spice-drop-zone-content {
     border:1px solid #1589ee;
 }
+
+.spice-hover-display-children:hover .spice-hover-child {
+    display: block;
+}
+
+.spice-hover-display-children .spice-hover-child {
+    display: none;
+}
