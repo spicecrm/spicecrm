@@ -14,7 +14,7 @@
                 <label class="slds-form-element__label"><system-label label="LBL_SERVICEEQUIPMENT"></system-label></label>
                 <div class="slds-form-element__control">
                     <select class="slds-select" [(ngModel)]="serviceequipment_id" [disabled]="serviceequipments.length == 0" size="5">
-                        <option *ngIf="serviceequipments.length == 0"><system-label label="LBL_NO_ENTRY"></system-label></option>
+                        <option *ngIf="serviceequipments.length == 0"><system-label label="MSG_NO_RECORDS_FOUND"></system-label></option>
                         <option *ngFor="let serviceequipment of serviceequipments" [value]="serviceequipment.id">{{serviceequipment.name}}</option>
                     </select>
                 </div>

@@ -36,12 +36,10 @@ export class ServiceTicketContactDetail implements OnDestroy, OnInit {
     private subscriptions: Subscription = new Subscription();
 
     constructor(@SkipSelf() private parent: model, private model: model, private metadata: metadata, private language: language) {
-
+        this.model.module = 'Contacts';
         this.subscriptions.add(this.parent.data$.subscribe(ticketdata => {
             this.loadContact();
         }));
-
-        this.model.module = 'Contacts';
     }
 
     public ngOnInit(): void {

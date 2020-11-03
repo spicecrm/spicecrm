@@ -7,7 +7,6 @@ import {language} from '../../../services/language.service';
 import {backend} from '../../../services/backend.service';
 import { modal } from '../../../services/modal.service';
 import { QuestionsManagerAddModal } from './questionsmanageraddmodal';
-import { modellist } from '../../../services/modellist.service';
 
 @Component({
     selector: 'questions-manager',
@@ -17,6 +16,7 @@ export class QuestionsManager implements OnInit {
 
     @Input() public noTitle = false;
     @Input() public showQuestionsetButtons = false;
+    @Input() public categorypool: any;
     @Output() public questionsetAction: EventEmitter<string> = new EventEmitter();
     @Input('disabled') public componentDisabled = false;
 
@@ -58,6 +58,7 @@ export class QuestionsManager implements OnInit {
         this.modalservice.openModal('QuestionsManagerAddModal' ).subscribe( form => {
             form.instance.questionset = this.model;
             form.instance.questionid = this.currentQuestionId;
+            form.instance.categorypool = this.categorypool;
             form.instance.response.subscribe( response => {
                 this.handleFormResponse( response );
             });

@@ -36,12 +36,10 @@ export class ServiceTicketConsumerDetail implements OnDestroy, OnInit {
     private subscriptions: Subscription = new Subscription();
 
     constructor(@SkipSelf() private parent: model, private model: model, private metadata: metadata, private language: language) {
-
+        this.model.module = 'Consumers';
         this.subscriptions.add(this.parent.data$.subscribe(ticketdata => {
             this.loadConsumer();
         }));
-
-        this.model.module = 'Consumers';
     }
 
     public ngOnInit(): void {
