@@ -13,6 +13,7 @@ import {language} from '../../services/language.service';
 
 
 import {dictionarymanager} from '../services/dictionarymanager.service';
+import {DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
 
 
 @Component({
@@ -21,8 +22,18 @@ import {dictionarymanager} from '../services/dictionarymanager.service';
 })
 export class DictionaryManagerItems {
 
-    constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private language: language,  private modal: modal, private injector: Injector, private modelutilities: modelutilities) {
+    /**
+     * the curretn dictionaryitem
+     */
+    private dictionaryitem: DictionaryItem;
 
+
+    constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private language: language, private modal: modal, private injector: Injector, private modelutilities: modelutilities) {
+
+    }
+
+    get canShuffle() {
+        return this.dictionarymanager.canChange(this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarymanager.currentDictionaryDefinition)?.scope);
     }
 
     /**
@@ -31,22 +42,10 @@ export class DictionaryManagerItems {
     get dictionaryitems() {
 
         // return an empty array when no DictionaryDefinition is set
-        if(!this.dictionarymanager.currentDictionaryDefinition) return [];
+        if (!this.dictionarymanager.currentDictionaryDefinition) return [];
 
-        return this.dictionarymanager.dictionaryitems.filter(d => d.deleted == 0 && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).sort((a, b) => parseInt(a.sequence, 10) > parseInt(b.sequence, 10) ? 1 : -1);
+        return this.dictionarymanager.dictionaryitems.filter(d => d.deleted == 0 && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
     }
-
-
-    /**
-     * set the current definition to the service
-     *
-     * @param definitionId
-     */
-    private setCurrentDictionaryDefintion(definitionId: string) {
-        this.dictionarymanager.currentDictionaryDefinition = definitionId;
-    }
-
-
 
     /**
      * react to the click to add a new dictionary definition
@@ -67,13 +66,6 @@ export class DictionaryManagerItems {
         this.modal.prompt('confirm', this.language.getLabel('MSG_DELETE_RECORD', '', 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(answer => {
             if (answer) {
                 let di = this.dictionarymanager.dictionaryitems.find(f => f.id == id).deleted = 1;
-
-                /*
-                for (let f of this.domainmanager.domainfields.filter(f => f.sysdomaindefinition_id == id)) {
-                    f.deleted = 1;
-                }
-                */
-
                 if (this.dictionarymanager.currentDictionaryDefinition == id) {
                     this.dictionarymanager.currentDictionaryDefinition == null;
                 }
@@ -99,5 +91,16 @@ export class DictionaryManagerItems {
             i++;
         }
     }
+
+    /**
+     * sets the current active id
+     *
+     * @param id
+     */
+    private setActiveId(id) {
+        this.dictionarymanager.currentDictionaryItem = id;
+        this.dictionaryitem = this.dictionarymanager.dictionaryitems.find(i => i.id == id);
+    }
+
 
 }

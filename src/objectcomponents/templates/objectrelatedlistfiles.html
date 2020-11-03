@@ -33,8 +33,7 @@
             </div>
         </header>
         <div class="slds-no-flex slds-button-group" role="group">
-            <button *ngIf="!componentconfig.disableupload" class="slds-button slds-button--neutral" (click)="selectFile()"><system-label label="LBL_UPLOAD"></system-label></button>
-            <!--button *ngIf="!componentconfig.disableupload" class="slds-button slds-button--neutral" (click)="takeFoto()"><system-label label="LBL_PHOTO"></system-label></button-->
+            <button *ngIf="!componentconfig.disableupload" class="slds-button slds-button--icon-border slds-m-vertical--xx-small" (click)="selectFile()" system-title="LBL_UPLOAD"><system-utility-icon size="x-small" icon="upload"></system-utility-icon></button>
         </div>
         <input #fileupload style="display:none" type="file" multiple (change)="uploadFile()"/>
     </div>
