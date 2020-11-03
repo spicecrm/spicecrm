@@ -26,8 +26,41 @@ declare var _;
 })
 export class SystemCheckbox implements ControlValueAccessor {
 
+    /**
+     * set to true to render the checkbox without the NGContent. This is useful if you want to display the checkbox without any text and the adjacent elements are messing up the layout
+     * ToDo: check if we can assess if ngcontent has been ppassed in ..
+     */
+    @Input() private hidelabel: boolean = false;
+
+    /**
+     * set to true if the model value should be returned as integer
+     */
+    @Input() private asinteger: boolean = false;
+
+
+    /**
+     * to disable the checkbox
+     */
+    @Input() private disabled = false;
+
+    /**
+     * an event emitter for the click
+     */
+    @Output('click') public click$ = new EventEmitter<boolean>();
+
+    /**
+     * the internal uinique id for the element
+     */
     private id = _.uniqueId();  // needed to use inside the template for html ids... without, the click events will get confused...
 
+    /**
+     * the internal held value for the model
+     */
+    private _model_value: any;
+
+    /**
+     * the value to set for the checkbox
+     */
     private _value: any = "1"; // the value used for the "value" attribute of the checkbox itself
 
     get value() {
@@ -39,43 +72,20 @@ export class SystemCheckbox implements ControlValueAccessor {
         this._value = val;
     }
 
-    private _model_value: any; // the value used for ngModel...
+
     get model_value() {
-        return this._model_value;
+        return this.asinteger ? this._model_value == 1 ? true: false : this._model_value;
     }
 
     set model_value(val) {
-        if (val != this._model_value) {
-            this.onChange(val);
+        let mval = this.asinteger ? val ? 1 : 0 : val
+        if (mval != this._model_value) {
+            this.onChange(mval);
         }
 
-        this.writeValue(val);
+        this.writeValue(mval);
     }
 
-    private _checked = false;
-    get checked(): boolean {
-        return this._checked;
-    }
-
-    /**
-     * set to true to render the checkbox without the NGContent. This is useful if you want to display the checkbox without any tzext and the adjacent elements are messing up the layout
-     * ToDo: check if we can assess if ngcontent has been ppassed in ..
-     */
-    @Input() private hidelabel: boolean = false;
-
-    @Input()
-    set checked(val: boolean) {
-        this._checked = val;
-    }
-
-    @Input() private disabled = false;
-    @Input() private label: string;
-
-    @Output('toggle')
-    @Output('click')
-    public click$ = new EventEmitter<boolean>();
-    @Output('check') private check$ = new EventEmitter();
-    @Output('uncheck') private uncheck$ = new EventEmitter();
 
     constructor(
         private language: language,
@@ -89,13 +99,7 @@ export class SystemCheckbox implements ControlValueAccessor {
 
         this.onTouched();
 
-        this.checked = !this.checked;
-        this.click$.emit(this.checked);
-        if (this.checked) {
-            this.check$.emit();
-        } else {
-            this.uncheck$.emit();
-        }
+        this.click$.emit(this.value);
     }
 
     // ControlValueAccessor implementation:
@@ -117,12 +121,7 @@ export class SystemCheckbox implements ControlValueAccessor {
 
     public writeValue(obj: any): void {
         this._model_value = obj;
-        // if checked state and model state are different, model state (model_value) overrules!
-        if (this.model_value && !this.checked) {
-            this.checked = true;
-        } else if (!this.model_value && this.checked) {
-            this.checked = false;
-        }
+
         this.cdRef.detectChanges();
     }
 }
