@@ -38,7 +38,7 @@ export class MailboxesGmailTrafficManager {
     }
 
     /**
-     * simple getter to get if the Mailbox allos Inbound and thus renders the IMAP sectio
+     * simple getter to get if the Mailbox allos Inbound and thus renders the IMAP section
      */
     get isInbound() {
         return this.model.getFieldValue('inbound_comm') ? true : false;
