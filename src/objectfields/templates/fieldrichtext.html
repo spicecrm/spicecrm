@@ -1,10 +1,9 @@
 <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
-    <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+    <div>
+        <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+    </div>
     <button *ngIf="!isEditMode() && isEditable()" class="slds-button slds-button--icon slds-m-left--xx-small spice-hover-button" (click)="setEditMode()">
- <system-button-icon [icon]="'edit'"></system-button-icon>
-    </button>
-    <button *ngIf="fieldconfig.enablePageBuilder && isEditMode() && isEditable()" class="slds-button slds-button--brand slds-m-left--xx-small slds-m-bottom--xx-small spice-hover-button" (click)="openPageBuilder()">
-        <system-label label="LBL_PAGE_BUILDER"></system-label>
+        <system-button-icon [icon]="'edit'"></system-button-icon>
     </button>
 </div>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="false" [fieldconfig]="fieldconfig">
@@ -12,9 +11,6 @@
     <iframe *ngIf="fieldconfig.asiframe" [src]="sanitizedValue" style="resize: vertical;" [ngStyle]="heightStyle" width="100%" frameborder="0" seamless="true" sandbox></iframe>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
-    <system-richtext-editor *ngIf="!model.data.body_spb else pageBuilderHtmlContainer" [(ngModel)]="value" (save$)="save($event)" [extendedmode]="!fieldconfig.simplemode"></system-richtext-editor>
-    <ng-template #pageBuilderHtmlContainer>
-        <div [innerHTML]="parsedHtml"></div>
-    </ng-template>
+    <system-richtext-editor [(ngModel)]="value" (save$)="save($event)" [extendedmode]="!fieldconfig.simplemode"></system-richtext-editor>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>
