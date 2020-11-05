@@ -74,7 +74,7 @@ import /*embed*/ {ComponentsetManagerEditDialog} from "./components/componentset
 import /*embed*/ {ValidationRulesManager, MaybeJsonPipe} from "./components/validationrulesmanager";
 import /*embed*/ {ValidationRulesConditions} from "./components/validationrulesconditions";
 import /*embed*/ {ValidationRulesActions} from "./components/validationrulesactions";
-import /*embed*/ {LanguageTranslationsManager} from "./components/languagetranslationsmanager";
+import /*embed*/ {LanguageTranslationsManager} from "./components/languagetranslationsmanager"
 import /*embed*/ {LanguageLabelManagerComponent,SortPipe} from "./components/languagelabelmanager";
 import /*embed*/ {LanguageLabelModal} from "./components/languagelabelmodal";
 import /*embed*/ {MailboxesManager} from "./components/mailboxesmanager";
