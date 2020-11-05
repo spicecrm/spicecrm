@@ -31,8 +31,8 @@ export class MailboxesGmailTrafficManager {
         let settings = this.model.getField('settings');
         if (!settings || (settings && settings.length == 0)) {
             this.model.setField('settings', {
-                gmail_user_id: '',
-                gmail_password: '',
+                gmail_user_name: '',
+                gmail_email_address: '',
             });
         }
     }
