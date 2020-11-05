@@ -445,7 +445,7 @@ export class model implements OnDestroy {
             // check required
             if (
                 field !== "id" && this.getFieldStati(field).required &&
-                (!this.data[field] || this.data[field].length === 0)
+                ((!this.data[field] && this.data[field] !== 0) || String(this.data[field]).length === 0)
             ) {
                 this.isValid = false;
                 this.addMessage("error", this.language.getLabel("MSG_INPUT_REQUIRED") + "!", field);
