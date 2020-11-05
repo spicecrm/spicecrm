@@ -29,6 +29,8 @@ import /*embed*/ {SpicePageBuilderPanel} from './components/spicepagebuilderpane
 import /*embed*/ {SpicePageBuilderEditor} from './components/spicepagebuildereditor';
 import /*embed*/ {SpicePageBuilder} from './components/spicepagebuilder';
 
+import /*embed*/ {fieldPageBuilder} from './fields/fieldpagebuilder';
+
 import {FormsModule} from "@angular/forms";
 import {DirectivesModule} from "../../directives/directives";
 import {DragDropModule} from "@angular/cdk/drag-drop";
@@ -53,6 +55,7 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
         SpicePageBuilderElementSpacer,
         SpicePageBuilderElementButton,
         SpicePageBuilderElementCode,
+        fieldPageBuilder
     ],
     exports: [
         SpicePageBuilder
