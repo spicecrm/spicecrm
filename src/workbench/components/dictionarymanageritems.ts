@@ -13,6 +13,7 @@ import {language} from '../../services/language.service';
 
 
 import {dictionarymanager} from '../services/dictionarymanager.service';
+import {DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
 
 
 @Component({
@@ -24,10 +25,15 @@ export class DictionaryManagerItems {
     /**
      * the curretn dictionaryitem
      */
-    private dictionaryitem: any;
+    private dictionaryitem: DictionaryItem;
+
 
     constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private language: language, private modal: modal, private injector: Injector, private modelutilities: modelutilities) {
 
+    }
+
+    get canShuffle() {
+        return this.dictionarymanager.canChange(this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarymanager.currentDictionaryDefinition)?.scope);
     }
 
     /**
@@ -38,7 +44,7 @@ export class DictionaryManagerItems {
         // return an empty array when no DictionaryDefinition is set
         if (!this.dictionarymanager.currentDictionaryDefinition) return [];
 
-        return this.dictionarymanager.dictionaryitems.filter(d => d.deleted == 0 && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).sort((a, b) => parseInt(a.sequence, 10) > parseInt(b.sequence, 10) ? 1 : -1);
+        return this.dictionarymanager.dictionaryitems.filter(d => d.deleted == 0 && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).sort((a, b) => a.sequence > b.sequence ? 1 : -1);
     }
 
     /**
