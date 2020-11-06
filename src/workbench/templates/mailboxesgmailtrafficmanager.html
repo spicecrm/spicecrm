@@ -3,16 +3,15 @@
         <h1><system-label label="LBL_GMAIL"></system-label></h1>
         <div class="slds-grid slds-p-vertical--xx-small">
             <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
-                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_USER_ID"></system-label></label>
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_EMAIL_ADDRESS"></system-label></label>
                 <input type="text" [(ngModel)]="model.data.settings.gmail_email_address" class="slds-input" [disabled]="!view.isEditMode()"/>
             </div>
             <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
-                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_PASSWORD"></system-label></label>
-                <system-input-password  [(ngModel)]="model.data.settings.gmail_user_name" [disabled]="!view.isEditMode()"></system-input-password>
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_USERNAME"></system-label></label>
+                <input type="text" [(ngModel)]="model.data.settings.gmail_user_name" class="slds-input" [disabled]="!view.isEditMode()"/>
             </div>
         </div>
         <div class="slds-grid slds-p-vertical--xx-small">
-            <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="displayFoldersModal()" [disabled]="!view.isEditMode()"><system-label label="LBL_GMAIL_SELECT_FOLDERS"></system-label></button>
             <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()" [disabled]="!view.isEditMode()">
                 <system-label label="LBL_TEST_CONNECTION"></system-label>
             </button>

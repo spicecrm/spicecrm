@@ -72,31 +72,9 @@ export class MailboxesGmailTrafficManager {
     }
 
     /**
-     * opens the modal for the seldection of the IMAP folders
-     */
-    private displayFoldersModal() {
-        let waitingmodal = this.modal.await('loading folders');
-        this.getMailboxes().subscribe(
-            (response) => {
-                waitingmodal.emit(true);
-                if (response !== false) {
-                    this.modal.openModal("MailboxesIMAPSMTPSelectFoldersModal", true, this.injector).subscribe(
-                        (cmp) => {
-                            cmp.instance.setMailboxes(response.mailboxes);
-                        },
-                        (error) => {
-                            this.toast.sendToast(error);
-                        }
-                    );
-                }
-            }
-        );
-    }
-
-    /**
      * test the onnection via the backend
      */
     public testConnection() {
-        this.modal.openModal("MailboxesmanagerTestIMAPModal", true, this.injector);
+        this.modal.openModal("MailboxesmanagerTestModal", true, this.injector);
     }
 }
