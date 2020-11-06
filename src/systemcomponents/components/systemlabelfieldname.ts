@@ -8,17 +8,19 @@ import {
     Component,
     Input,
     OnChanges,
-    SimpleChanges
+    SimpleChanges, HostListener, AfterViewInit
 } from '@angular/core';
 import {Subscription} from "rxjs";
 import {language} from '../../services/language.service';
+import {modal} from "../../services/modal.service";
+import {metadata} from "../../services/metadata.service";
 
 @Component({
     selector: 'system-label-fieldname',
     templateUrl: './src/systemcomponents/templates/systemlabelfieldname.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SystemLabelFieldname implements OnChanges, OnDestroy {
+export class SystemLabelFieldname implements OnChanges, AfterViewInit, OnDestroy {
 
     /**
      * the module
@@ -45,10 +47,21 @@ export class SystemLabelFieldname implements OnChanges, OnDestroy {
      */
     private subsciptions: Subscription = new Subscription();
 
-    constructor(private language: language, private cdRef: ChangeDetectorRef) {
+    constructor(private language: language,
+                private modal: modal,
+                private metadata: metadata,
+                private cdRef: ChangeDetectorRef) {
         this.subsciptions.add(
             this.language.currentlanguage$.subscribe(() => this.detectChanges())
         );
+    }
+
+
+    /**
+     * detach from changes detections to handle it manually
+     */
+    public ngAfterViewInit() {
+        this.cdRef.detach();
     }
 
     /**
@@ -74,4 +87,16 @@ export class SystemLabelFieldname implements OnChanges, OnDestroy {
         this.cdRef.detectChanges();
     }
 
+    /**
+     * handle the double click to open the editor modal
+     * @private
+     */
+    @HostListener('dblclick')
+    private onDBClick() {
+        if (!this.language.inlineEditEnabled) return;
+        this.modal.openModal('SystemLabelEditorModal', true).subscribe(modalRef => {
+            const label = this.fieldconfig.label || this.metadata.getFieldlabel(this.module, this.field);
+            modalRef.instance.labelData = {name: label, global_translations: [], custom_translations: []};
+        });
+    }
 }
