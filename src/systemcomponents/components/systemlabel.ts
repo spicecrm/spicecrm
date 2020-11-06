@@ -2,23 +2,26 @@
  * @module SystemComponents
  */
 import {
+    AfterViewInit,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
-    OnDestroy,
     Component,
+    HostListener,
     Input,
     OnChanges,
+    OnDestroy,
     SimpleChanges
 } from '@angular/core';
 import {Subscription} from "rxjs";
 import {language} from '../../services/language.service';
+import {modal} from "../../services/modal.service";
 
 @Component({
     selector: 'system-label',
     templateUrl: './src/systemcomponents/templates/systemlabel.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SystemLabel implements OnChanges, OnDestroy {
+export class SystemLabel implements OnChanges, AfterViewInit, OnDestroy {
 
     /**
      * the label to be rendered
@@ -35,16 +38,27 @@ export class SystemLabel implements OnChanges, OnDestroy {
      */
     private subsciptions: Subscription = new Subscription();
 
-    constructor(private language: language, private cdRef: ChangeDetectorRef) {
+    constructor(private language: language,
+                private modal: modal,
+                private cdRef: ChangeDetectorRef) {
         this.subsciptions.add(
             this.language.currentlanguage$.subscribe(() => this.detectChanges())
         );
     }
 
     /**
+     * detach from changes detections to handle it manually
+     */
+    public ngAfterViewInit() {
+        this.cdRef.detach();
+    }
+
+    /**
      * unsubscribe from the language service when the component is destroyed
+     * reattach the component to change detection to inform the system when the component is destroyed
      */
     public ngOnDestroy(): void {
+        this.cdRef.reattach();
         this.subsciptions.unsubscribe();
     }
 
@@ -64,4 +78,15 @@ export class SystemLabel implements OnChanges, OnDestroy {
         this.cdRef.detectChanges();
     }
 
+    /**
+     * handle the double click to open the editor modal
+     * @private
+     */
+    @HostListener('dblclick')
+    private onDBClick() {
+        if (!this.language.inlineEditEnabled) return;
+        this.modal.openModal('SystemLabelEditorModal', true).subscribe(modalRef => {
+            modalRef.instance.labelData = {name: this.label, global_translations: [], custom_translations: []};
+        });
+    }
 }

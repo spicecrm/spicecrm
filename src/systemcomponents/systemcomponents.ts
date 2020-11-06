@@ -85,6 +85,7 @@ import /*embed*/ {SystemInputCompanycodes} from "./components/systeminputcompany
 import /*embed*/ {SystemInputBackendMethod} from "./components/systeminputbackendmethod";
 import /*embed*/ {SystemInstallerComponent} from "./components/systeminstallercomponent";
 import /*embed*/ {SystemLabel} from "./components/systemlabel";
+import /*embed*/ {SystemLabelEditorModal} from "./components/systemlabeleditormodal";
 import /*embed*/ {SystemLabelFieldname} from "./components/systemlabelfieldname";
 import /*embed*/ {SystemLabelModulename} from "./components/systemlabelmodulename";
 import /*embed*/ {SystemLanguageSelector} from "./components/systemlanguageselector";
@@ -292,7 +293,8 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemImageModal,
         SystemNavigationCollector,
         SystemNavigationManager,
-        SystemNavigationManagerRouteContainer
+        SystemNavigationManagerRouteContainer,
+        SystemLabelEditorModal
     ],
     entryComponents: [
         SystemDynamicRouteContainer,
