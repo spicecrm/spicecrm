@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, Injector} from '@angular/core';
+import {ChangeDetectorRef, Component, Injector} from '@angular/core';
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
@@ -71,6 +71,7 @@ export class fieldRichText extends fieldGeneric {
                 public injector: Injector,
                 public broadcast: broadcast,
                 public modal: modal,
+                public cdRef: ChangeDetectorRef,
                 public sanitized: DomSanitizer) {
         super(model, view, language, metadata, router);
         this.modelChangesSubscriber();
@@ -113,6 +114,15 @@ export class fieldRichText extends fieldGeneric {
         this.setStylesheetField();
         this.setStylesheetsToUse();
         this.setHtmlValue();
+    }
+
+    /**
+     * sets the edit mode on the view and the model into editmode itself
+     */
+    public setEditMode() {
+        this.model.startEdit();
+        this.view.setEditMode();
+        this.cdRef.detectChanges();
     }
 
     protected encodeHtml(value) {
@@ -201,35 +211,5 @@ export class fieldRichText extends fieldGeneric {
                 },
                 error => this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message)
             );
-    }
-
-    /**
-     * open page builder modal
-     * @private
-     */
-    private openPageBuilder() {
-        this.modal.openModal('SpicePageBuilder', true, this.injector).subscribe(modalRef => {
-            if (!!this.value) {
-                modalRef.instance.spicePageBuilderService.page = JSON.parse(JSON.stringify(this.model.getField('body_spb')));
-            }
-            modalRef.instance.spicePageBuilderService.response.subscribe(res => {
-                if (!res) return;
-                this.model.setField('body_spb', res);
-                const loadingModal = this.modal.await('LBL_PARSING_HTML');
-
-                this.backend.postRequest('mjml/parseJsonToHtml', {}, {json: this.model.getField('body_spb')}).subscribe(res => {
-                    if (!res || !res.html) {
-                        this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
-                        loadingModal.emit(true);
-                        return loadingModal.complete();
-                    }
-                    this.parsedHtml = this.sanitized.bypassSecurityTrustHtml(res.html);
-                    this.value = res.html;
-                    loadingModal.emit(true);
-                    loadingModal.complete();
-                });
-                modalRef.instance.self.destroy();
-            });
-        });
     }
 }
