@@ -3,13 +3,13 @@
  */
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {FormsModule}   from '@angular/forms';
-import {ObjectFields}      from '../../objectfields/objectfields';
-import {GlobalComponents}      from '../../globalcomponents/globalcomponents';
-import {ObjectComponents}      from '../../objectcomponents/objectcomponents';
-import {SystemComponents}      from '../../systemcomponents/systemcomponents';
-import {ModuleMediaFiles}      from '../../modules/mediafiles/modulemediafiles';
-import { DirectivesModule } from '../../directives/directives';
+import {FormsModule} from '@angular/forms';
+import {ObjectFields} from '../../objectfields/objectfields';
+import {GlobalComponents} from '../../globalcomponents/globalcomponents';
+import {ObjectComponents} from '../../objectcomponents/objectcomponents';
+import {SystemComponents} from '../../systemcomponents/systemcomponents';
+import {ModuleMediaFiles} from '../../modules/mediafiles/modulemediafiles';
+import {DirectivesModule} from '../../directives/directives';
 
 import /*embed*/ {QuestionsManager} from './components/questionsmanager';
 import /*embed*/ {QuestionsManagerEditMulti} from "./components/questionsmanagereditmulti";
@@ -37,7 +37,7 @@ import /*embed*/ {QuestionsetRenderRating} from './components/questionsetrenderr
 import /*embed*/ {QuestionsetRenderNPS} from './components/questionsetrendernps';
 import /*embed*/ {QuestionsetRenderText} from './components/questionsetrendertext';
 import /*embed*/ {QuestionsetRenderIST, QuestionTypeISTTextPipe, QuestionTypeISTOptionsPipe} from './components/questionsetrenderist';
-import /*embed*/ {QuestionsetCategoryPool} from './components/questionsetcategorypool';
+import /*embed*/ {QuestionnaireCategoryPool} from './components/questionnairecategorypool';
 import /*embed*/ {QuestionsManagerEditCategories} from './components/questionsmanagereditcategories';
 import /*embed*/ {QuestionnaireEvaluation} from './components/questionnaireevaluation';
 import /*embed*/ {QuestionnaireEvaluationDefault} from './components/questionnaireevaluationdefault';
@@ -49,7 +49,7 @@ import /*embed*/ {QuestionsetRenderBinarySingleMulti} from './components/questio
 import /*embed*/ {QuestionnaireEditor} from './components/questionnaireeditor';
 import /*embed*/ {QuestionnaireEditorQuestionsetAdd} from './components/questionnaireeditorquestionsetadd';
 import /*embed*/ {QuestionsetManager} from './components/questionsetmanager';
-import /*embed*/ { QuestionnaireResults } from './components/questionnaireresults';
+import /*embed*/ {QuestionnaireResults} from './components/questionnaireresults';
 
 
 @NgModule({
@@ -93,7 +93,7 @@ import /*embed*/ { QuestionnaireResults } from './components/questionnaireresult
         QuestionnairePreviewButton,
         QuestionnairePreview,
         QuestionnaireRender,
-        QuestionsetCategoryPool,
+        QuestionnaireCategoryPool,
         QuestionsManagerEditCategories,
         QuestionnaireEditor,
         QuestionnaireEditorQuestionsetAdd,
