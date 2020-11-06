@@ -37,6 +37,10 @@ export class language {
      * an event emitter that is triggered if the language service has switched languages and teh language translations have been reloaded.
      */
     public currentlanguage$: EventEmitter<any> = new EventEmitter<any>();
+    /**
+     * if true enable inline editing for labels
+     */
+    public inlineEditEnabled: boolean = false;
 
     constructor(
         private http: HttpClient,
