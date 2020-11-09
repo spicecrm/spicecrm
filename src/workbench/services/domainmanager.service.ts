@@ -42,6 +42,8 @@ export class domainmanager {
 
     private languagelabels: any[] = [];
     private languagetranslations: any[] = [];
+    private languagecustomlabels: any[] = [];
+    private languagecustomtranslations: any[] = [];
 
     private loaded: string;
 
@@ -130,6 +132,10 @@ export class domainmanager {
             changes.languagelabels = this.languagelabels;
             changes.languagetranslations = this.languagetranslations;
         }
+        if (this.languagecustomlabels.length > 0) {
+            changes.languagecustomlabels = this.languagecustomlabels;
+            changes.languagecustomtranslations = this.languagecustomtranslations;
+        }
 
         this.backend.postRequest('system/dictionary/domains', {}, changes).subscribe(res => {
 
@@ -167,13 +173,15 @@ export class domainmanager {
             for (let dtable in this.metadata.fieldDefs) {
                 let table = this.metadata.fieldDefs[dtable];
                 for (let field in table) {
-                    if (table[field].options && table[field].type.includes('enum') && !this.domaindefinitions.find(d => d.name == dtable.toLowerCase() + '_' + field)) {
+                    if (table[field].options && (apl.en_us.global[table[field].options] || apl.en_us.custom[table[field].options]) && table[field].type.includes('enum') && !this.domaindefinitions.find(d => d.name == dtable.toLowerCase() + '_' + field)) {
+
+                        let scope = apl.en_us.global[table[field].options] ? 'g' : 'c';
 
                         let definitionId = this.modelutilities.generateGuid();
                         this.domaindefinitions.push({
                             id: definitionId,
                             name: dtable.toLowerCase() + '_' + field,
-                            scope: 'g',
+                            scope: scope,
                             fieldtype: table[field].type,
                             status: 'a',
                             deleted: 0
@@ -184,7 +192,7 @@ export class domainmanager {
                             id: validationid,
                             name: table[field].options,
                             validation_type: 'enum',
-                            scope: 'g',
+                            scope: scope,
                             status: 'a',
                             deleted: 0
                         });
@@ -196,7 +204,7 @@ export class domainmanager {
                             len: table[field].len ? table[field].len : '255',
                             sysdomaindefinition_id: definitionId,
                             sysdomainfieldvalidation_id: validationid,
-                            scope: 'g',
+                            scope: scope,
                             status: 'a',
                             deleted: 0
                         });
@@ -211,28 +219,48 @@ export class domainmanager {
                                 minvalue: option,
                                 sequence: i,
                                 comment: '',
-                                scope: 'g',
+                                scope: scope,
                                 status: 'a',
                                 deleted: 0
                             });
 
                             if (option && !this.language.languagedata.applang[('VAL_' + table[field].options + '_' + option).toUpperCase()]) {
                                 let labelid = this.modelutilities.generateGuid();
-                                this.languagelabels.push({
-                                    id: labelid,
-                                    name: ('VAL_' + table[field].options + '_' + option).toUpperCase()
-                                });
+                                if(scope == 'g') {
+                                    this.languagelabels.push({
+                                        id: labelid,
+                                        name: ('VAL_' + table[field].options + '_' + option).toUpperCase()
+                                    });
+                                } else {
+                                    this.languagecustomlabels.push({
+                                        id: labelid,
+                                        name: ('VAL_' + table[field].options + '_' + option).toUpperCase()
+                                    });
+                                }
+
                                 for (let language in apl) {
-                                    if (apl[language][table[field].options] && apl[language][table[field].options][option]) {
+                                    if (apl[language].global[table[field].options] && apl[language].global[table[field].options][option]) {
                                         this.languagetranslations.push({
                                             id: this.modelutilities.generateGuid(),
                                             syslanguagelabel_id: labelid,
                                             syslanguage: language,
-                                            translation_default: apl[language][table[field].options][option]
+                                            translation_default: apl[language].global[table[field].options][option]
                                         });
 
                                         if (language == this.language.currentlanguage) {
-                                            this.language.addLabel(('VAL_' + table[field].options + '_' + option).toUpperCase(), apl[language][table[field].options][option]);
+                                            this.language.addLabel(('VAL_' + table[field].options + '_' + option).toUpperCase(), apl[language].global[table[field].options][option]);
+                                        }
+                                    }
+                                    if (apl[language].custom[table[field].options] && apl[language].custom[table[field].options][option]) {
+                                        this.languagecustomtranslations.push({
+                                            id: this.modelutilities.generateGuid(),
+                                            syslanguagelabel_id: labelid,
+                                            syslanguage: language,
+                                            translation_default: apl[language].custom[table[field].options][option]
+                                        });
+
+                                        if (language == this.language.currentlanguage) {
+                                            this.language.addLabel(('VAL_' + table[field].options + '_' + option).toUpperCase(), apl[language].custom[table[field].options][option]);
                                         }
                                     }
                                 }
