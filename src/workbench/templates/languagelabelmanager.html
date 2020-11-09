@@ -5,6 +5,20 @@
         </div>
         <button class="slds-button slds-button--neutral" [disabled]="!search_term" (click)="search()">search</button>
     </div>
+    <div class="slds-grid slds-grid--vertical-align-center slds-m-horizontal--xx-small" style="cursor: pointer">
+        <div class="slds-truncate slds-grow slds-align-middle">
+            <system-label label="LBL_ENABLE_INLINE_EDIT"></system-label>
+        </div>
+        <div class="slds-form-element">
+            <label class="slds-checkbox_toggle slds-grid">
+                <span class="slds-form-element__label slds-m-bottom_none"></span>
+                <input type="checkbox" [(ngModel)]="language.inlineEditEnabled">
+                <span class="slds-checkbox_faux_container" aria-live="assertive">
+                    <span class="slds-checkbox_faux" style="cursor: initial"></span>
+                </span>
+            </label>
+        </div>
+    </div>
     <div *ngIf="true" class="slds-form-element slds-col--bump-left">
         <div class="slds-button-group" role="group">
             <button type="button" class="slds-button slds-button--neutral" (click)="addLabel()">

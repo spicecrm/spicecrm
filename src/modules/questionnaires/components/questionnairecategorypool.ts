@@ -40,8 +40,8 @@ export class QuestionnaireCategoryPool implements OnInit, OnDestroy {
     public ngOnInit(): void {
         this.backend.getRequest('QuestionOptionCategories/getList').subscribe(( response: any ) => {
             this.allCategories = response;
-            for ( let i = 0; i < this.allCategories.length; i++ ) {
-                this.allCategoryNamesUpper[i] = this.allCategories[i].name.toUpperCase() + ' [' + this.allCategories[i].abbreviation.toUpperCase() + ']';
+            for ( let category of this.allCategories ) {
+                this.allCategoryNamesUpper.push( category.name.toUpperCase() + ' [' + category.abbreviation.toUpperCase() + ']' );
             }
         });
     }
