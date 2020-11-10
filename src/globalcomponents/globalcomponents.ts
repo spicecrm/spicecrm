@@ -99,6 +99,8 @@ import /*embed*/ {GlobalObtainGDPRConsentContainer} from './components/globalobt
 import /*embed*/ {GlobalHeaderImage} from './components/globalheaderimage';
 import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
 
+import /*embed*/ {GlobalHeaderNotifications} from './components/globalheadernotifications';
+
 
 /**
  * GlobalComponents holds records that are rendered in the global header and footer parts of the application. This includes e.g. the header menu and other components
@@ -191,7 +193,8 @@ import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
         GlobalNavigationTabbedSubtabItem,
         GlobalNavigationTabbedSubTabMoreTab,
         GlobalHeaderImage,
-        GlobalLoginImage
+        GlobalLoginImage,
+        GlobalHeaderNotifications
     ],
     entryComponents: [
         GlobalCopyright,
