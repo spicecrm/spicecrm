@@ -370,9 +370,9 @@ field-generic-display .slds-button_icon {
 }
 
 .spice-hover-display-children:hover .spice-hover-child {
-    display: block;
+    visibility: visible !important;
 }
 
 .spice-hover-display-children .spice-hover-child {
-    display: none;
+    visibility: hidden !important;
 }
