@@ -1,11 +1,19 @@
 <system-modal size="large">
-    <system-modal-header (close)="close()"><system-label [label]="titlelabel"></system-label></system-modal-header>
+    <system-modal-header module="Emails" (close)="close()">
+        <system-label [label]="titlelabel"></system-label>
+        <system-modal-header-right>
+            <button class="slds-button slds-button_icon" (click)="dock()" [title]="language.getLabel('LBL_DOCK')">
+                <system-button-icon icon="dock_panel"></system-button-icon>
+                <span class="slds-assistive-text"><system-label label="LBL_DOCK"></system-label></span>
+            </button>
+        </system-modal-header-right>
+    </system-modal-header>
     <system-modal-content>
-        <object-record-fieldset [fieldset]="fieldset" direction="vertical"></object-record-fieldset>
-        <system-dynamic-component component="SpiceAttachmentsPanel"></system-dynamic-component>
+        <!--object-record-fieldset [fieldset]="fieldset" direction="vertical"></object-record-fieldset>
+        <system-dynamic-component component="SpiceAttachmentsPanel"></system-dynamic-component-->
+        <system-componentset [componentset]="componentconfig.componentset"></system-componentset>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
         <button [disabled]="isDisabled" class="slds-button slds-button--brand" (click)="sendEmail()"><system-label label="LBL_SEND"></system-label></button>
     </system-modal-footer>
 </system-modal>

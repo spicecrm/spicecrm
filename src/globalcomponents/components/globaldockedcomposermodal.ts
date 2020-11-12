@@ -15,6 +15,7 @@ import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {dockedComposer} from '../../services/dockedcomposer.service';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
+import {modal} from '../../services/modal.service';
 import {view} from '../../services/view.service';
 import {metadata} from '../../services/metadata.service';
 
@@ -24,19 +25,31 @@ import {metadata} from '../../services/metadata.service';
 })
 export class GlobalDockedComposerModal implements OnInit {
 
-    @ViewChild('containercontent', {read: ViewContainerRef, static: true}) private containercontent: ViewContainerRef;
-
+    /**
+     * reference to the modal itself to close it
+     *
+     * @private
+     */
     private self: any = {};
 
-    constructor(private metadata: metadata, private dockedComposer: dockedComposer, private language: language, public model: model, private view: view) {
+
+    /**
+     * the componentconfig
+     *
+     * @private
+     */
+    private componentconfig: any;
+
+    constructor(private metadata: metadata, private dockedComposer: dockedComposer, private language: language, public modal: modal, public model: model, private view: view) {
         this.view.isEditable = true;
         this.view.setEditMode();
     }
 
     public ngOnInit() {
         // get the config
-        let componentconfig = this.metadata.getComponentConfig('GlobalDockedComposerModal', this.model.module);
+        this.componentconfig = this.metadata.getComponentConfig('GlobalDockedComposerModal', this.model.module);
 
+        /*
         if (!componentconfig.fieldset && !componentconfig.componentset) {
             componentconfig = this.metadata.getComponentConfig('GlobalDockedComposer', this.model.module);
         }
@@ -54,16 +67,39 @@ export class GlobalDockedComposerModal implements OnInit {
                 componentRef.instance.fieldset = componentconfig.fieldset;
             });
         }
+        */
     }
 
     get displayLabel() {
         return this.model.data.name ? this.model.data.name : this.language.getModuleName(this.model.module, true);
     }
 
+    /**
+     * closes the modal and resturns back to the composer view
+     *
+     * @private
+     */
     private minimize() {
         this.self.destroy();
     }
 
+    /**
+     * closes the composer and the modal
+     *
+     * @private
+     */
+    private promptClose() {
+        this.modal.prompt('confirm', this.language.getLabel('MSG_CANCEL', '', 'long'), this.language.getLabel('MSG_CANCEL')).subscribe(answer => {
+            if (answer) {
+                this.closeComposer();
+            }
+        });
+    }
+
+    /**
+     * closes the composer and the modal window
+     * @private
+     */
     private closeComposer() {
         for (let i: number = 0; i < this.dockedComposer.composers.length; i++) {
             if (this.dockedComposer.composers[i].id === this.model.id) {
@@ -71,6 +107,23 @@ export class GlobalDockedComposerModal implements OnInit {
             }
         }
         this.self.destroy();
+    }
+
+    /**
+     * handle the action from the actionset that is returned
+     *
+     * @param action
+     * @private
+     */
+    private handleaction(action) {
+        switch (action) {
+            case 'savegodetail':
+                this.model.goDetail();
+                this.closeComposer();
+                break;
+            default:
+                this.closeComposer();
+        }
     }
 
     private saveComposer(goto = false) {

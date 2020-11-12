@@ -22,6 +22,8 @@ import /*embed*/ {EmailsPopoverBody} from "./components/emailspopoverbody";
 import /*embed*/ {fieldEmailStatus} from "./components/fieldemailstatus";
 import /*embed*/ {EmailReplyButton} from "./components/emailreplybutton";
 import /*embed*/ {EmailReplyModal} from "./components/emailreplymodal";
+import /*embed*/ {EmailForwardButton} from "./components/emailforwardbutton";
+import /*embed*/ {EmailForwardModal} from "./components/emailforwardmodal";
 import /*embed*/ {EmailSchedulesButton} from "./components/emailschedulesbutton";
 import /*embed*/ {EmailSchedulesModal} from "./components/emailschedulesmodal";
 import /*embed*/ {EmailSchedulesRelatedButton} from "./components/emailschedulesrelatedbutton";
@@ -51,6 +53,8 @@ import /*embed*/ {EmailTemplatesPreview} from "./components/emailtemplatesprevie
         fieldEmailStatus,
         EmailReplyButton,
         EmailReplyModal,
+        EmailForwardButton,
+        EmailForwardModal,
         EmailSchedulesButton,
         EmailSchedulesModal,
         EmailSchedulesRelatedButton,
