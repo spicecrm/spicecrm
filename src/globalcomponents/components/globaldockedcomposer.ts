@@ -89,6 +89,12 @@ export class GlobalDockedComposer implements OnInit {
 
         // set the actionset
         this.actionset = componentconfig.actionset;
+
+        // check if the composer should be auto expanded on init
+        if (this.composerdata.loadexpanded && this.canExpand) {
+            this.expand();
+            this.composerdata.loadexpanded = false;
+        }
     }
 
     /**
@@ -115,6 +121,9 @@ export class GlobalDockedComposer implements OnInit {
         return this.isClosed ? 'erect_window' : 'minimize_window';
     }
 
+    /**
+     * checks if a GlobalDockedComposermodal is availabe for the module and thus the modal can be opened.
+     */
     get canExpand() {
         return !_.isEmpty(this.metadata.getComponentConfig('GlobalDockedComposerModal', this.model.module));
     }
@@ -126,7 +135,6 @@ export class GlobalDockedComposer implements OnInit {
      */
     private expand() {
         this.modal.openModal('GlobalDockedComposerModal', true, this.ViewContainerRef.injector);
-
     }
 
     /**

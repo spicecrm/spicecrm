@@ -14,6 +14,8 @@
         <system-componentset [componentset]="componentconfig.componentset"></system-componentset>
     </system-modal-content>
     <system-modal-footer>
-        <button [disabled]="isDisabled" class="slds-button slds-button--brand" (click)="sendEmail()"><system-label label="LBL_SEND"></system-label></button>
+        <div class="slds-text-align_right">
+            <object-action-container containerclass="" [actionset]="componentconfig.actionset" (actionemitter)="handleaction($event)" ></object-action-container>
+        </div>
     </system-modal-footer>
 </system-modal>

@@ -47,39 +47,38 @@ export class GlobalDockedComposerModal implements OnInit {
 
     public ngOnInit() {
         // get the config
-        this.componentconfig = this.metadata.getComponentConfig('GlobalDockedComposerModal', this.model.module);
-
-        /*
-        if (!componentconfig.fieldset && !componentconfig.componentset) {
-            componentconfig = this.metadata.getComponentConfig('GlobalDockedComposer', this.model.module);
-        }
-
-        if (componentconfig.componentset) {
-            let components = this.metadata.getComponentSetObjects(componentconfig.componentset);
-            for (let component of components) {
-                this.metadata.addComponent(component.component, this.containercontent).subscribe(componentRef => {
-                    componentRef.instance.componentconfig = component.componentconfig;
-                });
-            }
-        } else if (componentconfig.fieldset) {
-            this.metadata.addComponent('ObjectRecordFieldset', this.containercontent).subscribe(componentRef => {
-                componentRef.instance.direction = 'vertical';
-                componentRef.instance.fieldset = componentconfig.fieldset;
-            });
-        }
-        */
+        this.loadConfig();
     }
 
+    /**
+     * loads the config
+     *
+     * @private
+     */
+    private loadConfig(){
+        this.componentconfig = this.metadata.getComponentConfig('GlobalDockedComposerModal', this.model.module);
+    }
+
+    /**
+     * returns the display label
+     */
     get displayLabel() {
         return this.model.data.name ? this.model.data.name : this.language.getModuleName(this.model.module, true);
     }
 
     /**
      * closes the modal and resturns back to the composer view
+     * if the composer is not yet created .. create one in the process of minimizing
+     * this happens when the composer window is created from another source and needs to be considered
      *
      * @private
      */
     private minimize() {
+        // if we do not yet have a composer .. create one
+        if(!this.dockedComposer.composers.find(c => c.id == this.model.id)){
+            this.dockedComposer.addComposer(this.model.module, this.model);
+        }
+        // destroy the modal
         this.self.destroy();
     }
 
@@ -123,25 +122,6 @@ export class GlobalDockedComposerModal implements OnInit {
                 break;
             default:
                 this.closeComposer();
-        }
-    }
-
-    private saveComposer(goto = false) {
-        if (this.model.validate()) {
-            this.model.save().subscribe(result => {
-                // navigate to the record
-                if (goto) this.model.goDetail();
-
-                // remove the docked composer
-                for (let i: number = 0; i < this.dockedComposer.composers.length; i++) {
-                    if (this.dockedComposer.composers[i].id === this.model.id) {
-                        this.dockedComposer.composers.splice(i, 1);
-                    }
-                }
-
-                // destroy the modal
-                this.self.destroy();
-            });
         }
     }
 }
