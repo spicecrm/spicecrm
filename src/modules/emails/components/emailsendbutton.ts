@@ -1,0 +1,77 @@
+/**
+ * @module ModuleEmails
+ */
+
+import {Component, EventEmitter, Output } from "@angular/core";
+import {model} from "../../../services/model.service";
+import {modal} from "../../../services/modal.service";
+import {metadata} from "../../../services/metadata.service";
+
+/**
+ * this renders a button as part of an actionset to send an email
+ *
+ */
+@Component({
+    selector: "email-send-button",
+    templateUrl: "./src/modules/emails/templates/emailsendbutton.html"
+})
+export class EmailSendButton {
+    // private object_module_name: string;
+    private actionconfig; // can be set inside actionsets...
+    @Output() public actionemitter = new EventEmitter();
+
+    /**
+     * inidcates that we are sending
+     */
+    private sending: boolean = false;
+
+    constructor(
+        private model: model,
+        private metadata: metadata,
+        private modal: modal,
+    ) {
+
+    }
+
+    /**
+     * a getter that returns the disabled status. This getter checks if all data are available
+     */
+    get disabled() {
+        let recipientAddresses = this.model.getFieldValue('recipient_addresses');
+        let mailbox = this.model.getFieldValue('mailbox_id');
+        let name = this.model.getFieldValue('name');
+        let body = this.model.getFieldValue('body');
+        let recipientTo = recipientAddresses ? recipientAddresses.find(re => re.address_type == 'to') : undefined;
+
+        return (!name || !body || !mailbox || !recipientAddresses || !recipientTo) ? true : this.sending;
+    }
+
+
+    /**
+     * the method invoed when selecting the action. It sends the email
+     */
+    public execute() {
+        this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {
+            modalRef.instance.messagelabel = 'LBL_SENDING';
+
+            this.sending = true;
+            this.model.setField('type', 'outbound');
+            this.model.setField('to_be_sent', '1');
+            this.model.setField('from_addr', this.model.data.from_addr_name);
+            this.model.setField('to_addrs', this.model.data.to_addrs_names);
+            this.model.setField('cc_addrs', this.model.data.cc_addrs_names);
+
+            this.model.save().subscribe(
+                success => {
+                    modalRef.instance.self.destroy();
+                    // emit that the email has been sent
+                    this.actionemitter.emit('emailsent');
+                },
+                error => {
+                    modalRef.instance.self.destroy();
+                    this.sending = false;
+                }
+            );
+        });
+    }
+}
