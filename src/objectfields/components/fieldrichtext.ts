@@ -30,7 +30,7 @@ export class fieldRichText extends fieldGeneric {
      * holds the sanitized value for the iframe
      * @private
      */
-    private sanitizedValue: SafeHtml = '';
+    private sanitizedValue: SafeHtml;
     /**
      * the cached full html code to prevent "flickering" of the iframe (change detection)
      */
@@ -190,7 +190,6 @@ export class fieldRichText extends fieldGeneric {
                 .replace('&lt;/code&gt;', '</code>');
             match = regexp.exec(this.value);
         }
-        if (!this.model.getField('body_spb')) return;
         this.parsedHtml = this.sanitized.bypassSecurityTrustHtml(this.value);
         this.setSanitizedValue();
     }
