@@ -33,7 +33,7 @@
                                 <input type="text" class="slds-input slds-combobox__input" autoComplete="off" role="textbox" [(ngModel)]="repositoryname" [disabled]="repositories.length <= 1"/>
                                 <system-icon icon="down" sprite="utility" size="x-small" addclasses="slds-icon_container slds-icon-utility-down slds-input__icon slds-input__icon_right"></system-icon>
                             </div>
-                            <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid" role="listbox">
+                            <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown--x-small" role="listbox">
                                 <ul class="slds-listbox slds-listbox_vertical" role="presentation">
                                     <li *ngFor="let listrepostiory of repositories" (click)="selectRepository(listrepostiory)" role="presentation" class="slds-listbox__item">
                                         <div class="slds-listbox__option slds-listbox__option_plain" role="option">
