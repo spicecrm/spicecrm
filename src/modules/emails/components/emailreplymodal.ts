@@ -187,4 +187,17 @@ export class EmailReplyModal implements OnInit {
             );
         });
     }
+
+    /**
+     * handles the action from the actionset
+     *
+     * @param action
+     * @private
+     */
+    private handleaction(action) {
+        switch (action) {
+            default:
+                this.close();
+        }
+    }
 }
