@@ -9,7 +9,7 @@
                     <system-label label="LBL_TRANSLATIONS"></system-label>:
                 </h2>
                 <div *ngIf="!isLoading" class="slds-grid slds-col--bump-left">
-                    <system-input-radio *ngFor="let scope of scopes" [(ngModel)]="currentScope" [value]="scope" [disabled]="scope == 'global' && labelData.scope == 'custom'" name="label-editor-modal-translation-scope">
+                    <system-input-radio *ngFor="let scope of scopes" [(ngModel)]="currentScope" (ngModelChange)="setUntranslatedLanguages()" [value]="scope" [disabled]="scope == 'global' && labelData.scope == 'custom'" name="label-editor-modal-translation-scope">
                         {{scope}}
                     </system-input-radio>
                 </div>
