@@ -45,14 +45,34 @@
     <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
         <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_SEARCH_PARAMETERS"></system-label></legend>
         <div class="slds-form-element__control">
-            <div class="slds-form-element">
-                <label class="slds-form-element__label"><system-label label="LBL_OPERATOR"></system-label></label>
-                <div class="slds-form-element__control">
-                    <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="ftsconfiguration.moduleFtsSettings.operator">
-                            <option value='and'><system-label label="LBL_AND"></system-label></option>
-                            <option value='or'><system-label label="LBL_OR"></system-label></option>
-                        </select>
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label"><system-label label="LBL_OPERATOR"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="ftsconfiguration.moduleFtsSettings.operator">
+                                <option value='and'><system-label label="LBL_AND"></system-label></option>
+                                <option value='or'><system-label label="LBL_OR"></system-label></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label"><system-label label="LBL_SEARCH_ANALYZER"></system-label></label>
+                    <system-icon-help-text [helpText]="language.getLabel('HLP_FTS_SEARCHANALYZER') +
+                            '\n' + language.getLabel('HLP_FTS_ANALYZER_STANDARD') +
+                            '\n' + language.getLabel('HLP_FTS_ANALYZER_NGRAM') +
+                            '\n' + language.getLabel('HLP_FTS_ANALYZER_HTML') +
+                            '\n' + language.getLabel('HLP_FTS_ANALYZER_EDGENGRAM') +
+                            '\n' + language.getLabel('HLP_FTS_ANALYZER_EMAIL') ">
+                    </system-icon-help-text>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="ftsconfiguration.moduleFtsSettings.search_analyzer">
+                                <option value=''>standard</option>
+                                <option *ngFor="let analyzer of ftsconfiguration.analyzers" [value]="analyzer.value">{{analyzer.text}}</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
