@@ -4,7 +4,7 @@
             <system-button-icon icon="close" size="medium"></system-button-icon>
             <span class="slds-assistive-text"><system-label label="LBL_CANCEL"></system-label></span>
         </button>
-        <button class="slds-button slds-button_icon" (click)="expand()" [title]="language.getLabel('LBL_EXPAND')">
+        <button class="slds-button slds-button_icon" *ngIf="canExpand" (click)="expand()" [title]="language.getLabel('LBL_EXPAND')">
             <system-button-icon icon="expand"></system-button-icon>
             <span class="slds-assistive-text"><system-label label="LBL_EXPAND"></system-label></span>
         </button>
