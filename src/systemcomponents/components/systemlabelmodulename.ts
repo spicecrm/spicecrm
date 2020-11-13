@@ -8,10 +8,13 @@ import {
     Component,
     Input,
     OnChanges,
-    SimpleChanges
+    SimpleChanges, HostListener, Renderer2
 } from '@angular/core';
 import {Subscription} from "rxjs";
 import {language} from '../../services/language.service';
+import {modal} from "../../services/modal.service";
+import {footer} from "../../services/footer.service";
+import {metadata} from "../../services/metadata.service";
 
 @Component({
     selector: 'system-label-modulename',
@@ -40,7 +43,12 @@ export class SystemLabelModulename implements OnChanges, OnDestroy {
      */
     private subsciptions: Subscription = new Subscription();
 
-    constructor(private language: language, private cdRef: ChangeDetectorRef) {
+    constructor(private language: language,
+                private modal: modal,
+                private footer: footer,
+                private metadata: metadata,
+                private renderer: Renderer2,
+                private cdRef: ChangeDetectorRef) {
         this.subsciptions.add(
             this.language.currentlanguage$.subscribe(() => this.detectChanges())
         );
@@ -69,4 +77,81 @@ export class SystemLabelModulename implements OnChanges, OnDestroy {
         this.cdRef.detectChanges();
     }
 
+    /**
+     * handle the double click to open the editor modal
+     * @private
+     */
+    @HostListener('dblclick')
+    private onDBClick() {
+        let moduleDefs = this.metadata.getModuleDefs(this.module);
+        const label = !this.singular ? moduleDefs.module_label : moduleDefs.singular_label;
+        if (!this.language.inlineEditEnabled) return;
+        this.modal.openModal('SystemLabelEditorModal', true).subscribe(modalRef => {
+            modalRef.instance.labelData = {name: label, global_translations: [], custom_translations: []};
+        });
+    }
+
+    /**
+     * open label editor modal
+     * @private
+     */
+    public openModal() {
+        let moduleDefs = this.metadata.getModuleDefs(this.module);
+        const label = !this.singular ? moduleDefs.module_label : moduleDefs.singular_label;
+        this.modal.openModal('SystemLabelEditorModal', true).subscribe(modalRef => {
+            modalRef.instance.labelData = {name: label, global_translations: [], custom_translations: []};
+        });
+    }
+
+    /**
+     * handle right click to edit translations
+     * @private
+     */
+    @HostListener('contextmenu', ['$event'])
+    private onRightClick(event) {
+        if (!this.language.inlineEditEnabled) return;
+        event.preventDefault();
+        const dropdown = this.createDropdown(event);
+        this.renderer.appendChild(this.footer.footercontainer.element.nativeElement, dropdown);
+        const docClickListener = this.renderer.listen('document', 'click', event => {
+            this.closeDropdown(event, dropdown);
+            docClickListener();
+        });
+    }
+
+    /**
+     * remove the dropdown from the footer
+     * @param event
+     * @param dropdown
+     * @private
+     */
+    private closeDropdown(event: MouseEvent, dropdown: HTMLElement) {
+        if (this.footer.footercontainer.element.nativeElement.contains(dropdown)) {
+            this.renderer.removeChild(this.footer.footercontainer.element.nativeElement, dropdown);
+        }
+    }
+
+    /**
+     * create dropdown
+     * @param event
+     * @private
+     */
+    private createDropdown(event: MouseEvent): HTMLElement {
+        const dropdown = this.renderer.createElement('div');
+        const addClasses = (item, classes) => classes.forEach(itemClass => this.renderer.addClass(item, itemClass));
+        this.renderer.setStyle(dropdown, 'top', event.pageY + 'px');
+        this.renderer.setStyle(dropdown, 'left', event.pageX + 'px');
+        addClasses(dropdown, ['slds-dropdown--inverse', 'slds-dropdown', 'slds-theme--inverse']);
+        const ul = this.renderer.createElement('ul');
+        this.renderer.addClass(ul,'slds-dropdown__list');
+        const li = this.renderer.createElement('li');
+        addClasses(li, ['slds-slds-dropdown__item', 'slds-p-around--xx-small']);
+
+        this.renderer.setProperty(li, 'onclick', () => this.openModal());
+        this.renderer.setProperty(li, 'innerHTML', `<a>${this.language.getLabel('LBL_EDIT_LABEL')}</a>`);
+
+        this.renderer.appendChild(ul, li);
+        this.renderer.appendChild(dropdown, ul);
+        return dropdown;
+    }
 }
