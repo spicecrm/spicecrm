@@ -2,6 +2,7 @@
     <label class="slds-truncate slds-float_left" [ngClass]="addclasses">
         <abbr *ngIf="stati.editable && stati.required" class="slds-required">*</abbr>
         <system-label-fieldname *ngIf="!fieldconfig.label" [field]="fieldname" [fieldconfig]="fieldconfig" [module]="model.module" [length]="view.labels"></system-label-fieldname>
+        <system-label *ngIf="fieldconfig.label" [label]="fieldconfig.label" [length]="view.labels"></system-label>
     </label>
     <system-icon-help-text *ngIf="helpText" [helpText]="helpText"></system-icon-help-text>
 </div >

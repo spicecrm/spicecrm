@@ -9,13 +9,13 @@
     </button>
     <div class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center">
         <div class="slds-media__figure slds-m-right_x-small">
-            <span *ngIf="module" class="slds-icon_container">
+            <div *ngIf="module" class="slds-icon_container">
                 <system-icon [module]="module" size="small"></system-icon>
-            </span>
+            </div>
         </div>
-        <h2 class="slds-text-heading_medium slds-hyphenate">
+        <span class="slds-text-heading_medium slds-hyphenate">
             <ng-content></ng-content>
-        </h2>
+        </span>
         <div>
             <ng-content select="system-modal-header-right"></ng-content>
         </div>
