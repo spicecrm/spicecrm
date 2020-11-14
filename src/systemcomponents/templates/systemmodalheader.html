@@ -1,5 +1,5 @@
 <header class="slds-modal__header slds-theme--shade" [ngStyle]="headerStyle">
-    <button *ngIf="!hiddenCloseButton && !isSmall" class="slds-button slds-button_icon slds-modal__close slds-button--icon-inverse" (click)="close.emit(true)">
+    <button *ngIf="!hiddenCloseButton && !isSmall" class="slds-button slds-button_icon slds-modal__close slds-button--icon-inverse" style="color:white;" (click)="close.emit(true)">
         <system-button-icon icon="close" size="large"></system-button-icon>
         <span class="slds-assistive-text"><system-label label="LBL_CLOSE"></system-label></span>
     </button>
