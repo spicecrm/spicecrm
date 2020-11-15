@@ -4,11 +4,11 @@
             <system-button-icon icon="close" size="medium"></system-button-icon>
             <span class="slds-assistive-text"><system-label label="LBL_CANCEL"></system-label></span>
         </button>
-        <button class="slds-button slds-button_icon" *ngIf="canExpand" (click)="expand()" [title]="language.getLabel('LBL_EXPAND')">
+        <button class="slds-button slds-button_icon" [disabled]="!canExpand" (click)="expand()" [title]="language.getLabel('LBL_EXPAND')">
             <system-button-icon icon="expand"></system-button-icon>
             <span class="slds-assistive-text"><system-label label="LBL_EXPAND"></system-label></span>
         </button>
-        <button class="slds-button slds-button_icon" (click)="dock()" [title]="language.getLabel('LBL_DOCK')">
+        <button class="slds-button slds-button_icon" [disabled]="!canDock" (click)="dock()" [title]="language.getLabel('LBL_DOCK')">
             <system-button-icon icon="dock_panel"></system-button-icon>
             <span class="slds-assistive-text"><system-label label="LBL_DOCK"></system-label></span>
         </button>
@@ -25,11 +25,11 @@
                     <system-button-icon icon="close"></system-button-icon>
                     <span class="slds-assistive-text"><system-label label="LBL_CANCEL"></system-label></span>
                 </button>
-                <button class="slds-button slds-button--neutral" (click)="expand()" [title]="language.getLabel('LBL_EXPAND')">
+                <button class="slds-button slds-button--neutral" [disabled]="!canExpand" (click)="expand()" [title]="language.getLabel('LBL_EXPAND')">
                     <system-button-icon icon="expand"></system-button-icon>
                     <span class="slds-assistive-text"><system-label label="LBL_EXPAND"></system-label></span>
                 </button>
-                <button class="slds-button slds-button--neutral" (click)="dock()" [title]="language.getLabel('LBL_DOCK')">
+                <button class="slds-button slds-button--neutral" [disabled]="!canDock" (click)="dock()" [title]="language.getLabel('LBL_DOCK')">
                     <system-button-icon icon="dock_panel"></system-button-icon>
                     <span class="slds-assistive-text"><system-label label="LBL_DOCK"></system-label></span>
                 </button>

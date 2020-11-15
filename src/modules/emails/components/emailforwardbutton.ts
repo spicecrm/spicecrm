@@ -45,8 +45,7 @@ export class EmailForwardButton {
      * the method invoed when selecting the action. This triggers opening a modal window for the email composition
      */
     public execute() {
-        this.modal.openModal('EmailForwardModal', true, this.injector)
-            .subscribe(ref => ref.instance.parent = this.model);
+        this.modal.openModal('EmailForwardModal', true, this.injector);
     }
 
 

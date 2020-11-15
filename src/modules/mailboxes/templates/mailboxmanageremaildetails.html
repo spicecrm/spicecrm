@@ -23,6 +23,12 @@
                 </div>
                 <object-action-container [actionset]="actionSet" (actionemitter)="handleAction($event)"></object-action-container>
                 <div class="slds-p-left--small slds-button-group">
+                    <button class="slds-button slds-button--icon slds-button_icon-border-filled" (click)="reply()" [title]="language.getLabel('LBL_REPLY')">
+                        <system-button-icon icon="reply"></system-button-icon>
+                    </button>
+                    <button class="slds-button slds-button--icon slds-button_icon-border-filled" (click)="forward()" [title]="language.getLabel('LBL_FORWARD')">
+                        <system-button-icon icon="forward"></system-button-icon>
+                    </button>
                     <button class="slds-button slds-button--icon slds-button_icon-border-filled" *ngIf="isRead" (click)="markUnread()" [title]="language.getLabel('LBL_MARK_UNREAD')">
                         <system-button-icon icon="email"></system-button-icon>
                     </button>
