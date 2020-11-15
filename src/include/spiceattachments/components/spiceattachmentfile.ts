@@ -40,7 +40,13 @@ export class SpiceAttachmentFile {
      */
     @Input() private editmode: boolean = true;
 
-    constructor(private modelattachments: modelattachments, private userpreferences: userpreferences, private modal: modal, private toast: toast, private helper: helper, private injector: Injector) {
+    /**
+     * the modalatatchments service
+     * passed in as input since the container knows if self or parent element
+     */
+    @Input() private modelattachments: modelattachments;
+
+    constructor(private userpreferences: userpreferences, private modal: modal, private toast: toast, private helper: helper, private injector: Injector) {
 
     }
 
