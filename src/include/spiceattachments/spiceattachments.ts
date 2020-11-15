@@ -20,6 +20,7 @@ import /*embed*/ {SpiceAttachmentAddImageModal} from "./components/spiceattachme
 import /*embed*/ {SpiceAttachmentsCount} from "./components/spiceattachmentscount";
 import /*embed*/ {fieldSpiceAttachmentsCount} from "./fields/fieldspiceattachmentscount";
 import /*embed*/ {SpiceAttachmentsEditModal} from "./components/spiceattachmentseditmodal";
+import /*embed*/ {SpiceAttachmentStats} from "./components/spiceattachmentstats";
 
 @NgModule({
     imports: [
@@ -40,7 +41,8 @@ import /*embed*/ {SpiceAttachmentsEditModal} from "./components/spiceattachments
         SpiceAttachmentsPopupList,
         SpiceAttachmentsCount,
         fieldSpiceAttachmentsCount,
-        SpiceAttachmentsEditModal
+        SpiceAttachmentsEditModal,
+        SpiceAttachmentStats
     ]
 })
 export class ModuleSpiceAttachments {
