@@ -11,6 +11,8 @@ import {userpreferences} from '../../../services/userpreferences.service';
 import {session} from "../../../services/session.service";
 import {dockedComposer} from "../../../services/dockedcomposer.service";
 import {EmailReplyModal} from "./emailreplymodal";
+import {modelattachments} from "../../../services/modelattachments.service";
+import {backend} from "../../../services/backend.service";
 
 declare var moment: any;
 
@@ -19,7 +21,7 @@ declare var moment: any;
  */
 @Component({
     templateUrl: './src/modules/emails/templates/emailreplymodal.html',
-    providers: [view, model]
+    providers: [view, model, modelattachments]
 })
 export class EmailForwardModal extends EmailReplyModal {
 
@@ -38,6 +40,8 @@ export class EmailForwardModal extends EmailReplyModal {
                 public session: session,
                 public userpreferences: userpreferences,
                 public dockedcomposer: dockedComposer,
+                private modelattachments: modelattachments,
+                private backend: backend
     ) {
         super(language, metadata, model, parent, view, prefs, modal, session, userpreferences, dockedcomposer);
     }
@@ -56,6 +60,14 @@ export class EmailForwardModal extends EmailReplyModal {
             name: this.language.getLabel('LBL_FW') + this.parent.getField('name'),
             body: '<br><br><br>' + this.buildHistoryText()
         });
+
+        this.loadParentAttachments();
+    }
+
+    private loadParentAttachments() {
+        this.modelattachments.module = 'Emails';
+        this.modelattachments.id = this.model.id;
+        this.modelattachments.cloneAttachments(this.parent);
     }
 
 }
