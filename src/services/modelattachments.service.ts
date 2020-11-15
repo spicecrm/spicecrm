@@ -449,17 +449,12 @@ export class modelattachments {
     public deleteAttachment(id) {
         this.backend.deleteRequest(`spiceAttachments/module/${this.module}/${this.id}/${id}`)
             .subscribe(res => {
-                this.files.some((item, index) => {
-                    if (item.id == id) {
-                        this.files.splice(index, 1);
+                let index = this.files.findIndex(f => f.id == id);
+                this.files.splice(index, 1);
 
-                        // broadcast the count
-                        this.count--;
-                        this.broadcastAttachmentCount();
-
-                        return true;
-                    }
-                });
+                // broadcast the count
+                this.count--;
+                this.broadcastAttachmentCount();
             });
     }
 
