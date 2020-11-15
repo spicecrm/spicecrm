@@ -25,8 +25,20 @@ declare var moment: any;
 export class SpiceAttachmentFile {
 
 
+    /**
+     * the file
+     *
+     * @private
+     */
     @Input() private file: any = {};
 
+
+    /**
+     * if we are editing and thus can unlink files
+     *
+     * @private
+     */
+    @Input() private editmode: boolean = true;
 
     constructor(private modelattachments: modelattachments, private userpreferences: userpreferences, private modal: modal, private toast: toast, private helper: helper, private injector: Injector) {
 
@@ -134,6 +146,8 @@ export class SpiceAttachmentFile {
      * action to delete the file
      */
     private deleteFile() {
-        this.modelattachments.deleteAttachment(this.file.id);
+        if(this.editmode) {
+            this.modelattachments.deleteAttachment(this.file.id);
+        }
     }
 }
