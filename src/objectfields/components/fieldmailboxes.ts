@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -17,10 +17,11 @@ declare var _: any;
     selector: 'field-mailboxes',
     templateUrl: './src/objectfields/templates/fieldmailboxes.html'
 })
-export class fieldMailboxes extends fieldGeneric {
+export class fieldMailboxes extends fieldGeneric implements OnInit {
+    /**
+     * teh available mailboxes
+     */
     public options: any[] = [];
-    public loadingOptions: boolean = false;
-    public loaded: boolean = false;
 
     constructor(
         public model: model,
@@ -42,50 +43,36 @@ export class fieldMailboxes extends fieldGeneric {
         return this.options.length == 0;
     }
 
-    public getValue() {
-        let optionsArray = this.getOptions();
+    public ngOnInit() {
+        super.ngOnInit();
 
-        for (let i = 0; i < this.options.length; i++) {
-            if (this.options[i].value == this.model.data[this.fieldname]) {
-                return this.options[i].display;
-            }
+        // get the mailboxes  / Options
+        this.getOptions();
+    }
+
+    get displayValue() {
+        return this.options.find(m => m.id == this.value);
+    }
+
+    public getOptions() {
+        let options = this.configuration.getData(`mailboxes${this.scope}`);
+        if (_.isEmpty(options)) {
+            this.backend.getRequest("mailboxes/getmailboxes", {scope: this.scope}).subscribe(
+                (results: any) => {
+                    this.options = results;
+
+                    if (this.options.length > 0 && !this.value) {
+                        this.model.setField(this.fieldname, this.options[0].value);
+                    }
+
+                    // set to config
+                    this.configuration.setData(`mailboxes${this.scope}`, this.options);
+
+                });
+        } else {
+            this.options = options;
         }
     }
 
-    public getOptions(): any[] {
-        if (!this.loadingOptions) {
-            if (this.loaded) {
-                return this.options;
-            } else {
-                let options = this.configuration.getData(`mailboxes${this.scope}`);
-                if(_.isEmpty(options)) {
-                    this.loadingOptions = true;
-                    this.backend.getRequest("mailboxes/getmailboxes", {scope: this.scope}).subscribe(
-                        (results: any) => {
-                            this.options = results;
-                            this.loadingOptions = false;
-
-                            if (this.options.length > 0 && !this.value) {
-                                this.model.setField(this.fieldname, this.options[0].value);
-                            }
-                            this.loaded = true;
-
-                            // set to config
-                            this.configuration.setData(`mailboxes${this.scope}`, this.options);
-
-                            // return the options
-                            return this.options;
-                        });
-                } else {
-                    this.options = options;
-                    return this.options;
-                }
-            }
-        }
-    }
-
-    get value() {
-        return this.getValue();
-    }
 
 }
