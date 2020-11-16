@@ -94,7 +94,7 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
         this.model.module = this.activity.module;
 
         // initiate the model attachment
-        if(this.displayattachments) {
+        if (this.displayattachments) {
             this.modelattachments.module = this.model.module;
             this.modelattachments.id = this.model.id;
         }
@@ -232,5 +232,10 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
      */
     private toggleexpand() {
         this.isopen = !this.isopen;
+
+        // if expanded and not laoded yet load the atachments
+        if (this.isopen && !this.modelattachments.loaded) {
+            this.modelattachments.getAttachments();
+        }
     }
 }
