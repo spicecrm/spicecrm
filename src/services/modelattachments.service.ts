@@ -2,7 +2,7 @@
  * @module services
  */
 import {EventEmitter, Injectable} from "@angular/core";
-import {Subject, Observable} from "rxjs";
+import {Subject, Observable, BehaviorSubject} from "rxjs";
 
 import {configurationService} from "./configuration.service";
 import {session} from "./session.service";
@@ -50,7 +50,12 @@ export class modelattachments {
     /**
      * an emitter that emits when the atatchments are loaded
      */
-    public loaded$: EventEmitter<boolean> = new EventEmitter<boolean>();
+    public loaded: boolean = false;
+
+    /**
+     * an emitter that emits when the atatchments are loaded
+     */
+    public loaded$: BehaviorSubject<boolean>;
 
     constructor(
         private backend: backend,
@@ -60,6 +65,7 @@ export class modelattachments {
         private broadcast: broadcast,
         private language: language
     ) {
+        this.loaded$ = new BehaviorSubject<boolean>(false);
     }
 
     /**
@@ -122,8 +128,10 @@ export class modelattachments {
                 retSubject.next(this.files);
                 retSubject.complete();
 
+                this.loaded = true;
+
                 // emit on the service
-                this.loaded$.emit(true);
+                this.loaded$.next(true);
             },
             error => {
                 this.loading = false;
