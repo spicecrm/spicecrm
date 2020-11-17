@@ -9,6 +9,7 @@ import {view} from '../../../services/view.service';
 import {modal} from '../../../services/modal.service';
 import {dockedComposer} from '../../../services/dockedcomposer.service';
 import {activitiytimeline} from '../../../services/activitiytimeline.service';
+import {modelattachments} from "../../../services/modelattachments.service";
 
 /**
  * @ignore
@@ -151,6 +152,7 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
         // SPICEUI-2
         this.model.id = undefined;
         this.model.initializeModel(this.activitiytimeline.parent);
+
     }
 
     /**

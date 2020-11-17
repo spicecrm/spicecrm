@@ -16,32 +16,37 @@ import {backend} from "../../../services/backend.service";
 })
 
 export class EmailSchedulesView {
+
     private emailschedules: any[] = [];
     private locked: boolean = false;
     private isLoading: boolean = false;
+
     constructor(private language: language,
                 private model: model,
                 private view: view,
                 private metadata: metadata,
                 private backend: backend
     ) {
-        this.getData(this.model.id);
+        this.getData();
     }
 
+    private refresh() {
+        this.getData();
+    }
 
     /**
      * get the data from the backend
      */
-    private getData(id) {
+    private getData() {
         this.isLoading = true;
-        this.backend.getRequest(`/module/${this.model.module}/${id}/myOpenSchedules`).subscribe(result => {
-                if (result.status) {
-                    this.isLoading = false;
-                    this.emailschedules = result.openschedules;
-                } else {
-                    this.locked = true;
-                }
-            });
+        this.backend.getRequest(`/module/${this.model.module}/${this.model.id}/myOpenSchedules`).subscribe(result => {
+            if (result.status) {
+                this.isLoading = false;
+                this.emailschedules = result.openschedules;
+            } else {
+                this.locked = true;
+            }
+        });
     }
 
 
