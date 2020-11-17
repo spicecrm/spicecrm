@@ -3,6 +3,7 @@
  */
 import {Component} from '@angular/core';
 import {language} from '../../services/language.service';
+import {session} from "../../services/session.service";
 
 /**
  * displays a button to toggle label inline editing
@@ -13,6 +14,6 @@ import {language} from '../../services/language.service';
 })
 export class GlobalHeaderLabelInlineEdit {
 
-    constructor(private language: language) {
+    constructor(private language: language, private session: session) {
     }
 }
