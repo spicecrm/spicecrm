@@ -2,7 +2,7 @@
  * @module services
  */
 import {EventEmitter, Injectable} from "@angular/core";
-import {Subject, Observable} from "rxjs";
+import {Subject, Observable, BehaviorSubject} from "rxjs";
 
 import {configurationService} from "./configuration.service";
 import {session} from "./session.service";
@@ -10,6 +10,7 @@ import {backend} from "./backend.service";
 import {toast} from "./toast.service";
 import {language} from "./language.service";
 import {broadcast} from "./broadcast.service";
+import {model} from "./model.service";
 
 /**
  * @ignore
@@ -49,7 +50,12 @@ export class modelattachments {
     /**
      * an emitter that emits when the atatchments are loaded
      */
-    public loaded$: EventEmitter<boolean> = new EventEmitter<boolean>();
+    public loaded: boolean = false;
+
+    /**
+     * an emitter that emits when the atatchments are loaded
+     */
+    public loaded$: BehaviorSubject<boolean>;
 
     constructor(
         private backend: backend,
@@ -59,6 +65,7 @@ export class modelattachments {
         private broadcast: broadcast,
         private language: language
     ) {
+        this.loaded$ = new BehaviorSubject<boolean>(false);
     }
 
     /**
@@ -66,7 +73,7 @@ export class modelattachments {
      */
     public getCount(): Observable<any> {
         let retSubject = new Subject();
-        this.backend.getRequest("module/" + this.module + "/" + this.id + "/attachment/count").subscribe(
+        this.backend.getRequest(`spiceAttachments/module/${this.module}/${this.id}/count`).subscribe(
             response => {
                 // set the count
                 this.count = response.count;
@@ -99,11 +106,13 @@ export class modelattachments {
 
         this.files = [];
         this.loading = true;
-        this.backend.getRequest("module/" + this.module + "/" + this.id + "/attachment/ui").subscribe(
+        this.backend.getRequest(`spiceAttachments/module/${this.module}/${this.id}`).subscribe(
             response => {
                 for (let attId in response) {
-                    response[attId].date = new moment(response[attId].date);
-                    this.files.push(response[attId]);
+                    if(!this.files.find(a => a.id == attId)) {
+                        response[attId].date = new moment(response[attId].date);
+                        this.files.push(response[attId]);
+                    }
                 }
 
                 // set the count
@@ -119,8 +128,10 @@ export class modelattachments {
                 retSubject.next(this.files);
                 retSubject.complete();
 
+                this.loaded = true;
+
                 // emit on the service
-                this.loaded$.emit(true);
+                this.loaded$.next(true);
             },
             error => {
                 this.loading = false;
@@ -128,11 +139,49 @@ export class modelattachments {
                 // close the subject
                 retSubject.error(error);
                 retSubject.complete();
-            });
+            }
+        );
 
         return retSubject.asObservable();
     }
 
+    /**
+     * clones the attachments from another model
+     *
+     * @param parentModel
+     */
+    public cloneAttachments(parentModel: model): Observable<any>{
+        let retSubject = new Subject();
+        this.backend.postRequest(`spiceAttachments/module/${this.module}/${this.id}/clone/${parentModel.module}/${parentModel.id}`).subscribe(
+            response => {
+                for (let attId in response) {
+                    if(!this.files.find(a => a.id == attId)) {
+                        response[attId].date = new moment(response[attId].date);
+                        this.files.push(response[attId]);
+                    }
+                }
+
+                // set the count
+                this.count = this.files.length;
+
+                // broadcast the count
+                this.broadcastAttachmentCount();
+
+                // close the subject
+                retSubject.next(this.files);
+                retSubject.complete();
+            },
+            error => {
+                this.loading = false;
+
+                // close the subject
+                retSubject.error(error);
+                retSubject.complete();
+            }
+        );
+        return retSubject.asObservable();
+    }
+    
     /**
      * returns the human readable file size fort the display
      *
@@ -283,7 +332,7 @@ export class modelattachments {
             retSub.next({progress: {total: e.total, loaded: e.loaded}});
         }, false);
 
-        request.open("POST", this.configurationService.getBackendUrl() + "/module/" + this.module + "/" + this.id + "/attachment", true);
+        request.open("POST", this.configurationService.getBackendUrl() + `/spiceAttachments/module/${this.module}/${this.id}`, true);
         request.setRequestHeader("OAuth-Token", this.session.authData.sessionId);
         request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
@@ -362,7 +411,7 @@ export class modelattachments {
             retSub.next({progress: {total: e.total, loaded: e.loaded}});
         }, false);
 
-        request.open("POST", this.configurationService.getBackendUrl() + "/module/" + this.module + "/" + this.id + "/attachment", true);
+        request.open("POST", this.configurationService.getBackendUrl() + `/spiceAttachments/module/${this.module}/${this.id}`, true);
         request.setRequestHeader("OAuth-Token", this.session.authData.sessionId);
         request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
@@ -406,19 +455,14 @@ export class modelattachments {
      * @param id
      */
     public deleteAttachment(id) {
-        this.backend.deleteRequest("module/" + this.module + "/" + this.id + "/attachment/" + id)
+        this.backend.deleteRequest(`spiceAttachments/module/${this.module}/${this.id}/${id}`)
             .subscribe(res => {
-                this.files.some((item, index) => {
-                    if (item.id == id) {
-                        this.files.splice(index, 1);
+                let index = this.files.findIndex(f => f.id == id);
+                this.files.splice(index, 1);
 
-                        // broadcast the count
-                        this.count--;
-                        this.broadcastAttachmentCount();
-
-                        return true;
-                    }
-                });
+                // broadcast the count
+                this.count--;
+                this.broadcastAttachmentCount();
             });
     }
 
@@ -430,7 +474,7 @@ export class modelattachments {
      * @param name
      */
     public downloadAttachment(id, name?) {
-        this.backend.getRequest("/module/" + this.module + "/" + this.id + "/attachment/" + id).subscribe(fileData => {
+        this.backend.getRequest(`spiceAttachments/module/${this.module}/${this.id}/${id}`).subscribe(fileData => {
             let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
             let blobUrl = URL.createObjectURL(blob);
             let a = document.createElement("a");
@@ -446,7 +490,7 @@ export class modelattachments {
     public getAttachment(id): Observable<any> {
         let retSubject = new Subject();
 
-        this.backend.getRequest("/module/" + this.module + "/" + this.id + "/attachment/" + id).subscribe(fileData => {
+        this.backend.getRequest(`spiceAttachments/module/${this.module}/${this.id}/${id}`).subscribe(fileData => {
             retSubject.next(fileData.file);
             retSubject.complete();
         });
@@ -482,8 +526,14 @@ export class modelattachments {
         return blob;
     }
 
+    /**
+     * opens the attachment
+     *
+     * @param id
+     * @param name
+     */
     public openAttachment(id, name?) {
-        this.backend.getRequest("/module/" + this.module + "/" + this.id + "/attachment/" + id).subscribe(fileData => {
+        this.backend.getRequest(`spiceAttachments/module/${this.module}/${this.id}/${id}`).subscribe(fileData => {
             let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
             let blobUrl = URL.createObjectURL(blob);
             window.open(blobUrl, "_blank");

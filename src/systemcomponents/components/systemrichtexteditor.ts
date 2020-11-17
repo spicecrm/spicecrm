@@ -48,6 +48,11 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     @Input() private extendedmode: boolean = true;
 
+    /**
+     * an input to set the inner height of the editor window set in pixel
+     * @private
+     */
+    @Input() private innerheight: string;
 
     // for the value accessor
     private onChange: (value: string) => void;
@@ -87,8 +92,15 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         return this.isExpanded ? 'contract_alt' : 'expand_alt';
     }
 
+    /**
+     * returns the inner height .. and if not set sets it to a default of 250
+     */
+    get innerHeight(){
+        return this.innerheight ? this.innerheight : '250';
+    }
+
     private getRichTextStyle(container) {
-        return this.isExpanded ? {height: `calc(100vh - ${container.offsetTop}px)`, resize: "none"} : {};
+        return this.isExpanded ? {height: `calc(100vh - ${container.offsetTop}px)`, resize: "none"} : {height: this.innerHeight + 'px'};
     }
 
     public ngOnInit() {

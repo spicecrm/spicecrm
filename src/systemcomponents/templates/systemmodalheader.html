@@ -1,5 +1,5 @@
 <header class="slds-modal__header slds-theme--shade" [ngStyle]="headerStyle">
-    <button *ngIf="!hiddenCloseButton && !isSmall" class="slds-button slds-button_icon slds-modal__close slds-button--icon-inverse" (click)="close.emit(true)">
+    <button *ngIf="!hiddenCloseButton && !isSmall" class="slds-button slds-button_icon slds-modal__close slds-button--icon-inverse" style="color:white;" (click)="close.emit(true)">
         <system-button-icon icon="close" size="large"></system-button-icon>
         <span class="slds-assistive-text"><system-label label="LBL_CLOSE"></system-label></span>
     </button>
@@ -9,13 +9,13 @@
     </button>
     <div class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center">
         <div class="slds-media__figure slds-m-right_x-small">
-            <span *ngIf="module" class="slds-icon_container">
+            <div *ngIf="module" class="slds-icon_container">
                 <system-icon [module]="module" size="small"></system-icon>
-            </span>
+            </div>
         </div>
-        <h2 class="slds-text-heading_medium slds-hyphenate">
+        <span class="slds-text-heading_medium slds-hyphenate">
             <ng-content></ng-content>
-        </h2>
+        </span>
         <div>
             <ng-content select="system-modal-header-right"></ng-content>
         </div>
