@@ -23,6 +23,9 @@ import {Subscription} from "rxjs";
 declare var moment: any;
 declare var _: any;
 
+/**
+ * a generic component to render an item in teh activity timeline
+ */
 @Component({
     selector: 'activitytimeline-item',
     templateUrl: './src/modules/activities/templates/activitytimelineitem.html',
