@@ -57,7 +57,7 @@ export class MailboxesGmailTrafficManager {
     private getMailboxes(): Observable<any> {
         let responseSubject = new Subject<any>();
         let modelData = this.model.utils.spiceModel2backend('Mailboxes', this.model.data);
-        this.backend.postRequest("mailboxes/gmail/getmailboxfolders",{}, {data: modelData})
+        this.backend.postRequest("/mailboxes/gmail/getMailboxLabels",{}, {data: modelData})
             .subscribe((response: any) => {
                 if (response.result === true) {
                     responseSubject.next(response);
