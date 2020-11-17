@@ -118,8 +118,7 @@ export class ObjectVerticalTabContainer implements OnInit {
         }
 
         return {
-            height: 'calc(99.9vh - ' + (rect.top) + 'px)',
-            overflow: 'auto',
+            height: 'calc(99.9vh - ' + (rect.top) + 'px)'
         };
     }
 
