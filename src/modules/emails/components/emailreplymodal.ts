@@ -36,6 +36,13 @@ export class EmailReplyModal implements OnInit {
     public titlelabel: string = 'LBL_EMAIL_REPLY';
 
     /**
+     * the reply mode
+     *
+     * @private
+     */
+    private mode: 'reply'|'replyall' = 'reply';
+
+    /**
      * an event emitter when the email ahs been sent and the modal window will destroy itself
      */
     @Output() private mailsent: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -107,7 +114,7 @@ export class EmailReplyModal implements OnInit {
         let htime = datetime ? datetime.format(this.userpreferences.getTimeFormat()) : "";
 
         let historytext = "";
-        historytext += "<div class='spicecrm_quote'>"
+        historytext += "<div class='spicecrm_quote'>";
         historytext += "<div dir='ltr' class='crm_attr'>";
         historytext += "<b>" + this.language.getLabel('LBL_FROM') + ":</b> <a href='mailto:" + this.parent.data.from_addr + "'>" + this.parent.data.from_addr + "</a>";
         historytext += "<br>";

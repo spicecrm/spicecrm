@@ -23,6 +23,9 @@ import {Subscription} from "rxjs";
 declare var moment: any;
 declare var _: any;
 
+/**
+ * a generic component to render an item in teh activity timeline
+ */
 @Component({
     selector: 'activitytimeline-item',
     templateUrl: './src/modules/activities/templates/activitytimelineitem.html',
@@ -94,8 +97,10 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
         this.model.module = this.activity.module;
 
         // initiate the model attachment
-        this.modelattachments.module = this.model.module;
-        this.modelattachments.id = this.model.id;
+        if (this.displayattachments) {
+            this.modelattachments.module = this.model.module;
+            this.modelattachments.id = this.model.id;
+        }
 
         let defaultcomponentconfig = this.metadata.getComponentConfig('ActivityTimelineItem', this.model.module);
 
@@ -230,5 +235,10 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
      */
     private toggleexpand() {
         this.isopen = !this.isopen;
+
+        // if expanded and not laoded yet load the atachments
+        if (this.isopen && !this.modelattachments.loaded) {
+            this.modelattachments.getAttachments();
+        }
     }
 }
