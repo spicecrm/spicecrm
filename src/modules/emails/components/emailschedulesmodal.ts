@@ -11,12 +11,21 @@ import {backend} from "../../../services/backend.service";
 import {metadata} from "../../../services/metadata.service";
 import {toast} from "../../../services/toast.service";
 
+/**
+ * renders a modal to create a scheduled email
+ */
 @Component({
     selector: "email-schedules-modal",
     templateUrl: "./src/modules/emails/templates/emailschedulesmodal.html",
     providers: [model, view],
 })
 export class EmailSchedulesModal {
+
+    /**
+     * reference to the modal itself
+     *
+     * @private
+     */
     private self: any = {};
 
     constructor(private language: language,
@@ -38,8 +47,12 @@ export class EmailSchedulesModal {
      * initialize EmailSchedules
      */
     public ngOnInit() {
+        // set the module
         this.model.module = 'EmailSchedules';
+        // initialize the model
         this.model.initialize();
+        // start editing
+        this.model.startEdit(false);
     }
 
     /**
@@ -47,6 +60,10 @@ export class EmailSchedulesModal {
      */
     private close() {
         this.self.destroy();
+    }
+
+    get canSave() {
+        return this.model.getField('mailbox_id') && this.model.getField('email_subject') && this.model.getField('email_body');
     }
 
     /**
@@ -58,6 +75,7 @@ export class EmailSchedulesModal {
             let selectedIds = this.modellist.getSelectedIDs();
             let body = {
                 module: this.modellist.module,
+                id: this.model.id,
                 ids: selectedIds,
                 data: this.model.data,
                 modulefilter: this.modellist.modulefilter,

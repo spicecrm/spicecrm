@@ -8,13 +8,12 @@ import {modal} from "../../../services/modal.service";
 import {metadata} from "../../../services/metadata.service";
 
 /**
- * this renders a button as part of an actionset that renders a reply button to create an email reply modal
+ * this renders a button as part of an actionset that renders a reply button to create an email forward modal
  */
 @Component({
-    selector: "email-reply-button",
-    templateUrl: "./src/modules/emails/templates/emailreplybutton.html"
+    templateUrl: "./src/modules/emails/templates/emailforwardbutton.html"
 })
-export class EmailReplyButton {
+export class EmailForwardButton {
     /**
      * set as part when the acitonset renders
      *
@@ -46,7 +45,7 @@ export class EmailReplyButton {
      * the method invoed when selecting the action. This triggers opening a modal window for the email composition
      */
     public execute() {
-        this.modal.openModal('EmailReplyModal', true, this.injector);
+        this.modal.openModal('EmailForwardModal', true, this.injector);
     }
 
 

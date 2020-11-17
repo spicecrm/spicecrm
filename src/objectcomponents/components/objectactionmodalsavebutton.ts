@@ -29,6 +29,10 @@ export class ObjectActionModalSaveButton {
     constructor(private language: language, private metadata: metadata, private model: model, private modal: modal,  @Optional()private modalwindow: modalwindow) {}
 
     get displayLabel() {
+        // see if we have a abel configured
+        if(this.actionconfig.label) return this.actionconfig.label;
+
+        // else standard labels
         return this.actionconfig.gorelated ? 'LBL_SAVE_AND_GO_TO_RECORD' : 'LBL_SAVE';
     }
 

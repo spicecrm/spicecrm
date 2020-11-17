@@ -9,7 +9,7 @@
         <h3 class="slds-truncate slds-text-heading--x-small slds-p-right--xxx-small" (click)="previewFile($event)">
             <a href="javascript:void(0);">{{file.filename}}</a>
         </h3>
-        <div *ngIf="!uploading" class="slds-shrink-none">
+        <div *ngIf="!uploading && editmode" class="slds-shrink-none">
             <button  class="slds-button slds-button--icon" (click)="deleteFile()">
                 <system-button-icon icon="clear"></system-button-icon>
             </button>
