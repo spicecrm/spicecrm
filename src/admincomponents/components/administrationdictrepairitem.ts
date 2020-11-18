@@ -14,15 +14,14 @@ import {modal} from "../../services/modal.service";
 })
 export class AdministrationDictRepairItem {
 
-    private loading: boolean = false;
     private sql: string = '';
 
     constructor(private backend: backend, private toast: toast, private language: language, private modal: modal, private injector: Injector) {
     }
 
-    public execute() {
+    public executeDB() {
         let await = this.modal.await(this.language.getLabel('LBL_LOADING'));
-        this.backend.getRequest('dictionary/sql').subscribe(result => {
+        this.backend.getRequest('/repair/sql').subscribe(result => {
             await.emit(true);
             this.sql = result.sql;
             if(result) {
@@ -31,9 +30,14 @@ export class AdministrationDictRepairItem {
                 });
             }
         });
-
-
         }
 
+    public executeLG() {
+        let await = this.modal.await(this.language.getLabel('LBL_LOADING'));
+        this.backend.getRequest('/repair/language').subscribe(result => {
+            await.emit(true);
+            this.toast.sendToast('LBL_LANGUAGES_REPAIRED', 'success');
+        });
+    }
 
 }
