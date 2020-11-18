@@ -44,6 +44,10 @@ export class ServicePlannerMapsModelPopoverDirection {
      * save the unit system for the distance measuring
      */
     private unitSystem: 'IMPERIAL' | 'METRIC' = 'METRIC';
+    /**
+     * holds the component config
+     */
+    public componentconfig: any;
 
     constructor(private model: model,
                 private language: language,
@@ -113,8 +117,8 @@ export class ServicePlannerMapsModelPopoverDirection {
         const directionsService = new google.maps.DirectionsService();
 
         const origin: ServicePlannerRoutePointI = {
-            lat: this.servicePlannerService.timelineSelectedEvent.data.address_latitude,
-            lng: this.servicePlannerService.timelineSelectedEvent.data.address_longitude
+            lat: this.servicePlannerService.timelineSelectedItem.event.data.address_latitude,
+            lng: this.servicePlannerService.timelineSelectedItem.event.data.address_longitude
         };
         const destination: ServicePlannerRoutePointI = {
             lat: this.model.data.address_latitude,
@@ -161,7 +165,7 @@ export class ServicePlannerMapsModelPopoverDirection {
                 hours: Math.floor(duration / 3600)
             }
         };
-        this.calculatedDateStart = new moment(this.servicePlannerService.timelineSelectedEvent.data.date_end)
+        this.calculatedDateStart = new moment(this.servicePlannerService.timelineSelectedItem.event.data.date_end)
             .add((this.directionData.duration.minutes + (this.directionData.duration.hours * 60)), 'minutes').format();
         this.isLoading = false;
         this.cdRef.detectChanges();
@@ -174,12 +178,20 @@ export class ServicePlannerMapsModelPopoverDirection {
      */
     private plan() {
         this.model.startEdit();
+
+        const userFieldPrefix = this.componentconfig.planningUserFieldNamePrefix || 'assigned_user';
         this.model.setFields({
             date_start: new moment(this.calculatedDateStart),
             date_end: new moment(this.calculatedDateStart).add(1, 'hours'),
-            duration_hours: 1,
             serviceorder_status: 'planned'
         });
+
+        if (!!this.servicePlannerService.timelineSelectedItem) {
+            this.model.setFields({
+                [userFieldPrefix + '_id']: this.servicePlannerService.timelineSelectedItem.record.id,
+                [userFieldPrefix + '_name']: this.servicePlannerService.timelineSelectedItem.record.name
+            });
+        }
 
         this.modal.closeAllModals();
         this.model.edit();
