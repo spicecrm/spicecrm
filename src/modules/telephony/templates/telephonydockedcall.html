@@ -27,7 +27,7 @@
     <footer class="slds-docked-composer__footer slds-shrink-none">
         <div class="slds-grid slds-grid--vertical-align-center slds-size--1-of-1">
             <div class="slds-col_bump-left">
-                <button class="slds-button slds-button--neutral" [disabled]="!canEndCall" (click)="endCall()"><system-button-icon icon="end_call"></system-button-icon> <system-label label="LBL_END"></system-label></button>
+                <button class="slds-button slds-button--neutral" *ngIf="!hideEndCallButton" [disabled]="!canEndCall" (click)="endCall()"><system-button-icon icon="end_call"></system-button-icon> <system-label label="LBL_END"></system-label></button>
                 <button class="slds-button slds-button--brand" (click)="closeComposer()"><system-label label="LBL_CLOSE"></system-label></button>
             </div>
         </div>
