@@ -214,7 +214,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
             return false;
         }
 
-        this.socket = io(`${this.socketurl}?sysid=${this.socketid}&room=alcatel${this.username}&token=${this.session.authData.sessionId}`);
+        this.socket = io(`${this.socketurl}?sysid=${this.socketid}&room=alcatel${this.session.authData.sessionId}&token=${this.session.authData.sessionId}`);
         this.socket.on('connect', (socket) => {
             this.socketconnected = true;
         });
