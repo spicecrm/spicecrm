@@ -69,7 +69,7 @@
                     {{headerField}}
                 </div>
             </div>
-            <div class="slds-grid">
+            <div>
                 <div *ngFor="let record of records; trackBy: trackByItemFn" class="slds-grid slds-size--1-of-1 slds-border--bottom" [style.height.px]="eventHeight">
                     <div [style.height.px]="eventHeight" [style.background-color]="focusedId == record.id ? focusColor : 'initial'" class="slds-border--right slds-size--1-of-1 slds-grid slds-grid--vertical-align-center">
                         <div class="slds-p-left--xx-small" style="width: 30px">
