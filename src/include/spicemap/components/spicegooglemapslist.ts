@@ -216,30 +216,38 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
      * @param msg
      */
     public handleBroadcastMessage(msg: { messagedata: any, messagetype: string }) {
-        if (msg.messagetype != 'map.focus' || !msg.messagedata || !msg.messagedata.record || this.navigation.activeTab != msg.messagedata.tabId) {
+        if ((msg.messagetype != 'map.focus' && msg.messagetype != 'map.defocus') || !msg.messagedata || !msg.messagedata.record || this.navigation.activeTab != msg.messagedata.tabId) {
             return;
         }
         this.focusedRecordId = undefined;
         this.cdRef.detectChanges();
-        const focusedRecord = this.records.find((record: RecordI) => record.id == msg.messagedata.record.id);
-        if (!focusedRecord) {
-            this.mapOptions.circle = {
-                center: {
-                    lat: msg.messagedata.record.data[this.latName],
-                    lng: msg.messagedata.record.data[this.lngName],
-                },
-                draggable: true,
-                editable: true,
-                radius: null,
-                radiusPercentage: this.componentconfig.radiusPercentage,
-                color: this.componentconfig.circleColor
-            };
 
-            this.searchAroundActive = true;
-            this.startRadiusEditing(true);
+        if (msg.messagetype == 'map.defocus') {
+            this.mapOptions.circle = undefined;
+            this.searchAroundActive = false;
             this.setMapOptionChanged('circle');
+
         } else {
-            this.focusedRecordId = focusedRecord.id;
+            const focusedRecord = this.records.find((record: RecordI) => record.id == msg.messagedata.record.id);
+            if (!focusedRecord) {
+                this.mapOptions.circle = {
+                    center: {
+                        lat: msg.messagedata.record.data[this.latName],
+                        lng: msg.messagedata.record.data[this.lngName],
+                    },
+                    draggable: true,
+                    editable: true,
+                    radius: null,
+                    radiusPercentage: this.componentconfig.radiusPercentage,
+                    color: this.componentconfig.circleColor
+                };
+
+                this.searchAroundActive = true;
+                this.startRadiusEditing(true);
+                this.setMapOptionChanged('circle');
+            } else {
+                this.focusedRecordId = focusedRecord.id;
+            }
         }
         this.cdRef.detectChanges();
     }
