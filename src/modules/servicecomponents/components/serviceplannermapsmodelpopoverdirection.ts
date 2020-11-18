@@ -179,7 +179,11 @@ export class ServicePlannerMapsModelPopoverDirection {
     private plan() {
         this.model.startEdit();
 
-        const userFieldPrefix = this.componentconfig.planningUserFieldNamePrefix || 'assigned_user';
+        let userFieldPrefix = this.componentconfig && this.componentconfig.planningUserFieldNamePrefix? this.componentconfig.planningUserFieldNamePrefix : undefined;
+        if (!userFieldPrefix) {
+            const config = this.metadata.getComponentConfig('ServicePlannerMapsModelPopoverDirection', 'ServiceOrders');
+            userFieldPrefix = config.planningUserFieldNamePrefix || 'assigned_user';
+        }
         this.model.setFields({
             date_start: new moment(this.calculatedDateStart),
             date_end: new moment(this.calculatedDateStart).add(1, 'hours'),
@@ -187,10 +191,11 @@ export class ServicePlannerMapsModelPopoverDirection {
         });
 
         if (!!this.servicePlannerService.timelineSelectedItem) {
-            this.model.setFields({
-                [userFieldPrefix + '_id']: this.servicePlannerService.timelineSelectedItem.record.id,
-                [userFieldPrefix + '_name']: this.servicePlannerService.timelineSelectedItem.record.name
-            });
+                const fields = {};
+                if (userFieldPrefix + '_type' in this.model.data) fields[userFieldPrefix + '_type'] = 'Users';
+                if (userFieldPrefix + '_id' in this.model.data) fields[userFieldPrefix + '_id'] = this.servicePlannerService.timelineSelectedItem.record.id;
+                if (userFieldPrefix + '_name' in this.model.data) fields[userFieldPrefix + '_name'] = this.servicePlannerService.timelineSelectedItem.record.name;
+                this.model.setFields(fields);
         }
 
         this.modal.closeAllModals();
