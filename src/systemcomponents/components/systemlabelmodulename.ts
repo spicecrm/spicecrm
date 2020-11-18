@@ -2,13 +2,15 @@
  * @module SystemComponents
  */
 import {
+    AfterViewInit,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
-    OnDestroy,
     Component,
     Input,
     OnChanges,
-    SimpleChanges, HostListener, Renderer2
+    OnDestroy,
+    Renderer2,
+    SimpleChanges
 } from '@angular/core';
 import {Subscription} from "rxjs";
 import {language} from '../../services/language.service';
@@ -21,7 +23,7 @@ import {metadata} from "../../services/metadata.service";
     templateUrl: './src/systemcomponents/templates/systemlabelmodulename.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SystemLabelModulename implements OnChanges, OnDestroy {
+export class SystemLabelModulename implements OnChanges, AfterViewInit, OnDestroy {
 
     /**
      * the module
@@ -55,6 +57,13 @@ export class SystemLabelModulename implements OnChanges, OnDestroy {
     }
 
     /**
+     * detach from changes detections to handle it manually
+     */
+    public ngAfterViewInit() {
+        this.cdRef.detach();
+    }
+
+    /**
      * unsubscribe from the language service when the component is destroyed
      */
     public ngOnDestroy(): void {
@@ -71,24 +80,13 @@ export class SystemLabelModulename implements OnChanges, OnDestroy {
     }
 
     /**
-     * triggers the change detection when the language is changed
-     */
-    private detectChanges() {
-        this.cdRef.detectChanges();
-    }
-
-    /**
-     * handle the double click to open the editor modal
+     * handle double click
+     * @param event
      * @private
      */
-    @HostListener('dblclick')
-    private onDBClick() {
-        let moduleDefs = this.metadata.getModuleDefs(this.module);
-        const label = !this.singular ? moduleDefs.module_label : moduleDefs.singular_label;
-        if (!this.language.inlineEditEnabled) return;
-        this.modal.openModal('SystemLabelEditorModal', true).subscribe(modalRef => {
-            modalRef.instance.labelData = {name: label, global_translations: [], custom_translations: []};
-        });
+    private onDblClick(event: MouseEvent) {
+        this.openModal();
+        event.preventDefault();
     }
 
     /**
@@ -104,19 +102,24 @@ export class SystemLabelModulename implements OnChanges, OnDestroy {
     }
 
     /**
+     * triggers the change detection when the language is changed
+     */
+    private detectChanges() {
+        this.cdRef.detectChanges();
+    }
+
+    /**
      * handle right click to edit translations
      * @private
      */
-    @HostListener('contextmenu', ['$event'])
     private onRightClick(event) {
-        if (!this.language.inlineEditEnabled) return;
-        event.preventDefault();
         const dropdown = this.createDropdown(event);
         this.renderer.appendChild(this.footer.footercontainer.element.nativeElement, dropdown);
         const docClickListener = this.renderer.listen('document', 'click', event => {
             this.closeDropdown(event, dropdown);
             docClickListener();
         });
+        event.preventDefault();
     }
 
     /**
@@ -143,7 +146,7 @@ export class SystemLabelModulename implements OnChanges, OnDestroy {
         this.renderer.setStyle(dropdown, 'left', event.pageX + 'px');
         addClasses(dropdown, ['slds-dropdown--inverse', 'slds-dropdown', 'slds-theme--inverse']);
         const ul = this.renderer.createElement('ul');
-        this.renderer.addClass(ul,'slds-dropdown__list');
+        this.renderer.addClass(ul, 'slds-dropdown__list');
         const li = this.renderer.createElement('li');
         addClasses(li, ['slds-slds-dropdown__item', 'slds-p-around--xx-small']);
 
