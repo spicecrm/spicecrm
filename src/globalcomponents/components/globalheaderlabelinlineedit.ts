@@ -1,8 +1,9 @@
 /**
  * @module GlobalComponents
  */
-import {Component} from '@angular/core';
+import {ChangeDetectorRef, Component} from '@angular/core';
 import {language} from '../../services/language.service';
+import {session} from "../../services/session.service";
 
 /**
  * displays a button to toggle label inline editing
@@ -13,6 +14,16 @@ import {language} from '../../services/language.service';
 })
 export class GlobalHeaderLabelInlineEdit {
 
-    constructor(private language: language) {
+    constructor(private language: language,
+                private session: session) {
+    }
+
+    /**
+     * toogle inline edit enabled
+     * @private
+     */
+    private toggleEnabled() {
+        this.language.inlineEditEnabled = !this.language.inlineEditEnabled;
+        this.language.currentlanguage$.emit(this.language.currentlanguage);
     }
 }
