@@ -1,7 +1,7 @@
 /**
  * @module AdminComponentsModule
  */
-import {Component, Injector, OnInit} from '@angular/core';
+import {Component, Injector} from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {toast} from "../../services/toast.service";
 import {language} from "../../services/language.service";
@@ -14,15 +14,16 @@ import {modal} from "../../services/modal.service";
 })
 export class AdministrationDictRepairItem {
 
-    private loading: boolean = false;
     private sql: string = '';
-
     constructor(private backend: backend, private toast: toast, private language: language, private modal: modal, private injector: Injector) {
     }
 
-    public execute() {
+    /**
+     * calls the backend repair method that delivers the sql string, injects it in the modal
+     */
+    public executeDB() {
         let await = this.modal.await(this.language.getLabel('LBL_LOADING'));
-        this.backend.getRequest('dictionary/sql').subscribe(result => {
+        this.backend.getRequest('/repair/sql').subscribe(result => {
             await.emit(true);
             this.sql = result.sql;
             if(result) {
@@ -31,8 +32,6 @@ export class AdministrationDictRepairItem {
                 });
             }
         });
-
-
         }
 
 
