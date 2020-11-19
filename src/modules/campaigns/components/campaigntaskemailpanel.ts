@@ -37,10 +37,6 @@ export class CampaignTaskEmailPanel implements OnInit, OnDestroy {
      */
     private mailboxData: {header: string, footer: string, stylesheet: string};
     /**
-     * holds the mailbox data
-     */
-    private loadingMailboxData: boolean = false;
-    /**
      * holds the sanitized html value
      */
     private sanitizedHTML: SafeHtml;
@@ -115,12 +111,13 @@ export class CampaignTaskEmailPanel implements OnInit, OnDestroy {
         this.subscription.add(
             this.model.data$.subscribe(res => {
                 if (res.mailbox_id !== this.mailboxId) {
-                    this.mailboxData = undefined;
+                    this.mailboxId = res.mailbox_id;
+                    this.loadMailboxData();
                     this.setSanitizedHTMLValue();
 
                 }
                 if (res.email_body !== this.emailBody) {
-                    this.setInitialValues();
+                    this.emailBody = res.email_body;
                     this.setSanitizedHTMLValue();
                 }
             })
@@ -156,43 +153,37 @@ export class CampaignTaskEmailPanel implements OnInit, OnDestroy {
      * concatenate the mailbox html with the body with the stylesheet content and sanitize the html
      */
     private setSanitizedHTMLValue() {
-        const mailboxId = this.model.getField('mailbox_id');
-        const emailBody: string = this.model.getField('email_body') || '';
 
-        if (!mailboxId) {
-            this.sanitizedHTML = this.sanitizer.bypassSecurityTrustHtml(
-                emailBody
-            );
+        if (!this.mailboxId) {
+
+            this.sanitizedHTML = this.sanitizer.bypassSecurityTrustHtml(this.emailBody);
+
         } else if (!!this.mailboxData) {
-            const htmlDom: string = this.buildHtmlDom(
-                emailBody,
-                this.mailboxData
-            );
-            this.sanitizedHTML = this.sanitizer.bypassSecurityTrustHtml(
-                htmlDom
-            );
-        } else if (!this.mailboxData && !this.loadingMailboxData) {
-            this.loadingMailboxData = true;
-            this.backend.get('Mailboxes', this.model.getField('mailbox_id'), 'details').subscribe(
-                (mailbox: any) => {
-                    this.loadingMailboxData = false;
-                    if (!mailbox) return;
-                    const mailboxData = {
-                        header: mailbox.mailbox_header || '',
-                        footer: mailbox.mailbox_footer || '',
-                        stylesheet: this.metadata.getHtmlStylesheetCode(mailbox.stylesheet) || ''
-                    };
-                    this.mailboxData = mailboxData;
 
-                    const htmlDom: string = this.buildHtmlDom(
-                        emailBody,
-                        mailboxData
-                    );
-                    this.sanitizedHTML = this.sanitizer.bypassSecurityTrustHtml(
-                        htmlDom
-                    );
-                }
-            );
+            const htmlDom: string = this.buildHtmlDom(this.emailBody, this.mailboxData);
+            this.sanitizedHTML = this.sanitizer.bypassSecurityTrustHtml(htmlDom);
+
         }
+    }
+
+    /**
+     * load the mailbox data for the preview dom
+     * @private
+     */
+    private loadMailboxData() {
+
+        this.mailboxData = undefined;
+
+        this.backend.get('Mailboxes', this.mailboxId, 'details').subscribe(
+            (mailbox: any) => {
+                if (!mailbox) return;
+                this.mailboxData = {
+                    header: mailbox.mailbox_header || '',
+                    footer: mailbox.mailbox_footer || '',
+                    stylesheet: this.metadata.getHtmlStylesheetCode(mailbox.stylesheet) || ''
+                };
+            }
+        );
+
     }
 }
