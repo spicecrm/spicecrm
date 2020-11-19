@@ -2,6 +2,7 @@
  * @module AdminComponentsModule
  */
 import {Component} from '@angular/core';
+import {Md5} from "ts-md5";
 import {backend} from '../../services/backend.service';
 import {toast} from "../../services/toast.service";
 import {language} from "../../services/language.service";
@@ -29,7 +30,7 @@ export class AdministrationDictRepairModal {
      */
     private doRepair() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
-        this.backend.postRequest('dictionary/repair').subscribe((result: any) => {
+        this.backend.postRequest('repair/database').subscribe((result: any) => {
             if (!result.response) {
                 this.dbErrors = result.errors;
             } else if (result.synced) {
@@ -43,6 +44,22 @@ export class AdministrationDictRepairModal {
         });
         });
     }
+
+    /**
+     * converts the sql string into an array of strings
+     * @private
+     */
+    private convertSQL() {
+        /**
+         * todo: interpolate strings in template
+         */
+        let cut = this.sql.split("\n").filter(query => !query.includes('*'));
+        let queries = cut.map(query => btoa(query));
+        console.log(cut);
+        console.log(queries);
+    }
+
+
     /**
      * copy the SQL to clipboard
      */
