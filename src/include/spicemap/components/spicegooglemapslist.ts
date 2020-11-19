@@ -108,6 +108,7 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     public ngOnDestroy() {
         this.subscriptions.unsubscribe();
         this.modelList.searchGeo = undefined;
+        this.modelList.reLoadList();
     }
 
     /**
