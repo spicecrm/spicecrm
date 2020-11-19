@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -13,7 +13,7 @@ import {Router} from '@angular/router';
     selector: 'field-multiple-enum-dropdown',
     templateUrl: './src/objectfields/templates/fieldmultipleenumdropdown.html'
 })
-export class fieldMultipleEnumDropdown extends fieldGeneric implements OnDestroy {
+export class fieldMultipleEnumDropdown extends fieldGeneric implements OnInit, OnDestroy {
     private valueArray = [];
     private viewModeValueText = '';
 
@@ -25,6 +25,17 @@ export class fieldMultipleEnumDropdown extends fieldGeneric implements OnDestroy
         public router: Router
     ) {
         super(model, view, language, metadata, router);
+
+    }
+
+    public ngOnInit() {
+        this.setSubscriptions();
+    }
+
+    /**
+     * Detect Changes
+     */
+    private setSubscriptions() {
         this.subscriptions.add(
             // Detect changement of model data.
             this.model.data$.subscribe(
