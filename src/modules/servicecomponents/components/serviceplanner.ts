@@ -223,7 +223,7 @@ export class ServicePlanner implements OnInit, OnDestroy {
         // set the selected item
         if (!!selected) {
             if (selected.event) this.servicePlannerService.timelineSelectedItem.event.color = null;
-            if ((selected.record.id == data.record.id && !data.event) || (!!data.event && !!selected.event && data.event.id == selected.event.id)) {
+            if ((selected.record.id == data.record.id && !data.event && !selected.event) || (!!data.event && !!selected.event && data.event.id == selected.event.id)) {
                 this.servicePlannerService.timelineSelectedItem = undefined;
             } else {
                 this.servicePlannerService.timelineSelectedItem = data;
