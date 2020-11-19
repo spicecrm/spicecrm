@@ -89,9 +89,9 @@ export class CampaignTaskEmailPanel implements OnInit, OnDestroy {
                         <style>${mailboxData.stylesheet}</style>
                     </head>
                     <body>
-                        <header>${mailboxData.header}</header>
-                         ${body}
-                        <footer>${mailboxData.footer}</footer>
+                        <div>${mailboxData.header}</div>
+                        <div>${body || ''}</div> 
+                        <div>${mailboxData.footer}</div>
                     </body>
                 </html>`;
     }
@@ -113,7 +113,6 @@ export class CampaignTaskEmailPanel implements OnInit, OnDestroy {
                 if (res.mailbox_id !== this.mailboxId) {
                     this.mailboxId = res.mailbox_id;
                     this.loadMailboxData();
-                    this.setSanitizedHTMLValue();
 
                 }
                 if (res.email_body !== this.emailBody) {
@@ -156,7 +155,7 @@ export class CampaignTaskEmailPanel implements OnInit, OnDestroy {
 
         if (!this.mailboxId) {
 
-            this.sanitizedHTML = this.sanitizer.bypassSecurityTrustHtml(this.emailBody);
+            this.sanitizedHTML = this.sanitizer.bypassSecurityTrustHtml(this.emailBody || '');
 
         } else if (!!this.mailboxData) {
 
@@ -172,6 +171,8 @@ export class CampaignTaskEmailPanel implements OnInit, OnDestroy {
      */
     private loadMailboxData() {
 
+        if (!this.mailboxId) return;
+
         this.mailboxData = undefined;
 
         this.backend.get('Mailboxes', this.mailboxId, 'details').subscribe(
@@ -182,8 +183,8 @@ export class CampaignTaskEmailPanel implements OnInit, OnDestroy {
                     footer: mailbox.mailbox_footer || '',
                     stylesheet: this.metadata.getHtmlStylesheetCode(mailbox.stylesheet) || ''
                 };
+                this.setSanitizedHTMLValue();
             }
         );
-
     }
 }
