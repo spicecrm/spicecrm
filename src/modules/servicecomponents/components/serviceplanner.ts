@@ -36,10 +36,6 @@ export class ServicePlanner implements OnInit, OnDestroy {
      */
     public timeZone: string;
     /**
-     * holds the focused event color
-     */
-    public focusColor: string = '#ffc700';
-    /**
      * holds the records that will be passed to the timeline component
      */
     protected timelineRecords: ServicePlannerRecordI[] = [];
@@ -159,65 +155,14 @@ export class ServicePlanner implements OnInit, OnDestroy {
                     });
                     this.cdRef.detectChanges();
                     break;
+                case 'model.delete':
                 case 'model.save':
                     if (module !== 'ServiceOrders') break;
-                    this.handleEventChange(data);
-                    // force detect changes
-                    this.timelineRecords = this.timelineRecords.slice();
+                    this.getUsersServiceOrders();
                     this.modellist.reLoadList(true);
-                    break;
-                case 'model.delete':
-                    this.timelineRecords.some((record: ServicePlannerRecordI) => {
-                        if (record.id !== data.assigned_user_id) return false;
-                        record.events = record.events.filter((serviceOrder: ServicePlannerEventI) => serviceOrder.id !== data.id);
-                    });
-                    // force detect changes
-                    this.timelineRecords = this.timelineRecords.slice();
-                    break;
             }
         });
         this.subscriptions.add(subscriber);
-    }
-
-    /**
-     * modify event date after drop
-     * @param data
-     * @return boolean true if the event was found
-     */
-    private handleEventChange(data) {
-
-        if (moment(data.date_start) > this.endDate && moment(data.date_end) < this.startDate) {
-            this.timelineRecords.some((record: ServicePlannerRecordI) => {
-                if (record.id !== data.assigned_user_id) return false;
-                record.events = record.events.filter((serviceOrder: ServicePlannerEventI) => serviceOrder.id !== data.id);
-                return true;
-            });
-        } else {
-            this.timelineRecords.some((record: ServicePlannerRecordI) => {
-
-                if (record.id !== data.assigned_user_id) return false;
-
-                const exists = record.events.some((serviceOrder: ServicePlannerEventI) => {
-                    if (serviceOrder.id !== data.id) return false;
-                    serviceOrder.data = {...data};
-                    serviceOrder.start = new moment(moment.utc(data.date_start).tz(this.timeZone).format());
-                    serviceOrder.end = new moment(moment.utc(data.date_end).tz(this.timeZone).format());
-                    return true;
-                });
-                if (exists) return true;
-
-                const event: ServicePlannerEventI = {
-                    id: data.id,
-                    module: 'ServiceOrders',
-                    start: new moment(moment.utc(data.date_start).tz(this.timeZone).format()),
-                    end: new moment(moment.utc(data.date_end).tz(this.timeZone).format()),
-                    data: {...data}
-                };
-                record.events.push(event);
-                record.events.sort((a, b) => a.start.isAfter(b.start) ? 1 : -1);
-                return true;
-            });
-        }
     }
 
     /**
@@ -261,16 +206,32 @@ export class ServicePlanner implements OnInit, OnDestroy {
      * handle the event click
      * @param event
      */
-    private handleEventClick(event: ServicePlannerEventI) {
-        this.broadcast.broadcastMessage('map.focus', {
-            record: event,
-            tabId: this.navigation.activeTabObject.id
-        });
-        if (this.servicePlannerService.timelineSelectedEvent) {
-            this.servicePlannerService.timelineSelectedEvent.color = null;
+    private handleEventClick(data: {record: ServicePlannerRecordI, event?: ServicePlannerEventI}) {
+        // defocus the map
+        this.broadcast.broadcastMessage('map.defocus', {tabId: this.navigation.activeTabObject.id, record: {}});
+
+        // focus the map
+        const selected = this.servicePlannerService.timelineSelectedItem;
+
+        if (!!data.event && (!selected || (!selected.event || (!!selected.event && data.event.id != selected.event.id)))) {
+            this.broadcast.broadcastMessage('map.focus', {
+                record: data.event,
+                tabId: this.navigation.activeTabObject.id
+            });
         }
-        this.servicePlannerService.timelineSelectedEvent = event;
-        event.color = this.focusColor;
+
+        // set the selected item
+        if (!!selected) {
+            if (selected.event) this.servicePlannerService.timelineSelectedItem.event.color = null;
+            if ((selected.record.id == data.record.id && !data.event && !selected.event) || (!!data.event && !!selected.event && data.event.id == selected.event.id)) {
+                this.servicePlannerService.timelineSelectedItem = undefined;
+            } else {
+                this.servicePlannerService.timelineSelectedItem = data;
+            }
+        } else {
+            this.servicePlannerService.timelineSelectedItem = data;
+        }
+
         // force detect changes
         this.timelineRecords = this.timelineRecords.slice();
     }

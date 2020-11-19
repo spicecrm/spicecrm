@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import {language} from '../../../services/language.service';
 import {modal} from '../../../services/modal.service';
+import {metadata} from '../../../services/metadata.service';
 import {backend} from '../../../services/backend.service';
 import {telephony} from '../../../services/telephony.service';
 import {telephonyCallI} from "../../../services/interfaces.service";
@@ -35,7 +36,16 @@ export class TelephonyDockedCall {
 
     private matchedbeans: any[] = [];
 
-    constructor(private backend: backend, private modal: modal, private libloader: libloader, private telephony: telephony, private language: language, private cdref: ChangeDetectorRef, private ViewContainerRef: ViewContainerRef) {
+    private hideEndCallButton: boolean = false;
+
+    constructor(private backend: backend,
+                private modal: modal,
+                private libloader: libloader,
+                private telephony: telephony,
+                private language: language,
+                private cdref: ChangeDetectorRef,
+                private ViewContainerRef: ViewContainerRef,
+                private metadata: metadata) {
         this.loadPhoneLib();
     }
 
@@ -79,6 +89,11 @@ export class TelephonyDockedCall {
                 this.panelcomponent = 'TelephonyCallPanel';
             });
         }
+        this.getConfiguration();
+    }
+
+    private getConfiguration() {
+        this.hideEndCallButton = this.metadata.getComponentConfig('TelephonyCallPanel')?.hideEndCallButton;
     }
 
     /**
@@ -130,7 +145,8 @@ export class TelephonyDockedCall {
      */
     get msisdnFormatted() {
         if (libphonenumber && libphonenumber.parsePhoneNumberFromString) {
-            return libphonenumber.parsePhoneNumberFromString(this.calldata.msisdn, 'AT').formatInternational();
+            let msisdn = this.calldata.msisdn;
+            return libphonenumber.parsePhoneNumberFromString(msisdn, 'AT').formatInternational();
         } else {
             return this.calldata.msisdn;
         }

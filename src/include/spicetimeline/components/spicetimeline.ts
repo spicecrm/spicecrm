@@ -36,6 +36,10 @@ declare var moment: any;
 })
 export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
     /**
+     * holds the focused event color
+     */
+    public focusColor: string = '#ffc700';
+    /**
      * holds the today text color
      */
     public todayColor: string = '#eb7092';
@@ -90,7 +94,7 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
     /**
      * holds the records main module
      */
-    @Output() private eventClick = new EventEmitter<EventI>();
+    @Output() private eventClick = new EventEmitter<{record: RecordI, event?: EventI}>();
     /**
      * holds the period unit to render the timeline cells
      */
@@ -163,6 +167,11 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
      * subscription to handle unsubscribe
      */
     private subscriptions: Subscription = new Subscription();
+    /**
+     * holds the focused id
+     * @private
+     */
+    private focusedId: string;
 
     constructor(private renderer: Renderer2,
                 private cdRef: ChangeDetectorRef,
@@ -606,9 +615,13 @@ export class SpiceTimeline implements OnChanges, AfterViewInit, OnDestroy {
 
     /**
      * emit the clicked event
+     * @param record
      * @param event
+     * @private
      */
-    private emitEvent(event) {
-        this.eventClick.emit(event);
+    private emitEvent(record: RecordI, event?: EventI) {
+        if (!!event) event.color = this.focusColor;
+        this.focusedId = !!event || record.id == this.focusedId ? undefined : record.id;
+        this.eventClick.emit({record, event});
     }
 }
