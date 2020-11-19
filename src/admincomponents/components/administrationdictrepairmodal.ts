@@ -45,7 +45,14 @@ export class AdministrationDictRepairModal {
         });
     }
 
+    /**
+     * converts the sql string into an array of strings
+     * @private
+     */
     private convertSQL() {
+        /**
+         * todo: interpolate strings in template
+         */
         let cut = this.sql.split("\n").filter(query => !query.includes('*'));
         let queries = cut.map(query => btoa(query));
         console.log(cut);
