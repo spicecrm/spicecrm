@@ -1,11 +1,10 @@
 /**
  * @module AdminComponentsModule
  */
-import {Component, Injector, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {toast} from "../../services/toast.service";
 import {language} from "../../services/language.service";
-import {loader} from "../../services/loader.service";
 import {modal} from "../../services/modal.service";
 import {Subject} from "rxjs";
 
@@ -16,20 +15,24 @@ import {Subject} from "rxjs";
 })
 export class AdministrationDictRepairLanguage {
 
-    private sql: string = '';
     private loaderHandler: Subject<string> = new Subject<string>();
-    constructor(private backend: backend, private toast: toast, private language: language, private modal: modal, private injector: Injector, private loader: loader) {
+    constructor(private backend: backend, private toast: toast, private language: language, private modal: modal) {
     }
 
-
+    /**
+     * calls the repair method in backend, then loads the language from the language service
+     */
     public executeLG() {
         let await = this.modal.await(this.language.getLabel('LBL_LOADING'));
         this.backend.getRequest('/repair/language').subscribe(result => {
+            await.emit(true);
             if(result.response) {
                 this.language.getLanguage(this.loaderHandler);
+                this.toast.sendToast(this.language.getLabel('LBL_LANGUAGES_REPAIRED'), 'success');
+            } else {
+                this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
             }
-            await.emit(true);
-            this.toast.sendToast('LBL_LANGUAGES_REPAIRED', 'success');
+
         });
     }
 
