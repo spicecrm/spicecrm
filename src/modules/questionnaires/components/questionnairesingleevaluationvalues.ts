@@ -7,14 +7,14 @@ import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
 
 @Component({
-    selector: 'questionnaire-evaluation-values',
-    templateUrl: './src/modules/questionnaires/templates/questionnaireevaluationvalues.html',
+    selector: 'questionnaire-single-evaluation-values',
+    templateUrl: './src/modules/questionnaires/templates/questionnairesingleevaluationvalues.html',
     styles: [
         "span.quest-eval-points { display: inline-block; text-align: center; min-width: 2rem; margin-left:0.33rem; font-weight: normal; border: 1px solid #fff; }",
         "span.quest-eval-catname { padding-top:0; padding-bottom:0; padding-right:0; font-weight: normal; }"
     ]
 })
-export class QuestionnaireEvaluationValues implements OnInit {
+export class QuestionnaireSingleEvaluationValues implements OnInit {
 
     private sectionIsOpen = true;
     private isLoading = true;

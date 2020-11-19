@@ -726,6 +726,21 @@ export class metadata {
     }
 
     /**
+     * returns the global search modules
+     */
+    public getGlobalSearchModules() {
+        let modules = [];
+
+        for (let module in this.moduleDefs) {
+            if (this.moduleDefs[module].ftsglobalsearch) {
+                modules.push(module);
+            }
+        }
+
+        return modules;
+    }
+
+    /**
      * gets the module by the sysmoduleid
      *
      * @param sysmoudleid
