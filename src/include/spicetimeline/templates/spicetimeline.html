@@ -64,13 +64,17 @@
     <div #contentContainer class="slds-grid slds-grow slds-scrollable" style="width: 100%; min-height: 0">
         <div class="slds-grid slds-grid--vertical slds-theme--default" style="position: sticky; left: 0; z-index: 21" [ngStyle]="{width: periodDataWidth +'px', 'min-width': periodDataWidth +'px'}">
             <div [style.height.px]="eventHeight" class="slds-border--bottom slds-border--right slds-grid slds-theme--default" style="top: 0; z-index: 20; position: sticky">
-                <div *ngFor="let headerField of headerFields" [style.width.%]="100 / headerFields.length" class="slds-border--left slds-p-around--xx-small slds-truncate">
+                <div style="width: 30px"></div>
+                <div *ngFor="let headerField of headerFields; let first = first" [style.width.%]="100 / headerFields.length" [class.slds-border--left]="!first" class="slds-p-around--xx-small slds-truncate">
                     {{headerField}}
                 </div>
             </div>
             <div>
-                <div *ngFor="let record of records; trackBy: trackByItemFn" class="slds-grid slds-border--bottom slds-size--1-of-1" [style.height.px]="eventHeight">
-                    <div [style.height.px]="eventHeight" class="slds-border--bottom slds-border--right slds-size--1-of-1">
+                <div *ngFor="let record of records; trackBy: trackByItemFn" class="slds-grid slds-size--1-of-1 slds-border--bottom" [style.height.px]="eventHeight">
+                    <div [style.height.px]="eventHeight" [style.background-color]="focusedId == record.id ? focusColor : 'initial'" class="slds-border--right slds-size--1-of-1 slds-grid slds-grid--vertical-align-center">
+                        <div class="slds-p-left--xx-small" style="width: 30px">
+                            <system-checkbox [ngModel]="focusedId == record.id" (ngModelChange)="emitEvent(record)" [value]="record.id" class="slds-align--absolute-center"></system-checkbox>
+                        </div>
                         <div *ngIf="recordFieldsetFields?.length > 0; else summaryTemplate" [system-model-provider]="{id: record.id, module: recordModule, data: record}" class="slds-grid slds-height_full">
                             <field-container *ngFor="let recordFieldsetField of recordFieldsetFields" [field]="recordFieldsetField.field" [fieldconfig]="recordFieldsetField.fieldconfig" [style.width.%]="100 / headerFields.length" class="slds-border--left spice-timeline-record-row-data"></field-container>
                         </div>
@@ -89,13 +93,13 @@
             </div>
             <div class="slds-is-relative">
                 <div [ngStyle]="todayHourMarkerStyle"></div>
-                <div *ngFor="let record of records; trackBy: trackByItemFn" class="slds-grid slds-border--bottom slds-size--1-of-1 slds-is-relative slds-text-color--inverse" [style.height.px]="eventHeight">
+                <div *ngFor="let record of records; trackBy: trackByItemFn" [style.background-color]="focusedId == record.id ? focusColor : 'initial'" [style.height.px]="eventHeight" class="slds-grid slds-border--bottom slds-size--1-of-1 slds-is-relative slds-text-color--inverse">
                     <div *ngFor="let part of periodDuration; trackBy: trackByIndexFn" [style.width.px]="periodUnitWidth" [class.slds-theme--shade]="periodUnit === 'day' && recordsUnavailableTimes[record.id] && recordsUnavailableTimes[record.id][part.fullDate]" class="slds-border--right slds-height_full slds-grid">
                         <ng-container *ngIf="periodUnit === 'week' && recordsUnavailableTimes[record.id]">
                             <div *ngFor="let hour of part.hours; trackBy: trackByIndexFn" [style.width.%]="100 / part.hours.length" [class.slds-theme--shade]="recordsUnavailableTimes[record.id][hour]" class="slds-height_full"></div>
                         </ng-container>
                     </div>
-                    <spice-timeline-event *ngFor="let event of record.events; trackBy: trackByItemFn" [event]="event" [ngStyle]="event.style" (click)="emitEvent(event)" class="slds-truncate slds-p-around--xx-small"></spice-timeline-event>
+                    <spice-timeline-event *ngFor="let event of record.events; trackBy: trackByItemFn" [event]="event" [ngStyle]="event.style" (click)="emitEvent(record, event)" class="slds-truncate slds-p-around--xx-small"></spice-timeline-event>
                 </div>
             </div>
         </div>
