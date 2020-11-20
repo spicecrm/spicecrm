@@ -166,7 +166,7 @@ export class ServicePlannerMapsModelPopoverDirection {
             }
         };
         this.calculatedDateStart = new moment(this.servicePlannerService.timelineSelectedItem.event.data.date_end)
-            .add((this.directionData.duration.minutes + (this.directionData.duration.hours * 60)), 'minutes').format();
+            .add(moment.duration(this.directionData.duration.minutes + (this.directionData.duration.hours * 60) , 'minutes')).format();
         this.isLoading = false;
         this.cdRef.detectChanges();
     }
