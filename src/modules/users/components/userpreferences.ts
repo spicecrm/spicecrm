@@ -13,6 +13,7 @@ import {Subject} from "rxjs";
 import { session } from '../../../services/session.service';
 import { model } from '../../../services/model.service';
 import { configurationService } from '../../../services/configuration.service';
+import { metadata } from '../../../services/metadata.service';
 
 /**
  * @ignore
@@ -144,7 +145,8 @@ export class UserPreferences {
         private session: session,
         private model: model,
         private broadcast: broadcast,
-        private configurationService: configurationService ) {
+        private configurationService: configurationService,
+        private metadata: metadata) {
 
         this.view.isEditable = true;
 
@@ -153,9 +155,17 @@ export class UserPreferences {
 
         this.handlingWithForeignPrefs = this.session.authData.userId !== this.model.data.id;
 
+        // CR1000463: use spiceacl to enable editing
+        // keep BWC for old modules/ACL/ACLController.php
+        let _aclcontroller = this.configurationService.getSystemParamater('aclcontroller');
         // Only the user himself can view/edit the preferences, or the admin if enableSettingUserPrefsByAdmin is set (true) in config.php:
-        this.cannotPrefs = this.handlingWithForeignPrefs && ( !this.session.isAdmin || !this.configurationService.getSystemParamater('enableSettingUserPrefsByAdmin'));
-
+        if( _aclcontroller && _aclcontroller != 'spiceacl') {
+            this.cannotPrefs = this.handlingWithForeignPrefs && ( !this.session.isAdmin || !this.configurationService.getSystemParamater('enableSettingUserPrefsByAdmin'));
+        } else {
+            // use SpiceACL access
+            let _editPrefs = this.metadata.checkModuleAcl('UserPreferences', 'edit');
+            this.cannotPrefs = !_editPrefs;
+        }
         this.prefservice.needFormats();
         this.backend.getRequest('/timezones').subscribe( response => {
             this.timezones = response;
