@@ -33,6 +33,7 @@ export class MailboxesGmailTrafficManager {
             this.model.setField('settings', {
                 gmail_user_name: '',
                 gmail_email_address: '',
+                gmail_delete_emails: false
             });
         }
     }
