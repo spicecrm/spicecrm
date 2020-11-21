@@ -74,6 +74,13 @@ export class MailboxesManager {
     }
 
     /**
+     * getter for the mailboxes returning them sorted
+     */
+    get mailboxes() {
+        return this.modellist.listData.list.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    /**
      * getter for the current mailbox
      */
     get selected_mailbox() {

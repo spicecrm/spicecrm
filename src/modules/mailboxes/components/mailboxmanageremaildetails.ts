@@ -256,4 +256,13 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
     private forward() {
         this.modal.openModal('EmailForwardModal', true, this.injector);
     }
+
+    /**
+     * delete the email
+     *
+     * @private
+     */
+    private delete() {
+        this.model.delete();
+    }
 }
