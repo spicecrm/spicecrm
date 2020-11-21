@@ -10,6 +10,7 @@ import {session} from '../../services/session.service';
 import {navigation} from '../../services/navigation.service';
 import {layout} from '../../services/layout.service';
 import {ActivationStart, Router} from '@angular/router';
+import { configurationService } from '../../services/configuration.service';
 
 
 @Component({
@@ -23,12 +24,15 @@ export class GlobalHeader {
      */
     @ViewChild('header', {read: ViewContainerRef, static: false}) private header: ViewContainerRef;
 
-    constructor(private session: session, private router: Router, private toast: toast, private layout: layout, private navigation: navigation) {
+    constructor(private session: session, private router: Router, private toast: toast, private layout: layout, private navigation: navigation, private configurationService: configurationService) {
 
         // ToDo: check what this is doing here
         this.router.events.subscribe((val: any) => {
             if (val instanceof ActivationStart) {
-                if (val.snapshot.params.module === 'Users' && val.snapshot.params.id) {
+                // CR1000463: use spiceacl to enable listing and access foreign user records
+                // keep BWC for old modules/ACL/ACLController.php
+                let _aclcontroller = this.configurationService.getSystemParamater('aclcontroller');
+                if (_aclcontroller && _aclcontroller != 'spiceacl' && val.snapshot.params.module === 'Users' && val.snapshot.params.id) {
                     if (!this.session.authData.admin && val.snapshot.params.id != this.session.authData.userId) {
                         this.toast.sendToast('You are not allowed to view or edit foreign user data.', 'warning', null, 3);
                         this.router.navigate(['/module/Users']);
