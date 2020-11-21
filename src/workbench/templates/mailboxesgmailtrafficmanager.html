@@ -12,6 +12,11 @@
             </div>
         </div>
         <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <system-checkbox [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.gmail_delete_emails"><system-label label="LBL_DELETE_REMOTE"></system-label></system-checkbox>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
             <!--button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="getMailboxes()" [disabled]="!view.isEditMode()">
                 <system-label label="LBL_GET_LABELS"></system-label>
             </button-->
