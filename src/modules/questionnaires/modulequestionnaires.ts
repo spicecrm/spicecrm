@@ -52,8 +52,6 @@ import /*embed*/ {QuestionsetManager} from './components/questionsetmanager';
 import /*embed*/ {QuestionnaireResults} from './components/questionnaireresults';
 import /*embed*/ {QuestionnaireSingleEvaluationValues} from './components/questionnairesingleevaluationvalues';
 import /*embed*/ {QuestionnaireEntireEvaluation} from './components/questionnaireentireevaluation';
-import /*embed*/ {QuestionnaireFillOutModal} from './components/questionnairefilloutmodal';
-import /*embed*/ {QuestionnaireFillOutButton} from './components/questionnairefilloutbutton';
 
 
 @NgModule({
@@ -110,9 +108,7 @@ import /*embed*/ {QuestionnaireFillOutButton} from './components/questionnairefi
         QuestionnaireInterpretationAssignment,
         QuestionnaireResults,
         QuestionnaireSingleEvaluationValues,
-        QuestionnaireEntireEvaluation,
-        QuestionnaireFillOutModal,
-        QuestionnaireFillOutButton
+        QuestionnaireEntireEvaluation
     ]
 })
 export class ModuleQuestionnaires {}

@@ -6,6 +6,14 @@
         <div [system-overlay-loading-spinner]="verifying">
             <div class="slds-form-element">
                 <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>
+                    <system-label label="LBL_PHONEUSER_NAME"></system-label>
+                </label>
+                <div class="slds-form-element__control">
+                    <input type="text" autocomplete="off" [(ngModel)]="preferences.phoneusername" required class="slds-input"/>
+                </div>
+            </div>
+            <div class="slds-form-element">
+                <label class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>
                     <system-label label="LBL_USER_NAME"></system-label>
                 </label>
                 <div class="slds-form-element__control">
