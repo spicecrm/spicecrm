@@ -155,6 +155,11 @@ import /*embed*/ {SystemNavigationCollector} from "./components/systemnavigation
 import /*embed*/ {SystemNavigationManager} from "./components/systemnavigationmanager";
 import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/systemnavigationmanagerroutecontainer";
 
+import /*embed*/ {SystemPreferencesPanel} from "./components/systempreferencespanel";
+import /*embed*/ {SystemPreferencesPanelItem} from "./components/systempreferencespanelitem";
+import /*embed*/ {SystemPreferencesPanelItemDisplay} from "./components/systempreferencespanelitemdisplay";
+import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systempreferencespanelitemedit";
+
 @NgModule({
     imports: [
         DirectivesModule,
@@ -294,7 +299,11 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemNavigationCollector,
         SystemNavigationManager,
         SystemNavigationManagerRouteContainer,
-        SystemLabelEditorModal
+        SystemLabelEditorModal,
+        SystemPreferencesPanel,
+        SystemPreferencesPanelItem,
+        SystemPreferencesPanelItemDisplay,
+        SystemPreferencesPanelItemEdit
     ],
     entryComponents: [
         SystemDynamicRouteContainer,
@@ -414,6 +423,10 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemNavigationManager,
         SystemInputCountry,
         SystemInputState,
+        SystemPreferencesPanel,
+        SystemPreferencesPanelItem,
+        SystemPreferencesPanelItemDisplay,
+        SystemPreferencesPanelItemEdit
     ]
 })
 export class SystemComponents {
