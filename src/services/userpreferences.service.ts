@@ -2,8 +2,7 @@
  * @module services
  */
 import {Injectable} from '@angular/core';
-import {Subject} from 'rxjs';
-import {Observable} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {backend} from './backend.service';
 import {toast} from './toast.service';
 import {language} from './language.service';
@@ -216,8 +215,10 @@ export class userpreferences {
         this.formats.nameFormats.length = 0;
         this.formats.loaded = false;
         this.backend.getRequest('user/preferencesformats').subscribe((formats) => {
-            for (let item of formats.nameFormats) {
-                this.formats.nameFormats.push({name: item, example: this.translateNameFormat(item)});
+            if (Array.isArray(formats.nameFormats)) {
+                for (let item of formats.nameFormats) {
+                    this.formats.nameFormats.push({name: item, example: this.translateNameFormat(item)});
+                }
             }
             this.formats.loaded = true;
             retSubject.next(true);

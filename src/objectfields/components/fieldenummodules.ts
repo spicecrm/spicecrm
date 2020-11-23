@@ -18,4 +18,8 @@ export class FieldEnumModulesComponent extends fieldEnum {
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);
     }
+
+    get displayAsterisk() {
+        return !!this.fieldconfig.displayAsterisk;
+    }
 }
