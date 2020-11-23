@@ -1,138 +1,108 @@
 /**
  * @module ModuleUsers
  */
-import {Component} from "@angular/core";
-import {language} from "../../../services/language.service";
-import {view} from "../../../services/view.service";
-import {backend} from "../../../services/backend.service";
-import {toast} from "../../../services/toast.service";
-import {broadcast} from "../../../services/broadcast.service";
-import {userpreferences} from "../../../services/userpreferences.service";
+import {Component, OnDestroy} from '@angular/core';
+import {language} from '../../../services/language.service';
+import {view} from '../../../services/view.service';
+import {backend} from '../../../services/backend.service';
+import {toast} from '../../../services/toast.service';
+import {broadcast} from '../../../services/broadcast.service';
+import {userpreferences} from '../../../services/userpreferences.service';
 import {currency} from '../../../services/currency.service';
-import {Subject} from "rxjs";
-import { session } from '../../../services/session.service';
-import { model } from '../../../services/model.service';
-import { configurationService } from '../../../services/configuration.service';
+import {Subject, Subscription} from 'rxjs';
+import {session} from '../../../services/session.service';
+import {model} from '../../../services/model.service';
+import {configurationService} from '../../../services/configuration.service';
 
-/**
- * @ignore
- */
+/** @ignore */
 declare var _: any;
+
 /**
- * @ignore
+ * render the user preferences
  */
-declare var moment: any;
-
 @Component({
-    selector: "user-preferences",
-    templateUrl: "./src/modules/users/templates/userpreferences.html",
-    styles: [
-            `.slds-button--icon {
-            color: #eeeeee
-        }
-
-        .slds-button--icon:hover {
-            color: #5B5B5B
-        }`
-    ],
+    selector: 'user-preferences',
+    templateUrl: './src/modules/users/templates/userpreferences.html',
     providers: [view]
 })
-export class UserPreferences {
-
+export class UserPreferences implements OnDestroy {
     /**
-     * the preferences loaded
+     * holds the loaded preferences
+     * @private
      */
     private preferences: any = {};
-
     /**
-     * a list of dashboards that is available for selection
-     */
-    private dashboards: any[] = [];
-
-    /**
-     * the default preferences to be laoded
+     * holds the names of the default preferences to be loaded
+     * @private
      */
     private names = [
-        "export_delimiter",
-        "default_export_charset",
-        "currency",
-        "default_currency_significant_digits",
-        "datef",
-        "timef",
-        "timezone",
-        "num_grp_sep",
-        "dec_sep",
-        "default_locale_name_format",
-        "week_day_start",
-        "week_days_count",
-        "calendar_day_start_hour",
-        "calendar_day_end_hour",
-        "reminder_time",
-        "home_dashboard",
-        "home_dashboardset",
-        "home_assistant",
-        "help_icon",
-        "navigation_paradigm",
-        "distance_unit_system"
+        'export_delimiter',
+        'default_export_charset',
+        'currency',
+        'default_currency_significant_digits',
+        'datef',
+        'timef',
+        'timezone',
+        'num_grp_sep',
+        'dec_sep',
+        'default_locale_name_format',
+        'week_day_start',
+        'week_days_count',
+        'calendar_day_start_hour',
+        'calendar_day_end_hour',
+        'reminder_time',
+        'home_dashboard',
+        'home_dashboardset',
+        'home_assistant',
+        'help_icon',
+        'navigation_paradigm',
+        'distance_unit_system'
     ];
-
     /**
-     * availabel startdays for the calendar
+     * holds the dashboard sets
+     * @private
      */
-    private weekDayStartList = ["Sunday", "Monday"];
-    private visibilityOptions = ["visible", "hidden"];
-    private weekDaysCountList = [5,6,7];
-    private dayHoursList = [];
-    private reminderTimeOptions = this.language.getDisplayOptions('reminder_time_options');
-
-    private expanded = {loc: true, exp: true, other: true, calendar: true, home: true};
-    private exportDelimiterList = [",", ";"];
-
-    /**
-     * list of charsets
-     */
-    private charsetlist = [
-        "BIG-5", "CP1251", "CP1252", "EUC-CN", "EUC-JP", "EUC-KR", "EUC-TW", "ISO-2022-JP",
-        "ISO-2022-KR", "ISO-8859-1", "ISO-8859-2", "ISO-8859-3", "ISO-8859-4", "ISO-8859-5",
-        "ISO-8859-6", "ISO-8859-7", "ISO-8859-8", "ISO-8859-9", "ISO-8859-10", "ISO-8859-13",
-        "ISO-8859-14", "ISO-8859-15", "KOI8-R", "KOI8-U", "SJIS", "UTF-8"];
-    private currencySignificantDigitsList: string[] = ["1", "2", "3", "4", "5", "6"];
-    private thousandDelimiterList: string[] = [",", "."];
-
-    private dateFormatList: object[];
-    private timeFormatList: object[];
-
-    private currencyList: any[] = [];
     private dashboardSets: any[] = [];
-
     /**
-     * examples for the formatting of numbers
+     * holds the dashboard set data
+     * @private
      */
-    private formattingsOfNumbers = [
-        {
-            show: "1.000.000,00",
-            num_grp_sep: ".",
-            dec_sep: ","
-        },
-        {
-            show: "1,000,000.00",
-            num_grp_sep: ",",
-            dec_sep: "."
-        }
-    ];
-
-    private prefsLoaded = new Subject<string>();
-
-    private timezones: object;
-    private timezoneKeys: string[];
-
-    private cannotPrefs: boolean;
-    private handlingWithForeignPrefs: boolean;
+    private dashboardSetData = {};
+    /**
+     * holds the home dashboard data
+     * @private
+     */
+    private homeDashboardData = {};
+    /**
+     * holds a list of available dashboards
+     * @private
+     */
+    private dashboards: any[] = [];
+    /**
+     * holds a subscription to subscribe on preferences loaded
+     * @private
+     */
+    private loadedSubscription = new Subject<string>();
+    /**
+     * true if the user is admin or the current user
+     * @private
+     */
+    private canEdit: boolean;
+    /**
+     * holds the current user boolean
+     * @private
+     */
+    private isCurrentUser: boolean;
 
     /**
      * inidcates if the preferences are being loaded
      */
-    private loading: boolean = true;
+    private isLoading: boolean = true;
+    /**
+     * holds the subscriptions to unsubscribe
+     * @private
+     */
+    private subscriptions: Subscription;
 
     constructor(
         private backend: backend,
@@ -140,161 +110,139 @@ export class UserPreferences {
         private toast: toast,
         private currency: currency,
         private language: language,
-        private prefservice: userpreferences,
+        private preferencesService: userpreferences,
         private session: session,
         private model: model,
         private broadcast: broadcast,
-        private configurationService: configurationService ) {
+        private configuration: configurationService) {
 
+        this.loadInitialValues();
+    }
+
+    /**
+     * unsubscribe from subscriptions
+     */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
+    }
+
+    /**
+     * set the initial local list values
+     * @private
+     */
+    private loadInitialValues() {
         this.view.isEditable = true;
-
-        this.dateFormatList = this.prefservice.getPossibleDateFormats();
-        this.timeFormatList = this.prefservice.getPossibleTimeFormats();
-
-        this.handlingWithForeignPrefs = this.session.authData.userId !== this.model.data.id;
-
+        this.isCurrentUser = this.session.authData.userId == this.model.data.id;
         // Only the user himself can view/edit the preferences, or the admin if enableSettingUserPrefsByAdmin is set (true) in config.php:
-        this.cannotPrefs = this.handlingWithForeignPrefs && ( !this.session.isAdmin || !this.configurationService.getSystemParamater('enableSettingUserPrefsByAdmin'));
+        this.canEdit = this.isCurrentUser || (this.session.isAdmin && this.configuration.getSystemParamater('enableSettingUserPrefsByAdmin'));
 
-        this.prefservice.needFormats();
-        this.backend.getRequest('/timezones').subscribe( response => {
-            this.timezones = response;
-            this.timezoneKeys = Object.keys( this.timezones );
-        } );
-        this.currencyList = this.currency.getCurrencies();
+        this.loadDashboardsLists();
 
-        if ( !this.handlingWithForeignPrefs ) {
+        this.loadPreferences();
 
-            this.prefsLoaded.subscribe( () => {
-                this.preferences = _.pick( this.prefservice.unchangedPreferences.global, this.names );
+    }
 
-                // preferences are loaded
-                this.loading = false;
-            } );
-            this.prefservice.getPreferences( this.prefsLoaded );
+    /**
+     * load user preferences
+     * @private
+     */
+    private loadPreferences() {
+        if (this.isCurrentUser || this.canEdit) {
+
+            this.subscriptions = this.loadedSubscription.subscribe(() => {
+                this.isLoading = false;
+                this.preferences = _.pick(this.preferencesService.unchangedPreferences.global, this.names);
+
+                this.setDashboardSetData(this.preferences.home_dashboardset);
+                this.setHomeDashboardData(this.preferences.home_dashboardset);
+            });
+            this.preferencesService.getPreferences(this.loadedSubscription);
 
         } else {
-
-            if ( !this.cannotPrefs ) {
-                this.backend.getRequest( 'user/' + this.model.data.id + '/preferences/global', {} ).subscribe( prefs => {
+            this.backend.getRequest('user/' + this.model.data.id + '/preferences/global', {}).subscribe(prefs => {
+                    this.isLoading = false;
                     this.preferences = prefs;
 
-                    // set loaded to true
-                    this.loading = false;
+                    this.setDashboardSetData(prefs.home_dashboardset);
+                    this.setHomeDashboardData(this.preferences.home_dashboardset);
                 },
-                    error => {
-                        this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message);
-                        if ( error.status === 403 ) this.cannotPrefs = true; // Error should not happen, but in case it does ...
-                    });
-            }
-
+                error => {
+                    this.toast.sendToast(this.language.getLabel('LBL_ERROR') + ' ' + error.status, 'error', error.error.error.message);
+                    if (error.status === 403) this.canEdit = true; // Error should not happen, but in case it does ...
+                });
         }
+    }
 
-        for (let i = 0; i < 24; i++) {
-            this.dayHoursList.push(i);
-        }
-
-        this.backend.getList("Dashboards", [{sortfield: "name", sortdirection: "DESC"}], ["name", "id"], {limit: -99})
+    /**
+     * loads dashboards and dashboard sets lists
+     * @private
+     */
+    private loadDashboardsLists() {
+        this.backend.getList('Dashboards', [{sortfield: 'name', sortdirection: 'DESC'}], ['name', 'id'], {limit: -99})
             .subscribe((dashboards: any) => {
                 this.dashboards = dashboards.list;
+                this.setHomeDashboardData(this.preferences.home_dashboardset);
             });
-
-        this.backend.getList("DashboardSets", [{sortfield: "name", sortdirection: "DESC"}], ["name", "id"], {limit: -99})
+        this.backend.getList('DashboardSets', [{sortfield: 'name', sortdirection: 'DESC'}], ['name', 'id'], {limit: -99})
             .subscribe((dashboardSets: any) => {
                 this.dashboardSets = dashboardSets.list;
+                this.setDashboardSetData(this.preferences.home_dashboardset);
             });
     }
 
-    get datef() {
-        return this.preferences.datef ? moment().format(this.prefservice.jsDateFormat2momentDateFormat(this.preferences.datef)): "";
+    /**
+     * set the dashboard set data
+     * @param value
+     * @private
+     */
+    private setDashboardSetData(value) {
+        this.preferences.home_dashboardset = value;
+        this.dashboardSetData = this.dashboardSets.find(dashboardSet => dashboardSet.id == value);
     }
 
-    get timef() {
-        return this.preferences.timef ? moment().format(this.prefservice.jsTimeFormat2momentTimeFormat(this.preferences.timef)): "";
+    /**
+     * set the home dashboard data
+     * @param value
+     * @private
+     */
+    private setHomeDashboardData(value) {
+        this.preferences.home_dashboardset = value;
+        this.dashboardSetData = this.dashboardSets.find(dashboardSet => dashboardSet.id == value);
     }
 
-    get formattingOfNumbers(): string {
-        if (!this.preferences.num_grp_sep || !this.preferences.dec_sep) {
-            return "";
-        }
-        return "1"
-            + this.preferences.num_grp_sep + "000"
-            + this.preferences.num_grp_sep + "000"
-            + this.preferences.dec_sep + ("0".repeat(this.preferences.default_currency_significant_digits ? this.preferences.default_currency_significant_digits : 2));
-    }
-
-    private setFormattingOfNumbers(val: number | string) {
-        if (val === '-') {
-            this.preferences.num_grp_sep = this.preferences.dec_sep = null;
-        } else {
-            this.preferences.num_grp_sep = this.formattingsOfNumbers[val].num_grp_sep;
-            this.preferences.dec_sep = this.formattingsOfNumbers[val].dec_sep;
-        }
-    }
-
+    /**
+     * set view mode
+     * @private
+     */
     private cancel() {
         this.view.setViewMode();
     }
 
+    /**
+     * save preferences changes
+     * @private
+     */
     private save() {
 
-        if ( this.handlingWithForeignPrefs ) {
-            this.backend.postRequest('user/'+this.model.data.id+'/preferences/global', {}, this.preferences).subscribe(
+        if (!this.isCurrentUser) {
+            this.backend.postRequest('user/' + this.model.data.id + '/preferences/global', {}, this.preferences).subscribe(
                 savedprefs => {
                     this.preferences = savedprefs;
                     this.view.setViewMode();
                 },
                 error => {
-                    this.toast.sendToast(this.language.getLabel("LBL_ERROR") + " " + error.status, "error", error.error.error.message);
+                    this.toast.sendToast(this.language.getLabel('LBL_ERROR') + ' ' + error.status, 'error', error.error.error.message);
                 }
             );
         } else {
-            this.prefservice.setPreferences( this.preferences ).subscribe( () => {
-                this.toast.sendToast( this.language.getLabel( "LBL_DATA_SAVED" ), "success" );
-                this.preferences = _.pick( this.prefservice.unchangedPreferences.global, this.names );
+            this.preferencesService.setPreferences(this.preferences).subscribe(() => {
+                this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
+                this.preferences = _.pick(this.preferencesService.unchangedPreferences.global, this.names);
 
                 // broadcast that the references have been saved
                 this.broadcast.broadcastMessage('userpreferences.save');
             });
             this.view.setViewMode();
         }
-    }
-
-    private togglePanel(panel) {
-        this.expanded[panel] = !this.expanded[panel];
-    }
-
-    private getTabStyle(tab) {
-        if (!this.expanded[tab]) {
-            return {
-                height: "0px",
-                transform: "rotateX(90deg)"
-            };
-        }
-    }
-
-    private getExampleText(name: string): string {
-        let exampleText = '';
-        if (this.prefservice.formats.nameFormats) {
-            this.prefservice.formats.nameFormats.some((row, index) => {
-                if (name === row.name) {
-                    exampleText = row.example;
-                    return true;
-                }
-            });
-        }
-        return exampleText;
-    }
-
-    private change( event, pref ) {
-        this.preferences[pref] = ( event.srcElement.value === '-' ? null : event.srcElement.value );
-    }
-
-    private getDashboardSetData(id) {
-        return this.dashboardSets.find(dashboardSet => dashboardSet.id == id);
-    }
-
-    private getDashboardData(id) {
-        return this.dashboards.find(dashboard => dashboard.id == id);
     }
 }

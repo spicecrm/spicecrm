@@ -1,0 +1,38 @@
+<div class="slds-page-header">
+    <div class="slds-page-header__row">
+        <div class="slds-page-header__col-title">
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <div>
+                    <system-icon icon="custom67" sprite="custom" addclasses="slds-page-header__icon"></system-icon>
+                </div>
+                <div class="slds-media__body">
+                    <div class="slds-page-header__name">
+                        <div class="slds-page-header__name-title">
+                            <h1>
+                                <span class="slds-page-header__title slds-truncate" system-title="LBL_DEFAULT_PREFERENCES">
+                                    <system-label label="LBL_DEFAULT_PREFERENCES"></system-label>
+                                </span>
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid">
+           <ng-container *ngIf="view.isEditMode(); else editButtonContainer">
+               <button class="slds-button slds-button--neutral slds-m-horizontal--xx-small" (click)="view.setViewMode()">
+                   <system-label label="LBL_CANCEL"></system-label>
+               </button>
+               <button class="slds-button slds-button--brand" (click)="save()">
+                   <system-label label="LBL_SAVE"></system-label>
+               </button>
+           </ng-container>
+            <ng-template #editButtonContainer>
+                <button class="slds-button slds-button--neutral" (click)="view.setEditMode()">
+                    <system-label label="LBL_EDIT"></system-label>
+                </button>
+            </ng-template>
+        </div>
+    </div>
+</div>
+<system-preferences-panel [preferences]="preferences" class="spice-display-block slds-p-around--xx-small"></system-preferences-panel>
