@@ -59,6 +59,7 @@ import /*embed*/ { AdministrationSchedulerScheduleButton } from './components/ad
 import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryManagerItem, AdministrationDictionaryManagerItemField } from './components/administrationdictionarymanager';
 import /*embed*/ {AdministrationGeneralSettings} from "./components/administrationgeneralsettings";
 import /*embed*/ {AdministrationLanguages} from "./components/administrationlanguages";
+import /*embed*/ {AdministrationDefaultPreferences} from './components/administrationdefaultpreferences';
 
 
 
@@ -109,7 +110,8 @@ import /*embed*/ {AdministrationLanguages} from "./components/administrationlang
         AdministrationHomeScreenCard,
         AdministrationHomeScreenCardItem,
         AdministrationGeneralSettings,
-        AdministrationLanguages
+        AdministrationLanguages,
+        AdministrationDefaultPreferences
     ],
     entryComponents: [
         AdministrationMain,
@@ -120,7 +122,8 @@ import /*embed*/ {AdministrationLanguages} from "./components/administrationlang
         AdministrationFTSManager,
         AdministrationDictionaryManager,
         AdministrationDictionaryManagerItem,
-        AdministrationDictionaryManagerItemField
+        AdministrationDictionaryManagerItemField,
+        AdministrationDefaultPreferences
     ],
     exports: [],
 
