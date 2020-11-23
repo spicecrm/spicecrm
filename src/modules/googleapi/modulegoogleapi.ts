@@ -1,5 +1,5 @@
 /**
- * @module ModuleProjects
+ * @module ModuleEmails
  */
 import {CommonModule} from "@angular/common";
 import {NgModule} from "@angular/core";
@@ -13,11 +13,8 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ { projectwbsHierarchy } from "./services/projectwbshierarchy.service";
+import /*embed*/ {GoogleAPISettings} from "./components/googleapisettings";
 
-import /*embed*/ {ProjectWBSHierarchy} from "./components/projectwbshierarchy";
-import /*embed*/ {ProjectWBSHierarchyNode} from "./components/projectwbshierarchynode";
-import /*embed*/ {ProjectActivityDashlet} from "./components/projectactivitydashlet";
 
 @NgModule({
     imports: [
@@ -30,18 +27,7 @@ import /*embed*/ {ProjectActivityDashlet} from "./components/projectactivitydash
         DirectivesModule,
     ],
     declarations: [
-        ProjectWBSHierarchy,
-        ProjectWBSHierarchyNode,
-        ProjectActivityDashlet
+        GoogleAPISettings
     ]
 })
-export class ModuleProjects {
-    public readonly version = "1.0";
-    public readonly build_date = "/*build_date*/";
-
-    constructor(
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
-    }
-}
+export class ModuleGoogleAPI {}
