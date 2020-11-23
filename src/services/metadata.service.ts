@@ -1695,7 +1695,7 @@ export class metadata {
 
 @Injectable()
 export class aclCheck implements CanActivate {
-    constructor(private metadata: metadata, private router: Router, private session: session) {
+    constructor(private metadata: metadata, private router: Router, private session: session, private configurationService: configurationService) {
     }
 
     public canActivate(route, state) {
@@ -1707,8 +1707,13 @@ export class aclCheck implements CanActivate {
 
         // • prevents non-admins from listing the user list
         // • prevents non-admins from accessing foreign user records
-        if (route.params.module === 'Users' && (!route.params.id || route.params.id != this.session.authData.userId) && !this.session.authData.admin) {
-            return false;
+        // CR1000463: use spiceacl to enable listing and access foreign user records
+        // keep BWC for old modules/ACL/ACLController.php
+        let _aclcontroller = this.configurationService.getSystemParamater('aclcontroller');
+        if( _aclcontroller && _aclcontroller != 'spiceacl') {
+            if (route.params.module === 'Users' && (!route.params.id || route.params.id != this.session.authData.userId) && !this.session.authData.admin) {
+                return false;
+            }
         }
 
         // if ( route.params.module === 'Users' && this.session.authData.portalOnly ) return false; // prevents "portal only users" from listing the user list

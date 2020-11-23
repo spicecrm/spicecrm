@@ -13,6 +13,7 @@ import {Subject, Subscription} from 'rxjs';
 import {session} from '../../../services/session.service';
 import {model} from '../../../services/model.service';
 import {configurationService} from '../../../services/configuration.service';
+import {metadata} from "../../../services/metadata.service";
 
 /** @ignore */
 declare var _: any;
@@ -114,7 +115,8 @@ export class UserPreferences implements OnDestroy {
         private session: session,
         private model: model,
         private broadcast: broadcast,
-        private configuration: configurationService) {
+        private configuration: configurationService,
+        private metadata: metadata) {
 
         this.loadInitialValues();
     }
@@ -133,8 +135,17 @@ export class UserPreferences implements OnDestroy {
     private loadInitialValues() {
         this.view.isEditable = true;
         this.isCurrentUser = this.session.authData.userId == this.model.data.id;
+
         // Only the user himself can view/edit the preferences, or the admin if enableSettingUserPrefsByAdmin is set (true) in config.php:
-        this.canEdit = this.isCurrentUser || (this.session.isAdmin && this.configuration.getSystemParamater('enableSettingUserPrefsByAdmin'));
+        // CR1000463: use spiceacl to enable editing
+        // keep BWC for old modules/ACL/ACLController.php
+        const aclController = this.configuration.getSystemParamater('aclcontroller');
+        if( aclController && aclController != 'spiceacl') {
+            this.canEdit = this.isCurrentUser || (this.session.isAdmin && this.configuration.getSystemParamater('enableSettingUserPrefsByAdmin'));
+        } else {
+            // use SpiceACL access
+            this.canEdit = this.metadata.checkModuleAcl('UserPreferences', 'edit');
+        }
 
         this.loadDashboardsLists();
 
