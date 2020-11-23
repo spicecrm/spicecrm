@@ -1,10 +1,11 @@
 /**
  * @module ModuleMailboxes
  */
-import {Injectable, EventEmitter, Output} from '@angular/core';
+import {Injectable, EventEmitter, Output, OnDestroy} from '@angular/core';
 import {backend} from '../../../services/backend.service';
+import {broadcast} from '../../../services/broadcast.service';
 
-import {Subject, Observable, BehaviorSubject} from 'rxjs';
+import {Subject, Observable, BehaviorSubject, Subscription} from 'rxjs';
 
 /**
  * @ignore
@@ -12,7 +13,7 @@ import {Subject, Observable, BehaviorSubject} from 'rxjs';
 declare var moment: any;
 
 @Injectable()
-export class mailboxesEmails {
+export class mailboxesEmails implements OnDestroy{
 
     @Output('mailboxesLoaded') public mailboxesLoaded$: BehaviorSubject<boolean>;
 
@@ -71,13 +72,35 @@ export class mailboxesEmails {
      */
     public emailopenness: string = "";
 
+    /**
+     * holds teh subscriptions for the sevrice
+     *
+     * @private
+     */
+    private serviceSubscriptions: Subscription = new Subscription();
+
     constructor(
-        private backend: backend
+        private backend: backend,
+        private broadcast: broadcast
     ) {
         this.mailboxesLoaded$ = new BehaviorSubject<boolean>(false);
 
         // load the mailboxes
         this.getMailboxes();
+
+        // subscribe to the broadcast service
+        this.serviceSubscriptions.add(
+            this.broadcast.message$.subscribe(message => {
+                this.handleMessage(message);
+            })
+        );
+    }
+
+    /**
+     * unsubscribe to all subscriptions of the service
+     */
+    public ngOnDestroy() {
+        this.serviceSubscriptions.unsubscribe();
     }
 
     /**
@@ -147,6 +170,40 @@ export class mailboxesEmails {
             }
         );
 
+    }
+
+    /**
+     * handles model updates
+     *
+     * @param message
+     */
+    public handleMessage(message: any) {
+        // only handle if the module is the list module
+        if (message.messagedata.module !== 'Emails') {
+            return;
+        }
+
+        switch (message.messagetype) {
+            case 'model.delete':
+                let deletedItemIndex = this.emails.findIndex(item => item.id == message.messagedata.id);
+                if (deletedItemIndex >= 0) {
+                    if(this.activeMessage.id == message.messagedata.id){
+                        this.activeMessage = undefined;
+                    }
+
+                    this.emails.splice(deletedItemIndex, 1);
+                    this.totalcount--;
+
+                }
+                break;
+            case 'model.save':
+                let eventHandled = false;
+                let savedItemIndex = this.emails.findIndex(item => item.id == message.messagedata.id);
+                if (savedItemIndex >= 0) {
+                    this.emails[savedItemIndex] = message.messagedata.data;
+                }
+                break;
+        }
     }
 
     /**
