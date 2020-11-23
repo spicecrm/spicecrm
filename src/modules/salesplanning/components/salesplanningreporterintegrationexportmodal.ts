@@ -83,7 +83,7 @@ export class SalesPlanningReporterIntegrationExportModal implements OnInit {
         });
 
         // get the reporter Fields
-        this.reporterFields = JSON.parse(this.model.getField('listfields'));
+        this.reporterFields = this.model.getField('listfields');
     }
 
     /**
