@@ -61,7 +61,7 @@ export class SpiceAttachmentAddImageModal {
      */
     private add() {
         // get the image data fromn the uploader
-        let mediaMetaData = this.inputMedia.imageMetaData;
+        let mediaMetaData = this.inputMedia.mediaMetaData;
 
         // upload the attachment
         this.modelattachments.uploadFileBase64(this.filecontent.substring(this.filecontent.indexOf('base64,') + 7), mediaMetaData.filename, mediaMetaData.mimetype);
