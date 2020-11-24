@@ -302,11 +302,11 @@ export class modellist implements OnDestroy {
                 return (!a.priority || a.priority > b.priority) ? 1 : -1;
             });
 
-            // if we are in embedded mode stop processing and return
-            if(embedded) return;
-
             // load the list types for the module
             this.loadListTypes();
+
+            // if we are in embedded mode stop processing and return
+            if(embedded) return;
 
             // try to get the list data from the session if there is session data stored
             if (!this.getFromSession()) {
