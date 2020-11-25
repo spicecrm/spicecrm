@@ -53,7 +53,6 @@ import /*embed*/ {QuestionnaireResults} from './components/questionnaireresults'
 import /*embed*/ {QuestionnaireSingleEvaluationValues} from './components/questionnairesingleevaluationvalues';
 import /*embed*/ {QuestionnaireEntireEvaluation} from './components/questionnaireentireevaluation';
 
-
 @NgModule({
     imports: [
         CommonModule,
@@ -108,7 +107,9 @@ import /*embed*/ {QuestionnaireEntireEvaluation} from './components/questionnair
         QuestionnaireInterpretationAssignment,
         QuestionnaireResults,
         QuestionnaireSingleEvaluationValues,
-        QuestionnaireEntireEvaluation
+        QuestionnaireEntireEvaluation,
+        // QuestionnaireFillOutModal,
+        // QuestionnaireFillOutButton
     ]
 })
 export class ModuleQuestionnaires {}

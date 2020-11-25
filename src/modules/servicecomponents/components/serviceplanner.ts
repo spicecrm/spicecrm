@@ -94,6 +94,7 @@ export class ServicePlanner implements OnInit, OnDestroy {
         this.modellist.usecache = false;
         // set the module in an embedded mode so not the full list is loaded
         this.modellist.setModule('ServiceOrders', true);
+        this.modellist.setListType('all', false, [], false);
         this.modellist.listcomponent = 'SpiceGoogleMapsList';
         this.modellist.reLoadList(true);
     }
