@@ -24,7 +24,7 @@ export class UserAddButton {
         if( _aclcontroller && _aclcontroller != 'spiceacl') {
             if (this.session.isAdmin) this.disabled = false;
         } else {
-            if (this.metadata.checkModuleAcl('Users', 'edit')) {
+            if (this.metadata.checkModuleAcl('Users', 'create')) {
                 this.disabled = false;
             }
         }
