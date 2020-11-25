@@ -11,6 +11,8 @@ import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {ModuleMediaFiles} from '../../modules/mediafiles/modulemediafiles';
 import {DirectivesModule} from '../../directives/directives';
 
+import /*embed*/ {questionnaireParticipationService} from "./services/questionnaireparticipation.service";
+
 import /*embed*/ {QuestionsManager} from './components/questionsmanager';
 import /*embed*/ {QuestionsManagerEditMulti} from "./components/questionsmanagereditmulti";
 import /*embed*/ {QuestionsManagerAddModal} from './components/questionsmanageraddmodal';
@@ -52,7 +54,6 @@ import /*embed*/ {QuestionsetManager} from './components/questionsetmanager';
 import /*embed*/ {QuestionnaireResults} from './components/questionnaireresults';
 import /*embed*/ {QuestionnaireSingleEvaluationValues} from './components/questionnairesingleevaluationvalues';
 import /*embed*/ {QuestionnaireEntireEvaluation} from './components/questionnaireentireevaluation';
-
 
 @NgModule({
     imports: [
@@ -108,7 +109,9 @@ import /*embed*/ {QuestionnaireEntireEvaluation} from './components/questionnair
         QuestionnaireInterpretationAssignment,
         QuestionnaireResults,
         QuestionnaireSingleEvaluationValues,
-        QuestionnaireEntireEvaluation
+        QuestionnaireEntireEvaluation,
+        // QuestionnaireFillOutModal,
+        // QuestionnaireFillOutButton
     ]
 })
 export class ModuleQuestionnaires {}

@@ -12,6 +12,7 @@ import {
 import { language } from '../../../services/language.service';
 import { backend } from "../../../services/backend.service";
 import { helper } from '../../../services/helper.service';
+import { questionnaireParticipationService } from '../services/questionnaireparticipation.service';
 
 /**
 * @ignore
@@ -35,12 +36,6 @@ export class QuestionsetRender implements OnInit {
 
     @Input() public questionsetIdOrObject: any;
     @Input() public participation_id: string;
-    @Input() public noEdit = false;
-    @Input() public inModal = true;
-    @Input() public timerText: string = null;
-    @Input() public timerWarning = false;
-    @Input() public hideFinishedQuestions = false;
-    @Input() public previewMode = false;
 
     private answers = {};
     private imageWidthOption = 200;
@@ -59,7 +54,7 @@ export class QuestionsetRender implements OnInit {
 
     private isCompleteChange = new EventEmitter();
 
-    constructor( private language: language, private backend: backend, private helperservice: helper ) { }
+    constructor( private language: language, private backend: backend, private helperservice: helper, private questionnaireParticipation: questionnaireParticipationService ) { }
 
     private set numOfFinishedQuestions( val ) {
         this.numOfFinishedQuestionsValue = val;
