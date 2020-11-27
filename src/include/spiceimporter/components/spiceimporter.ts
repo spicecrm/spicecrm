@@ -1,8 +1,8 @@
 /**
  * @module SpiceImporterModule
  */
-import {AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {Router} from '@angular/router';
 import {metadata} from '../../../services/metadata.service';
 import {model} from '../../../services/model.service';
 import {navigationtab} from '../../../services/navigationtab.service';
@@ -19,13 +19,7 @@ declare var _: any;
 
 @Component({
     templateUrl: './src/include/spiceimporter/templates/spiceimporter.html',
-    providers: [model, SpiceImporterService],
-    styles: [
-        ':host >>> .slds-progress__marker global-button-icon svg {fill:#CA1B1F}',
-        ':host >>> .slds-progress__marker:hover global-button-icon svg {fill:#FD595D}',
-        ':host >>> .slds-progress__marker:active global-button-icon svg {fill:#FD595D}',
-        ':host >>> .slds-progress__marker:focus global-button-icon svg {fill:#FD595D}',
-    ]
+    providers: [model, SpiceImporterService]
 })
 export class SpiceImporter implements OnInit {
     @ViewChild('contentcontainer', {read: ViewContainerRef, static: true}) private contentcontainer: ViewContainerRef;
@@ -44,9 +38,7 @@ export class SpiceImporter implements OnInit {
                 private navigationtab: navigationtab,
                 private router: Router,
                 private backend: backend,
-                private toast: toast,
-                private cdRef: ChangeDetectorRef,
-                private activatedRoute: ActivatedRoute) {
+                private toast: toast) {
 
         // get the bean details
         this.model.module = this.navigationtab.activeRoute.params.module;
@@ -72,7 +64,10 @@ export class SpiceImporter implements OnInit {
 
     public ngOnInit() {
         // set the navigation paradigm
-        this.navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_IMPORT'), displaymodule: this.model.module});
+        this.navigationtab.setTabInfo({
+            displayname: this.language.getLabel('LBL_IMPORT'),
+            displaymodule: this.model.module
+        });
 
         // get saved imports
         this.backend.getRequest('/modules/SpiceImports/savedImports/' + this.model.module).subscribe(res => {

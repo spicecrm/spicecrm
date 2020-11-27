@@ -1,28 +1,16 @@
 /**
  * @module SpiceImporterModule
  */
-import {
-    Component,
-    Injectable,
-    Input,
-    OnInit,
-    ChangeDetectorRef,
-    enableProdMode,
-    SystemJsNgModuleLoader
-} from '@angular/core';
 import {NgModule} from '@angular/core';
-import {LocationStrategy, HashLocationStrategy} from "@angular/common";
-import {BrowserModule, Title} from '@angular/platform-browser';
-import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
-import {HttpClientModule, HttpHeaders, HttpClient} from "@angular/common/http";
+import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule} from '@angular/forms';
-import {RouterModule, Routes, Router, ActivatedRoute} from '@angular/router';
-import {Subject, Observable} from 'rxjs';
 
 // spicecrm generic modules
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
+import {ObjectFields} from "../../objectfields/objectfields";
+import {DirectivesModule} from "../../directives/directives";
 
 import /*embed*/ {SpiceImporterService} from './services/spiceimporter.service';
 
@@ -35,17 +23,15 @@ import /*embed*/ {SpiceImporterUpdate} from "./components/spiceimporterupdate";
 import /*embed*/ {SpiceImporterResult} from './components/spiceimporterresult';
 import /*embed*/ {SpiceImporter} from './components/spiceimporter';
 
-import {ObjectFields} from "../../objectfields/objectfields";
-
 @NgModule({
     imports: [
         BrowserModule,
-        HttpClientModule,
         FormsModule,
         SystemComponents,
         GlobalComponents,
         ObjectComponents,
-        ObjectFields
+        ObjectFields,
+        DirectivesModule
     ],
     declarations: [
         SpiceImporter,
