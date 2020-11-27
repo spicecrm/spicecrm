@@ -144,6 +144,7 @@ import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
 import /*embed*/ {SystemInputMedia} from './components/systeminputmedia';
 import /*embed*/ {SystemInputTimezone} from './components/systeminputtimezone';
 import /*embed*/ {SystemInputBase64} from './components/systeminputbase64';
+import /*embed*/ {SystemInputFile} from './components/systeminputfile';
 
 import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
 import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem";
@@ -303,7 +304,8 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemPreferencesPanel,
         SystemPreferencesPanelItem,
         SystemPreferencesPanelItemDisplay,
-        SystemPreferencesPanelItemEdit
+        SystemPreferencesPanelItemEdit,
+        SystemInputFile
     ],
     entryComponents: [
         SystemDynamicRouteContainer,
@@ -426,7 +428,8 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemPreferencesPanel,
         SystemPreferencesPanelItem,
         SystemPreferencesPanelItemDisplay,
-        SystemPreferencesPanelItemEdit
+        SystemPreferencesPanelItemEdit,
+        SystemInputFile
     ]
 })
 export class SystemComponents {
