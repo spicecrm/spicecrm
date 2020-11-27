@@ -22,21 +22,34 @@ export class QuestionnaireSingleEvaluationValues implements OnInit {
     private evaluationValues = [];
     private source = '';
 
+    private noParticipation: boolean;
+
     constructor( private backend: backend, private model: model, private language: language ) { }
 
     public ngOnInit(): void {
-
+        // The Service Feedback is in creation just now?
+        if ( this.model.isNew ) {
+            this.noParticipation = true; // In case there is no Service Feedback yet (in creation just now), then there is also no Questionnaire Participation.
+            this.isLoading = false;
+            return;
+        }
         this.backend.postRequest( 'module/QuestionnaireEvaluations/generate/byReference/ServiceFeedbacks/' + this.model.id ).subscribe( ( data: any ) => {
             this.isLoading = false;
             this.source = data.source;
+            this.noParticipation = ( data.source === 'noParticipation' );
             if ( data.values ) {
                 for( let category in data.values ) {
                     this.evaluationValues.push( data.values[category] );
                     this.language.sortObjects( this.evaluationValues, 'name' );
                 }
             }
-        } );
-
+        },
+        error => {
+            if( error.status === 404 ) {
+                this.noParticipation = true; // In case there is no Service Feedback yet, then there is also no Questionnaire Participation.
+                this.isLoading = false;
+            }
+        });
     }
 
     private toggleSection(): void {
