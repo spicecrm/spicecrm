@@ -7,6 +7,7 @@ import {backend} from "../../services/backend.service";
 import {toast} from "../../services/toast.service";
 import {modelutilities} from "../../services/modelutilities.service";
 import {metadata} from "../../services/metadata.service";
+import {modal} from "../../services/modal.service";
 
 
 @Component({
@@ -52,7 +53,8 @@ export class SystemLabelEditorModal implements OnInit {
         private metadata: metadata,
         private language: language,
         private utils: modelutilities,
-        private toast: toast
+        private toast: toast,
+        private modal: modal
     ) {
     }
 
@@ -92,6 +94,7 @@ export class SystemLabelEditorModal implements OnInit {
     get translations(): any {
         return this.labelData[`${this.currentScope}_translations`];
     }
+
 
     /**
      * add new translation to label
@@ -149,14 +152,21 @@ export class SystemLabelEditorModal implements OnInit {
                 if (res) {
                     this.labelData = res;
                 } else {
-                    this.labelData = {
-                        id: this.utils.generateGuid(),
-                        name: this.labelData.name,
-                        scope: this.currentScope,
-                        global_translations: [],
-                        custom_translations: []
-                    };
-                    this.addTranslation(this.language.currentlanguage);
+                    // prompt the user to set the new scope
+                    this.modal.openModal('SystemLabelEditorGlobalCustomModal', false).subscribe(modalRef => {
+                        modalRef.instance.labelscope.subscribe(scope => {
+                            this.currentScope = scope;
+                            this.labelData = {
+                                id: this.utils.generateGuid(),
+                                name: this.labelData.name,
+                                scope: this.currentScope,
+                                global_translations: [],
+                                custom_translations: []
+                            };
+                            this.addTranslation(this.language.currentlanguage);
+                        });
+                    });
+
                 }
                 this.setUntranslatedLanguages();
             },
