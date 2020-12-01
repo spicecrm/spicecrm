@@ -54,6 +54,10 @@ export class SystemPlaceholderDirective implements OnDestroy {
      * set the element reference title attribute
      */
     private setElementTitleAttribute() {
-        this.elementRef.nativeElement.setAttribute('placeholder', this.language.getLabel(this.label));
+        if(this.label) {
+            this.elementRef.nativeElement.setAttribute('placeholder', this.language.getLabel(this.label));
+        } else {
+            this.elementRef.nativeElement.setAttribute('placeholder', '');
+        }
     }
 }
