@@ -136,6 +136,13 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 // read the template XML and parse it
                 $dir = dirname(__DIR__);
                 $filepath = "$dir/assets/outlook/spicecrmoutlookplugin.xml";
+
+                // in case we have a custom xml, use it
+                $customfilepath = "$dir/config/assets/outlook/spicecrmoutlookplugin.xml";
+                if(file_exists($customfilepath)) {
+                    $filepath = $customfilepath;
+                }
+
                 $file = file_get_contents($filepath);
                 echo(str_replace('<serverurl>', $serverurl, $file));
                 break;
