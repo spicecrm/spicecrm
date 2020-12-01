@@ -22,7 +22,7 @@
                 <div class="slds-form-element__control">
                     <div class="slds-file-selector slds-file-selector_files" (drop)="onDrop($event)" (dragover)="onDragOver($event)" (dragleave)="onDragLeave()">
                         <div class="slds-file-selector__dropzone" [ngClass]="{'slds-has-drag-over':isDragOver}">
-                            <input #fileupload class="slds-file-selector__input slds-assistive-text" accept=".gz" type="file" id="config-file-upload-input" (change)="fileSelectionChange()" [disabled]="isUploading" />
+                            <input #fileupload (click)="fileupload.value = null" class="slds-file-selector__input slds-assistive-text" accept=".gz" type="file" id="config-file-upload-input" (change)="fileSelectionChange()" [disabled]="isUploading" />
                             <label class="slds-file-selector__body" for="config-file-upload-input">
                                 <span class="slds-file-selector__button slds-button slds-button_neutral">
                                         <system-button-icon [icon]="'upload'" [size]="'small'" [addclasses]="'slds-button__icon_left'"></system-button-icon>

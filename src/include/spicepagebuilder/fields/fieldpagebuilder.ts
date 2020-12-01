@@ -81,7 +81,7 @@ export class fieldPageBuilder extends fieldGeneric implements OnInit, AfterViewI
             )
         );
         this.subscriptions.add(
-            this.model.mode$.subscribe(() =>
+            this.view.mode$.subscribe(() =>
                 this.cdRef.detectChanges()
             )
         );
