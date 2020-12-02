@@ -27,16 +27,14 @@
             </a>
         </li>
     </ul>
-    <div class="slds-scrollable">
+    <div>
         <!--groupware-email-archive-pane-beans [ngClass]="{'slds-hide': activetab!='beans'}"></groupware-email-archive-pane-beans>
         <groupware-email-archive-pane-search [ngClass]="{'slds-hide': activetab!='search'}"></groupware-email-archive-pane-search>
         <groupware-email-archive-pane-attachments [ngClass]="{'slds-hide': activetab!='attachments'}"></groupware-email-archive-pane-attachments>
         <groupware-email-archive-pane-linked [ngClass]="{'slds-hide': activetab!='linked'}"></groupware-email-archive-pane-linked-->
-        <ng-container *ngFor="let tab of getTabs(); let tabindex = index">
-            <div class="slds-vertical-tabs__content slds-scrollable--y slds-p-around--xx-small slds-show" [ngClass]="{'slds-hide': activetab!=tabindex}" role="tabpanel">
-                <groupware-email-archive-pane-item *ngIf="tab.componentset" [componentconfig]="tab"></groupware-email-archive-pane-item>
-            </div>
-        </ng-container>
+        <div *ngFor="let tab of getTabs(); let tabindex = index" system-to-bottom-noscroll class="slds-vertical-tabs__content slds-scrollable--y slds-p-around--xx-small slds-show" [ngClass]="{'slds-hide': activetab!=tabindex}" role="tabpanel">
+            <groupware-email-archive-pane-item *ngIf="tab.componentset" [componentconfig]="tab"></groupware-email-archive-pane-item>
+        </div>
     </div>
 
 
