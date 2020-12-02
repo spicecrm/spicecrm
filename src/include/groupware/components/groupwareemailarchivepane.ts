@@ -1,7 +1,7 @@
 /**
  * @module ModuleGroupware
  */
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {metadata} from "../../../services/metadata.service";
 
@@ -13,7 +13,7 @@ import {metadata} from "../../../services/metadata.service";
     selector: 'groupware-email-archive-pane',
     templateUrl: './src/include/groupware/templates/groupwareemailarchivepane.html'
 })
-export class GroupwareEmailArchivePane {
+export class GroupwareEmailArchivePane implements OnInit{
     /**
      * Currently active tab.
      */
@@ -22,7 +22,7 @@ export class GroupwareEmailArchivePane {
     /**
      * the component config
      */
-    public componentconfig: any = [];
+    public componentconfig: any;
 
     constructor(
         private metadata: metadata,
@@ -35,6 +35,12 @@ export class GroupwareEmailArchivePane {
      * loads the componentconfig if not passed in
      */
     public ngOnInit() {
+        // check that we have a config if no load it
+        if(!this.componentconfig){
+            this.componentconfig = this.metadata.getComponentConfig('GroupwareEmailArchivePane');
+        }
+
+        // get the panels and load the panel item configs and store them
         if (this.componentconfig && this.componentconfig.componentset) {
             let items = this.metadata.getComponentSetObjects(this.componentconfig.componentset);
             this.componentconfig = [];
