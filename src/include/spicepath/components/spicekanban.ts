@@ -319,7 +319,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
      */
     private getStageLabel(stagedata) {
         if (stagedata.stage_label) {
-            return this.language.getLabel(stagedata.stage_label);
+            return stagedata.stage_label;
         } else {
             return stagedata.stage_name;
         }
