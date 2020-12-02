@@ -43,6 +43,10 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
             let modelFields = this.metadata.getModuleFields(this.model.module);
             if (modelFields.currency_id) this.currencyidfield = 'currency_id';
         }
+
+        if (this.isEditMode()) {
+            this.setCurrencyFromPreferences();
+        }
     }
 
     get currencyId(){
@@ -99,6 +103,28 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
         } else {
             // this.value = Math.floor(val * Math.pow(10, this.userpreferences.toUse.default_currency_significant_digits)) / Math.pow(10, this.userpreferences.toUse.default_currency_significant_digits);
             this.model.setField(this.fieldname, Math.floor(val * Math.pow(10, this.userpreferences.toUse.default_currency_significant_digits)) / Math.pow(10, this.userpreferences.toUse.default_currency_significant_digits))
+        }
+    }
+
+    /**
+     * handle view mode change to set the currency id from user preferences if editing is true
+     * @param mode
+     */
+    public handleViewModeChange(mode) {
+        if (mode == 'edit') {
+            this.setCurrencyFromPreferences();
+        }
+        super.handleViewModeChange(mode);
+
+    }
+
+    /**
+     * load currency id from user preferences
+     * @private
+     */
+    private setCurrencyFromPreferences() {
+        if (!!this.currencyidfield && !this.model.data[this.currencyidfield]) {
+            this.model.data[this.currencyidfield] = this.userpreferences.toUse.currency;
         }
     }
 }
