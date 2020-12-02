@@ -41,7 +41,7 @@ export class ObjectVerticalTabContainer implements OnInit {
     /**
      * the number of the active tab
      */
-    private activeTab: number = 0
+    private activeTab: number = 0;
 
     /**
      * holds which tabs have been activated already. Since tabs are only rendered when selected
