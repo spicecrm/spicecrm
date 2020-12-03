@@ -38,7 +38,7 @@ export class SpiceInstallerReview implements AfterViewInit {
      */
     private install() {
         this.loading = true;
-        this.http.post(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/KREST/spiceinstaller/install`, this.spiceinstaller.configObject).subscribe(
+        this.http.post(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/spiceinstaller/install`, this.spiceinstaller.configObject).subscribe(
             (response: any) => {
                 let res = response;
                 this.loading = false;
