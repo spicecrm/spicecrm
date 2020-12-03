@@ -100,7 +100,47 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                curl_setopt($ch, CURLOPT_URL, $testUrl . '/KREST/sysinfo');
+                curl_setopt($ch, CURLOPT_URL, $testUrl . '/sysinfo');
+                $result = curl_exec($ch);
+
+                if ($result == false) {
+                    $message = curl_error($ch);
+                } else {
+                    $info = curl_getinfo($ch);
+
+                    switch ($info['http_code']) {
+                        case '200':
+                            $success = true;
+                            $message = $result;
+                            break;
+                        default:
+                            $message = 'http response code ' . $info['http_code'] . ' returned from server';
+                            break;
+
+                    }
+                }
+
+                echo json_encode(array('success' => $success, 'message' => $message));
+                break;
+            case 'installercheck':
+                $success = false;
+                $message = '';
+
+                // get the params
+                $params = explode('&', $urlArray[1]);
+                $paramsArray = [];
+                foreach ($params as $param) {
+                    $eqPos = strpos($param, '=');
+                    $paramsArray[substr($param, 0, $eqPos)] = substr($param, $eqPos + 1);
+                }
+
+                // get the url sent
+                $testUrl = base64_decode($paramsArray['url']);
+
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_URL, $testUrl . '/isysinfo');
                 $result = curl_exec($ch);
 
                 if ($result == false) {
