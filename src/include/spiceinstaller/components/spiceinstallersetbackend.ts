@@ -32,7 +32,7 @@ export class SpiceInstallerSetBackEnd {
 
     private testConnection() {
         this.checking = true;
-        this.http.get('config/check', {params: {url: btoa(this.spiceinstaller.systemurl)}}).subscribe(
+        this.http.get('config/installercheck', {params: {url: btoa(this.spiceinstaller.systemurl)}}).subscribe(
             (res: any) => {
                 var response = res;
                 if (response.success != true) {
