@@ -60,7 +60,7 @@ class configHandler
         fwrite($confFile, json_encode(array(
             'id' => $siteDetails['id'],
             'display' => $siteDetails['display'],
-            'backendUrl' => $siteDetails['backendUrl'] . '/KREST',
+            'backendUrl' => $siteDetails['backendUrl'],
             'proxy' => $siteDetails['proxy'] == 1 ? true : false,
             'developerMode' => $siteDetails['developerMode'] == 1 ? true : false,
             'loginProgressBar' => $siteDetails['loginProgressBar'] == 1 ? true : false,
