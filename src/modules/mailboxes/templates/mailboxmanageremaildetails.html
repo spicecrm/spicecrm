@@ -23,13 +23,22 @@
                 </div>
                 <object-action-container [actionset]="actionSet" (actionemitter)="handleAction($event)"></object-action-container>
                 <div class="slds-p-left--small slds-button-group">
-                    <button class="slds-button slds-button--icon slds-button_icon-border-filled" *ngIf="isRead" (click)="markUnread()" [title]="language.getLabel('LBL_MARK_UNREAD')">
+                    <button class="slds-button slds-button--icon slds-button_icon-border-filled" (click)="reply()" [title]="language.getLabel('LBL_REPLY')">
+                        <system-button-icon icon="reply"></system-button-icon>
+                    </button>
+                    <button class="slds-button slds-button--icon slds-button_icon-border-filled" (click)="forward()" [title]="language.getLabel('LBL_FORWARD')">
+                        <system-button-icon icon="forward"></system-button-icon>
+                    </button>
+                    <button class="slds-button slds-button--icon slds-button_icon-border-filled" *ngIf="model.checkAccess('delete')" (click)="delete()" [title]="language.getLabel('LBL_DELETE')">
+                        <system-button-icon icon="delete"></system-button-icon>
+                    </button>
+                    <button class="slds-button slds-button--icon slds-button_icon-border-filled" [disabled]="!model.checkAccess('edit')" *ngIf="isRead" (click)="markUnread()" [title]="language.getLabel('LBL_MARK_UNREAD')">
                         <system-button-icon icon="email"></system-button-icon>
                     </button>
-                    <button class="slds-button slds-button--icon slds-button_icon-border-filled" *ngIf="!isUserClosed" (click)="completeMail()" [title]="language.getLabel('LBL_MARK_USER_CLOSED')">
+                    <button class="slds-button slds-button--icon slds-button_icon-border-filled" [disabled]="!model.checkAccess('edit')" *ngIf="!isUserClosed" (click)="completeMail()" [title]="language.getLabel('LBL_MARK_USER_CLOSED')">
                         <system-button-icon icon="lock"></system-button-icon>
                     </button>
-                    <button class="slds-button slds-button--icon slds-button_icon-border-filled" *ngIf="isUserClosed" (click)="reopen()" [title]="language.getLabel('LBL_REOPEN')">
+                    <button class="slds-button slds-button--icon slds-button_icon-border-filled" [disabled]="!model.checkAccess('edit')" *ngIf="isUserClosed" (click)="reopen()" [title]="language.getLabel('LBL_REOPEN')">
                         <system-button-icon icon="unlock"></system-button-icon>
                     </button>
                 </div>

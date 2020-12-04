@@ -30,7 +30,7 @@ export class SpiceImporterService {
     // For backend END //
     public savedImports: any[] = [];
     public fileRows: string = '';
-    public fileData: any[] = [];
+    public fileData;
     public currentImportStep: number = 0;
     public result: any = {};
     public importStepsText: any[] =

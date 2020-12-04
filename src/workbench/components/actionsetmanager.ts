@@ -346,6 +346,12 @@ export class ActionsetManager {
     private drop(event) {
         this.currentActionSet.actions.splice(event.currentIndex, 0, this.currentActionSet.actions.splice(event.previousIndex, 1)[0]);
 
+        // rebuild the sequence
+        let i = 0;
+        for(let actionitem of this.currentActionSet.actions){
+            actionitem.sequence = i;
+            i++;
+        }
     }
 
     private deleteChanges() {

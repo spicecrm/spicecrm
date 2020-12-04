@@ -5,9 +5,11 @@ import {
     Component,
     OnDestroy,
     ViewChild,
-    ViewContainerRef
+    ViewContainerRef,
+    Injector
 } from "@angular/core";
 import {model} from "../../../services/model.service";
+import {modal} from "../../../services/modal.service";
 import {view} from "../../../services/view.service";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
@@ -53,6 +55,8 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
         private backend: backend,
         private toast: toast,
         private view: view,
+        private modal: modal,
+        private injector: Injector
     ) {
         // subscribe to the event when a message is selected
         this.mailboxSubscription = this.mailboxesEmails.activeMessage$.subscribe(email => {
@@ -233,5 +237,32 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
                 this.toast.sendAlert('Cannot change openness to ' + openness);
             }
         );
+    }
+
+    /**
+     * reply to the email
+     *
+     * @private
+     */
+    private reply() {
+        this.modal.openModal('EmailReplyModal', true, this.injector);
+    }
+
+    /**
+     * forward the email
+     *
+     * @private
+     */
+    private forward() {
+        this.modal.openModal('EmailForwardModal', true, this.injector);
+    }
+
+    /**
+     * delete the email
+     *
+     * @private
+     */
+    private delete() {
+        this.model.delete();
     }
 }

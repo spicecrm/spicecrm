@@ -1,12 +1,12 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
-    {{getValue()}}
+    {{displayValue?.display}}
 </field-generic-display>
 <div *ngIf="isEditMode()" class="slds-form-element">
     <div class="slds-form-element__control" [ngClass]="getFieldClass()">
         <div class="slds-select_container slds-m-vertical--xx-small">
-            <select class="slds-select" [disabled]="isDisabled" [(ngModel)]="model.data[fieldname]">
-                <ng-container *ngFor="let o of getOptions()">
+            <select class="slds-select" [disabled]="options.length == 0" [(ngModel)]="value">
+                <ng-container *ngFor="let o of options">
                     <option [value]="o.value" >{{o.display}}</option>
                 </ng-container>
             </select>
