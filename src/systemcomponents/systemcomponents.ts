@@ -86,6 +86,7 @@ import /*embed*/ {SystemInputBackendMethod} from "./components/systeminputbacken
 import /*embed*/ {SystemInstallerComponent} from "./components/systeminstallercomponent";
 import /*embed*/ {SystemLabel} from "./components/systemlabel";
 import /*embed*/ {SystemLabelEditorModal} from "./components/systemlabeleditormodal";
+import /*embed*/ {SystemLabelEditorGlobalCustomModal} from "./components/systemlabeleditorglobalcustommodal";
 import /*embed*/ {SystemLabelFieldname} from "./components/systemlabelfieldname";
 import /*embed*/ {SystemLabelModulename} from "./components/systemlabelmodulename";
 import /*embed*/ {SystemLanguageSelector} from "./components/systemlanguageselector";
@@ -301,6 +302,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemNavigationManager,
         SystemNavigationManagerRouteContainer,
         SystemLabelEditorModal,
+        SystemLabelEditorGlobalCustomModal,
         SystemPreferencesPanel,
         SystemPreferencesPanelItem,
         SystemPreferencesPanelItemDisplay,

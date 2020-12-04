@@ -49,6 +49,8 @@ import /*embed*/ { AdministrationDictRepair } from './components/administrationd
 import /*embed*/ {AdministrationDictRepairItem} from "./components/administrationdictrepairitem";
 import /*embed*/ {AdministrationDictRepairModal} from "./components/administrationdictrepairmodal";
 import /*embed*/ {AdministrationDictRepairLanguage} from "./components/administrationdictrepairlanguage";
+import /*embed*/ {AdministrationDictRepairACLRoles} from "./components/administrationdictrepairaclroles";
+import /*embed*/ {AdministrationDictRepairCache} from "./components/administrationdictrepaircache";
 import /*embed*/ { AdministrationConfigEditor } from './components/administrationconfigeditor';
 
 import /*embed*/ { AdministrationSchedulerJobsEnum } from './components/administrationschedulerjobsenum';
@@ -98,6 +100,8 @@ import /*embed*/ {AdministrationDefaultPreferences} from './components/administr
         AdministrationDictRepairItem,
         AdministrationDictRepairLanguage,
         AdministrationDictRepairModal,
+        AdministrationDictRepairACLRoles,
+        AdministrationDictRepairCache,
         AdministrationConfigEditor,
         AdministrationSchedulerJobsEnum,
         AdministrationSchedulerJobLog,

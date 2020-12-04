@@ -6,13 +6,14 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    Input,
+    Injector,
     OnDestroy,
     OnInit
 } from "@angular/core";
 import {model} from "../../../services/model.service";
 import {Subscription} from "rxjs";
 import {view} from "../../../services/view.service";
+import {modal} from "../../../services/modal.service";
 
 /** @ignore */
 declare var _;
@@ -35,13 +36,21 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      */
     private selectedTab: 'editor' | 'preview' = 'editor';
     /**
-     * holds the body html field name
+     * holds the fields names to be used from the component config
      */
-    private bodyHtmlField: string = 'body_html';
-    /**
-     * holds the body spice page builder field name
-     */
-    private bodySPBField: string = 'body_spb';
+    private fieldsNames: {
+        /** holds the body html field name */
+        bodyHtmlField?: string,
+        /** holds the body spice page builder field name */
+        bodySPBField?: string,
+        /** holds the subject field name */
+        subjectField?: string,
+        /** holds the mailbox field name */
+        mailboxField?: string,
+        /** holds the preview for bean module name */
+        previewForBean?: string
+
+    } = {bodyHtmlField: 'body_html', bodySPBField: 'body_spb'};
     /**
      * holds the active editor
      */
@@ -56,14 +65,25 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      */
     private subscription: Subscription = new Subscription();
 
-    constructor(private model: model, private cdRef: ChangeDetectorRef, private view: view) {
+    constructor(private model: model,
+                private cdRef: ChangeDetectorRef,
+                private modal: modal,
+                private injector: Injector,
+                private view: view) {
+    }
+
+    /**
+     * @return matchedModelState: boolean
+     */
+    get isHidden() {
+        return (this.componentconfig.requiredmodelstate && !this.model.checkModelState(this.componentconfig.requiredmodelstate));
     }
 
     /**
      * set active editor and subscribe to model data changes
      */
     public ngAfterViewInit() {
-        this.setActiveEditor(this.model.data.body_html, this.model.data.body_spb);
+        this.setActiveEditor(this.model.data[this.fieldsNames.bodyHtmlField], this.model.data[this.fieldsNames.bodySPBField]);
         this.subscribeToModelChanges();
     }
 
@@ -83,6 +103,15 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
     }
 
     /**
+     * sets the edit mode on the view and the model into editmode itself
+     */
+    public setEditMode() {
+        this.model.startEdit();
+        this.view.setEditMode();
+        this.cdRef.detectChanges();
+    }
+
+    /**
      * set the iframe initial height
      * @private
      */
@@ -97,8 +126,11 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      * @private
      */
     private setBodyFieldsName() {
-        if (!!this.componentconfig.bodyHtmlField) this.bodyHtmlField = this.componentconfig.bodyHtmlField;
-        if (!!this.componentconfig.bodySPBField) this.bodySPBField = this.componentconfig.bodySPBField;
+        if (!!this.componentconfig.bodyHtmlField) this.fieldsNames.bodyHtmlField = this.componentconfig.bodyHtmlField;
+        if (!!this.componentconfig.bodySPBField) this.fieldsNames.bodySPBField = this.componentconfig.bodySPBField;
+        if (!!this.componentconfig.subjectField) this.fieldsNames.subjectField = this.componentconfig.subjectField;
+        if (!!this.componentconfig.mailboxField) this.fieldsNames.mailboxField = this.componentconfig.mailboxField;
+        if (!!this.componentconfig.previewForBean) this.fieldsNames.previewForBean = this.componentconfig.previewForBean;
     }
 
     /**
@@ -108,9 +140,11 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
     private subscribeToModelChanges() {
         this.subscription.add(
             this.model.data$.subscribe(data =>
-                this.setActiveEditor(data.body_html, data.body_spb)
+                this.setActiveEditor(data[this.fieldsNames.bodyHtmlField], data[this.fieldsNames.bodySPBField])
             )
         );
+        this.subscription.add(
+            this.view.mode$.subscribe(() => this.cdRef.detectChanges()));
     }
 
     /**
@@ -121,6 +155,7 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      */
     private setActiveEditor(body: string, bodySPB: string) {
         this.activeEditor = !body ? undefined : (!bodySPB || _.isEmpty(bodySPB)) ? 'richText' : 'pageBuilder';
+        this.model.data.via_spb = this.activeEditor == 'pageBuilder';
         this.cdRef.detectChanges();
     }
 
@@ -130,16 +165,25 @@ export class EmailTemplatesEditor implements OnInit, AfterViewInit, OnDestroy {
      * @private
      */
     private setSelectedTab(value: 'editor' | 'preview') {
-        if (value == 'preview' && !this.model.data[this.bodyHtmlField]) return;
+        if (value == 'preview' && !this.model.data[this.fieldsNames.bodyHtmlField]) return;
         this.selectedTab = value;
     }
 
     /**
-     * sets the edit mode on the view and the model into editmode itself
+     * open lookup modal to select an email template to be copied to the body
      */
-    public setEditMode() {
-        this.model.startEdit();
-        this.view.setEditMode();
-        this.cdRef.detectChanges();
+    private copyFromTemplate() {
+        this.modal.openModal('ObjectModalModuleLookup', true, this.injector)
+            .subscribe(selectModal => {
+                selectModal.instance.module = 'EmailTemplates';
+                selectModal.instance.multiselect = false;
+                selectModal.instance.selectedItems.subscribe(items => {
+                    if (!items.length) return;
+                    this.model.setFields({
+                        [this.fieldsNames.bodyHtmlField]: items[0].body_html,
+                        [this.fieldsNames.bodySPBField]: items[0].body_spb
+                    });
+                });
+            });
     }
 }
