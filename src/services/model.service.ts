@@ -1064,7 +1064,7 @@ export class model implements OnDestroy {
         return this.initializeModel(parent);
     }
 
-    public initializeModel(parent: any = null) {
+    public initializeModel(parent: model = null) {
         if (!this.id) {
             this.id = this.generateGuid();
             this.isNew = true;
@@ -1098,6 +1098,9 @@ export class model implements OnDestroy {
         // initialize the field stati and run the initial evaluation rules
         this.initializeFieldsStati();
         this.evaluateValidationRules(null, "init");
+
+        // set the parent model from the intialized one in the call
+        this.parentmodel = parent;
     }
 
 
@@ -1108,8 +1111,7 @@ export class model implements OnDestroy {
 
         // acl check if we are alowed to create
         if (this.metadata.checkModuleAcl(this.module, "create")) {
-            this.initializeModel();
-            this.executeCopyRules(parent);
+            this.initializeModel(parent);
 
             // set teh reference
             this.reference = addReference;
