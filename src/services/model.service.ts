@@ -1086,6 +1086,7 @@ export class model implements OnDestroy {
         this.data.date_modified = new moment();
 
         this.executeCopyRules(parent);
+        this.setFieldsDefaultValues();
         this.evaluateValidationRules();
 
         // set default acl to allow editing
@@ -1165,6 +1166,19 @@ export class model implements OnDestroy {
         this.executeCopyRulesGeneric();
     }
 
+    /**
+     * set fields default values from the fields definitions
+     * @private
+     */
+    private setFieldsDefaultValues() {
+        const moduleFields = this.metadata.getModuleFields(this.module);
+        if (!moduleFields) return;
+        _.each(moduleFields, fieldDefs => {
+            if (!('default' in fieldDefs) || this.data[fieldDefs.name] != undefined || fieldDefs.type == 'link' || fieldDefs.source == 'non-db') return;
+            this.setFixedValue(fieldDefs.name, fieldDefs.default);
+        });
+    }
+
     // get generic copy rules
     public executeCopyRulesGeneric() {
         let copyrules = this.metadata.getCopyRules("*", this.module);
@@ -1172,7 +1186,7 @@ export class model implements OnDestroy {
             if (copyrule.tofield && copyrule.fixedvalue) {
                 this.setFixedValue(copyrule.tofield, copyrule.fixedvalue);
             } else if (copyrule.tofield && copyrule.calculatedvalue) {
-                this.setFieldValue(copyrule.tofield, this.getCalculatdValue(copyrule.calculatedvalue));
+                this.setField(copyrule.tofield, this.getCalculatdValue(copyrule.calculatedvalue));
             }
         }
     }

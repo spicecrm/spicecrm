@@ -48,7 +48,7 @@ import /*embed*/ { AdministrationSysTrashcanRecover } from './components/adminis
 import /*embed*/ { AdministrationDictRepair } from './components/administrationdictrepair';
 import /*embed*/ {AdministrationDictRepairItem} from "./components/administrationdictrepairitem";
 import /*embed*/ {AdministrationDictRepairModal} from "./components/administrationdictrepairmodal";
-
+import /*embed*/ {AdministrationDictRepairLanguage} from "./components/administrationdictrepairlanguage";
 import /*embed*/ { AdministrationConfigEditor } from './components/administrationconfigeditor';
 
 import /*embed*/ { AdministrationSchedulerJobsEnum } from './components/administrationschedulerjobsenum';
@@ -59,6 +59,8 @@ import /*embed*/ { AdministrationSchedulerScheduleButton } from './components/ad
 import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryManagerItem, AdministrationDictionaryManagerItemField } from './components/administrationdictionarymanager';
 import /*embed*/ {AdministrationGeneralSettings} from "./components/administrationgeneralsettings";
 import /*embed*/ {AdministrationLanguages} from "./components/administrationlanguages";
+import /*embed*/ {AdministrationDefaultPreferences} from './components/administrationdefaultpreferences';
+
 
 
 
@@ -94,6 +96,7 @@ import /*embed*/ {AdministrationLanguages} from "./components/administrationlang
         AdministrationSysTrashcanRecover,
         AdministrationDictRepair,
         AdministrationDictRepairItem,
+        AdministrationDictRepairLanguage,
         AdministrationDictRepairModal,
         AdministrationConfigEditor,
         AdministrationSchedulerJobsEnum,
@@ -107,7 +110,8 @@ import /*embed*/ {AdministrationLanguages} from "./components/administrationlang
         AdministrationHomeScreenCard,
         AdministrationHomeScreenCardItem,
         AdministrationGeneralSettings,
-        AdministrationLanguages
+        AdministrationLanguages,
+        AdministrationDefaultPreferences
     ],
     entryComponents: [
         AdministrationMain,
@@ -118,7 +122,8 @@ import /*embed*/ {AdministrationLanguages} from "./components/administrationlang
         AdministrationFTSManager,
         AdministrationDictionaryManager,
         AdministrationDictionaryManagerItem,
-        AdministrationDictionaryManagerItemField
+        AdministrationDictionaryManagerItemField,
+        AdministrationDefaultPreferences
     ],
     exports: [],
 

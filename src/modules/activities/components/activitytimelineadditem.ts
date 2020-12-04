@@ -9,11 +9,13 @@ import {view} from '../../../services/view.service';
 import {modal} from '../../../services/modal.service';
 import {dockedComposer} from '../../../services/dockedcomposer.service';
 import {activitiytimeline} from '../../../services/activitiytimeline.service';
+import {modelattachments} from "../../../services/modelattachments.service";
 
 /**
  * @ignore
  */
 declare var moment: any;
+declare var _: any;
 
 /**
  * a component that is a generic container for adding items as part of the activitiy add container
@@ -55,6 +57,18 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
     public isExpanded: boolean = false;
 
     /**
+     * set top true if the module can expand into a global docked composer modal
+     * checked if the config exists
+     */
+    public canExpand: boolean = false;
+
+    /**
+     * set top true if the module can be docked into a composer
+     * checked if the config exists
+     */
+    public canDock: boolean = false;
+
+    /**
      * @ignore
      *
      * a handler to the parent subscription
@@ -92,6 +106,12 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
         if(this.componentconfig.utilitybuttonsposition) {
             this.utilityButtonsPosition = this.componentconfig.utilitybuttonsposition;
         }
+
+        // check if the model can expand in a GlobalDockedComposerModal
+        this.checkCanExpand();
+
+        // check if the model can be docked into a GlobalDockedComposer
+        this.checkCanDock();
     }
 
     /**
@@ -132,6 +152,7 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
         // SPICEUI-2
         this.model.id = undefined;
         this.model.initializeModel(this.activitiytimeline.parent);
+
     }
 
     /**
@@ -148,10 +169,28 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
     }
 
     /**
+     * checks if a GlobalDockedComposermodal is availabe for the module and thus the modal can be opened.
+     */
+    private checkCanExpand() {
+        this.canExpand = !_.isEmpty(this.metadata.getComponentConfig('GlobalDockedComposerModal', this.model.module));
+    }
+
+    /**
      * expands the item and renders it in a modal undocking it from the activity tiemline container
      */
     private expand() {
-        this.modal.openModal('GlobalDockedComposerModal', true, this.ViewContainerRef.injector);
+        this.dockedComposer.addComposer(this.model.module, this.model, true);
+        // this.modal.openModal('GlobalDockedComposerModal', true, this.ViewContainerRef.injector);
+        this.isExpanded = false;
+        this.initializeModule();
+    }
+
+
+    /**
+     * checks if a GlobalDockedComposermodal is availabe for the module and thus the modal can be opened.
+     */
+    private checkCanDock() {
+        this.canDock = !_.isEmpty(this.metadata.getComponentConfig('GlobalDockedComposer', this.model.module));
     }
 
     /**
@@ -160,6 +199,7 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
     private dock() {
         this.dockedComposer.addComposer(this.model.module, this.model);
         this.isExpanded = false;
+        this.initializeModule();
     }
 
     /**
@@ -168,6 +208,7 @@ export class ActivityTimelineAddItem implements OnInit, OnDestroy {
     private cancel() {
         this.model.cancelEdit();
         this.isExpanded = false;
+        this.initializeModule();
     }
 
     /**

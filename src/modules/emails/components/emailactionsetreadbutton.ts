@@ -1,5 +1,5 @@
 /**
- * @module ObjectComponents
+ * @module ModuleEmails
  */
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';

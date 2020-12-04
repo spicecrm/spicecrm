@@ -1,7 +1,7 @@
 <div (click)="onEditorClick($event)" class="slds-rich-text-editor slds-grid slds-grid_vertical slds-nowrap" >
     <!--system-richtext-toolbar [isActive]="isActive" #editorToolbar (execute)="executeCommand($event)"></system-richtext-toolbar-->
     <div role="toolbar" class="slds-rich-text-editor__toolbar slds-shrink-none">
-        <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-m-right--xx-small" tabindex="-1" [title]="language.getLabel('LBL_SAVE')" (click)="save$.emit(_html)">
+        <button *ngIf="extendedmode" class="slds-button slds-button_icon slds-button_icon-border-filled slds-m-right--xx-small" tabindex="-1" [title]="language.getLabel('LBL_SAVE')" (click)="save$.emit(_html)">
             <system-button-icon icon="save"></system-button-icon>
         </button>
         <ul *ngIf="extendedmode" class="slds-button-group-list">

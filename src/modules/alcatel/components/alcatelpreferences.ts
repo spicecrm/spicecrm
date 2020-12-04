@@ -29,6 +29,7 @@ export class AlcatelPreferences {
     private saved$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     private preferences: any = {
+        phoneusername: '',
         username: '',
         userpass: ''
     };
@@ -48,6 +49,7 @@ export class AlcatelPreferences {
      */
     private getPreferences() {
         this.backend.getRequest('alcatel/preferences').subscribe(prefs => {
+            this.preferences.phoneusername = prefs.phoneusername;
             this.preferences.username = prefs.username;
         });
     }

@@ -105,7 +105,7 @@ export class SpicePageBuilderElementColumn implements OnInit, AfterViewInit {
                 case 'image':
                     this.spicePageBuilderService.openMediaFilePicker().subscribe(src => {
                         if (!!src) {
-                            const image: PanelElementI = {...event.item.data};
+                            const image: PanelElementI = JSON.parse(JSON.stringify(event.item.data));
                             image.attributes.src = src;
                             delete image.icon;
                             this.column.children.splice(

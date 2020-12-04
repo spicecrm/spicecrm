@@ -86,6 +86,7 @@ import /*embed*/ {SystemInputBackendMethod} from "./components/systeminputbacken
 import /*embed*/ {SystemInstallerComponent} from "./components/systeminstallercomponent";
 import /*embed*/ {SystemLabel} from "./components/systemlabel";
 import /*embed*/ {SystemLabelEditorModal} from "./components/systemlabeleditormodal";
+import /*embed*/ {SystemLabelEditorGlobalCustomModal} from "./components/systemlabeleditorglobalcustommodal";
 import /*embed*/ {SystemLabelFieldname} from "./components/systemlabelfieldname";
 import /*embed*/ {SystemLabelModulename} from "./components/systemlabelmodulename";
 import /*embed*/ {SystemLanguageSelector} from "./components/systemlanguageselector";
@@ -144,6 +145,7 @@ import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
 import /*embed*/ {SystemInputMedia} from './components/systeminputmedia';
 import /*embed*/ {SystemInputTimezone} from './components/systeminputtimezone';
 import /*embed*/ {SystemInputBase64} from './components/systeminputbase64';
+import /*embed*/ {SystemInputFile} from './components/systeminputfile';
 
 import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
 import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem";
@@ -154,6 +156,11 @@ import /*embed*/ {SystemSlider} from "./components/systemslider";
 import /*embed*/ {SystemNavigationCollector} from "./components/systemnavigationcollector";
 import /*embed*/ {SystemNavigationManager} from "./components/systemnavigationmanager";
 import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/systemnavigationmanagerroutecontainer";
+
+import /*embed*/ {SystemPreferencesPanel} from "./components/systempreferencespanel";
+import /*embed*/ {SystemPreferencesPanelItem} from "./components/systempreferencespanelitem";
+import /*embed*/ {SystemPreferencesPanelItemDisplay} from "./components/systempreferencespanelitemdisplay";
+import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systempreferencespanelitemedit";
 
 @NgModule({
     imports: [
@@ -294,7 +301,13 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemNavigationCollector,
         SystemNavigationManager,
         SystemNavigationManagerRouteContainer,
-        SystemLabelEditorModal
+        SystemLabelEditorModal,
+        SystemLabelEditorGlobalCustomModal,
+        SystemPreferencesPanel,
+        SystemPreferencesPanelItem,
+        SystemPreferencesPanelItemDisplay,
+        SystemPreferencesPanelItemEdit,
+        SystemInputFile
     ],
     entryComponents: [
         SystemDynamicRouteContainer,
@@ -414,6 +427,11 @@ import /*embed*/ {SystemNavigationManagerRouteContainer} from "./components/syst
         SystemNavigationManager,
         SystemInputCountry,
         SystemInputState,
+        SystemPreferencesPanel,
+        SystemPreferencesPanelItem,
+        SystemPreferencesPanelItemDisplay,
+        SystemPreferencesPanelItemEdit,
+        SystemInputFile
     ]
 })
 export class SystemComponents {
