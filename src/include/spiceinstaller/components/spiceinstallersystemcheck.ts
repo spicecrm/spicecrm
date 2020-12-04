@@ -29,7 +29,7 @@ export class SpiceInstallerSystemCheck {
 
     private checkSystem() {
         this.loading = true;
-        this.http.get(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/KREST/spiceinstaller/check`).subscribe((response: any) => {
+        this.http.get(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/spiceinstaller/check`).subscribe((response: any) => {
             this.loading = false;
             let result = response;
             this.requirements = result.requirements;

@@ -18,7 +18,30 @@ export class AdministrationGeneralSettings implements OnInit {
     /**
      * array to catch the settings
      */
-    private settings: any = [];
+    private settings: any = {
+        system: {
+            name: '',
+            site_url: '',
+            unique_key: ''
+        },
+        advanced: {
+            developerMode: false,
+            stack_trace_errors: false,
+            dump_slow_queries: false,
+            slow_query_time_msec: 0,
+            upload_maxsize: 0
+        },
+        logger: {
+            level: '',
+            file: {
+                name: 'spicecrm',
+                ext: '',
+                maxLogs: 10,
+                maxSize: 10,
+                suffix: ''
+            }
+        }
+    };
 
     /**
      * available options from backend
@@ -52,13 +75,8 @@ export class AdministrationGeneralSettings implements OnInit {
     public ngOnInit() {
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
             this.backend.getRequest('admin/generalsettings').subscribe(data => {
-                if (data.status) {
-                    this.settings = data.settings;
-                    this.options = data.defaults;
-                } else {
-                    this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
-                }
-                this.currencies = this.currency.getCurrencies();
+                this.settings = data;
+                this._loglevels = this.settings.logger.level.split(',');
                 this.loading = false;
                 modalRef.instance.self.destroy();
             });
@@ -79,6 +97,32 @@ export class AdministrationGeneralSettings implements OnInit {
             });
             modalRef.instance.self.destroy();
         });
+    }
 
+    private _loglevels = [];
+
+    get loglevels() {
+        return this._loglevels;
+    }
+
+    set loglevels(levels) {
+        this._loglevels = levels;
+        this.settings.logger.level = levels.join(',');
+    }
+
+    /**
+     * getter to strip the MB from the max size
+     */
+    get maxSize(){
+        return this.settings.logger.file.maxSize?.replace('MB', '');
+    }
+
+    /**
+     *setter to add the MB to the max size
+     *
+     * @param maxSize
+     */
+    set maxSize(maxSize){
+        this.settings.logger.file.maxSize = maxSize + 'MB';
     }
 }
