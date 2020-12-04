@@ -26,12 +26,6 @@ import {BehaviorSubject} from "rxjs";
 /** @ignore */
 declare var _;
 
-const ngValueAccessor = {
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => SystemInputFile),
-    multi: true
-};
-
 /**
  * render a html input file and handle a model file data binding
  */
@@ -39,9 +33,12 @@ const ngValueAccessor = {
     selector: 'system-input-file',
     templateUrl: './src/systemcomponents/templates/systeminputfile.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [ngValueAccessor]
+    providers: [{
+        provide: NG_VALUE_ACCESSOR,
+        useExisting: forwardRef(() => SystemInputFile),
+        multi: true
+    }]
 })
-
 export class SystemInputFile implements ControlValueAccessor {
     /**
      * holds a view container reference for the input file

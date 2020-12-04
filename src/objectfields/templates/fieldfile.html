@@ -22,7 +22,7 @@
     </div>
     <div *ngIf="!value" class="slds-file-selector slds-file-selector_files">
         <div class="slds-file-selector__dropzone" (system-drop-file)="onDrop($event)">
-            <input #fileupload type="file" class="slds-file-selector__input slds-assistive-text" [id]="fieldid"
+            <input #fileupload type="file" (click)="fileupload.value = null" class="slds-file-selector__input slds-assistive-text" [id]="fieldid"
                    (change)="uploadFile()">
             <label class="slds-file-selector__body" [attr.for]="fieldid">
             <span class="slds-file-selector__button slds-button slds-button_neutral">
