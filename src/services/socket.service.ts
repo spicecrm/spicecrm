@@ -36,10 +36,10 @@ export class socket {
         private modelutilities: modelutilities
     ) {
 
-
+        // todo move to the module where it is used
         this.broadcast.message$.subscribe(data => {
             if (data.messagetype === 'login') {
-                this.initialize();
+                this.initialize('');
             }
             if (data.messagetype === 'logout') {
                 this.disconnect();
@@ -50,7 +50,7 @@ export class socket {
     /**
      * get the prefs and login
      */
-    private initialize() {
+    private initialize(room) {
 
         if (this.socket) {
             this.socket.disconnect();
@@ -64,7 +64,7 @@ export class socket {
         this.socketid = config.socket_id;
 
         if (this.socketurl && this.socketid) {
-            this.connectSocket();
+            this.connectSocket(room);
         }
     }
 
@@ -72,7 +72,7 @@ export class socket {
      * returns if the socket is connected
      */
     get isConnected() {
-        return this.socketconnected
+        return this.socketconnected;
     }
 
     private disconnect() {
@@ -88,13 +88,13 @@ export class socket {
     /**
      * connect to the socket
      */
-    private connectSocket() {
+    private connectSocket(room) {
         // ensure we have an URL
         if (!this.socketurl) {
             return false;
         }
 
-        this.socket = io(`${this.socketurl}?sysid=${this.socketid}&room=beanupdates&token=${this.session.authData.sessionId}`);
+        this.socket = io(`${this.socketurl}?sysid=${this.socketid}&room=${room}&token=${this.session.authData.sessionId}`);
         this.socket.on('connect', (socket) => {
             this.socketconnected = true;
         });
