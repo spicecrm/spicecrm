@@ -29,14 +29,14 @@ import {modelattachments} from "../../../services/modelattachments.service";
 declare var moment: any;
 
 /**
- * displays a quicknote that is read in teh stream
+ * renders a panel for the attachments. The modelatatchment service can be provided by the component or by the parent
+ * if the parent provides the service the parent is also responsible for the laoding of atatchments
  */
 @Component({
     templateUrl: './src/include/spiceattachments/templates/spiceattachmentspanel.html',
     providers: [modelattachments]
 })
 export class SpiceAttachmentsPanel implements AfterViewInit {
-
 
     /**
      * the fileupload elelent
@@ -107,8 +107,13 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
         this.modelattachments.uploadAttachmentsBase64FromArray(this.uploadfiles);
     }
 
+    /**
+     * load the attachments .. unless the service is provided from teh parent .. then the parent is responsible for the load
+     */
     public ngAfterViewInit() {
-        setTimeout(() => this.loadFiles(), 10);
+        if(!this.parentmodelattachments) {
+            setTimeout(() => this.loadFiles(), 10);
+        }
     }
 
     /**

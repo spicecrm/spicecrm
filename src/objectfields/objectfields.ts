@@ -30,7 +30,6 @@ import /*embed*/ {fieldWeightedAmount} from './components/fieldweightedamount';
 import /*embed*/ {fieldTotalAmount} from './components/fieldtotalamount';
 import /*embed*/ {fieldEnum} from './components/fieldenum';
 import /*embed*/ {fieldLanguage} from './components/fieldlanguage';
-import /*embed*/ {fieldMailboxes} from './components/fieldmailboxes';
 import /*embed*/ {fieldEmailTo} from './components/fieldemailto';
 import /*embed*/ {fieldEmailTemplates} from './components/fieldemailtemplates';
 import /*embed*/ {fieldTextMessageTemplates} from './components/fieldtextmessagetemplates';
@@ -155,7 +154,6 @@ declare var _: any;
         fieldCompanies,
         fieldEnum,
         fieldLanguage,
-        fieldMailboxes,
         fieldEmailTo,
         fieldEmailTemplates,
         fieldTextMessageTemplates,

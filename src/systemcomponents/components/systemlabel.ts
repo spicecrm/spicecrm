@@ -6,10 +6,10 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    HostListener,
     Input,
     OnChanges,
-    OnDestroy, Renderer2,
+    OnDestroy,
+    Renderer2,
     SimpleChanges
 } from '@angular/core';
 import {Subscription} from "rxjs";
@@ -75,25 +75,6 @@ export class SystemLabel implements OnChanges, AfterViewInit, OnDestroy {
     }
 
     /**
-     * triggers the change detection when the language is changed
-     */
-    private detectChanges() {
-        this.cdRef.detectChanges();
-    }
-
-    /**
-     * handle the double click to open the editor modal
-     * @private
-     */
-    @HostListener('dblclick')
-    private onDBClick() {
-        if (!this.language.inlineEditEnabled) return;
-        this.modal.openModal('SystemLabelEditorModal', true).subscribe(modalRef => {
-            modalRef.instance.labelData = {name: this.label, global_translations: [], custom_translations: []};
-        });
-    }
-
-    /**
      * open label editor modal
      * @private
      */
@@ -104,12 +85,27 @@ export class SystemLabel implements OnChanges, AfterViewInit, OnDestroy {
     }
 
     /**
+     * triggers the change detection when the language is changed
+     */
+    private detectChanges() {
+        this.cdRef.detectChanges();
+    }
+
+    /**
+     * handle double click
+     * @param event
+     * @private
+     */
+    private onDblClick(event: MouseEvent) {
+        this.openModal();
+        event.preventDefault();
+    }
+
+    /**
      * handle right click to edit translations
      * @private
      */
-    @HostListener('contextmenu', ['$event'])
     private onRightClick(event) {
-        if (!this.language.inlineEditEnabled) return;
         event.preventDefault();
         const dropdown = this.createDropdown(event);
         this.renderer.appendChild(this.footer.footercontainer.element.nativeElement, dropdown);
@@ -121,7 +117,7 @@ export class SystemLabel implements OnChanges, AfterViewInit, OnDestroy {
 
     /**
      * remove the dropdown from the footer
-      * @param event
+     * @param event
      * @param dropdown
      * @private
      */
@@ -143,7 +139,7 @@ export class SystemLabel implements OnChanges, AfterViewInit, OnDestroy {
         this.renderer.setStyle(dropdown, 'left', event.pageX + 'px');
         addClasses(dropdown, ['slds-dropdown--inverse', 'slds-dropdown', 'slds-theme--inverse']);
         const ul = this.renderer.createElement('ul');
-        this.renderer.addClass(ul,'slds-dropdown__list');
+        this.renderer.addClass(ul, 'slds-dropdown__list');
         const li = this.renderer.createElement('li');
         addClasses(li, ['slds-slds-dropdown__item', 'slds-p-around--xx-small']);
 
