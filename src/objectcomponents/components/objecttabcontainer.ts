@@ -105,7 +105,7 @@ export class ObjectTabContainerItem implements AfterViewInit, OnDestroy {
      */
     @Output() private taberrors = new EventEmitter();
 
-    constructor(private metadata: metadata, private fielderrorgroup: fielderrorgrouping) {
+    constructor(private metadata: metadata, private fielderrorgroup: fielderrorgrouping, public model: model) {
     }
 
     /**
