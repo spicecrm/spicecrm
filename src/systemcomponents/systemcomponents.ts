@@ -56,6 +56,7 @@ import /*embed*/ {SystemIllustrationNoAccess} from "./components/systemillustrat
 import /*embed*/ {SystemIllustrationNoData} from "./components/systemillustrationnodata";
 import /*embed*/ {SystemIllustrationNoRecords} from "./components/systemillustrationnorecords";
 import /*embed*/ {SystemIllustrationNoTask} from "./components/systemillustrationnotask";
+import /*embed*/ {SystemIllustrationPageNotAvailable} from "./components/systemillustrationpagenotavailable";
 import /*embed*/ {SystemImagePreviewModal} from "./components/systemimagepreviewmodal";
 import /*embed*/ {SystemInputText} from "./components/systeminputtext";
 import /*embed*/ {SystemInputEnum} from "./components/systeminputenum";
@@ -209,6 +210,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
         SystemIllustrationNoTask,
+        SystemIllustrationPageNotAvailable,
         SystemImagePreviewModal,
         SystemInputText,
         SystemInputInteger,
