@@ -20,9 +20,6 @@ import {socket} from "./socket.service";
 
 declare var _: any;
 
-// import {GlobalHeader} from '../globalcomponents/components/globalheader';
-// import {GlobalFooter} from '../globalcomponents/components/globalfooter';
-
 /**
  * @ignore
  */
@@ -61,9 +58,10 @@ export class model implements OnDestroy {
     private _module: string = "";
 
     /**
-     * the id of the record in the backend
+     * the id of the record in the backend held internally
+     * this is get/set via a setter that also handels the model registry
      */
-    public id: string = "";
+    public _id: string = "";
 
     /**
      * an object holding the acl data for the record as it is set in the backend
@@ -232,6 +230,10 @@ export class model implements OnDestroy {
      */
     public savingProgress: BehaviorSubject<number> = new BehaviorSubject(1);
 
+    /**
+     * any subscriptions the service might have to be collected here
+     * @private
+     */
     private subscriptions: Subscription = new Subscription();
 
     constructor(
@@ -250,7 +252,6 @@ export class model implements OnDestroy {
         public injector: Injector,
         public socket: socket
     ) {
-        this.modelRegisterId = this.navigation.registerModel(this);
 
         this.data$ = new BehaviorSubject(this.data);
 
@@ -264,18 +265,56 @@ export class model implements OnDestroy {
         );
     }
 
+    /**
+     * registers the model but only if id and module are set
+     * otherwise it spams the model registry
+     *
+     * @private
+     */
+    private registerModel() {
+        if (this.module && this._id && !this.navigation.modelregister.find(m => m.model._id == this._id && m.model.module == this.module)) {
+            this.modelRegisterId = this.navigation.registerModel(this);
+        }
+    }
 
     get messages(): any[] {
         return this._messages;
     }
 
+    /**
+     * getter for the module
+     */
     get module(): string {
         return this._module;
     }
 
+    /**
+     * setter for the module
+     * also triggers inittialization of field statis as well as model registry
+     *
+     * @param val
+     */
     set module(val: string) {
         this._module = val;
         this.initializeFieldsStati();
+        this.registerModel();
+    }
+
+    /**
+     * getter for the id
+     */
+    get id() {
+        return this._id;
+    }
+
+    /**
+     * setter for teh id also triggers the registration of the model if module and id are set
+     *
+     * @param id
+     */
+    set id(id) {
+        this._id = id;
+        this.registerModel();
     }
 
     /*
@@ -644,7 +683,7 @@ export class model implements OnDestroy {
 
         let val_left = this.data[condition.fieldname];
         let val_right = null;
-        if(condition.comparator.match(/regex/g)) {
+        if (condition.comparator.match(/regex/g)) {
             val_right = condition.valuations;
         } else {
             val_right = this.evaluateValidationParams(condition.valuations);
@@ -1199,7 +1238,7 @@ export class model implements OnDestroy {
         if (!parent.data.id) parent.data.id = parent.id;
         let copyrules = this.metadata.getCopyRules(parent.module, this.module);
         for (let copyrule of copyrules) {
-            if (copyrule.fromfield && copyrule.tofield ) {
+            if (copyrule.fromfield && copyrule.tofield) {
                 // this.setFieldValue(copyrule.tofield, parent.getFieldValue(copyrule.fromfield));
                 // this.setFieldValue(copyrule.tofield, parent.data[copyrule.fromfield]);
                 this.copyValue(copyrule.tofield, parent.data[copyrule.fromfield], copyrule.params);
@@ -1224,7 +1263,7 @@ export class model implements OnDestroy {
 
         switch (fieldDef.type) {
             case 'link':
-                if(params.generatenewid) {
+                if (params.generatenewid) {
                     if (_.isObject(value) && value.beans) {
                         const newLink = {beans: {}};
                         for (let relId in value.beans) {
