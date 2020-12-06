@@ -1,0 +1,9 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <span>{{getValue()}}</span>
+        <button *ngIf="canActivate" class="slds-button slds-button--icon slds-theme--warning slds-m-left--x-small" (click)="activateRevision()">
+            <system-button-icon icon="light_bulb"></system-button-icon>
+        </button>
+    </div>
+</field-generic-display>
