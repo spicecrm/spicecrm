@@ -233,7 +233,7 @@ export class fieldModelAttachment extends fieldGeneric {
      * @private
      */
     private downloadFile() {
-        this.modelattachments.downloadAttachmentFOrField(this.model.module, this.model.id, this.prefix, this.value);
+        this.modelattachments.downloadAttachmentForField(this.model.module, this.model.id, this.prefix, this.value);
     }
 
     /**
