@@ -26,9 +26,9 @@ export class fieldFloat extends fieldGeneric implements OnInit {
 
     public ngOnInit() {
         this.textvalue = this.getValAsText();
-        this.model.data$.subscribe(() => {
+        this.subscriptions.add(this.model.data$.subscribe(() => {
             this.textvalue = this.getValAsText();
-        });
+        }));
     }
 
     private getValAsText() {
