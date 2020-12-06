@@ -514,7 +514,7 @@ export class modelattachments {
      * @param id
      * @param name
      */
-    public downloadAttachmentFOrField(module, id, field, name?) {
+    public downloadAttachmentForField(module, id, field, name?) {
         this.backend.getRequest(`spiceAttachments/module/${module}/${id}/byfield/${field}`).subscribe(fileData => {
             let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
             let blobUrl = URL.createObjectURL(blob);
