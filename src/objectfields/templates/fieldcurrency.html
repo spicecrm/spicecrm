@@ -21,7 +21,7 @@
             </div>
         </div>
         <div class="slds-form-element slds-grow">
-            <input class="slds-input slds-text-align--right" type="number" [(ngModel)]="value" [ngModelOptions]="modelOptions"/>
+            <input #floatinput class="slds-input slds-text-align--right" (keydown)="checkInput($event)" (keyup)="changed()" [(ngModel)]="textvalue"/>
         </div>
     </div>
     <field-messages [fieldname]="fieldname"></field-messages>
