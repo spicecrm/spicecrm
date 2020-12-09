@@ -1293,15 +1293,17 @@ export class model implements OnDestroy {
         let fieldDef = this.metadata.getFieldDefs(this.module, toField);
 
         // if no field definition found just set the field attribute
-        if (!fieldDef) this.setField(toField, value);
+        if (!fieldDef || (fieldDef && !fieldDef.type)) this.setField(toField, value);
 
-        switch (fieldDef.type) {
-            case 'bool':
-                this.setField(toField, (value === 'true' || value === '1') ? true : ((value === 'false' || value === '0') ? false : null));
-                break;
-            default:
-                this.setField(toField, value);
-                break;
+        if(fieldDef && fieldDef.type) {
+            switch (fieldDef.type) {
+                case 'bool':
+                    this.setField(toField, (value === 'true' || value === '1') ? true : ((value === 'false' || value === '0') ? false : null));
+                    break;
+                default:
+                    this.setField(toField, value);
+                    break;
+            }
         }
     }
 
