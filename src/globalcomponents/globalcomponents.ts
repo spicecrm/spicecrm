@@ -35,6 +35,7 @@ import /*embed*/ {GlobalHeaderTools} from "./components/globalheadertools";
 import /*embed*/ {GlobalHeaderActions} from "./components/globalheaderactions";
 import /*embed*/ {GlobalHeaderActionItem} from "./components/globalheaderactionitem";
 import /*embed*/ {GlobalHeaderFavorite} from "./components/globalheaderfavorite";
+import /*embed*/ {GlobalHeaderLabelInlineEdit} from "./components/globalheaderlabelinlineedit";
 import /*embed*/ {GlobalHeaderWorkbench} from "./components/globalheaderworkbench";
 import /*embed*/ {GlobalHeaderReload} from "./components/globalheaderreload";
 import /*embed*/ {GlobalFooter} from "./components/globalfooter";
@@ -136,6 +137,7 @@ import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
         GlobalHeaderActions,
         GlobalHeaderActionItem,
         GlobalHeaderFavorite,
+        GlobalHeaderLabelInlineEdit,
         GlobalHeaderWorkbench,
         GlobalHeaderReload,
         GlobalFooter,

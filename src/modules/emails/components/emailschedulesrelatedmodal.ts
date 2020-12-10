@@ -74,6 +74,7 @@ export class EmailSchedulesRelatedModal {
                 beanId: this.modelId,
                 bean: this.currentModule,
                 links: selectedLinks,
+                id: this.model.id,
                 data: this.model.data
             };
             let mailboxCondition = body.data.hasOwnProperty('mailbox_id');

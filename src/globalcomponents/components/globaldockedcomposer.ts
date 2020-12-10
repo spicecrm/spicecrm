@@ -15,6 +15,8 @@ import {view} from '../../services/view.service';
 import {metadata} from '../../services/metadata.service';
 import {modal} from '../../services/modal.service';
 
+declare var _: any;
+
 @Component({
     selector: 'global-docked-composer',
     templateUrl: './src/globalcomponents/templates/globaldockedcomposer.html',
@@ -30,8 +32,18 @@ export class GlobalDockedComposer implements OnInit {
     @Input() public composerdata: any = {};
     @Input() public composerindex: number;
 
+    /**
+     * if the composer is closed
+     *
+     * @private
+     */
     private isClosed: boolean = false;
 
+    /**
+     * the actionset to be rendered in teh composer
+     *
+     * @private
+     */
     private actionset: string;
 
     constructor(private metadata: metadata, private dockedComposer: dockedComposer, private language: language, private model: model, private view: view, private modal: modal, private ViewContainerRef: ViewContainerRef) {
@@ -77,53 +89,95 @@ export class GlobalDockedComposer implements OnInit {
 
         // set the actionset
         this.actionset = componentconfig.actionset;
+
+        // check if the composer should be auto expanded on init
+        if (this.composerdata.loadexpanded && this.canExpand) {
+            this.expand();
+            this.composerdata.loadexpanded = false;
+        }
     }
 
+    /**
+     * getter for a display label
+     * Eiter displays the modal name if set or the module name
+     */
     get displayLabel() {
         return this.model.data.name ? this.model.data.name : this.language.getModuleName(this.model.module, true);
     }
 
+    /**
+     * toggles the composer to be open or closed
+     *
+     * @private
+     */
     private toggleClosed() {
         this.isClosed = !this.isClosed;
     }
 
+    /**
+     * returns the toggle icon to either minimize or maximize the composer based on the close state
+     */
     get toggleIcon() {
         return this.isClosed ? 'erect_window' : 'minimize_window';
     }
 
-    private expand() {
-        this.modal.openModal('GlobalDockedComposerModal', true, this.ViewContainerRef.injector);
-
+    /**
+     * checks if a GlobalDockedComposermodal is availabe for the module and thus the modal can be opened.
+     */
+    get canExpand() {
+        return !_.isEmpty(this.metadata.getComponentConfig('GlobalDockedComposerModal', this.model.module));
     }
 
+    /**
+     * expands the comoser and opens the GlobalDockedComposerModal window
+     *
+     * @private
+     */
+    private expand() {
+        this.modal.openModal('GlobalDockedComposerModal', true, this.ViewContainerRef.injector);
+    }
+
+    /**
+     * handle the action from the actionset that is returned
+     *
+     * @param action
+     * @private
+     */
     private handleaction(action) {
         switch (action) {
+            case 'savegodetail':
+                this.model.goDetail();
+                this.closeComposer();
+                break;
             default:
                 this.closeComposer();
         }
     }
 
+    /**
+     * closes the current composer
+     *
+     * @private
+     */
+    private promptClose() {
+        this.modal.prompt('confirm', this.language.getLabel('MSG_CANCEL', '', 'long'), this.language.getLabel('MSG_CANCEL')).subscribe(answer => {
+            if (answer) {
+                this.closeComposer();
+            }
+        });
+
+    }
+
+    /**
+     * closes the composer
+     *
+     * @private
+     */
     private closeComposer() {
         for (let i: number = 0; i < this.dockedComposer.composers.length; i++) {
             if (this.dockedComposer.composers[i].id === this.composerdata.id) {
                 this.dockedComposer.composers.splice(i, 1);
             }
-        }
-    }
-
-    private saveComposer(goto = false) {
-        if (this.model.validate()) {
-            this.model.save().subscribe((result) => {
-                // navigate to the record
-                if (goto) this.model.goDetail();
-
-                // remove the composer
-                for (let i: number = 0; i < this.dockedComposer.composers.length; i++) {
-                    if (this.dockedComposer.composers[i].id === this.composerdata.id) {
-                        this.dockedComposer.composers.splice(i, 1);
-                    }
-                }
-            });
         }
     }
 }

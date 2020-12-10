@@ -24,10 +24,10 @@ export class spiceinstaller {
      * backend config
      */
     public systemid: string = '000';
-    public systemname: string = 'spice';
+    public systemname: string = '';
     public systemurl: string = '';
-    public systemproxy: number = 0;
-    public systemdevmode: boolean = true;
+    public systemproxy: number = 1;
+    public systemdevmode: boolean = false;
     public systemloginprogressbar: number = 0;
     public systemallowforgotpass: number = 0;
     /**

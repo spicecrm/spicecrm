@@ -8,6 +8,7 @@ import {backend} from '../../services/backend.service';
 import {modal} from "../../services/modal.service";
 import {toast} from "../../services/toast.service";
 import {helper} from "../../services/helper.service";
+import set = Reflect.set;
 
 
 @Component({
@@ -66,14 +67,25 @@ export class AdministrationFTSStatus {
             response => {
                 this.version = response.version;
 
-                this.stats.docs = response.stats._all.total.docs.count;
-                this.stats.size = this.helper.humanFileSize(response.stats._all.total.store.size_in_bytes);
+                this.stats.docs = 0; // initialize
+                // catch when no fts index is set yet
+                if(response.stats._all.total.docs && response.stats._all.total.docs.count) {
+                    this.stats.docs = response.stats._all.total.docs.count;
+                }
+
+                this.stats.size = 0;
+                // catch when no fts index is set yet
+                if(response.stats._all.total.store && response.stats._all.total.store.size_in_bytes) {
+                    this.stats.size = this.helper.humanFileSize(response.stats._all.total.store.size_in_bytes);
+                }
+
 
                 for (let index in response.stats.indices) {
                     this.indices.push({
                         name: index,
                         docs: response.stats.indices[index].total.docs.count,
-                        size: this.helper.humanFileSize(response.stats.indices[index].total.store.size_in_bytes)
+                        size: this.helper.humanFileSize(response.stats.indices[index].total.store.size_in_bytes),
+                        blocked: (response.settings && response.settings[index] && response.settings[index].settings.index.blocks?.read_only_allow_delete) ? true : false
                     });
                 }
 
@@ -89,6 +101,26 @@ export class AdministrationFTSStatus {
                 this.toast.sendToast('Error loading Status', "error");
             });
     }
+
+    /**
+     * unlocks the complete index from a lock entry
+     * @private
+     */
+    private unlock() {
+        this.backend.putRequest('fts/unblock').subscribe(resp => {
+            console.log(resp);
+            this.loadstatus();
+        });
+    }
+
+    /**
+     * chesks if at least one index is locked
+     * @private
+     */
+    get hasLocks() {
+        return this.indices.find(i => i.blocked) ? true : false;
+    }
+
 
 }
 
