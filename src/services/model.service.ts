@@ -1240,7 +1240,7 @@ export class model implements OnDestroy {
         for (let copyRule of copyRules) {
             if (!copyRule.tofield) continue;
             if (!!copyRule.fromfield) {
-                this.copyValue(copyRule.tofield, parent.data[copyRule.fromfield], copyrule.params);
+                this.copyValue(copyRule.tofield, parent.data[copyRule.fromfield], copyRule.params);
             } else if (!!copyRule.fixedvalue) {
                 this.setFixedValue(copyRule.tofield, copyRule.fixedvalue);
             }
