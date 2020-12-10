@@ -61,12 +61,18 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
         this.fieldid = this.model.generateGuid();
 
         this.subscriptions.add(
-            this.view.mode$.subscribe(mode => {
-                if (mode == 'edit' && this.view.editfieldid && this.view.editfieldid == this.fieldid) {
-                    this.setFocus();
-                }
-            })
+            this.view.mode$.subscribe(mode => this.handleViewModeChange(mode))
         );
+    }
+
+    /**
+     * handle the view mode change
+     * @param mode
+     */
+    public handleViewModeChange(mode) {
+        if (mode == 'edit' && this.view.editfieldid && this.view.editfieldid == this.fieldid) {
+            this.setFocus();
+        }
     }
 
     /**

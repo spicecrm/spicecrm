@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {ServicePlannerEventI} from "../interfaces/servicecomponents.interfaces";
+import {ServicePlannerEventI, ServicePlannerRecordI} from "../interfaces/servicecomponents.interfaces";
 
 /**
  * to help communicating between the service planner components
@@ -9,5 +9,5 @@ export class ServicePlannerService {
     /**
      * holds the selected event from the timeline
      */
-    public timelineSelectedEvent: ServicePlannerEventI;
+    public timelineSelectedItem: {record: ServicePlannerRecordI, event?: ServicePlannerEventI};
 }

@@ -10,10 +10,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 declare var _;
 
 /**
- * a checkbox group component, compatible with ngModel!
- * each system-checkbox-group-checkbox component clicked will add or reomove its value to the array.
- * created by: sebastian franz at 2018-08-17
- * inspired by: https://medium.com/@mihalcan/angular-multiple-check-boxes-45ad2119e115
+ * renders a checbox group
  */
 @Component({
     selector: 'system-checkbox-group',
@@ -45,7 +42,7 @@ export class SystemCheckboxGroup implements ControlValueAccessor, AfterViewInit 
     constructor(private cdRef: ChangeDetectorRef) {
     }
 
-    private _value: string[];
+    private _value: string[] = [];
 
     /**
      * @return ng model value
@@ -68,9 +65,11 @@ export class SystemCheckboxGroup implements ControlValueAccessor, AfterViewInit 
      * @param value
      */
     public writeValue(value: string[]): void {
-        this._value = value || [];
-        this.cdRef.detectChanges();
-        this.valueEmitter.emit();
+        if(value && !_.isEqual(value, this._value)) {
+            this._value = value;
+            this.cdRef.detectChanges();
+            this.valueEmitter.emit();
+        }
     }
 
     /**

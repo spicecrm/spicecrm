@@ -52,7 +52,7 @@ export class SystemInputTimezone implements ControlValueAccessor {
         this.timezones = moment.tz.names();
         // Strip strange timezone names:
         this.timezones = this.timezones.filter( ( timezone: string ) => {
-            return timezone.match(/^((Africa|Amerika|Antarctica|Arctic|Asia|Atlantic|Australia|Europe|Pacific)\/.+|UTC)$/);
+            return timezone.match(/^((Africa|America|Antarctica|Arctic|Asia|Atlantic|Australia|Europe|Pacific)\/.+|UTC)$/);
         });
         // Get the timezone offsets:
         this.timezones.forEach( (timezone: string) => this.offsetTimezones.push( moment.tz( timezone ).format('Z') ) );

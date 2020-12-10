@@ -38,6 +38,11 @@ export class language {
      */
     public currentlanguage$: EventEmitter<any> = new EventEmitter<any>();
 
+    /**
+     * if true enable inline editing for labels
+     */
+    public inlineEditEnabled: boolean = false;
+
     constructor(
         private http: HttpClient,
         private configurationService: configurationService,

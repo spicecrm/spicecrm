@@ -29,6 +29,7 @@ import {telephonyCallI} from "../../../services/interfaces.service";
 export class AlcatelToolbarIndicator implements OnDestroy {
 
     private socket: any;
+    private status_socket: any;
 
     private username: string;
 
@@ -180,13 +181,8 @@ export class AlcatelToolbarIndicator implements OnDestroy {
                     })
                 );
 
-                // set the subscription status
-                this.alcatelsubscription = res.subscription;
-
                 // if we have a subscription also connect to the socket
-                if (this.alcatelsubscription) {
-                    this.connectSocket();
-                }
+                this.connectSocket();
             }
         });
     }
@@ -214,7 +210,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
             return false;
         }
 
-        this.socket = io(`${this.socketurl}?sysid=${this.socketid}&room=alcatel${this.username}&token=${this.session.authData.sessionId}`);
+        this.socket = io(`${this.socketurl}?sysid=${this.socketid}&room=alcatel${this.session.authData.sessionId}&token=${this.session.authData.sessionId}`);
         this.socket.on('connect', (socket) => {
             this.socketconnected = true;
         });
@@ -223,6 +219,11 @@ export class AlcatelToolbarIndicator implements OnDestroy {
         });
         this.socket.on('message', (data) => {
             this.handleCallEvent(data.message);
+        });
+
+        this.status_socket = io(`${this.socketurl}?sysid=${this.socketid}&room=alcatel&token=${this.session.authData.sessionId}`);
+        this.status_socket.on('restart', () => {
+            this.login();
         });
 
     }

@@ -22,12 +22,17 @@ import /*embed*/ {EmailsPopoverBody} from "./components/emailspopoverbody";
 import /*embed*/ {fieldEmailStatus} from "./components/fieldemailstatus";
 import /*embed*/ {EmailReplyButton} from "./components/emailreplybutton";
 import /*embed*/ {EmailReplyModal} from "./components/emailreplymodal";
+import /*embed*/ {EmailForwardButton} from "./components/emailforwardbutton";
+import /*embed*/ {EmailForwardModal} from "./components/emailforwardmodal";
+import /*embed*/ {EmailSendButton} from "./components/emailsendbutton";
 import /*embed*/ {EmailSchedulesButton} from "./components/emailschedulesbutton";
 import /*embed*/ {EmailSchedulesModal} from "./components/emailschedulesmodal";
 import /*embed*/ {EmailSchedulesRelatedButton} from "./components/emailschedulesrelatedbutton";
 import /*embed*/ {EmailSchedulesRelatedModal} from "./components/emailschedulesrelatedmodal";
 import /*embed*/ {EmailSchedulesView} from "./components/emailschedulesview";
 import /*embed*/ {EmailActionSetReadButton} from "./components/emailactionsetreadbutton";
+import /*embed*/ {EmailTemplatesEditor} from "./components/emailtemplateseditor";
+import /*embed*/ {EmailTemplatesPreview} from "./components/emailtemplatespreview";
 
 @NgModule({
     imports: [
@@ -49,21 +54,17 @@ import /*embed*/ {EmailActionSetReadButton} from "./components/emailactionsetrea
         fieldEmailStatus,
         EmailReplyButton,
         EmailReplyModal,
+        EmailSendButton,
+        EmailForwardButton,
+        EmailForwardModal,
         EmailSchedulesButton,
         EmailSchedulesModal,
         EmailSchedulesRelatedButton,
         EmailSchedulesRelatedModal,
         EmailSchedulesView,
-        EmailActionSetReadButton
+        EmailActionSetReadButton,
+        EmailTemplatesEditor,
+        EmailTemplatesPreview
     ]
 })
-export class ModuleEmails {
-    public readonly version = "1.0";
-    public readonly build_date = "/*build_date*/";
-
-    constructor(
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
-    }
-}
+export class ModuleEmails {}

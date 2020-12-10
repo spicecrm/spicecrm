@@ -50,7 +50,8 @@ import /*embed*/ {QuestionnaireEditor} from './components/questionnaireeditor';
 import /*embed*/ {QuestionnaireEditorQuestionsetAdd} from './components/questionnaireeditorquestionsetadd';
 import /*embed*/ {QuestionsetManager} from './components/questionsetmanager';
 import /*embed*/ {QuestionnaireResults} from './components/questionnaireresults';
-
+import /*embed*/ {QuestionnaireSingleEvaluationValues} from './components/questionnairesingleevaluationvalues';
+import /*embed*/ {QuestionnaireEntireEvaluation} from './components/questionnaireentireevaluation';
 
 @NgModule({
     imports: [
@@ -104,7 +105,11 @@ import /*embed*/ {QuestionnaireResults} from './components/questionnaireresults'
         QuestionnaireEvaluationSpiderweb,
         QuestionnaireInterpretationCategories,
         QuestionnaireInterpretationAssignment,
-        QuestionnaireResults
+        QuestionnaireResults,
+        QuestionnaireSingleEvaluationValues,
+        QuestionnaireEntireEvaluation,
+        // QuestionnaireFillOutModal,
+        // QuestionnaireFillOutButton
     ]
 })
 export class ModuleQuestionnaires {}

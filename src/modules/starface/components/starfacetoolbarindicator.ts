@@ -67,6 +67,8 @@ export class StarfaceToolbarIndicator implements OnDestroy {
      */
     private starfacesubscription: boolean = false;
 
+    private _enabled: boolean = true;
+
     constructor(
         private language: language,
         private configuration: configurationService,
@@ -109,6 +111,24 @@ export class StarfaceToolbarIndicator implements OnDestroy {
                 return 'slds-icon-text-error';
             default:
                 return 'slds-icon-text-light';
+        }
+    }
+
+    private toggleconnection() {
+        this.enabled = !this.enabled;
+    }
+
+    get enabled() {
+        return this._enabled;
+    }
+
+    set enabled(value) {
+        this._enabled = value;
+
+        if (this.enabled) {
+            this.login();
+        } else {
+            this.disconnect();
         }
     }
 

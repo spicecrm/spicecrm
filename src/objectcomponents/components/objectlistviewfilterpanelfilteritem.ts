@@ -76,14 +76,11 @@ export class ObjectListViewFilterPanelFilterItem extends SystemFilterBuilderFilt
         private userpreferences: userpreferences
     ) {
         super(backend, language, metadata);
+
+        // set the module from the modellist
+        this.module = this.modellist.module;
     }
 
-    /**
-     * a simple getter as helper to get the module from the modellist
-     */
-    get module() {
-        return this.modellist.module;
-    }
 
     /**
      * returns the operator label

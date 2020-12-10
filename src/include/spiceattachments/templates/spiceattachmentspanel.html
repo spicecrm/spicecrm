@@ -1,18 +1,21 @@
 <div class="slds-box slds-m-around--xx-small" (system-drop-file)="fileDrop($event)">
     <div>
         <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
-            <spice-attachment-file *ngFor="let file of modelattachments.files" [file]="file" class="slds-media slds-size--1-of-1"></spice-attachment-file>
+            <spice-attachment-file *ngFor="let file of modelattachments.files" [modelattachments]="modelattachments" [file]="file" class="slds-media slds-size--1-of-1"></spice-attachment-file>
         </div>
-        <div *ngIf="modelattachments.loading" class="slds-p-around--large slds-align--absolute-center">
-            <system-spinner></system-spinner>
+        <div *ngIf="modelattachments.loading" class="slds-p-around--x-small slds-align--absolute-center">
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <system-spinner size="14"></system-spinner>
+                <system-label class="slds-p-left--x-small" label="LBL_INITIALIZING"></system-label>
+            </div>
         </div>
     </div>
-    <div *ngIf="editing" class="slds-grid slds-grid--align-center slds-grid--vertical-align-center slds-gutters_direct-xx-small">
+    <div *ngIf="editing && !componentconfig.disableupload && !modelattachments.loading" class="slds-grid slds-grid--align-center slds-grid--vertical-align-center slds-gutters_direct-xx-small">
         <div class="slds-col"><system-label label="LBL_DROP_FILES"></system-label></div>
         <div class="slds-col"><system-label label="LBL_OR"></system-label></div>
         <button *ngIf="!componentconfig.disableupload" class="slds-col slds-button slds-button--neutral" (click)="selectFile()"><system-label label="LBL_UPLOAD_FILES"></system-label></button>
         <div class="slds-col"><system-label label="LBL_OR"></system-label></div>
         <button *ngIf="!componentconfig.disableupload" class="slds-col slds-button slds-button--neutral" (click)="addImage()"><system-label label="LBL_ADD_IMAGE"></system-label></button>
-        <input #fileupload style="display:none" type="file" multiple (change)="uploadFile()"/>
+        <input #fileupload style="display:none" type="file" multiple (click)="fileupload.value = null" (change)="uploadFile()"/>
     </div>
 </div>
