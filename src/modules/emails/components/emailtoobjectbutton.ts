@@ -74,7 +74,7 @@ export class EmailToObjectButton implements OnDestroy {
     }
 
     public ngOnDestroy() {
-        this.subscription.unsubscribe();
+        this.subscription?.unsubscribe();
     }
 
     public getRelatedData() {
