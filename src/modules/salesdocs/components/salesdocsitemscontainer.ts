@@ -4,7 +4,8 @@
 import {
     Component,
     ElementRef,
-    Injector
+    Injector,
+    OnInit
 } from '@angular/core';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
@@ -22,7 +23,7 @@ declare var moment: any;
     selector: 'salesdocs-items-container',
     templateUrl: './src/modules/salesdocs/templates/salesdocsitemscontainer.html'
 })
-export class SalesDocsItemsContainer {
+export class SalesDocsItemsContainer implements OnInit{
 
     /**
      * the items on the sales Document
@@ -62,6 +63,13 @@ export class SalesDocsItemsContainer {
         if (config.fieldset) {
             this.fieldsetItems = this.metadata.getFieldSetFields(config.fieldset);
         }
+    }
+
+    /**
+     * on the init recalculate
+     */
+    public ngOnInit() {
+        this.recalculate();
     }
 
     /**
