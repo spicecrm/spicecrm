@@ -3,96 +3,30 @@
         <div class="slds-text-body--regular slds-box slds-m-top--small slds-text-color--weak" style="padding: .25rem">
             {{ spiceImport.stepLongText }}
         </div>
-        <div class="slds-form slds-m-around--medium">
+        <div class="slds-form slds-size--1-of-1">
             <div class="slds-form-element slds-m-vertical--medium">
-                <div *ngIf="spiceImport.fileId === ''" class="slds-form-element__control">
-                    <div class="slds-file-selector slds-file-selector--files slds-p-vertical--xx-small  slds-grid"
-                         (drop)="onDrop($event)"
-                         (dragover)="preventdefault($event)" (dragleave)="preventdefault($event)">
-                        <div class="slds-file-selector__dropzone slds-p-left--small slds-p-vertical--small  slds-p-right--xx-small slds-grid">
-                            <input #fileupload type="file" accept=".csv" value=""
-                                   class="slds-file-selector__input slds-assistive-text"
-                                   (click)="fileupload.value = null"
-                                   (change)="uploadFile()"/>
-                            <label class="slds-file-selector__body slds-p-top--medium">
-                                <div class="slds-file-selector__button slds-button slds-button--neutral"
-                                     (click)="selectFile()">
-                                    <system-button-icon [icon]="'upload'"
-                                                        class="slds-m-right--xxx-small"></system-button-icon>
-                                    <system-label label="LBL_UPLOAD"></system-label>
-                                </div>
-                            </label>
-
-                            <div class="slds-grid slds-m-vertical--x-small slds-m-left--medium">
-                                <fieldset class="slds-form-element">
-                                    <div class="slds-form-element__control">
-                                        <div class="slds-radio_button-group">
-                                              <span class="slds-button slds-radio_button" style="line-height: 1.10rem">
-                                                <input type="radio" [(ngModel)]="separator" name="separator"
-                                                       id="semicolon"
-                                                       value="semicolon"/>
-                                                <label class="slds-radio_button__label" for="semicolon">
-                                                  <span class="slds-radio_faux" style="padding: 0 7px">;</span>
-                                                </label>
-                                              </span>
-                                            <span class="slds-button slds-radio_button" style="line-height: 1.10rem">
-                                                <input type="radio" [(ngModel)]="separator" name="separator" id="comma"
-                                                       value="comma"/>
-                                                <label class="slds-radio_button__label" for="comma">
-                                                  <span class="slds-radio_faux" style="padding: 0 7px">,</span>
-                                              </label>
-                                              </span>
-                                        </div>
-                                    </div>
-                                    <legend class="slds-form-element__legend slds-form-element__label">
-                                        <system-label label="LBL_SEPARATOR"></system-label>
-                                    </legend>
-                                </fieldset>
-                                <fieldset class="slds-form-element">
-                                    <div class="slds-form-element__control">
-                                        <div class="slds-radio_button-group">
-                                              <span class="slds-button slds-radio_button" style="line-height: 1.10rem">
-                                                <input type="radio" [(ngModel)]="enclosure" name="enclosure"
-                                                       id="singleq" value="single"/>
-                                                <label class="slds-radio_button__label" for="singleq">
-                                                  <span class="slds-radio_faux" style="padding: 0 7px">'</span>
-                                                </label>
-                                              </span>
-                                            <span class="slds-button slds-radio_button" style="line-height: 1.10rem">
-                                                <input type="radio" [(ngModel)]="enclosure" name="enclosure" id="noneq"
-                                                       value="none"/>
-                                                <label class="slds-radio_button__label" for="noneq">
-                                                  <span class="slds-radio_faux" style="padding: 0 7px"> </span>
-                                              </label>
-                                              </span>
-                                            <span class="slds-button slds-radio_button" style="line-height: 1.10rem">
-                                                <input type="radio" [(ngModel)]="enclosure" name="enclosure"
-                                                       id="doubleq" value="double"/>
-                                                <label class="slds-radio_button__label" for="doubleq">
-                                                  <span class="slds-radio_faux" style="padding: 0 7px">"</span>
-                                              </label>
-                                          </span>
-                                        </div>
-                                    </div>
-                                    <legend class="slds-form-element__legend slds-form-element__label">
-                                        <system-label label="LBL_ENCLOSURE"></system-label>
-                                    </legend>
-                                </fieldset>
+                <div class="slds-form-element__control slds-grid">
+                    <div class="slds-grow" style="min-width: 0">
+                        <system-input-file [ngModel]="spiceImport.fileData" (ngModelChange)="loadFilePreview($event)" (onRemove)="clearFile()" accept=".csv" class="slds-size--1-of-1"></system-input-file>
+                    </div>
+                    <div *ngIf="!spiceImport.fileData" class="slds-grid slds-m-around--x-small">
+                        <fieldset class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <system-input-radio-button-group [(ngModel)]="spiceImport.separator" [inputOptions]="[{label: ';', value: 'semicolon'}, {label: ',', value: 'comma'}]"></system-input-radio-button-group>
                             </div>
-                        </div>
+                            <legend class="slds-form-element__legend slds-form-element__label">
+                                <system-label label="LBL_SEPARATOR"></system-label>
+                            </legend>
+                        </fieldset>
+                        <fieldset class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <system-input-radio-button-group [(ngModel)]="spiceImport.enclosure" [inputOptions]="enclosureOptions"></system-input-radio-button-group>
+                            </div>
+                            <legend class="slds-form-element__legend slds-form-element__label">
+                                <system-label label="LBL_ENCLOSURE"></system-label>
+                            </legend>
+                        </fieldset>
                     </div>
-                </div>
-                <div *ngIf="spiceImport.fileId !== ''" class="slds-form-element__control">
-                    <div class="slds-pill slds-m-top--small slds-m-bottom--xxx-small slds-p-vertical--xx-small slds-p-horizontal--x-small">
-                        <a href="javascript:void(0);" class="slds-pill__label">{{spiceImport.fileName}} </a>
-                        <button class="slds-button slds-button--icon slds-pill__remove" (click)="clearFile()">
-                            <system-button-icon [icon]="'close'"></system-button-icon>
-                        </button>
-                    </div>
-                    <div>
-                        ({{spiceImport.fileRows}}) <system-label label="LBL_RECORDS"></system-label>
-                    </div>
-
                 </div>
             </div>
 
@@ -132,7 +66,7 @@
                         <span class="slds-form-element__label">none</span>
                       </label>
                     </span>
-                    <span *ngIf="hasSavedImports()" class="slds-radio">
+                    <span *ngIf="spiceImport.savedImports?.length > 0" class="slds-radio">
                       <input type="radio" id="importtemplatechoose" value="choose" name="template"
                              [(ngModel)]="importTemplateAction"/>
                       <label class="slds-radio__label" for="importtemplatechoose">
@@ -159,7 +93,7 @@
                     <div class="slds-select_container">
                         <select class="slds-select" (change)="setSavedImport($event)">
                             <option value=""></option>
-                            <option *ngFor="let savedImport of getSavedImports()" [value]="savedImport.id">
+                            <option *ngFor="let savedImport of spiceImport.savedImports" [value]="savedImport.id">
                                 {{savedImport.name}}
                             </option>
                         </select>
@@ -176,7 +110,7 @@
             </div>
         </div>
     </div>
-    <div class="slds-size--3-of-4 slds-height_full">
+    <div [system-overlay-loading-spinner]="isLoading" class="slds-size--3-of-4 slds-height_full">
         <table *ngIf="spiceImport.fileHeader.length > 0"
                class="slds-table slds-table--bordered slds-table--cell-buffer">
             <thead>
@@ -207,17 +141,3 @@
         </table>
     </div>
 </div>
-<ng-container *ngIf="showUploadModal">
-    <div role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
-        <div class="slds-modal__container">
-            <div class="slds-modal__header slds-modal__header--empty"></div>
-            <div class="slds-modal__content slds-p-around--medium">
-                <system-label label="LBL_UPLOADING"></system-label>{{theFile}} ...
-                <div class="uploadbar">
-                    <div class="uploadprogress" [ngStyle]="getBarStyle()"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="slds-backdrop slds-backdrop--open"></div>
-</ng-container>

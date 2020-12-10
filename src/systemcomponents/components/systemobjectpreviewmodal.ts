@@ -29,6 +29,13 @@ export class SystemObjectPreviewModal {
     @Input() private name: string = '';
 
     /**
+     * can be set to true to display a page not available error
+     *
+     * @private
+     */
+    @Input() private loadingerror: boolean = false;
+
+    /**
      * the blobURL. This is handled internally. When the data is sent this is created so the object can be rendered in the modal
      */
     private blobUrl: any;

@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
@@ -16,6 +16,18 @@ import {userpreferences} from '../../services/userpreferences.service';
     templateUrl: './src/objectfields/templates/fieldcurrency.html'
 })
 export class fieldCurrency extends fieldGeneric implements OnInit {
+
+    /**
+     * the reference to the input element
+     * @private
+     */
+    @ViewChild('floatinput', {static: false}) private inputel: ElementRef;
+
+    /**
+     * the formatted value
+     * @private
+     */
+    private textvalue: string = '';
 
     /**
      * holds an array of currencies
@@ -43,6 +55,12 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
             let modelFields = this.metadata.getModuleFields(this.model.module);
             if (modelFields.currency_id) this.currencyidfield = 'currency_id';
         }
+
+        // get the formatted value
+        this.textvalue = this.getValAsText();
+        this.subscriptions.add(this.model.data$.subscribe(() => {
+            this.textvalue = this.getValAsText();
+        }));
     }
 
     get currencyId(){
@@ -73,32 +91,58 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
         return currencySymbol;
     }
 
-    /**
-     * override the getter for the value
-     */
-    get value() {
-        let fieldval = this.model.getFieldValue(this.fieldname);
-
-        if (fieldval === undefined) return '';
-        let val = parseFloat(fieldval);
+    private getValAsText() {
+        if (this.value === undefined) return '';
+        let val = parseFloat(this.value);
         if (isNaN(val)) return '';
-        return val;
         return this.userpreferences.formatMoney(val);
     }
 
-    /**
-     * override the setter for the value
-     *
-     * @param val
-     */
-    set value(val) {
+    private checkInput(e) {
+        let allowedKeys = ['ArrowRight', 'ArrowLeft', 'Backspace', 'Delete'];
+        let regex = /^[0-9.,]+$/;
+        if (!regex.test(e.key) && allowedKeys.indexOf(e.key) < 0) {
+            e.preventDefault();
+            console.log(e.key);
+        }
+    }
+
+    private changed() {
+        let curpos = this.inputel.nativeElement.selectionEnd;
+        let val: any = this.textvalue;
         val = val.split(this.userpreferences.toUse.num_grp_sep).join('');
         val = val.split(this.userpreferences.toUse.dec_sep).join('.');
         if (isNaN(val = parseFloat(val))) {
-            this.model.setField(this.fieldname, '');
+            this.value = '';
         } else {
-            // this.value = Math.floor(val * Math.pow(10, this.userpreferences.toUse.default_currency_significant_digits)) / Math.pow(10, this.userpreferences.toUse.default_currency_significant_digits);
-            this.model.setField(this.fieldname, Math.floor(val * Math.pow(10, this.userpreferences.toUse.default_currency_significant_digits)) / Math.pow(10, this.userpreferences.toUse.default_currency_significant_digits))
+            this.value = (Math.round(val * Math.pow(10, this.userpreferences.toUse.default_currency_significant_digits)) / Math.pow(10, this.userpreferences.toUse.default_currency_significant_digits));
+        }
+        this.textvalue = this.getValAsText();
+        // set a brieftimeout and set the current pos back to the field tricking the Change Detection
+        setTimeout(()=> {
+            this.inputel.nativeElement.selectionEnd = curpos;
+        });
+    }
+
+    /**
+     * handle view mode change to set the currency id from user preferences if editing is true
+     * @param mode
+     */
+    public handleViewModeChange(mode) {
+        if (mode == 'edit') {
+            this.setCurrencyFromPreferences();
+        }
+        super.handleViewModeChange(mode);
+
+    }
+
+    /**
+     * load currency id from user preferences
+     * @private
+     */
+    private setCurrencyFromPreferences() {
+        if (!!this.currencyidfield && !this.model.data[this.currencyidfield]) {
+            this.model.data[this.currencyidfield] = this.userpreferences.toUse.currency;
         }
     }
 }

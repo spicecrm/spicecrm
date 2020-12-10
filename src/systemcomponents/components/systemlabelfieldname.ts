@@ -2,23 +2,28 @@
  * @module SystemComponents
  */
 import {
+    AfterViewInit,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
-    OnDestroy,
     Component,
     Input,
     OnChanges,
+    OnDestroy,
+    Renderer2,
     SimpleChanges
 } from '@angular/core';
 import {Subscription} from "rxjs";
 import {language} from '../../services/language.service';
+import {modal} from "../../services/modal.service";
+import {metadata} from "../../services/metadata.service";
+import {footer} from "../../services/footer.service";
 
 @Component({
     selector: 'system-label-fieldname',
     templateUrl: './src/systemcomponents/templates/systemlabelfieldname.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SystemLabelFieldname implements OnChanges, OnDestroy {
+export class SystemLabelFieldname implements OnChanges, AfterViewInit, OnDestroy {
 
     /**
      * the module
@@ -45,10 +50,23 @@ export class SystemLabelFieldname implements OnChanges, OnDestroy {
      */
     private subsciptions: Subscription = new Subscription();
 
-    constructor(private language: language, private cdRef: ChangeDetectorRef) {
+    constructor(private language: language,
+                private modal: modal,
+                private metadata: metadata,
+                private renderer: Renderer2,
+                private footer: footer,
+                private cdRef: ChangeDetectorRef) {
         this.subsciptions.add(
             this.language.currentlanguage$.subscribe(() => this.detectChanges())
         );
+    }
+
+
+    /**
+     * detach from changes detections to handle it manually
+     */
+    public ngAfterViewInit() {
+        this.cdRef.detach();
     }
 
     /**
@@ -68,10 +86,80 @@ export class SystemLabelFieldname implements OnChanges, OnDestroy {
     }
 
     /**
+     * open label editor modal
+     * @private
+     */
+    public openModal() {
+        this.modal.openModal('SystemLabelEditorModal', true).subscribe(modalRef => {
+            const label = this.fieldconfig.label || this.metadata.getFieldlabel(this.module, this.field);
+            modalRef.instance.labelData = {name: label, global_translations: [], custom_translations: []};
+        });
+    }
+
+    /**
+     * handle double click
+     * @param event
+     * @private
+     */
+    private onDblClick(event: MouseEvent) {
+        this.openModal();
+        event.preventDefault();
+    }
+
+    /**
      * triggers the change detection when the language is changed
      */
     private detectChanges() {
         this.cdRef.detectChanges();
     }
 
+    /**
+     * handle right click to edit translations
+     * @private
+     */
+    private onRightClick(event) {
+        const dropdown = this.createDropdown(event);
+        this.renderer.appendChild(this.footer.footercontainer.element.nativeElement, dropdown);
+        const docClickListener = this.renderer.listen('document', 'click', event => {
+            this.closeDropdown(event, dropdown);
+            docClickListener();
+        });
+        event.preventDefault();
+    }
+
+    /**
+     * remove the dropdown from the footer
+     * @param event
+     * @param dropdown
+     * @private
+     */
+    private closeDropdown(event: MouseEvent, dropdown: HTMLElement) {
+        if (this.footer.footercontainer.element.nativeElement.contains(dropdown)) {
+            this.renderer.removeChild(this.footer.footercontainer.element.nativeElement, dropdown);
+        }
+    }
+
+    /**
+     * create dropdown
+     * @param event
+     * @private
+     */
+    private createDropdown(event: MouseEvent): HTMLElement {
+        const dropdown = this.renderer.createElement('div');
+        const addClasses = (item, classes) => classes.forEach(itemClass => this.renderer.addClass(item, itemClass));
+        this.renderer.setStyle(dropdown, 'top', event.pageY + 'px');
+        this.renderer.setStyle(dropdown, 'left', event.pageX + 'px');
+        addClasses(dropdown, ['slds-dropdown--inverse', 'slds-dropdown', 'slds-theme--inverse']);
+        const ul = this.renderer.createElement('ul');
+        this.renderer.addClass(ul, 'slds-dropdown__list');
+        const li = this.renderer.createElement('li');
+        addClasses(li, ['slds-slds-dropdown__item', 'slds-p-around--xx-small']);
+
+        this.renderer.setProperty(li, 'onclick', () => this.openModal());
+        this.renderer.setProperty(li, 'innerHTML', `<a>${this.language.getLabel('LBL_EDIT_LABEL')}</a>`);
+
+        this.renderer.appendChild(ul, li);
+        this.renderer.appendChild(dropdown, ul);
+        return dropdown;
+    }
 }

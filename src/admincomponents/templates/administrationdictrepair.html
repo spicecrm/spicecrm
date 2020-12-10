@@ -1,10 +1,22 @@
 <div class="slds-grid slds-grid--align-spread slds-p-around--medium">
-    <h2 class="slds-text-heading--medium "><system-label label="LBL_REPAIR_DICTIONARY"></system-label></h2>
+    <h2 class="slds-text-heading--medium ">
+        <system-label label="LBL_REPAIR_DICTIONARY"></system-label>
+    </h2>
 </div>
 <div class="slds-p-around--small ">
     <table class="slds-table slds-table--cell-buffer slds-no-row-hover">
         <tbody>
-        <administration-dict-repair-item></administration-dict-repair-item>
+        <tr style="vertical-align: middle" class="slds-align-top">
+            <administration-dict-repair-item></administration-dict-repair-item>
+        </tr>
+        <tr style="vertical-align: middle" class="slds-align-top">
+            <administration-dict-repair-language></administration-dict-repair-language>
+        </tr>
+        <tr style="vertical-align: middle" class="slds-align-top">
+            <administration-dict-repair-acl-roles></administration-dict-repair-acl-roles>
+        </tr>
+        <tr style="vertical-align: middle" class="slds-align-top">
+            <administration-dict-repair-cache></administration-dict-repair-cache>
         </tbody>
     </table>
 </div>

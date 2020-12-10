@@ -1,7 +1,7 @@
 <activitytimeline-add-container *ngIf="displayAddContainer"></activitytimeline-add-container>
 <div class="slds-grid slds-grid--align-spread slds-p-top--small slds-grid--vertical-align-center">
     <div class="slds-grid slds-grid--vertical-align-center">
-        <h2 class="slds-p-vertical--xx-small slds-text-heading--small"><system-label label="LBL_ACTIVITIES"></system-label></h2>
+        <div class="slds-p-vertical--xx-small slds-text-heading--small"><system-label label="LBL_ACTIVITIES"></system-label></div>
     </div>
     <div class="slds-grid slds-grid--vertical-align-center">
         <system-input-delayed *ngIf="activitiytimeline.usefts" [placeholder]="language.getLabel('LBL_SEARCH')" delay="1000" [(ngModel)]="ftsSearchTerm" class="slds-p-horizontal--xx-small"></system-input-delayed>
@@ -18,22 +18,22 @@
     <!-- the Activities container-->
     <ng-container *ngIf="displayActivitiesContainer">
         <div class="slds-is-relative spiceActivitiyTimelineHeader">
-            <h2 class="slds-p-vertical--xx-small slds-text-heading--x-small">
+            <div class="slds-p-vertical--xx-small slds-text-heading--x-small">
                 <span>{{activitiytimeline.activities.Activities.totalcount}}</span>
                 <span class="slds-p-horizontal--xx-small"><system-label label="LBL_NEXT_STEPS"></system-label></span>
                 <system-utility-icon *ngIf="activitiytimeline.usefts && activitiytimeline.activities.Activities.totalcount>0" [icon]="displayaggregates.Activities?'up':'down'" size="x-small" (click)="toggleAggregates('Activities', $event)"></system-utility-icon>
-            </h2>
+            </div>
             <button *ngIf="activitiytimeline.canLoadMore('Activities')" class="slds-button slds-button--neutral slds-is-absolute" style="right:.5rem; top:-3px;" type="button" (click)="loadMore('Activities')"><span><system-label label="LBL_MORE"></system-label></span></button>
         </div>
         <activitytimeline-container module="Activities" [displayaggregates]="displayaggregates.Activities"></activitytimeline-container>
     </ng-container>
     <!-- the History container-->
     <div class="slds-is-relative spiceActivitiyTimelineHeader">
-        <h2 class="slds-p-vertical--xx-small slds-text-heading--x-small">
+        <div class="slds-p-vertical--xx-small slds-text-heading--x-small">
             <span>{{activitiytimeline.activities.History.totalcount}}</span>
             <span class="slds-p-horizontal--xx-small"><system-label label="LBL_PAST_ACTIVITIES"></system-label></span>
             <system-utility-icon *ngIf="activitiytimeline.usefts && activitiytimeline.activities.History.totalcount > 0" [icon]="displayaggregates.History?'up':'down'" size="x-small" (click)="toggleAggregates('History', $event)"></system-utility-icon>
-        </h2>
+        </div>
         <activitytimeline-summary-button></activitytimeline-summary-button>
     </div>
     <activity-timeline-drop-zone-wrapper>

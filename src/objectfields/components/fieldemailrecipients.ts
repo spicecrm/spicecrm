@@ -140,7 +140,8 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
 
         this.setDisplayValue();
 
-        if (this.model.data.recipient_addresses.length > 0 || this.fieldconfig.addresstype != 'to' || !this.model.getField('parent_type') || !this.model.getField('parent_id')) return;
+        // check if any condition si met so no determination shoudl happen on the addresses
+        if (this.model.data.recipient_addresses.length > 0 || this.fieldconfig.nodetermination === true || this.fieldconfig.addresstype != 'to' || !this.model.getField('parent_type') || !this.model.getField('parent_id')) return;
 
         // try to determine addresses from Parent
         this.backend.getRequest(`module/${(this.model.getField('parent_type'))}/${(this.model.getField('parent_id'))}`).subscribe(parent => {

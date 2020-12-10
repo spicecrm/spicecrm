@@ -75,15 +75,26 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
     }
 
     private handleOnBlur() {
+        let emailAddresses = [];
         // get the email addresses
-        let emailAddresses = this.model.getField('emailaddresses').filter(emailaddress => emailaddress.email_address != '');
+        this.model.getField('emailaddresses')
+            .filter(emailAddress => emailAddress.email_address != '')
+            .forEach(emailAddress => {
+                if (!emailAddresses.some(e => e.email_address == emailAddress.email_address)) emailAddresses.push(emailAddress);
+            });
 
         // get the primary email address
-        let email1 = '';
-        let primaryEmailAddress = emailAddresses.find(emailaddress => emailaddress.primary_address == '1');
-        if(primaryEmailAddress) email1 = primaryEmailAddress.email_address;
+        let primaryEmailAddress = emailAddresses.find(emailAddress => emailAddress.primary_address == '1');
+        // if no primary was set take the first entry
+        if (!primaryEmailAddress && emailAddresses.length > 0) {
+            emailAddresses[0].primary_address = '1';
+            primaryEmailAddress = emailAddresses[0];
+        }
 
-        this.model.setFields({emailAddresses, email1});
+        this.model.setFields({
+            emailaddresses: emailAddresses,
+            email1: primaryEmailAddress.email_address
+        });
     }
 }
 

@@ -59,9 +59,14 @@ export class ObjectRelatedCardFile {
                     this.modal.openModal('SystemImagePreviewModal').subscribe(modalref => {
                         modalref.instance.imgname = this.file.filename;
                         modalref.instance.imgtype = this.file.file_mime_type.toLowerCase();
-                        this.modelattachments.getAttachment(this.file.id).subscribe(file => {
-                            modalref.instance.imgsrc = 'data:' + this.file.file_mime_type.toLowerCase() + ';base64,' + file;
-                        });
+                        this.modelattachments.getAttachment(this.file.id).subscribe(
+                            file => {
+                                modalref.instance.imgsrc = 'data:' + this.file.file_mime_type.toLowerCase() + ';base64,' + file;
+                            },
+                            err => {
+                                modalref.instance.loadingerror = true;
+                            }
+                        );
                     });
                     break;
                 case 'text':
@@ -70,9 +75,14 @@ export class ObjectRelatedCardFile {
                     this.modal.openModal('SystemObjectPreviewModal').subscribe(modalref => {
                         modalref.instance.name = this.file.filename;
                         modalref.instance.type = this.file.file_mime_type.toLowerCase();
-                        this.modelattachments.getAttachment(this.file.id).subscribe(file => {
-                            modalref.instance.data = atob(file);
-                        });
+                        this.modelattachments.getAttachment(this.file.id).subscribe(
+                            file => {
+                                modalref.instance.data = atob(file);
+                            },
+                            err => {
+                                modalref.instance.loadingerror = true;
+                            }
+                        );
                     });
                     break;
                 case "application":
@@ -81,9 +91,14 @@ export class ObjectRelatedCardFile {
                             this.modal.openModal('SystemObjectPreviewModal').subscribe(modalref => {
                                 modalref.instance.name = this.file.filename;
                                 modalref.instance.type = this.file.file_mime_type.toLowerCase();
-                                this.modelattachments.getAttachment(this.file.id).subscribe(file => {
-                                    modalref.instance.data = atob(file);
-                                });
+                                this.modelattachments.getAttachment(this.file.id).subscribe(
+                                    file => {
+                                        modalref.instance.data = atob(file);
+                                    },
+                                    err => {
+                                        modalref.instance.loadingerror = true;
+                                    }
+                                );
                             });
                             break;
                         default:

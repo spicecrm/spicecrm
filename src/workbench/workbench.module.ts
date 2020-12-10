@@ -16,6 +16,10 @@ import {ObjectComponents} from "../objectcomponents/objectcomponents";
 import {GlobalComponents} from "../globalcomponents/globalcomponents";
 import {DragDropModule} from '@angular/cdk/drag-drop';
 
+// Interfaces
+import /*embed*/ {DictionaryManagerMessage, DictionaryDefinition, DictionaryItem, Relationship, RelationshipRelateField, DictionaryIndex, DictionaryIndexItem} from "./interfaces/dictionarymanager.interfaces";
+import /*embed*/ {DomainDefinition, DomainField} from "./interfaces/domainmanager.interfaces";
+
 // Services
 import /*embed*/ {domainmanager} from "./services/domainmanager.service";
 import /*embed*/ {dictionarymanager} from "./services/dictionarymanager.service";
@@ -40,6 +44,17 @@ import /*embed*/ {DictionaryManagerItems} from "./components/dictionarymanagerit
 import /*embed*/ {DictionaryManagerItemDetails} from "./components/dictionarymanageritemdetails";
 import /*embed*/ {DictionaryManagerAddDefinitionModal} from "./components/dictionarymanageradddefinitionmodal";
 import /*embed*/ {DictionaryManagerAddItemModal} from "./components/dictionarymanageradditemmodal";
+import /*embed*/ {DictionaryManagerRelationships} from "./components/dictionarymanagerrelationships";
+import /*embed*/ {DictionaryManagerRelationshipsDetails} from "./components/dictionarymanagerrelationshipsdetails";
+import /*embed*/ {DictionaryManagerRelationshipAdd} from "./components/dictionarymanagerrelationshipadd";
+import /*embed*/ {DictionaryManagerRelationshipAddOneToMany} from "./components/dictionarymanagerrelationshipaddonetomany";
+import /*embed*/ {DictionaryManagerRelationshipContainerOneToMany} from "./components/dictionarymanagerrelationshipcontaineronetomany";
+import /*embed*/ {DictionaryManagerRelationshipAddManyToMany} from "./components/dictionarymanagerrelationshipaddmanytomany";
+import /*embed*/ {DictionaryManagerRelationshipContainerManyToMany} from "./components/dictionarymanagerrelationshipcontainermanytomany";
+import /*embed*/ {DictionaryManagerIndexes} from "./components/dictionarymanagerindexes";
+import /*embed*/ {DictionaryManagerIndexAdd} from "./components/dictionarymanagerindexadd";
+import /*embed*/ {DictionaryManagerIndexDetails} from "./components/dictionarymanagerindexdetails";
+import /*embed*/ {DictionaryManagerFields} from "./components/dictionarymanagerfields";
 
 import /*embed*/ {FieldsetManager} from "./components/fieldsetmanager";
 import /*embed*/ {FieldsetManagerFieldsetDetails} from "./components/fieldsetmanagerfieldsetdetails";
@@ -66,6 +81,7 @@ import /*embed*/ {MailboxesManager} from "./components/mailboxesmanager";
 import /*embed*/ {MailboxesTransportsEnum} from "./components/mailboxestransportsenum";
 import /*embed*/ {MailboxesmanagerTestModal} from "./components/mailboxesmanagertestmodal";
 import /*embed*/ {MailboxesmanagerTestIMAPModal} from "./components/mailboxesmanagertestimapmodal";
+import /*embed*/ {MailboxesGmailTrafficManager} from "./components/mailboxesgmailtrafficmanager";
 import /*embed*/ {MailboxesMailgunTrafficManager} from "./components/mailboxesmailguntrafficmanager";
 import /*embed*/ {MailboxesSendgridTrafficManager} from "./components/mailboxessendgridtrafficmanager";
 import /*embed*/ {MailboxesTwillioTrafficManager} from "./components/mailboxestwilliotrafficmanager";
@@ -153,6 +169,17 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         DictionaryManagerItemDetails,
         DictionaryManagerAddDefinitionModal,
         DictionaryManagerAddItemModal,
+        DictionaryManagerRelationships,
+        DictionaryManagerRelationshipsDetails,
+        DictionaryManagerRelationshipAdd,
+        DictionaryManagerRelationshipAddOneToMany,
+        DictionaryManagerRelationshipContainerOneToMany,
+        DictionaryManagerRelationshipAddManyToMany,
+        DictionaryManagerRelationshipContainerManyToMany,
+        DictionaryManagerIndexes,
+        DictionaryManagerIndexAdd,
+        DictionaryManagerIndexDetails,
+        DictionaryManagerFields,
         FieldsetManager,
         FieldsetManagerFieldsetDetails,
         FieldsetManagerFieldDetails,
@@ -193,6 +220,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         MailboxesmanagerTestIMAPModal,
         MailboxesImapSmtpTrafficManager,
         MailboxesIMAPSMTPSelectFoldersModal,
+        MailboxesGmailTrafficManager,
         MailboxesMailgunTrafficManager,
         MailboxesSendgridTrafficManager,
         MailboxesTwillioTrafficManager,
