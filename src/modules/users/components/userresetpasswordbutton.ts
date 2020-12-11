@@ -21,7 +21,7 @@ export class UserResetPasswordButton {
      * Needs tobe an admin and the user needs to be active
      */
     get disabled() {
-        return this.session.isAdmin && this.model.getField('status') == 'Active' ? false : true;
+        return this.session.isAdmin && this.model.getField('status') == 'Active' && this.model.getFieldValue('external_auth_only') == false ? false : true;
     }
 
     /**
