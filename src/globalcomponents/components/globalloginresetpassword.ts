@@ -7,8 +7,12 @@ import {configurationService} from '../../services/configuration.service';
 import {session} from '../../services/session.service';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {toast} from '../../services/toast.service';
+import {language} from '../../services/language.service';
 
 
+/**
+ * renders a password change dialog when the user logs in and is required to change the password
+ */
 @Component({
     selector: 'global-login-reset-password',
     templateUrl: './src/globalcomponents/templates/globalloginresetpassword.html',
@@ -17,30 +21,69 @@ import {toast} from '../../services/toast.service';
     }
 })
 export class GlobalLoginResetPassword {
+    /**
+     * the old password to check that the password has been changed
+     * @private
+     */
     @Input('oldpassword') private oldPassword: string;
+
+    /**
+     * the entered password
+     * @private
+     */
     private password: string;
+
+    /**
+     * the repeated password
+     * @private
+     */
     private repeatPassword: string;
-    private promptNewPass: boolean = false;
+
+    /**
+     * the regex to match the password requirements
+     * @private
+     */
     private pwdCheck: RegExp = new RegExp('//');
+
+    /**
+     * the text for the password requriements
+     * @private
+     */
     private pwdGuideline: string;
-    private infoLoaded = false;
+
+    /**
+     * if we are psoting the password
+     * @private
+     */
+    private posting: boolean = false;
 
     constructor(private loginService: loginService,
                 private http: HttpClient,
                 private configuration: configurationService,
                 private toast: toast,
-                private session: session) {
+                private session: session,
+                private language: language
+    ) {
         this.getInfo();
     }
 
+    /**
+     * checks that the new assowrd is different than the old
+     */
     get oldPwError() {
         return (this.oldPassword == this.password) ? 'Old password is not allowed to be used as a new password' : false;
     }
 
+    /**
+     * check that the password matches the requirements
+     */
     get pwderror() {
         return this.password && !this.pwdCheck.test(this.password) ? 'Password does not match the Guideline.' : false;
     }
 
+    /**
+     * checks that the new password has been typed correctly
+     */
     get pwdreperror() {
         return this.password == this.repeatPassword ? false : 'Inputs for the new Password does not match.'; // does not match password
     }
@@ -61,11 +104,30 @@ export class GlobalLoginResetPassword {
     * retrieve password guideline
     */
     private getInfo() {
-        this.http.get(this.configuration.getBackendUrl() + '/forgotPassword/info').subscribe((res: any) => {
-            this.pwdCheck = new RegExp(res.pwdCheck.regex);
-            this.pwdGuideline = res.pwdCheck.guideline;
-            this.infoLoaded = true;
-        });
+        let extConf = this.configuration.getCapabilityConfig('userpassword');
+        this.pwdCheck = new RegExp(extConf.regex);
+
+        let requArray = [];
+        /*
+        if (extConf.onelower) requArray.push(this.language.getLabel('MSG_PASSWORD_ONELOWER'));
+        if (extConf.oneupper) requArray.push(this.language.getLabel('MSG_PASSWORD_ONEUPPER'));
+        if (extConf.onenumber) requArray.push(this.language.getLabel('MSG_PASSWORD_ONENUMBER'));
+        if (extConf.minpwdlength) requArray.push(this.language.getLabel('MSG_PASSWORD_LENGTH') + ' ' + extConf.minpwdlength);
+        */
+
+        if (extConf.onelower) requArray.push('one lower case');
+        if (extConf.oneupper) requArray.push('one upper case');
+        if (extConf.onenumber) requArray.push('one number');
+        if (extConf.minpwdlength) requArray.push('minimum length ' + extConf.minpwdlength);
+
+        this.pwdGuideline = requArray.join(', ');
+    }
+
+    /**
+     * checks if the password can be saved
+     */
+    get canSave() {
+        return this.password && this.oldPwError == false && this.pwderror == false && this.pwdreperror == false && !this.posting;
     }
 
     /*
@@ -73,15 +135,12 @@ export class GlobalLoginResetPassword {
     */
     private sendNewPass() {
 
-        if (this.infoLoaded) {
-            if (this.pwderror) return false;
-        }
-
-        if (this.password && this.pwdreperror == false && this.oldPwError == false) {
+        if (this.canSave) {
 
             let headers = new HttpHeaders();
             headers = headers.set('OAuth-Token', this.session.authData.sessionId);
 
+            this.posting = true;
             this.http.post(this.configuration.getBackendUrl() + '/resetTempPass', {
                 password: this.password,
             }, {headers: headers}).subscribe(
@@ -91,11 +150,7 @@ export class GlobalLoginResetPassword {
                     this.loginService.load();
                 },
                 (err: any) => {
-                    switch (err.status) {
-                        case 401:
-                            this.promptNewPass = true;
-                            break;
-                    }
+                   this.posting = false;
                 });
         }
     }

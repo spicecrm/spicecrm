@@ -8,15 +8,33 @@ import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {session} from "../../../services/session.service";
+import {configurationService} from "../../../services/configuration.service";
 
+/**
+ * renders a modal to rest the password of a user and resend the password
+ */
 @Component({
     selector: "user-reset-password-modal",
     templateUrl: "./src/modules/users/templates/userresetpasswordmodal.html"
 })
 export class UserResetPasswordModal {
 
+    /**
+     * reference to the modal itself
+     */
     public self: any = undefined;
+
+    /**
+     * the password
+     *
+     * @private
+     */
     private password: string = undefined;
+
+    /**
+     * the password again to ensure it has been properly enterewd
+     * @private
+     */
     private repeatPassword: string = undefined;
     private pwdCheck: RegExp = new RegExp("//");
     private pwdGuideline: string = undefined;
@@ -28,6 +46,13 @@ export class UserResetPasswordModal {
     private repeatPasswordErrorMsg: string = "";
     private canSendByEmail: boolean = true;
 
+    /**
+     * a string to break the autocomplete
+     *
+     * @private
+     */
+    private autocompletebreaker: string = '';
+
     constructor(
         private model: model,
         private language: language,
@@ -35,7 +60,10 @@ export class UserResetPasswordModal {
         private toast: toast,
         private session: session,
         private backend: backend,
-    ) {}
+        private configuration: configurationService
+    ) {
+        this.autocompletebreaker = this.modelutilities.generateGuid();
+    }
 
     get passwordError() {
         let boolean = !this.autoGenerate && this.password && !this.pwdCheck.test(this.password);
@@ -73,6 +101,10 @@ export class UserResetPasswordModal {
         this.showPassword = !this.showPassword;
     }
 
+    /**
+     * copies the password to the clipboard
+     * @private
+     */
     private copyPassword() {
         if (!this.autoGenerate) {
             return;
@@ -93,12 +125,22 @@ export class UserResetPasswordModal {
     }
 
 
+    /**
+     * retrieves the info and builds the minimum password requirements
+     *
+     * @private
+     */
     private getInfo() {
-        this.backend.getRequest("user/password/info", {lang: this.language.currentlanguage}).subscribe((res: any) => {
-            this.pwdCheck = new RegExp(res.pwdCheck.regex);
-            this.pwdGuideline = res.pwdCheck.guideline;
-            this.infoLoaded = true;
-        });
+        let extConf = this.configuration.getCapabilityConfig('userpassword');
+        this.pwdCheck = new RegExp(extConf.regex);
+
+        let requArray = [];
+        if(extConf.onelower) requArray.push(this.language.getLabel('MSG_PASSWORD_ONELOWER'));
+        if(extConf.oneupper) requArray.push(this.language.getLabel('MSG_PASSWORD_ONEUPPER'));
+        if(extConf.onenumber) requArray.push(this.language.getLabel('MSG_PASSWORD_ONENUMBER'));
+        if(extConf.minpwdlength) requArray.push(this.language.getLabel('MSG_PASSWORD_LENGTH') + ' ' + extConf.minpwdlength);
+
+        this.pwdGuideline = requArray.join(', ');
     }
 
     private onModalEscX() {
