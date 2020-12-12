@@ -10,7 +10,6 @@ import {GlobalComponents} from '../../globalcomponents/globalcomponents';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
-import {VersionManagerService} from "../../services/versionmanager.service";
 import {FormsModule} from "@angular/forms";
 
 import /*embed*/ {fieldDocumentRevisionStatus} from "./fields/fielddocumentrevisionstatus";

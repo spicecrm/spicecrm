@@ -16,7 +16,6 @@ import {SystemComponents} from '../systemcomponents/systemcomponents';
 import {loginCheck} from '../services/login.service';
 import {metadata, aclCheck} from '../services/metadata.service';
 import {canNavigateAway} from '../services/navigation.service';
-import {VersionManagerService} from '../services/versionmanager.service';
 
 import /*embed*/ {ObjectKeyValuesPipe} from "./pipes/objectkeyvalue.pipe";
 import /*embed*/ {ObjectFieldFilterPipe} from "./pipes/objectfieldfilter.pipe";
@@ -384,12 +383,4 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectModelPopoverHeader
     ]
 })
-export class ObjectComponents {
-
-    constructor(
-        public metadata: metadata,
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
-    }
-}
+export class ObjectComponents {}

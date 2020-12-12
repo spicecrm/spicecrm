@@ -30,7 +30,6 @@ import {popup} from '../../services/popup.service';
 import {toast} from '../../services/toast.service';
 import {fts} from '../../services/fts.service';
 import {configurationService} from '../../services/configuration.service';
-import {VersionManagerService} from '../../services/versionmanager.service';
 
 
 import {ObjectFields}      from '../../objectfields/objectfields';
@@ -114,13 +113,4 @@ import /*embed*/ {ProductUOMConversions} from "./components/productuomconversion
         ProductUOMConversions,
     ]
 })
-export class ModuleProducts {
-    public readonly version = '1.0';
-    public readonly build_date = '/*build_date*/';
-
-    constructor(
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
-    }
-}
+export class ModuleProducts {}

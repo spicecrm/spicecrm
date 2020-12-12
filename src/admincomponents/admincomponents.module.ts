@@ -6,7 +6,6 @@ import {FormsModule}   from '@angular/forms';
 import {NgModule, Component} from '@angular/core';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 
-import {VersionManagerService} from '../services/versionmanager.service';
 import { RouterModule, Routes, Router } from '@angular/router';
 import {DirectivesModule} from "../directives/directives";
 import {SystemComponents} from '../systemcomponents/systemcomponents';
@@ -133,12 +132,4 @@ import /*embed*/ {AdministrationDefaultPreferences} from './components/administr
 
 })
 export class AdminComponentsModule {
-    public readonly version = '1.0';
-    public readonly build_date = '/*build_date*/';
-
-    constructor(
-        private vms: VersionManagerService,
-    ) {
-        vms.registerModule(this);
-    }
 }
