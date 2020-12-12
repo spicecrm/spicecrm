@@ -15,7 +15,6 @@ import {FormsModule} from "@angular/forms";
 import {DirectivesModule} from "../directives/directives";
 // SERVICEs
 import {metadata} from "../services/metadata.service";
-import {VersionManagerService} from "../services/versionmanager.service";
 
 import /*embed*/ {systemrichtextservice} from "./services/systemrichtext.service";
 
@@ -436,14 +435,4 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemInputFile
     ]
 })
-export class SystemComponents {
-    private readonly version = "1.0";
-    private readonly build_date = "/*build_date*/";
-
-    constructor(
-        public metadata: metadata,
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
-    }
-}
+export class SystemComponents {}

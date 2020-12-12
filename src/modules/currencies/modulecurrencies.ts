@@ -10,7 +10,6 @@ import {GlobalComponents} from '../../globalcomponents/globalcomponents';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
-import {VersionManagerService} from "../../services/versionmanager.service";
 import {FormsModule} from "@angular/forms";
 
 import /*embed*/ {CurrencyManager} from "./components/currencymanager";
@@ -38,13 +37,4 @@ import /*embed*/ {CurrencyList} from "./components/currencylist";
         SystemCurrency
     ]
 })
-export class ModuleCurrencies {
-    public readonly version = "1.0";
-    public readonly build_date = "/*build_date*/";
-
-    constructor(
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
-    }
-}
+export class ModuleCurrencies {}
