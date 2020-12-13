@@ -98,6 +98,7 @@ import /*embed*/ {SystemModalFooter} from "./components/systemmodalfooter";
 import /*embed*/ {SystemModalHeaderRight} from "./components/systemmodalheaderright";
 import /*embed*/ {SystemModalHeaderTagline} from "./components/systemmodalheadertagline";
 import /*embed*/ {SystemModalHeader} from "./components/systemmodalheader";
+import /*embed*/ {SystemModalHeaderEmpty} from "./components/systemmodalheaderempty";
 import /*embed*/ {SystemModalWrapper} from "./components/systemmodalwrapper";
 import /*embed*/ {SystemModal} from "./components/systemmodal";
 import /*embed*/ {SystemNumberSpinner} from "./components/systemnumberspinner";
@@ -250,6 +251,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemModalContent,
         SystemModalFooter,
         SystemModalHeader,
+        SystemModalHeaderEmpty,
         SystemModalHeaderRight,
         SystemModalHeaderTagline,
         SystemModalWrapper,
@@ -385,6 +387,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemModalContent,
         SystemModalFooter,
         SystemModalHeader,
+        SystemModalHeaderEmpty,
         SystemModalHeaderRight,
         SystemModalHeaderTagline,
         SystemModalWrapper,
@@ -432,7 +435,8 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemPreferencesPanelItem,
         SystemPreferencesPanelItemDisplay,
         SystemPreferencesPanelItemEdit,
-        SystemInputFile
+        SystemInputFile,
+        SystemModalHeaderEmpty
     ]
 })
 export class SystemComponents {}
