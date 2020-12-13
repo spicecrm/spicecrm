@@ -1,9 +1,9 @@
 <div>
-    <div class="slds-grid slds-grid_align-spread slds-p-bottom_x-small">
+    <div *ngIf="!hideText"  class="slds-grid slds-grid_align-spread slds-p-bottom_x-small">
         <span class="slds-m-left--xx-small"><ng-content></ng-content></span>
         <strong class="slds-m-right--x-small">{{progressText}} {{lang.getLabel('LBL_COMPLETED')}}</strong>
     </div>
-    <div *ngIf="!hideText" class="slds-progress-bar slds-progress-bar_circular" [ngClass]="sizeClass">
+    <div class="slds-progress-bar slds-progress-bar_circular" [ngClass]="sizeClass">
         <span class="slds-progress-bar__value" [ngStyle]="{'width.%':progressWidth}"></span>
     </div>
 </div>
