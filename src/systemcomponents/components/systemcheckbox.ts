@@ -49,6 +49,11 @@ export class SystemCheckbox implements ControlValueAccessor {
     @Output('click') public click$ = new EventEmitter<boolean>();
 
     /**
+     * an event emitter for the click
+     */
+    @Output('change') public change$ = new EventEmitter<MouseEvent>();
+
+    /**
      * the internal uinique id for the element
      */
     private id = _.uniqueId();  // needed to use inside the template for html ids... without, the click events will get confused...
@@ -94,13 +99,16 @@ export class SystemCheckbox implements ControlValueAccessor {
 
     }
 
-    private click() {
+    private click(e: MouseEvent) {
+        e.stopPropagation();
+
         if (this.disabled) return false;
 
         this.onTouched();
 
         this.click$.emit(this.value);
     }
+
 
     // ControlValueAccessor implementation:
     private onChange(val: string){};// => void;
