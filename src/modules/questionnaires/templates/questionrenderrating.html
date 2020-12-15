@@ -2,7 +2,7 @@
     <thead >
     <tr class="slds-text-title_caps" >
         <th width="100%" class="slds-text-align_center" scope="col"></th>
-        <th *ngFor="let entry of questionset.questiontypeparameter.rating.entries" class="slds-text-align_center" scope="col">
+        <th *ngFor="let entry of questiontypeparameter.rating.entries" class="slds-text-align_center" scope="col">
             <div *ngIf="ratingValuesHaveAlsoText" class="slds-border--bottom slds-p-bottom--xx-small slds-m-bottom--xx-small">
                 <ng-container *ngIf="entry.text !== ''; else nbsp">{{entry.text}}</ng-container>
                 <ng-template #nbsp>&nbsp;</ng-template>
@@ -12,7 +12,7 @@
     </tr>
     </thead>
     <tbody>
-        <ng-container *ngFor="let question of qp.questionsArray[questionsetId]; let i=index">
+        <ng-container *ngFor="let question of questionset.questions; let i=index">
             <tr *ngIf="!qp.hideFinishedQuestions || !questionsMeta[question.id].finished">
                 <td>
                     <ng-container *ngIf="question.image_id">
@@ -20,12 +20,12 @@
                     </ng-container>
                     <div *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-truncate" style="white-space: normal">{{question.name}}</div>
                 </td>
-                <td class="slds-text-align_center" (click)="onClick(option.id,$event)"
-                    *ngFor="let option of qp.questionoptionsArray[question.id]; let j = index;"><input
-                        type="radio"
-                        [checked]="isChecked(question.id,option.id)" name="{{question.id}}"
-                        (click)="onClick(option.id,$event)"
-                        [disabled]="isDisabled(question.id)"></td><!--title="{{questionset.questiontypeparameter.rating.entries[j].text}}" -->
+                <td class="slds-text-align_center"
+                    *ngFor="let option of question.options[question.id]; let j = index;"><input
+                        title="{{questiontypeparameter.rating.entries[j].text}}" type="radio"
+                        [checked]="qp.editMode !== 'preview' && qp.answers[question.id].options[option.id]" name="{{question.id}}"
+                        (click)="onClick(option.id)"
+                        [disabled]="questionsMeta[question.id].tempReadonly || qp.editMode === 'off'"></td>
             </tr>
         </ng-container>
     </tbody>

@@ -4,17 +4,18 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { questionnaireParticipationService } from '../services/questionnaireparticipation.service';
 import { QuestionsetRenderBasic } from './questionsetrenderbasic';
+import { QuestionRenderBasic } from './questionrenderbasic';
 
 @Component({
-    selector: 'questionset-render-rating',
-    templateUrl: './src/modules/questionnaires/templates/questionsetrenderrating.html',
+    selector: 'question-render-rating',
+    templateUrl: './src/modules/questionnaires/templates/questionrenderrating.html',
     styles: [
         "table { border-top: none; }",
         "th { position: sticky; top: 0; border-top: 1px solid #dddbda; border-bottom: 1px solid #dddbda; z-index: 10;}",
         "tr:first-child td { border-top: none; }"
     ]
 })
-export class QuestionsetRenderRating extends QuestionsetRenderBasic implements OnInit {
+export class QuestionRenderRating extends QuestionRenderBasic implements OnInit {
 
     private ratingValuesHaveAlsoText = false;
 
@@ -36,12 +37,8 @@ export class QuestionsetRenderRating extends QuestionsetRenderBasic implements O
 
     }
 
-    private onClick( optionId: string, $event ): boolean {
-        return this.qp.clickAnswerOption( optionId, $event );
-    }
-
-    private isChecked( questionId: string, optionId: string ): boolean {
-        return this.qp.answers[questionId].options[optionId];
+    private onClick( optionId: string ): boolean {
+        return this.questionnaireParticipation.clickAnswerOption( optionId );
     }
 
 }

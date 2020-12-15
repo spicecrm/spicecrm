@@ -4,6 +4,7 @@
 import { Component, Pipe, OnInit } from '@angular/core';
 import { QuestionsetRenderBasic } from './questionsetrenderbasic';
 import { questionnaireParticipationService } from '../services/questionnaireparticipation.service';
+import { QuestionRenderBasic } from './questionrenderbasic';
 
 @Pipe({name: 'questiontypeisttextspipe'})
 export class QuestionTypeISTTextPipe {
@@ -57,11 +58,11 @@ export class QuestionTypeISTOptionsPipe {
 }
 
 @Component( {
-    selector: 'questionset-render-ist',
-    templateUrl: './src/modules/questionnaires/templates/questionsetrenderist.html',
+    selector: 'question-render-ist',
+    templateUrl: './src/modules/questionnaires/templates/questionrenderist.html',
     styles: [ 'div.questionset-render-question:last-child { margin-bottom: 0 !important; }' ]
 } )
-export class QuestionsetRenderIST extends QuestionsetRenderBasic implements OnInit {
+export class QuestionRenderIST extends QuestionRenderBasic implements OnInit {
 
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {
         super( questionnaireParticipation );

@@ -2,30 +2,12 @@
  * @module ModuleQuestionnaires
  */
 
-import { ChangeDetectorRef, EventEmitter, Injectable, Input, OnDestroy } from '@angular/core';
-
-import {backend} from '../../../services/backend.service';
-
-/*
-import {of, Subject, Subscription} from 'rxjs';
-
-import {session} from '../../../services/session.service';
-import {modelutilities} from '../../../services/modelutilities.service';
-import {userpreferences} from "../../../services/userpreferences.service";
-import {broadcast} from "../../../services/broadcast.service";
-import {modal} from "../../../services/modal.service";
-import {language} from "../../../services/language.service";
-import {map, take} from "rxjs/operators";
-import {CdkDragEnd} from "@angular/cdk/drag-drop";
-import {configurationService} from "../../../services/configuration.service";
-*/
-
-/**
- * @ignore
- */
-/*
-declare var moment: any;
-*/
+import { Injectable } from '@angular/core';
+import { backend } from '../../../services/backend.service';
+import { toast } from "../../../services/toast.service";
+import { language } from '../../../services/language.service';
+import { helper } from '../../../services/helper.service';
+import { BehaviorSubject } from 'rxjs';
 
 /**
  * @ignore
@@ -34,22 +16,27 @@ declare var moment: any;
 declare var _: any;
 */
 
-/**
- * Handle loading events from backend, manage other calendars, holds some default necessary values for calendar sheets and subscribe to handle model changes.
- */
 @Injectable()
 export class questionnaireParticipationService {
 
-    public questionsets: any[] = [];
+    public questionnaireId: string;
+    public parentId: string;
+    public parentType: string;
+
     public questionnaire: any;
+
+    /**
+     * Some arrays to hold records sorted:
+     */
+    public questionsetsArray: any[] = []; // array of all question sets, sorted
+    public questionsArray: {}; // array of all questions, sorted (in an object grouped by the question sets)
+    public questionoptionsArray: {}; // array of all question options, sorted (in an object grouped by the questions)
+
+    public questionoptions = {}; // Additional/direct access to question options.
 
     public participationId: string;
 
-    /*
-    private _noEdit = false;
-    private _preview = false;
-    private _bulk = true;
-     */
+    public imageWidthQuestion = 200;
 
     public inModal = true;
     public showQuestionnaireTitle = true;
@@ -61,85 +48,495 @@ export class questionnaireParticipationService {
 
     public editMode: 'off'|'preview'|'questionnaire'|'questionoption' = 'questionnaire';
 
-    private isLoadingQuestionnaire = false;
-    private isLoadingQuestionsets = false;
-    private isLoadingParticipation = false;
+    private isLoadedQuestionnaire = false;
+    private isLoadedParticipation = true;
 
-    public get isLoading() {
-        return this.isLoadingQuestionnaire && this.isLoadingQuestionsets && this.isLoadingParticipation;
+    public isSaving = false;
+
+    public percentOfFinishedQuestionsInQuestionset: any = {};
+    public numOfFinishedQuestionsInQuestionset: any = {};
+    public allQuestionsOfQuestionsetFinished: any = {};
+
+    /**
+     * Holds for every question an object with some additional information.
+     */
+    public questionsMeta = {};
+
+    public questions: { string: {} };
+
+    public answers: any = {};
+
+    /**
+     * isDirty indicates that one or more question answers has been given/changed and that the information is still not saved to the backend.
+     */
+    private _isDirty = false;
+    public get isDirty() {
+        return this._isDirty;
+    }
+    public isDirty$: BehaviorSubject<boolean>;
+
+    /**
+     * Indicator of loading status.
+     */
+    public get isLoaded(): boolean {
+        return this.isLoadedQuestionnaire && this.isLoadedParticipation;
     }
 
-    public initByParent( parentType: string, parentId: string ) {
+    constructor( private backend: backend, private toast: toast, private language: language, private helper: helper ) {
+        this.isDirty$ = new BehaviorSubject( this.isDirty );
+    }
 
+    public initByParent( parentId: string, parentType: string ): void {
+        this.parentId = parentId;
+        this.parentType = parentType;
+        this.loadParticipationByParent();
     }
 
     public initByParticipation( participationId: string ) {
+        this.participationId = participationId;
+        this.loadParticipation();
+    }
+
+    public initByQuestionnaire( questionnaireId: string ) {
+        this.questionnaireId = questionnaireId;
+        if ( !this.editMode ) this.editMode = 'preview';
+        this.loadQuestionnaire();
+    }
+
+    /**
+     * An answer value was entered.
+     */
+    public setAnswerValue( questionId: string, value: string ): boolean {
+
+        // If the edit mode is 'off', a input/change is not allowed and is not to be treated. --> Do nothing and return false.
+        if ( this.editMode === 'off' ) return false;
+
+        // Is the input field of the question currently disabled? --> Do nothing and return.
+        // Info: While waiting for the response of the server the input field is disabled.
+        if ( this.questionsMeta[questionId].tempReadonly ) return false;
+
+        let backupForNetworkError;
+        if ( this.editMode === 'questionoption' ) {
+            backupForNetworkError = JSON.stringify( this.answers[questionId] );
+        }
+        this.answers[questionId].optionlessAnswerValue = value;
+        if ( this.editMode === 'questionoption' ) this.saveSingleAnswerToBackend( questionId, backupForNetworkError );
+        else this._isDirty = true;
 
     }
 
-    public initByQuestionnaire( questionnaire: any ) {
-        this.questionnaire = questionnaire;
+    /**
+     * Save to the backend the answers of a single question.
+     * Used when edit mode is "questionoption".
+     */
+    public saveSingleAnswerToBackend( questionId: string, backupForNetworkError: string ): void {
+        // At the beginning disable the input field of the question. It will stay disabled until server response at the end.
+        this.questionsMeta[questionId].tempReadonly = true;
+        this.backend.postRequest( 'module/Questions/' + questionId + '/answervalues/' + this.participationId, {},
+            { optionlessAnswerValue: this.answers[questionId].optionlessAnswerValue } ).subscribe(
+            data => {
+                this.answers[questionId].optionlessAnswerValue = data.optionlessAnswerValue; // Relevant is, what´s in the database/backend.
+                this.questionsMeta[questionId].tempReadonly = false; // Enable the input field of the question.
+                this.determineNumOfFinishedQuestionsInQuestionset( this.questions[questionId].questionset_id ); // New determination of the number of finished questions.
+            },
+            error => {
+                this.questionsMeta[questionId].tempReadonly = false; // Enable the input field of the question.
+                this.toast.sendToast( this.language.getLabel( 'ERR_NETWORK_SAVING' ), 'error', error.message, false ); // Error toast for the user.
+                this.answers[questionId] = JSON.parse( backupForNetworkError ); // Restore old question answer.
+            }
+        );
     }
 
-    // /QuestionnaireParticipation/ID/start
-
-
-    public setEditMode( editMode: 'off'|'preview'|'questionnaire'|'questionoption' ) {
-        this.editMode = editMode;
-        return this;
+    /**
+     * Determine the number of currently selected answer options (checkboxes).
+     */
+    private numOptionsSelected( questionId: string ): number {
+        let numChecked = 0;
+        if ( this.answers[questionId].options ) {
+            for ( let optionId of Object.keys( this.answers[questionId].options )) {
+                if ( this.answers[questionId].options[optionId] === true ) numChecked++;
+            }
+        }
+        return numChecked;
     }
 
-    // let asdf = new QuestionaireParticipation->setEditMode('questionnaire')->setId()->init();
+    /**
+     * An answer option (radio button or checkbox) was clicked.
+     */
+    public clickAnswerOption( optionId: string, event: any ): boolean {
 
-    constructor( private backend: backend ) {
+        event.stopPropagation();
+
+        let question = this.questionoptions[optionId].parentQuestion;
+
+        // If the edit mode is 'off', a input/change is not allowed. --> Do nothing and return false.
+        if ( this.editMode === 'off' ) return false;
+
+        // Is the input field of the question currently disabled? --> Do nothing and return.
+        // Info: While waiting for the response of the server the input field is disabled.
+        if ( this.questionsMeta[question.id].tempReadonly ) return false;
+
+        // In case the edit mode is 'questionoption' the new answer will get posted to the backend immediately.
+        // Because there can always be a network error, backup the old answer to restore it.
+        let backupForNetworkError;
+        if ( this.editMode === 'questionoption' ) {
+            backupForNetworkError = JSON.stringify( this.answers[question.id] );
+        }
+
+        // Check the number of selected answer options, in case there is a maximum configured.
+        // Prevent selection in case the maximum is already reached.
+        if ( this.answers[question.id].options[optionId] !== true && this.questionsMeta[question.id].parameter.maxAnswers && this.questionsMeta[question.id].parameter.maxAnswers !== '' && this.numOptionsSelected( question.id ) >= this.questionsMeta[question.id].parameter.maxAnswers ) {
+            return false;
+        }
+
+        let qt = question.parentQuestionset.questiontype;
+        if ( qt === 'multi') {
+            this.answers[question.id].options[optionId] = !this.answers[question.id].options[optionId];
+        } else if ( qt === 'single' || qt ===  'rating' || qt ===  'ist' ) {
+            Object.entries( this.answers[question.id].options ).forEach( ( [key, value] ) => {
+                if ( key === optionId ) {
+                    this.answers[question.id].options[optionId] = !this.answers[question.id].options[optionId];
+                } else {
+                    this.answers[question.id].options[key] = false;
+                }
+            });
+        }
+
+        if ( this.editMode === 'questionoption' ) this.saveSingleAnswerToBackend( question.id, backupForNetworkError );
+        else this._isDirty = true;
+
+        return true;
 
     }
 
-    public setAnswerValue( questionId: string, value: any ) {
-        if ( this.editMode === 'off' || this.editMode === 'preview' ) return;
-        this.answers[questionId].value = value;
-    }
-
-    public setAnswerOption( optionId: string, onOff = true ) {
-        let question = this.options[optionId].question;
-        if ( this.editMode === 'off' || this.editMode === 'preview' ) return;
-
-    }
-
-    // public options: any {
-
-    /// }
-
+    // toDo, to complete
     public setTimer( text: string, warning: boolean ) {
-
-}
-
-    private loadQuestionnaire( questionnaireId ) {
-
+        1;
     }
 
-    private loadOrCreateParticipation( id: string = null, parentType: string = null ) {
-        if ( !parentType ) {
+    /**
+     * Load the questionnaire (with question sets, questions and question options)
+     * and do all the other stuff like building arrays, sorting, building of question meta data and initializing the answer object.
+     */
+    private loadQuestionnaire() {
+        this.backend.getRequest( 'questionnaire/render/'+this.questionnaireId ).subscribe( ( response: any ) => {
+            this.questionnaire = response;
+            this.doBasics();
+            this.buildArrays();
+            this.sortData();
+            this.buildQuestionMetaData();
+            this.initAnswers();
+            this.isLoadedQuestionnaire = true;
+            for ( let questionset of this.questionsetsArray ) {
+                this.determineNumOfFinishedQuestionsInQuestionset( questionset.id );
+            }
+        });
+    }
 
+    // fertig!
+    /**
+     * Do some basic stuff:
+     * Set IDs of parents. And: Create object "questionoptions".
+     */
+    private doBasics() {
+        if( this.questionnaire.questionsets ) {
+            for( let questionsetId in this.questionnaire.questionsets ) {
+                if( this.questionnaire.questionsets[questionsetId].questions ) {
+                    for( let questionId in this.questionnaire.questionsets[questionsetId].questions ) {
+                        this.questionnaire.questionsets[questionsetId].questions[questionId].parentQuestionset = this.questionnaire.questionsets[questionsetId];
+                        if( this.questionnaire.questionsets[questionsetId].questions[questionId].questionoptions ) {
+                            for( let optionId in this.questionnaire.questionsets[questionsetId].questions[questionId].questionoptions ) {
+                                this.questionnaire.questionsets[questionsetId].questions[questionId].questionoptions[optionId].parentQuestion = this.questionnaire.questionsets[questionsetId].questions[questionId];
+                                this.questionoptions[optionId] = this.questionnaire.questionsets[questionsetId].questions[questionId].questionoptions[optionId];
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
-    private loadParticipation( id: string, parentType: string ) {
-
+    /**
+     * Because question sets, questions and question options might be displayed sorted, we have to hold them in arrays.
+     * From the backend we got the data as objects. So build the arrays:
+     */
+    private buildArrays() {
+        this.questionsetsArray = []; // Array of the question sets.
+        this.questionsArray = {}; // Arrays of the questions, grouped by question set id.
+        this.questionoptionsArray = {}; // Arrays of the question options, grouped by question id.
+        if ( this.questionnaire.questionsets ) {
+            for ( let questionsetId in this.questionnaire.questionsets ) {
+                this.questionsetsArray.push( this.questionnaire.questionsets[questionsetId] ); // Fill the array of question sets.
+                this.questionsArray[questionsetId] = [];
+                if ( this.questionnaire.questionsets[questionsetId].questions ) {
+                    for ( let questionId in this.questionnaire.questionsets[questionsetId].questions ) {
+                        this.questionsArray[questionsetId].push( this.questionnaire.questionsets[questionsetId].questions[questionId] ); // Fill the array of questions (grouped by questionset id).
+                        this.questionoptionsArray[questionId] = [];
+                        if ( this.questionnaire.questionsets[questionsetId].questions[questionId].questionoptions ) {
+                            for ( let optionId in this.questionnaire.questionsets[questionsetId].questions[questionId].questionoptions ) {
+                                this.questionoptionsArray[questionId].push( this.questionnaire.questionsets[questionsetId].questions[questionId].questionoptions[optionId] ); // Fill the array of question options (grouped by question id).
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    private loadQuestionsets() {
-        this.backend.getRequest('module/Questionnaires/'+this.questionnaire.id+'/related/questionsets', {limit: 999}).subscribe( questionsets => {
-            for( let key of Object.keys( questionsets ) ) this.questionsets.push( questionsets[key] );
-            this.questionsets.sort( ( a, b ) => {
-                return a.position - b.position;
-            });
+    // Sort the questionsets - by position field or date_entered:
+    private sortQuestionsets() {
+        this.questionsetsArray.sort( ( a, b ) => {
+            let dummy = a.position - b.position;
+            if( dummy !== 0 ) return dummy;
+            else {
+                if( a.date_entered < b.date_entered ) return -1;
+                if( a.date_entered > b.date_entered ) return 1;
+                return 0;
+            }
+        } );
+    }
+
+    // Sort the questions - by position field or date_entered:
+    private sortQuestions() {
+        for ( let questionset of this.questionsetsArray ) {
+            if ( questionset.shuffle == 1 ) {
+                this.helper.shuffle( this.questionsArray[questionset.id] );
+            } else {
+                // Sort the questions by the field "position" (and date_entered) or shuffle them.
+                this.questionsArray[questionset.id].sort( ( a, b ) => {
+                    let dummy = a.position - b.position;
+                    if( dummy !== 0 ) return dummy;
+                    else {
+                        if( a.date_entered < b.date_entered ) return -1;
+                        if( a.date_entered > b.date_entered ) return 1;
+                        return 0;
+                    }
+                } );
+            }
+        }
+    }
+
+    private sortQuestionoptions() {
+        // Sort the question options - by position field. Only for questions with options (i.e. not for text questions):
+        for ( let questionset of this.questionsetsArray ) {
+            if ( questionset.questiontype.match( /^binary|single|multi$/ ) ) {
+                for ( let question of this.questionsArray[questionset.id] ) {
+                    if ( question.parentQuestionset.shuffle == 1 ) {
+                        this.helper.shuffle( this.questionoptionsArray[question.id] );
+                    } else {
+                        // Sort the questions by the field "position" (and date_entered) or shuffle them.
+                        this.questionoptionsArray[question.id].sort( ( a, b ) => {
+                            return a.position - b.position;
+                        });
+                    }
+                }
+            } else {
+                // In case of question type "rating" the options of each question has to be assigned to the predefined options from the question set.
+                // In case of a rating question set: Get the answer options from the field "questiontypeparameter".
+                if ( questionset.questiontype === 'rating' && questionset.questiontypeparameter.rating ) {
+                    for ( let question of this.questionsArray[questionset.id] ) {
+                        let sortedOptions = [];
+                        for ( let entry of questionset.questiontypeparameter.rating.entries ) {
+                            let isOptionFound = false;
+                            for ( let questionoption of this.questionoptionsArray[question.id] ) {
+                                if ( questionoption.questionset_type_parameter_id === entry.id ) {
+                                    isOptionFound = true;
+                                    sortedOptions.push( questionoption );
+                                    break;
+                                }
+                            }
+                            if( !isOptionFound ) sortedOptions.push( {} );
+                        }
+                        this.questionoptions[question.id] = sortedOptions;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Sort the questionnaire data got from the backend.
+     */
+    private sortData() {
+        this.sortQuestionsets();
+        this.sortQuestions();
+        this.sortQuestionoptions();
+    }
+
+    // fertig!
+    private buildQuestionMetaData() {
+        for ( let questionset of this.questionsetsArray ) {
+            for( let question of this.questionsArray[questionset.id] ) {
+                this.questionsMeta[question.id] = {
+                    readonly: false,
+                    finished: false,
+                    parameter: question.questionparameter
+                };
+            }
+        }
+    }
+
+    // fertig!
+    private questiontypeWithOptions( questiontype: string ): boolean {
+        return questiontype.match( /^binary|single|multi|ist|rating$/ ) !== null;
+    }
+
+    // fertig!
+    private initAnswers() {
+        for ( let questionset of this.questionsetsArray ) {
+            // if ( !this.answers[questionset.id] ) this.answers[questionset.id] = {};
+            for ( let question of this.questionsArray[questionset.id] ) {
+                if ( !this.answers[question.id] ) this.answers[question.id] = {};
+                if ( this.questiontypeWithOptions( questionset.questiontype )) {
+                    this.answers[question.id].options = {};
+                    for ( let option of this.questionoptionsArray[question.id] ) {
+                        this.answers[question.id].options[option.id] = false;
+                    }
+                } else {
+                    this.answers[question.id].optionlessAnswerValue = '';
+                }
+            }
+        }
+    }
+
+    private loadParticipationByParent() {
+        this.backend.getRequest('QuestionAnswers/ofParticipation/byParent/'+this.parentType+'/'+this.parentId ).subscribe( response => {
+            this.questionnaireId = response.questionnaireId;
+            // In case the edit mode is "off" or "preview" there are no answer values to load:
+            // if ( this.editMode === 'preview' || this.editMode === 'off' ) return;
+            this.loadQuestionnaire();
+            this.insertLoadedAnswers( response.answers );
+            this.isLoadedParticipation = true;
         });
-        this.isLoading = false;
     }
 
-    public reloadQuestionsets() {
-        this.loadQuestionsets();
+    private loadParticipation() {
+        this.backend.getRequest('QuestionAnswers/ofParticipation/byParticipation/'+this.participationId ).subscribe( response => {
+            this.questionnaireId = response.questionnaireId;
+            this.loadQuestionnaire();
+            this.insertLoadedAnswers( response.answers );
+            this.isLoadedParticipation = true;
+        });
+    }
+
+    private insertLoadedAnswers( answers: any ): void {
+        for ( let questionId of answers ) {
+            if ( answers[questionId].optionlessAnswerValue !== undefined ) {
+                this.answers[questionId].optionlessAnswerValue = answers[questionId].optionlessAnswerValue;
+            } else if ( answers[questionId].options ) {
+                for ( let optionId of answers[questionId].options ) {
+                    this.answers[questionId].options[optionId] = true;
+                }
+            }
+        }
+    }
+
+    /**
+     * Reload all the data of the questionnaire.
+     */
+    public reloadQuestionnaire() {
+        this.isLoadedQuestionnaire = this.isLoadedParticipation = false;
+        this.questionsetsArray.length = 0; // empties the array of question sets
+        let key: string;
+        for ( key in this.questionsArray ) delete this.questionsArray[key]; // empties the object of questions
+        for ( key in this.questionoptionsArray ) delete this.questionoptionsArray[key]; // empties the object of question options
+        for ( key in this.questionoptions ) delete this.questionoptions[key]; // empties the object of question options
+        for ( key in this.questionnaire ) delete this.questionnaire[key]; // empties the object of question sets
+        this.loadQuestionnaire();
+    }
+
+    // fertig? eher nicht betreffend answer object
+    private determineNumOfFinishedQuestionsInQuestionset( questionsetId: string ): number {
+        let numberFinishedQuestions = 0;
+        for ( let question of this.questionsArray[questionsetId] ) {
+            switch( question.questiontype ) {
+                case 'text':
+                    if ( this.answers[question.id].length && this.answers[question.id].optionlessAnswerValue && this.answers[question.id].optionlessAnswerValue != '' ) {
+                        this.questionsMeta[question.id].finished = true;
+                        numberFinishedQuestions++;
+                    } else this.questionsMeta[question.id].finished = false;
+                    break;
+                case 'nps':
+                    for ( let answer of this.answers[question.id] ) {
+                        if ( answer.value ) {
+                            this.questionsMeta[question.id].finished = true;
+                            numberFinishedQuestions++;
+                            continue;
+                        }
+                    }
+                case 'binary':
+                case 'single':
+                case 'multi':
+                    let numberAnswers = 0;
+                    let answeredOK = false;
+                    for ( let answer of this.answers[question.id] ) {
+                        if ( answer.value ) {
+                            numberAnswers++;
+                            if ( question.questiontype !== 'multi'
+                                || ( question.questiontype === 'multi' && !this.questionsMeta[question.id].parameter.minAnswers )
+                                || ( numberAnswers >= this.questionsMeta[question.id].parameter.minAnswers )) {
+                                answeredOK = true;
+                                this.questionsMeta[question.id].finished = true;
+                                continue;
+                            }
+                        }
+                    }
+                    if ( answeredOK ) numberFinishedQuestions++;
+                    break;
+                case 'ist':
+                    let unFinished = false;
+                    for ( let answer of this.answers[question.id] ) {
+                        if ( answer.value === false ) {
+                            unFinished = true;
+                            break;
+                        }
+                    }
+                    if ( !unFinished ) {
+                        numberFinishedQuestions++;
+                        this.questionsMeta[question.id].finished = true;
+                    }
+                    break;
+                case 'rating':
+                    for( let answer of this.answers[question.id] ) {
+                        if( answer.value ) {
+                            this.questionsMeta[question.id].finished = true;
+                            numberFinishedQuestions++;
+                            continue;
+                        }
+                    }
+                    break;
+            }
+
+            if( this.answers[question.id].length && this.answers[question.id].optionlessAnswerValue && this.answers[question.id].optionlessAnswerValue != '' ) {
+                this.questionsMeta[question.id].finished = true;
+                numberFinishedQuestions++;
+            } else this.questionsMeta[question.id].finished = false;
+        }
+        this.numOfFinishedQuestionsInQuestionset[questionsetId] = numberFinishedQuestions;
+        this.percentOfFinishedQuestionsInQuestionset[questionsetId] = numberFinishedQuestions/this.questionsArray[questionsetId].length*100;
+        this.allQuestionsOfQuestionsetFinished[questionsetId] = ( numberFinishedQuestions === this.questionsArray[questionsetId].length );
+        return numberFinishedQuestions;
+    }
+
+    private setFieldsOfQuestion( questionId: string, answervalues: any ): void {
+        for ( let answer of this.answers[questionId] ) {
+            answer.value = (answervalues[answer.optionId] || false);
+        }
+    }
+
+    public save() {
+        this.isSaving = true;
+        let route = 'QuestionAnswers/ofParticipation/';
+        if ( this.participationId ) route += 'byParticipation/'+this.participationId;
+        else route += 'byParent/'+this.parentType+'/'+this.parentId;
+        this.backend.postRequest( route, {}, { answers: this.answers } ).subscribe( response => {
+                console.log(response);
+                this.isSaving = false;
+            },
+            error => {
+                this.toast.sendToast('Error saving questionnaire answers.', 'error');
+                this.isSaving = false;
+            });
     }
 
 }

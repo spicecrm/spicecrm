@@ -4,17 +4,18 @@
 import { Component, OnInit } from '@angular/core';
 import { QuestionsetRenderBasic } from './questionsetrenderbasic';
 import { questionnaireParticipationService } from '../services/questionnaireparticipation.service';
+import { QuestionRenderBasic } from './questionrenderbasic';
 
 @Component({
-    selector: 'questionset-render-nps',
-    templateUrl: './src/modules/questionnaires/templates/questionsetrendernps.html',
+    selector: 'question-render-nps',
+    templateUrl: './src/modules/questionnaires/templates/questionrendernps.html',
     styles: [
         "table { border-top: none; }",
         "th { position: sticky; top: 0; border-top: 1px solid #dddbda; border-bottom: 1px solid #dddbda; z-index: 10;}",
         "tr:first-child td { border-top: none; }"
     ]
 })
-export class QuestionsetRenderNPS extends QuestionsetRenderBasic implements OnInit {
+export class QuestionRenderNPS extends QuestionRenderBasic implements OnInit {
 
     private textForScore0;
     private textForScore10;
@@ -31,13 +32,8 @@ export class QuestionsetRenderNPS extends QuestionsetRenderBasic implements OnIn
         }
     }
 
-    private onClick( questionId: string, score: number, $event ): boolean {
-        $event.stopPropagation();
-        return this.qp.setAnswerValue( questionId, score.toString() );
-    }
-
-    private isChecked( questionId: string, score: number ): boolean {
-        return this.qp.answers[questionId].optionlessAnswerValue && this.qp.answers[questionId].optionlessAnswerValue == score;
+    private onClick( questionId: string, score: number ): boolean {
+        return this.questionnaireParticipation.setAnswerValue( questionId, score.toString() );
     }
 
 }
