@@ -305,6 +305,7 @@ export class configurationService {
      * @param data
      */
     public setData(key, data) {
+        // console.log('setData',key,data);
         this.appdata[key] = data;
 
         // emit the key
@@ -317,6 +318,7 @@ export class configurationService {
      * @param key
      */
     public getData(key) {
+        // console.log('appdata',this.appdata);
         return this.appdata[key] ? this.appdata[key] : false;
     }
 

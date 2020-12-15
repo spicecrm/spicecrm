@@ -1,5 +1,5 @@
 /**
- * @module ModuleEmails
+ * @module ModuleHolidayCalendars
  */
 import {CommonModule} from "@angular/common";
 import {NgModule} from "@angular/core";
@@ -12,8 +12,10 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ {GoogleAPISettings} from "./components/googleapisettings";
-
+import /*embed*/ {HolidayCalendarList} from "./components/holidaycalendarlist";
+import /*embed*/ {HolidayCalendarListDays} from "./components/holidaycalendarlistdays";
+import /*embed*/ {HolidayCalendarListGetHolidaysModal} from "./components/holidaycalendarlistgetholidaysmodal";
+import /*embed*/ {HolidayCalendarListGetHolidaysButton} from "./components/holidaycalendarlistgetholidaysbutton";
 
 @NgModule({
     imports: [
@@ -26,7 +28,12 @@ import /*embed*/ {GoogleAPISettings} from "./components/googleapisettings";
         DirectivesModule,
     ],
     declarations: [
-        GoogleAPISettings
+        HolidayCalendarList,
+        HolidayCalendarListDays,
+        HolidayCalendarListGetHolidaysModal,
+        HolidayCalendarListGetHolidaysButton
     ]
 })
-export class ModuleGoogleAPI {}
+export class ModuleHolidayCalendars {
+
+}

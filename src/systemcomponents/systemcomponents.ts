@@ -15,7 +15,6 @@ import {FormsModule} from "@angular/forms";
 import {DirectivesModule} from "../directives/directives";
 // SERVICEs
 import {metadata} from "../services/metadata.service";
-import {VersionManagerService} from "../services/versionmanager.service";
 
 import /*embed*/ {systemrichtextservice} from "./services/systemrichtext.service";
 
@@ -99,6 +98,7 @@ import /*embed*/ {SystemModalFooter} from "./components/systemmodalfooter";
 import /*embed*/ {SystemModalHeaderRight} from "./components/systemmodalheaderright";
 import /*embed*/ {SystemModalHeaderTagline} from "./components/systemmodalheadertagline";
 import /*embed*/ {SystemModalHeader} from "./components/systemmodalheader";
+import /*embed*/ {SystemModalHeaderEmpty} from "./components/systemmodalheaderempty";
 import /*embed*/ {SystemModalWrapper} from "./components/systemmodalwrapper";
 import /*embed*/ {SystemModal} from "./components/systemmodal";
 import /*embed*/ {SystemNumberSpinner} from "./components/systemnumberspinner";
@@ -251,6 +251,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemModalContent,
         SystemModalFooter,
         SystemModalHeader,
+        SystemModalHeaderEmpty,
         SystemModalHeaderRight,
         SystemModalHeaderTagline,
         SystemModalWrapper,
@@ -386,6 +387,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemModalContent,
         SystemModalFooter,
         SystemModalHeader,
+        SystemModalHeaderEmpty,
         SystemModalHeaderRight,
         SystemModalHeaderTagline,
         SystemModalWrapper,
@@ -433,17 +435,8 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemPreferencesPanelItem,
         SystemPreferencesPanelItemDisplay,
         SystemPreferencesPanelItemEdit,
-        SystemInputFile
+        SystemInputFile,
+        SystemModalHeaderEmpty
     ]
 })
-export class SystemComponents {
-    private readonly version = "1.0";
-    private readonly build_date = "/*build_date*/";
-
-    constructor(
-        public metadata: metadata,
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
-    }
-}
+export class SystemComponents {}

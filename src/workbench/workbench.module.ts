@@ -5,9 +5,6 @@ import {CommonModule} from "@angular/common";
 import {NgModule} from "@angular/core";
 import {FormsModule}   from "@angular/forms";
 
-// SERVICEs
-import {VersionManagerService} from "../services/versionmanager.service";
-
 // MODULEs
 import {SystemComponents} from "../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../directives/directives";

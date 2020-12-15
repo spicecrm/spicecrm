@@ -4,17 +4,17 @@
         <div class="slds-tabs_scoped">
             <ul class="slds-tabs_scoped__nav" role="tablist">
                 <li class="slds-tabs_scoped__item" title="Emails" role="presentation" [ngClass]="{'slds-is-active': activetab=='emails'}">
-                    <a class="slds-tabs_scoped__link" href="javascript:void(0);"  role="tab" (click)="activetab='emails'" aria-controls="tab-scoped-1" id="tab-scoped-1__item">{{this.language.getLabel('LBL_EMAILS')}}</a>
+                    <a class="slds-tabs_scoped__link" href="javascript:void(0);"  role="tab" (click)="activetab='emails'">{{this.language.getLabel('LBL_EMAILS')}}</a>
                 </li>
                 <li class="slds-tabs_scoped__item" title="Recipients" role="presentation" [ngClass]="{'slds-is-active': activetab=='recipients'}">
-                    <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='recipients'" aria-controls="tab-scoped-2" id="tab-scoped-2__item">{{this.language.getLabel('LBL_RECIPIENTS')}}</a>
+                    <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='recipients'">{{this.language.getLabel('LBL_RECIPIENTS')}}</a>
                 </li>
             </ul>
-            <div id="tab-scoped-1" *ngIf="activetab=='emails'" class="slds-tabs_scoped__content" role="tabpanel" aria-labelledby="tab-scoped-1__item">
+            <div class="slds-tabs_scoped__content" [ngClass]="{'slds-hide': activetab!='emails'}" role="tabpanel">
                 <system-dynamic-component component="CampaignTaskEmailPanel"></system-dynamic-component>
                 <system-dynamic-component component="SpiceAttachmentsPanel"></system-dynamic-component>
             </div>
-            <div id="tab-scoped-2" *ngIf="activetab=='recipients'" class="slds-tabs_scoped__content" role="tabpanel" aria-labelledby="tab-scoped-2__item">
+            <div class="slds-tabs_scoped__content"  [ngClass]="{'slds-hide': activetab!='recipients'}"  role="tabpanel">
                 <table class="slds-table slds-table_bordered slds-table_cell-buffer">
                     <thead>
                     <tr class="slds-text-title_caps">
