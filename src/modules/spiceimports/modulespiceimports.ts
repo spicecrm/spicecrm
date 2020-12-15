@@ -6,7 +6,6 @@ import {
     NgModule
 } from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {VersionManagerService} from '../../services/versionmanager.service';
 
 import {ObjectFields} from '../../objectfields/objectfields';
 import {GlobalComponents} from '../../globalcomponents/globalcomponents';
@@ -38,11 +37,4 @@ import /*embed*/ {Spiceimportslogs} from './components/spiceimportslogs';
         spiceimportsservice
     ]
 })
-export class ModuleSpiceImports {
-    readonly version = '1.0';
-    readonly build_date = '/*build_date*/';
-
-    constructor(private vms: VersionManagerService,) {
-        this.vms.registerModule(this);
-    }
-}
+export class ModuleSpiceImports {}

@@ -1,5 +1,5 @@
 /**
- * @module ModuleProjects
+ * @module ModuleHolidayCalendars
  */
 import {CommonModule} from "@angular/common";
 import {NgModule} from "@angular/core";
@@ -12,11 +12,10 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
 import {SystemComponents} from "../../systemcomponents/systemcomponents";
 
-import /*embed*/ { projectwbsHierarchy } from "./services/projectwbshierarchy.service";
-
-import /*embed*/ {ProjectWBSHierarchy} from "./components/projectwbshierarchy";
-import /*embed*/ {ProjectWBSHierarchyNode} from "./components/projectwbshierarchynode";
-import /*embed*/ {ProjectActivityDashlet} from "./components/projectactivitydashlet";
+import /*embed*/ {HolidayCalendarList} from "./components/holidaycalendarlist";
+import /*embed*/ {HolidayCalendarListDays} from "./components/holidaycalendarlistdays";
+import /*embed*/ {HolidayCalendarListGetHolidaysModal} from "./components/holidaycalendarlistgetholidaysmodal";
+import /*embed*/ {HolidayCalendarListGetHolidaysButton} from "./components/holidaycalendarlistgetholidaysbutton";
 
 @NgModule({
     imports: [
@@ -29,9 +28,12 @@ import /*embed*/ {ProjectActivityDashlet} from "./components/projectactivitydash
         DirectivesModule,
     ],
     declarations: [
-        ProjectWBSHierarchy,
-        ProjectWBSHierarchyNode,
-        ProjectActivityDashlet
+        HolidayCalendarList,
+        HolidayCalendarListDays,
+        HolidayCalendarListGetHolidaysModal,
+        HolidayCalendarListGetHolidaysButton
     ]
 })
-export class ModuleProjects {}
+export class ModuleHolidayCalendars {
+
+}

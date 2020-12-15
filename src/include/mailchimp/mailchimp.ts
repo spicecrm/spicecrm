@@ -5,7 +5,6 @@ import {CommonModule} from "@angular/common";
 import {NgModule} from "@angular/core";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
-import {VersionManagerService} from "../../services/versionmanager.service";
 import {DirectivesModule} from "../../directives/directives";
 
 import {ObjectFields} from "../../objectfields/objectfields";
@@ -42,12 +41,4 @@ import {MailChimpCampaignStatsPanel} from "./components/mailchimpcampaignstatspa
     ]
 })
 export class MailChimpModule {
-    public readonly version = "1.0";
-    public readonly build_date = "/*build_date*/";
-
-    constructor(
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
-    }
 }

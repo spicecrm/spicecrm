@@ -99,18 +99,10 @@ export class language {
     public loadLanguage(): Observable<any> {
         let retSubject = new Subject();
 
-        let params: any = {
-            modules: JSON.stringify(this.metadata.getModules())
-        };
-
         if (this.currentlanguage == '') {
             if (this.cookie.getValue('spiceuilanguage')) {
                 this.currentlanguage = this.cookie.getValue('spiceuilanguage');
             }
-        }
-
-        if (this.currentlanguage != '') {
-            params.lang = this.currentlanguage;
         }
 
         this.http.get(

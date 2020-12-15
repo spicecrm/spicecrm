@@ -47,7 +47,6 @@ import {currency} from "./services/currency.service";
 import {footer} from "./services/footer.service";
 import {cookie} from "./services/cookie.service";
 import {assistant} from "./services/assistant.service";
-import {VersionManagerService} from "./services/versionmanager.service";
 import {modal} from "./services/modal.service";
 import {layout} from "./services/layout.service";
 import {libloader} from "./services/libloader.service";
@@ -173,8 +172,7 @@ export class SpiceUI {
         loggerService,
         libloader,
         toast,
-        userpreferences,
-        VersionManagerService
+        userpreferences
     ]
 })
 export class SpiceUIModule {

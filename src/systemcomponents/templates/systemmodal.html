@@ -1,6 +1,7 @@
 <section  role="dialog" class="slds-modal slds-fade-in-open" [ngClass]="sizeClass">
     <div @modalanimation class="slds-modal__container" [ngStyle]="containerStyle">
         <ng-content select="system-modal-header"></ng-content>
+        <ng-content select="system-modal-header-empty"></ng-content>
         <ng-content select="system-modal-content"></ng-content>
         <ng-content select="system-modal-footer"></ng-content>
     </div>

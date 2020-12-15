@@ -69,7 +69,7 @@ export class SalesDocsItemsAddProduct extends ObjectModalModuleLookup {
             if (copyrule.tofield && copyrule.fixedvalue) {
                 itemData[copyrule.tofield] = copyrule.fixedvalue;
             } else if (copyrule.tofield && copyrule.calculatedvalue) {
-                itemData[copyrule.tofield] = this.model.getCalculatdValue(copyrule.calculatedvalue);
+                itemData[copyrule.tofield] = this.model.getCalculatedValue(copyrule.calculatedvalue);
             }
         }
 
@@ -79,7 +79,7 @@ export class SalesDocsItemsAddProduct extends ObjectModalModuleLookup {
             if (copyrule.fromfield && copyrule.tofield) {
                 itemData[copyrule.tofield] = product[copyrule.fromfield];
             } else if (copyrule.tofield && copyrule.calculatedvalue) {
-                itemData[copyrule.tofield] = this.model.getCalculatdValue(copyrule.calculatedvalue);
+                itemData[copyrule.tofield] = this.model.getCalculatedValue(copyrule.calculatedvalue);
             } else if (copyrule.tofield && copyrule.fixedvalue) {
                 itemData[copyrule.tofield] = copyrule.fixedvalue;
             }
