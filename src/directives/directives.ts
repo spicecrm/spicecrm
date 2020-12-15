@@ -6,8 +6,6 @@
 import {CommonModule} from "@angular/common";
 import {NgModule} from "@angular/core";
 
-import {VersionManagerService} from '../services/versionmanager.service';
-
 import /*embed*/ {SystemModelPopOverDirective} from "./directives/systemmodelpopover";
 import /*embed*/ {SystemPopOverDirective} from "./directives/systempopover";
 import /*embed*/ {SystemModelProviderDirective} from "./directives/systemmodelprovider";
@@ -67,12 +65,4 @@ import /*embed*/ {SystemPlaceholderDirective} from './directives/systemplacehold
     ]
 })
 export class DirectivesModule {
-    public readonly version = '1.0';
-    public readonly build_date = '/*build_date*/';
-
-    constructor(
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
-    }
 }

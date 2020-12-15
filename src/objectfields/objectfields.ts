@@ -6,7 +6,6 @@ import {NgModule} from '@angular/core';
 import {FormsModule}   from '@angular/forms';
 
 import {metadata} from '../services/metadata.service';
-import {VersionManagerService} from '../services/versionmanager.service';
 
 import {SystemComponents} from '../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../directives/directives";
@@ -257,14 +256,4 @@ declare var _: any;
         fieldTags,
     ]
 })
-export class ObjectFields {
-    private readonly  version = '1.0';
-    private readonly build_date = '/*build_date*/';
-
-    constructor(
-        public metadata: metadata,
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
-    }
-}
+export class ObjectFields {}
