@@ -165,7 +165,7 @@ export class UserPreferences implements OnDestroy {
                 this.preferences = _.pick(this.preferencesService.unchangedPreferences.global, this.names);
 
                 this.setDashboardSetData(this.preferences.home_dashboardset);
-                this.setHomeDashboardData(this.preferences.home_dashboardset);
+                this.setHomeDashboardData(this.preferences.home_dashboard);
             });
             this.preferencesService.getPreferences(this.loadedSubscription);
 
@@ -175,7 +175,7 @@ export class UserPreferences implements OnDestroy {
                     this.preferences = prefs;
 
                     this.setDashboardSetData(prefs.home_dashboardset);
-                    this.setHomeDashboardData(this.preferences.home_dashboardset);
+                    this.setHomeDashboardData(this.preferences.home_dashboard);
                 },
                 error => {
                     this.toast.sendToast(this.language.getLabel('LBL_ERROR') + ' ' + error.status, 'error', error.error.error.message);
@@ -192,7 +192,7 @@ export class UserPreferences implements OnDestroy {
         this.backend.getList('Dashboards', [{sortfield: 'name', sortdirection: 'DESC'}], ['name', 'id'], {limit: -99})
             .subscribe((dashboards: any) => {
                 this.dashboards = dashboards.list;
-                this.setHomeDashboardData(this.preferences.home_dashboardset);
+                this.setHomeDashboardData(this.preferences.home_dashboard);
             });
         this.backend.getList('DashboardSets', [{sortfield: 'name', sortdirection: 'DESC'}], ['name', 'id'], {limit: -99})
             .subscribe((dashboardSets: any) => {
@@ -217,8 +217,8 @@ export class UserPreferences implements OnDestroy {
      * @private
      */
     private setHomeDashboardData(value) {
-        this.preferences.home_dashboardset = value;
-        this.dashboardSetData = this.dashboardSets.find(dashboardSet => dashboardSet.id == value);
+        this.preferences.home_dashboard = value;
+        this.homeDashboardData = this.dashboards.find(dashboard => dashboard.id == value);
     }
 
     /**
