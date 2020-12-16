@@ -2,7 +2,7 @@
  * @module ModuleQuestionnaires
  */
 
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { backend } from '../../../services/backend.service';
 import { toast } from "../../../services/toast.service";
 import { language } from '../../../services/language.service';
@@ -126,12 +126,42 @@ export class questionnaireParticipationService {
     }
 
     /**
+     * An option with value was entered (questiontype "ist").
+     */
+    public setOptionWithValue( optionId: string, value: string ): boolean {
+
+        let question = this.questionoptions[optionId].parentQuestion;
+
+        // If the edit mode is 'off', a input/change is not allowed. --> Do nothing and return false.
+        if ( this.editMode === 'off' ) return false;
+
+        // Is the input field of the question currently disabled? --> Do nothing and return.
+        // Info: While waiting for the response of the server the input field is disabled.
+        if ( this.questionsMeta[question.id].tempReadonly ) return false;
+
+        let backupForNetworkError;
+        if ( this.editMode === 'questionoption' ) {
+            backupForNetworkError = JSON.stringify( this.answers[question.id] );
+        }
+
+        if ( !value ) this.answers[question.id].options[optionId] = false;
+        else this.answers[question.id].options[optionId] = value;
+
+        if ( this.editMode === 'questionoption' ) this.saveSingleAnswerToBackend( question.id, backupForNetworkError );
+        else this._isDirty = true;
+
+        console.log( 'answers', this.answers );
+
+    }
+
+    /**
      * Save to the backend the answers of a single question.
      * Used when edit mode is "questionoption".
      */
     public saveSingleAnswerToBackend( questionId: string, backupForNetworkError: string ): void {
         // At the beginning disable the input field of the question. It will stay disabled until server response at the end.
         this.questionsMeta[questionId].tempReadonly = true;
+        /*
         this.backend.postRequest( 'module/Questions/' + questionId + '/answervalues/' + this.participationId, {},
             { optionlessAnswerValue: this.answers[questionId].optionlessAnswerValue } ).subscribe(
             data => {
@@ -145,6 +175,8 @@ export class questionnaireParticipationService {
                 this.answers[questionId] = JSON.parse( backupForNetworkError ); // Restore old question answer.
             }
         );
+
+         */
     }
 
     /**
@@ -425,7 +457,7 @@ export class questionnaireParticipationService {
                 this.answers[questionId].optionlessAnswerValue = answers[questionId].optionlessAnswerValue;
             } else if ( answers[questionId].options ) {
                 for ( let optionId of answers[questionId].options ) {
-                    this.answers[questionId].options[optionId] = true;
+                    this.answers[questionId].options[optionId] = answers[questionId].options[optionId];
                 }
             }
         }
@@ -518,25 +550,28 @@ export class questionnaireParticipationService {
         return numberFinishedQuestions;
     }
 
-    private setFieldsOfQuestion( questionId: string, answervalues: any ): void {
-        for ( let answer of this.answers[questionId] ) {
-            answer.value = (answervalues[answer.optionId] || false);
-        }
-    }
-
-    public save() {
+    /**
+     * Saves all answers to the backend.
+     * Emits true/false to report the success of saving.
+     */
+    public save(): EventEmitter<boolean> {
         this.isSaving = true;
         let route = 'QuestionAnswers/ofParticipation/';
         if ( this.participationId ) route += 'byParticipation/'+this.participationId;
         else route += 'byParent/'+this.parentType+'/'+this.parentId;
+        let finishedSaving$ = new EventEmitter<boolean>();
         this.backend.postRequest( route, {}, { answers: this.answers } ).subscribe( response => {
                 console.log(response);
                 this.isSaving = false;
+                this._isDirty = false;
+                finishedSaving$.emit( true );
             },
             error => {
-                this.toast.sendToast('Error saving questionnaire answers.', 'error');
+                this.toast.sendToast('Error saving questionnaire answers.', 'error', null, false, 'errorSavingQuestionnaireAnswers');
                 this.isSaving = false;
+                finishedSaving$.emit( false );
             });
+        return finishedSaving$;
     }
 
 }

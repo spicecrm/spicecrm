@@ -63,85 +63,28 @@ export class QuestionTypeISTOptionsPipe {
 } )
 export class QuestionsetRenderIST extends QuestionsetRenderBasic implements OnInit {
 
+    private cons = console;
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {
         super( questionnaireParticipation );
     }
 
     private getAnswerValue( questionId: string, answerIndex: number ): string {
         try {
-            return this.answers[questionId][answerIndex].value;
+            let optionId = this.qp.questionoptionsArray[questionId][answerIndex].id;
+            return this.qp.answers[questionId][optionId].value;
         } catch(e) {
             return '';
         }
     }
 
     public ngOnInit(): void {
-
         super.ngOnInit();
-
-        if ( !this.previewMode ) {
-
-            for ( let question of this.questions ) this.questionsMeta[question.id] = { tempReadonly: true };
-            this.backend.getRequest( 'module/QuestionSets/' + this.questionset.id + '/answervalues/' + this.participation_id ).subscribe(
-                data => {
-                    for( let question of this.questions ) {
-                        if ( !this.answers[question.id] ) this.answers[question.id] = [];
-                        if( data[question.id] ) this.setFieldsOfQuestion( question.id, data[question.id] );
-                    }
-                    for ( let question of this.questions ) this.questionsMeta[question.id].tempReadonly = false;
-                    this.determineNumOfFinishedQuestions();
-                });
-        }
     }
 
-    private onChange( questionId: string, answerIndex: number, event: any ): boolean {
-
-        // If the preview mode is set, a change is allowed but is not to be treated. --> Do nothing and return true.
-        if ( this.previewMode ) return true;
-
-        // If the edit mode is not set, a change is not allowed and is not to be treated. --> Do nothing and return false.
-        if ( this.noEdit ) return false;
-
-        // Are the input fields of the question currently disabled? --> Do nothing and return.
-        // Info: While waiting for the response of the server the input fields are disabled.
-        if ( this.questionsMeta[questionId].tempReadonly ) return false;
-
-        // At the beginning disable the input field(s) of the question. They will stay disabled until server response at the end.
-        this.questionsMeta[questionId].tempReadonly = true;
-
-        this.backupForNetworkError = JSON.stringify( this.answers[questionId] );
-
-        // Get the answer from the input field and store it.
-        this.answers[questionId][answerIndex].value = event.target.value;
-
-        // The data for the server request with the answer values (true or false).
-        let requestData = {};
-        for ( let i = 0; i < this.answers[questionId].length; i++ ) {
-            if ( this.answers[questionId][i].value === '' ) this.answers[questionId][i].value = false;
-            requestData[this.options[questionId][i].id] = this.answers[questionId][i].value;
-        }
-
-        // Do the request to the server to store the current answer state of the whole question.
-        this.backend.postRequest( 'module/Questions/' + questionId + '/answervalues/' + this.participation_id, {}, requestData ).subscribe(
-            data => {
-                this.questionsMeta[questionId].tempReadonly = false;
-                this.determineNumOfFinishedQuestions();
-            },
-            error => {
-                this.questionsMeta[questionId].tempReadonly = false;
-                this.toast.sendToast( this.language.getLabel('ERR_NETWORK_SAVING'),'error', error.message,false );
-                this.answers[questionId] = JSON.parse( this.backupForNetworkError );
-            }
-        );
-
-        return true;
-
-    }
-
-    private setFieldsOfQuestion( questionId: string, answervalues: any ): void {
-        for ( let answer of this.answers[questionId] ) {
-            answer.value = (answervalues[answer.optionId] || false);
-        }
+    private onChange( questionId: string, answerIndex: number, $event: any ): boolean {
+        $event.stopPropagation();
+        let optionId = this.qp.questionoptionsArray[questionId][answerIndex].id;
+        return this.qp.setOptionWithValue( optionId, $event.target.value );
     }
 
 }

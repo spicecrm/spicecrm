@@ -45,3 +45,4 @@ export class QuestionsetRenderRating extends QuestionsetRenderBasic implements O
     }
 
 }
+
