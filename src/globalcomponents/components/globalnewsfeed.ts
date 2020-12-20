@@ -26,7 +26,7 @@ export class GlobalNewsFeed {
     private isLoading: boolean = true;
 
     constructor(private http: HttpClient) {
-
+        this.loadNewsFeed();
     }
 
     /**
