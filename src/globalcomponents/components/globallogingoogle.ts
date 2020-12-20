@@ -64,7 +64,7 @@ export class GlobalLoginGoogle {
 
     public googleInit() {
         if (this.configuration.data.backendextensions.hasOwnProperty("google_oauth") &&
-            this.configuration.data.backendextensions.google_oauth.config != null) {
+            this.configuration.data.backendextensions.google_oauth?.config?.clientid) {
 
             this.libloader.loadFromSource(["https://apis.google.com/js/api.js", "https://apis.google.com/js/platform.js"]).subscribe(
                 success => {
