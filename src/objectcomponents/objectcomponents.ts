@@ -353,6 +353,7 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectRelatedlistTable,
         ObjectRelatedListItem,
         ObjectRecordFieldset,
+        ObjectRecordFieldsetField,
         ObjectRecordFieldsetHorizontalList,
         ObjectRowItemComponent,
         ObjectTabContainerItemHeader,
