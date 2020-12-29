@@ -22,17 +22,7 @@ import /*embed*/ {domainmanager} from "./services/domainmanager.service";
 import /*embed*/ {dictionarymanager} from "./services/dictionarymanager.service";
 
 // COMPONENTs
-import /*embed*/ {DomainManager} from "./components/domainmanager";
-import /*embed*/ {DomainManagerDefinitions} from "./components/domainmanagerdefinitions";
-import /*embed*/ {DomainManagerFields} from "./components/domainmanagerfields";
-import /*embed*/ {DomainManagerFieldTabs} from "./components/domainmanagerfieldtabs";
-import /*embed*/ {DomainManagerFieldDetails} from "./components/domainmanagerfielddetails";
-import /*embed*/ {DomainManagerFieldValidation} from "./components/domainmanagerfieldvalidation";
-import /*embed*/ {DomainManagerAddDefinitionModal} from "./components/domainmanageradddefinitionmodal";
-import /*embed*/ {DomainManagerAddFieldModal} from "./components/domainmanageraddfieldmodal";
-import /*embed*/ {DomainManagerSelectValidation} from "./components/domainmanagerselectvalidation";
-import /*embed*/ {DomainManagerAddValidation} from "./components/domainmanageraddvalidation";
-import /*embed*/ {DomainManagerAddValidationValueModal} from "./components/domainmanageraddvalidationvaluemodal";
+import /*embed*/ {DictionaryManagerItemStatus} from "./components/dictionarymanageritemstatus";
 
 import /*embed*/ {DictionaryManager} from "./components/dictionarymanager";
 import /*embed*/ {DictionaryManagerDefinitions} from "./components/dictionarymanagerdefinitions";
@@ -52,6 +42,19 @@ import /*embed*/ {DictionaryManagerIndexes} from "./components/dictionarymanager
 import /*embed*/ {DictionaryManagerIndexAdd} from "./components/dictionarymanagerindexadd";
 import /*embed*/ {DictionaryManagerIndexDetails} from "./components/dictionarymanagerindexdetails";
 import /*embed*/ {DictionaryManagerFields} from "./components/dictionarymanagerfields";
+
+
+import /*embed*/ {DomainManager} from "./components/domainmanager";
+import /*embed*/ {DomainManagerDefinitions} from "./components/domainmanagerdefinitions";
+import /*embed*/ {DomainManagerFields} from "./components/domainmanagerfields";
+import /*embed*/ {DomainManagerFieldTabs} from "./components/domainmanagerfieldtabs";
+import /*embed*/ {DomainManagerFieldDetails} from "./components/domainmanagerfielddetails";
+import /*embed*/ {DomainManagerFieldValidation} from "./components/domainmanagerfieldvalidation";
+import /*embed*/ {DomainManagerAddDefinitionModal} from "./components/domainmanageradddefinitionmodal";
+import /*embed*/ {DomainManagerAddFieldModal} from "./components/domainmanageraddfieldmodal";
+import /*embed*/ {DomainManagerSelectValidation} from "./components/domainmanagerselectvalidation";
+import /*embed*/ {DomainManagerAddValidation} from "./components/domainmanageraddvalidation";
+import /*embed*/ {DomainManagerAddValidationValueModal} from "./components/domainmanageraddvalidationvaluemodal";
 
 import /*embed*/ {FieldsetManager} from "./components/fieldsetmanager";
 import /*embed*/ {FieldsetManagerFieldsetDetails} from "./components/fieldsetmanagerfieldsetdetails";
@@ -164,6 +167,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         DictionaryManagerDefinitionTabs,
         DictionaryManagerItems,
         DictionaryManagerItemDetails,
+        DictionaryManagerItemStatus,
         DictionaryManagerAddDefinitionModal,
         DictionaryManagerAddItemModal,
         DictionaryManagerRelationships,
