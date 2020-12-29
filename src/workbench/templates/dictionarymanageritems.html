@@ -21,7 +21,7 @@
                     <td>
                         <system-utility-icon *ngIf="canShuffle" class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
                         <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionaryitem.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                        <system-utility-icon [colorclass]="dictionarymanager.getStatusColor(dictionaryitem.status)" class="slds-p-right--xx-small" size="xx-small" icon="light_bulb"></system-utility-icon>
+                        <dictionary-manager-item-status [(ngModel)]="dictionaryitem.status"></dictionary-manager-item-status>
                     </td>
                     <td data-label="Domain">
                         <div class="slds-truncate">{{dictionaryitem.name}}</div>
