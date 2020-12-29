@@ -23,7 +23,7 @@ export class DictionaryManagerItemStatus implements ControlValueAccessor {
     /**
      * internal variable if checked
      */
-    private status: any;
+    private status: 'i' | 'd' | 'a';
 
     /**
      * for the control accessor
@@ -64,7 +64,7 @@ export class DictionaryManagerItemStatus implements ControlValueAccessor {
      *
      * @param value
      */
-    public writeValue(value: any): void {
+    public writeValue(value: 'i' | 'd' | 'a'): void {
         this.status = value;
     }
 
