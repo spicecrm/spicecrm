@@ -59,11 +59,22 @@ export class DictionaryManagerItemStatus implements ControlValueAccessor {
     }
 
 
+    /**
+     * write the initial value
+     *
+     * @param value
+     */
     public writeValue(value: any): void {
-
+        this.status = value;
     }
 
-    toggleValue($e: MouseEvent) {
+    /**
+     * toggle the value on click
+     *
+     * @param $e
+     * @private
+     */
+    private toggleValue($e: MouseEvent) {
         $e.stopPropagation();
         this.status === 'a' ? this.status = 'd' : this.status = 'a';
         this.onChange(this.status);
