@@ -1,5 +1,5 @@
 <ng-container *ngIf="dictionarymanager.currentDictionaryDefinition; else selectdefinition">
-    <div style="height: 30vh;">
+    <div style="height: 30vh;" class="slds-scrollable--y">
         <table  class="slds-table slds-table_cell-buffer slds-table_bordered">
             <thead>
                 <tr class="slds-line-height_reset">
@@ -13,7 +13,9 @@
                     <th class="" scope="col">
                         <div class="slds-truncate"><system-label label="LBL_TEMPLATE"></system-label></div>
                     </th>
-                    <th style="width:2rem" scope="col"></th>
+                    <th style="width:2rem" scope="col">
+                        <system-utility-icon icon="new" size="x-small" (click)="addDictionaryItem($event)" ></system-utility-icon>
+                    </th>
                 </tr>
             </thead>
             <tbody class="dragboundary"  cdkDropList (cdkDropListDropped)="drop($event)">

@@ -24,7 +24,7 @@
                     <tr class="slds-hint-parent" *ngFor="let dictionaryrelationship of dictionaryrelationships" (click)="setActiveId(dictionaryrelationship.id)" [ngClass]="{'slds-is-selected': dictionarymanager.currentDictionaryRelationship == dictionaryrelationship.id}">
                         <td>
                             <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionaryrelationship.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                            <dictionary-manager-item-status [(ngModel)]="dictionarymanager.status"></dictionary-manager-item-status>
+                            <dictionary-manager-item-status [(ngModel)]="dictionaryrelationship.status"></dictionary-manager-item-status>
                         </td>
                         <td data-label="NAME">
                             <div class="slds-truncate">{{dictionaryrelationship.name}} / {{dictionaryrelationship.relationship_name}}</div>
