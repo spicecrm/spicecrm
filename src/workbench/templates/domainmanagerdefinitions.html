@@ -15,7 +15,7 @@
     <tr class="slds-hint-parent" [ngClass]="{'slds-is-selected':domainmanager.currentDomainDefinition == domaindefinition.id}"  *ngFor="let domaindefinition of domaindefinitions" (click)="setCurrentDomainDefintion(domaindefinition.id)">
         <td>
             <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="domaindefinition.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-            <system-utility-icon [colorclass]="domainmanager.getStatusColor(domaindefinition.status)" class="slds-p-right--xx-small" size="xx-small" icon="light_bulb"></system-utility-icon>
+            <dictionary-manager-item-status [(ngModel)]="domaindefinition.status"></dictionary-manager-item-status>
         </td>
         <td data-label="Domain" >
             <div class="slds-truncate">{{domaindefinition.name}}</div>
