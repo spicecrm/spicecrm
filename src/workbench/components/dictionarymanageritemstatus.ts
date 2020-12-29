@@ -76,7 +76,7 @@ export class DictionaryManagerItemStatus implements ControlValueAccessor {
      */
     private toggleValue($e: MouseEvent) {
         $e.stopPropagation();
-        this.status === 'a' ? this.status = 'd' : this.status = 'a';
+        this.status === 'a' ? this.status = 'i' : this.status = 'a';
         this.onChange(this.status);
     }
 }
