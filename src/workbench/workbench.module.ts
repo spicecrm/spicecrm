@@ -38,6 +38,8 @@ import /*embed*/ {DictionaryManagerRelationshipAddOneToMany} from "./components/
 import /*embed*/ {DictionaryManagerRelationshipContainerOneToMany} from "./components/dictionarymanagerrelationshipcontaineronetomany";
 import /*embed*/ {DictionaryManagerRelationshipAddManyToMany} from "./components/dictionarymanagerrelationshipaddmanytomany";
 import /*embed*/ {DictionaryManagerRelationshipContainerManyToMany} from "./components/dictionarymanagerrelationshipcontainermanytomany";
+import /*embed*/ {DictionaryManagerRelationshipAddParent} from "./components/dictionarymanagerrelationshipaddparent";
+import /*embed*/ {DictionaryManagerRelationshipContainerParent} from "./components/dictionarymanagerrelationshipcontainerparent";
 import /*embed*/ {DictionaryManagerIndexes} from "./components/dictionarymanagerindexes";
 import /*embed*/ {DictionaryManagerIndexAdd} from "./components/dictionarymanagerindexadd";
 import /*embed*/ {DictionaryManagerIndexDetails} from "./components/dictionarymanagerindexdetails";
@@ -177,6 +179,8 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         DictionaryManagerRelationshipContainerOneToMany,
         DictionaryManagerRelationshipAddManyToMany,
         DictionaryManagerRelationshipContainerManyToMany,
+        DictionaryManagerRelationshipAddParent,
+        DictionaryManagerRelationshipContainerParent,
         DictionaryManagerIndexes,
         DictionaryManagerIndexAdd,
         DictionaryManagerIndexDetails,

@@ -16,9 +16,9 @@ import {Relationship} from "../interfaces/dictionarymanager.interfaces";
  * renders a modal to add a one to many relationship
  */
 @Component({
-    templateUrl: './src/workbench/templates/dictionarymanagerrelationshipaddonetomany.html',
+    templateUrl: './src/workbench/templates/dictionarymanagerrelationshipaddparent.html',
 })
-export class DictionaryManagerRelationshipAddOneToMany implements OnInit {
+export class DictionaryManagerRelationshipAddParent implements OnInit {
 
     /**
      * reference to the modal window
@@ -50,7 +50,7 @@ export class DictionaryManagerRelationshipAddOneToMany implements OnInit {
             rhs_linklabel: '',
             rhs_relatename: '',
             rhs_relatelabel: '',
-            relationship_type: 'one-to-many',
+            relationship_type: 'parent',
             deleted: 0,
             status: 'd'
         };
@@ -80,7 +80,6 @@ export class DictionaryManagerRelationshipAddOneToMany implements OnInit {
 
         // determine the default link field and link name
         this.relationship.rhs_linkname = this.dictionarymanager.getDictionaryDefinitionName(this.relationship.lhs_sysdictionarydefinition_id).toLowerCase();
-        this.relationship.rhs_relatename = this.dictionarymanager.getDictionaryDefinitionName(this.relationship.lhs_sysdictionarydefinition_id).toLowerCase() + '_name';
 
         // determine the default lhs link name
         this.relationship.lhs_linkname = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.relationship.rhs_sysdictionarydefinition_id).tablename.toLowerCase();
@@ -100,7 +99,7 @@ export class DictionaryManagerRelationshipAddOneToMany implements OnInit {
      *
      * @private
      */
-    private add(){
+    private add() {
         this.dictionarymanager.dictionaryrelationships.push({...this.relationship});
         this.close();
     }
