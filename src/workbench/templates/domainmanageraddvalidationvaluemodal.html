@@ -3,14 +3,18 @@
     <system-modal-content>
         <div class="slds-grid">
             <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
-                <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_MIN"></system-label></label>
+                <label class="slds-form-element__label"><system-label label="LBL_VALUE"></system-label></label>
+                <system-input-text [(ngModel)]="fieldvalidationvalue.enumvalue"></system-input-text>
+            </div>
+            <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
+                <label class="slds-form-element__label"><system-label label="LBL_MIN"></system-label></label>
                 <system-input-text [(ngModel)]="fieldvalidationvalue.minvalue"></system-input-text>
             </div>
             <div class="slds-form-element__control slds-size--1-of-4 slds-p-right--xxx-small">
                 <label class="slds-form-element__label"><system-label label="LBL_MAX"></system-label></label>
                 <system-input-text [(ngModel)]="fieldvalidationvalue.maxvalue"></system-input-text>
             </div>
-            <div class="slds-form-element__control slds-size--1-of-2 slds-p-left--xxx-small">
+            <div class="slds-form-element__control slds-size--1-of-4 slds-p-left--xxx-small">
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_SCOPE"></system-label></label>
                 <div class="slds-select_container">
                     <select class="slds-select" [(ngModel)]="fieldvalidationvalue.scope">
