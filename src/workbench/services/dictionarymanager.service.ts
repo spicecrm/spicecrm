@@ -181,6 +181,19 @@ export class dictionarymanager {
 
 
     /**
+     * returns the dictionary item name for the given id
+     *
+     * @param domainid
+     */
+    public getDictionaryItemName(refid) {
+        let d = this.dictionaryitems.find(d => d.id == refid);
+        return d ? d.name : refid;
+    }
+
+
+
+
+    /**
      * returns all items (recurisively for a given id
      *
      * @param refid

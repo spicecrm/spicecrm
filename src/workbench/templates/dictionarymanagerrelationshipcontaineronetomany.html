@@ -59,13 +59,28 @@
     </div>
 </div>
 <div class="slds-grid">
-    <div>
-        <label class="slds-form-element__label"><system-label label="LBL_RHS_REALNAME"></system-label></label>
+    <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element">
+        <label class="slds-form-element__label"><system-label label="LBL_LHS_LINKLABEL"></system-label></label>
         <div class="slds-form-element__control">
-            <input class="slds-input" [(ngModel)]="relationship.rhs_realname"/>
+            <system-input-label [(ngModel)]="relationship.lhs_linklabel"></system-input-label>
         </div>
     </div>
-    <div>
+    <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
+        <label class="slds-form-element__label"><system-label label="LBL_RHS_LINKLABEL"></system-label></label>
+        <div class="slds-form-element__control">
+            <system-input-label [(ngModel)]="relationship.rhs_linklabel"></system-input-label>
+        </div>
+    </div>
+</div>
+<div class="slds-grid">
+    <div class="slds-size--1-of-2"></div>
+    <div class="slds-size--1-of-2">
+        <label class="slds-form-element__label"><system-label label="LBL_RHS_RELATENAME"></system-label></label>
+        <div class="slds-form-element__control">
+            <input class="slds-input" [(ngModel)]="relationship.rhs_relatename"/>
+        </div>
+    </div>
+    <!--div>
         <table class="slds-table slds-table_cell-buffer slds-table_bordered">
             <thead>
             <tr class="slds-line-height_reset">
@@ -87,5 +102,13 @@
             </tr>
             </tbody>
         </table>
+    </div-->
+</div><div class="slds-grid">
+    <div class="slds-size--1-of-2"></div>
+    <div class="slds-size--1-of-2">
+        <label class="slds-form-element__label"><system-label label="LBL_RHS_RELATELABEL"></system-label></label>
+        <div class="slds-form-element__control">
+            <system-input-label [(ngModel)]="relationship.rhs_relatelabel"></system-input-label>
+        </div>
     </div>
 </div>
