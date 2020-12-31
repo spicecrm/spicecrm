@@ -45,6 +45,14 @@ export class DictionaryManagerAddItemModal {
      */
     private messages: DictionaryManagerMessage[] = [];
 
+    /**
+     * the type tof the current dictionary item
+     * currently no deep nesting of templates is allowed so templates cannot be added within templates
+     *
+     * @private
+     */
+    private currentType: string;
+
     constructor(private dictionarymanager: dictionarymanager, private metadata: metadata, private modelutilities: modelutilities) {
 
         this.dictionaryitem = {
@@ -72,14 +80,19 @@ export class DictionaryManagerAddItemModal {
 
         // add the other dictioanry items
         for (let template of this.dictionarymanager.dictionarydefinitions) {
-            this.templates.push({
-                id: template.id,
-                name: template.name
-            });
+            if(template.sysdictionary_type == 'template') {
+                this.templates.push({
+                    id: template.id,
+                    name: template.name
+                });
+            }
         }
 
         // sort the domain name alphabetically
         this.templates.sort((a, b) => a.name.localeCompare(b.name) > 0 ? 1 : -1);
+
+        // get the current type
+        this.currentType = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.dictionarymanager.currentDictionaryDefinition).sysdictionary_type;
     }
 
     /**

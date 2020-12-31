@@ -27,7 +27,7 @@
                             <div class="slds-truncate">{{dictionarymanager.getDomainName(dictionaryitem.sysdomaindefinition_id)}}</div>
                         </td>
                         <td data-label="Field">
-                            <div class="slds-truncate">{{getDomainFields(dictionaryitem.sysdomaindefinition_id)[0].name}}</div>
+                            <div class="slds-truncate">{{translateDomainField(getDomainFields(dictionaryitem.sysdomaindefinition_id)[0].name, dictionaryitem)}}</div>
                         </td>
                         <td data-label="Template">
                             <div class="slds-truncate">{{getRefDefinitionName(dictionaryitem.sysdictionarydefinition_id)}}</div>
@@ -39,7 +39,7 @@
                         <td data-label="Domain">
                         </td>
                         <td data-label="Field">
-                            <div class="slds-truncate">{{field.name}}</div>
+                            <div class="slds-truncate">{{translateDomainField(field.name, dictionaryitem)}}</div>
                         </td>
                         <td data-label="Template">
                         </td>
