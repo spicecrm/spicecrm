@@ -21,6 +21,14 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 export class DictionaryManagerItemStatus implements ControlValueAccessor {
 
     /**
+     * allows this to be disabled
+     * useful when the status shoudl be displayed but we do not want it ot be changeable since it is a referenced item
+     *
+     * @private
+     */
+    @Input() private disabled: boolean = false;
+
+    /**
      * internal variable if checked
      */
     private status: 'i' | 'd' | 'a';
@@ -69,14 +77,16 @@ export class DictionaryManagerItemStatus implements ControlValueAccessor {
     }
 
     /**
-     * toggle the value on click
+     * toggle the value on click if the component is not disabled
      *
      * @param $e
      * @private
      */
     private toggleValue($e: MouseEvent) {
-        $e.stopPropagation();
-        this.status === 'a' ? this.status = 'i' : this.status = 'a';
-        this.onChange(this.status);
+        if(!this.disabled) {
+            $e.stopPropagation();
+            this.status === 'a' ? this.status = 'i' : this.status = 'a';
+            this.onChange(this.status);
+        }
     }
 }
