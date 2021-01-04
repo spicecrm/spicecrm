@@ -83,7 +83,8 @@
                 <div *ngIf="!questionsMeta[question.id].parameter.formatOptionsHorizontal" class="slds-grid_pull-padded-x-small slds-p-top--small slds-has-divider--top slds-m-top--medium">
                     <div *ngFor="let option of qp.questionoptionsArray[question.id];let j=index" class="slds-grid slds-text-align--center slds-p-right--small slds-p-left--x-small" [ngClass]="{'slds-border--bottom':qp.questionoptionsArray[question.id].length-1>j}" style="overflow:hidden" [ngStyle]="qp.questionoptionsArray[question.id].length-1 === j && {'margin-bottom':'-0.25rem'}" (click)="qp.clickAnswerOption(option.id,$event)">
                         <div class="slds-p-left--none slds-p-right--small" style="width:auto;display:inline-flex" [ngClass]="{'slds-p-bottom--small':qp.questionoptionsArray[question.id].length-1>j,'slds-p-top--small':j>0}">
-                            <input id="{{option.id}}" style="margin:auto" type="radio" [checked]="isChecked(question.id, option.id)" (click)="qp.clickAnswerOption(option.id,$event)" [disabled]="isDisabled(question.id)">
+                            <span *ngIf="isChecked(question.id, option.id)">checked! </span>
+                            <input id="{{option.id}}" style="margin:auto" type="radio" [checked]="isChecked(question.id, option.id)" (click)="qp.clickAnswerOption(option.id,$event)" [disabled]="isDisabled(question.id)">q:{{question.id}}, o:{{option.id}}
                         </div>
                         <div class="slds-border--left slds-text-align--left" style="width:100%;white-space:normal">
                             <div class="slds-p-top--small slds-p-left--small slds-p-right--x-small" [ngClass]="{'slds-p-bottom--small':qp.questionoptionsArray[question.id].length-1>j,'slds-p-top--small':j>0}">

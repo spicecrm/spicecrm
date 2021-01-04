@@ -25,7 +25,9 @@ export class QuestionsetRenderBinarySingleMulti extends QuestionsetRenderBasic i
     }
 
     private isChecked( questionId: string, optionId: string ): boolean {
-        return this.qp.answers[questionId].options[optionId];
+        //console.log('isChecked answers',this.questionnaireParticipation.answers);
+        //console.log(this.qp.answers[questionId].options[optionId]);
+        return this.qp.answers[questionId] && this.qp.answers[questionId].options && this.qp.answers[questionId].options[optionId];
     }
 
 }

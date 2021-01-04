@@ -12,9 +12,7 @@ import { BehaviorSubject } from 'rxjs';
 /**
  * @ignore
  */
-/*
 declare var _: any;
-*/
 
 @Injectable()
 export class questionnaireParticipationService {
@@ -198,7 +196,7 @@ export class questionnaireParticipationService {
     public clickAnswerOption( optionId: string, event: any ): boolean {
 
         event.stopPropagation();
-
+return false;
         let question = this.questionoptions[optionId].parentQuestion;
 
         // If the edit mode is 'off', a input/change is not allowed. --> Do nothing and return false.
@@ -433,6 +431,7 @@ export class questionnaireParticipationService {
 
     private loadParticipationByParent() {
         this.backend.getRequest('QuestionAnswers/ofParticipation/byParent/'+this.parentType+'/'+this.parentId ).subscribe( response => {
+            console.log('response',_.clone(response));
             this.questionnaireId = response.questionnaireId;
             // In case the edit mode is "off" or "preview" there are no answer values to load:
             // if ( this.editMode === 'preview' || this.editMode === 'off' ) return;
@@ -452,15 +451,23 @@ export class questionnaireParticipationService {
     }
 
     private insertLoadedAnswers( answers: any ): void {
-        for ( let questionId of answers ) {
+        this.answers = _.clone( answers );
+        console.log('answers',_.clone(answers));
+        console.log('this.answers',this.answers);
+        return;
+        console.log('insertLoadesAnswers',answers);
+        for ( let questionId of Object.keys( answers )) {
+            this.answers[questionId] = {};
             if ( answers[questionId].optionlessAnswerValue !== undefined ) {
                 this.answers[questionId].optionlessAnswerValue = answers[questionId].optionlessAnswerValue;
-            } else if ( answers[questionId].options ) {
-                for ( let optionId of answers[questionId].options ) {
+            } else if ( !_.isEmpty( answers[questionId].options )) {
+                this.answers[questionId].options = {};
+                for ( let optionId in answers[questionId].options ) {
                     this.answers[questionId].options[optionId] = answers[questionId].options[optionId];
                 }
             }
         }
+        console.log('this.answers',this.answers);
     }
 
     /**
@@ -479,6 +486,7 @@ export class questionnaireParticipationService {
 
     // fertig? eher nicht betreffend answer object
     private determineNumOfFinishedQuestionsInQuestionset( questionsetId: string ): number {
+        return 0;
         let numberFinishedQuestions = 0;
         for ( let question of this.questionsArray[questionsetId] ) {
             switch( question.questiontype ) {
@@ -568,7 +576,7 @@ export class questionnaireParticipationService {
             },
             error => {
                 this.toast.sendToast('Error saving questionnaire answers.', 'error', null, false, 'errorSavingQuestionnaireAnswers');
-                this.isSaving = false;
+                console.log(error);this.isSaving = false;
                 finishedSaving$.emit( false );
             });
         return finishedSaving$;
