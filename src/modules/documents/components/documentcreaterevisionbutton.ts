@@ -8,7 +8,7 @@ import {language} from '../../../services/language.service';
 import {modal} from "../../../services/modal.service";
 import {backend} from "../../../services/backend.service";
 import {configurationService} from "../../../services/configuration.service";
-import {ObjectActionOutputBeanButton} from "../../outputtemplates/components/objectactionoutputbeanbutton";
+import {ObjectActionOutputBeanButton} from "../../../modules/outputtemplates/components/objectactionoutputbeanbutton";
 import {Subscription} from "rxjs";
 import {relatedmodels} from "../../../services/relatedmodels.service";
 
