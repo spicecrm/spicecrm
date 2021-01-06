@@ -11,7 +11,7 @@ import {view} from "../../../services/view.service";
 import {backend} from "../../../services/backend.service";
 import {trigger, transition, animate, style, state} from '@angular/animations';
 
-import {ObjectActionOutputBeanModal} from "../../outputtemplates/components/objectactionoutputbeanmodal";
+import {ObjectActionOutputBeanModal} from "../../../modules/outputtemplates/components/objectactionoutputbeanmodal";
 
 @Component({
     selector: 'object-action-output-bean-modal',
