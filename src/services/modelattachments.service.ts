@@ -483,6 +483,8 @@ export class modelattachments {
                 // broadcast the count
                 this.count--;
                 this.broadcastAttachmentCount();
+            }, error => {
+                this.toast.sendToast( 'Cannot delete attachment.', 'error', error.error.error.message, false );
             });
     }
 
