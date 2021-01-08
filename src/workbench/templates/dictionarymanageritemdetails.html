@@ -37,10 +37,10 @@
             </div>
             <div class="slds-grid slds-p-vertical--xx-small">
                 <div class="slds-size--1-of-2 slds-form-element__control">
-                    <system-checkbox [(ngModel)]="dictionaryitem.required"><system-label label="LBL_REQUIRED"></system-label></system-checkbox>
+                    <system-checkbox [(ngModel)]="dictionaryitem.required" [asinteger]="true"><system-label label="LBL_REQUIRED"></system-label></system-checkbox>
                 </div>
                 <div class="slds-size--1-of-2 slds-form-element__control">
-                    <system-checkbox [(ngModel)]="dictionaryitem.non_db"><system-label label="LBL_NON_DB"></system-label></system-checkbox>
+                    <system-checkbox [(ngModel)]="dictionaryitem.non_db" [asinteger]="true"><system-label label="LBL_NON_DB"></system-label></system-checkbox>
                 </div>
             </div>
             <div class="slds-form-element slds-m-vertical--xxx-small">

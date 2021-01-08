@@ -32,10 +32,13 @@
                 <tr class="slds-line-height_reset">
                     <th style="width:2rem" scope="col">
                     </th>
-                    <th class="" scope="col">
+                    <th *ngIf="validation.validation_type == 'enum'" class="" scope="col">
+                        <div class="slds-truncate slds-th__action slds-p-horizontal--x-small">value</div>
+                    </th>
+                    <th *ngIf="validation.validation_type != 'enum'" class="" scope="col">
                         <div class="slds-truncate slds-th__action slds-p-horizontal--x-small">min</div>
                     </th>
-                    <th class="" scope="col">
+                    <th *ngIf="validation.validation_type != 'enum'"  class="" scope="col">
                         <div class="slds-truncate slds-th__action slds-p-horizontal--x-small">max</div>
                     </th>
                     <th class="" scope="col">
@@ -59,12 +62,15 @@
                     <td class="slds-grid slds-align--absolute-center" style="min-height: 40px;">
                         <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
                         <system-utility-icon (click)="customizeValidationValue($event, validationvalue)" class="slds-p-right--xx-small" size="xx-small" [icon]="validationvalue.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                        <system-utility-icon (click)="setValidationStatus($event, validationvalue)" [colorclass]="domainmanager.getStatusColor(validationvalue.status)" class="slds-p-right--xx-small" size="xx-small" icon="light_bulb"></system-utility-icon>
+                        <dictionary-manager-item-status [(ngModel)]="validationvalue.status"></dictionary-manager-item-status>
                     </td>
-                    <td>
+                    <td *ngIf="validation.validation_type == 'enum'" >
+                        <input type="text" [(ngModel)]="validationvalue.enumvalue" class="slds-input"/>
+                    </td>
+                    <td *ngIf="validation.validation_type != 'enum'" >
                         <input type="text" [(ngModel)]="validationvalue.minvalue" class="slds-input"/>
                     </td>
-                    <td>
+                    <td *ngIf="validation.validation_type != 'enum'" >
                         <input type="text" [(ngModel)]="validationvalue.maxvalue" class="slds-input"/>
                     </td>
                     <td>

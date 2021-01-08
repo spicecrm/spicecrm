@@ -22,6 +22,7 @@ import {domainmanager} from '../services/domainmanager.service';
 })
 export class DomainManagerDefinitions {
 
+    private definitionfilterterm: string;
 
     constructor(private domainmanager: domainmanager, private backend: backend, private metadata: metadata, private language: language, private modelutilities: modelutilities, private broadcast: broadcast, private toast: toast, private modal: modal, private injector: Injector) {
 
@@ -31,7 +32,19 @@ export class DomainManagerDefinitions {
      * returns the filtered definitions
      */
     get domaindefinitions() {
-        return this.domainmanager.domaindefinitions.filter(d => d.deleted == 0).sort((a, b) => a.name > b.name ? 1 : -1);
+        return this.domainmanager.domaindefinitions.filter(d => {
+            // no deleted
+            if (d.deleted) return false;
+            // match name if set
+            if(this.definitionfilterterm && !(d.name.toLowerCase().indexOf(this.definitionfilterterm.toLowerCase()) >= 0)) return false;
+            // else return true
+            return true;
+        }).sort((a, b) => a.name > b.name ? 1 : -1);
+    }
+
+
+    private trackByFn(index, item) {
+        return item.id;
     }
 
 
