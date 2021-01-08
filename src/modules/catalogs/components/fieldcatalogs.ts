@@ -37,10 +37,6 @@ export class fieldCatalogs extends fieldGeneric {
     ) {
         super(model, view, language, metadata, router);
 
-        this.model.data$.subscribe(data => {
-           this.setItemsFromValue();
-        });
-
         // subscribe to the view to react to a change to edit mode
         this.view.mode$.subscribe(mode => {
             if (mode == 'edit') {
@@ -65,6 +61,10 @@ export class fieldCatalogs extends fieldGeneric {
      */
     public ngOnInit() {
         this.products = this.configurationService.getData('catalogs');
+
+        this.model.data$.subscribe(data => {
+            this.setItemsFromValue();
+        });
 
         this.is_loading_items = false;
 
