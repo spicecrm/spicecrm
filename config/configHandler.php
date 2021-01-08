@@ -5,13 +5,18 @@ class configHandler
 
     static function getSites()
     {
+        $sitesDirectoryName = "../config/sites";
         $sites = array();
 
-        $configDriHandler = opendir("../config/sites");
+        //if sites subfolder doesnt exist, return empty array...
+        if (!is_dir($sitesDirectoryName)) {
+            return $sites;
+        }
+        $configDriHandler = opendir($sitesDirectoryName);
         if ($configDriHandler) {
             while (false !== ($configFile = readdir($configDriHandler))) {
                 if (preg_match('/.conf$/', $configFile)) {
-                    $string = file_get_contents("../config/sites/$configFile");
+                    $string = file_get_contents($sitesDirectoryName."/".$configFile);
                     $site = json_decode($string, true);
                     if (is_array($site))
                         if ($site['proxy']) {
@@ -43,14 +48,15 @@ class configHandler
         return false;
     }
 
-    static function setSite($siteDetails)    {
+    static function setSite($siteDetails)
+    {
         $configDriHandler = opendir("../config/sites");
         if (!$configDriHandler) {
             mkdir('../config/sites', 0755, true);
             $configDriHandler = opendir("../config/sites");
         }
 
-        if(!$configDriHandler){
+        if (!$configDriHandler) {
             return false;
         }
 
@@ -74,11 +80,12 @@ class configHandler
 
     }
 
-    static function getGeneralConfig() {
+    static function getGeneralConfig()
+    {
         $generalConfig = (object)array();
         $filepath = '../config/general/general.conf';
-        if ( is_file( $filepath ) and is_readable( $filepath ))
-            $generalConfig = json_decode( file_get_contents( $filepath ), true );
+        if (is_file($filepath) and is_readable($filepath))
+            $generalConfig = json_decode(file_get_contents($filepath), true);
         return $generalConfig;
     }
 
