@@ -92,7 +92,7 @@ export class SystemPrompt implements OnInit, AfterViewInit {
     }
 
     get splitText(): string[] {
-        return this.text ? this.text.split(/(?:\r\n|\r|\n)/g) : [];
+        return this.text ? this.language.getLabel(this.text, undefined, 'long').split(/(?:\r\n|\r|\n)/g) : [];
     }
     public ngOnInit() {
         if ( !this.theme ) this.theme = 'shade';

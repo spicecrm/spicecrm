@@ -1,5 +1,6 @@
 <header #header  class="slds-global-header_container">
     <div *ngIf="session.authData.sessionId && session.authData.loaded === true">
+        <!--global-header-trial-bar></global-header-trial-bar-->
         <global-header-top></global-header-top>
         <global-navigation-tabbed *ngIf="!issmall && tabbed"></global-navigation-tabbed>
         <global-navigation *ngIf="!issmall && !tabbed"></global-navigation>

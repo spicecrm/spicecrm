@@ -12,11 +12,7 @@
                 <div class="slds-grid slds-p-horizontal--x-small">
                     <div *ngIf="isPrefMissing('timezone')" class="slds-form-element slds-p-horizontal--x-small slds-p-bottom--x-small slds-size--1-of-3">
                         <label class="slds-form-element__label" for="{{componentId}}-timezone">{{ lang.getLabel('LBL_TIMEZONE') }}</label>
-                        <div class="slds-select_container">
-                            <select id="{{componentId}}-timezone" class="slds-select" name="timezone" [(ngModel)]="preferences.timezone">
-                                <option *ngFor="let key of timezoneKeys" value="{{key}}">{{timezones[key]}}</option>
-                            </select>
-                        </div>
+                        <system-input-timezone [(ngModel)]="preferences.timezone"></system-input-timezone>
                     </div>
                     <div *ngIf="isPrefMissing('datef')" class="slds-form-element slds-p-horizontal--x-small slds-p-bottom--x-small slds-size--1-of-3">
                         <label class="slds-form-element__label" for="{{componentId}}-datef">{{ lang.getLabel('LBL_DATE_FORMAT') }}</label>

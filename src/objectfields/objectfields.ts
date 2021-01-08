@@ -40,6 +40,7 @@ import /*embed*/ {fieldMultipleEnumDropdown} from './components/fieldmultipleenu
 import /*embed*/ {fieldEnumAlternate} from './components/fieldenumalternate';
 import /*embed*/ {fieldEnumRadio} from './components/fieldenumradio';
 import /*embed*/ {fieldBool} from './components/fieldbool';
+import /*embed*/ {fieldBoolLabelAligned} from './components/fieldboollabelaligned';
 import /*embed*/ {fieldParent} from './components/fieldparent';
 import /*embed*/ {fieldModuleFilter} from './components/fieldmodulefilter';
 import /*embed*/ {fieldRelate} from './components/fieldrelate';
@@ -164,6 +165,7 @@ declare var _: any;
         fieldEnumAlternate,
         fieldEnumRadio,
         fieldBool,
+        fieldBoolLabelAligned,
         fieldDate,
         fieldTime,
         fieldDateTime,
