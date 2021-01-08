@@ -100,6 +100,7 @@ import /*embed*/ {MailboxesProcessors} from "./components/mailboxesprocessors";
 import /*embed*/ {SelectTreeComponent} from "./components/selecttree";
 import /*embed*/ {SelectTreeAddDialog} from "./components/selecttreeadddialog";
 import /*embed*/ {ConfigCleaner} from "./components/configcleaner";
+import /*embed*/ {StyleCacheCleaner} from "./components/stylecachecleaner";
 import /*embed*/ {GoogleCalendarManager} from "./components/googlecalendarmanager";
 import /*embed*/ {ConfigTransfer} from './components/configtransfer';
 
@@ -243,6 +244,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         ModuleConfigAddDialog,
         WorkbenchConfig,
         ConfigCleaner,
+        StyleCacheCleaner,
         GoogleCalendarManager,
         ObjectRepositoryManager,
         ObjectRepositoryManagerFilter,
