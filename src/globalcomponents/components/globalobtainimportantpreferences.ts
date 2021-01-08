@@ -19,7 +19,7 @@ declare var moment: any;
  *
  */
 @Component({
-    selector: 'global-obtin-important-preferences',
+    selector: 'global-obtain-important-preferences',
     templateUrl: './src/globalcomponents/templates/globalobtainimportantpreferences.html',
 })
 export class GlobalObtainImportantPreferences implements OnInit {
@@ -69,7 +69,6 @@ export class GlobalObtainImportantPreferences implements OnInit {
 
     public ngOnInit() {
         if ( this.timeshift ) this.selectedTimezone = this.configuredTimezone = this.prefservice.unchangedPreferences.global.timezone;
-        if ( this.isPrefMissing('timezone') || this.timeshift ) this.getTimezones();
         for ( let name of this.namesOfMissingPrefs ) this.preferences[name] = this.prefservice.defaults[name];
     }
 
@@ -96,13 +95,6 @@ export class GlobalObtainImportantPreferences implements OnInit {
 
     private isPrefMissing( prefName ) {
         return this.namesOfMissingPrefs.indexOf( prefName ) !== -1;
-    }
-
-    private getTimezones() {
-        this.backend.getRequest( "/timezones" ).subscribe( response => {
-            this.timezones = response;
-            this.timezoneKeys = Object.keys( this.timezones );
-        } );
     }
 
     public onModalEscX() {
