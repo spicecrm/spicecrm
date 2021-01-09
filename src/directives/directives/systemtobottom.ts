@@ -3,6 +3,7 @@
  */
 import {
     Directive,
+    Input,
     HostBinding,
     ElementRef,
     Renderer2,
@@ -26,6 +27,12 @@ export class SystemToBottomDirective implements DoCheck {
      */
     @Output('system-to-bottom') private more: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+    /**
+     * a margin in pixels fromt he bottom
+     * @private
+     */
+    @Input() private marginBottom = 0;
+
     constructor(private element: ElementRef, private renderer: Renderer2, private footer: footer) {
     }
 
@@ -39,7 +46,7 @@ export class SystemToBottomDirective implements DoCheck {
      */
     public ngDoCheck() {
         let rect = this.element.nativeElement.getBoundingClientRect();
-        let height = Math.floor(window.innerHeight - rect.top - parseInt( getComputedStyle(this.element.nativeElement).marginBottom, 10 ) - parseInt( getComputedStyle(this.element.nativeElement).paddingBottom, 10 ) - this.footer.visibleFooterHeight);
+        let height = Math.floor(window.innerHeight - rect.top - this.marginBottom - parseInt( getComputedStyle(this.element.nativeElement).marginBottom, 10 ) - parseInt( getComputedStyle(this.element.nativeElement).paddingBottom, 10 ) - this.footer.visibleFooterHeight);
         this.renderer.setStyle(this.element.nativeElement, 'height',  height + 'px');
     }
 
