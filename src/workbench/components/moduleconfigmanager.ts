@@ -502,10 +502,6 @@ export class ModuleConfigManager {
         this.selectedModule();
     }
 
-    private get treecontainerstyle() {
-        return {
-            height: "calc(100vh - " + this.treecontainer.element.nativeElement.offsetTop + "px - " + this.addconfigcontainer.element.nativeElement.getBoundingClientRect().height + "px)"
-        };
-    }
+
 }
 
