@@ -28,6 +28,8 @@ interface authDataIf {
     googleToken: string;
     userimage: string;
     companycode_id: string;
+    tenant_id: string;
+    tenant_name: string;
     obtainGDPRconsent: boolean;
 }
 
@@ -54,6 +56,8 @@ export class session {
         googleToken: '',
         userimage: '',
         companycode_id: '',
+        tenant_id: '',
+        tenant_name: '',
         obtainGDPRconsent: false
     };
 

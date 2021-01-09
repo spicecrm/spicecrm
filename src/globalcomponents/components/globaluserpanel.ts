@@ -5,29 +5,25 @@ import {Router} from "@angular/router";
 import {Component, EventEmitter, Output, ViewChild, ViewContainerRef} from "@angular/core";
 import {loginService} from "../../services/login.service";
 import {session} from "../../services/session.service";
-import {language} from "../../services/language.service";
 import {metadata} from "../../services/metadata.service";
 import {backend} from "../../services/backend.service";
 import {configurationService} from "../../services/configuration.service";
 import {modal} from "../../services/modal.service";
-import {cookie} from "../../services/cookie.service";
 import {userpreferences} from '../../services/userpreferences.service';
 import {toast} from '../../services/toast.service';
 import {socket} from '../../services/socket.service';
 
 declare var _: any;
 
+/**
+ * the gloabl user panale rendered when the users clicks ont eh iamge or avatar in the top right corner
+ */
 @Component({
     selector: "global-user-panel",
     templateUrl: "./src/globalcomponents/templates/globaluserpanel.html",
 })
 export class GlobaUserPanel {
-
-    private timezones: object;
-    private timezoneKeys: string[];
-    private isEditingTz = false;
-    private compId: string = _.uniqueId();
-
+    
     /**
      * emits that the popup shoudl be closed
      */
@@ -37,14 +33,12 @@ export class GlobaUserPanel {
         private loginService: loginService,
         private session: session,
         private router: Router,
-        private language: language,
         private metadata: metadata,
         private backend: backend,
         private config: configurationService,
-        private modalservice: modal,
-        private cookie: cookie,
+        private modal: modal,
         private userprefs: userpreferences,
-        private toastservice: toast,
+        private toast: toast,
         private socket: socket
     ) {
 
@@ -55,7 +49,7 @@ export class GlobaUserPanel {
     }
 
     private changeImage() {
-        this.modalservice.openModal("SystemUploadImage").subscribe(componentref => {
+        this.modal.openModal("SystemUploadImage").subscribe(componentref => {
             componentref.instance.cropheight = 150;
             componentref.instance.cropwidth = 150;
             componentref.instance.imagedata.subscribe(image => {
@@ -79,34 +73,68 @@ export class GlobaUserPanel {
         return this.session.authData.display_name ? this.session.authData.display_name : this.session.authData.userName;
     }
 
+    /**
+     * returns the username
+     */
     get userName() {
         return this.session.authData.userName;
     }
 
+    /**
+     * returns the systemname or the tenanat name if the user is logged in a tenant
+     */
+    get systemName() {
+        return this.session.authData.tenant_name ? this.session.authData.tenant_name : this.config.data.display;
+    }
+
+    /**
+     * navigates to the users detail page
+     * 
+     * @private
+     */
     private goDetails() {
         this.router.navigate(["/module/Users/" + this.session.authData.userId]);
         this.close();
     }
 
+    /**
+     * triggers the change password dialog
+     * 
+     * @private
+     */
     private changePassword() {
-        this.modalservice.openModal("UserChangePasswordModal");
+        this.modal.openModal("UserChangePasswordModal");
     }
 
+    /**
+     * returns the user image to display in the user panel
+     */
     get userimage() {
         return this.session.authData.userimage;
     }
 
+    /**
+     * changes the users timezone
+     * 
+     * @param value
+     * @private
+     */
     private set currentTz(value) {
         if (this.userprefs.unchangedPreferences.global && this.userprefs.unchangedPreferences.global.timezone === value) return;
         this.userprefs.setPreference('timezone', value, true).subscribe((data: any) => {
-            this.toastservice.sendToast('Timezone set successfully to "' + data.timezone + '".', 'success');
+            this.toast.sendToast('Timezone set successfully to "' + data.timezone + '".', 'success');
         }, error => {
-            this.toastservice.sendToast('Error setting timezone.', 'error');
+            this.toast.sendToast('Error setting timezone.', 'error');
         });
         this.session.setTimezone(value); // Let the UI together with all the models and components know about the new configured timezone.
         this.close();
     }
 
+    /**
+     * loads the current timezone
+     * 
+     * @private
+     */
     private get currentTz(): string {
         if (this.userprefs.unchangedPreferences && this.userprefs.unchangedPreferences.global) {
             return this.userprefs.unchangedPreferences.global.timezone;
