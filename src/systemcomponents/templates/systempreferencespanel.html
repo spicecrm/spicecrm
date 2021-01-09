@@ -6,14 +6,7 @@
                     {{preferences.timezone}}
                 </system-preferences-panel-item-display>
                 <system-preferences-panel-item-edit>
-                    <div class="slds-select_container">
-                        <select class="slds-select" [(ngModel)]="preferences.timezone">
-                            <option></option>
-                            <option *ngFor="let key of timezoneKeys" [value]="key">
-                                {{timezones[key]}}
-                            </option>
-                        </select>
-                    </div>
+                    <system-input-timezone [(ngModel)]="preferences.timezone"></system-input-timezone>
                 </system-preferences-panel-item-edit>
             </system-preferences-panel-item>
             <system-preferences-panel-item class="slds-size--1-of-4" itemlabel="LBL_DISTANCE_UNIT_SYSTEM">
