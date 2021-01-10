@@ -1,16 +1,17 @@
-<div class="slds-trial-header slds-theme--info slds-grid">
+<div class="slds-trial-header slds-theme--info slds-grid slds-grid--vertical-align-center">
     <div class="slds-grid">
-        <button class="slds-button slds-m-right_small"><system-label label="LBL_WELCOME_TRIAL"></system-label></button>
-        <div class="slds-grid slds-dropdown-trigger slds-dropdown-trigger_click">
+        <button class="slds-button slds-m-right_small"><system-label label="LBL_WELCOME_TO_SPICECRM"></system-label></button>
+        <!--div class="slds-grid slds-dropdown-trigger slds-dropdown-trigger_click">
             <button class="slds-button" aria-haspopup="true">
                <system-button-icon icon="right"></system-button-icon>
                 <system-label label="LBL_CHOOSE_YOUR_TOUR"></system-label>
             </button>
-        </div>
+        </div-->
     </div>
-    <div class="slds-grid slds-grid_vertical-align-center slds-col_bump-left">
-        <span class="slds-box slds-box_xx-small slds-theme_default">30</span>
-        <span class="slds-m-horizontal_x-small"><system-label label="LBL_DAYS_LEFT_IN_TRIAL"></system-label></span>
-        <a href="javascript:void(0);" class="slds-button slds-button_success"><system-label label="LBL_SUBSCRIBE_NOW"></system-label></a>
+    <!--div>
+        <system-dynamic-component component="SystemTenantHeaderBarSummary"></system-dynamic-component>
+    </div-->
+    <div class="slds-col_bump-left">
+        <system-dynamic-component component="SystemTenantHeaderBarValidity"></system-dynamic-component>
     </div>
 </div>

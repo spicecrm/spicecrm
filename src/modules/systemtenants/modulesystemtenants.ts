@@ -14,6 +14,9 @@ import {DirectivesModule} from "../../directives/directives";
 import /*embed*/ {SystemTenantActivateButton} from "./components/systemtenantactivatebutton";
 import /*embed*/ {SystemTenantActivateModal} from "./components/systemtenantactivatemodal";
 import /*embed*/ {SystemTenantLoadDemoDataButton} from "./components/systemtenantloaddemodatabutton";
+import /*embed*/ {SystemTenantHeaderBarValidity} from "./components/systemtenantheaderbarvalidity";
+import /*embed*/ {SystemTenantHeaderBarSummary} from "./components/systemtenantheaderbarsummary";
+import /*embed*/ {SystemTenantHeaderBar} from "./components/systemtenantheaderbar";
 
 @NgModule({
     imports: [
@@ -25,7 +28,13 @@ import /*embed*/ {SystemTenantLoadDemoDataButton} from "./components/systemtenan
         SystemComponents,
         DirectivesModule
     ],
+    exports: [
+        SystemTenantHeaderBarSummary
+    ],
     declarations: [
+        SystemTenantHeaderBar,
+        SystemTenantHeaderBarValidity,
+        SystemTenantHeaderBarSummary,
         SystemTenantActivateButton,
         SystemTenantActivateModal,
         SystemTenantLoadDemoDataButton
