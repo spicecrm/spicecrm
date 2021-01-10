@@ -4,7 +4,7 @@
             <path class="slds-progress-ring__path" [attr.d]="d" />
         </svg>
     </div>
-    <div class="slds-progress-ring__content">
+    <div class="slds-progress-ring__content" [ngStyle]="innerStyle">
         <span *ngIf="iconstatus=='warning'" class="slds-icon_container slds-icon-utility-warning" title="Warning">
               <svg class="slds-icon" aria-hidden="true">
                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="vendor/sldassets/icons/utility-sprite/svg/symbols.svg#warning" />
