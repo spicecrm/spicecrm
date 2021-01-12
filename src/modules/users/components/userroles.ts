@@ -76,9 +76,12 @@ export class UserRoles {
      * @param roles
      */
     private sortRoles( roles ): any[] {
-        return roles.sort( ( a, b ) => {
-            return this.language.getLabel( a.label ).localeCompare( this.language.getLabel( b.label ));
-        });
+        if(roles) {
+            return roles.sort((a, b) => {
+                return this.language.getLabel(a.label).localeCompare(this.language.getLabel(b.label));
+            });
+        }
+        return [];
     }
 
     /**
