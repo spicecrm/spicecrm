@@ -4,7 +4,7 @@
             <div [ngStyle]="croppiestyle" class="slds-align--absolute-center slds-scrollable--none">
                 <div *ngIf="!imageBase64">
                     <button class="slds-button slds-button--neutral" (click)="showUpload()"><system-label label="LBL_SELECT_IMAGE"></system-label></button>
-                    <input #imgupload style="display:none" type="file" accept="image/*" (change)="uploadImage($event)"/>
+                    <input #imgupload style="display:none" type="file" (click)="imgupload.value = null" accept="image/*" (change)="uploadImage($event)"/>
                 </div>
                 <img *ngIf="imageBase64" id="croppieimage" [src]="imageBase64" (load)="doCrop($event)"/>
             </div>

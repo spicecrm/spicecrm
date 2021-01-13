@@ -34,7 +34,7 @@ export class projectwbsHierarchy {
         this.members = [];
 
         // get the WBS Elements
-        this.backend.getRequest("ProjectWBSsHierarchy/" + project_id + "/" + JSON.stringify(addfields)).subscribe(members => {
+        this.backend.getRequest("ProjectWBSsHierarchy/" + project_id).subscribe(members => {
             for (let member of members) {
                 this.members.push({
                     parent_id: member.parent_id,

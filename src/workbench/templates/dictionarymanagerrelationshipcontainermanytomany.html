@@ -59,6 +59,20 @@
     </div>
 </div>
 <div class="slds-grid">
+    <div class="slds-size--1-of-2 slds-p-right--xx-small slds-form-element">
+        <label class="slds-form-element__label"><system-label label="LBL_LHS_LINKLABEL"></system-label></label>
+        <div class="slds-form-element__control">
+            <system-input-label [(ngModel)]="relationship.lhs_linklabel"></system-input-label>
+        </div>
+    </div>
+    <div class="slds-size--1-of-2 slds-p-left--xx-small slds-form-element">
+        <label class="slds-form-element__label"><system-label label="LBL_RHS_LINKLABEL"></system-label></label>
+        <div class="slds-form-element__control">
+            <system-input-label [(ngModel)]="relationship.rhs_linklabel"></system-input-label>
+        </div>
+    </div>
+</div>
+<div class="slds-grid">
     <div class="slds-size--1-of-1 slds-p-right--xx-small slds-form-element">
         <label class="slds-form-element__label"><system-label label="LBL_JOIN_DICTIONARYDEFINITION_ID"></system-label></label>
         <div class="slds-select_container">

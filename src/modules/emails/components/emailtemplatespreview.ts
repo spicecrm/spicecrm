@@ -9,6 +9,7 @@ import {modal} from "../../../services/modal.service";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
 import {Subscription} from "rxjs";
+import {toast} from "../../../services/toast.service";
 
 /**
  * renders a preview for the final parsed body html
@@ -75,6 +76,11 @@ export class EmailTemplatesPreview implements AfterViewInit {
      */
     @Input() private bodyHtmlField: string = 'body_html';
     /**
+     * holds the preview for bean module name from parent
+     * @private
+     */
+    @Input() private previewForBean: string;
+    /**
      * holds the iframe height from parent
      * @private
      */
@@ -85,6 +91,7 @@ export class EmailTemplatesPreview implements AfterViewInit {
                 private metadata: metadata,
                 private model: model,
                 private modal: modal,
+                private toast: toast,
                 private sanitizer: DomSanitizer,
                 private cdRef: ChangeDetectorRef) {
     }
@@ -111,7 +118,7 @@ export class EmailTemplatesPreview implements AfterViewInit {
         this.subscription.add(
             this.model.data$.subscribe(() => {
                 this.setPlaceholder();
-                if (!this.selectedItem || this.selectedItem.module != this.model.data.for_bean) {
+                if (!this.selectedItem || this.selectedItem.module != this.previewForBean) {
                     this.clearSelectedItem();
                 }
             })
@@ -123,7 +130,7 @@ export class EmailTemplatesPreview implements AfterViewInit {
      * set the search placeholder
      */
     private setPlaceholder() {
-        this.placeholder = !!this.model.data.for_bean ? this.language.getModuleCombinedLabel('LBL_SEARCH', this.model.data.for_bean) : this.language.getLabel('LBL_SEARCH');
+        this.placeholder = !!this.previewForBean ? this.language.getModuleCombinedLabel('LBL_SEARCH', this.previewForBean) : this.language.getLabel('LBL_SEARCH');
         this.cdRef.detectChanges();
     }
 
@@ -131,9 +138,9 @@ export class EmailTemplatesPreview implements AfterViewInit {
      * opens a model search modal
      */
     private searchWithModal() {
-        if (!this.model.data.for_bean) return;
+        if (!this.previewForBean) return;
         this.modal.openModal('ObjectModalModuleLookup').subscribe(selectModal => {
-            selectModal.instance.module = this.model.data.for_bean;
+            selectModal.instance.module = this.previewForBean;
             selectModal.instance.multiselect = false;
             this.subscription.add(
                 selectModal.instance.selectedItems.subscribe(items => {
@@ -141,7 +148,7 @@ export class EmailTemplatesPreview implements AfterViewInit {
                     this.selectedItem = {
                         id: items[0].id,
                         text: items[0].summary_text,
-                        module: this.model.data.for_bean
+                        module: this.previewForBean
                     };
                     this.compileBody();
                 })
@@ -167,17 +174,22 @@ export class EmailTemplatesPreview implements AfterViewInit {
         if (!this.model.id) return;
         const loadingModal = this.modal.await('LBL_PARSING_HTML');
         const body = {html: this.model.data[this.bodyHtmlField]};
-        this.backend.postRequest(`${this.model.module}/liveCompile/${this.model.data.for_bean}/${this.selectedItem.id}`, {}, body)
+        this.backend.postRequest(`${this.model.module}/liveCompile/${this.previewForBean}/${this.selectedItem.id}`, {}, body)
             .subscribe((data: any) => {
                 if (!data || !data.html) {
-                    loadingModal.emit(true);
-                    return loadingModal.complete();
+                    loadingModal.emit(false);
+                    return loadingModal.unsubscribe();
                 }
                 this.parsedHtml = this.sanitizer.bypassSecurityTrustResourceUrl('data:text/html;charset=UTF-8,' + encodeURIComponent(data.html));
                 this.cdRef.detectChanges();
                 loadingModal.emit(true);
-                loadingModal.complete();
-            });
+                loadingModal.unsubscribe();
+            },
+                () => {
+                    this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
+                    loadingModal.emit(false);
+                    loadingModal.unsubscribe();
+                });
     }
 
     /**

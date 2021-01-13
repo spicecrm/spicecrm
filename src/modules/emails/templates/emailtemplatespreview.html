@@ -11,7 +11,7 @@
                             <div class="slds-pill_container">
                               <span class="slds-pill slds-size--1-of-1">
                                 <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
-                                  <system-icon [module]="this.model.data.for_bean" size="small"></system-icon>
+                                  <system-icon [module]="previewForBean" size="small"></system-icon>
                                 </span>
                                 <span class="slds-pill__label">
                                     {{selectedItem.text}}
@@ -23,8 +23,8 @@
                             </div>
                         </div>
                         <div *ngIf="!selectedItem" class="slds-input-has-icon slds-input-has-icon--right slds-grow" (click)="searchWithModal()">
-                            <input [disabled]="!this.model.data.for_bean"  type="text" class="slds-lookup__search-input slds-input--bare" [placeholder]="placeholder"  role="combobox">
-                            <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" [disabled]="!this.model.data.for_bean">
+                            <input [disabled]="!previewForBean"  type="text" class="slds-lookup__search-input slds-input--bare" [placeholder]="placeholder"  role="combobox">
+                            <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" [disabled]="!previewForBean">
                                 <system-button-icon icon="search"></system-button-icon>
                             </button>
                         </div>

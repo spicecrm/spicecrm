@@ -5,8 +5,6 @@ import {CommonModule} from "@angular/common";
 import {NgModule} from "@angular/core";
 import {FormsModule} from "@angular/forms";
 
-import {VersionManagerService} from "../../services/versionmanager.service";
-
 import {ObjectFields} from "../../objectfields/objectfields";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
@@ -58,11 +56,4 @@ import /*embed*/ {KnowledgeReleaseAllButton} from "./components/knowledgerelease
         KnowledgeService
     ]
 })
-export class ModuleKnowledge {
-    public readonly version = "1.0";
-    public readonly build_date = "/*build_date*/";
-
-    constructor(private vms: VersionManagerService,) {
-        this.vms.registerModule(this);
-    }
-}
+export class ModuleKnowledge {}
