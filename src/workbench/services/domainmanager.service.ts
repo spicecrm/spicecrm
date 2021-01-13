@@ -50,7 +50,7 @@ export class domainmanager {
     /**
      * the dbtypes
      */
-    public dbtypes = ['varchar', 'char', 'text', 'date', 'datetime', 'int', 'double', 'bool'];
+    public dbtypes = ['non-db','varchar', 'char', 'text', 'mediumtext', 'longtext', 'date', 'datetime', 'int', 'bigint', 'double', 'bool'];
 
     /**
      * holds the fieldtypes
@@ -98,8 +98,8 @@ export class domainmanager {
     public getValdiationValuesdById(validationid) {
         let validationValues = this.domainfieldvalidationvalues.filter(v => v.sysdomainfieldvalidation_id == validationid && v.scope == 'c');
         let globalValidationValues = this.domainfieldvalidationvalues.filter(v => v.sysdomainfieldvalidation_id == validationid && v.scope != 'c');
-        for(let globalValidationValue of globalValidationValues){
-            if(validationValues.findIndex(v => v.minvalue == globalValidationValue.minvalue) == -1){
+        for (let globalValidationValue of globalValidationValues) {
+            if (validationValues.findIndex(v => v.enumvalue == globalValidationValue.enumvalue) == -1) {
                 validationValues.push(globalValidationValue);
             }
         }
@@ -226,7 +226,7 @@ export class domainmanager {
 
                             if (option && !this.language.languagedata.applang[('VAL_' + table[field].options + '_' + option).toUpperCase()]) {
                                 let labelid = this.modelutilities.generateGuid();
-                                if(scope == 'g') {
+                                if (scope == 'g') {
                                     this.languagelabels.push({
                                         id: labelid,
                                         name: ('VAL_' + table[field].options + '_' + option).toUpperCase()

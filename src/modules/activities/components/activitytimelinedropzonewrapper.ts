@@ -119,6 +119,16 @@ export class ActivityTimelineDropZoneWrapper {
                 request.onreadystatechange = (scope: any = this) => {
                     if (request.readyState == 4) {
                         try {
+                            // if we have a note we first attached the file .. and now need to complete the MD5 Hash
+                            if (moduleName == 'Notes') {
+                                let retVal = JSON.parse(request.response);
+                                retSub.next({
+                                    progress: 100,
+                                    fileName: file.name,
+                                    fileType: file.type,
+                                    fileMD5: retVal[0].filemd5
+                                });
+                            }
                             retSub.complete();
                         } catch (e) {
                             resp = {
@@ -133,12 +143,14 @@ export class ActivityTimelineDropZoneWrapper {
                     retSub.next({
                         progress: Math.round(e.loaded / e.total * 100),
                         fileName: file.name,
-                        fileType: file.type
+                        fileType: file.type,
+                        fileMD5: file.filemd5
 
                     });
                 }, false);
 
-                let url = this.configurationService.getBackendUrl() + `/module/Notes/${moduleId}/noteattachment`;
+                // let url = this.configurationService.getBackendUrl() + `/module/Notes/${moduleId}/noteattachment`;
+                let url = this.configurationService.getBackendUrl() + '/spiceAttachments';
 
                 // change the url to the "add email" url if the file type is msg
                 if (moduleName != 'Notes') url = this.configurationService.getBackendUrl() + "/module/Emails/msg";
@@ -151,6 +163,7 @@ export class ActivityTimelineDropZoneWrapper {
                     file: file.filecontent,
                     filename: file.name,
                     filemimetype: file.type ? file.type : 'application/octet-stream',
+                    filemd5: undefined,
                     beanId: moduleId,
                     beanModule: moduleName
                 };
@@ -225,35 +238,51 @@ export class ActivityTimelineDropZoneWrapper {
     * @param currentIndex
     */
     private addNewNote(files, currentIndex = 0) {
+
+        // prepare the note
         this.noteModel.reset();
         this.noteModel.module = 'Notes';
         this.noteModel.initialize(this.activitiytimeline.parent);
         this.noteModel.startEdit(false);
         this.noteModel.setField('name', files[currentIndex].name);
-        this.noteModel.setField('filename', files[currentIndex].name);
+        this.noteModel.setField('file_name', files[currentIndex].name);
         this.noteModel.setField('file_mime_type', files[currentIndex].type ? files[currentIndex].type : 'application/octet-stream');
+        this.uploadData.uploading = true;
+
+        // upload the file
+        this.uploadFiles([files[currentIndex]], this.noteModel.module, this.noteModel.id).subscribe(
+            next => {
+                this.uploadData.fileName = next.fileName;
+                this.uploadData.progress = next.progress;
+                this.setFileIcon(next.fileName, next.fileType);
+                // if we get an MD5 back set it to the note
+                if (next.fileMD5) {
+                    this.noteModel.setField('file_md5', next.fileMD5);
+                }
+            },
+            () => {
+                this.toast.sendToast(this.language.getLabel('ERR_UPLOAD_FAILED'), 'error');
+            },
+            () => {
+                // save the note and continue to the next
+                this.noteModel.save().subscribe(succ => {
+                    if ((currentIndex + 1) >= files.length) {
+                        this.activitiytimeline.getTimeLineData('History');
+                        this.uploadData.uploading = false;
+                    } else {
+                        this.addNewNote(files, currentIndex + 1);
+                    }
+                });
+
+            }
+        );
+        /*
+
         this.noteModel.save(true).subscribe(
             res => {
-                this.uploadData.uploading = true;
-                this.uploadFiles([files[currentIndex]], this.noteModel.module, this.noteModel.id).subscribe(
-                    next => {
-                        this.uploadData.fileName = next.fileName;
-                        this.uploadData.progress = next.progress;
-                        this.setFileIcon(next.fileName, next.fileType);
-                    },
-                    () => {
-                        this.toast.sendToast(this.language.getLabel('ERR_UPLOAD_FAILED'), 'error');
-                    },
-                    () => {
-                        if ((currentIndex + 1) >= files.length) {
-                            this.activitiytimeline.getTimeLineData('History');
-                            this.uploadData.uploading = false;
-                        } else {
-                            this.addNewNote(files, currentIndex + 1);
-                        }
-                    }
-                );
+
             }, () => this.addNewNote(files, currentIndex + 1));
+         */
     }
 
     /*

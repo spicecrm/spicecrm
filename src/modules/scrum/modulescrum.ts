@@ -10,7 +10,6 @@ import {GlobalComponents} from '../../globalcomponents/globalcomponents';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../../directives/directives";
-import {VersionManagerService} from "../../services/versionmanager.service";
 
 import /*embed*/ {scrum} from "./services/scrum.service";
 
@@ -44,12 +43,4 @@ import /*embed*/ {ScrumTree} from "./components/scrumtree";
     providers: [scrum]
 })
 export class ModuleScrum {
-    public readonly version = '1.0';
-    public readonly build_date = '/*build_date*/';
-
-    constructor(
-        private vms: VersionManagerService,
-    ) {
-        vms.registerModule(this);
-    }
 }

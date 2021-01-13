@@ -15,7 +15,6 @@ import {FormsModule} from "@angular/forms";
 import {DirectivesModule} from "../directives/directives";
 // SERVICEs
 import {metadata} from "../services/metadata.service";
-import {VersionManagerService} from "../services/versionmanager.service";
 
 import /*embed*/ {systemrichtextservice} from "./services/systemrichtext.service";
 
@@ -56,6 +55,7 @@ import /*embed*/ {SystemIllustrationNoAccess} from "./components/systemillustrat
 import /*embed*/ {SystemIllustrationNoData} from "./components/systemillustrationnodata";
 import /*embed*/ {SystemIllustrationNoRecords} from "./components/systemillustrationnorecords";
 import /*embed*/ {SystemIllustrationNoTask} from "./components/systemillustrationnotask";
+import /*embed*/ {SystemIllustrationPageNotAvailable} from "./components/systemillustrationpagenotavailable";
 import /*embed*/ {SystemImagePreviewModal} from "./components/systemimagepreviewmodal";
 import /*embed*/ {SystemInputText} from "./components/systeminputtext";
 import /*embed*/ {SystemInputEnum} from "./components/systeminputenum";
@@ -86,6 +86,7 @@ import /*embed*/ {SystemInputBackendMethod} from "./components/systeminputbacken
 import /*embed*/ {SystemInstallerComponent} from "./components/systeminstallercomponent";
 import /*embed*/ {SystemLabel} from "./components/systemlabel";
 import /*embed*/ {SystemLabelEditorModal} from "./components/systemlabeleditormodal";
+import /*embed*/ {SystemLabelEditorGlobalCustomModal} from "./components/systemlabeleditorglobalcustommodal";
 import /*embed*/ {SystemLabelFieldname} from "./components/systemlabelfieldname";
 import /*embed*/ {SystemLabelModulename} from "./components/systemlabelmodulename";
 import /*embed*/ {SystemLanguageSelector} from "./components/systemlanguageselector";
@@ -97,6 +98,7 @@ import /*embed*/ {SystemModalFooter} from "./components/systemmodalfooter";
 import /*embed*/ {SystemModalHeaderRight} from "./components/systemmodalheaderright";
 import /*embed*/ {SystemModalHeaderTagline} from "./components/systemmodalheadertagline";
 import /*embed*/ {SystemModalHeader} from "./components/systemmodalheader";
+import /*embed*/ {SystemModalHeaderEmpty} from "./components/systemmodalheaderempty";
 import /*embed*/ {SystemModalWrapper} from "./components/systemmodalwrapper";
 import /*embed*/ {SystemModal} from "./components/systemmodal";
 import /*embed*/ {SystemNumberSpinner} from "./components/systemnumberspinner";
@@ -144,6 +146,7 @@ import /*embed*/ {SystemSelectUOM} from "./components/systemselectuom";
 import /*embed*/ {SystemInputMedia} from './components/systeminputmedia';
 import /*embed*/ {SystemInputTimezone} from './components/systeminputtimezone';
 import /*embed*/ {SystemInputBase64} from './components/systeminputbase64';
+import /*embed*/ {SystemInputFile} from './components/systeminputfile';
 
 import /*embed*/ {SystemModuleTree} from "./components/systemmoduletree";
 import /*embed*/ {SystemModuleTreeItem} from "./components/systemmoduletreeitem";
@@ -207,6 +210,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
         SystemIllustrationNoTask,
+        SystemIllustrationPageNotAvailable,
         SystemImagePreviewModal,
         SystemInputText,
         SystemInputInteger,
@@ -247,6 +251,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemModalContent,
         SystemModalFooter,
         SystemModalHeader,
+        SystemModalHeaderEmpty,
         SystemModalHeaderRight,
         SystemModalHeaderTagline,
         SystemModalWrapper,
@@ -300,10 +305,12 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemNavigationManager,
         SystemNavigationManagerRouteContainer,
         SystemLabelEditorModal,
+        SystemLabelEditorGlobalCustomModal,
         SystemPreferencesPanel,
         SystemPreferencesPanelItem,
         SystemPreferencesPanelItemDisplay,
-        SystemPreferencesPanelItemEdit
+        SystemPreferencesPanelItemEdit,
+        SystemInputFile
     ],
     entryComponents: [
         SystemDynamicRouteContainer,
@@ -380,6 +387,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemModalContent,
         SystemModalFooter,
         SystemModalHeader,
+        SystemModalHeaderEmpty,
         SystemModalHeaderRight,
         SystemModalHeaderTagline,
         SystemModalWrapper,
@@ -426,17 +434,9 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemPreferencesPanel,
         SystemPreferencesPanelItem,
         SystemPreferencesPanelItemDisplay,
-        SystemPreferencesPanelItemEdit
+        SystemPreferencesPanelItemEdit,
+        SystemInputFile,
+        SystemModalHeaderEmpty
     ]
 })
-export class SystemComponents {
-    private readonly version = "1.0";
-    private readonly build_date = "/*build_date*/";
-
-    constructor(
-        public metadata: metadata,
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
-    }
-}
+export class SystemComponents {}

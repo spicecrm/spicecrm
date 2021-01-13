@@ -52,7 +52,7 @@ export class SpiceInstallerFTS {
 
         if (this.serverCondition && this.portCondition && this.prefixCondition) {
             this.loading = true;
-            this.http.post(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/KREST/spiceinstaller/checkfts`, body).subscribe(
+            this.http.post(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/spiceinstaller/checkfts`, body).subscribe(
                 (response: any) => {
                     this.loading = false;
                     let res = response;

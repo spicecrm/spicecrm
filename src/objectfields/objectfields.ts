@@ -6,7 +6,6 @@ import {NgModule} from '@angular/core';
 import {FormsModule}   from '@angular/forms';
 
 import {metadata} from '../services/metadata.service';
-import {VersionManagerService} from '../services/versionmanager.service';
 
 import {SystemComponents} from '../systemcomponents/systemcomponents';
 import {DirectivesModule} from "../directives/directives";
@@ -41,6 +40,7 @@ import /*embed*/ {fieldMultipleEnumDropdown} from './components/fieldmultipleenu
 import /*embed*/ {fieldEnumAlternate} from './components/fieldenumalternate';
 import /*embed*/ {fieldEnumRadio} from './components/fieldenumradio';
 import /*embed*/ {fieldBool} from './components/fieldbool';
+import /*embed*/ {fieldBoolLabelAligned} from './components/fieldboollabelaligned';
 import /*embed*/ {fieldParent} from './components/fieldparent';
 import /*embed*/ {fieldModuleFilter} from './components/fieldmodulefilter';
 import /*embed*/ {fieldRelate} from './components/fieldrelate';
@@ -108,6 +108,7 @@ import /*embed*/ {fieldUnitsOfMeasure} from "./components/fieldunitsofmeasure";
 import /*embed*/ {fieldQuantity} from "./components/fieldquantity";
 import /*embed*/ {fieldQuestionnaireEvaluation} from './components/fieldquestionnaireevaluation';
 import /*embed*/ {fieldTags} from './components/fieldtags';
+import /*embed*/ {fieldParentDetails} from './components/fieldparentdetails';
 import /*embed*/ {fieldRelatedDetails} from './components/fieldrelateddetails';
 import /*embed*/ {fieldRelatedDetailsContainer} from './components/fieldrelateddetailscontainer';
 import /*embed*/ {fieldPhone} from "./components/fieldphone";
@@ -165,6 +166,7 @@ declare var _: any;
         fieldEnumAlternate,
         fieldEnumRadio,
         fieldBool,
+        fieldBoolLabelAligned,
         fieldDate,
         fieldTime,
         fieldDateTime,
@@ -230,6 +232,7 @@ declare var _: any;
         fieldQuantity,
         fieldQuestionnaireEvaluation,
         fieldTags,
+        fieldParentDetails,
         fieldRelatedDetails,
         fieldRelatedDetailsContainer,
         fieldPhone,
@@ -257,14 +260,4 @@ declare var _: any;
         fieldTags,
     ]
 })
-export class ObjectFields {
-    private readonly  version = '1.0';
-    private readonly build_date = '/*build_date*/';
-
-    constructor(
-        public metadata: metadata,
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
-    }
-}
+export class ObjectFields {}

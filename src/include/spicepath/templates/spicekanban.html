@@ -7,8 +7,7 @@
                         <span class="slds-tabs--path__stage">
                       <system-utility-icon icon="check" size="x-small"></system-utility-icon>
                     </span>
-                        <span class="slds-tabs--path__title">{{getStageLabel(stage.stagedata)}}
-                            ({{getStageCount(stage.stagedata)}})</span>
+                        <span class="slds-tabs--path__title"><system-label [label]="getStageLabel(stage.stagedata)"></system-label> ({{getStageCount(stage.stagedata)}})</span>
                     </a>
                 </li>
             </ng-container>
@@ -24,9 +23,7 @@
                 </ul>
             </div>
         </div>
-
     </div>
-
     <div (system-to-bottom)="loadmore()" class="slds-scrollable--y kanbancontainer" cdkDropListGroup [ngStyle]="containerStyle">
         <div class="slds-grid">
             <div *ngFor="let stage of stages" class="slds-col slds-p-horizontal--xx-small slds-m-top--x-small" [ngClass]="sizeClass" (cdkDropListDropped)="handleDrop($event)" cdkDropList [cdkDropListData]="stage">
@@ -48,7 +45,7 @@
                     <div class="slds-utility-bar__item slds-p-horizontal--x-small ">
                         <div *ngFor="let stage of hiddenstages" class="slds-box--border slds-m-around--xxx-small slds-align--absolute-center slds-theme--info" (cdkDropListDropped)="handleHiddenDrop($event)" cdkDropList [cdkDropListData]="stage">
                             <div class="slds-p-horizontal--medium slds-p-vertical--small slds-grid">
-                                <div class="slds-p-right--xx-small" [ngClass]="{'slds-has-divider--right': sumfields.length > 0}">{{getStageLabel(stage.stagedata)}} ({{getStageCount(stage.stagedata)}})</div>
+                                <div class="slds-p-right--xx-small" [ngClass]="{'slds-has-divider--right': sumfields.length > 0}"><system-label [label]="getStageLabel(stage.stagedata)"></system-label> ({{getStageCount(stage.stagedata)}})</div>
                                 <ul class="slds-list_horizontal slds-has-dividers_right slds-align_absolute-center">
                                     <li *ngFor="let sumfield of sumfields" class="slds-item">
                                         <spice-kanban-sumfield [symbol]="getCurrencySymbol(sumfield)" [title]="getTitle(sumfield)" [value]="getStageSum(stage.stagedata, sumfield)"></spice-kanban-sumfield>

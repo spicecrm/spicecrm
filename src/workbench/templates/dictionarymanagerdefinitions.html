@@ -32,7 +32,7 @@
             <tr class="slds-hint-parent" [ngClass]="{'slds-is-selected':dictionarymanager.currentDictionaryDefinition == dictionarydefinition.id}"  *ngFor="let dictionarydefinition of dictionarydefinitions; trackBy: trackByFn" (click)="setCurrentDictionaryDefintion(dictionarydefinition.id)">
                 <td>
                     <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionarydefinition.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                    <system-utility-icon [colorclass]="dictionarymanager.getStatusColor(dictionarydefinition.status)" class="slds-p-right--xx-small" size="xx-small" icon="light_bulb"></system-utility-icon>
+                    <dictionary-manager-item-status [(ngModel)]="dictionarydefinition.status"></dictionary-manager-item-status>
                 </td>
                 <td data-label="Domain" >
                     <div class="slds-truncate">{{dictionarydefinition.name}}</div>
