@@ -20,7 +20,7 @@
         <div class="slds-form-element__control slds-p-around--xx-small">
             <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_DICTIONARYDEFINITION"></system-label></label>
             <div class="slds-select_container">
-                <select class="slds-size--1-of-2" [disabled]="relationshipType == 'parent'" [(ngModel)]="related_id" class="slds-select">
+                <select class="slds-size--1-of-2" [(ngModel)]="related_id" class="slds-select">
                     <option *ngFor="let dictionarydefinition of related_ids" [value]="dictionarydefinition.id">{{dictionarymanager.getDictionaryDefinitionName(dictionarydefinition.id)}}</option>
                 </select>
             </div>
@@ -40,7 +40,7 @@
         <button class="slds-button slds-button--neutral" (click)="close()">
             <system-label label="LBL_CANCEL"></system-label>
         </button>
-        <button class="slds-button slds-button--brand" (click)="add()">
+        <button class="slds-button slds-button--brand" [disabled]="!related_id" (click)="add()">
             <system-label label="LBL_ADD"></system-label>
         </button>
     </system-modal-footer>

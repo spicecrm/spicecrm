@@ -25,7 +25,7 @@ export class DomainManagerAddFieldModal {
      * the domain definition
      */
     private domainfield: any = {
-        name: '',
+        name: '{sysdictionaryitems.name}',
         fieldtype: '',
         scope: 'g',
         required: 0,
@@ -59,6 +59,11 @@ export class DomainManagerAddFieldModal {
      */
     private save() {
         if(this.canSave) {
+
+            // add the sequence that represents the number of items
+            // todo ensure we renumber when we do this
+            this.domainfield.sequence =  this.domainmanager.domainfields.filter(d => d.sysdomaindefinition_id == this.domainmanager.currentDomainDefinition).length;
+
             this.domainfield.id = this.modelutilities.generateGuid();
             this.domainfield.sysdomaindefinition_id = this.domainmanager.currentDomainDefinition;
             this.domainmanager.domainfields.push(this.domainfield);

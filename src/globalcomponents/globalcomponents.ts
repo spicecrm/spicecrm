@@ -25,6 +25,7 @@ import {metadata} from "../services/metadata.service";
 
 import /*embed*/ {GlobalCopyright} from "./components/globalcopyright";
 import /*embed*/ {GlobalHeader} from "./components/globalheader";
+import /*embed*/ {GlobalHeaderTrialBar} from "./components/globalheadertrialbar";
 import /*embed*/ {GlobalHeaderTop} from "./components/globalheadertop";
 import /*embed*/ {GlobalHeaderSearch} from "./components/globalheadersearch";
 import /*embed*/ {GlobalHeaderSearchResultsItems} from "./components/globalheadersearchresultsitems";
@@ -127,6 +128,7 @@ import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
         GlobalNewsFeed,
         GlobalNewsFeedItem,
         GlobalHeader,
+        GlobalHeaderTrialBar,
         GlobalHeaderTop,
         GlobalHeaderSearch,
         GlobalHeaderSearchResultsItems,

@@ -22,7 +22,7 @@
                 <div class="slds-form-element__control">
                     <div class="slds-file-selector slds-file-selector_files" (drop)="onDrop($event)" (dragover)="onDragOver($event)" (dragleave)="onDragLeave()">
                         <div class="slds-file-selector__dropzone" [ngClass]="{'slds-has-drag-over':isDragOver}">
-                            <input #fileupload class="slds-file-selector__input slds-assistive-text" accept=".gz" type="file" id="config-file-upload-input" (change)="fileSelectionChange()" [disabled]="isUploading" />
+                            <input #fileupload (click)="fileupload.value = null" class="slds-file-selector__input slds-assistive-text" accept=".gz" type="file" id="config-file-upload-input" (change)="fileSelectionChange()" [disabled]="isUploading" />
                             <label class="slds-file-selector__body" for="config-file-upload-input">
                                 <span class="slds-file-selector__button slds-button slds-button_neutral">
                                         <system-button-icon [icon]="'upload'" [size]="'small'" [addclasses]="'slds-button__icon_left'"></system-button-icon>
@@ -43,6 +43,18 @@
                             <label class="slds-checkbox__label" for="cbDontEmptyTables">
                                 <span class="slds-checkbox_faux"></span>
                                 <span class="slds-form-element__label">Preserve existing database data, when not overwritten by the import, so the new data will be a mix of the old and the imported data. Otherwise the affected tables would be emptied before the import.</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control slds-m-vertical--medium">
+                        <div class="slds-checkbox">
+                            <input type="checkbox" id="cbIgnoreUnknownTables" [(ngModel)]="ignoreUnknownTables" [disabled]="isAfterUpload || isUploading" />
+                            <label class="slds-checkbox__label" for="cbIgnoreUnknownTables">
+                                <span class="slds-checkbox_faux"></span>
+                                <span class="slds-form-element__label">Ignore unknown tables and do the import anyway. In case the input data contains tables that are unknown to the system.</span>
                             </label>
                         </div>
                     </div>
@@ -93,7 +105,7 @@
                                     <input type="checkbox" name="selectableTables" id="table{{i}}" [(ngModel)]="table.include" />
                                     <label class="slds-checkbox__label" for="table{{i}}">
                                         <span class="slds-checkbox_faux"></span>
-                                        <span class="slds-form-element__label">{{table.name}}</span>
+                                        <span class="slds-form-element__label" style="display:inline-block">{{table.name}}</span>
                                     </label>
                                 </div>
                             </div>

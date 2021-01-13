@@ -35,7 +35,7 @@
         <div class="slds-no-flex slds-button-group" role="group">
             <button *ngIf="!componentconfig.disableupload" class="slds-button slds-button--icon-border slds-m-vertical--xx-small" (click)="selectFile()" system-title="LBL_UPLOAD"><system-utility-icon size="x-small" icon="upload"></system-utility-icon></button>
         </div>
-        <input #fileupload style="display:none" type="file" multiple (change)="uploadFile()"/>
+        <input #fileupload style="display:none" type="file" multiple (click)="fileupload.value = null" (change)="uploadFile()"/>
     </div>
     <div class="slds-card__body" @displaycard *ngIf="isopen">
         <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">

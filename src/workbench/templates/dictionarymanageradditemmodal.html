@@ -2,7 +2,8 @@
     <system-modal-header (close)="close()"><system-label label="LBL_ADD_DICTIONARY_ITEM"></system-label></system-modal-header>
     <system-modal-content>
        <system-input-radio name="select" value="i" [(ngModel)]="itemtype">Item</system-input-radio>
-       <system-input-radio name="select" value="t" [(ngModel)]="itemtype">template</system-input-radio>
+        <!-- only enable when we are not on a template already and we have templates we can add-->
+       <system-input-radio name="select" value="t" [disabled]="currentType == 'template' && templates.length > 0"  [(ngModel)]="itemtype">template</system-input-radio>
         <div *ngIf="itemtype == 'i'" class="slds-grid">
             <div class="slds-form-element__control slds-size--1-of-2 slds-p-right--xxx-small" [ngClass]="{'slds-has-error': getMessages('name').length > 0}">
                 <label class="slds-form-element__label"><abbr class="slds-required">* </abbr><system-label label="LBL_NAME"></system-label></label>

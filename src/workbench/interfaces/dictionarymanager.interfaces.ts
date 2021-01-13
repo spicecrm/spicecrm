@@ -59,10 +59,13 @@ export interface Relationship {
     lhs_sysdictionarydefinition_id: string;
     lhs_sysdictionaryitem_id: string;
     lhs_linkname: string;
+    lhs_linklabel: string;
     rhs_sysdictionarydefinition_id: string;
     rhs_sysdictionaryitem_id: string;
     rhs_linkname: string;
-    rhs_realname: string;
+    rhs_linklabel: string;
+    rhs_relatename: string;
+    rhs_relatelabel: string;
     relationship_type: 'one-to-many'|'many-to-many'|'parent';
     join_sysdictionarydefinition_id?: string;
     join_lhs_sysdictionaryitem_id?: string;

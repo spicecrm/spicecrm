@@ -1,14 +1,8 @@
-<tr style="vertical-align: middle" class="slds-align-top">
-    <td>
-        <system-utility-icon icon="custom_apps" size="x-small"></system-utility-icon>
-    </td>
-    <td>
-        <system-label label="LBL_REPAIR_LANGUAGE"></system-label>
-    </td>
-    <td>Repairs and rebuilds language extensions</td>
-    <td>
-        <button class="slds-button slds-button--brand slds-button--small" (click)="executeLG()">
-            <system-label label="LBL_EXECUTE"></system-label>
-        </button>
-    </td>
-</tr>
+<div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread slds-p-vertical--xx-small slds-border--bottom">
+    <system-utility-icon icon="custom_apps" size="x-small"></system-utility-icon>
+    <system-label class="slds-p-horizontal--x-small" label="LBL_REPAIR_LANGUAGE"></system-label>
+    <system-label class="slds-grow" label="LBL_REPAIR_LANGUAGE" length="long"></system-label>
+    <button class="slds-button slds-button--neutral slds-button--small" (click)="executeLG()">
+        <system-label label="LBL_EXECUTE"></system-label>
+    </button>
+</div>

@@ -10,7 +10,7 @@
  * - If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+ini_set('display_errors', 0);
 require "configHandler.php";
 
 $url = trim($_SERVER['REQUEST_URI'], '/');
@@ -100,7 +100,47 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                curl_setopt($ch, CURLOPT_URL, $testUrl . '/KREST/sysinfo');
+                curl_setopt($ch, CURLOPT_URL, $testUrl . '/sysinfo');
+                $result = curl_exec($ch);
+
+                if ($result == false) {
+                    $message = curl_error($ch);
+                } else {
+                    $info = curl_getinfo($ch);
+
+                    switch ($info['http_code']) {
+                        case '200':
+                            $success = true;
+                            $message = $result;
+                            break;
+                        default:
+                            $message = 'http response code ' . $info['http_code'] . ' returned from server';
+                            break;
+
+                    }
+                }
+
+                echo json_encode(array('success' => $success, 'message' => $message));
+                break;
+            case 'installercheck':
+                $success = false;
+                $message = '';
+
+                // get the params
+                $params = explode('&', $urlArray[1]);
+                $paramsArray = [];
+                foreach ($params as $param) {
+                    $eqPos = strpos($param, '=');
+                    $paramsArray[substr($param, 0, $eqPos)] = substr($param, $eqPos + 1);
+                }
+
+                // get the url sent
+                $testUrl = base64_decode($paramsArray['url']);
+
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_URL, $testUrl . '/isysinfo');
                 $result = curl_exec($ch);
 
                 if ($result == false) {
@@ -136,6 +176,13 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 // read the template XML and parse it
                 $dir = dirname(__DIR__);
                 $filepath = "$dir/assets/outlook/spicecrmoutlookplugin.xml";
+
+                // in case we have a custom xml, use it
+                $customfilepath = "$dir/config/assets/outlook/spicecrmoutlookplugin.xml";
+                if(file_exists($customfilepath)) {
+                    $filepath = $customfilepath;
+                }
+
                 $file = file_get_contents($filepath);
                 echo(str_replace('<serverurl>', $serverurl, $file));
                 break;

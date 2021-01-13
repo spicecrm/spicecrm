@@ -21,6 +21,7 @@ import /*embed*/ {SpiceAttachmentsCount} from "./components/spiceattachmentscoun
 import /*embed*/ {fieldSpiceAttachmentsCount} from "./fields/fieldspiceattachmentscount";
 import /*embed*/ {SpiceAttachmentsEditModal} from "./components/spiceattachmentseditmodal";
 import /*embed*/ {SpiceAttachmentStats} from "./components/spiceattachmentstats";
+import /*embed*/ {fieldModelAttachment} from "./fields/fieldmodelattachment";
 
 @NgModule({
     imports: [
@@ -42,7 +43,8 @@ import /*embed*/ {SpiceAttachmentStats} from "./components/spiceattachmentstats"
         SpiceAttachmentsCount,
         fieldSpiceAttachmentsCount,
         SpiceAttachmentsEditModal,
-        SpiceAttachmentStats
+        SpiceAttachmentStats,
+        fieldModelAttachment
     ]
 })
 export class ModuleSpiceAttachments {

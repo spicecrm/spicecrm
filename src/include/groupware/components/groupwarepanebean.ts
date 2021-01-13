@@ -33,7 +33,10 @@ export class GroupwarePaneBean implements OnInit {
         private model: model,
         private view: view
     ) {
+        // set base settings for the view
         this.view.displayLabels = false;
+        // no links to be displayed here
+        this.view.displayLinks = false;
     }
 
     public ngOnInit() {

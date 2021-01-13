@@ -70,4 +70,14 @@ export class DictionaryManagerFields {
         return dictionarydefinitionid != this.dictionarymanager.currentDictionaryDefinition ? this.dictionarymanager.dictionarydefinitions.find(d => d.id == dictionarydefinitionid)?.name : '';
     }
 
+    /**
+     * translate the field name
+     *
+     * @param fieldName
+     * @param $dictionaryId
+     */
+    public translateDomainField(fieldName, dictionaryItem) {
+        return fieldName.replace('{sysdictionaryitems.name}', dictionaryItem.name);
+    }
+
 }

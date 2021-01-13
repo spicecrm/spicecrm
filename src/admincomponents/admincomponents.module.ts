@@ -6,7 +6,6 @@ import {FormsModule}   from '@angular/forms';
 import {NgModule, Component} from '@angular/core';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 
-import {VersionManagerService} from '../services/versionmanager.service';
 import { RouterModule, Routes, Router } from '@angular/router';
 import {DirectivesModule} from "../directives/directives";
 import {SystemComponents} from '../systemcomponents/systemcomponents';
@@ -49,6 +48,8 @@ import /*embed*/ { AdministrationDictRepair } from './components/administrationd
 import /*embed*/ {AdministrationDictRepairItem} from "./components/administrationdictrepairitem";
 import /*embed*/ {AdministrationDictRepairModal} from "./components/administrationdictrepairmodal";
 import /*embed*/ {AdministrationDictRepairLanguage} from "./components/administrationdictrepairlanguage";
+import /*embed*/ {AdministrationDictRepairACLRoles} from "./components/administrationdictrepairaclroles";
+import /*embed*/ {AdministrationDictRepairCache} from "./components/administrationdictrepaircache";
 import /*embed*/ { AdministrationConfigEditor } from './components/administrationconfigeditor';
 
 import /*embed*/ { AdministrationSchedulerJobsEnum } from './components/administrationschedulerjobsenum';
@@ -98,6 +99,8 @@ import /*embed*/ {AdministrationDefaultPreferences} from './components/administr
         AdministrationDictRepairItem,
         AdministrationDictRepairLanguage,
         AdministrationDictRepairModal,
+        AdministrationDictRepairACLRoles,
+        AdministrationDictRepairCache,
         AdministrationConfigEditor,
         AdministrationSchedulerJobsEnum,
         AdministrationSchedulerJobLog,
@@ -129,12 +132,4 @@ import /*embed*/ {AdministrationDefaultPreferences} from './components/administr
 
 })
 export class AdminComponentsModule {
-    public readonly version = '1.0';
-    public readonly build_date = '/*build_date*/';
-
-    constructor(
-        private vms: VersionManagerService,
-    ) {
-        vms.registerModule(this);
-    }
 }
