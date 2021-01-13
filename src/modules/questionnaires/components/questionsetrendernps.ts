@@ -31,9 +31,11 @@ export class QuestionsetRenderNPS extends QuestionsetRenderBasic implements OnIn
         }
     }
 
-    private onClick( questionId: string, score: number, $event ): boolean {
+    private onClick( questionId: string, score: number|string, $event ): boolean {
         $event.stopPropagation();
-        return this.qp.setAnswerValue( questionId, score.toString() );
+        score = score.toString();
+        if ( score === this.qp.answers[questionId].optionlessAnswerValue ) score = '';
+        return this.qp.setAnswerValue( questionId, score );
     }
 
     private isChecked( questionId: string, score: number ): boolean {

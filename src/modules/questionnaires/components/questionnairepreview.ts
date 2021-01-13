@@ -25,7 +25,7 @@ export class QuestionnairePreview implements OnInit {
             this.questionnaire = response;
             this.questionnaireParticipation.showQuestionnaireTitle = false;
             this.questionnaireParticipation.editMode = 'preview';
-            this.questionnaireParticipation.initByQuestionnaire( this.questionnaire );
+            this.questionnaireParticipation.init_byQuestionnaire( this.questionnaire );
             this.isLoading = false;
         });
     }

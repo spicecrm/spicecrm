@@ -46,7 +46,7 @@
                 <p *ngIf="qp.hideFinishedQuestions && allQuestionsFinished" class="slds-text-align--center">Alle Fragen sind beantwortet – und ausgeblendet.</p>
 
                 <ng-container [ngSwitch]="questionset.questiontype">
-<!--
+
                     <div *ngSwitchCase="'rating'">
                         <questionset-render-rating [questionsetId]="questionset.id"></questionset-render-rating>
                     </div>
@@ -62,11 +62,11 @@
                     <div *ngSwitchCase="'nps'">
                         <questionset-render-nps [questionsetId]="questionset.id"></questionset-render-nps>
                     </div>
--->
+
                 </ng-container>
-<!--                      *ngIf="questionset.questiontype === 'binary' || questionset.questiontype === 'single' || questionset.questiontype === 'multi'"-->
+<!--                      *ngIf="questionset.questiontype === 'binary' || -->
                 <questionset-render-binary-single-multi
-                        *ngIf="questionset.questiontype === 'single'"
+                        *ngIf="questionset.questiontype === 'single' || questionset.questiontype === 'multi'"
                         [questionsetId]="questionset.id"
                 ></questionset-render-binary-single-multi>
 

@@ -42,9 +42,9 @@ export class QuestionnaireRender implements OnInit {
         this.qp.showQuestionnaireTitle = false;
         if ( this.questionnaireId !== undefined && this.editMode === undefined ) this.editMode = 'preview';
         this.qp.editMode = this.editMode;
-        if ( this.questionnaireId ) this.qp.initByQuestionnaire( this.questionnaireId );
-        else if ( this.participationId ) this.qp.initByParticipation( this.participationId );
-        else if ( this.parentId && this.parentType ) this.qp.initByParent( this.parentId, this.parentType );
+        if ( this.questionnaireId ) this.qp.init_byQuestionnaire( this.questionnaireId );
+        else if ( this.participationId ) this.qp.init_byParticipation( this.participationId );
+        else if ( this.parentId && this.parentType ) this.qp.init_byParent( this.parentId, this.parentType );
         this.questionnaireParticipation$.next( this.qp );
     }
 

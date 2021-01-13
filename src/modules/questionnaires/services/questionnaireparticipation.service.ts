@@ -47,7 +47,7 @@ export class questionnaireParticipationService {
     public editMode: 'off'|'preview'|'questionnaire'|'questionoption' = 'questionnaire';
 
     private isLoadedQuestionnaire = false;
-    private isLoadedParticipation = true;
+    private isLoadedParticipation = false;
 
     public isSaving = false;
 
@@ -84,18 +84,18 @@ export class questionnaireParticipationService {
         this.isDirty$ = new BehaviorSubject( this.isDirty );
     }
 
-    public initByParent( parentId: string, parentType: string ): void {
+    public init_byParent( parentId: string, parentType: string ): void {
         this.parentId = parentId;
         this.parentType = parentType;
-        this.loadParticipationByParent();
+        this.loadParticipation_byParent();
     }
 
-    public initByParticipation( participationId: string ) {
+    public init_byParticipation( participationId: string ) {
         this.participationId = participationId;
-        this.loadParticipation();
+        this.loadParticipation_byParticipation();
     }
 
-    public initByQuestionnaire( questionnaireId: string ) {
+    public init_byQuestionnaire( questionnaireId: string ) {
         this.questionnaireId = questionnaireId;
         if ( !this.editMode ) this.editMode = 'preview';
         this.loadQuestionnaire();
@@ -148,8 +148,6 @@ export class questionnaireParticipationService {
         if ( this.editMode === 'questionoption' ) this.saveSingleAnswerToBackend( question.id, backupForNetworkError );
         else this._isDirty = true;
 
-        console.log( 'answers', this.answers );
-
     }
 
     /**
@@ -196,7 +194,6 @@ export class questionnaireParticipationService {
     public clickAnswerOption( optionId: string, event: any ): boolean {
 
         event.stopPropagation();
-return false;
         let question = this.questionoptions[optionId].parentQuestion;
 
         // If the edit mode is 'off', a input/change is not allowed. --> Do nothing and return false.
@@ -246,9 +243,10 @@ return false;
 
     /**
      * Load the questionnaire (with question sets, questions and question options)
-     * and do all the other stuff like building arrays, sorting, building of question meta data and initializing the answer object.
+     * and do all the other stuff like building arrays, sorting, building of question meta data and initializing the answers object.
      */
-    private loadQuestionnaire() {
+    private loadQuestionnaire(): EventEmitter<any> {
+        let loaded$ = new EventEmitter<any>();
         this.backend.getRequest( 'questionnaire/render/'+this.questionnaireId ).subscribe( ( response: any ) => {
             this.questionnaire = response;
             this.doBasics();
@@ -256,11 +254,13 @@ return false;
             this.sortData();
             this.buildQuestionMetaData();
             this.initAnswers();
-            this.isLoadedQuestionnaire = true;
             for ( let questionset of this.questionsetsArray ) {
                 this.determineNumOfFinishedQuestionsInQuestionset( questionset.id );
             }
+            this.isLoadedQuestionnaire = true;
+            loaded$.emit();
         });
+        return loaded$;
     }
 
     // fertig!
@@ -269,14 +269,17 @@ return false;
      * Set IDs of parents. And: Create object "questionoptions".
      */
     private doBasics() {
-        if( this.questionnaire.questionsets ) {
-            for( let questionsetId in this.questionnaire.questionsets ) {
-                if( this.questionnaire.questionsets[questionsetId].questions ) {
-                    for( let questionId in this.questionnaire.questionsets[questionsetId].questions ) {
+        if ( this.questionnaire.questionsets ) {
+            for ( let questionsetId in this.questionnaire.questionsets ) {
+                if ( this.questionnaire.questionsets[questionsetId].questions ) {
+                    for ( let questionId in this.questionnaire.questionsets[questionsetId].questions ) {
+                        // For the question: Set a pointer to the parent question set:
                         this.questionnaire.questionsets[questionsetId].questions[questionId].parentQuestionset = this.questionnaire.questionsets[questionsetId];
-                        if( this.questionnaire.questionsets[questionsetId].questions[questionId].questionoptions ) {
-                            for( let optionId in this.questionnaire.questionsets[questionsetId].questions[questionId].questionoptions ) {
+                        if ( this.questionnaire.questionsets[questionsetId].questions[questionId].questionoptions ) {
+                            for ( let optionId in this.questionnaire.questionsets[questionsetId].questions[questionId].questionoptions ) {
+                                // For the question option: Set a pointer to the parent question:
                                 this.questionnaire.questionsets[questionsetId].questions[questionId].questionoptions[optionId].parentQuestion = this.questionnaire.questionsets[questionsetId].questions[questionId];
+                                // Create object "questionoptions":
                                 this.questionoptions[optionId] = this.questionnaire.questionsets[questionsetId].questions[questionId].questionoptions[optionId];
                             }
                         }
@@ -406,19 +409,26 @@ return false;
         }
     }
 
-    // fertig!
+    /**
+     *
+     * @param questiontype
+     * @private
+     */
     private questiontypeWithOptions( questiontype: string ): boolean {
         return questiontype.match( /^binary|single|multi|ist|rating$/ ) !== null;
     }
 
-    // fertig!
+    /**
+     *
+     * @private
+     */
     private initAnswers() {
         for ( let questionset of this.questionsetsArray ) {
-            // if ( !this.answers[questionset.id] ) this.answers[questionset.id] = {};
+            if ( this.answers[questionset.id] === undefined ) this.answers[questionset.id] = {};
             for ( let question of this.questionsArray[questionset.id] ) {
                 if ( !this.answers[question.id] ) this.answers[question.id] = {};
                 if ( this.questiontypeWithOptions( questionset.questiontype )) {
-                    this.answers[question.id].options = {};
+                    if ( this.answers[question.id].options === undefined ) this.answers[question.id].options = {};
                     for ( let option of this.questionoptionsArray[question.id] ) {
                         this.answers[question.id].options[option.id] = false;
                     }
@@ -429,45 +439,40 @@ return false;
         }
     }
 
-    private loadParticipationByParent() {
+    private loadParticipation_byParent() {
         this.backend.getRequest('QuestionAnswers/ofParticipation/byParent/'+this.parentType+'/'+this.parentId ).subscribe( response => {
-            console.log('response',_.clone(response));
             this.questionnaireId = response.questionnaireId;
             // In case the edit mode is "off" or "preview" there are no answer values to load:
             // if ( this.editMode === 'preview' || this.editMode === 'off' ) return;
-            this.loadQuestionnaire();
-            this.insertLoadedAnswers( response.answers );
-            this.isLoadedParticipation = true;
+            this.loadQuestionnaire().subscribe( () => {
+                this.insertLoadedAnswers( response.answers );
+                this.isLoadedParticipation = true;
+            });
         });
     }
 
-    private loadParticipation() {
+    private loadParticipation_byParticipation() {
         this.backend.getRequest('QuestionAnswers/ofParticipation/byParticipation/'+this.participationId ).subscribe( response => {
             this.questionnaireId = response.questionnaireId;
-            this.loadQuestionnaire();
-            this.insertLoadedAnswers( response.answers );
-            this.isLoadedParticipation = true;
+            this.loadQuestionnaire().subscribe( () => {
+                this.insertLoadedAnswers( response.answers );
+                this.isLoadedParticipation = true;
+            });
         });
     }
 
     private insertLoadedAnswers( answers: any ): void {
-        this.answers = _.clone( answers );
-        console.log('answers',_.clone(answers));
-        console.log('this.answers',this.answers);
-        return;
-        console.log('insertLoadesAnswers',answers);
-        for ( let questionId of Object.keys( answers )) {
-            this.answers[questionId] = {};
+        for ( let questionId in answers ) {
+            if ( this.answers[questionId] === undefined ) this.answers[questionId] = {};
             if ( answers[questionId].optionlessAnswerValue !== undefined ) {
                 this.answers[questionId].optionlessAnswerValue = answers[questionId].optionlessAnswerValue;
             } else if ( !_.isEmpty( answers[questionId].options )) {
-                this.answers[questionId].options = {};
+                if ( this.answers[questionId].options === undefined ) this.answers[questionId].options = {};
                 for ( let optionId in answers[questionId].options ) {
                     this.answers[questionId].options[optionId] = answers[questionId].options[optionId];
                 }
             }
         }
-        console.log('this.answers',this.answers);
     }
 
     /**
@@ -569,14 +574,14 @@ return false;
         else route += 'byParent/'+this.parentType+'/'+this.parentId;
         let finishedSaving$ = new EventEmitter<boolean>();
         this.backend.postRequest( route, {}, { answers: this.answers } ).subscribe( response => {
-                console.log(response);
                 this.isSaving = false;
                 this._isDirty = false;
                 finishedSaving$.emit( true );
             },
             error => {
                 this.toast.sendToast('Error saving questionnaire answers.', 'error', null, false, 'errorSavingQuestionnaireAnswers');
-                console.log(error);this.isSaving = false;
+                console.log(error);
+                this.isSaving = false;
                 finishedSaving$.emit( false );
             });
         return finishedSaving$;
