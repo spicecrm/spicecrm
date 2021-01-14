@@ -47,6 +47,13 @@ export class relatedmodels implements OnDestroy {
     public linkName = '';
 
     /**
+     * alternative to the link a specific endoint can be specified that is called instead of the relationship
+     * instead of the regular endpoint the endppint is then composed out of module/${this.module}/${this.id}/ + the endpoint defined here
+     * the endpoint needs to be defined as extension on the module and needs to be implemented as GET request
+     */
+    public linkEndPoint: string;
+
+    /**
      * an optional filterid to be applied to the selection of the related models
      */
     public modulefilter = '';
@@ -271,7 +278,8 @@ export class relatedmodels implements OnDestroy {
             sort: this.sort.sortfield ? JSON.stringify(this.sort) : ""
         };
 
-        this.backend.getRequest(`module/${this.module}/${this.id}/related/${this._linkName}`, params).subscribe(
+        let url = `module/${this.module}/${this.id}/` + (this.linkEndPoint ? this.linkEndPoint : `related/${this._linkName}`)
+        this.backend.getRequest(url, params).subscribe(
             (response: any) => {
 
                 // reset the list .. to make sure nobody added in the meantime ... the new data is the truth
@@ -349,14 +357,10 @@ export class relatedmodels implements OnDestroy {
 
         let retSubject = new Subject<any>();
 
-        // check if it is a normal related list, or a filtered list without a relationship
-        let url = "";
-        if (this.isonlyfiltered) {
-            url = "module/" + this.module + "/" + this.id + "/filtered";
-        } else {
-            url = "module/" + this.module + "/" + this.id + "/related/" + this._linkName;
-        }
+        // compose a URL depending if wee have a specific endpoint defined
+        let url = `module/${this.module}/${this.id}/` + (this.linkEndPoint ? this.linkEndPoint : `related/${this._linkName}`)
 
+        // get the data
         this.backend.getRequest(url, params).subscribe(
             (response: any) => {
 
