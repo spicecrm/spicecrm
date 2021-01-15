@@ -46,8 +46,8 @@ export class QuestionnaireFillOutModal implements OnInit {
     /**
      *  Save the current questionnaire answers. The whole questionnaire.
      */
-    private saveAndClose() {
-        this.qp.save().subscribe( success => {
+    private saveAndClose( setCompleted: boolean ) {
+        this.qp.save( setCompleted ).subscribe( success => {
             if ( success ) this.self.destroy();
         });
     }

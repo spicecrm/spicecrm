@@ -64,6 +64,8 @@ export class questionnaireParticipationService {
 
     public answers: any = {};
 
+    public isCompleted = false;
+
     /**
      * isDirty indicates that one or more question answers has been given/changed and that the information is still not saved to the backend.
      */
@@ -446,6 +448,7 @@ export class questionnaireParticipationService {
             // if ( this.editMode === 'preview' || this.editMode === 'off' ) return;
             this.loadQuestionnaire().subscribe( () => {
                 this.insertLoadedAnswers( response.answers );
+                this.isCompleted = !!response.isCompleted;
                 this.isLoadedParticipation = true;
             });
         });
@@ -456,6 +459,7 @@ export class questionnaireParticipationService {
             this.questionnaireId = response.questionnaireId;
             this.loadQuestionnaire().subscribe( () => {
                 this.insertLoadedAnswers( response.answers );
+                this.isCompleted = !!response.isCompleted;
                 this.isLoadedParticipation = true;
             });
         });
@@ -567,15 +571,16 @@ export class questionnaireParticipationService {
      * Saves all answers to the backend.
      * Emits true/false to report the success of saving.
      */
-    public save(): EventEmitter<boolean> {
+    public save( setCompleted = false ): EventEmitter<boolean> {
         this.isSaving = true;
         let route = 'QuestionAnswers/ofParticipation/';
         if ( this.participationId ) route += 'byParticipation/'+this.participationId;
         else route += 'byParent/'+this.parentType+'/'+this.parentId;
         let finishedSaving$ = new EventEmitter<boolean>();
-        this.backend.postRequest( route, {}, { answers: this.answers } ).subscribe( response => {
+        this.backend.postRequest( route, {}, { setCompleted: setCompleted, answers: this.answers } ).subscribe( response => {
                 this.isSaving = false;
                 this._isDirty = false;
+                this.isCompleted = !!response.isCompleted;
                 finishedSaving$.emit( true );
             },
             error => {
