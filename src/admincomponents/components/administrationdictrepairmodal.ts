@@ -41,7 +41,16 @@ export class AdministrationDictRepairModal {
                 this.close();
             }
             loadingRef.instance.self.destroy();
-        });
+        },
+        (err: any) => {
+                switch (err.status) {
+                    case 500:
+                        this.toast.sendAlert(err.message, 'error');
+                        this.close();
+                        loadingRef.instance.self.destroy();
+                        break;
+                }
+            });
         });
     }
 
