@@ -100,7 +100,6 @@ export class SpiceInstallerSetBackEnd implements OnInit {
                 loginProgressBar: this.spiceinstaller.systemloginprogressbar,
                 allowForgotPass: this.spiceinstaller.systemallowforgotpass
             }
-            console.log(body);
             this.saveConnection(body);
         }
 
