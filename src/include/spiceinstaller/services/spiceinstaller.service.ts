@@ -43,7 +43,7 @@ export class spiceinstaller {
     public db_user_name: string = '';
     public db_password: string = '';
     public db_name: string = '';
-    public db_type: string = 'mysql';
+    public db_type: string = 'mysqli';
     public db_port: string = '';
     public db_manager: string = '';
     public persistent: boolean = true;
