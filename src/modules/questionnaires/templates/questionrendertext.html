@@ -11,7 +11,7 @@
                           *ngIf="qp.editMode !== 'preview'"
                           [ngModel]="answerValue"
                           (change)="onTextChange()"
-                          [attr.disabled]="questionMeta[question.id].tempReadonly || qp.editMode === 'off' ? '':null"></textarea><!-- (focus)="onTextFocus(question.id)" -->
+                          [attr.disabled]="questionMeta[question.id].tempReadonly || qp.editMode === 'off' ? '':null"></textarea>
             </div>
         </div>
     </ng-container>
@@ -32,7 +32,7 @@
                            (change)="onTextChange()"
                            [attr.disabled]="questionMeta[question.id].tempReadonly || qp.editMode === 'off' ? '':null"
                            size="5" style="width:auto"
-                           class="slds-input"><!-- (focus)="onTextFocus(question.id)" -->
+                           class="slds-input">
                 </td>
             </tr>
         </ng-container>

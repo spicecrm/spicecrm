@@ -265,7 +265,6 @@ export class questionnaireParticipationService {
         return loaded$;
     }
 
-    // fertig!
     /**
      * Do some basic stuff:
      * Set IDs of parents. And: Create object "questionoptions".
@@ -398,7 +397,6 @@ export class questionnaireParticipationService {
         this.sortQuestionoptions();
     }
 
-    // fertig!
     private buildQuestionMetaData() {
         for ( let questionset of this.questionsetsArray ) {
             for( let question of this.questionsArray[questionset.id] ) {
@@ -426,7 +424,6 @@ export class questionnaireParticipationService {
      */
     private initAnswers() {
         for ( let questionset of this.questionsetsArray ) {
-            if ( this.answers[questionset.id] === undefined ) this.answers[questionset.id] = {};
             for ( let question of this.questionsArray[questionset.id] ) {
                 if ( !this.answers[question.id] ) this.answers[question.id] = {};
                 if ( this.questiontypeWithOptions( questionset.questiontype )) {
@@ -493,7 +490,7 @@ export class questionnaireParticipationService {
         this.loadQuestionnaire();
     }
 
-    // fertig? eher nicht betreffend answer object
+    // todo: check betreffend answer object
     private determineNumOfFinishedQuestionsInQuestionset( questionsetId: string ): number {
         return 0;
         let numberFinishedQuestions = 0;
@@ -585,7 +582,6 @@ export class questionnaireParticipationService {
             },
             error => {
                 this.toast.sendToast('Error saving questionnaire answers.', 'error', null, false, 'errorSavingQuestionnaireAnswers');
-                console.log(error);
                 this.isSaving = false;
                 finishedSaving$.emit( false );
             });

@@ -11,9 +11,9 @@
                     <textarea *ngIf="qp.editMode === 'preview'" class="slds-scrollable--y slds-textarea"></textarea>
                     <textarea class="slds-scrollable--y slds-textarea"
                               *ngIf="qp.editMode !== 'preview'"
-                              [ngModel]="qp.answers[question.id].optionlessAnswerValue"
-                              (change)="onTextChange(question.id,$event)" (input)="onTextChange(question.id,$event)"
-                              [attr.disabled]="questionsMeta[question.id].tempReadonly || qp.editMode === 'off' ? '':null"></textarea><!-- (focus)="onTextFocus(question.id)" -->
+                              [(ngModel)]="qp.answers[question.id].optionlessAnswerValue"
+                              (change)="onTextChange(question.id,$event)"
+                              [attr.disabled]="questionsMeta[question.id].tempReadonly || qp.editMode === 'off' ? '':null"></textarea>
                 </div>
             </div>
         </ng-container>
@@ -29,11 +29,11 @@
                     <td class="slds-text-align--right slds-p-vertical--small" width="100%">
                         <input type="text" *ngIf="qp.editMode === 'preview'" size="5" class="slds-input">
                         <input type="text" *ngIf="qp.editMode !== 'preview'"
-                               [ngModel]="qp.answers[question.id].optionlessAnswerValue"
+                               [(ngModel)]="qp.answers[question.id].optionlessAnswerValue"
                                (change)="onTextChange(question.id,$event)"
                                [attr.disabled]="questionsMeta[question.id].tempReadonly || qp.editMode === 'off' ? '':null"
                                size="5" style="width:auto"
-                               class="slds-input"><!-- (focus)="onTextFocus(question.id)" -->
+                               class="slds-input">
                     </td>
                 </tr>
             </ng-container>
