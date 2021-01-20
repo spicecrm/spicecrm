@@ -1,0 +1,117 @@
+<ng-container [ngSwitch]="questionset.questiontype">
+
+    <ng-container *ngSwitchCase="'binary'">
+        <table *ngIf="!qp.hideFinishedQuestions || !allQuestionsOfQuestionsetFinished" class="slds-table slds-table_bordered slds-table_col-bordered" style="border-top:none" >
+            <ng-container *ngFor="let question of questionset.questions; let i=index">
+                <tr *ngIf="!qp.hideFinishedQuestions || !questionMeta.finished">
+                    <td width="50%" class="slds-text-align_right">
+                        <ng-container *ngIf="qp.questionoptionsArray[question.id][0].image_id">
+                            <media-file-image [media_id]="qp.questionoptionsArray[question.id][0].image_id" [variant]="'mw'"
+                                              [frameWidth]="questionset.imageWidthOption" [classOuter]="'slds-m-horizontal--x-small slds-m-vertical--small'"></media-file-image>
+                        </ng-container>
+                        <ng-container *ngIf="!( qp.questionoptionsArray[question.id][1].image_id && questionset.showonlyimages === '1' )">
+                            <span *ngIf="qp.questionoptionsArray[question.id][0].text; else name0" style="white-space:pre-line">{{qp.questionoptionsArray[question.id][0].text}}</span>
+                            <ng-template #name0>{{qp.questionoptionsArray[question.id][0].name}}</ng-template>
+                        </ng-container>
+                    </td>
+                    <td class="slds-text-align_right binary-left-radio"><input type="radio"
+                                                                               [checked]="qp.editMode !== 'preview' && qp.answers[question.id].options[qp.questionoptionsArray[question.id][0].id]"
+                                                                               name="question-{{question.id}}"
+                                                                               (click)="onClick(qp.questionoptionsArray[question.id][0].id)"
+                                                                               [disabled]="questionMeta.readonly || qp.editMode === 'off'">
+                    </td>
+                    <td class="binary-right-radio"><input type="radio"
+                                                          [checked]="qp.editMode !== 'preview' && qp.answers[question.id].options[qp.questionoptionsArray[question.id][1].id]"
+                                                          name="question-{{question.id}}"
+                                                          (click)="onClick(qp.questionoptionsArray[question.id][1].id)"
+                                                          [disabled]="questionMeta.readonly || qp.editMode === 'off'">
+                    </td>
+                    <td width="50%" class="binary-right-text">
+                        <ng-container *ngIf="qp.questionoptionsArray[question.id][1].image_id">
+                            <media-file-image [media_id]="qp.questionoptionsArray[question.id][1].image_id" [variant]="'mw'"
+                                              [frameWidth]="questionset.imageWidthOption" [classOuter]="'slds-m-horizontal--x-small slds-m-vertical--small'"></media-file-image>
+                        </ng-container>
+                        <ng-container *ngIf="!( qp.questionoptionsArray[question.id][1].image_id && questionset.showonlyimages === '1' )">
+                            <span *ngIf="qp.questionoptionsArray[question.id][1].text; else name1" style="white-space:pre-line">{{qp.questionoptionsArray[question.id][1].text}}</span>
+                            <ng-template #name1>{{qp.questionoptionsArray[question.id][1].name}}</ng-template>
+                        </ng-container>
+                    </td>
+                </tr>
+            </ng-container>
+        </table>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'multi'">
+
+        <div *ngIf="!qp.hideFinishedQuestions || !questionMeta.finished" class="slds-box slds-m-bottom--medium questionset-render-question">
+            <h3 *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-text-heading_medium slds-m-bottom--x-small">{{question.name}}</h3>
+            <media-file-image *ngIf="question.image_id" [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="qp.imageWidthQuestion" [classOuter]="'slds-m-vertical--small'"></media-file-image>
+
+            <!-- Options vertical -->
+            <div *ngIf="!questionMeta.parameter.formatOptionsHorizontal" class="slds-grid_pull-padded-x-small slds-p-top--small slds-has-divider--top slds-m-top--medium">
+                <div *ngFor="let option of qp.questionoptionsArray[question.id];let j=index" class="slds-grid slds-text-align--center slds-p-right--small slds-p-left--x-small" [ngClass]="{'slds-border--bottom':qp.questionoptionsArray[question.id].length-1>j}" style="overflow:hidden" [ngStyle]="qp.questionoptionsArray[question.id].length-1 === j && {'margin-bottom':'-0.25rem'}">
+                    <div class="slds-p-left--none slds-p-right--small" style="width:auto;display:inline-flex" [ngClass]="{'slds-p-bottom--small':qp.questionoptionsArray[question.id].length-1>j,'slds-p-top--small':j>0}">
+                        <input type="checkbox" [checked]="qp.editMode !== 'preview' && qp.answers[question.id].options[option.id]" (click)="onClick(option.id)" [disabled]="questionMeta.readonly || qp.editMode === 'off'">
+                    </div>
+                    <div class="slds-border--left slds-text-align--left" style="width:100%;white-space:normal">
+                        <div class="slds-p-top--small slds-p-left--small slds-p-right--x-small" [ngClass]="{'slds-p-bottom--small':qp.questionoptionsArray[question.id].length-1>j,'slds-p-top--small':j>0}">
+                            <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [frameWidth]="questionset.imageWidthOption" [classOuter]="'slds-m-bottom--small'"></media-file-image>
+                            <ng-container *ngIf="!( option.image_id && questionset.showonlyimages === '1' )">{{option.name}}</ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Options horizontal -->
+            <div *ngIf="questionMeta.parameter.formatOptionsHorizontal" class="slds-grid slds-grid_pull-padded-x-small slds-p-top--small slds-has-divider--top slds-m-top--medium">
+                <div *ngFor="let option of qp.questionoptionsArray[question.id];let j=index" class="slds-size--1-of-1 slds-text-align--center slds-p-horizontal--small" [ngClass]="{'slds-border--left':j>0}" [ngStyle]="{'width':100/qp.questionoptionsArray[question.id].length+'%'}" style="overflow:hidden">
+                    <div class="slds-m-bottom--xxx-small">
+                        <input type="checkbox" [checked]="qp.editMode !== 'preview' && qp.answers[question.id].option[option.id]" (click)="onClick(option.id)" [disabled]="questionMeta.readonly || qp.editMode === 'off'">
+                    </div>
+                    <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [classOuter]="'slds-m-vertical--small'" [align]="'center'"></media-file-image>
+                    <ng-container *ngIf="!( option.image_id && questionset.showonlyimages === '1' )">{{option.name}}</ng-container>
+                </div>
+            </div>
+
+        </div>
+
+    </ng-container>
+
+    <div *ngSwitchCase="'single'">
+
+        <div *ngIf="!qp.hideFinishedQuestions || !questionMeta.finished" class="slds-box slds-m-bottom--medium questionset-render-question">
+
+            <h3 *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-text-heading_medium">{{question.name}}</h3>
+            <media-file-image *ngIf="question.image_id" [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="qp.imageWidthQuestion" [classOuter]="'slds-m-top--small'"></media-file-image>
+
+            <!-- Options vertical aligned -->
+            <div *ngIf="!questionMeta.parameter.formatOptionsHorizontal" class="slds-grid_pull-padded-x-small slds-p-top--small slds-has-divider--top slds-m-top--medium">
+                <div *ngFor="let option of qp.questionoptionsArray[question.id];let j=index" class="slds-grid slds-text-align--center slds-p-right--small slds-p-left--x-small" [ngClass]="{'slds-border--bottom':qp.questionoptionsArray[question.id].length-1>j}" style="overflow:hidden" [ngStyle]="qp.questionoptionsArray[question.id].length-1 === j && {'margin-bottom':'-0.25rem'}">
+                    <div class="slds-p-left--none slds-p-right--small" style="width:auto;display:inline-flex" [ngClass]="{'slds-p-bottom--small':qp.questionoptionsArray[question.id].length-1>j,'slds-p-top--small':j>0}">
+                        <input style="margin:auto" type="radio" name="question-{{question.id}}" [checked]="qp.editMode !== 'preview' && qp.answers[question.id].options[option.id]" (click)="onClick(option.id)" [disabled]="questionMeta.readonly || qp.editMode === 'off'">
+                    </div>
+                    <div class="slds-border--left slds-text-align--left" style="width:100%;white-space:normal">
+                        <div class="slds-p-top--small slds-p-left--small slds-p-right--x-small" [ngClass]="{'slds-p-bottom--small':qp.questionoptionsArray[question.id].length-1>j,'slds-p-top--small':j>0}">
+                            <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [frameWidth]="questionset.imageWidthOption" [classOuter]="'slds-m-bottom--small'"></media-file-image>
+                            <ng-container *ngIf="!( option.image_id && questionset.showonlyimages === '1' )">{{option.name}}</ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Options horizontal aligned -->
+            <div *ngIf="questionMeta.parameter.formatOptionsHorizontal" class="slds-grid slds-grid_pull-padded-x-small slds-p-top--small slds-has-divider--top slds-m-top--medium">
+                <div *ngFor="let option of qp.questionoptionsArray[question.id];let j=index" class="slds-size--1-of-1 slds-text-align--center slds-p-horizontal--small" [ngClass]="{'slds-border--left':j>0}" [ngStyle]="{'width':100/qp.questionoptionsArray[question.id].length+'%'}" style="overflow:hidden">
+                    <div class="slds-m-bottom--xxx-small">
+                        <input type="radio" name="question-{{question.id}}" [checked]="qp.editMode !== 'preview' && qp.answers[question.id].options[option.id]" (click)="onClick(option.id)" [disabled]="questionMeta.readonly || qp.editMode === 'off'">
+                    </div>
+                    <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [classOuter]="'slds-m-vertical--small'" [align]="'center'"></media-file-image>
+                    <ng-container *ngIf="!( option.image_id && questionset.showonlyimages === '1' )">{{option.name}}</ng-container>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</ng-container>

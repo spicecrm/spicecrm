@@ -30,18 +30,28 @@ export class QuestionnaireEditor implements OnInit {
 
     @ViewChild(QuestionnaireRender, {static:false}) public questionnaireRender;
 
-    constructor( private lang: language, private model: model, private backend: backend ) { }
+    constructor( private lang: language, private model: model, private backend: backend,  ) { } // private questionnaireParticipation: questionnaireParticipationService
 
     public ngOnInit(): void {
         if ( this.model.id ) {
             this.loadQuestionsets();
             this.loadQuestionOptionCategories();
+            this.createPreview();
         } else {
             this.model.data$.subscribe( () => {
                 this.loadQuestionsets();
                 this.loadQuestionOptionCategories();
+                this.createPreview();
             });
         }
+    }
+
+    private createPreview() {
+        1;
+        // For the preview create a questionnaire "participation":
+        // this.questionnaireParticipation.showQuestionnaireTitle = false;
+        // this.questionnaireParticipation.editMode = 'preview';
+        // this.questionnaireParticipation.initByQuestionnaire( this.model.id );
     }
 
     get isLoading() {
