@@ -13,13 +13,6 @@ import {DirectivesModule} from '../../directives/directives';
 
 import /*embed*/ {questionnaireParticipationService} from "./services/questionnaireparticipation.service";
 
-// import /*e mbed*/ {QuestionRenderBasic} from './components/questionrenderbasic';
-// import /*e mbed*/ {QuestionRenderText} from './components/questionrendertext';
-// import /*e mbed*/ {QuestionRenderBinarySingleMulti} from './components/questionrenderbinarysinglemulti';
-// import /*e mbed*/ {QuestionRenderNPS} from './components/questionrendernps';
-// import /*e mbed*/ {QuestionRenderIST} from './components/questionrenderist';
-// import /*e mbed*/ {QuestionRenderRating} from './components/questionrenderrating';
-
 import /*embed*/ {QuestionsManager} from './components/questionsmanager';
 import /*embed*/ {QuestionsManagerEditMulti} from "./components/questionsmanagereditmulti";
 import /*embed*/ {QuestionsManagerAddModal} from './components/questionsmanageraddmodal';
@@ -62,8 +55,8 @@ import /*embed*/ {QuestionnaireResults} from './components/questionnaireresults'
 import /*embed*/ {QuestionnaireSingleEvaluationValues} from './components/questionnairesingleevaluationvalues';
 import /*embed*/ {QuestionnaireEntireEvaluation} from './components/questionnaireentireevaluation';
 import /*embed*/ {QuestionsetRenderBasic} from './components/questionsetrenderbasic';
-import /*embed*/ { QuestionnaireFillOutButton } from './components/questionnairefilloutbutton';
-import /*embed*/ { QuestionnaireFillOutModal } from './components/questionnairefilloutmodal';
+import /*embed*/ {QuestionnaireFillOutButton} from './components/questionnairefilloutbutton';
+import /*embed*/ {QuestionnaireFillOutModal} from './components/questionnairefilloutmodal';
 
 @NgModule({
     imports: [
@@ -123,12 +116,6 @@ import /*embed*/ { QuestionnaireFillOutModal } from './components/questionnairef
         QuestionsetRenderBasic,
         QuestionnaireFillOutButton,
         QuestionnaireFillOutModal,
-        // QuestionRenderBasic,
-        // QuestionRenderText,
-        // QuestionRenderBinarySingleMulti,
-        // QuestionRenderNPS,
-        // QuestionRenderRating,
-        // QuestionRenderIST
     ]
 })
 export class ModuleQuestionnaires {}
