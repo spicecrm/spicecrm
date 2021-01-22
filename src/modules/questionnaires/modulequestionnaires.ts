@@ -13,13 +13,6 @@ import {DirectivesModule} from '../../directives/directives';
 
 import /*embed*/ {questionnaireParticipationService} from "./services/questionnaireparticipation.service";
 
-// import /*e mbed*/ {QuestionRenderBasic} from './components/questionrenderbasic';
-// import /*e mbed*/ {QuestionRenderText} from './components/questionrendertext';
-// import /*e mbed*/ {QuestionRenderBinarySingleMulti} from './components/questionrenderbinarysinglemulti';
-// import /*e mbed*/ {QuestionRenderNPS} from './components/questionrendernps';
-// import /*e mbed*/ {QuestionRenderIST} from './components/questionrenderist';
-// import /*e mbed*/ {QuestionRenderRating} from './components/questionrenderrating';
-
 import /*embed*/ {QuestionsManager} from './components/questionsmanager';
 import /*embed*/ {QuestionsManagerEditMulti} from "./components/questionsmanagereditmulti";
 import /*embed*/ {QuestionsManagerAddModal} from './components/questionsmanageraddmodal';
@@ -42,6 +35,7 @@ import /*embed*/ {QuestionnaireRender} from './components/questionnairerender';
 import /*embed*/ {QuestionsetPreviewButton} from './components/questionsetpreviewbutton';
 import /*embed*/ {QuestionsetPreview} from './components/questionsetpreview';
 import /*embed*/ {QuestionsetRender} from './components/questionsetrender';
+import /*embed*/ {QuestionsetRenderBasic} from './components/questionsetrenderbasic';
 import /*embed*/ {QuestionsetRenderRating} from './components/questionsetrenderrating';
 import /*embed*/ {QuestionsetRenderNPS} from './components/questionsetrendernps';
 import /*embed*/ {QuestionsetRenderText} from './components/questionsetrendertext';
@@ -61,9 +55,8 @@ import /*embed*/ {QuestionsetManager} from './components/questionsetmanager';
 import /*embed*/ {QuestionnaireResults} from './components/questionnaireresults';
 import /*embed*/ {QuestionnaireSingleEvaluationValues} from './components/questionnairesingleevaluationvalues';
 import /*embed*/ {QuestionnaireEntireEvaluation} from './components/questionnaireentireevaluation';
-import /*embed*/ {QuestionsetRenderBasic} from './components/questionsetrenderbasic';
-import /*embed*/ { QuestionnaireFillOutButton } from './components/questionnairefilloutbutton';
-import /*embed*/ { QuestionnaireFillOutModal } from './components/questionnairefilloutmodal';
+import /*embed*/ {QuestionnaireFillOutButton} from './components/questionnairefilloutbutton';
+import /*embed*/ {QuestionnaireFillOutModal} from './components/questionnairefilloutmodal';
 
 @NgModule({
     imports: [
@@ -96,6 +89,7 @@ import /*embed*/ { QuestionnaireFillOutModal } from './components/questionnairef
         QuestionsetPreviewButton,
         QuestionsetPreview,
         QuestionsetRender,
+        QuestionsetRenderBasic,
         QuestionsetRenderIST,
         QuestionsetRenderRating,
         QuestionsetRenderNPS,
@@ -120,15 +114,8 @@ import /*embed*/ { QuestionnaireFillOutModal } from './components/questionnairef
         QuestionnaireResults,
         QuestionnaireSingleEvaluationValues,
         QuestionnaireEntireEvaluation,
-        QuestionsetRenderBasic,
         QuestionnaireFillOutButton,
         QuestionnaireFillOutModal,
-        // QuestionRenderBasic,
-        // QuestionRenderText,
-        // QuestionRenderBinarySingleMulti,
-        // QuestionRenderNPS,
-        // QuestionRenderRating,
-        // QuestionRenderIST
     ]
 })
 export class ModuleQuestionnaires {}
