@@ -3,7 +3,7 @@
         <h2 class="slds-text-heading--medium">{{questionnaire.name}}</h2>
     </system-modal-header>
     <system-modal-content>
-        <questionnaire-render *ngIf="!isLoading" [questionnaire]="questionnaire" [previewMode]="true"></questionnaire-render>
+        <questionnaire-render *ngIf="!isLoading"></questionnaire-render>
         <system-spinner *ngIf="isLoading"></system-spinner>
     </system-modal-content>
     <system-modal-footer>

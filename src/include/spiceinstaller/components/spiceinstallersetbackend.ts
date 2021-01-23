@@ -2,7 +2,7 @@
  * @module SpiceInstaller
  */
 
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Router} from '@angular/router';
 import {configurationService} from '../../../services/configuration.service';
@@ -15,10 +15,10 @@ import {spiceinstaller} from "../services/spiceinstaller.service";
     templateUrl: './src/include/spiceinstaller/templates/spiceinstallersetbackend.html',
 })
 
-export class SpiceInstallerSetBackEnd {
-
-
+export class SpiceInstallerSetBackEnd implements OnInit {
     private checking: boolean = false;
+    private apiurl: string = "";
+    private apiFound: boolean = false;
 
     constructor(
         private toast: toast,
@@ -29,52 +29,84 @@ export class SpiceInstallerSetBackEnd {
     ) {
     }
 
+    /**
+     * gets the current url and checks if there is an api folder, hides all the properties for the backendconfig object except systemname
+     */
+    public ngOnInit() {
+        let currentUrl = window.location.href;
+        this.apiurl = currentUrl.replace("#/install", "api");
+       this.http.get('config/check', {params: {url: btoa(this.apiurl)}}).subscribe(
+           (res: any) => {
+               if (res.success) {
+                   this.apiFound = true;
+               }
+           },
+           (err: any) => {
+               switch (err.status) {
+                   case 401:
+                       break;
+               }
+               });
+    }
 
     private testConnection() {
         this.checking = true;
-        this.http.get('config/installercheck', {params: {url: btoa(this.spiceinstaller.systemurl)}}).subscribe(
-            (res: any) => {
-                var response = res;
-                if (response.success != true) {
-                    this.toast.sendToast(response.message, 'error');
-                    this.checking = false;
-                } else if (response.message == "spiceinstaller") {
-                    this.spiceinstaller.configObject.backendconfig = {
-                        id: this.spiceinstaller.systemid,
-                        display: this.spiceinstaller.systemname,
-                        backendUrl: this.spiceinstaller.systemurl,
-                        proxy: this.spiceinstaller.systemproxy,
-                        developerMode: this.spiceinstaller.systemdevmode,
-                        loginProgressBar: this.spiceinstaller.systemloginprogressbar,
-                        allowForgotPass: this.spiceinstaller.systemallowforgotpass
-                    };
-                    this.spiceinstaller.selectedStep.completed = true;
-                    this.spiceinstaller.steps[0] = this.spiceinstaller.selectedStep;
-                    this.spiceinstaller.next(this.spiceinstaller.steps[0]);
-                } else {
-                    this.saveConnection();
-                }
-            },
-            (err: any) => {
-                switch (err.status) {
-                    case 401:
-                        break;
-                }
-            });
+        if(!this.apiFound) {
+            this.http.get('config/installercheck', {params: {url: btoa(this.spiceinstaller.systemurl)}}).subscribe(
+                (res: any) => {
+                    var response = res;
+                    if (response.success != true) {
+                        this.toast.sendToast(response.message, 'error');
+                        this.checking = false;
+                    } else if (response.message == "spiceinstaller") {
+                        this.spiceinstaller.configObject.backendconfig = {
+                            id: this.spiceinstaller.systemid,
+                            display: this.spiceinstaller.systemname,
+                            backendUrl: this.spiceinstaller.systemurl,
+                            proxy: this.spiceinstaller.systemproxy,
+                            developerMode: this.spiceinstaller.systemdevmode,
+                            loginProgressBar: this.spiceinstaller.systemloginprogressbar,
+                            allowForgotPass: this.spiceinstaller.systemallowforgotpass
+                        };
+                        this.spiceinstaller.selectedStep.completed = true;
+                        this.spiceinstaller.steps[0] = this.spiceinstaller.selectedStep;
+                        this.spiceinstaller.next(this.spiceinstaller.steps[0]);
+                    } else {
+                        let body = {
+                            id: this.spiceinstaller.systemid,
+                            display: this.spiceinstaller.systemname,
+                            backendUrl: this.spiceinstaller.systemurl,
+                            proxy: this.spiceinstaller.systemproxy,
+                            developerMode: this.spiceinstaller.systemdevmode,
+                            loginProgressBar: this.spiceinstaller.systemloginprogressbar,
+                            allowForgotPass: this.spiceinstaller.systemallowforgotpass
+                        };
+                        this.saveConnection(body);
+                    }
+                },
+                (err: any) => {
+                    switch (err.status) {
+                        case 401:
+                            break;
+                    }
+                });
+        } else {
+            let body = {
+                id: this.spiceinstaller.systemid,
+                display: this.spiceinstaller.systemname,
+                backendUrl: this.apiurl,
+                proxy: false,
+                developerMode: this.spiceinstaller.systemdevmode,
+                loginProgressBar: this.spiceinstaller.systemloginprogressbar,
+                allowForgotPass: this.spiceinstaller.systemallowforgotpass
+            }
+            this.saveConnection(body);
+        }
+
     }
 
-    private saveConnection() {
+    private saveConnection(body: Object) {
         this.checking = true;
-
-        let body = {
-            id: this.spiceinstaller.systemid,
-            display: this.spiceinstaller.systemname,
-            backendUrl: this.spiceinstaller.systemurl,
-            proxy: this.spiceinstaller.systemproxy,
-            developerMode: this.spiceinstaller.systemdevmode,
-            loginProgressBar: this.spiceinstaller.systemloginprogressbar,
-            allowForgotPass: this.spiceinstaller.systemallowforgotpass
-        };
         this.http.post('config/set', body, {}).subscribe(
             (res: any) => {
                 let response = res;

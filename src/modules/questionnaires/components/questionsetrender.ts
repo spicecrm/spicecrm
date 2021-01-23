@@ -1,17 +1,10 @@
 /**
  * @module ModuleQuestionnaires
  */
-import {
-    Component,
-    ElementRef,
-    EventEmitter,
-    Input,
-    OnInit,
-    ViewChild
-} from '@angular/core';
-import { language } from '../../../services/language.service';
-import { backend } from "../../../services/backend.service";
+import { Component, ElementRef, EventEmitter, Input, OnInit, ViewChild } from '@angular/core';
 import { helper } from '../../../services/helper.service';
+import { questionnaireParticipationService } from '../services/questionnaireparticipation.service';
+import { language } from '../../../services/language.service';
 
 /**
 * @ignore
@@ -33,24 +26,13 @@ declare var _: any;
 } )
 export class QuestionsetRender implements OnInit {
 
-    @Input() public questionsetIdOrObject: any;
-    @Input() public participation_id: string;
-    @Input() public noEdit = false;
-    @Input() public inModal = true;
-    @Input() public timerText: string = null;
-    @Input() public timerWarning = false;
-    @Input() public hideFinishedQuestions = false;
-    @Input() public previewMode = false;
+    private _ = _; // Workaround to use _ (underscore.js) inside the html template.
 
-    private answers = {};
-    private imageWidthOption = 200;
-    private imageWidthQuestion = 200;
-    private isLoading = true;
-    private numOfFinishedQuestionsValue = 0;
-    private options = {};
-    private questions: any[] = [];
-    private questionset: any;
-    private questionsMeta = {};
+    public qp: questionnaireParticipationService;
+
+    @Input() public questionsetId: string;
+
+    public questionset: any;
 
     private textIsCollapsable = false;
     private textIsCollapsed = false;
@@ -59,96 +41,16 @@ export class QuestionsetRender implements OnInit {
 
     private isCompleteChange = new EventEmitter();
 
-    constructor( private language: language, private backend: backend, private helperservice: helper ) { }
-
-    private set numOfFinishedQuestions( val ) {
-        this.numOfFinishedQuestionsValue = val;
-        this.isCompleteChange.emit( this.questions.length === val );
+    constructor( private language: language, private questionnaireParticipation: questionnaireParticipationService ) {
+        this.qp = questionnaireParticipation;
     }
 
-    private get numOfFinishedQuestions(): number {
-        return this.numOfFinishedQuestionsValue;
-    }
+    private zeig = false;
 
     public ngOnInit(): void {
 
-        if ( !this.participation_id ) this.previewMode = true;
-
-        if ( typeof this.questionsetIdOrObject === 'string' ) {
-            this.backend.getRequest( 'module/QuestionSets/renderer/' + this.questionsetIdOrObject ).subscribe( ( response: any ) => {
-                this.questionset = response;
-                this.doWhenLoaded();
-            } );
-        } else {
-            this.questionset = this.questionsetIdOrObject;
-            this.doWhenLoaded();
-        }
-
-    }
-
-    private doWhenLoaded(): void {
-
-        if( this.questionset.data ) this.questionset = this.questionset.data;
-
-        if( this.questionset.questions && this.questionset.questions.beans ) {
-
-            // Put the questions into an array, sort them by the field "position" (and date_entered) or shuffle them.
-            let keys = Object.keys( this.questionset.questions.beans );
-            if( this.questionset.shuffle == 1 ) {
-                this.helperservice.shuffle( keys );
-            } else {
-                keys.sort( ( a, b ) => {
-                let dummy = this.questionset.questions.beans[a].position - this.questionset.questions.beans[b].position;
-                if( dummy !== 0 ) return dummy;
-                else {
-                    if( this.questionset.questions.beans[a].date_entered < this.questionset.questions.beans[b].date_entered ) return -1;
-                    if( this.questionset.questions.beans[a].date_entered > this.questionset.questions.beans[b].date_entered ) return 1;
-                    return 0;
-                }
-            } );
-            }
-            for ( let key of keys ) this.questions.push( this.questionset.questions.beans[key] );
-
-            // Build meta data for all questions.
-            for ( let question of this.questions ) {
-                this.questionsMeta[question.id] = {
-                    readonly: !this.previewMode,
-                    finished: false,
-                    parameter: {}
-                };
-            }
-
-        }
-
-        // Put the answer options into an object/array, grouped by the questions.
-        for( let question of this.questions ) {
-            if( question.questionoptions && question.questionoptions.beans ) {
-                let keys = Object.keys( question.questionoptions.beans );
-                if ( this.questionset.questiontype.match( /^binary|single|multi|ist$/ ) ) {
-                    // Sort or shuffle the options.
-                    if ( this.questionset.shuffle == 1 && this.questionset.questiontype.match( /^binary|single|multi$/ ) ) {
-                        this.helperservice.shuffle( keys );
-                    } else {
-                        keys.sort( ( a, b ) => {
-                            return question.questionoptions.beans[a].position - question.questionoptions.beans[b].position;
-                        } );
-                    }
-                }
-                this.options[question.id] = [];
-                if ( !this.previewMode ) this.answers[question.id] = [];
-                for ( let key of keys ) {
-                    this.options[question.id].push( question.questionoptions.beans[key] );
-                    if ( !this.previewMode ) {
-                        this.answers[question.id].push({
-                            optionId: question.questionoptions.beans[key].id,
-                            value: false
-                        });
-                    }
-                }
-            }
-        }
-
-        this.isLoading = false;
+        // window.setTimeout( () => { this.zeig = true; }, 5000 );
+        this.questionset = this.questionnaireParticipation.questionnaire.questionsets[this.questionsetId];
 
         // setTimeout() is a workaround
         window.setTimeout( () => {
@@ -159,6 +61,14 @@ export class QuestionsetRender implements OnInit {
 
     private toggleText(): void {
         this.textIsCollapsed = !this.textIsCollapsed;
+    }
+
+    private get percentOfFinishedQuestions(): number {
+        return this.questionnaireParticipation.percentOfFinishedQuestionsInQuestionset[this.questionsetId];
+    }
+
+    private get allQuestionsFinished(): number {
+        return this.questionnaireParticipation.allQuestionsOfQuestionsetFinished[this.questionsetId];
     }
 
 }

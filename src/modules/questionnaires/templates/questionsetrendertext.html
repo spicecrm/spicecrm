@@ -1,47 +1,43 @@
-<ng-container *ngIf="!sequenced">
-    <ng-container *ngFor="let question of questions;let i = index">
-        <div *ngIf="!hideFinishedQuestions || !questionsMeta[question.id].finished" class="slds-box slds-m-bottom--medium questionset-render-question">
-            <div>
-                <h3 *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-text-heading_medium" [class.slds-m-bottom_xx-small]="question.image_id">{{question.name}}</h3>
-                <media-file-image *ngIf="question.image_id" [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="imageWidthQuestion"></media-file-image>
-            </div>
-            <div class="slds-p-top--x-small">
-                <!-- <input type="text" style="width:100%;" *ngIf="previewMode" class="slds-input"> -->
-                <textarea *ngIf="previewMode" class="slds-scrollable--y slds-textarea"></textarea>
-                <!-- <input type="text" style="width:100%;" class="slds-input"
-                       *ngIf="!previewMode" [(ngModel)]="answers[question.id].optionlessAnswerValue"
-                       (focus)="onTextFocus(question.id)"
-                       (change)="onTextChange(question.id)"
-                       [attr.disabled]="questionsMeta[question.id].tempReadonly || noEdit ? '':null"> -->
-                <textarea class="slds-scrollable--y slds-textarea"
-                          *ngIf="!previewMode"
-                          [(ngModel)]="answers[question.id].optionlessAnswerValue"
-                          (focus)="onTextFocus(question.id)"
-                          (change)="onTextChange(question.id)"
-                          [attr.disabled]="questionsMeta[question.id].tempReadonly || noEdit ? '':null"></textarea>
-            </div>
-        </div>
-    </ng-container>
-</ng-container>
+<ng-container *ngIf="qp.isLoaded">
 
-<ng-container *ngIf="!hideFinishedQuestions || numOfFinishedQuestions !== questions.length">
-    <table *ngIf="sequenced" class="sequenced slds-text-align--right slds-table--bordered" style="border-top:none">
-        <ng-container *ngFor="let question of questions;let i = index">
-            <tr *ngIf="!hideFinishedQuestions || !questionsMeta[question.id].finished">
-                <td *ngFor="let item of forLoopArray(lengthLongestSequence); let j=index" class="slds-p-right--large slds-p-vertical--small slds-text-align--right slds-text-heading--small">
-                    {{questionNamesSplitted[i][j]}}
-                </td>
-                <td class="slds-text-align--right slds-p-vertical--small" width="100%">
-                    <input type="text" *ngIf="previewMode" size="5" class="slds-input">
-                    <input type="text" *ngIf="!previewMode"
-                           [(ngModel)]="answers[question.id].optionlessAnswerValue"
-                           (focus)="onTextFocus(question.id)"
-                           (change)="onTextChange(question.id)"
-                           [attr.disabled]="questionsMeta[question.id].tempReadonly || noEdit ? '':null"
-                           size="5" style="width:auto"
-                           class="slds-input">
-                </td>
-            </tr>
+    <ng-container *ngIf="!sequenced">
+        <ng-container *ngFor="let question of qp.questionsArray[questionsetId];let i = index">
+            <div *ngIf="!qp.hideFinishedQuestions || !questionsMeta[question.id].finished" class="slds-box slds-m-bottom--medium questionset-render-question">
+                <div>
+                    <h3 *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-text-heading_medium" [class.slds-m-bottom_xx-small]="question.image_id">{{question.name}}</h3>
+                    <media-file-image *ngIf="question.image_id" [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="qp.imageWidthQuestion"></media-file-image>
+                </div>
+                <div class="slds-p-top--x-small">
+                    <textarea *ngIf="qp.editMode === 'preview'" class="slds-scrollable--y slds-textarea"></textarea>
+                    <textarea class="slds-scrollable--y slds-textarea"
+                              *ngIf="qp.editMode !== 'preview'"
+                              [(ngModel)]="qp.answers[question.id].optionlessAnswerValue"
+                              (change)="onTextChange(question.id,$event)"
+                              [attr.disabled]="questionsMeta[question.id].tempReadonly || qp.editMode === 'off' ? '':null"></textarea>
+                </div>
+            </div>
         </ng-container>
-    </table>
+    </ng-container>
+
+    <ng-container *ngIf="!qp.hideFinishedQuestions || !allQuestionsOfQuestionsetFinished"> <!-- brauchen wir dieses ngIf ? -->
+        <table *ngIf="sequenced" class="sequenced slds-text-align--right slds-table--bordered" style="border-top:none">
+            <ng-container *ngFor="let question of qp.questionsArray[questionsetId];let i = index">
+                <tr *ngIf="!qp.hideFinishedQuestions || !questionsMeta[question.id].finished">
+                    <td *ngFor="let item of forLoopArray(lengthLongestSequence); let j=index" class="slds-p-right--large slds-p-vertical--small slds-text-align--right slds-text-heading--small">
+                        {{questionNamesSplitted[i][j]}}
+                    </td>
+                    <td class="slds-text-align--right slds-p-vertical--small" width="100%">
+                        <input type="text" *ngIf="qp.editMode === 'preview'" size="5" class="slds-input">
+                        <input type="text" *ngIf="qp.editMode !== 'preview'"
+                               [(ngModel)]="qp.answers[question.id].optionlessAnswerValue"
+                               (change)="onTextChange(question.id,$event)"
+                               [attr.disabled]="questionsMeta[question.id].tempReadonly || qp.editMode === 'off' ? '':null"
+                               size="5" style="width:auto"
+                               class="slds-input">
+                    </td>
+                </tr>
+            </ng-container>
+        </table>
+    </ng-container>
+
 </ng-container>
