@@ -19,7 +19,7 @@ import {projectwbsHierarchy} from "../services/projectwbshierarchy.service";
 })
 export class ProjectWBSHierarchyNode implements OnInit {
     @Input() public nodedata: any = {};
-    @Input() public fields: Array<any> = [];
+    @Input() public fields: any[] = [];
     private loading: boolean = false;
 
     constructor(private language: language, private metadata: metadata, private projectwbsHierarchy: projectwbsHierarchy, private model: model, private view: view) {
@@ -40,8 +40,12 @@ export class ProjectWBSHierarchyNode implements OnInit {
         this.model.data.acl = this.nodedata.data.acl;
     }
 
-    get expandable(){
+    get expandable() {
         return this.nodedata.member_count > 0;
+    }
+
+    private isExpandedNode() {
+        return this.nodedata.expanded;
     }
 
     private expandNode() {
@@ -53,12 +57,5 @@ export class ProjectWBSHierarchyNode implements OnInit {
         }
     }
 
-    private getIcon() {
-        switch (this.nodedata.expanded) {
-            case false:
-                return "chevronright";
-            case true:
-                return "chevrondown";
-        }
-    }
+
 }

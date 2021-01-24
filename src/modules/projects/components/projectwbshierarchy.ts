@@ -16,7 +16,7 @@ import {projectwbsHierarchy} from "../services/projectwbshierarchy.service";
 })
 export class ProjectWBSHierarchy implements OnInit {
     private componentconfig: any = {};
-    private fieldsetFields: Array<any> = [];
+    private fieldsetFields: any[] = [];
 
     constructor(private language: language, private metadata: metadata, private projectwbsHierarchy: projectwbsHierarchy, private model: model, private relatedmodels: relatedmodels, private broadcast: broadcast) {
 
