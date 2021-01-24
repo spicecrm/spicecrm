@@ -44,14 +44,21 @@ export class ProjectWBSHierarchyNode implements OnInit {
         return this.nodedata.member_count > 0;
     }
 
+    /**
+     * returns information if node is expanded or not
+     * @private
+     */
     private isExpandedNode() {
         return this.nodedata.expanded;
     }
 
+    /**
+     * expands or collapses node depending on current state
+     * @private
+     */
     private expandNode() {
         if (this.isExpandedNode()) {
             this.projectwbsHierarchy.collapse(this.nodedata.id);
-            this.loading = false;
         } else {
             this.loading = true;
             this.projectwbsHierarchy.expand(this.nodedata.id);
