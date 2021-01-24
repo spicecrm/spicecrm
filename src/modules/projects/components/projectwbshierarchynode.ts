@@ -49,8 +49,9 @@ export class ProjectWBSHierarchyNode implements OnInit {
     }
 
     private expandNode() {
-        if (this.nodedata.expanded) {
+        if (this.isExpandedNode()) {
             this.projectwbsHierarchy.collapse(this.nodedata.id);
+            this.loading = false;
         } else {
             this.loading = true;
             this.projectwbsHierarchy.expand(this.nodedata.id);

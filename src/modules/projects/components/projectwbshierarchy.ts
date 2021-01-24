@@ -58,6 +58,10 @@ export class ProjectWBSHierarchy implements OnInit {
         this.loadHierarchy();
     }
 
+    private isLoading() {
+        return this.projectwbsHierarchy.isloading;
+    }
+
     private addSelectedItems(items) {
         this.loadHierarchy();
     }

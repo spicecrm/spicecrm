@@ -24,7 +24,9 @@
                 </tr>
             </thead>
             <tbody>
-                <tr projectwbs-hierarchy-node class="slds-hint-parent" role="row" aria-expanded="true" *ngFor="let node of projectwbsHierarchy.membersList" [nodedata]="node" [fields]="fieldsetFields">
+            <system-spinner *ngIf="isLoading()"></system-spinner>
+
+            <tr projectwbs-hierarchy-node class="slds-hint-parent" role="row" aria-expanded="true" *ngFor="let node of projectwbsHierarchy.membersList" [nodedata]="node" [fields]="fieldsetFields">
             </tbody>
         </table>
     </div>

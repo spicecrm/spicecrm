@@ -12,6 +12,7 @@ export class projectwbsHierarchy {
     public requestedFields: Array<any> = [];
     public members: Array<any> = [];
     public membersList: Array<any> = [];
+    public isloading: boolean = false;
 
     constructor(private backend: backend, private modelutilities: modelutilities) {
     }
@@ -34,6 +35,7 @@ export class projectwbsHierarchy {
         this.members = [];
 
         // get the WBS Elements
+        this.isloading = true;
         this.backend.getRequest("ProjectWBSsHierarchy/" + project_id).subscribe(members => {
             for (let member of members) {
                 this.members.push({
@@ -66,6 +68,7 @@ export class projectwbsHierarchy {
                 return a.data.date_start.isBefore(b.data.date_start) ? 1 : -1;
             });
 
+            this.isloading = false;
             this.rebuildMembersList();
         });
     }
