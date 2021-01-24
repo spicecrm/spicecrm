@@ -1256,16 +1256,18 @@ export class model implements OnDestroy {
      * @param toField
      * @param value
      */
-    private copyValue(toField, value, params) {
+    private copyValue(toField, value, params: any = {}) {
         let fieldDef = this.metadata.getFieldDefs(this.module, toField);
         // if not found just set the field attribute
-        if (!fieldDef) this.setField(toField, value);
+        if (!fieldDef) {
+            this.setField(toField, value);
+            return;
+        }
 
         // handle links
-
         switch (fieldDef.type) {
             case 'link':
-                if (params.generatenewid) {
+                if (params?.generatenewid) {
                     if (_.isObject(value) && value.beans) {
                         const newLink = {beans: {}};
                         for (let relId in value.beans) {
