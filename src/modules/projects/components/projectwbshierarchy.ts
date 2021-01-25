@@ -16,7 +16,7 @@ import {projectwbsHierarchy} from "../services/projectwbshierarchy.service";
 })
 export class ProjectWBSHierarchy implements OnInit {
     private componentconfig: any = {};
-    private fieldsetFields: Array<any> = [];
+    private fieldsetFields: any[] = [];
 
     constructor(private language: language, private metadata: metadata, private projectwbsHierarchy: projectwbsHierarchy, private model: model, private relatedmodels: relatedmodels, private broadcast: broadcast) {
 
@@ -29,19 +29,28 @@ export class ProjectWBSHierarchy implements OnInit {
 
     }
 
+    /**
+     * handles message coming from broadcasting
+     * Reloads hierarchy if conditions are matched
+     * @param message
+     * @private
+     */
     private handleMessage(message: any) {
         // only handle if the module is the list module
-        if (message.messagetype.indexOf("model") === -1 || message.messagedata.module !== "ProjectWBSs") {
+        if (message.messagetype.indexOf("model") === -1 || message.messagedata.module !== "ProjectWBSs" || (message.messagedata.module === "ProjectWBSs" && message.messagetype === "model.loaded")) {
             return;
         }
 
         this.loadHierarchy();
     }
 
+    /**
+     * calls hierarchy service and load data
+     * @private
+     */
     private loadHierarchy() {
         this.projectwbsHierarchy.project_id = this.model.id;
         this.projectwbsHierarchy.requestedFields = this.fieldsetFields;
-
         this.projectwbsHierarchy.loadHierarchy();
     }
 
@@ -58,7 +67,12 @@ export class ProjectWBSHierarchy implements OnInit {
         this.loadHierarchy();
     }
 
-    private addSelectedItems(items) {
-        this.loadHierarchy();
+    /**
+     * used to display spinner when hiearchy container is being laoded
+     * @private
+     */
+    private isLoading() {
+        return this.projectwbsHierarchy.isloading;
     }
+
 }
