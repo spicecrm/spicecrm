@@ -18,6 +18,7 @@ export class AdministrationDictRepairModal {
     private synced:boolean = false;
     private sql: string;
     private dbErrors: any = [];
+    private queries: any[] = [];
     private self: any = {};
     constructor(private backend: backend, private toast: toast, private language: language, private modal: modal) {
     }
@@ -25,12 +26,18 @@ export class AdministrationDictRepairModal {
     private close() {
         this.self.destroy();
     }
+
+    public ngOnInit() {
+        this.convertSQL();
+    }
+
     /**
      * execute db repair and save the response
      */
     private doRepair() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
-        this.backend.postRequest('repair/database').subscribe((result: any) => {
+            const selectedQueries = this.queries.filter(query => query.selected).map(query => btoa(query.query));
+        this.backend.postRequest('repair/database', {}, {selectedQueries}).subscribe((result: any) => {
             if (!result.response) {
                 this.dbErrors = result.errors;
             } else if (result.synced) {
@@ -54,18 +61,14 @@ export class AdministrationDictRepairModal {
         });
     }
 
+
     /**
      * converts the sql string into an array of strings
      * @private
      */
     private convertSQL() {
-        /**
-         * todo: interpolate strings in template
-         */
-        let cut = this.sql.split("\n").filter(query => !query.includes('*'));
-        let queries = cut.map(query => btoa(query));
-        console.log(cut);
-        console.log(queries);
+        this.queries = this.sql.split("\n").filter(query => !query.includes('*') && query != "");
+        this.queries = this.queries.map(query => ({query, selected: false}));
     }
 
 
