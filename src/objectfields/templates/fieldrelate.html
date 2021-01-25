@@ -1,7 +1,6 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-not-authorized *ngIf="!isAuthorized; else fieldContainer"></field-not-authorized>
 <ng-template #fieldContainer>
-
     <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
         <div class="slds-grid slds-grid--vertical-align-center" >
             <system-icon *ngIf="displayicon" [module]="relateType" size="x-small" divClass="slds-align--absolute-center slds-p-right--xx-small"></system-icon>
