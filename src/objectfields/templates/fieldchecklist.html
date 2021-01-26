@@ -1,0 +1,72 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+    <div *ngIf="!isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
+        <div class="slds-grid slds-grid--align-end slds-m-vertical--small">
+        </div>
+        <div *ngFor="let checklist of value" class="slds-box">
+            <div class="slds-m-bottom--large slds-border--bottom slds-p-bottom--small">
+                <span class="slds-text-heading_medium slds-grow">{{checklist.name}}</span>
+                <button (click)="checklist.toggleShowCompleted = !checklist.toggleShowCompleted" system-title="LBL_TOGGLE" class="slds-button slds-button&#45;&#45;icon slds-button&#45;&#45;icon-border-filled">
+                    <system-button-icon icon="toggle" size="medium"></system-button-icon>
+                </button>
+            </div>
+            <div>
+                <div *ngFor="let item of checklist.items" class="slds-grid slds-m-bottom--x-small slds-grid--vertical-align-center">
+                    <system-checkbox [(ngModel)]="item.isCompleted"></system-checkbox>
+                    <input type="text" [(ngModel)]="item.text" class="slds-input slds-m-right--xx-small" diabled>
+                </div>
+            </div>
+        </div>
+    </div>
+</field-generic-display>
+
+<div *ngIf="isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
+    <div class="slds-grid slds-grid&#45;&#45;align-end slds-m-vertical&#45;&#45;small">
+        <button [class.slds-hide]="showAddChecklist" (click)="showAddChecklist = true"  system-title="LBL_ADD_CHECKLIST" class="slds-button slds-button&#45;&#45;icon slds-button&#45;&#45;icon-border-filled" class="slds-button slds-button&#45;&#45;icon slds-button&#45;&#45;icon-border-filled">
+            <system-button-icon icon="add" size="medium"></system-button-icon>
+        </button>
+        <div *ngIf="showAddChecklist" class="slds-grid slds-grid&#45;&#45;vertical-align-center">
+            <input #checklistInputContainer (keyup.enter)="addChecklist(checklistInputContainer.value)" type="text"  class="slds-input slds-grow slds-truncate slds-m-right&#45;&#45;xx-small">
+            <button (click)="addChecklist(checklistInputContainer.value)" system-title="LBL_CHECK" class="slds-button slds-button&#45;&#45;icon slds-button&#45;&#45;icon-border-filled">
+                <system-button-icon icon="check" size="medium"></system-button-icon>
+            </button>
+            <button (click)="showAddChecklist = false" system-title="LBL_CANCEL" class="slds-button slds-button&#45;&#45;icon slds-button&#45;&#45;icon-border-filled">
+                <system-button-icon icon="close" size="medium"></system-button-icon>
+            </button>
+        </div>
+    </div>
+    <div *ngFor="let checklist of value" class="slds-box">
+        <div class="slds-m-bottom&#45;&#45;large slds-border&#45;&#45;bottom slds-p-bottom&#45;&#45;small">
+            <span class="slds-text-heading_medium slds-grow">{{checklist.name}}</span>
+            <button (click)="checklist.toggleShowCompleted = !checklist.toggleShowCompleted" system-title="LBL_TOGGLE" class="slds-button slds-button&#45;&#45;icon slds-button&#45;&#45;icon-border-filled">
+                <system-button-icon icon="toggle" size="medium"></system-button-icon>
+            </button>
+            <button (click)="deleteChecklist(checklist)" system-title="LBL_DELETE" class="slds-button slds-button&#45;&#45;icon slds-button&#45;&#45;icon-border-filled">
+                <system-button-icon icon="delete" size="medium"></system-button-icon>
+            </button>
+        </div>
+        <div>
+            <div *ngFor="let item of checklist.items" class="slds-grid slds-m-bottom&#45;&#45;x-small slds-grid&#45;&#45;vertical-align-center">
+                <system-checkbox [(ngModel)]="item.isCompleted"></system-checkbox>
+                <input type="text" [(ngModel)]="item.text" class="slds-input slds-m-right&#45;&#45;xx-small">
+                <button (click)="deleteChecklistItem(item, checklist)" class="slds-button">
+                    <system-button-icon icon="delete" size="medium"></system-button-icon>
+                </button>
+            </div>
+        </div>
+        <div class="slds-box slds-m-top&#45;&#45;large">
+            <button [class.slds-hide]="showAddItem" (click)="showAddItem = true" system-title="LBL_ADD_ITEM" class="slds-button slds-button&#45;&#45;icon slds-button&#45;&#45;icon-border-filled slds-button slds-align&#45;&#45;absolute-center">
+                <system-button-icon icon="add" size="medium"></system-button-icon>
+            </button>
+            <div *ngIf="showAddItem" class="slds-grid">
+                <input #inputItemContainer (keyup.enter)="addChecklistItem(inputItemContainer, checklist)" type="text" class="slds-input slds-m-right&#45;&#45;x-small">
+                <button (click)="addChecklistItem(inputItemContainer, checklist)" system-title="LBL_SAVE" class="slds-button slds-button&#45;&#45;icon slds-button&#45;&#45;icon-border-filled slds-button slds-align&#45;&#45;absolute-center">
+                    <system-button-icon icon="save" size="medium"></system-button-icon>
+                </button>
+                <button (click)="showAddItem = false" system-title="LBL_CANCEL" class="slds-button slds-button&#45;&#45;icon slds-button&#45;&#45;icon-border-filled slds-button slds-align&#45;&#45;absolute-center">
+                    <system-button-icon icon="clear" size="medium"></system-button-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
