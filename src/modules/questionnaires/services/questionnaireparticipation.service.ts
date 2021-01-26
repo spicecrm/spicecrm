@@ -8,6 +8,7 @@ import { toast } from "../../../services/toast.service";
 import { language } from '../../../services/language.service';
 import { helper } from '../../../services/helper.service';
 import { BehaviorSubject } from 'rxjs';
+import { broadcast } from "../../../services/broadcast.service";
 
 /**
  * @ignore
@@ -37,7 +38,6 @@ export class questionnaireParticipationService {
     public imageWidthQuestion = 200;
 
     public inModal = true;
-    public showQuestionnaireTitle = true;
 
     public timerText: string = null;
     public timerWarning = false;
@@ -45,11 +45,6 @@ export class questionnaireParticipationService {
     public hideFinishedQuestions = false;
 
     public editMode: 'off'|'preview'|'questionnaire'|'questionoption' = 'questionnaire';
-
-    private isLoadedQuestionnaire = false;
-    private isLoadedParticipation = false;
-
-    public isSaving = false;
 
     public percentOfFinishedQuestionsInQuestionset: any = {};
     public numOfFinishedQuestionsInQuestionset: any = {};
@@ -66,38 +61,77 @@ export class questionnaireParticipationService {
 
     public isCompleted = false;
 
+    private initByParent = false;
+    private initByParticipation = false;
+    private initByQuestionnaire = false;
+
     /**
      * isDirty indicates that one or more question answers has been given/changed and that the information is still not saved to the backend.
      */
     private _isDirty = false;
-    public get isDirty() {
+    public get isDirty(): boolean {
         return this._isDirty;
     }
-    public isDirty$: BehaviorSubject<boolean>;
+    public set isDirty( value ) {
+        this._isDirty = value;
+        this.isDirty$.next( value );
+    }
+    public isDirty$ = new BehaviorSubject( false );
 
     /**
      * Indicator of loading status.
      */
+    private _isLoadedQuestionnaire = false;
+    private _isLoadedParticipation = false;
+    public get isLoadedQuestionnaire(): boolean {
+        return this._isLoadedQuestionnaire;
+    }
+    public set isLoadedQuestionnaire( value ) {
+        this._isLoadedQuestionnaire = value;
+        this.isLoaded$.next( this.isLoaded );
+    }
+    public get isLoadedParticipation(): boolean {
+        return this._isLoadedParticipation;
+    }
+    public set isLoadedParticipation( value ) {
+        this._isLoadedParticipation = value;
+        this.isLoaded$.next( this.isLoaded );
+    }
     public get isLoaded(): boolean {
-        return this.isLoadedQuestionnaire && this.isLoadedParticipation;
+        return this._isLoadedQuestionnaire && this._isLoadedParticipation;
     }
+    public isLoaded$ = new BehaviorSubject( false );
 
-    constructor( private backend: backend, private toast: toast, private language: language, private helper: helper ) {
-        this.isDirty$ = new BehaviorSubject( this.isDirty );
+    /**
+     * isSaving indicates that the saving of the answers is in progress.
+     */
+    private _isSaving = false;
+    public get isSaving(): boolean {
+        return this._isSaving;
     }
+    public set isSaving( value ) {
+        this._isSaving = value;
+        this.isSaving$.next( value );
+    }
+    public isSaving$ = new BehaviorSubject( false );
+
+    constructor( private backend: backend, private toast: toast, private language: language, private helper: helper, private broadcast: broadcast ) { }
 
     public init_byParent( parentId: string, parentType: string ): void {
+        this.initByParent = true;
         this.parentId = parentId;
         this.parentType = parentType;
         this.loadParticipation_byParent();
     }
 
     public init_byParticipation( participationId: string ) {
+        this.initByParticipation = true;
         this.participationId = participationId;
         this.loadParticipation_byParticipation();
     }
 
     public init_byQuestionnaire( questionnaireId: string ) {
+        this.initByQuestionnaire = true;
         this.questionnaireId = questionnaireId;
         if ( !this.editMode ) this.editMode = 'preview';
         this.loadQuestionnaire();
@@ -121,7 +155,7 @@ export class questionnaireParticipationService {
         }
         this.answers[questionId].optionlessAnswerValue = value;
         if ( this.editMode === 'questionoption' ) this.saveSingleAnswerToBackend( questionId, backupForNetworkError );
-        else this._isDirty = true;
+        else this.isDirty = true;
 
     }
 
@@ -148,7 +182,7 @@ export class questionnaireParticipationService {
         else this.answers[question.id].options[optionId] = value;
 
         if ( this.editMode === 'questionoption' ) this.saveSingleAnswerToBackend( question.id, backupForNetworkError );
-        else this._isDirty = true;
+        else this.isDirty = true;
 
     }
 
@@ -232,7 +266,7 @@ export class questionnaireParticipationService {
         }
 
         if ( this.editMode === 'questionoption' ) this.saveSingleAnswerToBackend( question.id, backupForNetworkError );
-        else this._isDirty = true;
+        else this.isDirty = true;
 
         return true;
 
@@ -248,6 +282,7 @@ export class questionnaireParticipationService {
      * and do all the other stuff like building arrays, sorting, building of question meta data and initializing the answers object.
      */
     private loadQuestionnaire(): EventEmitter<any> {
+        this.isLoadedParticipation = true; // Only in case there was no participation to load.
         let loaded$ = new EventEmitter<any>();
         this.backend.getRequest( 'questionnaire/render/'+this.questionnaireId ).subscribe( ( response: any ) => {
             this.questionnaire = response;
@@ -444,6 +479,7 @@ export class questionnaireParticipationService {
             // In case the edit mode is "off" or "preview" there are no answer values to load:
             // if ( this.editMode === 'preview' || this.editMode === 'off' ) return;
             this.loadQuestionnaire().subscribe( () => {
+                this.participationId = response.participationId;
                 this.insertLoadedAnswers( response.answers );
                 this.isCompleted = !!response.isCompleted;
                 this.isLoadedParticipation = true;
@@ -479,7 +515,7 @@ export class questionnaireParticipationService {
     /**
      * Reload all the data of the questionnaire.
      */
-    public reloadQuestionnaire() {
+    public reload() {
         this.isLoadedQuestionnaire = this.isLoadedParticipation = false;
         this.questionsetsArray.length = 0; // empties the array of question sets
         let key: string;
@@ -487,7 +523,9 @@ export class questionnaireParticipationService {
         for ( key in this.questionoptionsArray ) delete this.questionoptionsArray[key]; // empties the object of question options
         for ( key in this.questionoptions ) delete this.questionoptions[key]; // empties the object of question options
         for ( key in this.questionnaire ) delete this.questionnaire[key]; // empties the object of question sets
-        this.loadQuestionnaire();
+        if ( this.initByParent ) this.loadParticipation_byParent();
+        else if ( this.initByParticipation ) this.loadParticipation_byParticipation();
+        else if ( this.initByQuestionnaire ) this.loadQuestionnaire();
     }
 
     // todo: check betreffend answer object
@@ -571,14 +609,16 @@ export class questionnaireParticipationService {
     public save( setCompleted = false ): EventEmitter<boolean> {
         this.isSaving = true;
         let route = 'QuestionAnswers/ofParticipation/';
-        if ( this.participationId ) route += 'byParticipation/'+this.participationId;
-        else route += 'byParent/'+this.parentType+'/'+this.parentId;
+        // if ( this.participationId ) route += 'byParticipation/'+this.participationId;
+        // else
+        route += 'byParent/'+this.parentType+'/'+this.parentId;
         let finishedSaving$ = new EventEmitter<boolean>();
         this.backend.postRequest( route, {}, { setCompleted: setCompleted, answers: this.answers } ).subscribe( response => {
                 this.isSaving = false;
-                this._isDirty = false;
+                this.isDirty = false;
                 this.isCompleted = !!response.isCompleted;
                 finishedSaving$.emit( true );
+                this.broadcast.broadcastMessage('questionnaireParticipation.saved', { id: this.participationId, parentId: this.parentId, parentType: this.parentType });
             },
             error => {
                 this.toast.sendToast('Error saving questionnaire answers.', 'error', null, false, 'errorSavingQuestionnaireAnswers');

@@ -1,9 +1,9 @@
 /**
  * @module ModuleQuestionnaires
  */
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { questionnaireParticipationService } from '../services/questionnaireparticipation.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 @Component({
     selector: 'questionnaire-render',
@@ -15,7 +15,7 @@ import { BehaviorSubject } from 'rxjs';
     ],
     providers: [questionnaireParticipationService]
 })
-export class QuestionnaireRender implements OnInit {
+export class QuestionnaireRender implements OnInit, OnDestroy {
 
     /**
      * Either questionnaireId, parentId/parentType or participationId has to be set.
@@ -27,37 +27,53 @@ export class QuestionnaireRender implements OnInit {
 
     @Input() private editMode: 'off'|'preview'|'questionnaire'|'questionoption' = 'questionnaire';
 
-    @Output() private dirty = new EventEmitter(false);
-    @Output() private loading = new BehaviorSubject(false);
-    @Output() private saving = new BehaviorSubject(false);
+    @Input() private showQuestionnaireTitle = true;
+    @Input() private showQuestionnaireTextBefore = true;
+    @Input() private showQuestionnaireTextAfter = true;
+
+    @Output() private isDirty$ = new BehaviorSubject( false );
+    @Output() private isSaving$ = new BehaviorSubject( false );
+    @Output() private isLoaded$ = new BehaviorSubject( false );
 
     @Output() private questionnaireParticipation$ = new EventEmitter<questionnaireParticipationService>();
     private qp: questionnaireParticipationService;
+
+    private subscriptions: Subscription = new Subscription();
 
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {
         this.qp = questionnaireParticipation;
     }
 
     public ngOnInit() {
-        this.qp.showQuestionnaireTitle = false;
-        if ( this.questionnaireId !== undefined && this.editMode === undefined ) this.editMode = 'preview';
         this.qp.editMode = this.editMode;
         if ( this.questionnaireId ) this.qp.init_byQuestionnaire( this.questionnaireId );
         else if ( this.participationId ) this.qp.init_byParticipation( this.participationId );
         else if ( this.parentId && this.parentType ) this.qp.init_byParent( this.parentId, this.parentType );
         this.questionnaireParticipation$.next( this.qp );
+        this.subscriptions.add(
+            this.qp.isLoaded$.subscribe( isLoaded => this.isLoaded$.next( isLoaded ))
+        );
+        this.subscriptions.add(
+            this.qp.isSaving$.subscribe( isSaving => this.isSaving$.next( isSaving ))
+        );
+        this.subscriptions.add(
+            this.qp.isDirty$.subscribe( isDirty => this.isDirty$.next( isDirty ))
+        );
     }
 
-    /*
     public reload(): void {
-       // if ( !this.questionnaireParticipation.isLoading )
-       this.qp.reloadQuestionnaire();
+       if ( this.qp ) this.qp.reload();
     }
 
     public save() {
-        this.qp.save();
+        if ( this.qp ) this.qp.save();
     }
 
+    /**
+     * unsubscribe from subscriptions
      */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
+    }
 
 }
