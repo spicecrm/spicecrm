@@ -21,28 +21,27 @@ declare var moment: any;
 @Component({
     selector: 'field-duration',
     templateUrl: './src/objectfields/templates/fieldduration.html',
-    providers: [popup]
+
 })
 export class fieldDuration extends fieldGeneric {
     private isValid: boolean = true;
-    errorMessage: String = '';
-    durationHours: Array<string> = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
-    durationMinutes: Array<string> = ['00', '15', '30', '45'];
+    private durationHours: string[] = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+    private durationMinutes: string[] = ['00', '15', '30', '45'];
 
     get fieldminutes() {
-        return this.fieldconfig['field_minutes'] ? this.fieldconfig['field_minutes'] : 'duration_minutes';
+        return this.fieldconfig.field_minutes ? this.fieldconfig.field_minutes : 'duration_minutes';
     }
 
     get fieldhours() {
-        return this.fieldconfig['field_hours'] ? this.fieldconfig['field_hours'] : 'duration_hours';
+        return this.fieldconfig.field_hours ? this.fieldconfig.field_hours : 'duration_hours';
     }
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private popup: popup, private renderer: Renderer2, private elementRef: ElementRef) {
+    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);
 
     }
 
-    getDisplay() {
+    private getDisplay() {
         if (this.model.data[this.fieldminutes] || this.model.data[this.fieldhours]) {
             // return this.model.data[this.fieldhours] + ':' + this.model.data[this.fieldminutes];
             return ("00" + this.model.data[this.fieldhours]).slice(-2)  + ':' + ("00" + this.model.data[this.fieldminutes]).slice(-2);
