@@ -16,7 +16,11 @@ import /*embed*/ { projectwbsHierarchy } from "./services/projectwbshierarchy.se
 
 import /*embed*/ {ProjectWBSHierarchy} from "./components/projectwbshierarchy";
 import /*embed*/ {ProjectWBSHierarchyNode} from "./components/projectwbshierarchynode";
+
+import /*embed*/ {ProjectActivityDashletActivity} from "./components/projectactivitydashletactivity";
 import /*embed*/ {ProjectActivityDashlet} from "./components/projectactivitydashlet";
+import /*embed*/ {fieldProjectActivityEffort} from "./fields/fieldprojectactivityeffort";
+import /*embed*/ {fieldProjectPlannedActivityConsumption} from "./fields/fieldprojectplannedactivityconsumption";
 
 @NgModule({
     imports: [
@@ -31,7 +35,10 @@ import /*embed*/ {ProjectActivityDashlet} from "./components/projectactivitydash
     declarations: [
         ProjectWBSHierarchy,
         ProjectWBSHierarchyNode,
-        ProjectActivityDashlet
+        ProjectActivityDashlet,
+        ProjectActivityDashletActivity,
+        fieldProjectActivityEffort,
+        fieldProjectPlannedActivityConsumption
     ]
 })
 export class ModuleProjects {}
