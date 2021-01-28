@@ -22,6 +22,8 @@ import /*embed*/ {ProjectActivityDashlet} from "./components/projectactivitydash
 import /*embed*/ {fieldProjectActivityEffort} from "./fields/fieldprojectactivityeffort";
 import /*embed*/ {fieldProjectPlannedActivityConsumption} from "./fields/fieldprojectplannedactivityconsumption";
 import /*embed*/ {fieldProjectActivityDropdown} from "./fields/fieldprojectactivitydropdown";
+import /*embed*/ {ProjectWBSStatusReportButton} from "./components/projectwbsstatusreportbutton";
+import /*embed*/ {ProjectWBSStatusReportModal} from "./components/projectwbsstatusreportmodal";
 
 @NgModule({
     imports: [
@@ -36,6 +38,8 @@ import /*embed*/ {fieldProjectActivityDropdown} from "./fields/fieldprojectactiv
     declarations: [
         ProjectWBSHierarchy,
         ProjectWBSHierarchyNode,
+        ProjectWBSStatusReportButton,
+        ProjectWBSStatusReportModal,
         ProjectActivityDashlet,
         ProjectActivityDashletActivity,
         fieldProjectActivityDropdown,
