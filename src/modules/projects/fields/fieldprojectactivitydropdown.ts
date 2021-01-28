@@ -29,19 +29,7 @@ export class fieldProjectActivityDropdown extends fieldGeneric implements OnInit
         this.getActivityTypes();
     }
 
-    /**
-     * getter for the value
-     */
-    public getValue() {
-        return this.model.getFieldValue("projectactivitytype_name")
-    }
 
-    /**
-     * set value
-     */
-    public setValue() {
-        this.model.setField(this.fieldid, this.value);
-    }
     /**
      * gets the ProjectActivityTypes options for a ProjectActivity
      */
