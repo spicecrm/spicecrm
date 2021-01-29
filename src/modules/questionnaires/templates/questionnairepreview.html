@@ -1,10 +1,11 @@
 <system-modal size="large">
     <system-modal-header (close)="closePopup()">
-        <h2 class="slds-text-heading--medium">{{questionnaire.name}}</h2>
+        <h2 class="slds-text-heading--medium"><ng-container *ngIf="isLoaded">{{questionnaireParticipation.questionnaire.name}}</ng-container></h2>
     </system-modal-header>
     <system-modal-content>
-        <questionnaire-render *ngIf="!isLoading" [questionnaire]="questionnaire" [previewMode]="true"></questionnaire-render>
-        <system-spinner *ngIf="isLoading"></system-spinner>
+        <questionnaire-render   *ngIf="questionnaireId" [questionnaireId]="questionnaireId"
+                                (isLoaded$)="isLoaded=$event" editMode="preview" [showQuestionnaireTitle]="false"
+                                (questionnaireParticipation$)="questionnaireParticipation=$event"></questionnaire-render>
     </system-modal-content>
     <system-modal-footer>
         <button class="slds-button slds-button--neutral" (click)="closePopup()"><system-label label="LBL_CLOSE"></system-label></button>

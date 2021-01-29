@@ -2,7 +2,7 @@
  * @module ModuleQuestionnaires
  */
 import { Component, Input, OnInit } from '@angular/core';
-import {backend} from '../../../services/backend.service';
+import { backend } from '../../../services/backend.service';
 import { model } from '../../../services/model.service';
 import { userpreferences } from '../../../services/userpreferences.service';
 

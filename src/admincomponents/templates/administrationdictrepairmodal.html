@@ -3,15 +3,17 @@
         <system-label label="LBL_REPAIR_DICTIONARY"></system-label>
     </system-modal-header>
     <system-modal-content>
-        <div *ngIf="sql !=''">
-            <div class="slds-form-element">
-                <system-label label="LBL_SQL"></system-label>
-                <div class="slds-form-element__control">
-                    <textarea disabled class="slds-textarea" style="min-height: 400px;" [ngModel]="sql"></textarea>
-                </div>
-
-            </div>
-        </div>
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+            <tbody>
+            <tr *ngFor="let query of queries">
+                <td style="white-space: normal">
+                    <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small ">
+                        <system-checkbox  [(ngModel)]="query.selected"></system-checkbox>
+                        <div>{{query.query}}</div></div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
         <div *ngIf="dbErrors.length > 0" class="slds-form-element">
             <system-label label="LBL_LAST_DB_ERROR"></system-label>
             <div class="slds-form-element__control">
@@ -24,7 +26,7 @@
         </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--brand" [disabled]="sql == ''" (click)="doRepair()">
+        <button class="slds-button slds-button--brand" [disabled]="queries.length <= 0" (click)="doRepair()">
             <system-label label="LBL_EXECUTE"></system-label>
         </button>
         <button class="slds-button slds-button--brand" (click)="copy2clipboard()">

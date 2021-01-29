@@ -1,9 +1,9 @@
 /**
  * @module ModuleQuestionnaires
  */
-import { Component, Input, OnInit } from '@angular/core';
-import {backend} from '../../../services/backend.service';
-import {language} from '../../../services/language.service';
+import { Component, Input, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { questionnaireParticipationService } from '../services/questionnaireparticipation.service';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 @Component({
     selector: 'questionnaire-render',
@@ -12,40 +12,68 @@ import {language} from '../../../services/language.service';
         '::ng-deep .questionnaire-some-words p { margin: 0.5rem 0; }',
         '::ng-deep .questionnaire-some-words p:first-child { margin-top: 0; }',
         '::ng-deep .questionnaire-some-words p:last-child { margin-bottom: 0; }'
-    ]
+    ],
+    providers: [questionnaireParticipationService]
 })
-export class QuestionnaireRender implements OnInit {
+export class QuestionnaireRender implements OnInit, OnDestroy {
 
-    @Input() public questionnaire: any;
-    @Input() public inModal: true;
-    @Input() public showQuestionnaireTitle = true;
-    @Input() public previewMode = false;
+    /**
+     * Either questionnaireId, parentId/parentType or participationId has to be set.
+     */
+    @Input() private questionnaireId: string;
+    @Input() private parentId: string;
+    @Input() private parentType: string;
+    @Input() private participationId: string;
 
-    private questionsets: any[] = [];
-    private isLoading = true;
+    @Input() private editMode: 'off'|'preview'|'questionnaire'|'questionoption' = 'questionnaire';
 
-    constructor( private language: language, private backend: backend ) { }
+    @Input() private showQuestionnaireTitle = true;
+    @Input() private showQuestionnaireTextBefore = true;
+    @Input() private showQuestionnaireTextAfter = true;
 
-    public ngOnInit() {
-        this.loadQuestionsets();
+    @Output() private isDirty$ = new BehaviorSubject( false );
+    @Output() private isSaving$ = new BehaviorSubject( false );
+    @Output() private isLoaded$ = new BehaviorSubject( false );
+
+    @Output() private questionnaireParticipation$ = new EventEmitter<questionnaireParticipationService>();
+    private qp: questionnaireParticipationService;
+
+    private subscriptions: Subscription = new Subscription();
+
+    constructor( public questionnaireParticipation: questionnaireParticipationService ) {
+        this.qp = questionnaireParticipation;
     }
 
-    private loadQuestionsets(): void {
-        this.isLoading = true;
-        this.questionsets = [];
-        this.backend.getRequest('module/Questionnaires/'+this.questionnaire.id+'/related/questionsets', {limit: 999}).subscribe( questionsets => {
-
-            for (let key of Object.keys( questionsets )) this.questionsets.push( questionsets[key] );
-            this.questionsets.sort((a, b) => {
-                return a.position - b.position;
-            });
-
-            this.isLoading = false;
-        });
+    public ngOnInit() {
+        this.qp.editMode = this.editMode;
+        if ( this.questionnaireId ) this.qp.init_byQuestionnaire( this.questionnaireId );
+        else if ( this.participationId ) this.qp.init_byParticipation( this.participationId );
+        else if ( this.parentId && this.parentType ) this.qp.init_byParent( this.parentId, this.parentType );
+        this.questionnaireParticipation$.next( this.qp );
+        this.subscriptions.add(
+            this.qp.isLoaded$.subscribe( isLoaded => this.isLoaded$.next( isLoaded ))
+        );
+        this.subscriptions.add(
+            this.qp.isSaving$.subscribe( isSaving => this.isSaving$.next( isSaving ))
+        );
+        this.subscriptions.add(
+            this.qp.isDirty$.subscribe( isDirty => this.isDirty$.next( isDirty ))
+        );
     }
 
     public reload(): void {
-        if ( !this.isLoading ) this.loadQuestionsets();
+       if ( this.qp ) this.qp.reload();
+    }
+
+    public save() {
+        if ( this.qp ) this.qp.save();
+    }
+
+    /**
+     * unsubscribe from subscriptions
+     */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
     }
 
 }

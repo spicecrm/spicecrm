@@ -83,6 +83,7 @@ export class session {
     public getSessionHeader(): HttpHeaders {
         let headers = new HttpHeaders();
         headers = headers.set('OAuth-Token', this.authData.sessionId);
+        headers = headers.set('OAuth-Issuer', 'SpiceCRM');
         return headers;
     }
 

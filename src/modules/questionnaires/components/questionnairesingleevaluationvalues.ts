@@ -5,6 +5,7 @@ import {Component, OnInit} from '@angular/core';
 import {backend} from '../../../services/backend.service';
 import {model} from '../../../services/model.service';
 import {language} from '../../../services/language.service';
+import { broadcast } from '../../../services/broadcast.service';
 
 @Component({
     selector: 'questionnaire-single-evaluation-values',
@@ -24,7 +25,7 @@ export class QuestionnaireSingleEvaluationValues implements OnInit {
 
     private noParticipation: boolean;
 
-    constructor( private backend: backend, private model: model, private language: language ) { }
+    constructor( private backend: backend, private model: model, private language: language, private broadcast: broadcast ) { }
 
     public ngOnInit(): void {
         // The Service Feedback is in creation just now?
@@ -33,21 +34,10 @@ export class QuestionnaireSingleEvaluationValues implements OnInit {
             this.isLoading = false;
             return;
         }
-        this.backend.postRequest( 'module/QuestionnaireEvaluations/generate/byReference/ServiceFeedbacks/' + this.model.id ).subscribe( ( data: any ) => {
-            this.isLoading = false;
-            this.source = data.source;
-            this.noParticipation = ( data.source === 'noParticipation' );
-            if ( data.values ) {
-                for( let category in data.values ) {
-                    this.evaluationValues.push( data.values[category] );
-                    this.language.sortObjects( this.evaluationValues, 'name' );
-                }
-            }
-        },
-        error => {
-            if( error.status === 404 ) {
-                this.noParticipation = true; // In case there is no Service Feedback yet, then there is also no Questionnaire Participation.
-                this.isLoading = false;
+        this.loadValues();
+        this.broadcast.message$.subscribe(msg => {
+            if ( msg.messagetype == 'questionnaireParticipation.saved' && msg.messagedata.parentType === this.model.module && msg.messagedata.parentId === this.model.id ) {
+                this.reloadValues();
             }
         });
     }
@@ -63,6 +53,33 @@ export class QuestionnaireSingleEvaluationValues implements OnInit {
                 transform: 'rotateX(90deg)'
             };
         }
+    }
+
+    private loadValues(): void {
+        this.backend.postRequest( 'module/QuestionnaireEvaluations/generate/byReference/ServiceFeedbacks/' + this.model.id ).subscribe( ( data: any ) => {
+                this.isLoading = false;
+                this.source = data.source;
+                this.noParticipation = ( data.source === 'noParticipation' );
+                if ( data.values ) {
+                    for( let category in data.values ) {
+                        this.evaluationValues.push( data.values[category] );
+                        this.language.sortObjects( this.evaluationValues, 'name' );
+                    }
+                }
+            },
+            error => {
+                if( error.status === 404 ) {
+                    this.noParticipation = true; // In case there is no Service Feedback yet, then there is also no Questionnaire Participation.
+                    this.isLoading = false;
+                }
+            });
+    }
+
+    private reloadValues(): void {
+        this.isLoading = true;
+        this.source = '';
+        this.evaluationValues.length = 0;
+        this.loadValues();
     }
 
 }

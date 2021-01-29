@@ -103,8 +103,12 @@ export class ObjectRelatedList implements OnInit {
         // ToDo: check if this still is in use
         this.relatedmodels.isonlyfiltered = this.componentconfig.isonlyfiltered;
 
-        // check if we have a separate link
-        if (this.componentconfig.link) this.relatedmodels.linkName = this.componentconfig.link;
+        // check if we have a separate link or even an EndPoint
+        if (this.componentconfig.linkEndPoint) {
+            this.relatedmodels.linkEndPoint = this.componentconfig.linkEndPoint;
+        } else if (this.componentconfig.link) {
+            this.relatedmodels.linkName = this.componentconfig.link;
+        }
 
         // check if we have a sequence field and thus the list shoudl be sequenced
         if (this.componentconfig.sequencefield) {
