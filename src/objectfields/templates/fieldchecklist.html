@@ -38,9 +38,6 @@
     <div *ngFor="let checklist of value" class="slds-box">
         <div class="slds-grid slds-grid--vertical-align-center slds-m-bottom--large slds-border--bottom slds-p-bottom--small">
             <span class="slds-text-heading_medium slds-grow">{{checklist.name}}</span>
-            <button (click)="checklist.toggleShowCompleted = !checklist.toggleShowCompleted" system-title="LBL_TOGGLE" class="slds-button slds-button--icon slds-button--icon-border-filled">
-                <system-button-icon icon="toggle" size="medium"></system-button-icon>
-            </button>
             <button (click)="deleteChecklist(checklist)" system-title="LBL_DELETE" class="slds-button slds-button--icon slds-button--icon-border-filled">
                 <system-button-icon icon="delete" size="medium"></system-button-icon>
             </button>
