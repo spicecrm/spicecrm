@@ -34,15 +34,12 @@ export class fieldChecklist extends fieldGeneric implements OnInit {
                 this.initializeValue(data);
             })
         );
-        console.log('edit mode' + this.isEditMode() );
 
     }
 
     private initializeValue(data) {
         if (!!data[this.fieldname] && Array.isArray(data[this.fieldname])) return;
         this.value = [];
-        console.log('edit mode' + this.isEditMode() );
-
     }
 
     public addChecklist(name: string) {
@@ -53,8 +50,6 @@ export class fieldChecklist extends fieldGeneric implements OnInit {
         };
         this.value = [...this.value, newItem];
         this.showAddChecklist = false;
-        console.log('edit mode' + this.isEditMode() );
-
     }
 
     public addChecklistItem(inputItemContainer: HTMLInputElement, checklist) {
@@ -63,17 +58,13 @@ export class fieldChecklist extends fieldGeneric implements OnInit {
             text: inputItemContainer.value
         });
         inputItemContainer.value = '';
-        console.log('edit mode' + this.isEditMode() );
     }
 
     public deleteChecklist(checklist) {
         this.value = this.value.filter(item => item != checklist);
-        console.log('edit mode' + this.isEditMode() );
-
     }
 
     public deleteChecklistItem(item, checklist) {
         checklist.items = checklist.items.filter(checklistItem => checklistItem != item);
-        console.log('edit mode' + this.isEditMode() );
     }
 }
