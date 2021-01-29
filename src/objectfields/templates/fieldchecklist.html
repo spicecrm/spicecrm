@@ -12,7 +12,7 @@
             </div>
             <ng-container *ngFor="let item of checklist.items">
                 <div *ngIf="(!checklist.toggleShowCompleted && item.isCompleted) || (!item.isCompleted)" class="slds-grid slds-m-bottom--x-small slds-grid--vertical-align-center">
-                    <system-checkbox [(ngModel)]="item.isCompleted"></system-checkbox>
+                    <system-checkbox [(ngModel)]="item.isCompleted" [disabled]="true"></system-checkbox>
                     <span [style.text-decoration]="item.isCompleted ? 'line-through' : 'initial'" class="slds-m-right--xx-small">{{item.text}}</span>
                 </div>
             </ng-container>
