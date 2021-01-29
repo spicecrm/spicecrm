@@ -29,6 +29,15 @@ export class fieldProjectActivityDropdown extends fieldGeneric implements OnInit
         this.getActivityTypes();
     }
 
+    /**
+     *
+     * @param value
+     * @private
+     */
+    private translateValue(value) {
+      return this.options.find(val => val.id == value)?.name;
+    }
+
 
     /**
      * gets the ProjectActivityTypes options for a ProjectPlannedActivity
