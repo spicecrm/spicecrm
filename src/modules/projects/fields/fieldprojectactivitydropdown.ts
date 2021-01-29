@@ -13,7 +13,6 @@ import {backend} from "../../../services/backend.service";
 @Component({
     selector: 'field-project-activity-dropdown',
     templateUrl: './src/modules/projects/templates/fieldprojectactivitydropdown.html',
-
 })
 
 export class fieldProjectActivityDropdown extends fieldGeneric implements OnInit {
@@ -22,6 +21,7 @@ export class fieldProjectActivityDropdown extends fieldGeneric implements OnInit
 
     constructor(public backend: backend, public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);
+
     }
 
     public ngOnInit() {
@@ -31,10 +31,11 @@ export class fieldProjectActivityDropdown extends fieldGeneric implements OnInit
 
 
     /**
-     * gets the ProjectActivityTypes options for a ProjectActivity
+     * gets the ProjectActivityTypes options for a ProjectPlannedActivity
      */
     public getActivityTypes() {
-        this.backend.getRequest(`activitytypes/${this.model.id}`).subscribe(result => {
+        let projectwbsid = this.model.getField('projectwbs_id');
+        this.backend.getRequest(`activitytypes/${projectwbsid}`).subscribe(result => {
             if (result.activitytypes.length > 0) {
                 this.options = result.activitytypes;
                 this.disabled = false;
