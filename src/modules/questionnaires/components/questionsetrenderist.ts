@@ -63,7 +63,6 @@ export class QuestionTypeISTOptionsPipe {
 } )
 export class QuestionsetRenderIST extends QuestionsetRenderBasic implements OnInit {
 
-    private cons = console;
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {
         super( questionnaireParticipation );
     }
@@ -71,7 +70,7 @@ export class QuestionsetRenderIST extends QuestionsetRenderBasic implements OnIn
     private getAnswerValue( questionId: string, answerIndex: number ): string {
         try {
             let optionId = this.qp.questionoptionsArray[questionId][answerIndex].id;
-            return this.qp.answers[questionId][optionId].value;
+            return this.qp.answers[questionId].options[optionId];
         } catch(e) {
             return '';
         }

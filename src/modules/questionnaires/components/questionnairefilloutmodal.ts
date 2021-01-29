@@ -5,6 +5,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { questionnaireParticipationService } from '../services/questionnaireparticipation.service';
 import { modal } from '../../../services/modal.service';
 import { language } from '../../../services/language.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'questionnaire-fill-out-modal',
@@ -21,15 +22,13 @@ export class QuestionnaireFillOutModal implements OnInit {
     private questionnaireParticipation: questionnaireParticipationService;
     private qp: questionnaireParticipationService;
 
-    private get qpIsSaving(): boolean {
-        return this.qp && this.qp.isSaving;
-    }
+    private qpIsDirty: boolean;
+    private qpIsSaving: boolean;
+    private qpIsLoaded: boolean;
 
-    private get qpIsDirty(): boolean {
-        return this.qp && this.qp.isDirty;
-    }
+    private subscriptions: Subscription = new Subscription();
 
-    constructor( private modal: modal, private language: language ) {}
+    constructor( private modal: modal, private language: language ) { }
 
     public ngOnInit(): void {
         this.qp = this.questionnaireParticipation;
@@ -48,9 +47,11 @@ export class QuestionnaireFillOutModal implements OnInit {
      */
     private saveAndClose( setCompleted: boolean ) {
         if ( this.qpIsSaving ) return;
-        this.qp.save( setCompleted ).subscribe( success => {
-            if ( success ) this.self.destroy();
-        });
+        this.subscriptions.add(
+            this.qp.save( setCompleted ).subscribe( success => {
+                if ( success ) this.self.destroy();
+            })
+        );
     }
 
     /**
@@ -60,12 +61,21 @@ export class QuestionnaireFillOutModal implements OnInit {
      */
     private onModalEscX(): boolean {
         if ( this.qpIsSaving ) return; // Closing is not possible during the saving process.
-        if ( this.qp.isDirty ) {
-            this.modal.confirm( this.language.getLabel('Discard changes?')).subscribe(answer => {
-                if ( answer ) this.self.destroy();
-            });
+        if ( this.qpIsDirty ) {
+            this.subscriptions.add(
+                this.modal.confirm( this.language.getLabel('Discard changes?')).subscribe(answer => {
+                    if ( answer ) this.self.destroy();
+                })
+            );
             return false;
         } else return true;
+    }
+
+    /**
+     * unsubscribe from subscriptions
+     */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
     }
 
 }
