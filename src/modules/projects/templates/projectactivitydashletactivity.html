@@ -9,8 +9,7 @@
                      class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
                     <div class="slds-pill_container">
                         <span class="slds-pill slds-size--1-of-1">
-                            <span class="slds-pill__label">{{selected_wbs.project_name}} / {{selected_wbs.name}}
-                                / {{selected_wbs.type}} / {{selected_wbs.level}}</span>
+                            <span class="slds-pill__label">{{selected_wbs.summary_text}}</span>
                             <button class="slds-button slds-button--icon slds-pill__remove"
                                     (click)="selected_wbs = null">
                               <system-button-icon [icon]="'close'"></system-button-icon>
