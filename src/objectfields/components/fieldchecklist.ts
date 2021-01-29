@@ -15,12 +15,19 @@ import {language} from "../../services/language.service";
  * renders a checklist
  */
 @Component({
-    selector: 'field-gdpr',
+    selector: 'field-checklist',
     templateUrl: './src/objectfields/templates/fieldchecklist.html'
 })
 export class fieldChecklist extends fieldGeneric implements OnInit {
 
+    /**
+     *
+     */
     public showAddItem: boolean = false;
+
+    /**
+     *
+     */
     public showAddChecklist: boolean = false;
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private backend: backend, private modal: modal, private injector: Injector) {
@@ -34,15 +41,11 @@ export class fieldChecklist extends fieldGeneric implements OnInit {
                 this.initializeValue(data);
             })
         );
-        console.log('edit mode' + this.isEditMode() );
-
     }
 
     private initializeValue(data) {
         if (!!data[this.fieldname] && Array.isArray(data[this.fieldname])) return;
         this.value = [];
-        console.log('edit mode' + this.isEditMode() );
-
     }
 
     public addChecklist(name: string) {
@@ -53,8 +56,6 @@ export class fieldChecklist extends fieldGeneric implements OnInit {
         };
         this.value = [...this.value, newItem];
         this.showAddChecklist = false;
-        console.log('edit mode' + this.isEditMode() );
-
     }
 
     public addChecklistItem(inputItemContainer: HTMLInputElement, checklist) {
@@ -63,17 +64,13 @@ export class fieldChecklist extends fieldGeneric implements OnInit {
             text: inputItemContainer.value
         });
         inputItemContainer.value = '';
-        console.log('edit mode' + this.isEditMode() );
     }
 
     public deleteChecklist(checklist) {
         this.value = this.value.filter(item => item != checklist);
-        console.log('edit mode' + this.isEditMode() );
-
     }
 
     public deleteChecklistItem(item, checklist) {
         checklist.items = checklist.items.filter(checklistItem => checklistItem != item);
-        console.log('edit mode' + this.isEditMode() );
     }
 }
