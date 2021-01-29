@@ -16,7 +16,15 @@ import {backend} from "../../../services/backend.service";
 })
 
 export class fieldProjectActivityDropdown extends fieldGeneric implements OnInit {
+    /**
+     * holds the options
+     * @private
+     */
     private options: any = [];
+    /**
+     * variable to set the field disabled
+     * @private
+     */
     private disabled: boolean = true;
 
     constructor(public backend: backend, public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
@@ -24,6 +32,9 @@ export class fieldProjectActivityDropdown extends fieldGeneric implements OnInit
 
     }
 
+    /**
+     * retrieves the activitytypes when the component is rendering
+     */
     public ngOnInit() {
         super.ngOnInit();
         this.getActivityTypes();
