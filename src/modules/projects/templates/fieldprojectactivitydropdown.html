@@ -1,6 +1,6 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!this.isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [title]="value" [fieldid]="fieldid">
-    {{translateValue(value)}}
+    {{value}}
 </field-generic-display>
 <div *ngIf="this.isEditMode()">
     <div class="slds-form-element__control" [ngClass]="getFieldClass()">
