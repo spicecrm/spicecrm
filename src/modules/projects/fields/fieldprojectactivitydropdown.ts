@@ -21,15 +21,9 @@ export class fieldProjectActivityDropdown extends fieldGeneric implements OnInit
      * @private
      */
     private options: any = [];
-    /**
-     * variable to set the field disabled
-     * @private
-     */
-    private disabled: boolean = true;
 
     constructor(public backend: backend, public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
         super(model, view, language, metadata, router);
-
     }
 
     /**
@@ -40,6 +34,21 @@ export class fieldProjectActivityDropdown extends fieldGeneric implements OnInit
         this.getActivityTypes();
     }
 
+    /**
+     * get projectactivitytipe_id from vardefs
+     */
+    get idField(){
+        let fieldDefs = this.metadata.getFieldDefs(this.model.module, this.fieldname);
+        return fieldDefs.id_name;
+    }
+
+    /**
+     * get the condition to set the selection disabled
+     * if there is no projectwbs_id, the selection cant be possible
+     */
+    get isDisabled() {
+        return !this.model.getField('projectwbs_id');
+    }
 
     /**
      * gets the ProjectActivityTypes options for a ProjectPlannedActivity
@@ -49,7 +58,6 @@ export class fieldProjectActivityDropdown extends fieldGeneric implements OnInit
         this.backend.getRequest(`activitytypes/${projectwbsid}`).subscribe(result => {
             if (result.activitytypes.length > 0) {
                 this.options = result.activitytypes;
-                this.disabled = false;
             }
         });
     }
