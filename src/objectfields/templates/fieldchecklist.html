@@ -20,9 +20,9 @@
     </div>
 </field-generic-display>
 
-<div *ngIf="isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
+<div *ngIf="isEditMode()" cdkDropListGroup class="slds-form-element__control fieldchecklistdragboundary" [ngClass]="getFieldClass()">
     <div class="slds-grid slds-grid--align-end slds-m-vertical--small">
-        <button [class.slds-hide]="showAddChecklist" (click)="showAddChecklist = true"  system-title="LBL_ADD_CHECKLIST" class="slds-button slds-button--icon slds-button--icon-border-filled" class="slds-button slds-button--icon slds-button--icon-border-filled">
+        <button [class.slds-hide]="showAddChecklist" (click)="showAddChecklist = true"  system-title="LBL_ADD_CHECKLIST" class="slds-button slds-button--icon slds-button--icon-border-filled">
             <system-button-icon icon="add" size="medium"></system-button-icon>
         </button>
         <div *ngIf="showAddChecklist" class="slds-grid slds-grid--vertical-align-center">
@@ -42,8 +42,9 @@
                 <system-button-icon icon="delete" size="medium"></system-button-icon>
             </button>
         </div>
-        <div>
-            <div *ngFor="let item of checklist.items" class="slds-grid slds-m-bottom--x-small slds-grid--vertical-align-center">
+        <div cdkDropList [cdkDropListData]="checklist.items" (cdkDropListDropped)="onDrop($event)" cdkDropListLockAxis="y" style="min-height: 20px;">
+            <div *ngFor="let item of checklist.items" class="slds-grid slds-m-bottom--x-small slds-grid--vertical-align-center slds-drag--preview" cdkDrag [cdkDragData]="item" cdkDragBoundary=".fieldchecklistdragboundary">
+                <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
                 <system-checkbox [(ngModel)]="item.isCompleted"></system-checkbox>
                 <input type="text" [(ngModel)]="item.text" class="slds-input slds-m-right--xx-small">
                 <button (click)="deleteChecklistItem(item, checklist)" class="slds-button">
