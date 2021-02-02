@@ -10,6 +10,7 @@ import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 import {language} from "../../services/language.service";
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 
 /**
  * renders a checklist
@@ -66,5 +67,21 @@ export class fieldChecklist extends fieldGeneric implements OnInit {
 
     public deleteChecklistItem(item, checklist) {
         checklist.items = checklist.items.filter(checklistItem => checklistItem != item);
+    }
+
+    /**
+     * handle drag and drop event
+     */
+
+    private onDrop(event: CdkDragDrop<any>) {
+
+        if (event.previousContainer === event.container) {
+            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        } else {
+            transferArrayItem(event.previousContainer.data,
+                event.container.data,
+                event.previousIndex,
+                event.currentIndex);
+        }
     }
 }

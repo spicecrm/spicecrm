@@ -4,6 +4,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule}   from '@angular/forms';
+import {DragDropModule} from "@angular/cdk/drag-drop";
 
 import {metadata} from '../services/metadata.service';
 
@@ -131,7 +132,8 @@ declare var _: any;
         CommonModule,
         FormsModule,
         SystemComponents,
-        DirectivesModule
+        DirectivesModule,
+        DragDropModule
     ],
     declarations: [
         fieldSet,
