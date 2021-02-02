@@ -89,7 +89,7 @@ export class ProjectActivityDashletActivity implements OnInit, OnDestroy {
         }
 
         return this.plannedActivities.filter((e) => {
-            return e.project_name.toLowerCase().includes(this.wbs_search_term) || e.name.toLowerCase().includes(this.wbs_search_term) || e.type.toLowerCase().includes(this.wbs_search_term) || e.level.toLowerCase().includes(this.wbs_search_term);
+            return e.summary_text.toLowerCase().includes(this.wbs_search_term);
         });
     }
 
