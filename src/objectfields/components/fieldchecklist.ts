@@ -44,9 +44,10 @@ export class fieldChecklist extends fieldGeneric implements OnInit {
     }
 
     public addChecklist(name: string) {
+        if (!name) return;
         const newItem = {
             name,
-            toggleShowCompleted: true,
+            showCompleted: true,
             items: []
         };
         this.value = [...this.value, newItem];
@@ -54,6 +55,7 @@ export class fieldChecklist extends fieldGeneric implements OnInit {
     }
 
     public addChecklistItem(inputItemContainer: HTMLInputElement, checklist) {
+        if (!inputItemContainer.value) return;
         checklist.items.push({
             isCompleted: false,
             text: inputItemContainer.value
