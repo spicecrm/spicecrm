@@ -6,12 +6,12 @@
         <div *ngFor="let checklist of value" class="slds-box">
             <div class="slds-grid slds-grid--vertical-align-center slds-m-bottom--large slds-border--bottom slds-p-bottom--small">
                 <span class="slds-text-heading_medium slds-grow slds-p-right--x-small">{{checklist.name}}</span>
-                <button (click)="checklist.toggleShowCompleted = !checklist.toggleShowCompleted" system-title="LBL_TOGGLE" class="slds-button slds-button--icon slds-button--icon-border-filled">
+                <button (click)="checklist.showCompleted = !checklist.showCompleted" system-title="LBL_TOGGLE" class="slds-button slds-button--icon-border-filled">
                     <system-button-icon icon="toggle" size="medium"></system-button-icon>
                 </button>
             </div>
             <ng-container *ngFor="let item of checklist.items">
-                <div *ngIf="(!checklist.toggleShowCompleted && item.isCompleted) || (!item.isCompleted)" class="slds-grid slds-m-bottom--x-small slds-grid--vertical-align-center">
+                <div *ngIf="(checklist.showCompleted && item.isCompleted) || (!item.isCompleted)" class="slds-grid slds-m-bottom--x-small slds-grid--vertical-align-center">
                     <system-checkbox [(ngModel)]="item.isCompleted" [disabled]="true"></system-checkbox>
                     <span [style.text-decoration]="item.isCompleted ? 'line-through' : 'initial'" class="slds-m-right--xx-small">{{item.text}}</span>
                 </div>
@@ -26,8 +26,8 @@
             <system-button-icon icon="add" size="medium"></system-button-icon>
         </button>
         <div *ngIf="showAddChecklist" class="slds-grid slds-grid--vertical-align-center">
-            <input #checklistInputContainer (keyup.enter)="addChecklist(checklistInputContainer.value)" type="text"  class="slds-input slds-grow slds-truncate slds-m-right--xx-small">
-            <button (click)="addChecklist(checklistInputContainer.value)" system-title="LBL_CHECK" class="slds-button slds-button--icon slds-button--icon-border-filled">
+            <input #checklistInputContainer (keyup.enter)="addChecklist(checklistInputContainer.value)" type="text" class="slds-input slds-grow slds-truncate slds-m-right--xx-small">
+            <button (click)="addChecklist(checklistInputContainer.value)" [disabled]="!checklistInputContainer.value" system-title="LBL_CHECK" class="slds-button slds-button--icon slds-button--icon-border-filled">
                 <system-button-icon icon="check" size="medium"></system-button-icon>
             </button>
             <button (click)="showAddChecklist = false" system-title="LBL_CANCEL" class="slds-button slds-button--icon slds-button--icon-border-filled">
@@ -37,7 +37,7 @@
     </div>
     <div *ngFor="let checklist of value" class="slds-box">
         <div class="slds-grid slds-grid--vertical-align-center slds-m-bottom--large slds-border--bottom slds-p-bottom--small">
-            <span class="slds-text-heading_medium slds-grow">{{checklist.name}}</span>
+            <input type="text" [(ngModel)]="checklist.name" class="slds-input slds-m-right--xx-small">
             <button (click)="deleteChecklist(checklist)" system-title="LBL_DELETE" class="slds-button slds-button--icon slds-button--icon-border-filled">
                 <system-button-icon icon="delete" size="medium"></system-button-icon>
             </button>
@@ -58,7 +58,7 @@
             </button>
             <div *ngIf="showAddItem" class="slds-grid">
                 <input #inputItemContainer (keyup.enter)="addChecklistItem(inputItemContainer, checklist)" type="text" class="slds-input slds-m-right--x-small">
-                <button (click)="addChecklistItem(inputItemContainer, checklist)" system-title="LBL_SAVE" class="slds-button slds-button--icon slds-button--icon-border-filled slds-button slds-align--absolute-center">
+                <button (click)="addChecklistItem(inputItemContainer, checklist)" [disabled]="!inputItemContainer.value" system-title="LBL_SAVE" class="slds-button slds-button--icon slds-button--icon-border-filled slds-button slds-align--absolute-center">
                     <system-button-icon icon="save" size="medium"></system-button-icon>
                 </button>
                 <button (click)="showAddItem = false" system-title="LBL_CANCEL" class="slds-button slds-button--icon slds-button--icon-border-filled slds-button slds-align--absolute-center">
