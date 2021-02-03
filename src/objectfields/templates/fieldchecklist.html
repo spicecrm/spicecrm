@@ -6,7 +6,7 @@
         <div *ngFor="let checklist of value" class="slds-box">
             <div class="slds-grid slds-grid--vertical-align-center slds-m-bottom--large slds-border--bottom slds-p-bottom--small">
                 <span class="slds-text-heading_medium slds-grow slds-p-right--x-small">{{checklist.name}}</span>
-                <button (click)="checklist.showCompleted = !checklist.showCompleted" system-title="LBL_TOGGLE" class="slds-button slds-button--icon-border-filled">
+                <button (click)="checklist.showCompleted = !checklist.showCompleted; $event.stopPropagation()" system-title="LBL_TOGGLE" class="slds-button slds-button--icon-border-filled">
                     <system-button-icon icon="toggle" size="medium"></system-button-icon>
                 </button>
             </div>
