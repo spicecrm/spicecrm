@@ -10,24 +10,18 @@ import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 import {language} from "../../services/language.service";
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 
 /**
  * renders a checklist
  */
 @Component({
-    selector: 'field-checklist',
+    selector: 'field-gdpr',
     templateUrl: './src/objectfields/templates/fieldchecklist.html'
 })
 export class fieldChecklist extends fieldGeneric implements OnInit {
 
-    /**
-     *
-     */
     public showAddItem: boolean = false;
-
-    /**
-     *
-     */
     public showAddChecklist: boolean = false;
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private backend: backend, private modal: modal, private injector: Injector) {
@@ -41,6 +35,7 @@ export class fieldChecklist extends fieldGeneric implements OnInit {
                 this.initializeValue(data);
             })
         );
+
     }
 
     private initializeValue(data) {
@@ -49,9 +44,11 @@ export class fieldChecklist extends fieldGeneric implements OnInit {
     }
 
     public addChecklist(name: string) {
+        if (!this.value) this.value = [];
+        if (!name) return;
         const newItem = {
             name,
-            toggleShowCompleted: true,
+            showCompleted: true,
             items: []
         };
         this.value = [...this.value, newItem];
@@ -59,6 +56,7 @@ export class fieldChecklist extends fieldGeneric implements OnInit {
     }
 
     public addChecklistItem(inputItemContainer: HTMLInputElement, checklist) {
+        if (!inputItemContainer.value) return;
         checklist.items.push({
             isCompleted: false,
             text: inputItemContainer.value
@@ -72,5 +70,21 @@ export class fieldChecklist extends fieldGeneric implements OnInit {
 
     public deleteChecklistItem(item, checklist) {
         checklist.items = checklist.items.filter(checklistItem => checklistItem != item);
+    }
+
+    /**
+     * handle drag and drop event
+     */
+
+    private onDrop(event: CdkDragDrop<any>) {
+
+        if (event.previousContainer === event.container) {
+            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        } else {
+            transferArrayItem(event.previousContainer.data,
+                event.container.data,
+                event.previousIndex,
+                event.currentIndex);
+        }
     }
 }
