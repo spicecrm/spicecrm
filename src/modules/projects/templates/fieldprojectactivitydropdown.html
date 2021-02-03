@@ -5,7 +5,7 @@
 <div *ngIf="this.isEditMode()">
     <div class="slds-form-element__control" [ngClass]="getFieldClass()">
         <div class="slds-select_container slds-m-vertical--xx-small">
-            <select #focus class="slds-select" [(ngModel)]="value">
+            <select [disabled]="isDisabled" #focus class="slds-select" [(ngModel)]="model.data[this.idField]">
                 <option *ngFor="let o of options" [value]="o.id">{{o.name}}</option>
             </select>
         </div>
