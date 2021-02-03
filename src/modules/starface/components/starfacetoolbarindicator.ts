@@ -260,7 +260,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
             return false;
         }
 
-        this.socket = io(`${this.socketurl}?sysid=${this.socketid}&room=${this.username}&token=${this.session.authData.sessionId}`);
+        this.socket = io(`${this.socketurl}?sysid=${this.socketid}&room=starface${this.username}&token=${this.session.authData.sessionId}`);
         this.socket.on('connect', (socket) => {
             this.socketconnected = true;
         });
