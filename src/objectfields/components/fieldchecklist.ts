@@ -44,6 +44,7 @@ export class fieldChecklist extends fieldGeneric implements OnInit {
     }
 
     public addChecklist(name: string) {
+        if (!this.value) this.value = [];
         if (!name) return;
         const newItem = {
             name,
