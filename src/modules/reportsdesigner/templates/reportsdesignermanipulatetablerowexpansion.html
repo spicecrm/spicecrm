@@ -2,6 +2,14 @@
     <td colspan="7">
         <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
             <div class="slds-form-element__control">
+                <div class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
+                    <div class="slds-form-element slds-size--1-of-1">
+                        <label class="slds-form-element__label"><system-label label="LBL_PATH"></system-label></label>
+                        <div class="slds-form-element__control">
+                            <input type="text" [(ngModel)]="listItem.path" class="slds-input" [disabled]="true">
+                        </div>
+                    </div>
+                </div>
                 <div class="slds-form-element slds-grid">
                     <div class="slds-form-element slds-size--1-of-2">
                         <label class="slds-form-element__label"><system-label label="LBL_FIXED_VALUE"></system-label></label>
