@@ -59,7 +59,7 @@ export class SystemInputNumber implements ControlValueAccessor {
      * @param event The DOM event
      */
     private fieldChanged(event) {
-        this.textValue = this.getValSanitized(this.textValue);
+        this.textValue = typeof(this.textValue) != 'number' ? this.getValSanitized(this.textValue) : this.textValue;
         // Only submit the (new) value if the sanitized value has actually changed:
         if ( this.textValue !== this.lastTextValue ) {
             this.onChange( this.textValue );
