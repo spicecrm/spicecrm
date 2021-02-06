@@ -18,8 +18,20 @@ import {projectwbsHierarchy} from "../services/projectwbshierarchy.service";
     }
 })
 export class ProjectWBSHierarchyNode implements OnInit {
+    /**
+     * the data from teh members
+     */
     @Input() public nodedata: any = {};
+
+    /**
+     * the fields to be dispalayed
+     */
     @Input() public fields: any[] = [];
+
+    /**
+     *
+     * @private
+     */
     private loading: boolean = false;
 
     constructor(private language: language, private metadata: metadata, private projectwbsHierarchy: projectwbsHierarchy, private model: model, private view: view) {
@@ -29,15 +41,7 @@ export class ProjectWBSHierarchyNode implements OnInit {
     public ngOnInit() {
         this.model.module = "ProjectWBSs";
         this.model.id = this.nodedata.id;
-        this.model.data.summary_text = this.nodedata.summary_text;
-
-        // copy fields
-        for (let field of this.fields) {
-            this.model.data[field.field] = this.nodedata.data[field.field];
-        }
-
-        // copy acl
-        this.model.data.acl = this.nodedata.data.acl;
+        this.model.data = this.model.utils.backendModel2spice(this.model.module, this.nodedata.data);
     }
 
     get expandable() {

@@ -15,7 +15,16 @@ import {projectwbsHierarchy} from "../services/projectwbshierarchy.service";
     providers: [projectwbsHierarchy, relatedmodels]
 })
 export class ProjectWBSHierarchy implements OnInit {
+    /**
+     * the component config
+     * @private
+     */
     private componentconfig: any = {};
+
+    /**
+     * the fieldsets to be displayed
+     * @private
+     */
     private fieldsetFields: any[] = [];
 
     constructor(private language: language, private metadata: metadata, private projectwbsHierarchy: projectwbsHierarchy, private model: model, private relatedmodels: relatedmodels, private broadcast: broadcast) {
@@ -50,7 +59,6 @@ export class ProjectWBSHierarchy implements OnInit {
      */
     private loadHierarchy() {
         this.projectwbsHierarchy.project_id = this.model.id;
-        this.projectwbsHierarchy.requestedFields = this.fieldsetFields;
         this.projectwbsHierarchy.loadHierarchy();
     }
 
