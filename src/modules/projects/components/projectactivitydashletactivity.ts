@@ -32,8 +32,15 @@ export class ProjectActivityDashletActivity implements OnInit, OnDestroy {
     private selected_wbs = null;
     private wbs_search_term = "";
     private show_wbs_results = false;
+
+    // the current set minutes
     private activityminutes: number = 15;
+
+    // the currrent set hours
     private activitiyhours: number = 0;
+
+    private activitiyDateStart: any;
+    private activitiyDateEnd: any;
 
     private subscriptions: Subscription = new Subscription();
 
@@ -105,25 +112,28 @@ export class ProjectActivityDashletActivity implements OnInit, OnDestroy {
             this.activitiyhours = data.duration_hours;
 
             // calculate the end date
-            let endDate = moment(this.model.data.activity_start);
-            endDate.add(this.activityminutes, "m");
-            endDate.add(this.activitiyhours, "h");
-            this.model.setField('activity_end', endDate);
+            this.activitiyDateEnd = moment(this.model.data.activity_start);
+            this.activitiyDateEnd.add(this.activityminutes, "m");
+            this.activitiyDateEnd.add(this.activitiyhours, "h");
 
-        } else if (Math.round(moment.duration(data.activity_end.diff(data.activity_start)).asMinutes()) != (this.activitiyhours * 60 + this.activityminutes)) {
-            // set end date to start date (without setting the time...)
-            if (!this.model.data.activity_start) {
-                return false;
-            }
+            this.model.setField('activity_end', this.activitiyDateEnd);
 
-            this.model.data.activity_end
-                .year(this.model.data.activity_start.get("year"))
-                .month(this.model.data.activity_start.get("month"))
-                .date(this.model.data.activity_start.get("date"));
+        } else if (Math.round(moment.duration(data.activity_start.diff(this.activitiyDateStart)).asMinutes()) != 0) {
+            // set the current date start so we have a reference for changes
+            this.activitiyDateStart = new moment(data.activity_start);
+            // calculate a new end date with the new duration
+            this.activitiyDateEnd = moment(this.model.data.activity_start);
+            this.activitiyDateEnd.add(this.activityminutes, "m");
+            this.activitiyDateEnd.add(this.activitiyhours, "h");
 
-            // calculate the duration in minutes
-            let duration = Math.round(moment.duration(data.activity_end.diff(data.activity_start)).asMinutes());
-
+            this.model.setField('activity_end', this.activitiyDateEnd);
+        } else if (Math.round(moment.duration(data.activity_end.diff(data.activity_start)).asMinutes()) < 0) {
+            // we have a new end date before the start date .. this is not allowed .. reset the end time
+            this.model.setField('activity_end', this.activitiyDateEnd);
+        } else if (Math.round(moment.duration(data.activity_end.diff(this.activitiyDateEnd)).asMinutes()) != 0) {
+            // calculate a new duration based on the new end
+            this.activitiyDateEnd = moment(this.model.data.activity_end);
+            let duration = Math.round(moment.duration(this.model.data.activity_end.diff(data.activity_start)).asMinutes());
             // get minutes and hours
             if (duration > 0) {
                 this.activitiyhours = Math.floor(duration / 60);
@@ -212,21 +222,24 @@ export class ProjectActivityDashletActivity implements OnInit, OnDestroy {
         this.show_wbs_results = false;
 
         // set to the next 15  minute to the end
-        let value = new moment();
-        value.minute((Math.floor(value.minute() / 15) + 1) * 15);
-        this.model.data.activity_end = value;
-        this.model.data.activity_end.second(0);
+        this.activitiyDateStart = new moment();
+        this.activitiyDateStart.minute((Math.floor(this.activitiyDateStart.minute() / 15)) * 15);
+        this.activitiyDateStart.second(0);
 
         // set default duration to 15 minutes
-        this.model.data.duration_hours = 0;
-        this.model.data.duration_minutes = 15;
-
         this.activitiyhours = 0;
         this.activityminutes = 15;
 
-        // set the date start subtracting the duration
-        this.model.data.activity_start = new moment(value);
-        this.model.data.activity_start.second(0);
-        this.model.data.activity_start.subtract(this.model.data.duration_minutes, "m");
+        // calculate the end date
+        this.activitiyDateEnd = new moment(this.activitiyDateStart);
+        this.activitiyDateEnd.add(this.activityminutes, 'm');
+
+        // set the model data
+        this.model.setFields({
+            activity_start: new moment(this.activitiyDateStart),
+            activity_end: new moment(this.activitiyDateEnd),
+            duration_hours: this.activitiyhours,
+            duration_minutes: this.activityminutes
+        });
     }
 }
