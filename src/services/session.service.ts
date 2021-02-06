@@ -12,7 +12,6 @@ declare var moment: any;
 // Taken from https://github.com/killmenot/webtoolkit.md5
 
 interface authDataIf {
-    renewPass: boolean;
     sessionId: string;
     loaded: boolean;
     userId: string;
@@ -51,7 +50,6 @@ export class session {
         password: '',
         admin: false,
         dev: false,
-        renewPass: false,
         portalOnly: false,
         googleToken: '',
         userimage: '',
@@ -172,7 +170,6 @@ export class session {
         this.authData.password = '';
         this.authData.admin = false;
         this.authData.dev = false;
-        this.authData.renewPass = false;
         this.authData.companycode_id = '';
         this.authData.obtainGDPRconsent = false;
 
