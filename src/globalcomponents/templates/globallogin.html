@@ -47,7 +47,7 @@
                             </div>
                         </div>
                         <button type="submit" value="Submit" class="slds-button slds-button--brand slds-button_stretch" tabindex="0">Login</button>
-                        <global-login-google (googletoken)="doLogin()"></global-login-google>
+                        <global-login-google (token)="login($event, 'Google')"></global-login-google>
                     </form>
                     <div class="slds-p-vertical--x-small slds-grid slds-grid--align-spread slds-grid_vertical-align-center"
                          *ngIf="configuration.data.allowForgotPass">
@@ -60,8 +60,9 @@
                     <global-login-forgot-password class="slds-col" *ngIf="showForgotPass" (hasNewPassword)="showForgotPass = $event"></global-login-forgot-password>
                 </div>
             </div>
-            <global-login-reset-password *ngIf="loginService.session.authData.renewPass" [oldpassword]="password"></global-login-reset-password>
-            <ng-container *ngIf="loginService.session.authData.sessionId && !loginService.session.authData.renewPass">
+            <!-- the renew dialog ... needs to be added here in this way as we do not have the modal service and repository yet -->
+            <global-login-reset-password class="slds-is-absolute" *ngIf="renewpassword" (closeRenewDialog)="renewpassword = false" [oldpassword]="password"></global-login-reset-password>
+            <ng-container *ngIf="loginService.session.authData.sessionId">
                 <system-loader-progress></system-loader-progress>
             </ng-container>
         </div>
