@@ -118,7 +118,7 @@ export class ProjectActivityDashletActivity implements OnInit, OnDestroy {
 
             this.model.setField('activity_end', this.activitiyDateEnd);
 
-        } else if (Math.round(moment.duration(data.activity_start.diff(this.activitiyDateStart)).asMinutes()) != 0) {
+        } else if (data.activity_start && Math.round(moment.duration(data.activity_start.diff(this.activitiyDateStart)).asMinutes()) != 0) {
             // set the current date start so we have a reference for changes
             this.activitiyDateStart = new moment(data.activity_start);
             // calculate a new end date with the new duration
@@ -127,10 +127,10 @@ export class ProjectActivityDashletActivity implements OnInit, OnDestroy {
             this.activitiyDateEnd.add(this.activitiyhours, "h");
 
             this.model.setField('activity_end', this.activitiyDateEnd);
-        } else if (Math.round(moment.duration(data.activity_end.diff(data.activity_start)).asMinutes()) < 0) {
+        } else if (data.activity_end && Math.round(moment.duration(data.activity_end.diff(data.activity_start)).asMinutes()) < 0) {
             // we have a new end date before the start date .. this is not allowed .. reset the end time
             this.model.setField('activity_end', this.activitiyDateEnd);
-        } else if (Math.round(moment.duration(data.activity_end.diff(this.activitiyDateEnd)).asMinutes()) != 0) {
+        } else if (data.activity_end && Math.round(moment.duration(data.activity_end.diff(this.activitiyDateEnd)).asMinutes()) != 0) {
             // calculate a new duration based on the new end
             this.activitiyDateEnd = moment(this.model.data.activity_end);
             let duration = Math.round(moment.duration(this.model.data.activity_end.diff(data.activity_start)).asMinutes());
