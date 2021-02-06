@@ -1,10 +1,11 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
-    <div class="slds-text-align_right">
-        {{value}}
+    <div class="slds-grid slds-grid_vertical-align-center">
+        <system-progress-bar class="slds-grow" [progress]="completion" [hideText]="true"></system-progress-bar>
+        <div class="slds-p-left--x-small">{{value}}</div>
     </div>
 </field-generic-display>
-<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
-    <system-slider [_min]="min" [_max]="max" [(ngModel)]="value"></system-slider>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-top--small" [ngClass]="getFieldClass()">
+    <system-slider [min]="min" [max]="max" [step]="step" [(ngModel)]="value"></system-slider>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>
