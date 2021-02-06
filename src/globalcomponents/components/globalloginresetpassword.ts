@@ -1,7 +1,7 @@
 /**
  * @module GlobalComponents
  */
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {loginService} from '../../services/login.service';
 import {configurationService} from '../../services/configuration.service';
 import {session} from '../../services/session.service';
@@ -26,6 +26,13 @@ export class GlobalLoginResetPassword {
      * @private
      */
     @Input('oldpassword') private oldPassword: string;
+
+    /**
+     * emits if the prompt should be closed again
+     *
+     * @private
+     */
+    @Output() private closeRenewDialog: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * the entered password
@@ -56,6 +63,7 @@ export class GlobalLoginResetPassword {
      * @private
      */
     private posting: boolean = false;
+
 
     constructor(private loginService: loginService,
                 private http: HttpClient,
@@ -88,6 +96,15 @@ export class GlobalLoginResetPassword {
         return this.password == this.repeatPassword ? false : 'Inputs for the new Password does not match.'; // does not match password
     }
 
+    /**
+     * closes the dialog
+     *
+     * @private
+     */
+    private closeDialog() {
+        this.closeRenewDialog.emit(true);
+    }
+
     /*
     * handle change on enter and escape press
     */
@@ -96,7 +113,7 @@ export class GlobalLoginResetPassword {
             this.sendNewPass();
         }
         if (event.key === 'Escape') {
-            this.loginService.logout();
+            this.closeDialog();
         }
     }
 
@@ -145,12 +162,11 @@ export class GlobalLoginResetPassword {
                 password: this.password,
             }, {headers: headers}).subscribe(
                 (res) => {
-                    this.session.authData.renewPass = false;
                     this.toast.sendToast('Password was successfully changed', 'success', '', 5);
                     this.loginService.load();
                 },
                 (err: any) => {
-                   this.posting = false;
+                    this.posting = false;
                 });
         }
     }
