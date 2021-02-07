@@ -78,14 +78,12 @@ export class OutlookLoginPane {
                     this.session.authData.email = repsonse.email;
                     this.session.authData.admin = repsonse.admin == 1 ? true : false;
                     this.session.authData.dev = repsonse.dev == 1 ? true : false;
-                    this.session.authData.renewPass = repsonse.renewPass === '1' ? true : false;
+                    // this.session.authData.renewPass = repsonse.renewPass === '1' ? true : false;
 
                     // set the backendurl
                     // this.configuration.data.backendUrl = backendurl;
 
-                    if (!this.session.authData.renewPass) {
-                        this.loginService.load();
-                    }
+                    this.loginService.load();
                 },
                 (err: any) => {
                     switch (err.status) {

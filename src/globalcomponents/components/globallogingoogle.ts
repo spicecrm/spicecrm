@@ -2,7 +2,7 @@
  * @module GlobalComponents
  */
 import {HttpClient} from "@angular/common/http";
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Output} from "@angular/core";
+import {Component, EventEmitter, Input, Output} from "@angular/core";
 import {backend} from "../../services/backend.service";
 import {configurationService} from "../../services/configuration.service";
 import {loginService} from "../../services/login.service";
@@ -23,6 +23,8 @@ declare var gapi: any;
     templateUrl: "./src/globalcomponents/templates/globallogingoogle.html"
 })
 export class GlobalLoginGoogle {
+
+    @Input() private authenticatedUser: string;
 
     /**
      * determines if the buitton is rendered or not
@@ -53,12 +55,11 @@ export class GlobalLoginGoogle {
         private loginService: loginService,
         private session: session,
         private libloader: libloader,
-        private toast: toast,
-        private changeDetectorRef: ChangeDetectorRef
+        private toast: toast
     ) {
         // listen to config changes and trigger the initialization
         this.configuration.loaded$.subscribe((loaded) => {
-            this.googleInit();
+            if (loaded) this.googleInit();
         });
     }
 
@@ -68,6 +69,7 @@ export class GlobalLoginGoogle {
     public googleInit() {
         let config = this.configuration.getCapabilityConfig('google_oauth');
         if (config?.clientid) {
+            this.visible = true;
             this.libloader.loadFromSource(["https://apis.google.com/js/platform.js"]).subscribe(
                 success => {
                     // load the google API
@@ -78,16 +80,16 @@ export class GlobalLoginGoogle {
                         });
 
                         // set visible and enable the button
-                        this.visible = true;
                         this.disabled = false;
 
                         // run change detection
-                        this.changeDetectorRef.detectChanges();
+                        // this.changeDetectorRef.detectChanges();
                     });
                 },
                 error => {
                     this.disabled = true;
-                });
+                }
+            );
         }
     }
 
@@ -101,7 +103,12 @@ export class GlobalLoginGoogle {
         event.stopPropagation();
         Promise.resolve(this.auth2.signIn())
             .then((googleUser) => {
-                this.token.emit(googleUser.getAuthResponse().id_token);
+                let profileEmail = this.auth2.currentUser.get().getBasicProfile().getEmail();
+                if (!this.authenticatedUser || (this.authenticatedUser && this.authenticatedUser == profileEmail)) {
+                    this.token.emit(googleUser.getAuthResponse().id_token);
+                } else if (this.authenticatedUser && this.authenticatedUser != profileEmail) {
+                    this.toast.sendToast('Wrong username', 'warning', 'usernames do not match, pleas elogin with the proper user');
+                }
             })
             .catch((error: { error: string }) => {
                 this.toast.sendToast('Error with Google Login', 'error');

@@ -75,8 +75,8 @@ export class GSuiteLoginPane {
         private libloader: libloader,
         private cookie: cookie
     ) {
-        this.configuration.loaded$.subscribe(() => {
-            this.googleInit();
+        this.configuration.loaded$.subscribe(loaded => {
+            if(loaded) this.googleInit();
         });
         if (sessionStorage['OAuth-Token'] && sessionStorage['OAuth-Token'].length > 0) {
             let headers = new HttpHeaders();
@@ -101,14 +101,10 @@ export class GSuiteLoginPane {
                     this.session.authData.email = repsonse.email;
                     this.session.authData.admin = repsonse.admin == 1;
                     this.session.authData.dev = repsonse.dev == 1;
-                    this.session.authData.renewPass = repsonse.renewPass === '1';
 
                     // set the backendurl
                     // this.configuration.data.backendUrl = backendurl;
-
-                    if (!this.session.authData.renewPass) {
-                        this.loginService.load();
-                    }
+                    this.loginService.load();
                 },
                 (err: any) => {
                     switch (err.status) {
@@ -197,7 +193,6 @@ export class GSuiteLoginPane {
                 let user_token = googleUser.getAuthResponse().id_token;
                 let access_token = googleUser.getAuthResponse().access_token;
                 this.loginService.oauthToken = user_token;
-                this.loginService.accessToken = access_token;
                 this.loginService.authData.userName = "";
                 this.loginService.authData.password = "";
                 // this.session.authData.sessionId = user_token;
