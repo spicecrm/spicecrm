@@ -93,7 +93,6 @@ import /*embed*/ {MailboxesEWSTrafficManager} from "./components/mailboxesewstra
 import /*embed*/ {MailboxesEWSSelectFoldersModal} from "./components/mailboxesewsselectfoldersmodal";
 import /*embed*/ {MailboxManagerAddDialog} from "./components/mailboxmanageradddialog";
 import /*embed*/ {MailboxesIMAPSMTPSelectFoldersModal} from "./components/mailboxesimapsmtpselectfoldersmodal";
-import /*embed*/ {ServiceCategoryManagerComponent} from "./components/servicecategorymanager";
 import /*embed*/ {MailboxesImapSmtpTrafficManager} from "./components/mailboxesimapsmtptrafficmanager";
 import /*embed*/ {MailboxesTransportManager} from "./components/mailboxestransportmanager";
 import /*embed*/ {MailboxesProcessors} from "./components/mailboxesprocessors";
@@ -236,7 +235,6 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         MailboxesEWSSelectFoldersModal,
         MailboxesTransportManager,
         SortPipe,
-        ServiceCategoryManagerComponent,
         MailboxesProcessors,
         SelectTreeComponent,
         SelectTreeAddDialog,
