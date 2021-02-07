@@ -100,6 +100,8 @@ import /*embed*/ {GlobalObtainGDPRConsent} from './components/globalobtaingdprco
 import /*embed*/ {GlobalObtainGDPRConsentContainer} from './components/globalobtaingdprconsentcontainer';
 import /*embed*/ {GlobalHeaderImage} from './components/globalheaderimage';
 import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
+import /*embed*/ {GlobalReLogin} from './components/globalrelogin';
+import /*embed*/ {GlobalReConnect} from './components/globalreconnect';
 
 
 /**
@@ -112,16 +114,7 @@ import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
         ObjectFields,
         DirectivesModule,
         SystemComponents,
-        ObjectComponents,
-        RouterModule.forRoot([
-            // {path: "login", component: GlobalLogin},
-            //{path: "setsddup", component: GlobalSetup}
-            /*
-            {path: "recent", component: GlobalRecentItems, canActivate: [loginCheck]},
-            {path: "search", component: GlobalSearch, canActivate: [loginCheck]},
-            {path: "search/:searchterm", component: GlobalSearch, canActivate: [loginCheck]},
-            */
-        ])
+        ObjectComponents
     ],
     declarations: [
         GlobalCopyright,
@@ -156,6 +149,8 @@ import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
         GlobalNavigationCompact,
         GlobalLogin,
         GlobalLoginLoading,
+        GlobalReLogin,
+        GlobalReConnect,
         GlobalSetup,
         GlobalLoginForgotPassword,
         GlobalLoginResetPassword,

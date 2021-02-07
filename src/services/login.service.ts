@@ -158,6 +158,65 @@ export class loginService {
     }
 
     /**
+     * logs back into the backend
+     */
+    public relogin(password, token): Observable<boolean> {
+        let loginUrl: string = this.configurationService.getBackendUrl() + '/login';
+
+        let loginSuccess = new Subject<boolean>();
+
+        /**
+         * the headers to be passed in
+         */
+        let headers = new HttpHeaders();
+
+        if(password) {
+            headers = headers.set(
+                'Authorization',
+                'Basic ' + this.helper.encodeBase64(this.session.authData.userName + ':' + password)
+            );
+        } else if (token) {
+            headers = headers.set(
+                'OAuth-Token',
+                token
+            );
+            headers = headers.set(
+                'OAuth-Issuer',
+                this.oauthIssuer
+            );
+        }
+
+        this.http.get(loginUrl, {headers})
+            .subscribe(
+                (res: any) => {
+                    let response = res;
+                    this.session.authData.sessionId = response.id;
+
+                    sessionStorage['OAuth-Token'] = this.session.authData.sessionId;
+
+                    // resolve the promise
+                    loginSuccess.next(true);
+                    loginSuccess.complete();
+
+                    // broadcast that we have a relogin
+                    this.broadcast.broadcastMessage('relogin');
+                },
+                (err: any) => {
+                    switch (err.status) {
+                        case 401:
+                            loginSuccess.error(err.error.error);
+                            break;
+                        default:
+                            this.toast.sendToast('Application Error', 'error', 'Error Authenticating');
+                            break;
+                    }
+                    loginSuccess.complete();
+                });
+
+        return loginSuccess.asObservable();
+    }
+
+    /**
      * renew the password for the current user
      *
      * @param newPassword
@@ -175,7 +234,7 @@ export class loginService {
                 'Basic ' + this.helper.encodeBase64(this.authData.userName + ':' + this.authData.password)
             );
             this.http.post(renewUrl, {newpwd: newPassword}, {headers}).subscribe(res => {
-
+                // do nmothing
             });
         }
     }
@@ -209,10 +268,13 @@ export class loginService {
      * logs out from the backend and cleans up all data internally
      * broadcasts a an ebvenmt that sevrices can subscriber and listen to to cleanup and data that might occur
      */
-    public logout() {
-        this.http.delete(
-            this.configurationService.getBackendUrl() + '/login?session_id=' + this.session.authData.sessionId
-        );
+    public logout(localonly: boolean = false) {
+        // check if we shoudl also logout on the server
+        if(!localonly) {
+            this.http.delete(
+                this.configurationService.getBackendUrl() + '/login?session_id=' + this.session.authData.sessionId
+            );
+        }
         this.session.endSession();
         this.loader.reset();
 
@@ -225,7 +287,7 @@ export class loginService {
 
 @Injectable()
 export class loginCheck implements CanActivate {
-    constructor(private login: loginService, private session: session, private router: Router, private loader: loader) {
+    constructor(private login: loginService, private session: session, private modal: modal, private router: Router, private loader: loader) {
     }
 
     public canActivate(route, state) {

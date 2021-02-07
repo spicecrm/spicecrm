@@ -10,6 +10,7 @@ import {broadcast} from './broadcast.service';
 import {Router} from '@angular/router';
 import {HttpClient} from "@angular/common/http";
 import {Title} from "@angular/platform-browser";
+import {BehaviorSubject} from "rxjs";
 
 /**
  * @ignore
@@ -56,7 +57,7 @@ export class configurationService {
     /**
      * emits when the systemparamaters have been laoded
      */
-    public loaded$: EventEmitter<boolean> = new EventEmitter<boolean>();
+    public loaded$: BehaviorSubject<boolean>;
 
     /**
      * emits when a data with a give key is changed
@@ -69,6 +70,9 @@ export class configurationService {
                 private broadcast: broadcast,
                 private title: Title,
                 private router: Router,) {
+
+        // add a new behaviour subject
+        this.loaded$ = new BehaviorSubject<boolean>(false);
 
         let storedSites = localStorage.spiceuisites;
 
@@ -229,7 +233,7 @@ export class configurationService {
                     this.data.socket_frontend = res.socket_frontend;
                     this.data.unique_key = res.unique_key;
                     this.data.name = res.name ? res.name : 'SpiceCRM',
-                        this.loaded$.emit(true);
+                        this.loaded$.next(true);
                 }
                 this.initialized = true;
                 this.reloading = false;

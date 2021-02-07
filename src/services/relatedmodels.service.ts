@@ -113,7 +113,7 @@ export class relatedmodels implements OnDestroy {
     public sequencefield: string = null;
 
     /**
-     * a handler to the broadcast subscrition. M;aking sure the susbcription is cancelled whent he component is destroyed
+     * a handler to the broadcast subscrition. Making sure the susbcription is cancelled whent he component is destroyed
      */
     private serviceSubscriptions: any[] = [];
 
