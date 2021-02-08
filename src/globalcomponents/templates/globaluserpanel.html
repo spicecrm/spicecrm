@@ -7,9 +7,11 @@
     </div>
     <div class="slds-theme--shade slds-p-around--small slds-border--top slds-border--bottom">
         <ul class="slds-list--horizontal slds-has-dividers--left">
-            <li class="slds-item"><a href="javascript:void(0);" class="slds-text-link--reset" (click)="goDetails()"><system-label label="LBL_DETAILS"></system-label></a>
+            <li class="slds-item">
+                <a href="javascript:void(0);" class="slds-text-link--reset" (click)="goDetails()"><system-label label="LBL_DETAILS"></system-label></a>
             </li>
-            <li class="slds-item"><a href="javascript:void(0);" class="slds-text-link--reset" (click)="changePassword()"><system-label label="LBL_CHANGE_PASSWORD"></system-label></a>
+            <li *ngIf="canChangePassword" class="slds-item">
+                <a href="javascript:void(0);" class="slds-text-link--reset" (click)="changePassword()"><system-label label="LBL_CHANGE_PASSWORD"></system-label></a>
             </li>
         </ul>
     </div>
