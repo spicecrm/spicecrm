@@ -40,8 +40,6 @@ export class loginService {
      */
     public oauthIssuer: string = '';
 
-    public loginSuccessful: Subject<boolean> = new Subject<boolean>();
-
     constructor(
         private configurationService: configurationService,
         private http: HttpClient,
@@ -66,9 +64,9 @@ export class loginService {
      * logs into the backend
      */
     public login(): Observable<boolean> {
-        let loginUrl: string = this.configurationService.getBackendUrl() + '/login';
+        let loginSuccess = new Subject<any>();
 
-        let loginBy: string;
+        let loginUrl: string = this.configurationService.getBackendUrl() + '/login';
 
         /**
          * the headers to be passed in
@@ -125,6 +123,7 @@ export class loginService {
                     this.session.authData.portalOnly = response.portal_only;
                     this.session.authData.googleToken = response.access_token;
                     this.session.authData.obtainGDPRconsent = response.obtainGDPRconsent;
+                    this.session.authData.canchangepassword = response.canchangepassword;
 
                     sessionStorage['OAuth-Token'] = this.session.authData.sessionId;
 
@@ -139,22 +138,22 @@ export class loginService {
                     // load the UI
                     this.load();
 
-                    this.loginSuccessful.next(true);
-                    this.loginSuccessful.complete();
+                    loginSuccess.next(true);
+                    loginSuccess.complete();
                 },
                 (err: any) => {
                     switch (err.status) {
                         case 401:
-                            this.loginSuccessful.error(err.error.error);
+                            loginSuccess.error(err.error.error);
                             break;
                         default:
                             this.toast.sendToast('Application Error', 'error', 'Error Authenticating');
                             break;
                     }
-                    this.loginSuccessful.complete();
+                    loginSuccess.complete();
                 });
 
-        return this.loginSuccessful.asObservable();
+        return loginSuccess.asObservable();
     }
 
     /**

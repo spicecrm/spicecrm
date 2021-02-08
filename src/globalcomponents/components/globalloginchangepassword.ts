@@ -9,23 +9,25 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {toast} from '../../services/toast.service';
 import {language} from '../../services/language.service';
 
-
 /**
  * renders a password change dialog when the user logs in and is required to change the password
  */
 @Component({
-    selector: 'global-login-reset-password',
-    templateUrl: './src/globalcomponents/templates/globalloginresetpassword.html',
-    host: {
-        '(window:keyup)': 'this.keypressed($event)'
-    }
+    selector: 'global-login-change-password',
+    templateUrl: './src/globalcomponents/templates/globalloginchangepassword.html'
 })
-export class GlobalLoginResetPassword {
+export class GlobalLoginChangePassword {
     /**
      * the old password to check that the password has been changed
      * @private
      */
-    @Input('oldpassword') private oldPassword: string;
+    @Input('password') private password: string;
+
+    /**
+     * the id ot the user that tried to log in but has an expired password
+     * @private
+     */
+    @Input('username') private username: string;
 
     /**
      * emits if the prompt should be closed again
@@ -38,7 +40,7 @@ export class GlobalLoginResetPassword {
      * the entered password
      * @private
      */
-    private password: string;
+    private newPassword: string;
 
     /**
      * the repeated password
@@ -64,7 +66,6 @@ export class GlobalLoginResetPassword {
      */
     private posting: boolean = false;
 
-
     constructor(private loginService: loginService,
                 private http: HttpClient,
                 private configuration: configurationService,
@@ -79,21 +80,21 @@ export class GlobalLoginResetPassword {
      * checks that the new assowrd is different than the old
      */
     get oldPwError() {
-        return (this.oldPassword == this.password) ? 'Old password is not allowed to be used as a new password' : false;
+        return (this.password == this.newPassword) ? 'Old password is not allowed to be used as a new password' : false;
     }
 
     /**
      * check that the password matches the requirements
      */
     get pwderror() {
-        return this.password && !this.pwdCheck.test(this.password) ? 'Password does not match the Guideline.' : false;
+        return this.newPassword && !this.pwdCheck.test(this.newPassword) ? 'Password does not match the Guideline.' : false;
     }
 
     /**
      * checks that the new password has been typed correctly
      */
     get pwdreperror() {
-        return this.password == this.repeatPassword ? false : 'Inputs for the new Password does not match.'; // does not match password
+        return this.newPassword == this.repeatPassword ? false : 'Inputs for the new Password does not match.'; // does not match password
     }
 
     /**
@@ -105,17 +106,6 @@ export class GlobalLoginResetPassword {
         this.closeRenewDialog.emit(true);
     }
 
-    /*
-    * handle change on enter and escape press
-    */
-    private keypressed(event) {
-        if (event.key === 'Enter') {
-            this.sendNewPass();
-        }
-        if (event.key === 'Escape') {
-            this.closeDialog();
-        }
-    }
 
     /*
     * retrieve password guideline
@@ -125,6 +115,7 @@ export class GlobalLoginResetPassword {
         this.pwdCheck = new RegExp(extConf.regex);
 
         let requArray = [];
+
         if (extConf.onelower) requArray.push('one lower case');
         if (extConf.oneupper) requArray.push('one upper case');
         if (extConf.onenumber) requArray.push('one number');
@@ -137,30 +128,29 @@ export class GlobalLoginResetPassword {
      * checks if the password can be saved
      */
     get canSave() {
-        return this.password && this.oldPwError == false && this.pwderror == false && this.pwdreperror == false && !this.posting;
+        return this.newPassword && this.oldPwError == false && this.pwderror == false && this.pwdreperror == false && !this.posting;
     }
 
     /*
     * change the password for the user
+    * send an unauthenticated request to the backend
     */
-    private sendNewPass() {
-
+    private setPassword() {
         if (this.canSave) {
-
-            let headers = new HttpHeaders();
-            headers = headers.set('OAuth-Token', this.session.authData.sessionId);
-
             this.posting = true;
-            this.http.post(this.configuration.getBackendUrl() + '/resetTempPass', {
+            this.http.post(this.configuration.getBackendUrl() + '/changepassword', {
+                username: this.username,
                 password: this.password,
-            }, {headers: headers}).subscribe(
+                newPassword: this.newPassword
+            }).subscribe(
                 (res) => {
                     this.toast.sendToast('Password was successfully changed', 'success', '', 5);
-                    this.loginService.load();
+                    this.closeDialog();
                 },
                 (err: any) => {
                     this.posting = false;
-                });
+                }
+            );
         }
     }
 }
