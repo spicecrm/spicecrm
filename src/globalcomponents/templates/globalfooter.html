@@ -3,7 +3,7 @@
     <global-docked-composer-container *ngIf="session.authData.sessionId && session.authData.loaded === true"></global-docked-composer-container>
     <div #footercontainer></div>
     <div data-info="ModalContainer" style="position:fixed;z-index:10000">
-        <div #backdrop class="slds-backdrop" [class.slds-backdrop_open]="modalservice.backdropVisible" [style.zIndex]="modalservice.backdropZindex"></div>
+        <div #backdrop class="slds-backdrop" [class.slds-backdrop_open]="modalservice.backdropVisible" [style.zIndex]="modalservice.backdropZindex" [style.backdrop-filter]="modalservice.backdropBlurred" ></div>
         <span #modalcontainer></span>
     </div>
     <system-toast-container class="slds-notify_container"></system-toast-container>

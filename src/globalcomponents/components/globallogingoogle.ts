@@ -2,13 +2,13 @@
  * @module GlobalComponents
  */
 import {HttpClient} from "@angular/common/http";
-import {AfterViewInit, Component, ElementRef, EventEmitter, Output} from "@angular/core";
+import {Component, EventEmitter, Input, Output} from "@angular/core";
 import {backend} from "../../services/backend.service";
 import {configurationService} from "../../services/configuration.service";
 import {loginService} from "../../services/login.service";
 import {session} from "../../services/session.service";
 import {libloader} from "../../services/libloader.service";
-import {Observable, Subject} from "rxjs";
+import {toast} from "../../services/toast.service";
 
 /**
  * @ignore
@@ -24,7 +24,7 @@ declare var gapi: any;
 })
 export class GlobalLoginGoogle {
 
-    // private clientId: string = "";
+    @Input() private authenticatedUser: string;
 
     /**
      * determines if the buitton is rendered or not
@@ -36,17 +36,17 @@ export class GlobalLoginGoogle {
      */
     private disabled: boolean = true;
 
-    private scope = [
-        "profile",
-        "email",
-        "https://www.googleapis.com/auth/plus.me",
-        "https://www.googleapis.com/auth/contacts.readonly",
-        "https://www.googleapis.com/auth/admin.directory.user.readonly",
-        "https://www.googleapis.com/auth/calendar",
-        "https://www.googleapis.com/auth/tasks",
-    ].join(" ");
-
+    /**
+     * the google auth object
+     */
     public auth2: any;
+
+    /**
+     * emits the token
+     *
+     * @private
+     */
+    @Output() private token: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(
         private backend: backend,
@@ -54,60 +54,64 @@ export class GlobalLoginGoogle {
         private http: HttpClient,
         private loginService: loginService,
         private session: session,
-        private libloader: libloader
+        private libloader: libloader,
+        private toast: toast
     ) {
         // listen to config changes and trigger the initialization
         this.configuration.loaded$.subscribe((loaded) => {
-            this.googleInit();
+            if (loaded) this.googleInit();
         });
     }
 
+    /**
+     * initialize and load the google libraries
+     */
     public googleInit() {
-        if (this.configuration.data.backendextensions.hasOwnProperty("google_oauth") &&
-            this.configuration.data.backendextensions.google_oauth?.config?.clientid) {
-
-            this.libloader.loadFromSource(["https://apis.google.com/js/api.js", "https://apis.google.com/js/platform.js"]).subscribe(
+        let config = this.configuration.getCapabilityConfig('google_oauth');
+        if (config?.clientid) {
+            this.visible = true;
+            this.libloader.loadFromSource(["https://apis.google.com/js/platform.js"]).subscribe(
                 success => {
                     // load the google API
                     gapi.load("auth2", () => {
-                        let clientid =   this.configuration.data.backendextensions.google_oauth.config.clientid;
-                        // this.clientId = calendar_config.web.client_id;
                         this.auth2 = gapi.auth2.init({
-                            client_id: clientid,
-                            cookiepolicy: "single_host_origin",
-                            scope: this.scope
+                            client_id: config.clientid,
+                            cookiepolicy: "single_host_origin"
                         });
 
-                        this.visible = true;
-
+                        // set visible and enable the button
                         this.disabled = false;
+
+                        // run change detection
+                        // this.changeDetectorRef.detectChanges();
                     });
                 },
                 error => {
                     this.disabled = true;
-                    console.log('Error loading Google Libs');
-                });
-        } else {
-            this.visible = false;
+                }
+            );
         }
     }
 
-    public signInClick(event) {
+    /**
+     * get the google token
+     *
+     * @param event
+     */
+    public signIn(event) {
         event.preventDefault();
         event.stopPropagation();
         Promise.resolve(this.auth2.signIn())
             .then((googleUser) => {
-                let user_token = googleUser.getAuthResponse().id_token;
-                let access_token = googleUser.getAuthResponse().access_token;
-                this.loginService.oauthToken = user_token;
-                this.loginService.accessToken = access_token;
-                this.loginService.authData.userName = "";
-                this.loginService.authData.password = "";
-                // this.session.authData.sessionId = user_token;
-                this.loginService.login();
+                let profileEmail = this.auth2.currentUser.get().getBasicProfile().getEmail();
+                if (!this.authenticatedUser || (this.authenticatedUser && this.authenticatedUser == profileEmail)) {
+                    this.token.emit(googleUser.getAuthResponse().id_token);
+                } else if (this.authenticatedUser && this.authenticatedUser != profileEmail) {
+                    this.toast.sendToast('Wrong username', 'warning', 'usernames do not match, pleas elogin with the proper user');
+                }
             })
             .catch((error: { error: string }) => {
-                console.log(JSON.stringify(error, undefined, 2));
+                this.toast.sendToast('Error with Google Login', 'error');
             });
     }
 }

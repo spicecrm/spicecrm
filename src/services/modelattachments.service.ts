@@ -305,46 +305,13 @@ export class modelattachments {
      * @param file
      */
     public uploadForUploadAttachmentsBase64(newfile, retSub, file) {
-        let request = new XMLHttpRequest();
-        let resp: any = {};
-        request.onreadystatechange = (scope: any = this) => {
-            if (request.readyState == 4) {
-                try {
-                    let retVal = JSON.parse(request.response);
 
-                    newfile.id = retVal[0].id;
-                    newfile.thumbnail = retVal[0].thumbnail;
-                    newfile.filemd5 = retVal[0].filemd5;
-                    newfile.user_id = retVal[0].user_id;
-                    newfile.user_name = retVal[0].user_name;
-                    delete (newfile.uploadprogress);
 
-                    retSub.next({files: retVal});
-                    retSub.complete();
-                } catch (e) {
-                    resp = {
-                        status: "error",
-                        data: "Unknown error occurred: [" + request.responseText + "]"
-                    };
-                }
-            }
-        };
-
-        request.upload.addEventListener("progress", e => {
-            newfile.uploadprogress = Math.round(e.loaded / e.total * 100);
-            retSub.next({progress: {total: e.total, loaded: e.loaded}});
-        }, false);
-
-        // determine the upload URL
-        // if we just upload or also link to a bean
-        let url = this.configurationService.getBackendUrl() + '/spiceAttachments';
-        if (this.module && this.id) {
-            url += `/module/${this.module}/${this.id}`;
-        }
-
-        request.open("POST", url, true);
-        request.setRequestHeader("OAuth-Token", this.session.authData.sessionId);
-        request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        let progressSubscription = new BehaviorSubject<number>(0);
+        progressSubscription.subscribe(value => {
+            newfile.uploadprogress = Math.floor(value);
+            // retSub.next({progress: {total: e.total, loaded: e.loaded}});
+        });
 
         let fileBody = {
             file: file.filecontent,
@@ -352,7 +319,26 @@ export class modelattachments {
             filemimetype: file.type ? file.type : 'application/octet-stream'
         };
 
-        request.send(JSON.stringify(fileBody));
+        // determine the upload URL
+        // if we just upload or also link to a bean
+        let url = 'spiceAttachments';
+        if (this.module && this.id) {
+            url += `/module/${this.module}/${this.id}`;
+        }
+
+        this.backend.postRequestWithProgress(url, null, fileBody, progressSubscription).subscribe(retVal => {
+                newfile.id = retVal[0].id;
+                newfile.thumbnail = retVal[0].thumbnail;
+                newfile.filemd5 = retVal[0].filemd5;
+                newfile.user_id = retVal[0].user_id;
+                newfile.user_name = retVal[0].user_name;
+                delete (newfile.uploadprogress);
+
+                retSub.next({files: retVal});
+                retSub.complete();
+            }
+        );
+
     }
 
     /**
@@ -393,47 +379,11 @@ export class modelattachments {
         this.count++;
         this.broadcastAttachmentCount();
 
-        let request = new XMLHttpRequest();
-        let resp: any = {};
-        request.onreadystatechange = (scope: any = this) => {
-            if (request.readyState == 4) {
-                try {
-                    let retVal = JSON.parse(request.response);
-
-                    newfile.id = retVal[0].id;
-                    newfile.thumbnail = retVal[0].thumbnail;
-                    newfile.filemd5 = retVal[0].filemd5;
-                    newfile.user_id = retVal[0].user_id;
-                    newfile.user_name = retVal[0].user_name;
-                    delete (newfile.uploadprogress);
-
-                    retSub.next({files: retVal});
-                    retSub.complete();
-                } catch (e) {
-                    resp = {
-                        status: "error",
-                        data: "Unknown error occurred: [" + request.responseText + "]"
-                    };
-                }
-            }
-        };
-
-        request.upload.addEventListener("progress", e => {
-            newfile.uploadprogress = Math.round(e.loaded / e.total * 100);
-            retSub.next({progress: {total: e.total, loaded: e.loaded}});
-        }, false);
-
-        // determine the upload URL
-        // if we just upload or also link to a bean
-        let url = this.configurationService.getBackendUrl() + '/spiceAttachments';
-        if (this.module && this.id) {
-            url += `/module/${this.module}/${this.id}`;
-        }
-
-        // post the request
-        request.open("POST", url, true);
-        request.setRequestHeader("OAuth-Token", this.session.authData.sessionId);
-        request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        let progressSubscription = new BehaviorSubject<number>(0);
+        progressSubscription.subscribe(value => {
+            newfile.uploadprogress = Math.floor(value);
+            // retSub.next({progress: {total: e.total, loaded: e.loaded}});
+        });
 
         let fileBody = {
             file: filecontent,
@@ -441,11 +391,28 @@ export class modelattachments {
             filemimetype: filetype ? filetype : 'application/octet-stream'
         };
 
-        request.send(JSON.stringify(fileBody));
+        // determine the upload URL
+        // if we just upload or also link to a bean
+        let url = 'spiceAttachments';
+        if (this.module && this.id) {
+            url += `/module/${this.module}/${this.id}`;
+        }
+
+        this.backend.postRequestWithProgress(url, null, fileBody, progressSubscription).subscribe(retVal => {
+                newfile.id = retVal[0].id;
+                newfile.thumbnail = retVal[0].thumbnail;
+                newfile.filemd5 = retVal[0].filemd5;
+                newfile.user_id = retVal[0].user_id;
+                newfile.user_name = retVal[0].user_name;
+                delete (newfile.uploadprogress);
+
+                retSub.next({files: retVal});
+                retSub.complete();
+            }
+        );
 
         return retSub.asObservable();
     }
-
 
     /**
      * loads the file locally using the HTML5 FileReader
@@ -484,7 +451,7 @@ export class modelattachments {
                 this.count--;
                 this.broadcastAttachmentCount();
             }, error => {
-                this.toast.sendToast( 'Cannot delete attachment.', 'error', error.error.error.message, false );
+                this.toast.sendToast('Cannot delete attachment.', 'error', error.error.error.message, false);
             });
     }
 
@@ -529,7 +496,6 @@ export class modelattachments {
             a.remove();
         });
     }
-
 
 
     /**

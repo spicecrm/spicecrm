@@ -236,6 +236,13 @@ export class model implements OnDestroy {
      */
     private subscriptions: Subscription = new Subscription();
 
+    /**
+     * indicates that we had an error loading the modal and will retry on the proper event
+     *
+     * @private
+     */
+    private loadingError: boolean = false;
+
     constructor(
         public backend: backend,
         private broadcast: broadcast,
@@ -261,6 +268,14 @@ export class model implements OnDestroy {
                     this.utils.timezoneChanged(this.data, data.messagedata);
                     this.utils.timezoneChanged(this.backupData, data.messagedata);
                 }
+
+                // add a listener to reload if we dropped the connection on a 401 error and the user did relogin
+                /*
+                if (data.messagetype === 'relogin' && this.loadingError) {
+                    this.loadingError = false;
+                    this.getData();
+                }
+                */
             })
         );
     }
@@ -459,6 +474,10 @@ export class model implements OnDestroy {
                 if (redirectNotFound && err.status != 401) {
                     this.toast.sendToast(this.language.getLabel("LBL_ERROR_LOADING_RECORD"), "error");
                     this.router.navigate(["/module/" + this.module]);
+                }
+
+                if (err.status == 401) {
+                    this.loadingError = true;
                 }
                 responseSubject.error(err);
             }
@@ -1036,8 +1055,8 @@ export class model implements OnDestroy {
 
     public delete(): Observable<boolean> {
         let responseSubject = new Subject<boolean>();
-        this.backend.delete(this.module, this.id)
-            .subscribe(res => {
+
+        this.backend.deleteRequest(`module/${this.module}/${this.id}`).subscribe(res => {
                 this.broadcast.broadcastMessage("model.delete", {
                     id: this.id,
                     module: this.module,
@@ -1045,7 +1064,8 @@ export class model implements OnDestroy {
                 });
                 responseSubject.next(true);
                 responseSubject.complete();
-            });
+            }
+        );
         return responseSubject.asObservable();
     }
 
@@ -1076,16 +1096,17 @@ export class model implements OnDestroy {
 
     public getAuditLog(filters: any = {}): Observable<any> {
         let responseSubject = new Subject<boolean>();
-        this.backend.getAudit(this.module, this.id, filters)
-            .subscribe(
-                res => {
-                    responseSubject.next(res);
-                    responseSubject.complete();
-                },
-                error => {
-                    responseSubject.next(error);
-                    responseSubject.complete();
-                });
+
+        this.backend.getRequest(`module/${this.module}/${this.id}/auditlog`, filters).subscribe(
+            res => {
+                responseSubject.next(res);
+                responseSubject.complete();
+            },
+            error => {
+                responseSubject.next(error);
+                responseSubject.complete();
+            }
+        );
         return responseSubject.asObservable();
     }
 
@@ -1299,7 +1320,7 @@ export class model implements OnDestroy {
         // if no field definition found just set the field attribute
         if (!fieldDef || (fieldDef && !fieldDef.type)) this.setField(toField, value);
 
-        if(fieldDef && fieldDef.type) {
+        if (fieldDef && fieldDef.type) {
             switch (fieldDef.type) {
                 case 'bool':
                     this.setField(toField, (value === 'true' || value === '1') ? true : ((value === 'false' || value === '0') ? false : null));
@@ -1326,7 +1347,7 @@ export class model implements OnDestroy {
                     return date;
                 }
             case "addDate":
-                const fromFieldDate = moment.isMoment(fromField) ? new moment( fromField) : new moment();
+                const fromFieldDate = moment.isMoment(fromField) ? new moment(fromField) : new moment();
                 let params;
                 try {
                     params = JSON.parse(copyRule.params);
@@ -1335,7 +1356,7 @@ export class model implements OnDestroy {
                 }
                 if (!params.number || !params.unit) return fromFieldDate;
 
-                return new moment(fromFieldDate.format()).add(params.number,params.unit);
+                return new moment(fromFieldDate.format()).add(params.number, params.unit);
         }
         return "";
     }

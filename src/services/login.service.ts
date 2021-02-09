@@ -11,8 +11,8 @@ import {session} from './session.service';
 import {toast} from './toast.service';
 import {helper} from './helper.service';
 import {broadcast} from './broadcast.service';
-import { modal } from './modal.service';
-import { metadata } from './metadata.service';
+import {modal} from './modal.service';
+import {metadata} from './metadata.service';
 
 interface loginAuthDataIf {
     userName: string;
@@ -29,9 +29,16 @@ export class loginService {
         password: ''
     };
 
+    /**
+     * an oauthToken passed in
+     */
     public oauthToken: string = '';
-    public accessToken: string = '';
-    public loginSuccessful: Subject<boolean> = new Subject<boolean>();
+
+    /**
+     * the issuing authority for the OAuth Token
+     * to be pased to the login so the handler can identify based on the toekn
+     */
+    public oauthIssuer: string = '';
 
     constructor(
         private configurationService: configurationService,
@@ -44,48 +51,55 @@ export class loginService {
         public broadcast: broadcast,
         public modal: modal, public metadata: metadata
     ) {
-
-        this.broadcast.message$.subscribe( ( message: any ) => {
-            if ( message.messagetype === 'loader.completed' && message.messagedata === 'loadUserData' ) {
-                if ( this.session.authData.obtainGDPRconsent ) {
+        this.broadcast.message$.subscribe((message: any) => {
+            if (message.messagetype === 'loader.completed' && message.messagedata === 'loadUserData') {
+                if (this.session.authData.obtainGDPRconsent) {
                     this.modal.openModal('GlobalObtainGDPRConsentContainer');
                 }
             }
         });
-
     }
 
+    /**
+     * logs into the backend
+     */
     public login(): Observable<boolean> {
-        // make sure we invalidate a session id cookie that might still be around
-        // document.cookie = 'PHPSESSID=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        let loginSuccess = new Subject<any>();
 
-        let krestUrl: string = "";
-        let options: object = {};
-        let loginBy: string;
-        if (this.authData.userName.length > 0 && this.authData.password.length > 0) {
-            let asUsernamePos: number = this.authData.userName.indexOf('#as#');
-            if (asUsernamePos > -1) {
+        let loginUrl: string = this.configurationService.getBackendUrl() + '/login';
+
+        /**
+         * the headers to be passed in
+         */
+        let headers = new HttpHeaders();
+
+        if (this.authData.userName && this.authData.password) {
+            /**
+             let asUsernamePos: number = this.authData.userName.indexOf('#as#');
+             if (asUsernamePos > -1) {
                 loginBy = this.authData.userName.slice(0, asUsernamePos);
                 this.authData.userName = this.authData.userName.slice(asUsernamePos + 4);
             }
-            let loginheaders = new HttpHeaders();
-            loginheaders = loginheaders.set(
+             */
+
+            headers = headers.set(
                 'Authorization',
                 'Basic ' + this.helper.encodeBase64(this.authData.userName + ':' + this.authData.password)
             );
-
-            krestUrl = this.configurationService.getBackendUrl() + '/login';
-            if (loginBy) krestUrl += '?byDev=' + encodeURIComponent(loginBy);
-            options = {headers: loginheaders};
-        } else if (this.oauthToken.length > 0) {
-            let optionparams = {oauthToken: this.oauthToken, accessToken: this.accessToken};
-            krestUrl = this.configurationService.getBackendUrl() + '/google_oauth/token';
-            options = {params: optionparams};
+        } else if (this.oauthToken) {
+            headers = headers.set(
+                'OAuth-Token',
+                this.oauthToken
+            );
+            headers = headers.set(
+                'OAuth-Issuer',
+                this.oauthIssuer
+            );
         } else {
             throw new Error('Cannot Log In');
         }
 
-        this.http.get(krestUrl, options)
+        this.http.get(loginUrl, {headers})
             .subscribe(
                 (res: any) => {
                     if (res.result == false) {
@@ -104,40 +118,129 @@ export class loginService {
                     this.session.authData.last_name = response.last_name;
                     this.session.authData.display_name = response.display_name;
                     this.session.authData.email = response.email;
-                    this.session.authData.admin = response.admin == 1 ? true : false;
-                    this.session.authData.dev = response.dev == 1 ? true : false;
-                    this.session.authData.portalOnly = response.portal_only === '1' ? true : false;
-                    this.session.authData.renewPass = response.renewPass === '1' ? true : false;
+                    this.session.authData.admin = response.admin;
+                    this.session.authData.dev = response.dev;
+                    this.session.authData.portalOnly = response.portal_only;
                     this.session.authData.googleToken = response.access_token;
                     this.session.authData.obtainGDPRconsent = response.obtainGDPRconsent;
+                    this.session.authData.canchangepassword = response.canchangepassword;
+
                     sessionStorage['OAuth-Token'] = this.session.authData.sessionId;
+
                     sessionStorage[btoa(this.session.authData.sessionId + ':backendurl')] =
                         btoa(this.configurationService.getBackendUrl());
                     sessionStorage[btoa(this.session.authData.sessionId + ':siteid')] =
                         btoa(this.configurationService.getSiteId());
-                    if (!this.session.authData.renewPass) {
-                        this.load();
-                    }
 
-                    // broadcast taht we have a login
+                    // broadcast that we have a login
                     this.broadcast.broadcastMessage('login');
 
-                    this.loginSuccessful.next(true);
-                    this.loginSuccessful.complete();
+                    // load the UI
+                    this.load();
+
+                    loginSuccess.next(true);
+                    loginSuccess.complete();
                 },
                 (err: any) => {
                     switch (err.status) {
                         case 401:
-                            this.toast.sendToast('error authenticating', 'error', 'Wrong username and/or password');
+                            loginSuccess.error(err.error.error);
+                            break;
+                        default:
+                            this.toast.sendToast('Application Error', 'error', 'Error Authenticating');
                             break;
                     }
-                    this.loginSuccessful.next(false);
-                    this.loginSuccessful.error('Not logged in');
+                    loginSuccess.complete();
                 });
 
-        return this.loginSuccessful.asObservable();
+        return loginSuccess.asObservable();
     }
 
+    /**
+     * logs back into the backend
+     */
+    public relogin(password, token): Observable<boolean> {
+        let loginUrl: string = this.configurationService.getBackendUrl() + '/login';
+
+        let loginSuccess = new Subject<boolean>();
+
+        /**
+         * the headers to be passed in
+         */
+        let headers = new HttpHeaders();
+
+        if(password) {
+            headers = headers.set(
+                'Authorization',
+                'Basic ' + this.helper.encodeBase64(this.session.authData.userName + ':' + password)
+            );
+        } else if (token) {
+            headers = headers.set(
+                'OAuth-Token',
+                token
+            );
+            headers = headers.set(
+                'OAuth-Issuer',
+                this.oauthIssuer
+            );
+        }
+
+        this.http.get(loginUrl, {headers})
+            .subscribe(
+                (res: any) => {
+                    let response = res;
+                    this.session.authData.sessionId = response.id;
+
+                    sessionStorage['OAuth-Token'] = this.session.authData.sessionId;
+
+                    // resolve the promise
+                    loginSuccess.next(true);
+                    loginSuccess.complete();
+
+                    // broadcast that we have a relogin
+                    this.broadcast.broadcastMessage('relogin');
+                },
+                (err: any) => {
+                    switch (err.status) {
+                        case 401:
+                            loginSuccess.error(err.error.error);
+                            break;
+                        default:
+                            this.toast.sendToast('Application Error', 'error', 'Error Authenticating');
+                            break;
+                    }
+                    loginSuccess.complete();
+                });
+
+        return loginSuccess.asObservable();
+    }
+
+    /**
+     * renew the password for the current user
+     *
+     * @param newPassword
+     */
+    public renewPassword(newPassword) {
+        let renewUrl: string = this.configurationService.getBackendUrl() + '/user/password/change';
+
+        /**
+         * the headers to be passed in
+         */
+        if (this.authData.userName && this.authData.password) {
+            let headers = new HttpHeaders();
+            headers = headers.set(
+                'Authorization',
+                'Basic ' + this.helper.encodeBase64(this.authData.userName + ':' + this.authData.password)
+            );
+            this.http.post(renewUrl, {newpwd: newPassword}, {headers}).subscribe(res => {
+                // do nmothing
+            });
+        }
+    }
+
+    /**
+     * starts the loaded upon successful login
+     */
     public load() {
         this.loader.load().subscribe((val) => this.redirect(val));
     }
@@ -149,7 +252,7 @@ export class loginService {
             // clear all toasts
             this.toast.clearAll();
 
-            // see if we came from alogout and go back or go to home
+            // see if we came from a logout and go back or go to home
             if (this.redirectUrl) {
                 this.router.navigate([this.redirectUrl]);
                 this.redirectUrl = '';
@@ -160,10 +263,17 @@ export class loginService {
         }
     }
 
-    public logout() {
-        this.http.delete(
-            this.configurationService.getBackendUrl() + '/login?session_id=' + this.session.authData.sessionId
-        );
+    /**
+     * logs out from the backend and cleans up all data internally
+     * broadcasts a an ebvenmt that sevrices can subscriber and listen to to cleanup and data that might occur
+     */
+    public logout(localonly: boolean = false) {
+        // check if we shoudl also logout on the server
+        if(!localonly) {
+            this.http.delete(
+                this.configurationService.getBackendUrl() + '/login?session_id=' + this.session.authData.sessionId
+            );
+        }
         this.session.endSession();
         this.loader.reset();
 
@@ -172,23 +282,11 @@ export class loginService {
 
         this.router.navigate(['/login']);
     }
-
-
-    // seems to be unused
-    /*private getOptionsWithOauthToken() {
-
-        let headers = new HttpHeaders();
-        // headers.append('oauth-token', this.authData.access_token);
-        let options = new RequestOptions({
-            headers: headers
-        });
-        return options;
-    }*/
 }
 
 @Injectable()
 export class loginCheck implements CanActivate {
-    constructor(private login: loginService, private session: session, private router: Router, private loader: loader) {
+    constructor(private login: loginService, private session: session, private modal: modal, private router: Router, private loader: loader) {
     }
 
     public canActivate(route, state) {

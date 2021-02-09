@@ -9,6 +9,7 @@ import {configurationService} from '../../services/configuration.service';
 import {session} from '../../services/session.service';
 import {broadcast} from '../../services/broadcast.service';
 import {cookie} from '../../services/cookie.service';
+import {toast} from '../../services/toast.service';
 import {language} from '../../services/language.service';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
@@ -67,65 +68,51 @@ export class GlobalLogin {
      */
     private externalSidebarUrl: SafeResourceUrl = null;
 
+
     /**
-     * holds if the user is just trying to log in
+     * the id of the last message if a toast was sent
+     *
+     * @private
      */
-    private loggingIn: boolean = false;
+    private messageId: string;
+
+    /**
+     * indicator to show the new password dialog
+     *
+     * @private
+     */
+    private renewpassword: boolean = false;
 
     constructor(private loginService: loginService,
                 private http: HttpClient,
                 private configuration: configurationService,
                 private session: session,
                 private cookie: cookie,
+                private toast: toast,
                 private language: language,
                 private broadcast: broadcast,
                 private sanitizer: DomSanitizer,
                 private changeDetectorRef: ChangeDetectorRef
     ) {
-        if (sessionStorage['OAuth-Token'] && sessionStorage['OAuth-Token'].length > 0) {
-            let headers = new HttpHeaders();
-            headers = headers.set('OAuth-Token', sessionStorage['OAuth-Token']);
-
-
+        if (sessionStorage['OAuth-Token']) {
             if (sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]) {
                 this.configuration.setSiteID(atob(sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]));
             }
 
-            this.http.get(this.configuration.getBackendUrl() + '/login', {
-                headers
-            }).subscribe(
-                (res: any) => {
-                    let response = res;
-                    this.session.authData.sessionId = response.id;
-                    this.session.authData.userId = response.userid;
-                    this.session.authData.userName = response.user_name;
-                    this.session.authData.userimage = response.user_image;
-                    this.session.authData.first_name = response.first_name;
-                    this.session.authData.last_name = response.last_name;
-                    this.session.authData.display_name = response.display_name;
-                    this.session.authData.email = response.email;
-                    this.session.authData.admin = response.admin == 1 ? true : false;
-                    this.session.authData.dev = response.dev == 1 ? true : false;
-                    this.session.authData.renewPass = response.renewPass === '1' ? true : false;
-                    this.session.authData.obtainGDPRconsent = response.obtainGDPRconsent;
-
-                    // set the backendurl
-                    // this.configuration.data.backendUrl = backendurl;
-
-                    if (!this.session.authData.renewPass) {
-                        // broadcast taht we have a login
-                        this.broadcast.broadcastMessage('login');
-
-                        this.loginService.load();
-                    }
+            // try to login with the found token
+            this.loginService.oauthToken = sessionStorage['OAuth-Token'];
+            this.loginService.oauthIssuer = 'SpiceCRM';
+            this.loginService.login().subscribe(
+                res => {
+                    this.broadcast.broadcastMessage('login');
+                    this.loginService.load();
                 },
-                (err: any) => {
-                    switch (err.status) {
-                        case 401:
-                            this.promptUser = true;
-                            break;
-                    }
-                });
+                err => {
+                    this.loginService.oauthToken = null;
+                    this.loginService.oauthIssuer = null;
+                    this.promptUser = true;
+                }
+            );
         } else {
             this.promptUser = true;
 
@@ -150,22 +137,42 @@ export class GlobalLogin {
     /**
      * triggers the actual login itself
      */
-    private login() {
-        this.loggingIn = true;
-        if (this.username.length > 0 && this.password.length > 0) {
-            this.loginService.authData.userName = this.username;
-            this.loginService.authData.password = this.password;
+    private login(token?, issuer?) {
+
+        // clear the current messageid if one is set
+        if (this.messageId) this.toast.clearToast(this.messageId);
+
+        if (token || (this.username && this.password)) {
+            if(token) {
+                this.loginService.authData.userName = null;
+                this.loginService.authData.password = null;
+                this.loginService.oauthToken = token;
+                this.loginService.oauthIssuer = issuer;
+            } else {
+                this.loginService.authData.userName = this.username;
+                this.loginService.authData.password = this.password;
+                this.loginService.oauthToken = null;
+                this.loginService.oauthIssuer = null;
+            }
             this.loginService.login().subscribe(
                 success => {
-                    this.loggingIn = false;
+                    // do nothing .. be happy
                 },
                 error => {
-                    this.loggingIn = false;
+                    switch (error.errorCode) {
+                        // invalid password/user
+                        case 1:
+                            this.messageId = this.toast.sendToast('error logging on with username and password', 'error');
+                            break;
+                        // password expired
+                        case 2:
+                            this.renewpassword = true;
+                            break;
+                    }
                 }
             );
         }
     }
-
 
     /**
      * setter for the selected language
@@ -214,13 +221,6 @@ export class GlobalLogin {
      */
     get displayimage() {
         return window.innerHeight > 800;
-    }
-
-    /**
-     * private function that actually does the login is user data is set
-     */
-    private doLogin() {
-        this.loginService.login();
     }
 
     /**
