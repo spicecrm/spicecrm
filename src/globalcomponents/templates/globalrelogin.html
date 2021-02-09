@@ -10,14 +10,14 @@
             <div class="slds-form-element slds-p-vertical--xx-small">
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
                     <system-utility-icon [icon]="'user'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
-                    <input disabled type="text" [ngModel]="session.authData.userName" class="slds-input slds-p-horizontal--large" tabindex="1" placeholder="Username" />
+                    <input disabled type="text" [ngModel]="session.authData.userName" class="slds-input slds-p-horizontal--large slds-p-vertical--xx-small" tabindex="1" placeholder="Username" />
                 </div>
             </div>
             <ng-container *ngIf="!login.oauthIssuer || login.oauthIssuer == 'SpiceCRM'">
                 <div class="slds-form-element slds-p-vertical--xx-small">
                     <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
                         <system-utility-icon [icon]="'lock'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
-                        <input type="password" name="password" autocomplete  [(ngModel)]="password" class="slds-input slds-p-horizontal--large" tabindex="2" placeholder="Password" />
+                        <input type="password" name="password" autocomplete  [(ngModel)]="password" class="slds-input slds-p-horizontal--large slds-p-vertical--xx-small" tabindex="2" placeholder="Password" />
                     </div>
                 </div>
                 <div class="slds-p-vertical--xx-small">
