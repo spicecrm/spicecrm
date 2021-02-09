@@ -23,7 +23,7 @@ declare var _: any;
     templateUrl: "./src/globalcomponents/templates/globaluserpanel.html",
 })
 export class GlobaUserPanel {
-    
+
     /**
      * emits that the popup shoudl be closed
      */
@@ -88,8 +88,15 @@ export class GlobaUserPanel {
     }
 
     /**
+     * returns if the user can change the password
+     */
+    get canChangePassword() {
+        return this.session.authData.canchangepassword;
+    }
+
+    /**
      * navigates to the users detail page
-     * 
+     *
      * @private
      */
     private goDetails() {
@@ -99,11 +106,13 @@ export class GlobaUserPanel {
 
     /**
      * triggers the change password dialog
-     * 
+     *
      * @private
      */
     private changePassword() {
-        this.modal.openModal("UserChangePasswordModal");
+        if(this.canChangePassword) {
+            this.modal.openModal("UserChangePasswordModal");
+        }
     }
 
     /**
@@ -115,7 +124,7 @@ export class GlobaUserPanel {
 
     /**
      * changes the users timezone
-     * 
+     *
      * @param value
      * @private
      */
@@ -132,7 +141,7 @@ export class GlobaUserPanel {
 
     /**
      * loads the current timezone
-     * 
+     *
      * @private
      */
     private get currentTz(): string {

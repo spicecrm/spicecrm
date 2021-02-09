@@ -21,9 +21,30 @@ import {Subscription} from "rxjs";
     providers: [model]
 })
 export class ObjectRecordView implements OnInit, OnDestroy {
+    /**
+     * the name of the module
+     * @private
+     */
     private moduleName: any = '';
+
+    /**
+     * the componentconfig
+     * @private
+     */
     private componentconfig: any = {};
+
+    /**
+     * any subnscriptions thois component might have that need to be destroyed when the component is destroyed
+     * @private
+     */
     private componentSubscriptions: Subscription = new Subscription();
+
+    /**
+     * indicates if the model here is loaded
+     *
+     * @private
+     */
+    private modelloaded: boolean = false;
 
     constructor(
         private broadcast: broadcast,
@@ -34,9 +55,7 @@ export class ObjectRecordView implements OnInit, OnDestroy {
         private model: model,
         private favorite: favorite,
     ) {
-        this.componentSubscriptions.add(this.broadcast.message$.subscribe(message => {
-            this.handleMessage(message);
-        }));
+
     }
 
     public ngOnInit() {
@@ -50,10 +69,10 @@ export class ObjectRecordView implements OnInit, OnDestroy {
         this.model.module = this.moduleName;
         this.model.id = this.navigationtab.activeRoute.params.id;
 
-
+        // retrieve the model data
         this.model.getData(true, 'detailview', true, true).subscribe(data => {
-            // this.navigation.setActiveModule(this.moduleName, this.model.id, data.summary_text);
             this.navigationtab.setTabInfo({displayname: data.summary_text, displaymodule: this.model.module});
+            this.modelloaded = true;
         });
 
         /**
@@ -92,6 +111,4 @@ export class ObjectRecordView implements OnInit, OnDestroy {
                 break;
         }
     }
-
-
 }

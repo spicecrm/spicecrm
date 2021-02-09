@@ -6,7 +6,6 @@ import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
 import {backend} from "../../../services/backend.service";
 import {toast} from "../../../services/toast.service";
-import {modelutilities} from "../../../services/modelutilities.service";
 import {session} from "../../../services/session.service";
 import {configurationService} from "../../../services/configuration.service";
 
@@ -36,15 +35,44 @@ export class UserResetPasswordModal {
      * @private
      */
     private repeatPassword: string = undefined;
+
+    /**
+     * the regex to check the password
+     *
+     * @private
+     */
     private pwdCheck: RegExp = new RegExp("//");
+
+    /**
+     * the composed text for the pwd guideline
+     * @private
+     */
     private pwdGuideline: string = undefined;
-    private infoLoaded = false;
+
+    /**
+     * holds the info if the password is auto generated
+     *
+     * @private
+     */
     private autogenerate: boolean = false;
+
+    /**
+     * set if the password shpudl be sent via email
+     * @private
+     */
     private sendByEmail: boolean = false;
+
+    /**
+     * toggle to show the password
+     *
+     * @private
+     */
     private showPassword: boolean = false;
-    private passwordErrorMsg: string = "";
-    private repeatPasswordErrorMsg: string = "";
-    private canSendByEmail: boolean = true;
+
+    /**
+     * force reset on the next login
+     */
+    private forceReset: boolean = true;
 
     /**
      * a string to break the autocomplete
@@ -53,50 +81,59 @@ export class UserResetPasswordModal {
      */
     private autocompletebreaker: string = '';
 
+    /**
+     * set to know we are in the update process
+     *
+     * @private
+     */
+    private updating: boolean = false;
+
     constructor(
         private model: model,
         private language: language,
-        private modelutilities: modelutilities,
         private toast: toast,
         private session: session,
         private backend: backend,
         private configuration: configurationService
     ) {
-        this.autocompletebreaker = this.modelutilities.generateGuid();
+
+        this.getInfo();
     }
 
+    /**
+     * returns if the password does not match
+     */
     get passwordError() {
-        let boolean = !this.autoGenerate && this.password && !this.pwdCheck.test(this.password);
-        this.passwordErrorMsg = boolean ? "Password does not match the Guideline." : "";
-        return boolean;
+        return this.password && !this.pwdCheck.test(this.password);
     }
 
     get repeatPasswordError() {
-        let boolean = !this.autoGenerate && this.repeatPassword && this.password !== this.repeatPassword;
-        this.repeatPasswordErrorMsg = boolean ? "Inputs for the new Password does not match." : "";
-        return boolean;
+        return this.repeatPassword && this.password !== this.repeatPassword;
     }
 
+    /**
+     * geter for the autogenerate checkbox
+     */
     get autoGenerate() {
         return this.autogenerate;
     }
 
+    /**
+     * toggle the autogenerate checkbox and trigger the creation
+     *
+     * @param value
+     */
     set autoGenerate(value) {
         this.autogenerate = value;
-        this.password = value ? Math.random().toString(36).slice(-8) : undefined;
+        // this.password = value ? Math.random().toString(36).slice(-8) : undefined;
+        this.password = value ? this.generatePassword() : undefined;
         this.repeatPassword = this.password;
     }
 
-    public ngOnInit() {
-        this.getInfo();
-    }
-
-
-    private getPasswordStyle(touched, dirty, isRepeat = false) {
-        return touched && dirty && ((isRepeat ? this.repeatPasswordError : this.passwordError)) ? 'slds-has-error' : '';
-    }
-
-
+    /**
+     * toggles if the password is human readable
+     * @private
+     */
     private toggleShowPassword() {
         this.showPassword = !this.showPassword;
     }
@@ -135,62 +172,122 @@ export class UserResetPasswordModal {
         this.pwdCheck = new RegExp(extConf.regex);
 
         let requArray = [];
-        if(extConf.onelower) requArray.push(this.language.getLabel('MSG_PASSWORD_ONELOWER'));
-        if(extConf.oneupper) requArray.push(this.language.getLabel('MSG_PASSWORD_ONEUPPER'));
-        if(extConf.onenumber) requArray.push(this.language.getLabel('MSG_PASSWORD_ONENUMBER'));
-        if(extConf.minpwdlength) requArray.push(this.language.getLabel('MSG_PASSWORD_LENGTH') + ' ' + extConf.minpwdlength);
+        if (extConf.onelower) requArray.push(this.language.getLabel('MSG_PASSWORD_ONELOWER'));
+        if (extConf.oneupper) requArray.push(this.language.getLabel('MSG_PASSWORD_ONEUPPER'));
+        if (extConf.onenumber) requArray.push(this.language.getLabel('MSG_PASSWORD_ONENUMBER'));
+        if (extConf.minpwdlength) requArray.push(this.language.getLabel('MSG_PASSWORD_LENGTH') + ' ' + extConf.minpwdlength);
 
         this.pwdGuideline = requArray.join(', ');
     }
 
-    private onModalEscX() {
-        this.close();
+    /**
+     * generates a password that matches the minimal requiremens
+     * fills it up with lower case chars to the required minimum length
+     *
+     * @private
+     */
+    private generatePassword() {
+        let passwordChars: string[] = [];
+        let extConf = this.configuration.getCapabilityConfig('userpassword');
+        if (extConf.onelower) passwordChars.push(this.randomLower());
+        if (extConf.oneupper) passwordChars.push(this.randomUpper());
+        if (extConf.onenumber) passwordChars.push(this.randomNumber());
+
+        let minLength = extConf.minpwdlength ? parseInt(extConf.minpwdlength, 10) : 8;
+        while (passwordChars.length < minLength) {
+            passwordChars.push(this.randomLower());
+        }
+
+        passwordChars = this.shuffle(passwordChars);
+        return passwordChars.join('');
     }
 
-    private save() {
-        if (!this.checkErrors() || !this.session.isAdmin) {
+    /**
+     * shuffles an array
+     * @param array
+     * @private
+     */
+    private shuffle(arr) {
+        let currentIndex = arr.length, temporaryValue, randomIndex;
+
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+
+            // And swap it with the current element.
+            temporaryValue = arr[currentIndex];
+            arr[currentIndex] = arr[randomIndex];
+            arr[randomIndex] = temporaryValue;
+        }
+
+        return arr;
+    }
+
+    /**
+     * returns a radnom upper character
+     * @private
+     */
+    private randomUpper() {
+        return String.fromCharCode(Math.floor(Math.random() * 26) + 65);
+    }
+
+    /**
+     * returns a random lower character
+     * @private
+     */
+    private randomLower() {
+        return String.fromCharCode(Math.floor(Math.random() * 26) + 97);
+    }
+
+    /**
+     * returns a random number
+     *
+     * @private
+     */
+    private randomNumber() {
+        return String.fromCharCode((Math.floor(Math.random() * 9) + 48));
+    }
+
+    /**
+     * getter to check if we can save
+     */
+    get canSave() {
+        if (this.updating || this.passwordError || this.repeatPasswordError || !this.session.isAdmin) {
             return false;
         }
-        this.backend.postRequest("user/password/new", {}, {
-            newpwd: this.password,
-            userId: this.model.id,
-            SystemGeneratedPassword: this.autoGenerate,
-            sendByEmail: this.sendByEmail
-        }).subscribe(res => {
-            if (res.status) {
-                if (this.sendByEmail) {
-                    this.toast.sendToast("An Email with the new password was successfully sent, check your inbox", "success", "", 10);
-                } else {
-                    this.toast.sendToast("Data saved", "success");
-                }
-
-                this.self.destroy();
-            } else {
-                this.sendByEmail = false;
-                this.canSendByEmail = false;
-                this.toast.sendToast(res.message, "error");
-            }
-        }, error => {
-            this.sendByEmail = false;
-            this.canSendByEmail = false;
-            this.toast.sendToast("Email couldn't be send. Check Mailbox Settings.", "error")
-        });
+        return true;
     }
 
-    private checkErrors() {
-        if (this.autoGenerate) {
-            return true;
+    /**
+     * sets the password
+     *
+     * @private
+     */
+    private setPassword() {
+        if (this.canSave) {
+            this.updating = true;
+            this.backend.postRequest(`module/Users/${this.model.id}/password/reset`, {}, {
+                newPassword: this.password,
+                forceReset: this.autoGenerate,
+                sendEmail: this.sendByEmail
+            }).subscribe(res => {
+                this.close();
+                this.toast.sendToast('Password Reset!', 'info');
+            }, error => {
+                this.updating = false;
+                this.toast.sendToast("Error resetting the password", "error");
+            });
         }
-        let isValid = true;
-        if (this.infoLoaded && this.passwordError) {
-            isValid = false;
-        }
-        if (!this.password || this.repeatPasswordError) {
-            isValid = false;
-        }
-        return isValid;
     }
 
+    /**
+     * closes the modal
+     *
+     * @private
+     */
     private close() {
         this.self.destroy();
     }
