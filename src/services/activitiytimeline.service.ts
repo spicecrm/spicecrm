@@ -313,11 +313,10 @@ export class activitiytimeline {
     ) {
 
         if (!silent) {
-
             this.activities[module].loading = true;
         }
 
-        let params = {
+        let body = {
             count: true,
             limit: this.defaultLimit,
             objects: JSON.stringify(this.filters.objectfilters),
@@ -326,7 +325,7 @@ export class activitiytimeline {
         };
 
 
-        this.backend.postRequest('module/' + module + '/fts/' + this.parent.module + '/' + this.parent.id, {}, params).subscribe(
+        this.backend.postRequest('module/' + module + '/fts/' + this.parent.module + '/' + this.parent.id, {}, body).subscribe(
             (response: any) => {
                 if (response) {
                     this.resetListData(module);

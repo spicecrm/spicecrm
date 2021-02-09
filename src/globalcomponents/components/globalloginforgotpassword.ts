@@ -9,27 +9,82 @@ import {HttpClient} from "@angular/common/http";
 
 @Component({
     selector: 'global-login-forgot-password',
-    templateUrl: './src/globalcomponents/templates/globalloginforgotpassword.html',
-    host: {
-        '(window:keypress)': 'this.keypressed($event)'
-    }
+    templateUrl: './src/globalcomponents/templates/globalloginforgotpassword.html'
 })
 export class GlobalLoginForgotPassword {
-    email: string = '';
-    token: string = '';
-    password: string = undefined;
-    repeatPassword: string = undefined;
-    pwdCheck: RegExp = new RegExp('//');
-    pwdGuideline: string = '';
-    infoLoaded: boolean = false;
-    emailEmpty: boolean = false;
-    tokenEmpty: boolean = false;
-    tokenInvalid: boolean = false;
-    promptUser: boolean = false;
-    showForgotPasswordEmail: boolean = true;
-    promptNewPass: boolean = false;
-    showForgotPasswordToken: boolean = false;
-    @Output() hasNewPassword: EventEmitter<any> = new EventEmitter<any>();
+    /**
+     * the users email address
+     *
+     * @private
+     */
+    private email: string = '';
+
+    /**
+     * the token the user sends
+     *
+     * @private
+     */
+    private token: string = '';
+
+    /**
+     * the password entered by the user
+     * @private
+     */
+    private password: string = undefined;
+
+    /**
+     * holds the repeated password
+     * @private
+     */
+    private repeatPassword: string = undefined;
+
+    /**
+     * the regex to match the password requirements
+     * @private
+     */
+    private pwdCheck: RegExp = new RegExp('//');
+
+    /**
+     * the text for the password requriements
+     * @private
+     */
+    private pwdGuideline: string;
+
+    /**
+     * defines the legth of the toekn that is either the minimum password length
+     * defaults to 6 if not set
+     *
+     * @private
+     */
+    private tokenLength: number = 6;
+
+    /**
+     * indicates that we are sending and thus closes the various inputs and disables the buttons
+     *
+     * @private
+     */
+    private sending: boolean = false;
+
+    /**
+     * set to display the
+     * @private
+     */
+    private display: 'email'|'token' = 'email';
+
+
+    /**
+     * emit true to close the reset window
+     *
+     * @private
+     */
+    @Output() private close: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    /**
+     * keep the active toast if we have one
+     *
+     * @private
+     */
+    private activeToast: string;
 
     constructor(
         private http: HttpClient,
@@ -39,122 +94,113 @@ export class GlobalLoginForgotPassword {
         this.getInfo();
     }
 
-    getInfo() {
-        this.http.get(this.configuration.getBackendUrl() + '/forgotPassword/info').subscribe((res: any) => {
-            this.pwdCheck = new RegExp(res.pwdCheck.regex);
-            this.pwdGuideline = res.pwdCheck.guideline;
-            this.infoLoaded = true;
-        });
+    /*
+    * retrieve password guideline
+    */
+    private getInfo() {
+        let extConf = this.configuration.getCapabilityConfig('userpassword');
+        this.pwdCheck = new RegExp(extConf.regex);
+
+        let requArray = [];
+
+        if (extConf.onelower) requArray.push('one lower case');
+        if (extConf.oneupper) requArray.push('one upper case');
+        if (extConf.onenumber) requArray.push('one number');
+        if (extConf.minpwdlength) {
+            requArray.push('minimum length ' + extConf.minpwdlength);
+            this.tokenLength = parseInt(extConf.minpwdlength, 10);
+        }
+
+        this.pwdGuideline = requArray.join(', ');
     }
 
     get pwderror() {
         return this.password && !this.pwdCheck.test(this.password) ? 'Password does not match the Guideline.' : false;
     }
+
     get pwdreperror() {
         return this.password == this.repeatPassword ? false : 'Inputs for the new Password does not match.'; // does not match password
     }
 
-    keypressed(event) {
-        if (event.keyCode === 13) {
-            if (this.showForgotPasswordEmail)
-                this.sendEmail();
-            if (this.showForgotPasswordToken)
-                this.sendToken();
-            if (this.promptNewPass)
-                this.sendNewPass();
-        }
+    /**
+     * regex for the email address validation
+     *
+     * @private
+     */
+    private emailValidation = new RegExp('^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$');
+
+
+    /**
+     * returns
+     */
+    get emailValid() {
+        return this.email && this.email.length > 0 && this.emailValidation.test(this.email);
     }
 
-    sendEmail() {
-        if (this.email.length > 0) {
-            this.emailEmpty = false;
-            this.http.get(this.configuration.getBackendUrl() + '/forgotPassword/' + this.email).subscribe(
-                (res:any) => {
-                    if (!res) {
-                        this.toast.sendToast('User with the given email does not exist', 'error');
-                    } else if(res.result == false) {
-                        this.toast.sendToast(res.message, 'error');
-                    } else {
-                        this.showForgotPasswordToken = true;
-                        this.showForgotPasswordEmail = false;
-                        this.toast.sendToast('Successfully sent, check your inbox to get the token code', 'success');
-                    }
+    /**
+     * request the token via email
+     *
+     * @private
+     */
+    private sendEmail() {
+        if (this.emailValid) {
+            // clear an error toast if we have one
+            if(this.activeToast){
+                this.toast.clearToast(this.activeToast);
+            }
+
+            // set to sending and send the request
+            this.sending = true;
+            this.http.get(this.configuration.getBackendUrl() + `/passwordtoken/email/${this.email}`).subscribe(
+                (res: any) => {
+                    this.display = 'token';
+                    this.toast.sendToast('Successfully sent, check your inbox to get the token code', 'success');
+                    this.sending = false;
                 },
                 (err: any) => {
-                    switch (err.status) {
-                        case 401:
-                            this.showForgotPasswordEmail = true;
-                            break;
-                    }
-                });
-        } else {
-            this.emailEmpty = true;
+                    this.activeToast = this.toast.sendToast('there was an error sending the token', 'error', 'Please verify that the mail is correect or contact a system administrator');
+                    this.sending = false;
+                }
+            );
         }
     }
 
-    sendToken() {
-        if (this.token.length > 0) {
-            this.tokenEmpty = false;
+    /**
+     * checks if we have a valid token and a valid password
+     */
+    get canSendToken() {
+        return this.token.length == this.tokenLength && !this.pwderror && !this.pwdreperror;
+    }
+
+    /**
+     * resets the password with the token
+     *
+     * @private
+     */
+    private resetPassword() {
+        if (this.canSendToken) {
+            // clear an error toast if we have one
+            if(this.activeToast){
+                this.toast.clearToast(this.activeToast);
+            }
+
+            // submit the request
+            this.sending = true;
             this.http.post(
-                this.configuration.getBackendUrl() + '/forgotPassword/' + this.email + "/" + this.token,
-                {},
+                this.configuration.getBackendUrl() + `/passwordtoken/token/${this.token}`,
+                {
+                    newPassword: this.password
+                }
             ).subscribe(
                 (res: any) => {
-                    var response = res;
-                    this.showForgotPasswordEmail = false;
-                    if (response.token_valid) {
-                        this.showForgotPasswordToken = false;
-                        this.promptNewPass = true;
-                    } else {
-                        this.tokenInvalid = true;
-                        this.toast.sendToast(
-                            'Token or email is invalid',
-                            'error',
-                            'Token is expired, or invalid or does not belong to this email address',
-                            false,
-                        );
-                    }
-
+                    this.close.emit(true);
+                    this.sending = false;
                 },
                 (err: any) => {
-                    switch (err.status) {
-                        case 401:
-                            this.showForgotPasswordToken = true;
-                            break;
-                    }
-                });
-        } else {
-            this.emailEmpty = true;
-        }
-    }
-
-    sendNewPass() {
-        if(this.infoLoaded)
-            if(this.pwderror) return false;
-
-        if (this.password && this.pwdreperror == false) {
-            this.http.post(this.configuration.getBackendUrl() + '/forgotPassword/resetPass', {
-                "email": this.email,
-                "token": this.token,
-                "password": this.password
-            }).subscribe(
-                (res) => {
-                    this.promptNewPass = false;
-                    this.toast.sendToast(
-                        'please log in with new password',
-                        'default',
-                        'please return to login form and enter login data with new password',
-                        false,
-                    );
-                    this.hasNewPassword.emit(false);
-                },
-                (err: any) => {
-                    switch (err.status) {
-                        case 401:
-                            this.promptNewPass = true;
-                            break;
-                    }
-                });
+                    this.activeToast = this.toast.sendToast('there was an error resetting your password', 'error', 'please contact a system administrator');
+                    this.sending = false;
+                }
+            );
         }
     }
 

@@ -15,15 +15,14 @@ import {configurationService} from "../../../services/configuration.service";
 @Component({
     templateUrl: './src/modules/servicecomponents/templates/servicecategorymanager.html',
 })
-export class ServiceCategoryManagerComponent
-{
-    category_tree = [];
-    levels = [];
-    max_levels = 4;
-    loading = true;
-    selected_categorys = [];
-    edit_category:object = null;
-    service_queues = [];
+export class ServiceCategoryManagerComponent {
+    private category_tree = [];
+    private levels = [];
+    private max_levels = 4;
+    private loading = true;
+    private selected_categorys = [];
+    private edit_category: object = null;
+    private service_queues = [];
 
     constructor(
         private backend: backend,
@@ -34,37 +33,32 @@ export class ServiceCategoryManagerComponent
         private toast: toast,
     ) {
         // getting the category tree...
-        if( !this.config.getData('service_category_tree') )
-        {
+        if (!this.config.getData('service_category_tree')) {
             this.backend.getRequest('spiceui/core/servicecategories/tree').subscribe(
-                (res:any) => {
-                    //console.log(res);
+                (res: any) => {
                     this.config.setData('service_category_tree', res);
                     this.initializeTree(res);
                 }
             );
-        }
-        else {
+        } else {
             this.initializeTree(this.config.getData('service_category_tree'));
         }
 
-        this.backend.all('ServiceQueues', {}).subscribe(
-            (res:any) => {
-                //console.log(res);
-                this.service_queues = res;
+        this.backend.getRequest('module/ServiceQueues', {limit: -99}).subscribe(
+            (res: any) => {
+                for (let r of res.list) {
+                    this.service_queues.push(this.utils.backendModel2spice('ServiceQueues', r));
 
+                }
             }
         );
     }
 
-    initializeTree(tree)
-    {
-        //console.log(tree);
+    private initializeTree(tree) {
         this.category_tree = tree;
         // getting max levels...
 
-        for(let i = 0; i < this.max_levels; i++)
-        {
+        for (let i = 0; i < this.max_levels; i++) {
             this.levels[i] = [];
         }
         this.levels[0] = this.category_tree;
@@ -72,32 +66,27 @@ export class ServiceCategoryManagerComponent
     }
 
 
-    resetLevels(start_lvl = 0)
-    {
-        for(let lvl = start_lvl; lvl < this.max_levels; lvl++)
-        {
+    private resetLevels(start_lvl = 0) {
+        for (let lvl = start_lvl; lvl < this.max_levels; lvl++) {
             this.levels[lvl] = [];
         }
-        this.selected_categorys.splice(start_lvl,this.max_levels - start_lvl);
+        this.selected_categorys.splice(start_lvl, this.max_levels - start_lvl);
     }
 
     /**
      * triggered on mouseenter, selects a category to go deeper
      */
-    select(cat)
-    {
+    private select(cat) {
         this.selected_categorys[cat.level] = cat;
-        if(cat.categories) {
+        if (cat.categories) {
             this.levels[cat.level + 1] = cat.categories;
             this.resetLevels(cat.level + 2);
-        }
-        else{
-            this.resetLevels(cat.level+1);
+        } else {
+            this.resetLevels(cat.level + 1);
         }
     }
 
-    addCategory(parent = null)
-    {
+    private addCategory(parent = null) {
         let cat = {
             id: this.utils.generateGuid(),
             name: 'new Category...',
@@ -109,21 +98,17 @@ export class ServiceCategoryManagerComponent
             level: 0,
         };
 
-        if( parent )
-        {
-            if( !parent.categories )
-            {
+        if (parent) {
+            if (!parent.categories) {
                 parent.categories = [];
             }
             cat.parent_id = parent.id;
             cat.level = parent.level + 1;
-            if( cat.level > this.max_levels )
-                this.max_levels = cat.level;
+            if (cat.level > this.max_levels) this.max_levels = cat.level;
 
             parent.categories.push(cat);
             this.levels[parent.level + 1] = parent.categories;
-        }
-        else {
+        } else {
             this.category_tree.push(cat);
             this.levels[0] = this.category_tree;
         }
@@ -132,27 +117,21 @@ export class ServiceCategoryManagerComponent
         this.edit(cat);
     }
 
-    removeCategory(cat)
-    {
-        if( cat.categories )
-        {
-            let r = confirm('Are you sure you want to delete this Category? There are '+cat.categories.length+' Subcategories which will be get deleted too!');
-            if( !r )
-                return false;
+    private removeCategory(cat) {
+        if (cat.categories) {
+            let r = confirm('Are you sure you want to delete this Category? There are ' + cat.categories.length + ' Subcategories which will be get deleted too!');
+            if (!r) return false;
         }
 
-        if(cat == this.edit_category )
-        {
+        if (cat == this.edit_category) {
             this.edit_category = null;
         }
 
         let i = 0;
-        for(let c of this.category_tree)
-        {
+        for (let c of this.category_tree) {
 
-            if( c == cat )
-            {
-                this.category_tree.splice(i,1);
+            if (c == cat) {
+                this.category_tree.splice(i, 1);
                 return true;
             }
 
@@ -160,14 +139,11 @@ export class ServiceCategoryManagerComponent
             i++;
         }
 
-        function searchThroughTree(current, searched)
-        {
-            if(current.categories)
-            {
-                for(let i = 0; i < current.categories.length; i++)
-                {
-                    if(current.categories[i] == searched){
-                        current.categories.splice(i,1);
+        function searchThroughTree(current, searched) {
+            if (current.categories) {
+                for (let i = 0; i < current.categories.length; i++) {
+                    if (current.categories[i] == searched) {
+                        current.categories.splice(i, 1);
                         return true;
                     }
 
@@ -178,17 +154,14 @@ export class ServiceCategoryManagerComponent
         }
     }
 
-    edit(cat)
-    {
+    private edit(cat) {
         this.selected_categorys[cat.level] = cat;
         this.edit_category = cat;
     }
 
-    save()
-    {
+    private save() {
         this.backend.postRequest('spiceui/core/servicecategories/tree', null, this.category_tree).subscribe(
             (success) => {
-
                 this.toast.sendToast('changes saved');
             },
             (error) => {
@@ -198,12 +171,9 @@ export class ServiceCategoryManagerComponent
         );
     }
 
-    isCategorySelected(cat):boolean
-    {
-        for(let c of this.selected_categorys)
-        {
-            if( c.id == cat.id )
-                return true;
+    private isCategorySelected(cat): boolean {
+        for (let c of this.selected_categorys) {
+            if (c.id == cat.id) return true;
         }
         return false;
     }
