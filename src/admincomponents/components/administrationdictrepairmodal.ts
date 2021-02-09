@@ -16,9 +16,8 @@ import {modal} from "../../services/modal.service";
 export class AdministrationDictRepairModal {
 
     private synced:boolean = false;
-    private sql: string;
+    private sql: any =[];
     private dbErrors: any = [];
-    private queries: any[] = [];
     private self: any = {};
     constructor(private backend: backend, private toast: toast, private language: language, private modal: modal) {
     }
@@ -27,16 +26,12 @@ export class AdministrationDictRepairModal {
         this.self.destroy();
     }
 
-    public ngOnInit() {
-        this.convertSQL();
-    }
-
     /**
      * execute db repair and save the response
      */
     private doRepair() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
-            const selectedQueries = this.queries.filter(query => query.selected).map(query => btoa(query.query));
+            const selectedQueries = this.sql.filter(query => query.selected);
         this.backend.postRequest('repair/database', {}, {selectedQueries}).subscribe((result: any) => {
             if (!result.response) {
                 this.dbErrors = result.errors;
@@ -63,22 +58,11 @@ export class AdministrationDictRepairModal {
 
 
     /**
-     * converts the sql string into an array of strings
-     * @private
+     * selects all the queries
      */
-    private convertSQL() {
-        this.queries = this.sql.split("\n").filter(query => !query.includes('*') && query != "");
-        this.queries = this.queries.map(query => ({query, selected: false}));
-    }
-
-
-    /**
-     * copy the SQL to clipboard
-     */
-    private copy2clipboard() {
-        navigator.clipboard.writeText(this.sql).then(success => {
-            this.toast.sendToast(this.language.getLabel('LBL_COPIED_TO_CLIPBOARD'), "info");
-        });
+    private selectAll() {
+     this.sql.forEach(query => {query.selected = true;});
+        //return this.sql;
     }
 
 }

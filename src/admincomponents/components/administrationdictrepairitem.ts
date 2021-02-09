@@ -14,7 +14,7 @@ import {modal} from "../../services/modal.service";
 })
 export class AdministrationDictRepairItem {
 
-    private sql: string = '';
+    private sql: any = [];
     constructor(private backend: backend, private toast: toast, private language: language, private modal: modal, private injector: Injector) {
     }
 
