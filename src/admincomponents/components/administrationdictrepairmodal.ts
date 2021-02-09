@@ -15,13 +15,38 @@ import {modal} from "../../services/modal.service";
 })
 export class AdministrationDictRepairModal {
 
+    /**
+     * flag for synchronisation
+     * @private
+     */
     private synced:boolean = false;
+    /**
+     * array container for the statements
+     * @private
+     */
     private sql: any =[];
+    /**
+     * whole untouched sql string
+     * @private
+     */
+    private wholeSQL: string;
+    /**
+     * array container of database errors from backend
+     * @private
+     */
     private dbErrors: any = [];
+    /**
+     * modal reference
+     * @private
+     */
     private self: any = {};
     constructor(private backend: backend, private toast: toast, private language: language, private modal: modal) {
     }
 
+    /**
+     * destroy modal instance
+     * @private
+     */
     private close() {
         this.self.destroy();
     }
@@ -57,12 +82,21 @@ export class AdministrationDictRepairModal {
     }
 
 
+
+    /**
+     * copy the whole SQL to clipboard
+     */
+    private copy2clipboard() {
+        navigator.clipboard.writeText(this.wholeSQL).then(success => {
+            this.toast.sendToast(this.language.getLabel('LBL_COPIED_TO_CLIPBOARD'), "info");
+        });
+    }
+
     /**
      * selects all the queries
      */
     private selectAll() {
-     this.sql.forEach(query => {query.selected = true;});
-        //return this.sql;
+     this.sql.forEach(query => {query.selected = true});
     }
 
 }
