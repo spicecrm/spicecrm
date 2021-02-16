@@ -227,13 +227,11 @@ export class UserAddModal implements OnInit {
 
     private savePassword(goDetail) {
         let body = {
-            newpwd: this.password,
-            userId: this.model.id,
-            SystemGeneratedPassword: this.autoGenerate,
-            sendByEmail: this.canSendByEmail ? this.sendByEmail : false
+            newPassword: this.password,
+            forceReset: this.autoGenerate,
+            sendEmail: this.canSendByEmail ? this.sendByEmail : false
         };
-        this.backend.postRequest("user/password/new", {}, body).subscribe(res => {
-            if (res.status) {
+        this.backend.postRequest("module/Users/"+this.model.id+"/password/reset", {}, body).subscribe(res => {
                 if (this.sendByEmail) {
                     this.toast.sendToast(this.language.getLabel("MSG_NEW_PASSWORD_EMAIL_SENT"), "success", "", 10);
                 } else {
@@ -243,15 +241,10 @@ export class UserAddModal implements OnInit {
                     this.model.goDetail();
                 }
                 this.self.destroy();
-            } else {
-                this.sendByEmail = false;
-                this.canSendByEmail = false;
-                this.toast.sendToast(res.message, "error");
-            }
         }, error => {
             this.sendByEmail = false;
             this.canSendByEmail = false;
-            this.toast.sendToast(this.language.getLabel("MSG_EMAIL_SEND_FAILED"), "error");
+            this.toast.sendToast(this.language.getLabel("MSG_PASSWORD_RESET_FAIELD"), "error");
         });
     }
 }
