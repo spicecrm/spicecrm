@@ -55,7 +55,7 @@ export class fieldProjectActivityDropdown extends fieldGeneric implements OnInit
      */
     public getActivityTypes() {
         let projectwbsid = this.model.getField('projectwbs_id');
-        this.backend.getRequest(`activitytypes/${projectwbsid}`).subscribe(result => {
+        this.backend.getRequest(`modules/ProjectWBSs/${projectwbsid}/activitytypes`).subscribe(result => {
             if (result.activitytypes.length > 0) {
                 this.options = result.activitytypes;
             }
