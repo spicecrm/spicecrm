@@ -24,7 +24,7 @@ export class AdministrationDictRepairLanguage {
      */
     public executeLG() {
         let await = this.modal.await(this.language.getLabel('LBL_LOADING'));
-        this.backend.getRequest('/repair/language').subscribe(result => {
+        this.backend.getRequest('repair/language').subscribe(result => {
             await.emit(true);
             if(result.response) {
                 this.language.getLanguage(this.loaderHandler);
