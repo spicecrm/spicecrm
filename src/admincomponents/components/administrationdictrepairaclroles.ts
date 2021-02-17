@@ -18,7 +18,7 @@ export class AdministrationDictRepairACLRoles {
 
     public executeRepairRoles() {
         let await = this.modal.await(this.language.getLabel('LBL_LOADING'));
-        this.backend.getRequest('/repair/aclroles').subscribe(result => {
+        this.backend.getRequest('repair/aclroles').subscribe(result => {
             await.emit(true);
             if(result) {
                 this.toast.sendToast(this.language.getLabel('LBL_ROLES_REPAIRED'), 'success');
