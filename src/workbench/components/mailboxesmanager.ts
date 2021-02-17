@@ -64,7 +64,7 @@ export class MailboxesManager {
         // get the transports
         if (!this.configuration.getData('mailboxtransports')) {
             this.configuration.setData('mailboxtransports', []);
-            this.backend.getRequest('/mailboxes/transports').subscribe(transports => {
+            this.backend.getRequest('mailboxes/transports').subscribe(transports => {
                 this.configuration.setData('mailboxtransports', transports);
             });
         }
