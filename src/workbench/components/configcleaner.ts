@@ -30,7 +30,7 @@ export class ConfigCleaner
     diagnose(type:string)
     {
         this.is_loading = true;
-        this.backend.getRequest(`/cleanup/configs/check/${type}`).subscribe(
+        this.backend.getRequest(`cleanup/configs/check/${type}`).subscribe(
             res => {
                 this.results = res;
                 this.is_loading = false;
