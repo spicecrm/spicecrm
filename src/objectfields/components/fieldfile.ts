@@ -227,7 +227,7 @@ export class fieldFile extends fieldGeneric {
      * doanloads the attachment via ajax request
      */
     private downloadAttachment() {
-        this.backend.getRequest('/module/' + this.model.module + '/' + this.model.id + '/noteattachment').subscribe(fileData => {
+        this.backend.getRequest('module/' + this.model.module + '/' + this.model.id + '/noteattachment').subscribe(fileData => {
             let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
             let blobUrl = URL.createObjectURL(blob);
             let a = document.createElement("a");
@@ -253,7 +253,7 @@ export class fieldFile extends fieldGeneric {
                     this.modal.openModal('SystemImagePreviewModal').subscribe(modalref => {
                         modalref.instance.imgname = this.value;
                         modalref.instance.imgtype = this.model.getFieldValue('file_mime_type');
-                        this.backend.getRequest('/module/' + this.model.module + '/' + this.model.id + '/noteattachment').subscribe(file => {
+                        this.backend.getRequest('module/' + this.model.module + '/' + this.model.id + '/noteattachment').subscribe(file => {
                             modalref.instance.imgsrc = 'data:' + this.model.getFieldValue('file_mime_type') + ';base64,' + file.file;
                         });
                     });
@@ -264,7 +264,7 @@ export class fieldFile extends fieldGeneric {
                     this.modal.openModal('SystemObjectPreviewModal').subscribe(modalref => {
                         modalref.instance.name = this.value;
                         modalref.instance.type = this.model.getFieldValue('file_mime_type');
-                        this.backend.getRequest('/module/' + this.model.module + '/' + this.model.id + '/noteattachment').subscribe(file => {
+                        this.backend.getRequest('module/' + this.model.module + '/' + this.model.id + '/noteattachment').subscribe(file => {
                             modalref.instance.data = atob(file.file);
                         });
 
@@ -276,7 +276,7 @@ export class fieldFile extends fieldGeneric {
                             this.modal.openModal('SystemObjectPreviewModal').subscribe(modalref => {
                                 modalref.instance.name = this.value;
                                 modalref.instance.type = this.model.getFieldValue('file_mime_type');
-                                this.backend.getRequest('/module/' + this.model.module + '/' + this.model.id + '/noteattachment').subscribe(file => {
+                                this.backend.getRequest('module/' + this.model.module + '/' + this.model.id + '/noteattachment').subscribe(file => {
                                     modalref.instance.data = atob(file.file);
                                 });
                             });
