@@ -21,7 +21,7 @@ export class TeleSalesCockpitCompleteButton {
 
     public execute() {
         let item = this.telecockpitservice.selectedListItem;
-        this.backend.postRequest(`/module/CampaignLog/${item.id}/completed`)
+        this.backend.postRequest(`module/CampaignLog/${item.id}/completed`)
             .subscribe(
                 status => {
                     if (status.success) {

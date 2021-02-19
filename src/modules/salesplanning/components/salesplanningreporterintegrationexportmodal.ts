@@ -71,11 +71,11 @@ export class SalesPlanningReporterIntegrationExportModal implements OnInit {
      * break down the reported data and extract the fields
      */
     public ngOnInit(): void {
-        this.backend.getRequest('/module/SalesPlanningVersions', {limit: '-99', fields: '*'}).subscribe(versions => {
+        this.backend.getRequest('module/SalesPlanningVersions', {limit: '-99', fields: '*'}).subscribe(versions => {
             this.salespanningversions = versions.list;
         });
 
-        this.backend.getRequest('/module/SalesPlanningTerritories', {
+        this.backend.getRequest('module/SalesPlanningTerritories', {
             limit: '-99',
             fields: JSON.stringify(['name', 'id'])
         }).subscribe(territories => {
@@ -128,7 +128,7 @@ export class SalesPlanningReporterIntegrationExportModal implements OnInit {
         this.scopesetcharacteristics = [];
 
         // backend call
-        this.backend.getRequest('/module/SalesPlanningScopeSets/getScopeCharacteristics/' + scopeSetId).subscribe(
+        this.backend.getRequest('module/SalesPlanningScopeSets/getScopeCharacteristics/' + scopeSetId).subscribe(
             scopesetcharacteristics => {
                 for (let scopesetcharacteristic of scopesetcharacteristics) {
                     if (scopesetcharacteristic.id != 'territory') {
