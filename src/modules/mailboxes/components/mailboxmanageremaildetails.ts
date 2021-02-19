@@ -208,7 +208,7 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
         // set the model
         this.model.setField('status', status);
         // update the backend
-        this.backend.postRequest('/module/' + this.model.module + '/' + this.model.id + '/setstatus/' + status).subscribe(
+        this.backend.postRequest('module/' + this.model.module + '/' + this.model.id + '/setstatus/' + status).subscribe(
             (res: any) => {
                 // also set it in the service
                 this.mailboxesEmails.activeMessage.status = status;
@@ -228,7 +228,7 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
         // set the model
         this.model.setField("openness", openness);
         // update the backend
-        this.backend.postRequest("/module/" + this.model.module + '/' + this.model.id + "/setopenness/" + openness).subscribe(
+        this.backend.postRequest("module/" + this.model.module + '/' + this.model.id + "/setopenness/" + openness).subscribe(
             (res: any) => {
                 // also set it in the service
                 this.mailboxesEmails.activeMessage.openness = openness;
