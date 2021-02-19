@@ -82,7 +82,7 @@ export class EmailSchedulesModal {
                 searchterm: this.modellist.searchTerm,
                 aggregates: this.modellist.selectedAggregates
             };
-            this.backend.postRequest('/modules/EmailSchedules/saveSchedule', {}, body).subscribe(result => {
+            this.backend.postRequest('modules/EmailSchedules/saveSchedule', {}, body).subscribe(result => {
                 loadingRef.instance.self.destroy();
                 if (result.status) {
                     this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
