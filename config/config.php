@@ -12,7 +12,6 @@
  */
 ini_set('display_errors', 0);
 require "configHandler.php";
-
 $url = trim($_SERVER['REQUEST_URI'], '/');
 $urlArray = explode('?', $url);
 
@@ -36,7 +35,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
                 // echo $genericCss."\n\n\n";
 
-                if (isset($customCss{0})) echo "/***** Custom Stylesheet ***************/\n\n\n" . $customCss;
+                if (isset($customCss[0])) echo "/***** Custom Stylesheet ***************/\n\n\n" . $customCss;
                 else echo "/* NO Custom Stylesheet */\n";
 
                 break;
