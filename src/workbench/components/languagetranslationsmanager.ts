@@ -63,7 +63,7 @@ export class LanguageTranslationsManager {
             ]
         };
 
-        this.backend.postRequest('/syslanguages/labels', null, [body]).subscribe(
+        this.backend.postRequest('syslanguages/labels', null, [body]).subscribe(
             (res) => {
                 this.language.addLabel(label.name, label.translation_default, label.translation_short, label.translation_long);
                 this.labels = this.labels.filter(thisLabel => thisLabel.id != label.id);
