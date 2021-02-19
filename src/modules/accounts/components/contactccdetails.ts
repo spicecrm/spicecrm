@@ -95,7 +95,7 @@ export class ContactCCDetails implements OnInit, OnDestroy {
     private loadCompanyCode() {
         this.isLoading = true;
         let fields = JSON.stringify(["companycode", "date_modified", "description", "id"]);
-        this.backend.getRequest(`/module/CompanyCodes`, {fields: fields}).subscribe(CCodes => {
+        this.backend.getRequest(`module/CompanyCodes`, {fields: fields}).subscribe(CCodes => {
             this.companyCodes = CCodes.list;
             this.isLoading = false;
         });
