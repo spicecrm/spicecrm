@@ -157,7 +157,7 @@ export class LanguageLabelManagerComponent {
     public deleteLabel(label) {
         this.modalservice.confirm(this.language.getLabel('LBL_DELETE_LABEL_TEXT'), this.language.getLabel('LBL_DELETE_LABEL_TITLE')).subscribe((decision) => {
             if (decision) {
-                this.backend.deleteRequest('/syslanguages/labels/' + label.id + '/' + label.source).subscribe(
+                this.backend.deleteRequest('syslanguages/labels/' + label.id + '/' + label.source).subscribe(
                     (res) => {
                         for (let i = 0; i < this.labels.length; i++) {
                             let lbl = this.labels[i];
@@ -173,7 +173,7 @@ export class LanguageLabelManagerComponent {
     }
 
     public save() {
-        this.backend.postRequest('/syslanguages/labels', null, [this.selected_label]).subscribe(
+        this.backend.postRequest('syslanguages/labels', null, [this.selected_label]).subscribe(
             (res) => {
                 // reload labels to show up in the application...
                 // this.language.loadLanguage();
