@@ -32,7 +32,7 @@ export class AccountsKPIsOverview {
 
         this.getYears();
         this.isLoading = true;
-        this.backend.getRequest(`/module/AccountKPIs/${this.model.id}/getsummary`, {yearfrom: (this.yearto - this.limit)+1, yearto: this.yearto})
+        this.backend.getRequest(`module/AccountKPIs/${this.model.id}/getsummary`, {yearfrom: (this.yearto - this.limit)+1, yearto: this.yearto})
             .subscribe(kpis => {
                 this.accountKpis = kpis.accountkpis;
                 this.companyCodes = kpis.companycodes;
