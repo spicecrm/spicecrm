@@ -90,7 +90,7 @@ export class FieldDunsNumber extends fieldGeneric {
             country: (this.model.getField(this.fieldCountry) ? this.model.getField(this.fieldCountry) : '')
         };
         modalRef.instance.isLoading = true;
-        this.backend.getRequest('/SpiceDuns', params).subscribe(res => {
+        this.backend.getRequest('SpiceDuns', params).subscribe(res => {
             if (res) {
                 modalRef.instance.isLoading = false;
                 if (res.length) {
