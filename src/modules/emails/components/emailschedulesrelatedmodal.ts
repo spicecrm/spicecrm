@@ -86,7 +86,7 @@ export class EmailSchedulesRelatedModal {
             let emailsubjectCondition = body.data.hasOwnProperty('email_subject');
             let selectedLinksCondition = selectedLinks.length > 0;
             if(mailboxCondition && emailsubjectCondition && selectedLinksCondition) {
-                this.backend.postRequest('/modules/EmailSchedules/saveScheduleFromRelated', {}, body).subscribe(result => {
+                this.backend.postRequest('modules/EmailSchedules/saveScheduleFromRelated', {}, body).subscribe(result => {
                     loadingRef.instance.self.destroy();
                     if (result.status) {
                         this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
