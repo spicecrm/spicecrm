@@ -67,14 +67,14 @@ export class SystemInputTags {
 
     private doSearch() {
         /*
-        this.backend.getRequest('/SpiceTags/' + btoa(this.querystring.trim())).subscribe(tags => {
+        this.backend.getRequest('SpiceTags/' + btoa(this.querystring.trim())).subscribe(tags => {
             this.matchedtags = tags;
             this.matchedtags.sort((a, b) => {
                 return a.toLowerCase() > b.toLowerCase() ? 1 : -1;
             });
         });
         */
-        this.backend.postRequest('/SpiceTags', {},  {search: this.querystring.trim()}).subscribe(tags => {
+        this.backend.postRequest('SpiceTags', {},  {search: this.querystring.trim()}).subscribe(tags => {
             this.matchedtags = tags;
             this.matchedtags.sort((a, b) => {
                 return a.toLowerCase() > b.toLowerCase() ? 1 : -1;
