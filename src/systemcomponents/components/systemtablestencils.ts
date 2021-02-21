@@ -70,7 +70,7 @@ export class SystemTableStencils implements OnInit {
      */
     private linestyle(index) {
         return {
-            opacity: 0.5 + (0.5 / index)
+            opacity: 0.2 + (0.8 / index)
         };
     }
 }
