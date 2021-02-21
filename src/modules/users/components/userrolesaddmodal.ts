@@ -65,7 +65,7 @@ export class UserRolesAddModal {
     }
 
     private add() {
-        this.backend.postRequest(`/spiceui/core/roles/${this.sysuirole_id}/${this.user_id}/new`)
+        this.backend.postRequest(`spiceui/core/roles/${this.sysuirole_id}/${this.user_id}/new`)
             .subscribe(
                 res => {
                     if (res.status == "error") {

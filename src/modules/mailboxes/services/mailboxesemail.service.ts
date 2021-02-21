@@ -212,7 +212,7 @@ export class mailboxesEmails implements OnDestroy{
     public fetchEmails() {
         let responseSubject = new Subject<any>();
 
-        this.backend.getRequest("/modules/Mailboxes/" + this.activeMailBox.id + "/fetchemails").subscribe(
+        this.backend.getRequest("modules/Mailboxes/" + this.activeMailBox.id + "/fetchemails").subscribe(
             // todo a spinner or sth similar while waiting for the response
             (response: any) => {
                 if (response.new_mail_count > 0) {

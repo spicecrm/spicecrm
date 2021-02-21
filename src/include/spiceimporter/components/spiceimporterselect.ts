@@ -157,7 +157,7 @@ export class SpiceImporterSelect {
             enclosure: this.spiceImport.enclosure,
             separator: this.spiceImport.separator
         };
-        this.backend.getRequest('/modules/SpiceImports/filePreview', params).subscribe(res => {
+        this.backend.getRequest('modules/SpiceImports/filePreview', params).subscribe(res => {
 
             this.isLoading = false;
 

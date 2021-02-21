@@ -205,7 +205,7 @@ export class mediafiles {
             limit: -99
         };
 
-        this.backend.getRequest('/module/MediaCategories', paramsCategories).subscribe((response: any) => {
+        this.backend.getRequest('module/MediaCategories', paramsCategories).subscribe((response: any) => {
             for (let c of response.list) {
                 this.categories[c.id] = c;
                 this.categoriesSorted.push(c);
