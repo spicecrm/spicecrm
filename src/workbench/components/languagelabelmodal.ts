@@ -82,7 +82,7 @@ export class LanguageLabelModal {
         let valid = this.validate();
         if (!valid) return false;
 
-        this.backend.postRequest('/syslanguages/labels', null, [this.label]).subscribe(
+        this.backend.postRequest('syslanguages/labels', null, [this.label]).subscribe(
             (res) => {
                 this.label$.emit(this.label);
                 this.close$.emit('save');

@@ -35,7 +35,7 @@ export class SpiceInstallerSetBackEnd implements OnInit {
     public ngOnInit() {
         let currentUrl = window.location.href;
         this.apiurl = currentUrl.replace("#/install", "api");
-       this.http.get('config/check', {params: {url: btoa(this.apiurl)}}).subscribe(
+        this.http.get('config/check', {params: {url: btoa(this.apiurl)}}).subscribe(
            (res: any) => {
                if (res.success) {
                    this.apiFound = true;
