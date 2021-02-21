@@ -60,7 +60,7 @@ export class CampaignTaskActivateButton {
         this.activating = true;
 
         // execute on backend
-        this.backend.postRequest('/module/CampaignTasks/' + this.model.id + '/activate').subscribe(status => {
+        this.backend.postRequest('module/CampaignTasks/' + this.model.id + '/activate').subscribe(status => {
             this.activating = false;
 
             // send toast and set actrive

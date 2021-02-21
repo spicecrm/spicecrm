@@ -86,7 +86,7 @@ export class Spiceimportslogs {
             this.language.getLabel('MSG_DELETE_RECORD'))
             .subscribe((answer) => {
                 if (answer) {
-                    this.backend.deleteRequest(`/module/SpiceImports/${this.spiceimportsservice.activeImportData.id}`)
+                    this.backend.deleteRequest(`module/SpiceImports/${this.spiceimportsservice.activeImportData.id}`)
                         .subscribe(res => {
                             if (res) {
                                 this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_DELETED'), 'success');

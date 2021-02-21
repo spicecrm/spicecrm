@@ -37,7 +37,7 @@ export class WorkflowCloseWorkflowButton {
         this.modal.confirm(this.language.getLabel('MSG_CLOSE_WORKFLOW', '', 'long'), this.language.getLabel('MSG_CLOSE_WORKFLOW')).subscribe(response => {
             if (response) {
                 let spinner = this.modal.await('closing');
-                this.backend.postRequest(`/Workflows/${this.model.id}/close`).subscribe(
+                this.backend.postRequest(`Workflows/${this.model.id}/close`).subscribe(
                     completed => {
                         spinner.emit(true);
                         this.model.getData(true);

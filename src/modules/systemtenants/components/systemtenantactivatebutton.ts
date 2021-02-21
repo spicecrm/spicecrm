@@ -20,7 +20,7 @@ export class SystemTenantActivateButton {
 
     public execute() {
         let spinner = this.modal.await('Initialize Tenant');
-        this.backend.postRequest(`/module/SystemTenants/${this.model.id}/initialize`).subscribe(success => {
+        this.backend.postRequest(`module/SystemTenants/${this.model.id}/initialize`).subscribe(success => {
             spinner.emit(true);
         });
     }

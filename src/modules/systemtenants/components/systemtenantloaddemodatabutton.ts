@@ -20,7 +20,7 @@ export class SystemTenantLoadDemoDataButton {
 
     public execute() {
         let spinner = this.modal.await('Loading Demo Data');
-        this.backend.postRequest(`/module/SystemTenants/${this.model.id}/loaddemodata`).subscribe(success => {
+        this.backend.postRequest(`module/SystemTenants/${this.model.id}/loaddemodata`).subscribe(success => {
             spinner.emit(true);
         });
     }

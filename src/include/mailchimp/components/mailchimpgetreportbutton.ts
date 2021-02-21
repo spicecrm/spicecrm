@@ -33,7 +33,7 @@ export class MailChimpGetReportButton {
 
     public execute() {
         let stopper = this.modal.await('Loading')
-        this.backend.getRequest(`/MailChimp/CampaignTasks/${this.model.id}/report`)
+        this.backend.getRequest(`MailChimp/CampaignTasks/${this.model.id}/report`)
             .subscribe(response => {
                     this.toast.sendToast(this.language.getLabel('LBL_COMPLETED'));
                     this.report = response;
