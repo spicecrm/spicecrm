@@ -41,6 +41,9 @@ import /*embed*/ {AdministrationHomeScreenCardItem} from "./components/administr
 import /*embed*/ { AdministrationSystemStats } from './components/administrationsystemstats';
 import /*embed*/ { AdministrationSystemVersions } from './components/administrationsystemversions';
 
+import /*embed*/ { AdministrationAPIInspector } from './components/administrationapiinspector';
+import /*embed*/ { AdministrationAPIInspectorDetails } from './components/administrationapiinspectordetails';
+
 import /*embed*/ { AdministrationSysTrashcanManager } from './components/administrationsystrashcanmanager';
 import /*embed*/ { AdministrationSysTrashcanRecover } from './components/administrationsystrashcanrecover';
 
@@ -76,6 +79,8 @@ import /*embed*/ {AdministrationDefaultPreferences} from './components/administr
         DragDropModule
     ],
     declarations: [
+        AdministrationAPIInspector,
+        AdministrationAPIInspectorDetails,
         AdministrationMain,
         AdministrationMenu,
         AdministrationMenuRouteItem,
