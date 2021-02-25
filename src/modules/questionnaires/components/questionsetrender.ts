@@ -45,8 +45,6 @@ export class QuestionsetRender implements OnInit {
         this.qp = questionnaireParticipation;
     }
 
-    private zeig = false;
-
     public ngOnInit(): void {
 
         // window.setTimeout( () => { this.zeig = true; }, 5000 );

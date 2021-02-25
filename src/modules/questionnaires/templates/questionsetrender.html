@@ -45,30 +45,45 @@
 
                 <p *ngIf="qp.hideFinishedQuestions && allQuestionsFinished" class="slds-text-align--center">Alle Fragen sind beantwortet – und ausgeblendet.</p>
 
-                <ng-container [ngSwitch]="questionset.questiontype">
+                <ng-container *ngIf="questionset.questiontype === 'ratinggroup'">
+                    <questionset-render-rating [questionsetId]="questionset.id"></questionset-render-rating>
+                </ng-container>
 
-                    <div *ngSwitchCase="'rating'">
-                        <questionset-render-rating [questionsetId]="questionset.id"></questionset-render-rating>
-                    </div>
+                <ng-container *ngIf="questionset.questiontype !== 'rating'">
 
-                    <div *ngSwitchCase="'text'">
-                        <questionset-render-text [questionsetId]="questionset.id"></questionset-render-text>
-                    </div>
+                    <ng-container *ngFor="let question of qp.questionsArray[questionsetId];let i = index;last as isLast">
 
-                    <div *ngSwitchCase="'ist'">
-                        <questionset-render-ist [questionsetId]="questionset.id"></questionset-render-ist>
-                    </div>
+                        <div [ngClass]="{'slds-m-bottom_medium': !isLast}">
+                            <ng-container [ngSwitch]="question.questiontype">
 
-                    <div *ngSwitchCase="'nps'">
-                        <questionset-render-nps [questionsetId]="questionset.id"></questionset-render-nps>
-                    </div>
+                                <div *ngSwitchCase="'rating'">
+                                    <question-render-rating [questionId]="question.id"></question-render-rating>
+                                </div>
+
+                                <div *ngSwitchCase="'text'">
+                                    <question-render-text [questionId]="question.id"></question-render-text>
+                                </div>
+
+                                <div *ngSwitchCase="'ist'">
+                                    <question-render-ist [questionId]="question.id"></question-render-ist>
+                                </div>
+
+                                <div *ngSwitchCase="'nps'">
+                                    <question-render-nps [questionId]="question.id"></question-render-nps>
+                                </div>
+                            </ng-container>
+                            <question-render-binary-single-multi
+                                    *ngIf="question.questiontype === 'binary' || question.questiontype === 'single' || question.questiontype === 'multi'"
+                                    [questionId]="question.id"
+                                    [previousQuestion]="i === 0 ? null:qp.questionsArray[questionsetId][i-1]"
+                                    [followingQuestion]="i+1 >= qp.questionsArray[questionsetId].length ? null:qp.questionsArray[questionsetId][i+1]"
+                            ></question-render-binary-single-multi>
+                        </div>
+                        </ng-container>
+
+                    <!--/ng-container-->
 
                 </ng-container>
-<!--                      *ngIf="questionset.questiontype === 'binary' || -->
-                <questionset-render-binary-single-multi
-                        *ngIf="questionset.questiontype === 'single' || questionset.questiontype === 'multi'"
-                        [questionsetId]="questionset.id"
-                ></questionset-render-binary-single-multi>
 
             </div>
 

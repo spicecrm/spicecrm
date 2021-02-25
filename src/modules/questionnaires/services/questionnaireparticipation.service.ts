@@ -55,7 +55,7 @@ export class questionnaireParticipationService {
      */
     public questionsMeta = {};
 
-    public questions: { string: {} };
+    public questions = {};
 
     public answers: any = {};
 
@@ -252,10 +252,10 @@ export class questionnaireParticipationService {
             return false;
         }
 
-        let qt = question.parentQuestionset.questiontype;
+        let qt = question.questiontype;
         if ( qt === 'multi') {
             this.answers[question.id].options[optionId] = !this.answers[question.id].options[optionId];
-        } else if ( qt === 'single' || qt ===  'rating' || qt ===  'ist' ) {
+        } else if ( qt === 'single' || qt ===  'rating' || qt ===  'ist' || qt === 'binary' || qt === 'ratinggroup' ) {
             Object.entries( this.answers[question.id].options ).forEach( ( [key, value] ) => {
                 if ( key === optionId ) {
                     this.answers[question.id].options[optionId] = !this.answers[question.id].options[optionId];
@@ -309,6 +309,7 @@ export class questionnaireParticipationService {
             for ( let questionsetId in this.questionnaire.questionsets ) {
                 if ( this.questionnaire.questionsets[questionsetId].questions ) {
                     for ( let questionId in this.questionnaire.questionsets[questionsetId].questions ) {
+                        this.questions[questionId] = this.questionnaire.questionsets[questionsetId].questions[questionId];
                         // For the question: Set a pointer to the parent question set:
                         this.questionnaire.questionsets[questionsetId].questions[questionId].parentQuestionset = this.questionnaire.questionsets[questionsetId];
                         if ( this.questionnaire.questionsets[questionsetId].questions[questionId].questionoptions ) {
@@ -388,8 +389,8 @@ export class questionnaireParticipationService {
     private sortQuestionoptions() {
         // Sort the question options - by position field. Only for questions with options (i.e. not for text questions):
         for ( let questionset of this.questionsetsArray ) {
-            if ( questionset.questiontype.match( /^binary|single|multi$/ ) ) {
-                for ( let question of this.questionsArray[questionset.id] ) {
+            for ( let question of this.questionsArray[questionset.id] ) {
+                if ( question.questiontype.match( /^binary|single|multi|rating$/ ) ) {
                     if ( question.parentQuestionset.shuffle == 1 ) {
                         this.helper.shuffle( this.questionoptionsArray[question.id] );
                     } else {
@@ -398,25 +399,25 @@ export class questionnaireParticipationService {
                             return a.position - b.position;
                         });
                     }
-                }
-            } else {
-                // In case of question type "rating" the options of each question has to be assigned to the predefined options from the question set.
-                // In case of a rating question set: Get the answer options from the field "questiontypeparameter".
-                if ( questionset.questiontype === 'rating' && questionset.questiontypeparameter.rating ) {
-                    for ( let question of this.questionsArray[questionset.id] ) {
-                        let sortedOptions = [];
-                        for ( let entry of questionset.questiontypeparameter.rating.entries ) {
-                            let isOptionFound = false;
-                            for ( let questionoption of this.questionoptionsArray[question.id] ) {
-                                if ( questionoption.questionset_type_parameter_id === entry.id ) {
-                                    isOptionFound = true;
-                                    sortedOptions.push( questionoption );
-                                    break;
+                } else {
+                    // In case of question type "ratinggroup" the options of each question has to be assigned to the predefined options from the question set.
+                    // In case of a rating question set: Get the answer options from the field "questiontypeparameter".
+                    if ( question.questiontype === 'ratinggroup' && question.questionparameter.ratinggroup ) {
+                        for ( let question of this.questionsArray[questionset.id] ) {
+                            let sortedOptions = [];
+                            for ( let entry of question.questionparameter.ratinggroup.entries ) {
+                                let isOptionFound = false;
+                                for ( let questionoption of this.questionoptionsArray[question.id] ) {
+                                    if ( questionoption.questionset_type_parameter_id === entry.id ) {
+                                        isOptionFound = true;
+                                        sortedOptions.push( questionoption );
+                                        break;
+                                    }
                                 }
+                                if( !isOptionFound ) sortedOptions.push( {} );
                             }
-                            if( !isOptionFound ) sortedOptions.push( {} );
+                            this.questionoptions[question.id] = sortedOptions;
                         }
-                        this.questionoptions[question.id] = sortedOptions;
                     }
                 }
             }
@@ -450,7 +451,7 @@ export class questionnaireParticipationService {
      * @private
      */
     private questiontypeWithOptions( questiontype: string ): boolean {
-        return questiontype.match( /^binary|single|multi|ist|rating$/ ) !== null;
+        return questiontype.match( /^binary|single|multi|ist|rating|ratinggroup$/ ) !== null;
     }
 
     /**
@@ -461,7 +462,7 @@ export class questionnaireParticipationService {
         for ( let questionset of this.questionsetsArray ) {
             for ( let question of this.questionsArray[questionset.id] ) {
                 if ( !this.answers[question.id] ) this.answers[question.id] = {};
-                if ( this.questiontypeWithOptions( questionset.questiontype )) {
+                if ( this.questiontypeWithOptions( question.questiontype )) {
                     if ( this.answers[question.id].options === undefined ) this.answers[question.id].options = {};
                     for ( let option of this.questionoptionsArray[question.id] ) {
                         this.answers[question.id].options[option.id] = false;
