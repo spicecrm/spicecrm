@@ -7,7 +7,7 @@ import {toast} from '../../services/toast.service';
 import {modal} from '../../services/modal.service';
 
 @Component({
-    templateUrl: './src/admincomponents/templates/administrationapiinspector.html'
+    templateUrl: './src/admincomponents/templates/administrationapiinspector.html',
 })
 export class AdministrationAPIInspector implements OnInit {
 
