@@ -2,7 +2,12 @@
  * @module ModuleQuestionnaires
  */
 import { Component, OnChanges, Input, Renderer2, ElementRef, OnDestroy, EventEmitter, Output } from '@angular/core';
-import {language} from '../../../services/language.service';
+import { language } from '../../../services/language.service';
+
+/**
+ * @ignore
+ */
+declare var _;
 
 @Component({
     selector: 'questions-manager-edit-categories',
@@ -13,6 +18,7 @@ export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
     @Input() public categorypool;
     @Input() public option: any; // {}
     @Output() public change = new EventEmitter();
+    @Input() public showLabel = false;
 
     private selectedCategories = [];
 
@@ -20,6 +26,11 @@ export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
     private clickListener: any;
 
     private names = '';
+
+    /**
+     * A unique ID for the component. Used for the attributes "id" and "for" in html elements.
+     */
+    private compId = _.uniqueId();
 
     constructor( private language: language, private renderer: Renderer2, private elementRef: ElementRef ) { }
 

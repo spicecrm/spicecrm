@@ -19,7 +19,6 @@ export class QuestionsetManager implements OnInit {
     @Output() public deleted = new EventEmitter();
 
     private currentPosition: number;
-    @Input() public disabled: false;
 
     constructor( private model: model, private lang: language, private modalservice: modal ) { }
 
@@ -46,6 +45,15 @@ export class QuestionsetManager implements OnInit {
                     }
                 });
         }
+    }
+
+
+    private dragStarted(e) {
+        e.source.element.nativeElement.classList.add('slds-is-selected');
+    }
+
+    private dragEnded(e) {
+        e.source.element.nativeElement.classList.remove('slds-is-selected');
     }
 
 }
