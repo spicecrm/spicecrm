@@ -19,6 +19,7 @@ import {broadcast} from '../../../services/broadcast.service';
 import {configurationService} from '../../../services/configuration.service';
 import {userpreferences} from '../../../services/userpreferences.service';
 import {CdkDragDrop} from "@angular/cdk/drag-drop";
+import {ListTypeI} from "../../../services/interfaces.service";
 
 declare var _: any;
 
@@ -45,11 +46,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
      * subscription to the modellist for type changes
      */
     private modellistsubscribe: any = undefined;
-
-    /**
-     * for the requested fields
-     */
-    private requestedFields: string[] = [];
 
     /**
      * holds the config data for the beanguides
@@ -88,12 +84,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
     public ngOnInit() {
         this.confdata = this.configuration.getData('spicebeanguides')[this.modellist.module];
         let stages = this.confdata.stages;
-
-        let tilecomponentconfig = this.metadata.getComponentConfig('SpiceKanbanTile', this.modellist.module);
-        let tilecomponentFields = this.metadata.getFieldSetFields(this.componentconfig.fieldset);
-        for (let tilecomponentField of tilecomponentFields) {
-            this.requestedFields.push(tilecomponentField.field);
-        }
 
         let bucketitems = [];
         for (let stage of stages) {
@@ -152,9 +142,11 @@ export class SpiceKanban implements OnInit, OnDestroy {
         // set limit to 10 .. since this is retrieved bper stage
         this.modellist.loadlimit = 25;
 
-        // subscribe to changes of the listtype
-        // since this is a behvaiour subject this will also fire the intiial list load
-        this.modellistsubscribe = this.modellist.listtype$.subscribe(newType => this.switchListtype());
+        // subscribe to changes of the list type
+        // since this is a behavior subject this will also fire the initial list load
+        this.modellistsubscribe = this.modellist.listType$.subscribe(newType =>
+            this.handleListTypeChange(newType)
+        );
     }
 
     /**
@@ -169,6 +161,15 @@ export class SpiceKanban implements OnInit, OnDestroy {
 
     }
 
+    /**
+     * handle the list type change to reload the data only if for this component to prevent possible actions after destroy
+     * @param newType
+     * @private
+     */
+    private handleListTypeChange(newType: ListTypeI) {
+        if (newType.listcomponent != 'SpiceKanban') return;
+        this.modellist.reLoadList();
+    }
 
     /**
      * reads draganddrop from the config and returns it
@@ -196,14 +197,6 @@ export class SpiceKanban implements OnInit, OnDestroy {
         let stagedata = this.stages.find(thisStage => stage == thisStage.stage);
         return stagedata.stagedata;
     }
-
-
-    private switchListtype() {
-        // let requestedFields = [];
-        // this.modellist.loadList(this.requestedFields);
-        // this.modellist.getListData(this.requestedFields);
-    }
-
 
     /**
      * the size class

@@ -22,6 +22,11 @@ export class ObjectListHeader implements OnDestroy{
     @ViewChildren(SystemResizeDirective) private resizeElements: QueryList<SystemResizeDirective>;
 
     /**
+     * a relaod timeout .. set when the sort is changed to reacxt to subsequent changes and not relaod immediately
+     */
+    private reloadTimeOut: number;
+
+    /**
      * an action set ot be applied to the list actions
      */
     @Input() private actionset: string = '';
@@ -106,6 +111,8 @@ export class ObjectListHeader implements OnDestroy{
     private setSortField(field): void {
         if (this.isSortable(field)) {
             this.modellist.setSortField(field.field);
+            if (this.reloadTimeOut) window.clearTimeout(this.reloadTimeOut);
+            this.reloadTimeOut = window.setTimeout(() => this.modellist.reLoadList(), 500);
         }
     }
 

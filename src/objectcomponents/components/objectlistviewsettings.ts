@@ -44,7 +44,7 @@ export class ObjectListViewSettings {
     }
 
     private save() {
-        this.modellist.updateListType({}).subscribe(saved => {
+        this.modellist.updateListType().subscribe(saved => {
             this.toast.sendToast('List Saved');
         });
     }

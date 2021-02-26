@@ -189,12 +189,12 @@ export class UserPreferences implements OnDestroy {
      * @private
      */
     private loadDashboardsLists() {
-        this.backend.getList('Dashboards', [{sortfield: 'name', sortdirection: 'DESC'}], ['name', 'id'], {limit: -99})
+        this.backend.getList('Dashboards', [{sortfield: 'name', sortdirection: 'DESC'}], {limit: -99})
             .subscribe((dashboards: any) => {
                 this.dashboards = dashboards.list;
                 this.setHomeDashboardData(this.preferences.home_dashboard);
             });
-        this.backend.getList('DashboardSets', [{sortfield: 'name', sortdirection: 'DESC'}], ['name', 'id'], {limit: -99})
+        this.backend.getList('DashboardSets', [{sortfield: 'name', sortdirection: 'DESC'}], {limit: -99})
             .subscribe((dashboardSets: any) => {
                 this.dashboardSets = dashboardSets.list;
                 this.setDashboardSetData(this.preferences.home_dashboardset);

@@ -1,20 +1,14 @@
 /**
  * @module ObjectComponents
  */
-import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    OnDestroy,
-    ViewChild,
-    ViewContainerRef
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {layout} from '../../services/layout.service';
 import {modellist} from '../../services/modellist.service';
 import {Subscription} from "rxjs";
+import {ListTypeI} from "../../services/interfaces.service";
 
 /**
  * renders the modellist
@@ -24,12 +18,7 @@ import {Subscription} from "rxjs";
     templateUrl: './src/objectcomponents/templates/objectlist.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ObjectList implements OnDestroy {
-
-    /**
-     * all fields that are available
-     */
-    private allFields: any[] = [];
+export class ObjectList implements OnDestroy, OnInit {
 
     /**
      * the subscription to the modellist
@@ -55,23 +44,82 @@ export class ObjectList implements OnDestroy {
         return this.modellist.isLoading;
     }
 
-    constructor(public router: Router, public cdRef: ChangeDetectorRef, public metadata: metadata, public modellist: modellist, public language: language, public layout: layout) {
+    constructor(public router: Router,
+                public cdRef: ChangeDetectorRef,
+                public metadata: metadata,
+                public modellist: modellist,
+                public language: language,
+                public layout: layout) {
+    }
 
-        this.subscriptions.add(this.modellist.listDataChanged$.subscribe(() => {
-            this.cdRef.detectChanges();
-        }));
-        // get the confih
-        this.componentconfig = this.metadata.getComponentConfig('ObjectList', this.modellist.module);
+    /**
+     * call to initialize the component
+     */
+    public ngOnInit() {
+        this.initialize();
+    }
+
+    /**
+     * subscribe to detect list data changes
+     * load the component config
+     * call to get the list data
+     * @private
+     */
+    private initialize() {
+
+        this.loadComponentConfig();
 
         // set the limit for the loading
         this.modellist.loadlimit = 50;
 
-        // load the list and initialize from sesson data if this is set
-        // handled in the list service
-        // this.loadList(true);
+        if (!this.modellist.loadFromSession()) {
+            this.getListData();
+        }
 
-        // subscribe to changes of the listtype
-        this.subscriptions.add(this.modellist.listtype$.subscribe(newType => this.switchListtype()));
+        this.subscriptions.add(
+            this.modellist.listType$.subscribe(newType =>
+                this.handleListTypeChange(newType)
+            )
+        );
+
+        this.subscriptions.add(
+            this.modellist.listDataChanged$.subscribe(() => {
+                this.cdRef.detectChanges();
+            })
+        );
+    }
+
+    /**
+     * handle the list type change to reload the data only if for this component to prevent possible actions after destroy
+     * @param newType
+     * @private
+     */
+    private handleListTypeChange(newType: ListTypeI) {
+        this.cdRef.detectChanges();
+        if (newType.listcomponent != 'ObjectList') return;
+        this.getListData();
+    }
+
+    /**
+     * load the component config and set the disable autoload value from the model list service if undefined
+     * @private
+     */
+    private loadComponentConfig() {
+        this.componentconfig = this.metadata.getComponentConfig('ObjectList', this.modellist.module);
+        if ('disableAutoloadListAll' in this.componentconfig) return;
+        this.componentconfig.disableAutoloadListAll = this.modellist.disableAutoloadListAll;
+    }
+
+    /**
+     * trigger get list data on the service of autoload is not disabled and the list type is not "all"
+     * @private
+     */
+    private getListData() {
+        if (this.modellist.currentList.id != 'all' || !this.componentconfig?.disableAutoloadListAll) {
+            this.modellist.getListData().subscribe(() =>
+                this.cdRef.detectChanges()
+            );
+        }
     }
 
     /**
@@ -104,44 +152,14 @@ export class ObjectList implements OnDestroy {
     }
 
     /**
-     * unsubscribe from the modellist subscription
+     * unsubscribe from the model list subscription
      */
     public ngOnDestroy() {
         this.subscriptions.unsubscribe();
     }
 
     /**
-     * handle the listtype when this is switched and reload the listdefs and the listdata
-     */
-    private switchListtype() {
-        // shoudl be handled in the listservice
-        // this.loadList();
-    }
-
-    /**
-     * function to load the listdata. Checks on the listdata if the component is the same .. if yes .. no reload is needed
-     * this can happen when the list is loaded from the appdata service that cahces the previous list
-     *
-     * @param loadfromcache
-     */
-    private loadList(loadfromcache: boolean = false) {
-
-        if (this.modellist.listData.listcomponent != 'ObjectList') {
-            let requestedFields = [];
-            for (let entry of this.allFields) {
-                if (requestedFields.indexOf(entry.field) == -1) {
-                    requestedFields.push(entry.field);
-                }
-            }
-            if (this.sortfield) {
-                this.modellist.setSortField(this.sortfield, this.sortdirection, false);
-            }
-            this.modellist.getListData(requestedFields).subscribe(() => this.cdRef.detectChanges());
-        }
-    }
-
-    /**
-     * manages the scroll event for the infinited Scroll
+     * manages the scroll event for the infinite Scroll
      *
      * @param e
      */
@@ -150,7 +168,7 @@ export class ObjectList implements OnDestroy {
     }
 
     /**
-     * trackby function to opütimize performnce onm the for loop
+     * trackby function to optimize performance onm the for loop
      *
      * @param index
      * @param item

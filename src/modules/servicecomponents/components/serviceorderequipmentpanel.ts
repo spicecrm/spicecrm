@@ -136,9 +136,9 @@ export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
      */
     private setAllItems() {
         this.all_items = {};
-        this.modellist.setModule("ServiceEquipments");
+        this.modellist.initialize("ServiceEquipments");
         if (this.sortField) {
-            this.modellist.setSortField(this.sortField, "DESC", false);
+            this.modellist.setSortField(this.sortField, "DESC");
         }
 
         // if we don't have a serviceorder id, we give the servicelocation directly to the filter
@@ -150,9 +150,8 @@ export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
         }
 
         this.modellist.modulefilter = this.equipmentfilter;
-        let requestedFields = ['name', 'servicelocation_name'];
 
-        this.modellist.getListData(requestedFields).subscribe(data => {
+        this.modellist.getListData().subscribe(data => {
             if(data) {
                 let all_items = this.modellist.listData;
                 this.setSelectedItems(all_items);
