@@ -27,9 +27,16 @@ export class ObjectListViewSettingsAddlistModal implements OnInit {
     private globallist: boolean = false;
 
     /**
+     * holds the list component name
+     */
+    private listcomponent: string;
+
+    /**
      * reference to the modal self to enable closing it
      */
     private self: any = {};
+
+    public componentListOptions: Array<{label: string, component: string}> = [];
 
     constructor(
         private language: language,
@@ -39,10 +46,26 @@ export class ObjectListViewSettingsAddlistModal implements OnInit {
     }
 
     public ngOnInit() {
+        this.loadComponentListOptions();
         if (this.modalmode === 'edit') {
-            this.listname = this.modellist.getListTypeName();
+            this.listname = this.modellist.currentList.name;
             this.globallist = this.modellist.getGlobal();
+            this.listcomponent = this.modellist.currentList.listcomponent;
         }
+    }
+
+    /**
+     * load the component config and build the list of the available component
+     * @private
+     */
+    private loadComponentListOptions() {
+        let config = this.modellist.metadata.getComponentConfig('ObjectListView', this.modellist.module);
+        let items = this.modellist.metadata.getComponentSetObjects(config.componentset);
+        this.componentListOptions = items.map(item => ({
+                component: item.component,
+                label: item.componentconfig.name
+            }));
+        this.listcomponent = this.componentListOptions[0].component;
     }
 
     /**
@@ -71,14 +94,19 @@ export class ObjectListViewSettingsAddlistModal implements OnInit {
      */
     private save() {
         if (this.listname.length > 0) {
+            const listParams = {
+                name: this.listname,
+                listcomponent: this.listcomponent,
+                global: this.globallist ? '1' : '0'
+            };
             switch (this.modalmode) {
                 case 'add':
-                    this.modellist.addListType(this.listname, this.globallist ? '1' : '0').subscribe(res => {
+                    this.modellist.addListType(listParams).subscribe(res => {
                         this.close();
                     });
                     break;
                 case 'edit':
-                    this.modellist.updateListType({name: this.listname, global: this.globallist ? '1' : '0'}).subscribe(res => {
+                    this.modellist.updateListType(listParams).subscribe(res => {
                         this.close();
                     });
                     break;

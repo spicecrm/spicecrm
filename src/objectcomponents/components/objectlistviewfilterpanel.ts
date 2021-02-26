@@ -37,7 +37,7 @@ export class ObjectListViewFilterPanel {
 
     constructor(private elementRef: ElementRef, private language: language, private metadata: metadata, private modellist: modellist, private model: model, private renderer: Renderer2) {
         // subscribe to the list type selected to handle the filters set by the listtype
-        this.modellist.listtype$.subscribe(newList => {
+        this.modellist.listType$.subscribe(newList => {
             this.setFilter();
         });
     }
@@ -97,7 +97,9 @@ export class ObjectListViewFilterPanel {
         if (this.isChanged) {
             this.modellist.updateListType({
                 filterdefs: JSON.stringify(this.filter)
-            }, true);
+            }).subscribe(() => {
+                this.modellist.reLoadList();
+            });
 
             // close the filter panel
             this.modellist.displayFilters = false;

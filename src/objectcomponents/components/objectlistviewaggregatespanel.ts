@@ -48,6 +48,7 @@ export class ObjectListViewAggregatesPanel {
      */
     private clearAggregates() {
         this.modellist.removeAllAggregates();
+        this.modellist.reLoadList();
     }
 
 }
