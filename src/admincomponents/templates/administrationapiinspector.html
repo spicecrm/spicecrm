@@ -1,0 +1,12 @@
+<h2 class="slds-text-heading_medium slds-p-around--small">
+    <system-label label="LBL_API_INSPECTOR"></system-label>
+</h2>
+<div class="slds-theme--default" system-to-bottom [system-overlay-loading-spinner]="loading">
+    <div class="slds-grid slds-p-around--xx-small slds-border--bottom" *ngFor="let apiEndPoint of apiEndpoints">
+        <div class="slds-size--1-of-3 slds-truncate" (click)="showDetails(apiEndPoint)">
+            <span>{{apiEndPoint.route}}</span>
+        </div>
+        <div class="slds-size--1-of-12">{{apiEndPoint.method}}</div>
+        <div class="slds-grow">{{apiEndPoint.description}}</div>
+    </div>
+</div>
