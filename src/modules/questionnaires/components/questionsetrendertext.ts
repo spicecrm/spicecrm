@@ -17,7 +17,7 @@ import { questionnaireParticipationService } from '../services/questionnairepart
 export class QuestionsetRenderText extends QuestionsetRenderBasic implements OnInit {
 
     private lengthLongestSequence = 0;
-    private questionNamesSplitted: any[] = [];
+    private questiontextSplitted: any[] = [];
     private sequenced = false;
 
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {
@@ -32,8 +32,8 @@ export class QuestionsetRenderText extends QuestionsetRenderBasic implements OnI
             this.sequenced = this.questiontypeparameter.text.sequenced;
             let i = 0;
             for ( let question of this.qp.questionsArray[this.questionset.id] ) {
-                this.questionNamesSplitted[i] = question.name.split(',');
-                if ( this.questionNamesSplitted[i].length > this.lengthLongestSequence ) this.lengthLongestSequence = this.questionNamesSplitted[i].length;
+                this.questiontextSplitted[i] = question.questiontext.split(',');
+                if ( this.questiontextSplitted[i].length > this.lengthLongestSequence ) this.lengthLongestSequence = this.questiontextSplitted[i].length;
                 i++;
             }
         }

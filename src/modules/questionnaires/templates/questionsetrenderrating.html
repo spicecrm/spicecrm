@@ -20,7 +20,7 @@
                         <ng-container *ngIf="question.image_id">
                             <media-file-image [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="qp.imageWidthQuestion"></media-file-image>
                         </ng-container>
-                        <div *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-truncate" style="white-space: normal">{{question.name}}</div>
+                        <div *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-truncate" style="white-space: normal">{{question.questiontext}}</div>
                     </td>
                     <td class="slds-text-align_center" (click)="onClick(option.id,$event)"
                         *ngFor="let option of qp.questionoptionsArray[question.id]; let j = index;"><input

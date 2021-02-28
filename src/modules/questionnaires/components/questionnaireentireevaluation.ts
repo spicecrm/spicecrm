@@ -118,7 +118,7 @@ export class QuestionnaireEntireEvaluation implements OnInit {
                             } else {
                                 // In case of question type "rating" the options of each question has to be assigned to the predefined options from the question set.
                                 // In case of a rating question set: Get the answer options from the field "questiontypeparameter".
-                                if ( questionset.questiontype === 'rating' && questionset.questiontypeparameter.rating ) {
+                                if ( questionset.questiontype === 'ratinggroup' && questionset.questiontypeparameter.rating ) {
                                     let sortedOptions = [];
                                     for ( let entry of questionset.questiontypeparameter.rating.entries ) {
                                         let isOptionFound = false;

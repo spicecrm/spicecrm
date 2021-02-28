@@ -1,0 +1,30 @@
+<table *ngIf="!qp.hideFinishedQuestions || !questionMeta.finished" width="100%" class="slds-table slds-table_bordered slds-table_col-bordered">
+    <thead >
+    <tr class="slds-text-title_caps" >
+        <th width="100%" class="slds-text-align_center" scope="col"></th>
+        <th *ngFor="let option of qp.questionoptionsArray[question.id]" class="slds-text-align_center" scope="col">
+            <div *ngIf="ratingValuesHaveAlsoText" class="slds-border--bottom slds-p-bottom--xx-small slds-m-bottom--xx-small">
+                <ng-container *ngIf="altTexts[option.id] !== ''; else nbsp">{{altTexts[option.id]}}</ng-container>
+                <ng-template #nbsp>&nbsp;</ng-template>
+            </div>
+            {{option.name}}
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <ng-container *ngIf="question.image_id">
+                    <media-file-image [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="qp.imageWidthQuestion"></media-file-image>
+                </ng-container>
+                <div *ngIf="!question.image_id || question.showonlyimages !== '1'" class="slds-truncate" style="white-space: normal">{{question.questiontext}}</div>
+            </td>
+            <td class="slds-text-align_center"
+                *ngFor="let option of qp.questionoptionsArray[question.id]; let j = index;" (click)="qp.clickAnswerOption(option.id,$event)"><input
+                    title="{ {altTexts[option.id]} }" type="radio"
+                    [checked]="isChecked(option.id)"
+                    (click)="qp.clickAnswerOption(option.id,$event)" [disabled]="isDisabled()"
+                    ></td>
+        </tr>
+    </tbody>
+</table>

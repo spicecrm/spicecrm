@@ -2,10 +2,10 @@
  * @module ModuleQuestionnaires
  */
 import { Component, EventEmitter, Input, Output, OnInit, OnChanges } from '@angular/core';
-import {model} from '../../../services/model.service';
-import {metadata} from '../../../services/metadata.service';
-import {language} from '../../../services/language.service';
-import {view} from '../../../services/view.service';
+import { model } from '../../../services/model.service';
+import { metadata } from '../../../services/metadata.service';
+import { language } from '../../../services/language.service';
+import { view } from '../../../services/view.service';
 
 @Component({
     selector: '[questions-manager-edit-binary-option]',
