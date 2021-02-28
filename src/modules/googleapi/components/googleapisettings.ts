@@ -67,7 +67,10 @@ export class GoogleAPISettings implements OnInit {
      * @private
      */
     private loadScope() {
-        let scopes = this.configvalues.serviceuserscope.split(' ');
+        let scopes = [];
+        if(this.configvalues.hasOwnProperty('serviceuserscope')) {
+            scopes = this.configvalues.serviceuserscope.split(' ');
+        }
         for (let scope of scopes) {
             switch (scope) {
                 case 'https://www.googleapis.com/auth/calendar':
