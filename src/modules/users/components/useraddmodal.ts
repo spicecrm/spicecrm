@@ -244,7 +244,7 @@ export class UserAddModal implements OnInit {
         }, error => {
             this.sendByEmail = false;
             this.canSendByEmail = false;
-            this.toast.sendToast(this.language.getLabel("MSG_PASSWORD_RESET_FAIELD"), "error");
+            this.toast.sendToast(this.language.getLabel("MSG_PASSWORD_RESET_FAILED"), "error");
         });
     }
 }
