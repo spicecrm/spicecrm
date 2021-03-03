@@ -1,5 +1,5 @@
-<div class="slds-theme--shade">
-    <div [ngClass]="{'slds-hide': !model.id}">
+<div class="slds-theme--shade slds-height_full">
+    <div [ngClass]="{'slds-hide': !model.id}" class="slds-grid slds-grid--vertical slds-height_full">
         <div class="slds-p-around--medium slds-border--bottom" *ngIf="model.id">
             <div class="slds-grid">
                 <div class="slds-col slds-has-flexi-truncate">
@@ -44,11 +44,11 @@
                 </div>
             </div>
         </div>
-        <div class="slds-m-around--x-small slds-p-around--x-small slds-theme--default" system-to-bottom>
+        <div class="slds-m-around--x-small slds-p-around--x-small slds-theme--default slds-scrollable--y slds-grow" style="min-height: 0;">
             <div #detailscontent></div>
         </div>
     </div>
-    <div *ngIf="!model.id" class="slds-align--absolute-center" system-to-bottom-noscroll>
+    <div *ngIf="!model.id" class="slds-align--absolute-center slds-height_full">
         <system-label label="LBL_SELECT_EMAIL"></system-label>
     </div>
 </div>
