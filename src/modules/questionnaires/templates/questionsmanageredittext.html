@@ -9,19 +9,17 @@
     </div>
 </div>
 
-<div class="slds-p-top_xx-small" [ngClass]="{'slds-has-error':nameMissing}">
-    <label for="{{compId}}-name" class="slds-form-element__label" ><abbr class="slds-required" title="required">* </abbr><system-label label="LBL_NAME"></system-label></label>
-    <input id="{{compId}}-name" type="text" class="slds-input" [(ngModel)]="name" (blur)="nameBlurred()" (change)="nameChanged()">
+<div class="slds-p-top_xx-small">
+    <div [ngClass]="{'slds-has-error':nameMissing}">
+        <label for="{{compId}}-name" class="slds-form-element__label" ><abbr class="slds-required" title="required">* </abbr><system-label label="LBL_NAME"></system-label></label>
+        <input id="{{compId}}-name" type="text" class="slds-input" [(ngModel)]="name" (blur)="nameBlurred()" (change)="nameChanged()">
+    </div>
 </div>
 
-<div class="slds-m-top--medium slds-grid slds-grid_align-spread slds-grid_vertical-align-end">
-    <!--
-    <div class="slds-grow slds-m-right--large">
-        <label class="slds-form-element__label"><system-label label="LBL_CORRECT_ANSWER"></system-label></label>
-        <input type="text" class="slds-input" [(ngModel)]="answer.name">
+<div class="slds-p-top_xx-small slds-grid slds-grid_align-spread slds-grid_vertical-align-end">
+    <div class="slds-size_1-of-4 slds-p-right_medium">
+        <label for="{{compId}}-answer" class="slds-form-element__label" ><system-label label="LBL_CORRECT_ANSWER"></system-label></label>
+        <input id="{{compId}}-answer" [system-trim-input] type="text" class="slds-input" [(ngModel)]="answer.name">
     </div>
-    -->
-    <div>
-        <system-checkbox [(ngModel)]="sequenced"><system-label label="Fragetext als Sequenz darstellen"></system-label></system-checkbox>
-    </div>
+    <system-checkbox [(ngModel)]="sequenced"><system-label label="Fragetext als Sequenz darstellen"></system-label></system-checkbox>
 </div>
