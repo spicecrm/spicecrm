@@ -1,6 +1,21 @@
-<mailbox-manager-header></mailbox-manager-header>
-<div class="slds-grid">
-    <mailbox-manager-emails *ngIf="isEmailMailbox" class="slds-size--2-of-5"></mailbox-manager-emails>
-    <mailbox-manager-textmessages *ngIf="!isEmailMailbox" class="slds-size--2-of-5"></mailbox-manager-textmessages>
-    <mailbox-manager-email-details class="slds-size--3-of-5"></mailbox-manager-email-details>
+<div class="slds-grid slds-grid--vertical" system-to-bottom-noscroll>
+    <mailbox-manager-header></mailbox-manager-header>
+    <ng-container [ngSwitch]="mailboxesEmails.activeSplitType.name">
+        <div *ngSwitchCase="'noSplit'" class="slds-grid slds-grow" style="min-height: 0;">
+            <mailbox-manager-emails *ngIf="isEmailMailbox" [class.slds-hide]="mailboxesEmails.activeMessage" class="slds-size--1-of-1 slds-height_full"></mailbox-manager-emails>
+            <mailbox-manager-textmessages *ngIf="!isEmailMailbox" [class.slds-hide]="mailboxesEmails.activeMessage" class="slds-size--1-of-1 slds-height_full"></mailbox-manager-textmessages>
+            <mailbox-manager-email-details [class.slds-hide]="!mailboxesEmails.activeMessage" class="slds-size--1-of-1 slds-height_full"></mailbox-manager-email-details>
+        </div>
+        <div *ngSwitchCase="'verticalSplit'" class="slds-grid slds-grow" style="min-height: 0;">
+            <mailbox-manager-emails *ngIf="isEmailMailbox" class="slds-size--2-of-5"></mailbox-manager-emails>
+            <mailbox-manager-textmessages *ngIf="!isEmailMailbox" class="slds-size--2-of-5"></mailbox-manager-textmessages>
+            <mailbox-manager-email-details class="slds-size--3-of-5"></mailbox-manager-email-details>
+        </div>
+        <div *ngSwitchCase="'horizontalSplit'" class="slds-grid slds-grid--vertical slds-grow" style="min-height: 0;">
+            <mailbox-manager-emails *ngIf="isEmailMailbox" class="slds-size--1-of-1" style="height: 50%"></mailbox-manager-emails>
+            <mailbox-manager-textmessages *ngIf="!isEmailMailbox" class="slds-size--1-of-1" style="height: 50%"></mailbox-manager-textmessages>
+            <mailbox-manager-email-details class="slds-size--1-of-1 slds-border--top" style="height: 50%"></mailbox-manager-email-details>
+        </div>
+    </ng-container>
+
 </div>
