@@ -188,6 +188,9 @@
                 </button>
             </li>
         </ul>
+        <ul  class="slds-button-group-list slds-grid slds-grid--align-end slds-grow">
+            <ng-content></ng-content>
+        </ul>
     </div>
     <div class="slds-rich-text-editor__textarea slds-grid" #editorWrapper>
         <div #htmlEditorContainer class="slds-rich-text-area__content slds-text-color_weak slds-grow" [ngStyle]="getRichTextStyle(htmlEditorContainer)">
