@@ -22,6 +22,7 @@ export class ProductGroupManagerDetailsAttributesValidationItem {
                 private metadata: metadata,
                 private view: view,
                 private model: model) {
+        this.view.displayLabels = false;
     }
 
     get canEdit() {
