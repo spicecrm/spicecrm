@@ -142,6 +142,18 @@
                 </button>
             </li>
         </ul>
+        <ul class="slds-button-group-list">
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_LINK')" (click)="insertUrl()" >
+                    <system-button-icon icon="link"></system-button-icon>
+                </button>
+            </li>
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_REMOVE_LINK')" (click)="executeCommand('unlink')" >
+                    <system-button-icon icon="remove_link"></system-button-icon>
+                </button>
+            </li>
+        </ul>
         <ul *ngIf="extendedmode"  class="slds-button-group-list">
             <li>
                 <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_NEW_IMAGE')" (click)="executeCommand('openMediaFilePicker')">
@@ -156,16 +168,6 @@
             <li>
                 <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_ADD_CODE_SNIPPET')" (click)="addCodeSnippet()">
                     <system-button-icon icon="snippet"></system-button-icon>
-                </button>
-            </li>
-            <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_LINK')" (click)="insertUrl()" >
-                    <system-button-icon icon="link"></system-button-icon>
-                </button>
-            </li>
-            <li>
-                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_REMOVE_LINK')" (click)="executeCommand('unlink')" >
-                    <system-button-icon icon="remove_link"></system-button-icon>
                 </button>
             </li>
         </ul>
