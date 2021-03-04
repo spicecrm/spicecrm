@@ -20,8 +20,8 @@
                 {{questionNameSplitted[j]}}
             </td>
             <td class="slds-text-align--right slds-p-vertical--small" width="100%">
-                <input type="text" *ngIf="qp.editMode === 'preview'" size="5" class="slds-input">
-                <input type="text" *ngIf="qp.editMode !== 'preview'"
+                <input [system-trim-input] type="text" *ngIf="qp.editMode === 'preview'" size="5" class="slds-input">
+                <input [system-trim-input] type="text" *ngIf="qp.editMode !== 'preview'"
                        [ngModel]="qp.answers[question.id].optionlessAnswerValue"
                        (change)="onTextChange()"
                        [attr.disabled]="questionMeta.tempReadonly || qp.editMode === 'off' ? '':null"
