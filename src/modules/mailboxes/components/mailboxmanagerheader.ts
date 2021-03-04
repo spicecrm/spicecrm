@@ -128,4 +128,27 @@ export class MailboxManagerHeader implements OnInit {
         );
     }
 
+    /**
+     * set the active split type
+     * @param type
+     */
+    public setActiveSplitType(type: 'verticalSplit' | 'horizontalSplit' | 'noSplit') {
+        const activeType: any = {name: type};
+        switch (type) {
+            case'noSplit':
+                this.mailboxesEmails.activeMessage = null;
+                activeType.icon = 'picklist_type';
+                activeType.label = 'LBL_NO_SPLIT';
+                break;
+            case'verticalSplit':
+                activeType.icon = 'side_list';
+                activeType.label = 'LBL_VERTICAL_SPLIT';
+                break;
+            case'horizontalSplit':
+                activeType.icon = 'inspector_panel';
+                activeType.label = 'LBL_HORIZONTAL_SPLIT';
+                break;
+        }
+        this.mailboxesEmails.activeSplitType = activeType;
+    }
 }

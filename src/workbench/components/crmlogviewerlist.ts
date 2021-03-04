@@ -18,7 +18,7 @@ declare var moment: any;
     selector: 'crm-log-viewer-list',
     templateUrl: './src/workbench/templates/crmlogviewerlist.html',
     styles: [
-        'td.expanded { white-space: normal; }',
+        'td.expanded { white-space: normal; word-break: break-word; }',
         'td.expanded div { overflow-wrap: break-word; }',
         'td.collapsed > div { position: absolute; top:0; bottom:0; right:0; left:0; padding: calc(0.25rem + 4px) calc(0.5rem + 0px); }',
         'a.notClickable { cursor: text }',

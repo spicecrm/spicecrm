@@ -29,7 +29,7 @@
 <div *ngIf="isEditMode()">
     <div *ngFor="let emailaddress of model.data.emailaddresses; trackBy: trackByFn" class="slds-form-element__control slds-grid slds-grid--align-spread" [ngClass]="getFieldClass()">
         <div class="slds-size--1-of-1">
-            <field-email-emailaddress class="slds-size--1-of-1" [emailaddress]="emailaddress" (primaryaddress)="setprimary(emailaddress.id)" (onBlur)="handleOnBlur()"></field-email-emailaddress>
+            <field-email-emailaddress class="slds-size--1-of-1" [emailaddress]="emailaddress" (primaryaddress)="setprimary(emailaddress.id)" (onBlur)="handleOnBlur()" [primaryInputRadioName]="primaryInputRadioName"></field-email-emailaddress>
         </div>
     </div>
     <div class="slds-grid slds-align-content-center slds-p-vertical--x-small slds-border--top">
