@@ -55,6 +55,8 @@ import /*embed*/ {ActivityTimelineSummaryItemView} from './components/activityti
 import /*embed*/ {ActivityTimelineSummaryButton} from './components/activitytimelinesummarybutton';
 import /*embed*/ {ActivityTimelineSummaryAggregates} from './components/activitytimelinesummaryaggregates';
 
+import /*embed*/ {fieldActivityDate} from './fields/fieldactivitydate';
+
 @NgModule({
     imports: [
         CommonModule,
@@ -104,7 +106,8 @@ import /*embed*/ {ActivityTimelineSummaryAggregates} from './components/activity
         ActivityTimelineAggregates,
         ActivityTimelineSummaryItemView,
         ActivityTimelineSummaryButton,
-        ActivityTimelineSummaryAggregates
+        ActivityTimelineSummaryAggregates,
+        fieldActivityDate
     ],
     exports: [
         ActivityTimelineItemContainer,
