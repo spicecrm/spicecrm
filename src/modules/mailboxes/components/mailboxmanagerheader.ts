@@ -7,12 +7,19 @@ import {metadata} from '../../../services/metadata.service';
 import {navigationtab} from '../../../services/navigationtab.service';
 import {mailboxesEmails} from '../services/mailboxesemail.service';
 import {ActivatedRoute} from '@angular/router';
+import {InputRadioOptionI} from "../../../systemcomponents/interfaces/systemcomponents.interfaces";
 
 @Component({
     selector: 'mailbox-manager-header',
     templateUrl: './src/modules/mailboxes/templates/mailboxmanagerheader.html',
 })
 export class MailboxManagerHeader implements OnInit {
+
+    public splitTypeOptions: InputRadioOptionI[] = [
+        {value: 'noSplit', icon: 'picklist_type', title: 'LBL_NO_SPLIT'},
+        {value: 'verticalSplit', icon: 'side_list', title: 'LBL_VERTICAL_SPLIT'},
+        {value: 'horizontalSplit', icon: 'inspector_panel', title: 'LBL_HORIZONTAL_SPLIT'},
+    ];
 
     /**
      * the selected mailbox

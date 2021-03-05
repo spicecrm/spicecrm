@@ -26,40 +26,8 @@
         </div>
     </div>
     <div class="slds-col--bump-left slds-grid">
-        <button *ngIf="mailboxesEmails.activeSplitType.name == 'noSplit' && !!mailboxesEmails.activeMessage" class="slds-button slds-button--neutral" (click)="mailboxesEmails.activeMessage = null">
-            <system-button-icon class="slds-button__icon--left" icon="back"></system-button-icon>
-            <span><system-label label="LBL_BACK"></system-label></span>
-        </button>
-        <div class="slds-dropdown-trigger slds-dropdown-trigger--click slds-m-horizontal--xx-small" aria-expanded="false" system-dropdown-trigger-simple>
-            <button class="slds-button slds-button--neutral" aria-haspopup="true" [system-title]="mailboxesEmails.activeSplitType.label">
-                <span class="slds-m-right--xx-small">
-                    <system-label [label]="mailboxesEmails.activeSplitType.label"></system-label>
-                </span>
-                <system-button-icon [icon]="mailboxesEmails.activeSplitType.icon" size="small"></system-button-icon>
-                <system-button-icon class="slds-p-left--xxx-small" icon="down" size="small"></system-button-icon>
-            </button>
-            <div class="slds-dropdown slds-dropdown--right slds-dropdown--small">
-                <ul class="slds-dropdown__list" role="menu">
-                    <li class="slds-dropdown__item slds-is-selected" role="presentation" (click)="setActiveSplitType('noSplit')">
-                        <a href="javascript:void(0);" role="menuitemcheckbox" aria-checked="true" tabindex="0">
-                            <span class="slds-truncate"><system-label label="LBL_NO_SPLIT"></system-label></span>
-                            <system-utility-icon icon="picklist_type" size="x-small"></system-utility-icon>
-                        </a>
-                    </li>
-                    <li class="slds-dropdown__item slds-is-selected" role="presentation" (click)="setActiveSplitType('verticalSplit')">
-                        <a href="javascript:void(0);" role="menuitemcheckbox" aria-checked="true" tabindex="0">
-                            <span class="slds-truncate"><system-label label="LBL_VERTICAL_SPLIT"></system-label></span>
-                            <system-utility-icon icon="side_list" size="x-small"></system-utility-icon>
-                        </a>
-                    </li>
-                    <li class="slds-dropdown__item slds-is-selected" role="presentation" (click)="setActiveSplitType('horizontalSplit')">
-                        <a href="javascript:void(0);" role="menuitemcheckbox" aria-checked="true" tabindex="0">
-                            <span class="slds-truncate"><system-label label="LBL_HORIZONTAL_SPLIT"></system-label></span>
-                            <system-utility-icon icon="inspector_panel" size="x-small"></system-utility-icon>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+        <div class="slds-m-horizontal--xx-small">
+            <system-input-radio-button-group [ngModel]="mailboxesEmails.activeSplitType.name" (ngModelChange)="setActiveSplitType($event)" [inputOptions]="splitTypeOptions"></system-input-radio-button-group>
         </div>
         <div class=" slds-button-group">
             <button class="slds-button slds-button--neutral" [disabled]="!buttonenabled" (click)="reloadList()">

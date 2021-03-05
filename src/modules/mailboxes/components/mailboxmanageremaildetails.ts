@@ -265,4 +265,11 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
     private delete() {
         this.model.delete();
     }
+
+    /**
+     * set the active message to null
+     */
+    public goBack() {
+        this.mailboxesEmails.activeMessage = null;
+    }
 }
