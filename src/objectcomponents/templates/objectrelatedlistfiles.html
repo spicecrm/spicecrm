@@ -42,7 +42,7 @@
     </div>
     <div class="slds-card__body" @displaycard *ngIf="isopen">
         <div class="slds-card__body--inner slds-grid slds-wrap slds-grid--pull-padded">
-            <div object-related-card-file *ngFor="let file of filteredFiles" [file]="file" [bigThumbnail]="componentconfig?.bigThumbnail" class="slds-tile slds-card__tile slds-p-horizontal--small slds-size--1-of-1 slds-large-size--1-of-3 slds-hint-parent"></div>
+            <div object-related-card-file *ngFor="let file of filteredFiles" [file]="file" [bigThumbnail]="componentconfig?.bigThumbnail" class="slds-tile slds-card__tile slds-p-horizontal--small slds-hint-parent"></div>
         </div>
         <div *ngIf="modelattachments.loading" class="slds-p-around--large slds-align--absolute-center">
             <system-spinner></system-spinner>
