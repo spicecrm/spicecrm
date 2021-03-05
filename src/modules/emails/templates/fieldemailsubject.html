@@ -1,0 +1,15 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <div [system-title]="model.data.type == 'out' ? 'LBL_OUTBOUND' : model.data.status == 'unread' ? 'LBL_UNREAD' : 'LBL_READ'" class="slds-m-right--x-small">
+            <system-utility-icon [icon]="model.data.type == 'out' ? 'send' : model.data.status != 'unread' ? 'email_open' : 'email'" size="x-small"></system-utility-icon>
+        </div>
+        <div [title]="value" [ngStyle]="{'text-decoration': model.data.status == 'closed' ? 'line-through' : 'initial', 'font-weight': model.data.status == 'unread' ? 'bold' : 'initial'}" class="slds-truncate">
+            {{value}}
+        </div>
+    </div>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-is-relative" [ngClass]="getFieldClass()" style="position:relative;">
+    <input system-placeholder="" type="text" class="slds-input" [(ngModel)]="value" [maxlength]="fieldlength" [autocomplete]="fieldid" [ngModelOptions]="modelOptions">
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>
