@@ -42,7 +42,7 @@ export class configurationService {
      * holds general system data retrieved from sysinfo call
      */
     public data: any = {
-        backendUrl: 'proxy',
+        backendUrl: 'api',
         backendextensions: {},
         systemparameters: {},
         theme: {},
