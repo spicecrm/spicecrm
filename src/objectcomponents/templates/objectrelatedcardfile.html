@@ -1,9 +1,9 @@
-<div *ngIf="bigThumbnail; else smallThumbnailContainer" class="slds-file slds-file_card slds-has-title">
-    <figure>
-        <a (click)="previewFile()" href="javascript:void(0)" class="slds-file__crop">
+<div *ngIf="bigThumbnail; else smallThumbnailContainer" class="slds-file slds-file_card slds-has-title" style="width: 300px">
+    <figure style="height: 300px">
+        <a (click)="previewFile()" href="javascript:void(0)" class="slds-file__crop" style="padding-top: 245px">
             <img *ngIf="file.thumbnail" [src]="'data:image/jpg;base64,' + file.thumbnail">
         </a>
-        <figcaption class="slds-file__title slds-file__title_card slds-file-has-actions">
+        <figcaption class="slds-file__title slds-file__title_card slds-file-has-actions" style="height: 55px">
             <div class="slds-media slds-media_small slds-media_center slds-size--1-of-1">
                 <div class="slds-media__figure slds-line-height_reset">
                     <system-file-icon [filename]="file.filename" divClass="" [filemimetype]="file.file_mime_type"  size="'small'"></system-file-icon>
@@ -45,7 +45,7 @@
 </div>
 
 <ng-template #smallThumbnailContainer>
-    <div class="slds-media">
+    <div class="slds-media" style="width: 300px">
         <div style="width: 30px; height: 30px;" class="slds-m-right--x-small slds-align--absolute-center">
             <!--system-icon *ngIf="!file.thumbnail" [icon]="fileicon.icon" divClass="" [sprite]="fileicon.sprite"  size="'small'"></system-icon-->
             <system-file-icon *ngIf="!file.thumbnail" [filename]="file.filename" divClass="" [filemimetype]="file.file_mime_type"  size="'small'"></system-file-icon>
