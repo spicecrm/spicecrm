@@ -1,6 +1,6 @@
 <div class="slds-grid slds-grid--vertical" system-to-bottom-noscroll>
-    <mailbox-manager-header></mailbox-manager-header>
-    <ng-container [ngSwitch]="mailboxesEmails.activeSplitType.name">
+    <mailbox-manager-header [class.slds-hide]="!!mailboxesEmails.activeMessage && mailboxesEmails.activeSplitType?.name == 'noSplit'"></mailbox-manager-header>
+    <ng-container [ngSwitch]="mailboxesEmails.activeSplitType?.name">
         <div *ngSwitchCase="'noSplit'" class="slds-grid slds-grow" style="min-height: 0;">
             <mailbox-manager-emails *ngIf="isEmailMailbox" [class.slds-hide]="mailboxesEmails.activeMessage" class="slds-size--1-of-1 slds-height_full"></mailbox-manager-emails>
             <mailbox-manager-textmessages *ngIf="!isEmailMailbox" [class.slds-hide]="mailboxesEmails.activeMessage" class="slds-size--1-of-1 slds-height_full"></mailbox-manager-textmessages>
