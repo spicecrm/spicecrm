@@ -29,9 +29,11 @@ export class MailboxManagerEmails {
     }
 
     /**
-     * loadmore triggered by the tobottom Directive
+     * load more if the scroll position reached the bottom
      */
-    private loadmore() {
-        this.mailboxesEmails.loadMore();
+    private loadmore(scrollContainer: HTMLElement) {
+        if (scrollContainer.scrollTop + scrollContainer.clientHeight + 50 > scrollContainer.scrollHeight) {
+            this.mailboxesEmails.loadMore();
+        }
     }
 }

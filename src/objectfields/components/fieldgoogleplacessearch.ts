@@ -8,6 +8,7 @@ import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
+import {configurationService} from "../../services/configuration.service";
 
 /**
 * @ignore
@@ -21,7 +22,12 @@ export class fieldGooglePlacesSearch extends fieldGeneric {
 
     public options: any[] = [];
 
-    constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router) {
+    constructor(public model: model,
+                public view: view,
+                public language: language,
+                public metadata: metadata,
+                public configurationService: configurationService,
+                public router: Router) {
         super(model, view, language, metadata, router);
 
 
@@ -54,8 +60,10 @@ export class fieldGooglePlacesSearch extends fieldGeneric {
             if (this.fieldconfig.street && details.address.street_name) {
                 changedFields[this.fieldconfig.street] = details.address.street_name;
             }
-            if (this.fieldconfig.street_number && details.address.street_number) {
+            if (!this.hideStreetNumber && !!this.fieldconfig.street_number && !!details.address.street_number) {
                 changedFields[this.fieldconfig.street_number] = details.address.street_number;
+            } else if (this.hideStreetNumber && this.fieldconfig.street  && details.address.street_name && details.address.street_number) {
+                changedFields[this.fieldconfig.street] += ' ' + details.address.street_number;
             }
             if (this.fieldconfig.latitude && details.address.latitude) {
                 changedFields[this.fieldconfig.latitude] = details.address.latitude;
@@ -69,4 +77,14 @@ export class fieldGooglePlacesSearch extends fieldGeneric {
         }
     }
 
+
+
+    /**
+     * a getter to hide the field
+     */
+    get hideStreetNumber() {
+        const addressConfig = JSON.parse(this.configurationService.data.backendextensions.address_format?.config || '{}');
+        if (addressConfig?.hidestreetnumber) return true;
+        return false;
+    }
 }
