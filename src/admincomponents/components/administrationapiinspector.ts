@@ -14,7 +14,7 @@ import {administrationapiinspectorService} from "../services/administrationapiin
     providers:[administrationapiinspectorService]
 })
 
-export class AdministrationAPIInspector implements OnInit {
+export class AdministrationAPIInspector {
 
     /**
      * holds all the endpoints
@@ -31,14 +31,7 @@ export class AdministrationAPIInspector implements OnInit {
         ) {}
 
 
-    /**
-     * loads the endpoints from the backend
-     *
-     * @public
-     */
-    public ngOnInit() {
-        this.apiinspector.loadEndpoints();
-    }
+
 
     /**
      * opens a modal to details more details

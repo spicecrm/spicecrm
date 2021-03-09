@@ -44,6 +44,27 @@ export class administrationapiinspectorService {
      */
     public flattendArray = [];
 
+    /**
+     * the tree array as required for the system tree
+     *
+     * [
+     *   {
+     *     id: string,
+     *     parent_id: string,
+     *     parent_sequence: number,
+     *     name: string,
+     *     clickable: boolean
+     *   }
+     * ]
+     */
+    public apiTree: any[] = [];
+
+    /**
+     * holds the methods for the selected API node in the tree
+     */
+    public apiMethods: any[] = [];
+
+    public _apiFilter: string;
 
     /**
      * the current selected API
@@ -58,6 +79,30 @@ export class administrationapiinspectorService {
         public injector: Injector,
         private modelutilities: modelutilities
     ) {
+        this.loadEndpoints();
+    }
+
+    /**
+     * getter for the current api filter
+     */
+    get apiFilter() {
+        return this._apiFilter;
+    }
+
+    /**
+     * setter for the current api filter
+     * also resets the selection and also the complete tree
+     *
+     * @param value
+     */
+    set apiFilter(value) {
+        this._apiFilter = value;
+
+        // reset the methods
+        this.apiMethods = [];
+
+        // rebuild the tree with the searchterm
+        this.buildTree();
     }
 
     /**
@@ -70,9 +115,12 @@ export class administrationapiinspectorService {
         this.backend.getRequest('routes').subscribe(
             routes => {
                 this.apiEndpoints = routes;
-                this.apiEndpoints.sort((a, b) => a.route.replace('{','').localeCompare(b.route.replace('{','')));
+                this.apiEndpoints.sort((a, b) => a.route.replace('{', '').localeCompare(b.route.replace('{', '')));
+
+                this.buildTree();
+
                 this.loading = false;
-                this.parse();
+                // this.parse();
 
             },
             err => {
@@ -80,6 +128,84 @@ export class administrationapiinspectorService {
                 this.loading = false;
             }
         );
+    }
+
+    /**
+     * builds the tree and applies a filter if required
+     * @private
+     */
+    private buildTree() {
+        // reset the api tree
+        this.apiTree = [];
+        // indicate that we are loading
+        this.loading = true;
+        // if applicable filter and process the tree
+        for (let apiendpoint of this.apiEndpoints.filter(a => !this._apiFilter || (this.apiFilter && a.route.toLowerCase().indexOf(this._apiFilter.toLowerCase()) >= 0))) {
+            if (!apiendpoint.route) continue;
+
+            if (!this.apiTree.find(a => a.route == apiendpoint.route)) {
+                this.addRouteToTree(apiendpoint.route);
+            }
+        }
+        this.loading = false;
+    }
+
+    /**
+     * adds a route item to the tree and returns the id of the new generated item
+     *
+     * @param route
+     * @private
+     */
+    private addRouteToTree(route) {
+        let parentID = this.getPartentId(route);
+        let itemId = this.getRouteId(route);
+
+        this.apiTree.push({
+            id: itemId,
+            name: route != '/' ? route.split('/').pop() : route,
+            route: route,
+            parent_id: parentID,
+            parent_sequence: this.apiTree.filter(a => a.parent_id == parentID).length,
+            clickable: true
+        });
+        return itemId;
+    }
+
+    /**
+     * tries to find a praten id recursively. If no parent record is found
+     * @param route
+     * @private
+     */
+    private getPartentId(route: string) {
+        // spöits the route in pieces
+        let routeItems = route.substring(1).split('/');
+
+        // removes the last entry in the item to get the parent route
+        routeItems.pop();
+
+        // checks that we have a parent record .. otherwise we are at the top
+        if (routeItems.length == 0) return undefined;
+
+        // join the parent route again
+        let parentRoute = '/' + routeItems.join('/');
+
+        // try to find the parent in the tree if not add it add
+        let parentItem = this.apiTree.find(a => a.route == parentRoute);
+        if (parentItem) {
+            return parentItem.id;
+        } else {
+            return this.addRouteToTree(parentRoute);
+        }
+    }
+
+    /**
+     * checks if an item in the tree array exists for the route .. if not returns a new id otherwise the id of the reocrd
+     *
+     * @param route
+     * @private
+     */
+    private getRouteId(route) {
+        return this.apiTree.find(a => a.route == route) ? this.apiTree.find(a => a.route == route).id : this.modelutilities.generateGuid();
     }
 
     /**
@@ -97,7 +223,7 @@ export class administrationapiinspectorService {
                     id: this.modelutilities.generateGuid(),
                     parentId: parentId,
                     level: level,
-                    methods:[],
+                    methods: [],
                     subroutes: {},
                 };
             }
@@ -121,19 +247,19 @@ export class administrationapiinspectorService {
         let subRoutes = [];
         for (const key in routeInfo) {
 
-                subRoutes.push({
-                    class: routeInfo[key].class,
-                    description: routeInfo[key].description,
-                    extension: routeInfo[key].extension,
-                    function: routeInfo[key].function,
-                    method: routeInfo[key].method,
-                    options:  routeInfo[key].options,
-                    parameters: routeInfo[key].parameters,
-                    requestBody: routeInfo[key].requestBody,
-                    responses: routeInfo[key].responses,
-                    route: routeInfo[key].route,
-                    summary: routeInfo[key].summary
-                });
+            subRoutes.push({
+                class: routeInfo[key].class,
+                description: routeInfo[key].description,
+                extension: routeInfo[key].extension,
+                function: routeInfo[key].function,
+                method: routeInfo[key].method,
+                options: routeInfo[key].options,
+                parameters: routeInfo[key].parameters,
+                requestBody: routeInfo[key].requestBody,
+                responses: routeInfo[key].responses,
+                route: routeInfo[key].route,
+                summary: routeInfo[key].summary
+            });
 
         }
         return subRoutes;
@@ -160,18 +286,18 @@ export class administrationapiinspectorService {
      */
 
     public flatten(data, arr = []) {
-        let i=0;
+        let i = 0;
         for (const key in data) {
             arr.push({
-                    id: data[key].id,
-                    parent_id: data[key].parentId,
-                    parent_sequence: i,
-                    name: key,
-                    clickable: true,
-                    methods: data[key].methods,
-                    extension: data[key].extension,
-                    function: data[key].function
-                });
+                id: data[key].id,
+                parent_id: data[key].parentId,
+                parent_sequence: i,
+                name: key,
+                clickable: true,
+                methods: data[key].methods,
+                extension: data[key].extension,
+                function: data[key].function
+            });
 
             if (Object.keys(data[key]).length > 0) {
                 this.flatten(data[key].subroutes, arr);
@@ -180,7 +306,7 @@ export class administrationapiinspectorService {
         }
         return arr;
     }
-    
+
     /**
      * select the active API .. fired when the secltion in the tree changes
      *
@@ -188,7 +314,34 @@ export class administrationapiinspectorService {
      * @private
      */
     public selectAPI(selectedId: string) {
-        this.selectedAPI = this.flattendArray.find(a => a.id == selectedId);
+        this.apiMethods = this.apiEndpoints.filter(e => e.route == this.apiTree.find(t => t.id == selectedId).route);
+    }
+
+    /**
+     * returns teh methods for a route
+     *
+     * @param route
+     * @param method
+     */
+    public getMethodParameters(route: string, method: string, source: 'path'|'query'|'body') {
+        let parameters =[];
+        let apiEndpoint: any = this.apiEndpoints.find(e => e.route == route && e.method == method);
+
+        if(!apiEndpoint.parameters) return [];
+
+        for(let paramName in apiEndpoint.parameters){
+            let param = {...apiEndpoint.parameters[paramName]};
+
+            // only if the in matches
+            if(param.in != source) continue;
+
+            // add thename and add to the params array
+            param.name = paramName;
+            parameters.push(param);
+        }
+
+        // return a sorted array
+        return parameters.sort((a, b) => a.name.localeCompare(b.name));
     }
 
 }
