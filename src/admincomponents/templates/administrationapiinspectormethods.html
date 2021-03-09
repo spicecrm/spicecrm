@@ -1,0 +1,54 @@
+<div *ngFor="let apimethod of apiinspector.apiMethods" class="slds-m-around--x-small slds-box" >
+    <div class="slds-grid slds-grid--vertical-align-center slds-p-bottom--small slds-border--bottom">
+        <div class="slds-badge slds-m-right--x-small" [ngStyle]="getMethodStyle(apimethod.method)">
+            <div class="slds-size--1-of-1 slds-text-align--center">{{apimethod.method}}</div>
+        </div>
+        <div class="slds-truncate slds-text-heading--small slds-grow">{{apimethod.route}}</div>
+        <system-utility-icon class="slds-p-left--xx-small" *ngIf="apimethod.options.noAuth" icon="unlock" size="x-small" colorclass="slds-icon-text-success"></system-utility-icon>
+        <system-utility-icon class="slds-p-left--xx-small" *ngIf="apimethod.options.adminOnly" icon="user_role" size="x-small" colorclass="slds-icon-text-warning"></system-utility-icon>
+    </div>
+    <div class="slds-p-vertical--small slds-text-heading--small"><system-label label="LBL_SUMMARY"></system-label></div>
+    <div>{{apimethod.description}}</div>
+    <administration-api-inspector-method-parameters [apimethod]="apimethod" in="path"></administration-api-inspector-method-parameters>
+    <administration-api-inspector-method-parameters [apimethod]="apimethod" in="query"></administration-api-inspector-method-parameters>
+    <!--
+        <span class=" slds-m-around--xx-small">
+            <div>
+                <div>
+                    <span class="slds-m-left--large slds-text-heading_small"> {{apimethods.function}}</span>
+                </div>
+                <div>
+                    <span class="slds-m-left--large slds-text-heading_small"> {{apimethods.extension}}</span>
+                </div>
+
+                <div class="slds-box--border">
+                    <span class="slds-text-heading_small slds-m-left--xx-small slds-text-heading_small" >Summary:</span> <span class="slds-m-left--large">{{apimethods.summary}}</span>
+                </div>
+
+                <div class="slds-box--border">
+                    <span class="slds-text-heading_small slds-m-left--xx-small">Parameters:</span>
+                    <div *ngFor="let paramspec of apimethods.parameters |keyvalue">
+                        <span class="slds-text-heading_small slds-m-left--xx-small">description param:</span><span class="slds-m-left--large"> {{paramspec.value.description}}</span>
+                        <span class="slds-text-heading_small slds-m-left--xx-small">Example:</span><span class="slds-m-left--large"> {{paramspec.value.example}}</span>
+                    </div>
+                </div>
+
+                <div class="slds-box--border">
+                    <span class="slds-text-heading_small slds-m-left--xx-small">Request Body:</span>
+                    <div *ngFor="let bodyspec of apimethods.requestBody |keyvalue">
+                        <span class="slds-text-heading_small slds-m-left--xx-small">name param:</span><span class="slds-m-left--large"> {{bodyspec.key}}</span>
+                        <span class="slds-text-heading_small slds-m-left--xx-small">description param:</span><span class="slds-m-left--large"> {{bodyspec.value}}</span>
+                    </div>
+                </div>
+
+                <div class="slds-box--border">
+                    <span class="slds-text-heading_small slds-m-left--xx-small">Responses:</span>
+                    <div *ngFor="let responsespec of apimethods.responses |keyvalue">
+                        <span class="slds-text-heading_small slds-m-left--xx-small">code:</span><span class="slds-m-left--large "> {{responsespec.key}}</span>
+                        <span class="slds-text-heading_small slds-m-left--xx-small">Description:</span><span class="slds-m-left--large"> {{responsespec.value.description}}</span>
+                    </div>
+                </div>
+            </div>
+        </span>
+        -->
+</div>
