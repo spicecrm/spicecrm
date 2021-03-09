@@ -109,6 +109,7 @@ export class QuestionsManagerEditBasic implements OnInit {
     public nameBlurred(): void {
         if ( !this.name ) {
             this.name = this.questiontext;
+            this.nameChanged();
         }
     }
 

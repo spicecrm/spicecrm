@@ -16,6 +16,10 @@ export class ObjectRelatedCardFile {
 
     @Input() private file: any = {};
 
+    /**
+     * holds the big thumbnail value
+     */
+    @Input() public bigThumbnail: boolean = false;
 
     constructor(private modelattachments: modelattachments, private userpreferences: userpreferences, private modal: modal, private toast: toast, private helper: helper, private injector: Injector) {
 
