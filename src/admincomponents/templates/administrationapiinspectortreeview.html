@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <li aria-level="1" *ngFor="let flattendarray of flattendArray | keyvalue" role="treeitem" tabindex="0">
+        <div class="slds-tree__item">
+            <button class="slds-button slds-button_icon slds-m-right_x-small" [ngClass]="{'slds-hidden': hasChildren}" (click)="displayChrildren = !displayChidlren">
+                <system-button-icon icon="chevronright"></system-button-icon>
+            </button>
+            <div class="slds-has-flexi-truncate">
+                <div class="slds-tree__item-label slds-truncate">{{flattendarray.key}}</div>
+            </div>
+        </div>
+        <ul *ngIf="displayChildren">
+            <administrtaion-apiinspector-tree-item [level]="level+1" [item]="item"></administrtaion-apiinspector-tree-item>
+        </ul>
+    </li>
+</body>
+</html>

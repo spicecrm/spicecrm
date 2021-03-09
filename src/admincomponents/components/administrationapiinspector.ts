@@ -1,55 +1,43 @@
 /**
- * @module AdminComponentsModule
+ * @module Admin Inspector Module
  */
 import {Component, OnInit, Injector} from '@angular/core';
 import {backend} from '../../services/backend.service';
 import {toast} from '../../services/toast.service';
 import {modal} from '../../services/modal.service';
+import {classNames} from "@angular/cdk/schematics";
+import {administrationapiinspectorService} from "../services/administrationapiinspector.service";
 
 @Component({
+    selector: '[administration-api-inspector]',
     templateUrl: './src/admincomponents/templates/administrationapiinspector.html',
+    providers:[administrationapiinspectorService]
 })
-export class AdministrationAPIInspector implements OnInit {
 
-    /**
-     * indicates that we are loading
-     *
-     * @private
-     */
-    private loading: boolean = false;
+export class AdministrationAPIInspector implements OnInit {
 
     /**
      * holds all the endpoints
      *
      * @private
      */
-    private apiEndpoints: any[] = [];
+    private toggleClassSub =[];
 
-    constructor(private backend: backend, private toast: toast, private modal: modal, private injector: Injector) {
-    }
+    constructor(
+        private toast: toast,
+        private modal: modal,
+        private injector: Injector,
+        private apiinspector: administrationapiinspectorService
+        ) {}
 
-    public ngOnInit() {
-        this.loadEndpoints();
-    }
 
     /**
-     * loads all available endpoints from the backend
+     * loads the endpoints from the backend
      *
-     * @private
+     * @public
      */
-    private loadEndpoints() {
-        this.loading = true;
-        this.backend.getRequest('routes').subscribe(
-            routes => {
-                this.apiEndpoints = routes;
-                this.apiEndpoints.sort((a, b) => a.route.localeCompare(b.route));
-                this.loading = false;
-            },
-            err => {
-                this.toast.sendToast('Error Loading Routes', 'error');
-                this.loading = false;
-            }
-        );
+    public ngOnInit() {
+        this.apiinspector.loadEndpoints();
     }
 
     /**
@@ -58,10 +46,13 @@ export class AdministrationAPIInspector implements OnInit {
      * @param apiendpoint
      * @private
      */
-    private showDetails(apiendpoint: any) {
-        this.modal.openModal('AdministrationAPIInspectorDetails').subscribe(modalRef => {
-            modalRef.instance.endpoint = apiendpoint;
-        });
+
+    private selectNode(selectedId: string) {
+
+       this.apiinspector.selectAPI(selectedId);
     }
 
+
+
 }
+
