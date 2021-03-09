@@ -436,6 +436,7 @@ export class questionnaireParticipationService {
     private buildQuestionMetaData() {
         for ( let questionset of this.questionsetsArray ) {
             for( let question of this.questionsArray[questionset.id] ) {
+                // if ( typeof question.questionparameter === 'undefined' ) question.questionparameter = {};
                 this.questionsMeta[question.id] = {
                     readonly: false,
                     finished: false,

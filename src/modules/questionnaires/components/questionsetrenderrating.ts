@@ -11,7 +11,9 @@ import { QuestionsetRenderBasic } from './questionsetrenderbasic';
     styles: [
         "table { border-top: none; }",
         "th { position: sticky; top: 0; border-top: 1px solid #dddbda; border-bottom: 1px solid #dddbda; z-index: 10;}",
-        "tr:first-child td { border-top: none; }"
+        "tr:first-child td { border-top: none; }",
+        'td { padding: 0.5rem 0.75rem; }',
+        'td.question-hover:hover { background-color: #f3f2f2; }'
     ]
 })
 export class QuestionsetRenderRating extends QuestionsetRenderBasic implements OnInit {
