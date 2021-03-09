@@ -64,10 +64,12 @@ export class administrationapiinspectorService {
      */
     public apiMethods: any[] = [];
 
+
     /**
      * a filter string to search by
      */
     public _apiFilter: string;
+
 
     /**
      * the current selected API
@@ -233,7 +235,7 @@ export class administrationapiinspectorService {
 
         if(!apiEndpoint.parameters) return [];
 
-        for(let paramName in apiEndpoint.parameters){
+        for(let paramName in apiEndpoint.parameters) {
             let param = {...apiEndpoint.parameters[paramName]};
 
             // only if the in matches
@@ -246,6 +248,47 @@ export class administrationapiinspectorService {
 
         // return a sorted array
         return parameters.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    /**
+     * returns the response for a route
+     * @param route
+     * @param method
+     */
+    public getMethodResponses(route: string, method: string) {
+        let responses = [];
+        let apiEndpoint: any = this.apiEndpoints.find(e => e.route == route && e.method == method);
+
+        if(!apiEndpoint.responses) return [];
+
+        for(let ResName in apiEndpoint.responses) {
+            let res = {...apiEndpoint.responses[ResName]};
+
+            // add thename and add to the params array
+            res.name = ResName;
+            responses.push(res);
+        }
+        return responses.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    /**
+     * returns the body requests for a route
+     * @param route
+     * @param method
+     * @param type
+     */
+    public getMethodRequests(route: string, method: string,type: 'any' | 'bigInt' | 'boolean' | 'number' | 'null' | 'object' |'string' | 'undefined') {
+        let requests = [];
+        let apiEndpoint: any = this.apiEndpoints.find(e => e.route == route && e.method == method);
+
+        if(!apiEndpoint.requestBody) return [];
+
+        for(let ReqName in apiEndpoint.requestBody){
+            let request = {...apiEndpoint.requestBody[ReqName]};
+
+
+        }
+        return requests.sort((a, b) => a.name.localeCompare(b.name));
     }
 
 }
