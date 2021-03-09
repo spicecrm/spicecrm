@@ -142,7 +142,7 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
 
         // get componentset
         let componentconfig = this.metadata.getComponentConfig("MailboxmanagerEmailDetails", this.model.module);
-        let viewComponentSet = componentconfig.componentset;
+        let viewComponentSet = this.mailboxesEmails.activeSplitType.name == 'horizontalSplit' ? componentconfig.horizontalComponentset : componentconfig.componentset;
         for (let component of this.metadata.getComponentSetObjects(viewComponentSet)) {
             this.metadata.addComponent(component.component, this.detailscontent).subscribe(componentRef => {
                 componentRef.instance.componentconfig = component.componentconfig ? component.componentconfig : {};
@@ -264,5 +264,12 @@ export class MailboxmanagerEmailDetails implements OnDestroy {
      */
     private delete() {
         this.model.delete();
+    }
+
+    /**
+     * set the active message to null
+     */
+    public goBack() {
+        this.mailboxesEmails.activeMessage = null;
     }
 }

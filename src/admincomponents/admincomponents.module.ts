@@ -14,6 +14,7 @@ import /*embed*/ {administrationconfigurator} from './services/administrationcon
 import /*embed*/ {ftsconfiguration} from './services/ftsconfiguration.service';
 import /*embed*/ {dictionary} from './services/dictionary.service';
 import /*embed*/ {administration} from './services/administration.service';
+import /*embed*/ {administrationapiinspectorService} from "./services/administrationapiinspector.service";
 
 import /*embed*/ { AdministrationMain } from './components/administrationmain';
 import /*embed*/ { AdministrationMenu } from './components/administrationmenu';
@@ -43,6 +44,11 @@ import /*embed*/ { AdministrationSystemVersions } from './components/administrat
 
 import /*embed*/ { AdministrationAPIInspector } from './components/administrationapiinspector';
 import /*embed*/ { AdministrationAPIInspectorDetails } from './components/administrationapiinspectordetails';
+import /*embed*/ { AdministrationApiInspectorMethodParameters } from "./components/administrationapiinspectormethodparameters";
+import /*embed*/ { AdministrationApiInspectorMethods } from "./components/administrationapiinspectormethods";
+import /*embed*/ { AdministrationapiinspectorMethodResponses } from "./components/administrationapiinspectormethodresponses";
+import /*embed*/ { AdministrationapiinspectorMethodRequests } from "./components/administrationapiinspectormethodrequests";
+
 
 import /*embed*/ { AdministrationSysTrashcanManager } from './components/administrationsystrashcanmanager';
 import /*embed*/ { AdministrationSysTrashcanRecover } from './components/administrationsystrashcanrecover';
@@ -80,7 +86,11 @@ import /*embed*/ {AdministrationDefaultPreferences} from './components/administr
     ],
     declarations: [
         AdministrationAPIInspector,
+        AdministrationApiInspectorMethods,
+        AdministrationApiInspectorMethodParameters,
         AdministrationAPIInspectorDetails,
+        AdministrationapiinspectorMethodResponses,
+        AdministrationapiinspectorMethodRequests,
         AdministrationMain,
         AdministrationMenu,
         AdministrationMenuRouteItem,

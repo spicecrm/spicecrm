@@ -1,0 +1,25 @@
+<ng-container *ngIf="this.response.length > 0">
+    <div class="slds-p-vertical--small slds-text-heading--label slds-m-top--large"><system-label [label]="'LBL_API_RESPONSES'"></system-label></div>
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered ">
+        <thead>
+        <tr class="slds-line-height_reset">
+            <th class="" scope="col">
+                <div class="slds-truncate" ><system-label label="LBL_NAME"></system-label></div>
+            </th>
+            <th class="" scope="col">
+                <div class="slds-truncate" ><system-label label="LBL_DESCRIPTION"></system-label></div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let response of response" class="slds-hint-parent">
+            <td>
+                <div class="slds-truncate">{{response.name}}</div>
+            </td>
+            <td>
+                <div class="slds-truncate">{{response.description}}</div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</ng-container>

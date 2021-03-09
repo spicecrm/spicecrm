@@ -78,15 +78,7 @@ export class ProductBrowserTree implements OnInit {
     }
 
     private getProducts(parentId = '') {
-        let searchfields = {field: 'productgroup_id', operator: '=', value: parentId};
-        let params = {
-            searchfields: JSON.stringify(searchfields),
-            offset: 0,
-            limit: 250,
-            sortfield: 'name'
-        };
-
-        this.backend.getRequest('module/Products', params).subscribe(items => {
+        this.backend.getRequest(`module/ProductGroups/${parentId}/Products`).subscribe(items => {
             for (let item of items.list) {
                 item.expanded = false;
                 item.loaded = false;
