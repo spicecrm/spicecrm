@@ -43,7 +43,7 @@ export class SystemUtilityIcon implements OnChanges{
     /**
      * an optional color class: can be any of the avialable SLDS icon color classes
      */
-    @Input() private colorclass: string = 'slds-icon-text-default';
+    @Input() private colorclass: 'slds-icon-text-default'|'slds-icon-text-success'|'slds-icon-text-warning'|'slds-icon-text-error'|'slds-icon-text-light' = 'slds-icon-text-default';
 
     /**
      * a string for the title that is rendered as part of the SVG HTML element

@@ -1,12 +1,15 @@
 /**
  * @module AdminComponentsModule
  */
-import {Component, OnInit} from '@angular/core';
-
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {administrationapiinspectorService} from "../services/administrationapiinspector.service";
 
 @Component({
-    templateUrl: './src/admincomponents/templates/administrationapiinspectordetails.html'
+    selector: 'administration-api-inspector-details',
+    templateUrl: './src/admincomponents/templates/administrationapiinspectordetails.html',
+    providers:[administrationapiinspectorService]
 })
+
 export class AdministrationAPIInspectorDetails {
 
     /**
