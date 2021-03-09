@@ -44,7 +44,8 @@ import /*embed*/ { AdministrationSystemVersions } from './components/administrat
 
 import /*embed*/ { AdministrationAPIInspector } from './components/administrationapiinspector';
 import /*embed*/ { AdministrationAPIInspectorDetails } from './components/administrationapiinspectordetails';
-import /*embed*/ { AdministrationApiInspectorDetail } from "./components/administrationapiinspectordetail";
+import /*embed*/ { AdministrationApiInspectorMethodParameters } from "./components/administrationapiinspectormethodparameters";
+import /*embed*/ { AdministrationApiInspectorMethods } from "./components/administrationapiinspectormethods";
 
 
 import /*embed*/ { AdministrationSysTrashcanManager } from './components/administrationsystrashcanmanager';
@@ -83,7 +84,8 @@ import /*embed*/ {AdministrationDefaultPreferences} from './components/administr
     ],
     declarations: [
         AdministrationAPIInspector,
-        AdministrationApiInspectorDetail,
+        AdministrationApiInspectorMethods,
+        AdministrationApiInspectorMethodParameters,
         AdministrationAPIInspectorDetails,
         AdministrationMain,
         AdministrationMenu,
@@ -127,8 +129,7 @@ import /*embed*/ {AdministrationDefaultPreferences} from './components/administr
         AdministrationHomeScreenCardItem,
         AdministrationGeneralSettings,
         AdministrationLanguages,
-        AdministrationDefaultPreferences,
-        AdministrationApiInspectorDetail
+        AdministrationDefaultPreferences
     ],
     entryComponents: [
         AdministrationMain,
