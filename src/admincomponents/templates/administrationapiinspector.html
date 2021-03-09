@@ -1,4 +1,4 @@
-<div class="slds-form--inline">
+<!--div class="slds-form--inline">
     <h2 class="slds-text-heading_medium slds-p-around--small">
         <system-label label="LBL_API_INSPECTOR"></system-label>
     </h2>
@@ -16,22 +16,32 @@
             </div>
         </div>
         <input class="slds-input">
-
+    </div>
+</div-->
+<div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-p-around--small">
+    <h2 class="slds-text-heading_medium"><system-label label="LBL_API_INSPECTOR"></system-label></h2>
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <input class="slds-input" system-placeholder="LBL_FILTER_BY" [(ngModel)]="apiinspector.apiFilter" [ngModelOptions]="{updateOn: 'blur'}"/>
     </div>
 </div>
 <div class="slds-theme--default slds-grid"  [system-overlay-loading-spinner]="apiinspector.loading">
-    <div class="slds-size--1-of-3 slds-p-around--xx-small" system-to-bottom>
-        <system-tree [sourceList]="apiinspector.flattendArray" (selectedItemChange)="selectNode($event)">
-        </system-tree>
-    </div>
+    <div class="slds-size--1-of-3 slds-border--right" system-to-bottom>
 
-    <div class="slds-size--2-of-3" system-to-bottom>
-        <administration-api-inspector-detail *ngIf="apiinspector.selectedAPI; else nothingselected" [detailSource]="apiinspector.selectedAPI">
-
-        </administration-api-inspector-detail>
-        <ng-template #nothingselected>
+        <system-tree *ngIf="!apiinspector.loading; else treeLoadingSpinner" [sourceList]="apiinspector.apiTree" (selectedItemChange)="selectNode($event)"></system-tree>
+        <ng-template #treeLoadingSpinner>
             <div class="slds-height_full slds-align--absolute-center">
-                <system-illustration-no-data><system-label label="LBL_NO_API_SELECTED"></system-label></system-illustration-no-data>
+                <div class="slds-grid slds-grid--vertical">
+                    <system-spinner></system-spinner>
+                    <system-label class="slds-p-vertical--small" label="LBL_LOADING_ENDPOINTS"></system-label>
+                </div>
+            </div>
+        </ng-template>
+    </div>
+    <div class="slds-size--2-of-3" system-to-bottom>
+        <administration-api-inspector-methods *ngIf="apiinspector.apiMethods.length > 0; else noMethodsAvailable"></administration-api-inspector-methods>
+        <ng-template #noMethodsAvailable>
+            <div class="slds-height_full slds-align--absolute-center">
+                <system-illustration-no-data><system-label label="LBL_NO_METHODS_FOR_ENDPOINT"></system-label></system-illustration-no-data>
             </div>
         </ng-template>
     </div>
