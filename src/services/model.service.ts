@@ -1152,7 +1152,8 @@ export class model implements OnDestroy {
         // set default acl to allow editing
         this.data.acl = {
             create: true,
-            edit: true
+            edit: true,
+            detail: true
         };
 
         // initialize the field stati and run the initial evaluation rules

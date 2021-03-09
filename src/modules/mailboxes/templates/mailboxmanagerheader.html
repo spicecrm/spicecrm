@@ -25,15 +25,21 @@
             </ul>
         </div>
     </div>
-    <div class="slds-col--bump-left slds-button-group">
-        <button class="slds-button slds-button--neutral" [disabled]="!buttonenabled" (click)="reloadList()">
-            <system-button-icon class="slds-button__icon--left" icon="refresh"></system-button-icon>
-            <span><system-label label="LBL_REFRESH"></system-label></span>
-        </button>
-        <button class="slds-button slds-button--neutral" [disabled]="!buttonenabled" (click)="fetchEmails()">
-            <system-button-icon class="slds-button__icon--left" icon="email"></system-button-icon>
-            <span><system-label label="LBL_FETCH_EMAILS"></system-label></span>
-        </button>
+    <div class="slds-col--bump-left slds-grid">
+        <div class="slds-m-horizontal--xx-small">
+            <system-input-radio-button-group [ngModel]="mailboxesEmails.activeSplitType.name" (ngModelChange)="setActiveSplitType($event)" [inputOptions]="splitTypeOptions"></system-input-radio-button-group>
+        </div>
+        <div class=" slds-button-group">
+            <button class="slds-button slds-button--neutral" [disabled]="!buttonenabled" (click)="reloadList()">
+                <system-button-icon class="slds-button__icon--left" icon="refresh"></system-button-icon>
+                <span><system-label label="LBL_REFRESH"></system-label></span>
+            </button>
+            <button class="slds-button slds-button--neutral" [disabled]="!buttonenabled" (click)="fetchEmails()">
+                <system-button-icon class="slds-button__icon--left" icon="email"></system-button-icon>
+                <span><system-label label="LBL_FETCH_EMAILS"></system-label></span>
+            </button>
+        </div>
     </div>
+
 </div>
 
