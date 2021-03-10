@@ -11,7 +11,7 @@ import {administrationapiinspectorService} from "../services/administrationapiin
 @Component({
     selector: '[administration-api-inspector]',
     templateUrl: './src/admincomponents/templates/administrationapiinspector.html',
-    providers:[administrationapiinspectorService]
+    providers: [administrationapiinspectorService]
 })
 
 export class AdministrationAPIInspector {
@@ -21,16 +21,27 @@ export class AdministrationAPIInspector {
      *
      * @private
      */
-    private toggleClassSub =[];
+    private toggleClassSub = [];
 
     constructor(
         private toast: toast,
         private modal: modal,
         private injector: Injector,
         private apiinspector: administrationapiinspectorService
-        ) {}
+    ) {
+    }
 
-
+    /**
+     * toggels the unauthorized filter
+     *
+     * @param e
+     * @private
+     */
+    private toggleUnauthorized(e: MouseEvent) {
+       e.preventDefault();
+       e.stopPropagation();
+       this.apiinspector.apiFilterUnauthorized = !this.apiinspector.apiFilterUnauthorized;
+    }
 
 
     /**
@@ -42,9 +53,8 @@ export class AdministrationAPIInspector {
 
     private selectNode(selectedId: string) {
 
-       this.apiinspector.selectAPI(selectedId);
+        this.apiinspector.selectAPI(selectedId);
     }
-
 
 
 }
