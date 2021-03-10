@@ -60,9 +60,23 @@ export class administrationapiinspectorService {
     public apiTree: any[] = [];
 
     /**
+     * the selected API
+     *
+     * @private
+     */
+    public selectedApi: any;
+
+    /**
      * holds the methods for the selected API node in the tree
      */
     public apiMethods: any[] = [];
+
+    /**
+     * indicates that also all submehtods of a given route are displayed
+     *
+     * @private
+     */
+    private _apiSubMethods: boolean = true;
 
     /**
      * a filter string to search by
@@ -276,13 +290,41 @@ export class administrationapiinspectorService {
     }
 
     /**
-     * select the active API .. fired when the secltion in the tree changes
+     * select the active API .. fired when the selection changes
      *
      * @param selectedId
      * @private
      */
     public selectAPI(selectedId: string) {
-        this.apiMethods = this.apiEndpoints.filter(e => e.route == this.apiTree.find(t => t.id == selectedId).route);
+        this.selectedAPI = this.apiTree.find(t => t.id == selectedId);
+        this.filterMethods();
+    }
+
+    /**
+     * getter for the sleect submethods
+     */
+    get apiSubMethods() {
+        return this._apiSubMethods;
+    }
+
+    /**
+     * setter for the selectSubmethods that also refilters the methods
+     *
+     * @param value
+     */
+    set apiSubMethods(value) {
+        this._apiSubMethods = value;
+        this.filterMethods();
+    }
+
+    /**
+     * filters the methods for the selected Endpoint
+     * respects if all submethods shoudl be set or not
+     *
+     * @private
+     */
+    private filterMethods() {
+        this.apiMethods = this.apiEndpoints.filter(e => this._apiSubMethods ? e.route.indexOf(this.selectedAPI.route) == 0 : e.route == this.selectedAPI.route);
     }
 
     /**
@@ -351,6 +393,40 @@ export class administrationapiinspectorService {
 
         }
         return requests.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+
+
+    /**
+     * sets a fixed with for the method badge and a color for the type of method
+     *
+     * @param method
+     * @private
+     */
+    public getMethodStyle(method) {
+
+        let color = 'inherit';
+
+        switch (method) {
+            case 'get':
+                color = '#05628a';
+                break;
+            case 'post':
+                color = '#f38303';
+                break;
+            case 'put':
+                color = '#41b658';
+                break;
+            case 'delete':
+                color = '#d83a00';
+                break;
+        }
+
+        return {
+            width: '100px',
+            color: '#ffffff',
+            background: color
+        };
     }
 
 }
