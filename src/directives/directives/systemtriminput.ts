@@ -8,7 +8,7 @@ import { Directive, HostListener, Input } from '@angular/core';
  *  https://github.com/KingMario/packages/tree/master/projects/ngx-trim-directive
  */
 @Directive({
-    selector: 'input[system-trim-input]',
+    selector: 'input[system-trim-input], textarea[system-trim-input]',
 })
 export class SystemTrimInputDirective {
 
