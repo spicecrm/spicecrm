@@ -1,15 +1,18 @@
 <ng-container *ngIf="this.parameters.length > 0">
-    <div class="slds-p-vertical--small slds-text-heading--label"><system-label [label]="'LBL_'+in.toUpperCase()+'_PARAMETERS'"></system-label></div>
-    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+    <div class="slds-p-around--small slds-text-heading--label"><system-label [label]="'LBL_'+in.toUpperCase()+'_PARAMETERS'"></system-label></div>
+    <table class="slds-table slds-table--fixed-layout slds-table_cell-buffer slds-table_bordered">
         <thead>
         <tr class="slds-line-height_reset">
-            <th class="" scope="col">
+            <th style="width: 120px" scope="col">
                 <div class="slds-truncate" ><system-label label="LBL_NAME"></system-label></div>
             </th>
-            <th class="" scope="col">
+            <th scope="col">
                 <div class="slds-truncate" ><system-label label="LBL_DESCRIPTION"></system-label></div>
             </th>
-            <th class="" scope="col">
+            <th style="width: 100px" scope="col">
+                <div class="slds-truncate" ><system-label label="LBL_TYPE"></system-label></div>
+            </th>
+            <th *ngIf="parameterCollector" class="" scope="col">
                 <div class="slds-truncate" ><system-label label="LBL_TYPE"></system-label></div>
             </th>
         </tr>
@@ -24,6 +27,9 @@
             </td>
             <td>
                 <div class="slds-truncate">{{parameter.type}}</div>
+            </td>
+            <td *ngIf="parameterCollector">
+                <input class="slds-input" [(ngModel)]="parameterCollector[parameter.name]">
             </td>
         </tr>
         </tbody>

@@ -1,0 +1,33 @@
+<system-modal>
+    <system-modal-header (close)="close()">{{apiMethod.route}} / {{apiMethod.method}}</system-modal-header>
+    <system-modal-content [grow]="true" #modalcontent margin="none">
+        <div class="slds-tabs_default" >
+            <ul class="slds-tabs_default__nav" role="tablist">
+                <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active': activetab == 'parameters'}" role="presentation">
+                    <a class="slds-tabs_default__link" role="tab" (click)="activetab = 'parameters'"><system-label label="LBL_PARAMETERS"></system-label></a>
+                </li>
+                <!--li class="slds-tabs_default__item" title="Item Two" [ngClass]="{'slds-is-active': activetab == 'request'}" role="presentation">
+                    <a class="slds-tabs_default__link" role="tab" (click)="activetab = 'request'"><system-label label="LBL_REQUEST"></system-label></a>
+                </li-->
+                <li class="slds-tabs_default__item" title="Item Three" [ngClass]="{'slds-is-active': activetab == 'response'}" role="presentation">
+                    <a class="slds-tabs_default__link" role="tab" (click)="activetab = 'response'"><system-label label="LBL_RESPONSE"></system-label></a>
+                </li>
+            </ul>
+            <div #tabcontent [ngStyle]="tabStyle" class="slds-scrollable">
+                <div class="slds-tabs_default__content" [ngClass]="{'slds-hide': activetab != 'parameters'}" role="tabpanel">
+                    <administration-api-inspector-method-parameters [apimethod]="apiMethod" [parameterCollector]="parameterCollector" in="path"></administration-api-inspector-method-parameters>
+                    <administration-api-inspector-method-parameters [apimethod]="apiMethod" [parameterCollector]="parameterCollector" in="query"></administration-api-inspector-method-parameters>
+                    <administration-api-inspector-method-parameters [apimethod]="apiMethod" [parameterCollector]="parameterCollector" in="body"></administration-api-inspector-method-parameters>
+                </div>
+                <!--div class="slds-tabs_default__content" [ngClass]="{'slds-hide': activetab != 'request'}" role="tabpanel">Item Two Content</div-->
+                <div class="slds-tabs_default__content" [ngClass]="{'slds-hide': activetab != 'response'}" role="tabpanel">
+                    <pre class="slds-p-horizontal--x-small" style="white-space: pre-wrap">{{this.response}}</pre>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="test()"><system-label label="LBL_TEST"></system-label></button>
+    </system-modal-footer>
+</system-modal>

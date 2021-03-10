@@ -1,4 +1,5 @@
-import {Component} from '@angular/core';
+import {Component, Injector} from '@angular/core';
+import {modal} from '../../services/modal.service';
 import {administrationapiinspectorService} from "../services/administrationapiinspector.service";
 
 @Component({
@@ -9,6 +10,8 @@ import {administrationapiinspectorService} from "../services/administrationapiin
 export class AdministrationApiInspectorMethods {
 
     constructor(
+        private modal: modal,
+        private injector: Injector,
         private apiinspector: administrationapiinspectorService
     ) {
     }
@@ -43,6 +46,15 @@ export class AdministrationApiInspectorMethods {
             color: '#ffffff',
             background: color
         };
+    }
+
+    private test(apiMethod: any, e: MouseEvent){
+        e.preventDefault();
+        e.stopPropagation();
+
+        this.modal.openModal('AdministrationApiInspectorMethodTest', true, this.injector).subscribe(modalRef => {
+            modalRef.instance.apiMethod = apiMethod;
+        });
     }
 
 }
