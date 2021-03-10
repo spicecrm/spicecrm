@@ -64,7 +64,6 @@ export class administrationapiinspectorService {
      */
     public apiMethods: any[] = [];
 
-
     /**
      * a filter string to search by
      */
@@ -145,7 +144,9 @@ export class administrationapiinspectorService {
         // indicate that we are loading
         this.loading = true;
         // if applicable filter and process the tree
-        for (let apiendpoint of this.apiEndpoints.filter(a => !this._apiFilter || (this.apiFilter && a.route.toLowerCase().indexOf(this._apiFilter.toLowerCase()) >= 0))) {
+        for (let apiendpoint of this.apiEndpoints.filter(a => {
+            return !this._apiFilter || (this.apiFilter && a.route.toLowerCase().indexOf(this._apiFilter.toLowerCase()) >= 0);
+        })) {
             if (!apiendpoint.route) continue;
 
             if (!this.apiTree.find(a => a.route == apiendpoint.route)) {
