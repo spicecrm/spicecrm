@@ -69,6 +69,8 @@ export class administrationapiinspectorService {
      */
     public _apiFilter: string;
 
+    public _apiFilterUnauthorized: boolean = false;
+
 
     /**
      * the current selected API
@@ -102,8 +104,25 @@ export class administrationapiinspectorService {
     set apiFilter(value) {
         this._apiFilter = value;
 
-        // reset the methods
-        this.apiMethods = [];
+        // rebuild the tree with the searchterm
+        this.buildTree();
+    }
+
+    /**
+     * getter for the current api filter
+     */
+    get apiFilterUnauthorized() {
+        return this._apiFilterUnauthorized;
+    }
+
+    /**
+     * setter for the current api filter
+     * also resets the selection and also the complete tree
+     *
+     * @param value
+     */
+    set apiFilterUnauthorized(value) {
+        this._apiFilterUnauthorized = value;
 
         // rebuild the tree with the searchterm
         this.buildTree();
@@ -139,12 +158,18 @@ export class administrationapiinspectorService {
      * @private
      */
     private buildTree() {
+        // reset the methods
+        this.apiMethods = [];
         // reset the api tree
         this.apiTree = [];
         // indicate that we are loading
         this.loading = true;
         // if applicable filter and process the tree
         for (let apiendpoint of this.apiEndpoints.filter(a => {
+            if (this._apiFilterUnauthorized) {
+                // check if route is also unauthporized and if not return false
+            }
+
             return !this._apiFilter || (this.apiFilter && a.route.toLowerCase().indexOf(this._apiFilter.toLowerCase()) >= 0);
         })) {
             if (!apiendpoint.route) continue;
