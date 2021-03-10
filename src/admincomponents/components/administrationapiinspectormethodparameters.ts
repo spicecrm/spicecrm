@@ -31,6 +31,11 @@ export class AdministrationApiInspectorMethodParameters implements OnChanges {
      */
     @Input() private in: 'path' | 'query' | 'body';
 
+    /**
+     * if this is set the component will render inputs for the paramaters to allow the usage of this as part of the testing
+     */
+    @Input() public parameterCollector: any;
+
     constructor(
         private apiinspector: administrationapiinspectorService
     ) {
