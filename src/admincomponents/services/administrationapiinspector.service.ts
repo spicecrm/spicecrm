@@ -69,8 +69,17 @@ export class administrationapiinspectorService {
      */
     public _apiFilter: string;
 
+    /**
+     * filter variable for all unauthorized routes
+     */
+
     public _apiFilterUnauthorized: boolean = false;
 
+    /**
+     * filter variable for all admin only routes
+     */
+
+    public _apiFilterAdminOnly: boolean = false;
 
     /**
      * the current selected API
@@ -129,6 +138,26 @@ export class administrationapiinspectorService {
     }
 
     /**
+     * getter for the current api filter
+     */
+    get apiFilterAdminOnly() {
+        return this._apiFilterAdminOnly;
+    }
+
+    /**
+     * setter for the current api filter
+     * also resets the selection and also the complete tree
+     *
+     * @param value
+     */
+    set apiFilterAdminOnly(value) {
+        this._apiFilterAdminOnly = value;
+
+        // rebuild the tree with the searchterm
+        this.buildTree();
+    }
+
+    /**
      * loads all available endpoints from the backend
      *
      * @public
@@ -166,11 +195,18 @@ export class administrationapiinspectorService {
         this.loading = true;
         // if applicable filter and process the tree
         for (let apiendpoint of this.apiEndpoints.filter(a => {
-            if (this._apiFilterUnauthorized) {
-                // check if route is also unauthporized and if not return false
+            if (this._apiFilterUnauthorized && (this.apiFilterUnauthorized && a.route.toLowerCase().indexOf(this._apiFilterUnauthorized) == -1)) {
+                return false;
             }
 
-            return !this._apiFilter || (this.apiFilter && a.route.toLowerCase().indexOf(this._apiFilter.toLowerCase()) >= 0);
+            if (this._apiFilterAdminOnly && (this.apiFilterAdminOnly && a.route.toLowerCase().indexOf(this._apiFilterAdminOnly) == -1)) {
+                return false;
+            }
+
+            if (this._apiFilter && (this.apiFilter && a.route.toLowerCase().indexOf(this._apiFilter.toLowerCase()) == -1)) {
+                return false;
+            }
+            return true;
         })) {
             if (!apiendpoint.route) continue;
 
