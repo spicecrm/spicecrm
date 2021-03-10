@@ -9,9 +9,13 @@ import { QuestionRenderBasic } from './questionrenderbasic';
     selector: 'question-render-nps',
     templateUrl: './src/modules/questionnaires/templates/questionrendernps.html',
     styles: [
-        "table { border-top: none; }",
-        "th { position: sticky; top: 0; border-top: 1px solid #dddbda; border-bottom: 1px solid #dddbda; z-index: 10;}",
-        "tr:first-child td { border-top: none; }"
+        'table { border-top: none; }',
+        'th { position: sticky; top: 0; border-top: 1px solid #dddbda; border-bottom: 1px solid #dddbda; z-index: 10;}',
+        'tr:first-child td { border-top-width: 0; }',
+        'td.question-hover:hover { background-color: #f3f2f2; }',
+        'td { padding: 0.5rem 0.75rem }',
+        'table.with-text-for-score th.th1 { border-bottom: none; }',
+        'th.th2 { border-top: none; }'
     ]
 })
 export class QuestionRenderNPS extends QuestionRenderBasic implements OnInit {
