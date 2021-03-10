@@ -1,5 +1,12 @@
 <system-modal>
-    <system-modal-header (close)="close()">{{apiMethod.route}} / {{apiMethod.method}}</system-modal-header>
+    <system-modal-header (close)="close()">
+        {{apiMethod.route}}
+        <system-modal-header-right>
+            <div class="slds-badge" [ngStyle]="apiInspector.getMethodStyle(apiMethod.method)">
+                <div class="slds-size--1-of-1 slds-text-align--center">{{apiMethod.method}}</div>
+            </div>
+        </system-modal-header-right>
+    </system-modal-header>
     <system-modal-content [grow]="true" #modalcontent margin="none">
         <div class="slds-tabs_default" >
             <ul class="slds-tabs_default__nav" role="tablist">
