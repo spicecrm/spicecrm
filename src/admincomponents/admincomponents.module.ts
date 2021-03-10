@@ -47,7 +47,7 @@ import /*embed*/ { AdministrationAPIInspectorDetails } from './components/admini
 import /*embed*/ { AdministrationApiInspectorMethodParameters } from "./components/administrationapiinspectormethodparameters";
 import /*embed*/ { AdministrationApiInspectorMethods } from "./components/administrationapiinspectormethods";
 import /*embed*/ { AdministrationapiinspectorMethodResponses } from "./components/administrationapiinspectormethodresponses";
-import /*embed*/ { AdministrationapiinspectorMethodRequests } from "./components/administrationapiinspectormethodrequests";
+import /*embed*/ { AdministrationApiInspectorMethodTest } from "./components/administrationapiinspectormethodtest";
 
 
 import /*embed*/ { AdministrationSysTrashcanManager } from './components/administrationsystrashcanmanager';
@@ -90,7 +90,7 @@ import /*embed*/ {AdministrationDefaultPreferences} from './components/administr
         AdministrationApiInspectorMethodParameters,
         AdministrationAPIInspectorDetails,
         AdministrationapiinspectorMethodResponses,
-        AdministrationapiinspectorMethodRequests,
+        AdministrationApiInspectorMethodTest,
         AdministrationMain,
         AdministrationMenu,
         AdministrationMenuRouteItem,

@@ -64,11 +64,12 @@ export class administrationapiinspectorService {
      */
     public apiMethods: any[] = [];
 
-
     /**
      * a filter string to search by
      */
     public _apiFilter: string;
+
+    public _apiFilterUnauthorized: boolean = false;
 
 
     /**
@@ -103,8 +104,25 @@ export class administrationapiinspectorService {
     set apiFilter(value) {
         this._apiFilter = value;
 
-        // reset the methods
-        this.apiMethods = [];
+        // rebuild the tree with the searchterm
+        this.buildTree();
+    }
+
+    /**
+     * getter for the current api filter
+     */
+    get apiFilterUnauthorized() {
+        return this._apiFilterUnauthorized;
+    }
+
+    /**
+     * setter for the current api filter
+     * also resets the selection and also the complete tree
+     *
+     * @param value
+     */
+    set apiFilterUnauthorized(value) {
+        this._apiFilterUnauthorized = value;
 
         // rebuild the tree with the searchterm
         this.buildTree();
@@ -140,12 +158,20 @@ export class administrationapiinspectorService {
      * @private
      */
     private buildTree() {
+        // reset the methods
+        this.apiMethods = [];
         // reset the api tree
         this.apiTree = [];
         // indicate that we are loading
         this.loading = true;
         // if applicable filter and process the tree
-        for (let apiendpoint of this.apiEndpoints.filter(a => !this._apiFilter || (this.apiFilter && a.route.toLowerCase().indexOf(this._apiFilter.toLowerCase()) >= 0))) {
+        for (let apiendpoint of this.apiEndpoints.filter(a => {
+            if (this._apiFilterUnauthorized) {
+                // check if route is also unauthporized and if not return false
+            }
+
+            return !this._apiFilter || (this.apiFilter && a.route.toLowerCase().indexOf(this._apiFilter.toLowerCase()) >= 0);
+        })) {
             if (!apiendpoint.route) continue;
 
             if (!this.apiTree.find(a => a.route == apiendpoint.route)) {
@@ -229,17 +255,17 @@ export class administrationapiinspectorService {
      * @param route
      * @param method
      */
-    public getMethodParameters(route: string, method: string, source: 'path'|'query'|'body') {
-        let parameters =[];
+    public getMethodParameters(route: string, method: string, source: 'path' | 'query' | 'body') {
+        let parameters = [];
         let apiEndpoint: any = this.apiEndpoints.find(e => e.route == route && e.method == method);
 
-        if(!apiEndpoint.parameters) return [];
+        if (!apiEndpoint.parameters) return [];
 
-        for(let paramName in apiEndpoint.parameters) {
+        for (let paramName in apiEndpoint.parameters) {
             let param = {...apiEndpoint.parameters[paramName]};
 
             // only if the in matches
-            if(param.in != source) continue;
+            if (param.in != source) continue;
 
             // add thename and add to the params array
             param.name = paramName;
@@ -259,9 +285,9 @@ export class administrationapiinspectorService {
         let responses = [];
         let apiEndpoint: any = this.apiEndpoints.find(e => e.route == route && e.method == method);
 
-        if(!apiEndpoint.responses) return [];
+        if (!apiEndpoint.responses) return [];
 
-        for(let ResName in apiEndpoint.responses) {
+        for (let ResName in apiEndpoint.responses) {
             let res = {...apiEndpoint.responses[ResName]};
 
             // add thename and add to the params array
@@ -277,13 +303,13 @@ export class administrationapiinspectorService {
      * @param method
      * @param type
      */
-    public getMethodRequests(route: string, method: string,type: 'any' | 'bigInt' | 'boolean' | 'number' | 'null' | 'object' |'string' | 'undefined') {
+    public getMethodRequests(route: string, method: string, type: 'any' | 'bigInt' | 'boolean' | 'number' | 'null' | 'object' | 'string' | 'undefined') {
         let requests = [];
         let apiEndpoint: any = this.apiEndpoints.find(e => e.route == route && e.method == method);
 
-        if(!apiEndpoint.requestBody) return [];
+        if (!apiEndpoint.requestBody) return [];
 
-        for(let ReqName in apiEndpoint.requestBody){
+        for (let ReqName in apiEndpoint.requestBody) {
             let request = {...apiEndpoint.requestBody[ReqName]};
 
 
