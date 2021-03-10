@@ -4,10 +4,10 @@
 </div>
 <div class="slds-theme--default slds-grid"  [system-overlay-loading-spinner]="apiinspector.loading">
     <div class="slds-size--1-of-3 slds-border--right" >
-        <div class="slds-p-around--small slds-border--bottom">
+        <div class="slds-p-around--x-small slds-border--bottom">
             <div class="slds-grid slds-grid--vertical-align-center">
-                <input class="slds-input" system-placeholder="LBL_FILTER_BY" [(ngModel)]="apiinspector.apiFilter"/>
-                <system-utility-icon class="slds-p-left--xx-small" (click)="apiinspector.apiFilterUnauthorized = !apiinspector.apiFilterUnauthorized" icon="unlock" size="x-small" [colorclass]="apiinspector.apiFilterUnauthorized ? 'slds-icon-text-warning' : 'slds-icon-text-light'"></system-utility-icon>
+                <input class="slds-input" system-placeholder="LBL_FILTER" [(ngModel)]="apiinspector.apiFilter"/>
+                <system-utility-icon class="slds-p-left--xx-small" (click)="toggleUnauthorized($event)" icon="unlock" size="x-small" [colorclass]="apiinspector.apiFilterUnauthorized ? 'slds-icon-text-warning' : 'slds-icon-text-light'"></system-utility-icon>
                 <system-utility-icon class="slds-p-left--xx-small" icon="user_role" size="x-small" colorclass="slds-icon-text-light"></system-utility-icon>
             </div>
         </div>
@@ -24,6 +24,10 @@
         </div>
     </div>
     <div class="slds-size--2-of-3" >
+        <div style="min-height: 49px;" class="slds-p-around--x-small slds-border--bottom slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
+            <span class="slds-text-heading--medium">{{apiinspector.selectedAPI?.route}} ({{apiinspector.apiMethods.length}})</span>
+            <system-checkbox [(ngModel)]="apiinspector.apiSubMethods"><system-label label="LBL_INCLUDE_SUBROUTES"></system-label></system-checkbox>
+        </div>
         <div system-to-bottom>
             <administration-api-inspector-methods *ngIf="apiinspector.apiMethods.length > 0; else noMethodsAvailable"></administration-api-inspector-methods>
             <ng-template #noMethodsAvailable>
