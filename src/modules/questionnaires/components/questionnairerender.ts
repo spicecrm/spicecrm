@@ -30,6 +30,7 @@ export class QuestionnaireRender implements OnInit, OnDestroy {
     @Input() private showQuestionnaireTitle = true;
     @Input() private showQuestionnaireTextBefore = true;
     @Input() private showQuestionnaireTextAfter = true;
+    @Input() private inModal = true;
 
     @Output() private isDirty$ = new BehaviorSubject( false );
     @Output() private isSaving$ = new BehaviorSubject( false );
@@ -46,6 +47,7 @@ export class QuestionnaireRender implements OnInit, OnDestroy {
 
     public ngOnInit() {
         this.qp.editMode = this.editMode;
+        this.qp.inModal = this.inModal;
         if ( this.questionnaireId ) this.qp.init_byQuestionnaire( this.questionnaireId );
         else if ( this.participationId ) this.qp.init_byParticipation( this.participationId );
         else if ( this.parentId && this.parentType ) this.qp.init_byParent( this.parentId, this.parentType );
