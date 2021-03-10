@@ -81,19 +81,19 @@ export class administrationapiinspectorService {
     /**
      * a filter string to search by
      */
-    public _apiFilter: string;
+    private _apiFilter: string;
 
     /**
      * filter variable for all unauthorized routes
      */
 
-    public _apiFilterUnauthorized: boolean = false;
+    private _apiFilterUnauthorized: boolean = false;
 
     /**
      * filter variable for all admin only routes
      */
 
-    public _apiFilterAdminOnly: boolean = false;
+    private _apiFilterAdminOnly: boolean = false;
 
     /**
      * the current selected API
@@ -147,6 +147,9 @@ export class administrationapiinspectorService {
     set apiFilterUnauthorized(value) {
         this._apiFilterUnauthorized = value;
 
+        // can only be unauthorized or admin - mutually exclusive
+        if(this._apiFilterUnauthorized) this._apiFilterAdminOnly = false;
+
         // rebuild the tree with the searchterm
         this.buildTree();
     }
@@ -166,6 +169,9 @@ export class administrationapiinspectorService {
      */
     set apiFilterAdminOnly(value) {
         this._apiFilterAdminOnly = value;
+
+        // can only be unauthorized or admin - mutually exclusive
+        if(this._apiFilterAdminOnly) this._apiFilterUnauthorized = false;
 
         // rebuild the tree with the searchterm
         this.buildTree();
@@ -209,18 +215,18 @@ export class administrationapiinspectorService {
         this.loading = true;
         // if applicable filter and process the tree
         for (let apiendpoint of this.apiEndpoints.filter(a => {
-            if (this._apiFilterUnauthorized && (this.apiFilterUnauthorized && a.route.toLowerCase().indexOf(this._apiFilterUnauthorized) == -1)) {
+            // check for unauthorized in the options
+            if (this._apiFilterUnauthorized  && a.options.noAuth !== true) {
                 return false;
             }
 
-            if (this._apiFilterAdminOnly && (this.apiFilterAdminOnly && a.route.toLowerCase().indexOf(this._apiFilterAdminOnly) == -1)) {
+            // check for adminonly
+            if (this._apiFilterAdminOnly && a.options.adminOnly !== true) {
                 return false;
             }
 
-            if (this._apiFilter && (this.apiFilter && a.route.toLowerCase().indexOf(this._apiFilter.toLowerCase()) == -1)) {
-                return false;
-            }
-            return true;
+            // filter by searchterm
+            return !this._apiFilter || a.route.toLowerCase().indexOf(this._apiFilter.toLowerCase()) >= 0;
         })) {
             if (!apiendpoint.route) continue;
 
