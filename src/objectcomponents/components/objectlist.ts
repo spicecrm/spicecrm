@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
@@ -9,6 +9,7 @@ import {layout} from '../../services/layout.service';
 import {modellist} from '../../services/modellist.service';
 import {Subscription} from "rxjs";
 import {ListTypeI} from "../../services/interfaces.service";
+import {modal} from "../../services/modal.service";
 
 /**
  * renders the modellist
@@ -49,6 +50,8 @@ export class ObjectList implements OnDestroy, OnInit {
                 public metadata: metadata,
                 public modellist: modellist,
                 public language: language,
+                public injector: Injector,
+                public modal: modal,
                 public layout: layout) {
     }
 
@@ -68,6 +71,8 @@ export class ObjectList implements OnDestroy, OnInit {
     private initialize() {
 
         this.loadComponentConfig();
+
+        this.chooseFields();
 
         // set the limit for the loading
         this.modellist.loadlimit = 50;
@@ -97,6 +102,7 @@ export class ObjectList implements OnDestroy, OnInit {
     private handleListTypeChange(newType: ListTypeI) {
         this.cdRef.detectChanges();
         if (newType.listcomponent != 'ObjectList') return;
+        this.chooseFields();
         this.getListData();
     }
 
@@ -111,7 +117,7 @@ export class ObjectList implements OnDestroy, OnInit {
     }
 
     /**
-     * trigger get list data on the service of autoload is not disabled and the list type is not "all"
+     * trigger get list data on the service if autoload is not disabled and the list type is not "all" or reset the list data
      * @private
      */
     private getListData() {
@@ -119,11 +125,13 @@ export class ObjectList implements OnDestroy, OnInit {
             this.modellist.getListData().subscribe(() =>
                 this.cdRef.detectChanges()
             );
+        } else {
+            this.modellist.resetListData();
         }
     }
 
     /**
-     * getter if the listconfig allows inline editing
+     * getter if the list config allows inline editing
      */
     get inlineedit() {
         return this.componentconfig.inlineedit;
@@ -153,15 +161,15 @@ export class ObjectList implements OnDestroy, OnInit {
 
     /**
      * unsubscribe from the model list subscription
+     * reset the use cache value in case other component does not use cache
      */
     public ngOnDestroy() {
         this.subscriptions.unsubscribe();
+        this.modellist.useCache = false;
     }
 
     /**
      * manages the scroll event for the infinite Scroll
-     *
-     * @param e
      */
     private onScroll() {
         this.modellist.loadMoreList();
@@ -175,5 +183,14 @@ export class ObjectList implements OnDestroy, OnInit {
      */
     protected trackbyfn(index, item) {
         return item.id;
+    }
+
+    /**
+     * opens the modal allowing the user to choose and select the display fields when no field defs are defined and no current list fields are defined
+     */
+    private chooseFields() {
+        if (this.modellist.isCustomList() && this.modellist.listfields.length == 0 && this.modellist.getFieldDefs()?.length == 0 && this.modellist.checkAccess('edit')) {
+            this.modal.openModal('ObjectListViewSettingsSetfieldsModal', true, this.injector);
+        }
     }
 }
