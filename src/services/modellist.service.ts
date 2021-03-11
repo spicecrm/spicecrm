@@ -341,7 +341,6 @@ export class modellist implements OnDestroy {
      * unsubscribe from subscriptions
      */
     public ngOnDestroy() {
-        this.setToSession();
         this.serviceSubscriptions.unsubscribe();
     }
 
@@ -523,12 +522,14 @@ export class modellist implements OnDestroy {
 
 
     /**
-     * get the defined listfields
+     * @returns true if the list with the given id is a standard list and compare with current list id if the id was not defined
      */
-    get listfields() {
-        return this._listfields;
+    public isCustomList(id?) {
+        if (!id) {
+            id = this.currentList.id;
+        }
+        return !this.standardLists.some(stdList => stdList.id == id);
     }
-
 
     /**
      * sets the defined listfields
@@ -559,6 +560,14 @@ export class modellist implements OnDestroy {
 
         // emit the change so all components are aware and can react
         this.listfield$.emit(this._listfields);
+    }
+
+
+    /**
+     * get the defined listfields
+     */
+    get listfields() {
+        return this._listfields;
     }
 
 
@@ -598,14 +607,13 @@ export class modellist implements OnDestroy {
     }
 
     /**
-     * handles the saving or retrieving of list results
+     * save the list data in the configuration service
      */
     public setToSession() {
 
         if (!this.useCache) return;
 
         this.configuration.setData('lastlist_' + this.module, {
-            listTypeId: this.currentList.id,
             listdata: this.listData,
             sortarray: this.sortArray,
             searchterm: this.searchTerm,
@@ -617,7 +625,7 @@ export class modellist implements OnDestroy {
 
     /**
      * set use cache to true to tell the set method it should cache to session on destroy
-     * load the relative data from the session
+     * load the list data from the configuration service
      */
     public loadFromSession(): boolean {
         this.useCache = true;
@@ -629,8 +637,6 @@ export class modellist implements OnDestroy {
             this.selectedAggregates = sessionData.selectedaggregates;
             this.sortArray = sessionData.sortarray;
             this.buckets = sessionData.buckets;
-
-            this.setListType(sessionData.listTypeId);
 
             return true;
         } else {
@@ -807,11 +813,12 @@ export class modellist implements OnDestroy {
 
         this.backend.deleteRequest("spiceui/core/modules/" + this.module + "/listtypes/" + id).subscribe(
             res => {
-                // set the new default listtype
-                this.setListType('all');
 
                 // remove the deleted listtype from the current list
                 this.metadata.deleteModuleListType(this.module, id);
+
+                // set the new default listtype
+                this.setListType('all');
             },
             error => {
                 this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
@@ -1059,7 +1066,7 @@ export class modellist implements OnDestroy {
         let aggregates = {};
         aggregates[this.module] = this.selectedAggregates;
 
-        this.backend.getList(this.module, this.sortArray, {
+        const params = {
             modulefilter: this.modulefilter,
             filtercontextbeanid: this.filtercontextbeanid,
             start: 0,
@@ -1070,14 +1077,16 @@ export class modellist implements OnDestroy {
             aggregates: aggregates,
             buckets: this.buckets,
             relatefilter: this.relatefilter?.active ? this.relatefilter : null
-        }).subscribe((res: any) => {
+        };
+
+        this.backend.getList(this.module, this.sortArray, params).subscribe((res: any) => {
                 // set the listdata
                 this.listData = res;
 
                 // update the timestamp for the last load
                 this.lastLoad = new moment();
 
-                // inidcate that we are no longer loading
+                // indicate that we are no longer loading
                 this.isLoading = false;
 
                 // set the aggregates
@@ -1085,6 +1094,8 @@ export class modellist implements OnDestroy {
 
                 // set the buckets
                 this.buckets = res.buckets;
+
+                this.setToSession();
 
                 // return & close the subject
                 retSub.next(true);
