@@ -1,11 +1,11 @@
 <div class="slds-grid">
     <div class="slds-p-right--medium" style="width:100%;" [ngClass]="{'slds-has-error':nameMissing}">
-        <label for="{{compId}}-name" class="slds-form-element__label" ><abbr class="slds-required" title="required">* </abbr><system-label label="LBL_NAME"></system-label></label>
-        <input id="{{compId}}-name" type="text" class="slds-input" [(ngModel)]="name" (blur)="nameBlurred()" (change)="nameChanged()">
-    </div>
-    <div class="x-slds-p-right--medium" style="width:100%;">
         <label for="{{compId}}-questiontext" class="slds-form-element__label" ><system-label label="LBL_QUESTION_TEXT"></system-label></label>
         <input id="{{compId}}-questiontext" type="text" class="slds-input" [(ngModel)]="questiontext" (blur)="questiontextBlurred()">
+    </div>
+    <div class="x-slds-p-right--medium" style="width:100%;">
+        <label for="{{compId}}-name" class="slds-form-element__label" ><abbr class="slds-required" title="required">* </abbr><system-label label="LBL_NAME"></system-label></label>
+        <input id="{{compId}}-name" type="text" class="slds-input" [(ngModel)]="name" (blur)="nameBlurred()" (change)="nameChanged()">
     </div>
     <!--div style="width:4rem">
         <label class="slds-form-element__label" ><system-label label="LBL_IMAGE"></system-label></label>

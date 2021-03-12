@@ -1,25 +1,27 @@
-<ng-container *ngIf="!questionMeta.parameter.sequenced">
-    <div *ngIf="1 || !qp.hideFinishedQuestions || !questionMeta.finished" class="slds-box questionset-render-question">
-        <div *ngIf="question.questiontext || question.image_id" class="slds-m-bottom_medium">
-            <h3 *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-text-heading_medium" [class.slds-m-bottom_xx-small]="question.image_id">{{question.questiontext}}</h3>
-            <media-file-image *ngIf="question.image_id" [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="qp.imageWidthQuestion"></media-file-image>
-        </div>
-        <textarea *ngIf="qp.editMode === 'preview'" class="slds-scrollable--y slds-textarea" style="display:block"></textarea>
-        <textarea class="slds-scrollable--y slds-textarea" style="display:block"
-              *ngIf="qp.editMode !== 'preview'"
-              [(ngModel)]="qp.answers[question.id].optionlessAnswerValue"
-              (change)="onTextChange()"
-              [attr.disabled]="questionMeta.tempReadonly || qp.editMode === 'off' ? '':null"></textarea>
-    </div>
-</ng-container>
+<ng-container *ngIf="qp.isLoaded">
 
-<ng-container *ngIf="!qp.hideFinishedQuestions || !questionMeta.finished">
-    <table *ngIf="questionMeta.parameter.sequenced" class="sequenced slds-text-align--right slds-table--bordered" style="border-top:none">
-        <tr>
-            <td *ngFor="let item of forLoopArray(lengthLongestSequence); let j=index" class="slds-p-right--large slds-p-vertical--small slds-text-align--right slds-text-heading--small">
+    <ng-container *ngIf="!qp.hideFinishedQuestions || !questionMeta.finished">
+
+        <div *ngIf="questionMeta.parameter && !questionMeta.parameter.sequenced" class="slds-box question-render-question">
+            <div *ngIf="question.questiontext || question.image_id" class="slds-m-bottom_x-small">
+                <h3 *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="x-slds-text-heading_medium" [class.slds-m-bottom_xx-small]="question.image_id">{{question.questiontext}}</h3>
+                <div class="slds-m-bottom_small"><media-file-image *ngIf="question.image_id" [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="qp.imageWidthQuestion"></media-file-image></div>
+            </div>
+            <div>
+                <textarea *ngIf="qp.editMode === 'preview'" class="slds-scrollable_y slds-textarea"></textarea>
+                <textarea [system-trim-input] class="slds-scrollable_y slds-textarea"
+                      *ngIf="qp.editMode !== 'preview'"
+                      [(ngModel)]="qp.answers[question.id].optionlessAnswerValue"
+                      (change)="onTextChange()"
+                      [attr.disabled]="questionMeta.tempReadonly || qp.editMode === 'off' ? '':null"></textarea>
+            </div>
+        </div>
+
+        <div *ngIf="questionMeta && questionMeta.parameter && questionMeta.parameter.sequenced" class="sequenced slds-box question-render-question slds-text-align_right slds-grid slds-grid_vertical-align-center" style="padding:0.5rem 0.5rem 0.5rem 1rem" [ngStyle]="binaryTableStyle()">
+            <div *ngFor="let item of forLoopArray(lengthLongestSequence); let j=index" class="slds-p-right_large x-lds-p-vertical_small slds-text-heading_small">
                 {{questionNameSplitted[j]}}
-            </td>
-            <td class="slds-text-align--right slds-p-vertical--small" width="100%">
+            </div>
+            <div class="slds-text-align_right x-slds-p-vertical_small slds-col--bump-left">
                 <input [system-trim-input] type="text" *ngIf="qp.editMode === 'preview'" size="5" class="slds-input">
                 <input [system-trim-input] type="text" *ngIf="qp.editMode !== 'preview'"
                        [ngModel]="qp.answers[question.id].optionlessAnswerValue"
@@ -27,8 +29,26 @@
                        [attr.disabled]="questionMeta.tempReadonly || qp.editMode === 'off' ? '':null"
                        size="5" style="width:auto"
                        class="slds-input">
-            </td>
-        </tr>
-    </table>
-</ng-container>
+            </div>
+        </div>
 
+        <!--table *ngIf="questionMeta.parameter.sequenced" class="sequenced slds-text-align_right slds-table_bordered" style="border-top:none">
+            <tr>
+                <td *ngFor="let item of forLoopArray(lengthLongestSequence); let j=index" class="slds-p-right_large slds-p-vertical_small slds-text-align_right slds-text-heading_small">
+                    {{questionNameSplitted[j]}}
+                </td>
+                <td class="slds-text-align_right slds-p-vertical_small" width="100%">
+                    <input [system-trim-input] type="text" *ngIf="qp.editMode === 'preview'" size="5" class="slds-input">
+                    <input [system-trim-input] type="text" *ngIf="qp.editMode !== 'preview'"
+                           [ngModel]="qp.answers[question.id].optionlessAnswerValue"
+                           (change)="onTextChange()"
+                           [attr.disabled]="questionMeta.tempReadonly || qp.editMode === 'off' ? '':null"
+                           size="5" style="width:auto"
+                           class="slds-input">
+                </td>
+            </tr>
+        </table-->
+
+    </ng-container>
+
+</ng-container>

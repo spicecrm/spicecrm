@@ -59,7 +59,10 @@ export class QuestionTypeISTOptionsPipe {
 @Component( {
     selector: 'question-render-ist',
     templateUrl: './src/modules/questionnaires/templates/questionrenderist.html',
-    styles: [ 'div.questionset-render-question:last-child { margin-bottom: 0 !important; }' ]
+    styles: [
+        'div.question-render-question:last-child { margin-bottom: 0; }',
+        'div.question-render-question { border-radius:0; }'
+    ]
 } )
 export class QuestionRenderIST extends QuestionRenderBasic implements OnInit {
 
@@ -78,12 +81,21 @@ export class QuestionRenderIST extends QuestionRenderBasic implements OnInit {
 
     public ngOnInit(): void {
         super.ngOnInit();
+        if ( !this.question.questiontext ) this.question.questiontext = this.question.name; // provisorisch, solange gefahr besteht, dass "questiontext" leer ist
     }
 
     private onChange( answerIndex: number, $event: any ): boolean {
         $event.stopPropagation();
         let optionId = this.qp.questionoptionsArray[this.questionId][answerIndex].id;
         return this.qp.setOptionWithValue( optionId, $event.target.value );
+    }
+
+    /**
+     * Should the question rendered together with the following question?
+     */
+    public get isToMergeWithFollowingQuestion() {
+        if ( this.followingQuestion && this.followingQuestion.questiontype === 'ist' ) return true;
+        return false;
     }
 
 }

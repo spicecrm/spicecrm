@@ -1,48 +1,40 @@
-<!--div class="slds-form--inline">
-    <h2 class="slds-text-heading_medium slds-p-around--small">
-        <system-label label="LBL_API_INSPECTOR"></system-label>
-    </h2>
-    <div class="slds-grid">
-        <div>
-            <div>
-                <div class="slds-radio">
-                    <input type="radio" id="AdminOnly" value="AdminOnly" name="AdminOnly" />
-                    <label class="slds-radio__label" for="AdminOnly">Admin</label>
-                </div>
-                <div class="slds-radio">
-                    <input type="radio" id="NoAuth" value="NoAuth" name="NoAuth" />
-                    <label class="slds-radio__label" for="NoAuth">Authentication</label>
-                </div>
-            </div>
-        </div>
-        <input class="slds-input">
-    </div>
-</div-->
-<div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-p-around--small">
-    <h2 class="slds-text-heading_medium"><system-label label="LBL_API_INSPECTOR"></system-label></h2>
-    <div class="slds-grid slds-grid--vertical-align-center">
-        <input class="slds-input" system-placeholder="LBL_FILTER_BY" [(ngModel)]="apiinspector.apiFilter" [ngModelOptions]="{updateOn: 'blur'}"/>
-    </div>
+<div class="slds-grid slds-grid_vertical-align-center slds-p-around--small slds-border--bottom">
+    <system-icon icon="apex_plugin"></system-icon>
+    <h2 class="slds-text-heading_medium"><system-label label="LBL_API_INSPECTOR"></system-label> ({{apiinspector.apiEndpoints.length}})</h2>
 </div>
 <div class="slds-theme--default slds-grid"  [system-overlay-loading-spinner]="apiinspector.loading">
-    <div class="slds-size--1-of-3 slds-border--right" system-to-bottom>
-
-        <system-tree *ngIf="!apiinspector.loading; else treeLoadingSpinner" [sourceList]="apiinspector.apiTree" (selectedItemChange)="selectNode($event)"></system-tree>
-        <ng-template #treeLoadingSpinner>
-            <div class="slds-height_full slds-align--absolute-center">
-                <div class="slds-grid slds-grid--vertical">
-                    <system-spinner></system-spinner>
-                    <system-label class="slds-p-vertical--small" label="LBL_LOADING_ENDPOINTS"></system-label>
+    <div class="slds-size--1-of-3 slds-border--right" >
+        <div class="slds-p-around--x-small slds-border--bottom">
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <input class="slds-input" system-placeholder="LBL_FILTER" [(ngModel)]="apiinspector.apiFilter"/>
+                <system-utility-icon class="slds-p-left--xx-small" (click)="toggleUnauthorized($event)" icon="unlock" size="x-small" [colorclass]="apiinspector.apiFilterUnauthorized ? 'slds-icon-text-warning' : 'slds-icon-text-light'"></system-utility-icon>
+                <system-utility-icon class="slds-p-left--xx-small" (click)="toggleAdminOnly($event)" icon="user_role" size="x-small" [colorclass]="apiinspector.apiFilterAdminOnly ? 'slds-icon-text-warning' : 'slds-icon-text-light'" ></system-utility-icon>
+            </div>
+        </div>
+        <div system-to-bottom>
+            <system-tree *ngIf="!apiinspector.loading; else treeLoadingSpinner" [sourceList]="apiinspector.apiTree" (selectedItemChange)="selectNode($event)"></system-tree>
+            <ng-template #treeLoadingSpinner>
+                <div class="slds-height_full slds-align--absolute-center">
+                    <div class="slds-grid slds-grid--vertical">
+                        <system-spinner></system-spinner>
+                        <system-label class="slds-p-vertical--small" label="LBL_LOADING_ENDPOINTS"></system-label>
+                    </div>
                 </div>
-            </div>
-        </ng-template>
+            </ng-template>
+        </div>
     </div>
-    <div class="slds-size--2-of-3" system-to-bottom>
-        <administration-api-inspector-methods *ngIf="apiinspector.apiMethods.length > 0; else noMethodsAvailable"></administration-api-inspector-methods>
-        <ng-template #noMethodsAvailable>
-            <div class="slds-height_full slds-align--absolute-center">
-                <system-illustration-no-data><system-label label="LBL_NO_METHODS_FOR_ENDPOINT"></system-label></system-illustration-no-data>
-            </div>
-        </ng-template>
+    <div class="slds-size--2-of-3" >
+        <div style="min-height: 49px;" class="slds-p-around--x-small slds-border--bottom slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
+            <span class="slds-text-heading--medium">{{apiinspector.selectedAPI?.route}} ({{apiinspector.apiMethods.length}})</span>
+            <system-checkbox [(ngModel)]="apiinspector.apiSubMethods"><system-label label="LBL_INCLUDE_SUBROUTES"></system-label></system-checkbox>
+        </div>
+        <div system-to-bottom>
+            <administration-api-inspector-methods *ngIf="apiinspector.apiMethods.length > 0; else noMethodsAvailable"></administration-api-inspector-methods>
+            <ng-template #noMethodsAvailable>
+                <div class="slds-height_full slds-align--absolute-center">
+                    <system-illustration-no-data><system-label label="LBL_NO_METHODS_FOR_ENDPOINT"></system-label></system-illustration-no-data>
+                </div>
+            </ng-template>
+        </div>
     </div>
 </div>

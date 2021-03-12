@@ -60,14 +60,40 @@ export class administrationapiinspectorService {
     public apiTree: any[] = [];
 
     /**
+     * the selected API
+     *
+     * @private
+     */
+    public selectedApi: any;
+
+    /**
      * holds the methods for the selected API node in the tree
      */
     public apiMethods: any[] = [];
 
     /**
+     * indicates that also all submehtods of a given route are displayed
+     *
+     * @private
+     */
+    private _apiSubMethods: boolean = true;
+
+    /**
      * a filter string to search by
      */
-    public _apiFilter: string;
+    private _apiFilter: string;
+
+    /**
+     * filter variable for all unauthorized routes
+     */
+
+    private _apiFilterUnauthorized: boolean = false;
+
+    /**
+     * filter variable for all admin only routes
+     */
+
+    private _apiFilterAdminOnly: boolean = false;
 
     /**
      * the current selected API
@@ -101,8 +127,51 @@ export class administrationapiinspectorService {
     set apiFilter(value) {
         this._apiFilter = value;
 
-        // reset the methods
-        this.apiMethods = [];
+        // rebuild the tree with the searchterm
+        this.buildTree();
+    }
+
+    /**
+     * getter for the current api filter
+     */
+    get apiFilterUnauthorized() {
+        return this._apiFilterUnauthorized;
+    }
+
+    /**
+     * setter for the current api filter
+     * also resets the selection and also the complete tree
+     *
+     * @param value
+     */
+    set apiFilterUnauthorized(value) {
+        this._apiFilterUnauthorized = value;
+
+        // can only be unauthorized or admin - mutually exclusive
+        if(this._apiFilterUnauthorized) this._apiFilterAdminOnly = false;
+
+        // rebuild the tree with the searchterm
+        this.buildTree();
+    }
+
+    /**
+     * getter for the current api filter
+     */
+    get apiFilterAdminOnly() {
+        return this._apiFilterAdminOnly;
+    }
+
+    /**
+     * setter for the current api filter
+     * also resets the selection and also the complete tree
+     *
+     * @param value
+     */
+    set apiFilterAdminOnly(value) {
+        this._apiFilterAdminOnly = value;
+
+        // can only be unauthorized or admin - mutually exclusive
+        if(this._apiFilterAdminOnly) this._apiFilterUnauthorized = false;
 
         // rebuild the tree with the searchterm
         this.buildTree();
@@ -138,12 +207,27 @@ export class administrationapiinspectorService {
      * @private
      */
     private buildTree() {
+        // reset the methods
+        this.apiMethods = [];
         // reset the api tree
         this.apiTree = [];
         // indicate that we are loading
         this.loading = true;
         // if applicable filter and process the tree
-        for (let apiendpoint of this.apiEndpoints.filter(a => !this._apiFilter || (this.apiFilter && a.route.toLowerCase().indexOf(this._apiFilter.toLowerCase()) >= 0))) {
+        for (let apiendpoint of this.apiEndpoints.filter(a => {
+            // check for unauthorized in the options
+            if (this._apiFilterUnauthorized  && a.options.noAuth !== true) {
+                return false;
+            }
+
+            // check for adminonly
+            if (this._apiFilterAdminOnly && a.options.adminOnly !== true) {
+                return false;
+            }
+
+            // filter by searchterm
+            return !this._apiFilter || a.route.toLowerCase().indexOf(this._apiFilter.toLowerCase()) >= 0;
+        })) {
             if (!apiendpoint.route) continue;
 
             if (!this.apiTree.find(a => a.route == apiendpoint.route)) {
@@ -212,13 +296,41 @@ export class administrationapiinspectorService {
     }
 
     /**
-     * select the active API .. fired when the secltion in the tree changes
+     * select the active API .. fired when the selection changes
      *
      * @param selectedId
      * @private
      */
     public selectAPI(selectedId: string) {
-        this.apiMethods = this.apiEndpoints.filter(e => e.route == this.apiTree.find(t => t.id == selectedId).route);
+        this.selectedAPI = this.apiTree.find(t => t.id == selectedId);
+        this.filterMethods();
+    }
+
+    /**
+     * getter for the sleect submethods
+     */
+    get apiSubMethods() {
+        return this._apiSubMethods;
+    }
+
+    /**
+     * setter for the selectSubmethods that also refilters the methods
+     *
+     * @param value
+     */
+    set apiSubMethods(value) {
+        this._apiSubMethods = value;
+        this.filterMethods();
+    }
+
+    /**
+     * filters the methods for the selected Endpoint
+     * respects if all submethods shoudl be set or not
+     *
+     * @private
+     */
+    private filterMethods() {
+        this.apiMethods = this.apiEndpoints.filter(e => this._apiSubMethods ? e.route.indexOf(this.selectedAPI.route) == 0 : e.route == this.selectedAPI.route);
     }
 
     /**
@@ -227,17 +339,17 @@ export class administrationapiinspectorService {
      * @param route
      * @param method
      */
-    public getMethodParameters(route: string, method: string, source: 'path'|'query'|'body') {
-        let parameters =[];
+    public getMethodParameters(route: string, method: string, source: 'path' | 'query' | 'body') {
+        let parameters = [];
         let apiEndpoint: any = this.apiEndpoints.find(e => e.route == route && e.method == method);
 
-        if(!apiEndpoint.parameters) return [];
+        if (!apiEndpoint.parameters) return [];
 
-        for(let paramName in apiEndpoint.parameters){
+        for (let paramName in apiEndpoint.parameters) {
             let param = {...apiEndpoint.parameters[paramName]};
 
             // only if the in matches
-            if(param.in != source) continue;
+            if (param.in != source) continue;
 
             // add thename and add to the params array
             param.name = paramName;
@@ -246,6 +358,81 @@ export class administrationapiinspectorService {
 
         // return a sorted array
         return parameters.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    /**
+     * returns the response for a route
+     * @param route
+     * @param method
+     */
+    public getMethodResponses(route: string, method: string) {
+        let responses = [];
+        let apiEndpoint: any = this.apiEndpoints.find(e => e.route == route && e.method == method);
+
+        if (!apiEndpoint.responses) return [];
+
+        for (let ResName in apiEndpoint.responses) {
+            let res = {...apiEndpoint.responses[ResName]};
+
+            // add thename and add to the params array
+            res.name = ResName;
+            responses.push(res);
+        }
+        return responses.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    /**
+     * returns the body requests for a route
+     * @param route
+     * @param method
+     * @param type
+     */
+    public getMethodRequests(route: string, method: string, type: 'any' | 'bigInt' | 'boolean' | 'number' | 'null' | 'object' | 'string' | 'undefined') {
+        let requests = [];
+        let apiEndpoint: any = this.apiEndpoints.find(e => e.route == route && e.method == method);
+
+        if (!apiEndpoint.requestBody) return [];
+
+        for (let ReqName in apiEndpoint.requestBody) {
+            let request = {...apiEndpoint.requestBody[ReqName]};
+
+
+        }
+        return requests.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+
+
+    /**
+     * sets a fixed with for the method badge and a color for the type of method
+     *
+     * @param method
+     * @private
+     */
+    public getMethodStyle(method) {
+
+        let color = 'inherit';
+
+        switch (method) {
+            case 'get':
+                color = '#05628a';
+                break;
+            case 'post':
+                color = '#f38303';
+                break;
+            case 'put':
+                color = '#41b658';
+                break;
+            case 'delete':
+                color = '#d83a00';
+                break;
+        }
+
+        return {
+            width: '100px',
+            color: '#ffffff',
+            background: color
+        };
     }
 
 }
