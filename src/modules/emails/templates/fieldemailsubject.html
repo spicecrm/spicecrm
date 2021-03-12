@@ -1,10 +1,10 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
     <div class="slds-grid slds-grid--vertical-align-center">
-        <div [system-title]="model.data.type == 'out' ? 'LBL_OUTBOUND' : model.data.status == 'unread' ? 'LBL_UNREAD' : 'LBL_READ'" class="slds-m-right--x-small">
-            <system-utility-icon [icon]="model.data.type == 'out' ? 'send' : model.data.status != 'unread' ? 'email_open' : 'email'" size="x-small"></system-utility-icon>
+        <div [system-title]="statusLabel" class="slds-m-right--x-small">
+            <system-utility-icon [icon]="statusIcon" size="x-small"></system-utility-icon>
         </div>
-        <div [title]="value" [ngStyle]="{'text-decoration': model.data.status == 'closed' ? 'line-through' : 'initial', 'font-weight': model.data.status == 'unread' ? 'bold' : 'initial'}" class="slds-truncate">
+        <div [title]="value" [ngStyle]="{'text-decoration': model.data.openness == 'user_closed' || model.data.openness == 'system_closed' ? 'line-through' : 'initial', 'font-weight': model.data.status == 'unread' ? 'bold' : 'initial'}" class="slds-truncate">
             {{value}}
         </div>
     </div>
