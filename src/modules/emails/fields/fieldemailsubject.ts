@@ -39,4 +39,42 @@ export class fieldEmailSubject extends fieldGeneric {
                 public sanitized: DomSanitizer) {
         super(model, view, language, metadata, router);
     }
+
+    /**
+     * @return the email status icon
+     */
+    get statusIcon() {
+        switch (this.model.data.status) {
+            case 'opened':
+            case 'read':
+                return 'email_open';
+            case 'bounced':
+            case 'deferred':
+            case 'send_error':
+                return 'error';
+            case 'sent':
+                return 'send';
+            default:
+                return 'email';
+        }
+    }
+
+    /**
+     * @return the email status label
+     */
+    get statusLabel() {
+        switch (this.model.data.status) {
+            case 'opened':
+            case 'read':
+                return 'LBL_OPEN';
+            case 'bounced':
+            case 'deferred':
+            case 'send_error':
+                return 'LBL_ERROR';
+            case 'sent':
+                return 'LBL_OUTBOUND';
+            default:
+                return 'LBL_UNREAD';
+        }
+    }
 }
