@@ -28,6 +28,8 @@ export class fieldEmailStatus extends fieldGeneric {
             case 'deferred':
             case 'send_error':
                 return 'error';
+            case 'sent':
+                return 'send';
             default:
                 return 'email';
         }
