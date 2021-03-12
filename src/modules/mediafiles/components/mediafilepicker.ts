@@ -65,6 +65,9 @@ export class MediaFilePicker extends ObjectModalModuleLookup {
      * adds a new model
      */
     private upload(): void {
+        if (!this.metadata.checkModuleAcl('edit')) {
+            return;
+        }
         this.model.module = 'MediaFiles';
         this.model.id = undefined;
         this.model.initialize();
