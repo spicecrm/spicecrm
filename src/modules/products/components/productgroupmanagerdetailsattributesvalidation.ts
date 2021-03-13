@@ -23,7 +23,10 @@ export class ProductGroupManagerDetailsAttributesValidation implements OnInit, O
                 private model: model,
                 private metadata: metadata,
                 private relatedmodels: relatedmodels) {
+
+        // set the module
         this.model.module = 'ProductAttributeValueValidations';
+
     }
 
     get canEdit() {

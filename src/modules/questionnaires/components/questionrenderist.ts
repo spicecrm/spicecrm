@@ -2,8 +2,8 @@
  * @module ModuleQuestionnaires
  */
 import { Component, Pipe, OnInit } from '@angular/core';
-import { QuestionsetRenderBasic } from './questionsetrenderbasic';
 import { questionnaireParticipationService } from '../services/questionnaireparticipation.service';
+import { QuestionRenderBasic } from './questionrenderbasic';
 
 @Pipe({name: 'questiontypeisttextspipe'})
 export class QuestionTypeISTTextPipe {
@@ -57,20 +57,23 @@ export class QuestionTypeISTOptionsPipe {
 }
 
 @Component( {
-    selector: 'questionset-render-ist',
-    templateUrl: './src/modules/questionnaires/templates/questionsetrenderist.html',
-    styles: [ 'div.questionset-render-question:last-child { margin-bottom: 0 !important; }' ]
+    selector: 'question-render-ist',
+    templateUrl: './src/modules/questionnaires/templates/questionrenderist.html',
+    styles: [
+        'div.question-render-question:last-child { margin-bottom: 0; }',
+        'div.question-render-question { border-radius:0; }'
+    ]
 } )
-export class QuestionsetRenderIST extends QuestionsetRenderBasic implements OnInit {
+export class QuestionRenderIST extends QuestionRenderBasic implements OnInit {
 
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {
         super( questionnaireParticipation );
     }
 
-    private getAnswerValue( questionId: string, answerIndex: number ): string {
+    private getAnswerValue( answerIndex: number ): string {
         try {
-            let optionId = this.qp.questionoptionsArray[questionId][answerIndex].id;
-            return this.qp.answers[questionId].options[optionId];
+            let optionId = this.qp.questionoptionsArray[this.questionId][answerIndex].id;
+            return this.qp.answers[this.questionId].options[optionId];
         } catch(e) {
             return '';
         }
@@ -78,12 +81,21 @@ export class QuestionsetRenderIST extends QuestionsetRenderBasic implements OnIn
 
     public ngOnInit(): void {
         super.ngOnInit();
+        if ( !this.question.questiontext ) this.question.questiontext = this.question.name; // provisorisch, solange gefahr besteht, dass "questiontext" leer ist
     }
 
-    private onChange( questionId: string, answerIndex: number, $event: any ): boolean {
+    private onChange( answerIndex: number, $event: any ): boolean {
         $event.stopPropagation();
-        let optionId = this.qp.questionoptionsArray[questionId][answerIndex].id;
+        let optionId = this.qp.questionoptionsArray[this.questionId][answerIndex].id;
         return this.qp.setOptionWithValue( optionId, $event.target.value );
+    }
+
+    /**
+     * Should the question rendered together with the following question?
+     */
+    public get isToMergeWithFollowingQuestion() {
+        if ( this.followingQuestion && this.followingQuestion.questiontype === 'ist' ) return true;
+        return false;
     }
 
 }

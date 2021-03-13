@@ -17,10 +17,8 @@ import {QuestionnaireRender} from '../components/questionnairerender';
 export class QuestionnaireEditor implements OnInit {
 
     private questionsets: any[] = [];
-    private questionsetsBackup: any[] = [];
 
     private isLoadingQuestionsets = true;
-    private changeOrderMode = false;
 
     private categorypool = {
         loaded: false,
@@ -116,45 +114,25 @@ export class QuestionnaireEditor implements OnInit {
         this.sortQuestionsets();
     }
 
-
-    private changeOrderStart(): void {
-
-        this.questionsetsBackup = this.questionsets.slice(0); // clone the questionsets array (for canceling)
-        this.changeOrderMode = true;
-
-        // Changing the order should be also cancelable by esc key:
-        const this2 = this; // we need 'this' in the anonymous function 'handler'
-        window.addEventListener('keyup', function handler(event) {
-            if ( this2.changeOrderMode && event.keyCode === 27 ) {
-                event.stopImmediatePropagation();
-                this2.changeOrderCancel();
-                this.removeEventListener ('click', handler );
-            }
-        });
-    }
-
-    private changeOrderCancel(): void {
-        this.questionsets = this.questionsetsBackup;
-        this.changeOrderMode = false;
-    }
-    private changeOrderSave(): void {
-        for ( let i in this.questionsets ) {
-            this.questionsets[i].position = i;
-            this.backend.postRequest('module/QuestionSets/'+this.questionsets[i].id, null, '{"position":'+i+'}');
+    private drop(event) {
+        let previousItem = this.questionsets.splice( event.previousIndex, 1 );
+        this.questionsets.splice( event.currentIndex, 0, previousItem[0] );
+        let updateArray = [];
+        let i = 0;
+        for ( let item of this.questionsets ) {
+            item.position = i;
+            updateArray.push({ id: item.id, position: i });
+            i++;
         }
-        this.changeOrderMode = false;
+        this.backend.postRequest( 'module/QuestionSets', {}, updateArray );
     }
-    private questionsetUp( i ): void {
-        if ( i === 0 ) return;
-        let tmp = this.questionsets[i-1];
-        this.questionsets[i-1] = this.questionsets[i];
-        this.questionsets[i] = tmp;
+
+    private dragStarted(e) {
+        e.source.element.nativeElement.classList.add('slds-is-selected');
     }
-    private questionsetDown( i ): void {
-        if ( i > this.questionsets.length-1 ) return;
-        let tmp = this.questionsets[i+1];
-        this.questionsets[i+1] = this.questionsets[i];
-        this.questionsets[i] = tmp;
+
+    private dragEnded(e) {
+        e.source.element.nativeElement.classList.remove('slds-is-selected');
     }
 
 }

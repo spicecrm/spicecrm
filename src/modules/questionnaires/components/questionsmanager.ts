@@ -1,10 +1,10 @@
 /**
  * @module ModuleQuestionnaires
  */
-import { Component, ContentChild, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {model} from '../../../services/model.service';
-import {language} from '../../../services/language.service';
-import {backend} from '../../../services/backend.service';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { model } from '../../../services/model.service';
+import { language } from '../../../services/language.service';
+import { backend } from '../../../services/backend.service';
 import { modal } from '../../../services/modal.service';
 import { QuestionsManagerAddModal } from './questionsmanageraddmodal';
 
@@ -14,21 +14,20 @@ import { QuestionsManagerAddModal } from './questionsmanageraddmodal';
 })
 export class QuestionsManager implements OnInit {
 
-    @Input() public noTitle = false;
     @Input() public showQuestionsetButtons = false;
     @Input() public categorypool: any;
     @Output() public questionsetAction: EventEmitter<string> = new EventEmitter();
-    @Input('disabled') public componentDisabled = false;
 
     private questions: any[] = [];
-    private questionsBackup: any[] = [];
     private currentQuestionId = '';
-    private changeOrderMode = false;
     private isLoading = true;
+    private questiontypes = ['single','multi','binary','rating','nps','ist','text'];
+    private questiontypes_dom: any;
 
     constructor( private language: language, private model: model, private backend: backend, private modalservice: modal ) { }
 
     public ngOnInit(): void {
+        this.questiontypes_dom = this.language.getDisplayOptions('questionstypes_dom');
         this.backend.getRequest('module/QuestionSets/'+this.model.id+'/related/questions', {limit: 999} ).subscribe( (response: any) => {
             for ( let id in response ) {
                 this.questions.push( this.model.utils.backendModel2spice('Questions', response[id] ));
@@ -44,9 +43,10 @@ export class QuestionsManager implements OnInit {
         });
     }
 
-    private addQuestion(): void {
+    private addQuestion( questiontype, event ): void {
+        event.preventDefault();
         this.currentQuestionId = '';
-        this.openForm();
+        this.openForm( questiontype );
     }
 
     private editQuestion(questionId): void {
@@ -54,11 +54,12 @@ export class QuestionsManager implements OnInit {
         this.openForm();
     }
 
-    private openForm(): void {
+    private openForm( questiontype: string = null ): void {
         this.modalservice.openModal('QuestionsManagerAddModal' ).subscribe( form => {
             form.instance.questionset = this.model;
             form.instance.questionid = this.currentQuestionId;
             form.instance.categorypool = this.categorypool;
+            form.instance.questiontype = questiontype;
             form.instance.response.subscribe( response => {
                 this.handleFormResponse( response );
             });
@@ -104,44 +105,25 @@ export class QuestionsManager implements OnInit {
         }
     }
 
-    private changeOrderStart(): void {
-
-        this.questionsBackup = this.questions.slice(0); // clone the questions array (for canceling)
-        this.changeOrderMode = true;
-
-        // Changing the order should be also cancelable by esc key:
-        const this2 = this; // we need 'this' in the anonymous function 'handler'
-        window.addEventListener('keyup', function handler(event) {
-            if ( this2.changeOrderMode && event.keyCode === 27 ) {
-                event.stopImmediatePropagation();
-                this2.changeOrderCancel();
-                this.removeEventListener ('click', handler );
-            }
-        });
-    }
-
-    private changeOrderCancel(): void {
-        this.questions = this.questionsBackup;
-        this.changeOrderMode = false;
-    }
-    private changeOrderSave(): void {
-        for ( let i in this.questions ) {
-            this.questions[i].position = i;
-            this.backend.postRequest('module/Questions/'+this.questions[i].id, null, '{"position":'+i+'}');
+    private drop(event) {
+        let previousItem = this.questions.splice( event.previousIndex, 1 );
+        this.questions.splice( event.currentIndex, 0, previousItem[0] );
+        let updateArray = [];
+        let i = 0;
+        for ( let item of this.questions ) {
+            item.position = i;
+            updateArray.push({ id: item.id, position: i });
+            i++;
         }
-        this.changeOrderMode = false;
+        this.backend.postRequest( 'module/Questions', {}, updateArray );
     }
-    private questionUp( i ): void {
-        if ( i === 0 ) return;
-        let tmp = this.questions[i-1];
-        this.questions[i-1] = this.questions[i];
-        this.questions[i] = tmp;
+
+    private dragStarted(e) {
+        e.source.element.nativeElement.classList.add('slds-is-selected');
     }
-    private questionDown( i ): void {
-        if ( i > this.questions.length-1 ) return;
-        let tmp = this.questions[i+1];
-        this.questions[i+1] = this.questions[i];
-        this.questions[i] = tmp;
+
+    private dragEnded(e) {
+        e.source.element.nativeElement.classList.remove('slds-is-selected');
     }
 
 }

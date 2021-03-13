@@ -1,7 +1,7 @@
 /**
  * @module ModuleQuestionnaires
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { questionnaireParticipationService } from '../services/questionnaireparticipation.service';
 import { QuestionsetRenderBasic } from './questionsetrenderbasic';
 
@@ -11,7 +11,9 @@ import { QuestionsetRenderBasic } from './questionsetrenderbasic';
     styles: [
         "table { border-top: none; }",
         "th { position: sticky; top: 0; border-top: 1px solid #dddbda; border-bottom: 1px solid #dddbda; z-index: 10;}",
-        "tr:first-child td { border-top: none; }"
+        "tr:first-child td { border-top: none; }",
+        'td { padding: 0.5rem 0.75rem; }',
+        'td.question-hover:hover { background-color: #f3f2f2; }'
     ]
 })
 export class QuestionsetRenderRating extends QuestionsetRenderBasic implements OnInit {
@@ -28,7 +30,7 @@ export class QuestionsetRenderRating extends QuestionsetRenderBasic implements O
 
         // Is there any rating value with an alternative text?
         for ( let entry of this.questiontypeparameter.rating.entries ) {
-            if( entry.text !== '' ) {
+            if ( entry.text !== '' ) {
                 this.ratingValuesHaveAlsoText = true;
                 break;
             }
@@ -41,7 +43,7 @@ export class QuestionsetRenderRating extends QuestionsetRenderBasic implements O
     }
 
     private isChecked( questionId: string, optionId: string ): boolean {
-        return this.qp.answers[questionId].options[optionId];
+        return this.qp.answers && this.qp.answers[questionId] && this.qp.answers[questionId].options && this.qp.answers[questionId].options[optionId];
     }
 
 }
