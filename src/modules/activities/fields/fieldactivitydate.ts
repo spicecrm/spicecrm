@@ -75,9 +75,12 @@ export class fieldActivityDate extends fieldGeneric {
         this.cachedValue = {raw: this.value};
         const date = new moment(this.value);
 
-        if (date.isSame(new moment(), 'day')) {
+        const isToday = moment(date.format('YYYY M D')).isSame(new moment().format('YYYY M D'));
+        const isThisYear = date.isSame(new moment(), 'year');
+
+        if (isToday) {
             this.cachedValue.formatted = date.format(this.userpreferences.getTimeFormat());
-        } else if (date.isSame(new moment(), 'year')) {
+        } else if (isThisYear) {
             this.cachedValue.formatted = date.format('MMM D');
         } else {
             this.cachedValue.formatted = date.format(this.userpreferences.getDateFormat());

@@ -4,6 +4,8 @@
 import {Injectable} from '@angular/core';
 import {Subject, Observable} from 'rxjs';
 import {backend} from "../../../services/backend.service";
+import {model} from "../../../services/model.service";
+import {modelutilities} from "../../../services/modelutilities.service";
 
 /**
  * Groupware Service is used to communicate between SpiceCRM and a 3rd party platform.
@@ -49,6 +51,8 @@ export abstract class GroupwareService {
 
     constructor(
         public backend: backend,
+        public model: model,
+        public modelutilities: modelutilities
     ) {
     }
 
