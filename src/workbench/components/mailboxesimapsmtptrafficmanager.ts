@@ -50,6 +50,8 @@ export class MailboxesImapSmtpTrafficManager {
                 smtp_verify_peer: "",
                 smtp_verify_peer_name: "",
                 reply_to: "",
+                shared_mailbox_auth_user: "",
+                shared_mailbox_user: "",
             });
         }
     }
