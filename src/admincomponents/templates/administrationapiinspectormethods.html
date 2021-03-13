@@ -4,8 +4,8 @@
             <div class="slds-size--1-of-1 slds-text-align--center">{{apimethod.method}}</div>
         </div>
         <div class="slds-truncate slds-text-heading--small slds-grow">{{apimethod.route}}</div>
-        <system-utility-icon class="slds-p-left--xx-small" *ngIf="apimethod.options.noAuth" icon="unlock" size="x-small" colorclass="slds-icon-text-success"></system-utility-icon>
-        <system-utility-icon class="slds-p-left--xx-small" *ngIf="apimethod.options.adminOnly" icon="user_role" size="x-small" colorclass="slds-icon-text-warning"></system-utility-icon>
+        <system-utility-icon class="slds-p-left--xx-small" icon="unlock" size="x-small" [colorclass]="apimethod.options.noAuth ? 'slds-icon-text-error' : 'slds-icon-text-light'"></system-utility-icon>
+        <system-utility-icon class="slds-p-left--xx-small" icon="user_role" size="x-small" [colorclass]="apimethod.options.adminOnly ? 'slds-icon-text-error' : 'slds-icon-text-light'"></system-utility-icon>
         <system-utility-icon class="slds-p-left--xx-small slds-text-link--reset" (click)="test(apimethod, $event)" icon="play" size="x-small"></system-utility-icon>
     </div>
     <div class="slds-p-around--small">
