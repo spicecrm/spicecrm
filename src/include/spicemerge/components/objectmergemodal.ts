@@ -58,7 +58,7 @@ export class ObjectMergeModal implements OnInit {
 
 
         // set the modellist module
-        this.modellist._module = this.model.module;
+        this.modellist.module = this.model.module;
         this.modellist.setListType('all', false);
         this.modellist.getListData();
 
