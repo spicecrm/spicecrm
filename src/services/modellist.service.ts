@@ -721,7 +721,7 @@ export class modellist implements OnDestroy {
      */
     public aggregatesEnabled() {
         try {
-            return this.searchAggregates ? true : false;
+            return this.searchAggregates && !_.isEmpty(this.searchAggregates) ? true : false;
         } catch (e) {
             return false;
         }
