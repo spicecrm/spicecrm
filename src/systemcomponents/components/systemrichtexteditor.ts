@@ -54,6 +54,12 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
      */
     @Input() private innerheight: string;
 
+    /**
+     * enable/disable using the media file module
+     * @private
+     */
+    @Input() private useMedialFile: boolean = false;
+
     // for the value accessor
     private onChange: (value: string) => void;
     private onTouched: () => void;
@@ -64,8 +70,6 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     private keydownListener: any;
     private modalOpen: boolean = false;
     public isExpanded: boolean = false;
-    public contract: EventEmitter<string> = new EventEmitter<string>();
-    public editorModalSaveSubscriber: any;
 
     private block: string = 'default';
     private fontName: string = 'Tilium Web';
@@ -95,12 +99,12 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
     /**
      * returns the inner height .. and if not set sets it to a default of 250
      */
-    get innerHeight(){
+    get innerHeight() {
         return this.innerheight ? this.innerheight : '250';
     }
 
-    private getRichTextStyle(container) {
-        return this.isExpanded ? {height: `calc(100vh - ${container.offsetTop}px)`, resize: "none"} : {height: this.innerHeight + 'px'};
+    get richTextStyle() {
+        return this.isExpanded ? {height: '100vh', resize: 'none', position: 'fixed'} : {height: (+this.innerHeight + 50) + 'px'};
     }
 
     public ngOnInit() {
@@ -155,11 +159,14 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
             case 'openSourceEditor':
                 this.openSourceEditor();
                 break;
-            case 'openEditorModal':
-                this.openEditorModal();
+            case 'toggleFullscreen':
+                this.isExpanded = !this.isExpanded;
                 break;
             case 'openMediaFilePicker':
                 this.openMediaFilePicker();
+                break;
+            case 'insertImage':
+                this.insertImage();
                 break;
             default:
                 if (this.isActive && command != '') {
@@ -229,38 +236,24 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
         this.triggerBlocks(els);
     }
 
-    /** Workflow:
-     * - Toggle the expand variable value.
-     * - If isExpanded is True:
-     *      -- A new instance of this component will be added to the footer through the "SystemRichTextEditorModal" component.
-     *      -- The html value will be passed to the footer instance of this component.
-     *      -- A subscriber subscribe to the emitter (contract) from the new footer instance of this component to get back the html value and set isExpanded to false and destroy the instance in the footer.
-     * - If isExpanded is False:
-     *      -- the emitter (contract) from the new footer instance of this component will emit the html value to set it back to this component.
+    /**
+     * handle inserting image from media file if active or from url directly
      */
-    private openEditorModal() {
-        this.isExpanded = !this.isExpanded;
-        if (this.isExpanded) {
-            this.modal.openModal('SystemRichTextEditorModal').subscribe(componentRef => {
-                this.editorModalSaveSubscriber = componentRef.instance.save$
-                    .subscribe(content => this.save$.emit(content));
-                componentRef.instance.content = this._html;
-                componentRef.instance.contract
-                    .pipe(take(1))
-                    .subscribe(html => {
-                        this.isExpanded = false;
-                        this.focusEditor();
-                        this.writeValue(html);
-                        this.onChange(html);
-                        if (this.editorModalSaveSubscriber) this.editorModalSaveSubscriber.unsubscribe();
-                    });
+    public insertImage() {
+        this.editorService.saveSelection();
+        this.modal.input(this.language.getLabel('LBL_IMAGE_LINK',this.language.getLabel('LBL_IMAGE')))
+            .subscribe(url => {
+                if (!url) return;
+                this.focusEditor();
+                this.editorService.restoreSelection();
+                this.editorService.insertImage(url, this.htmlEditor.element.nativeElement);
+                this.onContentChange(this.htmlEditor.element.nativeElement.innerHTML);
             });
-        } else {
-            this.contract.emit(this._html);
-        }
     }
 
     private openMediaFilePicker() {
+
+        this.editorService.saveSelection();
         this.modalOpen = true;
         this.modal.openModal('MediaFilePicker').subscribe(componentRef => {
             componentRef.instance.answer.subscribe(image => {
@@ -271,7 +264,8 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                             if (uploadimage) {
                                 this.focusEditor();
                                 this.editorService.restoreSelection();
-                                this.editorService.insertImage('https://cdn.spicecrm.io/' + uploadimage);
+                                this.editorService.insertImage('https://cdn.spicecrm.io/' + uploadimage, this.htmlEditor.element.nativeElement);
+                                this.onContentChange(this.htmlEditor.element.nativeElement.innerHTML);
                             }
                             this.modalOpen = false;
                         });
@@ -280,7 +274,8 @@ export class SystemRichTextEditor implements OnInit, OnDestroy, ControlValueAcce
                     if (image.id) {
                         this.focusEditor();
                         this.editorService.restoreSelection();
-                        this.editorService.insertImage('https://cdn.spicecrm.io/' + image.id);
+                        this.editorService.insertImage('https://cdn.spicecrm.io/' + image.id, this.htmlEditor.element.nativeElement);
+                        this.onContentChange(this.htmlEditor.element.nativeElement.innerHTML);
                     }
                     this.modalOpen = false;
                 }
