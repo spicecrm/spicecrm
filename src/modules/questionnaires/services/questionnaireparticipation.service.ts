@@ -58,6 +58,7 @@ export class questionnaireParticipationService {
     public questions = {};
 
     public answers: any = {};
+    public answersBackup: any = {};
 
     public isCompleted = false;
 
@@ -114,6 +115,8 @@ export class questionnaireParticipationService {
         this.isSaving$.next( value );
     }
     public isSaving$ = new BehaviorSubject( false );
+
+    public answersChanged$ = new EventEmitter();
 
     constructor( private backend: backend, private toast: toast, private language: language, private helper: helper, private broadcast: broadcast ) { }
 
@@ -267,6 +270,8 @@ export class questionnaireParticipationService {
 
         if ( this.editMode === 'questionoption' ) this.saveSingleAnswerToBackend( question.id, backupForNetworkError );
         else this.isDirty = true;
+
+        this.answersChanged$.emit();
 
         return true;
 
@@ -482,6 +487,7 @@ export class questionnaireParticipationService {
             // if ( this.editMode === 'preview' || this.editMode === 'off' ) return;
             this.loadQuestionnaire().subscribe( () => {
                 this.participationId = response.participationId;
+                this.answersBackup = _.clone( response.answers ); // A clone of the answer data to keep the possibility to reset data.
                 this.insertLoadedAnswers( response.answers );
                 this.isCompleted = !!response.isCompleted;
                 this.isLoadedParticipation = true;
@@ -628,6 +634,23 @@ export class questionnaireParticipationService {
                 finishedSaving$.emit( false );
             });
         return finishedSaving$;
+    }
+
+    /**
+     * Get all the data of answers - to do something else with it.
+     * An alternative to the method "save".
+     */
+    public getData() {
+        return this.answers;
+    }
+
+    /**
+     * Resets the data to its original state.
+     */
+    public reset() {
+        this.answers = {};
+        this.initAnswers();
+        this.insertLoadedAnswers( this.answersBackup );
     }
 
 }
