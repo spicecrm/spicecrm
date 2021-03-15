@@ -43,6 +43,18 @@ export class AdministrationAPIInspector {
        this.apiinspector.apiFilterUnauthorized = !this.apiinspector.apiFilterUnauthorized;
     }
 
+    /**
+     * toggels the admin only filter
+     *
+     * @param e
+     * @private
+     */
+    private toggleAdminOnly(e: MouseEvent) {
+       e.preventDefault();
+       e.stopPropagation();
+       this.apiinspector.apiFilterAdminOnly = !this.apiinspector.apiFilterAdminOnly;
+    }
+
 
     /**
      * opens a modal to details more details

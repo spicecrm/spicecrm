@@ -66,7 +66,8 @@ export class SpiceInstallerSetBackEnd implements OnInit {
                             proxy: this.spiceinstaller.systemproxy,
                             developerMode: this.spiceinstaller.systemdevmode,
                             loginProgressBar: this.spiceinstaller.systemloginprogressbar,
-                            allowForgotPass: this.spiceinstaller.systemallowforgotpass
+                            allowForgotPass: this.spiceinstaller.systemallowforgotpass,
+                            frontendUrl: this.spiceinstaller.frontendUrl
                         };
                         this.spiceinstaller.selectedStep.completed = true;
                         this.spiceinstaller.steps[0] = this.spiceinstaller.selectedStep;
@@ -79,7 +80,8 @@ export class SpiceInstallerSetBackEnd implements OnInit {
                             proxy: this.spiceinstaller.systemproxy,
                             developerMode: this.spiceinstaller.systemdevmode,
                             loginProgressBar: this.spiceinstaller.systemloginprogressbar,
-                            allowForgotPass: this.spiceinstaller.systemallowforgotpass
+                            allowForgotPass: this.spiceinstaller.systemallowforgotpass,
+                            frontendUrl: this.spiceinstaller.frontendUrl
                         };
                         this.saveConnection(body);
                     }
@@ -98,7 +100,8 @@ export class SpiceInstallerSetBackEnd implements OnInit {
                 proxy: false,
                 developerMode: this.spiceinstaller.systemdevmode,
                 loginProgressBar: this.spiceinstaller.systemloginprogressbar,
-                allowForgotPass: this.spiceinstaller.systemallowforgotpass
+                allowForgotPass: this.spiceinstaller.systemallowforgotpass,
+                frontendUrl: this.spiceinstaller.frontendUrl
             }
             this.saveConnection(body);
         }
