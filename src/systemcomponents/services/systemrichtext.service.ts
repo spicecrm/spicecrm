@@ -43,7 +43,7 @@ export class systemrichtextservice {
     public selectedText: string;
     public uploadUrl: string;
 
-    constructor(@Inject(DOCUMENT) private _document: any) {
+    constructor(@Inject(DOCUMENT) private _document: Document) {
     }
 
     /**
@@ -175,11 +175,117 @@ export class systemrichtextservice {
     /**
      * Insert image with Url
      * @param imageUrl
+     * @param editorContainer
      */
-    public insertImage(imageUrl: string) {
-        this._document.execCommand('insertImage', false, imageUrl);
+    public insertImage(imageUrl: string, editorContainer: HTMLElement) {
+
+        const newImg: HTMLImageElement = document.createElement('IMG') as HTMLImageElement;
+        newImg.src = imageUrl;
+        this.insertElement(newImg, editorContainer);
     }
 
+    /**
+     * handle inserting a new element as a child of the selection or append to the content if there is no selection
+     * @param element
+     * @param editorContainer
+     */
+    public insertElement(element: HTMLElement, editorContainer: HTMLElement) {
+
+        if (!this.savedSelection) {
+
+            this.insertElementForNode(element, editorContainer);
+
+        } else {
+
+            this.resetRangeBoundaries(editorContainer);
+
+            let currentTarget = this.getRangeCurrentTarget(this.savedSelection.startContainer, editorContainer);
+            const addBefore = this.savedSelection.collapsed && this.savedSelection.startOffset == 0;
+            const currentTargetIsEditor = editorContainer.isEqualNode(currentTarget);
+            let beforeElement;
+
+            if (currentTargetIsEditor) {
+                beforeElement = !addBefore ? null : editorContainer.firstChild as HTMLElement;
+                this.insertElementForNode(element, editorContainer, beforeElement);
+            } else {
+                beforeElement = !addBefore ? currentTarget.nextSibling : currentTarget;
+                this.insertElementForNode(element, currentTarget.parentElement, beforeElement);
+            }
+
+            this.clearSelection();
+        }
+    }
+
+    /**
+     * clear the document/window user selection
+     * @private
+     */
+    private clearSelection() {
+
+        this.savedSelection = undefined;
+
+        if (window.getSelection) {
+            window.getSelection().removeAllRanges();
+        } else if (document.getSelection) {
+            document.getSelection().removeAllRanges();
+        }
+    }
+
+    /**
+     * reset the range start container boundaries if selection is out of the editor range
+     * @param editorContainer
+     * @protected
+     */
+    protected resetRangeBoundaries(editorContainer) {
+        if (!this.savedSelection) return;
+        if (!editorContainer.contains(this.savedSelection.startContainer)) {
+            this.savedSelection.setStart(editorContainer, 0);
+        }
+        if (!editorContainer.contains(this.savedSelection.endContainer)) {
+            this.savedSelection.setEnd(editorContainer, 0);
+        }
+    }
+
+    /**
+     * insert an element for the given parent element
+     * @param element
+     * @param target
+     * @param beforeElement
+     * @protected
+     */
+    protected insertElementForNode(element: HTMLElement, target: HTMLElement, beforeElement?: HTMLElement) {
+
+        if (this.savedSelection) {
+            this.savedSelection.deleteContents();
+        }
+
+        if (!beforeElement) {
+            target.appendChild(element);
+        } else {
+            target.insertBefore(element, beforeElement);
+        }
+    }
+
+    /**
+     * get the current target for a range by returning the parent node of the start container on the editor first level
+     * @param startContainer
+     * @param editorContainer
+     * @protected
+     */
+    protected getRangeCurrentTarget(startContainer: Node, editorContainer: HTMLElement): HTMLElement {
+
+        let currentTarget = startContainer as HTMLElement;
+
+        if (!editorContainer.isEqualNode(currentTarget)) {
+
+            while (currentTarget.nodeType !== 1) {
+                currentTarget = currentTarget.parentElement;
+            }
+            return currentTarget;
+        } else {
+            return editorContainer;
+        }
+    }
 
     public createCustomClass(customClass: CustomClass) {
         const tagName = customClass.tag ? customClass.tag : 'span';
