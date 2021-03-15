@@ -1,7 +1,7 @@
 /**
  * @module ModuleQuestionnaires
  */
-import { Component, Input, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, OnDestroy, OnChanges } from '@angular/core';
 import { questionnaireParticipationService } from '../services/questionnaireparticipation.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 
@@ -15,7 +15,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
     ],
     providers: [questionnaireParticipationService]
 })
-export class QuestionnaireRender implements OnInit, OnDestroy {
+export class QuestionnaireRender implements OnInit, OnDestroy, OnChanges {
 
     /**
      * Either questionnaireId, parentId/parentType or participationId has to be set.
@@ -41,16 +41,19 @@ export class QuestionnaireRender implements OnInit, OnDestroy {
 
     private subscriptions: Subscription = new Subscription();
 
+    @Output() private answersChanged$ = new EventEmitter();
+
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {
         this.qp = questionnaireParticipation;
+        this.qp.answersChanged$.subscribe( () => this.answersChanged$.emit() );
     }
 
     public ngOnInit() {
         this.qp.editMode = this.editMode;
         this.qp.inModal = this.inModal;
-        if ( this.questionnaireId ) this.qp.init_byQuestionnaire( this.questionnaireId );
-        else if ( this.participationId ) this.qp.init_byParticipation( this.participationId );
+        if ( this.participationId ) this.qp.init_byParticipation( this.participationId );
         else if ( this.parentId && this.parentType ) this.qp.init_byParent( this.parentId, this.parentType );
+        else if ( this.questionnaireId ) this.qp.init_byQuestionnaire( this.questionnaireId );
         this.questionnaireParticipation$.next( this.qp );
         this.subscriptions.add(
             this.qp.isLoaded$.subscribe( isLoaded => this.isLoaded$.next( isLoaded ))
@@ -76,6 +79,10 @@ export class QuestionnaireRender implements OnInit, OnDestroy {
      */
     public ngOnDestroy() {
         this.subscriptions.unsubscribe();
+    }
+
+    public ngOnChanges() {
+        this.qp.editMode = this.editMode;
     }
 
 }
