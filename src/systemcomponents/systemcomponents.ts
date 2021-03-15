@@ -107,7 +107,6 @@ import /*embed*/ {SystemProgressRing} from "./components/systemprogressring";
 import /*embed*/ {SystemProgressBar} from "./components/systemprogressbar";
 import /*embed*/ {SystemPrompt} from "./components/systemprompt";
 import /*embed*/ {SystemRichTextEditor} from "./components/systemrichtexteditor";
-import /*embed*/ {SystemRichTextEditorModal} from "./components/systemrichtexteditormodal";
 import /*embed*/ {SystemRichTextSourceModal} from "./components/systemrichtextsourcemodal";
 import /*embed*/ {SystemRoleSelector} from "./components/systemroleselector";
 import /*embed*/ {SystemSection} from "./components/systemsection";
@@ -271,7 +270,6 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemProgressBar,
         SystemPrompt,
         SystemRichTextEditor,
-        SystemRichTextEditorModal,
         SystemRichTextSourceModal,
         SystemRoleSelector,
         SystemSection,
