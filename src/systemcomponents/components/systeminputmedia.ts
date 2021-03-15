@@ -102,6 +102,7 @@ export class SystemInputMedia implements OnDestroy {
      */
     @Input('mimetype') public set _mimetype( value: string ) {
         this.mediaMetaData.mimetype = value;
+        console.log('mimetype',value);
         this.mediaMetaData.fileformat = this.getFileformatFromMimetype( this.mediaMetaData.mimetype ) as string;
     }
 
@@ -420,7 +421,9 @@ export class SystemInputMedia implements OnDestroy {
      * @param event
      */
     private imageLoaded(event): void {
-        // load first!
+
+        let image = this.imageElement.nativeElement;
+
         this.libloader.loadLib('cropper').subscribe(
             (next) => {
                 if (this.cropper) this.cropper.destroy();
@@ -433,8 +436,6 @@ export class SystemInputMedia implements OnDestroy {
                 this.cropper.crop();
             }
         );
-
-        let image = this.imageElement.nativeElement;
 
         image.addEventListener('ready', () => {
             if (this.cropper) {
@@ -462,8 +463,6 @@ export class SystemInputMedia implements OnDestroy {
             if (this.isCropped) this.calcTargetSize();
         });
 
-
-
     }
 
     /**
@@ -487,9 +486,10 @@ export class SystemInputMedia implements OnDestroy {
      * @param fileOrMimetype A file or a string with the mime type.
      */
     private getFileformatFromMimetype(fileOrMimetype: File | string): string {
-        const mimetype = typeof fileOrMimetype === 'object' ? fileOrMimetype.type : fileOrMimetype;
-        if (!/^image\/\w+/.test(mimetype)) return '';
-        return mimetype.split('/').pop();
+        if ( fileOrMimetype === null ) return '';
+        const mimetype = ( typeof fileOrMimetype === 'object' ? fileOrMimetype.type : fileOrMimetype );
+        if ( typeof mimetype === 'string' && /^image\/\w+/.test(mimetype)) return mimetype.split('/').pop();
+        return '';
     }
 
     /**
@@ -571,7 +571,7 @@ export class SystemInputMedia implements OnDestroy {
     }
 
     /**
-     * The parent component want the image (rotated, mirrored, cropped, resized, ...)
+     * The parent component wants the image (rotated, mirrored, cropped, resized, ...)
      */
     public getImage(): string {
 
