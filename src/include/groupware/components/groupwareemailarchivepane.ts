@@ -4,6 +4,7 @@
 import {Component, OnInit} from '@angular/core';
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {metadata} from "../../../services/metadata.service";
+import {view} from "../../../services/view.service";
 
 /**
  * A groupware container for the tabs and their content.
@@ -11,7 +12,8 @@ import {metadata} from "../../../services/metadata.service";
  */
 @Component({
     selector: 'groupware-email-archive-pane',
-    templateUrl: './src/include/groupware/templates/groupwareemailarchivepane.html'
+    templateUrl: './src/include/groupware/templates/groupwareemailarchivepane.html',
+    providers: [view]
 })
 export class GroupwareEmailArchivePane implements OnInit{
     /**
@@ -26,6 +28,7 @@ export class GroupwareEmailArchivePane implements OnInit{
 
     constructor(
         private metadata: metadata,
+        private view: view,
         private groupware: GroupwareService,
     ) {
         this.groupware.getEmailFromSpice();
@@ -36,7 +39,7 @@ export class GroupwareEmailArchivePane implements OnInit{
      */
     public ngOnInit() {
         // check that we have a config if no load it
-        if(!this.componentconfig){
+        if(!this.componentconfig) {
             this.componentconfig = this.metadata.getComponentConfig('GroupwareEmailArchivePane');
         }
 
@@ -49,6 +52,9 @@ export class GroupwareEmailArchivePane implements OnInit{
                 this.componentconfig.push(item.componentconfig);
             }
         }
+
+        this.view.isEditable = true;
+        this.view.setEditMode();
     }
 
     /**
