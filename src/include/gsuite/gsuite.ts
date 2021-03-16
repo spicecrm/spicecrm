@@ -62,6 +62,7 @@ import {telephony} from "../../services/telephony.service";
 import {socket} from "../../services/socket.service";
 import {SystemDynamicRouteInterceptor} from "../../systemcomponents/components/systemdynamicrouteinterceptor";
 
+import {model} from "../../services/model.service";
 import {ModuleGroupware} from "../../include/groupware/groupware";
 import {GroupwareService} from '../../include/groupware/services/groupware.service';
 
@@ -100,6 +101,7 @@ import /*embed*/ {GSuiteLoginPane} from "./components/gsuiteloginpane";
     ],
     bootstrap: [GSuitePane],
     providers: [
+        model,
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         {provide: GroupwareService, useClass: GSuiteGroupware},
         GSuiteBrokerService,
