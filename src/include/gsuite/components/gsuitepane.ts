@@ -8,6 +8,7 @@ import {broadcast} from "../../../services/broadcast.service";
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {GSuiteBrokerService} from "../services/gsuitebroker.service";
 import {GSuiteGroupware} from "../services/gsuitegroupware.service";
+import {model} from "../../../services/model.service";
 
 /**
  * Main container for the SpiceCRM GSuite add-in. This gets rendered by the loader.
@@ -29,6 +30,7 @@ export class GSuitePane implements OnInit {
                 private gSuiteBrokerService: GSuiteBrokerService,
                 private router: Router,
                 private broadcast: broadcast,
+                private model: model,
                 public session: session) {
     }
 
@@ -53,6 +55,8 @@ export class GSuitePane implements OnInit {
      * call to handle navigation
      */
     public ngOnInit() {
+        this.model.module = 'Emails';
+        this.model.initialize();
         this.handleNavigation();
     }
 }
