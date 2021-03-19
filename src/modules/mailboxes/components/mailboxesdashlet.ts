@@ -72,7 +72,7 @@ export class MailboxesDashlet implements OnInit, OnDestroy {
     */
     private getMailboxes(refresh?) {
         this.isLoading = true;
-        this.backend.getRequest('modules/Mailboxes/dashlet').subscribe((mailboxes: any[]) => {
+        this.backend.getRequest('module/Mailboxes/dashlet').subscribe((mailboxes: any[]) => {
             if (!mailboxes || mailboxes.length == 0) {
                 return this.isLoading = false;
             }
@@ -135,7 +135,7 @@ export class MailboxesDashlet implements OnInit, OnDestroy {
     private loadMore() {
         if (this.canLoadMore) {
             this.isLoading = true;
-            this.backend.getRequest('modules/Mailboxes/dashlet').subscribe((mailboxes: any[]) => {
+            this.backend.getRequest('module/Mailboxes/dashlet').subscribe((mailboxes: any[]) => {
                 this.mailboxes = this.mailboxes.concat(mailboxes);
                 if (mailboxes.length < this.loadLimit) {
                     this.canLoadMore = false;
