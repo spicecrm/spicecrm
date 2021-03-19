@@ -96,6 +96,8 @@ export class libloader {
             return of({script: name, loaded: false, status: "Unknown"});
         } else if (this.isLibLoaded(name)) {
             return of({script: name, loaded: true, status: "Already Loaded"});
+        } else if (this.isLibLoading(name)) {
+            return this.loadedLibs$;
         } else {
             this.loadedLibs.push({name: name, status: 'loading'});
             let sub = new Subject<object>();
