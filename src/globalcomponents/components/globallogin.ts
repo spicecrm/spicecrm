@@ -142,6 +142,9 @@ export class GlobalLogin {
         // clear the current messageid if one is set
         if (this.messageId) this.toast.clearToast(this.messageId);
 
+        // clear all toasts
+        this.toast.clearAll();
+
         if (token || (this.username && this.password)) {
             if(token) {
                 this.loginService.authData.userName = null;
@@ -156,7 +159,8 @@ export class GlobalLogin {
             }
             this.loginService.login().subscribe(
                 success => {
-                    // do nothing .. be happy
+                    // clear all toasts
+                    this.toast.clearAll();
                 },
                 error => {
                     switch (error.errorCode) {
