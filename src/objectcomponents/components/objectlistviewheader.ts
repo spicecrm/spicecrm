@@ -56,6 +56,14 @@ export class ObjectListViewHeader {
     }
 
     /**
+     * clears the searchterm
+     * @private
+     */
+    private clearSearchTerm() {
+        this.searchTerm = '';
+    }
+
+    /**
      * reload the model list on 1 second timeout
      * @private
      */
