@@ -112,7 +112,7 @@ export class dictionarymanager {
      * load the domains
      */
     private loadDictionaryDefinitions() {
-        this.backend.getRequest('system/dictionary/definitions').subscribe(res => {
+        this.backend.getRequest('dictionary/definitions').subscribe(res => {
 
             this.domaindefinitions = res.domaindefinitions;
             this.domainfields = res.domainfields;
@@ -223,7 +223,7 @@ export class dictionarymanager {
      */
     public save() {
         let changes = this.determineChangedRecords();
-        this.backend.postRequest('system/dictionary/definitions', {}, changes);
+        this.backend.postRequest('dictionary/definitions', {}, changes);
     }
 
     /**
