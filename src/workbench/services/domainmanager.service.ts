@@ -71,7 +71,7 @@ export class domainmanager {
      * load the domains
      */
     private loadDomains() {
-        this.backend.getRequest('system/dictionary/domains').subscribe(res => {
+        this.backend.getRequest('dictionary/domains').subscribe(res => {
             this.domaindefinitions = res.domaindefinitions;
             this.domainfields = res.domainfields;
             this.domainfieldvalidations = res.domainfieldvalidations;
@@ -137,7 +137,7 @@ export class domainmanager {
             changes.languagecustomtranslations = this.languagecustomtranslations;
         }
 
-        this.backend.postRequest('system/dictionary/domains', {}, changes).subscribe(res => {
+        this.backend.postRequest('dictionary/domains', {}, changes).subscribe(res => {
 
         });
 
@@ -169,7 +169,7 @@ export class domainmanager {
     }
 
     public generateENUMSFromModules() {
-        this.backend.getRequest('system/dictionary/domains/appliststrings').subscribe(apl => {
+        this.backend.getRequest('dictionary/domains/appliststrings').subscribe(apl => {
             for (let dtable in this.metadata.fieldDefs) {
                 let table = this.metadata.fieldDefs[dtable];
                 for (let field in table) {
