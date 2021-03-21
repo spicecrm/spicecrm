@@ -6,7 +6,6 @@ import {Router} from "@angular/router";
 import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 import {broadcast} from "../../../services/broadcast.service";
 import {Subscription} from "rxjs";
-import {model} from "../../../services/model.service";
 
 /**
  * Outlook add-in detail pane showing a list of beans that use the email addresses found in the email.
@@ -14,8 +13,7 @@ import {model} from "../../../services/model.service";
  */
 @Component({
     selector: 'groupware-detail-pane',
-    templateUrl: './src/include/groupware/templates/groupwaredetailpane.html',
-    providers: [model]
+    templateUrl: './src/include/groupware/templates/groupwaredetailpane.html'
 })
 export class GroupwareDetailPane implements OnInit, OnDestroy {
 
@@ -30,7 +28,6 @@ export class GroupwareDetailPane implements OnInit, OnDestroy {
         private groupware: GroupwareService,
         private router: Router,
         private broadcast: broadcast,
-        private model: model,
         private cdref: ChangeDetectorRef
     ) {
     }
@@ -39,8 +36,6 @@ export class GroupwareDetailPane implements OnInit, OnDestroy {
      * triggers the loader and if one record is found opens that one
      */
     public ngOnInit(): void {
-        this.model.module = 'Emails';
-        this.model.initialize();
         this.loadRecords();
 
         this.subscriptions.add(

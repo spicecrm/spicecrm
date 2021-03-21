@@ -64,8 +64,9 @@ import /*embed*/ {QuestionRenderText} from './components/questionrendertext';
 import /*embed*/ {QuestionRenderNPS} from './components/questionrendernps';
 import /*embed*/ {QuestionRenderBinarySingleMulti} from './components/questionrenderbinarysinglemulti';
 import /*embed*/ {QuestionsManagerEditRatingGroup} from './components/questionsmanagereditratinggroup';
+import /*embed*/ {fieldQuestionnaire} from './fields/fieldquestionnaire';
 
-@NgModule({
+@NgModule( {
     imports: [
         CommonModule,
         FormsModule,
@@ -74,7 +75,7 @@ import /*embed*/ {QuestionsManagerEditRatingGroup} from './components/questionsm
         ObjectComponents,
         SystemComponents,
         ModuleMediaFiles,
-        DirectivesModule,DragDropModule
+        DirectivesModule, DragDropModule
     ],
     declarations: [
         QuestionsManager,
@@ -127,7 +128,8 @@ import /*embed*/ {QuestionsManagerEditRatingGroup} from './components/questionsm
         QuestionRenderNPS,
         QuestionRenderIST,
         QuestionRenderBinarySingleMulti,
-        QuestionsManagerEditRatingGroup
+        QuestionsManagerEditRatingGroup,
+        fieldQuestionnaire
     ]
 })
 export class ModuleQuestionnaires {}

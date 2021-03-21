@@ -16,7 +16,7 @@ export class view {
     /**
      * an event emitter that fires when the mode changes
      */
-    public mode$: BehaviorSubject<string>;
+    public mode$: BehaviorSubject<'view'|'edit'>;
 
     /**
      * defines if the view can be set to edit mode or not
@@ -63,7 +63,7 @@ export class view {
     public linkedToModel: boolean = false;
 
     constructor(@Optional() private model: model, private layout: layout) {
-        this.mode$ = new BehaviorSubject<string>(this.mode);
+        this.mode$ = new BehaviorSubject<'view'|'edit'>(this.mode);
 
         if (this.model) {
             this.model.mode$.subscribe(mode => {

@@ -83,7 +83,7 @@ export class OutlookGroupware extends GroupwareService {
                 let data = {
                     beans: this.archiveto,
                     email: email,
-                    bean: this.modelutilities.spiceModel2backend('Emails', this.model.data)
+                    bean: this.model.utils.spiceModel2backend('Emails', this.model.data)
                 };
 
                 this.backend.postRequest('module/Emails/groupware/saveOutlookEmailWithBeans', {}, data).subscribe(

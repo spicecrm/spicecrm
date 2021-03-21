@@ -7,6 +7,7 @@ import {OutlookConfiguration} from '../services/outlookconfiguration.service';
 import {GroupwareService} from "../../../include/groupware/services/groupware.service";
 import {session} from "../../../services/session.service";
 import {broadcast} from "../../../services/broadcast.service";
+import {model} from "../../../services/model.service";
 
 declare var Office: any;
 
@@ -26,6 +27,7 @@ export class OutlookPane implements OnInit {
         private groupware: GroupwareService,
         private router: Router,
         private session: session,
+        private model: model,
         private broadcast: broadcast
     ) {
         // ToDo: implement pinned pane that relaod when item is changed
@@ -46,6 +48,8 @@ export class OutlookPane implements OnInit {
      * Sets the ID of the currently selected email.
      */
     public ngOnInit(): void {
+        this.model.module = 'Emails';
+        this.model.initialize();
         this.groupware.messageId = Office.context.mailbox.item.itemId;
     }
 

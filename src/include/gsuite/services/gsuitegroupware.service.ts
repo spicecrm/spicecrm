@@ -5,11 +5,10 @@ import {Injectable, OnDestroy} from "@angular/core";
 import {GroupwareService} from "../../../include/groupware/services/groupware.service";
 import {Observable, Subject, Subscription} from "rxjs";
 import {backend} from "../../../services/backend.service";
-import {model} from "../../../services/model.service";
-import {modelutilities} from "../../../services/modelutilities.service";
 import {GSuiteBrokerService} from "./gsuitebroker.service";
 import {GSuiteAttachmentI, GSuiteMessageI} from "../interfaces/gsuite.interfaces";
 import {Router} from "@angular/router";
+import {model} from "../../../services/model.service";
 
 declare var _: any;
 
@@ -34,12 +33,11 @@ export class GSuiteGroupware extends GroupwareService implements OnDestroy {
     private subscription: Subscription = new Subscription();
 
     constructor(public backend: backend,
-                public model: model,
-                public modelutilities: modelutilities,
                 private gSuiteBroker: GSuiteBrokerService,
+                public model: model,
                 private router: Router) {
 
-        super(backend, model, modelutilities);
+        super(backend, model);
         this.subscribeToGSuiteChanges();
     }
 
