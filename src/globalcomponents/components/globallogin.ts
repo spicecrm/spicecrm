@@ -83,6 +83,13 @@ export class GlobalLogin {
      */
     private renewpassword: boolean = false;
 
+    /**
+     * inidcates that we are in the login process
+     *
+     * @private
+     */
+    private loggingIn: boolean = false;
+
     constructor(private loginService: loginService,
                 private http: HttpClient,
                 private configuration: configurationService,
@@ -145,6 +152,9 @@ export class GlobalLogin {
         // clear all toasts
         this.toast.clearAll();
 
+        // set the loggingin in state
+        this.loggingIn = true;
+
         if (token || (this.username && this.password)) {
             if(token) {
                 this.loginService.authData.userName = null;
@@ -161,6 +171,9 @@ export class GlobalLogin {
                 success => {
                     // clear all toasts
                     this.toast.clearAll();
+
+                    // reset the logging in state
+                    this.loggingIn = false;
                 },
                 error => {
                     switch (error.errorCode) {
@@ -173,6 +186,9 @@ export class GlobalLogin {
                             this.renewpassword = true;
                             break;
                     }
+
+                    // reset the logging in state
+                    this.loggingIn = true;
                 }
             );
         }
