@@ -17,6 +17,7 @@ import {BucketsI, geoSearch, listDataI, ListTypeI, relateFilter} from "./interfa
  * @ignore
  */
 declare var moment: any;
+declare var _: any;
 
 @Injectable()
 export class modellist implements OnDestroy {
@@ -600,7 +601,7 @@ export class modellist implements OnDestroy {
      */
     public aggregatesEnabled() {
         try {
-            return !!this.searchAggregates;
+            return this.searchAggregates && !_.isEmpty(this.searchAggregates) ? true : false;
         } catch (e) {
             return false;
         }

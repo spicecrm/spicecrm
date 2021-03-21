@@ -100,7 +100,8 @@ export class ReportsDesignerCondition {
      */
     private getOperators() {
         let retArray = [];
-        let operators = this.reporterConfig.operatorTypes[this.reporterConfig.operatorAssignments[this.whereCondition.type]];
+        const operatorType = this.reporterConfig.operatorAssignments[this.whereCondition.type] || 'varchar';
+        let operators = this.reporterConfig.operatorTypes[operatorType];
         for (let oprator of operators) {
             retArray.push({
                 value: oprator,

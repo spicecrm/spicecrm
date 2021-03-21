@@ -42,10 +42,10 @@
                             <system-button-icon icon="email"></system-button-icon>
                         </button>
                         <button class="slds-button slds-button--icon slds-button_icon-border-filled" [disabled]="!model.checkAccess('edit')" *ngIf="!isUserClosed" (click)="completeMail()" [title]="language.getLabel('LBL_MARK_USER_CLOSED')">
-                            <system-button-icon icon="lock"></system-button-icon>
+                            <system-button-icon icon="unlock"></system-button-icon>
                         </button>
                         <button class="slds-button slds-button--icon slds-button_icon-border-filled" [disabled]="!model.checkAccess('edit')" *ngIf="isUserClosed" (click)="reopen()" [title]="language.getLabel('LBL_REOPEN')">
-                            <system-button-icon icon="unlock"></system-button-icon>
+                            <system-button-icon icon="lock"></system-button-icon>
                         </button>
                     </div>
                 </div>
