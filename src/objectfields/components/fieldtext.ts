@@ -40,7 +40,6 @@ export class fieldText extends fieldGeneric implements OnInit {
     public ngOnInit() {
         if (window.webkitSpeechRecognition) {
             this.speechRecognition = this.fieldconfig.speechRecognition; // boolean
-            this.speechRecognition = true; // for debugging
         }
     }
 
