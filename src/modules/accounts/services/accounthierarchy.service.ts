@@ -27,7 +27,7 @@ export class accountHierarchy {
             addfields.push(field.field);
         }
 
-        this.backend.getRequest("AccountsHierachy/" + parent_id + "/" + JSON.stringify(addfields)).subscribe(members => {
+        this.backend.getRequest(`module/Accounts/${parent_id}/hierarchy/${JSON.stringify(addfields)}`).subscribe(members => {
             for (let member of members) {
                 this.members.push({
                     parent_id: parent_id,
