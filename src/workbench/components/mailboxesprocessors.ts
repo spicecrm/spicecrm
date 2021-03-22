@@ -68,7 +68,7 @@ export class MailboxesProcessors {
     private getProcessors(): Observable<any> {
         let responseSubject = new Subject<Array<any>>();
 
-        this.backend.getRequest("mailboxes/getmailboxprocessors")
+        this.backend.getRequest("module/Mailboxes/processors")
             .subscribe((response: any) => {
                 if (response.result === true) {
                     this.processors = response.processors;
