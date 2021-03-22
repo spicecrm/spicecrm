@@ -14,11 +14,11 @@ import {language} from "../../../services/language.service";
 export class ContactNewsletters {
 
     private rawResult: any = {};
-    private availableNewsLetters: Array<any> = [];
-    private subscribedNewsLetters: Array<any> = [];
+    private availableNewsLetters: any[] = [];
+    private subscribedNewsLetters: any[] = [];
 
-    private selectedAvailable: Array<any> = [];
-    private selectedSubscribed: Array<any> = [];
+    private selectedAvailable: any[] = [];
+    private selectedSubscribed: any[] = [];
 
     private multiselect: boolean = false;
 
@@ -26,7 +26,7 @@ export class ContactNewsletters {
 
     constructor(private language: language, private backend: backend, private metadata: metadata, private model: model) {
         // get the newsletters
-        this.backend.getRequest("newsletters/subscriptions/" + this.model.id).subscribe((results: any) => {
+        this.backend.getRequest("module/Contacts/" + this.model.id + "/newsletters/subscriptions" ).subscribe((results: any) => {
 
             // keep the raw result for the save
             this.rawResult = results;
@@ -61,7 +61,7 @@ export class ContactNewsletters {
                             summary_text: campaigns[campaignId].name,
                             defaultList: campaigns[campaignId].defaultList,
                             exemptList: campaigns[campaignId].exemptList
-                        })
+                        });
 
                         delete(campaigns[campaignId]);
                     } else if (campaigns[campaignId].defaultList == plEntry.prospect_list_id) {
@@ -70,7 +70,7 @@ export class ContactNewsletters {
                             summary_text: campaigns[campaignId].name,
                             defaultList: campaigns[campaignId].defaultList,
                             exemptList: campaigns[campaignId].exemptList
-                        })
+                        });
                         delete(campaigns[campaignId]);
                     }
                 }
@@ -83,7 +83,7 @@ export class ContactNewsletters {
                     summary_text: campaigns[campaignId].name,
                     defaultList: campaigns[campaignId].defaultList,
                     exemptList: campaigns[campaignId].exemptList
-                })
+                });
                 delete(campaigns[campaignId]);
             }
         });
@@ -156,7 +156,7 @@ export class ContactNewsletters {
                     return true;
                 }
             });
-        })
+        });
         this.selectedAvailable = [];
     }
 
@@ -168,7 +168,7 @@ export class ContactNewsletters {
                     return true;
                 }
             });
-        })
+        });
         this.selectedSubscribed = [];
     }
 
@@ -177,7 +177,7 @@ export class ContactNewsletters {
             subscribed: this.subscribedNewsLetters,
             unsubscribed: this.availableNewsLetters
         };
-        this.backend.postRequest("newsletters/subscriptions/" + this.model.id, {}, postBody).subscribe((results: any) => {
+        this.backend.postRequest("module/Contacts/"  + this.model.id + "/newsletters/subscriptions", {}, postBody).subscribe((results: any) => {
             this.closePopup();
         });
     }
