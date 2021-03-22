@@ -60,7 +60,7 @@ export class ActionsetManager {
                 private view: view,
                 private modal: modal) {
 
-        this.backend.getRequest('spiceui/admin/modules').subscribe(modules => {
+        this.backend.getRequest('system/spiceui/admin/modules').subscribe(modules => {
             this.sysModules = modules;
         });
         this.checkMode();
@@ -390,7 +390,7 @@ export class ActionsetManager {
                 delete: deletedActionsets
             };
 
-            this.backend.postRequest('spiceui/core/actionsets', {}, postData).subscribe((res: any) => {
+            this.backend.postRequest('configuration/spiceui/core/actionsets', {}, postData).subscribe((res: any) => {
                 if(res) {
                     this.broadcast.broadcastMessage('metadata.updateactionsets', postData);
                     loadingModalRef.instance.self.destroy();

@@ -39,7 +39,7 @@ export class PackageLoader {
         private metadata: metadata
     ) {
 
-        this.backend.getRequest('packages/repositories').subscribe(
+        this.backend.getRequest('configuration/packages/repositories').subscribe(
             (res) => {
                 this.loading = false;
                 this.repositories = res;
@@ -78,7 +78,7 @@ export class PackageLoader {
         this.opencrs = false;
         this.errorpackages = [];
 
-        this.backend.getRequest('packages' + this.repositoryaddurl).subscribe(
+        this.backend.getRequest('configuration/packages' + this.repositoryaddurl).subscribe(
             (res) => {
                 this.loading = false;
                 try {
