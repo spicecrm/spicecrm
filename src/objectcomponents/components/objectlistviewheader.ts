@@ -44,22 +44,31 @@ export class ObjectListViewHeader {
         this.actionSet = componentconfig.actionset;
     }
 
-    /**
-     * the trigger for the keyup on the search field
-     *
-     * @param e the event
-     */
-    private onKeyUp(e) {
-        // handle the key pressed
-        switch (e.key) {
-            case 'Enter':
-                if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
-                this.modellist.reLoadList();
-                break;
-            default:
-                if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
-                this.searchTimeOut = window.setTimeout(() => this.modellist.reLoadList(), 1000);
-                break;
+    set searchTerm(value: string) {
+        if (value != this.modellist.searchTerm) {
+            this.modellist.searchTerm = value;
+            this.reloadList();
         }
+    }
+
+    get searchTerm(): string {
+        return this.modellist.searchTerm;
+    }
+
+    /**
+     * clears the searchterm
+     * @private
+     */
+    private clearSearchTerm() {
+        this.searchTerm = '';
+    }
+
+    /**
+     * reload the model list on 1 second timeout
+     * @private
+     */
+    private reloadList() {
+        if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
+        this.searchTimeOut = window.setTimeout(() => this.modellist.reLoadList(), 1000);
     }
 }
