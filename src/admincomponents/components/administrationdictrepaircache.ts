@@ -18,7 +18,7 @@ export class AdministrationDictRepairCache {
 
     public executeRepairCache() {
         let await = this.modal.await(this.language.getLabel('LBL_LOADING'));
-        this.backend.getRequest('repair/cache').subscribe(result => {
+        this.backend.getRequest('admin/repair/cache').subscribe(result => {
             await.emit(true);
             if(result) {
                 this.toast.sendToast(this.language.getLabel('LBL_CACHE_REPAIRED'), 'success');
