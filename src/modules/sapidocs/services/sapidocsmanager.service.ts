@@ -55,7 +55,7 @@ export class sapIdocsManager {
      * loads all segments and fields
      */
     private loadSegments() {
-        let segments = this.backend.getRequest('SAPIdocsManager/segments').subscribe(res => {
+        let segments = this.backend.getRequest('configuration/sapidocsmanager/segments').subscribe(res => {
             this.segments = res.segments;
             this.addToReference(this.segments);
             this.segmentrelations = res.segmentrelations;
@@ -82,7 +82,7 @@ export class sapIdocsManager {
     public updateSegments() {
         let changes = this.getChanges();
         if (changes.length > 0) {
-            this.backend.postRequest('SAPIdocsManager/segments', {}, changes).subscribe(res => {
+            this.backend.postRequest('configuration/sapidocsmanager/segments', {}, changes).subscribe(res => {
                 this.toast.sendToast('saved', 'info');
 
                 // reset references and rebuild

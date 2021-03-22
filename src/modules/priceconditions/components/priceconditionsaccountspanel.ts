@@ -107,7 +107,7 @@ export class PriceConditionsAccountsPanel implements OnInit {
      * loads the conditions for the accounnt on the backend
      */
     private loadConditions() {
-        this.backend.getRequest(`module/PriceConditions/list/${this.model.module}/${this.model.id}`).subscribe(conditions => {
+        this.backend.getRequest(`module/${this.model.module}/${this.model.id}/related/priceconditions`).subscribe(conditions => {
             this.conditions = conditions;
 
             // set loading to false
