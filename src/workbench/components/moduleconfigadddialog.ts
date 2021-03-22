@@ -288,7 +288,7 @@ export class ModuleConfigAddDialog implements OnInit {
         }
 
         // check if component exists
-        this.backend.getRequest('spiceui/core/' + path, saveComp).subscribe(
+        this.backend.getRequest('configuration/spiceui/core/' + path, saveComp).subscribe(
             data => {
                 delete saveComp.type;
 

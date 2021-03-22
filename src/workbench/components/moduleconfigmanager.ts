@@ -71,7 +71,7 @@ export class ModuleConfigManager {
             }
         });
 
-        this.backend.getRequest('spiceui/admin/modules').subscribe(modules => {
+        this.backend.getRequest('system/spiceui/admin/modules').subscribe(modules => {
             this.sysModules = modules;
 
             this.initialized = true;

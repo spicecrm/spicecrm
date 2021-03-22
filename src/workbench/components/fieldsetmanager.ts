@@ -51,7 +51,7 @@ export class FieldsetManager {
                 private view: view,
                 private modal: modal) {
 
-        this.backend.getRequest('spiceui/admin/modules').subscribe(modules => {
+        this.backend.getRequest('system/spiceui/admin/modules').subscribe(modules => {
             this.sysModules = modules;
 
             // iniutialize the metadata service
@@ -551,7 +551,7 @@ export class FieldsetManager {
 
     private saveChanges() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
-            this.backend.getRequest('spiceui/core/fieldsets').subscribe((res: any) => {
+            this.backend.getRequest('configuration/spiceui/core/fieldsets').subscribe((res: any) => {
 
 
                 let rawFieldsets = this.metadata.getRawFieldSets();
@@ -581,7 +581,7 @@ export class FieldsetManager {
                     delete: deletedFieldsets
                 };
 
-                this.backend.postRequest('spiceui/core/fieldsets', {}, postData).subscribe((res: any) => {
+                this.backend.postRequest('configuration/spiceui/core/fieldsets', {}, postData).subscribe((res: any) => {
                     this.broadcast.broadcastMessage('metadata.updatefieldsets', postData);
                     loadingModalRef.instance.self.destroy();
                     this.toast.sendToast('changes saved');
