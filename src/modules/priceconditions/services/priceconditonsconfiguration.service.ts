@@ -31,7 +31,7 @@ export class priceconditonsconfiguration {
     private getConfig() {
         this.config = this.configuration.getData('priceconditonsconfiguration');
         if(_.isEmpty(this.config)) {
-            this.backend.getRequest(`module/PriceConditions/configuration`).subscribe(config => {
+            this.backend.getRequest(`configuration/priceconditions`).subscribe(config => {
                 this.config = config;
                 this.configuration.setData('priceconditonsconfiguration', config);
                 this.loaded$.next(true);
