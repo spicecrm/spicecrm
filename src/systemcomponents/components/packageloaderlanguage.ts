@@ -56,7 +56,7 @@ export class PackageLoaderLanguage {
     private loadLanguage(languagecode) {
 
         this.loading = true;
-        this.backend.getRequest('packages/language/' + languagecode + this.repositoryaddurl).subscribe(response => {
+        this.backend.getRequest('configuration/packages/language/' + languagecode + this.repositoryaddurl).subscribe(response => {
             this.loading = false;
             if (response.success) {
                 this.package.installed = true;
@@ -75,7 +75,7 @@ export class PackageLoaderLanguage {
     private deleteLanguage(languagecode) {
 
         this.loading = true;
-        this.backend.deleteRequest('packages/language/' + languagecode).subscribe(response => {
+        this.backend.deleteRequest('configuration/packages/language/' + languagecode).subscribe(response => {
             this.loading = false;
             if (response) {
                 this.package.installed = false;
