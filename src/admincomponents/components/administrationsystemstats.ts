@@ -49,7 +49,7 @@ export class AdministrationSystemStats {
      */
     private loadStats() {
         this.loaded = false;
-        this.backend.getRequest('admin/systemstats').subscribe(stats => {
+        this.backend.getRequest('configuration/systemstats').subscribe(stats => {
             this.stats = stats;
 
             // calculate the totals

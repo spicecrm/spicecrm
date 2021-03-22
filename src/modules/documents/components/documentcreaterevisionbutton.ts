@@ -45,7 +45,7 @@ export class DocumentCreateRevisionButton extends ObjectActionOutputBeanButton i
                 outputModal.instance.handBack = documentEmitter;
                 this.subscriptions.add(
                     documentEmitter.subscribe(document => {
-                        this.backend.postRequest(`module/Documents/${this.model.id}/revisionFromBase64`, '', {
+                        this.backend.postRequest(`module/Documents/${this.model.id}/revisionfrombase64`, '', {
                             file_name: document.name + '.pdf',
                             file: document.content,
                             file_mime_type: 'application/pdf',

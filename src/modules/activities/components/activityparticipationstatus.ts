@@ -95,7 +95,7 @@ export class ActivityParticipationStatus implements ControlValueAccessor {
 
     private setStatus(status) {
         this.updating = true;
-        this.backend.postRequest(`modules/${this.parent.module}/${this.parent.id}/setstatus/${this.model.id}/${status}`).subscribe(res => {
+        this.backend.postRequest(`module/${this.parent.module}/${this.parent.id}/status/${this.model.id}/${status}`).subscribe(res => {
             this.status = status;
             this.onChange(this.status);
             this.updating = false;

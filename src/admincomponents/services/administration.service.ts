@@ -94,7 +94,7 @@ export class administration implements OnDestroy {
      */
     private loadNavigation() {
         this.loading = true;
-        this.backend.getRequest('spiceui/admin/navigation').subscribe(
+        this.backend.getRequest('system/spiceui/admin/navigation').subscribe(
             nav => {
                 this.adminNavigation = nav;
                 this.loading = false;
