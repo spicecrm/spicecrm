@@ -91,7 +91,7 @@ export class SAPIDOCsListHeaderActionsProcessModal implements OnInit {
      */
     private async processIDOC(idocid): Promise<boolean> {
         let sub = new Subject<boolean>();
-        this.backend.postRequest(`modules/SAPIdocs/${idocid}/process`).subscribe(
+        this.backend.postRequest(`module/SAPIdocs/${idocid}/process`).subscribe(
             success => {
                 sub.next(true);
                 sub.complete();

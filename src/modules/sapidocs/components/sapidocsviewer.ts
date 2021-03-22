@@ -84,7 +84,7 @@ export class SAPIDOCsViewer implements AfterViewInit {
      */
     private processIDOC() {
         this.processing = true;
-        this.backend.postRequest(`modules/SAPIdocs/${this.model.id}/process`).subscribe(
+        this.backend.postRequest(`module/SAPIdocs/${this.model.id}/process`).subscribe(
             success => {
                 this.processing = false;
                 this.toast.sendToast('IDOC processed', 'info');
