@@ -40,8 +40,7 @@
 
                                 <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
                                     <div>
-                                        <h3 *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-text-heading_medium">{{question.name}}</h3>
-                                        <media-file-image *ngIf="question.image_id" [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="imageWidthQuestion" [classOuter]="'slds-m-top--small'"></media-file-image>
+                                        <h3 class="slds-text-heading_medium">{{question.name}}</h3>
                                     </div>
                                     <div class="slds-m-bottom_xx-small" style="min-width:210px">
                                         <div class="slds-p-bottom_xxx-small slds-text-align_center">
@@ -60,10 +59,7 @@
 
                                         <ng-container *ngIf="question.questiontype === 'single' || question.questiontype === 'multi' || question.questiontype === 'binary'">
                                             <tr *ngFor="let option of options[question.id];let j=index">
-                                                <td style="width:100%">
-                                                    <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [frameWidth]="imageWidthOption" [classOuter]="'slds-m-bottom--small'"></media-file-image>
-                                                    <ng-container *ngIf="!( option.image_id && questionset.showonlyimages === '1' )">{{option.name}}</ng-container>
-                                                </td>
+                                                <td style="width:100%">{{option.name}}</td>
                                                 <td style="min-width:120px">
                                                     <div class="slds-progress-bar slds-progress-bar--circular slds-progress-bar--large">
                                                         <span class="slds-progress-bar__value" [ngStyle]="getAnswerBarWidth( question.id, option.id )">
@@ -79,10 +75,7 @@
 
                                         <ng-container *ngIf="questionset.questiontype === 'ratinggroup' || question.questiontype === 'rating'">
                                             <tr *ngFor="let option of options[question.id];let j=index">
-                                                <td style="width:100%">
-                                                    <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [frameWidth]="imageWidthOption" [classOuter]="'slds-m-bottom--small'"></media-file-image>
-                                                    <ng-container *ngIf="!( option.image_id && questionset.showonlyimages === '1' )">{{option.name}}</ng-container>
-                                                </td>
+                                                <td style="width:100%">{{option.name}}</td>
                                                 <td style="min-width:120px">
                                                     <div class="slds-progress-bar slds-progress-bar--circular slds-progress-bar--large">
                                                         <span class="slds-progress-bar__value" [ngStyle]="getAnswerBarWidth( question.id, option.id )">
@@ -98,10 +91,7 @@
 
                                         <ng-container *ngIf="question.questiontype === 'nps'">
                                             <tr *ngFor="let option of options[question.id];let j=index">
-                                                <td style="width:100%">
-                                                    <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [frameWidth]="imageWidthOption" [classOuter]="'slds-m-bottom--small'"></media-file-image>
-                                                    <ng-container *ngIf="!( option.image_id && questionset.showonlyimages === '1' )">{{option.name}}</ng-container>
-                                                </td>
+                                                <td style="width:100%">{{option.name}}</td>
                                                 <td style="min-width:120px">
                                                     <div class="slds-progress-bar slds-progress-bar--circular slds-progress-bar--large">
                                                         <span class="slds-progress-bar__value" [ngStyle]="getAnswerBarWidth( question.id, option.id )">
