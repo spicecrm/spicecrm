@@ -832,7 +832,7 @@ export class modellist implements OnDestroy {
             global: global
         };
         this.backend.postRequest(
-            "spiceui/core/modules/" + this.module + "/listtypes",
+            "configuration/spiceui/core/modules/" + this.module + "/listtypes",
             {},
             JSON.stringify(listParams)
         ).subscribe((listdata: any) => {
@@ -886,7 +886,7 @@ export class modellist implements OnDestroy {
         listParams.fielddefs = btoa(JSON.stringify(fielddefs));
 
         // post to the backend
-        this.backend.postRequest(`spiceui/core/modules/${this.module}/listtypes/${this.currentList.id}`, {}, listParams).subscribe(listdata => {
+        this.backend.postRequest(`configuration/spiceui/core/modules/${this.module}/listtypes/${this.currentList.id}`, {}, listParams).subscribe(listdata => {
             this.listTypes.some(item => {
                 if (item.id == this.currentList.id) {
 
@@ -924,7 +924,7 @@ export class modellist implements OnDestroy {
             id = this.currentList.id;
         }
 
-        this.backend.deleteRequest("spiceui/core/modules/" + this.module + "/listtypes/" + id).subscribe(
+        this.backend.deleteRequest("configuration/spiceui/core/modules/" + this.module + "/listtypes/" + id).subscribe(
             res => {
                 // set the new default listtype
                 this.setListType('all');
