@@ -88,7 +88,7 @@ export class ReporterFilterItemEnum implements OnInit, OnDestroy {
         if (this.moduleName && this.fieldName) {
             this.enumOptions = this.language.getFieldDisplayOptions(this.moduleName, this.fieldName, true);
         } else {
-            this.backend.getRequest('KReporter/core/enumoptions', {path: this.wherecondition.path}).subscribe(options => {
+            this.backend.getRequest('kreporter/core/enumoptions', {path: this.wherecondition.path}).subscribe(options => {
                 if (!options || options.length == 0) return;
                 this.enumOptions = options.map(option => ({value: option.value, display: option.text}));
             });

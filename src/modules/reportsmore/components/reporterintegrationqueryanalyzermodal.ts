@@ -75,7 +75,7 @@ export class ReporterIntegrationQueryanalyzerModal implements OnInit {
             record: this.model.id,
             whereOverride: JSON.stringify(whereConditions)
         }
-        this.backend.postRequest('KReporter/plugins/kqueryanalizer/get_sql', {}, postBody).subscribe(sql => {
+        this.backend.postRequest('kreporter/plugins/kqueryanalizer/sql', {}, postBody).subscribe(sql => {
                 this.mainquery = sql.main;
                 this.formattedquery = sql.formatted;
                 this.highlightedquery = sql.highlighted;

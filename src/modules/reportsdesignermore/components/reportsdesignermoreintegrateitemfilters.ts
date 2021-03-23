@@ -42,7 +42,7 @@ export class ReportsDesignerMoreIntegrateItemFilters {
      */
     private loadSaveFilters() {
         this.isLoading = true;
-        this.backend.getRequest(`KReporter/${this.model.id}/savedfilter`).subscribe(filters => {
+        this.backend.getRequest(`kreporter/${this.model.id}/savedfilters`).subscribe(filters => {
             this.isLoading = false;
             if (!filters) return;
 
@@ -61,7 +61,7 @@ export class ReportsDesignerMoreIntegrateItemFilters {
     private deleteFilter(filterId) {
         this.modal.confirmDeleteRecord().subscribe(response => {
             if (response) {
-                this.backend.deleteRequest(`KReporter/${this.model.id}/savedfilter/${filterId}`).subscribe(res => {
+                this.backend.deleteRequest(`kreporter/${this.model.id}/savedfilter/${filterId}`).subscribe(res => {
                     if (!!res) {
                         this.savedFilters = this.savedFilters.filter(filter => filter.savedfilter_id != filterId);
                     }

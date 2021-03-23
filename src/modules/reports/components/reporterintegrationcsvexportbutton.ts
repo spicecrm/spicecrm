@@ -68,7 +68,7 @@ export class ReporterIntegrationCSVexportButton {
 
         // render the loading modal and trigger the download
         let awaitpromise = this.modal.await(this.language.getLabel('LBL_LOADING'));
-        this.backend.getDownloadPostRequestFile('KReporter/plugins/action/kcsvexport/export', {
+        this.backend.getDownloadPostRequestFile('kreporter/plugins/action/kcsvexport/export', {
             record: this.model.id,
             dynamicoptions: JSON.stringify(whereConditions)
         }).subscribe(

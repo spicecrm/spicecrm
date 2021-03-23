@@ -60,7 +60,7 @@ export class ReporterDetailPresentationTree extends ReporterDetailPresentationSt
         this.isLoading = true;
         this.cdRef.detectChanges();
 
-        this.backend.getRequest('KReporter/Tree/' + this.model.id + '/columns', {}).subscribe((columns: any) => {
+        this.backend.getRequest('kreporter/' + this.model.id + '/tree/columns', {}).subscribe((columns: any) => {
 
             let treeStopReached = false;
 
@@ -145,7 +145,7 @@ export class ReporterDetailPresentationTree extends ReporterDetailPresentationSt
             }
 
 
-            this.backend.postRequest('KReporter/Tree/' + this.model.id + '/node/' + encodeURIComponent(btoa(node)), {}, body).subscribe(reportData => {
+            this.backend.postRequest('kreporter/' + this.model.id + '/tree/node/' + encodeURIComponent(btoa(node)), {}, body).subscribe(reportData => {
 
                 if (!reportData) return;
 

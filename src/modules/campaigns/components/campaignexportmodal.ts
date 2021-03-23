@@ -30,7 +30,7 @@ export class CampaignExportModal {
 
     private downloadCSV(reportid) {
         let await = this.modal.await(this.language.getLabel('LBL_DOWNLOADING'));
-        this.backend.getDownloadPostRequestFile('KReporter/plugins/action/kcsvexport/export', {
+        this.backend.getDownloadPostRequestFile('kreporter/plugins/action/kcsvexport/export', {
             record: reportid,
             parentbeanId: this.model.id,
             parentbeanModule: this.model.module
@@ -47,7 +47,7 @@ export class CampaignExportModal {
 
     private downloadXLS(reportid) {
         let await = this.modal.await(this.language.getLabel('LBL_DOWNLOADING'));
-        this.backend.getDownloadPostRequestFile('KReporter/plugins/action/kexcelexport/export', {
+        this.backend.getDownloadPostRequestFile('kreporter/plugins/action/kexcelexport/export', {
             record: reportid,
             parentbeanId: this.model.id,
             parentbeanModule: this.model.module

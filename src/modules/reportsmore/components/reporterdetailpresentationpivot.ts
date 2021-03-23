@@ -159,7 +159,7 @@ export class ReporterDetailPresentationPivot implements AfterViewInit, OnInit, O
             });
         }
 
-        this.backend.getRequest('KReporter/' + this.model.id + '/presentation', {
+        this.backend.getRequest('kreporter/' + this.model.id + '/presentation', {
             whereConditions: JSON.stringify(whereConditions),
             parentbeanId: this.model.getField('parentBeanId'),
             parentbeanModule: this.model.getField('parentBeanModule')
