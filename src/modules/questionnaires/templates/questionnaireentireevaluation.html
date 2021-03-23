@@ -36,7 +36,7 @@
 
                     <ng-container *ngIf="questions[questionset.id].length; else noQuestionsTemplate">
                         <div *ngFor="let question of questions[questionset.id]; last as isLast">
-                            <div class="slds-box slds-theme_default" style="padding-top:0.5rem" [ngClass]="{'slds-m-bottom_x-small': !isLast}">
+                            <div *ngIf="questionIsToShow( question )" class="slds-box slds-theme_default" style="padding-top:0.5rem" [ngClass]="{'slds-m-bottom_x-small': !isLast}">
 
                                 <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
                                     <div>
@@ -58,7 +58,7 @@
                                 <table class="slds-table slds-table_col-bordered slds-table_bordered slds-table_header-hidden slds-m-top_x-small" style="x-border-bottom:0">
                                     <tbody>
 
-                                        <ng-container *ngIf="questionset.questiontype === 'single' || questionset.questiontype === 'multi' || questionset.questiontype === 'binary'">
+                                        <ng-container *ngIf="question.questiontype === 'single' || question.questiontype === 'multi' || question.questiontype === 'binary'">
                                             <tr *ngFor="let option of options[question.id];let j=index">
                                                 <td style="width:100%">
                                                     <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [frameWidth]="imageWidthOption" [classOuter]="'slds-m-bottom--small'"></media-file-image>
@@ -77,7 +77,7 @@
                                             </tr>
                                         </ng-container>
 
-                                        <ng-container *ngIf="questionset.questiontype === 'rating'">
+                                        <ng-container *ngIf="questionset.questiontype === 'ratinggroup' || question.questiontype === 'rating'">
                                             <tr *ngFor="let option of options[question.id];let j=index">
                                                 <td style="width:100%">
                                                     <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [frameWidth]="imageWidthOption" [classOuter]="'slds-m-bottom--small'"></media-file-image>
@@ -96,7 +96,7 @@
                                             </tr>
                                         </ng-container>
 
-                                        <ng-container *ngIf="questionset.questiontype === 'nps'">
+                                        <ng-container *ngIf="question.questiontype === 'nps'">
                                             <tr *ngFor="let option of options[question.id];let j=index">
                                                 <td style="width:100%">
                                                     <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [frameWidth]="imageWidthOption" [classOuter]="'slds-m-bottom--small'"></media-file-image>
@@ -118,7 +118,7 @@
                                     </tbody>
                                 </table>
 
-                                <div *ngIf="questionset.questiontype === 'nps' || ( questionset.questiontype === 'rating' && allOptionsNumeric( question.id ))" class="slds-text-align_right slds-text-heading_small x-slds-border--top slds-p-top--xx-small slds-p-right--x-small">
+                                <div *ngIf="question.questiontype === 'nps' || (( question.questiontype === 'ratinggroup' || question.questiontype === 'rating' ) && allOptionsNumeric( question.id ))" class="slds-text-align_right slds-text-heading_small x-slds-border--top slds-p-top--xx-small slds-p-right--x-small">
                                     <b>&Oslash;&nbsp; {{averageOfAnswers( question.id )}}</b>
                                 </div>
 
