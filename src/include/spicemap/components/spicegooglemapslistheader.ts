@@ -99,7 +99,7 @@ export class SpiceGoogleMapsListHeader implements OnInit, OnDestroy {
     private doSearch() {
         this.searchTermOld = this.searchTerm;
         this.modellist.searchTerm = this.searchTerm;
-        this.modellist.getListData(this.requestfields);
+        this.modellist.getListData();
     }
 
     /**

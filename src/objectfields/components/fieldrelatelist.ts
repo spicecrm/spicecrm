@@ -74,9 +74,8 @@ export class fieldRelateList extends fieldGeneric implements OnInit {
         if (!this.relateType) {
             return;
         }
-        let fields = ['id', 'summary_text'];
         let params = {limit: this.fieldconfig.limit || -1, modulefilter: this.fieldconfig.modulefilter};
-        this.backend.getList(this.relateType, [{sortfield: 'name', sortirection: 'ASC'}], fields, params)
+        this.backend.getList(this.relateType, [{sortfield: 'name', sortirection: 'ASC'}], params)
             .subscribe((res: any) => {
                 if (res && res.list) {
                     this.relatedList = res.list;

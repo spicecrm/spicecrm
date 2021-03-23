@@ -101,8 +101,15 @@ export class ObjectListViewSettingsSetfieldsModal {
         if (this.canSet()) {
             this.modellist.listfields = this.listFields;
             this.close();
-            // this.modellist.updateListType({fielddefs: btoa(JSON.stringify(this.listFields))}).subscribe(ret => this.close());
         }
+    }
+
+    public saveAndSet() {
+        if (!this.canSet()) return;
+        this.modellist.listfields = this.listFields;
+        this.modellist.updateListType().subscribe(() =>
+            this.close()
+        );
     }
 
     /**

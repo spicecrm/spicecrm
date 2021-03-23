@@ -104,12 +104,11 @@ export class SalesDocsEquipmentPanel implements OnInit {
     private fetchAvailableEquipments() {
         let accountId = this.model.getField('account_op_id');
         if ( accountId ) {
-            this.modellist.setModule( 'ServiceEquipments' );
-            if( this.sortField ) this.modellist.setSortField( this.sortField, 'DESC', false );
+            this.modellist.initialize( 'ServiceEquipments' );
+            if( this.sortField ) this.modellist.setSortField( this.sortField, 'DESC' );
             this.modellist.filtercontextbeanid = accountId;
             this.modellist.modulefilter = this.equipmentfilter;
-            let requestedFields = ['name', 'servicelocation_name'];
-            this.modellist.getListData( requestedFields ).subscribe( data => {
+            this.modellist.getListData().subscribe( data => {
                 if ( data ) {
                     this.availableEquipments = this.modellist.listData.list;
                     this.assignSelectedEquipments();

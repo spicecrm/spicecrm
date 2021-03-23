@@ -10,7 +10,7 @@ import {metadata} from '../../../services/metadata.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {modal} from '../../../services/modal.service';
 import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
-import {relateFilter} from "../../../services/modellist.service";
+import {relateFilter} from "../../../services/interfaces.service";
 
 @Component({
     templateUrl: './src/modules/activities/templates/fieldactivityparticipationpanel.html'

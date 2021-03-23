@@ -45,17 +45,6 @@ export class ObjectListHeaderSort {
     }
 
     /**
-     * sets the field as sort parameter
-     *
-     * @param field the field from the fieldset
-     */
-    private setSortField(): void {
-        if (this.isSortable) {
-            this.modellist.setSortField(this.field.field);
-        }
-    }
-
-    /**
      * a helper function to determine the sort icon based on the set sort criteria
      */
     get sortIcon(): string {
@@ -70,7 +59,7 @@ export class ObjectListHeaderSort {
         return '';
     }
 
-    get sortindex(){
+    get sortindex() {
         let sortdata = this.modellist.getSortField(this.field.field);
         if(sortdata && sortdata.sortitems > 1) {
             return sortdata.sortindex + 1;

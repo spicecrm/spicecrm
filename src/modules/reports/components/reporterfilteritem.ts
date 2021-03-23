@@ -24,7 +24,8 @@ export class ReporterFilterItem {
 
     private getOperators() {
         let retArray = [];
-        let operators = this.reporterconfig.operatorTypes[this.reporterconfig.operatorAssignments[this.wherecondition.type]];
+        const operatorType = this.reporterconfig.operatorAssignments[this.wherecondition.type] || 'varchar';
+        let operators = this.reporterconfig.operatorTypes[operatorType];
         for (let oprator of operators) {
             retArray.push({
                 value: oprator,

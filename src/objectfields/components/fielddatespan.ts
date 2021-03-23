@@ -31,11 +31,11 @@ export class fieldDateSpan extends fieldGeneric implements OnInit {
     }
 
     get fieldstart() {
-        return this.fieldconfig.field_start ? this.fieldconfig.field_start : 'date_start';
+        return this.fieldconfig.date_start ? this.fieldconfig.date_start : 'date_start';
     }
 
     get fieldend() {
-        return this.fieldconfig.field_end ? this.fieldconfig.field_end : 'date_end';
+        return this.fieldconfig.date_end ? this.fieldconfig.date_end : 'date_end';
     }
 
 

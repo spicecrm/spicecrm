@@ -55,7 +55,7 @@ export class ProjectActivityDashlet implements OnInit {
 
         // set modellist config
         this.modellist.loadlimit = this.limit;
-        this.modellist.module = this.module;
+        this.modellist.initialize(this.module);
         if(!this.modellist.currentList.sortfields) {
             this.modellist.currentList.sortfields = btoa('{"sortfield": "date_entered", "sortdirection": "DESC"}');
         }
@@ -125,5 +125,6 @@ export class ProjectActivityDashlet implements OnInit {
      */
     private loadRecentActivities() {
         this.modellist.setListType('owner', false, [{sortfield: "date_entered", sortdirection: "DESC"}]);
+        this.modellist.getListData();
     }
 }

@@ -61,6 +61,7 @@ import {loggerService} from "../../services/logger.service";
 import {socket} from "../../services/socket.service";
 import {SystemDynamicRouteInterceptor} from "../../systemcomponents/components/systemdynamicrouteinterceptor";
 
+import {model} from "../../services/model.service";
 import {ModuleGroupware} from "../../include/groupware/groupware";
 import {GroupwareService} from '../../include/groupware/services/groupware.service';
 
@@ -111,6 +112,7 @@ declare var Office: any;
     ],
     bootstrap: [OutlookPane],
     providers: [
+        model,
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         {provide: GroupwareService, useClass: OutlookGroupware},
         aclCheck,
