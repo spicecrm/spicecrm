@@ -42,7 +42,7 @@ export class UserRoles {
 
         this.componentId = _.uniqueId();
 
-        this.backend.getRequest("spiceui/core/roles/" + this.model.id).subscribe(res => {
+        this.backend.getRequest('configuration/spiceui/core/roles/' + this.model.id).subscribe(res => {
             this.userRoles = res.allRoles.filter(role => {
                 for (let userRole of res.userRoles) {
                     if (role.id == userRole.sysuirole_id) {
@@ -124,7 +124,7 @@ export class UserRoles {
                 this.language.getLabel("MSG_DELETE_RECORD"))
                 .subscribe((answer) => {
                     if (answer) {
-                        this.backend.deleteRequest(`spiceui/core/roles/${roleId}/${this.model.data.id}`)
+                        this.backend.deleteRequest(`configuration/spiceui/core/roles/${roleId}/${this.model.data.id}`)
                             .subscribe(
                                 res => {
                                     if (res.status == "error") {
@@ -154,7 +154,7 @@ export class UserRoles {
                 (role.id == roleId) ? role.defaultrole = "1" : role.defaultrole = "0";
                 return true;
             });
-            this.backend.postRequest(`spiceui/core/roles/${roleId}/${this.model.data.id}/default`);
+            this.backend.postRequest(`configuration/spiceui/core/roles/${roleId}/${this.model.data.id}/default`);
         }
     }
 }

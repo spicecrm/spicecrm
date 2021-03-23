@@ -56,8 +56,8 @@ export class AdministrationDictRepairModal {
      */
     private doRepair() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
-            const selectedQueries = this.sql.filter(query => query.selected);
-        this.backend.postRequest('repair/database', {}, {selectedQueries}).subscribe((result: any) => {
+            const selectedqueries = this.sql.filter(query => query.selected);
+        this.backend.postRequest('admin/repair/database', {}, {selectedqueries}).subscribe((result: any) => {
             if (!result.response) {
                 this.dbErrors = result.errors;
             } else if (result.synced) {

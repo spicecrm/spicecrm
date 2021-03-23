@@ -59,7 +59,7 @@ export class SystemTenantHeaderBarSummary implements OnInit {
      */
     private getStats() {
         if(this.limits.database > 0 ||this.limits.elastic > 0 ||this.limits.users > 0 ||this.limits.uploadfiles > 0) {
-            this.backend.getRequest('admin/systemstats', {summary: true}).subscribe(stats => {
+            this.backend.getRequest('configuration/systemstats', {summary: true}).subscribe(stats => {
                 if(this.limits.database > 0){
                     this.usage.database = Math.round(stats.database.size/ 1024 / 1000 / this.limits.database * 100);
                 }

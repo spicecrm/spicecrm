@@ -74,7 +74,7 @@ export class ValidationRulesManager
     }
 
     removeCurrentValidationRule() {
-        this.backend.deleteRequest('spiceui/core/modelvalidations/' + this.current_rule).subscribe(
+        this.backend.deleteRequest('configuration/spiceui/core/modelvalidations/' + this.current_rule).subscribe(
             (success) => {
                 //this.broadcast.broadcastMessage('metadata.updatefieldsets', data);
                 this.toast.sendToast('rule removed');
@@ -91,9 +91,9 @@ export class ValidationRulesManager
 
     save() {
         let data = this.current_rule_data;
-        this.backend.postRequest('spiceui/core/modelvalidations', {}, data).subscribe(
+        this.backend.postRequest('configuration/spiceui/core/modelvalidations', {}, data).subscribe(
             (success) => {
-                this.current_rule_data._is_new_record = false;
+                this.current_rule_data.isnewrecord = false;
 
                 let idx = this._backup_rules.findIndex((e) => {
                     return e.id == this._current_rule
@@ -110,7 +110,7 @@ export class ValidationRulesManager
     }
 
     cancel() {
-        if (this.current_rule_data._is_new_record) {
+        if (this.current_rule_data.isnewrecord) {
             // remove it...
             this.removeRule(this.current_rule);
         }
@@ -127,7 +127,7 @@ export class ValidationRulesManager
             active: 1,
             actions: [],
             conditions: [],
-            _is_new_record: true,
+            isnewrecord: true,
         });
         this.current_rule = this.rules[this.rules.length - 1].id;
     }
