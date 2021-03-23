@@ -8,33 +8,57 @@ import {modelutilities} from "../../../services/modelutilities.service";
 @Injectable()
 export class projectwbsHierarchy {
 
+    /**
+     * the id of the project
+     */
     public project_id: string = "";
-    public requestedFields: Array<any> = [];
-    public members: Array<any> = [];
-    public membersList: Array<any> = [];
+
+    /**
+     * the plain list of members
+     */
+    public members: any[] = [];
+
+    /**
+     * the list with the embedded project wbs elements structured by hirarchy
+     */
+    public membersList: any[] = [];
+
+    /**
+     * indicates that we are loading
+     */
+    public isloading: boolean = false;
 
     constructor(private backend: backend, private modelutilities: modelutilities) {
     }
 
-    public  loadHierarchy(project_id = this.project_id, expanded = false) {
-        let addfields = [];
+    /**
+     * loads thge hirearchy
+     * @param project_id
+     * @param expanded
+     */
+    public loadHierarchy(project_id = this.project_id, expanded = false) {
 
-        for (let field of this.requestedFields) {
-            addfields.push(field.field);
-        }
+        // if we are in a loading process already dont load twice
+        if(this.isloading) return;
 
-        let membersExpanded: Array<any> = [];
-        for(let member of this.members){
-            if(member.expanded){
+        // set to loading
+        this.isloading = true;
+
+        // build the expended members list
+        let membersExpanded: any[] = [];
+        for (let member of this.members) {
+            if (member.expanded) {
                 membersExpanded.push(member.id);
             }
         }
 
         // reset members
         this.members = [];
+        this.membersList = [];
 
         // get the WBS Elements
-        this.backend.getRequest("ProjectWBSsHierarchy/" + project_id + "/" + JSON.stringify(addfields)).subscribe(members => {
+
+        this.backend.getRequest("ProjectWBSsHierarchy/" + project_id).subscribe(members => {
             for (let member of members) {
                 this.members.push({
                     parent_id: member.parent_id,
@@ -48,28 +72,37 @@ export class projectwbsHierarchy {
 
             this.members.sort((a, b) => {
                 // no dates set
-                if (a.data.start_date == "" && b.data.start_date == "") {
+                if (a.data.date_start == "" && b.data.date_start == "") {
                     return a.data.name > b.data.name ? -1 : 1;
                 }
 
                 // second object does not have a date
-                if (b.data.start_date == "") {
+                if (b.data.date_start == "") {
                     return -1;
                 }
 
                 // first objects does not have a date
-                if (a.data.start_date == "") {
+                if (a.data.date_start == "") {
                     return 1;
                 }
 
                 // all have a date
-                return a.data.start_date.isBefore(b.data.start_date) ? 1 : -1;
+                return a.data.date_start.isBefore(b.data.date_start) ? 1 : -1;
             });
 
+            // rebuild the members list
             this.rebuildMembersList();
+
+            // loading completed
+            this.isloading = false;
         });
     }
 
+    /**
+     * expand a node
+     *
+     * @param id
+     */
     public expand(id) {
         this.members.some(thisMember => {
             if (thisMember.id === id) {
@@ -80,6 +113,11 @@ export class projectwbsHierarchy {
         this.rebuildMembersList();
     }
 
+    /**
+     * collapse a node
+     *
+     * @param id
+     */
     public collapse(id) {
         this.members.some(thisMember => {
             if (thisMember.id === id) {
@@ -91,6 +129,9 @@ export class projectwbsHierarchy {
         this.rebuildMembersList();
     }
 
+    /**
+     * rebuilds teh structured list from a flat list
+     */
     public rebuildMembersList() {
         this.membersList = [];
         for (let member of this.members) {
@@ -112,6 +153,12 @@ export class projectwbsHierarchy {
         }
     }
 
+    /**
+     * recursive function to build the panel tree
+     *
+     * @param parent_id
+     * @param level
+     */
     public buildMembersList(parent_id, level = 0) {
         for (let member of this.members) {
             if (member.parent_id == parent_id) {
@@ -130,7 +177,6 @@ export class projectwbsHierarchy {
                     this.buildMembersList(member.id, level + 1);
                 }
             }
-
         }
     }
 }

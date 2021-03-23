@@ -15,22 +15,49 @@ import {modal} from "../../services/modal.service";
 })
 export class AdministrationDictRepairModal {
 
+    /**
+     * flag for synchronisation
+     * @private
+     */
     private synced:boolean = false;
-    private sql: string;
+    /**
+     * array container for the statements
+     * @private
+     */
+    private sql: any =[];
+    /**
+     * whole untouched sql string
+     * @private
+     */
+    private wholeSQL: string;
+    /**
+     * array container of database errors from backend
+     * @private
+     */
     private dbErrors: any = [];
+    /**
+     * modal reference
+     * @private
+     */
     private self: any = {};
     constructor(private backend: backend, private toast: toast, private language: language, private modal: modal) {
     }
 
+    /**
+     * destroy modal instance
+     * @private
+     */
     private close() {
         this.self.destroy();
     }
+
     /**
      * execute db repair and save the response
      */
     private doRepair() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
-        this.backend.postRequest('repair/database').subscribe((result: any) => {
+            const selectedQueries = this.sql.filter(query => query.selected);
+        this.backend.postRequest('repair/database', {}, {selectedQueries}).subscribe((result: any) => {
             if (!result.response) {
                 this.dbErrors = result.errors;
             } else if (result.synced) {
@@ -41,32 +68,35 @@ export class AdministrationDictRepairModal {
                 this.close();
             }
             loadingRef.instance.self.destroy();
-        });
+        },
+        (err: any) => {
+                switch (err.status) {
+                    case 500:
+                        this.toast.sendAlert(err.message, 'error');
+                        this.close();
+                        loadingRef.instance.self.destroy();
+                        break;
+                }
+            });
         });
     }
 
-    /**
-     * converts the sql string into an array of strings
-     * @private
-     */
-    private convertSQL() {
-        /**
-         * todo: interpolate strings in template
-         */
-        let cut = this.sql.split("\n").filter(query => !query.includes('*'));
-        let queries = cut.map(query => btoa(query));
-        console.log(cut);
-        console.log(queries);
-    }
 
 
     /**
-     * copy the SQL to clipboard
+     * copy the whole SQL to clipboard
      */
     private copy2clipboard() {
-        navigator.clipboard.writeText(this.sql).then(success => {
+        navigator.clipboard.writeText(this.wholeSQL).then(success => {
             this.toast.sendToast(this.language.getLabel('LBL_COPIED_TO_CLIPBOARD'), "info");
         });
+    }
+
+    /**
+     * selects all the queries
+     */
+    private selectAll() {
+     this.sql.forEach(query => {query.selected = true});
     }
 
 }

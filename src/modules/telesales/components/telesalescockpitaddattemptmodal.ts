@@ -80,7 +80,7 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
         let planned_activity_date = this.modelutilities.spice2backend(this.model.module, 'planned_activity_date', this.model.data.planned_activity_date);
         let params = {planned_activity_date: planned_activity_date};
 
-        this.backend.postRequest(`/module/CampaignLog/${this.model.id}/attempted`, params)
+        this.backend.postRequest(`module/CampaignLog/${this.model.id}/attempted`, params)
             .subscribe(
                 status => {
                     if (status.success) {
@@ -98,7 +98,7 @@ export class TeleSalesCockpitAddAttemptModal implements OnInit {
     }
 
     private remove() {
-        this.backend.postRequest(`/module/CampaignLog/${this.model.id}/completed`)
+        this.backend.postRequest(`module/CampaignLog/${this.model.id}/completed`)
             .subscribe(
                 status => {
                     if (status.success) {

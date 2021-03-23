@@ -3,7 +3,7 @@
  */
 import {Injectable} from "@angular/core";
 import {GroupwareService} from "../../../include/groupware/services/groupware.service";
-import {Observable, Subject, of} from "rxjs";
+import {Observable, of, Subject} from "rxjs";
 import {OutlookAttachmentI} from "../interfaces/outlook.interfaces";
 
 declare var Office: any;
@@ -83,6 +83,7 @@ export class OutlookGroupware extends GroupwareService {
                 let data = {
                     beans: this.archiveto,
                     email: email,
+                    bean: this.model.utils.spiceModel2backend('Emails', this.model.data)
                 };
 
                 this.backend.postRequest('module/Emails/groupware/saveOutlookEmailWithBeans', {}, data).subscribe(

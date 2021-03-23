@@ -55,8 +55,10 @@ export class ObjectListViewAggregateItem {
         this.isChecked = value;
         if (value) {
             this.modellist.setAggregate(this.aggregatename, this.bucketitem.aggdata);
+            this.modellist.reLoadList();
         } else {
-            this.modellist.removeAggregate(this.aggregatename, this.bucketitem.aggdata);
+            const removed = this.modellist.removeAggregate(this.aggregatename, this.bucketitem.aggdata);
+            if (removed) this.modellist.reLoadList();
         }
     }
 

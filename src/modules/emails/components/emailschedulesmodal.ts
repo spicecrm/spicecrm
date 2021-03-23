@@ -1,7 +1,7 @@
 /**
  * @module ModuleEmails
  */
-import {Component, Injector} from '@angular/core';
+import {Component, Injector, SkipSelf} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
 import {modellist} from '../../../services/modellist.service';
@@ -30,6 +30,7 @@ export class EmailSchedulesModal {
 
     constructor(private language: language,
                 private model: model,
+                @SkipSelf() private parentModel: model,
                 private injector: Injector,
                 private view: view,
                 private modal: modal,
@@ -50,7 +51,9 @@ export class EmailSchedulesModal {
         // set the module
         this.model.module = 'EmailSchedules';
         // initialize the model
-        this.model.initialize();
+        this.model.initialize(this.parentModel);
+        this.model.data.parent_id = this.parentModel.id;
+        this.model.data.parent_type = this.parentModel.module;
         // start editing
         this.model.startEdit(false);
     }
@@ -82,7 +85,7 @@ export class EmailSchedulesModal {
                 searchterm: this.modellist.searchTerm,
                 aggregates: this.modellist.selectedAggregates
             };
-            this.backend.postRequest('/modules/EmailSchedules/saveSchedule', {}, body).subscribe(result => {
+            this.backend.postRequest('modules/EmailSchedules/saveSchedule', {}, body).subscribe(result => {
                 loadingRef.instance.self.destroy();
                 if (result.status) {
                     this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');

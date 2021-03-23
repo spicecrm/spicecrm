@@ -30,7 +30,7 @@ export class SpiceInstallerSetLanguage {
         // checks the reference
         this.checkReference();
         // loads the languages
-        this.http.get(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/KREST/spiceinstaller/getlanguages`).subscribe((result: any) => {
+        this.http.get(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/spiceinstaller/getlanguages`).subscribe((result: any) => {
             this.languages = result.languages;
         });
     }
@@ -41,7 +41,7 @@ export class SpiceInstallerSetLanguage {
 
     private checkReference() {
         this.loading = true;
-        this.http.get(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/KREST/spiceinstaller/checkreference`).subscribe(result => {
+        this.http.get(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/spiceinstaller/checkreference`).subscribe(result => {
             this.loading = false;
             if (!result) {
                 this.toast.sendToast('cannot connect to reference server', "error");

@@ -42,7 +42,7 @@ export class ObjectListViewFilterButton {
      * returns if the filter shoudl be enabled
      */
     get enabled() {
-        return this.modellist.filterEnabled();
+        return this.modellist.filterEnabled() && !this.modellist.isLoading;
     }
 
     /**

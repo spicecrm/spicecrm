@@ -1,4 +1,4 @@
-import {Component, OnInit, Injector, ChangeDetectorRef, OnDestroy} from "@angular/core";
+import {Component, OnInit, Injector, ChangeDetectorRef, OnDestroy, SkipSelf} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
 import {metadata} from "../../../services/metadata.service";
@@ -72,7 +72,7 @@ export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
 
     constructor(
         private language: language,
-        // @SkipSelf() private parent: model,
+        @SkipSelf() public parent: model,
         private model: model,
         private modal: modal,
         private metadata: metadata,
@@ -87,10 +87,6 @@ export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
         // get the config
         this.componentconfig = this.metadata.getComponentConfig('ServiceOrderEquipmentPanel', this.model.module);
 
-        // this.model.data$.subscribe(data) {
-        //
-        // }
-        // dont forget destroy
         this.servicelocationId = this.model.getField("servicelocation_id");
         this.subscription = this.model.data$.subscribe(
             res => {
@@ -99,9 +95,8 @@ export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
                 }
                 if(res.servicelocation_id != this.servicelocationId) {
                     this.servicelocationId = res.servicelocation_id;
-                    if(this.servicelocationId != "" && this.servicelocationId)this.setAllItems();
+                    if(this.servicelocationId != "" && this.servicelocationId) this.setAllItems();
                 }
-
             }
         );
 
@@ -141,15 +136,22 @@ export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
      */
     private setAllItems() {
         this.all_items = {};
-        this.modellist.setModule("ServiceEquipments");
+        this.modellist.initialize("ServiceEquipments");
         if (this.sortField) {
-            this.modellist.setSortField(this.sortField, "DESC", false);
+            this.modellist.setSortField(this.sortField, "DESC");
         }
-        this.modellist.filtercontextbeanid = this.model.id;
-        this.modellist.modulefilter = this.equipmentfilter;
-        let requestedFields = ['name', 'servicelocation_name'];
 
-        this.modellist.getListData(requestedFields).subscribe(data => {
+        // if we don't have a serviceorder id, we give the servicelocation directly to the filter
+        // when we change the servicelocation we need both information in the backend 'serviceorder' for old relations and 'servicelocation' for possible relations
+        if(!this.model.isNew)  {
+            this.modellist.filtercontextbeanid = JSON.stringify({ serviceorder_id: this.model.id, servicelocation_id: this.model.data.servicelocation_id });
+        } else {
+            this.modellist.filtercontextbeanid = JSON.stringify({ serviceorder_id: '', servicelocation_id: this.servicelocationId });
+        }
+
+        this.modellist.modulefilter = this.equipmentfilter;
+
+        this.modellist.getListData().subscribe(data => {
             if(data) {
                 let all_items = this.modellist.listData;
                 this.setSelectedItems(all_items);
@@ -162,6 +164,11 @@ export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
      */
     private setSelectedItems(all_items) {
         this.selected_items = this.model.getRelatedRecords(this.relation_link_name);
+        // if we come from a ServiceEquipment -> set it as selected
+        if(this.model?.parentmodel?.module == 'ServiceEquipments') {
+            this.selected_items.push(this.model.parentmodel);
+        }
+
         for (let aitem of all_items.list) {
             aitem.selected = false;
             for (let sitem of this.selected_items) {
@@ -177,13 +184,7 @@ export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
      * clearAllRelationships to the equipments (location changed!) and delete all equipments
      */
     private clearAllSelectedItems() {
-        this.all_items = [];
-        this.selected_items = this.model.getRelatedRecords(this.relation_link_name);
-        for (let aitem of this.selected_items) {
-            aitem.selected = false;
-            this.model.removeRelatedRecords(this.relation_link_name, [aitem.id]);
-            this.model.data[this.relation_link_name].beans_relations_to_delete[aitem.id] = aitem;
-        }
+        this.all_items.list = this.all_items?.list?.filter(item => item?.selected);
     }
 
 
@@ -199,15 +200,13 @@ export class ServiceOrderEquipmentPanel implements OnInit, OnDestroy {
      * returns the number of not deleted items
      */
     get itemcount() {
-        if (this.all_items) {
-            if (this.all_items.list) {
-                let items = this.all_items.list.filter(item => item.deleted != 1);
-                if (items) {
-                    return items.length;
-                }
-            } else {
-                return 0;
+        if (this.all_items?.list) {
+            let items = this.all_items.list.filter(item => item.deleted != 1);
+            if (items) {
+                return items.length;
             }
+        } else {
+            return 0;
         }
     }
 

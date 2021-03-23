@@ -13,7 +13,7 @@ import {Subscription} from "rxjs";
  */
 @Component({
     selector: 'groupware-detail-pane',
-    templateUrl: './src/include/groupware/templates/groupwaredetailpane.html',
+    templateUrl: './src/include/groupware/templates/groupwaredetailpane.html'
 })
 export class GroupwareDetailPane implements OnInit, OnDestroy {
 

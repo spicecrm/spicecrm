@@ -8,6 +8,7 @@ import {backend} from "../../../services/backend.service";
 import {GSuiteBrokerService} from "./gsuitebroker.service";
 import {GSuiteAttachmentI, GSuiteMessageI} from "../interfaces/gsuite.interfaces";
 import {Router} from "@angular/router";
+import {model} from "../../../services/model.service";
 
 declare var _: any;
 
@@ -33,9 +34,10 @@ export class GSuiteGroupware extends GroupwareService implements OnDestroy {
 
     constructor(public backend: backend,
                 private gSuiteBroker: GSuiteBrokerService,
+                public model: model,
                 private router: Router) {
 
-        super(backend);
+        super(backend, model);
         this.subscribeToGSuiteChanges();
     }
 

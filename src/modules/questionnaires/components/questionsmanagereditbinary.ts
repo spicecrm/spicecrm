@@ -1,9 +1,11 @@
 /**
  * @module ModuleQuestionnaires
  */
-import {Component, OnInit, Input } from '@angular/core';
-import {model} from '../../../services/model.service';
-import {language} from '../../../services/language.service';
+import { Component, OnInit, Input } from '@angular/core';
+import { model } from '../../../services/model.service';
+import { language } from '../../../services/language.service';
+import { view } from '../../../services/view.service';
+import { QuestionsManagerEditBasicWithOptions } from './questionsmanagereditbasicwithoptions';
 
 declare var _: any;
 
@@ -12,23 +14,23 @@ declare var _: any;
     templateUrl: './src/modules/questionnaires/templates/questionsmanagereditbinary.html',
     styles: [ 'tr.no-hover:hover td { background-color: inherit; box-shadow: none !important; }']
 })
-export class QuestionsManagerEditBinary implements OnInit {
+export class QuestionsManagerEditBinary extends QuestionsManagerEditBasicWithOptions implements OnInit {
 
-    @Input() public questionset: any = {};
-    @Input() public categorypool;
-
-    private options: any[] = []; // Should always be 2 elements (left option and right option of binary question)
-    private isBuilt = false;
-
-    constructor( private language: language, private model: model) { }
+    constructor( public language: language, public model: model, public view: view ) {
+        super( language, model, view );
+    }
 
     public ngOnInit(): void {
+        super.ngOnInit();
         this.model.data$.subscribe(data => {
             if ( !this.model.isLoading && !this.isBuilt ) this.buildEntries(); // model data is already available (loaded) AND buildEntries() has not been executed yet
         });
     }
 
-    private buildEntries(): void {
+    /**
+     * Build the list of options, after the question model (with question options) has been loaded.
+     */
+    public buildEntries(): void {
         this.isBuilt = true;
         if ( !this.model.data.questionoptions || !this.model.data.questionoptions.beans) {
             this.model.data.questionoptions = {beans: {}};
@@ -54,21 +56,33 @@ export class QuestionsManagerEditBinary implements OnInit {
         }
     }
 
-    private exchangeOptions(): void {
+    /**
+     * Exchange the two options (swap).
+     */
+    public exchangeOptions(): void {
         let tmp = this.options[0];
         this.options[0] = this.options[1];
         this.options[1] = tmp;
         this.options[0].position = 0;
         this.options[1].position = 1;
-        this.changeName();
+        this.generateName();
     }
 
-    private handleChange( event ): void {
-        if ( event === true ) this.changeName();
+    /**
+     * Handler in case the options got changed.
+     * @param event Event
+     */
+    public handleChange( event ): void {
+        if ( event === true ) this.generateName();
     }
 
-    private changeName(): void {
-        this.model.setField('name', this.options[0].name+' / '+this.options[1].name );
+    /**
+     * Generate the question name in case it is not specified yet. Generate it from the two option names.
+     */
+    public generateName(): void {
+        if ( !this.name && this.options[0].name && this.options[1].name ) {
+            this.name = this.options[0].name + ' / ' + this.options[1].name;
+        }
     }
 
 }

@@ -25,12 +25,12 @@ export class modelattachments {
     /**
      * the module of the parent object this is linked to
      */
-    public module: string = "";
+    public module: string;
 
     /**
      * the id of the parent bean
      */
-    public id: string = "";
+    public id: string;
 
     /**
      * the toal attachment count
@@ -109,7 +109,7 @@ export class modelattachments {
         this.backend.getRequest(`spiceAttachments/module/${this.module}/${this.id}`).subscribe(
             response => {
                 for (let attId in response) {
-                    if(!this.files.find(a => a.id == attId)) {
+                    if (!this.files.find(a => a.id == attId)) {
                         response[attId].date = new moment(response[attId].date);
                         this.files.push(response[attId]);
                     }
@@ -150,12 +150,12 @@ export class modelattachments {
      *
      * @param parentModel
      */
-    public cloneAttachments(parentModel: model): Observable<any>{
+    public cloneAttachments(parentModel: model): Observable<any> {
         let retSubject = new Subject();
         this.backend.postRequest(`spiceAttachments/module/${this.module}/${this.id}/clone/${parentModel.module}/${parentModel.id}`).subscribe(
             response => {
                 for (let attId in response) {
-                    if(!this.files.find(a => a.id == attId)) {
+                    if (!this.files.find(a => a.id == attId)) {
                         response[attId].date = new moment(response[attId].date);
                         this.files.push(response[attId]);
                     }
@@ -181,7 +181,7 @@ export class modelattachments {
         );
         return retSubject.asObservable();
     }
-    
+
     /**
      * returns the human readable file size fort the display
      *
@@ -228,6 +228,7 @@ export class modelattachments {
                 file_mime_type: file.type ? file.type : 'application/octet-stream',
                 filesize: file.size,
                 filename: file.name,
+                filemd5: undefined,
                 id: '',
                 text: '',
                 thumbnail: '',
@@ -276,6 +277,7 @@ export class modelattachments {
                 file_mime_type: file.type ? file.type : 'application/octet-stream',
                 filesize: file.size,
                 filename: file.name,
+                filemd5: undefined,
                 id: '',
                 text: '',
                 thumbnail: '',
@@ -303,38 +305,13 @@ export class modelattachments {
      * @param file
      */
     public uploadForUploadAttachmentsBase64(newfile, retSub, file) {
-        let request = new XMLHttpRequest();
-        let resp: any = {};
-        request.onreadystatechange = (scope: any = this) => {
-            if (request.readyState == 4) {
-                try {
-                    let retVal = JSON.parse(request.response);
 
-                    newfile.id = retVal[0].id;
-                    newfile.thumbnail = retVal[0].thumbnail;
-                    newfile.user_id = retVal[0].user_id;
-                    newfile.user_name = retVal[0].user_name;
-                    delete (newfile.uploadprogress);
 
-                    retSub.next({files: retVal});
-                    retSub.complete();
-                } catch (e) {
-                    resp = {
-                        status: "error",
-                        data: "Unknown error occurred: [" + request.responseText + "]"
-                    };
-                }
-            }
-        };
-
-        request.upload.addEventListener("progress", e => {
-            newfile.uploadprogress = Math.round(e.loaded / e.total * 100);
-            retSub.next({progress: {total: e.total, loaded: e.loaded}});
-        }, false);
-
-        request.open("POST", this.configurationService.getBackendUrl() + `/spiceAttachments/module/${this.module}/${this.id}`, true);
-        request.setRequestHeader("OAuth-Token", this.session.authData.sessionId);
-        request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        let progressSubscription = new BehaviorSubject<number>(0);
+        progressSubscription.subscribe(value => {
+            newfile.uploadprogress = Math.floor(value);
+            // retSub.next({progress: {total: e.total, loaded: e.loaded}});
+        });
 
         let fileBody = {
             file: file.filecontent,
@@ -342,7 +319,26 @@ export class modelattachments {
             filemimetype: file.type ? file.type : 'application/octet-stream'
         };
 
-        request.send(JSON.stringify(fileBody));
+        // determine the upload URL
+        // if we just upload or also link to a bean
+        let url = 'spiceAttachments';
+        if (this.module && this.id) {
+            url += `/module/${this.module}/${this.id}`;
+        }
+
+        this.backend.postRequestWithProgress(url, null, fileBody, progressSubscription).subscribe(retVal => {
+                newfile.id = retVal[0].id;
+                newfile.thumbnail = retVal[0].thumbnail;
+                newfile.filemd5 = retVal[0].filemd5;
+                newfile.user_id = retVal[0].user_id;
+                newfile.user_name = retVal[0].user_name;
+                delete (newfile.uploadprogress);
+
+                retSub.next({files: retVal});
+                retSub.complete();
+            }
+        );
+
     }
 
     /**
@@ -369,6 +365,7 @@ export class modelattachments {
             file_mime_type: filetype ? filetype : 'application/octet-stream',
             filesize: atob(filecontent).length,
             filename: filename,
+            filemd5: undefined,
             id: '',
             text: '',
             thumbnail: '',
@@ -382,38 +379,11 @@ export class modelattachments {
         this.count++;
         this.broadcastAttachmentCount();
 
-        let request = new XMLHttpRequest();
-        let resp: any = {};
-        request.onreadystatechange = (scope: any = this) => {
-            if (request.readyState == 4) {
-                try {
-                    let retVal = JSON.parse(request.response);
-
-                    newfile.id = retVal[0].id;
-                    newfile.thumbnail = retVal[0].thumbnail;
-                    newfile.user_id = retVal[0].user_id;
-                    newfile.user_name = retVal[0].user_name;
-                    delete (newfile.uploadprogress);
-
-                    retSub.next({files: retVal});
-                    retSub.complete();
-                } catch (e) {
-                    resp = {
-                        status: "error",
-                        data: "Unknown error occurred: [" + request.responseText + "]"
-                    };
-                }
-            }
-        };
-
-        request.upload.addEventListener("progress", e => {
-            newfile.uploadprogress = Math.round(e.loaded / e.total * 100);
-            retSub.next({progress: {total: e.total, loaded: e.loaded}});
-        }, false);
-
-        request.open("POST", this.configurationService.getBackendUrl() + `/spiceAttachments/module/${this.module}/${this.id}`, true);
-        request.setRequestHeader("OAuth-Token", this.session.authData.sessionId);
-        request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        let progressSubscription = new BehaviorSubject<number>(0);
+        progressSubscription.subscribe(value => {
+            newfile.uploadprogress = Math.floor(value);
+            // retSub.next({progress: {total: e.total, loaded: e.loaded}});
+        });
 
         let fileBody = {
             file: filecontent,
@@ -421,11 +391,28 @@ export class modelattachments {
             filemimetype: filetype ? filetype : 'application/octet-stream'
         };
 
-        request.send(JSON.stringify(fileBody));
+        // determine the upload URL
+        // if we just upload or also link to a bean
+        let url = 'spiceAttachments';
+        if (this.module && this.id) {
+            url += `/module/${this.module}/${this.id}`;
+        }
+
+        this.backend.postRequestWithProgress(url, null, fileBody, progressSubscription).subscribe(retVal => {
+                newfile.id = retVal[0].id;
+                newfile.thumbnail = retVal[0].thumbnail;
+                newfile.filemd5 = retVal[0].filemd5;
+                newfile.user_id = retVal[0].user_id;
+                newfile.user_name = retVal[0].user_name;
+                delete (newfile.uploadprogress);
+
+                retSub.next({files: retVal});
+                retSub.complete();
+            }
+        );
 
         return retSub.asObservable();
     }
-
 
     /**
      * loads the file locally using the HTML5 FileReader
@@ -463,6 +450,8 @@ export class modelattachments {
                 // broadcast the count
                 this.count--;
                 this.broadcastAttachmentCount();
+            }, error => {
+                this.toast.sendToast('Cannot delete attachment.', 'error', error.error.error.message, false);
             });
     }
 
@@ -487,13 +476,44 @@ export class modelattachments {
         });
     }
 
+
+    /**
+     * doanloads an attachment in he local browser that is retrived from a field on a bean
+     *
+     * @param id
+     * @param name
+     */
+    public downloadAttachmentForField(module, id, field, name?) {
+        this.backend.getRequest(`spiceAttachments/module/${module}/${id}/byfield/${field}`).subscribe(fileData => {
+            let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
+            let blobUrl = URL.createObjectURL(blob);
+            let a = document.createElement("a");
+            document.body.appendChild(a);
+            a.href = blobUrl;
+            a.download = fileData.filename;
+            a.type = fileData.file_mime_type;
+            a.click();
+            a.remove();
+        });
+    }
+
+
+    /**
+     * retrueves an attachment with a given id for a model
+     * @param id
+     */
     public getAttachment(id): Observable<any> {
         let retSubject = new Subject();
 
-        this.backend.getRequest(`spiceAttachments/module/${this.module}/${this.id}/${id}`).subscribe(fileData => {
-            retSubject.next(fileData.file);
-            retSubject.complete();
-        });
+        this.backend.getRequest(`spiceAttachments/module/${this.module}/${this.id}/${id}`).subscribe(
+            fileData => {
+                retSubject.next(fileData.file);
+                retSubject.complete();
+            },
+            err => {
+                retSubject.error(err);
+                retSubject.complete();
+            });
 
         return retSubject.asObservable();
     }

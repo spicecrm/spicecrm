@@ -17,7 +17,8 @@
                 <tr  *ngFor="let validation of validations" (click)="selectValidation(validation.id)">
                     <td>
                         <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="validation.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
-                        <system-utility-icon [colorclass]="domainmanager.getStatusColor(validation.status)" class="slds-p-right--xx-small" size="xx-small" icon="light_bulb"></system-utility-icon>
+                        <dictionary-manager-item-status [(ngModel)]="validation.status"></dictionary-manager-item-status>
+
                     </td>
                     <td>{{validation.name}}</td>
                     <td>{{validation.validation_type}}</td>

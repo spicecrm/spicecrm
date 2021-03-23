@@ -108,7 +108,7 @@ export class PriceConditionsAccountsPanel implements OnInit {
      */
     private loadConditions() {
         this.backend.getRequest(`module/PriceConditions/list/${this.model.module}/${this.model.id}`).subscribe(conditions => {
-            this.conditions = conditions;
+            this.conditions = conditions.sort((a, b) => a.valid_from > b.valid_from ? -1 : 1);
 
             // set loading to false
             this.loading = false;

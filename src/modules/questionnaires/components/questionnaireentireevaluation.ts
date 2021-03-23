@@ -2,8 +2,7 @@
  * @module ModuleQuestionnaires
  */
 import { Component, Input, OnInit } from '@angular/core';
-import {backend} from '../../../services/backend.service';
-import {language} from '../../../services/language.service';
+import { backend } from '../../../services/backend.service';
 import { model } from '../../../services/model.service';
 import { userpreferences } from '../../../services/userpreferences.service';
 
@@ -37,7 +36,7 @@ export class QuestionnaireEntireEvaluation implements OnInit {
     constructor( private backend: backend, private model: model, private userPreferences: userpreferences ) { }
 
     public ngOnInit(): void {
-        this.questionnaireId = this.inputQuestionnaireId !== undefined ? this.inputQuestionnaireId : this.model.id
+        this.questionnaireId = this.inputQuestionnaireId !== undefined ? this.inputQuestionnaireId : this.model.id;
 
         this.loadQuestionnaire();
         this.loadQuestionsets();
@@ -84,6 +83,9 @@ export class QuestionnaireEntireEvaluation implements OnInit {
 
             for ( let questionset of this.questionsets ) {
 
+                // Parse the question type parameter (from the question set, json):
+                questionset.questiontypeparameter = ( questionset.questiontypeparameter && questionset.questiontypeparameter !== '' ? JSON.parse( questionset.questiontypeparameter ) : {} );
+
                 this.questions[questionset.id] = [];
                 if ( questionset.questions && questionset.questions.beans ) {
 
@@ -110,11 +112,28 @@ export class QuestionnaireEntireEvaluation implements OnInit {
                                 keys.sort( ( a, b ) => {
                                     return question.questionoptions.beans[a].position - question.questionoptions.beans[b].position;
                                 });
+                                for ( let key of keys ) {
+                                    this.options[question.id].push( question.questionoptions.beans[key] );
+                                }
+                            } else {
+                                // In case of question type "rating" the options of each question has to be assigned to the predefined options from the question set.
+                                // In case of a rating question set: Get the answer options from the field "questiontypeparameter".
+                                if ( questionset.questiontype === 'ratinggroup' && questionset.questiontypeparameter.rating ) {
+                                    let sortedOptions = [];
+                                    for ( let entry of questionset.questiontypeparameter.rating.entries ) {
+                                        let isOptionFound = false;
+                                        for ( let key of keys ) {
+                                            if ( question.questionoptions.beans[key].questionset_type_parameter_id === entry.id ) {
+                                                isOptionFound = true;
+                                                sortedOptions.push( question.questionoptions.beans[key] );
+                                                break;
+                                            }
+                                        }
+                                        if( !isOptionFound ) sortedOptions.push( {} );
+                                    }
+                                    this.options[question.id] = sortedOptions;
+                                }
                             }
-                            for ( let key of keys ) {
-                                this.options[question.id].push( question.questionoptions.beans[key] );
-                            }
-
                         }
 
                     }

@@ -5,9 +5,6 @@ import {CommonModule} from "@angular/common";
 import {NgModule} from "@angular/core";
 import {FormsModule}   from "@angular/forms";
 
-// SERVICEs
-import {VersionManagerService} from "../services/versionmanager.service";
-
 // MODULEs
 import {SystemComponents} from "../systemcomponents/systemcomponents";
 import {DirectivesModule} from "../directives/directives";
@@ -25,17 +22,7 @@ import /*embed*/ {domainmanager} from "./services/domainmanager.service";
 import /*embed*/ {dictionarymanager} from "./services/dictionarymanager.service";
 
 // COMPONENTs
-import /*embed*/ {DomainManager} from "./components/domainmanager";
-import /*embed*/ {DomainManagerDefinitions} from "./components/domainmanagerdefinitions";
-import /*embed*/ {DomainManagerFields} from "./components/domainmanagerfields";
-import /*embed*/ {DomainManagerFieldTabs} from "./components/domainmanagerfieldtabs";
-import /*embed*/ {DomainManagerFieldDetails} from "./components/domainmanagerfielddetails";
-import /*embed*/ {DomainManagerFieldValidation} from "./components/domainmanagerfieldvalidation";
-import /*embed*/ {DomainManagerAddDefinitionModal} from "./components/domainmanageradddefinitionmodal";
-import /*embed*/ {DomainManagerAddFieldModal} from "./components/domainmanageraddfieldmodal";
-import /*embed*/ {DomainManagerSelectValidation} from "./components/domainmanagerselectvalidation";
-import /*embed*/ {DomainManagerAddValidation} from "./components/domainmanageraddvalidation";
-import /*embed*/ {DomainManagerAddValidationValueModal} from "./components/domainmanageraddvalidationvaluemodal";
+import /*embed*/ {DictionaryManagerItemStatus} from "./components/dictionarymanageritemstatus";
 
 import /*embed*/ {DictionaryManager} from "./components/dictionarymanager";
 import /*embed*/ {DictionaryManagerDefinitions} from "./components/dictionarymanagerdefinitions";
@@ -51,10 +38,25 @@ import /*embed*/ {DictionaryManagerRelationshipAddOneToMany} from "./components/
 import /*embed*/ {DictionaryManagerRelationshipContainerOneToMany} from "./components/dictionarymanagerrelationshipcontaineronetomany";
 import /*embed*/ {DictionaryManagerRelationshipAddManyToMany} from "./components/dictionarymanagerrelationshipaddmanytomany";
 import /*embed*/ {DictionaryManagerRelationshipContainerManyToMany} from "./components/dictionarymanagerrelationshipcontainermanytomany";
+import /*embed*/ {DictionaryManagerRelationshipAddParent} from "./components/dictionarymanagerrelationshipaddparent";
+import /*embed*/ {DictionaryManagerRelationshipContainerParent} from "./components/dictionarymanagerrelationshipcontainerparent";
 import /*embed*/ {DictionaryManagerIndexes} from "./components/dictionarymanagerindexes";
 import /*embed*/ {DictionaryManagerIndexAdd} from "./components/dictionarymanagerindexadd";
 import /*embed*/ {DictionaryManagerIndexDetails} from "./components/dictionarymanagerindexdetails";
 import /*embed*/ {DictionaryManagerFields} from "./components/dictionarymanagerfields";
+
+
+import /*embed*/ {DomainManager} from "./components/domainmanager";
+import /*embed*/ {DomainManagerDefinitions} from "./components/domainmanagerdefinitions";
+import /*embed*/ {DomainManagerFields} from "./components/domainmanagerfields";
+import /*embed*/ {DomainManagerFieldTabs} from "./components/domainmanagerfieldtabs";
+import /*embed*/ {DomainManagerFieldDetails} from "./components/domainmanagerfielddetails";
+import /*embed*/ {DomainManagerFieldValidation} from "./components/domainmanagerfieldvalidation";
+import /*embed*/ {DomainManagerAddDefinitionModal} from "./components/domainmanageradddefinitionmodal";
+import /*embed*/ {DomainManagerAddFieldModal} from "./components/domainmanageraddfieldmodal";
+import /*embed*/ {DomainManagerSelectValidation} from "./components/domainmanagerselectvalidation";
+import /*embed*/ {DomainManagerAddValidation} from "./components/domainmanageraddvalidation";
+import /*embed*/ {DomainManagerAddValidationValueModal} from "./components/domainmanageraddvalidationvaluemodal";
 
 import /*embed*/ {FieldsetManager} from "./components/fieldsetmanager";
 import /*embed*/ {FieldsetManagerFieldsetDetails} from "./components/fieldsetmanagerfieldsetdetails";
@@ -91,13 +93,13 @@ import /*embed*/ {MailboxesEWSTrafficManager} from "./components/mailboxesewstra
 import /*embed*/ {MailboxesEWSSelectFoldersModal} from "./components/mailboxesewsselectfoldersmodal";
 import /*embed*/ {MailboxManagerAddDialog} from "./components/mailboxmanageradddialog";
 import /*embed*/ {MailboxesIMAPSMTPSelectFoldersModal} from "./components/mailboxesimapsmtpselectfoldersmodal";
-import /*embed*/ {ServiceCategoryManagerComponent} from "./components/servicecategorymanager";
 import /*embed*/ {MailboxesImapSmtpTrafficManager} from "./components/mailboxesimapsmtptrafficmanager";
 import /*embed*/ {MailboxesTransportManager} from "./components/mailboxestransportmanager";
 import /*embed*/ {MailboxesProcessors} from "./components/mailboxesprocessors";
 import /*embed*/ {SelectTreeComponent} from "./components/selecttree";
 import /*embed*/ {SelectTreeAddDialog} from "./components/selecttreeadddialog";
 import /*embed*/ {ConfigCleaner} from "./components/configcleaner";
+import /*embed*/ {StyleCacheCleaner} from "./components/stylecachecleaner";
 import /*embed*/ {GoogleCalendarManager} from "./components/googlecalendarmanager";
 import /*embed*/ {ConfigTransfer} from './components/configtransfer';
 
@@ -167,6 +169,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         DictionaryManagerDefinitionTabs,
         DictionaryManagerItems,
         DictionaryManagerItemDetails,
+        DictionaryManagerItemStatus,
         DictionaryManagerAddDefinitionModal,
         DictionaryManagerAddItemModal,
         DictionaryManagerRelationships,
@@ -176,6 +179,8 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         DictionaryManagerRelationshipContainerOneToMany,
         DictionaryManagerRelationshipAddManyToMany,
         DictionaryManagerRelationshipContainerManyToMany,
+        DictionaryManagerRelationshipAddParent,
+        DictionaryManagerRelationshipContainerParent,
         DictionaryManagerIndexes,
         DictionaryManagerIndexAdd,
         DictionaryManagerIndexDetails,
@@ -230,7 +235,6 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         MailboxesEWSSelectFoldersModal,
         MailboxesTransportManager,
         SortPipe,
-        ServiceCategoryManagerComponent,
         MailboxesProcessors,
         SelectTreeComponent,
         SelectTreeAddDialog,
@@ -238,6 +242,7 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         ModuleConfigAddDialog,
         WorkbenchConfig,
         ConfigCleaner,
+        StyleCacheCleaner,
         GoogleCalendarManager,
         ObjectRepositoryManager,
         ObjectRepositoryManagerFilter,

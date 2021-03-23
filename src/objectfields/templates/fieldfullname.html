@@ -15,7 +15,7 @@
             </div>
             <field-messages [fieldname]="fieldsalutation"></field-messages>
         </div>
-        <div class="slds-col slds-form-element__control slds-p-left--xx-small slds-align-top" [ngClass]="getClassesForSubField(fielddegree)">
+        <div *ngIf="!isSimple" class="slds-col slds-form-element__control slds-p-left--xx-small slds-align-top" [ngClass]="getClassesForSubField(fielddegree)">
             <field-label [fieldname]="fielddegree"></field-label>
             <input class="slds-input" type="text" [(ngModel)]="degree1"/>
             <field-messages [fieldname]="fielddegree"></field-messages>
@@ -30,7 +30,7 @@
             <input #focus class="slds-input" type="text" [(ngModel)]="last_name" [ngModelOptions]="{updateOn: 'blur'}"/>
             <field-messages [fieldname]="fieldlastname"></field-messages>
         </div>
-        <div class="slds-col slds-form-element__control slds-p-left--xx-small slds-align-top" [ngClass]="getClassesForSubField(fieldlasttitle)">
+        <div *ngIf="!isSimple" class="slds-col slds-form-element__control slds-p-left--xx-small slds-align-top" [ngClass]="getClassesForSubField(fieldlasttitle)">
             <field-label [fieldname]="fieldlasttitle"></field-label>
             <input class="slds-input" type="text" [(ngModel)]="degree2"/>
             <field-messages [fieldname]="fieldlasttitle"></field-messages>

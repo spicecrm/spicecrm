@@ -96,7 +96,7 @@ export class SystemModuleTreeItem {
      */
     private loadItems() {
         this.isLoading = true;
-        this.backend.getRequest('/dictionary/browser/' + this.module + '/nodes').subscribe(items => {
+        this.backend.getRequest('dictionary/browser/' + this.module + '/nodes').subscribe(items => {
             if (items) {
                 this.nodeitems = items
                     .map(item => {

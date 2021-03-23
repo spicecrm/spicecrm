@@ -1,44 +1,44 @@
 /**
  * @module ModuleQuestionnaires
  */
-import {Component, OnInit, Input } from '@angular/core';
-import {model} from '../../../services/model.service';
-import {metadata} from '../../../services/metadata.service';
-import {language} from '../../../services/language.service';
-import {view} from '../../../services/view.service';
+import { Component, OnInit } from '@angular/core';
+import { model } from '../../../services/model.service';
+import { language } from '../../../services/language.service';
+import { view } from '../../../services/view.service';
+import { QuestionsManagerEditBasic } from './questionsmanagereditbasic';
 
 @Component({
     selector: 'questions-manager-edit-text',
     templateUrl: './src/modules/questionnaires/templates/questionsmanageredittext.html'
 })
-export class QuestionsManagerEditText implements OnInit {
-
-    @Input() public questionset: any = {};
-    @Input() public categorypool;
+export class QuestionsManagerEditText extends QuestionsManagerEditBasic implements OnInit {
 
     private answer: any = {}; // No array, only one element (a text answer)
-    private sequenced = false;
-    private isBuilt = false;
 
-    constructor( private language: language, private metadata: metadata, private model: model, private view: view ) {
-        this.view.isEditable = true;
-        this.view.setEditMode();
+    /**
+     * Getter for the sequenced flag, stored in the question parameters.
+     */
+    public get sequenced(): boolean {
+        return !!this.questionparameters.sequenced;
+    }
+
+    /**
+     * Setter for the sequenced flag, stored in the question parameters.
+     */
+    public set sequenced( value: boolean ) {
+        this.questionparameters.sequenced = value;
+        this.writeQuestionparametersToModel();
+    }
+
+    constructor( public language: language, public model: model, public view: view ) {
+        super( language, model, view );
     }
 
     public ngOnInit(): void {
-        this.model.data$.subscribe(data => {
-            if ( !this.model.isLoading && !this.isBuilt ) this.buildEntries(); // model data is already available (loaded) AND buildEntries() has not been executed yet
-        });
-    }
-
-    private buildEntries(): void {
-
-        this.isBuilt = true;
-
-        if ( this.questionset.data.questiontypeparameter.length ) {
-            let config = JSON.parse( this.questionset.data.questiontypeparameter );
-            if ( config.text && config.text.sequenced ) this.sequenced = config.text.sequenced;
-        }
+        super.ngOnInit();
+        // Create the property "sequenced", if not yet existing in the question parameter object.
+        // "sequenced" is specific for questions of type "text".
+        if ( this.questionparameters.sequenced === undefined ) this.sequenced = false;
 
         if ( !this.model.data.questionoptions || !this.model.data.questionoptions.beans ) {
             this.model.data.questionoptions = { beans: {} };

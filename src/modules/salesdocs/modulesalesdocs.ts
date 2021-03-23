@@ -18,7 +18,7 @@ import /*embed*/ {SalesDocsItemsParentPipe} from './pipes/salesdocsitemsparentpi
 
 /**
  * fields
-  */
+ */
 import /*embed*/ {fieldSalesdocTypes} from './fields/fieldsalesdoctypes';
 import /*embed*/ {fieldSalesdocItemTypes} from './fields/fieldsalesdocitemtypes';
 import /*embed*/ {fieldSalesdocTaxCategories} from './fields/fieldsalesdoctaxcategories';
@@ -44,13 +44,15 @@ import /*embed*/ {SalesdocsRejectButton} from "./components/salesdocsrejectbutto
 import /*embed*/ {SalesdocsRejectModal} from "./components/salesdocsrejectmodal";
 import /*embed*/ {SalesDocsRejectItemsContainer} from "./components/salesdocsrejectitemscontainer";
 import /*embed*/ {SalesDocsItemRejectContainer} from "./components/salesdocsitemrejectcontainer";
-import /*embed*/ {SalesdocsWithReferenceButton} from "./components/salesdocswithreferencebutton";
-import /*embed*/ {SalesdocsWithReferenceTypeModal} from "./components/salesdocswithreferencetypemodal";
-import /*embed*/ {SalesdocsWithReferenceSelectItemsModal} from "./components/salesdocswithreferenceselectitemsmodal";
-import /*embed*/ {SalesDocsEquipmentPanel } from './components/salesdocsequipmentpanel';
-import /*embed*/ {SalesDocsEquipmentItem } from './components/salesdocsequipmentitem';
-import /*embed*/ {SalesVoucherRedeemButton } from './components/salesvoucherredeembutton';
-import /*embed*/ {SalesVoucherRedeemModal } from './components/salesvoucherredeemmodal';
+import /*embed*/ {SalesDocsEquipmentPanel} from './components/salesdocsequipmentpanel';
+import /*embed*/ {SalesDocsEquipmentItem} from './components/salesdocsequipmentitem';
+import /*embed*/ {SalesVoucherRedeemButton} from './components/salesvoucherredeembutton';
+import /*embed*/ {SalesVoucherRedeemModal} from './components/salesvoucherredeemmodal';
+import /*embed*/ {SalesDocsConvertButton} from './components/salesdocsconvertbutton';
+import /*embed*/ {SalesDocsConvertSelectType} from './components/salesdocsconvertselecttype';
+import /*embed*/ {SalesDocsConvertModalItemHeader} from './components/salesdocsconvertmodalitemheader';
+import /*embed*/ {SalesDocsConvertModalItem} from './components/salesdocsconvertmodalitem';
+import /*embed*/ {SalesDocsConvertModal} from './components/salesdocsconvertmodal';
 
 @NgModule({
     imports: [
@@ -89,13 +91,15 @@ import /*embed*/ {SalesVoucherRedeemModal } from './components/salesvoucherredee
         SalesdocsRejectModal,
         SalesDocsRejectItemsContainer,
         SalesDocsItemRejectContainer,
-        SalesdocsWithReferenceButton,
-        SalesdocsWithReferenceTypeModal,
-        SalesdocsWithReferenceSelectItemsModal,
         SalesDocsEquipmentItem,
         SalesDocsEquipmentPanel,
         SalesVoucherRedeemButton,
-        SalesVoucherRedeemModal
+        SalesVoucherRedeemModal,
+        SalesDocsConvertButton,
+        SalesDocsConvertSelectType,
+        SalesDocsConvertModalItemHeader,
+        SalesDocsConvertModalItem,
+        SalesDocsConvertModal
     ]
 })
 export class ModuleSalesDocs {

@@ -41,6 +41,10 @@ export class QuestionsManagerEditOptionSingleMulti implements OnInit {
             });
     }
 
+    /**
+     * Handler if the checkbox "is_correct_option" got changed.
+     * @param event Event
+     */
     private onChange_isCorrectOption( event ): void {
         this.option.is_correct_option = event.target.checked;
     }
@@ -50,10 +54,6 @@ export class QuestionsManagerEditOptionSingleMulti implements OnInit {
     }
     private optionDown(): void {
         this.event.emit( 'down');
-    }
-
-    private change(): void {
-        null;
     }
 
 }

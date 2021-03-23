@@ -8,8 +8,6 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
 
 import {userpreferences} from "../../services/userpreferences.service";
 
-import {VersionManagerService} from "../../services/versionmanager.service";
-
 import {ObjectFields} from "../../objectfields/objectfields";
 import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {ObjectComponents} from "../../objectcomponents/objectcomponents";
@@ -76,13 +74,4 @@ import /*embed*/ {CalendarThreeDaysDashlet} from "./components/calendarthreedays
     ],
     providers: [userpreferences]
 })
-export class ModuleCalendar {
-    public version = "1.0";
-    public build_date = "/*build_date*/";
-
-    constructor(
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
-    }
-}
+export class ModuleCalendar {}

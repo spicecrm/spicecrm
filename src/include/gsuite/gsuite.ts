@@ -55,7 +55,6 @@ import {territories} from "../../services/territories.service";
 import {currency} from "../../services/currency.service";
 import {footer} from "../../services/footer.service";
 import {cookie} from "../../services/cookie.service";
-import {VersionManagerService} from "../../services/versionmanager.service";
 import {modal} from "../../services/modal.service";
 import {layout} from "../../services/layout.service";
 import {loggerService} from "../../services/logger.service";
@@ -63,6 +62,7 @@ import {telephony} from "../../services/telephony.service";
 import {socket} from "../../services/socket.service";
 import {SystemDynamicRouteInterceptor} from "../../systemcomponents/components/systemdynamicrouteinterceptor";
 
+import {model} from "../../services/model.service";
 import {ModuleGroupware} from "../../include/groupware/groupware";
 import {GroupwareService} from '../../include/groupware/services/groupware.service';
 
@@ -101,6 +101,7 @@ import /*embed*/ {GSuiteLoginPane} from "./components/gsuiteloginpane";
     ],
     bootstrap: [GSuitePane],
     providers: [
+        model,
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         {provide: GroupwareService, useClass: GSuiteGroupware},
         GSuiteBrokerService,
@@ -133,7 +134,6 @@ import /*embed*/ {GSuiteLoginPane} from "./components/gsuiteloginpane";
         userpreferences,
         cookie,
         MathExpressionCompilerService,
-        VersionManagerService,
         modal,
         loggerService
     ]

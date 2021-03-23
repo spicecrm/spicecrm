@@ -1,11 +1,14 @@
-<div class="slds-p-horizontal--small slds-p-vertical--small slds-border--bottom" (click)="selectMail(email)" style="cursor: pointer;" [ngClass]="{'slds-theme_default': isSelected}">
-    <div class="slds-grid slds-grid--vertical-align-center">
-        <!--div>{{email.sentiment}}/{{email.magnitude}} </div-->
-        <system-utility-icon *ngIf="email.attachments_count > 0" icon="attach" size="xx-small" class="slds-p-right--x-small"></system-utility-icon>
-        <div class="slds-text-title_caps slds-truncate" [ngStyle]="nameStyle">{{email.name}}</div>
-        <div class="slds-col--bump-left slds-p-left--xx-small">
-            <field-container field="date_sent" fielddisplayclass="slds-truncate"></field-container>
+<div class="slds-p-horizontal--small slds-p-vertical--xx-small slds-border--bottom" (click)="selectMail(email)" style="cursor: pointer;" [ngClass]="{'slds-theme_default': isSelected}">
+    <div class="slds-grid">
+        <div class="slds-grow slds-truncate" [class.slds-grid]="mailboxesEmails.activeSplitType?.name != 'verticalSplit'">
+            <field-container field="name" [fieldconfig]="{fieldtype: 'emailsubject'}" class="slds-grow slds-truncate slds-p-right--xx-small spice-display-block" fielddisplayclass=""></field-container>
+            <field-container field="from_addr" class="slds-truncate spice-display-block" fielddisplayclass="" style="min-width: 220px; width: 220px"></field-container>
+        </div>
+        <div class="slds-p-left--xx-small slds-truncate slds-grid slds-grid--align-spread" style="min-width: 100px; width: 100px">
+            <div style="width: 22px">
+                <system-utility-icon *ngIf="email.attachments_count > 0" icon="attach" size="xx-small" class="slds-p-right--x-small"></system-utility-icon>
+            </div>
+            <field-container field="date_sent" [fieldconfig]="{fieldtype: 'activitydate'}" class="slds-truncate" fielddisplayclass=""></field-container>
         </div>
     </div>
-    <object-record-fieldset [fieldset]="fieldset" fielddisplayclass=""></object-record-fieldset>
 </div>

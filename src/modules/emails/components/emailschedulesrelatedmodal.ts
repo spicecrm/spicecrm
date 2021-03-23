@@ -1,7 +1,7 @@
 /**
  * @module ModuleEmails
  */
-import {Component, Injector} from '@angular/core';
+import {Component, Injector, SkipSelf} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
@@ -23,6 +23,7 @@ export class EmailSchedulesRelatedModal {
     private currentModule: string;
     constructor(private language: language,
                 private model: model,
+                @SkipSelf() private parentModel: model,
                 private injector: Injector,
                 private view: view,
                 private modal: modal,
@@ -39,8 +40,15 @@ export class EmailSchedulesRelatedModal {
      * initalize emailschedules and filter the linkedBeans
      */
     public ngOnInit() {
+        // set the module
         this.model.module = "EmailSchedules";
-        this.model.initialize();
+        // initialize the model
+        this.model.initialize(this.parentModel);
+        this.model.data.parent_id = this.parentModel.id;
+        this.model.data.parent_type = this.parentModel.module;
+        // start editing
+        this.model.startEdit(false);
+
         this.fiilterProspects();
 
     }
@@ -81,7 +89,7 @@ export class EmailSchedulesRelatedModal {
             let emailsubjectCondition = body.data.hasOwnProperty('email_subject');
             let selectedLinksCondition = selectedLinks.length > 0;
             if(mailboxCondition && emailsubjectCondition && selectedLinksCondition) {
-                this.backend.postRequest('/modules/EmailSchedules/saveScheduleFromRelated', {}, body).subscribe(result => {
+                this.backend.postRequest('modules/EmailSchedules/saveScheduleFromRelated', {}, body).subscribe(result => {
                     loadingRef.instance.self.destroy();
                     if (result.status) {
                         this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');

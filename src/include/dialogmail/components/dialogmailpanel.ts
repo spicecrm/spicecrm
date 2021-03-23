@@ -21,7 +21,7 @@ export class DialogMailPanel {
 
     private getUserMails() {
         this.isLoading = true;
-        this.backend.getRequest(`/DialogMail/Contact/${this.model.id}/mails`)
+        this.backend.getRequest(`DialogMail/Contact/${this.model.id}/mails`)
             .subscribe(res => {
                 this.dMailList = res;
                 this.isLoading = false;

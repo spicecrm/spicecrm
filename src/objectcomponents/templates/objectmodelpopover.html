@@ -7,11 +7,8 @@
             <system-componentset *ngIf="headercomponentset" [componentset]="headercomponentset"></system-componentset>
             <object-model-popover-header *ngIf="!headercomponentset"></object-model-popover-header>
             <footer class="slds-grid slds-wrap slds-p-right--large">
-                <div class="slds-p-horizontal--small slds-size--1-of-2 slds-p-bottom--x-small" *ngFor="let field of fields">
+                <div class="slds-p-horizontal--small slds-size--1-of-2 slds-p-bottom--x-small" [ngClass]="{'slds-size--1-of-2': fields.length > 1, 'slds-size--1-of-1': fields.length == 1}"  *ngFor="let field of fields">
                     <dl>
-                        <!--dt>
-                            <field-label [fieldname]="field.field" [fieldconfig]="field.fieldconfig"></field-label>
-                        </dt-->
                         <dd>
                             <field-container [field]="field.field" [fieldconfig]="field.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
                         </dd>

@@ -1,0 +1,6 @@
+<div *ngIf="hasExpiration" class="slds-grid slds-grid_vertical-align-center">
+    <span *ngIf="isTrial" class="slds-m-horizontal_x-small"><system-label label="LBL_TRIAL_EXPIRES_IN_BEFORE"></system-label></span>
+    <span *ngIf="!isTrial" class="slds-m-horizontal_x-small"><system-label label="LBL_LICENSE_EXPIRES_IN_BEFORE"></system-label></span>
+    <span class="slds-box slds-box_xx-small slds-theme_default">{{daysLeft}}</span>
+    <span class="slds-m-horizontal_x-small"><system-label label="LBL_TRIAL_EXPIRES_IN_AFTER"></system-label></span>
+</div>

@@ -1,0 +1,12 @@
+<questionnaire-render *ngIf="model.getField('questionnaire_id')"
+        [questionnaireId]="questionnaireId"
+        [editMode]="view.getMode() === 'edit' ? 'questionnaire':'off'"
+        [showQuestionnaireTitle]="false"
+        [inModal]="false"
+        [parentType]="model.module"
+        [parentId]="model.id"
+        (answersChanged$)="answersChanged()"
+        (questionnaireParticipation$)="questionnaireParticipation=$event"
+></questionnaire-render>
+
+<div *ngIf="!model.getField('questionnaire_id')">No questionnaire selected yet.</div>

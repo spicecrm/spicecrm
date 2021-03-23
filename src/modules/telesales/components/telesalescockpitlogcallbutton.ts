@@ -40,7 +40,7 @@ export class TeleSalesCockpitLogCallButton {
             if (response) {
                 let params = {call_id: response.id};
 
-                this.backend.postRequest(`/module/CampaignLog/${item.id}/called`, params)
+                this.backend.postRequest(`module/CampaignLog/${item.id}/called`, params)
                     .subscribe(status => {
                         if (status.success) {
                             this.updateItem();

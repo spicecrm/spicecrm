@@ -15,7 +15,9 @@ import {language} from '../../services/language.service';
 import {dictionarymanager} from '../services/dictionarymanager.service';
 import {DictionaryIndex, DictionaryItem} from "../interfaces/dictionarymanager.interfaces";
 
-
+/**
+ * displays the indexes related to the dictionary definition selected
+ */
 @Component({
     selector: 'dictionary-manager-indexes',
     templateUrl: './src/workbench/templates/dictionarymanagerindexes.html',
@@ -28,12 +30,31 @@ export class DictionaryManagerIndexes {
     /**
      * gets all non deleted entries sorted by name
      */
-    get dictionaryindexes(): DictionaryIndex[] {
+    get dictionaryIndexes(): DictionaryIndex[] {
 
         // return an empty array when no DictionaryDefinition is set
         if (!this.dictionarymanager.currentDictionaryDefinition) return [];
 
         return this.dictionarymanager.dictionaryindexes.filter(d => d.deleted == 0 && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition).sort((a, b) => a.name.localeCompare(b.name) ? 1 : -1);
+    }
+
+    /**
+     * gets all non deleted entries sorted by name
+     */
+    get dictionaryIndexesForTemplates(): any[] {
+        let relatedindexes: any[] = [];
+
+        for(let item of this.dictionarymanager.dictionaryitems.filter(d => d.deleted == 0 && d.sysdictionary_ref_id && d.sysdictionarydefinition_id == this.dictionarymanager.currentDictionaryDefinition)){
+            let relIndexes = this.dictionarymanager.dictionaryindexes.filter(d => d.deleted == 0 && d.sysdictionarydefinition_id == item.sysdictionary_ref_id);
+            if(relIndexes.length > 0) {
+                relatedindexes.push({
+                    relatedTemplateId: item.sysdictionary_ref_id,
+                    indexes: relIndexes
+                });
+            }
+        }
+
+        return relatedindexes;
     }
 
     /**

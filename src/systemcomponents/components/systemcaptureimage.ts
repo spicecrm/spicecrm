@@ -69,7 +69,7 @@ export class SystemCaptureImage implements AfterViewInit{
             file: dataUrl.replace('data:image/png;base64,', ''),
             filemimetype: 'image/png'
         };
-        this.backend.postRequest('/module/'+ this.model.module +'/' + this.model.id + '/attachment',{},  postBody).subscribe(response => {
+        this.backend.postRequest('module/'+ this.model.module +'/' + this.model.id + '/attachment',{},  postBody).subscribe(response => {
             this.response$.emit(response[0]);
             this.close();
         })

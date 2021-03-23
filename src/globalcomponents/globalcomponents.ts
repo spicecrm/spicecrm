@@ -25,6 +25,7 @@ import {metadata} from "../services/metadata.service";
 
 import /*embed*/ {GlobalCopyright} from "./components/globalcopyright";
 import /*embed*/ {GlobalHeader} from "./components/globalheader";
+import /*embed*/ {GlobalHeaderTrialBar} from "./components/globalheadertrialbar";
 import /*embed*/ {GlobalHeaderTop} from "./components/globalheadertop";
 import /*embed*/ {GlobalHeaderSearch} from "./components/globalheadersearch";
 import /*embed*/ {GlobalHeaderSearchResultsItems} from "./components/globalheadersearchresultsitems";
@@ -39,11 +40,18 @@ import /*embed*/ {GlobalHeaderLabelInlineEdit} from "./components/globalheaderla
 import /*embed*/ {GlobalHeaderWorkbench} from "./components/globalheaderworkbench";
 import /*embed*/ {GlobalHeaderReload} from "./components/globalheaderreload";
 import /*embed*/ {GlobalFooter} from "./components/globalfooter";
+
+import /*embed*/ {GlobalSetup} from "./components/globalsetup";
 import /*embed*/ {GlobalLogin} from "./components/globallogin";
 import /*embed*/ {GlobalLoginLoading} from "./components/globalloginloading";
-import /*embed*/ {GlobalSetup} from "./components/globalsetup";
+import /*embed*/ {GlobalLoginChangePassword} from "./components/globalloginchangepassword";
 import /*embed*/ {GlobalLoginForgotPassword} from "./components/globalloginforgotpassword";
 import /*embed*/ {GlobalLoginResetPassword} from "./components/globalloginresetpassword";
+import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
+import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
+import /*embed*/ {GlobalReLogin} from './components/globalrelogin';
+import /*embed*/ {GlobalReConnect} from './components/globalreconnect';
+
 import /*embed*/ {GlobalNavigation} from "./components/globalnavigation";
 import /*embed*/ {GlobalNavigationMenu} from "./components/globalnavigationmenu";
 import /*embed*/ {GlobalNavigationMenuItemActionContainer} from "./components/globalnavigationmenuitemactioncontainer";
@@ -93,15 +101,11 @@ import /*embed*/ {GlobalSearchModuleItem} from "./components/globalsearchmodulei
 import /*embed*/ {GlobalNewsFeed} from "./components/globalnewsfeed";
 import /*embed*/ {GlobalNewsFeedItem} from "./components/globalnewsfeeditem";
 
-import /*embed*/ {GlobalLoginGoogle} from "./components/globallogingoogle";
 import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobtainimportantpreferences';
 import /*embed*/ {GlobalObtainGDPRConsent} from './components/globalobtaingdprconsent';
 import /*embed*/ {GlobalObtainGDPRConsentContainer} from './components/globalobtaingdprconsentcontainer';
 import /*embed*/ {GlobalHeaderImage} from './components/globalheaderimage';
-import /*embed*/ {GlobalLoginImage} from './components/globalloginimage';
-
 import /*embed*/ {GlobalHeaderNotifications} from './components/globalheadernotifications';
-
 
 /**
  * GlobalComponents holds records that are rendered in the global header and footer parts of the application. This includes e.g. the header menu and other components
@@ -113,22 +117,14 @@ import /*embed*/ {GlobalHeaderNotifications} from './components/globalheadernoti
         ObjectFields,
         DirectivesModule,
         SystemComponents,
-        ObjectComponents,
-        RouterModule.forRoot([
-            // {path: "login", component: GlobalLogin},
-            //{path: "setsddup", component: GlobalSetup}
-            /*
-            {path: "recent", component: GlobalRecentItems, canActivate: [loginCheck]},
-            {path: "search", component: GlobalSearch, canActivate: [loginCheck]},
-            {path: "search/:searchterm", component: GlobalSearch, canActivate: [loginCheck]},
-            */
-        ])
+        ObjectComponents
     ],
     declarations: [
         GlobalCopyright,
         GlobalNewsFeed,
         GlobalNewsFeedItem,
         GlobalHeader,
+        GlobalHeaderTrialBar,
         GlobalHeaderTop,
         GlobalHeaderSearch,
         GlobalHeaderSearchResultsItems,
@@ -156,6 +152,9 @@ import /*embed*/ {GlobalHeaderNotifications} from './components/globalheadernoti
         GlobalNavigationCompact,
         GlobalLogin,
         GlobalLoginLoading,
+        GlobalLoginChangePassword,
+        GlobalReLogin,
+        GlobalReConnect,
         GlobalSetup,
         GlobalLoginForgotPassword,
         GlobalLoginResetPassword,

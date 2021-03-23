@@ -20,11 +20,16 @@ export class QuestionsManagerAddModal implements OnInit {
     @Input() public questionset: any = {};
     @Input() public questionid = '';
     @Input() public categorypool: any;
+    @Input() public questiontype: string;
 
     public response: Observable<object> = null;
     private responseSubject: Subject<any> = null;
 
+    private isLoading = false;
+
     private self: any;
+
+    private questiontypes_dom: any;
 
     @ViewChild(QuestionsManagerEditMulti, {static:false}) private refQuestionsManagerEditMulti;
 
@@ -34,14 +39,20 @@ export class QuestionsManagerAddModal implements OnInit {
     }
 
     public ngOnInit(): void {
+        this.questiontypes_dom = this.language.getDisplayOptions('questionstypes_dom');
         this.model.module = 'Questions';
         if ( this.questionid ) {
+            this.isLoading = true;
             this.model.id = this.questionid;
-            this.model.getData(true);
+            this.model.getData(true).subscribe( response => {
+                this.questiontype = this.model.getField('questiontype');
+                this.isLoading = false;
+            });
         } else {
             this.model.initializeModel();
             this.model.setField('questionset_id', this.questionset.id );
             this.model.setField('id', this.model.id );
+            this.model.setField('questiontype', this.questiontype );
         }
     }
 
@@ -71,12 +82,18 @@ export class QuestionsManagerAddModal implements OnInit {
         if ( emptyRows ) {
             this.toast.sendToast( 'You have empty rows. Complete or delete them before saving!', 'error', '', true );
         } else {
-            this.model.save().subscribe(modeldata => {
-                this.responseSubject.next( this.model.data );
-                this.responseSubject.complete();
-                this.self.destroy();
-            });
+            if ( !!this.model.data.name ) {
+                this.model.save().subscribe(modeldata => {
+                    this.responseSubject.next( this.model.data );
+                    this.responseSubject.complete();
+                    this.self.destroy();
+                });
+            }
         }
+    }
+
+    private get savingAllowed(): boolean {
+        return !!this.model.getField('name');
     }
 
 }

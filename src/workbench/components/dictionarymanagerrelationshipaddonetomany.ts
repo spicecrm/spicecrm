@@ -43,10 +43,13 @@ export class DictionaryManagerRelationshipAddOneToMany implements OnInit {
             lhs_sysdictionarydefinition_id: '',
             lhs_sysdictionaryitem_id: '',
             lhs_linkname: '',
+            lhs_linklabel: '',
             rhs_sysdictionarydefinition_id: '',
             rhs_sysdictionaryitem_id: '',
             rhs_linkname: '',
-            rhs_realname: '',
+            rhs_linklabel: '',
+            rhs_relatename: '',
+            rhs_relatelabel: '',
             relationship_type: 'one-to-many',
             deleted: 0,
             status: 'd'
@@ -77,7 +80,7 @@ export class DictionaryManagerRelationshipAddOneToMany implements OnInit {
 
         // determine the default link field and link name
         this.relationship.rhs_linkname = this.dictionarymanager.getDictionaryDefinitionName(this.relationship.lhs_sysdictionarydefinition_id).toLowerCase();
-        this.relationship.rhs_realname = this.dictionarymanager.getDictionaryDefinitionName(this.relationship.lhs_sysdictionarydefinition_id).toLowerCase() + '_name';
+        this.relationship.rhs_relatename = this.dictionarymanager.getDictionaryDefinitionName(this.relationship.lhs_sysdictionarydefinition_id).toLowerCase() + '_name';
 
         // determine the default lhs link name
         this.relationship.lhs_linkname = this.dictionarymanager.dictionarydefinitions.find(d => d.id == this.relationship.rhs_sysdictionarydefinition_id).tablename.toLowerCase();

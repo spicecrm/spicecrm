@@ -6,10 +6,10 @@ import {model} from '../../services/model.service';
 import {modal} from '../../services/modal.service';
 import {view} from '../../services/view.service';
 import {backend} from '../../services/backend.service';
-import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
+import {language} from "../../services/language.service";
 
 /**
  * renders a field with an indicator for data and marketing release according to GDPR Rules

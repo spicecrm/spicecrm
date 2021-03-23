@@ -51,6 +51,7 @@ export class ConfigTransfer {
     private importErrorMessage: string;
     private importErrorID: string;
     private dontEmptyTables = false;
+    private ignoreUnknownTables = false;
     @ViewChild('fileupload', {read: ViewContainerRef, static: true}) private fileupload: ViewContainerRef;
     private isDragOver = false;
 
@@ -126,7 +127,7 @@ export class ConfigTransfer {
                         if ( value === 100 ) this.isImporting = true;
                     });
                     this.readFileFromFilesystem( this.fileFromBrowser ).subscribe( fileContent => {
-                        this.backend.postRequestWithProgress( '/configtransfer/data/import', null, { file: fileContent, dontEmptyTables: this.dontEmptyTables }, null, progress ).subscribe( response => {
+                        this.backend.postRequestWithProgress( 'configtransfer/data/import', null, { file: fileContent, dontEmptyTables: this.dontEmptyTables, ignoreUnknownTables: this.ignoreUnknownTables }, progress ).subscribe( response => {
                                 this.isAfterUpload = this.importOK = true;
                                 this.isImporting = this.isUploading = false;
                                 this.importResponse = response;

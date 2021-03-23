@@ -20,6 +20,7 @@ export class SpiceInstallerCredentials {
     private passwordCondition: boolean = true;
     private rpPasswordCondition: boolean = true;
     private surnameCondition: boolean = true;
+    private emailCondition: boolean = true;
     /**
      * repeated password variable holder and Regexp for password
      */
@@ -39,8 +40,9 @@ export class SpiceInstallerCredentials {
         this.passwordCondition = this.spiceinstaller.password.length > 0 && this.pwRegexp.test(this.spiceinstaller.password);
         this.rpPasswordCondition = this.rpPassword == this.spiceinstaller.password;
         this.surnameCondition = this.spiceinstaller.surname.length > 0;
+        this.emailCondition = this.spiceinstaller.email.length > 0;
 
-        if (this.usernameCondition && this.passwordCondition && this.rpPasswordCondition && this.surnameCondition) {
+        if (this.usernameCondition && this.passwordCondition && this.rpPasswordCondition && this.surnameCondition && this.emailCondition) {
 
             this.spiceinstaller.configObject.credentials = {
                 username: this.spiceinstaller.username,

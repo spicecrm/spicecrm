@@ -122,6 +122,9 @@ export class SalesDocsItemContainer implements OnInit {
                 }
             }
         }
+
+        // recalculate in any case
+        this.recalculate();
     }
 
     get editing() {

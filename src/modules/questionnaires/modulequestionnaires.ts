@@ -10,14 +10,19 @@ import {ObjectComponents} from '../../objectcomponents/objectcomponents';
 import {SystemComponents} from '../../systemcomponents/systemcomponents';
 import {ModuleMediaFiles} from '../../modules/mediafiles/modulemediafiles';
 import {DirectivesModule} from '../../directives/directives';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import {CdkDragDrop, CdkDropList, moveItemInArray} from "@angular/cdk/drag-drop";
+
+import /*embed*/ {questionnaireParticipationService} from "./services/questionnaireparticipation.service";
 
 import /*embed*/ {QuestionsManager} from './components/questionsmanager';
-import /*embed*/ {QuestionsManagerEditMulti} from "./components/questionsmanagereditmulti";
-import /*embed*/ {QuestionsManagerAddModal} from './components/questionsmanageraddmodal';
 import /*embed*/ {QuestionsetTypeParameters} from './components/questionsettypeparameters';
 import /*embed*/ {QuestionsetTypeParametersRating} from './components/questionsettypeparametersrating';
 import /*embed*/ {QuestionsetTypeParametersNPS} from './components/questionsettypeparametersnps';
 import /*embed*/ {QuestionsetTypeParametersText} from './components/questionsettypeparameterstext';
+import /*embed*/ {QuestionsManagerEditBasic} from './components/questionsmanagereditbasic';
+import /*embed*/ {QuestionsManagerEditBasicWithOptions} from './components/questionsmanagereditbasicwithoptions';
+import /*embed*/ {QuestionsManagerEditMulti} from "./components/questionsmanagereditmulti";
 import /*embed*/ {QuestionsManagerEditRating} from './components/questionsmanagereditrating';
 import /*embed*/ {QuestionsManagerEditNPS} from './components/questionsmanagereditnps';
 import /*embed*/ {QuestionsManagerEditBinary} from "./components/questionsmanagereditbinary";
@@ -27,16 +32,15 @@ import /*embed*/ {QuestionsManagerEditText} from "./components/questionsmanagere
 import /*embed*/ {QuestionsManagerEditIst} from "./components/questionsmanagereditist";
 import /*embed*/ {QuestionsManagerEditOptionIst} from "./components/questionsmanagereditoptionist";
 import /*embed*/ {QuestionsManagerEditOptionSingleMulti} from "./components/questionsmanagereditoptionsinglemulti";
+import /*embed*/ {QuestionsManagerAddModal} from './components/questionsmanageraddmodal';
 import /*embed*/ {QuestionnairePreviewButton} from './components/questionnairepreviewbutton';
 import /*embed*/ {QuestionnairePreview} from './components/questionnairepreview';
 import /*embed*/ {QuestionnaireRender} from './components/questionnairerender';
 import /*embed*/ {QuestionsetPreviewButton} from './components/questionsetpreviewbutton';
 import /*embed*/ {QuestionsetPreview} from './components/questionsetpreview';
 import /*embed*/ {QuestionsetRender} from './components/questionsetrender';
+import /*embed*/ {QuestionsetRenderBasic} from './components/questionsetrenderbasic';
 import /*embed*/ {QuestionsetRenderRating} from './components/questionsetrenderrating';
-import /*embed*/ {QuestionsetRenderNPS} from './components/questionsetrendernps';
-import /*embed*/ {QuestionsetRenderText} from './components/questionsetrendertext';
-import /*embed*/ {QuestionsetRenderIST, QuestionTypeISTTextPipe, QuestionTypeISTOptionsPipe} from './components/questionsetrenderist';
 import /*embed*/ {QuestionnaireCategoryPool} from './components/questionnairecategorypool';
 import /*embed*/ {QuestionsManagerEditCategories} from './components/questionsmanagereditcategories';
 import /*embed*/ {QuestionnaireEvaluation} from './components/questionnaireevaluation';
@@ -45,15 +49,24 @@ import /*embed*/ {QuestionnaireEvaluationBar} from './components/questionnaireev
 import /*embed*/ {QuestionnaireEvaluationSpiderweb} from './components/questionnaireevaluationspiderweb';
 import /*embed*/ {QuestionnaireInterpretationCategories} from './components/questionnaireinterpretationcategories';
 import /*embed*/ {QuestionnaireInterpretationAssignment} from './components/questionnaireinterpretationassignment';
-import /*embed*/ {QuestionsetRenderBinarySingleMulti} from './components/questionsetrenderbinarysinglemulti';
 import /*embed*/ {QuestionnaireEditor} from './components/questionnaireeditor';
 import /*embed*/ {QuestionnaireEditorQuestionsetAdd} from './components/questionnaireeditorquestionsetadd';
 import /*embed*/ {QuestionsetManager} from './components/questionsetmanager';
 import /*embed*/ {QuestionnaireResults} from './components/questionnaireresults';
 import /*embed*/ {QuestionnaireSingleEvaluationValues} from './components/questionnairesingleevaluationvalues';
 import /*embed*/ {QuestionnaireEntireEvaluation} from './components/questionnaireentireevaluation';
+import /*embed*/ {QuestionnaireFillOutButton} from './components/questionnairefilloutbutton';
+import /*embed*/ {QuestionnaireFillOutModal} from './components/questionnairefilloutmodal';
+import /*embed*/ {QuestionRenderBasic} from './components/questionrenderbasic';
+import /*embed*/ {QuestionRenderIST, QuestionTypeISTTextPipe, QuestionTypeISTOptionsPipe} from './components/questionrenderist';
+import /*embed*/ {QuestionRenderRating} from './components/questionrenderrating';
+import /*embed*/ {QuestionRenderText} from './components/questionrendertext';
+import /*embed*/ {QuestionRenderNPS} from './components/questionrendernps';
+import /*embed*/ {QuestionRenderBinarySingleMulti} from './components/questionrenderbinarysinglemulti';
+import /*embed*/ {QuestionsManagerEditRatingGroup} from './components/questionsmanagereditratinggroup';
+import /*embed*/ {fieldQuestionnaire} from './fields/fieldquestionnaire';
 
-@NgModule({
+@NgModule( {
     imports: [
         CommonModule,
         FormsModule,
@@ -62,7 +75,7 @@ import /*embed*/ {QuestionnaireEntireEvaluation} from './components/questionnair
         ObjectComponents,
         SystemComponents,
         ModuleMediaFiles,
-        DirectivesModule
+        DirectivesModule, DragDropModule
     ],
     declarations: [
         QuestionsManager,
@@ -71,6 +84,8 @@ import /*embed*/ {QuestionnaireEntireEvaluation} from './components/questionnair
         QuestionsetTypeParametersRating,
         QuestionsetTypeParametersNPS,
         QuestionsetTypeParametersText,
+        QuestionsManagerEditBasic,
+        QuestionsManagerEditBasicWithOptions,
         QuestionsManagerEditRating,
         QuestionsManagerEditNPS,
         QuestionsManagerEditBinary,
@@ -84,11 +99,8 @@ import /*embed*/ {QuestionnaireEntireEvaluation} from './components/questionnair
         QuestionsetPreviewButton,
         QuestionsetPreview,
         QuestionsetRender,
-        QuestionsetRenderIST,
+        QuestionsetRenderBasic,
         QuestionsetRenderRating,
-        QuestionsetRenderNPS,
-        QuestionsetRenderText,
-        QuestionsetRenderBinarySingleMulti,
         QuestionTypeISTTextPipe,
         QuestionTypeISTOptionsPipe,
         QuestionnairePreviewButton,
@@ -108,8 +120,16 @@ import /*embed*/ {QuestionnaireEntireEvaluation} from './components/questionnair
         QuestionnaireResults,
         QuestionnaireSingleEvaluationValues,
         QuestionnaireEntireEvaluation,
-        // QuestionnaireFillOutModal,
-        // QuestionnaireFillOutButton
+        QuestionnaireFillOutButton,
+        QuestionnaireFillOutModal,
+        QuestionRenderBasic,
+        QuestionRenderText,
+        QuestionRenderRating,
+        QuestionRenderNPS,
+        QuestionRenderIST,
+        QuestionRenderBinarySingleMulti,
+        QuestionsManagerEditRatingGroup,
+        fieldQuestionnaire
     ]
 })
 export class ModuleQuestionnaires {}
