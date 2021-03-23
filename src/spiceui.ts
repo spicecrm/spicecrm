@@ -27,7 +27,7 @@ import {configurationService} from "./services/configuration.service";
 import {helper} from "./services/helper.service";
 import {loginService, loginCheck} from "./services/login.service";
 import {session} from "./services/session.service";
-import {metadata, aclCheck} from "./services/metadata.service";
+import {metadata, aclCheck, noBack} from "./services/metadata.service";
 import {MathExpressionCompilerService} from "./services/mathexpressioncompiler";
 import {language} from "./services/language.service";
 import {recent} from "./services/recent.service";
@@ -47,7 +47,6 @@ import {currency} from "./services/currency.service";
 import {footer} from "./services/footer.service";
 import {cookie} from "./services/cookie.service";
 import {assistant} from "./services/assistant.service";
-import {VersionManagerService} from "./services/versionmanager.service";
 import {modal} from "./services/modal.service";
 import {layout} from "./services/layout.service";
 import {libloader} from "./services/libloader.service";
@@ -162,6 +161,7 @@ export class SpiceUI {
         metadata,
         modal,
         modelutilities,
+        noBack,
         navigation,
         recent,
         reminder,
@@ -173,8 +173,7 @@ export class SpiceUI {
         loggerService,
         libloader,
         toast,
-        userpreferences,
-        VersionManagerService
+        userpreferences
     ]
 })
 export class SpiceUIModule {

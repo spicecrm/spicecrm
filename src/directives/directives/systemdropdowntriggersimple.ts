@@ -65,6 +65,10 @@ export class SystemDropdownTriggerSimpleDirective implements OnDestroy {
             } else {
                 this.clickListener();
             }
+        } else {
+            this.dropDownOpen = false;
+            if (this.clickListener) this.clickListener();
+            this.cdRef.detectChanges();
         }
     }
 

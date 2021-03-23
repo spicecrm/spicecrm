@@ -120,7 +120,7 @@ export class socket {
                 console.log(eventData.message.error);
                 break;
             case 'message':
-                if (eventData.message.s != this.session.authData.sessionId) {
+                if (eventData.message.s == this.session.authData.sessionId) {
                     if (this.navigation.modelregister.find(m => m.model.id == eventData.message.i && m.model.module == eventData.message.m)) {
                         this.backend.get(eventData.message.m, eventData.message.i).subscribe(data => {
                             this.broadcast.broadcastMessage("model.save", {

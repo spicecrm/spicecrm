@@ -169,7 +169,7 @@ export class SystemInputFile implements ControlValueAccessor {
             file_mime_type: this.file.file_mime_type
         };
 
-        this.backend.postRequestWithProgress('/bean/file/upload', null, fileBody, null, progressSubscription)
+        this.backend.postRequestWithProgress('bean/file/upload', null, fileBody, progressSubscription)
             .subscribe(res => {
                 this.file.file_md5 = res.file_md5;
                 this.onChange({

@@ -11,6 +11,26 @@
     <iframe *ngIf="fieldconfig.asiframe" [src]="sanitizedValue" style="resize: vertical;" [ngStyle]="heightStyle" width="100%" frameborder="0" seamless="true" sandbox></iframe>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
-    <system-richtext-editor [(ngModel)]="value" (save$)="save($event)" [extendedmode]="!fieldconfig.simplemode" [innerheight]="fieldconfig.innerheight"></system-richtext-editor>
+    <system-richtext-editor [(ngModel)]="value" (save$)="save($event)" [extendedmode]="!fieldconfig.simplemode" [innerheight]="fieldconfig.innerheight" [useMedialFile]="metadata.checkModuleAcl('MediaFiles', 'list') && metadata.checkModuleAcl('MediaFiles', 'view')">
+        <li *ngIf="fieldconfig?.useSignature">
+            <div class="slds-form-element slds-grid">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_SIGNATURE"></system-label>:
+                </label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select [(ngModel)]="selectedSignatureId" (ngModelChange)="renderSelectedSignature()" [disabled]="signatures?.length == 0" class="slds-select">
+                            <option value="">
+                                <system-label label="LBL_NONE"></system-label>
+                            </option>
+                            <option *ngFor="let signature of signatures" [value]="signature.id">
+                                <system-label [label]="signature.label"></system-label>
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </system-richtext-editor>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>

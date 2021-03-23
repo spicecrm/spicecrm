@@ -1,3 +1,8 @@
+<div class="slds-border--bottom slds-p-horizontal--x-small slds-p-top--xx-small">
+    <system-checkbox [(ngModel)]="selectAll" [indeterminate]="groupware.archiveattachments?.length > 0 && attachments?.length != groupware.archiveattachments?.length">
+        <system-label label="LBL_SELECT_ALL"></system-label>
+    </system-checkbox>
+</div>
 <div *ngIf="attachments.length > 0" class="slds-p-around--x-small">
     <groupware-email-archive-pane-attachment *ngFor="let attachment of attachments" [attachment]="attachment"></groupware-email-archive-pane-attachment>
 </div>

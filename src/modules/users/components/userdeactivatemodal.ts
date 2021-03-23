@@ -52,7 +52,7 @@ export class UserDeactivateModal {
      * get objects assigned to the current user
      */
     private getUserObjects() {
-        this.backend.getRequest(`/module/Users/${this.model.id}/deactivate`).subscribe(
+        this.backend.getRequest(`module/Users/${this.model.id}/deactivate`).subscribe(
             res => {
                 for (let moduleid in res) {
                     this.objects.push({
@@ -106,7 +106,7 @@ export class UserDeactivateModal {
 
         // create apsinner for the user indicating the process and submit the request
         let spinner = this.modal.await(this.language.getLabel('LBL_DEACTIVATING'));
-        this.backend.postRequest(`/module/Users/${this.model.id}/deactivate`, {}, body).subscribe(
+        this.backend.postRequest(`module/Users/${this.model.id}/deactivate`, {}, body).subscribe(
             res => {
                 this.model.getData();
                 spinner.emit(true);

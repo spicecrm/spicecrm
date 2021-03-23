@@ -4,13 +4,14 @@
 import {Component, OnInit, EventEmitter, Output, ViewChild, ViewContainerRef, OnDestroy, Input} from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {model} from '../../services/model.service';
-import {modellist, relateFilter} from '../../services/modellist.service';
+import {modellist} from '../../services/modellist.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {layout} from '../../services/layout.service';
 import {metadata} from '../../services/metadata.service';
 import {Subscription} from "rxjs";
 import {ObjectModalModuleLookupHeader} from "./objectmodalmodulelookupheader";
+import {relateFilter} from "../../services/interfaces.service";
 
 /**
  * provides a lookup modal with a modellist and the option to select a model
@@ -76,8 +77,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
 
     constructor(public language: language, public modellist: modellist, public metadata: metadata, public modelutilities: modelutilities, public model: model, public layout: layout) {
         // subscribe to changes of the listtype
-        this.subscriptions.add(this.modellist.listtype$.subscribe(newType => this.switchListtype()));
-
+        this.subscriptions.add(this.modellist.listType$.subscribe(newType => this.switchListtype()));
     }
 
     /**
@@ -98,19 +98,6 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
     }
 
     /**
-     * a getter that builds teh request fields from the listfields from the modellistservice
-     */
-    get requestfields() {
-        let requestfields = [];
-        for (let listfield of this.modellist.listfields) {
-            if (requestfields.indexOf(listfield.field) != -1) {
-                requestfields.push(listfield.field);
-            }
-        }
-        return requestfields;
-    }
-
-    /**
      * returns treu if we have a small screen factor
      */
     get smallView() {
@@ -124,8 +111,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
         // this.model.module = this.module;
         this.modellist.modulefilter = this.modulefilter;
         this.modellist.relatefilter = this.relatefilter;
-        // this.modellist.setModule(this.module, true);
-        this.modellist.module = this.module;
+        this.modellist.initialize(this.module);
 
         // set hte module on the model
         this.model.module = this.module;
@@ -158,7 +144,7 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
      */
     private doSearch() {
         this.modellist.searchTerm = this.searchTerm;
-        this.modellist.getListData(this.requestfields);
+        this.modellist.getListData();
     }
 
     /**
@@ -196,30 +182,6 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
             this.selectedItems.emit([item]);
             this.usedSearchTerm.emit(this.searchTerm);
             this.self.destroy();
-        }
-    }
-
-    /**
-     * returns if a given fielsd is set sortable in teh fieldconfig
-     *
-     * @param field the field from the fieldset
-     */
-    private isSortable(field): boolean {
-        if (field.fieldconfig.sortable === true) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * sets the field as sort parameter
-     *
-     * @param field the field from the fieldset
-     */
-    private setSortField(field): void {
-        if (this.isSortable(field)) {
-            this.modellist.setSortField(field.field);
         }
     }
 }

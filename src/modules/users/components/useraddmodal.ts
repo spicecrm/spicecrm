@@ -1,7 +1,7 @@
 /**
  * @module ModuleUsers
  */
-import {ChangeDetectorRef, Component, OnInit, ViewChild, ViewContainerRef} from "@angular/core";
+import {ChangeDetectorRef, Component, OnInit, SkipSelf, ViewChild, ViewContainerRef} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {modelutilities} from "../../../services/modelutilities.service";
 import {view} from "../../../services/view.service";
@@ -10,6 +10,7 @@ import {toast} from "../../../services/toast.service";
 import {backend} from "../../../services/backend.service";
 import {Observable, Subject} from "rxjs";
 import {metadata} from "../../../services/metadata.service";
+import {configurationService} from "../../../services/configuration.service";
 
 /**
  * @ignore
@@ -42,12 +43,14 @@ export class UserAddModal implements OnInit {
     constructor(
         private language: language,
         private model: model,
+        @SkipSelf() private parent: model,
         private modelutilities: modelutilities,
         private toast: toast,
         private backend: backend,
         private view: view,
         private cdr: ChangeDetectorRef,
         private metadata: metadata,
+        private configuration: configurationService
     ) {
         this.model.module = "Users";
         this.view.isEditable = true;
@@ -139,7 +142,7 @@ export class UserAddModal implements OnInit {
     }
 
     public ngOnInit() {
-        this.model.initialize();
+        this.model.initialize(this.parent);
         this.model.data.UserType = "RegularUser";
         this.model.data.status = "Active";
         this.getFieldSets();
@@ -158,15 +161,17 @@ export class UserAddModal implements OnInit {
     }
 
     private getPassInfo() {
-        let params = {lang: this.language.currentlanguage};
-        this.backend.getRequest("user/password/info", params)
-            .subscribe((res: any) => {
-                if (!res || !res.pwdCheck) {
-                    return;
-                }
-                this.pwdCheck = res.pwdCheck.regex ? new RegExp(res.pwdCheck.regex) : this.pwdCheck;
-                this.pwdGuideline = res.pwdCheck.guideline ? res.pwdCheck.guideline : this.pwdGuideline;
-            });
+        let extConf = this.configuration.getCapabilityConfig('userpassword');
+        this.pwdCheck = new RegExp('/' + extConf.regex + '/');
+
+        let requArray = [];
+        if(extConf.onelower) requArray.push(this.language.getLabel('MSG_PASSWORD_ONELOWER'));
+        if(extConf.oneupper) requArray.push(this.language.getLabel('MSG_PASSWORD_ONEUPPER'));
+        if(extConf.onenumber) requArray.push(this.language.getLabel('MSG_PASSWORD_ONENUMBER'));
+        if(extConf.minpwdlength) requArray.push(this.language.getLabel('MSG_PASSWORD_LENGTH') + ' ' + extConf.minpwdlength);
+
+        this.pwdGuideline = requArray.join(', ');
+
     }
 
     private copyPassword() {
@@ -222,13 +227,11 @@ export class UserAddModal implements OnInit {
 
     private savePassword(goDetail) {
         let body = {
-            newpwd: this.password,
-            userId: this.model.id,
-            SystemGeneratedPassword: this.autoGenerate,
-            sendByEmail: this.canSendByEmail ? this.sendByEmail : false
+            newPassword: this.password,
+            forceReset: this.autoGenerate,
+            sendEmail: this.canSendByEmail ? this.sendByEmail : false
         };
-        this.backend.postRequest("user/password/new", {}, body).subscribe(res => {
-            if (res.status) {
+        this.backend.postRequest("module/Users/"+this.model.id+"/password/reset", {}, body).subscribe(res => {
                 if (this.sendByEmail) {
                     this.toast.sendToast(this.language.getLabel("MSG_NEW_PASSWORD_EMAIL_SENT"), "success", "", 10);
                 } else {
@@ -238,15 +241,10 @@ export class UserAddModal implements OnInit {
                     this.model.goDetail();
                 }
                 this.self.destroy();
-            } else {
-                this.sendByEmail = false;
-                this.canSendByEmail = false;
-                this.toast.sendToast(res.message, "error");
-            }
         }, error => {
             this.sendByEmail = false;
             this.canSendByEmail = false;
-            this.toast.sendToast(this.language.getLabel("MSG_EMAIL_SEND_FAILED"), "error");
+            this.toast.sendToast(this.language.getLabel("MSG_PASSWORD_RESET_FAILED"), "error");
         });
     }
 }

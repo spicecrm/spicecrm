@@ -13,9 +13,18 @@ import {Subject, Observable, BehaviorSubject, Subscription} from 'rxjs';
 declare var moment: any;
 
 @Injectable()
-export class mailboxesEmails implements OnDestroy{
+export class mailboxesEmails implements OnDestroy {
 
     @Output('mailboxesLoaded') public mailboxesLoaded$: BehaviorSubject<boolean>;
+
+    /**
+     * holds the mailbox manager active split type
+     */
+    public activeSplitType: {
+        name: 'noSplit' | 'verticalSplit' | 'horizontalSplit',
+        icon: 'picklist_type' | 'side_list' | 'inspector_panel',
+        label: 'LBL_NO_SPLIT' | 'LBL_VERTICAL_SPLIT' | 'LBL_HORIZONTAL_SPLIT'
+    } = {name: 'noSplit', icon: 'picklist_type', label: 'LBL_NO_SPLIT'};
 
     /**
      * the default limit for the emails to be loaded at once
@@ -212,7 +221,7 @@ export class mailboxesEmails implements OnDestroy{
     public fetchEmails() {
         let responseSubject = new Subject<any>();
 
-        this.backend.getRequest("/modules/Mailboxes/" + this.activeMailBox.id + "/fetchemails").subscribe(
+        this.backend.getRequest("modules/Mailboxes/" + this.activeMailBox.id + "/fetchemails").subscribe(
             // todo a spinner or sth similar while waiting for the response
             (response: any) => {
                 if (response.new_mail_count > 0) {

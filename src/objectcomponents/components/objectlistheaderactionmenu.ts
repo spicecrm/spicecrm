@@ -75,6 +75,6 @@ export class ObjectListHeaderActionMenu extends ObjectActionContainer {
      * returns if we do not have a standrad list and thus can edit
      */
     get canChooseFields() {
-        return this.modellist.listtype != 'all' && this.modellist.listtype != 'owner' && this.modellist.checkAccess('edit');
+        return this.modellist.currentList.id != 'all' && this.modellist.currentList.id != 'owner' && this.modellist.checkAccess('edit');
     }
 }

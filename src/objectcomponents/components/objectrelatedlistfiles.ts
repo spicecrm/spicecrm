@@ -283,4 +283,14 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
                 }, 600);
         }
     }
+
+    /**
+     * toggle big thumbnail value
+     */
+    public toggleBigThumbnail() {
+        if (!this.componentconfig) {
+            this.componentconfig = {};
+        }
+        this.componentconfig.bigThumbnail = !this.componentconfig.bigThumbnail;
+    }
 }

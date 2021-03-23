@@ -53,7 +53,7 @@ export class ObjectRelatedListItem implements OnInit {
         // initialize the model
         this.model.module = this.module;
         this.model.id = this.listitem.id;
-        this.model.data = this.listitem;
+        this.model.data = this.model.utils.backendModel2spice(this.module, this.listitem);
 
         // load the componentconfig from ObjectRelatedListItem ... if input itemactionset is not defined
         this.componentconfig = this.metadata.getComponentConfig('ObjectRelatedListItem', this.model.module);

@@ -18,6 +18,12 @@ import { userpreferences } from '../../services/userpreferences.service';
 export class SystemProgressBar {
 
     /**
+     * if set to true the text for the progress will not be displayed
+     * @private
+     */
+    @Input() private hideText: boolean = false;
+
+    /**
      * The progress of completion.
      */
     @Input() private progress: number = 0;

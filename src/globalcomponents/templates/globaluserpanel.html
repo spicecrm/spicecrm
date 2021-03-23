@@ -7,9 +7,11 @@
     </div>
     <div class="slds-theme--shade slds-p-around--small slds-border--top slds-border--bottom">
         <ul class="slds-list--horizontal slds-has-dividers--left">
-            <li class="slds-item"><a href="javascript:void(0);" class="slds-text-link--reset" (click)="goDetails()"><system-label label="LBL_DETAILS"></system-label></a>
+            <li class="slds-item">
+                <a href="javascript:void(0);" class="slds-text-link--reset" (click)="goDetails()"><system-label label="LBL_DETAILS"></system-label></a>
             </li>
-            <li class="slds-item"><a href="javascript:void(0);" class="slds-text-link--reset" (click)="changePassword()"><system-label label="LBL_CHANGE_PASSWORD"></system-label></a>
+            <li *ngIf="canChangePassword" class="slds-item">
+                <a href="javascript:void(0);" class="slds-text-link--reset" (click)="changePassword()"><system-label label="LBL_CHANGE_PASSWORD"></system-label></a>
             </li>
         </ul>
     </div>
@@ -18,18 +20,18 @@
         <system-language-selector></system-language-selector>
         <div class="slds-p-top--x-small">
             <div class="slds-form-element">
-                <label class="slds-form-element__label" for="{{compId}}-select-tz"><system-label label="LBL_SELECT_TIMEZONE"></system-label></label>
-                <system-input-timezone [(ngModel)]="currentTz" id="{{compId}}-select-tz"></system-input-timezone>
+                <label class="slds-form-element__label"><system-label label="LBL_SELECT_TIMEZONE"></system-label></label>
+                <system-input-timezone [(ngModel)]="currentTz" ></system-input-timezone>
             </div>
         </div>
     </div>
     <div class="slds-theme--shade slds-p-around--x-small slds-grid">
         <div class="slds-grid slds-grid--vertical-align-center">
             <system-utility-icon class="slds-p-right--xx-small" *ngIf="socket.isConnected" size="xx-small" icon="omni_channel"></system-utility-icon>
-            <system-label label="LBL_LOGGED_ON_SYSTEM"></system-label>: {{config.data.display}}
+            <system-label label="LBL_LOGGED_ON_SYSTEM"></system-label>: {{systemName}}
         </div>
         <div class="slds-col--bump-left">
-            <system-utility-icon icon="logout" size="x-small" [title]="language.getLabel('LBL_LOGOFF')" (click)="logoff()"></system-utility-icon>
+            <system-utility-icon icon="logout" size="x-small" system-title="LBL_LOGOFF" (click)="logoff()"></system-utility-icon>
         </div>
     </div>
 </div>

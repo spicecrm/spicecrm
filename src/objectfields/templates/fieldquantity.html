@@ -7,7 +7,7 @@
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
     <div class="slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
         <div class="slds-form-element slds-size--2-of-3">
-            <input class="slds-input slds-text-align--right" type="text" [(ngModel)]="textvalue" (change)="changed()"/>
+            <input #floatinput class="slds-input slds-text-align--right" type="text" [(ngModel)]="textvalue" (change)="changed()"/>
         </div>
         <system-select-uom class="slds-size--1-of-3 slds-p-left--x-small" [(ngModel)]="uomid"></system-select-uom>
     </div>

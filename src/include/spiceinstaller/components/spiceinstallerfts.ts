@@ -24,7 +24,7 @@ export class SpiceInstallerFTS {
      * loading boolean
      */
     private loading: boolean = false;
-
+    private protocolOptions: any = [{type: 'http', name: 'HTTP'}, {type: 'https', name: 'HTTPS'}];
     constructor(
         private toast: toast,
         private http: HttpClient,
@@ -44,6 +44,7 @@ export class SpiceInstallerFTS {
             prefix: this.spiceinstaller.prefix,
             loglevel: 1,
             schedulerpackagesize: 2500,
+            protocol: this.spiceinstaller.transferProtocol
         };
 
         this.serverCondition = this.spiceinstaller.server.length > 0;
@@ -52,7 +53,7 @@ export class SpiceInstallerFTS {
 
         if (this.serverCondition && this.portCondition && this.prefixCondition) {
             this.loading = true;
-            this.http.post(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/KREST/spiceinstaller/checkfts`, body).subscribe(
+            this.http.post(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/spiceinstaller/checkfts`, body).subscribe(
                 (response: any) => {
                     this.loading = false;
                     let res = response;

@@ -39,7 +39,7 @@ export class UserDeactivateButton {
                 res => {
                     if (res) {
                         let spinner = this.modal.await(this.language.getLabel('LBL_ACTIVATING'));
-                        this.backend.postRequest(`/module/Users/${this.model.id}/activate`).subscribe(
+                        this.backend.postRequest(`module/Users/${this.model.id}/activate`).subscribe(
                             res => {
                                 this.model.getData();
                                 spinner.emit(true);

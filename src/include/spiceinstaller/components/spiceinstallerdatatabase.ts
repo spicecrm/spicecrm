@@ -38,16 +38,16 @@ export class SpiceInstallerDatabase {
      * saves the configuration
      */
     private checkDB() {
-
         switch (this.spiceinstaller.db_type) {
-            case 'mysql':
+            case 'mysql': // backward compatibility
+            case 'mysqli':
                 this.spiceinstaller.db_host_instance = 'SQLEXPRESS';
                 this.spiceinstaller.db_manager = 'MysqliManager';
                 break;
             case 'pgsql' :
                 this.spiceinstaller.db_manager = 'PostgreSQLManager';
                 break;
-            case 'sqlsrv':
+            case 'mssql':
                 this.spiceinstaller.db_manager = 'SqlsrvManager';
                 break;
             case 'oci8':
@@ -89,7 +89,7 @@ export class SpiceInstallerDatabase {
 
         if (this.hostNameCondition && this.userNameCondition && this.dbNameCondition) {
             this.loading = true;
-            this.http.post(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/KREST/spiceinstaller/checkdb`, body).subscribe(
+            this.http.post(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/spiceinstaller/checkdb`, body).subscribe(
                 (response: any) => {
                     this.loading = false;
                     let res = response;

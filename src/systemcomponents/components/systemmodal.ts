@@ -63,7 +63,7 @@ export class SystemModal {
      * helper function to get the classes for the template
      */
     get sizeClass() {
-        if (this.size) {
+        if (this.size && this.size != 'small') {
             return this.class + ' slds-modal_' + this.size;
         }
 

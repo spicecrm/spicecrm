@@ -34,7 +34,7 @@ export class SystemOverlayLoadingSpinnerDirective {
         this.renderer.addClass(this.overlayElement, 'slds-align--absolute-center');
         this.renderer.setStyle(this.overlayElement, 'height', '100%');
         this.renderer.setStyle(this.overlayElement, 'width', '100%');
-        this.renderer.setStyle(this.overlayElement, 'z-index', '99999');
+        this.renderer.setStyle(this.overlayElement, 'z-index', '999');
         this.renderer.setStyle(this.overlayElement, 'top', '0');
         this.renderer.setStyle(this.overlayElement, 'left', '0');
         let spinnerContainer = this.renderer.createElement('div');
