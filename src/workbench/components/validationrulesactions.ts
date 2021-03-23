@@ -58,14 +58,14 @@ export class ValidationRulesActions implements OnInit
         return this.data.actions.push({
             id: this.utils.generateGuid(),
             sysuimodelvalidation_id: this.data.id,
-            _is_new_record: true,
+            isnewrecord: true,
         });
     }
 
     removeAction(id)
     {
         let idx = this.data.actions.findIndex((e) => {return e.id == id});
-        if( this.data.actions[idx]._is_new_record )
+        if( this.data.actions[idx].isnewrecord )
         {
             this.data.actions.splice(idx,1);
         }
