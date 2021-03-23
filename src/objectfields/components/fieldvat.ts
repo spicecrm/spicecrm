@@ -31,7 +31,7 @@ export class fieldVat extends fieldGeneric
 
     validate() {
         this.isvalidating = true;
-        this.backend.getRequest('module/Accounts/VIES/' + this.model.data[this.fieldname]).subscribe((response: any) => {
+        this.backend.getRequest(`module/Accounts/${this.model.data[this.fieldname]}/vies`).subscribe((response: any) => {
             if (response.status == 'success') {
                 if (response.data.valid !== true) {
                     this.toast.sendToast(this.language.getLabel('ERR_INVALID_VAT'), 'error');
