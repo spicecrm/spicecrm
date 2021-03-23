@@ -50,7 +50,7 @@ export class FieldReportCategory extends fieldGeneric {
     private loadCategories() {
         const categories = this.configuration.getData('reportcategories');
         if (!categories) {
-            this.backend.getRequest('KReporter/categoriesmanager/categories').subscribe(categories => {
+            this.backend.getRequest('kreporter/categoriesmanager/categories').subscribe(categories => {
                 if (!!categories) this.categories = categories;
             });
         } else {
