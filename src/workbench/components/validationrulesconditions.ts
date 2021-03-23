@@ -52,14 +52,14 @@ export class ValidationRulesConditions implements OnInit
         return this.data.conditions.push({
             id: this.utils.generateGuid(),
             sysuimodelvalidation_id: this.data.id,
-            _is_new_record: true,
+            isnewrecord: true,
         });
     }
 
     removeCondition(id)
     {
         let idx = this.data.conditions.findIndex((e) => {return e.id == id});
-        if( this.data.conditions[idx]._is_new_record )
+        if( this.data.conditions[idx].isnewrecord )
         {
             this.data.conditions.splice(idx,1);
         }
