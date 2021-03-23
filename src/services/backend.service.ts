@@ -45,6 +45,34 @@ export class backend {
      */
     private autoLogout: any = {};
 
+    /**
+     * indicates that hthe user needs to relogin again
+     *
+     * @private
+     */
+    private reLogin: boolean = false;
+
+    /**
+     * indicates that we have been disconnected and are trying to reconnect
+     *
+     * @private
+     */
+    private reConnecting: boolean = false;
+
+    /**
+     * indicates that any further request should be staged
+     *
+     * @private
+     */
+    private stageRequests: boolean = false;
+
+    /**
+     * holds staged requests that had an error and shoudlbe later on reprocessed
+     *
+     * @private
+     */
+    private stagedRequests: any[] = [];
+
     private httpErrorsToReport = [];
     private httpErrorReporting = false;
     private httpErrorReportingRetryTime = 10000; // 10 seconds
@@ -107,23 +135,32 @@ export class backend {
      *
      * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
      */
-    public getRequest(route: string = "", params: any = {}): Observable<any> {
-        let responseSubject = new Subject<any>();
-        this.resetTimeOut();
-        this.http.get(
-            this.configurationService.getBackendUrl() + "/" + encodeURI(route),
+    public getRequest(route: string = "", params: any = {}, responseSubject?: Subject<any>): Observable<any> {
+        // if we do not have a responsesubject passed in create a new one
+        if (!responseSubject) {
+            responseSubject = new Subject<any>();
+        }
 
-            {headers: this.getHeaders(), observe: "response", params: this.prepareParams(params)}
-        ).subscribe(
-            (res) => {
-                responseSubject.next(res.body);
-                responseSubject.complete();
-            },
-            err => {
-                this.handleError(err, route, 'GET', {getParams: params});
-                responseSubject.error(err);
-            }
-        );
+        // if requests shoud be staged do not even attempt to process currently
+        if (this.stageRequests) {
+            this.stageRequest('GET', route, {getParams: params}, responseSubject);
+        } else {
+            this.http.get(
+                this.configurationService.getBackendUrl() + "/" + encodeURI(route),
+
+                {headers: this.getHeaders(), observe: "response", params: this.prepareParams(params)}
+            ).subscribe(
+                (res) => {
+                    responseSubject.next(res.body);
+                    responseSubject.complete();
+                },
+                err => {
+                    if (this.handleError(err, route, 'GET', {getParams: params}, responseSubject) == false) {
+                        responseSubject.error(err);
+                    }
+                }
+            );
+        }
         return responseSubject.asObservable();
     }
 
@@ -138,8 +175,6 @@ export class backend {
      * @return the http object as an observable that will response with its own response
      */
     public getRawRequest(route: string = "", params: any = {}, responseType: string = "blob", headers: any = {}): Observable<any> {
-
-        this.resetTimeOut();
 
         let headers2 = this.session.getSessionHeader();
         for (let prop in headers) {
@@ -166,32 +201,39 @@ export class backend {
      *
      * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
      */
-    public postRequest(route: string = "", params: any = {}, body: any = {}, httpErrorReport = true): Observable<any> {
-        let responseSubject = new Subject<any>();
-
-        this.resetTimeOut();
-
-        let headers = this.getHeaders();
-        if (body) {
-            headers = headers.set("Content-Type", "application/json");
-        } else {
-            headers = headers.set("Content-Type", "application/x-www-form-urlencoded");
+    public postRequest(route: string = "", params: any = {}, body: any = {}, responseSubject?: Subject<any>): Observable<any> {
+        if (!responseSubject) {
+            responseSubject = new Subject<any>();
         }
 
-        this.http.post(
-            this.configurationService.getBackendUrl() + "/" + encodeURI(route),
-            body,
-            {headers: headers, observe: "response", params: this.prepareParams(params)}
-        ).subscribe(
-            (res) => {
-                responseSubject.next(res.body);
-                responseSubject.complete();
-            },
-            err => {
-                this.handleError(err, route, 'POST', {getParams: params, body: body}, httpErrorReport);
-                responseSubject.error(err);
+        // if requests shoud be staged do not even attempt to process currently
+        if (this.stageRequests) {
+            this.stageRequest('GET', route, {getParams: params, body: body}, responseSubject);
+        } else {
+
+            let headers = this.getHeaders();
+            if (body) {
+                headers = headers.set("Content-Type", "application/json");
+            } else {
+                headers = headers.set("Content-Type", "application/x-www-form-urlencoded");
             }
-        );
+
+            this.http.post(
+                this.configurationService.getBackendUrl() + "/" + encodeURI(route),
+                body,
+                {headers: headers, observe: "response", params: this.prepareParams(params)}
+            ).subscribe(
+                (res) => {
+                    responseSubject.next(res.body);
+                    responseSubject.complete();
+                },
+                err => {
+                    if (!this.handleError(err, route, 'POST', {getParams: params, body: body}, responseSubject)) {
+                        responseSubject.error(err);
+                    }
+                }
+            );
+        }
         return responseSubject.asObservable();
     }
 
@@ -206,39 +248,54 @@ export class backend {
      *
      * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
      */
-    public postRequestWithProgress(route: string = "", params: any = {}, body: any = {}, httpErrorReport = true, progress: BehaviorSubject<number> = null): Observable<any> {
-        let responseSubject = new Subject<any>();
-
-        this.resetTimeOut();
-
-        let headers = this.getHeaders();
-        if (body) {
-            headers = headers.set("Content-Type", "application/json");
-        } else {
-            headers = headers.set("Content-Type", "application/x-www-form-urlencoded");
+    public postRequestWithProgress(route: string = "", params: any = {}, body: any = {}, progress: BehaviorSubject<number> = null, responseSubject?: Subject<any>): Observable<any> {
+        if (!responseSubject) {
+            responseSubject = new Subject<any>();
         }
 
-        let reportProgress = progress !== null;
-        if (reportProgress) progress.next(0);
-        this.http.post(this.configurationService.getBackendUrl() + "/" + encodeURI(route), body, {
-            headers: headers,
-            observe: 'events',
-            params: this.prepareParams(params),
-            reportProgress: !!progress
-        }).subscribe(
-            event => {
-                if (event.type === HttpEventType.UploadProgress) {
-                    progress.next(100 * event.loaded / event.total);
-                } else if (event.type === HttpEventType.Response) {
-                    responseSubject.next(event.body);
-                    responseSubject.complete();
-                }
-            },
-            err => {
-                this.handleError(err, route, 'POST', {getParams: params, body: body}, httpErrorReport);
-                responseSubject.error(err);
+        // if requests shoud be staged do not even attempt to process currently
+        if (this.stageRequests) {
+            this.stageRequest('POSTWITHPROGRESS', route, {
+                getParams: params,
+                body: body,
+                progress: progress
+            }, responseSubject);
+        } else {
+
+            let headers = this.getHeaders();
+            if (body) {
+                headers = headers.set("Content-Type", "application/json");
+            } else {
+                headers = headers.set("Content-Type", "application/x-www-form-urlencoded");
             }
-        );
+
+            let reportProgress = progress !== null;
+            if (reportProgress) progress.next(0);
+            this.http.post(this.configurationService.getBackendUrl() + "/" + encodeURI(route), body, {
+                headers: headers,
+                observe: 'events',
+                params: this.prepareParams(params),
+                reportProgress: !!progress
+            }).subscribe(
+                event => {
+                    if (event.type === HttpEventType.UploadProgress) {
+                        progress.next(100 * event.loaded / event.total);
+                    } else if (event.type === HttpEventType.Response) {
+                        responseSubject.next(event.body);
+                        responseSubject.complete();
+                    }
+                },
+                err => {
+                    if (!this.handleError(err, route, 'POSTWITHPROGRESS', {
+                        getParams: params,
+                        body: body,
+                        progress: progress
+                    }, responseSubject)) {
+                        responseSubject.error(err);
+                    }
+                }
+            );
+        }
         return responseSubject.asObservable();
     }
 
@@ -256,8 +313,6 @@ export class backend {
      */
     public getDownloadPostRequestFile(route: string = "", params: any = {}, body: any = {}): Observable<any> {
         let responseSubject = new Subject<any>();
-
-        this.resetTimeOut();
 
         let headers = this.getHeaders();
         headers = headers.set("Accept", "*/*");
@@ -344,25 +399,6 @@ export class backend {
         return sub.asObservable();
     }
 
-    /**
-     * Determines the charset of a http response.
-     *
-     * @param response
-     *
-     * @return The string defining the character set.
-     */
-    private getCharsetOfResponse(response: any): string {
-        if (!response.headers) return null;
-        response.headers.lazyInit();
-        let dummy = response.headers.headers.get('content-type');
-        if (!dummy) return null;
-        dummy = dummy[0];
-        dummy = dummy.split(';');
-        if (!dummy[1]) return null;
-        dummy = dummy[1].split('=');
-        if (!dummy[1]) return null;
-        return dummy[1];
-    }
 
     /**
      * a generic wrapper function for [[getLinkToDownload]] that will wrap the request and automatically trigger the download in the browser
@@ -416,25 +452,31 @@ export class backend {
      *
      * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
      */
-    public putRequest(route: string = "", params: any = {}, body: any = {}): Observable<any> {
-        let responseSubject = new Subject<any>();
+    public putRequest(route: string = "", params: any = {}, body: any = {}, responseSubject?: Subject<any>): Observable<any> {
+        if (!responseSubject) {
+            responseSubject = new Subject<any>();
+        }
 
-        this.resetTimeOut();
-
-        this.http.put(
-            this.configurationService.getBackendUrl() + "/" + route,
-            body,
-            {headers: this.getHeaders(), observe: "response", params: this.prepareParams(params)}
-        ).subscribe(
-            (res) => {
-                responseSubject.next(res.body);
-                responseSubject.complete();
-            },
-            (err) => {
-                this.handleError(err, route, 'PUT', {getParams: params, body: body});
-                responseSubject.error(err);
-            }
-        );
+        // if requests shoud be staged do not even attempt to process currently
+        if (this.stageRequests) {
+            this.stageRequest('PUT', route, {getParams: params, body: body}, responseSubject);
+        } else {
+            this.http.put(
+                this.configurationService.getBackendUrl() + "/" + route,
+                body,
+                {headers: this.getHeaders(), observe: "response", params: this.prepareParams(params)}
+            ).subscribe(
+                (res) => {
+                    responseSubject.next(res.body);
+                    responseSubject.complete();
+                },
+                (err) => {
+                    if(!this.handleError(err, route, 'PUT', {getParams: params, body: body},responseSubject)) {
+                        responseSubject.error(err);
+                    }
+                }
+            );
+        }
         return responseSubject.asObservable();
     }
 
@@ -446,24 +488,29 @@ export class backend {
      *
      * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
      */
-    public deleteRequest(route: string = "", params: any = {}): Observable<any> {
-        let responseSubject = new Subject<any>();
+    public deleteRequest(route: string = "", params: any = {}, responseSubject?: Subject<any>): Observable<any> {
+        if (!responseSubject) {
+            responseSubject = new Subject<any>();
+        }
 
-        this.resetTimeOut();
-
-        this.http.delete(
-            this.configurationService.getBackendUrl() + "/" + route,
-            {headers: this.getHeaders(), params: this.prepareParams(params)}
-        ).subscribe(
-            (res) => {
-                responseSubject.next(res ? res : true);
-                responseSubject.complete();
-            },
-            (err) => {
-                this.handleError(err, route, 'DELETE', {getParams: params});
-                responseSubject.error(err);
-            }
-        );
+        // if requests shoud be staged do not even attempt to process currently
+        if (this.stageRequests) {
+            this.stageRequest('DELETE', route, {getParams: params}, responseSubject);
+        } else {
+            this.http.delete(
+                this.configurationService.getBackendUrl() + "/" + route,
+                {headers: this.getHeaders(), params: this.prepareParams(params)}
+            ).subscribe(
+                (res) => {
+                    responseSubject.next(res ? res : true);
+                    responseSubject.complete();
+                },
+                (err) => {
+                    this.handleError(err, route, 'DELETE', {getParams: params}, responseSubject);
+                    responseSubject.error(err);
+                }
+            );
+        }
         return responseSubject.asObservable();
     }
 
@@ -474,27 +521,104 @@ export class backend {
      * @param route the route that has been called
      * @param method the method of the all (e.g. POST, GET, ...
      * @param data the data passed in
-     * @param httpErrorReport a boolean flag that specifies if the error shoudl be logged on teh backend. Defaults to true.
+     * @param httpErrorReport a boolean flag that specifies if the error shoudl be logged on the backend. Defaults to true.
      */
-    private handleError(err, route, method: string, data = null, httpErrorReport = true) {
+    private handleError(err, route, method: string, data = null, responseSubject?: Subject<any>): boolean {
         switch (err.status) {
             case 401:
-                this.toast.sendAlert(
-                    this.language.getLabel("ERR_LOGGED_OUT_SESSION_EXPIRED"),
-                    "error",
-                    null,
-                    false,
-                    'sessionexpired'
-                );
-                this.modalservice.closeAllModals();
-                this.session.endSession();
-                this.router.navigate(["/login"]);
-                break;
-            case 0:
-                if (httpErrorReport) {
-                    this.reportError(err, route, method, data);
+                // push the current request to the staged queue
+                this.stageRequest(method, route, data, responseSubject);
+                this.stageRequests = true;
+
+                // if we are not ina  relogin already set the service to relogin and
+                if (!this.reLogin) {
+                    this.reLogin = true;
+                    this.modalservice.openModal('GlobalReLogin', false, null, true).subscribe(modalref => {
+                        modalref.instance.loggedin.subscribe(loggedin => {
+                            if (loggedin) {
+                                // set relogin to false so requests get processed again
+                                this.reLogin = false;
+
+                                // set the stageRequests flag back to false so new requests can be processed
+                                this.stageRequests = false;
+
+                                // process staged requests
+                                this.processStagedRequests();
+                            }
+                        });
+                    });
                 }
+                return true;
+            case 0:
+                // push the current request to the staged queue
+                this.stageRequest(method, route, data, responseSubject);
+                this.stageRequests = true;
+                if(!this.reConnecting) {
+                    this.reConnecting = true;
+                    this.modalservice.openModal('GlobalReConnect', false, null, true).subscribe(modalref => {
+                        modalref.instance.connected.subscribe(connected => {
+                            if (connected) {
+                                // set reConnecting to false so requests get processed again
+                                this.reConnecting = false;
+
+                                // set the stageRequests flag back to false so new requests can be processed
+                                this.stageRequests = false;
+
+                                // process staged requests
+                                this.processStagedRequests();
+                            }
+                        });
+                    });
+                }
+                // this.reportError(err, route, method, data);
+                return true;
         }
+        return false;
+    }
+
+    /**
+     * stage a request
+     *
+     * @param method
+     * @param route
+     * @param data
+     * @param responseSubject
+     * @private
+     */
+    private stageRequest(method, route, data, responseSubject) {
+        this.stagedRequests.push({
+            method, route, data, responseSubject
+        });
+    }
+
+    /**
+     * processes all staged requests that have not been processed
+     * @private
+     */
+    private processStagedRequests() {
+        // loop through staged requests and resubmit them
+        for (let stagedRequest of this.stagedRequests) {
+            switch (stagedRequest.method) {
+                case 'GET':
+                    this.getRequest(stagedRequest.route, stagedRequest.data.getParams, stagedRequest.responseSubject);
+                    break;
+                case 'POST':
+                    this.postRequest(stagedRequest.route, stagedRequest.data.getParams, stagedRequest.data.body, stagedRequest.responseSubject);
+                    break;
+                case 'POSTWITHPROGRESS':
+                    this.postRequestWithProgress(stagedRequest.route, stagedRequest.data.getParams, stagedRequest.data.body, stagedRequest.data.progress, stagedRequest.responseSubject);
+                    break;
+                case 'PUT':
+                    this.putRequest(stagedRequest.route, stagedRequest.data.getParams, stagedRequest.data.body, stagedRequest.responseSubject);
+                    break;
+                case 'DELETE':
+                    this.deleteRequest(stagedRequest.route, stagedRequest.data.getParams, stagedRequest.responseSubject);
+                    break;
+            }
+        }
+
+        // clear the staged request queue
+        this.stagedRequests = [];
     }
 
     /**
@@ -531,7 +655,7 @@ export class backend {
      */
     private errorsToBackend() {
         if (this.httpErrorsToReport.length) {
-            this.postRequest('httperrors', null, {errors: this.httpErrorsToReport}, false).subscribe(
+            this.postRequest('httperrors', null, {errors: this.httpErrorsToReport}).subscribe(
                 () => {
                     this.httpErrorsToReport.length = 0;
                     this.httpErrorReporting = false;
@@ -544,30 +668,6 @@ export class backend {
         }
     }
 
-    /**
-     * @ignore
-     */
-    private resetTimeOut() {
-        if (this.configurationService.data.autoLogout > 0) {
-            window.clearTimeout(this.autoLogout);
-            this.autoLogout = window.setTimeout(
-                () => this.logout(),
-                parseInt(this.configurationService.data.autoLogout, 10) * 60000
-            );
-        }
-    }
-
-    /**
-     * handles the reset of the session data, informs the user and send the user back to the login route
-     */
-    private logout() {
-        if (this.session.authData.sessionId) {
-            this.toast.sendAlert("you have been logged out", "error", "", false);
-            this.session.endSession();
-        }
-        this.router.navigate(["/login"]);
-    }
-
     /*
      * Model functions
      */
@@ -578,70 +678,16 @@ export class backend {
         if (trackAction) {
             params.trackaction = trackAction;
         }
-        this.getRequest("module/" + module + "/" + id, params)
-            .subscribe(
-                (response: any) => {
-                    for (let fieldName in response) {
-                        response[fieldName] = this.backend2spice(module, fieldName, response[fieldName]);
-                    }
-
-                    responseSubject.next(response);
-                    responseSubject.complete();
-                }, error => {
-                    responseSubject.error(error);
-                    responseSubject.complete();
-                });
-        return responseSubject.asObservable();
-    }
-
-    /**
-     * returns a list of records/beans of the given module, sorted, limited and filtered by params
-     * @param {string} module
-     * @param {object} params aka searchParams in Backend...
-     *  cheat sheet:
-     *      offset {number} the number to start with...
-     *      limit {number}
-     *      fields {array} a list of fields of the bean...
-     *      sortfield {string} the field to sort of
-     *      sortdirection {string} 'asc','desc' the direction to sort
-     *      listid {string} 'owner' returns only owned records...
-     *      searchfields {json} like this
-     *      {
-     *          join: 'AND',
-     *           conditions: [
-     *               {
-     *                   field: string '',
-     *                   operator: '<>',
-     *                   value: string
-     *               },
-     *               {
-     *                   ...
-     *               },
-     *           ]
-     *       }
-     * @returns {Observable<Array<any>>}
-     */
-    public all(module: string, params: any = {}): Observable<any[]> {
-        let responseSubject = new Subject<any[]>();
-        // defaults...
-        if (!params.limit) {
-            params.limit = -99;
-        }
-
-        if (!params.fields) {
-            params.fields = "*";
-        }
-
-        this.getRequest("module/" + module, params).subscribe(
+        this.getRequest("module/" + module + "/" + id, params).subscribe(
             (response: any) => {
-                let list = response.list;
-                for (let r of list) {
-                    for (let fieldName in r) {
-                        r[fieldName] = this.backend2spice(module, fieldName, r[fieldName]);
-                    }
+                for (let fieldName in response) {
+                    response[fieldName] = this.backend2spice(module, fieldName, response[fieldName]);
                 }
 
-                responseSubject.next(list);
+                responseSubject.next(response);
+                responseSubject.complete();
+            }, error => {
+                responseSubject.error(error);
                 responseSubject.complete();
             }
         );
@@ -682,38 +728,14 @@ export class backend {
         return responseSubject.asObservable();
     }
 
-    public getAudit(module: string, id: string, filters: any = {}): Observable<any> {
-        let responseSubject = new Subject<any[]>();
-        this.getRequest("module/" + module + "/" + id + "/auditlog", filters)
-            .subscribe(response => {
-                    responseSubject.next(response);
-                    responseSubject.complete();
-                },
-                response => {
-                    if (response.error.error && response.error.error.errorCode && response.error.error.errorCode === 'moduleNotAudited') {
-                        responseSubject.error(response.error.error.errorCode);
-                        responseSubject.complete();
-                        // console.warn(`Audit not enabled for module "${module}".`);
-                    }
-                });
-        return responseSubject.asObservable();
-    }
-
     /**
      *
      * @param {string} module
-     * @param {string} sortfield
-     * @param {string} sortdirection
-     * @param {Array<any>} fields
+     * @param sortfields
      * @param params
      * @returns {<Array<any>>}
      */
-    public getList(
-        module: string,
-        sortfields: any[] = [],
-        fields: any[] = [],
-        params: any = {},
-    ): Observable<any[]> {
+    public getList(module: string, sortfields: any[] = [], params: any = {}): Observable<any[]> {
         let responseSubject = new Subject<any[]>();
 
         let start: number = params.start ? params.start : 0;
@@ -729,10 +751,6 @@ export class backend {
 
         if (sortfields.length > 0) {
             reqparams.sortfields = sortfields;
-        }
-
-        if (fields && fields.length > 0) {
-            reqparams.fields = JSON.stringify(fields);
         }
 
         // todo: break out Options String
@@ -759,9 +777,9 @@ export class backend {
         return responseSubject.asObservable();
     }
 
-    public save(module: string, id: string, cdata: any, progress: BehaviorSubject<number> = null, templateId: string = null ): Observable<any[]> {
+    public save(module: string, id: string, cdata: any, progress: BehaviorSubject<number> = null, templateId: string = null): Observable<any[]> {
         let responseSubject = new Subject<any[]>();
-        this.postRequestWithProgress("module/" + module + "/" + id, { templateId: templateId }, this.modelutilities.spiceModel2backend(module, cdata), null, progress )
+        this.postRequestWithProgress("module/" + module + "/" + id, {templateId: templateId}, this.modelutilities.spiceModel2backend(module, cdata), progress)
             .subscribe(
                 (response: any) => {
                     responseSubject.next(this.modelutilities.backendModel2spice(module, response));
@@ -771,37 +789,6 @@ export class backend {
                     responseSubject.error(error);
                     responseSubject.complete();
                 });
-        return responseSubject.asObservable();
-    }
-
-    public delete(module: string, id: string): Observable<boolean> {
-        let responseSubject = new Subject<boolean>();
-
-        this.deleteRequest("module/" + module + "/" + id)
-            .subscribe((res) => {
-                responseSubject.next(res ? res : true);
-                responseSubject.complete();
-            });
-        return responseSubject.asObservable();
-    }
-
-    public getRecent(module: string = "", limit: number = 0): Observable<any[]> {
-        let responseSubject = new Subject<any[]>();
-
-        let params: any = {};
-        if (module) {
-            params.module = module;
-        }
-
-        if (limit > 0) {
-            params.limit = limit;
-        }
-
-        this.getRequest("modules/Trackers/recent", params)
-            .subscribe((response) => {
-                responseSubject.next(response);
-                responseSubject.complete();
-            });
         return responseSubject.asObservable();
     }
 

@@ -5,8 +5,6 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 
-import {VersionManagerService} from '../../services/versionmanager.service';
-
 import {ObjectFields} from '../../objectfields/objectfields';
 import {GlobalComponents} from '../../globalcomponents/globalcomponents';
 import {ObjectComponents} from '../../objectcomponents/objectcomponents';
@@ -57,6 +55,8 @@ import /*embed*/ {ActivityTimelineSummaryItemView} from './components/activityti
 import /*embed*/ {ActivityTimelineSummaryButton} from './components/activitytimelinesummarybutton';
 import /*embed*/ {ActivityTimelineSummaryAggregates} from './components/activitytimelinesummaryaggregates';
 
+import /*embed*/ {fieldActivityDate} from './fields/fieldactivitydate';
+
 @NgModule({
     imports: [
         CommonModule,
@@ -106,20 +106,12 @@ import /*embed*/ {ActivityTimelineSummaryAggregates} from './components/activity
         ActivityTimelineAggregates,
         ActivityTimelineSummaryItemView,
         ActivityTimelineSummaryButton,
-        ActivityTimelineSummaryAggregates
+        ActivityTimelineSummaryAggregates,
+        fieldActivityDate
     ],
     exports: [
         ActivityTimelineItemContainer,
         ActivityTimelineStencil
     ]
 })
-export class ModuleActivities {
-    readonly version = '1.0';
-    readonly build_date = '/*build_date*/';
-
-    constructor(
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
-    }
-}
+export class ModuleActivities {}

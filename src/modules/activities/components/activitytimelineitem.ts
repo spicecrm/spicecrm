@@ -237,7 +237,7 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
         this.isopen = !this.isopen;
 
         // if expanded and not laoded yet load the atachments
-        if (this.isopen && !this.modelattachments.loaded) {
+        if (this.isopen && this.componentconfig.displayattachments && !this.modelattachments.loaded) {
             this.modelattachments.getAttachments();
         }
     }

@@ -423,6 +423,19 @@ export class SystemInputMedia implements OnDestroy {
 
         let image = this.imageElement.nativeElement;
 
+        this.libloader.loadLib('cropper').subscribe(
+            (next) => {
+                if (this.cropper) this.cropper.destroy();
+                this.cropper = new Cropper(image, {
+                    autoCrop: false,
+                    viewMode: 1,
+                    toggleDragModeOnDblclick: this.allowCropping,
+                    dragMode: this.allowCropping ? 'crop' : 'move'
+                });
+                this.cropper.crop();
+            }
+        );
+
         image.addEventListener('ready', () => {
             if (this.cropper) {
                 this.mediaMetaData.originalWidth = this.cropper.getImageData().naturalWidth;
@@ -449,19 +462,6 @@ export class SystemInputMedia implements OnDestroy {
             if (this.isCropped) this.calcTargetSize();
         });
 
-        this.libloader.loadLib('cropper').subscribe(
-            (next) => {
-                if (this.cropper) this.cropper.destroy();
-                this.cropper = new Cropper(image, {
-                    autoCrop: false,
-                    viewMode: 1,
-                    toggleDragModeOnDblclick: this.allowCropping,
-                    dragMode: this.allowCropping ? 'crop' : 'move'
-                });
-                this.cropper.crop();
-            }
-        );
-
     }
 
     /**
@@ -485,9 +485,10 @@ export class SystemInputMedia implements OnDestroy {
      * @param fileOrMimetype A file or a string with the mime type.
      */
     private getFileformatFromMimetype(fileOrMimetype: File | string): string {
-        const mimetype = typeof fileOrMimetype === 'object' ? fileOrMimetype.type : fileOrMimetype;
-        if (!/^image\/\w+/.test(mimetype)) return '';
-        return mimetype.split('/').pop();
+        if ( fileOrMimetype === null ) return '';
+        const mimetype = ( typeof fileOrMimetype === 'object' ? fileOrMimetype.type : fileOrMimetype );
+        if ( typeof mimetype === 'string' && /^image\/\w+/.test(mimetype)) return mimetype.split('/').pop();
+        return '';
     }
 
     /**
@@ -569,7 +570,7 @@ export class SystemInputMedia implements OnDestroy {
     }
 
     /**
-     * The parent component want the image (rotated, mirrored, cropped, resized, ...)
+     * The parent component wants the image (rotated, mirrored, cropped, resized, ...)
      */
     public getImage(): string {
 

@@ -48,6 +48,18 @@
                     </div>
                 </div>
 
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control slds-m-vertical--medium">
+                        <div class="slds-checkbox">
+                            <input type="checkbox" id="cbIgnoreUnknownTables" [(ngModel)]="ignoreUnknownTables" [disabled]="isAfterUpload || isUploading" />
+                            <label class="slds-checkbox__label" for="cbIgnoreUnknownTables">
+                                <span class="slds-checkbox_faux"></span>
+                                <span class="slds-form-element__label">Ignore unknown tables and do the import anyway. In case the input data contains tables that are unknown to the system.</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
                 <div *ngIf="!isAfterUpload && !isUploading">
                     <div class="slds-m-vertical--medium">Upload and import the file &quot;<b>{{filename}}</b>&quot;?</div>
                     <div><button class="slds-button slds-button--brand" (click)="uploadFile()">{{lang.getLabel('LBL_UPLOAD_AND_IMPORT')}}</button></div>
@@ -93,7 +105,7 @@
                                     <input type="checkbox" name="selectableTables" id="table{{i}}" [(ngModel)]="table.include" />
                                     <label class="slds-checkbox__label" for="table{{i}}">
                                         <span class="slds-checkbox_faux"></span>
-                                        <span class="slds-form-element__label">{{table.name}}</span>
+                                        <span class="slds-form-element__label" style="display:inline-block">{{table.name}}</span>
                                     </label>
                                 </div>
                             </div>

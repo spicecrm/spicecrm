@@ -12,7 +12,7 @@ import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {backend} from '../../services/backend.service';
 import {toast} from '../../services/toast.service';
-import {relateFilter} from "../../services/modellist.service";
+import {relateFilter} from "../../services/interfaces.service";
 
 @Component({
     selector: 'field-relate',

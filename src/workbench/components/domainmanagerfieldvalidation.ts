@@ -88,21 +88,7 @@ export class DomainManagerFieldValidation implements OnChanges {
         }
     }
 
-    /**
-     * toggle the status
-     * @param e
-     * @param validationValue
-     */
-    private setValidationStatus(e: MouseEvent, validationValue) {
-        e.stopPropagation();
-        if (validationValue.status == 'd') {
-            validationValue.status = 'a';
-        } else if (validationValue.status == 'a') {
-            validationValue.status = 'i';
-        } else {
-            validationValue.status = 'a';
-        }
-    }
+
 
     /**
      * handles the drop event and resets the sequence fiels

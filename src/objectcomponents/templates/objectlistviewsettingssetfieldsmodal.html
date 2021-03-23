@@ -26,6 +26,9 @@
         <button class="slds-button slds-button--neutral" (click)="close()">
             <system-label label="LBL_CANCEL"></system-label>
         </button>
+        <button class="slds-button slds-button--neutral" [disabled]="!canSet()" (click)="saveAndSet()">
+            <system-label label="LBL_SAVE_AND_SET"></system-label>
+        </button>
         <button class="slds-button slds-button--brand" [disabled]="!canSet()" (click)="set()">
             <system-label label="LBL_SET"></system-label>
         </button>

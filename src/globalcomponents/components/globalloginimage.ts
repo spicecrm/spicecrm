@@ -37,7 +37,7 @@ export class GlobalLoginImage implements OnDestroy, AfterViewInit {
         if ( this.configuration.hasCapabilityConfig('theme') ) this.setImageUrl();
 
         // Update the image url in case the configuration data has changed:
-        this.subscriptions.add(this.configuration.loaded$.subscribe( () => this.setImageUrl()));
+        this.subscriptions.add(this.configuration.loaded$.subscribe( loaded => { if( loaded) this.setImageUrl();}));
     }
 
     /**

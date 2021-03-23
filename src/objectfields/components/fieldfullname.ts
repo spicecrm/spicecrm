@@ -95,14 +95,26 @@ export class fieldFullName extends fieldGeneric {
 
     }
 
-    private getClassesForSubField(fieldname: string) {
+    /**
+     * returns if the simple mode is set in the fieldconfig
+     */
+    get isSimple() {
+        return this.fieldconfig.simple;
+    }
 
+    /**
+     * determines the width of the fields based on the size of the view
+     *
+     * @param fieldname
+     * @private
+     */
+    private getClassesForSubField(fieldname: string) {
 
         let fieldClass = '';
 
         switch (fieldname) {
             case this.fieldsalutation:
-                fieldClass = this.view.size == 'small' ? 'slds-size--1-of-3 slds-order--1' : 'slds-size--1-of-7';
+                fieldClass = this.view.size == 'small' ? 'slds-size--1-of-3 slds-order--1' : (this.isSimple ? 'slds-size--1-of-5' : 'slds-size--1-of-7');
                 break;
             case this.fielddegree:
                 fieldClass = this.view.size == 'small' ? 'slds-size--1-of-3 slds-order--2' : 'slds-size--1-of-7';
@@ -111,10 +123,10 @@ export class fieldFullName extends fieldGeneric {
                 fieldClass = this.view.size == 'small' ? 'slds-size--1-of-3 slds-order--3' : 'slds-size--1-of-7';
                 break;
             case this.fieldfirstname:
-                fieldClass = this.view.size == 'small' ? 'slds-size--1-of-2 slds-order--4' : 'slds-p-left--xx-small slds-size--2-of-7';
+                fieldClass = this.view.size == 'small' ? 'slds-size--1-of-2 slds-order--4' : (this.isSimple ? 'slds-p-left--xx-small slds-size--2-of-5' : 'slds-p-left--xx-small slds-size--2-of-7');
                 break;
             case this.fieldlastname:
-                fieldClass = this.view.size == 'small' ? 'slds-size--1-of-2 slds-order--5' : 'slds-size--2-of-7';
+                fieldClass = this.view.size == 'small' ? 'slds-size--1-of-2 slds-order--5' : (this.isSimple ? 'slds-size--2-of-5' : 'slds-size--2-of-7');
                 break;
         }
 

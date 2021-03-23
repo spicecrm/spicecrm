@@ -5,7 +5,6 @@ import {CommonModule} from "@angular/common";
 import {NgModule} from "@angular/core";
 import {FormsModule} from "@angular/forms";
 
-import {VersionManagerService} from "../../services/versionmanager.service";
 import {DirectivesModule} from "../../directives/directives";
 
 import {ObjectFields} from "../../objectfields/objectfields";
@@ -17,7 +16,12 @@ import /*embed*/ { projectwbsHierarchy } from "./services/projectwbshierarchy.se
 
 import /*embed*/ {ProjectWBSHierarchy} from "./components/projectwbshierarchy";
 import /*embed*/ {ProjectWBSHierarchyNode} from "./components/projectwbshierarchynode";
+
+import /*embed*/ {ProjectActivityDashletActivity} from "./components/projectactivitydashletactivity";
 import /*embed*/ {ProjectActivityDashlet} from "./components/projectactivitydashlet";
+import /*embed*/ {fieldProjectActivityEffort} from "./fields/fieldprojectactivityeffort";
+import /*embed*/ {fieldProjectPlannedActivityConsumption} from "./fields/fieldprojectplannedactivityconsumption";
+import /*embed*/ {fieldProjectActivityDropdown} from "./fields/fieldprojectactivitydropdown";
 
 @NgModule({
     imports: [
@@ -32,16 +36,11 @@ import /*embed*/ {ProjectActivityDashlet} from "./components/projectactivitydash
     declarations: [
         ProjectWBSHierarchy,
         ProjectWBSHierarchyNode,
-        ProjectActivityDashlet
+        ProjectActivityDashlet,
+        ProjectActivityDashletActivity,
+        fieldProjectActivityDropdown,
+        fieldProjectActivityEffort,
+        fieldProjectPlannedActivityConsumption,
     ]
 })
-export class ModuleProjects {
-    public readonly version = "1.0";
-    public readonly build_date = "/*build_date*/";
-
-    constructor(
-        private vms: VersionManagerService,
-    ) {
-        this.vms.registerModule(this);
-    }
-}
+export class ModuleProjects {}

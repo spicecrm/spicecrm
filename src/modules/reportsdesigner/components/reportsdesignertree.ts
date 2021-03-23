@@ -177,7 +177,7 @@ export class ReportsDesignerTree {
         this.reportModuleFields[rootModule] = [];
         this.isLoadingModuleFields = true;
         this.cdr.detectChanges();
-        this.backend.getRequest('/dictionary/browser/' + forModule + '/fields')
+        this.backend.getRequest('dictionary/browser/' + forModule + '/fields')
             .subscribe(items => {
                 this.reportModuleFields[rootModule] = items.filter(item => item.type != 'relate' && item.source != 'non-db');
                 this.isLoadingModuleFields = false;

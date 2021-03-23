@@ -17,6 +17,16 @@
                 <system-input-password [disabled]="!view.isEditMode()"  [(ngModel)]="model.data.settings.imap_pop3_password"></system-input-password>
             </div>
         </div>
+        <div class="slds-grid">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_SHARED_MAILBOX_AUTH_USER"></system-label></label>
+                <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.shared_mailbox_auth_user" class="slds-input"/>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_SHARED_MAILBOX_USER"></system-label></label>
+                <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.shared_mailbox_user" class="slds-input"/>
+            </div>
+        </div>
         <div class="slds-grid slds-p-vertical--small">
             <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()" [disabled]="!view.isEditMode()"><system-label label="LBL_TEST_CONNECTION"></system-label></button>
         </div>

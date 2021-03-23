@@ -56,10 +56,10 @@ export class DashboardView implements OnInit {
         // load for the selector
         let lastDashboardId = this.userpreferences.getPreference('last_dashboard');
         this.model.module = 'Dashboards';
-        this.modellist.module = 'Dashboards';
+        this.modellist.initialize('Dashboards');
         // ToDo: add infinite scrolling and reload on change of searchterm
         this.modellist.loadlimit = 250;
-        this.modellist.getListData(['name', 'global'])
+        this.modellist.getListData()
             .subscribe(() => {
                 if (lastDashboardId) {
                     this.modellist.listData.list.some(dashboard => {
