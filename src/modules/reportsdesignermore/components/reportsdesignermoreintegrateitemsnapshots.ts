@@ -34,7 +34,7 @@ export class ReportsDesignerMoreIntegrateItemSnapshots {
      */
     private loadSnapshots() {
         this.isLoading = true;
-        this.backend.getRequest(`kreporter/${this.model.id}/snapshots`).subscribe(snapshots => {
+        this.backend.getRequest(`module/KReports/${this.model.id}/snapshots`).subscribe(snapshots => {
             if (!!snapshots) this.snapshots = snapshots;
             this.isLoading = false;
         });
@@ -47,7 +47,7 @@ export class ReportsDesignerMoreIntegrateItemSnapshots {
     private deleteSnapshot(snapshotId) {
         this.modal.confirmDeleteRecord().subscribe(response => {
             if (response) {
-                this.backend.deleteRequest(`kreporter/${this.model.id}/snapshot/${snapshotId}`).subscribe(res => {
+                this.backend.deleteRequest(`module/KReports/${this.model.id}/snapshot/${snapshotId}`).subscribe(res => {
                     if (!!res) {
                         this.snapshots = this.snapshots.filter(snapshot => snapshot.snapshot != snapshotId);
                     }

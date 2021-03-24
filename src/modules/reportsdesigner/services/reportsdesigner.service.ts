@@ -99,7 +99,7 @@ export class ReportsDesignerService {
     private loadReporterConfig() {
         let reporterConfig = this.configurationService.getData('reporterConfig');
         if (!reporterConfig) {
-            this.backend.getRequest('kreporter/core/whereoperators/all').subscribe(reporterConfig => {
+            this.backend.getRequest('module/KReports/core/whereoperators/all').subscribe(reporterConfig => {
                 this.configurationService.setData('reporterConfig', reporterConfig);
                 this.setConfigs(reporterConfig);
             });
@@ -112,7 +112,7 @@ export class ReportsDesignerService {
      * load report color themes from backend
      */
     public loadVisualizationColors() {
-        this.backend.getRequest(`kreporter/core/vizcolors`).subscribe(res => {
+        this.backend.getRequest(`module/KReports/core/vizcolors`).subscribe(res => {
             if (!res) return;
             this.visualizeColorTheme = res.map(item => {
                 item.colors = item.colors.split('*');
