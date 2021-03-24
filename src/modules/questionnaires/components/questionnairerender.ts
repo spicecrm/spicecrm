@@ -75,7 +75,7 @@ export class QuestionnaireRender implements OnInit, OnDestroy, OnChanges {
     }
 
     /**
-     * unsubscribe from subscriptions
+     * unsubscribe from subscriptions and destroy
      */
     public ngOnDestroy() {
         this.subscriptions.unsubscribe();
