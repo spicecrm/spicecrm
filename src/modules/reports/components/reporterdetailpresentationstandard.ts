@@ -192,7 +192,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
             }]);
         }
 
-        this.backend.postRequest(`kreporter/${this.model.id}/presentation/dynamicoptions`, {}, body).subscribe((presData: any) => {
+        this.backend.postRequest(`module/KReports/${this.model.id}/presentation/dynamicoptions`, {}, body).subscribe((presData: any) => {
 
             this.presData = [];
             this.cdRef.detectChanges();

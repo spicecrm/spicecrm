@@ -112,7 +112,7 @@ export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
         }
         params.whereConditions = JSON.stringify(whereConditions);
 
-        this.backend.getRequest('kreporter/' + this.model.id + '/visualization', params).subscribe(vizData => {
+        this.backend.getRequest('module/KReports/' + this.model.id + '/visualization', params).subscribe(vizData => {
             this.vizData = vizData;
             this.loading = false;
             this.cdRef.detectChanges();
