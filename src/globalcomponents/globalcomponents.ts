@@ -105,6 +105,8 @@ import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobt
 import /*embed*/ {GlobalObtainGDPRConsent} from './components/globalobtaingdprconsent';
 import /*embed*/ {GlobalObtainGDPRConsentContainer} from './components/globalobtaingdprconsentcontainer';
 import /*embed*/ {GlobalHeaderImage} from './components/globalheaderimage';
+import /*embed*/ {GlobalHeaderNotificationsItemGeneric} from './components/globalheadernotificationsitemgeneric';
+import /*embed*/ {GlobalHeaderNotificationsItemAssignment} from './components/globalheadernotificationsitemassignment';
 import /*embed*/ {GlobalHeaderNotifications} from './components/globalheadernotifications';
 
 /**
@@ -195,7 +197,9 @@ import /*embed*/ {GlobalHeaderNotifications} from './components/globalheadernoti
         GlobalNavigationTabbedSubTabMoreTab,
         GlobalHeaderImage,
         GlobalLoginImage,
-        GlobalHeaderNotifications
+        GlobalHeaderNotifications,
+        GlobalHeaderNotificationsItemGeneric,
+        GlobalHeaderNotificationsItemAssignment
     ],
     entryComponents: [
         GlobalCopyright,
