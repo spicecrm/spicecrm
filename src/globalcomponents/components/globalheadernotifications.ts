@@ -1,13 +1,8 @@
 /**
  * @module GlobalComponents
  */
-import {Component} from '@angular/core';
-import {configurationService} from "../../services/configuration.service";
-import {backend} from "../../services/backend.service";
-import {session} from "../../services/session.service";
-
-/** @ignore */
-declare var moment;
+import {Component, ElementRef, Renderer2} from '@angular/core';
+import {NotificationService} from "../../services/notification.service";
 
 /**
  * display notifications on the global header
@@ -22,66 +17,44 @@ export class GlobalHeaderNotifications {
      * @private
      */
     private isOpen: boolean = false;
-    /**
-     * holds the unread notifications count
-     * @private
-     */
-    private unreadCount: number = 0;
-    /**
-     * holds the notifications
-     * @private
-     */
-    private notifications = [];
+    private clickListener: () => void;
 
-    constructor(private configuration: configurationService,
-                private session: session,
-                private backend: backend) {
-        this.loadNotifications();
-        this.setUnreadCount();
-    }
-
-    /**
-     * load the notifications from the configuration service
-     * @private
-     */
-
-    private loadNotifications() {
-        this.notifications = this.configuration.getData('spicenotifications') || [];
-        this.notifications.map(n => {
-            const timeZone = this.session.getSessionData('timezone') || moment.tz.guess(true);
-            let pDateTime = typeof timeZone == 'string' && timeZone.length > 0 ? moment.utc(n.notification_date).tz(timeZone) : moment(n.notification_date);
-            n.notification_date = pDateTime.isValid() ? pDateTime : null;
-            n.notification_read = n.notification_read == '1';
-            return n;
-        });
-    }
-
-    /**
-     * set the notifications unread count
-     * @private
-     */
-    private setUnreadCount() {
-        this.unreadCount = this.notifications.filter(n => !n.notification_read).length;
-    }
-
-    /**
-     * toggle open popover
-     * @private
-     */
-    private toggleOpenPopover() {
-        this.isOpen = !this.isOpen;
+    constructor(private notificationService: NotificationService,
+                private elementRef: ElementRef,
+                private renderer: Renderer2) {
     }
 
     /**
      * mark notification as read
-     * @param notification
-     * @private
+     * @param id
      */
-    private markAsRead(notification) {
-        this.backend.postRequest('SpiceNotifications/markAsRead/' + notification.id).subscribe(res => {
-            if (!res) return;
-            notification.notification_read = 1;
-            this.setUnreadCount();
-        });
+    public markAsRead(id: string) {
+        this.notificationService.markAsRead(id);
+    }
+
+    /**
+     * toggle open popover and handle closing the popover when the click is outside the container
+     */
+    public toggleOpenPopover() {
+        this.isOpen = !this.isOpen;
+        if (this.isOpen) {
+            this.clickListener = this.renderer.listen('document', 'click', event => {
+                if (this.elementRef.nativeElement.contains(event.target)) return;
+                this.isOpen = false;
+                this.clickListener();
+            });
+        } else if (this.clickListener) {
+            this.clickListener();
+        }
+    }
+
+    /**
+     * close the popover and remove the click listener
+     */
+    public closePopover() {
+        this.isOpen = false;
+        if (this.clickListener) {
+            this.clickListener();
+        }
     }
 }

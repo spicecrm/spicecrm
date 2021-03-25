@@ -1,0 +1,22 @@
+<div class="slds-media slds-has-flexi-truncate slds-p-around_x-small">
+    <div class="slds-media__figure">
+        <span *ngIf="!!notification.bean_module" class="slds-icon_container" style="width:40px;height:40px;">
+            <system-icon [module]="notification.bean_module"></system-icon>
+        </span>
+    </div>
+    <div class="slds-media__body">
+        <div class="slds-grid slds-grid_align-spread" [class.slds-text-title_bold]="notification.notification_read != 1">
+            <a href="javascript:void(0);" class="slds-text-link_reset slds-has-flexi-truncate">
+                <h3 class="slds-truncate" [system-title]="notification.notification_text">
+                    <span>
+                        {{notification.notification_text}}
+                    </span>
+                </h3>
+                <p class="slds-text-color_weak">
+                    {{notification.notification_date}}
+                    <abbr *ngIf="notification.notification_read != 1" system-title="LBL_UNREAD" class="slds-text-link slds-m-horizontal_xxx-small slds-text-color_success">●</abbr>
+                </p>
+            </a>
+        </div>
+    </div>
+</div>
