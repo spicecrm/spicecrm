@@ -192,7 +192,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
             }]);
         }
 
-        this.backend.postRequest(`KReporter/${this.model.id}/presentation/dynamicoptions`, {}, body).subscribe((presData: any) => {
+        this.backend.postRequest(`module/KReports/${this.model.id}/presentation/dynamicoptions`, {}, body).subscribe((presData: any) => {
 
             this.presData = [];
             this.cdRef.detectChanges();
@@ -344,7 +344,7 @@ export class ReporterDetailPresentationStandard implements AfterViewInit, OnInit
                     isHidden: this.fieldsData[field.fieldid].display != 'yes'
                 });
             }
-            this.backend.postRequest('KReporter/core/savelayout/' + this.model.id, {}, {layout: layoutdata}).subscribe(result => {
+            this.backend.postRequest('module/KReports/' + this.model.id + '/layout', {}, {layout: layoutdata}).subscribe(result => {
                 if (result.success) {
                     this.toast.sendToast('Layout saved');
                 }
