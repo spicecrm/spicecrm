@@ -26,6 +26,7 @@ import {loggerService} from './services/logger.service';
 import {configurationService} from "./services/configuration.service";
 import {helper} from "./services/helper.service";
 import {loginService, loginCheck} from "./services/login.service";
+import {NotificationService} from "./services/notification.service";
 import {session} from "./services/session.service";
 import {metadata, aclCheck, noBack} from "./services/metadata.service";
 import {MathExpressionCompilerService} from "./services/mathexpressioncompiler";
@@ -173,7 +174,8 @@ export class SpiceUI {
         loggerService,
         libloader,
         toast,
-        userpreferences
+        userpreferences,
+        NotificationService
     ]
 })
 export class SpiceUIModule {
