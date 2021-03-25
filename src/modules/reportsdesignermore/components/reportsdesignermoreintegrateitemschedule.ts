@@ -51,7 +51,7 @@ export class ReportsDesignerMoreIntegrateItemSchedule {
      * load dLists from backend
      */
     private loadDLists() {
-        this.backend.getRequest('KReporter/dlistmanager/dlists').subscribe(dLists => {
+        this.backend.getRequest('module/KReports/dlistmanager/dlists').subscribe(dLists => {
             if (!!dLists) this.dLists = dLists;
         });
     }

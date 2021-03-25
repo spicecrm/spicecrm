@@ -72,10 +72,10 @@ export class ReporterIntegrationQueryanalyzerModal implements OnInit {
             });
         }
         let postBody = {
-            record: this.model.id,
+//            record: this.model.id,
             whereOverride: JSON.stringify(whereConditions)
-        }
-        this.backend.postRequest('KReporter/plugins/kqueryanalizer/get_sql', {}, postBody).subscribe(sql => {
+        };
+        this.backend.postRequest('module/KReports/' + this.model.id + '/plugins/kqueryanalizer/sql', {}, postBody).subscribe(sql => {
                 this.mainquery = sql.main;
                 this.formattedquery = sql.formatted;
                 this.highlightedquery = sql.highlighted;
