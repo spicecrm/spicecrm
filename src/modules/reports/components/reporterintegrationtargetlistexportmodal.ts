@@ -41,7 +41,7 @@ export class ReporterIntegrationTargetlistexportModal {
                 whereConditions: btoa(JSON.stringify(this.whereConditions))
             };
 
-            this.backend.postRequest('KReporter/plugins/action/ktargetlistexport/export_to_targetlist', {}, requestbody).subscribe(result => {
+            this.backend.postRequest('module/KReports/plugins/action/ktargetlistexport/export_to_targetlist', {}, requestbody).subscribe(result => {
                 modalRef.instance.self.destroy();
                 this.closeModal();
             });

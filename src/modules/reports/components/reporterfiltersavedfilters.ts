@@ -63,7 +63,7 @@ export class ReporterFilterSavedFilters implements OnInit {
      * load the savedFilters
      */
     public ngOnInit() {
-        this.backend.getRequest(`KReporter/${this.reportId}/savedfilter/assigneduserid/own`)
+        this.backend.getRequest(`module/KReports/${this.reportId}/savedfilters`, {assigneduserid:"own"})
             .subscribe(filters => {
                 this.savedFilters = filters;
             });
