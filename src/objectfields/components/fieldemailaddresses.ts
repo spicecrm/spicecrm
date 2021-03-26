@@ -8,7 +8,7 @@ import {language} from '../../services/language.service';
 import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
-import {Subscription} from "rxjs";
+import {broadcast} from "../../services/broadcast.service";
 
 declare var _;
 
@@ -32,18 +32,15 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * holds the email addresses locally
      */
     public emailAddresses = [];
-    /**
-     * holds a subscription to unsubscribe
-     * @private
-     */
-    private subscription = new Subscription();
 
     constructor(public model: model,
                 public view: view,
                 public language: language,
                 public metadata: metadata,
+                public broadcast: broadcast,
                 public router: Router) {
         super(model, view, language, metadata, router);
+        this.subscribeToDataChange();
     }
 
     /**
@@ -143,6 +140,20 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
     }
 
     /**
+     * subscribe to model.loaded broadcast message
+     * @private
+     */
+    private subscribeToDataChange() {
+        this.subscriptions.add(
+            this.broadcast.message$.subscribe(msg => {
+                if (msg.messagetype != 'model.loaded') return;
+                this.initialize();
+            })
+        );
+
+    }
+
+    /**
      * set email1 field value
      * @param emailAddress
      * @param ignoreInvalid
@@ -160,7 +171,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * @private
      */
     private subscribeToModeChange() {
-        this.subscription.add(
+        this.subscriptions.add(
             this.view.mode$.subscribe(() => this.initialize())
         );
     }
