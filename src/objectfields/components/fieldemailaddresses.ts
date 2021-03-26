@@ -231,7 +231,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * @private
      */
     private setCanAdd() {
-        this.canAdd = !this.fieldconfig.singleModel ?
+        this.canAdd = !this.fieldconfig.singleMode ?
             !this.emailAddresses.some(emailAddress => emailAddress.invalid_email == 1) : this.emailAddresses.length == 0;
     }
 
