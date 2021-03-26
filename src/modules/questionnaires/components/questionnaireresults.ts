@@ -22,30 +22,38 @@ export class QuestionnaireResults implements OnInit {
 
     public ngOnInit() {
         this.broadcast.message$.subscribe(msg => {
+            // Reload the questionnaire in case the participation/answers had been (re-)saved elsewhere:
             if ( msg.messagetype == 'questionnaireParticipation.saved' && msg.messagedata.parentType === this.model.module && msg.messagedata.parentId === this.model.id ) {
                 this.questionnaireParticipation.reload();
             }
         });
     }
 
+    /**
+     * Is there a participation?
+     * @private
+     */
     private get noParticipation() {
         return this.questionnaireParticipation && this.questionnaireParticipation.isLoaded && !this.questionnaireParticipation.participationId;
     }
 
-    /*
-    private reload(): void {
-        this.isLoading = true;
-        this.noParticipation = false;
-        // this.loadQuestionSetsWithResults();
-    }
-    */
-
-    /*
-    private fillOut() {
-        this.modal.openModal('QuestionnaireFillOut', true, this.injector );
-    }
+    /**
+     * Reload the rendered questionnaire.
+     * @private
      */
+    private reload(): void {
+        this.questionnaireParticipation.reload();
+    }
 
-
+    /**
+     * Open the modal to fill out the questionnaire.
+     * @private
+     */
+    private fillOut(): void {
+        this.modal.openModal('QuestionnaireFillOutModal').subscribe(modal => {
+            modal.instance.parentId = this.model.id;
+            modal.instance.parentType = this.model.module;
+        });
+    }
 
 }
