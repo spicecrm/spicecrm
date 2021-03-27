@@ -188,7 +188,7 @@ export class GlobalLogin {
                     }
 
                     // reset the logging in state
-                    this.loggingIn = true;
+                    this.loggingIn = false;
                 }
             );
         }
