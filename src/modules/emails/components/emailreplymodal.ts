@@ -89,9 +89,11 @@ export class EmailReplyModal implements OnInit {
             if (address.address_type == "from") {
                 let toaddress = {...address};
                 toaddress.address_type = "to";
+                toaddress.id = '';
                 this.model.data.recipient_addresses.push(toaddress);
             } else if (address.address_type != "from" && address.address_type != "to") {
                 let addaddress = {...address};
+                addaddress.id = '';
                 this.model.data.recipient_addresses.push(addaddress);
             }
         }
