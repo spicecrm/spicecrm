@@ -62,6 +62,7 @@ import /*embed*/ {fieldFile} from './components/fieldfile';
 import /*embed*/ {fieldUrl} from './components/fieldurl';
 import /*embed*/ {fieldEmail} from './components/fieldemail';
 import /*embed*/ {fieldEmailAddresses} from './components/fieldemailaddresses';
+import /*embed*/ {fieldEmailEmailAddressStatus} from './components/fieldemailemailaddressstatus';
 import /*embed*/ {fieldEmailEmailAddress} from './components/fieldemailemailaddress';
 import /*embed*/ {fieldEmailRecipients} from './components/fieldemailrecipients';
 import /*embed*/ {fieldEmailRecipientsShort} from './components/fieldemailrecipientsshort';
@@ -199,6 +200,7 @@ declare var _: any;
         fieldEmailRecipients,
         fieldEmailRecipientsShort,
         fieldEmailEmailAddress,
+        fieldEmailEmailAddressStatus,
         fieldVat,
         fieldBarcode,
         fieldBarcodeRenderer,

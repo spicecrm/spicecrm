@@ -107,7 +107,7 @@ export class QuestionnaireEntireEvaluation implements OnInit {
                         this.options[question.id] = [];
                         if ( question.questionoptions && question.questionoptions.beans ) {
                             let keys = Object.keys( question.questionoptions.beans );
-                            if ( questionset.questiontype.match( /^binary|single|multi|ist$/ ) ) {
+                            if ( question.questiontype.match( /^binary|single|multi|ist|rating$/ ) ) {
                                 // Sort the options.
                                 keys.sort( ( a, b ) => {
                                     return question.questionoptions.beans[a].position - question.questionoptions.beans[b].position;
@@ -214,8 +214,15 @@ export class QuestionnaireEntireEvaluation implements OnInit {
         }
     }
 
+    private questionIsToShow( question: any ): boolean {
+        return /^ratinggroup|rating|nps|single|multi|binary$/.test( question.questiontype );
+    }
+
     private questionsetIsToShow( questionset: any ): boolean {
-        return /^rating|nps|single|multi|binary$/.test( questionset.questiontype );
+        for ( let id in questionset.questions.beans ) {
+            if ( /^ratinggroup|rating|nps|single|multi|binary$/.test( questionset.questions.beans[id].questiontype )) return true;
+        }
+        return false;
     }
 
 }
