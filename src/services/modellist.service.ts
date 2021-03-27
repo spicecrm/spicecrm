@@ -1192,7 +1192,7 @@ export class modellist implements OnDestroy {
 
         let selectedIds = this.getSelectedIDs();
         if (selectedIds.length > 0) {
-            this.backend.getLinkToDownload('/module/' + this.module + '/export', 'POST', {}, {
+            this.backend.getLinkToDownload(`module/${this.module}/export`, 'POST', {}, {
                 ids: selectedIds,
                 fields: fields
             }, {}).subscribe(
@@ -1205,7 +1205,7 @@ export class modellist implements OnDestroy {
             let aggregates = {};
             aggregates[this.module] = this.selectedAggregates;
             this.backend.getLinkToDownload(
-                '/module/' + this.module + '/export',
+                `module/${this.module}/export`,
                 'POST',
                 {},
                 {
