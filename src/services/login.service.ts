@@ -207,6 +207,7 @@ export class loginService {
                             break;
                         default:
                             this.toast.sendToast('Application Error', 'error', 'Error Authenticating');
+                            loginSuccess.error(err.statusText);
                             break;
                     }
                     loginSuccess.complete();
