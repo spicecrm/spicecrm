@@ -19,7 +19,7 @@ export class CampaignExportModal {
     private exportReports: any[] = [];
 
     constructor(private language: language, private model: model, private backend: backend, private modal: modal) {
-        this.backend.getRequest('module/CampaignTasks/export/reports').subscribe(reports => {
+        this.backend.getRequest('module/Campaign/tasks/export/reports').subscribe(reports => {
             this.exportReports = reports;
         });
     }
