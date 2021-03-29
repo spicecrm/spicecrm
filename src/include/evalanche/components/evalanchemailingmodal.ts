@@ -46,8 +46,8 @@ export class EvalancheMailingModal {
                 template: this.template,
                 targetlists: selected
             };
-            console.log(body);
-            this.backend.postRequest(`Evalanche/${this.model.module}/${this.model.id}/sendmailing`, {}, body).subscribe(response => {
+
+            this.backend.postRequest(`channels/emarketing/evalanche/${this.model.module}/${this.model.id}/sendmailing`, {}, body).subscribe(response => {
                 loadingRef.instance.self.destroy();
                 if (response.success) {
                     this.toast.sendToast('success', 'success');

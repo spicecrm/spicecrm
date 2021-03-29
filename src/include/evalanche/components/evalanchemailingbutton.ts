@@ -50,7 +50,7 @@ export class EvalancheMailingButton {
      */
     public execute() {
         let await = this.modal.await(this.language.getLabel('LBL_LOADING'));
-        this.backend.getRequest(`Evalanche/${this.model.module}/${this.model.id}/templates`).subscribe(response => {
+        this.backend.getRequest(`channels/emarketing/evalanche/${this.model.module}/${this.model.id}/templates`).subscribe(response => {
             if(response) {
                 await.emit(true);
                 this.templates = response.templates;
