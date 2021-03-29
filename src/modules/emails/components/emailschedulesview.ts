@@ -39,7 +39,7 @@ export class EmailSchedulesView {
      */
     private getData() {
         this.isLoading = true;
-        this.backend.getRequest(`module/${this.model.module}/${this.model.id}/myOpenSchedules`).subscribe(result => {
+        this.backend.getRequest(`module/EmailSchedules/myopen/${this.model.id}`).subscribe(result => {
             if (result.status) {
                 this.isLoading = false;
                 this.emailschedules = result.openschedules;
