@@ -83,7 +83,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
         this.relateIdField = fieldDefs.id_name;
         this.relateNameField = this.fieldname;
         this.relateType = fieldDefs.module;
-        this.isAuthorized = this.metadata.checkModuleAcl(fieldDefs.module, 'list');
+        this.isAuthorized = this.metadata.checkModuleAcl(fieldDefs.module, 'list') || this.metadata.checkModuleAcl(fieldDefs.module, 'listrelated');
         this.handleRelateFIlterField();
 
     }
