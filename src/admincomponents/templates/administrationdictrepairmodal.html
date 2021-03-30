@@ -27,10 +27,10 @@
         </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--brand" [disabled]="sql.length <= 0" (click)="selectAll()">
+        <button class="slds-button slds-button--neutral" [disabled]="sql.length <= 0" (click)="selectAll()">
             <system-label label="LBL_SELECT_ALL"></system-label>
         </button>
-        <button class="slds-button slds-button--brand" [disabled]="wholeSQL.length <= 0" (click)="copy2clipboard()">
+        <button *ngIf="!hidden" class="slds-button slds-button--neutral" [disabled]="wholeSQL.length <= 0" (click)="copy2clipboard()">
             <system-label label="LBL_COPY_TO_CLIPBOARD"></system-label>
         </button>
         <button class="slds-button slds-button--brand" [disabled]="sql.length <= 0" (click)="doRepair()">
