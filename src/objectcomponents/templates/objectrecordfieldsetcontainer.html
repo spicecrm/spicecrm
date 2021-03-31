@@ -1,4 +1,4 @@
-<fieldset class="slds-form-element slds-form-element_compound">
+<fieldset *ngIf="!hidden" class="slds-form-element slds-form-element_compound">
     <legend *ngIf="componentconfig.name" class="slds-form-element__legend slds-form-element__label slds-p-horizontal--xx-small"><system-label [label]="componentconfig.name"></system-label></legend>
     <div class="slds-form-element__control">
         <object-record-fieldset [fieldset]="fieldset" [direction]="direction"></object-record-fieldset>
