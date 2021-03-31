@@ -68,7 +68,7 @@ export class CampaignTaskExportButton {
         // set activating indicator
         this.exporting = true;
 
-        this.backend.getDownloadPostRequestFile(`/module/CampaignTasks/${this.model.id}/export`, {}).subscribe(url => {
+        this.backend.getDownloadPostRequestFile(`/module/Campaign/${this.model.id}/tasks/export`, {}).subscribe(url => {
 
             // create a link on the document and click for the download
             let downloadLink = document.createElement('a');
