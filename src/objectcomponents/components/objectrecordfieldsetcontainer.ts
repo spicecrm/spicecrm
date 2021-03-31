@@ -35,4 +35,13 @@ export class ObjectRecordFieldsetContainer {
 
     constructor(private metadata: metadata, private model: model, private view: view) {
     }
+
+    /**
+     * determine if the fieldset as such is hidden
+     *
+     * this is mainly driven by the required model state
+     */
+    get hidden() {
+        return (this.componentconfig.requiredmodelstate && !this.model.checkModelState(this.componentconfig.requiredmodelstate));
+    }
 }
