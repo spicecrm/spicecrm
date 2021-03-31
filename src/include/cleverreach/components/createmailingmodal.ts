@@ -83,7 +83,7 @@ export class CreateMailingModal implements OnInit {
      */
 
     private onSubmit() {
-        this.backend.postRequest(`CleverReach/${this.model.module}/${this.model.id}/sendMailing`, null, this.mailing.value).subscribe(
+        this.backend.postRequest(`channels/emarketing/cleverreach/${this.model.module}/${this.model.id}/sendmailing`, null, this.mailing.value).subscribe(
             response => {
                 this.toast.sendToast(this.language.getLabel('LBL_COMPLETED'));
                 this.model.setField('mailing_id', response.mailing_id);
