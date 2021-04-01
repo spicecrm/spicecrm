@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Diagram filter</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script type="text/javascript" src="../../codebase/diagram.js"></script>
+	<link rel="stylesheet" href="../../codebase/diagram.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+
+	<link rel="stylesheet" href="../common/dhx_samples.css">
+	<script type="text/javascript" src="../common/diagram.js"></script>
+	<style>
+		.dhx_free_diagram .yes_line {
+			stroke: #38B551;
+		}
+
+		.yes_line .dhx_diagram_arrow {
+			fill: #38B551;
+		}
+
+		.dhx_free_diagram .no_line {
+			stroke: #E10000;
+		}
+
+		.no_line .dhx_diagram_arrow {
+			fill: #E10000;
+		}
+
+		.yes_circle .dhx_item_shape {
+			fill: #38B551;
+			stroke: none;
+		}
+
+		.yes_circle text {
+			fill: white;
+			text-transform: uppercase;
+			font-size: 12px;
+			font-weight: 500;
+		}
+
+		.no_circle .dhx_item_shape {
+			fill: red;
+			stroke: none;
+		}
+
+		.no_circle text {
+			fill: white;
+			text-transform: uppercase;
+			font-size: 12px;
+			font-weight: 500;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="diagram_container"></div>
+	<button class="dhx_btn" style="position:absolute;top:0;right:20%;display:block;" onclick="filter()">Filter</button>
+	<button class="dhx_btn" style="position:absolute;top:40px;right:20%;display:block;" onclick="filterByCustomRule()">Custom filter</button>
+	<button class="dhx_btn" style="position:absolute;top:80px;right:20%;display:block;" onclick="undoFilter()">Undo filter</button>
+	<script>
+		var diagram = new dhx.Diagram("diagram_container");
+		diagram.data.parse(custom);
+		function filter() {
+			diagram.data.filter({ by: "text", match: "Read N" })
+		}
+		function filterByCustomRule() {
+			diagram.data.filter(function (shape) {
+				return shape.id > 3;
+			})
+		}
+		function undoFilter() {
+			diagram.data.filter();
+		}
+	</script>
+
+</body>
+
+</html>

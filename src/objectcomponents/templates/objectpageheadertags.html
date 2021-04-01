@@ -1,0 +1,50 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div *ngIf="taggingEnabled" class="slds-show--medium slds-p-top--xxx-small">
+    <system-stencil *ngIf="model.isLoading; else displayContent"></system-stencil>
+    <ng-template #displayContent>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <div class="slds-p-vertical--x-small">
+                <div class="slds-p-right--xx-small slds-grid slds-gutters_direct-xxx-small" *ngIf="objecttags.length">
+                    <div *ngFor="let tag of objecttags;let i=index" class="slds-col">
+                        <span class="slds-badge">
+                            {{tag}}
+                            <span *ngIf="isEditing" class="slds-badge__icon slds-badge__icon_right" style="margin-bottom: 2px;" (click)="removeByIndex(i)">
+                                <system-utility-icon icon="close" size="xx-small"></system-utility-icon>
+                            </span>
+                        </span>
+                    </div>
+                </div>
+                <div *ngIf="objecttags.length == 0 && !isEditing" class="slds-p-right--xx-small">
+                    <div style="font-style:italic"><system-label label="LBL_NO_TAGS_ASSIGNED"></system-label></div>
+                </div>
+            </div>
+            <div *ngIf="!isEditing">
+                <button class="slds-button slds-button_icon" (click)="editTags()">
+                    <system-button-icon [icon]="'edit'"></system-button-icon>
+                </button>
+            </div>
+            <div *ngIf="isEditing" class="slds-grid slds-grow">
+                <div class="slds-form-element slds-grow">
+                    <system-input-tags (tagemitter)="addTag($event)"></system-input-tags>
+                </div>
+                <button class="slds-p-left--xx-small slds-button slds-button_icon" (click)="cancelEdit()">
+                    <system-button-icon [icon]="'close'"></system-button-icon>
+                </button>
+                <button class="slds-button slds-button_icon" (click)="saveTags()">
+                    <system-button-icon [icon]="'check'"></system-button-icon>
+                </button>
+            </div>
+        </div>
+    </ng-template>
+</div>

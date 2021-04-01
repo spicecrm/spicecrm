@@ -1,0 +1,57 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <div class="slds-form-element__control slds-p-right--xx-small">
+            <select class="slds-select" [(ngModel)]="mailbox" style="min-width: 250px;" [disabled]="mailboxesEmails.mailboxes.length==0 || isFetching">
+                <option *ngFor="let mailbox of mailboxesEmails.mailboxes" value="{{mailbox.id}}">
+                    {{mailbox.name}}
+                </option>
+            </select>
+        </div>
+        <div class="slds-form-element__control slds-p-horizontal--xx-small">
+            <system-checkbox [(ngModel)]="mailboxesEmails.unreadonly"><system-label label="LBL_UNREAD_ONLY"></system-label></system-checkbox>
+        </div>
+        <div class="slds-form-element__control slds-p-horizontal--xx-small">
+            <select class="slds-select" [(ngModel)]="emailopenness">
+                <option value="all"><system-label label="LBL_EMAILS_ALL"></system-label></option>
+                <option value="open"><system-label label="LBL_EMAILS_OPEN"></system-label></option>
+                <option value="user_closed"><system-label label="LBL_EMAILS_USER_CLOSED"></system-label></option>
+                <option value="system_closed"><system-label label="LBL_EMAILS_SYSTEM_CLOSED"></system-label></option>
+            </select>
+        </div>
+        <div class="slds-p-horizontal--xx-small">
+            <ul class="slds-list_horizontal slds-has-dividers_left slds-has-block-links_space">
+                <li class="slds-item"><span>{{mailboxesEmails.emails.length}} <system-label label="LBL_OF"></system-label> {{mailboxesEmails.totalcount}} <system-label label="LBL_ITEMS"></system-label></span></li>
+                <li class="slds-item"><system-utility-icon [icon]="mailboxesEmails.source == 'db' ? 'database' : 'feed'" size="xx-small"></system-utility-icon></li>
+            </ul>
+        </div>
+    </div>
+    <div class="slds-col--bump-left slds-grid">
+        <div class="slds-m-horizontal--xx-small">
+            <system-input-radio-button-group [ngModel]="mailboxesEmails.activeSplitType.name" (ngModelChange)="setActiveSplitType($event)" [inputOptions]="splitTypeOptions"></system-input-radio-button-group>
+        </div>
+        <div class=" slds-button-group">
+            <button class="slds-button slds-button--neutral" [disabled]="!buttonenabled" (click)="reloadList()">
+                <system-button-icon class="slds-button__icon--left" icon="refresh"></system-button-icon>
+                <span><system-label label="LBL_REFRESH"></system-label></span>
+            </button>
+            <button class="slds-button slds-button--neutral" [disabled]="!buttonenabled" (click)="fetchEmails()">
+                <system-button-icon class="slds-button__icon--left" icon="email"></system-button-icon>
+                <span><system-label label="LBL_FETCH_EMAILS"></system-label></span>
+            </button>
+        </div>
+    </div>
+
+</div>
+

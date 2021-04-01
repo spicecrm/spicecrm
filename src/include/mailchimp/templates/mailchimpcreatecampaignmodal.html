@@ -1,0 +1,66 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<system-modal>
+    <system-modal-header (close)="close()">
+        <h1>{{language.getLabel('LBL_CREATE_MAILING')}} in {{language.getLabel('LBL_CLEVERREACH')}}</h1>
+    </system-modal-header>
+    <system-modal-content>
+        <form class="slds-form" [formGroup]="campaign" (ngSubmit)="onSubmit()">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label">{{language.getLabel('LBL_NAME')}}:</label>
+                <div class="slds-form-element__control">
+                    <input type="text" placeholder="name must be unique" class="slds-input" formControlName="name">
+                </div>
+            </div>
+            <div class="slds-form-element">
+                <label class="slds-form-element__label">{{language.getLabel('LBL_SUBJECT')}}:</label>
+                <div class="slds-form-element__control">
+                    <input type="text" placeholder="Placeholder Text" class="slds-input" formControlName="subject">
+                </div>
+            </div>
+
+            <div class="slds-form-element">
+                <label class="slds-form-element__label">{{language.getLabel('LBL_TYPE')}}:</label>
+
+                <div class="slds-form-element__control">
+                      <span class="slds-radio">
+                        <input type="radio" id="radio-15" value="regular" formControlName="type"/>
+                        <label class="slds-radio__label" for="radio-15">
+                          <span class="slds-radio_faux"></span>
+                          <span class="slds-form-element__label">Regular</span>
+                        </label>
+                      </span>
+                    <span class="slds-radio">
+                        <input type="radio" id="radio-16" value="plaintext" formControlName="type"/>
+                        <label class="slds-radio__label" for="radio-16">
+                          <span class="slds-radio_faux"></span>
+                          <span class="slds-form-element__label">Plain Text</span>
+                        </label>
+                      </span>
+                </div>
+            </div>
+            <div class="slds-form-element">
+                <label class="slds-form-element__label">{{language.getLabel('LBL_TEXT')}}:</label>
+                <div class="slds-form-element__control">
+                    <textarea placeholder="Preview Text" class="slds-textarea" formControlName="text"
+                              rows="5"></textarea>
+                </div>
+            </div>
+        </form>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button class="slds-button slds-button--brand" type="submit"
+                (click)="onSubmit()">{{language.getLabel('LBL_CREATE')}}</button>
+    </system-modal-footer>
+</system-modal>

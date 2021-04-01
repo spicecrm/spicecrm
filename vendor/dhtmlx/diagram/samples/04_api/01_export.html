@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Export Diagram</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script type="text/javascript" src="../../codebase/diagram.js"></script>
+	<link rel="stylesheet" href="../../codebase/diagram.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+
+	<link rel="stylesheet" href="../common/dhx_samples.css">
+	<script type="text/javascript" src="../common/data.js"></script>
+</head>
+
+<body>
+    <div id="diagram_container" class="dhx_inline_cont" style="width:800px;height:500px;"></div>
+	<div class="dhx_inline_cont">
+        <button class="dhx_btn" onclick="diagram.export.pdf();">Export to PDF</button>
+        <button class="dhx_btn" onclick="diagram.export.png();">Export to PNG</button>
+    </div>
+
+	<script>
+		var diagram = new dhx.Diagram("diagram_container", { type: "org" });
+		diagram.data.parse(orgChartData);
+	</script>
+
+</body>
+
+</html>

@@ -1,0 +1,66 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<li class="slds-expression__group">
+    <fieldset>
+        <div class="slds-grid slds-gutters_direct-xx-small slds-grid--vertical-align-end slds-size--1-of-1">
+            <div class="slds-form-element slds-col slds-grow-none">
+                <label class="slds-form-element__label"><system-label label="LBL_GROUP_OPERATOR"></system-label></label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="filtergroup.logicaloperator">
+                            <option value="and"><system-label label="LBL_AND"></system-label></option>
+                            <option value="or"><system-label label="LBL_OR"></system-label></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element slds-col slds-grow-none">
+                <label class="slds-form-element__label"><system-label label="LBL_GROUP_SCOPE"></system-label></label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="filtergroup.groupscope">
+                            <option value="all"><system-label label="LBL_ALL"></system-label></option>
+                            <option value="own"><system-label label="LBL_OWN"></system-label></option>
+                            <option value="not_own"><system-label label="LBL_NOT_OWN"></system-label></option>
+                            <option value="creator"><system-label label="LBL_CREATOR"></system-label></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button *ngIf="candelete" class="slds-button slds-button_icon slds-button_icon-border-filled slds-col--bump-left" (click)="delete()">
+                <system-button-icon icon="delete"></system-button-icon>
+            </button>
+        </div>
+        <ul>
+            <!--li class="slds-expression__row slds-expression__row_group" *ngFor="let expression of expressions"-->
+            <li class="slds-expression__row_group" *ngFor="let expression of expressions">
+                <fieldset *ngIf="!expression.deleted">
+                    <system-filter-builder-expression [module]="module" [filterexpression]="expression" (expressionDeleted)="filterchanged()" ></system-filter-builder-expression>
+                </fieldset>
+            </li>
+            <ng-container *ngFor="let group of groups">
+                <system-filter-builder-expression-group *ngIf="!group.deleted" [module]="module" [filtergroup]="group" [candelete]="true" (expressionChanged)="filterchanged()" ></system-filter-builder-expression-group>
+            </ng-container>
+        </ul>
+        <div class="slds-expression__buttons">
+            <button class="slds-button slds-button_neutral" (click)="addExpression()">
+                <system-button-icon icon="add"></system-button-icon>
+                <system-label label="LBL_ADD_CONDITION"></system-label>
+            </button>
+            <button class="slds-button slds-button_neutral" (click)="addGroup()">
+                <system-button-icon icon="add"></system-button-icon>
+                <system-label label="LBL_ADD_GROUP"></system-label>
+            </button>
+        </div>
+    </fieldset>
+</li>

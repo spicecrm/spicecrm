@@ -1,0 +1,52 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-grid slds-grid_vertical-align-center slds-p-around--small slds-border--bottom">
+    <system-icon icon="apex_plugin"></system-icon>
+    <h2 class="slds-text-heading_medium"><system-label label="LBL_API_INSPECTOR"></system-label> ({{apiinspector.apiEndpoints.length}})</h2>
+</div>
+<div class="slds-theme--default slds-grid"  [system-overlay-loading-spinner]="apiinspector.loading">
+    <div class="slds-size--1-of-3 slds-border--right" >
+        <div class="slds-p-around--x-small slds-border--bottom">
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <input class="slds-input" system-placeholder="LBL_FILTER" [(ngModel)]="apiinspector.apiFilter"/>
+                <system-utility-icon class="slds-p-left--xx-small" (click)="toggleUnauthorized($event)" icon="unlock" size="x-small" [colorclass]="apiinspector.apiFilterUnauthorized ? 'slds-icon-text-warning' : 'slds-icon-text-light'"></system-utility-icon>
+                <system-utility-icon class="slds-p-left--xx-small" (click)="toggleAdminOnly($event)" icon="user_role" size="x-small" [colorclass]="apiinspector.apiFilterAdminOnly ? 'slds-icon-text-warning' : 'slds-icon-text-light'" ></system-utility-icon>
+            </div>
+        </div>
+        <div system-to-bottom>
+            <system-tree *ngIf="!apiinspector.loading; else treeLoadingSpinner" [sourceList]="apiinspector.apiTree" (selectedItemChange)="selectNode($event)"></system-tree>
+            <ng-template #treeLoadingSpinner>
+                <div class="slds-height_full slds-align--absolute-center">
+                    <div class="slds-grid slds-grid--vertical">
+                        <system-spinner></system-spinner>
+                        <system-label class="slds-p-vertical--small" label="LBL_LOADING_ENDPOINTS"></system-label>
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+    <div class="slds-size--2-of-3" >
+        <div style="min-height: 49px;" class="slds-p-around--x-small slds-border--bottom slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
+            <span class="slds-text-heading--medium">{{apiinspector.selectedAPI?.route}} ({{apiinspector.apiMethods.length}})</span>
+            <system-checkbox [(ngModel)]="apiinspector.apiSubMethods"><system-label label="LBL_INCLUDE_SUBROUTES"></system-label></system-checkbox>
+        </div>
+        <div system-to-bottom>
+            <administration-api-inspector-methods *ngIf="apiinspector.apiMethods.length > 0; else noMethodsAvailable"></administration-api-inspector-methods>
+            <ng-template #noMethodsAvailable>
+                <div class="slds-height_full slds-align--absolute-center">
+                    <system-illustration-no-data><system-label label="LBL_NO_METHODS_FOR_ENDPOINT"></system-label></system-illustration-no-data>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>

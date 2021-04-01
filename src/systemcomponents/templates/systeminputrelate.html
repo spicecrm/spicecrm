@@ -1,0 +1,39 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-combobox_container">
+    <div class="slds-form-element slds-lookup">
+        <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click " role="combobox">
+            <div *ngIf="_relatedid" class="slds-form-element__control">
+                <div class="slds-pill_container">
+                  <span class="slds-pill slds-size--1-of-1">
+                    <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
+                      <system-icon [module]="module" size="small"></system-icon>
+                    </span>
+                    <span class="slds-pill__label">{{_relatedname}}</span>
+                    <button class="slds-button slds-button--icon slds-pill__remove" (click)="clearField()">
+                      <system-button-icon [icon]="'close'"></system-button-icon>
+                    </button>
+                  </span>
+                </div>
+            </div>
+            <div *ngIf="!_relatedid" class="slds-form-element__control slds-grid slds-box--border">
+                <div class="slds-input-has-icon slds-input-has-icon--right slds-grow">
+                    <input type="text" class="slds-lookup__search-input slds-input--bare" (focus)="searchWithModal()" [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', module)" autocomplete="none" role="combobox"/>
+                    <button (click)="searchWithModal()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right">
+                        <system-button-icon [icon]="'search'"></system-button-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

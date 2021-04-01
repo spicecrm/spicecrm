@@ -1,0 +1,131 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<ng-container *ngIf="loaded; else loading">
+    <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-p-around--small">
+        <h2 class="slds-text-heading_medium">System and Storage Statistics Summary</h2>
+        <button class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="refresh()">
+            <system-button-icon icon="refresh"></system-button-icon>
+        </button>
+    </div>
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-m-bottom--medium">
+        <thead>
+            <tr class="slds-text-title_caps">
+                <th scope="col">
+                    Object
+                </th>
+                <th scope="col">
+                    Records
+                </th>
+                <th scope="col">
+                    Size
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div class="slds-truncate" >Database</div>
+                </td>
+                <td>
+                    <div class="slds-truncate" >{{totaldbrecords}}</div>
+                </td>
+                <td>
+                    <div class="slds-truncate" >{{humanReadableSize(totaldbsize)}}</div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="slds-truncate" >Elasticsearch</div>
+                </td>
+                <td>
+                    <div class="slds-truncate" >{{totalelasticrecords}}</div>
+                </td>
+                <td>
+                    <div class="slds-truncate" >{{humanReadableSize(totalelasticsize)}}</div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="slds-truncate" >Uploadfiles</div>
+                </td>
+                <td>
+                    <div class="slds-truncate" >{{uploadcount}}</div>
+                </td>
+                <td>
+                    <div class="slds-truncate" >{{humanReadableSize(uploadsize)}}</div>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr class="slds-theme--shade slds-text-title_caps">
+                <th>
+                    <div class="slds-truncate" >total</div>
+                </th>
+                <th>
+                    <div class="slds-truncate" ></div>
+                </th>
+                <th>
+                    <div class="slds-truncate" >{{humanReadableSize(totalsize)}}</div>
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+    <h2 class="slds-p-around--small">System and Storage Statistics Details</h2>
+    <div class="slds-border--top" system-to-bottom>
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table--header-fixed">
+            <thead>
+                <tr class="slds-text-title_caps">
+                    <th scope="col">
+                        <div class="slds-truncate" (click)="sortby('name', false)">Table</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" (click)="sortby('records')">Records</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" (click)="sortby('size')">Size</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate">indexed Records</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate">Index Size</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let table of stats.database">
+                    <td>
+                        <div class="slds-truncate" >{{table.name}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate" >{{table.records}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate" >{{humanReadableSize(table.size)}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate" >{{ftsDocumentCount(table.name)}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate" >{{ftsIndexSize(table.name)}}</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</ng-container>
+<ng-template #loading>
+    <div class="slds-align--absolute-center slds-height_full slds-size--1-of-1">
+        <system-spinner></system-spinner>
+    </div>
+</ng-template>

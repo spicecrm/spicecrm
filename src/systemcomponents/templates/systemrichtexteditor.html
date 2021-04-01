@@ -1,0 +1,219 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div (click)="onEditorClick($event)" class="slds-rich-text-editor slds-grid slds-grid_vertical slds-nowrap slds-grid slds-grid--vertical slds-theme--default" style="  top: 0; right: 0; left: 0; bottom: 0; z-index: 9999;" [ngStyle]="richTextStyle">
+    <!--system-richtext-toolbar [isActive]="isActive" #editorToolbar (execute)="executeCommand($event)"></system-richtext-toolbar-->
+    <div role="toolbar" class="slds-rich-text-editor__toolbar slds-shrink-none">
+        <button *ngIf="extendedmode" class="slds-button slds-button_icon slds-button_icon-border-filled slds-m-right--xx-small" tabindex="-1" [title]="language.getLabel('LBL_SAVE')" (click)="save$.emit(_html)">
+            <system-button-icon icon="save"></system-button-icon>
+        </button>
+        <ul *ngIf="extendedmode" class="slds-button-group-list">
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_UNDO')" (click)="executeCommand('undo')">
+                    <system-button-icon icon="undo"></system-button-icon>
+                    <span class="slds-assistive-text">undo</span>
+                </button>
+            </li>
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_REDO')" (click)="executeCommand('redo')"  >
+                    <system-button-icon icon="redo"></system-button-icon>
+                    <span class="slds-assistive-text">redo</span>
+                </button>
+            </li>
+        </ul>
+        <!--div class="slds-grid slds-rich-text-editor__spacing-wrapper" role="group" aria-label="Format font family &amp; size">
+            <div class="slds-rich-text-editor__select">
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="fontName" (change)="setFontName(fontName)"  tabindex="-1">
+                                <option value="Tilium Web"><span style="font-family: 'Tilium Web'">Tilium Web</span></option>
+                                <option value="Arial"><span style="font-family: 'Arial'">Arial</span></option>
+                                <option value="Calibri"><span style="font-family: 'Calibri'">Calibri</span></option>
+                                <option value="Comic Sans MS"><span style="font-family: 'Comic Sans MS'">Comic Sans MS</span></option>
+                                <option value="Times New Roman"><span style="font-family: 'Times New Roman'">Times New Roman</span></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-rich-text-editor__select">
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="fontSize" (change)="setFontSize(fontSize)"  tabindex="-1">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div-->
+        <div *ngIf="extendedmode"  class="slds-grid slds-rich-text-editor__spacing-wrapper" role="group">
+            <div class="slds-rich-text-editor__select">
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="block" (change)="executeCommand(block)" >
+                                <option value="h1"><h1>Heading 1</h1></option>
+                                <option value="h2"><h2>Heading 2</h2></option>
+                                <option value="h3"><h3>Heading 3</h3></option>
+                                <option value="h4">Heading 4</option>
+                                <option value="h5">Heading 5</option>
+                                <option value="h6">Heading 6</option>
+                                <option value="p">Paragraph</option>
+                                <option value="pre">Predefined</option>
+                                <option value="div">Standard</option>
+                                <option value="default">Default</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ul class="slds-button-group-list">
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_BOLD')" (click)="executeCommand('bold')" [ngClass]="{'slds-active': commandIsActive('bold')}" >
+                    <system-button-icon icon="bold"></system-button-icon>
+                </button>
+            </li>
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_ITALIC')" (click)="executeCommand('italic')" [ngClass]="{'slds-active': commandIsActive('italic')}" >
+                    <system-button-icon icon="italic"></system-button-icon>
+                </button>
+            </li>
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_UNDERLINE')" (click)="executeCommand('underline')" [ngClass]="{'slds-active': commandIsActive('underline')}" >
+                    <system-button-icon icon="underline"></system-button-icon>
+                </button>
+            </li>
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_STRIKETHROUGH')" (click)="executeCommand('strikethrough')" [ngClass]="{'slds-active': commandIsActive('strikethrough')}" >
+                    <system-button-icon icon="strikethrough"></system-button-icon>
+                </button>
+            </li>
+        </ul>
+        <ul class="slds-button-group-list">
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_BULLETED_LIST')" (click)="executeCommand('insertUnorderedList')" [ngClass]="{'slds-active': commandIsActive('insertUnorderedList')}" >
+                    <system-button-icon icon="richtextbulletedlist"></system-button-icon>
+                </button>
+            </li>
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_NUMBERED_LIST')" (click)="executeCommand('insertOrderedList')" [ngClass]="{'slds-active': commandIsActive('insertOrderedList')}" >
+                    <system-button-icon icon="richtextnumberedlist"></system-button-icon>
+                </button>
+            </li>
+        </ul>
+        <ul class="slds-button-group-list">
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_TEXT_INDENT')" (click)="executeCommand('indent')" [ngClass]="{'slds-active': commandIsActive('indent')}" >
+                    <system-button-icon icon="richtextindent"></system-button-icon>
+                </button>
+            </li>
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_TEXT_OUTDENT')" (click)="executeCommand('outdent')" [ngClass]="{'slds-active': commandIsActive('otdent')}" >
+                    <system-button-icon icon="richtextoutdent"></system-button-icon>
+                </button>
+            </li>
+        </ul>
+        <ul class="slds-button-group-list">
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_LEFT_ALIGN')" (click)="executeCommand('justifyLeft')" [ngClass]="{'slds-active': commandIsActive('justifyLeft')}" >
+                    <system-button-icon icon="left_align_text"></system-button-icon>
+                </button>
+            </li>
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_CENTER_ALIGN')" (click)="executeCommand('justifyCenter')" [ngClass]="{'slds-active': commandIsActive('justifyCenter')}" >
+                    <system-button-icon icon="center_align_text"></system-button-icon>
+                </button>
+            </li>
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_RIGHT_ALIGN')" (click)="executeCommand('justifyRight')" [ngClass]="{'slds-active': commandIsActive('justifyRight')}" >
+                    <system-button-icon icon="right_align_text"></system-button-icon>
+                </button>
+            </li>
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_ALIGN_TEXT')" (click)="executeCommand('justifyFull')" [ngClass]="{'slds-active': commandIsActive('justifyFull')}" >
+                    <system-button-icon icon="justify_text"></system-button-icon>
+                </button>
+            </li>
+        </ul>
+        <ul class="slds-button-group-list">
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_LINK')" (click)="insertUrl()" >
+                    <system-button-icon icon="link"></system-button-icon>
+                </button>
+            </li>
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_REMOVE_LINK')" (click)="executeCommand('unlink')" >
+                    <system-button-icon icon="remove_link"></system-button-icon>
+                </button>
+            </li>
+        </ul>
+        <ul *ngIf="extendedmode"  class="slds-button-group-list">
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_NEW_IMAGE')" (click)="executeCommand('insertImage')">
+                    <system-button-icon icon="image"></system-button-icon>
+                </button>
+            </li>
+            <li *ngIf="useMedialFile">
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_NEW_IMAGE')" (click)="executeCommand('openMediaFilePicker')">
+                    <system-button-icon icon="ad_set"></system-button-icon>
+                </button>
+            </li>
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_ADD_VIDEO')" (click)="addVideo()">
+                    <system-button-icon icon="video"></system-button-icon>
+                </button>
+            </li>
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_ADD_CODE_SNIPPET')" (click)="addCodeSnippet()">
+                    <system-button-icon icon="snippet"></system-button-icon>
+                </button>
+            </li>
+        </ul>
+        <ul class="slds-button-group-list">
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_REMOVE_FORMATTING')" (click)="executeCommand('removeFormat')" >
+                    <system-button-icon icon="remove_formatting"></system-button-icon>
+                </button>
+            </li>
+        </ul>
+        <ul *ngIf="extendedmode"  class="slds-button-group-list">
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_SOURCE_EDITOR')" (click)="executeCommand('openSourceEditor')">
+                    <system-button-icon icon="insert_tag_field"></system-button-icon>
+                </button>
+            </li>
+            <li>
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled" tabindex="-1" [title]="language.getLabel('LBL_EXPAND')" (click)="executeCommand('toggleFullscreen')">
+                    <system-button-icon [icon]="expandIcon"></system-button-icon>
+                </button>
+            </li>
+        </ul>
+        <ul  class="slds-button-group-list slds-grid slds-grid--align-end slds-grow">
+            <ng-content></ng-content>
+        </ul>
+    </div>
+    <div class="slds-rich-text-editor__textarea slds-grid slds-grow" style="min-height: 0">
+        <div class="slds-rich-text-area__content slds-text-color_weak slds-grow slds-height_full">
+            <div #htmleditor tabindex="0" [attr.contenteditable]="isActive" style="height: 100%; cursor: text;" (click)="exec()" (keyup)="exec()"  (paste)="onPaste($event)" (input)="onContentChange(htmleditor.innerHTML)"></div>
+        </div>
+    </div>
+</div>

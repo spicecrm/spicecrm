@@ -1,0 +1,48 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-panel slds-size--medium slds-grid slds-grid--vertical slds-nowrap slds-panel--filters slds-size_medium " system-to-bottom>
+    <div class="slds-form--stacked slds-grow slds-scrollable--y slds-grid slds-grid--vertical">
+        <div class="slds-filters">
+            <div  class="slds-filters__header slds-grid slds-grid--align-spread slds-has-divider--bottom-space">
+                <h4 class="slds-align-middle slds-text-heading--small"><system-label label="LBL_FILTER"></system-label></h4>
+                <div class="slds-button-group" [ngClass]="{'slds-hidden': !isChanged}">
+                    <button class="slds-button slds-button--icon slds-button_icon-border-filled" (click)="cancel()"><system-button-icon icon="close"></system-button-icon></button>
+                    <button class="slds-button slds-button--icon slds-button_icon-border-filled slds-is-selected" (click)="save()"><system-button-icon icon="check"></system-button-icon></button>
+                </div>
+            </div>
+            <div class="slds-p-around--xx-small">
+                <object-listview-filter-panel-filter-myitems [(ngModel)]="filter.groupscope"></object-listview-filter-panel-filter-myitems>
+                <object-listview-filter-panel-filter-geo [(geography)]="geography"></object-listview-filter-panel-filter-geo>
+                <div class="slds-grid slds-p-around--xx-small">
+                    <label class="slds-form-element__label"><system-label label="LBL_MATCHING"></system-label></label>
+                    <system-input-radio name="operator" value="and" [disabled]="!canEdit" [(ngModel)]="filter.logicaloperator"><system-label label="LBL_ALL"></system-label></system-input-radio>
+                    <system-input-radio name="operator" value="or" [disabled]="!canEdit"  [(ngModel)]="filter.logicaloperator"><system-label label="LBL_ANY"></system-label></system-input-radio>
+                </div>
+                <ng-container *ngIf="filter.conditions.length > 0; else nofilter">
+                    <div class="slds-grid_vertical">
+                        <object-listview-filter-panel-filter-item *ngFor="let condition of filter.conditions; let i = index"  [filterexpression]="condition" (deleteItem)="deleteItem(i)"></object-listview-filter-panel-filter-item>
+                    </div>
+                    <div *ngIf="canEdit" class="slds-filters__footer slds-grid slds-shrink-none">
+                        <a href="javascript:void(0);" (click)="addExpression($event)"><system-label label="LBL_ADDFILTER"></system-label></a>
+                        <a href="javascript:void(0);" class="slds-col--bump-left" (click)="removeAllFilters()"><system-label label="LBL_REMOVEALL"></system-label></a>
+                    </div>
+                </ng-container>
+                <ng-template #nofilter>
+                    <div *ngIf="canEdit" class="slds-p-around--small slds-align--absolute-center">
+                        <a href="javascript:void(0);" (click)="addExpression($event)"><system-label label="LBL_ADDFILTER"></system-label></a>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</div>

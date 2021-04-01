@@ -1,0 +1,119 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-grid slds-grid--vertical slds-height_full slds-size--1-of-1 slds-theme--default">
+    <div class="slds-grid slds-size--1-of-1 slds-page-header" style="border-bottom-left-radius: 0; border-bottom-right-radius: 0; padding: .5rem;">
+        <div class="slds-col slds-grid">
+            <div  class="slds-dropdown-trigger slds-dropdown-trigger--click slds-m-left--xx-small" [class.slds-is-open]="pickerIsOpen">
+                <button class="slds-button slds-button--icon-border" (click)="toggleOpenPicker()">
+                    <system-utility-icon icon="event" size="x-small"></system-utility-icon>
+                </button>
+                <div class="slds-dropdown slds-dropdown_left">
+                    <system-input-date-picker [setDate]="currentDate" [weekStartDay]="0" (datePicked)="setDate($event)"></system-input-date-picker>
+                </div>
+            </div>
+            <div class="slds-page-header__title slds-m-horizontal--x-small slds-align-middle slds-truncate">
+                {{headerDateText}}
+            </div>
+        </div>
+        <button *ngIf="periodUnit !== 'month'" (click)="toggleOnlyWorkingHours()" [disabled]="!onlyWorkingHoursEnabled" [class.slds-button--brand]="onlyWorkingHours" system-title="LBL_ONLY_WORKING_HOURS" class="slds-button slds-button--icon-border slds-m-left--xx-small" style="height: 32px;padding: 0;width: 32px;">
+            <system-button-icon icon="clock" size="medium"></system-button-icon>
+        </button>
+        <div class="slds-button-group" role="group">
+            <button class="slds-button slds-button--icon-border" (click)="shiftDate('subtract')">
+                <system-button-icon icon="chevronleft"></system-button-icon>
+            </button>
+            <button class="slds-button slds-button--icon-border" (click)="shiftDate('add')">
+                <system-button-icon icon="chevronright"></system-button-icon>
+            </button>
+        </div>
+        <div class="slds-button-group slds-m-left--x-small" role="group">
+            <button class="slds-button slds-button--icon-border" (click)="zoomOut()" [disabled]="periodUnitWidth <= 30">
+                <system-button-icon [icon]="'zoomout'"></system-button-icon>
+            </button>
+            <button class="slds-button slds-button--icon-border" (click)="resetZoom()" [disabled]="periodUnitWidth == defaultPeriodUnitWidth">
+                <system-button-icon [icon]="'undo'"></system-button-icon>
+            </button>
+            <button class="slds-button slds-button--icon-border" (click)="zoomIn()" [disabled]="periodUnitWidth >= 400">
+                <system-button-icon [icon]="'zoomin'"></system-button-icon>
+            </button>
+        </div>
+        <div class="slds-dropdown-trigger slds-dropdown-trigger--click slds-m-left--xx-small" system-dropdown-trigger>
+            <button class="slds-button slds-button--neutral slds-p-horizontal--x-small">
+                <system-label [label]="'LBL_'+ periodUnit|uppercase "></system-label>
+                <system-button-icon [icon]="'down'"></system-button-icon>
+            </button>
+            <div class="slds-dropdown slds-dropdown--right slds-dropdown--x-small">
+                <ul class="slds-dropdown__list" role="menu">
+                    <li class="slds-dropdown__item" role="presentation">
+                        <a href="javascript:void(0);" role="menuitem" (click)="setPeriodUnit('day')">
+                            <span class="slds-truncate"><system-label label="LBL_DAY"></system-label></span>
+                        </a>
+                    </li>
+                    <li class="slds-dropdown__item" role="presentation" (click)="setPeriodUnit('week')">
+                        <a href="javascript:void(0);" role="menuitem">
+                            <span class="slds-truncate"><system-label label="LBL_WEEK"></system-label></span>
+                        </a>
+                    </li>
+                    <li class="slds-dropdown__item" role="presentation" (click)="setPeriodUnit('month')">
+                        <a href="javascript:void(0);" role="menuitem">
+                            <span class="slds-truncate"><system-label label="LBL_MONTH"></system-label></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div #contentContainer class="slds-grid slds-grow slds-scrollable" style="width: 100%; min-height: 0">
+        <div class="slds-grid slds-grid--vertical slds-theme--default" style="position: sticky; left: 0; z-index: 21" [ngStyle]="{width: periodDataWidth +'px', 'min-width': periodDataWidth +'px'}">
+            <div [style.height.px]="eventHeight" class="slds-border--bottom slds-border--right slds-grid slds-theme--default" style="top: 0; z-index: 20; position: sticky">
+                <div style="width: 30px"></div>
+                <div *ngFor="let headerField of headerFields; let first = first" [style.width.%]="100 / headerFields.length" [class.slds-border--left]="!first" class="slds-p-around--xx-small slds-truncate">
+                    {{headerField}}
+                </div>
+            </div>
+            <div>
+                <div *ngFor="let record of records; trackBy: trackByItemFn" class="slds-grid slds-size--1-of-1 slds-border--bottom" [style.height.px]="eventHeight">
+                    <div [style.height.px]="eventHeight" [style.background-color]="focusedId == record.id ? focusColor : 'initial'" class="slds-border--right slds-size--1-of-1 slds-grid slds-grid--vertical-align-center">
+                        <div class="slds-p-left--xx-small" style="width: 30px">
+                            <system-checkbox [ngModel]="focusedId == record.id" (ngModelChange)="emitEvent(record)" [value]="record.id" class="slds-align--absolute-center"></system-checkbox>
+                        </div>
+                        <div *ngIf="recordFieldsetFields?.length > 0; else summaryTemplate" [system-model-provider]="{id: record.id, module: recordModule, data: record}" class="slds-grid slds-height_full">
+                            <field-container *ngFor="let recordFieldsetField of recordFieldsetFields" [field]="recordFieldsetField.field" [fieldconfig]="recordFieldsetField.fieldconfig" [style.width.%]="100 / headerFields.length" class="slds-border--left spice-timeline-record-row-data"></field-container>
+                        </div>
+                        <ng-template #summaryTemplate>
+                            <span system-model-popover module="Users" [id]="record.id" class="slds-text-link--reset slds-p-horizontal--xx-small">{{record.name}}</span>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid slds-grid--vertical" [style.width.px]="periodTimelineWidth">
+            <div class="slds-grid slds-border--bottom slds-size--1-of-1 slds-theme--default" [style.height.px]="eventHeight" style="top: 0; z-index: 20; position: sticky">
+                <div *ngFor="let part of periodDuration; trackBy: trackByIndexFn" [system-title]="part.text" [ngStyle]="{width: periodUnitWidth +'px', color: part.color}" class="slds-border--right slds-p-around--xx-small slds-truncate slds-height_full">
+                    {{part.text}}
+                </div>
+            </div>
+            <div class="slds-is-relative">
+                <div [ngStyle]="todayHourMarkerStyle"></div>
+                <div *ngFor="let record of records; trackBy: trackByItemFn" [style.background-color]="focusedId == record.id ? focusColor : 'initial'" [style.height.px]="eventHeight" class="slds-grid slds-border--bottom slds-size--1-of-1 slds-is-relative slds-text-color--inverse">
+                    <div *ngFor="let part of periodDuration; trackBy: trackByIndexFn" [style.width.px]="periodUnitWidth" [class.slds-theme--shade]="periodUnit === 'day' && recordsUnavailableTimes[record.id] && recordsUnavailableTimes[record.id][part.fullDate]" class="slds-border--right slds-height_full slds-grid">
+                        <ng-container *ngIf="periodUnit === 'week' && recordsUnavailableTimes[record.id]">
+                            <div *ngFor="let hour of part.hours; trackBy: trackByIndexFn" [style.width.%]="100 / part.hours.length" [class.slds-theme--shade]="recordsUnavailableTimes[record.id][hour]" class="slds-height_full"></div>
+                        </ng-container>
+                    </div>
+                    <spice-timeline-event *ngFor="let event of record.events; trackBy: trackByItemFn" [event]="event" [ngStyle]="event.style" (click)="emitEvent(record, event)" class="slds-truncate slds-p-around--xx-small"></spice-timeline-event>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

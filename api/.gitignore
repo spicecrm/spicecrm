@@ -1,0 +1,138 @@
+# SugarCRM #
+###################
+# Ignore custom .htaccess stuff.
+/.htpasswd
+
+# Ignore large parts of the annoying cache directory without breaking things.
+# This will break the current behaviour. Which was often leading to
+# the misuse of the repository as backup replacement.
+# For development the cache directory can be safely ignored and
+# therefore it is ignored.
+/cache
+/cache/csv/*
+/cache/dashlets/*
+/cache/diagnostic/*
+/cache/dynamic_fields/*
+/cache/Expressions/*
+/cache/feeds/*
+/cache/fts/*
+/cache/images/*
+/cache/import/*
+/cache/include/*
+/cache/jsLanguage/*
+/cache/modules/*
+/cache/htmlclean/*
+/cache/htmlclean/HTML/*
+/cache/htmlclean/URI/*
+/cache/pdf/*
+/cache/Relationships/*
+/cache/smarty/cache/*
+/cache/smarty/templates_c/*
+/cache/Sugarpdf/*
+/cache/themes/*
+/cache/xml/*
+/cache/upload/*
+
+/modules/SecurityGroups/*
+/modules/SpiceUIGenerator/csv/*
+
+# Ignore some files and directories from the custom directory.
+/custom/blowfish/*.*
+/custom/modules/*/Ext
+/custom/modules/*/Ext/*
+
+# no media files
+/media
+
+# Custom configuration should also be ignored.
+/config.php
+/config_override.php
+
+# The silent upgrade scripts aren't needed.
+/silentUpgrade*.php
+
+# Ignore the new upload directories.
+/upload/*
+/upload_backup
+/upload_backup/*
+
+# packaging #
+###################
+/packaging
+/packaging/*
+
+# eclipse #
+###################
+.project
+.settings
+.buildpath
+
+# netbeans #
+###################
+/nbproject
+/nbproject/*
+project.xml
+
+# node #
+###################
+/node_modules
+/node_modules/*
+
+# nphpstorm #
+###################
+.idea
+/.idea
+
+# sass #
+###################
+.sass-cache
+.sass-cache/*
+
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+!packaging/*.zip
+
+# Logs and databases #
+######################
+# if you need dumps and configuration scripts, just tag the wanted engine type and file
+*.log
+*.sqlite
+*.sql
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+.~*
+.*~
+composer.lock
+xmlfiles
+package-lock.json
+
+# dompdf
+/vendor/dompdf/dompdf/lib/fonts/dompdf_font_family_cache.php

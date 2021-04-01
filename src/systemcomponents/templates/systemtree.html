@@ -1,0 +1,46 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div role="tree" class="tree-list-drag-boundary">
+    <ul cdkDropList cdkDropListSortingDisabled [cdkDropListData]="tree" (cdkDropListDropped)="handleDrop($event)"
+        class="slds-tree slds-p-top--xxx-small" role="tree"
+        aria-labelledby="treeheading">
+        <li role="treeitem" *ngFor="let item of tree; trackBy: trackByFn"
+            cdkDrag cdkDragBoundary=".tree-list-drag-boundary"
+            [cdkDragData]="item"
+            (cdkDragStarted)="setIsDragging(true)"
+            (cdkDragEnded)="setIsDragging(false)"
+            [cdkDragDisabled]="!config.draggable || item.systemTreeDefs.hasChildren"
+            [attr.aria-level]="item.systemTreeDefs.level"
+            [attr.aria-selected]="item.systemTreeDefs.isSelected"
+            class="slds-grid slds-drag--preview">
+            <system-tree-item [item]="item"
+                              (click)="handleClick(item.id)"
+                              [config]="config"
+                              [isDragging]="isDragging"
+                              (toggleExpandedChange)="handleExpand($event)"
+                              (dragPositionChange)="handleDragPosition($event)"
+                              (onItemAdd)="onItemAdd.emit($event)"
+                              [title]="item.name"
+                              style="width: 100%"
+                              class="slds-grid--vertical slds-p-vertical--none slds-tree__item">
+            </system-tree-item>
+        </li>
+    </ul>
+</div>
+<div *ngIf="config.canadd"
+     class="slds-grid slds-align-content-center slds-border--top slds-m-top--x-small slds-p-top--x-small">
+    <button class="slds-button slds-button--icon slds-button--icon-border slds-p-around--xx-small"
+            (click)="onItemAdd.emit(null)">
+        <system-button-icon [icon]="'add'" [size]="'small'"></system-button-icon>
+    </button>
+</div>

@@ -1,0 +1,57 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<activitytimeline-add-container *ngIf="displayAddContainer"></activitytimeline-add-container>
+<div class="slds-grid slds-grid--align-spread slds-p-top--small slds-grid--vertical-align-center">
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <div class="slds-p-vertical--xx-small slds-text-heading--small"><system-label label="LBL_ACTIVITIES"></system-label></div>
+    </div>
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <system-input-delayed *ngIf="activitiytimeline.usefts" [placeholder]="language.getLabel('LBL_SEARCH')" delay="1000" [(ngModel)]="ftsSearchTerm" class="slds-p-horizontal--xx-small"></system-input-delayed>
+        <activity-timeline-filter class="slds-p-horizontal--xxx-small"></activity-timeline-filter>
+        <button class="slds-button slds-button--icon" [title]="language.getLabel('LBL_RELOAD')" (click)="reload()">
+            <system-button-icon class="slds-p-horizontal--xxx-small slds-icon-text-default" icon="refresh"></system-button-icon>
+        </button>
+        <button class="slds-button slds-button--icon" [title]="language.getLabel('LBL_OPEN_ALL')" (click)="toggleOpen()">
+            <system-button-icon class="slds-p-horizontal--xxx-small" [icon]="activitiytimeline.openness ? 'chevronup' : 'chevrondown'"></system-button-icon>
+        </button>
+    </div>
+</div>
+<div class="slds-p-top--x-small activities-activity">
+    <!-- the Activities container-->
+    <ng-container *ngIf="displayActivitiesContainer">
+        <div class="slds-is-relative spiceActivitiyTimelineHeader">
+            <div class="slds-p-vertical--xx-small slds-text-heading--x-small">
+                <span>{{activitiytimeline.activities.Activities.totalcount}}</span>
+                <span class="slds-p-horizontal--xx-small"><system-label label="LBL_NEXT_STEPS"></system-label></span>
+                <system-utility-icon *ngIf="activitiytimeline.usefts && activitiytimeline.activities.Activities.totalcount>0" [icon]="displayaggregates.Activities?'up':'down'" size="x-small" (click)="toggleAggregates('Activities', $event)"></system-utility-icon>
+            </div>
+            <button *ngIf="activitiytimeline.canLoadMore('Activities')" class="slds-button slds-button--neutral slds-is-absolute" style="right:.5rem; top:-3px;" type="button" (click)="loadMore('Activities')"><span><system-label label="LBL_MORE"></system-label></span></button>
+        </div>
+        <activitytimeline-container module="Activities" [displayaggregates]="displayaggregates.Activities"></activitytimeline-container>
+    </ng-container>
+    <!-- the History container-->
+    <div class="slds-is-relative spiceActivitiyTimelineHeader">
+        <div class="slds-p-vertical--xx-small slds-text-heading--x-small">
+            <span>{{activitiytimeline.activities.History.totalcount}}</span>
+            <span class="slds-p-horizontal--xx-small"><system-label label="LBL_PAST_ACTIVITIES"></system-label></span>
+            <system-utility-icon *ngIf="activitiytimeline.usefts && activitiytimeline.activities.History.totalcount > 0" [icon]="displayaggregates.History?'up':'down'" size="x-small" (click)="toggleAggregates('History', $event)"></system-utility-icon>
+        </div>
+        <activitytimeline-summary-button></activitytimeline-summary-button>
+    </div>
+    <activity-timeline-drop-zone-wrapper>
+        <activitytimeline-container module="History" [displayaggregates]="displayaggregates.History"></activitytimeline-container>
+    </activity-timeline-drop-zone-wrapper>
+    <div class="slds-grid slds-grid_align-end">
+        <button *ngIf="activitiytimeline.canLoadMore('History')" class="slds-button slds-button--neutral" type="button" (click)="loadMore('History')"><span><system-label label="LBL_MORE"></system-label></span></button>
+    </div>
+</div>

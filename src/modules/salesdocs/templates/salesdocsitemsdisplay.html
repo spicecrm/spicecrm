@@ -1,0 +1,118 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<table class="slds-table slds-table_bordered">
+    <thead>
+    <tr>
+        <th scope="col">
+            <div class="slds-truncate slds-text-align_center">#</div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate"><system-label label="LBL_PRODUCT"></system-label></div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate slds-text-align_right"><system-label label="LBL_QUANTITY"></system-label></div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate slds-text-align_right"><system-label label="LBL_PRICEPERUNIT"></system-label></div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate slds-text-align_right"><system-label label="LBL_AMOUNT_NET"></system-label></div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate slds-text-align_right"><system-label label="LBL_AMOUNT_GROSS"></system-label></div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate">tc</div>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of items|salesdocsitemsdeletedpipe">
+        <td>
+            <div class="slds-truncate slds-text-align_center">{{item.itemnr}}</div>
+        </td>
+        <td>
+            <div class="slds-grid">
+                <system-icon module="Products" size="x-small"></system-icon>
+                <div class="slds-truncate" style="max-width: 300px;">{{displayname(item)}}</div>
+                <system-tooltip *ngIf="item.description" class="slds-col_bump-left" [tooltiptext]="item.description"></system-tooltip>
+            </div>
+        </td>
+        <td>
+            <div class="slds-truncate slds-text-align_right">{{item.quantity}} {{item.uom}}</div>
+        </td>
+        <td>
+            <div class="slds-truncate slds-text-align_right">{{formatNumber(item.amount_net_per_uom)}}</div>
+        </td>
+        <td>
+            <div class="slds-truncate slds-text-align_right">{{formatNumber(item.amount_net)}}</div>
+        </td>
+        <td>
+            <div class="slds-truncate slds-text-align_right">{{formatNumber(item.amount_gross)}}</div>
+        </td>
+        <td>
+            <div class="slds-truncate">{{item.tax_category}}</div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4">
+            <div class="slds-truncate slds-text-align_right"></div>
+        </td>
+        <td>
+            <div class="slds-truncate slds-text-align_right">{{formatNumber(totalnet)}}</div>
+        </td>
+        <td>
+            <div class="slds-truncate slds-text-align_right">{{formatNumber(totalgross)}}</div>
+        </td>
+        <td>
+            <div class="slds-truncate"></div>
+        </td>
+    </tr>
+    <tr *ngIf="voucher_sum !== ''">
+        <td colspan="3">
+            <div class="slds-truncate slds-text-align_right"><system-label-modulename module="SalesVouchers" [singular]="true"></system-label-modulename></div>
+        </td>
+        <td colspan="2">
+            <div class="slds-truncate slds-text-align_right slds-form-element" *ngIf="voucher_sum !== ''">
+                <div class="slds-form-element__control">
+                    {{voucher.name}}
+                </div>
+            </div>
+        </td>
+        <td>
+            <div class="slds-truncate slds-text-align_right">
+                {{voucher_value}}
+            </div>
+        </td>
+        <td>
+            <div class="slds-truncate slds-text-align_right">
+                {{voucher_sum}}
+            </div>
+        </td>
+        <td>
+            <div class="slds-truncate"></div>
+        </td>
+    </tr>
+    <tr *ngIf="voucher_sum !== ''">
+        <td colspan="6">
+            <div class="slds-truncate slds-text-align_right"></div>
+        </td>
+        <td>
+            <div class="slds-truncate slds-text-align_right">{{formatNumber(totalgross2)}}</div>
+        </td>
+        <td>
+            <div class="slds-truncate"></div>
+        </td>
+    </tr>
+    </tbody>
+</table>

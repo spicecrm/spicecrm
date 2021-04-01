@@ -1,0 +1,76 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-grid slds-p-around--x-small" style="box-shadow: inset -1px 1px 6px 0 #aaa;">
+    <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small slds-size--1-of-1">
+        <div class="slds-form-element__control">
+            <div class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
+                <div class="slds-form-element slds-size--1-of-1">
+                    <label class="slds-form-element__label"><system-label label="LBL_PATH"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <input type="text" [(ngModel)]="whereCondition.path" class="slds-input" [disabled]="true">
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label"><system-label label="LBL_USER_EDITABLE"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="whereCondition.usereditable">
+                                <option value="yes"><system-label label="LBL_YES"></system-label></option>
+                                <option value="no"><system-label label="LBL_NO"></system-label></option>
+                                <option value="yfo"><system-label label="LBL_VALUE_ONLY"></system-label></option>
+                                <option value="yo1"><system-label label="LBL_REPORTS_ALLOW_EDIT_ON_OFF"></system-label></option>
+                                <option value="yo2"><system-label label="LBL_REPORTS_ALLOW_EDIT_ON_ON"></system-label></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label"><system-label label="LBL_GROUPING"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <input type="text" [(ngModel)]="whereCondition.grouping" class="slds-input" [disabled]="true">
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label"><system-label label="LBL_SEQUENCE"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <input type="text" [(ngModel)]="whereCondition.sequence" class="slds-input">
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label"><system-label label="LBL_CONTEXT"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <input type="text" [(ngModel)]="whereCondition.context" class="slds-input" [disabled]="contextUsed">
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label"><system-label label="LBL_REFERENCE"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <input type="text" [(ngModel)]="whereCondition.reference" class="slds-input" [disabled]="referenceDisabled">
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2">
+                    <label class="slds-form-element__label"><system-label label="LBL_REQUIRED"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <system-checkbox [(ngModel)]="joinType" [hidelabel]="true" [disabled]="!requiredEnabled"></system-checkbox>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>

@@ -1,0 +1,64 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<li class="slds-expression__group">
+    <fieldset>
+        <div class="slds-grid slds-gutters_direct-xx-small slds-grid--vertical-align-end slds-size--1-of-1">
+            <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-m-bottom--xx-small">
+                <label class="slds-form-element__label"><system-label label="LBL_GROUP_OPERATOR"></system-label></label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="groupType">
+                            <option value="AND"><system-label label="LBL_AND"></system-label></option>
+                            <option value="OR"><system-label label="LBL_OR"></system-label></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ul class="slds-m-vertical--x-small slds-p-horizontal--x-small">
+            <li *ngFor="let condition of group.conditions; trackBy: trackByFn" class="slds-expression__row_group slds-m-vertical--x-small" style="border: 1px dashed #ddd; padding: 1px">
+                <div class="slds-grid slds-p-around--xx-small">
+                    <reports-designer-condition [whereCondition]="condition" class="slds-grid slds-grid--vertical-align-center slds-grow"></reports-designer-condition>
+                    <div class="slds-grid slds-grid--vertical-align-center">
+                        <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-m-left--xx-small" (click)="deleteCondition(condition.id)">
+                            <system-button-icon icon="delete"></system-button-icon>
+                        </button>
+                        <button class="slds-button slds-button_icon slds-m-left--xx-small slds-p-vertical--x-small slds-p-horizontal--xx-small" (click)="toggleExpand(condition.id)">
+                            <system-utility-icon icon="down" size="x-small" [colorclass]="reportsDesignerService.expertMode ? 'slds-icon-text-default' : 'slds-icon-text-light'"
+                                                 [style.transform]="expanded == condition.id ? 'rotate(180deg)' : 'none'">
+                            </system-utility-icon>
+                        </button>
+
+                    </div>
+                </div>
+                <reports-designer-condition-group-expansion *ngIf="expanded == condition.id && reportsDesignerService.expertMode" [whereCondition]="condition"></reports-designer-condition-group-expansion>
+            </li>
+            <li cdkDropList [id]="group.id" (cdkDropListDropped)="onDrop($event)" class="slds-align--absolute-center slds-text-color--inverse-weak" style="min-height: 30px; border: 1px dashed #ddd">
+                <system-label label="MSG_DROP_FIELD_HERE"></system-label>
+            </li>
+            <ng-container *ngFor="let childGroup of group.children; trackBy: trackByFn">
+                <reports-designer-condition-group [group]="childGroup" [canDelete]="true" (treeChange)="handleTreeChange($event)"></reports-designer-condition-group>
+            </ng-container>
+        </ul>
+        <div class="slds-expression__buttons">
+            <button (click)="addGroup()" class="slds-button slds-button_neutral">
+                <system-button-icon icon="add" class="slds-m-right--xx-small"></system-button-icon>
+                <system-label label="LBL_ADD_GROUP"></system-label>
+            </button>
+            <button *ngIf="canDelete" (click)="deleteGroup()" class="slds-button slds-button_neutral slds-m-left--xx-small">
+                <system-button-icon icon="delete" class="slds-m-right--xx-small"></system-button-icon>
+                <system-label label="LBL_DELETE_GROUP"></system-label>
+            </button>
+        </div>
+    </fieldset>
+</li>

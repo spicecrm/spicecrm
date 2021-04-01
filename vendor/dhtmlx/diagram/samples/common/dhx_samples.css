@@ -1,0 +1,43 @@
+html, body{
+	height:100%;
+}
+body{
+	font-family: "Roboto",sans-serif;
+	margin: 0;
+	background: #F7F7F7;
+}
+.dhx_btn{
+	font: 500 1em "Roboto medium", "Roboto", Arial, Tahoma, Verdana, sans-serif;
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	box-sizing: border-box;
+	height: 38px;
+	margin: 5px 0;
+	padding: 0 15px;
+	color: #3DA0E3;
+	border: solid #3DA0E3 1px;
+	border-radius: 2px;
+	outline: none;
+	background: transparent;
+
+	-webkit-box-pack: justify;
+	-ms-flex-pack: justify;
+	justify-content: space-between;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+}
+.dhx_btn:hover{
+	cursor: pointer;
+	color: #FFF;
+	background: #0D8EE3;
+}
+.dhx_inline_cont{
+	display: inline-block;
+	box-sizing: border-box;
+	vertical-align: top;
+}
+#diagram_container{
+	height: 100%;
+}

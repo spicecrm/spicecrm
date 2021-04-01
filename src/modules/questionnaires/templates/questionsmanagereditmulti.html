@@ -1,0 +1,77 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-grid">
+    <div class="slds-p-right--medium" style="width:100%;">
+        <label for="{{compId}}-questiontext" class="slds-form-element__label"><system-label label="LBL_QUESTION_TEXT"></system-label></label>
+        <input id="{{compId}}-questiontext" type="text" class="slds-input" [(ngModel)]="questiontext" (blur)="questiontextBlurred()">
+    </div>
+    <div style="width:4rem">
+        <label class="slds-form-element__label" ><system-label label="LBL_IMAGE"></system-label></label>
+        <field-container [field]="'image_id'" [fieldconfig]="{fieldtype:'mediafileimage'}" [fielddisplayclass]="'left bottom'" (change)="change()"></field-container>
+    </div>
+</div>
+
+<div class="slds-grid slds-p-top_xx-small">
+    <div class="slds-p-right--medium" style="width:100%;" [ngClass]="{'slds-has-error':nameMissing}">
+        <label for="{{compId}}-name" class="slds-form-element__label"><abbr class="slds-required" title="required">* </abbr><system-label label="LBL_NAME"></system-label></label>
+        <input id="{{compId}}-name" type="text" class="slds-input" [(ngModel)]="name" (change)="nameChanged()">
+    </div>
+    <div class="slds-p-left_medium slds-text-align_center" style="white-space:nowrap">
+        <span class="slds-checkbox slds-checkbox_stacked">
+            <input id="{{compId}}-rf" type="checkbox" [checked]="questionparameters.hasInfosCorrectness" (change)="onChange_hasInfosCorrectness($event)"/>
+            <label class="slds-checkbox__label" for="{{compId}}-rf">
+                <span class="slds-checkbox_faux"></span>
+                <span class="slds-form-element__label">R/F</span>
+            </label>
+        </span>
+    </div>
+    <div class="slds-p-left_medium slds-text-align_center" style="white-space:nowrap">
+        <label for="{{compId}}-minanswers" class="slds-form-element__label slds-m-horizontal--none"><system-label label="LBL_MIN_MAX_ANSWERS"></system-label></label><br>
+        <input id="{{compId}}-minanswers" type="text" class="slds-input slds-text-align--right slds-m-right--xx-small" style="width:unset" [(ngModel)]="questionparameters.minAnswers" (change)="onChange_numAnswers()" size="3"><input type="text" class="slds-input slds-text-align--right" style="width:unset" [(ngModel)]="questionparameters.maxAnswers" (change)="onChange_numAnswers()" size="3">
+    </div>
+</div>
+
+<system-spinner *ngIf="model.isLoading"></system-spinner>
+
+<table *ngIf="options.length" class="slds-table slds-table_bordered slds-m-vertical--medium">
+    <thead>
+        <tr>
+            <th *ngIf="questionparameters.hasInfosCorrectness" class="slds-text-align--center">
+                R
+            </th>
+            <th scope="col" width="50%">
+                <div class="slds-truncate"><system-label label="LBL_TEXT"></system-label></div>
+            </th>
+            <th scope="col" width="4rem">
+                <div class="slds-truncate"><system-label label="LBL_IMAGE"></system-label></div>
+            </th>
+            <th scope="col" width="50%">
+                <div class="slds-truncate"><system-label label="LBL_CATEGORIES"></system-label></div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate slds-text-align_right"><system-label label="LBL_POINTS"></system-label></div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr questions-manager-edit-option-single-multi *ngFor="let option of options; let i = index;" [hasInfosCorrectness]="questionparameters.hasInfosCorrectness" [categorypool]="categorypool" [option]="option" [isFirstRow]="i === 0" [isLastRow]="i === options.length-1" (event)="optionEventHappened($event,i)"></tr>
+    </tbody>
+</table>
+
+<div *ngIf="!model.isLoading" class="slds-text-align_right slds-m-top--medium">
+    <button class="slds-button slds-button--neutral" (click)="addOptions()">
+        <system-button-icon [icon]="'add'" [position]="'left'"></system-button-icon>
+        <system-label label="LBL_ADD_ANSWER_OPTION"></system-label>
+    </button>
+</div>

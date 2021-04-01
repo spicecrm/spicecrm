@@ -1,0 +1,80 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-border--bottom" style="height: 50%">
+    <div class="slds-tabs--default slds-grid slds-grid--vertical" style="height: 100%">
+        <div class="slds-grid">
+            <ul class="slds-tabs--default__nav slds-scrollable--x slds-grow" role="tablist">
+                <li *ngFor="let module of allModules; trackBy: trackByFn" (click)="setActiveModule(module)" [class.slds-active]="module.unionid == activeModule.unionid"
+                    class="slds-tabs--default__item slds-grid slds-grid_vertical-align-center" role="presentation">
+                    <a class="slds-tabs--default__link slds-grid" href="javascript:void(0);" role="tab" aria-selected="false">
+                        <system-icon [module]="module.module" size="small" divClass="slds-m-right--x-small"></system-icon>
+                        <span class="slds-truncate">
+                        <system-label-modulename [module]="module.module"></system-label-modulename>
+                    </span>
+                    </a>
+                    <div *ngIf="module.unionid != 'root'" class="slds-col_bump-left slds-p-left_none slds-p-right_none">
+                        <button (click)="deleteUnionModule(module.unionid)" class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-x-small">
+                            <system-button-icon icon="close"></system-button-icon>
+                        </button>
+                    </div>
+                </li>
+            </ul>
+            <div class="slds-p-around--x-small slds-border--left slds-border--bottom">
+                <button (click)="addUnionModule()" [disabled]="!canAdd" class="slds-button slds-button_icon">
+                    <system-button-icon icon="add"></system-button-icon>
+                </button>
+            </div>
+        </div>
+        <div class="slds-grow" style="height: 0" *ngIf="!!activeModule.unionid">
+            <div *ngFor="let module of allModules; trackBy: trackByFn" [class.slds-hide]="activeModule.unionid != module.unionid" class="slds-scrollable--y" style="height: 100%">
+                <system-module-tree [module]="module.module" (itemSelected)="onItemSelection($event, module.module)"></system-module-tree>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="slds-grid slds-grid--vertical" style="height: 50%">
+    <div class=" slds-input-has-icon slds-input-has-icon_left" role="none">
+        <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
+        <input class="slds-input" type="search" [placeholder]="language.getLabel('LBL_SEARCH')" [(ngModel)]="filterKey"/>
+    </div>
+   <div class="slds-grow slds-scrollable--y">
+       <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+           <thead>
+           <tr class="slds-line-height_reset">
+               <th class="slds-cell-shrink"></th>
+               <th scope="col">
+                   <div class="slds-truncate"><system-label label="LBL_FIELD"></system-label></div>
+               </th>
+               <th scope="col">
+                   <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+               </th>
+           </tr>
+           </thead>
+           <tbody *ngFor="let module of allModules; trackBy: trackByFn" [class.slds-hide]="isLoadingModuleFields || activeModule.unionid != module.unionid"
+                  cdkDropList [id]="module.unionid" (cdkDropListExited)="dropExited($event)" (cdkDropListEntered)="dropEntered($event)" cdkDropListSortingDisabled [cdkDropListData]="reportModuleFields[module.module]">
+           <tr cdkDrag [cdkDragData]="reportField" *ngFor="let reportField of getFilteredReportFields(reportModuleFields[module.module]); trackBy: trackByFn" class="slds-hint-parent slds-drag--preview">
+               <td class="slds-p-around--none slds-cell-shrink">
+                   <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
+               </td>
+               <td data-label="Account Name">
+                   <div class="slds-truncate" [title]="reportField.name">{{reportField.name}}</div>
+               </td>
+               <td>
+                   <div class="slds-truncate" [title]="language.getLabel(reportField.label)"><system-label [label]="reportField.label"></system-label></div>
+               </td>
+           </tr>
+           </tbody>
+           <tbody system-table-stencils *ngIf="isLoadingModuleFields" [columns]="2" [rows]="5" [select]="true"></tbody>
+       </table>
+   </div>
+</div>

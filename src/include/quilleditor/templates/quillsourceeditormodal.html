@@ -1,0 +1,47 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<system-modal size="large" >
+    <system-modal-header (close)="close()"><system-label label="LBL_SOURCE_EDITOR"></system-label></system-modal-header>
+    <system-modal-content>
+        <div class="slds-grid" style="height: 70vh;">
+            <div class="slds-size--1-of-2 slds-p-right--xx-small" >
+                <quill-editor [(ngModel)]="_html" heightStyle="100%"></quill-editor>
+            </div>
+            <div class="slds-size--1-of-2 slds-p-left--x-small">
+                <div class="slds-p-bottom--xx-small slds-grid">
+                    <div class="slds-grow slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left-right slds-global-search__form-element" role="none">
+                        <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
+                        <input (keyup)="keyUp($event)" type="text" class="slds-input" [placeholder]="language.getLabel('LBL_SEARCH')" [(ngModel)]="searchText">
+                        <div *ngIf="foundIndices.length > 1" class="slds-grid slds-grid--align-spread slds-input__icon_right slds-is-absolute__top" style="height: 100%">
+                            <button (click)="nextResult()" [disabled]="nextDisabled" class="slds-button slds-button_icon slds-input__icon" style="position:relative;" [title]="language.getLabel('LBL_NEXT')">
+                                <system-button-icon icon="arrowdown"></system-button-icon>
+                            </button>
+                            <button (click)="previewResult()" [disabled]="previewDisabled" class="slds-button slds-button_icon slds-input__icon" style="position:relative;" [title]="language.getLabel('LBL_PREVIEW')">
+                                <system-button-icon icon="arrowup"></system-button-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <button [disabled]="!beautifyenabled" class="slds-m-left--xx-small slds-button slds-button--icon-border slds-button--neutral" (click)="beautify()">
+                        <system-button-icon icon="right_align_text"></system-button-icon>
+                    </button>
+                </div>
+                <pre #sourceeditor [attr.contenteditable]="true" (input)="onContentChange($event.target['innerText'])" style="height: calc(100% - 36px);"  class="slds-box slds-theme--default slds-scrollable_y"></pre>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()">
+            <system-label label="LBL_OK"></system-label>
+        </button>
+    </system-modal-footer>
+</system-modal>

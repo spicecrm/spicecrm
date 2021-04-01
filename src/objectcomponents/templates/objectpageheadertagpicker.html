@@ -1,0 +1,68 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<system-modal>
+    <system-modal-header (close)="closeModal()">
+        <system-label label="LBL_ASSIGN_TAGS"></system-label>
+    </system-modal-header>
+    <system-modal-content>
+        <ng-container *ngIf="allTagsAreLoaded && tagsAreParsed; else notReady">
+
+            <div class="slds-m-bottom--medium">
+                <ng-container *ngIf="tags.length; else noAssignedTags">
+                    <ul class="selectedTags slds-listbox slds-listbox_horizontal" role="presentation" style="line-height:1.7rem">
+                        <li *ngFor="let tag of tags; let i=index" >
+                            <span class="slds-badge" (click)="removeTag(i)">
+                                {{tag}}
+                                <!--system-utility-icon [icon]="'close'" [size]="'xx-small'" [addclasses]="'slds-icon_container'"></system-utility-icon-->
+                            </span>
+                        </li>
+                    </ul>
+                </ng-container>
+                <ng-template #noAssignedTags>
+                    <div style="font-style:italic"><system-label label="LBL_NO_TAGS_ASSIGNED"></system-label></div>
+                </ng-template>
+            </div>
+
+            <div class="slds-form-element">
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                    <system-utility-icon [icon]="'clear'" [size]="'x-small'" [addclasses]="'slds-input__icon slds-input__icon_right slds-icon-text-default'" (click)="clearFilter()"></system-utility-icon>
+                    <input type="text" class="slds-input" placeholder="{{ language.getLabel('LBL_ENTER_TAGS_FOR_TAGS') }}" [(ngModel)]="filter" (keyup)="changeFilter()" #fieldFilter/>
+                </div>
+            </div>
+
+            <div class="slds-m-top--small">
+                <ng-container *ngIf="offeredTags.length; else noOfferedTags">
+                    <ul class="slds-listbox slds-listbox_horizontal offeredTags" role="listbox" style="line-height:1.5rem">
+                        <li *ngFor="let tag of offeredTags; let i=index" role="presentation" (click)="addTag(i)" style="margin-top:0.2rem"><span class="slds-badge slds-badge_inverse">
+                                    <!--system-utility-icon [icon]="'add'" [size]="'xx-small'" [addclasses]="'slds-icon_container slds-icon-text-light'"></system-utility-icon-->
+                                    {{tag}}</span></li>
+                    </ul>
+                    <div class="slds-m-top--xx-small" *ngIf="numberFilteredTags-offeredTagsMaxLength>0" style="font-style:italic;text-align:right">{{ language.getLabelFormatted('LBL_NUMBER_OF_SHOWN_TAGS', [ offeredTags.length, numberFilteredTags ] ) }}</div>
+                </ng-container>
+                <ng-template #noOfferedTags>
+                    <div class="slds-m-top--xx-small" style="font-style:italic"><system-label label="LBL_NO_TAGS_FOUND"></system-label></div>
+                </ng-template>
+            </div>
+
+        </ng-container>
+
+        <ng-template #notReady><system-spinner></system-spinner></ng-template>
+
+    </system-modal-content>
+
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="closeModal()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="saveAndClose()"><system-label label="LBL_SAVE"></system-label></button>
+    </system-modal-footer>
+
+</system-modal>

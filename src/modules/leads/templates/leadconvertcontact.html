@@ -1,0 +1,39 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div *ngIf="selectedContact" class="slds-theme--shade slds-p-around--small slds-border--bottom slds-grid" [system-view-provider]="{displayLabels: false, editable: false}">
+    <div *ngIf="selectedContact" class="slds-col_bump-left slds-grid slds-grid--vertical-align-center">
+        <div class="slds-m-right--x-small"><system-label label="LBL_CONTACT"></system-label></div>
+        <div class="slds-pill">
+          <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
+            <system-icon [module]="model.module"></system-icon>
+          </span><a href="javascript:void(0);" class="slds-pill__label"><field-container fielddisplayclass="slds-truncate" fieldname="full_name"></field-container></a>
+            <button class="slds-button slds-button--icon slds-pill__remove" title="Remove">
+                <system-button-icon [icon]="'clear'" (click)="unlinkContact()"></system-button-icon>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="slds-grid slds-gutters_direct-x-small slds-p-horizontal--x-small">
+    <div class="slds-col slds-grow">
+        <div #detailcontainer></div>
+    </div>
+    <div *ngIf="view.isEditable" class="slds-col slds-size--1-of-3 slds-border--left slds-theme--shade" system-to-bottom [system-overlay-loading-spinner]="model.duplicateChecking">
+        <h2 class="slds-text-heading_small slds-p-around--small"><system-label label="LBL_DUPLICATES"></system-label></h2>
+        <lead-convert-item-duplicate class="slds-size--1-of-1" *ngFor="let duplicate of model.duplicates" [system-model-provider]="{module:model.module, data:duplicate}" (itemselected)="selectContact($event)"></lead-convert-item-duplicate>
+        <!-- display no recordsillustration if we did not find a record -->
+        <div *ngIf="!model.duplicateChecking && model.duplicates.length == 0" class="slds-height_full slds-align--absolute-center">
+            <system-illustration-no-records><system-label label="LBL_NO_DUPLICATES_FOUND"></system-label></system-illustration-no-records>
+        </div>
+    </div>
+</div>
+

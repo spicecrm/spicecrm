@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Org Chart Margin Between Shapes</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script type="text/javascript" src="../../codebase/diagram.js"></script>
+	<link rel="stylesheet" href="../../codebase/diagram.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+
+	<link rel="stylesheet" href="../common/dhx_samples.css">
+	<script type="text/javascript" src="../common/data.js"></script>
+</head>
+
+<body>
+	<div id="diagram_container1" class="dhx_inline_cont" style="width:500px;height:320px;"></div>
+	<div id="diagram_container2" class="dhx_inline_cont" style="width:500px;height:420px;"></div>
+	<div id="diagram_container3" class="dhx_inline_cont" style="width:500px;height:420px;"></div>
+	<script>
+		var diagram1 = new dhx.Diagram("diagram_container1", { type: "org", 
+			margin: { itemX: 15, itemY: 15 } });
+		diagram1.data.parse(orgChartData);
+
+		var diagram2 = new dhx.Diagram("diagram_container2", { type: "org",
+			margin: { itemX: 50, itemY: 50 } });
+		diagram2.data.parse(orgChartData);
+
+		var diagram3 = new dhx.Diagram("diagram_container3", { type: "org",
+			margin: { itemX: 15, itemY: 60 } });
+		diagram3.data.parse(orgChartData);
+	</script>
+
+</body>
+
+</html>

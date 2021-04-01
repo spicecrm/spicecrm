@@ -1,0 +1,107 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-grid">
+    <div class="slds-p-right--medium" style="width:100%;">
+        <label for="{{compId}}-questiontext" class="slds-form-element__label"><system-label label="LBL_QUESTION_TEXT"></system-label></label>
+        <input id="{{compId}}-questiontext" type="text" class="slds-input" [(ngModel)]="questiontext" (blur)="questiontextBlurred()">
+    </div>
+    <div style="width:4rem">
+        <label class="slds-form-element__label slds-m-horizontal--none"><system-label label="LBL_IMAGE"></system-label></label><br>
+        <field-container [field]="'image_id'" [fieldconfig]="{fieldtype:'mediafileimage'}" [fielddisplayclass]="''"></field-container>
+    </div>
+</div>
+
+<div class="slds-m-top--xx-small slds-m-bottom--large" [ngClass]="{'slds-has-error':nameMissing}">
+    <label for="{{compId}}-name" class="slds-form-element__label" ><abbr class="slds-required" title="required">* </abbr><system-label label="LBL_NAME"></system-label></label>
+    <input id="{{compId}}-name" type="text" class="slds-input" [(ngModel)]="name" (blur)="nameBlurred()"  (change)="nameChanged()">
+</div>
+
+<div class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center slds-m-top_small">
+    <div class="slds-form-element">
+        <div class="slds-form-element__control">
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="numEntries" (change)="setNumEntries()">
+                    <option *ngFor="let i of [3,4,5,6,7,8,9,10]" value="{{i}}">{{i}}<system-label [label]="'LBL_ENTRIES'"></system-label></option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="slds-p-horizontal--xx-small"><system-label [label]="'LBL_OR'"></system-label></div>
+    <button class="slds-button slds-button--neutral slds-col--bump-right" (click)="addOptions()">
+        <system-button-icon [icon]="'add'" [position]="'left'"></system-button-icon>
+        <system-label label="LBL_ADD_ENTRY"></system-label>
+    </button>
+    <span><system-label [label]="'LBL_SET_VALUES'"></system-label>:&nbsp;</span>
+    <button class="slds-button slds-button_neutral" (click)="fillRange(1,options.length)">1 … {{options.length}}</button>
+    <button class="slds-button slds-button_neutral" (click)="fillRange(options.length,1)">{{options.length}} … 1</button>
+    <button class="slds-button slds-button_neutral" (click)="fillRange((options.length-1)/-2,(options.length-1)/2)">-{{(options.length-1)/2}} … +{{(options.length-1)/2}}</button>
+</div>
+
+<system-spinner *ngIf="model.isLoading"></system-spinner>
+
+<table *ngIf="options.length" class="slds-table slds-table_bordered slds-m-top_x-small">
+    <thead>
+    <tr>
+        <th scope="col" width="10%">
+            <div class="slds-truncate"><system-label label="LBL_VALUE"></system-label></div>
+        </th>
+        <th scope="col" width="50%">
+            <div class="slds-truncate"><system-label label="LBL_ADDITIONAL_TEXT"></system-label> (<system-label label="LBL_OPTIONAL"></system-label>)</div>
+        </th>
+        <th scope="col"  width="4rem">
+            <div class="slds-truncate"><system-label label="LBL_IMAGE"></system-label></div>
+        </th>
+        <th scope="col" width="50%">
+            <div class="slds-truncate"><system-label label="LBL_CATEGORIES"></system-label></div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate slds-text-align_right"><system-label label="LBL_POINTS"></system-label></div>
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let option of options; let i = index; let isFirstRow = first; let isLastRow = last">
+        <td width="10%">
+            <div><input type="text" class="slds-input" [(ngModel)]="option.name"></div>
+        </td>
+        <td width="50%">
+            <div><input type="text" class="slds-input" [(ngModel)]="questionparameters.altTexts[option.id]"></div>
+        </td>
+        <td style="width:4rem">
+            <field-container [system-model-provider]="{ module: 'QuestionOptions', id: option.id, data: option }" [field]="'image_id'" [fieldconfig]="{fieldtype:'mediafileimage'}" [fielddisplayclass]="''"></field-container>
+        </td>
+        <td width="50%">
+            <div><questions-manager-edit-categories [option]="option" [categorypool]="categorypool"></questions-manager-edit-categories></div>
+        </td>
+        <td>
+            <div><input type="text" class="slds-input slds-text-align_right" style="width:unset" [(ngModel)]="option.points" size="4"></div>
+        </td>
+        <td>
+            <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" (click)="optionUp(i)" title="{{language.getLabel('LBL_UP')}}" [disabled]="isFirstRow">
+                <system-button-icon [icon]="'arrowup'"></system-button-icon>
+                <span class="slds-assistive-text"><system-label label="LBL_UP"></system-label></span>
+            </button>
+            <button
+                    class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" (click)="optionDown(i)" title="{{language.getLabel('LBL_DOWN')}}" [disabled]="isLastRow">
+                <system-button-icon [icon]="'arrowdown'"></system-button-icon>
+                <span class="slds-assistive-text"><system-label label="LBL_DOWN"></system-label></span>
+            </button><button
+                class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" (click)="deleteOption(i)" title="{{language.getLabel('LBL_DELETE')}}">
+            <system-button-icon [icon]="'delete'"></system-button-icon>
+            <span class="slds-assistive-text"><system-label label="LBL_DELETE"></system-label></span>
+        </button>
+        </td>
+    </tr>
+    </tbody>
+</table>

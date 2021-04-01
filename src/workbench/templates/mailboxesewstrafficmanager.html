@@ -1,0 +1,61 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-m-vertical--xx-small slds-box--border">
+    <div class="slds-p-around--x-small">
+        <h1><system-label label="LBL_EWS"></system-label></h1>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-1">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_HOST"></system-label></label>
+                <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.ews_host" class="slds-input"/>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_USER_NAME"></system-label></label>
+                <input type="text" [(ngModel)]="model.data.settings.ews_username" class="slds-input" [disabled]="!view.isEditMode()"/>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_PASSWORD"></system-label></label>
+                <system-input-password  [(ngModel)]="model.data.settings.ews_password" [disabled]="!view.isEditMode()"></system-input-password>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_MAILBOX_EMAIL"></system-label></label>
+                <input type="text" [(ngModel)]="model.data.settings.ews_email" class="slds-input" [disabled]="!view.isEditMode()"/>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_MAILBOX_FOLDER"></system-label></label>
+                <input type="text" [ngModel]="foldername" class="slds-input" disabled/>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_PUSH"></system-label></label>
+                <div>
+                    <system-checkbox [(ngModel)]="model.data.settings.ews_push"></system-checkbox>
+                </div>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_SUBSCRIPTION"></system-label></label>
+                <input type="text" [(ngModel)]="model.data.settings.ews_subscriptionid" class="slds-input" disabled/>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="displayFoldersModal()" [disabled]="!view.isEditMode()"><system-label label="LBL_EWS_SELECT_FOLDERS"></system-label></button>
+            <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()" [disabled]="!view.isEditMode()">
+                <system-label label="LBL_TEST_CONNECTION"></system-label>
+            </button>
+        </div>
+    </div>
+</div>

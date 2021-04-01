@@ -1,0 +1,90 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<div *ngIf="!isEditMode()">
+    <field-generic-display  [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()" [fieldid]="fieldid">
+        {{value}}
+    </field-generic-display>
+</div>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
+    <fieldset>
+        <div class="slds-form-element__group">
+            <system-googleplaces-autocomplete (address)="addressSelected($event)"></system-googleplaces-autocomplete>
+            <div class="slds-grid slds-gutters_direct-xx-small">
+                <div class="slds-form-element slds-col">
+                    <field-label [fieldname]="fieldName('street')" labellength="short"></field-label>
+                    <div class="slds-form-element__control">
+                        <input #focus type="text" class="slds-input" [(ngModel)]="street" [ngModelOptions]="modelOptions"/>
+                    </div>
+                    <field-messages [fieldname]="fieldName('street')"></field-messages>
+                </div>
+                <div *ngIf="!hidestreetnumber" class="slds-form-element slds-col slds-size--1-of-6 ">
+                    <field-label [fieldname]="fieldName('street_number')" labellength="short"></field-label>
+                    <div class="slds-form-element__control">
+                        <input #focus type="text" class="slds-input" [(ngModel)]="street_number" [ngModelOptions]="modelOptions"/>
+                    </div>
+                    <field-messages [fieldname]="fieldName('street_number')"></field-messages>
+                </div>
+                <div *ngIf="!hidenumbersuffix" class="slds-form-element slds-col slds-size--1-of-6 ">
+                    <field-label [fieldname]="fieldName('street_number_suffix')" labellength="short"></field-label>
+                    <div class="slds-form-element__control">
+                        <input #focus type="text" class="slds-input" [(ngModel)]="street_number_suffix" [ngModelOptions]="modelOptions"/>
+                    </div>
+                    <field-messages [fieldname]="fieldName('street_number_suffix')"></field-messages>
+                </div>
+            </div>
+            <div  *ngIf="!hideattn" class="slds-form-element slds-col slds-size--1-of-1">
+                <field-label [fieldname]="fieldName('attn')" labellength="short"></field-label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [(ngModel)]="attn" [ngModelOptions]="modelOptions"/>
+                </div>
+                <field-messages [fieldname]="fieldName('attn')"></field-messages>
+            </div>
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-5 slds-col slds-p-right--xx-small">
+                    <field-label [fieldname]="fieldName('postalcode')" labellength="short"></field-label>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [(ngModel)]="postalcode" [ngModelOptions]="modelOptions"/>
+                    </div>
+                    <field-messages [fieldname]="fieldName('postalcode')"></field-messages>
+                </div>
+                <div class="slds-form-element slds-p-left--xx-small slds-col">
+                    <field-label [fieldname]="fieldName('city')" labellength="short"></field-label>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [(ngModel)]="city" [ngModelOptions]="modelOptions"/>
+                    </div>
+                    <field-messages [fieldname]="fieldName('city')"></field-messages>
+                </div>
+                <div *ngIf="!hidedistrict" class="slds-form-element slds-col slds-size--2-of-5 slds-p-left--xx-small">
+                    <field-label [fieldname]="fieldName('district')" labellength="short"></field-label>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [(ngModel)]="district" [ngModelOptions]="modelOptions"/>
+                    </div>
+                    <field-messages [fieldname]="fieldName('district')"></field-messages>
+                </div>
+            </div>
+            <div class="slds-grid">
+                <div *ngIf="!hidestate" class="slds-form-element slds-col slds-size--1-of-2 slds-p-right--xx-small">
+                    <field-label [fieldname]="fieldName('state')" labellength="short"></field-label>
+                    <system-input-state [(ngModel)]="state" [country]="country"></system-input-state>
+                    <field-messages [fieldname]="fieldName('state')"></field-messages>
+                </div>
+                <div class="slds-form-element slds-p-left--xx-small slds-col">
+                    <label class="slds-form-element__label"><system-label label="LBL_COUNTRY"></system-label></label>
+                    <system-input-country [(ngModel)]="country"></system-input-country>
+                    <field-messages [fieldname]="fieldName('country')"></field-messages>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>

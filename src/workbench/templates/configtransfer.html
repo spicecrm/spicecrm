@@ -1,0 +1,155 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-m-horizontal--medium slds-m-top--medium slds-m-bottom--small">
+
+    <h2 class="slds-text-heading--medium">{{lang.getLabel('LBL_CONFIGURATION_TRANSFER')}}</h2>
+
+    <p>Export and import configuration data from/into database. Also usable for backup.</p>
+
+    <div class="slds-tabs_default slds-tabs_medium">
+
+        <ul class="slds-tabs_default__nav" role="tablist">
+            <li [ngClass]="{'slds-is-active':tabToShow==='i'}" class="slds-tabs_default__item" title="Item One" role="presentation">
+                <a class="slds-tabs_default__link" href="javascript:void(0);" (click)="showImport()">{{lang.getLabel('LBL_IMPORT')}}</a><!--tabindex="0"-->
+            </li>
+            <li [ngClass]="{'slds-is-active':tabToShow==='e'}" class="slds-tabs_default__item" title="Item Two" role="presentation">
+                <a class="slds-tabs_default__link" href="javascript:void(0);" (click)="showExport()">{{lang.getLabel('LBL_EXPORT')}}</a><!--tabindex="-1"-->
+            </li>
+        </ul>
+
+        <div [ngClass]="{'slds-hide':tabToShow!=='i'}" class="slds-tabs_default__content">
+
+            <div class="slds-form-element">
+                <span class="slds-form-element__label">{{lang.getLabel('LBL_CONFIGURATION_FILE')}}</span>
+                <div class="slds-form-element__control">
+                    <div class="slds-file-selector slds-file-selector_files" (drop)="onDrop($event)" (dragover)="onDragOver($event)" (dragleave)="onDragLeave()">
+                        <div class="slds-file-selector__dropzone" [ngClass]="{'slds-has-drag-over':isDragOver}">
+                            <input #fileupload (click)="fileupload.value = null" class="slds-file-selector__input slds-assistive-text" accept=".gz" type="file" id="config-file-upload-input" (change)="fileSelectionChange()" [disabled]="isUploading" />
+                            <label class="slds-file-selector__body" for="config-file-upload-input">
+                                <span class="slds-file-selector__button slds-button slds-button_neutral">
+                                        <system-button-icon [icon]="'upload'" [size]="'small'" [addclasses]="'slds-button__icon_left'"></system-button-icon>
+                                    {{lang.getLabel('LBL_SELECT_FILE')}}</span>
+                                <span class="slds-file-selector__text slds-medium-show">{{lang.getLabel('LBL_OR_DROP_FILE_HERE')}}</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="fileReadyForUpload">
+
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control slds-m-vertical--medium">
+                        <div class="slds-checkbox">
+                            <input type="checkbox" id="cbDontEmptyTables" [(ngModel)]="dontEmptyTables" [disabled]="isAfterUpload || isUploading" />
+                            <label class="slds-checkbox__label" for="cbDontEmptyTables">
+                                <span class="slds-checkbox_faux"></span>
+                                <span class="slds-form-element__label">Preserve existing database data, when not overwritten by the import, so the new data will be a mix of the old and the imported data. Otherwise the affected tables would be emptied before the import.</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control slds-m-vertical--medium">
+                        <div class="slds-checkbox">
+                            <input type="checkbox" id="cbIgnoreUnknownTables" [(ngModel)]="ignoreUnknownTables" [disabled]="isAfterUpload || isUploading" />
+                            <label class="slds-checkbox__label" for="cbIgnoreUnknownTables">
+                                <span class="slds-checkbox_faux"></span>
+                                <span class="slds-form-element__label">Ignore unknown tables and do the import anyway. In case the input data contains tables that are unknown to the system.</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="!isAfterUpload && !isUploading">
+                    <div class="slds-m-vertical--medium">Upload and import the file &quot;<b>{{filename}}</b>&quot;?</div>
+                    <div><button class="slds-button slds-button--brand" (click)="uploadFile()">{{lang.getLabel('LBL_UPLOAD_AND_IMPORT')}}</button></div>
+                </div>
+
+                <system-progress-bar *ngIf="isUploading || isAfterUpload" class="slds-m-vertical--medium" [progress]="uploadProgress" size="large">
+                    Upload of file &quot;<b>{{filename}}</b>&quot; &hellip;
+                </system-progress-bar>
+
+                <div *ngIf="isImporting"><b>Importing &hellip;</b></div>
+
+                <div *ngIf="importOK===true">
+                    <b>Import successful</b>: {{importResponse.numberLinesInserted}} records inserted into {{importResponse.numberAffectedTables}} tables.
+                    <br>Before import a backup of the affected tables has been made to folder &quot;{{importResponse.backupLocation}}&quot;. It will be automatically deleted after {{importResponse.backupPeriod}} days.
+                </div>
+                <div *ngIf="importOK===false">
+                    <b>Import failed</b>. No record has been inserted. Reason: {{importErrorMessage}}
+                </div>
+
+            </div>
+
+        </div>
+
+        <div [ngClass]="{'slds-hide':tabToShow!=='e'}" class="slds-tabs_default__content">
+
+            <system-spinner *ngIf="isLoadingTablenames" class="slds-m-top--x-large" style="display:block"></system-spinner>
+            <div *ngIf="!isLoadingTablenames">
+
+                <div *ngIf="!changeExportSettings" class="slds-m-bottom--medium"><button class="slds-button slds-button--neutral" (click)="changeExportSettings=true">change export settings &hellip;</button></div>
+
+                <div *ngIf="changeExportSettings">
+
+                    <div class="slds-button-group slds-m-bottom--medium" role="group">
+                        <button class="slds-button slds-button_neutral" (click)="selectAll(true)">{{lang.getLabel('LBL_SELECT_ALL')}}</button>
+                        <button class="slds-button slds-button_neutral" (click)="selectAll(false)">{{lang.getLabel('LBL_DESELECT_ALL')}}</button>
+                    </div>
+
+                    <div style="column-width:270px;column-gap:1em">
+
+                        <div *ngFor="let table of selectableTables; let i=index" class="slds-form-element">
+                            <div class="slds-form-element__control slds-m-bottom--xxx-small">
+                                <div class="slds-checkbox">
+                                    <input type="checkbox" name="selectableTables" id="table{{i}}" [(ngModel)]="table.include" />
+                                    <label class="slds-checkbox__label" for="table{{i}}">
+                                        <span class="slds-checkbox_faux"></span>
+                                        <span class="slds-form-element__label" style="display:inline-block">{{table.name}}</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="slds-m-vertical--medium">
+                        <div><b>{{blacklistedTables.length}} tables are not listed</b>, because they may not be exported/imported <span *ngIf="blacklistedTables.length"><a href="javascript:void(0)" (click)="showBlacklistedTables=!showBlacklistedTables">[show/hide]</a>. If necessary use the following input field &quot;{{lang.getLabel('LBL_ADDITIONAL_TABLES')}}&quot;.</span></div>
+                        <span *ngIf="showBlacklistedTables">{{blacklistedTables.join(', ')}}</span>
+                    </div>
+
+                    <div class="slds-form-element slds-m-vertical--medium">
+                        <label class="slds-form-element__label" for="additionalTables">{{lang.getLabel('LBL_ADDITIONAL_TABLES')}}</label>
+                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                            <input id="additionalTables" class="slds-input" type="text" [(ngModel)]="additionalTables" />
+                            <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" title="Clear" (click)="additionalTables=''">
+                                <system-button-icon [icon]="'clear'" [size]="'small'"></system-button-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div><button class="slds-button slds-button--brand" (click)="exportTables()" [disabled]="( numberOfSelectedTables === 0 && additionalTables === '' ) || isDownloading">{{lang.getLabel('LBL_EXPORT')}}</button></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <a #downloadlink style="display:none" [href]="loadUrl" [download]="fileName"></a>
+
+</div>

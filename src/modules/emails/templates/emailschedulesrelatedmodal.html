@@ -1,0 +1,64 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<system-modal  title="LBL_EMAIL_SCHEDULES">
+    <system-modal-header (close)="close()"><system-label label="LBL_EMAIL_SCHEDULE"></system-label></system-modal-header>
+    <system-modal-content [grow]="true">
+        <div class="slds-tabs_scoped">
+            <ul class="slds-tabs_scoped__nav" role="tablist">
+                <li class="slds-tabs_scoped__item" title="Emails" role="presentation" [ngClass]="{'slds-is-active': activetab=='emails'}">
+                    <a class="slds-tabs_scoped__link" href="javascript:void(0);"  role="tab" (click)="activetab='emails'">{{this.language.getLabel('LBL_EMAILS')}}</a>
+                </li>
+                <li class="slds-tabs_scoped__item" title="Recipients" role="presentation" [ngClass]="{'slds-is-active': activetab=='recipients'}">
+                    <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='recipients'">{{this.language.getLabel('LBL_RECIPIENTS')}}</a>
+                </li>
+            </ul>
+            <div class="slds-tabs_scoped__content" [ngClass]="{'slds-hide': activetab!='emails'}" role="tabpanel">
+                <system-dynamic-component component="CampaignTaskEmailPanel"></system-dynamic-component>
+                <system-dynamic-component component="SpiceAttachmentsPanel"></system-dynamic-component>
+            </div>
+            <div class="slds-tabs_scoped__content"  [ngClass]="{'slds-hide': activetab!='recipients'}"  role="tabpanel">
+                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                    <thead>
+                    <tr class="slds-text-title_caps">
+                        <th scope="col" class="slds-resizable">
+                            <div class="slds-truncate"><system-label label="LBL_LINK"></system-label></div>
+
+                        </th>
+                        <th scope="col" class="slds-resizable">
+                            <div class="slds-truncate"><system-label label="LBL_COUNT"></system-label></div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let link of linkedBeans" [class.slds-disabled-text]="link.disabled">
+                        <td>
+                            <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small ">
+                                <system-checkbox [disabled]="link.disabled"  [(ngModel)]="link.selected"></system-checkbox>
+                            <div class="slds-truncate"> <system-icon [addclasses]="link.disabled ? 'slds-icon_disabled' : null" [size]="'small'" [module]="link.module"></system-icon></div>
+                            <div class="slds-truncate"><system-label [label]="link.vname"></system-label></div></div>
+                        </td>
+                        <td>
+                            <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small">
+                                <div class="slds-truncate">{{link.count}}</div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button (click)="saveSchedule()" class="slds-button slds-button--brand"><system-label label="LBL_EMAIL_SCHEDULE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

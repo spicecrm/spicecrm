@@ -1,0 +1,105 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div *ngIf="bigThumbnail; else smallThumbnailContainer" class="slds-file slds-file_card slds-has-title" style="width: 300px">
+    <figure style="height: 300px">
+        <a (click)="previewFile()" href="javascript:void(0)" class="slds-file__crop" style="padding-top: 245px">
+            <img *ngIf="file.thumbnail" [src]="'data:image/jpg;base64,' + file.thumbnail">
+        </a>
+        <figcaption class="slds-file__title slds-file__title_card slds-file-has-actions" style="height: 55px">
+            <div class="slds-media slds-media_small slds-media_center slds-size--1-of-1">
+                <div class="slds-media__figure slds-line-height_reset">
+                    <system-file-icon [filename]="file.filename" divClass="" [filemimetype]="file.file_mime_type"  size="'small'"></system-file-icon>
+                </div>
+                <div class="slds-media__body">
+                    <div *ngIf="!!file.display_name" (click)="previewFile()" class="slds-file__text slds-truncate" [system-title]="file.display_name">
+                        {{file.display_name}}
+                    </div>
+                    <div *ngIf="!file.display_name" (click)="previewFile()" class="slds-file__text slds-truncate" [system-title]="file.filename">
+                        {{file.filename}}
+                    </div>
+                    <div *ngIf="!uploading" class="slds-tile__detail slds-text-body--small">
+                        <ul class="slds-list--horizontal slds-has-dividers--left">
+                            <li [system-title]="filedate" class="slds-item">{{filedate}}</li>
+                            <li [system-title]="humanFileSize" class="slds-item">{{humanFileSize}}</li>
+                        </ul>
+                        <div *ngIf="!!file.display_name" [system-title]="file.filename" class="slds-text-color--inverse-weak slds-truncate">
+                            {{file.filename}}
+                        </div>
+                    </div>
+                    <div *ngIf="uploading" class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-has-flexi-truncate">
+                        <div class="slds-progress-bar">
+                            <span class="slds-progress-bar__value" [ngStyle]="progressbarstyle">
+                                <span class="slds-assistive-text">Progress: 25%</span>
+                            </span>
+                        </div>
+                        <div class="slds-text-align--right" style="width: 50px;">
+                            {{file.uploadprogress}} %
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </figcaption>
+    </figure>
+    <div *ngIf="!uploading" class="slds-file__actions-menu">
+        <object-file-action-menu [file]="file"></object-file-action-menu>
+    </div>
+</div>
+
+<ng-template #smallThumbnailContainer>
+    <div class="slds-media" style="width: 300px">
+        <div style="width: 30px; height: 30px;" class="slds-m-right--x-small slds-align--absolute-center">
+            <!--system-icon *ngIf="!file.thumbnail" [icon]="fileicon.icon" divClass="" [sprite]="fileicon.sprite"  size="'small'"></system-icon-->
+            <system-file-icon *ngIf="!file.thumbnail" [filename]="file.filename" divClass="" [filemimetype]="file.file_mime_type"  size="'small'"></system-file-icon>
+            <div *ngIf="file.thumbnail">
+                <img [src]="'data:image/jpg;base64,' + file.thumbnail"/>
+            </div>
+        </div>
+        <div class="slds-media__body">
+            <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-has-flexi-truncate">
+                <h3 class="slds-truncate slds-text-heading--x-small slds-p-right--xxx-small"[system-title]="file.text" (click)="previewFile()">
+                    <a *ngIf="!!file.display_name; else fileNameContainer" href="javascript:void(0);">
+                        {{file.display_name}}
+                    </a>
+                    <ng-template #fileNameContainer>
+                        <a href="javascript:void(0);">
+                            {{file.filename}}
+                        </a>
+                    </ng-template>
+                </h3>
+                <div *ngIf="!uploading" class="slds-shrink-none">
+                    <object-file-action-menu [file]="file"></object-file-action-menu>
+                </div>
+            </div>
+            <div *ngIf="!uploading" class="slds-tile__detail slds-text-body--small">
+                <ul class="slds-list--horizontal slds-has-dividers--left">
+                    <li [system-title]="filedate" class="slds-item">{{filedate}}</li>
+                    <li [system-title]="humanFileSize" class="slds-item">{{humanFileSize}}</li>
+                </ul>
+                <div *ngIf="!!file.display_name" [system-title]="file.filename" class="slds-text-color--inverse-weak slds-truncate">
+                    {{file.filename}}
+                </div>
+            </div>
+            <div *ngIf="uploading" class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-has-flexi-truncate">
+                <div class="slds-progress-bar">
+            <span class="slds-progress-bar__value" [ngStyle]="progressbarstyle">
+                <span class="slds-assistive-text">Progress: 25%</span>
+            </span>
+                </div>
+                <div class="slds-text-align--right" style="width: 50px;">
+                    {{file.uploadprogress}} %
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

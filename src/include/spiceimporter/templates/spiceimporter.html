@@ -1,0 +1,103 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-page-header">
+    <div class="slds-grid">
+        <div class="slds-col slds-has-flexi-truncate">
+            <div class="slds-media slds-no-space slds-grow">
+                <system-icon [module]="model.module"></system-icon>
+                <div class="slds-media__body">
+                    <nav role="navigation" aria-label="Breadcrumbs">
+                        <ol class="slds-breadcrumb slds-list--horizontal">
+                            <li class="slds-breadcrumb__item slds-text-title--caps">
+                                <a href="javascript:void(0);" (click)="gotoModule()"><system-label-modulename [module]="model.module"></system-label-modulename></a>
+                            </li>
+                            <li class="slds-breadcrumb__item slds-text-title--caps">
+                                <a href="javascript:void(0);"><system-label label="LBL_IMPORT"></system-label></a>
+                            </li>
+                            <li *ngIf="currentImportStep >= 1" class="slds-breadcrumb__item slds-text-title--caps slds-p-left--x-small">
+                                {{ spiceImporter.importAction == 'new' ? language.getLabel('LBL_LOAD_NEW_RECORDS'): language.getLabel('LBL_UPDATE_EXISTING_RECORDS')}}
+                            </li>
+                        </ol>
+                    </nav>
+                    <div>
+                        <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
+                            {{getCurrentStep()}}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="slds-grid slds-grid--align-spread slds-p-around--small slds-theme--shade slds-border--bottom">
+    <button class="slds-button slds-button--neutral" [disabled]="showExit()" (click)="prevStep()"
+            [ngClass]="{'slds-hide': !currentImportStep}">
+        <system-label label="LBL_PREVIOUS"></system-label>
+    </button>
+    <div class="slds-progress slds-progress--shade">
+        <ol class="slds-progress__list">
+            <li *ngFor="let importStep of importSteps" class="slds-progress__item" [ngClass]="getStepClass(importStep)">
+                <button class="slds-button slds-progress__marker"
+                        [ngClass]="{'slds-button--icon slds-progress__marker--icon': getStepComplete(importStep)}">
+                    <span class="slds-assistive-text">{{importStep}}</span>
+                    <system-button-icon *ngIf="getStepComplete(importStep)" [icon]="'success'"></system-button-icon>
+                </button>
+            </li>
+        </ol>
+        <div class="slds-progress-bar slds-progress-bar_x-small">
+            <span class="slds-progress-bar__value" [ngStyle]="getProgressBarWidth()"></span>
+        </div>
+    </div>
+    <button *ngIf="showNext()" class="slds-button slds-button--neutral" (click)="nextStep()">
+        <system-label label="LBL_NEXT"></system-label>
+    </button>
+    <button *ngIf="showImport()" [disabled]="processing"
+            class="slds-button slds-button--brand slds-grid slds-grid_vertical-align-center"
+            (click)="nextStep()">
+        <span *ngIf="!processing" class="slds-p-right--xx-small">
+            {{spiceImporter.importAction == 'new' ?
+            language.getLabel('LBL_IMPORT'):
+            language.getLabel('LBL_UPDATE') }}
+        </span>
+        <span *ngIf="processing" class="slds-p-right--xx-small">
+            {{spiceImporter.importAction == 'new' ?
+            language.getLabel('LBL_IMPORTING'):
+            language.getLabel('LBL_UPDATING') }}
+        </span>
+
+        <system-spinner *ngIf="processing" inverse="true" [size]="16"></system-spinner>
+    </button>
+    <button *ngIf="showExit()" class="slds-button slds-button--brand" (click)="nextStep()">
+        <system-label label="LBL_CLOSE"></system-label>
+    </button>
+
+</div>
+<div #contentcontainer class="slds-scrollable--y" [ngStyle]="getContainerStyle()">
+    <spice-importer-select
+            (templateNameSet)="templateName = $event"
+            (importActionSet)="setImportAction($event)"
+            [hidden]="currentImportStep!==0"></spice-importer-select>
+    <spice-importer-map
+            [modelfields]="modelFields"
+            [requiredmodelfields]="requiredModelFields"
+            [hidden]="currentImportStep!==1"></spice-importer-map>
+    <spice-importer-fixed
+            [modelfields]="modelFields"
+            [requiredmodelfields]="requiredModelFields"
+            [hidden]="currentImportStep!==2"
+            [currentimportstep]="currentImportStep"></spice-importer-fixed>
+    <spice-importer-check *ngIf="currentImportStep === 3 && spiceImporter.importAction == 'new'"></spice-importer-check>
+    <spice-importer-update
+            *ngIf="currentImportStep === 3 && spiceImporter.importAction == 'update'"></spice-importer-update>
+    <spice-importer-result [hidden]="currentImportStep!==4"></spice-importer-result>
+</div>
+

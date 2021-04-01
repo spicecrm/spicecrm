@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Diagram find</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script type="text/javascript" src="../../codebase/diagram.js"></script>
+	<link rel="stylesheet" href="../../codebase/diagram.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+
+	<link rel="stylesheet" href="../common/dhx_samples.css">
+	<script type="text/javascript" src="../common/diagram.js"></script>
+	<style>
+		.dhx_free_diagram .yes_line {
+			stroke: #38B551;
+		}
+
+		.yes_line .dhx_diagram_arrow {
+			fill: #38B551;
+		}
+
+		.dhx_free_diagram .no_line {
+			stroke: #E10000;
+		}
+
+		.no_line .dhx_diagram_arrow {
+			fill: #E10000;
+		}
+
+		.yes_circle .dhx_item_shape {
+			fill: #38B551;
+			stroke: none;
+		}
+
+		.yes_circle text {
+			fill: white;
+			text-transform: uppercase;
+			font-size: 12px;
+			font-weight: 500;
+		}
+
+		.no_circle .dhx_item_shape {
+			fill: red;
+			stroke: none;
+		}
+
+		.no_circle text {
+			fill: white;
+			text-transform: uppercase;
+			font-size: 12px;
+			font-weight: 500;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="diagram_container"></div>
+	<button class="dhx_btn" style="position:absolute;top:0;right:20%;display:block;" onclick="find()">Find shape</button>
+	<div id="cont" style="position:absolute;top:100px;right:20%;display:block;"></div>
+	<script>
+		var diagram = new dhx.Diagram("diagram_container");
+		diagram.data.parse(custom);
+		function find() {
+			var shape = diagram.data.find({by:"type",match:"decision"});
+			console.log(shape);
+			document.getElementById("cont").innerHTML = `Shape - id:${shape.id}, text:${shape.text}, type:${shape.type}`;
+		}
+	</script>
+
+</body>
+
+</html>

@@ -1,0 +1,31 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-dropdown-trigger slds-dropdown-trigger--click slds-m-horizontal--xxx-small" aria-expanded="false" system-dropdown-trigger-simple>
+    <button class="slds-button slds-button--icon slds-button--icon-border slds-button--neutral" aria-haspopup="true" system-title="LBL_CHANGE_VIEW" [disabled]="disabled">
+        <system-button-icon [icon]="currentListIcon" size="small"></system-button-icon>
+        <system-button-icon class="slds-p-left--xxx-small" icon="down" size="x-small"></system-button-icon>
+    </button>
+    <div class="slds-dropdown slds-dropdown--right slds-dropdown--small">
+        <ul class="slds-dropdown__list" role="menu">
+            <li class="slds-dropdown__header" role="separator">
+                <span class="slds-text-title--caps"><system-label label="LBL_DISPLAYAS"></system-label></span>
+            </li>
+            <li *ngFor="let list of componentconfig.lists" class="slds-dropdown__item slds-is-selected" role="presentation" (click)="setListtype(list.component)">
+                <a href="javascript:void(0);" role="menuitemcheckbox" aria-checked="true" tabindex="0">
+                    <span class="slds-truncate"><system-label [label]="list.label"></system-label></span>
+                    <system-utility-icon [icon]="list.icon" size="x-small"></system-utility-icon>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

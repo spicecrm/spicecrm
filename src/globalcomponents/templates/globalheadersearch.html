@@ -1,0 +1,72 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-global-header__item_search" style="min-width: 15rem">
+    <div class="slds-form-element">
+        <div class="slds-form-element__control">
+            <div class="slds-combobox-group">
+                <div *ngIf="showModuleSelector" class="slds-combobox_object-switcher slds-combobox-addon_start">
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <div class="slds-combobox_container">
+                                <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" system-dropdown-trigger role="combobox">
+                                    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                                        <input type="text" class="slds-input slds-combobox__input slds-combobox__input-value" [(ngModel)]="searchmodule" readonly role="textbox"/>
+                                        <system-icon icon="down" sprite="utility" size="x-small" addclasses="slds-icon_container slds-icon-utility-down slds-input__icon slds-input__icon_right"></system-icon>
+                                    </div>
+                                    <div class="slds-dropdown slds-dropdown_x-small slds-dropdown_left">
+                                        <ul class="slds-listbox slds-listbox_vertical" role="group">
+                                            <li role="presentation" class="slds-listbox__item" (click)="searchmodule = 'all'">
+                                                <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
+                                                    <div class="slds-media__figure slds-listbox__option-icon">
+                                                        <system-utility-icon icon="check" size="x-small" *ngIf="'all' == searchmodule"></system-utility-icon>
+                                                    </div>
+                                                    <div class="slds-media__body">
+                                                        <div class="slds-truncate"><system-label label="LBL_ALL"></system-label></div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li *ngFor="let searchModule of fts.loadedSearchModules" role="presentation" (click)="searchmodule = searchModule" class="slds-listbox__item">
+                                                <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                                     role="option">
+                                                    <div class="slds-media__figure slds-listbox__option-icon">
+                                                        <system-utility-icon  icon="check" size="x-small" *ngIf="searchModule == _searchmodule"></system-utility-icon>
+                                                    </div>
+                                                    <div class="slds-media__body">
+                                                        <div class="slds-truncate"><system-label-modulename [module]="searchModule"></system-label-modulename></div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-combobox_container slds-combobox-addon_end" [ngClass]="{'slds-combobox-addon_start': !showModuleSelector}">
+                    <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" role="combobox" [ngClass]="{'slds-is-open': showRecent}">
+                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left slds-global-search__form-element"
+                             role="none">
+                            <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
+                            <input class="slds-input slds-combobox__input" type="search" [placeholder]="language.getLabel('LBL_SEARCH_SPICE')" (focus)="onFocus()" [(ngModel)]="searchTermUntrimmed" (keyup)="search($event)"/>
+                        </div>
+                        <div class="slds-dropdown slds-dropdown_fluid" role="listbox">
+                            <global-header-search-recent-items *ngIf="searchTerm === ''" (selected)="selected($event)"></global-header-search-recent-items>
+                            <global-header-search-results-items *ngIf="searchTerm !== ''" [searchTerm]="searchTerm" [searchResults]="searchresults" (selected)="selected($event)"></global-header-search-results-items>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

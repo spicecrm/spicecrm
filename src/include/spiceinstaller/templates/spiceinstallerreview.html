@@ -1,0 +1,97 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-grid slds-grid_vertical slds-p-around--medium">
+    <h2 class="slds-text-heading_medium slds-p-bottom--medium">Settings Review</h2>
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+        <tbody>
+        <tr>
+            <td><h2 class="slds-text-heading_medium">Backend Configuration Settings:</h2></td>
+            <td></td>
+        </tr>
+        <tr class="slds-hint-parent" *ngFor="let setting of spiceinstaller.configObject.backendconfig| keyvalue">
+            <td>
+                <div class="slds-truncate">{{spiceinstaller.keyToLabel(setting.key)}}</div>
+            </td>
+            <td>
+                <div class="slds-truncate">{{setting.value}}</div>
+            </td>
+        </tr>
+        <tr>
+            <td><h2 class="slds-text-heading_medium">Database Configuration Settings:</h2></td>
+            <td></td>
+        </tr>
+        <tr class="slds-hint-parent" *ngFor="let setting of spiceinstaller.configObject.database| keyvalue">
+            <td>
+                <div class="slds-truncate">{{spiceinstaller.keyToLabel(setting.key)}}</div>
+            </td>
+            <td>
+                <div class="slds-truncate">{{setting.value}}</div>
+            </td>
+        </tr>
+        <tr class="slds-hint-parent" *ngFor="let setting of spiceinstaller.configObject.dboptions| keyvalue">
+            <td>
+                <div class="slds-truncate">{{spiceinstaller.keyToLabel(setting.key)}}</div>
+            </td>
+            <td>
+                <div class="slds-truncate">{{setting.value}}</div>
+            </td>
+        </tr>
+        <tr>
+            <td><h2 class="slds-text-heading_medium">FTS Configuration Settings:</h2></td>
+            <td></td>
+        </tr>
+        <tr class="slds-hint-parent" *ngFor="let setting of spiceinstaller.configObject.fts| keyvalue">
+            <td>
+                <div class="slds-truncate">{{spiceinstaller.keyToLabel(setting.key)}}</div>
+            </td>
+            <td>
+                <div class="slds-truncate">{{setting.value}}</div>
+            </td>
+        </tr>
+        <tr>
+            <td><h2 class="slds-text-heading_medium">Credentials:</h2></td>
+            <td></td>
+        </tr>
+        <tr class="slds-hint-parent" *ngFor="let setting of spiceinstaller.configObject.credentials| keyvalue">
+            <td>
+                <div class="slds-truncate">{{spiceinstaller.keyToLabel(setting.key)}}</div>
+            </td>
+            <td>
+                <div class="slds-truncate">{{setting.value}}</div>
+            </td>
+        </tr>
+        <tr>
+            <td><h2 class="slds-text-heading_medium">Language:</h2></td>
+            <td></td>
+        </tr>
+        <tr class="slds-hint-parent" *ngFor="let setting of spiceinstaller.configObject.language| keyvalue">
+            <td>
+                <div class="slds-truncate">{{spiceinstaller.keyToLabel(setting.key)}}</div>
+            </td>
+            <td>
+                <div class="slds-truncate">{{setting.value}}</div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="slds-align-bottom slds-grid slds-grid--vertical-align-center slds-p-vertical--small">
+        <div *ngIf="loading" class="cssload-container">
+            <div class="cssload-double-torus" style="width: 16px; height: 16px;"></div>
+        </div>
+        <div class="slds-m-left--small slds-size--1-of-1">
+            <button class="slds-button slds-button--brand" [disabled]="loading" (click)="install()">begin installation</button>
+
+        </div>
+    </div>
+</div>

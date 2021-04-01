@@ -1,0 +1,287 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div>
+    <system-collapsable-tab [collapsible]="false"  tabtitle="LBL_LOCALE_PREFERENCES">
+        <div class="slds-grid slds-grid--align-spread">
+            <system-preferences-panel-item class="slds-size--1-of-4" itemlabel="LBL_TIMEZONE">
+                <system-preferences-panel-item-display>
+                    {{preferences.timezone}}
+                </system-preferences-panel-item-display>
+                <system-preferences-panel-item-edit>
+                    <system-input-timezone [(ngModel)]="preferences.timezone"></system-input-timezone>
+                </system-preferences-panel-item-edit>
+            </system-preferences-panel-item>
+            <system-preferences-panel-item class="slds-size--1-of-4" itemlabel="LBL_DISTANCE_UNIT_SYSTEM">
+                <system-preferences-panel-item-display>
+                    <system-label *ngIf="!!preferences.distance_unit_system" [label]="'LBL_' + preferences.distance_unit_system"></system-label>
+                </system-preferences-panel-item-display>
+                <system-preferences-panel-item-edit>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="preferences.distance_unit_system">
+                            <option></option>
+                            <option value="METRIC">
+                                <system-label label="LBL_METRIC"></system-label>
+                            </option>
+                            <option value="IMPERIAL">
+                                <system-label label="LBL_IMPERIAL"></system-label>
+                            </option>
+                        </select>
+                    </div>
+                </system-preferences-panel-item-edit>
+            </system-preferences-panel-item>
+            <system-preferences-panel-item class="slds-size--1-of-4" itemlabel="LBL_DATE_FORMAT">
+                <system-preferences-panel-item-display>
+                    {{dateFormat}}
+                </system-preferences-panel-item-display>
+                <system-preferences-panel-item-edit>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [ngModel]="preferences.datef" (ngModelChange)="setDateFormat($event)">
+                            <option></option>
+                            <option *ngFor="let item of dateFormatList" [value]="item.value">
+                                {{ item.name }}
+                            </option>
+                        </select>
+                    </div>
+                </system-preferences-panel-item-edit>
+            </system-preferences-panel-item>
+            <system-preferences-panel-item class="slds-size--1-of-4" itemlabel="LBL_TIME_FORMAT">
+                <system-preferences-panel-item-display>
+                    {{timeFormat}}
+                </system-preferences-panel-item-display>
+                <system-preferences-panel-item-edit>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [ngModel]="preferences.timef" (ngModelChange)="setTimeFormat($event)">
+                            <option></option>
+                            <option *ngFor="let item of timeFormatList" [value]="item.value">
+                                {{ item.name }}
+                            </option>
+                        </select>
+                    </div>
+                </system-preferences-panel-item-edit>
+            </system-preferences-panel-item>
+        </div>
+        <div class="slds-grid slds-grid--align-spread">
+            <system-preferences-panel-item class="slds-size--2-of-5" itemlabel="LBL_CURRENCY">
+                <system-preferences-panel-item-display>
+                    <span class="slds-form-element__static">
+                        <ng-container *ngFor="let item of currencyList">
+                            {{  item.id == preferences.currency ? item.name : '' }}
+                        </ng-container>
+                    </span>
+                </system-preferences-panel-item-display>
+                <system-preferences-panel-item-edit>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="preferences.currency">
+                            <option></option>
+                            <option *ngFor="let item of currencyList" [value]="item.id">
+                                {{ item.name }}
+                            </option>
+                        </select>
+                    </div>
+                </system-preferences-panel-item-edit>
+            </system-preferences-panel-item>
+            <system-preferences-panel-item class="slds-size--1-of-5" itemlabel="LBL_DECIMAL_DIGITS">
+                <system-preferences-panel-item-display>
+                    {{preferences.default_currency_significant_digits}}
+                </system-preferences-panel-item-display>
+                <system-preferences-panel-item-edit>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="preferences.default_currency_significant_digits">
+                            <option></option>
+                            <option *ngFor="let item of currencySignificantDigitsList" [value]="item">
+                                {{ item }}
+                            </option>
+                        </select>
+                    </div>
+                </system-preferences-panel-item-edit>
+            </system-preferences-panel-item>
+            <system-preferences-panel-item class="slds-size--2-of-5" itemlabel="LBL_FORMATTING">
+                <system-preferences-panel-item-display>
+                    {{numbersFormatting?.show}}
+                </system-preferences-panel-item-display>
+                <system-preferences-panel-item-edit>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [ngModel]="numbersFormatting" (ngModelChange)="setNumbersFormatting($event)">
+                            <option></option>
+                            <option *ngFor="let item of formattingOfNumbersList; let index=index" [ngValue]="item">
+                                {{ item.show }}
+                            </option>
+                        </select>
+                    </div>
+                </system-preferences-panel-item-edit>
+            </system-preferences-panel-item>
+        </div>
+    </system-collapsable-tab>
+    <system-collapsable-tab [collapsible]="false" tabtitle="LBL_NAVIGATION_PREFERENCES">
+        <div class="slds-grid slds-grid--align-spread">
+            <system-preferences-panel-item class="slds-size--1-of-1" itemlabel="LBL_NAVIGATION_PARADIGM">
+                <system-preferences-panel-item-display>
+                    {{ preferences.navigation_paradigm}}
+                </system-preferences-panel-item-display>
+                <system-preferences-panel-item-edit>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="preferences.navigation_paradigm">
+                            <option></option>
+                            <option value="simple">simple</option>
+                            <option value="tabbed">tabbed</option>
+                            <option value="subtabbed">tabbed w subtabs</option>
+                        </select>
+                    </div>
+                </system-preferences-panel-item-edit>
+            </system-preferences-panel-item>
+        </div>
+    </system-collapsable-tab>
+    <system-collapsable-tab [collapsible]="false" tabtitle="LBL_EXPORT_PREFERENCES">
+        <div class="slds-grid slds-grid--align-spread">
+            <system-preferences-panel-item class="slds-size--1-of-2" itemlabel="LBL_EXPORT_DELIMITER">
+                <system-preferences-panel-item-display>
+                    {{ preferences.export_delimiter }}
+                </system-preferences-panel-item-display>
+                <system-preferences-panel-item-edit>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="preferences.export_delimiter">
+                            <option></option>
+                            <option *ngFor="let item of exportDelimiterList" [value]="item">
+                                {{ item }}
+                            </option>
+                        </select>
+                    </div>
+                </system-preferences-panel-item-edit>
+            </system-preferences-panel-item>
+            <system-preferences-panel-item class="slds-size--1-of-2" itemlabel="LBL_EXPORT_CHARSET">
+                <system-preferences-panel-item-display>
+                    {{ preferences.default_export_charset }}
+                </system-preferences-panel-item-display>
+                <system-preferences-panel-item-edit>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="preferences.default_export_charset">
+                            <option></option>
+                            <option *ngFor="let item of charsetList" [value]="item">
+                                {{ item}}
+                            </option>
+                        </select>
+                    </div>
+                </system-preferences-panel-item-edit>
+            </system-preferences-panel-item>
+        </div>
+    </system-collapsable-tab>
+
+    <system-collapsable-tab [collapsible]="false" tabtitle="LBL_OTHER_PREFERENCES">
+        <div class="slds-grid slds-grid--align-spread">
+            <system-preferences-panel-item class="slds-size--1-of-2" itemlabel="LBL_NAME_FORMAT">
+                <system-preferences-panel-item-display>
+                    {{nameExampleText}}
+                </system-preferences-panel-item-display>
+                <system-preferences-panel-item-edit>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [ngModel]="preferences.default_locale_name_format" (ngModelChange)="setNameExampleText($event)">
+                            <option></option>
+                            <option *ngFor="let item of nameFormats" [value]="item.name">{{item.example}}</option>
+                        </select>
+                    </div>
+                </system-preferences-panel-item-edit>
+            </system-preferences-panel-item>
+            <system-preferences-panel-item class="slds-size--1-of-2" itemlabel="LBL_HELP_ICON">
+                <system-preferences-panel-item-display>
+                    {{preferences.help_icon}}
+                </system-preferences-panel-item-display>
+                <system-preferences-panel-item-edit>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="preferences.help_icon">
+                            <option></option>
+                            <option value="visible">
+                                <system-label label="LBL_VISIBLE"></system-label>
+                            </option>
+                            <option value="hidden">
+                                <system-label label="LBL_HIDDEN"></system-label>
+                            </option>
+                        </select>
+                    </div>
+                </system-preferences-panel-item-edit>
+            </system-preferences-panel-item>
+        </div>
+    </system-collapsable-tab>
+
+    <system-collapsable-tab [collapsible]="false" tabtitle="LBL_CALENDAR_PREFERENCES">
+        <div class="slds-grid slds-grid--align-spread">
+            <system-preferences-panel-item class="slds-size--1-of-4" itemlabel="LBL_WEEK_START_DAY">
+                <system-preferences-panel-item-display>
+                    {{preferences.week_day_start}}
+                </system-preferences-panel-item-display>
+                <system-preferences-panel-item-edit>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="preferences.week_day_start">
+                            <option></option>
+                            <option *ngFor="let day of weekDayStartList" [value]="day">{{day}}</option>
+                        </select>
+                    </div>
+                </system-preferences-panel-item-edit>
+            </system-preferences-panel-item>
+            <system-preferences-panel-item class="slds-size--1-of-4" itemlabel="LBL_WEEK_DAYS_COUNT">
+                <system-preferences-panel-item-display>
+                    {{preferences.week_days_count}}
+                </system-preferences-panel-item-display>
+                <system-preferences-panel-item-edit>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="preferences.week_days_count">
+                            <option></option>
+                            <option *ngFor="let count of weekDaysCountList" [value]="count">
+                                {{count}}<system-label label="LBL_DAYS"></system-label></option>
+                        </select>
+                    </div>
+                </system-preferences-panel-item-edit>
+            </system-preferences-panel-item>
+            <system-preferences-panel-item class="slds-size--1-of-4" itemlabel="LBL_DAY_START_HOUR">
+                <system-preferences-panel-item-display>{{preferences.calendar_day_start_hour}}</system-preferences-panel-item-display>
+                <system-preferences-panel-item-edit>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="preferences.calendar_day_start_hour">
+                            <option></option>
+                            <option *ngFor="let hour of dayHoursList" [value]="hour" [disabled]="preferences.calendar_day_end_hour <= hour">
+                                {{hour}}
+                            </option>
+                        </select>
+                    </div>
+                </system-preferences-panel-item-edit>
+            </system-preferences-panel-item>
+            <system-preferences-panel-item class="slds-size--1-of-4" itemlabel="LBL_DAY_END_HOUR">
+                <system-preferences-panel-item-display>{{preferences.calendar_day_end_hour}}</system-preferences-panel-item-display>
+                <system-preferences-panel-item-edit>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="preferences.calendar_day_end_hour">
+                            <option></option>
+                            <option *ngFor="let hour of dayHoursList" [value]="hour" [disabled]="preferences.calendar_day_start_hour >= hour">
+                                {{hour}}
+                            </option>
+                        </select>
+                    </div>
+                </system-preferences-panel-item-edit>
+            </system-preferences-panel-item>
+        </div>
+        <div class="slds-grid slds-grid--align-spread">
+            <system-preferences-panel-item class="slds-size--1-of-4" itemlabel="LBL_DEFAULT_REMINDER_TIME">
+                <system-preferences-panel-item-display>{{preferences.week_day_start}}</system-preferences-panel-item-display>
+                <system-preferences-panel-item-edit>
+                    <div class="slds-select_container">
+                        <select [(ngModel)]="preferences.reminder_time" class="slds-select">
+                            <option></option>
+                            <option *ngFor="let time of reminderTimeOptions" [value]="time.value">
+                                {{time.display}}
+                            </option>
+                        </select>
+                    </div>
+                </system-preferences-panel-item-edit>
+            </system-preferences-panel-item>
+        </div>
+    </system-collapsable-tab>
+</div>

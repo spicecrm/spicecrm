@@ -1,0 +1,66 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<ng-container *ngIf="qp.isLoaded">
+
+    <ng-container *ngIf="!qp.hideFinishedQuestions || !questionMeta.finished">
+
+        <div *ngIf="questionMeta.parameter && !questionMeta.parameter.sequenced" class="slds-box question-render-question">
+            <div *ngIf="question.questiontext || question.image_id" class="slds-m-bottom_x-small">
+                <h3 *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="x-slds-text-heading_medium" [class.slds-m-bottom_xx-small]="question.image_id">{{question.questiontext}}</h3>
+                <div class="slds-m-bottom_small"><media-file-image *ngIf="question.image_id" [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="qp.imageWidthQuestion"></media-file-image></div>
+            </div>
+            <div>
+                <textarea *ngIf="qp.editMode === 'preview'" class="slds-scrollable_y slds-textarea"></textarea>
+                <textarea [system-trim-input] class="slds-scrollable_y slds-textarea"
+                      *ngIf="qp.editMode !== 'preview'"
+                      [(ngModel)]="qp.answers[question.id].optionlessAnswerValue"
+                      (change)="onTextChange()"
+                      [attr.disabled]="questionMeta.tempReadonly || qp.editMode === 'off' ? '':null"></textarea>
+            </div>
+        </div>
+
+        <div *ngIf="questionMeta && questionMeta.parameter && questionMeta.parameter.sequenced" class="sequenced slds-box question-render-question slds-text-align_right slds-grid slds-grid_vertical-align-center" style="padding:0.5rem 0.5rem 0.5rem 1rem" [ngStyle]="binaryTableStyle()">
+            <div *ngFor="let item of forLoopArray(lengthLongestSequence); let j=index" class="slds-p-right_large x-lds-p-vertical_small slds-text-heading_small">
+                {{questionNameSplitted[j]}}
+            </div>
+            <div class="slds-text-align_right x-slds-p-vertical_small slds-col--bump-left">
+                <input [system-trim-input] type="text" *ngIf="qp.editMode === 'preview'" size="5" class="slds-input">
+                <input [system-trim-input] type="text" *ngIf="qp.editMode !== 'preview'"
+                       [ngModel]="qp.answers[question.id].optionlessAnswerValue"
+                       (change)="onTextChange()"
+                       [attr.disabled]="questionMeta.tempReadonly || qp.editMode === 'off' ? '':null"
+                       size="5" style="width:auto"
+                       class="slds-input">
+            </div>
+        </div>
+
+        <!--table *ngIf="questionMeta.parameter.sequenced" class="sequenced slds-text-align_right slds-table_bordered" style="border-top:none">
+            <tr>
+                <td *ngFor="let item of forLoopArray(lengthLongestSequence); let j=index" class="slds-p-right_large slds-p-vertical_small slds-text-align_right slds-text-heading_small">
+                    {{questionNameSplitted[j]}}
+                </td>
+                <td class="slds-text-align_right slds-p-vertical_small" width="100%">
+                    <input [system-trim-input] type="text" *ngIf="qp.editMode === 'preview'" size="5" class="slds-input">
+                    <input [system-trim-input] type="text" *ngIf="qp.editMode !== 'preview'"
+                           [ngModel]="qp.answers[question.id].optionlessAnswerValue"
+                           (change)="onTextChange()"
+                           [attr.disabled]="questionMeta.tempReadonly || qp.editMode === 'off' ? '':null"
+                           size="5" style="width:auto"
+                           class="slds-input">
+                </td>
+            </tr>
+        </table-->
+
+    </ng-container>
+
+</ng-container>

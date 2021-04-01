@@ -1,0 +1,71 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div *ngIf="sortedDays && sortedDays[0]" style="height: 100%">
+    <div class="slds-p-around--x-small">
+        <h2 *ngIf="cityName" class="slds-text-heading--medium">Weather in {{cityName}}</h2>
+        <div *ngIf="dayHourToShow" [ngClass]="todayOnly ? 'slds-border--bottom slds-p-bottom--xxx-small' : ''">
+            <div  class="slds-text-body--regular">
+                <span>
+                    {{getDayName(dayHourToShow.dt)}}
+                    <span *ngIf="todayOnly">, {{description}}</span>
+                </span>
+                <span *ngIf="!todayOnly" class="slds-p-left--x-small">{{getHour(dayHourToShow.dt)}}</span>
+            </div>
+            <div *ngIf="!todayOnly" class="slds-text-body--regular">{{description}}</div>
+        </div>
+    </div>
+    <div *ngIf="dayHourToShow" class="slds-grid slds-p-horizontal--x-small">
+        <div class="slds-grid slds-size--1-2 slds-grid--vertical-align-center">
+            <img width="50px" height="50px" [src]="getWeatherIconUrl(dayHourToShow.weather[0].icon)">
+            <div class="slds-text-heading--large slds-grid slds-grid--vertical-align-center">{{getTemperature(dayHourToShow.main.temp)}}°C</div>
+        </div>
+        <div class="slds-size--2-of-2  slds-p-left--medium">
+            <div class="slds-text-body--regular">Clouds: {{dayHourToShow.clouds.all}}%</div>
+            <div class="slds-text-body--regular">Humidity: {{dayHourToShow.main.humidity}}%</div>
+            <div class="slds-text-body--regular">Wind: {{getWind(dayHourToShow.wind)}}km/h</div>
+        </div>
+    </div>
+    <ng-container *ngIf="!todayOnly">
+        <div class="slds-grid slds-m-top--small slds-m-bottom--xx-small slds-p-horizontal--x-small slds-p-vertical--small slds-border--top slds-border--bottom">
+            <div *ngFor="let dayHour of dayToShow; trackBy: trackByFn"
+                 class="slds-size--1-of-5 slds-text-body--small"
+                 [ngClass]="(dayHour.dt == dayHourToShow.dt) ? 'slds-text-color--error': ''"
+                 style="cursor: pointer; max-width: 2.2rem"
+                 (click)="setDayHourToShow(dayHour)">
+                {{getHour(dayHour.dt)}}
+            </div>
+        </div>
+        <div class="slds-grid slds-m-horizontal--xx-small">
+            <div *ngFor="let day of sortedDays; let first = first; trackBy: trackByFn"
+                 class="slds-size--1-of-5 slds-p-vertical--xx-small"
+                 style="cursor: pointer; max-width: 4.3rem"
+                 [ngStyle]="(getDayName(first ? day[0].dt : day[4].dt) == getDayName(dayHourToShow.dt)) ? {'background-color': '#faf7f7', 'border': '1px solid #e0dfdf'}: {}"
+                 (click)="setDayToShow(day)">
+                <div class="slds-text-body--regular slds-text-align--center">{{getDayName(day[0].dt, true)}}</div>
+                <div class="slds-text-align--center">
+                    <img [src]="getWeatherIconUrl(first ? day[0].weather[0].icon : day[4].weather[0].icon)">
+                </div>
+                <div class="slds-text-body--regular slds-text-align--center">
+                    <span>{{getTemperature(first ? day[0].main.temp_max : day[4].main.temp_max)}}°</span>
+                    <span c></span>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</div>
+<div *ngIf="isLoading && !sortedDays" class="slds-align--absolute-center" style="height: 100%">
+    <system-spinner ></system-spinner>
+</div>
+<div *ngIf="!sortedDays && !isLoading" class="slds-align--absolute-center slds-text-heading--small" style="height: 100%">
+    Weather forecast is currently unavailable
+</div>

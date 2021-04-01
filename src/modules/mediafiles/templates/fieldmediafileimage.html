@@ -1,0 +1,72 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div [ngClass]="fielddisplayclass" class="slds-is-relative">
+
+    <ng-container *ngIf="fieldconfig.format === 'button'">
+
+        <button #buttonToPicker *ngIf="fieldIsEmpty" class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" [disabled]="!isEditMode()" (click)="getImage()">
+            <system-button-icon [icon]="'image'"></system-button-icon>
+        </button>
+
+        <button #buttonToEnlargement *ngIf="!fieldIsEmpty" class="slds-button slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-container" (click)="openEnlarged()" style="width:4rem">
+            <img *ngIf="imageUrl" [src]="imageUrl" class="imgInButton" style="border-radius: 0.25rem 0 0 0.25rem; padding: 1px 0 1px 1px; height: calc(2rem - 2px); width: calc(2rem - 1px)"><span class="slds-text-align_center">
+                <system-button-icon [icon]="'threedots'" style="width: calc(2rem - 2px)"></system-button-icon>
+            </span>
+        </button>
+
+        <!-- Enlarged Image View -->
+        <div *ngIf="enlarged" class="slds-is-absolute" style="width:160px; height:160px; left: calc(50% - 80px); top: calc(50% - 80px); z-index: 1; background-color: #ccc; border-radius:0.25rem; background-color: #fdfdfd; box-shadow: 0 2px 3px 0 rgba(0,0,0,.16); border: 1px solid #d8dde6">
+            <img *ngIf="imageUrlEnlarged" [src]="imageUrlEnlarged" class="slds-image" style="border: 1px solid #999" width="160" height="160">
+            <button #closebutton class="slds-button slds-button_icon slds-is-absolute" style="top:0.25rem; right:0.25rem; cursor:pointer; margin:0; filter: drop-shadow( 0px 0px 3px #fff)" (click)="closeEnlarged()" title="Close">
+                <system-button-icon [icon]="'close'" [size]="'small'"></system-button-icon>
+            </button>
+            <button *ngIf="isEditMode()"
+                class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled slds-is-absolute" title="Delete"
+                style="bottom: 0.25rem; left: 0.25rem; margin: 0;"
+                (click)="clearField4button()">
+                <system-button-icon [icon]="'delete'"></system-button-icon>
+            </button>
+            {{closebutton.focus()}}
+        </div>
+
+    </ng-container>
+
+    <ng-container *ngIf="fieldconfig.format !== 'button'">
+
+        <div class="slds-box--border slds-align_absolute-center" [ngStyle]="imageStyle">
+            <img *ngIf="!fieldIsEmpty && imageUrl" [src]="imageUrl" style="max-height:100%;padding:0.25rem">
+            <ng-container *ngIf="!model.isLoading">
+                <ng-container *ngIf="isEditMode()">
+                    <button #buttonToPicker *ngIf="fieldIsEmpty" class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled slds-align--absolute-center" [disabled]="!isEditMode()" (click)="getImage()">
+                        <system-button-icon [icon]="'image'"></system-button-icon>
+                    </button>
+                    <div *ngIf="!fieldIsEmpty" class="slds-is-absolute spice-button-group-vertical slds-is-absolute" style="bottom:1.25rem; right:0.75rem">
+                        <!-- button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" (click)="editImage()">
+                            <system-button-icon [icon]="'edit'"></system-button-icon>
+                        </button -->
+                        <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" title="Delete" (click)="clearField4image()" >
+                            <system-button-icon [icon]="'delete'"></system-button-icon>
+                        </button>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="!isEditMode()">
+                    <!-- system-illustration-no-data *ngIf="fieldIsEmpty"></system-illustration-no-data --><!-- systemIllustrationNoData doesn´t adapt to smaller images -->
+                    <button class="slds-button slds-button_icon slds-is-absolute" style="bottom:1.25rem; right:0.75rem" (click)="setEditMode()">
+                        <system-button-icon [icon]="'edit'"></system-button-icon>
+                    </button>
+                </ng-container>
+            </ng-container>
+        </div>
+    </ng-container>
+
+</div>

@@ -1,0 +1,46 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<system-modal>
+    <system-modal-header (close)="close()"></system-modal-header>
+    <system-modal-content>
+        <div *ngIf="isOutbound" class="slds-form-element slds-size--1-of-1">
+            <label class="slds-truncate slds-form-element__label"><system-label label="LBL_TEST_EMAIL"></system-label></label>
+            <input type="text" [(ngModel)]="testemailaddress" class="slds-input"/>
+        </div>
+        <div class="slds-p-vertical--x-small">
+            <div *ngIf="isInbound" class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center slds-p-vertical--xxx-small">
+                <div><system-label label="LBL_IMAP"></system-label></div>
+                <system-utility-icon size="xx-small" [icon]="imapIcon"></system-utility-icon>
+            </div>
+            <div *ngIf="isOutbound" class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center slds-p-vertical--xxx-small">
+                <div><system-label label="LBL_SMTP"></system-label></div>
+                <system-utility-icon size="xx-small" [icon]="smtpIcon"></system-utility-icon>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <div *ngIf="testing" class="slds-grid slds-grid--vertical-align-center">
+                <system-spinner size="10"></system-spinner>
+                <span class="slds-p-horizontal--xx-small"><system-label label="LBL_TESTING"></system-label></span>
+            </div>
+            <div *ngIf="!testing && validConnection" class="slds-grid slds-grid--vertical-align-center">
+                <system-utility-icon icon="check" size="x-small"></system-utility-icon>
+                <span class="slds-p-horizontal--xx-small"><system-label label="LBL_OK"></system-label></span>
+            </div>
+            <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()"><system-label label="LBL_TEST"></system-label></button>
+            <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button [disabled]="!validConnection" class="slds-button slds-button--brand" (click)="close()"><system-label label="LBL_OK"></system-label></button>
+        </div>
+    </system-modal-footer>
+</system-modal>

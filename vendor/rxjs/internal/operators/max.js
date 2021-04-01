@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var reduce_1=require("./reduce");function max(u){var e="function"==typeof u?function(e,r){return 0<u(e,r)?e:r}:function(e,r){return r<e?e:r};return reduce_1.reduce(e)}exports.max=max;

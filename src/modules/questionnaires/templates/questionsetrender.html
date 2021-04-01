@@ -1,0 +1,121 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<system-spinner *ngIf="!qp.isLoaded"></system-spinner>
+
+<ng-container *ngIf="qp.isLoaded">
+
+    <div class="questionset-render slds-text-heading_small" [ngClass]="{'in-modal':qp.inModal}">
+        <div class="questionset-render-header">
+            <div class="slds-grid slds-grid_vertical-align-center">
+
+                <h3 class="slds-size_3-of-5 slds-text-heading_medium">{{questionset.name}}</h3>
+
+                <div class="slds-size_2-of-5" *ngIf="!qp.editMode === 'preview' && !_.isEmpty(questionset.questions)">
+                    <div class="slds-grid slds-grid_vertical-align-center">
+                        <div *ngIf="qp.timerText" class="slds-box_border slds-m-left_medium" [class.slds-theme_warning]="qp.timerWarning">
+                            <span class="slds-p-left_xx-small slds-p-right_xx-small">{{qp.timerText}}</span>
+                        </div>
+                        <div *ngIf="qp.inModal" class="slds-col slds-m-left_medium">
+                            <div class="slds-progress-bar slds-progress-bar_large slds-progress-bar_circular" style="height:1rem">
+                                <span class="slds-progress-bar__value" [style.width]="percentOfFinishedQuestions+'%'">
+                                    <span class="slds-assistive-text">Progress: {{percentOfFinishedQuestions}}%</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="questionset.textbefore" class="questionset-render-textbefore">
+                <ng-container *ngIf="qp.inModal">
+                    <div #box class="slds-m-top_medium slds-box slds-theme_shade slds-is-relative" [class.slds-p-bottom_none]="textIsCollapsed" [class.collapsed]="textIsCollapsed">
+                        <div class="questionset-render-text">
+                            <div class="html-text"><div [innerHTML]="questionset.textbefore"></div></div>
+                        </div>
+                        <div *ngIf="textIsCollapsable && textIsCollapsed" class="questionset-render-textbefore-fadeout"><div class="slds-m-bottom_medium slds-m-right_medium slds-text-align_right" style="position:absolute;bottom:0;left:0;right:0"><button class="slds-button slds-button_neutral slds-text-body_regular" (click)="toggleText()"><system-button-icon [icon]="'chevrondown'" [position]="'left'"></system-button-icon>{{language.getLabel('LBL_MORE')}}</button></div></div>
+                    </div>
+                    <div *ngIf="textIsCollapsable && !textIsCollapsed" class="slds-text-align_right" style="margin-top:-0.75rem;margin-right:0.5rem"><button class="slds-button slds-button_neutral slds-text-body_regular" (click)="toggleText()"><system-button-icon [icon]="'chevronup'" [position]="'left'"></system-button-icon>{{language.getLabel('LBL_LESS')}}</button></div>
+                </ng-container>
+                <div *ngIf="!qp.inModal" [innerHTML]="questionset.textbefore" class="slds-m-vertical_medium"></div>
+            </div>
+        </div>
+
+        <div class="questionset-render-questions slds-m-top_medium" [ngClass]="{'slds-p-right_medium':qp.inModal}">
+
+            <div *ngIf="!_.isEmpty(questionset.questions); else noQuestionsTemplate">
+
+                <p *ngIf="qp.hideFinishedQuestions && allQuestionsFinished" class="slds-text-align_center">Alle Fragen sind beantwortet – und ausgeblendet.</p>
+
+                <ng-container *ngIf="questionset.questiontype === 'ratinggroup'">
+                    <questionset-render-rating [questionsetId]="questionset.id"></questionset-render-rating>
+                </ng-container>
+
+                <ng-container *ngIf="questionset.questiontype !== 'ratinggroup'">
+
+                    <ng-container *ngFor="let question of qp.questionsArray[questionsetId];let i = index;last as isLast">
+
+                        <div [ngClass]="{'slds-m-bottom_medium': !isLast}">
+
+                            <ng-container [ngSwitch]="question.questiontype">
+
+                                <div *ngSwitchCase="'rating'">
+                                    <question-render-rating [questionId]="question.id"></question-render-rating>
+                                </div>
+
+                                <div *ngSwitchCase="'text'">
+                                    <question-render-text
+                                        [questionId]="question.id"
+                                        [previousQuestion]="i === 0 ? null:qp.questionsArray[questionsetId][i-1]"
+                                        [followingQuestion]="i+1 >= qp.questionsArray[questionsetId].length ? null:qp.questionsArray[questionsetId][i+1]"
+                                    ></question-render-text>
+                                </div>
+
+                                <div *ngSwitchCase="'ist'">
+                                    <question-render-ist [questionId]="question.id"
+                                        [previousQuestion]="i === 0 ? null:qp.questionsArray[questionsetId][i-1]"
+                                        [followingQuestion]="i+1 >= qp.questionsArray[questionsetId].length ? null:qp.questionsArray[questionsetId][i+1]"
+                                    ></question-render-ist>
+                                </div>
+
+                                <div *ngSwitchCase="'nps'">
+                                    <question-render-nps [questionId]="question.id"></question-render-nps>
+                                </div>
+
+                            </ng-container>
+                            <question-render-binary-single-multi
+                                    *ngIf="question.questiontype === 'binary' || question.questiontype === 'single' || question.questiontype === 'multi'"
+                                    [questionId]="question.id"
+                                    [previousQuestion]="i === 0 ? null:qp.questionsArray[questionsetId][i-1]"
+                                    [followingQuestion]="i+1 >= qp.questionsArray[questionsetId].length ? null:qp.questionsArray[questionsetId][i+1]"
+                            ></question-render-binary-single-multi>
+                        </div>
+
+                    </ng-container>
+
+                </ng-container>
+
+            </div>
+
+            <ng-template #noQuestionsTemplate>
+                <p><system-label label="LBL_NO_QUESTIONS_TO_DISPLAY"></system-label></p>
+            </ng-template>
+
+        </div>
+
+        <div class="questionset-render-header">
+            <div *ngIf="questionset.textafter" [innerHTML]="questionset.textafter" class="slds-m-top_medium html-text"></div>
+        </div>
+
+    </div>
+
+</ng-container>

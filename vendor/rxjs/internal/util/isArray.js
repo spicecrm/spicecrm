@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.isArray=Array.isArray||function(e){return e&&"number"==typeof e.length};

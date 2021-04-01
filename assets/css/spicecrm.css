@@ -1,0 +1,396 @@
+@import url('https://fonts.googleapis.com/css?family=Titillium+Web');
+
+@import "./imports/spiceloader.css";
+@import "./imports/spicequill.css";
+@import "./imports/spicecalendar.css";
+@import "./imports/spicemaps.css";
+@import "./imports/spicehtmltext.css";
+@import "./imports/spicecdk.css";
+@import "./imports/spicetables.css";
+@import "./imports/spicescrollbar.css";
+@import "./imports/spicetimeline.css";
+@import "./imports/spicepagebuilder.css";
+
+:root {
+    --color-white: white;
+    --color-grey-3: #f3f2f2;
+    --color-gray-4: #ecebea;
+    --color-grey-5: #dddbda;
+    --color-grey-7: #aaaaaa;
+    --color-grey-9: #706e6b;
+    --color-grey-13: #080707;
+    --brand-background-primary: #fafaf9;
+    --brand-primary: #CA1B21;
+    --brand-primary-active: #b3191e;
+    --brand-primary-transparent: rgba(155, 155, 155, .1);
+    --brand-accessible: #CA1B21;
+    --brand-accessible-active: #b3191e;
+    --brand-header-contrast-cool: #a61419;
+    --brand-text-link: #002D31;
+    --color-background-inverse: #751b1e;
+    --color-border-inverse: #751b1e;
+    --color-background-success: #4bca81;
+    --color-background-success-dark: #04844b;
+    --color-text-link-active: #222;
+    --color-progressbar_item-completed: #080707;
+    --color-background-alt-inverse: #002D31;
+    --color-border-brand: #CA1B21;
+}
+
+html {
+    font-family: 'Titillium Web', sans-serif;
+}
+
+/* hide spin buttons in number fields */
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
+    display: none;
+}
+
+/* Keeps the <input> elements of the login form unchanged (white) also when its values are autofilled by the browser. */
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px white inset;
+}
+
+/* Separator / horizontal line at the beginning of a timeline activity. */
+.spiceActivitiyTimelineHeader::before {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    left: 160px;
+    margin-top: -1px;
+    border-bottom: 1px solid rgb(216, 221, 230);
+    content: ' ';
+}
+
+/* strombo: ??? */
+.spice-fieldbody {
+    /*padding: 5px 0*/;
+    min-height: 29px;
+}
+
+/* Keep fields when in display mode in the same size as when in edit mode. */
+.spice-fieldminheight {
+    /*padding: 5px 0*/;
+    min-height: 34px;
+}
+
+/* filter panel: position it to the right side and overlay the record list. */
+object-listview-filter-panel {
+    right: 0;
+    z-index: 90;
+}
+
+/* filter panel: expand it to the full height of the record list and give it a shadow on the left side to differentiate it from the record list in the background. */
+object-listview-filter-panel .slds-panel {
+    height: 100%; /* strombo: height does nothing because overwritten by inline style */
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .40)
+}
+
+/* aggregates panel: position it to the right side and overlay the record list. */
+object-listview-aggregates-panel {
+    right: 0;
+    z-index: 90;
+}
+
+/* aggregates panel: expand it to the full height of the record list and give it a shadow on the left side to differentiate it from the record list in the background. */
+object-listview-aggregates-panel .slds-panel {
+    height: 100%;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .40)
+}
+
+/* in non-tabbed navigation menu: horizontal arrangement of text and icon. */
+global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-more li.slds-dropdown-trigger {
+    display: flex;
+}
+
+/* SLDS OVERRIDES */
+
+/* animate icon on collapsible tab */
+/* ToDo: replace by angular animation */
+.slds-section__title-action-icon {
+    transition: 0.5s;
+}
+
+/* a 1 pixel gap between tab and bold horizontal line. */
+.slds-context-bar__item:before {
+    bottom: 1px;
+}
+
+/* a red border for the invalid input fields. */
+.slds-box--border.slds-has-error, .slds-box_border.slds-has-error {
+    background-color: #fff;
+    border-color: #c23934;
+    box-shadow: #c23934 0 0 0 1px inset;
+    background-clip: padding-box;
+}
+
+/* strombo: ??? */
+.slds-context-bar__dropdown-trigger .slds-dropdown:before {
+    background-color: transparent;
+}
+
+/* background color of vertical navigation/menu items */
+/* strombo: ??? ... original slds is brand-primary-transparent, not #ddd */
+.slds-nav-vertical__item.slds-is-active:before, .slds-nav-vertical__item:hover:before {
+    background: #ddd;
+}
+
+/* capitalize first letter in buttons */
+.slds-button span {
+    display: inline-block;
+}
+.slds-button span::first-letter {
+    text-transform: capitalize;
+}
+
+/* container for the rich text editor */
+.slds-rich-text-area__content {
+    max-height: none;
+    resize: vertical;
+    overflow: auto;
+    height: 300px;
+}
+
+/* align text justified */
+/* not a slds class, but related to slds classes slds-text-align_left, slds-text-align_center or slds-text-align_right */
+.slds-text-align_justify, .slds-text-align--justify {
+    text-align: justify;
+}
+
+/* maximize element height to 100 % */
+/* not a slds class, but related to slds class slds-size_full */
+.slds-height_full {
+    height: 100%;
+}
+
+/* strombo: ??? really necessary? slds-is-absolute already exists */
+.slds-is-absolute__top {
+    position: absolute;
+    top: 0;
+}
+
+/* for illustrations */
+.slds-illustration .slds-illustration__stroke-primary {
+    stroke: #aaa;
+}
+.slds-illustration .slds-illustration__fill-primary {
+    fill: #bbb;
+}
+.slds-illustration .slds-illustration__stroke-secondary {
+    stroke: #ccc;
+}
+.slds-illustration .slds-illustration__fill-secondary {
+    fill: #eee;
+}
+
+/* override for the input icon group */
+.slds-input__icon-group_right {
+    top: .5rem;
+}
+
+/* responsive tables */
+/* reduce padding */
+@media (max-width: 48em) {
+    .slds-max-medium-table--stacked-horizontal tr > td:first-child,
+    .slds-max-medium-table_stacked-horizontal tr > td:first-child,
+    .slds-max-medium-table--stacked-horizontal td,
+    .slds-max-medium-table_stacked-horizontal td,
+    .slds-max-medium-table--stacked-horizontal tr > td:last-child
+    .slds-max-medium-table_stacked-horizontal tr > td:last-child {
+        padding: .5em;
+    }
+}
+
+/* in tabbed navigation: emphasize the active sub tab */
+.slds-sub-tabs__item.slds-active, .slds-sub-tabs__item.slds-is-open {
+    background: rgba(155, 155, 155, .1) !important;
+}
+
+/* makes the placeholder of a <input> or <select> field distinguishable from the value(s) */
+::placeholder {
+    font-style: italic;
+    opacity: 1; /* for firefox, because all placeholders in firefox have an opacity value applied to them */
+}
+
+/* spicetags */
+.spice-taglist li {
+    display: inline;
+}
+.spice-taglist {
+    margin: 0 -0.5rem -0.5rem 0;
+}
+.spice-taglist span.slds-badge {
+    display: inline-block;
+    margin: 0 0.5rem 0.5rem 0;
+}
+
+/* position an element vertically centered */
+.spice-vertically-centered {
+    display: inline-block;
+    top: 50%;
+    transform: translateY(-50%);
+    position: relative;
+}
+
+/* in tabbed navigation: make tab width suitable to the content (text and dropdown button) */
+.slds-context-bar__item_tab {
+    width: initial;
+}
+
+/* tree items: stronger emphasis and left border in contrast color (instead brand primary) */
+.slds-tree [role=treeitem][aria-selected=true] > .slds-tree__item {
+    background: var(--color-gray-4);
+    box-shadow: var(--color-border-brand) 4px 0 0 inset;
+}
+
+/* for tables: resizable columns */
+.slds-table th.slds-resizable {
+    overflow: hidden;
+    resize: horizontal;
+    min-width: 75px;
+}
+
+.spice-collapsible-tab-grow {
+    display: block;
+    height: 100%;
+}
+
+.spice-collapsible-tab-grow > div.slds-section {
+    height: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    margin: 0;
+}
+
+.spice-collapsible-tab-grow > div.slds-section > :nth-child(2) {
+    -webkit-box-flex: 1;
+    flex-grow: 1;
+    min-height: 0;
+}
+
+/* mark an element as selected (not only slds boxes) */
+.spice-box-is-selected {
+    background-color: #e6e5e5;
+    box-shadow: 0 0 1px #777;
+    border-radius: .2rem;
+}
+
+/* arrange a button group vertical */
+.spice-button-group-vertical .slds-button:first-child:not(:last-child) {
+    border-radius: 0.25rem 0.25rem 0 0;
+}
+.spice-button-group-vertical .slds-button:last-child:not(:first-child) {
+    border-radius: 0 0 0.25rem 0.25rem;
+}
+.spice-button-group-vertical .slds-button:not(:first-child):not(:last-child) {
+    border-radius: 0;
+}
+.spice-button-group-vertical .slds-button {
+    margin-bottom: -1px;
+    display: block;
+}
+.spice-button-group-vertical .slds-button:last-child {
+    margin-bottom: 0;
+}
+.spice-button-group-vertical .slds-button+.slds-button {
+    margin-left: 0;
+}
+
+/* radio button groups: white color for icons in radio buttons */
+.slds-radio_button-group .slds-radio_button [type=radio]:checked + label svg {
+    fill: var(--color-white);
+}
+
+field-generic-display .slds-button--icon,
+field-generic-display .slds-button_icon {
+    color: var(--color-grey-3);
+}
+
+/* required for replaced colors to manage design */
+.slds-button {
+    color: var(--color-grey-9);
+}
+
+.slds-button.slds-button--brand, .slds-button.slds-button_brand {
+    color: var(--color-white);
+}
+
+/* fix for scoped tabs when the second tba is selected */
+.slds-tabs--scoped__item, .slds-tabs_scoped__item{
+    margin-bottom: -1.1px;
+}
+
+/* overwrite path for welcome mat*/
+.slds-welcome-mat__info{
+    display:-webkit-box;
+    display:-ms-flexbox;
+    display:flex;
+    overflow:auto;
+    padding:1rem 3rem 7.75rem;
+    color:#00396b;
+    background-image: none;
+    background-position:bottom center;
+    background-repeat:no-repeat;
+    background-size:contain;
+    background-color:#cae6f1;
+    -webkit-box-align:center;
+    -ms-flex-align:center;
+    align-items:center;
+}
+
+.spice-display-block {
+    display: block;
+}
+
+
+.spice-drop-zone {
+    position:relative;
+    z-index:8000;
+    width: 100%;
+}
+.spice-drop-zone article:focus {
+    outline: 0;
+}
+.spice-drop-zone-label {
+    opacity:0;
+    background:#0070d2;
+    top: -20px;
+    position: absolute;
+    width: 100px;
+    height: 20px;
+    left: calc(50% - 50px);
+    color: #fff;
+    border-top-right-radius: .25rem;
+    border-top-left-radius: .25rem;
+}
+.spice-drop-zone-label .slds-media__figure {
+    margin: 0 .5rem !important;
+}
+.spice-drop-zone-actions {
+    opacity:0;
+    background:#0070d2;
+    position:absolute;
+    right:0;
+    top:0;
+}
+.spice-drop-zone.slds-is-hovered > .spice-drop-zone-label,
+.spice-drop-zone.slds-is-hovered > .spice-drop-zone-actions {
+    opacity:1;
+    z-index:8000;
+}
+.spice-drop-zone.slds-is-hovered > .spice-drop-zone-content {
+    border:1px solid #1589ee;
+}
+
+.spice-hover-display-children:hover .spice-hover-child {
+    display: block;
+}
+
+.spice-hover-display-children .spice-hover-child {
+    display: none;
+}

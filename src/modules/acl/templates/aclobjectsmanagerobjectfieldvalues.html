@@ -1,0 +1,79 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div *ngIf="fields.length > 0" class="slds-box">
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+        <thead>
+        <tr class="slds-text-title_caps">
+            <th scope="col">
+                <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate"><system-label label="LBL_OPERATOR"></system-label></div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate"><system-label label="LBL_VALUE1"></system-label></div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate"><system-label label="LBL_VALUE2"></system-label></div>
+            </th>
+            <th scope="col">
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let field of fields">
+            <td>
+                <div class="slds-truncate">{{field.name}}</div>
+            </td>
+            <td>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [value]="getFieldValue('operator', field.id)" (change)="setFieldValue('operator', field.id, 'change', $event)">
+                            <option value="">ignore</option>
+                            <option value="EQ">=</option>
+                            <option value="NE">≠</option>
+                            <option value="GT">></option>
+                            <option value="GTE">≥</option>
+                            <option value="LT"><</option>
+                            <option value="LTE">≤</option>
+                            <option value="LK">Like</option>
+                            <option value="IN">in</option>
+                            <option value="ISEMPTY">is emtpy</option>
+                            <option value="ISNEMPTY">is not emtpy</option>
+                            <option value="SW">starts with</option>
+                            <option value="SN">does not start with</option>
+                            <option value="CU">Current User Field</option>
+                        </select>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [value]="getFieldValue('value1', field.id)" (blur)="setFieldValue('value1', field.id, 'blur', $event)"/>
+                </div>
+            </td>
+            <td>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [value]="getFieldValue('value2', field.id)" (change)="setFieldValue('value2', field.id, 'change', $event)"/>
+                </div>
+            </td>
+            <td>
+                <system-utility-icon icon="clear" size="x-small" (click)="resetid(field.id)"></system-utility-icon>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="slds-p-top--small">
+    <object-record-fieldset direction="vertical" [fieldset]="fieldset"></object-record-fieldset>
+</div>

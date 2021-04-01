@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var observable_1=require("../symbol/observable");exports.subscribeToObservable=function(o){return function(e){var r=o[observable_1.observable]();if("function"!=typeof r.subscribe)throw new TypeError("Provided object does not correctly implement Symbol.observable");return r.subscribe(e)}};

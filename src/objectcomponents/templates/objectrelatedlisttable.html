@@ -1,0 +1,47 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<table *ngIf="!noAccess;else noaccess" class="slds-table slds-table--fixed-layout slds-table--header-fixed slds-max-medium-table_stacked-horizontal" [ngClass]="{'slds-table--bordered':!isSmall, 'slds-no-row-hover':nowDragging}">
+    <thead>
+        <tr class="slds-text-title--caps">
+            <th *ngIf="isSequenced" class="slds-cell-shrink" scope="col"></th>
+            <ng-container *ngIf="isSequenced">
+                <th *ngFor="let item of listfields" class="slds-resizable" scope="col">
+                    <span class="slds-th__action slds-truncate"><system-label-fieldname [module]="module" [field]="item.field" [fieldconfig]="item.fieldconfig" length="short"></system-label-fieldname></span>
+                </th>
+            </ng-container>
+            <ng-container *ngIf="!isSequenced">
+                <th *ngFor="let item of listfields" class=" slds-is-sortable slds-resizable" scope="col">
+                    <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset" (click)="setSortField(item)">
+                        <span class="slds-truncate"><system-label-fieldname [module]="module" [field]="item.field" [fieldconfig]="item.fieldconfig" length="short"></system-label-fieldname></span>
+                        <system-utility-icon *ngIf="isSortable(item)" [icon]="getSortIcon(item)"  [size]="'xx-small'"></system-utility-icon>
+                    </a>
+                </th>
+            </ng-container>
+            <th *ngIf="!hideActions"  class="slds-cell-shrink" scope="col"></th>
+        </tr>
+    </thead>
+    <ng-container *ngIf="!isSequenced">
+        <tbody>
+            <tr object-related-list-item *ngFor="let relateditem of relatedmodels.items" [module]="module" [editable]="editable" [editcomponentset]="editcomponentset" [listfields]="listfields" [listitem]="relateditem" [hideActions]="hideActions" [listitemactionset]="listitemactionset" class="slds-hint-parent"></tr>
+        </tbody>
+    </ng-container>
+    <ng-container *ngIf="isSequenced">
+        <tbody class="dragboundary" cdkDropList (cdkDropListDropped)="drop($event)">
+            <tr object-related-list-sequenced-item *ngFor="let relateditem of relatedmodels.items; let i=index; trackBy:getIdOfRow" cdkDrag cdkDragBoundary=".dragboundary" (cdkDragStarted)="dragStarted($event)" (cdkDragEnded)="dragEnded($event)" [module]="module" [listfields]="listfields" [listitem]="relateditem" class="slds-hint-parent"></tr>
+        </tbody>
+    </ng-container>
+    <tbody system-table-stencils *ngIf="isloading" [columns]="listfields.length" [select]="isSequenced" [tools]="!hideActions"></tbody>
+</table>
+<ng-template #noaccess>
+    <system-illustration-no-access></system-illustration-no-access>
+</ng-template>

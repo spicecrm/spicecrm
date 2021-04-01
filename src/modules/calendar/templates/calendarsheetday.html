@@ -1,0 +1,62 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-grid slds-grid--vertical" style="height: 100%">
+    <div class="slds-grid slds-border--bottom">
+        <div class="slds-align--absolute-center slds-m-around--none slds-p-vertical--x-small slds-text-align--center slds-height_full" [style.width.px]="calendar.sheetTimeWidth">
+            {{offset}}
+        </div>
+        <div class="slds-border--left slds-p-top--xx-small slds-grow">
+            <div class="slds-p-bottom--xx-small" [ngClass]="dayTextContainerClass" [ngStyle]="isTodayStyle">
+                <div class="slds-p-left--x-small slds-truncate" [ngClass]="dayTextClass">{{displayDate('day')}}</div>
+                <h1 class="slds-p-left--x-small slds-truncate" [ngClass]="dateTextClass">{{displayDate('date')}}</h1>
+            </div>
+            <div [style.min-height.px]="calendar.multiEventHeight" class="slds-text-align--center slds-border--top slds-p-around--xxx-small slds-text-body--small">
+                <ng-container *ngFor="let event of ownerMultiEvents; trackBy: trackByItemFn">
+                    <calendar-sheet-event [event]="event" [style.height.px]="calendar.multiEventHeight" class="spice-calendar-multi-event-day"></calendar-sheet-event>
+                </ng-container>
+                <ng-container *ngFor="let event of userMultiEvents; trackBy: trackByItemFn">
+                    <calendar-sheet-event [event]="event" [style.height.px]="calendar.multiEventHeight" class="spice-calendar-multi-event-day"></calendar-sheet-event>
+                </ng-container>
+                <ng-container *ngFor="let event of googleMultiEvents; trackBy: trackByItemFn">
+                    <calendar-sheet-google-event [event]="event" [style.height.px]="calendar.multiEventHeight" class="spice-calendar-multi-event-day"></calendar-sheet-google-event>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <div #sheetContainer class="slds-scrollable--y slds-is-relative slds-grow calendar-event-drag-boundary">
+        <div *ngFor="let sheetHour of sheetHours; let index = index; trackBy: trackByIndexFn" class="slds-grid">
+            <div [style.width.px]="calendar.sheetTimeWidth" class="slds-height_full">
+                <div class="slds-text-align--center slds-border--bottom" [style.height.px]="calendar.sheetHourHeight">{{sheetHour}}:00</div>
+            </div>
+            <div class="slds-border--left slds-border--bottom slds-grow" [style.height.px]="calendar.sheetHourHeight">
+                <div class="slds-grid slds-grid--vertical" style="height: 50%">
+                    <calendar-sheet-drop-target [hour]="sheetHour" [hourPart]="0" class="spice-calendar-drop-target"></calendar-sheet-drop-target>
+                    <calendar-sheet-drop-target [hour]="sheetHour" [hourPart]="1" class="spice-calendar-drop-target"></calendar-sheet-drop-target>
+                </div>
+                <div class="slds-border--top slds-grid slds-grid--vertical" style="height: 50%">
+                    <calendar-sheet-drop-target [hour]="sheetHour" [hourPart]="2" class="spice-calendar-drop-target"></calendar-sheet-drop-target>
+                    <calendar-sheet-drop-target [hour]="sheetHour" [hourPart]="3" class="spice-calendar-drop-target"></calendar-sheet-drop-target>
+                </div>
+            </div>
+        </div>
+        <ng-container *ngFor="let event of ownerEvents; trackBy: trackByItemFn">
+            <calendar-sheet-event [event]="event" [ngStyle]="event.style" (eventChange)="setEventsStyle()" (eventDrop)="onEventDrop($event)" class="spice-calendar-event"></calendar-sheet-event>
+        </ng-container>
+        <ng-container *ngFor="let event of userEvents; trackBy: trackByItemFn">
+            <calendar-sheet-event [event]="event" [ngStyle]="event.style" (eventChange)="setEventsStyle()" (eventDrop)="onEventDrop($event)" class="spice-calendar-event"></calendar-sheet-event>
+        </ng-container>
+        <ng-container *ngFor="let event of googleEvents; trackBy: trackByItemFn">
+            <calendar-sheet-google-event [event]="event" [ngStyle]="event.style" class="spice-calendar-event"></calendar-sheet-google-event>
+        </ng-container>
+    </div>
+</div>

@@ -1,0 +1,154 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-grid slds-grid--vertical" system-to-bottom-noscroll>
+    <div class="slds-border--bottom slds-p-around--x-small">
+    <button (click)="addDrilldown()" class="slds-button slds-button_neutral slds-m-right--small slds-p-horizontal--x-small slds-text-title--caps" style="height: 100%; line-height: 22px">
+        <system-label label="LBL_ADD_DRILLDOWN"></system-label>
+    </button>
+    </div>
+    <div class="slds-grow slds-scrollable--y">
+        <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover">
+            <thead>
+            <tr class="slds-text-title--caps slds-theme--shade">
+                <th scope="col">
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_NAME')">
+                        <system-label label="LBL_NAME"></system-label>
+                    </div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_DISPLAY_NAME')">
+                        <system-label label="LBL_DISPLAY_NAME"></system-label>
+                    </div>
+                </th>
+                <th scope="col" style="padding-left: 5px">
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_LINK_TYPE')">
+                        <system-label label="LBL_LINK_TYPE"></system-label>
+                    </div>
+                </th>
+                <th scope="col" class="slds-cell-shrink"></th>
+                <th scope="col" class="slds-cell-shrink"></th>
+            </tr>
+            </thead>
+            <tbody *ngIf="drilldowns">
+                <ng-container *ngFor="let drilldown of drilldowns; trackBy: trackByFn">
+                    <tr class="slds-border--bottom slds-drag--preview">
+                        <td>
+                            <div class="slds-truncate">
+                                {{drilldown.reportname}}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <input type="text" [(ngModel)]="drilldown.displayname" class="slds-input">
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <select class="slds-select" [(ngModel)]="drilldown.linktype">
+                                            <option value="LINK"><system-label label="LBL_LINK"></system-label></option>
+                                            <option value="POPUP"><system-label label="LBL_POPUP"></system-label></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <button (click)="deleteDrilldown(drilldown.linkid)" [title]="language.getLabel('LBL_DELETE')" class="slds-button slds-button--icon">
+                                <system-button-icon icon="delete"></system-button-icon>
+                            </button>
+                        </td>
+                        <td>
+                            <button (click)="toggleExpandMapping(drilldown)" [title]="language.getLabel('LBL_MAPPING')" class="slds-button slds-button--icon">
+                                <system-button-icon icon="rules"></system-button-icon>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="expandedId == drilldown.linkid" class="slds-theme--shade" style="box-shadow: inset -1px 1px 6px 0 #aaa">
+                        <td colspan="5" style="padding: .5rem;">
+                            <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover slds-theme--shade">
+                                <thead>
+                                    <tr class="slds-text-title--caps">
+                                        <th scope="col">
+                                            <div class="slds-truncate" [title]="language.getLabel('LBL_WHERE_FIELD')">
+                                                <system-label label="LBL_WHERE_FIELD"></system-label>
+                                            </div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate" [title]="language.getLabel('LBL_OPERATOR')">
+                                                <system-label label="LBL_OPERATOR"></system-label>
+                                            </div>
+                                        </th>
+                                        <th scope="col" style="padding-left: 5px">
+                                            <div class="slds-truncate" [title]="language.getLabel('LBL_FIELD')">
+                                                <system-label label="LBL_FIELD"></system-label>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngIf="drilldown.mappingdata?.length > 0">
+                                    <tr *ngFor="let mappingDataItem of drilldown.mappingdata">
+                                        <td>
+                                            <div class="slds-truncate">
+                                                {{mappingDataItem.wherename}}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-form-element">
+                                                <div class="slds-form-element__control">
+                                                    <div class="slds-select_container">
+                                                        <select class="slds-select" [(ngModel)]="mappingDataItem.operator">
+                                                            <option value="equals"><system-label label="LBL_EQUALS"></system-label></option>
+                                                            <option value="notequal"><system-label label="LBL_OP_NOTEQUAL"></system-label></option>
+                                                            <option value="starts"><system-label label="LBL_STARTS"></system-label></option>
+                                                            <option value="greaterequal"><system-label label="LBL_OP_GREATEREQUAL"></system-label></option>
+                                                            <option value="greater"><system-label label="LBL_OP_GREATER"></system-label></option>
+                                                            <option value="lessequal"><system-label label="LBL_OP_LESSEQUAL"></system-label></option>
+                                                            <option value="less"><system-label label="LBL_OP_LESS"></system-label></option>
+                                                            <option value="reference"><system-label label="LBL_REFERENCE"></system-label></option>
+                                                            <option value="ignore"><system-label label="LBL_OP_IGNORE"></system-label></option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-form-element">
+                                                <div class="slds-form-element__control">
+                                                    <div class="slds-select_container">
+                                                        <select class="slds-select" [(ngModel)]="mappingDataItem.mappedid">
+                                                            <option></option>
+                                                            <option *ngFor="let field of listFields; trackBy: trackByFn" [value]="field.fieldid"><system-label [label]="field.name"></system-label></option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody *ngIf="drilldown.mappingdata?.length == 0">
+                                    <tr>
+                                        <td colspan="3">&nbsp;</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+</div>

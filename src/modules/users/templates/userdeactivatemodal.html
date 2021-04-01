@@ -1,0 +1,57 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="MSG_USER_DEACTIVATE"></system-label></system-modal-header>
+    <system-modal-content margin="none">
+        <div class="slds-p-around--small">
+            <system-label label="MSG_USER_DEACTIVATE" length="long"></system-label>
+            <div  class="slds-p-top--small slds-grid slds-grid--vertical-align-center">
+                <system-checkbox [disabled]="!canReassign" class="slds-p-right--small" [(ngModel)]="reassignRecords"><system-label label="MSG_REASSIGN_RECORDS"></system-label> ({{totalrecords}})</system-checkbox>
+                <user-deactivate-select-user style="min-width: 300px;" [ngClass]="{'slds-hidden': !reassignRecords}" (userid$)="newuserid = $event"></user-deactivate-select-user>
+            </div>
+        </div>
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="slds-text-align_right" scope="col" style="width:3.25rem">
+
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" system-title="LBL_MODULE"><system-label label="LBL_MODULE"></system-label></div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" system-title="LBL_COUNT"><system-label label="LBL_COUNT"></system-label></div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="slds-hint-parent" *ngFor="let object of objects">
+                    <td>
+                        <system-checkbox [disabled]="!reassignRecords || object.count == 0" [(ngModel)]="object.reassign"></system-checkbox>
+                    </td>
+                    <td>
+                        <div class="slds-truncate"><system-label-modulename [module]="object.sysmoduleid"></system-label-modulename></div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{object.count}}</div>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody system-table-stencils columns="2" [select]="true" [tools]="false" rows="5" *ngIf="loading"></tbody>
+        </table>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button [disabled]="!canSubmit" class="slds-button slds-button--brand" (click)="deactivate()"><system-label label="LBL_DEACTIVATE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

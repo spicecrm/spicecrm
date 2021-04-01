@@ -1,0 +1,66 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div *ngIf="!isEditMode; else editContainer" class="spice-drop-zone" [class.slds-is-hovered]="spicePageBuilderService.isMouseIn == 'content'" (mouseenter)="setIsMouseIn(true)" (mouseleave)="setIsMouseIn(false)" tabindex="-1">
+    <div class="spice-drop-zone-label">
+        <div class="slds-media slds-media_center">
+            <div class="slds-media__figure">
+                <system-icon icon="text" sprite="utility" size="x-small" divClass="slds-current-color"></system-icon>
+            </div>
+            <div class="slds-media__body">
+                <h2 class="slds-truncate">
+                    <system-label label="LBL_HTML_CODE"></system-label>
+                </h2>
+            </div>
+        </div>
+    </div>
+    <article (dblclick)="edit()" class="spice-drop-zone-content">
+        <div [innerHTML]="sanitizedContent" [ngStyle]="style"></div>
+    </article>
+    <div class="spice-drop-zone-actions">
+        <div class="slds-button-group" role="group">
+            <button cdkDragHandle class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_MOVE">
+                <system-button-icon icon="move" addclasses="slds-icon"></system-button-icon>
+            </button>
+            <button (click)="edit()" class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_CLOSE">
+                <system-button-icon icon="edit" addclasses="slds-icon"></system-button-icon>
+            </button>
+            <button (click)="delete$.emit()" class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_CLOSE">
+                <system-button-icon icon="close" addclasses="slds-icon"></system-button-icon>
+            </button>
+        </div>
+    </div>
+</div>
+
+<ng-template #editContainer>
+    <div class="slds-height_full">
+        <system-section titlelabel="LBL_ELEMENT_CONTENT" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
+            <div class="slds-grid slds-size--1-of-1 slds-height_full slds-p-around--xx-small">
+                <div class="slds-form-element slds-grid slds-grid--vertical slds-size--1-of-1">
+                    <div class="slds-grid slds-grid--align-spread slds-m-bottom--xx-small">
+                    <span class="slds-form-element__label">
+                        <system-label label="LBL_HTML"></system-label>
+                    </span>
+                        <button [disabled]="!beautifyLoaded" class="slds-button slds-button--icon-border slds-button--neutral" (click)="beautify()" system-title="LBL_BEAUTIFY">
+                            <system-button-icon icon="right_align_text"></system-button-icon>
+                        </button>
+                    </div>
+                    <div class="slds-form-element__control slds-grid slds-grow">
+                        <textarea class="slds-textarea" [(ngModel)]="element.content" style="resize: none;"></textarea>
+                    </div>
+                </div>
+            </div>
+        </system-section>
+    </div>
+</ng-template>
+
+

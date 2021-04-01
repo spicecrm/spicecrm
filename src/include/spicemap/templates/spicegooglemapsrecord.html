@@ -1,0 +1,82 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div #mainContainer style="width: 100%" class="slds-grid slds-grid--vertical slds-theme--default slds-height_full">
+    <div>
+        <div class="slds-grid slds-p-bottom--x-small" [class.slds-p-around--x-small]="isFullScreenOn">
+            <system-input-radio-button-group *ngIf="showUseMapOptions" [(ngModel)]="useMapFor" [disabled]="isLoadingDirection || modelList.isLoading" [inputOptions]="useMapForOptions" class="slds-m-right--x-small"></system-input-radio-button-group>
+            <div *ngIf="useMapFor == 'search'; else directionToolsContainer" class="slds-form-element slds-grid slds-grid--vertical-align-center slds-grow">
+                <object-list-types></object-list-types>
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right slds-grow">
+                    <system-utility-icon icon="search" size="x-small" addclasses="slds-input__icon"></system-utility-icon>
+                    <input type="text" class="slds-input" [(ngModel)]="listSearchTerm" autocomplete="off" (keyup.enter)="triggerSearch()" [placeholder]="language.getModuleName(modelList.module)">
+                </div>
+                <button class="slds-button slds-button--neutral slds-button--icon-border  slds-m-left--xx-small slds-m-right--xxx-small" (click)="modelList.reLoadList()">
+                    <system-button-icon [icon]="'refresh'"></system-button-icon>
+                </button>
+                <object-listview-aggregates-button></object-listview-aggregates-button>
+            </div>
+            <ng-template #directionToolsContainer>
+                <div class="slds-grid slds-grow slds-grid--vertical-align-center">
+                    <system-input-radio-button-group [(ngModel)]="directionStartType" [disabled]="isLoadingDirection" [inputOptions]="directionStartOptions" class="slds-m-right--x-small"></system-input-radio-button-group>
+                    <div class="slds-grow">
+                        <system-googleplaces-autocomplete [disabled]="!directionStartType || directionStartType != 'address' || isLoadingDirection" (address)="defineMapRouteFromSearchAddress($event)"></system-googleplaces-autocomplete>
+                    </div>
+                </div>
+            </ng-template>
+            <button (click)="toggleFullScreen(mainContainer)" system-title="LBL_FULL_SCREEN" class="slds-button slds-button--neutral slds-button--icon-border slds-m-left--xx-small slds-m-right--xxx-small slds-col--bump-left">
+                <system-button-icon [icon]="!isFullScreenOn ? 'expand' : 'contract'"></system-button-icon>
+            </button>
+        </div>
+        <div class="slds-grid slds-theme--shade slds-p-around--xx-small slds-border--bottom slds-border--top slds-border--left slds-border--right">
+            <div *ngIf="useMapFor == 'search'; else directionInfoContainer" class="slds-grid slds-grid--vertical-align-center">
+                <object-listview-header-details></object-listview-header-details>
+                <span class="slds-m-left--x-small slds-truncate">( {{records.length}} ) <system-label label="MSG_RECORDS_FOUND_WITH_GEO_DATA"></system-label></span>
+                <a *ngIf="canLoadMore" (click)="loadMore()" class="slds-text-link slds-m-left--x-small">
+                    <system-label label="LBL_MORE"></system-label>
+                </a>
+                <div *ngIf="!!mapOptions.circle" class="slds-grid slds-grow">
+                    <div class="slds-grid slds-grid--vertical-align-center slds-grow">
+                        <div class="slds-slider slds-p-horizontal--x-small slds-grow">
+                            <input #inputRangeElement type="range" min="0" max="100" class="slds-slider__range" [(ngModel)]="mapOptions.circle.radius" (mousedown)="onRangeMouseDown(inputRangeElement)">
+                        </div>
+                        <input type="number" [(ngModel)]="mapOptions.circle.radius" (ngModelChange)="setMapOptionChanged('circleRadius')" class="slds-input" style="width: 40px; padding: .3rem; height: 32px; min-height: 32px;">
+                        <span class="slds-p-horizontal--x-small">km</span>
+                    </div>
+                </div>
+            </div>
+            <ng-template #directionInfoContainer>
+                <system-utility-icon [icon]="(mapOptions.directionTravelMode == 'DRIVING' && !!directionResult) ? 'travel_and_places' : 'info_alt'" size="x-small" class="slds-m-right--x-small"></system-utility-icon>
+                <span *ngIf="directionResult; else infoTextContainer">
+                    {{directionResult.duration?.hours}} h {{directionResult.duration?.minutes}} min ( {{directionResult.distance?.text}} )
+                </span>
+                <ng-template #infoTextContainer>
+                    <span class="slds-truncate">
+                        <system-label label="MSG_SELECT_DIRECTION_TYPE"></system-label>
+                    </span>
+                </ng-template>
+            </ng-template>
+        </div>
+    </div>
+    <div class="slds-border--left slds-border--right slds-border--bottom slds-grid slds-grid--vertical slds-grow" style="min-height: 0;" [system-overlay-loading-spinner]="isLoading || isLoadingDirection">
+        <spice-google-maps [focusedRecordId]="focusedRecordId" [options]="mapOptions" [records]="records" [routes]="routes" (radiusChange)="onRadiusChange($event)"
+                           (directionChange)="setDirectionResult($event)" [style.height]="mapHeight" style="display: block"></spice-google-maps>
+        <object-list *ngIf="useMapFor == 'search'" style="display: block; height: 250px; min-height: 250px; max-height: 500px"></object-list>
+        <div @animatepanel *ngIf="modelList.displayAggregates" class="slds-is-absolute slds-panel slds-panel--filters slds-filters__body slds-nowrap  slds-scrollable--y" style="width: 320px; height: 100%; top:0; right: 0;z-index: 99;" [system-model-provider]="{module: modelList.module}">
+            <div class="slds-filters__body slds-grid_vertical">
+                <div class="slds-m-vertical--xx-small" *ngFor="let aggregate of listAggregates">
+                    <object-listview-aggregate [aggregate]="aggregate"></object-listview-aggregate>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

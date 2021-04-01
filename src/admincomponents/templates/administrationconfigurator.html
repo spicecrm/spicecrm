@@ -1,0 +1,61 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-grid slds-grid--align-spread slds-p-around--medium">
+    <h2 class="slds-text-heading--medium "><system-label label="LBL_DICTIONARY_ITEM"></system-label>: {{componentconfig.dictionary}} ({{count}} <system-label label="LBL_RECORDS"></system-label>)</h2>
+    <button class="slds-button slds-button--neutral" (click)="addEntry()"><system-label label="LBL_ADD"></system-label></button>
+</div>
+<table class="slds-table slds-table--bordered slds-table--cell-buffer">
+    <thead>
+        <tr class="slds-text-title--caps">
+            <th *ngFor="let field of getFields()" scope="col" (click)="sort(field.name)">
+                <div class="slds-truncate slds-p-horizontal--small">
+                    {{field.name}}
+                    <ng-container *ngIf="administrationconfigurator.sorting.field == field.name">
+                        <system-utility-icon *ngIf="administrationconfigurator.sorting.direction == 'asc'" [icon]="'arrowup'" [size]="'x-small'"></system-utility-icon>
+                        <system-utility-icon *ngIf="administrationconfigurator.sorting.direction == 'dsc'" [icon]="'arrowdown'" [size]="'x-small'"></system-utility-icon>
+                    </ng-container>
+                </div>
+            </th>
+            <th scope="col" style="width:2rem;">
+                <div class="slds-button-group slds-float--right" role="group">
+                    <button class="slds-button slds-button--icon-border" (click)="toggleFilter()">
+                        <system-button-icon [icon]="'filterList'" [size]="'small'"></system-button-icon>
+                    </button>
+                </div>
+            </th>
+        </tr>
+        <tr *ngIf="displayFilters" class="slds-theme--shade">
+            <td *ngFor="let field of getFields()">
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [(ngModel)]="filters[field.name]"/>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div class="slds-button-group slds-float--right" role="group">
+                    <button class="slds-button slds-button--icon-border" (click)="clearFilter()">
+                        <system-button-icon [icon]="'clear'" [size]="'small'"></system-button-icon>
+                    </button>
+                    <button class="slds-button slds-button--icon-border" (click)="toggleFilter()">
+                        <system-button-icon [icon]="'chevronup'" [size]="'small'"></system-button-icon>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr style="vertical-align: middle" class="slds-align-top" administration-configurator-item *ngFor="let entry of getEntries(); trackBy: trackByFn" [entry]="entry" [fields]="getFields()">
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,155 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-grid slds-wrap slds-height_full">
+    <div class="slds-p-horizontal--small slds-size--1-of-4 slds-border--right slds-height_full">
+        <div class="slds-text-body--regular slds-box slds-m-top--small slds-text-color--weak" style="padding: .25rem">
+            {{ spiceImport.stepLongText }}
+        </div>
+        <div class="slds-form slds-size--1-of-1">
+            <div class="slds-form-element slds-m-vertical--medium">
+                <div class="slds-form-element__control slds-grid">
+                    <div class="slds-grow" style="min-width: 0">
+                        <system-input-file [ngModel]="spiceImport.fileData" (ngModelChange)="loadFilePreview($event)" (onRemove)="clearFile()" accept=".csv" class="slds-size--1-of-1"></system-input-file>
+                    </div>
+                    <div *ngIf="!spiceImport.fileData" class="slds-grid slds-m-around--x-small">
+                        <fieldset class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <system-input-radio-button-group [(ngModel)]="spiceImport.separator" [inputOptions]="[{label: ';', value: 'semicolon'}, {label: ',', value: 'comma'}]"></system-input-radio-button-group>
+                            </div>
+                            <legend class="slds-form-element__legend slds-form-element__label">
+                                <system-label label="LBL_SEPARATOR"></system-label>
+                            </legend>
+                        </fieldset>
+                        <fieldset class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <system-input-radio-button-group [(ngModel)]="spiceImport.enclosure" [inputOptions]="enclosureOptions"></system-input-radio-button-group>
+                            </div>
+                            <legend class="slds-form-element__legend slds-form-element__label">
+                                <system-label label="LBL_ENCLOSURE"></system-label>
+                            </legend>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="slds-form-element slds-m-vertical--medium">
+                <legend class="slds-form-element__legend slds-form-element__label">
+                    <system-label label="LBL_IMPORT_ACTION"></system-label>
+                </legend>
+                <div class="slds-form-element__control">
+                    <span class="slds-radio">
+                      <input type="radio" id="importactionnew" name="options" value="new" [(ngModel)]="importAction"/>
+                      <label class="slds-radio__label" for="importactionnew">
+                        <span class="slds-radio--faux"></span>
+                        <span class="slds-form-element__label"><system-label label="LBL_LOAD_NEW_RECORDS"></system-label></span>
+                      </label>
+                    </span>
+                    <span class="slds-radio">
+                      <input type="radio" id="importactionupdate" name="options" value="update"
+                             [(ngModel)]="importAction"/>
+                      <label class="slds-radio__label" for="importactionupdate">
+                        <span class="slds-radio--faux"></span>
+                        <span class="slds-form-element__label"><system-label label="LBL_UPDATE_EXISTING_RECORDS"></system-label></span>
+                      </label>
+                    </span>
+                </div>
+            </div>
+            <div [hidden]="!spiceImport.fileId" class="slds-form-element slds-m-vertical--medium">
+                <legend class="slds-form-element__legend slds-form-element__label">
+                    <system-label label="LBL_IMPORT_TEMPLATE"></system-label>
+                </legend>
+                <div class="slds-form-element__control">
+                    <span class="slds-radio">
+                      <input type="radio" id="importtemplatenone" value="none" name="template"
+                             [(ngModel)]="importTemplateAction"/>
+                      <label class="slds-radio__label" for="importtemplatenone">
+                        <span class="slds-radio--faux"></span>
+                        <span class="slds-form-element__label">none</span>
+                      </label>
+                    </span>
+                    <span *ngIf="spiceImport.savedImports?.length > 0" class="slds-radio">
+                      <input type="radio" id="importtemplatechoose" value="choose" name="template"
+                             [(ngModel)]="importTemplateAction"/>
+                      <label class="slds-radio__label" for="importtemplatechoose">
+                        <span class="slds-radio--faux"></span>
+                        <span class="slds-form-element__label"><system-label label="LBL_SELECT"></system-label></span>
+                      </label>
+                    </span>
+                    <span class="slds-radio">
+                      <input type="radio" id="importtemplatesave" value="new" name="template"
+                             [(ngModel)]="importTemplateAction"/>
+                      <label class="slds-radio__label" for="importtemplatesave">
+                        <span class="slds-radio--faux"></span>
+                        <span class="slds-form-element__label"><system-label label="LBL_SAVE_AS"></system-label></span>
+                      </label>
+                    </span>
+
+                </div>
+            </div>
+            <div *ngIf="importTemplateAction=='choose' && spiceImport.fileId"
+                 class="slds-form-element slds-m-vertical--medium">
+                <label class="slds-form-element__label">{{language.getLabel('LBL_SELECT_TEMPLATE', '',
+                    'short')}}</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" (change)="setSavedImport($event)">
+                            <option value=""></option>
+                            <option *ngFor="let savedImport of spiceImport.savedImports" [value]="savedImport.id">
+                                {{savedImport.name}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="importTemplateAction=='new'" class="slds-form-element slds-m-vertical--medium">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label"><system-label label="LBL_TEMPLATE_NAME"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [(ngModel)]="templateName"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div [system-overlay-loading-spinner]="isLoading" class="slds-size--3-of-4 slds-height_full">
+        <table *ngIf="spiceImport.fileHeader.length > 0"
+               class="slds-table slds-table--bordered slds-table--cell-buffer">
+            <thead>
+            <tr class="slds-text-title--caps slds-p-vertical--small">
+                <th scope="col">
+                    <div style="font-weight: 600" class="slds-truncate slds-p-vertical--xx-small">
+                        <system-label label="LBL_HEADER"></system-label>
+                    </div>
+                </th>
+                <th colspan="2" scope="col">
+                    <div style="font-weight: 600" class="slds-truncate slds-p-vertical--xx-small">
+                        <system-label label="LBL_RECORDS"></system-label>
+                        ({{spiceImport.fileRows}})
+                    </div>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let row of spiceImport.fileHeader; let columnindex = index">
+                <td scope="row">
+                    <div class="slds-truncate">{{row}}</div>
+                </td>
+                <td *ngFor="let record of spiceImport.fileData">
+                    <div class="slds-truncate">{{record[columnindex]}}</div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div style="height: 100%;">
+    <div #header class="slds-grid slds-grid--vertical-align-center slds-p-around--x-small">
+        <h2 class="slds-text-heading--small"><system-label label="LBL_MODULES"></system-label></h2>
+    </div>
+    <div class="slds-scrollable" [ngStyle]="contentStyle">
+        <div *ngIf="loading; else typesdisplay" class="slds-p-around--medium slds-align--absolute-center">
+            <system-spinner></system-spinner>
+        </div>
+        <ng-template #typesdisplay>
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                <thead>
+                <tr class="slds-text-title_caps">
+                    <th scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_MODULE"></system-label></div>
+                    </th>
+                    <th scope="col" style="width: 3rem;"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let acltype of acltypes" (click)="selectType(acltype)"
+                    [ngClass]="{'slds-theme--shade': acltype.id == activeTypeId}">
+                    <td>
+                        <div class="slds-truncate"><system-link>{{acltype.module}}</system-link></div>
+                    </td>
+                    <td style="width: 3rem;">
+                        <system-utility-icon *ngIf="acltype.usagecount > 0" icon="lock" size="x-small"
+                                             addclasses="slds-icon slds-icon-text-default"></system-utility-icon>
+                        <system-utility-icon *ngIf="acltype.usagecount == 0" icon="unlock" size="x-small"
+                                             addclasses="slds-icon slds-icon-text-light"></system-utility-icon>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </ng-template>
+    </div>
+</div>

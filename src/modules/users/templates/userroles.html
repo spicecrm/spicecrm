@@ -1,0 +1,56 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div [system-overlay-loading-spinner]="loading" system-to-bottom>
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer"
+           style="box-shadow:0px 2px 5px 0 rgba(0,0,0,.1); border-radius: .15rem">
+        <thead class="slds-table--bordered slds-text-align_center">
+            <tr class="slds-text-title--caps">
+                <th></th>
+                <th style="padding: .75rem 1rem"><system-label label="LBL_NAME"></system-label></th>
+                <th colspan="2"><system-label label="LBL_DEFAULT"></system-label></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let role of userRoles; let roleIndex = index" class="slds-hint-parent">
+                <ng-container>
+                    <td style="padding-left: 1rem; padding-right: 0; width: 1.5rem">
+                        <span class="slds-avatar slds-avatar--small slds-align--absolute-center {{role.icon}}" style="margin: 0">
+                            {{ role.label ? language.getLabel(role.label,'', 'short') : role.name.substring(0, 2) | uppercase }}
+                        </span>
+                    </td>
+                    <td style="padding: .75rem 1rem">
+                        <system-custom-icon *ngIf="role.custom" icon="custom" size="x-small" title="{{language.getLabel('LBL_CUSTOM_ROLE')}}" style="display:inline-block"></system-custom-icon>
+                        {{ language.getAppLanglabel(role.label) || role.name }}</td>
+                    <td class="slds-text-align_center" style="width: 5rem">
+                    <span class="slds-radio">
+                          <input type="radio" [name]="componentId+'-radio-default-role'" id="{{componentId}}-{{role.id}}" [disabled]="!session.authData.admin" [checked]="role.defaultrole == '1'" (change)="setDefaultRole(role.id)" />
+                          <label class="slds-radio__label" for="{{componentId}}-{{role.id}}">
+                                <span class="slds-radio_faux"></span>
+                          </label>
+                    </span>
+                    </td>
+                    <td *ngIf="session.authData.admin" style="padding-right: 1rem;width: 35px">
+                        <button [disabled]="role.defaultrole == '1'" class="slds-button slds-button--icon" (click)="deleteRole(roleIndex, role.id, (role.defaultrole == '1'))">
+                            <system-button-icon [icon]="'delete'"></system-button-icon>
+                        </button>
+                    </td>
+                </ng-container>
+            </tr>
+        </tbody>
+    </table>
+    <div *ngIf="noneUserRoles.length > 0 && session.authData.admin" class="slds-p-around--small slds-align--absolute-center">
+        <button class="slds-button slds-button--brand slds-button-space-left" (click)="addRole($event)">
+            <system-label label="LBL_ASSIGN_ROLE"></system-label> &hellip;
+        </button>
+    </div>
+</div>

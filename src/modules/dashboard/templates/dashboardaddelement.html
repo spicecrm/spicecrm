@@ -1,0 +1,109 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<system-modal size="large">
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_ADD_DASHLET"></system-label>
+    </system-modal-header>
+    <system-modal-content [grow]="true" style="overflow-y: hidden">
+        <div class="slds-grid" style="height: 80px">
+            <div class="slds-form-element slds-size--1-of-3">
+                <label class="slds-form-element__label"><system-label label="LBL_TYPE"></system-label></label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="dashletType">
+                            <option value="Generic">
+                                <system-label label="LBL_DASHLET"></system-label>
+                            </option>
+                            <option value="dashletVisualization">
+                                <system-label label="LBL_REPORT_CHART"></system-label>
+                            </option>
+                            <option value="dashletPresentation">
+                                <system-label label="LBL_REPORT_LIST"></system-label>
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element slds-size--1-of-3 slds-p-left--small">
+                <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="dashletModule">
+                            <option value="*">All</option>
+                            <option *ngFor="let module of modules" [value]="module">
+                                {{module}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element slds-size--1-of-3 slds-p-left--small">
+                <label class="slds-form-element__label"><system-label label="LBL_SEARCH"></system-label></label>
+                <div class="slds-form-element__control">
+                    <div class="slds-input-has-icon slds-input-has-icon--right slds-grow">
+                        <input type="text" class="slds-lookup__search-input slds-input" [(ngModel)]="searchKey" (keyup)="search()">
+                        <system-utility-icon *ngIf="searchKey.length == 0" icon="search" addclasses="slds-input__icon"></system-utility-icon>
+                        <button *ngIf="searchKey.length > 0" class="slds-button slds-input__icon slds-input__icon_right" (click)="searchKey = ''">
+                            <system-button-icon icon="clear"></system-button-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--row 2-->
+        <div style="height: calc(100% - 80px)">
+            <div #scrollElement class="slds-scrollable--y" style="height: 100%" (scroll)="onScroll(scrollElement)">
+                <div *ngIf="dashletType === 'Generic'" class="slds-form-element">
+                    <div class="slds-grid slds-wrap">
+                        <div *ngFor="let dashlet of dashboardDashlets; trackBy: trackByFn" class="slds-size--1-of-3 slds-p-around--xx-small ">
+                            <a href="javascript:void(0);" (click)="add(dashlet)" class="slds-box slds-box_link slds-box_x-small slds-media">
+                                <system-icon [icon]="getIcon(dashlet.icon)" [sprite]="getSprite(dashlet.icon)"
+                                             [module]="!dashlet.module ? 'Dashboards': dashlet.module" size="large" class="slds-align_absolute-center"></system-icon>
+                                <div class="slds-media__body slds-border_left slds-p-around_small">
+                                    <h2 class="slds-truncate slds-text-heading_small slds-truncate" [title]="dashlet.label">
+                                        <system-label [label]="dashlet.label"></system-label>
+                                    </h2>
+                                    <p class="slds-m-top_small slds-truncate">
+                                        <system-label [label]="dashlet.label" length="long"></system-label>
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="dashletType !== 'Generic'" class="slds-form-element slds-lookup">
+                    <div class="slds-grid slds-wrap">
+                        <div *ngFor="let kReport of kReports; trackBy: trackByFn" class="slds-size--1-of-3 slds-p-around--xx-small">
+                            <a href="javascript:void(0);" (click)="add(kReport)"
+                               class="slds-box slds-box_link slds-box_x-small slds-media">
+                                <system-icon [module]="kReport.report_module" size="large" class="slds-align_absolute-center"></system-icon>
+                                <div class="slds-media__body slds-border_left slds-p-around_small">
+                                    <h2 class="slds-truncate slds-text-heading_small slds-truncate" [title]="kReport.name">
+                                        {{kReport.name}}
+                                    </h2>
+                                    <p class="slds-m-top_small slds-truncate">
+                                        {{kReport.description}}
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <system-spinner *ngIf="isLoading"></system-spinner>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"> <system-label label="LBL_CANCEL"></system-label> </button>
+    </system-modal-footer>
+</system-modal>

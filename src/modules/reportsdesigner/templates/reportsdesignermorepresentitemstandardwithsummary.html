@@ -1,0 +1,45 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-grid slds-grid--vertical" system-to-bottom-noscroll>
+    <div class="slds-border--bottom slds-p-around--small slds-grid">
+        <div class="slds-form-element slds-grid slds-grid--vertical-align-center">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_PROCESS_COUNT"></system-label>
+            </label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="properties.processCount">
+                        <option value="Synchronous"><system-label label="LBL_SYNCHRONOUS"></system-label></option>
+                        <option value="Asynchronous"><system-label label="LBL_ASYNCHRONOUS"></system-label></option>
+                        <option value="None"><system-label label="LBL_NONE"></system-label></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-m-left--x-small">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_RECORDS_PER_PAGE"></system-label>
+            </label>
+            <div class="slds-form-element__control">
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <input type="text" [(ngModel)]="properties.listEntries" class="slds-input">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grow slds-scrollable--y">
+        <reports-designer-present-item-table [showFunction]="true"></reports-designer-present-item-table>
+    </div>
+</div>

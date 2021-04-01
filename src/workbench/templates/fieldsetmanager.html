@@ -1,0 +1,133 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<workbench-header titlelabel="LBL_FIELDSET_MANAGER"></workbench-header>
+<div class="slds-p-around--small slds-border--bottom">
+    <div class="slds-grid slds-grid--vertical-align-center slds-form--inline">
+        <div class="slds-form-element">
+            <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
+            <div class="slds-form-element__control" style="min-width:250px;">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="currentModule" (change)="reset()" [disabled]="sysModules.length == 0">
+                        <option value="*">*</option>
+                        <option *ngFor="let sysModule of sysModules" [value]="sysModule.module">{{sysModule.module}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="slds-form-element">
+            <label class="slds-form-element__label"><system-label label="LBL_FIELDSET"></system-label></label>
+            <div class="slds-form-element__control" style="min-width:250px;">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="currentFieldSet" (change)="loadCurrentFieldset()" [disabled]="getFieldSets().length == 0">
+                        <option></option>
+                        <optgroup [label]="'custom' + language.getLabel('LBL_FIELDSET')" *ngIf="getFieldSets('custom').length > 0">
+                            <option *ngFor="let sysFieldset of getFieldSets('custom')" [value]="sysFieldset.id">{{sysFieldset.name}}
+                            </option>
+                        </optgroup>
+                        <optgroup [label]="'global' + language.getLabel('LBL_FIELDSET')"  *ngIf="getFieldSets('global').length > 0">
+                            <option *ngFor="let sysFieldset of getFieldSets('global')" [value]="sysFieldset.id">{{sysFieldset.name}}
+                            </option>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="slds-form-element slds-col--bump-left">
+            <button [disabled]="!allowBarButtons" class="slds-button slds-button--brand" (click)="copy()" >
+                <span><system-label label="LBL_COPY"></system-label></span>
+            </button>
+            <button [disabled]="!allowBarButtons" type="button" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="addFieldset()"><system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon></button>
+        </div>
+    </div>
+</div>
+<div *ngIf="currentFieldSet" class="slds-theme--default">
+    <div class="slds-p-around--small slds-border--bottom slds-theme--default">
+        <div class="slds-grid slds-grid--vertical-align-end">
+            <div class="slds-form-element slds-p-right--x-small slds-size--1-of-4">
+                <label class="slds-form-element__label"><system-label label="LBL_SCOPE"></system-label></label>
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
+                    <system-custom-icon [icon]="fieldSetType" size="x-small" addclasses="slds-input__icon slds-input__icon_left"></system-custom-icon>
+                    <input type="text" disabled class="slds-input" [ngModel]="fieldSetType"/>
+                </div>
+            </div>
+            <div class="slds-form-element slds-p-right--x-small slds-size--1-of-4">
+                <label class="slds-form-element__label"><system-label label="LBL_NAME"></system-label></label>
+                <div class="slds-form-element__control">
+                    <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentFieldSetName"/>
+                </div>
+            </div>
+            <div class="slds-form-element slds-p-right--x-small slds-size--1-of-4">
+                <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
+                <div class="slds-form-element__control">
+                    <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentFieldSetPackage"/>
+                </div>
+            </div>
+            <div class="slds-form-element slds-p-right--x-small slds-size--1-of-4">
+                <label class="slds-form-element__label"><system-label label="LBL_ID"></system-label></label>
+                <div class="slds-form-element__control">
+                    <input type="text" disabled class="slds-input" [ngModel]="currentFieldSet"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid">
+        <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-top--x-small slds-border--right">
+            <div class="slds-tree_container" role="application" style="max-width: none;">
+                <ul class="slds-tree" role="tree" aria-labelledby="treeheading">
+                    <li *ngFor="let currentFieldSetItem of currentFieldSetItems" role="treeitem" [attr.aria-level]="currentFieldSetItem.level" (click)="selectItem(currentFieldSetItem, getDisplayType(currentFieldSetItem))" [ngClass]="{'slds-theme--shade' : isSelected(currentFieldSetItem.id)}">
+                        <div class="slds-tree__item slds-grid  slds-grid--vertical-align-center">
+                            <system-custom-icon *ngIf="getDisplayType(currentFieldSetItem) != ''" [icon]="getDisplayType(currentFieldSetItem)" size="x-small"></system-custom-icon>
+                            <div style="white-space:nowrap;">
+                                <a href="javascript:void(0);" role="presentation" class="slds-truncate">{{getDisplayName(currentFieldSetItem)}}</a>
+                            </div>
+                            <div class="slds-col_bump-left">
+                                <button [disabled]="!view.isEditMode() || currentFieldSetItem.type == 'field' || currentFieldSetItem.customModeGlobalField" class="slds-button slds-button--icon" title="add item"  (click)="addItem(currentFieldSetItem.item.fieldset)">
+                                    <system-button-icon [icon]="'new'"></system-button-icon>
+                                </button>
+                                <button [disabled]="!view.isEditMode() || currentFieldSetItem.type == 'field'" class="slds-button slds-button--icon" title="customize" (click)="copy(currentFieldSetItem.item.fieldset, currentFieldSetItem)">
+                                    <system-button-icon [icon]="'copy'"></system-button-icon>
+                                </button>
+                                <button [disabled]="!view.isEditMode() || currentFieldSetItem.customModeGlobalField" class="slds-button slds-button--icon || customModeGlobalField" title="unlink item" (click)="unlinkItem(currentFieldSetItem)">
+                                    <system-button-icon [icon]="'remove_link'"></system-button-icon>
+                                </button>
+
+                                <button [disabled]="!view.isEditMode() || currentFieldSetItem.index + 1 == currentFieldSetItem.count || currentFieldSetItem.customModeGlobalField" class="slds-button slds-button--icon" title="move down" (click)="moveDown(currentFieldSetItem)">
+                                    <system-button-icon [icon]="'down'"></system-button-icon>
+                                </button>
+
+                                <button [disabled]="!view.isEditMode() || currentFieldSetItem.index == 0 || currentFieldSetItem.customModeGlobalField" class="slds-button slds-button--icon" title="move up" (click)="moveUp(currentFieldSetItem)">
+                                    <system-button-icon [icon]="'up'"></system-button-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="slds-p-around--small slds-align--absolute-center slds-border--top slds-m-top--small">
+                <button [disabled]="!view.isEditMode()" class="slds-button slds-button--icon" title="add item" (click)="addItem()">
+                    <system-button-icon [icon]="'new'"></system-button-icon>
+                </button>
+            </div>
+        </div>
+        <div class="slds-size--2-of-5 slds-p-horizontal--small slds-p-vertical--x-small">
+            <fieldsetmanager-fieldset-details *ngIf="selectedItem.type == 'fieldset'" [fieldset]="selectedItem"></fieldsetmanager-fieldset-details>
+            <fieldsetmanager-field-details *ngIf="selectedItem.type == 'field'" [field]="selectedItem"></fieldsetmanager-field-details>
+        </div>
+    </div>
+    <div class="slds-text-align--right slds-p-around--small slds-border--top">
+        <button  [disabled]="!view.isEditMode()" type="button" class="slds-button slds-button--brand" (click)="saveChanges()">
+            <system-label label="LBL_SAVE"></system-label>
+        </button>
+    </div>
+</div>

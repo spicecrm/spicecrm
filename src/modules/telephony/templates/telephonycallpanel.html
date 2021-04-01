@@ -1,0 +1,78 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-size_1-of-1 slds-height_full">
+    <!-- multiple matches-->
+    <div *ngIf="!calldata.relatedid && matchedbeans.length > 1; else recordmatched" class="slds-height_full slds-scrollable--y">
+        <div *ngFor="let matchedbean of matchedbeans" [system-model-provider]="{module: matchedbean.module, id: matchedbean.id, data: matchedbean.data}" class="slds-m-around--x-small slds-box--border slds-theme--shade">
+            <div class="slds-p-around--xx-small slds-grid slds-grid--vertical-align-center">
+                <system-icon size="small" class="slds-button" [module]="matchedbean.module"></system-icon>
+                <telephony-call-panel-related-compact class="slds-grow"></telephony-call-panel-related-compact>
+                <button class="slds-button slds-button--neutral" (click)="selectMatched(matchedbean)"><system-label label="LBL_SELECT"></system-label></button>
+            </div>
+        </div>
+        <!-- todo: add logic to create new record when not matched -->
+        <!--div class="slds-m-around--small slds-align--absolute-center">
+            <button class="slds-button slds-button--neutral" (click)="noMatch()"><system-label label="LBL_NOT_LISTED"></system-label></button>
+        </div-->
+    </div>
+    <!-- found a matching record -->
+    <ng-template #recordmatched>
+        <div *ngIf="!calldata.start; else callconnected" class="slds-height_full ">
+            <!-- exactly one match-->
+            <ng-container *ngIf="calldata.relatedid">
+                <div class="slds-height_full slds-align_absolute-center">
+                    <div class="slds-text-align_center slds-align-middle">
+                        <system-icon [module]="model.module"></system-icon>
+                        <telephony-call-panel-related></telephony-call-panel-related>
+                    </div>
+                </div>
+            </ng-container>
+            <!-- no match -->
+            <ng-container *ngIf="!calldata.relatedid && matchedbeans.length == 0">
+                <div class="slds-height_full slds-align_absolute-center">
+                    <div class="slds-text-align_center slds-align-middle">
+                        <system-icon module="Calls"></system-icon>
+                        <div class="slds-text-heading_medium">{{msisdnFormatted}}</div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+        <ng-template #callconnected>
+            <div class="slds-docked-composer__lead">
+                <div class="slds-media">
+                    <system-icon [module]="model.module ? model.module : 'Calls'"></system-icon>
+                    <div class="slds-media__body">
+                        <ng-container *ngIf="model.id; else nocalldata">
+                            <telephony-call-panel-related-compact *ngIf="model.id"></telephony-call-panel-related-compact>
+                        </ng-container>
+                        <ng-template #nocalldata>
+                            <p class="slds-text-heading_medium">{{msisdnFormatted}}</p>
+                            <ul class="slds-list_horizontal slds-has-dividers_right slds-text-body_small">
+                                <li class="slds-item ">create contact</li>
+                                <li class="slds-item ">create lead</li>
+                            </ul>
+                        </ng-template>
+                    </div>
+                </div>
+                <p class="slds-col_bump-left slds-text-heading_large">
+                    <telephony-call-duration [calldata]="calldata"></telephony-call-duration>
+                </p>
+            </div>
+            <div class="slds-docked-composer__toolbar">
+                <telephony-call-panel-save-button [calldata]="calldata"></telephony-call-panel-save-button>
+            </div>
+            <textarea [disabled]="calldata.call" style="height: 270px" class="slds-docked-composer__input slds-input_bare slds-text-longform slds-grow slds-size--1-of-1" [(ngModel)]="calldata.note" [placeholder]="language.getLabel('LBL_CALL_NOTES')"></textarea>
+        </ng-template>
+    </ng-template>
+</div>
+

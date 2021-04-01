@@ -1,0 +1,61 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_SEARCH_TERRITORY"></system-label></system-modal-header>
+    <system-modal-content margin="none" [grow]="true">
+        <table class="slds-table slds-table_bordered slds-theme--default">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="" scope="col">
+                        <div class="slds-truncate" [title]="language.getLabel('LBL_SPICEACLTERRITORY')"><system-label label="LBL_SPICEACLTERRITORY"></system-label></div>
+                    </th>
+                    <th *ngFor="let moduleElement of moduleElements" scope="col">
+                        <div class="slds-truncate" [title]="language.getLabel(moduleElement.name)"><system-label [label]="moduleElement.name"></system-label></div>
+                    </th>
+                </tr>
+                <tr class="slds-line-height_reset">
+                    <th class="" scope="col">
+                        <div class="slds-form-element__control">
+                            <input type="text" class="slds-input" [(ngModel)]="searchTerm" />
+                        </div>
+                    </th>
+                    <th *ngFor="let moduleElement of moduleElements" scope="col">
+                        <!--div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" id="select-01">
+                                    <option value=""><system-label label="LBL_SELECT_FILTER"></system-label></option>
+                                    <option *ngFor="let moduleElementsValue of moduleElementsValues[moduleElement.id]" [value]="moduleElementsValue.elementvalue">{{moduleElementsValue.elementdescription}}</option>
+                                </select>
+                            </div>
+                        </div-->
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="slds-hint-parent" *ngFor="let searchterritory of searchterritories | aclterritoriesnamepipe: searchTerm">
+                    <td [attr.data-label]="language.getLabel('LBL_SPICEACLTERRITORY')" (click)="selectTerritory(searchterritory)">
+                        <div class="slds-truncate">
+                            <a href="javascript:void(0);" class="slds-text-link_reset">{{searchterritory.name}}</a>
+                        </div>
+                    </td>
+                    <td *ngFor="let moduleElement of moduleElements" [attr.data-label]="language.getLabel(moduleElement.name)">
+                        <div class="slds-truncate">{{getElementValue(searchterritory, moduleElement.id)}}</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+    </system-modal-footer>
+</system-modal>

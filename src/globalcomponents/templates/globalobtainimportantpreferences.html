@@ -1,0 +1,95 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<system-modal>
+    <system-modal-header hiddenCloseButton="true">
+        {{lang.getLabel('LBL_IMPORTANT_USER_SETTINGS')}}
+    </system-modal-header>
+    <system-modal-content>
+        <div *ngIf="namesOfMissingPrefs.length" class="slds-section slds-is-open">
+            <h3 class="slds-section__title slds-theme_shade">
+                <span class="slds-truncate slds-p-horizontal_small" title="Section Title">{{lang.getLabel('LBL_SOME_SETTINGS_ARE_MISSING')}} &hellip;</span>
+            </h3>
+            <div class="slds-section__content">
+                <p class="slds-p-horizontal--medium slds-p-vertical--x-small">{{lang.getLabel('MSG_NOT_CONFIGURED_USER_SETTINGS')}}</p>
+                <div class="slds-grid slds-p-horizontal--x-small">
+                    <div *ngIf="isPrefMissing('timezone')" class="slds-form-element slds-p-horizontal--x-small slds-p-bottom--x-small slds-size--1-of-3">
+                        <label class="slds-form-element__label" for="{{componentId}}-timezone">{{ lang.getLabel('LBL_TIMEZONE') }}</label>
+                        <system-input-timezone [(ngModel)]="preferences.timezone"></system-input-timezone>
+                    </div>
+                    <div *ngIf="isPrefMissing('datef')" class="slds-form-element slds-p-horizontal--x-small slds-p-bottom--x-small slds-size--1-of-3">
+                        <label class="slds-form-element__label" for="{{componentId}}-datef">{{ lang.getLabel('LBL_DATE_FORMAT') }}</label>
+                        <div class="slds-select_container">
+                            <select id="{{componentId}}-datef" class="slds-select" [(ngModel)]="preferences.datef">
+                                <option *ngFor="let item of dateFormatList" [value]="item.value">{{item.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div *ngIf="isPrefMissing('timef')" class="slds-form-element slds-p-horizontal--x-small slds-p-bottom--x-small slds-size--1-of-3">
+                        <label class="slds-form-element__label" for="{{componentId}}-timef">{{ lang.getLabel('LBL_TIME_FORMAT') }}</label>
+                        <div class="slds-select_container">
+                            <select id="{{componentId}}-timef" class="slds-select" [(ngModel)]="preferences.timef">
+                                <option *ngFor="let item of timeFormatList" [value]="item.value">{{item.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="timeshift" class="slds-section slds-is-open">
+            <h3 class="slds-section__title slds-theme_shade">
+                <span class="slds-truncate slds-p-horizontal_small" title="Section Title">{{lang.getLabel('LBL_TIME_SHIFT')}}</span>
+            </h3>
+            <div class="slds-section__content">
+                <p class="slds-p-horizontal--medium slds-p-vertical--x-small slds-m-bottom--x-small">{{lang.getLabelFormatted('MSG_TIME_SHIFT', [timeshift])}}</p>
+                <div class="slds-grid slds-p-horizontal--medium slds-grid--vertical-align-center">
+                    <span class="slds-radio">
+                      <input type="radio" id="{{componentId}}-timeshift-radio-2" checked="true" name="timeshift" [(ngModel)]="timeshiftAction" value="takeSelected"/>
+                      <label class="slds-radio__label" for="{{componentId}}-timeshift-radio-2">
+                        <span class="slds-radio_faux"></span>
+                      </label>
+                    </span>
+                    <div class="slds-form-element">
+                        <div class="slds-select_container">
+                            <select class="slds-select" name="timezone" [(ngModel)]="selectedTimezone" (change)="this.timeshiftAction = 'takeSelected'">
+                                <option *ngFor="let key of timezoneKeys" value="{{key}}" >{{timezones[key]}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <span class="slds-radio  slds-m-left--medium">
+                      <input type="radio" id="{{componentId}}-timeshift-radio-1" name="timeshift" [(ngModel)]="timeshiftAction" value="takeGuessed"/>
+                      <label class="slds-radio__label" for="{{componentId}}-timeshift-radio-1">
+                        <span class="slds-radio_faux"></span>
+                        <span class="slds-form-element__label">{{guessedTimezone}} (GMT{{guessedTimezoneGmtDiff}})</span>
+                      </label>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--align-spread slds-grid--align-center slds-grid--align-end">
+            <div *ngIf="namesOfMissingPrefs.length" class="slds-form-element slds-p-horizontal--medium slds-p-vertical--x-small slds-col--bump-right">
+                <div class="slds-form-element__control">
+                    <div class="slds-checkbox">
+                        <input type="checkbox" id="ask-userprefs-navigate" [(ngModel)]="navigateToUserPrefs" />
+                        <label class="slds-checkbox__label" for="ask-userprefs-navigate">
+                            <span class="slds-checkbox_faux"></span>
+                            <span class="slds-form-element__label">{{lang.getLabel('MSG_AFTER_SAVING_NAVIGATE_USERPREFS')}}</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <button class="slds-button slds-button--brand" (click)="save()" [disabled]="!canSave()">{{lang.getLabel('LBL_OK')}}</button>
+        </div>
+    </system-modal-footer>
+</system-modal>

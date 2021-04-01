@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var ArgumentOutOfRangeErrorImpl=function(){function r(){return Error.call(this),this.message="argument out of range",this.name="ArgumentOutOfRangeError",this}return r.prototype=Object.create(Error.prototype),r}();exports.ArgumentOutOfRangeError=ArgumentOutOfRangeErrorImpl;

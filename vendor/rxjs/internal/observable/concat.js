@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var of_1=require("./of"),concatAll_1=require("../operators/concatAll");function concat(){for(var o=[],c=0;c<arguments.length;c++)o[c]=arguments[c];return concatAll_1.concatAll()(of_1.of.apply(void 0,o))}exports.concat=concat;

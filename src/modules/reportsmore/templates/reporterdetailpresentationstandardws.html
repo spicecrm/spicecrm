@@ -1,0 +1,85 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-height_full slds-grid slds-grid--vertical">
+    <div class="slds-scrollable--y slds-grow slds-grid slds-grid--vertical" style="min-height: 0" [system-overlay-loading-spinner]="isLoading">
+        <table class="slds-table slds-table_bordered slds-table--fixed-layout slds-table--header-fixed spice-table_footer-fixed">
+            <thead>
+                <tr class="slds-text-title--caps">
+                    <th *ngFor="let field of displayFields; trackBy: trackByFn" [ngClass]="fieldsDisplayClasses[field.fieldid]" scope="col" class="slds-resizable" [style.width.%]="fieldsData[field.fieldid].width"  (system-resize)="onresize()" [resizeid]="field.fieldid">
+                        <a *ngIf="!!field.sort && field.sort == 'sortable'; else notsortable" href="javascript:void(0);" class="slds-th__action slds-text-link--reset slds-grid" (click)="toggleSort(field)" [ngClass]="fieldsDisplayClasses[field.fieldid]">
+                            <div class="slds-truncate slds-p-vertical--xx-small">
+                                <system-label [label]="field.name"></system-label>
+                            </div>
+                            <system-utility-icon *ngIf="!!sortData.sortDirection" icon="arrowdown" [style.transform]="sortData.sortDirection == 'desc' ? 'rotate(180deg)' : 'none'" size="x-small"></system-utility-icon>
+                        </a>
+                        <ng-template #notsortable>
+                            <div class="slds-th__action slds-grid">
+                                <div class="slds-truncate">
+                                    <system-label [label]="field.name"></system-label>
+                                </div>
+                                <system-utility-icon *ngIf="!!field.sort && field.sort != '-'" icon="arrowdown" [style.transform]="field.sort == 'desc' ? 'rotate(180deg)' : 'none'" size="x-small"></system-utility-icon>
+                            </div>
+                        </ng-template>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngIf="presData?.records?.length > 0">
+                    <tr *ngFor="let record of presData.records; trackBy: trackByFn" style="vertical-align: top;">
+                        <td scope="row" *ngFor="let field of displayFields; trackBy: trackByFn" >
+                            <reporter-field-container [field]="field" [record]="record"></reporter-field-container>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+            <tfoot *ngIf="presData.recordtotal">
+            <tr class="slds-theme--info">
+                <td scope="row" *ngFor="let field of displayFields; trackBy: trackByFn" class="slds-text-title_bold slds-theme--info">
+                    <reporter-field-container [field]="field" [record]="presData.recordtotal"></reporter-field-container>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+        <div *ngIf="!isLoading && presData.records?.length == 0" class="slds-p-around--medium slds-align--absolute-center slds-grow" style="min-height: 0">
+            <h2 class="slds-text-heading--small"><system-label label="LBL_NO_ENTRIES"></system-label></h2>
+        </div>
+    </div>
+    <div>
+        <div *ngIf="showFooter"
+             class="slds-p-vertical--x-small slds-grid slds-grid_vertical-align-center slds-grid_align-spread">
+            <div class="slds-p-horizontal--medium">
+                {{displayRecords}} of {{presData.count}}
+            </div>
+            <div class="slds-p-horizontal--medium">
+                <button class="slds-button slds-button_icon" (click)="firstPage()" [disabled]="prevDisabled">
+                    <system-custom-icon icon="chevrondoubleleft" size="x-small"></system-custom-icon>
+                </button>
+                <button class="slds-button slds-button_icon" (click)="prevPage()" [disabled]="prevDisabled">
+                    <system-button-icon [icon]="'chevronleft'"></system-button-icon>
+                </button>
+                <button class="slds-button slds-button_icon" (click)="nextPage()" [disabled]="nextDisabled">
+                    <system-button-icon [icon]="'chevronright'"></system-button-icon>
+                </button>
+                <button class="slds-button slds-button_icon" (click)="lastPage()" [disabled]="nextDisabled">
+                    <system-custom-icon icon="chevrondoubleright" size="x-small"></system-custom-icon>
+                </button>
+                <button class="slds-button slds-button_icon" (click)="selectFields()" system-title="LBL_CHOOSE_FIELDS">
+                    <system-button-icon icon="settings" ></system-button-icon>
+                </button>
+                <button class="slds-button slds-button_icon" *ngIf="canSave" (click)="saveLayout()" system-title="LBL_SAVE_LAYOUT">
+                    <system-button-icon icon="save" ></system-button-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+
+/* sticky headers */
+.slds-table_header-fixed thead th,
+.slds-table--header-fixed thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    border-bottom: 1px solid var(--color-grey-5);
+}
+
+.slds-table--header-fixed tbody tr:first-child td,
+.slds-table--header-fixed tbody tr:first-child th,
+.slds-table_header-fixed tbody tr:first-child td,
+.slds-table_header-fixed tbody tr:first-child th
+{
+    border: 0;
+}
+
+/* sticky headers */
+.slds-table--header-fixed tfoot,
+.slds-table--header-fixed tfoot td,
+.slds-table_header-fixed tfoot,
+.slds-table_header-fixed tfoot td {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    border-top: 1px solid var(--color-grey-5);
+}

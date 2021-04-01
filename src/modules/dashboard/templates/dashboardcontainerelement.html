@@ -1,0 +1,30 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div [ngStyle]="getBoxStyle()" class="slds-box--border slds-theme--default spice-scrollbar-thin" [ngClass]="containerClass" (mousedown)="onMousedown('content', $event)">
+    <div style="width: 100%; height: 100%" [style.overflow]="view.isEditMode() ? 'hidden': 'initial'">
+        <div *ngIf="isAuthorized" #containerelement></div>
+        <div *ngIf="!isAuthorized" class="slds-align_absolute-center" style="height: 100%">
+            <system-illustration-no-access></system-illustration-no-access>
+        </div>
+    </div>
+    <div *ngIf="view.isEditMode()" style="width: 100%; height: 100%; position: absolute;top: 0; left: 0;"></div>
+    <ng-container *ngIf="isEditing()">
+        <div *ngIf="isEditing()" class="slds-is-absolute slds-m-around--x-small slds-align_absolute-center" style="top:0;right:0">
+            <system-utility-icon style="cursor:pointer" [icon]="'close'" [size]="'xx-small'" (click)="dashboardlayout.deleteDashlet(item.id)"></system-utility-icon>
+        </div>
+        <div [ngStyle]="getBoundingBoxStyle('top')" (mousedown)="onMousedown('top', $event)"></div>
+        <div [ngStyle]="getBoundingBoxStyle('right')" (mousedown)="onMousedown('right', $event)"></div>
+        <div [ngStyle]="getBoundingBoxStyle('bottom')" (mousedown)="onMousedown('bottom', $event)"></div>
+        <div [ngStyle]="getBoundingBoxStyle('left')" (mousedown)="onMousedown('left', $event)"></div>
+    </ng-container>
+</div>

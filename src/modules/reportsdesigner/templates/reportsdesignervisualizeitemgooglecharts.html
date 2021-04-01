@@ -1,0 +1,88 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-p-horizontal--xx-small slds-grid slds-grid--vertical" system-to-bottom-noscroll>
+    <reports-designer-visualize-item-chart-type-panel [properties]="properties.googlecharts" [typeOptions]="typeOptions" [dimensionsOptions]="dimensionsOptions"></reports-designer-visualize-item-chart-type-panel>
+    <div class="slds-grow" style="min-height: 0">
+        <reports-designer-visualize-item-chart-data-panel [properties]="properties.googlecharts" style="display: block; height: 50%"></reports-designer-visualize-item-chart-data-panel>
+        <div class="slds-p-top--x-small" style="height: 50%">
+            <system-collapsable-tab [collapsible]="false" [title]="'LBL_CHART_OPTIONS'" class="spice-collapsible-tab-grow">
+                <div class="slds-p-around--x-small slds-height_full">
+                    <div class="slds-grid">
+                        <div class="slds-size--1-of-2 slds-form-element slds-grid slds-grid--vertical-align-center slds-p-horizontal--x-small slds-size--1-of-1">
+                            <label class="slds-form-element__label">
+                                <system-label label="LBL_TITLE"></system-label>
+                            </label>
+                            <div class="slds-form-element__control slds-grow">
+                                <input type="text" size="5" [(ngModel)]="properties.googlecharts.title" class="slds-input">
+                            </div>
+                        </div>
+                        <div class="slds-size--1-of-2 slds-form-element slds-grid slds-grid--vertical-align-center slds-p-horizontal--x-small slds-size--1-of-1">
+                            <label class="slds-form-element__label">
+                                <system-label label="LBL_CONTEXT"></system-label>
+                            </label>
+                            <div class="slds-form-element__control slds-grow">
+                                <div class="slds-select_container">
+                                    <select class="slds-select" [(ngModel)]="properties.googlecharts.context">
+                                        <option></option>
+                                        <option *ngFor="let contextOption of contextOptions" [value]="contextOption">
+                                            {{contextOption}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-size--1-of-1 slds-p-top--x-small slds-m-top--x-small slds-has-divider--top slds-has-divider--bottom slds-grid slds-wrap">
+                        <system-checkbox [ngModel]="properties.googlecharts.options.legend == 'on'" (ngModelChange)="setPropertiesOption('legend', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_DISPLAY_LEGEND"></system-label>
+                        </system-checkbox>
+                        <system-checkbox [ngModel]="properties.googlecharts.options.emptyvalues == 'on'" (ngModelChange)="setPropertiesOption('emptyvalues', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_SHOW_EMPTY_VALUES"></system-label>
+                        </system-checkbox>
+                        <system-checkbox [ngModel]="properties.googlecharts.options.novlabels == 'on'" (ngModelChange)="setPropertiesOption('novlabels', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_HIDE_V_AXIS_LABELS"></system-label>
+                        </system-checkbox>
+                        <system-checkbox [ngModel]="properties.googlecharts.options.nohlabels == 'on'" (ngModelChange)="setPropertiesOption('nohlabels', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_HIDE_H_AXIS_LABELS"></system-label>
+                        </system-checkbox>
+                        <system-checkbox [ngModel]="properties.googlecharts.options.logv == 'on'" (ngModelChange)="setPropertiesOption('logv', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_LOGARITHMIC_V_SCALE"></system-label>
+                        </system-checkbox>
+                        <system-checkbox [ngModel]="properties.googlecharts.options.logh == 'on'" (ngModelChange)="setPropertiesOption('logh', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_LOGARITHMIC_H_SCALE"></system-label>
+                        </system-checkbox>
+                        <system-checkbox [ngModel]="properties.googlecharts.options.stacked == 'on'" (ngModelChange)="setPropertiesOption('stacked', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_STACKED_SERIES"></system-label>
+                        </system-checkbox>
+                        <system-checkbox [ngModel]="properties.googlecharts.options.is3D == 'on'" (ngModelChange)="setPropertiesOption('is3D', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            3 <system-label label="LBL_DIMENSIONAL"></system-label>
+                        </system-checkbox>
+                        <system-checkbox [ngModel]="properties.googlecharts.options.reverse == 'on'" (ngModelChange)="setPropertiesOption('reverse', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_REVERSE_SERIES"></system-label>
+                        </system-checkbox>
+                        <system-checkbox [ngModel]="properties.googlecharts.options.curvetypefunction == 'on'" (ngModelChange)="setPropertiesOption('curvetypefunction', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_SMOOTHED_LINE"></system-label>
+                        </system-checkbox>
+                        <!--suppress JSConstantReassignment -->
+                        <system-checkbox [ngModel]="properties.googlecharts.options.points == 'on'" (ngModelChange)="setPropertiesOption('points', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_SHOW_POINTS"></system-label>
+                        </system-checkbox>
+                        <system-checkbox [ngModel]="properties.googlecharts.options.material == 'on'" (ngModelChange)="setPropertiesOption('material', $event)" class="slds-size--1-of-4 slds-p-horizontal--x-small">
+                            <system-label label="LBL_MATERIAL_DESIGN"></system-label>
+                        </system-checkbox>
+                    </div>
+                </div>
+            </system-collapsable-tab>
+        </div>
+    </div>
+</div>

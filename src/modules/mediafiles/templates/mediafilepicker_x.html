@@ -1,0 +1,116 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<system-modal size="large">
+
+    <system-modal-header (close)="cancel()"><system-label label="LBL_MEDIAFILE_PICKER"></system-label></system-modal-header>
+
+    <system-modal-content margin="none" style="display:block" style="height:100%">
+
+        <div class="slds-grid slds-grid--align-spread slds-border--bottom slds-p-around--medium slds-border--bottom">
+
+            <div class="slds-form-element">
+                <label class="slds-form-element__label" for="select-mediacategory"><system-label label="LBL_CATEGORY"></system-label></label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" id="select-mediacategory" (change)="onChangeCategory($event)">
+                            <option *ngIf="dropdownUnused" value="" style="font-style: italic" selected><system-label label="LBL_MAKE_SELECTION"></system-label> …</option>
+                            <option value="*" style="font-style: italic"><system-label label="LBL_ALL_FILES"></system-label></option>
+                            <option value="-" style="font-style: italic"><system-label label="LBL_FILES_WITHOUT_CATEGORIES"></system-label></option>
+                            <option *ngFor="let category of mediafiles.categoriesSorted" value="{{category.id}}">{{category.fullName}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!--div class="slds-size--1-of-4 slds-form-element">
+                <label class="slds-form-element__label" for="{{compId}}-filter-tags"><system-label label="LBL_TAGS"></system-label></label>
+                <div class="slds-form-element__control">
+                    <input type="text" id="{{compId}}-filter-tags" class="slds-input" [(ngModel)]="filterTags"/>
+                </div>
+            </div-->
+
+            <fieldset class="slds-form-element">
+                <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_FILE_FORMATS"></system-label></legend>
+                <div class="slds-form-element__control">
+                    <div class="slds-checkbox_button-group">
+                        <span *ngFor="let format of fileformatList" class="slds-button slds-checkbox_button">
+                            <input type="checkbox" [id]="compId+'-fmt-'+format.format" [(ngModel)]="format.checked" />
+                            <label class="slds-checkbox_button__label" [for]="compId+'-fmt-'+format.format">
+                                <span class="slds-checkbox_faux">{{format.name}}</span>
+                            </label>
+                        </span>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="slds-grid">
+
+                <div class="slds-form-element slds-m-right--x-small">
+                    <label class="slds-form-element__label" [for]="compId+'order-by'"><system-label label="LBL_ORDER_BY"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [id]="compId+'order-by'" [(ngModel)]="sortBy">
+                                <option value="name"><system-label label="LBL_NAME"></system-label></option>
+                                <option value="filesize"><system-label label="LBL_FILESIZE"></system-label></option>
+                                <option value="pixelsize"><system-label label="LBL_PIXELSIZE"></system-label></option>
+                                <option value="date_entered"><system-label label="LBL_DATE_ENTERED"></system-label></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <fieldset class="slds-form-element">
+                    <legend class="slds-form-element__label"><system-label label="LBL_DIRECTION"></system-label></legend>
+                    <div class="slds-form-element__control">
+                        <div class="slds-radio_button-group">
+                        <span class="slds-button slds-radio_button">
+                            <input type="radio" name="radio" [id]="compId+'-dir-a'" [name]="compId+'-dir'" value="a" [(ngModel)]="sortDirection" />
+                            <label class="slds-radio_button__label" [for]="compId+'-dir-a'">
+                                <span class="slds-radio_faux"><system-button-icon icon="arrowdown"></system-button-icon></span>
+                            </label>
+                        </span>
+                            <span class="slds-button slds-radio_button">
+                            <input type="radio" name="radio" [id]="compId+'-dir-d'" [name]="compId+'-dir'" value="d" [(ngModel)]="sortDirection"/>
+                            <label class="slds-radio_button__label" [for]="compId+'-dir-d'">
+                                <span class="slds-radio_faux"><system-button-icon icon="arrowup"></system-button-icon></span>
+                            </label>
+                        </span>
+                        </div>
+                    </div>
+                </fieldset>
+
+            </div>
+
+        </div>
+
+        <system-spinner *ngIf="pickerIsLoading"></system-spinner>
+
+        <ul *ngIf="!pickerIsLoading" class="media-file-picker">
+            <ng-container *ngFor="let file of files; let i=index">
+                <li *ngIf="(( file.mediacategory_id == '' && selectedCategoryID === '-' ) || selectedCategoryID === '*' || ( file.mediacategory_id && selectedCategory && mediafiles.fileIsInCategory( file.mediacategory_id, selectedCategory ))) && fileformats[file.filetype] && fileformats[file.filetype].checked" class="slds-m-right--small slds-m-bottom--small">
+                    <a class="slds-theme_shade" href="javascript:void(0);" (click)="pick(i)">
+                        <img [src]="sanitizer.bypassSecurityTrustResourceUrl( 'data:image/jpg;base64,'+file.thumbnail )" style="max-width:150px;max-height:150px">
+                        <span class="fileinfos"><span class="name slds-truncate">{{file.name}}</span>{{file.filetype.toUpperCase()}}, {{file.filesize_display}} KB<br>{{file.date_entered_display}}</span>
+                    </a>
+                </li>
+            </ng-container>
+        </ul>
+
+    </system-modal-content>
+
+    <system-modal-footer class="slds-modal__footer_directional">
+        <button class="slds-button slds-button--brand" (click)="changeToUploadDialog()"><system-label label="LBL_UPLOAD_NEW_FILE"></system-label> …</button>
+        <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CLOSE"></system-label></button>
+    </system-modal-footer>
+
+</system-modal>

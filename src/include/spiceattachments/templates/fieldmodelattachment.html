@@ -1,0 +1,58 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [title]="value" [fieldid]="fieldid">
+    <div class="slds-grid slds-grid--vertical-align-center">
+        <system-file-icon *ngIf="value" [filemimetype]="model.getField('file_mime_type')" [filename]="value" divClass="slds-p-right--xx-small" size="x-small"></system-file-icon>
+        <div class="slds-truncate slds-grow"><a href="javascript:void(0);" (click)="previewFile($event)">{{value}}</a></div>
+    </div>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-vertical--xxx-small" [ngClass]="getFieldClass()">
+    <div *ngIf="value" class="slds-pill_container slds-size--1-of-1 slds-m-vertical--xxx-small">
+        <div class="slds-pill slds-pill_link slds-size--1-of-1">
+            <span class="slds-pill__icon_container">
+                <span class="slds-icon_container slds-icon-standard-account" title="Account">
+                    <system-icon [icon]="helper.determineFileIcon(mime_type)" divClass="" sprite="doctype"  size="x-small"></system-icon>
+                </span>
+            </span>
+            <a href="javascript:void(0);" class="slds-pill__action">
+                <span class="slds-pill__label">{{value}}</span>
+            </a>
+            <button class="slds-button slds-button_icon slds-button_icon slds-pill__remove" title="Remove" (click)="removeFile()">
+                <system-button-icon icon="close"></system-button-icon>
+            </button>
+        </div>
+    </div>
+    <!-- the progressbar if we are uploading-->
+    <div *ngIf="uploading" class="slds-p-around--x-small slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-has-flexi-truncate">
+        <div class="slds-progress-bar">
+            <span class="slds-progress-bar__value" [ngStyle]="progressbarstyle"></span>
+        </div>
+        <div class="slds-text-align--right" style="width: 50px;">
+            {{file.uploadprogress}} %
+        </div>
+    </div>
+    <!-- if we do not have a file and there is no upload in the progress -->
+    <div *ngIf="!value && !uploading" class="slds-file-selector slds-file-selector_files">
+        <div class="slds-file-selector__dropzone" (system-drop-file)="onDrop($event)">
+            <input #fileupload type="file" (click)="fileupload.value = null" class="slds-file-selector__input slds-assistive-text" [id]="fieldid"
+                   (change)="uploadFile()">
+            <label class="slds-file-selector__body" [attr.for]="fieldid">
+            <span class="slds-file-selector__button slds-button slds-button_neutral">
+            <system-button-icon [icon]="'upload'"></system-button-icon><system-label label="LBL_UPLOAD_FILES"></system-label></span>
+                <span class="slds-file-selector__text slds-medium-show"><system-label label="LBL_OR"></system-label> <system-label label="LBL_DROP_FILES"></system-label></span>
+            </label>
+        </div>
+    </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

@@ -1,0 +1,66 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-grid slds-height_full">
+    <div [system-overlay-loading-spinner]="isLoading" class="slds-grid slds-grid--vertical slds-height_full slds-size--1-of-2 slds-border--right">
+        <spice-google-maps [options]="mapOptions" [records]="records" [focusedRecordId]="focusedRecordId" (radiusChange)="onRadiusChange($event)" (centerChange)="onCenterChange($event)" style="display: block" class="slds-grow"></spice-google-maps>
+        <div class="slds-grid slds-grid--vertical-align-center slds-theme--shade slds-p-around--xx-small slds-border--bottom slds-border--top slds-border--left slds-border--right">
+            <span class="slds-truncate slds-grow">( {{records.length}} ) <system-label label="MSG_RECORDS_FOUND_WITH_GEO_DATA"></system-label></span>
+            <a *ngIf="canLoadMore" (click)="loadMore()" class="slds-text-link slds-m-left--x-small">
+                <system-label label="LBL_MORE"></system-label>
+            </a>
+            <button (click)="toggleSearchAround()" [class.slds-button--brand]="searchAroundActive" system-title="LBL_SEARCH_AROUND" class="slds-button slds-button--icon-border slds-m-left--x-small" style="height: 32px;padding: 0;width: 32px;">
+                <system-button-icon icon="choice" size="medium"></system-button-icon>
+            </button>
+            <ng-container *ngIf="searchAroundActive">
+                <div *ngIf="editingRadius && !!mapOptions.circle" class="slds-grid slds-grow">
+                    <div class="slds-grid slds-grid--vertical-align-center slds-grow">
+                        <div class="slds-slider slds-p-horizontal--x-small slds-grow">
+                            <input type="range" min="0" max="100" class="slds-slider__range" [(ngModel)]="mapOptions.circle.radius" (ngModelChange)="setMapOptionChanged('circleRadius')">
+                        </div>
+                        <input type="number" [(ngModel)]="mapOptions.circle.radius" (ngModelChange)="setMapOptionChanged('circleRadius')" class="slds-input" style="width: 40px; padding: .3rem; height: 32px; min-height: 32px;">
+                        <span class="slds-p-horizontal--x-small">km</span>
+                    </div>
+                    <div class="slds-button-group slds-m-left--xx-small">
+                        <button (click)="cancelEditingRadius()" system-title="LBL_CANCEL" class="slds-button slds-button--icon-border-filled" style="height: 32px;padding: 0;width: 32px;">
+                            <system-button-icon icon="close" size="medium"></system-button-icon>
+                        </button>
+                        <button (click)="confirmRadiusInput()" system-title="LBL_CONFIRM" class="slds-button slds-button--icon-border-filled" style="height: 32px;padding: 0;width: 32px;">
+                            <system-button-icon icon="check" size="medium"></system-button-icon>
+                        </button>
+                    </div>
+                </div>
+                <div *ngIf="!editingRadius" class="slds-align-middle slds-m-left--x-small slds-grid slds-grow">
+                    <span class="slds-truncate">
+                        {{mapOptions.circle?.radius + 'km around ' + mapOptions.circle?.center?.address}}
+                    </span>
+                    <button style="float: right" class="slds-button slds-button--icon slds-m-left--xx-small" (click)="startRadiusEditing()">
+                        <system-button-icon [icon]="'edit'"></system-button-icon>
+                    </button>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <div class="slds-size--1-of-2 slds-height_full slds-grid slds-grid--vertical">
+        <spice-google-maps-list-header *ngIf="!!componentconfig.showListHeader"></spice-google-maps-list-header>
+        <div style="display: block; width: 100%; min-height: 0;" class="slds-grow slds-is-relative">
+            <object-list class="slds-grow slds-height_full slds-size--1-of-1" style="display: block"></object-list>
+            <div @animatepanel *ngIf="modelList.displayAggregates" class="slds-is-absolute slds-panel slds-panel--filters slds-filters__body slds-nowrap  slds-scrollable--y" style="width: 320px; height: 100%; top:0; right: 0;z-index: 99;" [system-model-provider]="{module: modelList.module}">
+                <div class="slds-filters__body slds-grid_vertical">
+                    <div class="slds-m-vertical--xx-small" *ngFor="let aggregate of modelList.moduleAggregates">
+                        <object-listview-aggregate [aggregate]="aggregate"></object-listview-aggregate>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

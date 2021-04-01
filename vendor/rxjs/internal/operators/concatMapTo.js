@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var concatMap_1=require("./concatMap");function concatMapTo(c,t){return concatMap_1.concatMap(function(){return c},t)}exports.concatMapTo=concatMapTo;

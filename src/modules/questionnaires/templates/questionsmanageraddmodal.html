@@ -1,0 +1,47 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<section role="dialog" tabindex="-1"  class="slds-modal slds-fade-in-open slds-modal_large">
+    <div class="slds-modal__container">
+        <header class="slds-modal__header slds-theme_shade">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button--icon-inverse" title="{{language.getLabel('xLBL_CLOSE')}}" (click)="cancelModal()">
+                <system-button-icon [icon]="'close'" [size]="'large'"></system-button-icon>
+            </button>
+            <h2 *ngIf="!questionid" class="slds-text-heading_medium slds-hyphenate"><system-label label="LBL_ADD_QUESTION"></system-label></h2>
+            <h2 *ngIf="questionid" class="slds-text-heading_medium slds-hyphenate"><system-label label="LBL_EDIT_QUESTION"></system-label></h2>
+        </header>
+        <div class="slds-modal__content slds-p-around_medium">
+            <system-spinner *ngIf="isLoading"></system-spinner>
+            <div *ngIf="!isLoading" [ngSwitch]="questiontype">
+                <questions-manager-edit-rating *ngSwitchCase="'rating'" [categorypool]="categorypool"></questions-manager-edit-rating>
+                <questions-manager-edit-rating-group *ngSwitchCase="'ratinggroup'" [questionset]="questionset" [categorypool]="categorypool"></questions-manager-edit-rating-group>
+                <questions-manager-edit-binary *ngSwitchCase="'binary'" [categorypool]="categorypool"></questions-manager-edit-binary>
+                <questions-manager-edit-single *ngSwitchCase="'single'" [categorypool]="categorypool"></questions-manager-edit-single>
+                <questions-manager-edit-multi *ngSwitchCase="'multi'" [categorypool]="categorypool"></questions-manager-edit-multi>
+                <questions-manager-edit-text *ngSwitchCase="'text'" [categorypool]="categorypool"></questions-manager-edit-text>
+                <questions-manager-edit-ist *ngSwitchCase="'ist'" [categorypool]="categorypool"></questions-manager-edit-ist>
+                <questions-manager-edit-nps *ngSwitchCase="'nps'" [categorypool]="categorypool"></questions-manager-edit-nps>
+                <div *ngSwitchDefault><system-label label="MSG_NO_QUESTIONTYPE_NO_QUESTION"></system-label></div>
+            </div>
+        </div>
+        <footer class="slds-modal__footer slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+            <div><ng-container *ngIf="!isLoading">
+                <system-label label="LBL_QUESTIONTYPE" style="display:inline-block"></system-label>: {{questiontypes_dom[questiontype]}}
+            </ng-container></div>
+            <div>
+                <button class="slds-button slds-button--neutral" (click)="cancelModal()"><system-label label="LBL_CANCEL"></system-label></button>
+                <button class="slds-button slds-button--brand" (click)="saveQuestion()" [disabled]="!savingAllowed"><system-label label="LBL_SAVE"></system-label></button>
+            </div>
+        </footer>
+    </div>
+</section>
+

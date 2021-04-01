@@ -1,0 +1,124 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-page-header">
+    <div class="slds-grid">
+        <div class="slds-col slds-has-flexi-truncate">
+            <div class="slds-media slds-no-space slds-grow">
+                <div class="slds-media__figure" (click)="goToModule()">
+                    <system-icon [module]="model.module"></system-icon>
+                </div>
+                <div class="slds-media__body">
+                    <a (click)="goToModule()" href="javascript:void(0);" class="slds-text-title--caps slds-line-height--reset">
+                        <system-label-modulename [module]="model.module"></system-label-modulename>
+                    </a>
+                    <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
+                        {{model.getField('name')}}
+                    </h1>
+                </div>
+            </div>
+        </div>
+        <div class="slds-align-top slds-col slds-grid slds-no-flex slds-p-top--x-small">
+            <button [disabled]="model.isLoading" class="slds-button slds-m-left--x-small slds-button--neutral" (click)="cancel()">
+                <system-label label="LBL_CANCEL"></system-label>
+            </button>
+            <button [disabled]="model.isLoading" class="slds-button slds-m-horizontal--x-small slds-button--brand" (click)="save()">
+                <system-label label="LBL_SAVE"></system-label>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="slds-grid" system-to-bottom cdkDropListGroup>
+    <div class="slds-size--1-of-3 slds-border--right slds-grid--vertical" style="height: 100%;">
+        <reports-designer-tree (onUnionDelete)="handleUnionDelete($event)" (onUnionAdd)="handleUnionAdd($event)"></reports-designer-tree>
+    </div>
+    <div class="slds-size--2-of-3" style="height: 100%">
+        <div *ngIf="!model.isLoading && !!reportsDesignerService.activeModule?.module" class="slds-tabs--default">
+            <ul class="slds-tabs--default__nav" role="tablist">
+                <li (click)="setActiveTab('details')" [class.slds-active]="activeTab == 'details'" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
+                    <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
+                         <span class="slds-tabs__left-icon">
+                             <system-utility-icon icon="summarydetail" size="x-small"></system-utility-icon>
+                         </span>
+                        <system-label label="LBL_DETAILS"></system-label>
+                    </a>
+                </li>
+                <li (click)="setActiveTab('manipulate')" [class.slds-active]="activeTab == 'manipulate'" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
+                    <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
+                        <span class="slds-tabs__left-icon">
+                            <system-utility-icon icon="database" size="x-small"></system-utility-icon>
+                        </span>
+                        <system-label label="LBL_MANIPULATE"></system-label>
+                    </a>
+                </li>
+                <li (click)="setActiveTab('filter')" [class.slds-active]="activeTab == 'filter'" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
+                    <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
+                        <span class="slds-tabs__left-icon">
+                            <system-utility-icon icon="filterList" size="x-small"></system-utility-icon>
+                        </span>
+                        <system-label label="LBL_FILTER"></system-label>
+                    </a>
+                </li>
+                <li (click)="setActiveTab('present')" [class.slds-active]="activeTab == 'present'" [class.slds-text-color--inverse-weak]="reportsDesignerService.listFields?.length == 0" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
+                    <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
+                        <span class="slds-tabs__left-icon">
+                            <system-utility-icon icon="screen" size="x-small" [colorclass]="reportsDesignerService.listFields?.length == 0 ? 'slds-icon-text-light' : 'slds-icon-text-default'"></system-utility-icon>
+                        </span>
+                        <system-label label="LBL_PRESENT"></system-label>
+                    </a>
+                </li>
+                <li (click)="setActiveTab('visualize')" [class.slds-active]="activeTab == 'visualize'" [class.slds-text-color--inverse-weak]="reportsDesignerService.listFields?.length == 0" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
+                    <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
+                        <span class="slds-tabs__left-icon">
+                            <system-utility-icon icon="chart" size="x-small" [colorclass]="reportsDesignerService.listFields?.length == 0 ? 'slds-icon-text-light' : 'slds-icon-text-default'"></system-utility-icon>
+                        </span>
+                        <system-label label="LBL_VISUALIZE"></system-label>
+                    </a>
+                </li>
+                <li (click)="setActiveTab('integrate')" [class.slds-active]="activeTab == 'integrate'" class="slds-tabs--default__item slds-text-title--caps" role="presentation">
+                    <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">
+                        <span class="slds-tabs__left-icon">
+                            <system-utility-icon icon="settings" size="x-small"></system-utility-icon>
+                        </span>
+                        <system-label label="LBL_INTEGRATE"></system-label>
+                    </a>
+                </li>
+                <li class="slds-grid slds-grid--vertical-align-center slds-text-title--caps slds-col--bump-left slds-p-vertical--x-small" role="presentation">
+                    <system-checkbox [(ngModel)]="reportsDesignerService.expertMode"><system-label label="LBL_EXPERT_MODE"></system-label></system-checkbox>
+                </li>
+            </ul>
+            <div [ngSwitch]="activeTab" system-to-bottom>
+                <ng-container *ngIf="reportsDesignerService.activeModule?.unionid">
+                    <reports-designer-details *ngSwitchCase="'details'"></reports-designer-details>
+                    <ng-container *ngSwitchCase="'manipulate'">
+                        <reports-designer-manipulate [class.slds-hide]="reportsDesignerService.activeModule.unionid != 'root'"></reports-designer-manipulate>
+                        <reports-designer-manipulate-union [class.slds-hide]="reportsDesignerService.activeModule.unionid == 'root'"
+                                                           [module]="reportsDesignerService.activeModule"
+                                                           [currentUnionListFields]="currentUnionListFields">
+                        </reports-designer-manipulate-union>
+                    </ng-container>
+                    <reports-designer-filter *ngSwitchCase="'filter'" [module]="reportsDesignerService.activeModule"></reports-designer-filter>
+                    <reports-designer-present *ngSwitchCase="'present'"></reports-designer-present>
+                    <reports-designer-visualize *ngSwitchCase="'visualize'"></reports-designer-visualize>
+                    <reports-designer-integrate *ngSwitchCase="'integrate'"></reports-designer-integrate>
+                </ng-container>
+            </div>
+        </div>
+        <div *ngIf="model.isLoading" class="slds-align--absolute-center" style="height: 100%">
+            <system-spinner></system-spinner>
+        </div>
+        <div *ngIf="!model.isLoading && !reportsDesignerService.activeModule?.module" class="slds-p-around--small slds-align--absolute-center" style="height: 100%">
+            <system-label label="LBL_MAKE_SELECTION"></system-label>
+        </div>
+    </div>
+</div>
+

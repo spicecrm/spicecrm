@@ -1,0 +1,41 @@
+.spice-google-maps-legend {
+    margin-right: 60px;
+    width: 200px;
+    min-height: 200px;
+    background-color: var(--color-white);
+    box-shadow: 0 0 8px var(--color-grey-7);
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 30px);
+    top: 10px;
+}
+
+.spice-google-maps-legend-color-box {
+    width: 24px;
+    height: 100%;
+    text-align: center;
+    line-height: 24px;
+    font-size: 1rem;
+    color: var(--color-white);
+}
+
+.spice-google-maps-control-recenter {
+    background-color: var(--color-white);
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--color-grey-7) 0 1px 4px -1px;
+    cursor: pointer;
+}
+
+.spice-google-maps-control-recenter-icon {
+    background-image: url(//maps.gstatic.com/tactile/mylocation/mylocation-sprite-2x.png);
+    background-position: 0 0;
+    background-size: 180px 18px;
+    width: 18px;
+    height: 18px;
+    transform: scale(1.3);
+}

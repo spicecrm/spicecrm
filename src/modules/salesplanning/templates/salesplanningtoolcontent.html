@@ -1,0 +1,105 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div *ngIf="node" class="slds-grid slds-grid--vertical" style="height: inherit">
+    <div [class.slds-border--bottom]="!data || isLoading" class="slds-grid slds-p-vertical--xx-small" style="min-height: 30px">
+        <div class="slds-grow slds-p-horizontal--medium slds-scrollable--x slds-text-heading--small slds-align-middle slds-grid slds-grid--vertical-align-center">
+            <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
+                <li *ngFor="let nodeCrumb of displayNodeCrumbs" class="slds-breadcrumb__item">
+                    <div *ngIf="nodeCrumb.linkid" system-model-popover [module]="nodeCrumb.linkmodule" [id]="nodeCrumb.linkid" class="slds-p-horizontal--x-small">{{nodeCrumb.displayname}}</div>
+                    <div *ngIf="!nodeCrumb.linkid" class="slds-p-horizontal--x-small">{{nodeCrumb.displayname}}</div>
+                </li>
+            </ol>
+            <button (click)="viewNote()" [disabled]="isLoading || !nodeInfo" class="slds-button slds-m-left--x-small">
+                <system-button-icon icon="note" size="medium" [addclasses]="isLoading || !nodeInfo?.notice || nodeInfo?.notice?.length == 0 ? 'slds-icon-text-light' : ''"></system-button-icon>
+            </button>
+        </div>
+        <div class="slds-col_bump-left slds-m-right--xx-small">
+            <system-checkbox [(ngModel)]="markDone" [disabled]="isClosing || isLoading || !nodeInfo?.leaf || !this.canEdit || !isEditMode" class="slds-m-right--x-small"><system-label label="LBL_CLOSE"></system-label></system-checkbox>
+            <div class="slds-button-group">
+                <button *ngIf="isEditMode" [disabled]="isLoading" class="slds-button-group-item slds-button slds-button--neutral" (click)="cancel()">
+                    <system-label label="LBL_CANCEL"></system-label>
+                </button>
+                <button *ngIf="isEditMode" [disabled]="isLoading || isSaving" class="slds-button-group-item slds-button slds-button--neutral slds-align--absolute-center" (click)="openInputHelper()">
+                    <system-spinner *ngIf="isSaving" size="14" inverse="true" class="slds-m-right--xx-small" style="display: inline-block"></system-spinner>
+                    <system-label label="LBL_INPUT_HELPER"></system-label>
+                </button>
+                <button *ngIf="isEditMode" [disabled]="isLoading || isSaving" class="slds-button-group-item slds-button slds-button--brand slds-align--absolute-center" (click)="save()">
+                    <system-spinner *ngIf="isSaving" size="14" inverse="true" class="slds-m-right--xx-small" style="display: inline-block"></system-spinner>
+                    <system-label label="LBL_SAVE"></system-label>
+                </button>
+                <button *ngIf="!isEditMode" [disabled]="isLoading || !nodeInfo?.leaf || !data || !this.canEdit" class="slds-button-group-item slds-button slds-button--neutral" (click)="setEditMode()">
+                    <system-label label="LBL_EDIT"></system-label>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grow slds-scrollable slds-p-right--xx-small">
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered slds-no-row-hover">
+            <thead>
+            <tr class="slds-text-title_caps" style="height: 30px">
+                <th scope="col" style="padding: .1rem">
+                    <div [title]="language.getLabel('LBL_PLAN_CODE')">
+                        <system-label label="LBL_PLAN_CODE"></system-label>
+                    </div>
+                </th>
+                <th *ngFor="let period of periods; trackBy: trackByIndexFn" class="slds-text-align--right" scope="col" [title]="period?.name" style="padding: .1rem">
+                    <div class="slds-truncate">
+                        {{period?.name}}
+                    </div>
+                </th>
+                <th class="slds-text-align--right" scope="col" style="padding: .1rem">
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_SUM_PERIODS')">
+                        <system-label label="LBL_SUM_PERIODS"></system-label>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let contentField of contentFields; trackBy: trackByItemFn" style="height: 30px" [class.slds-text-color--inverse]="isDarkColor(contentField.display_color)" [style.background-color]="contentField.display_color">
+                <td style="padding: .1rem">
+                    <div [title]="contentField.summary_text">
+                        {{contentField.summary_text}}
+                    </div>
+                </td>
+                <td *ngFor="let period of periods; trackBy: trackByIndexFn" [title]="getCellDisplayValue(period?.key, contentField)" class="slds-size--1-of-12" style="padding: .1rem">
+                    <system-stencil *ngIf="isLoading"></system-stencil>
+                    <ng-container *ngIf="!isLoading">
+                        <div *ngIf="!isEditMode || contentField.editable != '1'" class="slds-truncate slds-text-align--right">
+                            {{getCellDisplayValue(period?.key, contentField)}}
+                        </div>
+                        <div *ngIf="isEditMode && contentField.editable == '1'" class="slds-form-element__control  slds-input-has-fixed-addon">
+                            <span class="slds-form-element__addon" style="margin: 0 .2rem">{{getFieldSymbol(contentField.field_type)}}</span>
+                            <input type="text" class="slds-input slds-text-align--right"
+                                   [ngModel]="getCellDisplayValue(period?.key, contentField, false)"
+                                   [disabled]="isSaving"
+                                   [ngModelOptions]="modelOptions"
+                                   (ngModelChange)="setCellValue($event, contentField, period?.key)"
+                                   style="min-height: 20px !important; line-height: 20px; padding: 0 .2rem">
+                        </div>
+                    </ng-container>
+                </td>
+                <td style="padding: .1rem" >
+                    <system-stencil *ngIf="isLoading"></system-stencil>
+                    <div *ngIf="!isLoading" class="slds-truncate slds-text-align--right" [title]="getRowSumDisplay(contentField)">
+                        {{getRowSumDisplay(contentField)}}
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div *ngIf="!isLoading && !node" class="slds-p-around--small slds-align--absolute-center" style="height: inherit">
+    <system-label label="LBL_MAKE_SELECTION"></system-label>
+</div>
+

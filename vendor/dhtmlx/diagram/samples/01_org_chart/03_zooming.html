@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Slim Org Chart</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script type="text/javascript" src="../../codebase/diagram.js"></script>
+	<link rel="stylesheet" href="../../codebase/diagram.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+
+	<link rel="stylesheet" href="../common/dhx_samples.css">
+	<script type="text/javascript" src="../common/data.js"></script>
+</head>
+<style>
+	body {
+		text-align: center;
+	}
+</style>
+<body>
+	<script>
+		var diagram = new dhx.Diagram(document.body, { 
+			type: "org",
+			defaultShapeType: "img-card",
+			scale : 0.7
+		});
+		diagram.data.parse(bitOrgChartData);
+	</script>
+
+</body>
+
+</html>

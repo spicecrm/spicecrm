@@ -1,0 +1,135 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
+    <div class="slds-form-element">
+        <div class="slds-form-element__control">
+            <input type="search" class="slds-input" [(ngModel)]="search_term" placeholder="search here..." (keyup.enter)="search()"/>
+        </div>
+        <button class="slds-button slds-button--neutral" [disabled]="!search_term" (click)="search()">search</button>
+    </div>
+    <div class="slds-grid slds-grid--vertical-align-center slds-m-horizontal--xx-small" style="cursor: pointer">
+        <div class="slds-truncate slds-grow slds-align-middle">
+            <system-label label="LBL_ENABLE_INLINE_EDIT"></system-label>
+        </div>
+        <div class="slds-form-element">
+            <label class="slds-checkbox_toggle slds-grid">
+                <span class="slds-form-element__label slds-m-bottom_none"></span>
+                <input type="checkbox" [(ngModel)]="language.inlineEditEnabled">
+                <span class="slds-checkbox_faux_container" aria-live="assertive">
+                    <span class="slds-checkbox_faux" style="cursor: initial"></span>
+                </span>
+            </label>
+        </div>
+    </div>
+    <div *ngIf="true" class="slds-form-element slds-col--bump-left">
+        <div class="slds-button-group" role="group">
+            <button type="button" class="slds-button slds-button--neutral" (click)="addLabel()">
+                <system-label label="LBL_ADD"></system-label>
+            </button>
+        </div>
+    </div>
+    <div *ngIf="sessionservice.isAdmin">
+        <button type="button" class="slds-button slds-button--neutral" (click)="filesToDB()">Files to DB</button>
+    </div>
+</div>
+
+<system-spinner *ngIf="is_searching"></system-spinner>
+
+<div *ngIf="labels.length > 0 && !is_searching" class="slds-grid">
+    <div class="slds-size--2-of-5 slds-p-around--small">
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <h2 class="slds-p-vertical--small slds-text-heading--small"><system-label label="LBL_LABELS"></system-label>:</h2>
+            <div class="slds-col--bump-left">
+                <pagination-controls [(page)]="page" [limit]="20" [total_records]="labels.length" [variation]="'short'"></pagination-controls>
+            </div>
+        </div>
+        <article>
+            <div class="slds-card slds-m-bottom--small">
+                <div class="slds-card__body slds-p-around--small">
+                    <ul class="slds-has-dividers_bottom-space">
+                        <li *ngFor="let lbl of labels | paginate: {page: page, limit: 20}" class="slds-item" [ngClass]="{'slds-theme_inverse': lbl == selected_label}" style="cursor: pointer;" (click)="selected_label = lbl">
+                            <div class="slds-grid slds-grid--vertical-align-center">
+                                <span>{{lbl.name}}</span>
+                                <span *ngIf="lbl.scope == 'custom'" class="slds-text-color_weak">custom</span>
+                                <div class="slds-col--bump-left">
+                                    <system-utility-icon *ngIf="lbl == selected_label" [icon]="'close'" [size]="'xx-small'" (click)="deleteLabel(lbl)"></system-utility-icon>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="slds-card__footer">
+                    <pagination-controls [(page)]="page" [limit]="20" [total_records]="labels.length"></pagination-controls>
+                </div>
+            </div>
+        </article>
+    </div>
+    <div *ngIf="selected_label" class="slds-size--3-of-5 slds-p-around--small">
+        <div class="slds-grid slds-grid--vertical-align-center slds-p-bottom--small">
+            <h2 class="slds-p-vertical--small slds-text-heading--small"><system-label label="LBL_TRANSLATIONS"></system-label>:</h2>
+            <div class="slds-grid slds-col--bump-left">
+                <span class="slds-radio">
+                    <input type="radio" name="translation_scope" [(ngModel)]="translation_scope" id="translation_scope_global" value="global" [disabled]="selected_label.scope == 'custom'" />
+                    <label class="slds-radio__label" for="translation_scope_global">
+                        <span class="slds-radio_faux"></span>
+                        <span class="slds-form-element__label">global</span>
+                    </label>
+                </span>
+                <span class="slds-radio">
+                    <input type="radio" name="translation_scope" [(ngModel)]="translation_scope" id="translation_scope_custom" value="custom" />
+                    <label class="slds-radio__label" for="translation_scope_custom">
+                        <span class="slds-radio_faux"></span>
+                        <span class="slds-form-element__label">custom</span>
+                    </label>
+                </span>
+            </div>
+        </div>
+
+        <article *ngFor="let trans of translations">
+            <div class="slds-card slds-m-bottom--small">
+                <div class="slds-card__header">
+                    <h2>{{getLangText(trans.syslanguage)}}</h2>
+                </div>
+                <div class="slds-card__body slds-p-around--small">
+                    <div class="slds-form-element">
+                        <label>short:</label>
+                        <input type="text" class="slds-input" [(ngModel)]="trans.translation_short" />
+                    </div>
+                    <div class="slds-form-element">
+                        <label><abbr class="slds-required">*</abbr>default:</label>
+                        <input type="text" class="slds-input" required="required" [(ngModel)]="trans.translation_default" />
+                    </div>
+                    <div class="slds-form-element">
+                        <label>long:</label>
+                        <textarea class="slds-textarea" [(ngModel)]="trans.translation_long"></textarea>
+                    </div>
+                </div>
+            </div>
+        </article>
+        <div class="slds-grid">
+            <div *ngIf="languages.length > translations.length" class="slds-grid">
+                <div class="slds-form-element__control slds-p-right--x-small">
+                    <div class="slds-select_container">
+                        <select class="slds-select" #add_translation_language>
+                            <option *ngFor="let lang of getMissingLanguages()" value="{{lang.language}}">{{lang.text}}</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="slds-button slds-button--neutral" title="{{language.getLabel('LBL_ADD_TRANSLATION')}}..." (click)="addTranslation(translation_scope, add_translation_language.value)"><system-label label="LBL_ADD"></system-label></button>
+            </div>
+            <div class="slds-col--bump-left">
+                <button type="button" class="slds-button slds-button--brand" [disabled]="labels.length < 1" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+            </div>
+        </div>
+    </div>
+</div>

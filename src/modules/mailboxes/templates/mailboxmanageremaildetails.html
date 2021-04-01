@@ -1,0 +1,73 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-theme--shade slds-height_full">
+    <div [ngClass]="{'slds-hide': !model.id}" class="slds-grid slds-grid--vertical slds-height_full">
+        <div class="slds-grid slds-border--bottom">
+            <div class="slds-grid slds-grid--align-end slds-p-vertical--medium" style="width: 3rem">
+                <button *ngIf="mailboxesEmails.activeSplitType.name == 'noSplit'" (click)="goBack()" system-title="LBL_BACK" class="slds-button slds-button--icon slds-button_icon-border-filled">
+                    <system-button-icon icon="back"></system-button-icon>
+                </button>
+            </div>
+            <div class="slds-p-around--medium slds-border--bottom slds-grow" *ngIf="model.id">
+                <div class="slds-grid">
+                    <div class="slds-col slds-has-flexi-truncate">
+                        <div class="slds-media slds-no-space slds-grow">
+                            <system-icon [module]="model.module"></system-icon>
+                            <div class="slds-media__body">
+                                <ul class="slds-list_horizontal slds-has-dividers_left">
+                                    <li  class="slds-item">
+                                        <field-container field="date_sent" fielddisplayclass="slds-truncate"></field-container>
+                                    </li>
+                                    <li  class="slds-item">
+                                        <field-container field="status" fielddisplayclass="slds-truncate"></field-container>
+                                    </li>
+                                </ul>
+                                <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate">
+                                    <ng-container *ngIf="!fieldset">{{model.data.summary_text}}</ng-container>
+                                    <object-record-fieldset-horizontal-list *ngIf="fieldset" [fieldset]="fieldset"></object-record-fieldset-horizontal-list>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                    <object-action-container [actionset]="actionSet" (actionemitter)="handleAction($event)"></object-action-container>
+                    <div class="slds-p-left--small slds-button-group">
+                        <button class="slds-button slds-button--icon slds-button_icon-border-filled" (click)="reply()" [title]="language.getLabel('LBL_REPLY')">
+                            <system-button-icon icon="reply"></system-button-icon>
+                        </button>
+                        <button class="slds-button slds-button--icon slds-button_icon-border-filled" (click)="forward()" [title]="language.getLabel('LBL_FORWARD')">
+                            <system-button-icon icon="forward"></system-button-icon>
+                        </button>
+                        <button class="slds-button slds-button--icon slds-button_icon-border-filled" *ngIf="model.checkAccess('delete')" (click)="delete()" [title]="language.getLabel('LBL_DELETE')">
+                            <system-button-icon icon="delete"></system-button-icon>
+                        </button>
+                        <button class="slds-button slds-button--icon slds-button_icon-border-filled" [disabled]="!model.checkAccess('edit')" *ngIf="isRead" (click)="markUnread()" [title]="language.getLabel('LBL_MARK_UNREAD')">
+                            <system-button-icon icon="email"></system-button-icon>
+                        </button>
+                        <button class="slds-button slds-button--icon slds-button_icon-border-filled" [disabled]="!model.checkAccess('edit')" *ngIf="!isUserClosed" (click)="completeMail()" [title]="language.getLabel('LBL_MARK_USER_CLOSED')">
+                            <system-button-icon icon="unlock"></system-button-icon>
+                        </button>
+                        <button class="slds-button slds-button--icon slds-button_icon-border-filled" [disabled]="!model.checkAccess('edit')" *ngIf="isUserClosed" (click)="reopen()" [title]="language.getLabel('LBL_REOPEN')">
+                            <system-button-icon icon="lock"></system-button-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div [style.padding-left.rem]="mailboxesEmails.activeSplitType.name == 'noSplit' ? 3 : 0.5" class="slds-m-around--x-small slds-p-around--x-small slds-theme--default slds-scrollable--y slds-grow" style="min-height: 0;">
+            <div #detailscontent></div>
+        </div>
+    </div>
+    <div *ngIf="!model.id" class="slds-align--absolute-center slds-height_full">
+        <system-label label="LBL_SELECT_EMAIL"></system-label>
+    </div>
+</div>

@@ -1,0 +1,63 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div>
+    <div class="slds-grid">
+        <div class="slds-size--1-of-6">
+            <field-label [fieldname]="'sendemail'"
+                         [fieldconfig]="{label: 'LBL_SENDEMAIL'}"></field-label>
+            <field-container [field]="'sendemail'"></field-container>
+        </div>
+        <div class="slds-grow slds-m-left--xx-small">
+            <field-label [fieldname]="'mailbox'" [fieldconfig]="{label: 'LBL_MAILBOX', scope: 'outbound'}" ></field-label>
+            <field-container [field]="'mailbox'" [fieldconfig]="{label: 'LBL_MAILBOX', scope: 'outbound'}" ></field-container>
+        </div>
+    </div>
+    <div class="slds-grid">
+        <div class="slds-size--1-of-6">
+            <field-label [fieldname]="'emailtype'"
+                         [fieldconfig]="{label: 'LBL_TYPE'}"></field-label>
+            <field-container [field]="'emailtype'"></field-container>
+        </div>
+        <div *ngIf="model.data.emailtype == '6'" class="slds-grow slds-m-left--xx-small">
+            <field-label [fieldname]="'emailto'" [fieldconfig]="{label: 'LBL_TO'}"></field-label>
+            <field-container [field]="'emailto'"></field-container>
+        </div>
+        <div *ngIf="model.data.emailtype == '7'" class="slds-grow slds-m-left--x-small" style="line-height: 1.4rem;">
+            <field-label [fieldname]="'emailclass'" [fieldconfig]="{label: 'LBL_CLASS'}"></field-label>
+            <field-container [field]="'emailclass'"></field-container>
+        </div>
+    </div>
+    <div class="slds-grid">
+        <div class="slds-size--1-of-6">
+            <label class="slds-truncate  slds-form-element__label" for="workflow-manager-details-tasks-email-panel-content-option"><system-label label="LBL_CONTENT_OPTION"></system-label></label>
+            <select id="workflow-manager-details-tasks-email-panel-content-option" class="slds-select" [(ngModel)]="contentOption">
+                <option value="email_template"><system-label label="LBL_EMAILTEMPLATE"></system-label></option>
+                <option value="method"><system-label label="LBL_METHOD_CONTENT"></system-label></option>
+            </select>
+        </div>
+        <div *ngIf="contentOption == 'email_template'" class="slds-grow slds-m-left--xx-small">
+            <field-label [fieldname]="'emailtemplate_name'" [fieldconfig]="{label: 'LBL_EMAILTEMPLATE'}"></field-label>
+            <field-container [field]="'emailtemplate_name'"></field-container>
+        </div>
+        <div *ngIf="contentOption == 'method'" class="slds-grow slds-m-left--x-small" style="line-height: 1.45rem;">
+            <field-label [fieldname]="'emailcontclass'" [fieldconfig]="{label: 'LBL_METHOD_CONTENT'}"></field-label>
+            <field-container [field]="'emailcontclass'"></field-container>
+        </div>
+    </div>
+    <div *ngIf="contentOption == 'method' || model.data.emailtype == '7'" class="slds-grid">
+        <div class="slds-col">
+            <field-label [fieldname]="'emailparams'" [fieldconfig]="{label: 'LBL_PARAMS'}"></field-label>
+            <field-container [field]="'emailparams'"></field-container>
+        </div>
+    </div>
+</div>

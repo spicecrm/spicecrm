@@ -1,0 +1,62 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-form-element__control slds-grid slds-grid--align-spread slds-p-vertical--xx-small slds-is-relative slds-size--1-of-1">
+    <div *ngIf="!file; else fileContainer" class="slds-file-selector slds-file-selector_files slds-is-relative slds-size--1-of-1">
+        <div (system-drop-file)="uploadFile($event)" class="slds-file-selector__dropzone slds-p-around--small slds-is-relative slds-size--1-of-1">
+            <input #inputFile type="file" [accept]="accept" (change)="uploadFile(inputFile.files)" (click)="inputFile.value = null" [disabled]="disabled" [id]="elementID" class="slds-file-selector__input slds-assistive-text">
+            <label [for]="elementID" class="slds-file-selector__body" style="cursor: pointer">
+                <span class="slds-file-selector__button slds-button slds-button_neutral">
+                    <system-button-icon icon="upload" class="slds-m-right--xx-small slds-align--absolute-center"></system-button-icon> <system-label label="LBL_UPLOAD_FILES"></system-label>
+                </span>
+                    <span class="slds-file-selector__text slds-medium-show">
+                    <system-label label="LBL_OR"></system-label> <system-label label="LBL_DROP_FILES"></system-label>
+                </span>
+            </label>
+        </div>
+    </div>
+    <ng-template #fileContainer>
+        <div class="slds-pill slds-pill_link slds-size--1-of-1">
+            <ng-container *ngIf="!isUploading; else uploadingContainer">
+                <span class="slds-pill__icon_container slds-m-left--xxx-small">
+                    <system-file-icon [filename]="file.file_name" divClass="" [filemimetype]="file.file_mime_type"  size="small"></system-file-icon>
+                </span>
+                <a href="javascript:void(0);" class="slds-pill__action slds-p-around--xx-small">
+                    <div [system-title]="file.file_name" class="slds-pill__label slds-truncate" style="width: calc(100% - 20px)">
+                        {{file.file_name}}
+                    </div>
+                </a>
+                <button class="slds-button slds-button_icon slds-button_icon slds-pill__remove slds-m-right--xx-small" system-title="LBL_REMOVE" (click)="removeFile()">
+                    <system-button-icon icon="close"></system-button-icon>
+                </button>
+            </ng-container>
+            <ng-template #uploadingContainer>
+                <a href="javascript:void(0);" class="slds-pill__action slds-p-around--xx-small">
+                    <div [system-title]="file.file_name" class="slds-pill__label slds-truncate" style="width: calc(100% - 20px)">
+                        {{file.file_name}}
+                    </div>
+                    <div class="slds-grid slds-grid_vertical-align-center slds-grid--align-spread slds-has-flexi-truncate slds-size--1-of-1">
+                        <div class="slds-progress-bar">
+                            <span class="slds-progress-bar__value" [style.width.%]="fileProgress"></span>
+                        </div>
+                        <div class="slds-p-left--xx-small" style="width: 50px;">
+                            {{fileProgress}} %
+                        </div>
+                    </div>
+                </a>
+            </ng-template>
+        </div>
+    </ng-template>
+</div>
+
+
+

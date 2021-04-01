@@ -1,0 +1,73 @@
+/*
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+*/
+
+/**
+ * @module ModuleLeads
+ */
+import {Component, Optional, Injector, SkipSelf} from '@angular/core';
+import {model} from '../../../services/model.service';
+import {modal} from '../../../services/modal.service';
+import {metadata} from '../../../services/metadata.service';
+import {language} from '../../../services/language.service';
+import {relatedmodels} from '../../../services/relatedmodels.service';
+
+
+/**
+ * renders a button to add a new lead
+ *
+ * the button is used as component in an actionset
+ */
+@Component({
+    selector: 'lead-new-button',
+    templateUrl: './src/modules/leads/templates/leadnewbutton.html',
+    providers: [model]
+})
+export class LeadNewButton {
+
+    /**
+     * if set to true didpslay teh button as icon
+     */
+    public displayasicon: boolean = false;
+
+    constructor(private injector: Injector, public language: language, public metadata: metadata, public modal: modal, public model: model, @SkipSelf() public parentmodel: model, @Optional() private relatedmodel: relatedmodels) {
+    }
+
+    /**
+     * execute the lead creation
+     *
+     * from accounts and contacts it is B2B , from consumers B2C
+     */
+    private execute() {
+        this.model.module = 'Leads';
+        this.model.id = undefined;
+        if (this.parentmodel.module == 'Contacts' || this.parentmodel.module == 'Accounts') {
+            this.model.addModel('', this.parentmodel, {lead_type: 'b2b'});
+        } else if (this.relatedmodel && (this.relatedmodel.module == 'Contacts' || this.relatedmodel.module == 'Accounts')) {
+            this.model.addModel('', this.relatedmodel.model, {lead_type: 'b2b'});
+        } else if (this.parentmodel.module == 'Consumer') {
+            this.model.addModel('', this.parentmodel, {lead_type: 'b2c'});
+        }  else if (this.relatedmodel && this.relatedmodel.module == 'Consumers') {
+            this.model.addModel('', this.relatedmodel.model, {lead_type: 'b2c'});
+        } else {
+            // make sure we have no idea so a new on gets issues
+            this.model.initialize(this.parentmodel);
+            this.modal.openModal('LeadSelectTypeModal', true, this.injector);
+        }
+    }
+
+    /**
+     * getter for the disbaled state of the button
+     */
+    get disabled() {
+        return !this.metadata.checkModuleAcl('Leads', "create");
+    }
+}

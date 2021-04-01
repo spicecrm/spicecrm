@@ -1,0 +1,61 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-page-header">
+    <div class="slds-page-header__row">
+        <div class="slds-page-header__col-title">
+            <div class="slds-media">
+                <div class="slds-media__body">
+                    <div class="slds-page-header__name">
+                        <div class="slds-page-header__name-title">
+                            <h1>
+                                <span class="slds-page-header__title slds-truncate"><system-label label="LBL_RECENT_ITEMS"></system-label></span>
+                            </h1>
+                        </div>
+                    </div>
+                    <p class="slds-page-header__name-meta">{{recent.items.length}} <system-label label="LBL_ITEMS"></system-label></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div system-to-bottom>
+    <table class="slds-table slds-table--bordered slds-table--fixed-layout slds-table--header-fixed" role="grid" >
+        <thead>
+            <tr class="slds-text-title--caps">
+                <th class="slds-cell-shrink" scope="col">
+                </th>
+                <th class="slds-is-sortable slds-is-resizable " scope="col">
+                    <span class="slds-truncate slds-th__action"><system-label label="LBL_NAME"></system-label></span>
+                </th>
+                <th class="slds-is-sortable slds-is-resizable " scope="col">
+                    <span class="slds-truncate slds-th__action"><system-label label="LBL_MODULE"></system-label></span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let recentItem of recent.items" class="slds-hint-parent">
+                <td role="gridcell" class="slds-cell-shrink">
+                    <system-icon [module]="recentItem.module_name" size="small" divClass=""></system-icon>
+                </td>
+                <td scope="row">
+                    <a href="javascript:void(0);" class=" slds-text-link--reset" (click)="goRecent(recentItem.module_name, recentItem.item_id)">
+                        <div class="slds-truncate" system-model-popover [module]="recentItem.module_name" [id]="recentItem.item_id">{{recentItem.item_summary}}</div>
+                    </a>
+                </td>
+                <td scope="row">
+                    <div class="slds-truncate"><system-label-modulename [module]="recentItem.module_name" [singular]="true"></system-label-modulename></div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

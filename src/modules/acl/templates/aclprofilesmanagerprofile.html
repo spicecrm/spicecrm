@@ -1,0 +1,124 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div *ngIf="!profileid;else objectlist" style="height: 100%;" class="slds-align_absolute-center">
+    <span class="slds-text-heading--small">Please select a profile</span>
+</div>
+<ng-template #objectlist>
+    <div class="slds-tabs_scoped">
+        <ul class="slds-tabs_scoped__nav" role="tablist">
+            <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': activetab=='profiles'}" title="Profiles" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='profiles'"><system-label label="LBL_SPICEACLOBJECTS"></system-label></a></li>
+            <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': activetab=='users'}" title="Users" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='users'"><system-label label="LBL_USERS"></system-label></a></li>
+            <li class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': activetab=='details'}" title="DETAILS" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" (click)="activetab='details'"><system-label label="LBL_DETAILS"></system-label></a></li>
+        </ul>
+        <div system-to-bottom *ngIf="activetab=='profiles'">
+            <div *ngIf="loadingobjects; else objectsdisplay" class="slds-p-around--medium slds-align--absolute-center">
+                <system-spinner></system-spinner>
+            </div>
+            <ng-template #objectsdisplay>
+                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                    <thead>
+                    <tr class="slds-text-title_caps">
+                        <th scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_MODULE"></system-label></div>
+                        </th>
+                        <th scope="col" style="width: 3rem;"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let aclobject of aclobjects">
+                        <td>
+                            <div class="slds-truncate">{{aclobject.name}}</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate">{{aclobject.module}}</div>
+                        </td>
+                        <td style="width: 3rem;">
+                            <div class="slds-grid">
+                                <system-custom-icon *ngIf="aclobject.status == 'r'" icon="light-bulb-on" size="x-small" addclasses="slds-icon slds-icon-text-default"></system-custom-icon>
+                                <system-custom-icon *ngIf="aclobject.status != 'r'" icon="light-bulb-off" size="x-small" addclasses="slds-icon slds-icon-text-light"></system-custom-icon>
+                                <system-utility-icon icon="delete" size="x-small" (click)="removeProfile(aclobject.id)"></system-utility-icon>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="slds-p-around--medium slds-align_absolute-center">
+                    <button class="slds-button" (click)="selectProfile()">
+                        <system-button-icon icon="new"></system-button-icon>
+                    </button>
+                </div>
+            </ng-template>
+        </div>
+        <div system-to-bottom *ngIf="activetab=='users'">
+            <div *ngIf="loadingusers; else usersdisplay" class="slds-p-around--medium slds-align--absolute-center">
+                <system-spinner></system-spinner>
+            </div>
+            <ng-template #usersdisplay>
+                <div class="slds-p-around--x-small">
+                    <system-checkbox [(ngModel)]="aclallusers">all users</system-checkbox>
+                </div>
+                <div *ngIf="!aclallusers">
+                    <table  class="slds-table slds-table_bordered slds-table_cell-buffer">
+                        <thead>
+                        <tr class="slds-text-title_caps">
+                            <th scope="col">
+                                <div class="slds-truncate"><system-label label="LBL_USER_NAME"></system-label></div>
+                            </th>
+                            <th scope="col" style="width: 3rem;"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let acluser of aclusers">
+                            <td>
+                                <div class="slds-truncate">{{acluser.user_name ? acluser.user_name : acluser.id}}</div>
+                            </td>
+                            <td style="width: 3rem;">
+                                <div *ngIf="acluser.id != '*'" class="slds-grid">
+                                    <system-utility-icon icon="delete" size="x-small" (click)="removeUser(acluser.id)"></system-utility-icon>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="slds-p-around--medium slds-align_absolute-center">
+                        <button class="slds-button" (click)="selectUser()">
+                            <system-button-icon icon="new"></system-button-icon>
+                        </button>
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+        <div *ngIf="activetab=='details'">
+            <div class="slds-p-around--x-small">
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label"><system-label label="LBL_NAME"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <input  class="slds-input" type="text" [(ngModel)]="profile.name" />
+                    </div>
+                </div>
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label"><system-label label="LBL_DESCRIPTION"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <textarea class="slds-textarea" [(ngModel)]="profile.description"></textarea>
+                    </div>
+                </div>
+                <div class="slds-p-vertical--x-small slds-align--absolute-center">
+                    <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

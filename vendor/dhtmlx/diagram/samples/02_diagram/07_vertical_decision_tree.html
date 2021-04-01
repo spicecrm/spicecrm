@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Vertical Decision Tree Diagram</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script type="text/javascript" src="../../codebase/diagram.js"></script>
+	<link rel="stylesheet" href="../../codebase/diagram.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+
+	<link rel="stylesheet" href="../common/dhx_samples.css">
+	<script type="text/javascript" src="../common/diagram.js"></script>
+	<style>
+		html,body,.cont{
+			background: #FFF;
+		}
+		.dhx_diagram{
+			background: #FFF;
+		}
+		.dhx_free_diagram .dhx_item_shape{
+			fill: #5A4A78;
+			stroke:none;
+		}
+		.dhx_free_diagram .dhx_diagram_flow_item text{
+			fill:white;
+		}
+		.last .dhx_item_shape{
+			fill: #7D8495;
+		}
+		.decision .dhx_item_shape{
+			fill: #C492AC;
+		}
+		.start .dhx_item_shape{
+			fill: #7D8495;
+		}
+		.dhx_free_diagram .dhx_diagram_line{
+			stroke: #7D8495;
+		}
+		.dhx_free_diagram .dhx_diagram_arrow{
+			stroke:#7D8495;
+			fill:#7D8495;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="diagram_container"></div>
+
+	<script>
+		var diagram = new dhx.Diagram("diagram_container",{
+			scale:0.9
+		});
+		diagram.data.parse(verticalTree);
+	</script>
+
+</body>
+
+</html>

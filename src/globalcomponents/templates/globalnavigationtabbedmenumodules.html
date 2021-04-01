@@ -1,0 +1,57 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-context-bar__item slds-context-bar__item_divider-right slds-dropdown-trigger slds-dropdown-trigger_click"  [ngClass]="{'slds-is-open': isopen}">
+    <a href="javascript:void(0);" class="slds-context-bar__label-action" (click)="setActive()">
+        <div class="slds-truncate slds-grid slds-grid--vertical-align-center" [title]="navModule">
+            <system-icon [module]="navModule" size="x-small"></system-icon>
+            <span><system-label-modulename [module]="navModule"></system-label-modulename></span>
+        </div>
+    </a>
+    <div class="slds-context-bar__icon-action">
+        <button class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-x-small" aria-haspopup="true" title="Open object switcher menu">
+            <system-button-icon icon="chevrondown"></system-button-icon>
+            <span class="slds-assistive-text">Open object switcher menu</span>
+        </button>
+    </div>
+    <div class="slds-dropdown slds-dropdown_left slds-dropdown--large">
+        <div class="slds-grid">
+            <ul class="slds-dropdown__list slds-size--1-of-2 slds-border--right" role="menu">
+                <li *ngIf="!activeModuleVisible" class="slds-dropdown__item slds-nav-vertical__item slds-has-divider--bottom"  [ngClass]="{'slds-is-active': navModule == activeModule}"(click)="navigateTo(navModule)">
+                    <a href="javascript:void(0);" role="menuitem" tabindex="-1">
+                        <div class="slds-truncate slds-size--1-of-1 slds-grid slds-grid--vertical-align-center" [title]="navModule">
+                            <system-icon [module]="navModule" size="x-small"></system-icon>
+                            <span><system-label-modulename [module]="navModule"></system-label-modulename></span>
+                            <button class="slds-button slds-button--icon slds-col--bump-left" (click)="setActiveModule($event, navModule)">
+                                <system-button-icon icon="chevronright" addclasses="slds-icon-text-light"></system-button-icon>
+                            </button>
+                        </div>
+                    </a>
+                </li>
+                <li *ngFor="let menuItem of menuItems" class="slds-dropdown__item slds-nav-vertical__item" [ngClass]="{'slds-is-active': menuItem == activeModule}" role="presentation" (click)="navigateTo(menuItem)">
+                    <a href="javascript:void(0);" role="menuitem" tabindex="-1">
+                        <div class="slds-truncate slds-size--1-of-1 slds-grid slds-grid--vertical-align-center" [title]="menuItem">
+                            <system-icon [module]="menuItem" size="x-small"></system-icon>
+                            <span><system-label-modulename [module]="menuItem"></system-label-modulename></span>
+                            <button class="slds-button slds-button--icon slds-col--bump-left" (click)="setActiveModule($event, menuItem)">
+                                <system-button-icon icon="chevronright" addclasses="slds-icon-text-light"></system-button-icon>
+                            </button>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+            <div class="slds-size--1-of-2">
+                <global-navigation-tabbed-module-menu [module]="activeModule" (actionTriggered)="closeMenu()"></global-navigation-tabbed-module-menu>
+            </div>
+        </div>
+    </div>
+</div>

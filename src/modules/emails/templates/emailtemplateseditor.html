@@ -1,0 +1,60 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<system-collapsable-tab *ngIf="!isHidden" tabtitle="LBL_CONTENT">
+    <div class="slds-tabs_scoped slds-p-around--x-small">
+        <ul class="slds-tabs_scoped__nav" role="tablist">
+            <li class="slds-tabs_scoped__item" [class.slds-is-active]="selectedTab == 'editor'" system-title="LBL_EDITOR" (click)="setSelectedTab('editor')" role="presentation">
+                <a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab"><system-label label="LBL_EDITOR"></system-label></a>
+            </li>
+            <li *ngIf="!!fieldsNames.previewForBean" class="slds-tabs_scoped__item" [ngClass]="{'slds-is-active': selectedTab == 'preview', 'slds-text-color--inverse-weak': !model.data[fieldsNames.bodyHtmlField]}" system-title="LBL_PREVIEW" (click)="setSelectedTab('preview')" role="presentation">
+                <a [class.slds-text-color--inverse-weak]="!model.data[fieldsNames.bodyHtmlField]" class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab"><system-label label="LBL_PREVIEW"></system-label></a>
+            </li>
+        </ul>
+        <div class="slds-tabs_scoped__content" [ngClass]="{'slds-show': selectedTab == 'editor', 'slds-hide': selectedTab != 'editor'}" role="tabpanel">
+            <div *ngIf="!view.isEditMode() && !model.data[fieldsNames.bodyHtmlField]; else contentEditingContainer" (dblclick)="setEditMode()" class="slds-grid slds-grid--vertical-align-start slds-grid--align-end" style="min-height: 250px">
+                <button class="slds-button slds-button--icon spice-hover-button" (click)="setEditMode()">
+                    <system-button-icon [icon]="'edit'"></system-button-icon>
+                </button>
+            </div>
+            <ng-template #contentEditingContainer>
+                <div class="slds-grid slds-m-bottom--xx-small">
+                    <field-container *ngIf="!!fieldsNames.subjectField" [field]="fieldsNames.subjectField" class="slds-grow slds-m-right--x-small"  fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small"></field-container>
+                    <field-container *ngIf="!!fieldsNames.mailboxField" [field]="fieldsNames.mailboxField" [fieldconfig]="{fieldtype: 'mailboxes', scope: 'outboundmass'}" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--x-small" class="slds-m-right--x-small"></field-container>
+                    <div class="slds-align-bottom slds-col--bump-left slds-p-bottom--xx-small">
+                        <button [disabled]="!view.isEditMode()" (click)="copyFromTemplate()" class="slds-button slds-button--neutral">
+                            <system-button-icon icon="copy" position="left"></system-button-icon>
+                            <system-label label="LBL_COPY_TEMPLATE"></system-label>
+                        </button>
+                    </div>
+                </div>
+                <div [ngSwitch]="activeEditor" class="slds-grid slds-grid--align-center slds-grid--vertical-align-center" style="min-height: 250px">
+                    <field-container *ngSwitchCase="'richText'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'richtext', hidelabel: true}" class="slds-size--1-of-1"></field-container>
+                    <field-container *ngSwitchCase="'pageBuilder'" [field]="fieldsNames.bodyHtmlField" [fieldconfig]="{fieldtype: 'pagebuilder', hidelabel: true, bodySPBField: fieldsNames.bodySPBField}" class="slds-size--1-of-1"></field-container>
+                    <div *ngSwitchDefault>
+                        <system-label label="LBL_EDIT_WITH" class="slds-m-right--xx-small"></system-label>
+                        <button class="slds-button slds-button--neutral spice-hover-button" (click)="activeEditor = 'richText'">
+                            <system-label label="LBL_RICH_TEXT_EDITOR"></system-label>
+                        </button>
+                        <system-label label="LBL_OR" class="slds-m-horizontal--xx-small"></system-label>
+                        <button class="slds-button slds-button--neutral spice-hover-button slds-m-lef" (click)="activeEditor = 'pageBuilder'">
+                            <system-label label="LBL_PAGE_BUILDER"></system-label>
+                        </button>
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+        <div *ngIf="!!fieldsNames.previewForBean" class="slds-tabs_scoped__content" [ngClass]="{'slds-show': selectedTab == 'preview', 'slds-hide': selectedTab != 'preview'}" role="tabpanel">
+            <email-templates-preview [previewForBean]="fieldsNames.previewForBean" [bodyHtmlField]="fieldsNames.bodyHtmlField" [iframeHeight]="iframeHeight"></email-templates-preview>
+        </div>
+    </div>
+</system-collapsable-tab>

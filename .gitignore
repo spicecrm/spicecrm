@@ -1,0 +1,11 @@
+# Dependency directories
+node_modules
+.idea
+src/**/*.js.map
+src/**/*.js
+config.json
+package-lock.json
+/config/sites
+/dist
+documentation
+docs

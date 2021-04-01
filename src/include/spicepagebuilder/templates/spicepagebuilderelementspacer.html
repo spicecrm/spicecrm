@@ -1,0 +1,73 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div *ngIf="!isEditMode; else editContainer" class="spice-drop-zone" [class.slds-is-hovered]="spicePageBuilderService.isMouseIn == 'content'" (mouseenter)="setIsMouseIn(true)" (mouseleave)="setIsMouseIn(false)" tabindex="-1">
+    <div class="spice-drop-zone-label">
+        <div class="slds-media slds-media_center">
+            <div class="slds-media__figure">
+                <system-icon icon="text" sprite="utility" size="x-small" divClass="slds-current-color"></system-icon>
+            </div>
+            <div class="slds-media__body">
+                <h2 class="slds-truncate">
+                    <system-label label="LBL_SPACER"></system-label>
+                </h2>
+            </div>
+        </div>
+    </div>
+    <article (dblclick)="edit()" class="spice-drop-zone-content">
+        <div [ngStyle]="style" [style.background-color]="element.attributes['container-background-color']"></div>
+    </article>
+    <div class="spice-drop-zone-actions">
+        <div class="slds-button-group" role="group">
+            <button cdkDragHandle class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_MOVE">
+                <system-button-icon icon="move" addclasses="slds-icon"></system-button-icon>
+            </button>
+            <button (click)="edit()" class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_CLOSE">
+                <system-button-icon icon="edit" addclasses="slds-icon"></system-button-icon>
+            </button>
+            <button (click)="delete$.emit()" class="slds-button slds-button_icon slds-button_icon-brand slds-button_icon-x-small" system-title="LBL_CLOSE">
+                <system-button-icon icon="close" addclasses="slds-icon"></system-button-icon>
+            </button>
+        </div>
+    </div>
+</div>
+
+<ng-template #editContainer>
+    <div style="height: 50%">
+        <system-section titlelabel="LBL_ELEMENT_CONTENT" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
+            <div class="slds-grid slds-size--1-of-1 slds-height_full slds-p-around--xx-small">
+                <div class="slds-size--1-of-1">
+                    <div class="slds-grid">
+                        <spice-page-builder-input-text [(ngModel)]="element.attributes.height" label="LBL_SPACING" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                    </div>
+                </div>
+            </div>
+        </system-section>
+    </div>
+    <div style="height: 50%">
+        <system-section titlelabel="LBL_STYLING" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
+            <div class="slds-size--1-of-1 slds-height_full slds-p-horizontal--xx-small slds-p-vertical--x-small slds-scrollable--y">
+                <div class="slds-size--1-of-1 slds-grid slds-wrap">
+                    <ng-container *ngFor="let styleAttribute of attributesList" [ngSwitch]="styleAttribute.type">
+                        <spice-page-builder-input-text *ngSwitchCase="'text'" [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                        <spice-page-builder-input-text *ngSwitchCase="'textSuffix'" [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name" [suffix]="spicePageBuilderService.defaultSuffix" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-text>
+                        <spice-page-builder-input-sides *ngSwitchCase="'sides'" [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-sides>
+                        <spice-page-builder-input-color *ngSwitchCase="'color'" [(ngModel)]="element.attributes[styleAttribute.name]" [label]="styleAttribute.name" class="slds-p-horizontal--xxx-small slds-size--1-of-2"></spice-page-builder-input-color>
+                    </ng-container>
+                </div>
+            </div>
+        </system-section>
+    </div>
+</ng-template>
+
+
+

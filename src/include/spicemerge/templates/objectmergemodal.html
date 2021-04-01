@@ -1,0 +1,38 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<system-modal size="large">
+    <system-modal-header (close)="closeModal()"><system-label label="LBL_MERGE_RECORD"></system-label> - {{model.data.summary_text}}</system-modal-header>
+    <system-modal-content margin="none" [grow]="true">
+        <object-merge-modal-records  [hidden]="currentMergeStep!==0"></object-merge-modal-records>
+        <object-merge-modal-data  [hidden]="currentMergeStep!==1"></object-merge-modal-data>
+        <object-merge-modal-execute [hidden]="currentMergeStep!==2"></object-merge-modal-execute>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--align-spread">
+            <div class="slds-progress slds-progress--shade slds-order--2">
+                <ol class="slds-progress__list">
+                    <li *ngFor="let mergeStep of mergeSteps" class="slds-progress__item" [ngClass]="getStepClass(mergeStep)">
+                        <button class="slds-button slds-progress__marker" [ngClass]="{'slds-button--icon slds-progress__marker--icon': getStepComplete(mergeStep)}">
+                            <system-button-icon *ngIf="getStepComplete(mergeStep)" [icon]="'success'"></system-button-icon>
+                        </button>
+                    </li>
+                </ol>
+                <div class="slds-progress-bar slds-progress-bar_x-small">
+                    <div class="slds-progress-bar__value" [ngStyle]="progressBarWidth"></div>
+                </div>
+            </div>
+            <button class="slds-button slds-button--neutral slds-order--1" (click)="prevStep()" [disabled]="prevDisabled"><system-label label="LBL_PREVIOUS"></system-label></button>
+            <button class="slds-button slds-button--brand slds-order--3" (click)="nextStep()" [disabled]="nextDisabled"><system-label label="LBL_NEXT"></system-label></button>
+        </div>
+    </system-modal-footer>
+</system-modal>

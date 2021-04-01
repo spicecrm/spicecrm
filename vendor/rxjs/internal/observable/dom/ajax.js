@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var AjaxObservable_1=require("./AjaxObservable");exports.ajax=AjaxObservable_1.AjaxObservable.create;

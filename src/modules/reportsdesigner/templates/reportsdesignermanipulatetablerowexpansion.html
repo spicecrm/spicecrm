@@ -1,0 +1,98 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<ng-container *ngIf="reportsDesignerService.manipulateExpandedItemId == this.listItem.fieldid && reportsDesignerService.expertMode">
+    <td colspan="7">
+        <fieldset class="slds-form-element slds-form-element_compound slds-p-vertical--x-small">
+            <div class="slds-form-element__control">
+                <div class="slds-grid slds-m-vertical--xx-small slds-grid--align-spread">
+                    <div class="slds-form-element slds-size--1-of-1">
+                        <label class="slds-form-element__label"><system-label label="LBL_PATH"></system-label></label>
+                        <div class="slds-form-element__control">
+                            <input type="text" [(ngModel)]="listItem.path" class="slds-input" [disabled]="true">
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-grid">
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <label class="slds-form-element__label"><system-label label="LBL_FIXED_VALUE"></system-label></label>
+                        <div class="slds-form-element__control">
+                            <input type="text" [(ngModel)]="listItem.fixedvalue" class="slds-input" tabindex="1" autofocus>
+                        </div>
+                    </div>
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <label class="slds-form-element__label"><system-label label="LBL_GROUPING"></system-label></label>
+                        <div class="slds-form-element__control">
+                            <input disabled type="text" [(ngModel)]="listItem.grouping" class="slds-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-grid">
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <label class="slds-form-element__label"><system-label label="LBL_VALUE_TYPE"></system-label></label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" [(ngModel)]="listItem.valuetype">
+                                    <option></option>
+                                    <option value="TOFSUM"><system-label label="LBL_VALUE_TYPE_TOFSUM"></system-label></option>
+                                    <option value="POFSUM"><system-label label="LBL_VALUE_TYPE_POFSUM"></system-label></option>
+                                    <option value="POFCOUNT"><system-label label="LBL_VALUE_TYPE_POFCOUNT"></system-label></option>
+                                    <option value="POFAVG"><system-label label="LBL_VALUE_TYPE_POFAVERAGE"></system-label></option>
+                                    <option value="DOFSUM"><system-label label="LBL_VALUE_TYPE_DOFSUM"></system-label></option>
+                                    <option value="DOFCOUNT"><system-label label="LBL_VALUE_TYPE_DOFCOUNT"></system-label></option>
+                                    <option value="DOFAVG"><system-label label="LBL_VALUE_TYPE_DOFAVERAGE"></system-label></option>
+                                    <option value="C"><system-label label="LBL_VALUE_TYPE_C"></system-label></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-m-top--x-small slds-has-divider--top">
+                    <label class="slds-form-element__label"><system-label label="LBL_CUSTOM_FUNCTION"></system-label></label>
+                    <system-input-base64 [(ngModel)]="listItem.customsqlfunction"></system-input-base64>
+                </div>
+                <div class="slds-grid slds-has-divider--top">
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <label class="slds-form-element__label"><system-label label="LBL_STORE"></system-label></label>
+                        <div class="slds-form-element__control">
+                            <input type="text" [(ngModel)]="listItem.assigntovalue" class="slds-input">
+                        </div>
+                    </div>
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <label class="slds-form-element__label"><system-label label="LBL_SEQUENCE"></system-label></label>
+                        <div class="slds-form-element__control">
+                            <input type="text" [(ngModel)]="listItem.formulasequence" class="slds-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label"><system-label label="LBL_FORMULA"></system-label></label>
+                    <system-input-base64 [(ngModel)]="listItem.formulavalue"></system-input-base64>
+                </div>
+                <div class="slds-grid slds-has-divider--top">
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <label class="slds-form-element__label"><system-label label="LBL_PATH"></system-label></label>
+                        <div class="slds-form-element__control">
+                            <input type="text" disabled [(ngModel)]="listItem.path" class="slds-input" tabindex="1" autofocus>
+                        </div>
+                    </div>
+                    <div class="slds-form-element slds-size--1-of-2">
+                        <label class="slds-form-element__label"><system-label label="LBL_ID"></system-label></label>
+                        <div class="slds-form-element__control">
+                            <input disabled type="text" [(ngModel)]="listItem.fieldid" class="slds-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </td>
+</ng-container>

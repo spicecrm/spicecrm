@@ -1,0 +1,99 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<system-modal>
+    <system-modal-header (close)="closeModal()">
+        <ng-container *ngIf="loaded">
+            <ng-container *ngIf="isNewUser"><system-label label="LBL_CREATE_PORTAL_USER"></system-label></ng-container>
+            <ng-container *ngIf="!isNewUser"><system-label label="LBL_EDIT_PORTAL_USER"></system-label></ng-container>
+            <span class="slds-text-heading_small slds-p-top_x-small" style="display:block">
+                <span class="slds-p-horizontal--x-small slds-theme--info slds-text-color--inverse" style="opacity:0.66">{{model.data.name}}</span>
+            </span>
+        </ng-container>
+        <ng-container *ngIf="!loaded">
+            <system-label label="LBL_PORTAL_USER"></system-label>
+        </ng-container>
+    </system-modal-header>
+    <system-modal-content>
+        <system-spinner *ngIf="!loaded"></system-spinner>
+        <div *ngIf="loaded" class="slds-form slds-form_horizontal">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label"><system-label label="LBL_ACTIVE"></system-label></label>
+                <div class="slds-form-element__control">
+                    <label class="slds-checkbox_toggle slds-grid">
+                        <input type="checkbox" name="active" [(ngModel)]="user.active">
+                        <span class="slds-checkbox_faux_container" aria-live="assertive">
+                            <span class="slds-checkbox_faux"></span>
+                          </span>
+                    </label>
+                </div>
+            </div>
+            <div class="slds-form-element" [ngClass]="{'slds-has-error':usernameAlreadyExists}">
+                <label class="slds-form-element__label"><abbr class="slds-required" title="required">*  </abbr><system-label label="LBL_USER_NAME"></system-label></label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [(ngModel)]="user.name" (change)="testUsername()" [disabled]="usernameTesting">
+                    <div *ngIf="usernameAlreadyExists" class="slds-form-element__help"><system-label label="MSG_USERNAME_ALREADY_EXISTS"></system-label></div>
+                </div>
+            </div>
+            <div class="slds-form-element" [ngClass]="{'slds-has-error':pwdError}">
+                <label class="slds-form-element__label">
+                    <ng-container *ngIf="isNewUser"><abbr class="slds-required" title="required">*  </abbr><system-label label="LBL_PASSWORD"></system-label></ng-container>
+                    <ng-container *ngIf="!isNewUser"><system-label label="LBL_NEW_PWD"></system-label>?</ng-container>
+                </label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" [(ngModel)]="user.password" [ngClass]="{'slds-has-error':pwdError}">
+                    <div *ngIf="pwdError" class="slds-form-element__help">{{pwdError}}</div>
+                    <div *ngIf="pwdGuideline" class="slds-m-top--xx-small slds-form-element__help" style="color:inherit">
+                        <system-label label="LBL_PWD_GUIDELINE"></system-label>:<br>
+                        {{pwdGuideline}}
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element">
+                <label class="slds-form-element__label"><abbr class="slds-required" title="required">*  </abbr><system-label label="LBL_ACL_ROLE"></system-label></label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="user.aclRole">
+                            <option *ngFor="let aclRole of aclRoles" [value]="aclRole.id" [selected]="user.aclRole === aclRole.id">{{aclRole.name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element">
+                <label class="slds-form-element__label"><abbr class="slds-required" title="required">*  </abbr><system-label label="LBL_PORTAL_ROLE"></system-label></label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="user.portalRole">
+                            <option *ngFor="let portalRole of portalRoles" [value]="portalRole.id" [selected]="user.portalRole === portalRole.id">{{portalRole.name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element">
+                <label *ngIf="isNewUser" class="slds-form-element__label">{{lang.getLabel('LBL_SET_DATE_TIME_PREFS')}} <system-icon-help-text [helpText]="lang.getLabel('HLP_SET_DATE_TIME_PREFS')"></system-icon-help-text></label>
+                <label *ngIf="!isNewUser" class="slds-form-element__label">{{lang.getLabel('LBL_RESET_DATE_TIME_PREFS')}} <system-icon-help-text [helpText]="lang.getLabel('HLP_RESET_DATE_TIME_PREFS')"></system-icon-help-text></label>
+                <div class="slds-form-element__control">
+                    <label class="slds-checkbox_toggle slds-grid">
+                        <input type="checkbox" name="active" [(ngModel)]="user.setDateTimePrefsWithSystemDefaults">
+                        <span class="slds-checkbox_faux_container" aria-live="assertive">
+                            <span class="slds-checkbox_faux"></span>
+                          </span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="closeModal()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button *ngIf="loaded" class="slds-button slds-button--brand" (click)="save()" [disabled]="!canSave"><system-label label="LBL_SAVE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

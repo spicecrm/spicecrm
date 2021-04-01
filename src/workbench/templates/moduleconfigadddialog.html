@@ -1,0 +1,66 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div role="dialog" tabindex="-1" aria-labelledby="header43"  class="slds-modal slds-fade-in-open slds-modal_medium">
+    <div class="slds-modal__container">
+        <div class="slds-modal__header">
+            <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" (click)="closeDialog()">
+                <system-button-icon [icon]="'close'" [size]="'large'"></system-button-icon>
+            </button>
+            <h2 id="header43" *ngIf="this.mode == 'copy'" class="slds-text-heading--medium"><system-label label="LBL_COPY_COMPONENT"></system-label></h2>
+            <h2 id="header44" *ngIf="this.mode == 'add'" class="slds-text-heading--medium"><system-label label="LBL_ADD_COMPONENT"></system-label></h2>
+        </div>
+        <div class="slds-modal__content slds-p-around--medium" style="height: 355px;">
+
+
+            <div class="slds-form-element">
+                <label class="slds-form-element__label" ><system-label label="LBL_SCOPE"></system-label></label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="currentType">
+                            <option *ngFor="let type of types" [value]="type.value"><system-label [label]="type.text"></system-label></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+
+            <system-select [selectList]="moduleSelectList" [(selectedItem)]="moduleSelectedItem" [label]="'LBL_MODULES'"></system-select>
+
+
+            <system-select [selectList]="compSelectList" [(selectedItem)]="compSelectedItem" [disabled]="compDisabled" [label]="'LBL_COMPONENT'"></system-select>
+            <div *ngIf="showDeprecatedWarning" class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
+                <span class="slds-assistive-text">warning</span>
+                <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
+                <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                  <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#warning"></use>
+                </svg>
+              </span>
+                <h2><system-label label="LBL_DEPRECATED_MSG"></system-label></h2>
+            </div>
+
+            <system-select [selectList]="roleSelectList" [(selectedItem)]="roleSelectedItem" [label]="'LBL_ROLES'"></system-select>
+
+            <div *ngIf="this.mode == 'copy'" class="slds-text-align_center slds-p-vertical_small slds-text-heading_small">
+                <system-label label="LBL_NOTE_COPY_CONFIG_INFO"></system-label>
+            </div>
+
+        </div>
+        <div class="slds-modal__footer">
+            <button class="slds-button slds-button--neutral" (click)="closeDialog()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button class="slds-button slds-button--brand" (click)="save()" [disabled]="validate()">
+                <span *ngIf="this.mode == 'add'"><system-label label="LBL_ADD"></system-label></span>
+                <span *ngIf="this.mode == 'copy'"><system-label label="LBL_COPY"></system-label></span>
+            </button>
+        </div>
+    </div>
+</div>

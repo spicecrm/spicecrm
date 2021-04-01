@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Line customization</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script type="text/javascript" src="../../codebase/diagram.js"></script>
+	<link rel="stylesheet" href="../../codebase/diagram.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+
+	<link rel="stylesheet" href="../common/dhx_samples.css">
+	<script type="text/javascript" src="../common/data.js"></script>
+
+	<style>
+		.myStyle .shape_content {
+			background: #9575CD;
+			color: #FFF;
+		}
+
+		.myStyle:hover .shape_content {
+			background: #00b7ff;
+		}
+
+		.myStyle:hover .dhx_item_shape {
+			stroke: #00b7ff;
+		}
+
+		.myStyle .dhx_item_shape {
+			rx: 0;
+			ry: 0;
+			stroke: #9575CD;
+		}
+
+		.myConnector {
+			stroke: red;
+			stroke-dasharray: 10;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="diagram_container"></div>
+
+	<script>
+		var dataset = [
+			{
+				id: "1",
+				text: "Chairman & CEO",
+				color: "#673AB7",
+				css: "myStyle",
+			},
+			{
+				id: "2",
+				text: "Manager",
+				color: "#E91E63"
+			},
+			{
+				id: "3",
+				text: "Technical Director",
+				color: "#9C27B0",
+				width: 200
+			},
+			{
+				id: "1-2",
+				from: "1",
+				to: "2",
+				css: "myConnector",
+				type: "line"
+			},
+			{
+				id: "1-3",
+				from: "1",
+				to: "3",
+				type: "line"
+			}
+		]
+		var diagram = new dhx.Diagram("diagram_container", { type: "org" });
+		diagram.data.parse(dataset);
+	</script>
+
+</body>
+
+</html>

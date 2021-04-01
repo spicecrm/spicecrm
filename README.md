@@ -1,2 +1,5 @@
-## deprecated
-This repository will no longer be updated. It has been replaced by the frontend and the backend repositories. 
+SpiceCRM all-in-one
+=============
+
+> just 1 repository  for a full experience
+> 

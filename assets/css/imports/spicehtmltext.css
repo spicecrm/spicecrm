@@ -1,0 +1,78 @@
+/* Style Definition for HTML fields */
+.html-text h1, .html-text h2, .html-text h3, .html-text h4, .html-text h5, .html-text h6 {
+    margin: 0.75rem 0;
+    line-height: 1.25;
+}
+
+.html-text h1 {
+    font-size: 1.25rem;
+}
+
+.html-text h2 {
+    font-size: 1rem;
+    color: #000;
+}
+
+.html-text h3, .html-text h4, .html-text h5, .html-text h6 {
+    font-size: 0.75rem;
+    color: #000;
+    line-height: 1.25;
+}
+
+.html-text b, .html-text strong {
+    font-weight: 700;
+}
+
+.html-text i, .html-text em {
+    font-style: italic;
+}
+
+.html-text p, .html-text ul {
+    margin: 0.75rem 0;
+}
+
+.html-text *:first-child {
+    margin-top: 0;
+}
+
+.html-text *:last-child {
+    margin-bottom: 0;
+}
+
+.html-text a {
+    color: #444;
+    text-decoration: underline;
+}
+
+.html-text a:hover {
+    color: #000;
+    text-decoration: none;
+}
+
+.html-text ul {
+    list-style: disc outside;
+}
+
+.html-text ol {
+    list-style: decimal outside;
+}
+
+.html-text li {
+    margin-left: 1.75rem;
+}
+
+.html-text .align-right {
+    text-align: right;
+}
+
+.html-text .align-left {
+    text-align: left;
+}
+
+.html-text .align-center {
+    text-align: center;
+}
+
+.html-text .align-justify {
+    text-align: justify;
+}

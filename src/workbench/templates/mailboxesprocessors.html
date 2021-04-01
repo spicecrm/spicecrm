@@ -1,0 +1,83 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<table *ngIf="processorsvisible"
+       class="slds-table slds-table_bordered slds-table_cell-buffer">
+    <thead>
+    <tr class="slds-text-title">
+        <th scope="col">
+            <div class="slds-truncate" title="Class">Class</div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate" title="Method">Method</div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate" title="Priority">Priority</div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate" title="Stop on success">Stop on
+                success
+            </div>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <ng-container
+            *ngFor="let mailbox_processor of model.data.mailbox_processors">
+        <tr *ngIf="!mailbox_processor.deleted">
+            <input type="hidden" [(ngModel)]="mailbox_processor.id">
+            <td scope="row" data-label="Class">
+                <select [disabled]="processors.length == 0"
+                        [(ngModel)]="mailbox_processor.processor_class"
+                        type="text" class="slds-select ng-pristine ng-valid">
+                    <option *ngFor="let processor of processors"
+                            value="{{ processor.processor_class }}">
+                        {{ processor.name }}
+                    </option>
+                </select>
+            </td>
+            <td scope="row" data-label="Method">
+                <select [disabled]="!mailbox_processor.processor_class"
+                        [(ngModel)]="mailbox_processor.processor_method"
+                        type="text" class="slds-select ng-pristine ng-valid">
+                    <ng-container *ngIf="mailbox_processor.processor_class">
+                        <option *ngFor="let method of getProcessorMethods(mailbox_processor.processor_class)"
+                                value="{{ method }}">
+                            {{ method }}
+                        </option>
+                    </ng-container>
+                </select>
+            </td>
+            <td scope="row" data-label="Priority">
+                <input class="slds-input ng-pristine ng-valid ng-touched"
+                       [(ngModel)]="mailbox_processor.priority"
+                       title="Priority">
+            </td>
+            <td scope="row" data-label="Stop on success">
+                <input class="slds-input ng-pristine ng-valid ng-touched"
+                       [(ngModel)]="mailbox_processor.stop_on_success"
+                       title="Stop on success">
+            </td>
+            <td scope="row">
+                <button class="slds-button slds-button_destructive"
+                        (click)="removeProcessor(mailbox_processor.id)">X
+                </button>
+            </td>
+        </tr>
+    </ng-container>
+    </tbody>
+</table>
+<button type="button"
+        class="slds-col--bump-left slds-button slds-button--neutral"
+        (click)="addProcessor()">
+    Add Processor
+</button>

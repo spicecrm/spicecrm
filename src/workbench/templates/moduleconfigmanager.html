@@ -1,0 +1,99 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div system-to-bottom-noscroll>
+    <div class="slds-p-around--medium slds-theme--shade">
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+                <div class="slds-media">
+                    <system-icon icon="custom19" sprite="custom"></system-icon>
+                    <div class="slds-media__body">
+                        <div class="slds-page-header__name">
+                            <div class="slds-page-header__name-title">
+                                <h1>
+                                    <span class="slds-page-header__title slds-truncate"><system-label label="LBL_CONFIGURATION_MANAGER"></system-label></span>
+                                </h1>
+                            </div>
+                        </div>
+                        <div class="slds-page-header__name-meta slds-grid">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
+        <div class="slds-form-element">
+            <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container" style="min-width:250px;">
+                    <select class="slds-select" [(ngModel)]="currentModule" [disabled]="!initialized" (change)="selectedModule()">
+                        <option value="*">*</option>
+                        <option *ngFor="let sysModule of sysModules" [value]="sysModule.module">{{sysModule.module}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- show a spinner unlöess we are initialized-->
+    <div *ngIf="!initialized" class="slds-align_absolute-center slds-p-around--large">
+        <system-spinner></system-spinner>
+    </div>
+    <div class="slds-grid" [ngClass]="{'slds-hidden':!initialized}">
+        <div class="slds-size--2-of-5 slds-border--right">
+            <div class="slds-tree_container" role="application" style="max-width: none;">
+                <div class="slds-tabs_default" style="background-color: transparent">
+                    <ul class="slds-tabs_default__nav" role="tablist">
+                        <li class="slds-tabs_default__item slds-is-active" [ngClass]="{'slds-is-active': currentTableActive == 'global' || currentTableActive == 'default'}" title="Item One" role="presentation">
+                            <div class="slds-grid slds-grid--vertical-align-center">
+                                <system-custom-icon icon="global" size="x-small"></system-custom-icon>
+                                <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="0" (click)="loadGlobal()" id="tab-default-1__item"><system-label label="LBL_GLOBAL"></system-label></a>
+                            </div>
+                        </li>
+                        <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active': currentTableActive == 'custom' || currentTableActive == 'default_custom'}" title="Item Two" role="presentation">
+                            <div class="slds-grid slds-grid--vertical-align-center">
+                                <system-custom-icon icon="custom" size="x-small"></system-custom-icon>
+                                <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-2" (click)="loadCustom()" id="tab-default-2__item"><system-label label="LBL_CUSTOM"></system-label></a>
+                            </div>
+                        </li>
+                    </ul>
+                    <div #treecontainer class="slds-tabs_default__content slds-p-vertical_none" role="tabpanel">
+                        <div class="slds-scrollable_y slds-border_bottom" system-to-bottom [marginBottom]="45">
+                            <system-tree [sourceList]="treelist" [selectedItem]="selectedComponent.id" (selectedItemChange)="selectedOutputItem($event)"></system-tree>
+                        </div>
+                        <div #addconfigcontainer class="slds-p-around--small slds-align--absolute-center">
+                            <button [disabled]="!view.isEditMode()" class="slds-button slds-button--icon" title="add item" (click)="addConf()">
+                                <system-utility-icon [icon]="'new'" [size]="'xx-small'"  [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-top--x-small ">
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <div *ngIf="selectedComponent.component" class="slds-text-heading_small">
+                    {{selectedComponent.component}} / {{selectedComponent.role_name}}
+                </div>
+                <div class="slds-col--bump-left">
+                    <button [disabled]="!getAllowCopyButton" type="button" class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--neutral" (click)="copyConf()">
+                        <system-label label="LBL_COPY"></system-label>
+                    </button>
+                    <button [disabled]="!view.isEditMode()" type="button" class="slds-m-bottom_small slds-col--bump-left slds-button slds-button--brand" (click)="saveChanges()">
+                        <system-label label="LBL_SAVE"></system-label>
+                    </button>
+                </div>
+            </div>
+            <workbench-config [component]="component" [configValues]="configValues"></workbench-config>
+        </div>
+    </div>
+</div>

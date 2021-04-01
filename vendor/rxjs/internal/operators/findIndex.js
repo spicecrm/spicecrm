@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var find_1=require("../operators/find");function findIndex(n,r){return function(e){return e.lift(new find_1.FindValueOperator(n,e,!0,r))}}exports.findIndex=findIndex;

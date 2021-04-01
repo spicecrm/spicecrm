@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Flow-Chart Custom Styles</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script type="text/javascript" src="../../codebase/diagram.js"></script>
+	<link rel="stylesheet" href="../../codebase/diagram.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+
+	<link rel="stylesheet" href="../common/dhx_samples.css">
+	<script type="text/javascript" src="../common/diagram.js"></script>
+	<style>
+		.dhx_free_diagram .yes_line .dhx_diagram_line{
+			stroke: #38B551;
+		}
+
+		.yes_line .dhx_diagram_arrow {
+			fill: #38B551;
+			stroke: #38B551;
+		}
+
+		.dhx_free_diagram .no_line .dhx_diagram_line{
+			stroke: #E10000;
+		}
+
+		.no_line .dhx_diagram_arrow {
+			fill: #E10000;
+			stroke: #E10000;
+		}
+
+		.yes_circle .dhx_item_shape {
+			fill: #38B551;
+			stroke: none;
+		}
+
+		.dhx_free_diagram .yes_circle text {
+			fill: white;
+			text-transform: uppercase;
+			font-size: 12px;
+			font-weight: 500;
+		}
+
+		.no_circle .dhx_item_shape {
+			fill: red;
+			stroke: none;
+		}
+
+		.dhx_free_diagram .no_circle text {
+			fill: white;
+			text-transform: uppercase;
+			font-size: 12px;
+			font-weight: 500;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="diagram_container"></div>
+
+	<script>
+		var diagram = new dhx.Diagram("diagram_container", {
+			margin: { 
+				y: 10 
+			}
+		});
+		diagram.data.parse(custom);
+	</script>
+
+</body>
+
+</html>

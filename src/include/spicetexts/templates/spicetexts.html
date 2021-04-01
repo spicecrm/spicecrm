@@ -1,0 +1,46 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-grid slds-grid--vertical-align-center slds-p-around--x-small">
+    <label for="searchField" class="slds-item_label"><system-label label="LBL_SEARCH"></system-label></label>
+    <div class="slds-col slds-form-element slds-m-left--x-small">
+        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+            <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--right"></system-utility-icon>
+            <input id="searchField" type="text" class="slds-input" placeholder="search by" [(ngModel)]="searchTerm">
+        </div>
+    </div>
+    <label for="languageFilter" class="slds-item_label slds-m-left--small slds-m-right--xx-small"><system-label label="LBL_FILTER"></system-label></label>
+    <div class="slds-form-element slds-m-right--small">
+        <div class="slds-form-element__control">
+            <div class="slds-select_container">
+                <select id="languageFilter" class="slds-select" [(ngModel)]="languageFilter" [disabled]="sysLanguages?.length == 0">
+                    <option value="all"><system-label label="LBL_ALL"></system-label></option>
+                    <option *ngFor="let sysLanguage of sysLanguages; trackBy: trackByFn" [value]="sysLanguage.language">
+                        {{language.getLabel(sysLanguage?.text)}}
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <spice-texts-add-button [parent]="model" [spiceTexts]="relatedModels.items"></spice-texts-add-button>
+</div>
+<div *ngIf="relatedModels.isloading" class="slds-align--absolute-center slds-m-top--large">
+    <system-spinner></system-spinner>
+</div>
+<div class="slds-m-vertical--small" *ngFor="let moduleText of moduleTexts; trackBy: trackByFn">
+    <div class="slds-box--border" style="padding: 0 .50rem;" [system-model-provider]="{module: 'SpiceTexts', id: moduleText.id, data: moduleText}">
+        <object-record-details ></object-record-details>
+    </div>
+</div>
+<div *ngIf="!relatedModels.isloading && relatedModels.items?.length == 0" class="slds-align--absolute-center slds-m-top--large">
+    <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
+</div>

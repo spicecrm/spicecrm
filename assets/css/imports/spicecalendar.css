@@ -1,0 +1,42 @@
+.spice-calendar-event {
+    padding-bottom: .125rem;
+    position: absolute;
+    display: block;
+}
+.spice-calendar-multi-event-day {
+    padding-bottom: .125rem;
+    position: initial;
+    display: block;
+    width: 100%;
+}
+.spice-calendar-more-event {
+    position: initial;
+    display: block;
+}
+
+.spice-calendar-event-has-dark-color {
+    color: var(--color-white);
+}
+
+.spice-calendar-event-has-dark-color:hover {
+    color: var(--color-grey-3);
+}
+
+.spice-calendar-drop-target {
+    display: block;
+    width: 100%;
+    height: 50%;
+}
+
+.spice-calendar-drop-target div {
+    cursor: initial;
+    visibility: hidden;
+    opacity: 0
+}
+.spice-calendar-drop-target:hover div {
+    cursor: pointer;
+    visibility: visible;
+    opacity: 1;
+    background-color: var(--color-grey-3);
+    text-align: center;
+}

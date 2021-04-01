@@ -1,0 +1,113 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+
+
+
+<div class="slds-p-around--small slds-border--bottom">
+    <div class="slds-grid slds-grid--vertical-align-center slds-form--inline">
+        <div class="slds-form-element">
+            <label class="slds-form-element__label"><system-label label="LBL_TREE"></system-label></label>
+            <div class="slds-form-element__control" style="min-width:250px;">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="currentSelectTree" (change)="loadSelectTree(currentSelectTree)" [disabled]="trees.length == 0">
+                        <option *ngFor="let tree of trees" [value]="tree.id">{{tree.name}}
+                        </option>
+
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="slds-form-element slds-col--bump-left">
+            <button type="button" class="slds-button slds-button_icon slds-button_icon-border-filled" (click)="addTree()"><system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon></button>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div class="slds-grid slds-grid--align-spread slds-p-around--medium">
+    <h2 class="slds-text-heading--medium">Select Tree</h2>
+    <button class="slds-button slds-button--brand" (click)="save()">Save</button>
+</div>
+<article class="slds-card slds-m-around--small">
+    <div class="slds-card__header">
+        <header class="slds-has-flexi-truncate">
+            <h2>Service Category Tree</h2>
+        </header>
+    </div>
+    <div class="slds-card__body slds-card__body_inner slds-grid">
+        <div *ngIf="loading" class="slds-p-around--small slds-align--absolute-center">
+            <system-spinner></system-spinner>
+        </div>
+        <div *ngFor="let lvl of levels; let i = index" class="slds-col slds-size--1-of-2" [ngStyle]="{width: 100/levels.length+'%'}" [ngClass]="{'slds-border--right': i < max_levels -1}">
+            <div *ngFor="let cat of lvl" [ngClass]="{'slds-theme--shade': isCategorySelected(cat) || cat == edit_category, 'slds-theme_alert-texture': cat == edit_category}">
+                <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small" (mouseenter)="select(cat)">
+                    <span class="slds-truncate" style="cursor: pointer;" (click)="edit(cat)">{{cat.name}}</span>
+                    <system-utility-icon class="slds-m-left--small" *ngIf="cat.favorite == 1" [icon]="'favorite'" [size]="'xx-small'"></system-utility-icon>
+                    <div class="slds-col--bump-left">
+                        <system-utility-icon *ngIf="cat.level < max_levels-1" [icon]="'add'" [size]="'xx-small'" style="cursor:pointer;" (click)="addCategory(cat)"></system-utility-icon>
+                        <system-utility-icon *ngIf="cat.childs" [icon]="'chevronright'" [size]="'xx-small'"></system-utility-icon>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="i == 0" class="slds-p-around--xx-small">
+                <system-utility-icon [icon]="'add'" [size]="'xx-small'" style="cursor:pointer;" (click)="addCategory()"></system-utility-icon>
+            </div>
+        </div>
+    </div>
+</article>
+
+<article *ngIf="edit_category" class="slds-card slds-m-around--small slds-size--1-of-4 slds-theme--shade slds-theme_alert-texture">
+    <div class="slds-card__header slds-grid">
+        <header class="slds-has-flexi-truncate">
+            <h2>Edit Category</h2>
+        </header>
+        <system-utility-icon [icon]="'close'" [size]="'xx-small'" style="cursor: pointer;" (click)="removeCategory(edit_category)"></system-utility-icon>
+    </div>
+    <div class="slds-card__body slds-card__body_inner">
+        <div class="slds-form-element slds-m-vertical--xxx-small">
+            <label class="slds-form-element__label">Name:</label>
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" [(ngModel)]="edit_category.name"/>
+            </div>
+        </div>
+        <div class="slds-form-element slds-m-vertical--xxx-small">
+            <label class="slds-form-element__label">Key:</label>
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" [(ngModel)]="edit_category.keyname"/>
+            </div>
+        </div>
+        <div class="slds-form-element slds-m-vertical--xxx-small">
+            <div class="slds-form-element slds-p-top--small">
+                <div class="slds-form-element__control slds-grid">
+                    <span class="slds-checkbox">
+                      <input type="checkbox" name="options" id="checkbox-42" [(ngModel)]="edit_category.favorite" />
+                      <label class="slds-checkbox__label" for="checkbox-42">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-form-element__label">Favorite</span>
+                      </label>
+                    </span>
+                    <span class="slds-checkbox">
+                      <input type="checkbox" name="options" id="checkbox-49" [(ngModel)]="edit_category.selectable" />
+                      <label class="slds-checkbox__label" for="checkbox-49">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-form-element__label">Selectable</span>
+                      </label>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>

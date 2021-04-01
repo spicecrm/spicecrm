@@ -1,0 +1,106 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div *ngIf="isLoading || isLoaded" class="slds-section slds-is-open">
+
+    <h3 class="slds-section__title slds-theme_shade slds-m-horizontal--x-small">
+        <span class="slds-truncate slds-p-horizontal_x-small" title="Filter">Log Entries</span>
+    </h3>
+
+    <div class="slds-section__content slds-m-bottom--medium" style="padding-top:0"><!-- slds-p-right--xx-large -->
+
+        <system-spinner *ngIf="isLoading" class="slds-m-top--x-large" style="display:block"></system-spinner>
+
+        <div *ngIf="isLoaded">
+
+            <div *ngIf="lines.length" class="slds-grid slds-grid--vertical-align-center slds-grid_align-spread slds-m-horizontal--medium">
+
+                <pagination-controls class="slds-col_bump-right slds-m-right--large" [(page)]="currPage" [limit]="linesPerPage" [total_records]="linesToShow.length" (leftPage)="collapseLinesOfPage($event)"></pagination-controls>
+
+                <div *ngIf="isFiltered"><span style="text-transform:uppercase">{{lang.getLabel('LBL_FILTERED')}}</span> ({{lines.length-linesToShow.length}} {{lang.getLabel('LBL_NOT_SHOWN')}})</div>
+
+                <div class="slds-form-element slds-m-left--medium slds-m-vertical--x-small">
+                    <div class="slds-form-element__control slds-grid">
+                        <input id="localFiltertextPositive" class="slds-input" type="text" system-trim-input="blur" [(ngModel)]="localFiltertextPositive" placeholder="{{lang.getLabel('LBL_TEXT_FILTER')}}, client-side" style="border-bottom-color:#090" />
+                        <button class="slds-button slds-button--icon-border slds-m-left--xx-small" (click)="clearLocalTextFilterPositive()" [attr.disabled]="localFiltertextPositive===''?true:null">
+                            <system-button-icon [icon]="'clear'" [size]="'small'"></system-button-icon>
+                        </button>
+                        <input id="localFiltertextNegative" class="slds-input slds-m-left--small slds-text-align--right" style="width:inherit;border-bottom-color:#c00" type="text" [ngModel]="localFiltertextNegative.length" size="3" disabled title="Negative Text Filter: Number of Terms" />
+                        <button class="slds-button slds-button--icon-border slds-m-left--xx-small" (click)="filterSelectedText()">
+                            <system-button-icon [icon]="'add'" [size]="'small'"></system-button-icon>
+                        </button>
+                        <button class="slds-button slds-button--icon-border slds-m-left--xx-small" (click)="clearLocalTextFilterNegative()" [attr.disabled]="localFiltertextNegative.length===0?true:null">
+                            <system-button-icon [icon]="'clear'" [size]="'small'"></system-button-icon>
+                        </button>
+                        <span></span>
+                        <button class="slds-button slds-button--icon-border slds-m-left--small" (click)="updateLocalFiltering()" [attr.disabled]="localFiltertextPositive==='' && localFiltertextNegative.length===0?true:null">
+                            <system-button-icon [icon]="'filterList'" [size]="'small'"></system-button-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="lines.length">
+
+                <table class="slds-table slds-table--bordered slds-table--col-bordered slds-table--striped slds-table_cell-buffer" style="max-height:400px" [ngStyle]="{'opacity':isBuildingLocalTextfilter?0.25:1}"><!-- slds-table--header-fixed -->
+                    <thead>
+                        <tr>
+                            <th style="width:1%">{{lang.getLabel('LBL_DATE')}}</th>
+                            <th style="width:1%">{{lang.getLabel('LBL_TIME')}}</th>
+                            <th style="width:1%" class="slds-text-align--right">PID</th>
+                            <th style="width:1%" class="slds-text-align--right">{{lang.getLabel('LBL_TRANSACTION')}}</th>
+                            <th style="width:1%">{{lang.getLabel('LBL_USER')}}</th>
+                            <th style="width:1%">{{lang.getLabel('LBL_LEVEL')}}</th>
+                            <th style="width:100%">{{lang.getLabel('LBL_TEXT')}}</th>
+                            <th style="width:2rem;border-left:0"></th>
+                            <th style="width:2rem;border-left:0"></th>
+                        </tr>
+                    </thead>
+                    <tbody #tbody>
+                        <tr *ngFor="let line of linesToShow | paginate: { page: currPage, limit: 20 }">
+                            <td class="slds-text-align--right"><a (click)="valuesNotClickable || valueClicked$.emit({type:'date',value:line.date})" [ngClass]="{notClickable:valuesNotClickable}">{{line.date}}</a></td>
+                            <td class="slds-text-align--right"><a (click)="valuesNotClickable || valueClicked$.emit({type:'date',value:line.date});valueClicked$.emit({type:'time',value:line.time})" [ngClass]="{notClickable:valuesNotClickable}">{{line.time}}</a></td>
+                            <td class="slds-text-align--right"><a (click)="valuesNotClickable || valueClicked$.emit({type:'pid',value:line.pid})" [ngClass]="{notClickable:valuesNotClickable}">{{line.pid}}</a></td>
+                            <td class="slds-text-align--right"><a (click)="valuesNotClickable || valueClicked$.emit({type:'tid',value:line.tid})" [ngClass]="{notClickable:valuesNotClickable}">{{line.tid}}</a></td>
+                            <td><a (click)="valuesNotClickable || valueClicked$.emit({type:'uid',value:line.uid})" [ngClass]="{notClickable:valuesNotClickable}">{{getUsername(line.uid)}}</a></td>
+                            <td><a (click)="valuesNotClickable || valueClicked$.emit({type:'lev',value:line.lev})" [ngClass]="{notClickable:valuesNotClickable}">{{line.lev}}</a></td>
+                            <td [ngClass]="{expanded:line.expand,collapsed:!line.expand}">
+                                <div class="slds-text-font_monospace" [ngClass]="{'slds-truncate':!line.expand}">{{line.txt}}</div>
+                            </td>
+                            <td class="slds-p-left--none" style="border-left:0">
+                                <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="line.expand=true" >
+                                    <system-button-icon [icon]="'threedots'" [size]="'small'"></system-button-icon>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="showLineInModal(line.i)" [ngClass]="{'slds-hidden':!line.txtTruncated}">
+                                    <system-button-icon [icon]="'expand'" [size]="'medium'"></system-button-icon>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr *ngIf="isFiltered && linesToShow.length === 0">
+                            <td colspan="8" class="slds-p-around--x-large">
+                                <div class="slds-p-vertical--x-large slds-text-align--center slds-text-heading--small">Empty list (filter is active).</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div *ngIf="lines.length == 0" class="slds-p-vertical--x-large slds-text-align--center slds-text-heading--small">No entries found.</div>
+
+        </div>
+
+    </div>
+
+</div>

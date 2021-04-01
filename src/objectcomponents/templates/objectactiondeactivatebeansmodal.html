@@ -1,0 +1,40 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<system-modal size="x-small">
+    <system-modal-header (close)="closeModal()">
+        <system-label label="LBL_SELECT_ACTIVE"></system-label>
+    </system-modal-header>
+    <system-modal-content margin="none">
+        <div class="slds-m-left_x-small slds-m-vertical_large">
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <system-input-radio *ngFor="let item of selectedItems" name="module" [value]="item.id" [(ngModel)]="value">{{fieldname(item)}}
+                        <div class="slds-float--right slds-m-right_small" *ngIf="item.itemsaved == 'deactivated'">
+                            <system-label label="LBL_DEACTIVATED"></system-label>
+                            <system-button-icon class="slds-m-left_small" [icon]="'check'"></system-button-icon>
+                        </div>
+                        <div class="slds-float--right slds-m-right_small" *ngIf="item.itemsaved == 'error'">
+                            <system-label label="LBL_ERROR"></system-label>
+                            <system-button-icon class="slds-m-left_small" [icon]="'close'"></system-button-icon>
+                        </div>
+                    </system-input-radio>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button *ngIf="!showfinish" class="slds-button slds-button--neutral" (click)="closeModal()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button *ngIf="!showfinish" class="slds-button slds-button--brand" (click)="select()"><system-label label="LBL_EXECUTE"></system-label></button>
+        <button *ngIf="showfinish" class="slds-button slds-button--brand" (click)="closeModal()"><system-label label="LBL_FINISH"></system-label></button>
+    </system-modal-footer>
+</system-modal>

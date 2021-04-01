@@ -1,0 +1,56 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-grid slds-grid--vertical slds-height_full slds-p-around--x-small slds-scrollable--y">
+    <div style="height: 50%">
+        <system-section titlelabel="LBL_SECTIONS" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
+            <div cdkDropList (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragExit($event)" cdkDropListSortingDisabled [cdkDropListEnterPredicate]="noReturnPredicate"
+                 [cdkDropListData]="sections"
+                 class="slds-grid slds-size--1-of-1 slds-grid--vertical slds-height_full slds-p-bottom--small spice-page-builder-panel-drop-list">
+                <div *ngFor="let section of sections; trackBy: trackByFn" cdkDrag [cdkDragData]="section"
+                     class="slds-grow slds-p-around--xx-small slds-grid slds-grid--vertical slds-drag--preview spice-drag-placeholder-visible">
+                    <div>
+                        {{section.children?.length}} <system-label label="LBL_COLUMNS"></system-label>
+                    </div>
+                    <div class="slds-grid slds-grow slds-theme--default" style="border: 2px solid #ca1b21; cursor: move">
+                        <div *ngFor="let item of section.children; trackBy: trackByFn; let last = last" [style.border-right]="!last ? '2px solid #ca1b21' : 0" class="slds-grow"></div>
+                    </div>
+                </div>
+            </div>
+        </system-section>
+    </div>
+    <div style="height: 50%">
+        <system-section titlelabel="LBL_CONTENT_ELEMENTS" [alwaysExpanded]="true" class="spice-collapsible-tab-grow">
+            <div cdkDropList (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragExit($event)" [id]="spicePageBuilderService.contentListId" cdkDropListSortingDisabled
+                 [cdkDropListEnterPredicate]="noReturnPredicate" [cdkDropListData]="spicePageBuilderService.panelElements"
+                 class="slds-grid slds-size--1-of-1 slds-p-around--xx-small slds-wrap spice-page-builder-panel-drop-list" style="height: fit-content">
+                <div *ngFor="let contentElement of spicePageBuilderService.panelElements; trackBy: trackByFn" cdkDrag [cdkDragData]="contentElement" [title]="contentElement.tagName"
+                     class="slds-p-around--xxx-small slds-drag--preview" style="cursor: move">
+                    <div class="slds-p-around--x-small slds-card slds-height_full slds-align--absolute-center slds-grid slds-grid--vertical">
+                        <system-utility-icon [icon]="contentElement.icon" size="large"></system-utility-icon>
+                        <div>
+                            <system-label [label]="contentElement.label"></system-label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </system-section>
+    </div>
+    <div class="slds-grid slds-grid--align-end slds-has-divider--top-space">
+        <button class="slds-button slds-button--neutral slds-m-left--xx-small spice-hover-button" (click)="cancel()">
+            <system-label label="LBL_CANCEL"></system-label>
+        </button>
+        <button class="slds-button slds-button--brand slds-m-left--xx-small spice-hover-button" (click)="save()">
+            <system-label label="LBL_SAVE"></system-label>
+        </button>
+    </div>
+</div>

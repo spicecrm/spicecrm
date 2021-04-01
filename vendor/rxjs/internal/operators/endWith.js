@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var concat_1=require("../observable/concat"),of_1=require("../observable/of");function endWith(){for(var o=[],e=0;e<arguments.length;e++)o[e]=arguments[e];return function(e){return concat_1.concat(e,of_1.of.apply(void 0,o))}}exports.endWith=endWith;

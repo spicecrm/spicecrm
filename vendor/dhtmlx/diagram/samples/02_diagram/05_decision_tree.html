@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Decision Tree</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script type="text/javascript" src="../../codebase/diagram.js"></script>
+	<link rel="stylesheet" href="../../codebase/diagram.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+
+	<link rel="stylesheet" href="../common/dhx_samples.css">
+	<script type="text/javascript" src="../common/diagram.js"></script>
+	<style>
+		html,body,.cont{
+			background: #FFF;
+		}
+		.dhx_diagram{
+			background: #FFF;
+		}
+		.pos .dhx_item_text{
+			fill:#3DA0E3;
+		}
+		.neg .dhx_item_text{
+			fill: #fd6767;
+		}
+		.decision .dhx_item_shape{
+			fill: #44B3FC;
+			stroke: none;
+		}
+		.dhx_free_diagram .dhx_item_text{
+			font-size: 16px;
+		}
+		.outcome .dhx_item_shape{
+			fill: #3DA0E3;
+			stroke: none;
+		}
+		.endpoint .dhx_item_shape{
+			fill: #307DB0;
+			stroke: none;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="diagram_container"></div>
+
+	<script>
+		var diagram = new dhx.Diagram("diagram_container");
+		diagram.config.lineGap = 40;
+		diagram.data.parse(decisionTree);
+	</script>
+
+</body>
+
+</html>

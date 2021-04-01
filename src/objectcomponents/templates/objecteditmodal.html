@@ -1,0 +1,42 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<system-modal size="large">
+    <system-modal-header (close)="closeModal()">
+        {{modalHeader}}
+        <system-modal-header-right>
+            <button *ngIf="duplicateCheckEnabled" class="slds-button slds-button--brand" [disabled]="model.duplicates.length == 0" (click)="showDuplicates = !showDuplicates" [ngClass]="{'slds-hidden': showDuplicatesTable}">
+                <span class="slds-p-right--xx-small">{{model.duplicateChecking ? '' : model.duplicatecount}}</span><system-label label="LBL_DUPLICATES"></system-label>
+            </button>
+        </system-modal-header-right>
+    </system-modal-header>
+    <system-modal-content [grow]="grow" margin="none" #modalContent>
+        <div *ngIf="!showDuplicatesTable"  class="slds-grid">
+            <div class="slds-grid--vertical slds-grow">
+                <object-edit-modal-dialog-container [module]="model.module"></object-edit-modal-dialog-container>
+            </div>
+            <div *ngIf="showDuplicates" class="slds-size--1-of-3 slds-border--left">
+                <object-edit-modal-dialog-duplicates-panel (close)="showDuplicates = false"></object-edit-modal-dialog-duplicates-panel>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+            <div class="slds-col">
+                <object-record-messages-badge></object-record-messages-badge>
+            </div>
+            <div class="slds-col">
+                <object-action-container containerclass="slds-button-group-row" [actionset]="componentconfig.actionset" (actionemitter)="handleAction($event)"></object-action-container>
+            </div>
+        </div>
+    </system-modal-footer>
+</system-modal>

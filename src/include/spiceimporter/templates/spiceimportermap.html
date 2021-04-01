@@ -1,0 +1,126 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-grid slds-wrap slds-height_full">
+    <div class="slds-p-horizontal--small slds-size--1-of-4 slds-border--right slds-height_full">
+        <div class="slds-text-body--regular slds-box slds-m-vertical--small slds-text-color--weak" style="padding: .25rem">
+            {{ spiceImport.stepLongText }}
+        </div>
+        <div *ngIf="modelFields && this.spiceImport.importAction == 'new'">
+            <legend class="slds-form-element__legend slds-form-element__label">
+                <system-label label="MSG_REQUIRED_MAPPED_FIXED"></system-label>
+            </legend>
+            <div class="slds-tile__detail slds-text-body--small slds-p-horizontal--small">
+                <div class="slds-grid" *ngFor="let field of this.requiredModelFields; trackBy: trackByFn">
+                    <span class="slds-truncate">
+                        {{ field.displayname }}
+                    </span>
+                    <span class="slds-col--bump-left slds-truncate">
+                        <system-button-icon
+                                [ngClass]="{'slds-text-color_success' : checkRequired(field.name), 'slds-text-color--error': !checkRequired(field.name)}"
+                                [icon]="checkRequired(field.name) ? 'success' : 'record' "></system-button-icon>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="slds-m-vertical--x-small">
+            <fieldset class="slds-form-element slds-m-top--small">
+                <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_UNIQUE_FIELD"></system-label></legend>
+                <div class="slds-form-element__control">
+                        <span class="slds-radio">
+                          <input type="radio" id="idFieldAuto" name="idFieldOptions" value="auto"
+                                 [(ngModel)]="idFieldAction"/>
+                          <label class="slds-radio__label" for="idFieldAuto">
+                            <span class="slds-radio_faux"></span>
+                            <span class="slds-form-element__label"><system-label label="LBL_HAVE_NO_ID"></system-label></span>
+                          </label>
+                        </span>
+                    <span class="slds-radio">
+                          <input type="radio" id="idFieldHave" name="idFieldOptions" value="have"
+                                 [(ngModel)]="idFieldAction"/>
+                          <label class="slds-radio__label" for="idFieldHave">
+                            <span class="slds-radio_faux"></span>
+                            <span class="slds-form-element__label"><system-label label="LBL_ALREAD_HAVE_ID"></system-label></span>
+                          </label>
+                        </span>
+                </div>
+            </fieldset>
+
+            <div *ngIf="idFieldAction == 'have' " class="slds-form-element  slds-m-vertical--small">
+                <label class="slds-form-element__label" for="idFieldSelect"><system-label label="LBL_SELECT_ID_FIELD"></system-label></label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" id="idFieldSelect" [(ngModel)]="spiceImport.idField">
+                            <option value=""></option>
+                            <option *ngFor="let field of spiceImport.fileHeader; trackBy: trackByFn" [value]="field">{{ field }}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-size--3-of-4 slds-height_full">
+        <table *ngIf="spiceImport.fileHeader.length > 0"
+               class="slds-table slds-table--bordered slds-table--cell-buffer">
+            <thead>
+            <tr class="slds-text-title--caps">
+                <th scope="col" colspan="2">
+                    <div style="font-weight: 600" class="slds-truncate slds-p-vertical--xx-small"><system-label label="LBL_HEADER"></system-label></div>
+                </th>
+                <th scope="col">
+                    <div style="font-weight: 600" class="slds-truncate  slds-p-vertical--xx-small">{{ model.module }} <system-label label="LBL_FIELDS"></system-label></div>
+                </th>
+                <th colspan="2" scope="col">
+                    <div style="font-weight: 600" class="slds-truncate  slds-p-vertical--xx-small"><system-label label="LBL_RECORDS"></system-label>
+                        ({{spiceImport.fileRows}})
+                    </div>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let row of spiceImport.fileHeader; let columnindex = index; trackBy: trackByFn">
+                <td scope="row" class="slds-p-right--none slds-p-left--none slds-text-align_center" width="22px">
+                    <div class="slds-text-align_center slds-p-around--xx-small">
+                        <system-button-icon *ngIf="spiceImport.idField == row" size="small"
+                                            [icon]="'lock'"></system-button-icon>
+                    </div>
+                </td>
+                <td scope="row">
+                    <div class="slds-truncate">{{row}}</div>
+                </td>
+                <td>
+                    <div class="slds-truncate">
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select"
+                                        [disabled]="spiceImport.idField == row"
+                                        [value]="spiceImport.idField == row ? '' : getMapping(row)"
+                                        (change)="setMapping(row, $event)">
+                                    <option value=""></option>
+                                    <ng-container *ngFor="let field of modelFields; trackBy: trackByFn">
+                                        <option [disabled]="isChosen(field.name)" [value]="field.name">
+                                            {{field.displayname}}
+                                        </option>
+                                    </ng-container>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td *ngFor="let record of spiceImport.fileData; trackBy: trackByFn">
+                    <div class="slds-truncate">{{record[columnindex]}}</div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

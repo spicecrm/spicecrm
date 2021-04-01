@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Org Chart Scroll Content</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script type="text/javascript" src="../../codebase/diagram.js"></script>
+	<link rel="stylesheet" href="../../codebase/diagram.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+
+	<link rel="stylesheet" href="../common/dhx_samples.css">
+	<script type="text/javascript" src="../common/data.js"></script>
+</head>
+
+<body style='background: #fff;'>
+	<div id="diagram_container" class="dhx_inline_cont" style="width:500px;height:320px;"></div>
+	<div class="dhx_inline_cont">
+		<button class="dhx_btn" onclick="showItem()">Show Item</button>
+		<button class="dhx_btn" onclick="scrollDiagram()">Scroll To</button>
+		<button class="dhx_btn" onclick="getScroll()">Get Scroll State</button>
+	</div>
+	<div class="dhx_inline_cont" style="width:200px;padding:0 20px;">
+		<div>Scroll State</div>
+		<div id="message"></div>
+	</div>
+	<script>
+		var diagram = new dhx.Diagram("diagram_container", { type: "org", scroll: true });
+		diagram.data.parse(bitOrgChartData);
+
+		function showItem() {
+			diagram.showItem("2.1");
+		}
+
+		function scrollDiagram() {
+			diagram.scrollTo(0, 160);
+		}
+
+		function getScroll() {
+			var coords = diagram.getScrollState();
+			document.getElementById("message").innerHTML = "x:" + coords.x + " y:" + coords.y;
+		}
+	</script>
+
+</body>
+
+</html>

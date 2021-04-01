@@ -1,0 +1,64 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+    {{model.data.job_interval_read}}
+</field-generic-display>
+<div *ngIf="isEditMode() && isEditable()" class="slds-grid">
+    <div class="slds-form-element slds-p-horizontal--xx-small">
+        <label class="slds-form-element__label slds-grid slds-p-right--none slds-grid--align-spread" for="min">
+            <span class="slds-truncate" [title]="language.getLabel('LBL_MINUTES')"><system-label label="LBL_MINUTES"></system-label></span>
+            <system-utility-icon icon="info_alt" size="xx-small" class="slds-m-left--xxx-small" [title]="fieldDescription.min"></system-utility-icon>
+        </label>
+        <div class="slds-form-element__control">
+            <input id="min" type="text" class="slds-input" [(ngModel)]="min" />
+        </div>
+    </div>
+    <div class="slds-form-element slds-p-horizontal--xx-small">
+        <label class="slds-form-element__label slds-grid slds-p-right--none slds-grid--align-spread" for="hrs">
+            <span class="slds-truncate" [title]="language.getLabel('LBL_HOURS')"><system-label label="LBL_HOURS"></system-label></span>
+            <system-utility-icon icon="info_alt" size="xx-small" class="slds-m-left--xxx-small" [title]="fieldDescription.hrs"></system-utility-icon>
+        </label>
+        <div class="slds-form-element__control">
+            <input id="hrs" type="text" class="slds-input" [(ngModel)]="hrs" />
+        </div>
+    </div>
+    <div class="slds-form-element slds-p-horizontal--xx-small">
+        <label class="slds-form-element__label slds-grid slds-p-right--none slds-grid--align-spread" for="date">
+            <span class="slds-truncate" [title]="language.getLabel('LBL_DAY_OF_MONTH')"><system-label label="LBL_DAY_OF_MONTH"></system-label></span>
+            <system-utility-icon icon="info_alt" size="xx-small" class="slds-m-left--xxx-small" [title]="fieldDescription.date"></system-utility-icon>
+
+        </label>
+        <div class="slds-form-element__control">
+            <input id="date" type="text" class="slds-input" [(ngModel)]="date" />
+        </div>
+    </div>
+    <div class="slds-form-element slds-p-horizontal--xx-small">
+        <label class="slds-form-element__label slds-grid slds-p-right--none slds-grid--align-spread" for="mo">
+            <span class="slds-truncate" [title]="language.getLabel('LBL_MONTH')"><system-label label="LBL_MONTH"></system-label></span>
+            <system-utility-icon icon="info_alt" size="xx-small" class="slds-m-left--xxx-small" [title]="fieldDescription.mo"></system-utility-icon>
+        </label>
+        <div class="slds-form-element__control">
+            <input id="mo" type="text" class="slds-input" [(ngModel)]="mo" />
+        </div>
+    </div>
+    <div class="slds-form-element slds-p-horizontal--xx-small">
+        <label class="slds-form-element__label slds-grid slds-p-right--none slds-grid--align-spread" for="day">
+            <span class="slds-truncate" [title]="language.getLabel('LBL_DAY_OF_WEEK')"><system-label label="LBL_DAY_OF_WEEK"></system-label></span>
+            <system-utility-icon icon="info_alt" size="xx-small" class="slds-m-left--xxx-small" [title]="fieldDescription.day"></system-utility-icon>
+        </label>
+        <div class="slds-form-element__control">
+            <input id="day" type="text" class="slds-input" [(ngModel)]="day" />
+        </div>
+    </div>
+</div>

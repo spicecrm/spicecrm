@@ -1,0 +1,84 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-rich-text-editor slds-grid slds-grid_vertical slds-nowrap">
+    <div #toolbar role="toolbar" class="slds-rich-text-editor__toolbar slds-shrink-none">
+        <ul class="slds-button-group-list">
+            <li >
+                <button class="slds-button slds-button--icon-border slds-button--neutral" (click)="removeImage()" [disabled]="!mediaBase64"><system-button-icon icon="delete"></system-button-icon></button>
+            </li>
+            <li *ngIf="allowEditing">
+                <button class="slds-button slds-button--icon-border slds-button--neutral" (click)="removeModifications()" [disabled]="!cropper || !isEdited" title="{{language.getLabel('LBL_REMOVE_MODIFICATIONS')}}"><system-button-icon icon="undo"></system-button-icon></button>
+            </li>
+        </ul>
+        <ul class="slds-button-group-list">
+            <li >
+                <button class="slds-button slds-button--icon-border slds-button--neutral" (click)="zoomIn()" [disabled]="!mediaBase64"><system-button-icon icon="zoomin"></system-button-icon></button>
+            </li>
+            <li >
+                <button class="slds-button slds-button--icon-border slds-button--neutral" (click)="zoomOut()" [disabled]="!mediaBase64"><system-button-icon icon="zoomout"></system-button-icon></button>
+            </li>
+        </ul>
+        <ul  class="slds-button-group-list">
+            <li>
+                <button class="slds-button slds-button--icon-border slds-button--neutral" (click)="setMoveMode()" [disabled]="!cropper"><system-button-icon icon="move"></system-button-icon></button>
+            </li>
+            <li>
+                <button class="slds-button slds-button--icon-border slds-button--neutral" (click)="setCropMode()" [disabled]="!cropper"><system-button-icon icon="drag"></system-button-icon></button>
+            </li>
+            <li>
+                <button class="slds-button slds-button--icon-border slds-button--neutral" (click)="removeCropping()" [disabled]="!cropper || !isCropped" title="{{language.getLabel('LBL_REMOVE_CROPPING')}}"><system-button-icon icon="clear"></system-button-icon></button>
+            </li>
+        </ul>
+        <ul class="slds-button-group-list">
+            <li>
+                <button class="slds-button slds-button--icon-border slds-button--neutral" (click)="rotate(-90)" [disabled]="!canRotate" title="{{language.getLabel('LBL_ROTATE_TO_LEFT')}}"><system-button-custom-icon icon="rotateleft" size="medium"></system-button-custom-icon></button>
+            </li>
+            <li>
+                <button class="slds-button slds-button--icon-border slds-button--neutral" (click)="rotate(+90)" [disabled]="!canRotate" title="{{language.getLabel('LBL_ROTATE_TO_RIGHT')}}"><system-button-custom-icon icon="rotateright" size="medium"></system-button-custom-icon></button>
+            </li>
+            <li>
+                <button class="slds-button slds-button--icon-border slds-button--neutral" (click)="mirrorX()" [disabled]="!canMirror" title="{{language.getLabel('LBL_MIRROR_HORIZONTALLY')}}"><system-button-custom-icon icon="mirrorhorizontal" size="medium"></system-button-custom-icon></button>
+            </li>
+            <li>
+                <button class="slds-button slds-button--icon-border slds-button--neutral" (click)="mirrorY()" [disabled]="!canMirror" title="{{language.getLabel('LBL_MIRROR_VERTICALLY')}}"><system-button-custom-icon icon="mirrorvertical" size="medium"></system-button-custom-icon></button>
+            </li>
+        </ul>
+        <div *ngIf="allowResizing" class="slds-grid slds-grid--vertical-align-center slds-col--bump-left">
+            <system-checkbox [(ngModel)]="doResizeByUser" [disabled]="!canResize"><system-label label="LBL_DOWNSIZE_TO_MAX"></system-label></system-checkbox>
+            <system-input-number onlyField="true" [(ngModel)]="maxWidthInput" precision="0" min="1" placeholder="{{language.getLabel('LBL_WIDTH')}} " [disabled]="!doResizeByUser || !canResize" size="5" (change)="maxWidthChanged()"></system-input-number>
+            <div class="slds-p-left--xxx-small">px</div>
+            <div class="slds-p-horizontal--x-small">x</div>
+            <system-input-number onlyField="true" [(ngModel)]="maxHeightInput" precision="0" min="1" placeholder="{{language.getLabel('LBL_HEIGHT')}} " [disabled]="!doResizeByUser || !canResize" size="5" (change)="maxHeightChanged()"></system-input-number>
+            <div class="slds-p-left--xxx-small">px</div>
+        </div>
+    </div>
+    <div [ngStyle]="{height:cropperHeight}">
+        <div class="slds-height_full" style="overflow:hidden" (system-drop-file)="onDrop($event)" [system-overlay-loading-spinner]="isLoading" >
+            <img #imgelement *ngIf="mediaBase64, else uploadbutton" [src]="mediaBase64" (load)="imageLoaded($event)" style="display:block"/>
+            <ng-template #uploadbutton>
+                <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+                    <div class="slds-grid slds-grid--vertical-align-center">
+                        <button class="slds-button slds-button--neutral" (click)="triggerFileSelectionDialog()"><system-label label="LBL_SELECT_FILE"></system-label></button>
+                        <input #fileselector style="display:none" type="file" accept="image/*" (change)="fileSelectionChange()"/>
+                        <div class="slds-p-horizontal--x-small"><system-label label="LBL_OR_PASTE_IMAGE_OR_DROP_FILE_HERE"></system-label></div>
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+    <div #bottomtoolbar role="toolbar" class="slds-rich-text-editor__toolbar slds-shrink-none slds-rich-text-editor__toolbar_bottom">
+        <div *ngIf="mediaMetaData.fileformat" class="slds-col--bump-right">Format: {{this.mediaMetaData.fileformat.toUpperCase()}}</div>
+        <div *ngIf="mediaBase64">{{mediaMetaData.originalWidth}} &times; {{mediaMetaData.originalHeight}} px<span *ngIf="isResized"> &nbsp;&#8594;&nbsp; {{mediaMetaData.width}} &times; {{mediaMetaData.height}} px</span></div>
+        <div *ngIf="!mediaBase64">&nbsp;</div>
+    </div>
+</div>

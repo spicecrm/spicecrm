@@ -1,0 +1,1 @@
+"use strict";function isFunction(t){return"function"==typeof t}Object.defineProperty(exports,"__esModule",{value:!0}),exports.isFunction=isFunction;

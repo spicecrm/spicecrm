@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var Observable_1=require("../Observable");function isObservable(e){return!!e&&(e instanceof Observable_1.Observable||"function"==typeof e.lift&&"function"==typeof e.subscribe)}exports.isObservable=isObservable;

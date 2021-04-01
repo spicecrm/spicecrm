@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var mergeMap_1=require("./mergeMap");function concatMap(e,r){return mergeMap_1.mergeMap(e,r,1)}exports.concatMap=concatMap;

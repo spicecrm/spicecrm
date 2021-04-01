@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var Scheduler=function(){function n(e,t){void 0===t&&(t=n.now),this.SchedulerAction=e,this.now=t}return n.prototype.schedule=function(e,t,n){return void 0===t&&(t=0),new this.SchedulerAction(this,e).schedule(n,t)},n.now=function(){return Date.now()},n}();exports.Scheduler=Scheduler;

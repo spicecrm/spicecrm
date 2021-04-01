@@ -1,0 +1,81 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-grid">
+    <div class="slds-size--1-of-2 slds-p-right--xx-small">
+        <field-label [fieldname]="'name'"></field-label>
+        <field-container [field]="'name'"></field-container>
+    </div>
+    <div class="slds-size--1-of-2 slds-p-left--xx-small">
+        <field-label [fieldname]="'sequence'" [fieldconfig]="{label:'WorkflowDefinitions:LBL_SEQUENCE'}"></field-label>
+        <field-container [field]="'sequence'"></field-container>
+    </div>
+</div>
+<div>
+    <field-label [fieldname]="'description'"></field-label>
+    <field-container [field]="'description'"></field-container>
+</div>
+<div class="slds-grid slds-gutters_direct-xx-small">
+    <div class="slds-col slds-size--1-of-4 slds-p-right--xx-small">
+        <field-label [fieldname]="'timetostart'"></field-label>
+        <field-container [field]="'timetostart'"></field-container>
+    </div>
+    <div class="slds-col slds-size--1-of-4 slds-p-right--xx-small">
+        <field-label [fieldname]="'timetocomplete'"></field-label>
+        <field-container [field]="'timetocomplete'"></field-container>
+    </div>
+    <div class="slds-col slds-size--1-of-4 slds-p-right--xx-small">
+        <field-label [fieldname]="'timetoalert'"></field-label>
+        <field-container [field]="'timetoalert'"></field-container>
+    </div>
+    <div class="slds-col slds-size--1-of-4 slds-p-right--xx-small">
+        <field-label [fieldname]="'timetoescalate'"></field-label>
+        <field-container [field]="'timetoescalate'"></field-container>
+    </div>
+</div>
+<div class="slds-grid">
+    <div class="slds-size--1-of-2 slds-p-right--xx-small">
+        <field-label [fieldname]="'tasktype'" [fieldconfig]="{label:'WorkflowDefinitions:LBL_TYPE'}"></field-label>
+        <field-container [field]="'tasktype'"></field-container>
+    </div>
+    <div class="slds-size--1-of-8 slds-p-left--xx-small">
+        <field-label [fieldname]="'primarytask'" [fieldconfig]="{label:'WorkflowDefinitions:LBL_PRIMARY'}"></field-label>
+        <field-container [field]="'primarytask'"></field-container>
+    </div>
+    <div class="slds-size--1-of-8 slds-p-left--xx-small">
+        <field-label [fieldname]="'closetask'" [fieldconfig]="{label:'WorkflowDefinitions:LBL_CLOSE_W_WORKFLOW'}"></field-label>
+        <field-container [field]="'closetask'"></field-container>
+    </div>
+    <div class="slds-size--1-of-8 slds-p-left--xx-small">
+        <field-label [fieldname]="'ishidden'" [fieldconfig]="{label:'WorkflowDefinitions:LBL_HIDDEN'}"></field-label>
+        <field-container [field]="'ishidden'"></field-container>
+    </div>
+    <div class="slds-size--1-of-8 slds-p-left--xx-small">
+        <field-label [fieldname]="'allowcomment'" [fieldconfig]="{label:'WorkflowDefinitions:LBL_ALLOW_COMMENT'}"></field-label>
+        <field-container [field]="'allowcomment'"></field-container>
+    </div>
+</div>
+<div class="slds-grid">
+    <div class="slds-size--3-of-8 slds-p-right--xx-small">
+        <field-label [fieldname]="'previoustask'" [fieldconfig]="{label:'WorkflowDefinitions:LBL_PREVIOUSTASK'}"></field-label>
+        <workflow-manager-taskdropdown [tasks]="tasks" [field]="'previoustask'" [disabled]="previousTaskDisabled"></workflow-manager-taskdropdown>
+    </div>
+    <div class="slds-size--1-of-8 slds-p-left--xx-small">
+        <field-label [fieldname]="'prevclosedreq'" [fieldconfig]="{label:'WorkflowDefinitions:LBL_CLOSED_REQ'}"></field-label>
+        <field-container [field]="'prevclosedreq'"></field-container>
+    </div>
+    <div class="slds-size--1-of-2 slds-p-left--xx-small">
+        <field-label [fieldname]="'nexttask'" [fieldconfig]="{label:'WorkflowDefinitions:LBL_NEXTTASK'}"></field-label>
+        <workflow-manager-taskdropdown [tasks]="tasks" [field]="'nexttask'" [disabled]="nextTaskDisabled"></workflow-manager-taskdropdown>
+    </div>
+</div>
+<workflow-manager-detail-taskdecisions *ngIf="model.data.tasktype == 'decision'" [tasks]="tasks"></workflow-manager-detail-taskdecisions>

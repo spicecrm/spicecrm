@@ -1,0 +1,158 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<!--div class="slds-backdrop slds-backdrop--open"></div>
+
+<div role="dialog" class="slds-modal slds-fade-in-open slds-modal_large">
+    <div class="slds-modal__container">
+        <div class="slds-modal__header slds-theme--shade">
+            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" (click)="cancelDialog()">
+                <system-button-icon [icon]="'close'" [size]="'large'" [inverse]="true"></system-button-icon>
+            </button>
+            <h2 class="slds-text-heading--medium"><system-label label="LBL_EDIT"></system-label></h2>
+        </div>
+        <div class="slds-modal__content slds-theme--default slds-p-around--medium slds-p-bottom--xx-small">
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--3-of-4">
+                    <label><abbr class="slds-required">*</abbr><system-label label="LBL_NAME"></system-label>:</label>
+                    <input type="text" class="slds-input" [(ngModel)]="name" placeholder="only A-Z, 0-9 and _ are allowed!">
+                </div>
+                <div class="slds-form-element slds-size--1-of-4 slds-p-around--small">
+                    <div class="slds-form-element__control">
+                        <span class="slds-radio">
+                          <input type="radio" id="radio-3" [(ngModel)]="scope" value="global" />
+                          <label class="slds-radio__label" for="radio-3">
+                            <span class="slds-radio_faux"></span>
+                            <span class="slds-form-element__label">global</span>
+                          </label>
+                        </span>
+                        <span class="slds-radio">
+                          <input type="radio" id="radio-4" [(ngModel)]="scope" value="custom" />
+                          <label class="slds-radio__label" for="radio-4">
+                            <span class="slds-radio_faux"></span>
+                            <span class="slds-form-element__label">custom</span>
+                          </label>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h2><system-label label="LBL_TRANSLATIONS"></system-label>:</h2>
+                <article *ngFor="let trans of translations">
+                    <div class="slds-card slds-m-bottom--small">
+                        <div class="slds-card__header">
+                            <h2>{{getLangText(trans.syslanguage)}}</h2>
+                        </div>
+                        <div class="slds-card__body slds-p-around--small">
+                            <div class="slds-form-element">
+                                <label>short:</label>
+                                <input type="text" class="slds-input" [(ngModel)]="trans.translation_short">
+                            </div>
+                            <div class="slds-form-element">
+                                <label><abbr class="slds-required">*</abbr>default:</label>
+                                <input type="text" class="slds-input" required="required" [(ngModel)]="trans.translation_default">
+                            </div>
+                            <div class="slds-form-element">
+                                <label>long:</label>
+                                <textarea class="slds-textarea" [(ngModel)]="trans.translation_long"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <div *ngIf="languages.length > translations.length" class="slds-grid">
+                    <div class="slds-form-element__control slds-p-right--x-small">
+                        <div class="slds-select_container">
+                            <select class="slds-select" #add_translation_language>
+                                <option *ngFor="let lang of getMissingLanguages()" value="{{lang.language}}">{{lang.text}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="slds-button slds-button--neutral" title="{{language.getLabel('LBL_ADD_TRANSLATION')}}..." (click)="addTranslation(add_translation_language.value)"><system-label label="LBL_ADD"></system-label></button>
+                </div>
+            </div>
+        </div>
+        <div class="slds-modal__footer">
+            <div class="slds-col">
+                <button class="slds-button slds-button--neutral" (click)="cancelDialog()"><system-label label="LBL_CANCEL"></system-label></button>
+                <button class="slds-button slds-button--brand" [disabled]="!validate()" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+            </div>
+        </div>
+    </div>
+</div-->
+
+<system-modal size="large">
+    <system-modal-header (close)="cancelDialog()"><system-label label="LBL_EDIT"></system-label></system-modal-header>
+    <system-modal-content>
+        <div class="slds-grid">
+            <div class="slds-form-element slds-size--3-of-4">
+                <label><abbr class="slds-required">*</abbr><system-label label="LBL_NAME"></system-label>:</label>
+                <input type="text" class="slds-input" [(ngModel)]="name" placeholder="only A-Z, 0-9 and _ are allowed!">
+            </div>
+            <div class="slds-form-element slds-size--1-of-4 slds-p-around--small">
+                <div class="slds-form-element__control">
+                        <span class="slds-radio">
+                          <input type="radio" id="radio-3" [(ngModel)]="scope" value="global" />
+                          <label class="slds-radio__label" for="radio-3">
+                            <span class="slds-radio_faux"></span>
+                            <span class="slds-form-element__label">global</span>
+                          </label>
+                        </span>
+                    <span class="slds-radio">
+                          <input type="radio" id="radio-4" [(ngModel)]="scope" value="custom" />
+                          <label class="slds-radio__label" for="radio-4">
+                            <span class="slds-radio_faux"></span>
+                            <span class="slds-form-element__label">custom</span>
+                          </label>
+                        </span>
+                </div>
+            </div>
+        </div>
+        <div>
+            <h2><system-label label="LBL_TRANSLATIONS"></system-label>:</h2>
+            <article *ngFor="let trans of translations">
+                <div class="slds-card slds-m-bottom--small">
+                    <div class="slds-card__header">
+                        <h2>{{getLangText(trans.syslanguage)}}</h2>
+                    </div>
+                    <div class="slds-card__body slds-p-around--small">
+                        <div class="slds-form-element">
+                            <label>short:</label>
+                            <input type="text" class="slds-input" [(ngModel)]="trans.translation_short">
+                        </div>
+                        <div class="slds-form-element">
+                            <label><abbr class="slds-required">*</abbr>default:</label>
+                            <input type="text" class="slds-input" required="required" [(ngModel)]="trans.translation_default">
+                        </div>
+                        <div class="slds-form-element">
+                            <label>long:</label>
+                            <textarea class="slds-textarea" [(ngModel)]="trans.translation_long"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            <div *ngIf="languages.length > translations.length" class="slds-grid">
+                <div class="slds-form-element__control slds-p-right--x-small">
+                    <div class="slds-select_container">
+                        <select class="slds-select" #add_translation_language>
+                            <option *ngFor="let lang of getMissingLanguages()" value="{{lang.language}}">{{lang.text}}</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="slds-button slds-button--neutral" title="{{language.getLabel('LBL_ADD_TRANSLATION')}}..." (click)="addTranslation(add_translation_language.value)"><system-label label="LBL_ADD"></system-label></button>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="cancelDialog()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" [disabled]="!validate()" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

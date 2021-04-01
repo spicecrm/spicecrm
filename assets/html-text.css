@@ -1,0 +1,39 @@
+/* Style Definition for HTML fields */
+
+/*! minireset.css v0.0.3 | MIT License | github.com/jgthms/minireset.css */
+html,body,p,ol,ul,li,dl,dt,dd,blockquote,figure,fieldset,legend,textarea,pre,iframe,hr,h1,h2,h3,h4,h5,h6{margin:0;padding:0}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}ul{list-style:none}button,input,select,textarea{margin:0}html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}img,embed,iframe,object,audio,video{height:auto;max-width:100%}iframe{border:0}table{border-collapse:collapse;border-spacing:0}td,th{padding:0;text-align:left}
+
+body {
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 0.8125rem;
+    padding: 1rem;
+}
+
+h1,  h2,  h3,  h4,  h5,  h6 {
+    margin: 0.75rem 0;
+    line-height: 1.25;
+}
+h1 { font-size: 1.25rem; }
+h2 { font-size: 1rem; color: #000; }
+h3,  h4,  h5,  h6 { font-size: 0.75rem; color: #000; line-height: 1.25; }
+
+b, strong { font-weight: 700; }
+
+i, em { font-style: italic; }
+
+p, ul { margin: 0.75rem 0; }
+
+*:first-child { margin-top: 0; }
+*:last-child { margin-bottom: 0; }
+
+a { color: #444; text-decoration: underline; }
+a:hover { color: #000; text-decoration: none; }
+
+ul { list-style: disc outside; }
+ol { list-style: decimal outside; }
+li { margin-left: 1.75rem; }
+
+.align-right { text-align: right; }
+.align-left { text-align: left; }
+.align-center { text-align: center; }
+.align-justify { text-align: justify; }

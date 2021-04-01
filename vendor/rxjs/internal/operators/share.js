@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var multicast_1=require("./multicast"),refCount_1=require("./refCount"),Subject_1=require("../Subject");function shareSubjectFactory(){return new Subject_1.Subject}function share(){return function(e){return refCount_1.refCount()(multicast_1.multicast(shareSubjectFactory)(e))}}exports.share=share;
