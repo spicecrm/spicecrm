@@ -79,7 +79,7 @@ export class ACLTerritorriesManagerTerritoryAddModal implements OnInit {
         this.model.data.territorytype_id = this.territorytype;
 
         // load type
-        this.backend.getRequest('spiceaclterritories/core/orgobjecttypes/' + this.territorytype).subscribe(territorrytypedetails => {
+        this.backend.getRequest('module/SpiceACLTerritories/core/territorytypes/' + this.territorytype).subscribe(territorrytypedetails => {
             this.model.data.elementvalues = {};
             for (let element of territorrytypedetails.elements) {
                 this.model.data.elementvalues[element.id] = {
@@ -113,24 +113,18 @@ export class ACLTerritorriesManagerTerritoryAddModal implements OnInit {
         return false;
     }
 
-    close() {
+    public close() {
         this.self.destroy();
     }
 
-    save() {
-        this.backend.postRequest('spiceaclterritories/core/territories/check', {}, this.modelutilities.spiceModel2backend('SpiceACLTerrtories', this.model.data)).subscribe(response => {
+    public save() {
+        this.backend.postRequest('module/SpiceACLTerritories/' + this.model.id + '/check', {}, this.modelutilities.spiceModel2backend('SpiceACLTerrtories', this.model.data)).subscribe(response => {
             if (response.status == 'success') {
-                this.backend.postRequest('spiceaclterritories/core/territories/' + this.model.id, {}, this.modelutilities.spiceModel2backend('SpiceACLTerrtories', this.model.data)).subscribe(response => {
+                this.backend.postRequest('module/SpiceACLTerritories/' + this.model.id, {}, this.modelutilities.spiceModel2backend('SpiceACLTerrtories', this.model.data)).subscribe(response => {
                     this.newterritory.emit(this.model.data);
                     this.close();
                 });
-
-            } else {
-
             }
         });
-
-
     }
-
 }

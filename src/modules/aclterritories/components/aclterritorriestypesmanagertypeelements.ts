@@ -12,38 +12,39 @@ import {backend} from '../../../services/backend.service';
     selector: 'aclterritorries-typesmanager-type-elements',
     templateUrl: './src/modules/aclterritories/templates/aclterritorriestypesmanagertypeelements.html',
 })
-export class ACLTerritorriesTypesmanagerTypeElements implements OnChanges{
+export class ACLTerritorriesTypesmanagerTypeElements implements OnChanges {
 
-    loading: boolean = false;
-    @Input() activeType: string = '';
-    typeelements: Array<any> = [];
+    public loading: boolean = false;
+    public typeelements: any[] = [];
+
+    @Input() public activeType: string = '';
 
     constructor(private backend: backend, private modal: modal, private language: language) {
     }
 
-    ngOnChanges(){
+    public ngOnChanges() {
         this.loadValues();
     }
 
-    loadValues(){
-        if(this.activeType != ''){
+    public loadValues() {
+        if(this.activeType != '') {
             this.loading = true;
-            this.backend.getRequest('spiceaclterritories/core/orgobjecttypeelements/'+this.activeType).subscribe(typeelements => {
+            this.backend.getRequest('module/SpiceACLTerritories/core/territorytypes/' + this.activeType + '/elements').subscribe(typeelements => {
                 this.typeelements = typeelements;
 
                 this.typeelements.sort((a, b) => {
                     return a.sequence > b.sequence ? 1 : -1;
-                })
+                });
 
                 this.loading = false;
-            })
+            });
         }
     }
 
-    addTypeElement(){
+    public addTypeElement() {
         this.modal.openModal('ACLTerritorriesTypesmanagerTypeelementsAddModal').subscribe(modalRef => {
             let currentelements = [];
-            for(let element of this.typeelements){
+            for(let element of this.typeelements) {
                 currentelements.push(element.spiceaclterritoryelement_id);
             }
             modalRef.instance.currentelements = currentelements;
@@ -56,18 +57,18 @@ export class ACLTerritorriesTypesmanagerTypeElements implements OnChanges{
                     sequence: this.typeelements.length
                 };
 
-                this.backend.postRequest('spiceaclterritories/core/orgobjecttypeelements', {}, newtype).subscribe(elements => {
+                this.backend.postRequest('module/SpiceACLTerritories/core/territorytypes/' + this.activeType + '/elements', {}, newtype).subscribe(elements => {
                     this.typeelements.push(newtype);
                 });
 
-            })
-        })
+            });
+        });
     }
 
-    deleteTypeElement(typeelements){
+    public deleteTypeElement(typeelements) {
         this.modal.confirm('Delete Element', 'Delete').subscribe(response => {
             if (response) {
-                this.backend.deleteRequest('spiceaclterritories/core/orgobjecttypeelements/' + typeelements.spiceaclterritoryelement_id + '/' + typeelements.spiceaclterritorytype_id).subscribe(resp => {
+                this.backend.deleteRequest('module/SpiceACLTerritories/core/territorytypes/' + typeelements.spiceaclterritorytype_id + '/elements/' + typeelements.spiceaclterritoryelement_id).subscribe(resp => {
                     this.typeelements.some((element, index) => {
                         if (element.spiceaclterritoryelement_id == typeelements.spiceaclterritoryelement_id && element.spiceaclterritorytype_id == typeelements.spiceaclterritorytype_id) {
                             this.typeelements.splice(index, 1);
