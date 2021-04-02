@@ -58,7 +58,7 @@ export class fieldSelectTree extends fieldGeneric {
         if( !this.config.getData('select_tree') ) {
             this.config.setData('select_tree', []);
             // load all select_fields which are needed to display the choosen select_fields...
-            this.backend.getRequest('spiceui/core/selecttree/list/'+ this.fieldconfig.key).subscribe(
+            this.backend.getRequest('configuration/spiceui/core/selecttree/list/'+ this.fieldconfig.key).subscribe(
                 (res: any) => {
                     this.sel_fields = res;
                     this.config.setData('select_tree', res);

@@ -57,7 +57,7 @@ export class SelectTreeComponent {
 
     private loadTrees(selectloadfirst = false) {
         if( !this.config.getData('select_trees')) {
-            this.backend.getRequest('spiceui/core/selecttree/trees').subscribe(
+            this.backend.getRequest('/configuration/spiceui/core/selecttree/trees').subscribe(
                 (res: any) => {
                     // this.config.setData('select_trees', res);
                     this.trees = res;
@@ -79,7 +79,7 @@ export class SelectTreeComponent {
 
         this.edit_category = null;
 
-        this.backend.getRequest('spiceui/core/selecttree/tree/'+ currentSelectTree).subscribe(
+        this.backend.getRequest('/configuration/spiceui/core/selecttree/tree/'+ currentSelectTree).subscribe(
             (res: any) => {
                 this.config.setData('select_tree', res);
                 this.initializeTree(res);
@@ -202,7 +202,7 @@ export class SelectTreeComponent {
     }
 
     private save() {
-        this.backend.postRequest('spiceui/core/selecttree/tree', null, this.category_tree).subscribe(
+        this.backend.postRequest('/configuration/spiceui/core/selecttree/tree', null, this.category_tree).subscribe(
             (success) => {
 
                 this.toast.sendToast('changes saved');
