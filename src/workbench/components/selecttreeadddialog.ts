@@ -43,7 +43,7 @@ export class SelectTreeAddDialog{
         };
 
 
-        this.backend.postRequest('spiceui/core/selecttree/newtree', null, this.tree).subscribe(
+        this.backend.postRequest('/configuration/spiceui/core/selecttree/newtree', null, this.tree).subscribe(
             (success) => {
 
                 // this.toast.sendToast('saved');

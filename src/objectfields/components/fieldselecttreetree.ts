@@ -41,7 +41,7 @@ export class fieldSelectTreeTree
         // getting the category tree...
         if( !this.config.getData('select_tree_tree') )
         {
-            this.backend.getRequest('spiceui/core/selecttree/tree/'+ this.treekey).subscribe(
+            this.backend.getRequest('configuration/spiceui/core/selecttree/tree/'+ this.treekey).subscribe(
                 (res:any) => {
                     this.config.setData('select_tree_tree', res);
                     this.select_tree = res;
