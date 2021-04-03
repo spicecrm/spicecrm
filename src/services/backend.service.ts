@@ -772,6 +772,10 @@ export class backend {
                 }
                 responseSubject.next(response);
                 responseSubject.complete();
+            },
+            error => {
+                responseSubject.error(error);
+                responseSubject.complete();
             }
         );
         return responseSubject.asObservable();

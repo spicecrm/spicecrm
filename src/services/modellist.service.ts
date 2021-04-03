@@ -410,7 +410,7 @@ export class modellist implements OnDestroy {
     }
 
     public addCustomListType(listTypeData): void {
-        this.metadata.addModuleListType(this.module,listTypeData);
+        this.metadata.addModuleListType(this.module, listTypeData);
     }
 
     /**
@@ -490,7 +490,7 @@ export class modellist implements OnDestroy {
         let fielddefs = this.getFieldDefs();
 
         // if the service is embedded in a specific component then load the list fields for that component
-        const component = this.embeddedByComponent  || this.currentList.listcomponent;
+        const component = this.embeddedByComponent || this.currentList.listcomponent;
 
         // load all fields from the selected component configs
         let componentconfig = this.metadata.getComponentConfig(component, this.module);
@@ -704,7 +704,7 @@ export class modellist implements OnDestroy {
             return;
         }
         this.standardLists.forEach((list: ListTypeI) => {
-                list.listcomponent = component;
+            list.listcomponent = component;
         });
         this.determineListFields();
         this.userpreferences.setPreference('defaultlisttype', component, false, this.module);
@@ -1080,7 +1080,8 @@ export class modellist implements OnDestroy {
             relatefilter: this.relatefilter?.active ? this.relatefilter : null
         };
 
-        this.backend.getList(this.module, this.sortArray, params).subscribe((res: any) => {
+        this.backend.getList(this.module, this.sortArray, params).subscribe(
+            (res: any) => {
                 // set the listdata
                 this.listData = res;
 
@@ -1102,6 +1103,15 @@ export class modellist implements OnDestroy {
                 retSub.next(true);
                 retSub.complete();
                 this.listDataChanged$.next(true);
+            },
+            error => {
+                this.toast.sendToast('error loading list');
+
+                // indicate that we are no longer loading
+                this.isLoading = false;
+
+                retSub.error(error);
+                retSub.complete();
             }
         );
 
