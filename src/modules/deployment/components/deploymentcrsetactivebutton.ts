@@ -23,7 +23,7 @@ export class DeploymentCRSetActiveButton {
     private activeID = '';
 
     constructor(private language: language, private backend: backend, private model: model, private toast: toast, private broadcast: broadcast) {
-        this.backend.getRequest('systemdeploymentcrs/active').subscribe(crresponse => {
+        this.backend.getRequest('deployment/systemdeploymentcrs/active').subscribe(crresponse => {
             this.activeID = crresponse.id;
         });
     }
@@ -40,14 +40,14 @@ export class DeploymentCRSetActiveButton {
      */
     public execute() {
         if (this.isActive) {
-            this.backend.deleteRequest('systemdeploymentcrs/active').subscribe(status => {
+            this.backend.deleteRequest('deployment/systemdeploymentcrs/delete').subscribe(status => {
                 this.activeID = '';
                 this.broadcast.broadcastMessage('cr.clearactive', {
                     module: this.model.module,
                 });
             });
         } else {
-            this.backend.postRequest('systemdeploymentcrs/active/' + this.model.id).subscribe(status => {
+            this.backend.postRequest(`deployment/${this.model.id}/systemdeploymentcrs/active`).subscribe(status => {
                 if (status.status == 'success') {
                     this.activeID = this.model.id;
 

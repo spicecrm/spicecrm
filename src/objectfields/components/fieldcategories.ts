@@ -42,7 +42,7 @@ export class fieldServiceCategories extends fieldGeneric
         if( !this.config.getData('service_categories') ) {
             this.config.setData('service_categories', []);
             // load all categories which are needed to display the choosen categories...
-            this.backend.getRequest('spiceui/core/servicecategories').subscribe(
+            this.backend.getRequest('configuration/spiceui/core/servicecategories').subscribe(
                 (res: any) => {
                     this.categories = res;
                     this.config.setData('service_categories', res);

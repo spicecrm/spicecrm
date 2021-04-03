@@ -34,7 +34,7 @@ export class ServiceCategoryManagerComponent {
     ) {
         // getting the category tree...
         if (!this.config.getData('service_category_tree')) {
-            this.backend.getRequest('spiceui/core/servicecategories/tree').subscribe(
+            this.backend.getRequest('configuration/spiceui/core/servicecategories/tree').subscribe(
                 (res: any) => {
                     this.config.setData('service_category_tree', res);
                     this.initializeTree(res);
@@ -160,7 +160,7 @@ export class ServiceCategoryManagerComponent {
     }
 
     private save() {
-        this.backend.postRequest('spiceui/core/servicecategories/tree', null, this.category_tree).subscribe(
+        this.backend.postRequest('configuration/spiceui/core/servicecategories/tree', null, this.category_tree).subscribe(
             (success) => {
                 this.toast.sendToast('changes saved');
             },
