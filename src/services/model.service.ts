@@ -1,7 +1,7 @@
 /**
  * @module services
  */
-import {Injectable, EventEmitter, Injector, OnDestroy, Optional} from "@angular/core";
+import {Injectable, EventEmitter, Injector, OnDestroy} from "@angular/core";
 import {of, BehaviorSubject, Subject, Observable, Subscription} from "rxjs";
 import {Router} from "@angular/router";
 
@@ -17,8 +17,6 @@ import {backend} from "./backend.service";
 import {recent} from "./recent.service";
 import {configurationService} from "./configuration.service";
 import {socket} from "./socket.service";
-
-declare var _: any;
 
 /**
  * @ignore
@@ -409,10 +407,7 @@ export class model implements OnDestroy {
      * @param field the field to be checked
      */
     public checkFieldAccess(field): boolean {
-        if (this.data && this.data.acl_fieldcontrol && this.data.acl_fieldcontrol[field] && this.data.acl_fieldcontrol[field] == '1') {
-            return false;
-        }
-        return true;
+        return !(this.data && this.data.acl_fieldcontrol && this.data.acl_fieldcontrol[field] && this.data.acl_fieldcontrol[field] == '1');
     }
 
     /**
@@ -572,7 +567,15 @@ export class model implements OnDestroy {
         }
     }
 
-    public setFieldStatus(field: string, status: string, value: boolean = true): boolean {
+    /**
+     * sets the field status
+     *
+     * @param field the name if the field
+     * @param status the status to be set
+     * @param value
+     *
+     */
+    public setFieldStatus(field: string, status: 'editable'|'invalid'|'required'|'incomplete'|'disabled'|'hidden'|'readonly', value: boolean = true): boolean {
         try {
             let stati = this._fields_stati[field];
             if (stati[status] && !value) {
@@ -599,6 +602,7 @@ export class model implements OnDestroy {
 
     public setFieldStati(field: string, stati: object): boolean {
         for (let status in stati) {
+            // @ts-ignore
             let result = this.setFieldStatus(field, status, stati[status]);
             if (!result) return false;
         }
@@ -701,7 +705,7 @@ export class model implements OnDestroy {
         }
 
         let val_left = this.data[condition.fieldname];
-        let val_right = null;
+        let val_right: null;
         if (condition.comparator.match(/regex/g)) {
             val_right = condition.valuations;
         } else {
@@ -780,7 +784,7 @@ export class model implements OnDestroy {
         }
     }
 
-    public evaluateValidationParams(params, targettype?: string) {
+    public evaluateValidationParams(params) {
         if (typeof params == "string") {
             // replace placeholders...
             if (/(\<[a-z\_]+\>)/.test(params)) {
@@ -979,7 +983,7 @@ export class model implements OnDestroy {
         }
 
         // determine changed fields
-        let changedData: any = {};
+        let changedData: any;
         if (this.isEditing && !this.isNew) {
             changedData = this.getDirtyFields();
             // in any case send back date_modified
@@ -1056,7 +1060,7 @@ export class model implements OnDestroy {
     public delete(): Observable<boolean> {
         let responseSubject = new Subject<boolean>();
 
-        this.backend.deleteRequest(`module/${this.module}/${this.id}`).subscribe(res => {
+        this.backend.deleteRequest(`module/${this.module}/${this.id}`).subscribe(() => {
                 this.broadcast.broadcastMessage("model.delete", {
                     id: this.id,
                     module: this.module,
@@ -1277,6 +1281,8 @@ export class model implements OnDestroy {
      *
      * @param toField
      * @param value
+     * @param params
+     * @private
      */
     private copyValue(toField, value, params: any = {}) {
         let fieldDef = this.metadata.getFieldDefs(this.module, toField);
@@ -1435,7 +1441,7 @@ export class model implements OnDestroy {
                         retSubject.next(true);
                         retSubject.complete();
                     },
-                    error => {
+                    () => {
                         retSubject.next(false);
                         retSubject.complete();
                     });
@@ -1467,7 +1473,7 @@ export class model implements OnDestroy {
                             responseSubject.complete();
                             this.duplicateChecking = false;
                         },
-                        error => {
+                        () => {
                             responseSubject.next([]);
                             responseSubject.complete();
                             this.duplicateChecking = false;
@@ -1479,7 +1485,7 @@ export class model implements OnDestroy {
                             responseSubject.complete();
                             this.duplicateChecking = false;
                         },
-                        error => {
+                        () => {
                             responseSubject.next([]);
                             responseSubject.complete();
                             this.duplicateChecking = false;
@@ -1586,11 +1592,7 @@ export class model implements OnDestroy {
 
     private isFieldARelationLink(field_name) {
         try {
-            if (this.fields[field_name].type == "link") {
-                return true;
-            } else {
-                return false;
-            }
+            return (this.fields[field_name].type == "link");
         } catch (e) {
             return false;
         }
