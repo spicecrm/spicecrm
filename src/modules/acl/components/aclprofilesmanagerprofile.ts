@@ -39,14 +39,14 @@ export class ACLProfilesManagerProfile implements OnChanges {
 
     set aclallusers(value) {
         if (value) {
-            this.backend.postRequest('spiceaclprofiles/' + this.profileid + '/aclusers', {}, {userids: ['*']}).subscribe(status => {
+            this.backend.postRequest('module/SpiceACLProfiles/' + this.profileid + '/related/users', {}, {userids: ['*']}).subscribe(status => {
                 this.aclusers.push({
                     id: '*',
                     user_name: ''
                 });
             });
         } else {
-            this.backend.deleteRequest('spiceaclprofiles/' + this.profileid + '/aclusers/*').subscribe(status => {
+            this.backend.deleteRequest('module/SpiceACLProfiles/' + this.profileid + '/related/users/*').subscribe(status => {
                 let i = 0;
                 for (let aclusers of this.aclusers) {
                     if (aclusers.id == '*') {
@@ -65,13 +65,13 @@ export class ACLProfilesManagerProfile implements OnChanges {
             this.aclobjects = [];
             this.loadingusers = true;
             this.aclusers = [];
-            this.backend.getRequest('spiceaclprofiles/' + this.profileid + '/aclobjects').subscribe(aclobjects => {
+            this.backend.getRequest('module/SpiceACLProfiles/' + this.profileid + '/related/spiceaclobjects').subscribe(aclobjects => {
                 this.aclobjects = aclobjects;
                 this.loadingobjects = false;
                 this.sortobjects();
             });
 
-            this.backend.getRequest('spiceaclprofiles/' + this.profileid + '/aclusers').subscribe(aclusers => {
+            this.backend.getRequest('module/SpiceACLProfiles/' + this.profileid + '/related/users').subscribe(aclusers => {
                 this.aclusers = aclusers;
                 this.loadingusers = false;
                 this.sortusers();
@@ -82,7 +82,7 @@ export class ACLProfilesManagerProfile implements OnChanges {
     private selectProfile() {
         this.modal.openModal('ACLProfilesManagerAddObjectModal').subscribe(modalRef => {
             modalRef.instance.aclobject.subscribe(aclobject => {
-                this.backend.postRequest('spiceaclprofiles/' + this.profileid + '/aclobjects/' + aclobject.id).subscribe(status => {
+                this.backend.postRequest('module/SpiceACLProfiles/' + this.profileid + '/related/spiceaclobjects/' + aclobject.id).subscribe(status => {
                     this.aclobjects.push(aclobject);
                     this.sortobjects();
                 });
@@ -91,7 +91,7 @@ export class ACLProfilesManagerProfile implements OnChanges {
     }
 
     private removeProfile(objectId) {
-        this.backend.deleteRequest('spiceaclprofiles/' + this.profileid + '/aclobjects/' + objectId).subscribe(status => {
+        this.backend.deleteRequest('module/SpiceACLProfiles/' + this.profileid + '/related/spiceaclobjects/' + objectId).subscribe(status => {
             let i = 0;
             for (let aclobject of this.aclobjects) {
                 if (aclobject.id == objectId) {
@@ -111,7 +111,7 @@ export class ACLProfilesManagerProfile implements OnChanges {
     }
 
     private removeUser(userId) {
-        this.backend.deleteRequest('spiceaclprofiles/' + this.profileid + '/aclusers/' + userId).subscribe(status => {
+        this.backend.deleteRequest('module/SpiceACLProfiles/' + this.profileid + '/related/users/' + userId).subscribe(status => {
             let i = 0;
             for (let aclusers of this.aclusers) {
                 if (aclusers.id == userId) {
@@ -133,7 +133,7 @@ export class ACLProfilesManagerProfile implements OnChanges {
                     items.forEach(user => {
                         newusers.push(user.id);
                     });
-                    this.backend.postRequest('spiceaclprofiles/' + this.profileid + '/aclusers', {}, {userids: newusers}).subscribe(status => {
+                    this.backend.postRequest('module/SpiceACLProfiles/' + this.profileid + '/related/users', {}, {userids: newusers}).subscribe(status => {
                         items.forEach(user => {
                             this.aclusers.push({
                                 id: user.id,

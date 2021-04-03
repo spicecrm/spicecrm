@@ -38,7 +38,7 @@ export class ACLObjectsManagerObjectFieldvalues {
         if (aclTypeId && this.loadedtype != aclTypeId) {
             this.loadedtype = aclTypeId;
             // get the fields
-            this.backend.getRequest('spiceaclobjects/authtypes/' + aclTypeId).subscribe(typedata => {
+            this.backend.getRequest('module/SpiceACLObjects/modules/' + aclTypeId).subscribe(typedata => {
                 this.fields = typedata.authtypefields;
             });
         }
