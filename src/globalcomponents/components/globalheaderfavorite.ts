@@ -104,7 +104,7 @@ export class GlobalHeaderFavorite {
         }
     }
 
-    private openEditModal(){
+    private openEditModal() {
         this.modal.openModal('SpiceFavoritesEditModal');
     }
 }

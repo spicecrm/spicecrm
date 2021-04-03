@@ -33,14 +33,14 @@ export class favorite {
         private configuration: configurationService,
         private session: session
     ) {
-        this.broadcast.message$.subscribe(message => this.handleMessage(message))
+        this.broadcast.message$.subscribe(message => this.handleMessage(message));
     }
 
     /**
      * returns the favorites
      */
     get favorites() {
-        let favorites = this.configuration.getData('favorites')
+        let favorites = this.configuration.getData('favorites');
         return favorites ? favorites : [];
     }
 
@@ -115,7 +115,7 @@ export class favorite {
      * sets the current record as favorite
      */
     public setFavorite() {
-        this.backend.postRequest('SpiceFavorites/' + this.module + '/' + this.id).subscribe((fav: any) => {
+        this.backend.postRequest('common/spicefavorites/' + this.module + '/' + this.id).subscribe((fav: any) => {
             this.favorites.splice(0, 0, {
                 item_id: fav.id,
                 module_name: fav.module,
@@ -137,7 +137,7 @@ export class favorite {
         if (!id) id = this.id;
 
         // call teh backend
-        this.backend.deleteRequest('SpiceFavorites/' + module + '/' + id).subscribe(fav => {
+        this.backend.deleteRequest('common/spicefavorites/' + module + '/' + id).subscribe(fav => {
             this.favorites.some((fav, favindex) => {
                 if (fav.module_name === module && fav.item_id === id) {
                     this.favorites.splice(favindex, 1);
