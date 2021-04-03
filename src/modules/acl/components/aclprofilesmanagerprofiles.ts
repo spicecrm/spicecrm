@@ -78,7 +78,7 @@ export class ACLProfilesManagerProfiles {
     }
 
     private activateProfile(profileid) {
-        this.backend.postRequest('spiceaclprofiles/' + profileid + '/activate').subscribe(aclobjects => {
+        this.backend.postRequest('module/SpiceACLProfiles/' + profileid + '/activation').subscribe(aclobjects => {
             this.aclprofiles.some(profile => {
                 if (profile.id == profileid) {
                     profile.status = 'r';
@@ -89,7 +89,7 @@ export class ACLProfilesManagerProfiles {
     }
 
     private deactivateProfile(profileid) {
-        this.backend.postRequest('spiceaclprofiles/' + profileid + '/deactivate').subscribe(aclobjects => {
+        this.backend.deleteRequest('module/SpiceACLProfiles/' + profileid + '/activation').subscribe(aclobjects => {
             this.aclprofiles.some(profile => {
                 if (profile.id == profileid) {
                     profile.status = 'd';
