@@ -1,5 +1,5 @@
 <div [ngClass]="fielddisplayclass" (dblclick)="setEditMode()">
-    <system-stencil *ngIf="model.isLoading; else displaycontent"></system-stencil>
+    <system-stencil *ngIf="model.isLoading || view.isLoading; else displaycontent"></system-stencil>
     <ng-template #displaycontent>
         <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread" style="min-height: 19px;">
             <div class="slds-truncate" style="width:100%">
