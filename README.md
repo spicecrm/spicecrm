@@ -1,5 +1,8 @@
 SpiceCRM all-in-one
 =============
 
-> just 1 repository  for a full experience
+> Check out repository to target folder
 > 
+> Call folder by URL in your browser
+> 
+> Follow installation steps

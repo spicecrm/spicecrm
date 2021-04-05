@@ -391,7 +391,18 @@ class SpiceInstaller
 //                    'clean_interval' => '7 DAY',
 //                ],
             ],
-            'frontend_url' => $postData['backendconfig']['frontendUrl']
+            'frontend_url' => $postData['backendconfig']['frontendUrl'],
+            'default_preferences' => [
+                'num_grp_sep' => '.',
+                'dec_sep' => ',',
+                'currency' => '-99',
+                'navigation_paradigm' => 'tabbed',
+                'week_day_start' => 'Monday',
+                'week_days_count' => '7',
+                'calendar_day_start_hour' => '7',
+                'calendar_day_end_hour' => '18',
+                'default_currency_significant_digits' => '2',
+            ]
         ];
     }
 
