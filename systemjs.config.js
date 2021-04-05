@@ -35,7 +35,7 @@
         packages: {
             'app': {
                 main: './spiceui',
-                defaultExtension: 'js?v=2021.01.001.1617646303785'
+                defaultExtension: 'js?v=2021.01.001.1617646648210'
             },
             rxjs: {
                 main: "index",
