@@ -38,7 +38,7 @@ export class DeploymentCRDBSQL implements OnInit {
      * generate the SQL on init
      */
     public ngOnInit() {
-        this.backend.getRequest('systemdeploymentcrs/sql/' + this.model.id).subscribe(result => {
+        this.backend.getRequest('module/SystemDeploymentCRs/' + this.model.id + '/sql').subscribe(result => {
             this.loading = false;
             this.sql = result.sql;
         });

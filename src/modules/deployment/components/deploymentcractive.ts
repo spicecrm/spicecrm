@@ -38,7 +38,7 @@ export class DeploymentCRActive implements OnDestroy {
                 private router: Router) {
 
         // get from the backend if a CR is active currently
-        this.backend.getRequest("deployment/systemdeploymentcrs/active").subscribe(crresponse => {
+        this.backend.getRequest("module/SystemDeploymentCRs/active").subscribe(crresponse => {
             this.activeID = crresponse.id;
             this.activeName = crresponse.name;
         });
