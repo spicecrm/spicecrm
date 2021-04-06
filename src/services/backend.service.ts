@@ -655,7 +655,7 @@ export class backend {
      */
     private errorsToBackend() {
         if (this.httpErrorsToReport.length) {
-            this.postRequest('httperrors', null, {errors: this.httpErrorsToReport}).subscribe(
+            this.postRequest('system/httperrors', null, {errors: this.httpErrorsToReport}).subscribe(
                 () => {
                     this.httpErrorsToReport.length = 0;
                     this.httpErrorReporting = false;
