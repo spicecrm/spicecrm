@@ -100,7 +100,7 @@ export class ModuleConfigManager {
         }
 
         if (this.change_request_required) {
-            this.backend.getRequest('systemdeploymentcrs/active').subscribe(crresponse => {
+            this.backend.getRequest('module/SystemDeploymentCRs/active').subscribe(crresponse => {
                 if (crresponse.id == "") {
                     this.setNoneMode();
                     // this.crNoneActive = true;
