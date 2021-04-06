@@ -39,18 +39,6 @@
                 <div class="slds-form-element">
                     <div class="slds-form-element__control slds-m-vertical--medium">
                         <div class="slds-checkbox">
-                            <input type="checkbox" id="cbDontEmptyTables" [(ngModel)]="dontEmptyTables" [disabled]="isAfterUpload || isUploading" />
-                            <label class="slds-checkbox__label" for="cbDontEmptyTables">
-                                <span class="slds-checkbox_faux"></span>
-                                <span class="slds-form-element__label">Preserve existing database data, when not overwritten by the import, so the new data will be a mix of the old and the imported data. Otherwise the affected tables would be emptied before the import.</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="slds-form-element">
-                    <div class="slds-form-element__control slds-m-vertical--medium">
-                        <div class="slds-checkbox">
                             <input type="checkbox" id="cbIgnoreUnknownTables" [(ngModel)]="ignoreUnknownTables" [disabled]="isAfterUpload || isUploading" />
                             <label class="slds-checkbox__label" for="cbIgnoreUnknownTables">
                                 <span class="slds-checkbox_faux"></span>
