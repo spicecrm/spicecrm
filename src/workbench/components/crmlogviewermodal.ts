@@ -40,7 +40,7 @@ export class CRMLogViewerModal {
                 this.line.fullText = response.line.txt;
             },
             error => {
-                this.toast.sendToast('Error loading line of log file!', 'error', 'Line '+this.line.lnr+' of log file '+this.line.fnr+' couldn´t be fetched.', false );
+                this.toast.sendToast('Error loading line of log file!', 'error', 'Line '+this.line.id+' of CRM log couldn´t be fetched.', false );
                 this.isLoading = false;
             });
     }
