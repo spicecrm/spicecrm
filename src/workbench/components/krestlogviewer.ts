@@ -28,7 +28,7 @@ declare var moment: any;
 export class KRESTLogViewer {
 
     // Configuration:
-    private routeBase = 'krestlog';
+    private routeBase = 'admin/restlog';
     private methods = [ 'CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PATCH', 'PUT', 'TRACE' ];
     private limit = '5000';
     private linesPerPage = 20;
@@ -63,7 +63,7 @@ export class KRESTLogViewer {
     constructor( private backend: backend, private metadata: metadata, private lang: language, private prefs: userpreferences, private modalservice: modal, private toast: toast ) {
 
         // Individual route, because of bug SPICEUI-159.
-        this.backend.getRequest( 'krestlog/userlist' ).subscribe( response => {
+        this.backend.getRequest( 'restlog/userlist' ).subscribe( response => {
             this.userlist = response.list;
             this.userlist.forEach( ( val, i ) => {
                 this.userlistIndexes[val.id] = i;
