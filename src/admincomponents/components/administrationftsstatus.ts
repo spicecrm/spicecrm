@@ -63,7 +63,7 @@ export class AdministrationFTSStatus {
         // reset the indices
         this.indices = [];
 
-        this.backend.getRequest('fts/status').subscribe(
+        this.backend.getRequest('admin/elastic/status').subscribe(
             response => {
                 this.version = response.version;
 
@@ -107,7 +107,7 @@ export class AdministrationFTSStatus {
      * @private
      */
     private unlock() {
-        this.backend.putRequest('fts/unblock').subscribe(resp => {
+        this.backend.putRequest('admin/elastic/unblock').subscribe(resp => {
             console.log(resp);
             this.loadstatus();
         });
