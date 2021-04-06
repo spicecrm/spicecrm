@@ -50,7 +50,6 @@ export class ConfigTransfer {
     private importResponse: any;
     private importErrorMessage: string;
     private importErrorID: string;
-    private dontEmptyTables = false;
     private ignoreUnknownTables = false;
     @ViewChild('fileupload', {read: ViewContainerRef, static: true}) private fileupload: ViewContainerRef;
     private isDragOver = false;
@@ -61,7 +60,7 @@ export class ConfigTransfer {
         if ( this.tabToShow === 'e' ) return;
         if( !this.tablenamesLoaded && !this.isLoadingTablenames ) {
             this.isLoadingTablenames = true;
-            this.backend.getRequest( 'configtransfer/tablenames' ).subscribe( ( response: any ) => {
+            this.backend.getRequest( 'configuration/transfer/tablenames' ).subscribe( ( response: any ) => {
                 response.selectableTables.forEach( ( tablename ) => {
                     this.selectableTables.push( { name: tablename, include: true } );
                 } );
@@ -90,7 +89,7 @@ export class ConfigTransfer {
             if ( table.include ) selectedTables.push(table.name);
         }));
         this.fileName = 'spicecrm-cfg-' + moment().format('YYYYMMDD-HHmm') + '.gz';
-        this.backend.getDownloadPostRequestFile('configtransfer/data/export', {}, { selectedTables: selectedTables, additionalTables: this.additionalTables } ).subscribe(
+        this.backend.getDownloadPostRequestFile('configuration/transfer/export', {}, { selectedTables: selectedTables, additionalTables: this.additionalTables } ).subscribe(
             url => {
                 this.downloadlink.element.nativeElement.href = url;
                 this.downloadlink.element.nativeElement.click();
@@ -127,7 +126,7 @@ export class ConfigTransfer {
                         if ( value === 100 ) this.isImporting = true;
                     });
                     this.readFileFromFilesystem( this.fileFromBrowser ).subscribe( fileContent => {
-                        this.backend.postRequestWithProgress( 'configtransfer/data/import', null, { file: fileContent, dontEmptyTables: this.dontEmptyTables, ignoreUnknownTables: this.ignoreUnknownTables }, progress ).subscribe( response => {
+                        this.backend.postRequestWithProgress( 'configuration/transfer/import', null, { file: fileContent, ignoreUnknownTables: this.ignoreUnknownTables }, progress ).subscribe( response => {
                                 this.isAfterUpload = this.importOK = true;
                                 this.isImporting = this.isUploading = false;
                                 this.importResponse = response;
