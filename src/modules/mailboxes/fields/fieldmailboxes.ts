@@ -97,7 +97,7 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
     public getOptions() {
         let options = this.configuration.getData(`mailboxes${this.scope}`);
         if (_.isEmpty(options)) {
-            this.backend.getRequest("module/Mailboxes", {scope: this.scope}).subscribe(
+            this.backend.getRequest("module/Mailboxes/scope", {scope: this.scope}).subscribe(
                 (results: any) => {
                     // sort the options
                     this.options = results.sort((a, b) => a.display.localeCompare(b.display));
