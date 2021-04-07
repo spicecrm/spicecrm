@@ -139,7 +139,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                curl_setopt($ch, CURLOPT_URL, $testUrl . '/isysinfo');
+                curl_setopt($ch, CURLOPT_URL, $testUrl . '/install/sysinfo');
                 $result = curl_exec($ch);
 
                 if ($result == false) {

@@ -89,7 +89,7 @@ export class SpiceInstallerDatabase {
 
         if (this.hostNameCondition && this.userNameCondition && this.dbNameCondition) {
             this.loading = true;
-            this.http.post(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/spiceinstaller/checkdb`, body).subscribe(
+            this.http.post(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/install/checkdb`, body).subscribe(
                 (response: any) => {
                     this.loading = false;
                     let res = response;
