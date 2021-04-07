@@ -52,8 +52,8 @@ class SpiceFTSHandler
     private final function __construct() {
         $this->elasticHandler = new ElasticHandler();
     }
-    private final function __clone() {}
-    private final function __wakeup() {}
+    private  function __clone() {}
+    private  function __wakeup() {}
     /**
      * @return SpiceFTSHandler
      */
@@ -1112,7 +1112,7 @@ class SpiceFTSHandler
                 $useWildcard = true;
 
             $params['buckets'] = json_decode($params['buckets'], true);
-            if (count($params['buckets']) > 0) {
+            if (is_array($params['buckets']) && count($params['buckets']) > 0) {
                 // get the full aggregates
                 $searchresultsraw = $this->searchModule($module, $searchterm, $searchtags, $aggregatesFilters, 0, 0, $sort, $addFilters, $useWildcard, $required);
                 $searchresults[$module] = $searchresultsraw['hits'] ?: ['hits' => [], 'total' => $this->elasticHandler->getHitsTotalValue($searchresultsraw)];
@@ -1186,7 +1186,9 @@ class SpiceFTSHandler
 
                     foreach ($seed->field_name_map as $field => $fieldData) {
                         //if (!isset($hit['_source']{$field}))
-                        $hit['_source'][$field] = html_entity_decode($seed->$field, ENT_QUOTES);
+                        if(is_string($seed->$field)){
+                            $hit['_source'][$field] = html_entity_decode($seed->$field, ENT_QUOTES);
+                        }
                     }
 
                     // get the email addresses
@@ -1335,7 +1337,7 @@ class SpiceFTSHandler
             $useWildcard = true;
 
         $params['buckets'] = json_decode($params['buckets'], true);
-        if ($params['buckets']  && count($params['buckets']) > 0) {
+        if (is_array($params['buckets'])   && count($params['buckets']) > 0) {
 
             $terms = [];
             foreach ($params['buckets']['bucketitems'] as &$bucketitem) {
