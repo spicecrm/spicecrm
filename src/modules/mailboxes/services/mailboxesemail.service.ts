@@ -164,7 +164,7 @@ export class mailboxesEmails implements OnDestroy {
 
     private getMailboxes() {
 
-        this.backend.getRequest("module/Mailboxes", {scope: 'inbound'}).subscribe(
+        this.backend.getRequest("module/Mailboxes/scope", {scope: 'inbound'}).subscribe(
             (results: any) => {
                 for (let mailbox of results) {
                     this.mailboxes.push({
