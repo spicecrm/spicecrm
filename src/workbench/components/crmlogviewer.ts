@@ -21,6 +21,7 @@ export class CRMLogViewer {
     // Configuration:
     private levels = [ 'debug', 'info', 'warn', 'deprecated', 'login', 'error', 'fatal', 'security' ];
     private limit = '5000';
+    private routeBase = 'admin/crmlog';
 
     // Various:
     private filter = { level: 'fatal', processId: '', userId: '', text: '', transactionId: '' };
@@ -35,7 +36,7 @@ export class CRMLogViewer {
     constructor( private lang: language, private backend: backend ) {
 
         // Individual route, because of bug SPICEUI-159.
-        this.backend.getRequest( 'admin/crmlog/userlist' ).subscribe( response => {
+        this.backend.getRequest( this.routeBase+'/userlist' ).subscribe( response => {
             this.userlist = response.list;
             this.userlist.forEach( ( val, i ) => {
                 this.userlistIndexes[val.id] = i;
