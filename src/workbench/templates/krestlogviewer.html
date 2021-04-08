@@ -223,13 +223,13 @@
 
         <div *ngIf="isLoaded">
 
-            <div *ngIf="lines.length" class="slds-grid slds-grid--vertical-align-center slds-grid_align-spread slds-m-horizontal--medium">
+            <div *ngIf="entries.length" class="slds-grid slds-grid--vertical-align-center slds-grid_align-spread slds-m-horizontal--medium">
 
-                <pagination-controls class="slds-col_bump-right slds-m-vertical--small" [(page)]="currPage" [limit]="linesPerPage" [total_records]="lines.length" (leftPage)="collapseLinesOfPage($event)"></pagination-controls>
+                <pagination-controls class="slds-col_bump-right slds-m-vertical--small" [(page)]="currPage" [limit]="entriesPerPage" [total_records]="entries.length" (leftPage)="collapseLinesOfPage($event)"></pagination-controls>
 
             </div>
 
-            <div *ngIf="lines.length">
+            <div *ngIf="entries.length">
 
                 <table class="slds-table slds-table--bordered slds-table--col-bordered slds-table--striped slds-table_cell-buffer" style="max-height:400px">
                     <thead>
@@ -247,18 +247,18 @@
                         </tr>
                     </thead>
                     <tbody #tbody>
-                        <tr *ngFor="let line of lines | paginate: { page: currPage, limit: 20 }" [ngClass]="{notStatus200:line.status!==200}">
-                            <td class="slds-text-align--right"><a (click)="valueClicked( 'date', line.date )">{{line.date}}</a></td>
-                            <td class="slds-text-align--right"><a (click)="valueClicked( 'date', line.date );valueClicked( 'time', line.time )">{{line.time}}</a></td>
-                            <td><a *ngIf="line.clr" (click)="showCRMlog(line.tid)"><b>[ {{line.clr}} ]</b></a></td>
-                            <td><a (click)="valueClicked( 'uid', line.uid )">{{getUsername(line.uid)}}</a></td>
-                            <td><a (click)="valueClicked( 'route', line.route )">{{line.route}}</a></td>
-                            <td><a (click)="valueClicked( 'method', line.method )">{{line.method}}</a></td>
-                            <td class="slds-text-align--right status"><a (click)="valueClicked( 'status', line.status )">{{line.status}}</a></td>
-                            <td>{{line.routeArgs}}</td>
-                            <td>{{line.getParams}}</td>
+                        <tr *ngFor="let entry of entries | paginate: { page: currPage, limit: 20 }" [ngClass]="{notStatus200:entry.status!==200}">
+                            <td class="slds-text-align--right"><a (click)="valueClicked( 'date', entry.date )">{{entry.date}}</a></td>
+                            <td class="slds-text-align--right"><a (click)="valueClicked( 'date', entry.date );valueClicked( 'time', entry.time )">{{entry.time}}</a></td>
+                            <td><a *ngIf="entry.clr" (click)="showCRMlog(entry.tid)"><b>[ {{entry.clr}} ]</b></a></td>
+                            <td><a (click)="valueClicked( 'uid', entry.uid )">{{getUsername(entry.uid)}}</a></td>
+                            <td><a (click)="valueClicked( 'route', entry.route )">{{entry.route}}</a></td>
+                            <td><a (click)="valueClicked( 'method', entry.method )">{{entry.method}}</a></td>
+                            <td class="slds-text-align--right status"><a (click)="valueClicked( 'status', entry.status )">{{entry.status}}</a></td>
+                            <td>{{entry.routeArgs}}</td>
+                            <td>{{entry.getParams}}</td>
                             <td>
-                                <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="showLineInModal(line.i)">
+                                <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="showEntryInModal(entry.i)">
                                     <system-button-icon [icon]="'expand'" [size]="'medium'"></system-button-icon>
                                 </button>
                             </td>
@@ -268,7 +268,7 @@
 
             </div>
 
-            <div *ngIf="lines.length == 0" class="slds-p-vertical--x-large slds-text-align--center slds-text-heading--small">{{lang.getLabel('LBL_NO_ENTRIES')}}</div>
+            <div *ngIf="entries.length == 0" class="slds-p-vertical--x-large slds-text-align--center slds-text-heading--small">{{lang.getLabel('LBL_NO_ENTRIES')}}</div>
 
         </div>
 
