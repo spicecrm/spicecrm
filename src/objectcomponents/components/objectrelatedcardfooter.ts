@@ -91,8 +91,8 @@ export class ObjectRelatedCardFooter implements OnInit {
     /**
      * a helper to check if the view All button shoudl be displayed or not
      */
-    private canViewAll() {
-        return this.relatedmodels.count > 0; // this.relatedmodels.items.length;
+    get canViewAll() {
+        return this.relatedmodels.count > 0 && this.relatedmodels.count > this.relatedmodels.items.length; // this.relatedmodels.items.length;
     }
 
     private canSetCount() {
@@ -104,8 +104,8 @@ export class ObjectRelatedCardFooter implements OnInit {
      */
     private showAll() {
         let routePrefix = '';
-        if(this.navigationtab?.tabid){
-            routePrefix = '/tab/'+this.navigationtab.tabid;
+        if (this.navigationtab?.tabid) {
+            routePrefix = '/tab/' + this.navigationtab.tabid;
         }
 
         if (this.fieldset && this.fieldset != '') {
