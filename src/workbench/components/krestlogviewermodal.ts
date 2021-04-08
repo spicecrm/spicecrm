@@ -11,7 +11,7 @@ import { toast } from '../../services/toast.service';
 })
 export class KRESTLogViewerModal {
 
-    @Input() private line: any;
+    @Input() private entry: any;
     @Input() private username = '';
     @Input() private routeBase: string;
     @Input() private canSwitchToLeft: boolean;
@@ -36,27 +36,28 @@ export class KRESTLogViewerModal {
     }
 
     public load() {
+        console.log('load!');
         // When the full text already has been retrieved from the backend
-        // (because this modal for this log line has already been shown)
+        // (because this modal for this log entry has already been shown)
         // the data is still stored (property "fullText") and we don´t need to do the request again:
-        this.isLoaded = this.line.fullLoaded && true;
+        this.isLoaded = this.entry.fullLoaded && true;
         if ( !this.isLoaded ) this.loadFullData();
     }
 
     // Load the full data (with the un-truncated log text) and merge the full text to the record got from parent component.
     private loadFullData() {
         this.isLoading = true;
-        this.backend.getRequest( this.routeBase+'/fullLine/' + this.line.id ).subscribe(
+        this.backend.getRequest( this.routeBase+'/entry/'+ this.entry.id ).subscribe(
             response => {
                 this.isLoaded = true;
                 this.isLoading = false;
-                this.line.postParams = response.line.postParams;
-                this.line.response = response.line.response;
-                this.line.headers = response.line.headers;
-                this.line.fullLoaded = true;
+                this.entry.postParams = response.entry.postParams;
+                this.entry.response = response.entry.response;
+                this.entry.headers = response.entry.headers;
+                this.entry.fullLoaded = true;
             },
             error => {
-                this.toast.sendToast('Error loading line of log file!', 'error', 'Line '+this.line.id+' of REST log couldn´t be fetched.', false );
+                this.toast.sendToast('Error loading entry of log file!', 'error', 'Entry '+this.entry.id+' of REST log couldn´t be fetched.', false );
                 this.isLoading = false;
             });
     }
@@ -84,9 +85,9 @@ export class KRESTLogViewerModal {
      */
     private formatted(param) {
         try {
-            return JSON.stringify(JSON.parse(this.line[param]), null, '\t');
+            return JSON.stringify(JSON.parse(this.entry[param]), null, '\t');
         } catch (e) {
-            return this.line[param];
+            return this.entry[param];
         }
     }
 }
