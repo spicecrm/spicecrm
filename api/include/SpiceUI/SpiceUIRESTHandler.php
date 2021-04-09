@@ -80,7 +80,7 @@ class SpiceUIRESTHandler
     function getModules()
     {
         global $moduleList, $modInvisList;
-$current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         SpiceACL::getInstance()->filterModuleList($moduleList);
         SpiceACL::getInstance()->filterModuleList($modInvisList);
@@ -204,8 +204,8 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
     function setComponentSets($data)
     {
-        
-$db = DBManagerFactory::getInstance();
+
+        $db = DBManagerFactory::getInstance();
 
         $this->checkAdmin();
 
@@ -593,10 +593,10 @@ $db = DBManagerFactory::getInstance();
 
     function checkComponentModuleAlreadyExists($params){
 
-        if ($params[type] == "custom") {
-            $sysuiconfigs = $this->db->query("SELECT * FROM sysuicustomcomponentmoduleconf WHERE component = '" . $params[component] . "' AND role_id = '" . $params[role_id] . "' AND module = '" . $params[module] . "'");
+        if ($params['type'] == "custom") {
+            $sysuiconfigs = $this->db->query("SELECT * FROM sysuicustomcomponentmoduleconf WHERE component = '" . $params['component'] . "' AND role_id = '" . $params['role_id'] . "' AND module = '" . $params['module'] . "'");
         }else {
-            $sysuiconfigs = $this->db->query("SELECT * FROM sysuicomponentmoduleconf WHERE component = '" . $params[component] . "' AND role_id = '" . $params[role_id] . "' AND module = '" . $params[module] . "'");
+            $sysuiconfigs = $this->db->query("SELECT * FROM sysuicomponentmoduleconf WHERE component = '" . $params['component'] . "' AND role_id = '" . $params['role_id'] . "' AND module = '" . $params['module'] . "'");
         }
         $result = $this->db->fetchByAssoc($sysuiconfigs);
 
@@ -604,10 +604,10 @@ $db = DBManagerFactory::getInstance();
     }
 
     function checkComponentDefaultAlreadyExists($params){
-        if ($params[type] == "custom") {
-            $sysuiconfigs = $this->db->query("SELECT * FROM sysuicustomcomponentdefaultconf WHERE component = '" . $params[component] . "' AND role_id = '" . $params[role_id] . "'");
+        if ($params['type'] == "custom") {
+            $sysuiconfigs = $this->db->query("SELECT * FROM sysuicustomcomponentdefaultconf WHERE component = '" . $params['component'] . "' AND role_id = '" . $params['role_id'] . "'");
         }else {
-            $sysuiconfigs = $this->db->query("SELECT * FROM sysuicomponentdefaultconf WHERE component = '" . $params[component] . "' AND role_id = '" . $params[role_id] . "'");
+            $sysuiconfigs = $this->db->query("SELECT * FROM sysuicomponentdefaultconf WHERE component = '" . $params['component'] . "' AND role_id = '" . $params['role_id'] . "'");
         }
         $result = $this->db->fetchByAssoc($sysuiconfigs);
 
@@ -618,14 +618,14 @@ $db = DBManagerFactory::getInstance();
 
     function checkFieldSetAlreadyExists($params){
 
-        if($params[module] == 'global'){
-            $params[module] = "*";
+        if($params['module'] == 'global'){
+            $params['module'] = "*";
         }
 
-        if ($params[type] == "custom") {
-            $sysuiconfigs = $this->db->query("SELECT * FROM sysuicustomfieldsets WHERE module = '" . $params[module] . "' AND name = '" . $params[name] . "'");
+        if ($params['type'] == "custom") {
+            $sysuiconfigs = $this->db->query("SELECT * FROM sysuicustomfieldsets WHERE module = '" . $params['module'] . "' AND name = '" . $params['name'] . "'");
         }else {
-            $sysuiconfigs = $this->db->query("SELECT * FROM sysuifieldsets WHERE module = '" . $params[module] . "' AND name = '" . $params[name] . "'");
+            $sysuiconfigs = $this->db->query("SELECT * FROM sysuifieldsets WHERE module = '" . $params['module'] . "' AND name = '" . $params['name'] . "'");
         }
         $result = $this->db->fetchByAssoc($sysuiconfigs);
         return $result;
@@ -1146,7 +1146,7 @@ $db = DBManagerFactory::getInstance();
     function getAdminNavigation()
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance();
         $navElements = [];
 
         // admin only
@@ -1176,7 +1176,7 @@ $db = DBManagerFactory::getInstance();
     function getAllModules()
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance();
 
         $modules = [];
         $modulestmp = []; // CR1000442
