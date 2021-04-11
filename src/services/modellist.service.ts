@@ -1118,6 +1118,12 @@ export class modellist implements OnDestroy {
         return retSub.asObservable();
     }
 
+    /**
+     * returns if the list can load more
+     */
+    public canLoadMore() {
+        return !this.isLoading && this.listData.list.length < this.listData.totalcount;
+    }
 
     /**
      * loads on top of the existing results
