@@ -966,10 +966,26 @@ export class modellist implements OnDestroy {
         this.selectionChanged$.emit(true);
     }
 
+    /**
+     * unselects all selected records
+     */
     public setAllUnselected() {
         this.listSelected.type = 'none';
-        for (let listItem of this.listData.list) {
+        for (let listItem of this.listData.list.filter(r => r.selected == true)) {
             listItem.selected = false;
+        }
+
+        // emit so items can trigger change detection
+        this.selectionChanged$.emit(true);
+    }
+
+    /*
+     * select functions
+     */
+    public setRangeSelected(from: number, to: number) {
+
+        for (let i = from; i <= to; i++) {
+            this.listData.list[i - 1].selected = true;
         }
 
         // emit so items can trigger change detection
@@ -980,13 +996,7 @@ export class modellist implements OnDestroy {
      * returny the number of selected IDs
      */
     public getSelectedCount() {
-        let selCount = 0;
-        for (let listItem of this.listData.list) {
-            if (listItem.selected) {
-                selCount++;
-            }
-        }
-        return selCount;
+        return this.listData.list.filter(i => i.selected == true).length;
     }
 
     /**
