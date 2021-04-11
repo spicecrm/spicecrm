@@ -2,18 +2,16 @@
  * @module ObjectComponents
  */
 
-import {Component} from '@angular/core';
-import {metadata} from '../../services/metadata.service';
+import {Component, Injector} from '@angular/core';
 import {model} from '../../services/model.service';
-import {language} from '../../services/language.service';
 import {modellist} from '../../services/modellist.service';
 import {modal} from '../../services/modal.service';
 
 @Component({
-    selector: 'object-list-header-actions-select-all-button',
-    templateUrl: './src/objectcomponents/templates/objectlistheaderactionsselectallbutton.html',
+    selector: 'object-list-header-actions-select-range-button',
+    templateUrl: './src/objectcomponents/templates/objectlistheaderactionsselectrangebutton.html',
 })
-export class ObjectListHeaderActionsSelectAllButton {
+export class ObjectListHeaderActionsSelectRangeButton {
 
     /**
      * defautls to true and is set in ngOnInit
@@ -21,11 +19,10 @@ export class ObjectListHeaderActionsSelectAllButton {
     public hidden: boolean = false;
 
     constructor(
-        private language: language,
-        private metadata: metadata,
         private model: model,
         private modellist: modellist,
-        private modal: modal
+        private modal: modal,
+        private injector: Injector
     ) {
     }
 
@@ -34,7 +31,7 @@ export class ObjectListHeaderActionsSelectAllButton {
     }
 
     public execute() {
-        this.modellist.setAllSelected();
+        this.modal.openModal('ObjectListHeaderActionsSelectRangeModal', true, this.injector);
     }
 }
 

@@ -37,6 +37,8 @@ import /*embed*/ {ObjectListHeaderActionsExportTargetlistButton} from './compone
 import /*embed*/ {ObjectListHeaderActionsExportTargetlistModal} from './components/objectlistheaderactionsexporttargetlistmodal';
 import /*embed*/ {ObjectListHeaderActionsSelectAllButton} from "./components/objectlistheaderactionsselectallbutton";
 import /*embed*/ {ObjectListHeaderActionsUnselectAllButton} from "./components/objectlistheaderactionsunselectallbutton";
+import /*embed*/ {ObjectListHeaderActionsSelectRangeButton} from "./components/objectlistheaderactionsselectrangebutton";
+import /*embed*/ {ObjectListHeaderActionsSelectRangeModal} from "./components/objectlistheaderactionsselectrangemodal";
 
 import /*embed*/ {ObjectListItem} from './components/objectlistitem';
 import /*embed*/ {ObjectListItemField} from './components/objectlistitemfield';
@@ -212,6 +214,8 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectListHeaderActionsExportTargetlistModal,
         ObjectListHeaderActionsSelectAllButton,
         ObjectListHeaderActionsUnselectAllButton,
+        ObjectListHeaderActionsSelectRangeButton,
+        ObjectListHeaderActionsSelectRangeModal,
         ObjectListItem,
         ObjectListItemField,
         ObjectActionMenu,
