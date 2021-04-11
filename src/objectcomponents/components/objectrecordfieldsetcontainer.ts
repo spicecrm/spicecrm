@@ -33,7 +33,7 @@ export class ObjectRecordFieldsetContainer {
         return this.componentconfig.direction;
     }
 
-    constructor(private metadata: metadata, private model: model, private view: view) {
+    constructor(public metadata: metadata, public model: model, public view: view) {
     }
 
     /**
