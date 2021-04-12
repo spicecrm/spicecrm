@@ -57,4 +57,14 @@ export class GlobalHeaderNotifications {
             this.clickListener();
         }
     }
+
+    /**
+     * load more items if the scroll reached to bottom
+     * @param element
+     */
+    public onScroll(element: HTMLElement) {
+        if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
+            this.notificationService.loadMoreNotifications();
+        }
+    }
 }
