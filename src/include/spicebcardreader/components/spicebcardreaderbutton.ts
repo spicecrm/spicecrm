@@ -122,7 +122,7 @@ export class SpiceBCardReaderButton {
                     filemimetype: file.type,
                     filename: file.name
                 };
-                this.backend.postRequest(`cardreader/processBusinessCard`, '', {card: cardFile})
+                this.backend.postRequest(`common/SpiceBCardReader/process`, '', {card: cardFile})
                     .subscribe(res => {
                         loadingModalRef.instance.self.destroy();
                         if (res && res.vcard) {
