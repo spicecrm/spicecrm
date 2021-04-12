@@ -35,7 +35,7 @@ export class DashletGeneratorDashlets {
 
     public ngOnInit() {
         this.loading = true;
-        this.backend.getRequest('dashboards/dashlets').subscribe(dashlets => {
+        this.backend.getRequest('module/Dashboards/dashlets').subscribe(dashlets => {
             this.dashlets = dashlets;
             this.loading = false;
         });
@@ -82,7 +82,7 @@ export class DashletGeneratorDashlets {
     }
 
     private remove(dashletId) {
-        this.backend.deleteRequest('dashboards/dashlets/' + dashletId);
+        this.backend.deleteRequest('module/Dashboards/dashlets/' + dashletId);
         this.dashlets = this.dashlets.filter(dashlet => dashlet.id != dashletId);
         this.dashlet.emit(undefined);
     }
