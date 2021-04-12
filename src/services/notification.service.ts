@@ -8,7 +8,9 @@ import {session} from './session.service';
 import {backend} from './backend.service';
 import {broadcast} from './broadcast.service';
 import {userpreferences} from "./userpreferences.service";
-import {NavigationI} from "../globalcomponents/interfaces/globalcomponents.interfaces";
+import {NotificationI} from "../globalcomponents/interfaces/globalcomponents.interfaces";
+import {language} from "./language.service";
+import {DomSanitizer} from "@angular/platform-browser";
 
 /** @ignore */
 declare var moment: any;
@@ -23,16 +25,32 @@ export class NotificationService {
      */
     public unreadCount: number = 0;
     /**
+     * holds the total count of the notifications
+     */
+    public totalCount: number = 0;
+    /**
      * holds the notifications
      */
-    public notifications: NavigationI[] = [];
+    public notifications: NotificationI[] = [];
+    /**
+     * holds the notifications
+     */
+    public desktopNotifications: Notification[] = [];
+    /**
+     * true if more notifications are loading from backend
+     */
+    public isLoading: boolean = false;
 
     constructor(private backend: backend,
                 private broadcast: broadcast,
                 private configuration: configurationService,
                 private preferences: userpreferences,
+                private language: language,
+                private sanitizer: DomSanitizer,
                 private session: session) {
-        this.loadNotifications();
+        this.initializeDesktopNotification().then(() =>
+            this.loadNotifications()
+        );
     }
 
     /**
@@ -57,23 +75,40 @@ export class NotificationService {
     public loadNotifications() {
 
         this.broadcast.message$.subscribe(msg => {
-            if (msg.messagetype !== 'loader.completed' || msg.messagedata !== 'loadUserData') return;
 
-            this.notifications = this.configuration.getData('spicenotifications');
-            this.formatNotificationsDate();
+            const data = this.configuration.getData('spicenotifications');
+
+            if (msg.messagetype !== 'loader.completed' || msg.messagedata !== 'loadUserData' || !data || !Array.isArray(data.records)) {
+                return;
+            }
+            this.totalCount = data.count;
+            this.notifications = this.parseNotifications(data.records);
+            this.createDesktopNotifications(this.notifications);
 
             this.unreadCount = this.notifications.filter(n => n.notification_read != 1).length;
         });
     }
 
-    private formatNotificationsDate() {
-        const timeZone = this.session.getSessionData('timezone') || moment.tz.guess(true);
-        const dateFormat = `${this.preferences.getDateFormat()} ${this.preferences.getTimeFormat()}`;
-        this.notifications = this.notifications.map(n => {
-            let pDateTime = typeof timeZone == 'string' && timeZone.length > 0 ? moment.utc(n.notification_date).tz(timeZone) : moment(n.notification_date);
-            n.notification_date = pDateTime.isValid() ? pDateTime.format(dateFormat) : null;
-            return n;
-        });
+    /**
+     * load more notifications from the backend
+     */
+    public loadMoreNotifications() {
+
+        if (this.isLoading || this.notifications.length >= this.totalCount) {
+            return;
+        }
+
+        this.isLoading = true;
+
+        this.backend.getRequest('common/SpiceNotifications', {offset: this.notifications.length})
+            .subscribe((res: {count: number, records: NotificationI[]}) => {
+                    this.isLoading = false;
+                    const parsedNotifications = this.parseNotifications(res.records);
+                    this.notifications = this.notifications.concat(parsedNotifications);
+                    this.createDesktopNotifications(parsedNotifications);
+                }, () =>
+                    this.isLoading = false
+            );
     }
 
     /**
@@ -83,5 +118,71 @@ export class NotificationService {
      */
     public pushNotification(notification) {
         this.notifications.push(notification);
+    }
+
+    /**
+     * creates desktop notifications from the notifications array
+     * @param notifications
+     */
+    public createDesktopNotifications(notifications: NotificationI[]) {
+        this.desktopNotifications.concat(
+            notifications
+                .filter(n => n.notification_read !== 1)
+                .map(n => {
+                    let title = '';
+                    switch (n.notification_type) {
+                        case 'assign':
+                            title = `${n.bean_name} ${this.language.getLabel('MSG_NOTIFICATION_ASSIGNED')} ${n.created_by_name}`;
+                            break;
+                        case 'change':
+                            title = `${this.language.getLabel('LBL_FIELDS')} (${n.additional_infos.fieldsNames}) ${this.language.getLabel('LBL_IN')} ${n.bean_name} ${this.language.getLabel('MSG_NOTIFICATION_CHANGED')} ${n.created_by_name}`;
+                            break;
+                        case 'delete':
+                            title = `${n.bean_name} ${this.language.getLabel('MSG_NOTIFICATION_DELETED')} ${n.created_by_name}`;
+                            break;
+                    }
+                    return new Notification(this.configuration.systemName, {
+                        body: title,
+                        icon: this.configuration.getCapabilityConfig('theme').header_image
+                    });
+                })
+        );
+    }
+
+    /**
+     * check if the notification api is supported by the browser and request permission if the user did not take action yet.
+     */
+    protected initializeDesktopNotification() {
+        if (!('Notification' in window)) {
+            console.error('This browser does not support desktop notification');
+            return Promise.resolve(null);
+        } else if (Notification.permission === 'default') {
+            return Notification.requestPermission();
+        } else {
+            return Promise.resolve(null);
+        }
+    }
+
+    /**
+     * format the notifications
+     * @param notifications
+     * @private
+     */
+    private parseNotifications(notifications: NotificationI[]) {
+        const timeZone = this.session.getSessionData('timezone') || moment.tz.guess(true);
+        const dateFormat = `${this.preferences.getDateFormat()} ${this.preferences.getTimeFormat()}`;
+        return notifications.map(n => {
+            let pDateTime = typeof timeZone == 'string' && timeZone.length > 0 ? moment.utc(n.notification_date).tz(timeZone) : moment(n.notification_date);
+            n.notification_date = pDateTime.isValid() ? pDateTime.format(dateFormat) : null;
+            if (!!n.additional_infos && typeof n.additional_infos == 'string') {
+                n.additional_infos = JSON.parse(n.additional_infos);
+                if (n.additional_infos?.fieldsNames) {
+                    n.additional_infos.fieldsNames = n.additional_infos.fieldsNames
+                        .map(f => this.language.getFieldDisplayName(n.bean_module, f))
+                        .join(',');
+                }
+            }
+            return n;
+        });
     }
 }
