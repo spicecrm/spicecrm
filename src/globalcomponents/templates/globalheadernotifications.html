@@ -21,22 +21,26 @@
             <system-button-icon icon="close" size="small"></system-button-icon>
         </button>
     </div>
-    <div class="slds-popover__body slds-p-around_none slds-scrollable--y">
+    <div #scrollContainer (scroll)="onScroll(scrollContainer)" class="slds-popover__body slds-p-around_none slds-scrollable--y">
         <div *ngIf="notificationService.notifications?.length === 0" class="slds-p-around--small">
             <system-label label="LBL_NO_ENTRIES"></system-label>
         </div>
         <ul>
             <ng-container *ngFor="let notification of notificationService.notifications">
                 <li [ngSwitch]="notification.notification_type" [class.slds-global-header__notification_unread]="!notification.notification_read" class="slds-global-header__notification spice-hover-display-children slds-is-relative">
-                    <global-header-notifications-item-assignment *ngSwitchCase="'assignment'" [notification]="notification"></global-header-notifications-item-assignment>
-                    <global-header-notifications-item-generic *ngSwitchDefault [notification]="notification"></global-header-notifications-item-generic>
+                    <global-header-notifications-item-assign *ngSwitchCase="'assign'" [notification]="notification"></global-header-notifications-item-assign>
+                    <global-header-notifications-item-change *ngSwitchCase="'change'" [notification]="notification"></global-header-notifications-item-change>
+                    <global-header-notifications-item-delete *ngSwitchCase="'delete'" [notification]="notification"></global-header-notifications-item-delete>
                     <div *ngIf="notification.notification_read != 1" (click)="markAsRead(notification.id)" class="slds-is-absolute slds-height_full spice-hover-child slds-grid slds-grid--vertical-align-center slds-p-right--x-small" style="right: 0; top: 0">
-                        <button system-title="LBL_MARK_AS_READ" class="slds-button slds-button_icon slds-button_icon-small slds-float_right slds-popover__close slds-button--icon-border">
+                        <button system-title="LBL_MARK_AS_READ" class="slds-theme--default slds-button slds-button_icon slds-button_icon-small slds-float_right slds-popover__close slds-button--icon-border">
                             <system-button-icon icon="check" size="small"></system-button-icon>
                         </button>
                     </div>
                 </li>
             </ng-container>
         </ul>
+        <div *ngIf="notificationService.isLoading" class="slds-align--absolute-center slds-p-around--small">
+            <system-spinner></system-spinner>
+        </div>
     </div>
 </section>
