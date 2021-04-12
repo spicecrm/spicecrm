@@ -20,6 +20,7 @@ declare var _: any;
  */
 declare var gapi: any;
 
+import * as globalInterfaces from "./interfaces/globalcomponents.interfaces";
 import {loginService, loginCheck} from "../services/login.service";
 import {metadata} from "../services/metadata.service";
 
@@ -105,8 +106,9 @@ import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobt
 import /*embed*/ {GlobalObtainGDPRConsent} from './components/globalobtaingdprconsent';
 import /*embed*/ {GlobalObtainGDPRConsentContainer} from './components/globalobtaingdprconsentcontainer';
 import /*embed*/ {GlobalHeaderImage} from './components/globalheaderimage';
-import /*embed*/ {GlobalHeaderNotificationsItemGeneric} from './components/globalheadernotificationsitemgeneric';
-import /*embed*/ {GlobalHeaderNotificationsItemAssignment} from './components/globalheadernotificationsitemassignment';
+import /*embed*/ {GlobalHeaderNotificationsItemChange} from './components/globalheadernotificationsitemchange';
+import /*embed*/ {GlobalHeaderNotificationsItemAssign} from './components/globalheadernotificationsitemassign';
+import /*embed*/ {GlobalHeaderNotificationsItemDelete} from './components/globalheadernotificationsitemdelete';
 import /*embed*/ {GlobalHeaderNotifications} from './components/globalheadernotifications';
 
 /**
@@ -198,8 +200,9 @@ import /*embed*/ {GlobalHeaderNotifications} from './components/globalheadernoti
         GlobalHeaderImage,
         GlobalLoginImage,
         GlobalHeaderNotifications,
-        GlobalHeaderNotificationsItemGeneric,
-        GlobalHeaderNotificationsItemAssignment
+        GlobalHeaderNotificationsItemChange,
+        GlobalHeaderNotificationsItemAssign,
+        GlobalHeaderNotificationsItemDelete
     ],
     entryComponents: [
         GlobalCopyright,
