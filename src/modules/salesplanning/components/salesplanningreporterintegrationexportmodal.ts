@@ -128,7 +128,7 @@ export class SalesPlanningReporterIntegrationExportModal implements OnInit {
         this.scopesetcharacteristics = [];
 
         // backend call
-        this.backend.getRequest('module/SalesPlanningScopeSets/getScopeCharacteristics/' + scopeSetId).subscribe(
+        this.backend.getRequest('module/SalesPlanningScopeSets/' + scopeSetId + '/characteristics').subscribe(
             scopesetcharacteristics => {
                 for (let scopesetcharacteristic of scopesetcharacteristics) {
                     if (scopesetcharacteristic.id != 'territory') {
@@ -225,7 +225,7 @@ export class SalesPlanningReporterIntegrationExportModal implements OnInit {
             });
         }
 
-        this.backend.postRequest(`module/SalesPlanningScopeSets/${currentversion.salesplanningscopeset_id}/createFromKReport/${this.model.id}`, {}, params).subscribe(result => {
+        this.backend.postRequest(`module/SalesPlanningScopeSets/${currentversion.salesplanningscopeset_id}/fromkreport/${this.model.id}`, {}, params).subscribe(result => {
             this.close();
         });
 
