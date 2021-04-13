@@ -66,7 +66,7 @@ export class loginService {
     public login(): Observable<boolean> {
         let loginSuccess = new Subject<any>();
 
-        let loginUrl: string = this.configurationService.getBackendUrl() + '/login';
+        let loginUrl: string = this.configurationService.getBackendUrl() + '/authentication/login';
 
         /**
          * the headers to be passed in
@@ -160,7 +160,7 @@ export class loginService {
      * logs back into the backend
      */
     public relogin(password, token): Observable<boolean> {
-        let loginUrl: string = this.configurationService.getBackendUrl() + '/login';
+        let loginUrl: string = this.configurationService.getBackendUrl() + '/authentication/login';
 
         let loginSuccess = new Subject<boolean>();
 
@@ -271,7 +271,7 @@ export class loginService {
         // check if we shoudl also logout on the server
         if(!localonly) {
             this.http.delete(
-                this.configurationService.getBackendUrl() + '/login?session_id=' + this.session.authData.sessionId
+                this.configurationService.getBackendUrl() + '/authentication/login?session_id=' + this.session.authData.sessionId
             );
         }
         this.session.endSession();
@@ -280,7 +280,7 @@ export class loginService {
         // broadcast that the user loged out
         this.broadcast.broadcastMessage('logout');
 
-        this.router.navigate(['/login']);
+        this.router.navigate(['/authentication/login']);
     }
 }
 
@@ -294,7 +294,7 @@ export class loginCheck implements CanActivate {
             if (state.url != '/') {
                 this.login.redirectUrl = state.url;
             }
-            this.router.navigate(['/login']);
+            this.router.navigate(['/authentication/login']);
             return false;
         } else {
             return true;

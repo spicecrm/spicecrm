@@ -138,7 +138,7 @@ export class GlobalLoginChangePassword {
     private setPassword() {
         if (this.canSave) {
             this.posting = true;
-            this.http.post(this.configuration.getBackendUrl() + '/changepassword', {
+            this.http.post(this.configuration.getBackendUrl() + '/authentication/changepassword', {
                 username: this.username,
                 password: this.password,
                 newPassword: this.newPassword

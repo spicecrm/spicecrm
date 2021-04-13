@@ -25,7 +25,7 @@ export class SystemDynamicRouteContainer implements AfterViewInit{
     ) {
         // dynamic routes only are avalbe when logged in
         if (!this.session || !this.session.authData.sessionId) {
-            this.router.navigate(['/login']);
+            this.router.navigate(['/authentication/login']);
         }
     }
 

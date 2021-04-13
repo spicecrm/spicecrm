@@ -115,7 +115,7 @@ export class SpiceInstallerSetBackEnd implements OnInit {
                 let response = res;
                 if (response.success == true) {
                     this.configurationService.setSiteData(response.site);
-                    this.router.navigate(['/login']);
+                    this.router.navigate(['/authentication/login']);
                 } else {
                     this.checking = false;
                 }
