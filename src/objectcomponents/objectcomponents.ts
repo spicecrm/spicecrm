@@ -112,8 +112,8 @@ import /*embed*/ {ObjectVerticalTabContainerItem} from './components/objectverti
 import /*embed*/ {ObjectVerticalTabContainerItemHeader} from './components/objectverticaltabcontaineritemheader';
 import /*embed*/ {ObjectRelateContainer} from './components/objectrelatecontainer';
 import /*embed*/ {ObjectRelatedCardHeader} from './components/objectrelatedcardheader';
-import /*embed*/ {ObjectRelatedCard} from './components/objectrelatedcard';
 import /*embed*/ {ObjectRelatedCardFooter} from './components/objectrelatedcardfooter';
+import /*embed*/ {ObjectRelatedCard} from './components/objectrelatedcard';
 import /*embed*/ {ObjectRelatedList} from './components/objectrelatedlist';
 import /*embed*/ {ObjectRelatedlistList} from './components/objectrelatedlistlist';
 import /*embed*/ {ObjectRelatedListItem} from './components/objectrelatedlistitem';
