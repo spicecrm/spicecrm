@@ -100,14 +100,23 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     set markDone(bool) {
         if (!this.nodeInfo.leaf || !this.canEdit || !this.isEditMode) return;
         this.isClosing = true;
-        let action = !bool ? 'unmarkDone' : 'markDone';
-        this.backend.postRequest(`module/SalesPlanningContents/version/${this.planningService.versionId}/Node/${this.nodeInfo.planningNode}/${action}`)
-            .subscribe(result => {
-                if (result.success == true) {
-                    this.nodeInfo.marked_done = bool;
-                    this.isClosing = false;
-                }
-            });
+        if (bool) {
+            this.backend.postRequest(`module/SalesPlanningContents/${this.planningService.versionId}/${this.nodeInfo.planningNode}/done`)
+                .subscribe(result => {
+                    if (result.success == true) {
+                        this.nodeInfo.marked_done = bool;
+                        this.isClosing = false;
+                    }
+                });
+        } else {
+            this.backend.deleteRequest(`module/SalesPlanningContents/${this.planningService.versionId}/${this.nodeInfo.planningNode}/done`)
+                .subscribe(result => {
+                    if (result.success == true) {
+                        this.nodeInfo.marked_done = bool;
+                        this.isClosing = false;
+                    }
+                });
+        }
     }
 
     public ngOnChanges() {
@@ -195,7 +204,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
             pathArray: this.planningService.selectedNodesIds,
             characteristics: this.planningService.selectedCharacteristicIds,
         };
-        this.backend.getRequest(`module/SalesPlanningContents/version/${this.planningService.versionId}/Node/${this.nodeInfo.planningNode}/Content`, params)
+        this.backend.getRequest(`module/SalesPlanningContents/${this.planningService.versionId}/${this.nodeInfo.planningNode}`, params)
             .subscribe(nodeContent => {
                 if (nodeContent && nodeContent.data) {
                     this.data = this.formatAllData(nodeContent.data);
@@ -382,7 +391,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     private save() {
         this.isSaving = true;
         let body = {data: this.machineFormatAllData(this.data)};
-        this.backend.postRequest(`module/SalesPlanningContents/version/${this.planningService.versionId}/Node/${this.nodeInfo.planningNode}/Update`, {}, body)
+        this.backend.postRequest(`module/SalesPlanningContents/${this.planningService.versionId}/${this.nodeInfo.planningNode}`, {}, body)
             .subscribe(result => {
                 if (result.success == true) {
                     this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");
@@ -561,7 +570,7 @@ export class SalesPlanningToolContent implements OnChanges, OnDestroy {
     */
     private saveContentNote() {
         let body = {notice: this.nodeInfo.notice};
-        this.backend.postRequest(`module/SalesPlanningContents/version/${this.planningService.versionId}/Node/${this.nodeInfo.planningNode}/setNotice`, {}, body)
+        this.backend.postRequest(`module/SalesPlanningContents/${this.planningService.versionId}/${this.nodeInfo.planningNode}/notice`, {}, body)
             .subscribe(result => {
                 if (result.success == true) {
                     this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success");
