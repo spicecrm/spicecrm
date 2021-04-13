@@ -50,7 +50,7 @@ export class DashletGeneratorDashletDetails implements OnChanges {
 
     private save() {
         this.dashlet.componentconfig = JSON.stringify(this.configValues);
-        this.backend.postRequest('dashboards/dashlets/' + this.dashlet.id, {}, this.dashlet)
+        this.backend.postRequest('module/Dashboards/dashlets/' + this.dashlet.id, {}, this.dashlet)
             .subscribe(res => this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success"));
     }
 }
