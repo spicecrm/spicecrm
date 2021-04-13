@@ -34,7 +34,7 @@ export class spiceimportsservice {
         this.activeItemLogs = undefined;
         this.isloadingLogs = true;
 
-        this.backend.getRequest(`modules/SpiceImports/${this.activeImportData.id}/logs`)
+        this.backend.getRequest(`module/SpiceImports/${this.activeImportData.id}/logs`)
             .subscribe(logs => {
                 logs.map(log => log.data = log.data.split('";"'));
                 this.activeItemLogs = logs;
