@@ -207,7 +207,7 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
             const searchTerm = encodeURIComponent(btoa(this.autocompletesearchterm));
             const locationBias = encodeURIComponent(btoa(this.locationbias));
 
-            this.backend.getRequest(`googleapi/places/search/${searchTerm}/${locationBias}`).subscribe(
+            this.backend.getRequest(`channels/groupware/gsuite/places/search/${searchTerm}/${locationBias}`).subscribe(
                 (res: any) => {
                     if (res.candidates && res.candidates.length > 0) {
                         this.autocompleteResults = res.candidates;
@@ -241,7 +241,7 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
 
         this.isSearching = true;
 
-        this.backend.getRequest('googleapi/places/' + placedetails.place_id).subscribe((res: any) => {
+        this.backend.getRequest('channels/groupware/gsuite/places/' + placedetails.place_id).subscribe((res: any) => {
                 this.details.emit({
                     address: {
                         street: res.address.street,
