@@ -2,13 +2,13 @@
     <div class="slds-grid slds-grid_vertical-align-center">
         <div class="slds-size--1-of-3 slds-text-align--left">
             <div *ngIf="relatedmodels.count > relatedmodels.loaditems && canViewAll" class="slds-grid slds-grid--vertical-align-center">
-                <button [disabled]="previousDisabled || paginating" class="slds-button" (click)="firstPage()">
-                    <system-button-icon  icon="jump_to_left"></system-button-icon>
+                <button [disabled]="previousDisabled || paginating" class="slds-button slds-button_icon" (click)="firstPage()">
+                    <system-button-icon icon="jump_to_left"></system-button-icon>
                 </button>
                 <button [disabled]="previousDisabled || paginating" class="slds-button slds-button_icon" (click)="previousPage()">
                     <system-button-icon icon="chevronleft"></system-button-icon>
                 </button>
-                <div class="slds-grid slds-grid--vertical-align-center slds-gutters_direct-xxx-small">
+                <div class="slds-p-horizontal--xx-small slds-grid slds-grid--vertical-align-center slds-gutters_direct-xxx-small">
                     <system-label class="slds-col" label="LBL_PAGE"></system-label>
                     <div class="slds-col">{{page}}</div>
                     <system-label class="slds-col" label="LBL_OF"></system-label>
