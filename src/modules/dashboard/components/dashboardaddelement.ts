@@ -80,7 +80,7 @@ export class DashboardAddElement {
     private getDashlets() {
         this.isLoading = true;
         this.dashboarddashlets = [];
-        this.backend.getRequest('dashboards/dashlets')
+        this.backend.getRequest('module/Dashboards/dashlets')
             .subscribe((dashboardDashlets: any) => {
                 this.dashboarddashlets = dashboardDashlets;
                 this.isLoading = false;

@@ -31,10 +31,10 @@ export class KRESTLogViewer {
     private routeBase = 'admin/restlog';
     private methods = [ 'CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PATCH', 'PUT', 'TRACE' ];
     private limit = '5000';
-    private linesPerPage = 20;
+    private entriesPerPage = 20;
 
     // The log data from the backend:
-    private lines: any[] = [];
+    private entries: any[] = [];
 
     // The hole list of CRM users:
     private userlist: any[];
@@ -63,7 +63,7 @@ export class KRESTLogViewer {
     constructor( private backend: backend, private metadata: metadata, private lang: language, private prefs: userpreferences, private modalservice: modal, private toast: toast ) {
 
         // Individual route, because of bug SPICEUI-159.
-        this.backend.getRequest( 'restlog/userlist' ).subscribe( response => {
+        this.backend.getRequest( this.routeBase+'/userlist' ).subscribe( response => {
             this.userlist = response.list;
             this.userlist.forEach( ( val, i ) => {
                 this.userlistIndexes[val.id] = i;
@@ -71,7 +71,7 @@ export class KRESTLogViewer {
         });
 
         this.yearNow = (new Date()).getFullYear().toString();
-        this.backend.getRequest( 'krestlog/routes' ).subscribe( response => {
+        this.backend.getRequest( this.routeBase+'/routes' ).subscribe( response => {
             this.routes = response.routes;
             this.routes.forEach( ( val, i ) => {
                 this.routesIndexes[val.id] = i;
@@ -85,7 +85,7 @@ export class KRESTLogViewer {
         return this.userlist[this.userlistIndexes[userId]].name;
     }
 
-    // Load the log lines from the backend.
+    // Load the log entries from the backend.
     private loadData() {
 
         if ( !this.canLoad()) return; // Check if all input fields (filter and limit) are valid and we can load.
@@ -95,23 +95,26 @@ export class KRESTLogViewer {
         this.isLoaded = false;
         this.filtertext = '';
 
-        // Build the REST route:
+        // Build the REST route query:
+
+        let begin, end;
 
         if ( this.period.type ) {
 
-            let begin = moment.tz( this.period.begin.year + '-'
+            begin = moment.tz( this.period.begin.year + '-'
                 + (this.period.begin.month ? this.period.begin.month : '01') + '-'
                 + (this.period.begin.day ? this.period.begin.day : '01') + ' '
                 + (this.period.begin.hour ? this.period.begin.hour : '00')
                 + ':00', this.prefs.toUse.timezone );
 
-            let end = begin.clone();
+            end = begin.clone();
             end.add( this.period.duration, this.period.type );
 
             begin.tz('UTC');
             end.tz('UTC');
 
-            route += '/' + begin.format( 'YYYYMMDDHH' ) + '/' + end.format( 'YYYYMMDDHH' );
+            // switched off after route changement on 2021-04-07
+            // route += '/' + begin.format( 'YYYYMMDDHH' ) + '/' + end.format( 'YYYYMMDDHH' );
 
         }
 
@@ -128,15 +131,18 @@ export class KRESTLogViewer {
             ipAddress: this.filter.ipAddress.length ? this.filter.ipAddress : undefined,
             status: this.filter.status.length ? this.filter.status : undefined,
             transactionId: this.filter.transactionId.length ? this.filter.transactionId : undefined,
+            // moved parameter "begin" and "end" from path to query (route changement on 2021-04-07):
+            begin: this.period.type ? begin.format( 'YYYYMMDDHH' ) : undefined,
+            end: this.period.type ? end.format( 'YYYYMMDDHH' ) : undefined
         };
         this.toast.clearToast( this.toastId );
-        this.backend.getRequest( route, queryParams ).subscribe(
+        this.backend.getRequest( route+'/entries', queryParams ).subscribe(
         response => {
-                this.lines = response.lines;
-                this.lines.forEach( ( line, i ) => {
-                    line.date = moment.unix( line.dtx ).tz( this.prefs.toUse.timezone ).format( this.prefs.getDateFormat() );
-                    line.time = moment.unix( line.dtx ).tz( this.prefs.toUse.timezone ).format( this.prefs.getTimeFormat() );
-                    line.i = i;
+                this.entries = response.entries;
+                this.entries.forEach( ( entry, i ) => {
+                    entry.date = moment.unix( entry.dtx ).tz( this.prefs.toUse.timezone ).format( this.prefs.getDateFormat() );
+                    entry.time = moment.unix( entry.dtx ).tz( this.prefs.toUse.timezone ).format( this.prefs.getTimeFormat() );
+                    entry.i = i;
                 });
                 this.currPage = 1;
                 this.isLoaded = true;
@@ -182,20 +188,20 @@ export class KRESTLogViewer {
         return this.period.begin.year.match(/^\d{4}$/);
     }
 
-    // Open the modal window to display a log line with unusual long log text.
-    private showLineInModal( lineNr ) {
+    // Open the modal window to display a log entry with unusual long log text.
+    private showEntryInModal( lineNr ) {
         if ( !this.modal || this.modal.instance.isClosed ) {
             this.modalservice.openModal( 'KRESTLogViewerModal' ).subscribe( modal => {
                 this.modal = modal;
                 this.modal.instance.routeBase = this.routeBase;
-                this.modal.instance.nrOfLines = this.lines.length;
+                this.modal.instance.nrOfLines = this.entries.length;
                 this.handOverModalData( lineNr );
                 this.lineNrInModal = lineNr;
                 modal.instance.toLeft$.subscribe( () => {
-                    if ( this.lineNrInModal > 0 ) this.showLineInModal( --this.lineNrInModal );
+                    if ( this.lineNrInModal > 0 ) this.showEntryInModal( --this.lineNrInModal );
                 });
                 modal.instance.toRight$.subscribe( () => {
-                    if ( this.lineNrInModal < this.lines.length-1 ) this.showLineInModal( ++this.lineNrInModal );
+                    if ( this.lineNrInModal < this.entries.length-1 ) this.showEntryInModal( ++this.lineNrInModal );
                 });
             } );
         } else {
@@ -203,7 +209,7 @@ export class KRESTLogViewer {
         }
     }
 
-    // Open the modal window to display a log line with unusual long log text.
+    // Open the modal window to display a log entry with unusual long log text.
     private showCRMlog( transactionId: string ) {
         this.modalservice.openModal( 'CRMLogViewerListModal' ).subscribe( modal => {
             modal.instance.filter = { transactionId: transactionId };
@@ -213,15 +219,15 @@ export class KRESTLogViewer {
     private handOverModalData( lineNr ) {
         this.currPage = Math.ceil( (lineNr+1) / 20 );
         this.modal.instance.lineNr = lineNr;
-        this.modal.instance.line = this.lines[lineNr];
-        this.modal.instance.username = this.getUsername( this.lines[lineNr].uid );
+        this.modal.instance.entry = this.entries[lineNr];
+        this.modal.instance.username = this.getUsername( this.entries[lineNr].uid );
         this.modal.instance.load();
     }
 
     // Mark expand property for every line. But only neccessary for the page shown at last.
     private collapseLinesOfPage( pageNr ) {
-        for ( let i=(pageNr-1)*this.linesPerPage; i < pageNr*this.linesPerPage; i++ ) {
-            if( this.lines[i] ) this.lines[i].expand = false;
+        for ( let i=(pageNr-1)*this.entriesPerPage; i < pageNr*this.entriesPerPage; i++ ) {
+            if( this.entries[i] ) this.entries[i].expand = false;
         }
     }
 

@@ -10,11 +10,11 @@
 
         <div *ngIf="isLoaded">
 
-            <div *ngIf="lines.length" class="slds-grid slds-grid--vertical-align-center slds-grid_align-spread slds-m-horizontal--medium">
+            <div *ngIf="entries.length" class="slds-grid slds-grid--vertical-align-center slds-grid_align-spread slds-m-horizontal--medium">
 
-                <pagination-controls class="slds-col_bump-right slds-m-right--large" [(page)]="currPage" [limit]="linesPerPage" [total_records]="linesToShow.length" (leftPage)="collapseLinesOfPage($event)"></pagination-controls>
+                <pagination-controls class="slds-col_bump-right slds-m-right--large" [(page)]="currPage" [limit]="entriesPerPage" [total_records]="entriesToShow.length" (leftPage)="collapseEntriesOfPage($event)"></pagination-controls>
 
-                <div *ngIf="isFiltered"><span style="text-transform:uppercase">{{lang.getLabel('LBL_FILTERED')}}</span> ({{lines.length-linesToShow.length}} {{lang.getLabel('LBL_NOT_SHOWN')}})</div>
+                <div *ngIf="isFiltered"><span style="text-transform:uppercase">{{lang.getLabel('LBL_FILTERED')}}</span> ({{entries.length-entriesToShow.length}} {{lang.getLabel('LBL_NOT_SHOWN')}})</div>
 
                 <div class="slds-form-element slds-m-left--medium slds-m-vertical--x-small">
                     <div class="slds-form-element__control slds-grid">
@@ -37,7 +37,7 @@
                 </div>
             </div>
 
-            <div *ngIf="lines.length">
+            <div *ngIf="entries.length">
 
                 <table class="slds-table slds-table--bordered slds-table--col-bordered slds-table--striped slds-table_cell-buffer" style="max-height:400px" [ngStyle]="{'opacity':isBuildingLocalTextfilter?0.25:1}"><!-- slds-table--header-fixed -->
                     <thead>
@@ -46,7 +46,7 @@
                             <th style="width:1%">{{lang.getLabel('LBL_TIME')}}</th>
                             <th style="width:1%" class="slds-text-align--right">PID</th>
                             <th style="width:1%" class="slds-text-align--right">{{lang.getLabel('LBL_TRANSACTION')}}</th>
-                            <th style="width:1%">{{lang.getLabel('LBL_USER')}}</th>
+                            <!-- <th style="width:1%">{{lang.getLabel('LBL_USER')}}</th> -->
                             <th style="width:1%">{{lang.getLabel('LBL_LEVEL')}}</th>
                             <th style="width:100%">{{lang.getLabel('LBL_TEXT')}}</th>
                             <th style="width:2rem;border-left:0"></th>
@@ -54,28 +54,28 @@
                         </tr>
                     </thead>
                     <tbody #tbody>
-                        <tr *ngFor="let line of linesToShow | paginate: { page: currPage, limit: 20 }">
-                            <td class="slds-text-align--right"><a (click)="valuesNotClickable || valueClicked$.emit({type:'date',value:line.date})" [ngClass]="{notClickable:valuesNotClickable}">{{line.date}}</a></td>
-                            <td class="slds-text-align--right"><a (click)="valuesNotClickable || valueClicked$.emit({type:'date',value:line.date});valueClicked$.emit({type:'time',value:line.time})" [ngClass]="{notClickable:valuesNotClickable}">{{line.time}}</a></td>
-                            <td class="slds-text-align--right"><a (click)="valuesNotClickable || valueClicked$.emit({type:'pid',value:line.pid})" [ngClass]="{notClickable:valuesNotClickable}">{{line.pid}}</a></td>
-                            <td class="slds-text-align--right"><a (click)="valuesNotClickable || valueClicked$.emit({type:'tid',value:line.tid})" [ngClass]="{notClickable:valuesNotClickable}">{{line.tid}}</a></td>
-                            <td><a (click)="valuesNotClickable || valueClicked$.emit({type:'uid',value:line.uid})" [ngClass]="{notClickable:valuesNotClickable}">{{getUsername(line.uid)}}</a></td>
-                            <td><a (click)="valuesNotClickable || valueClicked$.emit({type:'lev',value:line.lev})" [ngClass]="{notClickable:valuesNotClickable}">{{line.lev}}</a></td>
-                            <td [ngClass]="{expanded:line.expand,collapsed:!line.expand}">
-                                <div class="slds-text-font_monospace" [ngClass]="{'slds-truncate':!line.expand}">{{line.txt}}</div>
+                        <tr *ngFor="let entry of entriesToShow | paginate: { page: currPage, limit: 20 }">
+                            <td class="slds-text-align--right"><a (click)="valuesNotClickable || valueClicked$.emit({type:'date',value:entry.date})" [ngClass]="{notClickable:valuesNotClickable}">{{entry.date}}</a></td>
+                            <td class="slds-text-align--right"><a (click)="valuesNotClickable || valueClicked$.emit({type:'date',value:entry.date});valueClicked$.emit({type:'time',value:entry.time})" [ngClass]="{notClickable:valuesNotClickable}">{{entry.time}}</a></td>
+                            <td class="slds-text-align--right"><a (click)="valuesNotClickable || valueClicked$.emit({type:'pid',value:entry.pid})" [ngClass]="{notClickable:valuesNotClickable}">{{entry.pid}}</a></td>
+                            <td class="slds-text-align--right"><a (click)="valuesNotClickable || valueClicked$.emit({type:'tid',value:entry.tid})" [ngClass]="{notClickable:valuesNotClickable}">{{entry.tid}}</a></td>
+                            <!-- <td><a (click)="valuesNotClickable || valueClicked$.emit({type:'uid',value:entry.uid})" [ngClass]="{notClickable:valuesNotClickable}">{{getUsername(entry.uid)}}</a></td> -->
+                            <td><a (click)="valuesNotClickable || valueClicked$.emit({type:'lev',value:entry.lev})" [ngClass]="{notClickable:valuesNotClickable}">{{entry.lev}}</a></td>
+                            <td [ngClass]="{expanded:entry.expand,collapsed:!entry.expand}">
+                                <div class="slds-text-font_monospace" [ngClass]="{'slds-truncate':!entry.expand}">{{entry.txt}}</div>
                             </td>
                             <td class="slds-p-left--none" style="border-left:0">
-                                <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="line.expand=true" >
+                                <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="entry.expand=true" >
                                     <system-button-icon [icon]="'threedots'" [size]="'small'"></system-button-icon>
                                 </button>
                             </td>
                             <td>
-                                <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="showLineInModal(line.i)" [ngClass]="{'slds-hidden':!line.txtTruncated}">
+                                <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="showEntryInModal(entry.i)" [ngClass]="{'slds-hidden':!entry.txtTruncated}">
                                     <system-button-icon [icon]="'expand'" [size]="'medium'"></system-button-icon>
                                 </button>
                             </td>
                         </tr>
-                        <tr *ngIf="isFiltered && linesToShow.length === 0">
+                        <tr *ngIf="isFiltered && entriesToShow.length === 0">
                             <td colspan="8" class="slds-p-around--x-large">
                                 <div class="slds-p-vertical--x-large slds-text-align--center slds-text-heading--small">Empty list (filter is active).</div>
                             </td>
@@ -85,7 +85,7 @@
 
             </div>
 
-            <div *ngIf="lines.length == 0" class="slds-p-vertical--x-large slds-text-align--center slds-text-heading--small">No entries found.</div>
+            <div *ngIf="entries.length == 0" class="slds-p-vertical--x-large slds-text-align--center slds-text-heading--small">No entries found.</div>
 
         </div>
 

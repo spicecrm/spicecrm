@@ -38,7 +38,7 @@ export class GoogleCalendarManager {
             bean_mappings: this.beanMappings
         };
 
-        this.backend.postRequest('google/calendar/savebeanmappings', {}, postData)
+        this.backend.postRequest('channels/groupware/gsuite/calendar/beanmappings', {}, postData)
             .subscribe((res: any) => {
                 this.toast.sendToast('Bean Mappings saved');
             }
@@ -46,7 +46,12 @@ export class GoogleCalendarManager {
     }
 
     public startSync() {
-        this.backend.getRequest('google/calendar/notifications/startSync').
+        /**
+         * google/calendar/notifications/startSync route was missing
+         * replaces with /channels/groupware/gsuite/calendar/sync
+         * not sure if it works
+         */
+        this.backend.getRequest('channels/groupware/gsuite/calendar/sync').
             subscribe((res: any) => {
                 if (res.result == true) {
                     this.toast.sendToast('Google Calendar synchronization started.', 'success');
@@ -86,7 +91,7 @@ export class GoogleCalendarManager {
     private getBeans() {
         let responseSubject = new Subject<any[]>();
 
-        this.backend.getRequest('google/calendar/getbeans').subscribe(
+        this.backend.getRequest('channels/groupware/gsuite/calendar/beans').subscribe(
             (response: any) => {
                 if (response.result === true) {
                     this.beans = response.beans;
@@ -106,7 +111,7 @@ export class GoogleCalendarManager {
     private getCalendars() {
         let responseSubject = new Subject<any[]>();
 
-        this.backend.getRequest('google/calendar/getcalendars').subscribe(
+        this.backend.getRequest('channels/groupware/gsuite/calendar/calendars').subscribe(
             (response: any) => {
                 if (response.result === true) {
                     this.calendars = response.calendars;
@@ -126,7 +131,7 @@ export class GoogleCalendarManager {
     private getBeanMappings() {
         let responseSubject = new Subject<any[]>();
 
-        this.backend.getRequest('google/calendar/getbeanmappings').subscribe(
+        this.backend.getRequest('channels/groupware/gsuite/calendar/beanmappings').subscribe(
             (response: any) => {
                 if (response.result === true) {
                     // this.beanMappings = response.bean_mappings;
