@@ -117,7 +117,7 @@ export class DashboardContainerHeader {
      * @private
      */
     private saveComponents() {
-        this.backend.postRequest('dashboards/' + this.model.id, {}, this.dashboardlayout.dashboardElements)
+        this.backend.postRequest('module/Dashboards/' + this.model.id + '/components', {}, this.dashboardlayout.dashboardElements)
             .subscribe(()=> {
                 this.view.setViewMode();
                 this.model.endEdit();

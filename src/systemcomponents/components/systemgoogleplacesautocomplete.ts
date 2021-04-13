@@ -84,7 +84,7 @@ export class SystemGooglePlacesAutocomplete implements OnDestroy {
     private doAutocomplete() {
         if (this.autocompletesearchterm.length > 5) {
             this.isSearching = true;
-            this.backend.getRequest('googleapi/places/autocomplete/' + this.autocompletesearchterm).subscribe((res: any) => {
+            this.backend.getRequest('channels/groupware/gsuite/places/autocomplete/' + this.autocompletesearchterm).subscribe((res: any) => {
                     if (res.predictions && res.predictions.length > 0) {
                         this.autocompleteResults = res.predictions;
                         this.openSearchResults();
@@ -107,7 +107,7 @@ export class SystemGooglePlacesAutocomplete implements OnDestroy {
     private getAddressDetail(placeid) {
         this.displayAutocompleteResults = false;
         this.autocompletesearchterm = '';
-        this.backend.getRequest('googleapi/places/' + placeid).subscribe((res: any) => {
+        this.backend.getRequest('channels/groupware/gsuite/places/' + placeid).subscribe((res: any) => {
             let address = {
                 street: res.address.street,
                 street_name: res.address.street_name,

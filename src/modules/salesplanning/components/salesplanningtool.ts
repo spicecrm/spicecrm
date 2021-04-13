@@ -149,7 +149,7 @@ export class SalesPlanningTool {
     private getCharacteristicList() {
         this.planningService.characteristics = [];
         this.isLoading = true;
-        this.backend.getRequest(`module/SalesPlanningNodes/version/${this.planningService.versionId}/CharacteristicList`)
+        this.backend.getRequest(`module/SalesPlanningNodes/${this.planningService.versionId}/characteristiclist`)
             .subscribe(char => {
                 if (char && char.data) {
                     this.planningService.characteristics = char.data;

@@ -48,7 +48,7 @@ export class HolidayCalendarListGetHolidaysModal {
     }
 
     private load() {
-        this.backend.getRequest(`modules/SystemHolidayCalendars/${this.model.id}/calendarific/${this.country}/${this.year}`).subscribe(
+        this.backend.getRequest(`module/SystemHolidayCalendars/${this.model.id}/calendarific/${this.country}/${this.year}`).subscribe(
             res => {
                 this.close();
             },

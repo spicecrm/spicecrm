@@ -29,7 +29,7 @@ export class CampaignSendMailButton {
     public execute() {
         if (!this.sending) {
             this.sending = true;
-            this.backend.postRequest(`module/Campaign/${this.model.id}/tasks/queuemail`).subscribe((results: any) => {
+            this.backend.postRequest(`module/Campaigns/${this.model.id}/queuemail`).subscribe((results: any) => {
                 this.sending = false;
                 this.toast.sendToast('Mails queued');
 

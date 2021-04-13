@@ -78,7 +78,7 @@ export class ProductBrowserTree implements OnInit {
     }
 
     private getProducts(parentId = '') {
-        this.backend.getRequest(`module/ProductGroups/${parentId}/Products`).subscribe(items => {
+        this.backend.getRequest(`module/ProductGroups/${parentId}/products`).subscribe(items => {
             for (let item of items.list) {
                 item.expanded = false;
                 item.loaded = false;
