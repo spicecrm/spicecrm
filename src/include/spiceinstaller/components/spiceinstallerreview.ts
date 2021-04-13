@@ -52,7 +52,7 @@ export class SpiceInstallerReview implements AfterViewInit {
                             let response = res;
                             if (response.success == true) {
                                 this.configurationService.setSiteData(response.site);
-                                this.router.navigate(['/login']);
+                                this.router.navigate(['/authentication/login']);
                             }
                         },
                         (err: any) => {
