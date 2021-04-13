@@ -480,7 +480,7 @@ export class calendar implements OnDestroy {
             this.currentEnd.google = endDate;
             this.currentStart.google = startDate;
 
-            this.backend.getRequest("google/calendar/getgoogleevents", params)
+            this.backend.getRequest("channels/groupware/gsuite/calendar/events", params)
                 .subscribe(res => {
                     if (res.events && res.events.length > 0) {
                         for (let event of res.events) {
