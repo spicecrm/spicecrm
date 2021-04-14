@@ -181,7 +181,7 @@ export class ServicePlanner implements OnInit, OnDestroy {
             timelineOrdersFilter: this.moduleFilters.timelineOrders
         };
 
-        this.backend.getRequest('modules/ServiceOrders/Planner/records', params)
+        this.backend.getRequest('module/ServiceOrders/Planner/records', params)
             .pipe(
                 map((records: ServicePlannerRecordI[]) => records.map((record: ServicePlannerRecordI) => {
                         record.events = record.events.map((serviceOrder: ServicePlannerEventI) => {
