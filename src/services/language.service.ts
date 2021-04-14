@@ -106,7 +106,7 @@ export class language {
         }
 
         this.http.get(
-            this.configurationService.getBackendUrl() + '/authentication/language/'+this.currentlanguage,
+            this.configurationService.getBackendUrl() + '/system/language/'+this.currentlanguage,
             {headers: this.session.getSessionHeader(), observe: "response", params: {setPreferences: '1'}}
         ).subscribe(
             (res: any) => {
