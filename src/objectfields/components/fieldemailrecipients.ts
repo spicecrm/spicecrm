@@ -279,7 +279,7 @@ export class fieldEmailRecipients extends fieldGeneric implements OnInit {
                         this.searchResultsLoading = true;
                     });
 
-                    this.backend.postRequest('EmailAddresses/' + this.inputTextValue).subscribe(results => {
+                    this.backend.getRequest('module/EmailAddresses/' + this.inputTextValue).subscribe(results => {
                         this.zone.run(() => {
                             if (!!results && results.length > 0) {
                                 this.searchResults = results;
