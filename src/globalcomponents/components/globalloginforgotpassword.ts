@@ -187,7 +187,7 @@ export class GlobalLoginForgotPassword {
             // submit the request
             this.sending = true;
             this.http.post(
-                this.configuration.getBackendUrl() + `/passwordtoken/token/${this.token}`,
+                this.configuration.getBackendUrl() + `/authentication/passwordtoken/token/${this.token}`,
                 {
                     newPassword: this.password
                 }
