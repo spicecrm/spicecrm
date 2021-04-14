@@ -44,7 +44,7 @@ export class ServiceOrderNewButton {
         let awaitmodal = this.modal.await('loading');
 
         // request data and then create the ticket
-        this.backend.getRequest(`modules/ServiceOrders/discoverparent/${this.parentmodel.module}/${this.parentmodel.id}`).subscribe(
+        this.backend.getRequest(`module/ServiceOrders/discoverparent/${this.parentmodel.module}/${this.parentmodel.id}`).subscribe(
             res => {
 
                 // determine presets if we found a location and equipment
