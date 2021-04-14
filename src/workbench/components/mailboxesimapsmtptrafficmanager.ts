@@ -76,7 +76,7 @@ export class MailboxesImapSmtpTrafficManager {
     private getMailboxes(): Observable<any> {
         let responseSubject = new Subject<any>();
         let modelData = this.model.utils.spiceModel2backend('Mailboxes', this.model.data);
-        this.backend.postRequest("mailboxes/imap/getmailboxfolders",{}, {data: modelData})
+        this.backend.postRequest("module/Mailboxes/imap/folders",{}, {data: modelData})
             .subscribe((response: any) => {
                 if (response.result === true) {
                     responseSubject.next(response);
