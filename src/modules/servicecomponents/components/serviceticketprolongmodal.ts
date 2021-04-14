@@ -39,7 +39,7 @@ export class ServiceTicketProlongModal {
 
     private save() {
         this.saving = true;
-        this.backend.postRequest('modules/ServiceTickets/' + this.model.id + '/prolong', {}, {
+        this.backend.postRequest('module/ServiceTickets/' + this.model.id + '/prolong', {}, {
             prolonged_until: this.prolongDate.format("YYYY-MM-DD"),
             prolongation_reason: this.prolongReason
         }).subscribe(
