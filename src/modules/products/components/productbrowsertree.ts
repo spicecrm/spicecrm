@@ -55,7 +55,7 @@ export class ProductBrowserTree implements OnInit {
 
     private getProductGroups(parentId = '') {
 
-        this.backend.getRequest('productgroups/tree' + (parentId ? '/' + parentId : '')).subscribe(items => {
+        this.backend.getRequest('module/ProductGroups/tree' + (parentId ? '/' + parentId : '')).subscribe(items => {
             items.sort((a, b) => {
                 return parseInt(a.sortseq, 10) > parseInt(b.sortseq, 10) ? 1 : -1;
             });
