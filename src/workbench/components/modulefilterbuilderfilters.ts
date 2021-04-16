@@ -63,7 +63,7 @@ export class ModuleFilterBuilderFilters {
         this.filters = [];
         if (this.module) {
             this.loading = true;
-            this.backend.getRequest('sysmodulefilters/' + this.module).subscribe(filters => {
+            this.backend.getRequest('configuration/sysmodulefilters/' + this.module).subscribe(filters => {
                 this.filters = filters;
                 this.loading = false;
             });
@@ -75,7 +75,7 @@ export class ModuleFilterBuilderFilters {
             id: this.modelutilities.generateGuid(),
             module: this.module,
             filterdefs: null,
-            created_by_id: this.session.authData.userId,
+            createdby: this.session.authData.userId,
             name: 'new filter',
             scope: scope,
             package: '',
@@ -87,7 +87,7 @@ export class ModuleFilterBuilderFilters {
 
     private remove(filter) {
         this.metadata.removeModuleFilter(filter.id);
-        this.backend.deleteRequest('sysmodulefilters/' + filter.module + '/' + filter.id);
+        this.backend.deleteRequest('configuration/sysmodulefilters/' + filter.module + '/' + filter.id);
         this.filters = this.filters.filter(moduleFilter => moduleFilter.id != filter.id);
         this.filter.emit(undefined);
     }
