@@ -74,7 +74,7 @@ export class SystemInputTags {
             });
         });
         */
-        this.backend.postRequest('SpiceTags', {},  {search: this.querystring.trim()}).subscribe(tags => {
+        this.backend.postRequest('common/spicetags', {},  {search: this.querystring.trim()}).subscribe(tags => {
             this.matchedtags = tags;
             this.matchedtags.sort((a, b) => {
                 return a.toLowerCase() > b.toLowerCase() ? 1 : -1;
