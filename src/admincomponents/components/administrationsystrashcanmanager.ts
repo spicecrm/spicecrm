@@ -40,7 +40,7 @@ export class AdministrationSysTrashcanManager implements OnInit {
     }
 
     private getEntries() {
-        this.backend.getRequest('systrashcan').subscribe(records => {
+        this.backend.getRequest('admin/systrashcan').subscribe(records => {
             this.records = records;
             this.loaddate = new moment();
             this.loading = false;
