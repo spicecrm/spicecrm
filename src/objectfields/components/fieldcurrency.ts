@@ -63,11 +63,29 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
         }));
     }
 
-    get currencyId(){
+    /**
+     * setter for teh currency ID
+     *
+     * @param currencyId
+     */
+    set currencyId(currencyId){
+        this.model.setField(this.currencyidfield, currencyId);
+    }
+
+    /**
+     * a getter for the currency ID
+     */
+    get currencyId() {
         let currencyid = -99;
         if (this.currencyidfield) {
-            if (!this.model.data[this.currencyidfield]) return '';
-            else currencyid = this.model.data[this.currencyidfield];
+            if (!this.model.getField(this.currencyidfield)) {
+                let preferredCurrency = this.userpreferences.getPreference('currency');
+                if(preferredCurrency) {
+                    return preferredCurrency;
+                }
+            } else {
+                currencyid = this.model.getField(this.currencyidfield);
+            }
         }
         return currencyid;
     }
@@ -119,7 +137,7 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
         }
         this.textvalue = this.getValAsText();
         // set a brieftimeout and set the current pos back to the field tricking the Change Detection
-        setTimeout(()=> {
+        setTimeout(() => {
             this.inputel.nativeElement.selectionEnd = curpos;
         });
     }
