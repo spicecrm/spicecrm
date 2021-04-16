@@ -280,7 +280,7 @@ export class loginService {
         // broadcast that the user loged out
         this.broadcast.broadcastMessage('logout');
 
-        this.router.navigate(['/authentication/login']);
+        this.router.navigate(['/login']);
     }
 }
 
@@ -294,7 +294,7 @@ export class loginCheck implements CanActivate {
             if (state.url != '/') {
                 this.login.redirectUrl = state.url;
             }
-            this.router.navigate(['/authentication/login']);
+            this.router.navigate(['/login']);
             return false;
         } else {
             return true;
