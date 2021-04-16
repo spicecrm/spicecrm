@@ -56,6 +56,9 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
             if (modelFields.currency_id) this.currencyidfield = 'currency_id';
         }
 
+        // set teh default currency ID
+        this.setDefaultCurrencyId();
+
         // get the formatted value
         this.textvalue = this.getValAsText();
         this.subscriptions.add(this.model.data$.subscribe(() => {
@@ -64,12 +67,31 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
     }
 
     /**
+     * sets a default currency id fromt he preferences or if nothing is set to -99
+     * @private
+     */
+    private setDefaultCurrencyId() {
+        if (this.currencyidfield) {
+            if (!this.model.getField(this.currencyidfield)) {
+                let preferredCurrency = this.userpreferences.getPreference('currency');
+                if (preferredCurrency) {
+                    this.currencyId = preferredCurrency;
+                } else {
+                    this.currencyId = '-99';
+                }
+            }
+        }
+    }
+
+    /**
      * setter for teh currency ID
      *
      * @param currencyId
      */
-    set currencyId(currencyId){
-        this.model.setField(this.currencyidfield, currencyId);
+    set currencyId(currencyId) {
+        if (this.currencyidfield) {
+            this.model.setField(this.currencyidfield, currencyId);
+        }
     }
 
     /**
@@ -78,14 +100,7 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
     get currencyId() {
         let currencyid = -99;
         if (this.currencyidfield) {
-            if (!this.model.getField(this.currencyidfield)) {
-                let preferredCurrency = this.userpreferences.getPreference('currency');
-                if(preferredCurrency) {
-                    return preferredCurrency;
-                }
-            } else {
-                currencyid = this.model.getField(this.currencyidfield);
-            }
+            return this.model.getField(this.currencyidfield);
         }
         return currencyid;
     }
