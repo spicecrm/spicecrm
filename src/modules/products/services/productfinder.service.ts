@@ -37,7 +37,7 @@ export class productfinder {
 
     public setSearchFocus(searchFocus) {
         this.searchfocus = searchFocus;
-        let type = searchFocus.type == 'Product' ? 'products' : 'productgroups';
+        let type = searchFocus.type == 'Product' ? 'Products' : 'ProductGroups';
         this.getAttributes(type, searchFocus.object.id);
     }
 
@@ -49,7 +49,7 @@ export class productfinder {
         this.groupAttributes = [];
         let params = {searchparams: true};
 
-        this.backend.getRequest(`${type}/${id}/productattributes/direct`, params)
+        this.backend.getRequest(`module/${type}/${id}/ProductAttributes/direct`, params)
             .subscribe(attributes => {
                 for (let attribute of attributes) {
                     this.groupAttributes.push(this.modelutilities.backendModel2spice('ProductAtrtibutes', attribute));
