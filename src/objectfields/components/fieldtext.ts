@@ -29,6 +29,11 @@ export class fieldText extends fieldGeneric implements OnInit {
     private fixedHeight: number;
 
     /**
+     * setthe fieldlength to 0
+     */
+    public fieldlength = 0;
+
+    /**
      * reference to the text area
      */
     @ViewChild('textField', {read: ViewContainerRef, static: false}) private textField: ViewContainerRef;
@@ -37,12 +42,22 @@ export class fieldText extends fieldGeneric implements OnInit {
         super(model, view, language, metadata, router);
     }
 
+    /**
+     * initialize and load the fieldlength
+     */
     public ngOnInit() {
+        super.ngOnInit();
         if (window.webkitSpeechRecognition) {
             this.speechRecognition = this.fieldconfig.speechRecognition; // boolean
         }
     }
 
+    /**
+     * handle the resize of the field
+     *
+     * @param event
+     * @private
+     */
     private resize(event) {
         this.fixedHeight = event.height;
     }
@@ -84,8 +99,15 @@ export class fieldText extends fieldGeneric implements OnInit {
     /**
      * After a change of the textfield value, save the new value to the model.
      */
-    private change( $event ) {
-        if ( $event.target.value ) this.value = $event.target.value;
+    private change($event) {
+        if ($event.target.value) this.value = $event.target.value;
+    }
+
+    /**
+     * returns the length of the text
+     */
+    get textLength() {
+        return this.value ? this.value.length : 0;
     }
 
 }
