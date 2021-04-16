@@ -99,7 +99,7 @@
 
                     <div style="column-width:270px;column-gap:1em">
 
-                        <div *ngFor="let table of selectableTables; let i=index" class="slds-form-element">
+                        <div *ngFor="let table of selectableTables; let i=index" class="slds-form-element" style="z-index:1"><!-- z-index prevents a chrome/browser bug, that some divs are not visible -->
                             <div class="slds-form-element__control slds-m-bottom--xxx-small">
                                 <div class="slds-checkbox">
                                     <input type="checkbox" name="selectableTables" id="table{{i}}" [(ngModel)]="table.include" />
