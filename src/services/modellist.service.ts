@@ -301,7 +301,7 @@ export class modellist implements OnDestroy {
 
                     // analyse if we need to update the buckets
                     if (this.bucketfield) {
-                        if (message.messagedata.changed[this.bucketfield]) {
+                        if (message.messagedata.changed && message.messagedata.changed[this.bucketfield]) {
                             // update the bucket and if an amount is set snd in also the changed amount
 
                             let bucketamountfields = [];
@@ -322,7 +322,7 @@ export class modellist implements OnDestroy {
                             // just update the amount fields
                             let bucket = this.buckets.bucketitems.find(bucket => bucket.bucket == message.messagedata.data[this.bucketfield]);
                             for (let bucketamountfield of this.bucketamountfield) {
-                                if (message.messagedata.changed[bucketamountfield.name]) {
+                                if (message.messagedata.changed && message.messagedata.changed[bucketamountfield.name]) {
                                     bucket.values['_bucket_agg_' + bucketamountfield.name] += message.messagedata.data[bucketamountfield.name] - message.messagedata.backupdata[bucketamountfield.name];
                                 }
                             }
