@@ -16,6 +16,7 @@ import {view} from '../../services/view.service';
  * requires a component that provides a model and view
  */
 @Component({
+    selector: 'object-record-fieldset-container',
     templateUrl: './src/objectcomponents/templates/objectrecordfieldsetcontainer.html'
 })
 export class ObjectRecordFieldsetContainer {
