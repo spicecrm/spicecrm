@@ -1,9 +1,9 @@
 <ul class="slds-list_horizontal slds-has-dividers_left slds-has-block-links_space">
     <li class="slds-item">
         <span>
-            {{modellist.listData.list.length}}
+            <system-display-number class="slds-p-right--xxx-small" [number]="modellist.listData.list.length" [noDigits]="true"></system-display-number>
             <system-label label="LBL_OF"></system-label>
-            {{modellist.listData.totalcount}}
+            <system-display-number class="slds-p-horizontal--xxx-small" [number]="modellist.listData.totalcount" [noDigits]="true"></system-display-number>
             <system-label label="LBL_ITEMS"></system-label>
         </span>
     </li>
