@@ -1,8 +1,8 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
-<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+<field-generic-display *ngIf="!isEditMode()" fielddisplayclass="slds-has-divider--bottom slds-p-vertical--xx-small spice-fieldminheight" [fieldconfig]="fieldconfig" [editable]="isEditable()">
     <div *ngFor="let emailaddress of emailAddresses; trackBy: trackByFn" class="slds-grid slds-grid--vertical-align-center slds-size--1-of-1">
         <system-input-radio value="1" [ngModel]="emailaddress.primary_address" [disabled]="true" class="slds-truncate"></system-input-radio>
-        <div class="slds-m-bottom--x-small slds-grow">
+        <div class="slds-m-bottom--xx-small slds-grow">
             <div class="slds-grid slds-grid--vertical-align-center">
                 <button class="slds-button slds-button_icon slds-m-right--xx-small" [disabled]="emailaddress.invalid_email == '1'" (click)="sendEmail(emailaddress)">
                     <system-button-icon icon="email" sprite="action"></system-button-icon>

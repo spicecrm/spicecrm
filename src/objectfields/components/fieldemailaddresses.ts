@@ -1,7 +1,7 @@
 /**
  * @module ObjectFields
  */
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
