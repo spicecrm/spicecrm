@@ -11,6 +11,8 @@ import {userpreferences} from "./userpreferences.service";
 import {NotificationI} from "../globalcomponents/interfaces/globalcomponents.interfaces";
 import {language} from "./language.service";
 import {DomSanitizer} from "@angular/platform-browser";
+import {socket} from "./socket.service";
+import {SocketEventI} from "./interfaces.service";
 
 /** @ignore */
 declare var moment: any;
@@ -47,10 +49,37 @@ export class NotificationService {
                 private preferences: userpreferences,
                 private language: language,
                 private sanitizer: DomSanitizer,
+                private socket: socket,
                 private session: session) {
         this.initializeDesktopNotification().then(() =>
             this.loadNotifications()
         );
+        this.socket.initializeNamespace('notifications').event$.subscribe(e => this.handleSocketEvent(e));
+        this.subscribeToBroadcast();
+    }
+
+    /**
+     * subscribe to broadcast message to initialize/disconnect a socket client
+     * @private
+     */
+    private subscribeToBroadcast() {
+        this.broadcast.message$.subscribe(data => {
+            if (data.messagetype === 'login') {
+                this.socket.initializeNamespace('notifications')
+                    .event$.subscribe(res => console.log('notification ' + res.type));
+            }
+            if (data.messagetype === 'logout') {
+                this.socket.disconnect('notifications');
+            }
+        });
+    }
+
+    private handleSocketEvent(event: SocketEventI) {
+        switch (event.type) {
+            case 'new':
+                console.log(event.data);
+                break;
+        }
     }
 
     /**
