@@ -43,7 +43,7 @@ export class AdministrationQuotaManager implements OnInit {
     }
 
     getQuotaUsers() {
-        this.backend.getRequest('quotamanager/users').subscribe(data => {
+        this.backend.getRequest('module/QuotaManager/users').subscribe(data => {
             let i = 0;
             for (let entry of data) {
                 this.users.push({
