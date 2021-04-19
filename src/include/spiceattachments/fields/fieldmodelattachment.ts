@@ -101,7 +101,7 @@ export class fieldModelAttachment extends fieldGeneric {
     public getAttachment(): Observable<any> {
         let retSubject = new Subject();
         // somewhat ugly logic to get the prefix from the field .. it has to end with name
-        this.backend.getRequest(`spiceAttachments/module/${this.model.module}/${this.model.id}/byfield/${this.prefix}`).subscribe(
+        this.backend.getRequest(`common/spiceattachments/module/${this.model.module}/${this.model.id}/byfield/${this.prefix}`).subscribe(
             fileData => {
                 retSubject.next(fileData.file);
                 retSubject.complete();

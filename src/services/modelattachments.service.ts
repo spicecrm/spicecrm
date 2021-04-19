@@ -73,7 +73,7 @@ export class modelattachments {
      */
     public getCount(): Observable<any> {
         let retSubject = new Subject();
-        this.backend.getRequest(`spiceAttachments/module/${this.module}/${this.id}/count`).subscribe(
+        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/count`).subscribe(
             response => {
                 // set the count
                 this.count = response.count;
@@ -106,7 +106,7 @@ export class modelattachments {
 
         this.files = [];
         this.loading = true;
-        this.backend.getRequest(`spiceAttachments/module/${this.module}/${this.id}`).subscribe(
+        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}`).subscribe(
             response => {
                 for (let attId in response) {
                     if (!this.files.find(a => a.id == attId)) {
@@ -152,7 +152,7 @@ export class modelattachments {
      */
     public cloneAttachments(parentModel: model): Observable<any> {
         let retSubject = new Subject();
-        this.backend.postRequest(`spiceAttachments/module/${this.module}/${this.id}/clone/${parentModel.module}/${parentModel.id}`).subscribe(
+        this.backend.postRequest(`common/spiceattachments/module/${this.module}/${this.id}/clone/${parentModel.module}/${parentModel.id}`).subscribe(
             response => {
                 for (let attId in response) {
                     if (!this.files.find(a => a.id == attId)) {
@@ -442,7 +442,7 @@ export class modelattachments {
      * @param id
      */
     public deleteAttachment(id) {
-        this.backend.deleteRequest(`spiceAttachments/module/${this.module}/${this.id}/${id}`)
+        this.backend.deleteRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`)
             .subscribe(res => {
                 let index = this.files.findIndex(f => f.id == id);
                 this.files.splice(index, 1);
@@ -463,7 +463,7 @@ export class modelattachments {
      * @param name
      */
     public downloadAttachment(id, name?) {
-        this.backend.getRequest(`spiceAttachments/module/${this.module}/${this.id}/${id}`).subscribe(fileData => {
+        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`).subscribe(fileData => {
             let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
             let blobUrl = URL.createObjectURL(blob);
             let a = document.createElement("a");
@@ -484,7 +484,7 @@ export class modelattachments {
      * @param name
      */
     public downloadAttachmentForField(module, id, field, name?) {
-        this.backend.getRequest(`spiceAttachments/module/${module}/${id}/byfield/${field}`).subscribe(fileData => {
+        this.backend.getRequest(`common/spiceattachments/module/${module}/${id}/byfield/${field}`).subscribe(fileData => {
             let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
             let blobUrl = URL.createObjectURL(blob);
             let a = document.createElement("a");
@@ -505,7 +505,7 @@ export class modelattachments {
     public getAttachment(id): Observable<any> {
         let retSubject = new Subject();
 
-        this.backend.getRequest(`spiceAttachments/module/${this.module}/${this.id}/${id}`).subscribe(
+        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`).subscribe(
             fileData => {
                 retSubject.next(fileData.file);
                 retSubject.complete();
@@ -553,7 +553,7 @@ export class modelattachments {
      * @param name
      */
     public openAttachment(id, name?) {
-        this.backend.getRequest(`spiceAttachments/module/${this.module}/${this.id}/${id}`).subscribe(fileData => {
+        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`).subscribe(fileData => {
             let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
             let blobUrl = URL.createObjectURL(blob);
             window.open(blobUrl, "_blank");
