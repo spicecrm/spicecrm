@@ -12,10 +12,13 @@
 </ul>
 <section *ngIf="isOpen" class="slds-popover slds-popover_large slds-nubbin_top-right slds-is-absolute slds-grid slds-grid--vertical" role="dialog" style="top: 45px; right: 45px; max-height: calc(100vh - 55px); box-shadow: 0 0 15px 5px #bbb;">
     <div class="slds-grid slds-border--bottom">
-        <header class="slds-popover__header slds-grow" style="border-bottom: 0;">
+        <header class="slds-popover__header slds-grow slds-grid slds-grid--align-spread" style="border-bottom: 0;">
             <h2 class="slds-text-heading_small">
                 <system-label label="LBL_NOTIFICATIONS"></system-label>
             </h2>
+            <a (click)="markAllAsRead()" class="slds-text-link">
+                <system-label label="LBL_MARK_ALL_READ"></system-label>
+            </a>
         </header>
         <button (click)="closePopover()" system-title="LBL_CLOSE" class="slds-button slds-button_icon slds-button_icon-small slds-float_right slds-popover__close">
             <system-button-icon icon="close" size="small"></system-button-icon>
@@ -31,7 +34,7 @@
                     <global-header-notifications-item-assign *ngSwitchCase="'assign'" [notification]="notification"></global-header-notifications-item-assign>
                     <global-header-notifications-item-change *ngSwitchCase="'change'" [notification]="notification"></global-header-notifications-item-change>
                     <global-header-notifications-item-delete *ngSwitchCase="'delete'" [notification]="notification"></global-header-notifications-item-delete>
-                    <div *ngIf="notification.notification_read != 1" (click)="markAsRead(notification.id)" class="slds-is-absolute slds-height_full spice-hover-child slds-grid slds-grid--vertical-align-center slds-p-right--x-small" style="right: 0; top: 0">
+                    <div *ngIf="notification.notification_read != 1" (click)="markAsRead(notification.id); $event.stopPropagation()" class="slds-is-absolute slds-height_full spice-hover-child slds-grid slds-grid--vertical-align-center slds-p-right--x-small" style="right: 0; top: 0">
                         <button system-title="LBL_MARK_AS_READ" class="slds-theme--default slds-button slds-button_icon slds-button_icon-small slds-float_right slds-popover__close slds-button--icon-border">
                             <system-button-icon icon="check" size="small"></system-button-icon>
                         </button>

@@ -33,6 +33,13 @@ export class GlobalHeaderNotifications {
     }
 
     /**
+     * mark notification as read
+     */
+    public markAllAsRead() {
+        this.notificationService.markAllAsRead();
+    }
+
+    /**
      * toggle open popover and handle closing the popover when the click is outside the container
      */
     public toggleOpenPopover() {
