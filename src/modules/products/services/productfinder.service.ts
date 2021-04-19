@@ -79,7 +79,7 @@ export class productfinder {
             size: 25
         };
 
-        this.backend.getRequest(`productvariants/${this.searchfocus.type.toLowerCase()}/${this.searchfocus.object.id}`, params)
+        this.backend.getRequest(`module/ProductVariants/${this.searchfocus.type.toLowerCase()}/${this.searchfocus.object.id}`, params)
             .subscribe((variants: any) => {
                 for (let variant of variants.variants) {
                     this.productVariants.push(this.modelutilities.backendModel2spice('ProductVariants', variant));
@@ -105,7 +105,7 @@ export class productfinder {
             };
 
             // fetch the variants
-            this.backend.getRequest(`productvariants/${this.searchfocus.type.toLowerCase()}/${this.searchfocus.object.id}`, params)
+            this.backend.getRequest(`module/ProductVariants/${this.searchfocus.type.toLowerCase()}/${this.searchfocus.object.id}`, params)
                 .subscribe((variants: any) => {
                     for (let variant of variants.variants) {
                         this.productVariants.push(this.modelutilities.backendModel2spice('ProductVariants', variant));
