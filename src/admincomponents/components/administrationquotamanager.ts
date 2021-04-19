@@ -105,7 +105,7 @@ export class AdministrationQuotaManager implements OnInit {
                 + '/' + newQuota);
         } else {
             delete this.monthlyQuotas[userId][monthIndex];
-            this.backend.deleteRequest('quotamanager/quota/' + userId
+            this.backend.deleteRequest('module/QuotaManager/quota/' + userId
                 + '/' + this.year
                 + '/' + (monthIndex + 1));
         }
