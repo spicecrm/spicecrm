@@ -54,7 +54,7 @@ export class AdministrationQuotaManagerField {
                 // console.log("update to quota = " + quota);
             });
         } else {
-            this.backend.deleteRequest('quotamanager/quota/' + this.userid
+            this.backend.deleteRequest('module/QuotaManager/quota/' + this.userid
                 + '/' + this.year
                 + '/' + (this.monthindex + 1));
         }
