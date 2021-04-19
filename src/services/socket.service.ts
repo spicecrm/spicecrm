@@ -1,14 +1,15 @@
 /**
  * @module services
  */
-import {EventEmitter, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {configurationService} from "../services/configuration.service";
 import {broadcast} from "../services/broadcast.service";
 import {navigation} from "../services/navigation.service";
 import {backend} from "../services/backend.service";
 import {modelutilities} from "../services/modelutilities.service";
 import {session} from "../services/session.service";
-import {Subscription} from "rxjs";
+import {SocketEventDataI, SocketEventI, SocketObjectI} from "./interfaces.service";
+import {Subject} from "rxjs";
 
 declare var io: any;
 
@@ -18,14 +19,14 @@ export class socket {
     /**
      * the url for the socket connection from the backend
      */
-    private socketurl: string;
-    private socketid: string;
+    private socketUrl: string;
+    /**
+     * holds the socket id from the backend
+     * @private
+     */
+    private socketId: string;
 
-    private socket: any;
-
-    private socketconnected: boolean = false;
-
-    private subscriptions: Subscription = new Subscription();
+    private sockets: { [key: string]: SocketObjectI } = {};
 
     constructor(
         private configuration: configurationService,
@@ -35,104 +36,165 @@ export class socket {
         private backend: backend,
         private modelutilities: modelutilities
     ) {
-
-        // todo move to the module where it is used
-        this.broadcast.message$.subscribe(data => {
-            if (data.messagetype === 'login') {
-                this.initialize('');
-            }
-            if (data.messagetype === 'logout') {
-                this.disconnect();
-            }
-        });
-    }
-
-    /**
-     * get the prefs and login
-     */
-    private initialize(room) {
-
-        if (this.socket) {
-            this.socket.disconnect();
-            this.socket.destroy();
-            this.socket = null;
-        }
-
-        // get the scoketurl
-        let config = this.configuration.getCapabilityConfig('socket');
-        this.socketurl = config.socket_frontend;
-        this.socketid = config.socket_id;
-
-        if (this.socketurl && this.socketid) {
-            this.connectSocket(room);
-        }
     }
 
     /**
      * returns if the socket is connected
      */
-    get isConnected() {
-        return this.socketconnected;
+    public socketObject(namespace) {
+        return this.sockets[namespace];
     }
 
-    private disconnect() {
-        if (this.socket) {
-            this.socket.disconnect();
-            this.socket.destroy();
-            this.socketurl = undefined;
-            this.socketid = undefined;
-            this.socket = null;
+    /**
+     * disconnect the socket and reset the socket variables
+     */
+    public disconnect(namespace: string) {
+        if (this.sockets[namespace]) {
+            this.sockets[namespace].instance.disconnect();
+            this.sockets[namespace].instance.destroy();
+            delete this.sockets[namespace];
         }
     }
 
     /**
-     * connect to the socket
+     * initialize a new socket instance with namespace and register an event listener
+     * @param namespace
      */
-    private connectSocket(room) {
-        // ensure we have an URL
-        if (!this.socketurl) {
-            return false;
+    public initializeNamespace(namespace: string): SocketObjectI {
+
+        if (!!this.sockets[namespace]) {
+            return this.sockets[namespace];
         }
 
-        this.socket = io(`${this.socketurl}?sysid=${this.socketid}&room=${room}&token=${this.session.authData.sessionId}`);
-        this.socket.on('connect', (socket) => {
-            this.socketconnected = true;
+        this.setSocketData();
+
+        if (!this.socketUrl || !this.socketId) {
+            return;
+        }
+
+        return this.sockets[namespace] = this.initializeSocket(namespace);
+    }
+
+    /**
+     * emit the room to the serve to join
+     * @param namespace
+     * @param room
+     */
+    public joinRoom(namespace: string, room: string) {
+        if (!namespace || !room) return;
+        this.sockets[namespace].instance.emit('join:room', room);
+    }
+
+    /**
+     * emit the room to the serve to join
+     * @param namespace
+     * @param room
+     */
+    public leaveRoom(namespace: string, room: string) {
+        if (!namespace || !room) return;
+        this.sockets[namespace].instance.emit('leave:room', room);
+    }
+
+    /**
+     * load socket config from spice config
+     * @private
+     */
+    private setSocketData() {
+        let config = this.configuration.getCapabilityConfig('socket');
+        this.socketUrl = config.socket_frontend;
+        this.socketId = config.socket_id;
+    }
+
+    /**
+     * initialize a socket connection and register an event handler
+     * @param namespace
+     * @private
+     */
+    private initializeSocket(namespace: string): SocketObjectI {
+
+        const resSubject = new Subject<SocketEventI>();
+
+        namespace = !namespace ? '/' : `/ns-${namespace}`;
+
+        const socket = io(this.socketUrl + namespace, {
+            query: {
+                token: this.session.authData.sessionId,
+                sysid: this.socketId,
+                namespace: namespace,
+                userid: this.session.authData.userId
+            }
         });
-        this.socket.on('disconnect', () => {
-            this.socketconnected = false;
+
+        socket.on('connect', () => this.handleConnectEvent(resSubject));
+
+        socket.on('disconnect', () => this.handleDisconnectEvent(resSubject));
+
+        socket.onAny((e, data) => {
+            this.handleCustomEvent(resSubject,e, data);
         });
-        this.socket.on('message', (data) => {
-            this.handleMessage(data);
+
+        return {instance: socket, isConnected: socket.connected, event$: resSubject.asObservable()};
+    }
+
+    /**
+     * handle connect event
+     * @param resSubject
+     * @private
+     */
+    private handleConnectEvent(resSubject: Subject<SocketEventI>) {
+        window.console.log('socket connected');
+    }
+
+    /**
+     * handle connect event
+     * @param resSubject
+     * @private
+     */
+    private handleDisconnectEvent(resSubject: Subject<SocketEventI>) {
+        resSubject.complete();
+        window.console.log('socket disconnected');
+    }
+
+    /**
+     * handle connect event
+     * @param resSubject
+     * @param event
+     * @param data
+     * @private
+     */
+    private handleCustomEvent(resSubject: Subject<SocketEventI>,event: string, data: any) {
+        resSubject.next({
+            type: event,
+            data: data
         });
     }
 
     /**
      * handle the event from the socket
-     * chreck if the session is another óne than the one we are logged in
+     * check if the session is another óne than the one we are logged in
      * check if the model is active in the model register .. if yes reload it
-     * and issue a model saved broadacast message so all views and representations will update accordingy
+     * and issue a model saved broadcast message so all views and representations will update accordingly
      *
      * @param eventData
      */
-    private handleMessage(eventData: any) {
+    private handleMessage(eventData: SocketEventDataI) {
         switch (eventData.type) {
             case 'error':
-                console.log(eventData.message.error);
+                console.error(eventData.message.error);
                 break;
             case 'message':
-                if (eventData.message.s == this.session.authData.sessionId) {
-                    if (this.navigation.modelregister.find(m => m.model.id == eventData.message.i && m.model.module == eventData.message.m)) {
-                        this.backend.get(eventData.message.m, eventData.message.i).subscribe(data => {
+                if (eventData.message.sessionId == this.session.authData.sessionId) {
+                    if (this.navigation.modelregister.find(m => m.model.id == eventData.message.id && m.model.module == eventData.message.module)) {
+                        this.backend.get(eventData.message.module, eventData.message.id).subscribe(data => {
                             this.broadcast.broadcastMessage("model.save", {
-                                id: eventData.message.i,
-                                module: eventData.message.m,
-                                data: this.modelutilities.backendModel2spice(eventData.message.m, data)
+                                id: eventData.message.id,
+                                module: eventData.message.module,
+                                data: this.modelutilities.backendModel2spice(eventData.message.module, data)
                             });
                         });
                     }
                 }
                 break;
         }
-
     }
 }
