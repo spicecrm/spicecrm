@@ -50,7 +50,7 @@ export class SpiceAttachmentsEditModal implements OnInit {
         if (!!this.configurationService.getData('spiceattachments_categories')) {
             return this.categories = this.configurationService.getData('spiceattachments_categories');
         }
-        this.backend.getRequest('spiceAttachments/categories/' + this.model.module).subscribe(res => {
+        this.backend.getRequest('common/spiceattachments/categories/' + this.model.module).subscribe(res => {
             if (!res || !Array.isArray(res)) return;
             this.categories = res;
             this.configurationService.setData('spiceattachments_categories', res);
@@ -76,7 +76,7 @@ export class SpiceAttachmentsEditModal implements OnInit {
             display_name: this.inputData.display_name
         };
 
-        this.backend.postRequest('spiceAttachments/' + this.attachment.id, {}, body).subscribe(res => {
+        this.backend.postRequest('common/spiceattachments/' + this.attachment.id, {}, body).subscribe(res => {
            if (!!res && !!res.success) {
 
                if (!!this.inputData.category_ids && this.inputData.category_ids.join(',') != this.attachment.category_ids) {

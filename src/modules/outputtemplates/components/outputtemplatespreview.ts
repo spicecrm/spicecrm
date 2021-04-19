@@ -182,7 +182,7 @@ export class OutputTemplatesPreview {
 
         switch (this.outputformat) {
             case 'pdf':
-                this.backend.postRequest(`OutputTemplates/previewpdf`, {}, postBody).subscribe(
+                this.backend.postRequest(`module/OutputTemplates/previewpdf`, {}, postBody).subscribe(
                     pdf => {
                         let blob = this.datatoBlob(atob(pdf.content));
                         this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
@@ -198,7 +198,7 @@ export class OutputTemplatesPreview {
             case 'html':
 
                 // compile the template to show the user...
-                this.backend.postRequest(`OutputTemplates/previewhtml`, {}, postBody).subscribe(
+                this.backend.postRequest(`module/OutputTemplates/previewhtml`, {}, postBody).subscribe(
                     res => {
                         this.compiled_selected_template = res.content;
                         this.loading_output = false;
