@@ -59,7 +59,7 @@ export class AdministrationQuotaManager implements OnInit {
 
     getQuotas(): Observable<Array<any>> {
         let responseSubject = new Subject<Array<any>>();
-        this.backend.getRequest('quotamanager/quotas/' + this.year).subscribe(data => {
+        this.backend.getRequest('module/QuotaManager/quotas/' + this.year).subscribe(data => {
             this.quotas = data;
             this.monthlyQuotas = {};
             this.yearlyQuotas = {};
