@@ -84,7 +84,7 @@ export class LanguageTranslationsManager {
             return;
         }
         this.isLoading = true;
-        this.backend.getRequest(`syslanguage/${this.selectedLanguage}/${this.scope}/labels/untranslated`)
+        this.backend.getRequest(`configuration/syslanguage/${this.selectedLanguage}/${this.scope}/labels/untranslated`)
             .subscribe(
                 (res) => {
                     this.labels = res;
