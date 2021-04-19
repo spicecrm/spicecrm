@@ -47,7 +47,7 @@ export class AdministrationQuotaManagerField {
             index++;
         }
         if (quotaNumeric > 0) {
-            this.backend.postRequest('quotamanager/quota/' + this.userid
+            this.backend.postRequest('module/QuotaManager/quota/' + this.userid
                 + '/' + this.year
                 + '/' + (this.monthindex + 1)
                 + '/' + quota).subscribe(_ => {

@@ -99,7 +99,7 @@ export class AdministrationQuotaManager implements OnInit {
         if (newQuota > 0) {
             this.monthlyQuotas[userId][monthIndex] = newQuota;
             // console.log(this.monthlyQuotas);
-            this.backend.postRequest('quotamanager/quota/' + userId
+            this.backend.postRequest('module/QuotaManager/quota/' + userId
                 + '/' + this.year
                 + '/' + (monthIndex + 1)
                 + '/' + newQuota);
