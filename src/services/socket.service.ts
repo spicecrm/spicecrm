@@ -119,19 +119,21 @@ export class socket {
         const socket = io(this.socketUrl + namespace, {
             query: {
                 token: this.session.authData.sessionId,
-                sysid: this.socketId,
-                namespace: namespace,
-                userid: this.session.authData.userId
+                sysid: this.socketId
             }
         });
 
-        socket.on('connect', () => this.handleConnectEvent(resSubject));
+        socket.on('connect', () =>
+            this.handleConnectEvent(resSubject)
+        );
 
-        socket.on('disconnect', () => this.handleDisconnectEvent(resSubject));
+        socket.on('disconnect', () =>
+            this.handleDisconnectEvent(resSubject)
+        );
 
-        socket.onAny((e, data) => {
-            this.handleCustomEvent(resSubject,e, data);
-        });
+        socket.onAny((e, data) =>
+            this.handleCustomEvent(resSubject,e, data)
+        );
 
         return {instance: socket, isConnected: socket.connected, event$: resSubject.asObservable()};
     }
@@ -167,34 +169,5 @@ export class socket {
             type: event,
             data: data
         });
-    }
-
-    /**
-     * handle the event from the socket
-     * check if the session is another óne than the one we are logged in
-     * check if the model is active in the model register .. if yes reload it
-     * and issue a model saved broadcast message so all views and representations will update accordingly
-     *
-     * @param eventData
-     */
-    private handleMessage(eventData: SocketEventDataI) {
-        switch (eventData.type) {
-            case 'error':
-                console.error(eventData.message.error);
-                break;
-            case 'message':
-                if (eventData.message.sessionId == this.session.authData.sessionId) {
-                    if (this.navigation.modelregister.find(m => m.model.id == eventData.message.id && m.model.module == eventData.message.module)) {
-                        this.backend.get(eventData.message.module, eventData.message.id).subscribe(data => {
-                            this.broadcast.broadcastMessage("model.save", {
-                                id: eventData.message.id,
-                                module: eventData.message.module,
-                                data: this.modelutilities.backendModel2spice(eventData.message.module, data)
-                            });
-                        });
-                    }
-                }
-                break;
-        }
     }
 }
