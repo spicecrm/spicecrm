@@ -215,7 +215,7 @@ export class ProductTextGenerator {
         if (this.model.data.product_id && this.model.data.product_id !== this.attributesproductid) {
             this.loading = true;
             this.attributesproductid = this.model.data.product_id;
-            this.backend.getRequest('products/' + this.model.data.product_id + '/productattributes/textgenerator').subscribe((response: any) => {
+            this.backend.getRequest('module/Products/' + this.model.data.product_id + '/ProductAttributes/textgenerator').subscribe((response: any) => {
                 this.attributes = response.attributes;
                 this.ltattributes = response.ltattributes;
                 this.productnames = response.productnames;
