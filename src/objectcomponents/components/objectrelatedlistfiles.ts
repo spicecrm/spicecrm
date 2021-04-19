@@ -132,7 +132,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
         if (!!this.configurationService.getData('spiceattachments_categories')) {
             return this.categories = this.configurationService.getData('spiceattachments_categories');
         }
-        this.backend.getRequest('spiceAttachments/categories/' + this.model.module).subscribe(res => {
+        this.backend.getRequest('common/spiceattachments/categories/' + this.model.module).subscribe(res => {
             if (!res || !Array.isArray(res)) return;
             this.categories = res;
             this.configurationService.setData('spiceattachments_categories', res);
