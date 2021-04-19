@@ -1,3 +1,5 @@
+import {Observable} from "rxjs";
+
 /**
  * @module services
  */
@@ -77,4 +79,34 @@ export interface BucketsI {
     bucketfield?: string;
     bucketitems?: any[];
     buckettotal?: any[];
+}
+
+/**
+ * holds the socket service received event data interface
+ */
+export interface SocketEventDataI {
+    message: {
+        module?: string,
+        id?: string,
+        sessionId: string,
+        error?: string
+    };
+    type: 'error' | 'message';
+}
+
+/**
+ * holds the socket service socket object interface
+ */
+export interface SocketEventI {
+    type: string;
+    data?: any;
+}
+
+/**
+ * holds the socket service socket object interface
+ */
+export interface SocketObjectI {
+    instance: any;
+    isConnected: boolean;
+    event$: Observable<SocketEventI>;
 }
