@@ -179,7 +179,7 @@ export class SystemLabelEditorModal implements OnInit {
      */
     private save() {
         this.close();
-        this.backend.postRequest('syslanguages/labels', null, [this.labelData]).subscribe(
+        this.backend.postRequest('configuration/syslanguages/labels', null, [this.labelData]).subscribe(
             () => {
                 let currentTranslation = this.translations.find(translation => translation.syslanguage == this.language.currentlanguage);
                 this.language.addLabel(this.labelData.name, currentTranslation.translation_default, currentTranslation.translation_short, currentTranslation.translation_long);

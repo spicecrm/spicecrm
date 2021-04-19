@@ -173,7 +173,7 @@ export class LanguageLabelManagerComponent {
     }
 
     public save() {
-        this.backend.postRequest('syslanguages/labels', null, [this.selected_label]).subscribe(
+        this.backend.postRequest('configuration/syslanguages/labels', null, [this.selected_label]).subscribe(
             (res) => {
                 // reload labels to show up in the application...
                 // this.language.loadLanguage();
@@ -226,7 +226,8 @@ export class LanguageLabelManagerComponent {
     }
 
     /**
-     * bad naming... don't use shortcuts, be more explicit with your arguments... if you name it language, I would guess it means a complete language object... instead it means the language_code, why not name it so?
+     * bad naming... don't use shortcuts, be more explicit with your arguments... if you name it language, I would guess it means a complete language object...
+     * instead it means the language_code, why not name it so?
      * also the "text" of a language could mean everything...
      * @param language
      * @returns {any}
