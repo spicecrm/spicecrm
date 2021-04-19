@@ -17,6 +17,7 @@ import {backend} from "./backend.service";
 import {recent} from "./recent.service";
 import {configurationService} from "./configuration.service";
 import {socket} from "./socket.service";
+import {SocketEventI} from "./interfaces.service";
 
 declare var _: any;
 
@@ -313,6 +314,24 @@ export class model implements OnDestroy {
         this._module = val;
         this.initializeFieldsStati();
         this.registerModel();
+        if (!val) return;
+        this.socket.initializeNamespace(`module/${val}`)
+            .event$.subscribe(e => this.handleSocketEvents(e));
+    }
+
+    /**
+     * handle socket event
+     * @param event
+     * @private
+     */
+    private handleSocketEvents(event: SocketEventI) {
+        switch (event.type) {
+            case 'update':
+                this.backend.get(event.data.module, event.data.id).subscribe(data => {
+                        this.data = data;
+                });
+                break;
+        }
     }
 
     /**
@@ -462,6 +481,7 @@ export class model implements OnDestroy {
                 if (trackAction != "") {
                     this.recent.trackItem(this.module, this.id, this.data);
                 }
+                this.socket.joinRoom(`module/${this.module}`, this.id);
                 this.initializeFieldsStati();
                 this.evaluateValidationRules(null, "init");
                 this.isLoading = false;
@@ -1695,7 +1715,11 @@ export class model implements OnDestroy {
 
 
     public ngOnDestroy(): void {
+        if (!!this.module && !!this.id) {
+            // this.socket.leaveRoom(`module/${this.module}`, this.id);
+        }
         this.navigation.unregisterModel(this.modelRegisterId);
+
 
         // unsubscribe from any subscriptions we might have
         this.subscriptions.unsubscribe();
