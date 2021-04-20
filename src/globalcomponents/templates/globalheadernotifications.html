@@ -47,3 +47,11 @@
         </div>
     </div>
 </section>
+
+<div class="slds-notification-container">
+    <ng-container *ngFor="let notification of notificationService.newNotifications" [ngSwitch]="notification.notification_type">
+        <global-header-notifications-item-assign *ngSwitchCase="'assign'" [asBox]="true" [notification]="notification"></global-header-notifications-item-assign>
+        <global-header-notifications-item-change *ngSwitchCase="'change'" [asBox]="true" [notification]="notification"></global-header-notifications-item-change>
+        <global-header-notifications-item-delete *ngSwitchCase="'delete'" [asBox]="true" [notification]="notification"></global-header-notifications-item-delete>
+    </ng-container>
+</div>
