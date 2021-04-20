@@ -42,6 +42,10 @@ export class NotificationService {
      * true if more notifications are loading from backend
      */
     public isLoading: boolean = false;
+    /**
+     * holds the new notifications temporary to be rendered as toast for 5 seconds
+     */
+    public newNotifications: NotificationI[] = [];
 
     constructor(private backend: backend,
                 private broadcast: broadcast,
@@ -56,15 +60,6 @@ export class NotificationService {
         );
         this.initializeSocket();
         this.subscribeToBroadcast();
-    }
-
-    /**
-     * initialize a socket connection and join the user private room
-     * @private
-     */
-    private initializeSocket() {
-        this.socket.initializeNamespace('notifications').event$.subscribe(e => this.handleSocketEvents(e));
-        this.socket.joinRoom('notifications', this.session.authData.userId);
     }
 
     /**
@@ -145,7 +140,45 @@ export class NotificationService {
     public pushNotification(notification) {
         this.notifications.unshift(notification);
         this.pushDesktopNotification(notification);
+        this.newNotifications.push(notification);
+
+        window.setTimeout(() =>
+            this.clearTempNotification(notification),
+            10000
+        );
+
         this.unreadCount++;
+    }
+
+    /**
+     * remove the temporary notification from the new notification array
+     * @param n
+     */
+    public clearTempNotification(n: NotificationI) {
+        this.newNotifications = this.newNotifications.filter(newN => newN != n);
+    }
+
+    /**
+     * check if the notification api is supported by the browser and request permission if the user did not take action yet.
+     */
+    protected initializeDesktopNotification() {
+        if (!('Notification' in window)) {
+            window.console.error('This browser does not support desktop notification');
+            return Promise.resolve(null);
+        } else if (Notification.permission === 'default') {
+            return Notification.requestPermission();
+        } else {
+            return Promise.resolve(null);
+        }
+    }
+
+    /**
+     * initialize a socket connection and join the user private room
+     * @private
+     */
+    private initializeSocket() {
+        this.socket.initializeNamespace('notifications').event$.subscribe(e => this.handleSocketEvents(e));
+        this.socket.joinRoom('notifications', this.session.authData.userId);
     }
 
     /**
@@ -177,20 +210,6 @@ export class NotificationService {
                 return `${this.language.getLabel('LBL_FIELDS')} (${n.additional_infos.fieldsNames}) ${this.language.getLabel('LBL_IN')} ${n.bean_name} ${this.language.getLabel('MSG_NOTIFICATION_CHANGED')} ${n.created_by_name}`;
             case 'delete':
                 return `${n.bean_name} ${this.language.getLabel('MSG_NOTIFICATION_DELETED')} ${n.created_by_name}`;
-        }
-    }
-
-    /**
-     * check if the notification api is supported by the browser and request permission if the user did not take action yet.
-     */
-    protected initializeDesktopNotification() {
-        if (!('Notification' in window)) {
-            window.console.error('This browser does not support desktop notification');
-            return Promise.resolve(null);
-        } else if (Notification.permission === 'default') {
-            return Notification.requestPermission();
-        } else {
-            return Promise.resolve(null);
         }
     }
 

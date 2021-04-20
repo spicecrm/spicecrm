@@ -3,6 +3,7 @@
  */
 import {Component, ElementRef, Renderer2} from '@angular/core';
 import {NotificationService} from "../../services/notification.service";
+import {Subscription} from "rxjs";
 
 /**
  * display notifications on the global header
@@ -17,7 +18,12 @@ export class GlobalHeaderNotifications {
      * @private
      */
     private isOpen: boolean = false;
+    /**
+     * holds the click listener function to enable remove
+     * @private
+     */
     private clickListener: () => void;
+    private subscription = new Subscription();
 
     constructor(private notificationService: NotificationService,
                 private elementRef: ElementRef,

@@ -1,4 +1,4 @@
-<div class="slds-media slds-has-flexi-truncate slds-p-around_x-small">
+<div *ngIf="!asBox; else boxContainer" class="slds-media slds-has-flexi-truncate slds-p-around_x-small">
     <div class="slds-media__figure">
         <span class="slds-icon_container" style="width:40px;height:40px;">
             <system-icon *ngIf="!!notification.bean_module" [module]="notification.bean_module"></system-icon>
@@ -37,3 +37,41 @@
         </div>
     </div>
 </div>
+
+<ng-template #boxContainer>
+    <section class="slds-notification" role="dialog">
+        <div class="slds-notification__body">
+            <a class="slds-notification__target slds-media">
+                <system-icon *ngIf="notification.bean_module" [module]="notification.bean_module"></system-icon>
+                <div class="slds-media__body">
+                    <h2 class="slds-text-heading_small slds-m-bottom_xx-small">
+                        <span>
+                            <system-label label="LBL_FIELDS"></system-label>
+                        </span>
+                        <span>
+                            ({{notification.additional_infos.fieldsNames}})
+                        </span>
+                        <span>
+                            <system-label label="LBL_IN"></system-label>
+                        </span>
+                        <span system-model-popover [id]="notification.bean_id" [module]="notification.bean_module" [system-title]="notification.bean_name" class="slds-m-right--xxx-small" style="text-decoration: underline;">
+                            {{notification.bean_name}}
+                        </span>
+                        <span system-title="MSG_NOTIFICATION_CHANGED">
+                            <system-label label="MSG_NOTIFICATION_CHANGED"></system-label>
+                        </span>
+                        <span system-model-popover [id]="notification.created_by" module="Users" [system-title]="notification.created_by_name" class="slds-m-right--xxx-small" style="text-decoration: underline;">
+                            {{notification.created_by_name}}
+                        </span>
+                    </h2>
+                    <p>
+                        {{notification.notification_date}}
+                    </p>
+                </div>
+            </a>
+            <button (click)="notificationService.clearTempNotification(notification)" class="slds-button slds-button_icon slds-button_icon-container slds-notification__close" system-title="LBL_CLOSE">
+                <system-button-icon icon="close"></system-button-icon>
+            </button>
+        </div>
+    </section>
+</ng-template>
