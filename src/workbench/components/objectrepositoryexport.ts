@@ -21,7 +21,7 @@ export class ObjectRepositoryExport {
 
     private ngOnInit() {
         this.isLoading = true;
-        this.backend.getRequest( 'configurator/objectrepository' ).subscribe( response => {
+        this.backend.getRequest( 'configuration/configurator/objectrepository' ).subscribe( response => {
             this.repostring = response.repostring;
             this.isLoading = false;
             window.setTimeout( () => this.inputField.nativeElement.select(), 500 );
