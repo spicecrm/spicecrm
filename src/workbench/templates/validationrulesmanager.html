@@ -64,7 +64,7 @@
                 <div class="slds-form-element slds-m-vertical--xxx-small">
                     <label class="slds-form-element__label" >OnEvents:</label>
                     <div class="slds-form-element__control">
-                        <input type="text" class="slds-input" [ngModel]="current_rule_data.onevents | maybejson" (ngModelChange)="current_rule_data.onevents=$event"/>
+                        <input type="text" class="slds-input" [(ngModel)]="current_rule_data.onevents"/>
                     </div>
                 </div>
                 <div class="slds-form-element slds-m-vertical--xxx-small">
@@ -84,12 +84,6 @@
                 <div class="slds-form-element">
                     <label class="slds-form-element__label">Active:</label>
                     <div class="slds-form-element__control">
-                        <!--label class="slds-checkbox_toggle slds-grid">
-                            <input type="checkbox" [(ngModel)]="current_rule_data.active">
-                            <span class="slds-checkbox_faux_container" aria-live="assertive">
-                                <span class="slds-checkbox_faux"></span>
-                            </span>
-                        </label-->
                         <system-checkbox [(ngModel)]="current_rule_data.active"></system-checkbox>
                     </div>
                 </div>
