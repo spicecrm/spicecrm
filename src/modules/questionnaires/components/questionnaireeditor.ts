@@ -78,7 +78,7 @@ export class QuestionnaireEditor implements OnInit {
     }
 
     private loadQuestionOptionCategories(): void {
-        this.backend.getRequest('QuestionOptionCategories/getList').subscribe(( response: any ) => {
+        this.backend.getRequest('module/QuestionOptionCategories/getList').subscribe(( response: any ) => {
             let allCategories = response;
             if ( this.model.getField('categorypool') ) {
                 let categorypool = this.model.getField('categorypool').split(',');
