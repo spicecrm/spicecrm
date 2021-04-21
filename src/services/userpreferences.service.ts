@@ -214,7 +214,7 @@ export class userpreferences {
 
         this.formats.nameFormats.length = 0;
         this.formats.loaded = false;
-        this.backend.getRequest('user/preferencesformats').subscribe((formats) => {
+        this.backend.getRequest('module/Users/preferencesformats').subscribe((formats) => {
             if (Array.isArray(formats.nameFormats)) {
                 for (let item of formats.nameFormats) {
                     this.formats.nameFormats.push({name: item, example: this.translateNameFormat(item)});
