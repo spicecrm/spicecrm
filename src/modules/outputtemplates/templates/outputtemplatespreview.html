@@ -18,8 +18,8 @@
                           </span>
                             </div>
                         </div>
-                        <div *ngIf="!selectedItem" class="slds-input-has-icon slds-input-has-icon--right slds-grow">
-                            <input [disabled]="module"  type="text" class="slds-lookup__search-input slds-input--bare" (focus)="searchWithModal()" [placeholder]="placeholder"  role="combobox"/>
+                        <div *ngIf="!selectedItem" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
+                            <input  type="text" class="slds-input slds-combobox__input"  (focus)="searchWithModal()" [placeholder]="placeholder" autocomplete="none" role="combobox"/>
                             <button (click)="searchWithModal()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"><system-button-icon [icon]="'search'"></system-button-icon></button>
                         </div>
                     </div>
