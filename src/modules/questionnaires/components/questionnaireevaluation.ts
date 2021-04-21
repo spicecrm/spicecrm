@@ -35,7 +35,7 @@ export class QuestionnaireEvaluation implements OnInit {
 
     public ngOnInit(): void {
 
-        this.backend.getRequest( 'module/QuestionnaireParticipations/byReference/'+this.reference_type+'/'+this.reference_id+'/evaluation').subscribe((data: any) => {
+        this.backend.getRequest( 'module/QuestionnaireParticipations/byParent/'+this.reference_type+'/'+this.reference_id+'/evaluation').subscribe((data: any) => {
 
             if ( data.participated === false ) {
                 this.noParticipationYet = true;

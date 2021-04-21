@@ -56,7 +56,7 @@ export class QuestionnaireSingleEvaluationValues implements OnInit {
     }
 
     private loadValues(): void {
-        this.backend.postRequest( 'module/QuestionnaireEvaluations/generate/byReference/ServiceFeedbacks/' + this.model.id ).subscribe( ( data: any ) => {
+        this.backend.postRequest( 'module/QuestionnaireEvaluations/byParent/ServiceFeedbacks/'+this.model.id+'/generate').subscribe( ( data: any ) => {
                 this.isLoading = false;
                 this.source = data.source;
                 this.noParticipation = ( data.source === 'noParticipation' );
