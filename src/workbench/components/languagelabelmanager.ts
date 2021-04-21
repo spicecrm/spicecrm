@@ -85,7 +85,7 @@ export class LanguageLabelManagerComponent {
 
         this.selected_label = null;
         this.is_searching = true;
-        this.backend.getRequest('syslanguages/labels/search/' + this.search_term).subscribe(
+        this.backend.getRequest('configuration/syslanguages/labels/search/' + this.search_term).subscribe(
             (res) => {
                 this.labels = res;
                 this.is_searching = false;
