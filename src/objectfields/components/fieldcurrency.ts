@@ -64,6 +64,8 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
         this.subscriptions.add(this.model.data$.subscribe(() => {
             this.textvalue = this.getValAsText();
         }));
+
+        this.setCurrencyFromPreferences();
     }
 
     /**
