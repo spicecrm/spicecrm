@@ -51,7 +51,7 @@ export class modellist implements OnDestroy {
     /**
      * event emitter for the list type to catch changes in other components
      */
-    public listType$: EventEmitter<ListTypeI> = new EventEmitter<ListTypeI>();
+    public listType$: BehaviorSubject<ListTypeI>;
 
     /**
      * event emitter for the list type to catch changes in other components
@@ -190,6 +190,8 @@ export class modellist implements OnDestroy {
     ) {
         this.setDisableAutoloadListAll();
         this.subscribeToBroadcast();
+        this.generateStandardLists();
+        this.listType$ = new BehaviorSubject<ListTypeI>(this.standardLists[0]);
     }
 
     /**
