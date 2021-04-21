@@ -81,8 +81,15 @@ export class socket {
      * @param room
      */
     public joinRoom(namespace: string, room: string) {
-        if (!namespace || !room) return;
-        this.sockets[namespace].instance.emit('join:room', room);
+
+        if (!namespace || !room || !this.sockets[namespace]) return;
+
+        if (room in this.sockets[namespace].rooms) {
+            this.sockets[namespace].rooms[room]++;
+        } else {
+            this.sockets[namespace].instance.emit('join:room', room);
+            this.sockets[namespace].rooms[room] = 1;
+        }
     }
 
     /**
@@ -91,8 +98,17 @@ export class socket {
      * @param room
      */
     public leaveRoom(namespace: string, room: string) {
-        if (!namespace || !room) return;
-        this.sockets[namespace].instance.emit('leave:room', room);
+
+        if (!namespace || !room || !this.sockets[namespace].rooms[room]) {
+            return;
+        }
+
+        this.sockets[namespace].rooms[room]--;
+
+        if (this.sockets[namespace].rooms[room] < 1) {
+            this.sockets[namespace].instance.emit('leave:room', room);
+            delete this.sockets[namespace].rooms[room];
+        }
     }
 
     /**
@@ -135,7 +151,12 @@ export class socket {
             this.handleCustomEvent(resSubject,e, data)
         );
 
-        return {instance: socket, isConnected: socket.connected, event$: resSubject.asObservable()};
+        return {
+            instance: socket,
+            isConnected: () => socket.connected,
+            event$: resSubject.asObservable(),
+            rooms: {}
+        };
     }
 
     /**

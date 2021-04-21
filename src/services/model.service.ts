@@ -279,6 +279,9 @@ export class model implements OnDestroy {
                 */
             })
         );
+
+        this.socket.initializeNamespace('module')
+            .event$.subscribe(e => this.handleSocketEvents(e));
     }
 
     /**
@@ -315,8 +318,6 @@ export class model implements OnDestroy {
         this.initializeFieldsStati();
         this.registerModel();
         if (!val) return;
-        this.socket.initializeNamespace(`module/${val}`)
-            .event$.subscribe(e => this.handleSocketEvents(e));
     }
 
     /**
@@ -327,9 +328,7 @@ export class model implements OnDestroy {
     private handleSocketEvents(event: SocketEventI) {
         switch (event.type) {
             case 'update':
-                this.backend.get(event.data.module, event.data.id).subscribe(data => {
-                        this.data = data;
-                });
+                this.data = this.utils.backendModel2spice(this.module, event.data.data);
                 break;
         }
     }
@@ -349,6 +348,9 @@ export class model implements OnDestroy {
     set id(id) {
         this._id = id;
         this.registerModel();
+        if (!!id) {
+            this.socket.joinRoom('module', `${this.module}:${this.id}`);
+        }
     }
 
     /*
@@ -481,7 +483,6 @@ export class model implements OnDestroy {
                 if (trackAction != "") {
                     this.recent.trackItem(this.module, this.id, this.data);
                 }
-                this.socket.joinRoom(`module/${this.module}`, this.id);
                 this.initializeFieldsStati();
                 this.evaluateValidationRules(null, "init");
                 this.isLoading = false;
@@ -1716,7 +1717,7 @@ export class model implements OnDestroy {
 
     public ngOnDestroy(): void {
         if (!!this.module && !!this.id) {
-            // this.socket.leaveRoom(`module/${this.module}`, this.id);
+            this.socket.leaveRoom('module', `${this.module}:${this.id}`);
         }
         this.navigation.unregisterModel(this.modelRegisterId);
 
