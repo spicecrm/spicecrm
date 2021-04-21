@@ -146,7 +146,7 @@ export class SystemLabelEditorModal implements OnInit {
 
         this.isLoading = true;
 
-        this.backend.getRequest('syslanguages/labels/' + this.labelData.name).subscribe(
+        this.backend.getRequest('configuration/syslanguages/labels/' + this.labelData.name).subscribe(
             (res) => {
                 this.isLoading = false;
                 if (res) {
