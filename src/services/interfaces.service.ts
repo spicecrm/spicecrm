@@ -107,6 +107,13 @@ export interface SocketEventI {
  */
 export interface SocketObjectI {
     instance: any;
-    isConnected: boolean;
+    isConnected: () => boolean;
     event$: Observable<SocketEventI>;
+    /**
+     * holds the joined rooms.
+     * the key is the name of the room and the number is the number of the room participants in the current instance
+     */
+    rooms: {
+        [key: string]: number
+    };
 }
