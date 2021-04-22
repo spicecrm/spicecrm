@@ -60,7 +60,7 @@ export class workflow {
      */
     public addComment(taskid, comment = '') {
         let retSubject = new Subject<any>();
-        this.backend.postRequest('Workflows/addcomment/' + taskid, {}, {comment: comment}).subscribe(workflow => {
+        this.backend.postRequest('module/Workflows/addcomment/' + taskid, {}, {comment: comment}).subscribe(workflow => {
 
             this.workflows.some(wf => {
                 if (wf.id == workflow.id) {
