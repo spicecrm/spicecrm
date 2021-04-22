@@ -36,7 +36,7 @@ export class workflow {
 
         this.loading = true;
 
-        this.backend.getRequest('Workflows/forparent/' + module + '/' + id).subscribe(workflows => {
+        this.backend.getRequest('module/Workflows/forparent/' + module + '/' + id).subscribe(workflows => {
 
             this.workflows = workflows;
 
