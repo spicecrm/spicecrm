@@ -62,7 +62,7 @@ export class WorkflowManager {
 
     private getWorkflows() {
         this.workflowdefinitions = [];
-        this.backend.getRequest('WorkflowDefinitons/' + this.current_module).subscribe(wfd => {
+        this.backend.getRequest('module/WorkflowDefinitions/' + this.current_module).subscribe(wfd => {
             this.workflowdefinitions = wfd;
         });
     }
