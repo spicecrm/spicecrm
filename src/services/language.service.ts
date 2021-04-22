@@ -520,7 +520,7 @@ export class language {
      */
     public setDefaultLanguage(language) {
         this.http.post(
-            this.configurationService.getBackendUrl() + '/syslanguages/setdefault/' + language, {},
+            this.configurationService.getBackendUrl() + '/configuration/syslanguages/setdefault/' + language, {},
             {headers: this.session.getSessionHeader(), observe: "response"}
         ).subscribe(
             (res: any) => {
