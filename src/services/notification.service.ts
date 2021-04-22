@@ -177,7 +177,7 @@ export class NotificationService {
      * @private
      */
     private initializeSocket() {
-        this.socket.initializeNamespace('notifications').event$.subscribe(e => this.handleSocketEvents(e));
+        this.socket.initializeNamespace('notifications').subscribe(e => this.handleSocketEvents(e));
         this.socket.joinRoom('notifications', this.session.authData.userId);
     }
 
