@@ -280,8 +280,11 @@ export class model implements OnDestroy {
             })
         );
 
-        this.socket.initializeNamespace('module')
-            .event$.subscribe(e => this.handleSocketEvents(e));
+        this.subscriptions.add(
+            this.socket.initializeNamespace('module').subscribe(e =>
+                this.handleSocketEvents(e)
+            )
+        );
     }
 
     /**
@@ -353,7 +356,7 @@ export class model implements OnDestroy {
     set id(id) {
         this._id = id;
         this.registerModel();
-        if (!!id) {
+        if (!!id && !!this.module) {
             this.socket.joinRoom('module', `${this.module}:${this.id}`);
         }
     }
