@@ -328,7 +328,12 @@ export class model implements OnDestroy {
     private handleSocketEvents(event: SocketEventI) {
         switch (event.type) {
             case 'update':
-                this.data = this.utils.backendModel2spice(this.module, event.data.data);
+                const data = this.utils.backendModel2spice(this.module, event.data.data);
+                if (!this.isEditing) {
+                    this.data = data;
+                } else if (!_.isEmpty(this.backupData)) {
+                    this.backupData = data;
+                }
                 break;
         }
     }
