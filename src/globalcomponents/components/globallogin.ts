@@ -146,16 +146,16 @@ export class GlobalLogin {
      */
     private login(token?, issuer?) {
 
-        // clear the current messageid if one is set
-        if (this.messageId) this.toast.clearToast(this.messageId);
-
-        // clear all toasts
-        this.toast.clearAll();
-
-        // set the loggingin in state
-        this.loggingIn = true;
-
         if (token || (this.username && this.password)) {
+            // clear the current messageid if one is set
+            if (this.messageId) this.toast.clearToast(this.messageId);
+
+            // clear all toasts
+            this.toast.clearAll();
+
+            // set the loggingin in state
+            this.loggingIn = true;
+
             if(token) {
                 this.loginService.authData.userName = null;
                 this.loginService.authData.password = null;
@@ -185,10 +185,13 @@ export class GlobalLogin {
                         case 2:
                             this.renewpassword = true;
                             break;
+                        default:
+                            this.messageId = this.toast.sendToast('error logging on', 'error', error.message);
+                            break;
                     }
 
                     // reset the logging in state
-                    this.loggingIn = true;
+                    this.loggingIn = false;
                 }
             );
         }

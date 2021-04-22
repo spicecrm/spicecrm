@@ -14,11 +14,10 @@ import {language} from '../../services/language.service';
     selector: 'validationrules-conditions',
     templateUrl: './src/workbench/templates/validationrulesconditions.html',
 })
-export class ValidationRulesConditions implements OnInit
-{
-    @Input() data; // validation rule data
-    comparator_options:any[] = [];
-    fieldname_options:any[] = [];
+export class ValidationRulesConditions implements OnInit {
+    @Input() private data; // validation rule data
+    private comparator_options: any[] = [];
+    private fieldname_options: any[] = [];
 
     constructor(
         private metadata: metadata,
@@ -29,26 +28,24 @@ export class ValidationRulesConditions implements OnInit
     }
 
     // @Inputs are only loaded here...???
-    ngOnInit()
-    {
+    public ngOnInit() {
         // get options...
         this.comparator_options = this.language.getDisplayOptions('comparators_dom', true);
 
-        for(let opt in this.metadata.getModuleFields(this.data.module))
-        {
+        for (let opt in this.metadata.getModuleFields(this.data.module)) {
             this.fieldname_options.push(opt);
+            this.fieldname_options.sort();
+
         }
-        //console.log(this.data,this.fieldname_options);
-
     }
 
-    get conditions()
-    {
-        return this.data.conditions.filter((e) => {return e.deleted != 1});
+    get conditions() {
+        return this.data.conditions.filter((e) => {
+            return e.deleted != 1;
+        });
     }
 
-    addCondition()
-    {
+    private addCondition() {
         return this.data.conditions.push({
             id: this.utils.generateGuid(),
             sysuimodelvalidation_id: this.data.id,
@@ -56,17 +53,15 @@ export class ValidationRulesConditions implements OnInit
         });
     }
 
-    removeCondition(id)
-    {
-        let idx = this.data.conditions.findIndex((e) => {return e.id == id});
-        if( this.data.conditions[idx]._is_new_record )
-        {
-            this.data.conditions.splice(idx,1);
-        }
-        else {
+    private removeCondition(id) {
+        let idx = this.data.conditions.findIndex((e) => {
+            return e.id == id
+        });
+        if (this.data.conditions[idx]._is_new_record) {
+            this.data.conditions.splice(idx, 1);
+        } else {
             this.data.conditions[idx].deleted = 1;
         }
-        //console.log(this.data.conditions);
         return true;
     }
 

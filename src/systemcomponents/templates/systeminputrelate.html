@@ -14,13 +14,9 @@
                   </span>
                 </div>
             </div>
-            <div *ngIf="!_relatedid" class="slds-form-element__control slds-grid slds-box--border">
-                <div class="slds-input-has-icon slds-input-has-icon--right slds-grow">
-                    <input type="text" class="slds-lookup__search-input slds-input--bare" (focus)="searchWithModal()" [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', module)" autocomplete="none" role="combobox"/>
-                    <button (click)="searchWithModal()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right">
-                        <system-button-icon [icon]="'search'"></system-button-icon>
-                    </button>
-                </div>
+            <div *ngIf="!_relatedid" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
+                <input  type="text" class="slds-input slds-combobox__input"  (focus)="searchWithModal()" [placeholder]="language.getModuleCombinedLabel('LBL_SEARCH', module)" autocomplete="none" role="combobox"/>
+                <button (click)="searchWithModal()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"><system-button-icon [icon]="'search'"></system-button-icon></button>
             </div>
         </div>
     </div>
