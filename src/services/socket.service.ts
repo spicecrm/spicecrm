@@ -4,12 +4,9 @@
 import {Injectable} from '@angular/core';
 import {configurationService} from "../services/configuration.service";
 import {broadcast} from "../services/broadcast.service";
-import {navigation} from "../services/navigation.service";
-import {backend} from "../services/backend.service";
-import {modelutilities} from "../services/modelutilities.service";
 import {session} from "../services/session.service";
-import {SocketEventDataI, SocketEventI, SocketObjectI} from "./interfaces.service";
-import {Subject} from "rxjs";
+import {SocketEventI, SocketObjectI} from "./interfaces.service";
+import {Observable, Subject} from "rxjs";
 
 declare var io: any;
 
@@ -25,16 +22,16 @@ export class socket {
      * @private
      */
     private socketId: string;
-
+    /**
+     * holds the sockets
+     * @private
+     */
     private sockets: { [key: string]: SocketObjectI } = {};
 
     constructor(
         private configuration: configurationService,
         private broadcast: broadcast,
-        private session: session,
-        private navigation: navigation,
-        private backend: backend,
-        private modelutilities: modelutilities
+        private session: session
     ) {
     }
 
@@ -60,10 +57,10 @@ export class socket {
      * initialize a new socket instance with namespace and register an event listener
      * @param namespace
      */
-    public initializeNamespace(namespace: string): SocketObjectI {
+    public initializeNamespace(namespace: string): Observable<SocketEventI> {
 
         if (!!this.sockets[namespace]) {
-            return this.sockets[namespace];
+            return this.sockets[namespace].event$;
         }
 
         this.setSocketData();
@@ -72,7 +69,9 @@ export class socket {
             return;
         }
 
-        return this.sockets[namespace] = this.initializeSocket(namespace);
+        this.sockets[namespace] = this.initializeSocket(namespace);
+
+        return this.sockets[namespace].event$;
     }
 
     /**
@@ -130,26 +129,23 @@ export class socket {
 
         const resSubject = new Subject<SocketEventI>();
 
-        namespace = !namespace ? '/' : `/ns-${namespace}`;
+        const path = !namespace ? '/' : `/ns-${namespace}`;
 
-        const socket = io(this.socketUrl + namespace, {
+        const socket = io(this.socketUrl + path, {
             query: {
                 token: this.session.authData.sessionId,
-                sysid: this.socketId
+                sysId: this.socketId
             }
         });
 
         socket.on('connect', () =>
-            this.handleConnectEvent(resSubject)
+            this.handleConnectEvent(namespace, resSubject)
         );
 
-        socket.on('disconnect', () =>
-            this.handleDisconnectEvent(resSubject)
-        );
-
-        socket.onAny((e, data) =>
-            this.handleCustomEvent(resSubject,e, data)
-        );
+        socket.onAny((e, res: { token: string, data }) => {
+            if (res.token == this.session.authData.sessionId) return;
+            this.handleCustomEvent(resSubject, e, res.data);
+        });
 
         return {
             instance: socket,
@@ -161,21 +157,21 @@ export class socket {
 
     /**
      * handle connect event
+     * rejoin active rooms
+     * @param namespace
      * @param resSubject
      * @private
      */
-    private handleConnectEvent(resSubject: Subject<SocketEventI>) {
-        window.console.log('socket connected');
-    }
+    private handleConnectEvent(namespace: string, resSubject: Subject<SocketEventI>) {
 
-    /**
-     * handle connect event
-     * @param resSubject
-     * @private
-     */
-    private handleDisconnectEvent(resSubject: Subject<SocketEventI>) {
-        resSubject.complete();
-        window.console.log('socket disconnected');
+        if (!this.sockets[namespace]?.rooms) return;
+
+        Object.keys(this.sockets[namespace].rooms)
+            .forEach(room => {
+                if (this.sockets[namespace].rooms[room] < 1) return;
+
+                this.sockets[namespace].instance.emit('join:room', room);
+            });
     }
 
     /**
@@ -185,7 +181,7 @@ export class socket {
      * @param data
      * @private
      */
-    private handleCustomEvent(resSubject: Subject<SocketEventI>,event: string, data: any) {
+    private handleCustomEvent(resSubject: Subject<SocketEventI>, event: string, data: any) {
         resSubject.next({
             type: event,
             data: data
