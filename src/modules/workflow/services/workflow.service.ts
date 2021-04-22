@@ -85,7 +85,7 @@ export class workflow {
      */
     public doTaskAction(taskid, actionvalue, comment = '') {
         let retSubject = new Subject<any>();
-        this.backend.postRequest('Workflows/settaskstatus/' + taskid + '/' + actionvalue, {}, {comment: comment}).subscribe(workflow => {
+        this.backend.postRequest('module/Workflows/settaskstatus/' + taskid + '/' + actionvalue, {}, {comment: comment}).subscribe(workflow => {
 
             this.workflows.some(wf => {
                 if (wf.id == workflow.workflow.id) {
