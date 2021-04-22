@@ -38,7 +38,7 @@ export class fieldGDPR extends fieldGeneric implements OnInit {
      * load the data on intialization
      */
     public ngOnInit() {
-        this.backend.getRequest('gdpr/' + this.model.module + '/' + this.model.id).subscribe(gdprData => {
+        this.backend.getRequest('common/gdpr/' + this.model.module + '/' + this.model.id ).subscribe(gdprData => {
             this.gdprData = gdprData;
             this.loaded = true;
         });
