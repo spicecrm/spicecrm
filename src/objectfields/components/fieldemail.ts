@@ -36,8 +36,8 @@ export class fieldEmail extends fieldGeneric {
          */
         this.subscriptions.add(
             this.model.data$.subscribe(modeldata => {
-                if ((!this.value || (this.value && modeldata.email1 && this.value != modeldata.email1.toLowerCase())) && modeldata.email1) {
-                    this.value = modeldata.email1;
+                if (!this.value || (!!this.value  && this.value != modeldata.email1)) {
+                    this._value = modeldata.email1;
                 }
             })
         );

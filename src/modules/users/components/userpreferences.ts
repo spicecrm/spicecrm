@@ -158,7 +158,7 @@ export class UserPreferences implements OnDestroy {
      * @private
      */
     private loadPreferences() {
-        if (this.isCurrentUser || this.canEdit) {
+        if (this.isCurrentUser) {
 
             this.subscriptions = this.loadedSubscription.subscribe(() => {
                 this.isLoading = false;
@@ -169,7 +169,7 @@ export class UserPreferences implements OnDestroy {
             });
             this.preferencesService.getPreferences(this.loadedSubscription);
 
-        } else {
+        } else if (this.canEdit) {
             this.backend.getRequest('user/' + this.model.data.id + '/preferences/global', {}).subscribe(prefs => {
                     this.isLoading = false;
                     this.preferences = prefs;

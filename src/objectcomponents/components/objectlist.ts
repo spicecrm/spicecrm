@@ -169,10 +169,42 @@ export class ObjectList implements OnDestroy, OnInit {
     }
 
     /**
+     * displays rownumbers if set in the config
+     */
+    get rowNumbers() {
+        return this.componentconfig.rownumbers === true;
+    }
+
+    /**
+     * gets if the config has no autoload set
+     */
+    get noAutoLoad() {
+        return this.componentconfig.noautoload === true;
+    }
+
+    /**
+     * returns if the list can load more records
+     */
+    get canLoadMore() {
+        return this.modellist.canLoadMore();
+    }
+
+    /**
+     * load more items from teh manual pushed button
+     *
+     * @private
+     */
+    private loadMore() {
+        this.modellist.loadMoreList();
+    }
+
+    /**
      * manages the scroll event for the infinite Scroll
      */
     private onScroll() {
-        this.modellist.loadMoreList();
+        if (!this.noAutoLoad) {
+            this.modellist.loadMoreList();
+        }
     }
 
     /**

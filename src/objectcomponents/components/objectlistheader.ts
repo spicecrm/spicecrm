@@ -37,6 +37,11 @@ export class ObjectListHeader implements OnDestroy{
     @Input() private showSelectColumn: boolean = true;
 
     /**
+     * show the number column as first column
+     */
+    @Input() private showRowNumber: boolean = false;
+
+    /**
      * display the row action menu or hide the column
      */
     @Input() private showRowActionMenu: boolean = true;
