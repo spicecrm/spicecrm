@@ -39,6 +39,9 @@ import /*embed*/ {fieldOutputTemplates} from "./fields/fieldoutputtemplates";
         ObjectActionOutputBeanModalEmailContent,
         ObjectActionOutputBeanModal,
         fieldOutputTemplates
+    ],
+    exports: [
+        ObjectActionOutputBeanModalEmailContent
     ]
 })
 export class ModuleOutputTemplates {}

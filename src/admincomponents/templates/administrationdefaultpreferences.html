@@ -36,3 +36,26 @@
     </div>
 </div>
 <system-preferences-panel [preferences]="preferences" class="spice-display-block slds-p-around--xx-small"></system-preferences-panel>
+
+<system-collapsable-tab [collapsible]="false" tabtitle="LBL_HOME_PREFERENCES">
+    <div class="slds-grid">
+        <system-preferences-panel-item class="slds-size--1-of-3" itemlabel="LBL_HOME_ASSISTANT">
+            <system-preferences-panel-item-display>
+                {{preferences.home_assistant}}
+            </system-preferences-panel-item-display>
+            <system-preferences-panel-item-edit>
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="preferences.home_assistant">
+                        <option></option>
+                        <option value="visible">
+                            <system-label label="LBL_VISIBLE"></system-label>
+                        </option>
+                        <option value="hidden">
+                            <system-label label="LBL_HIDDEN"></system-label>
+                        </option>
+                    </select>
+                </div>
+            </system-preferences-panel-item-edit>
+        </system-preferences-panel-item>
+    </div>
+</system-collapsable-tab>

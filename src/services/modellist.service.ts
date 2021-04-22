@@ -51,7 +51,7 @@ export class modellist implements OnDestroy {
     /**
      * event emitter for the list type to catch changes in other components
      */
-    public listType$: EventEmitter<ListTypeI> = new EventEmitter<ListTypeI>();
+    public listType$: BehaviorSubject<ListTypeI>;
 
     /**
      * event emitter for the list type to catch changes in other components
@@ -190,6 +190,8 @@ export class modellist implements OnDestroy {
     ) {
         this.setDisableAutoloadListAll();
         this.subscribeToBroadcast();
+        this.generateStandardLists();
+        this.listType$ = new BehaviorSubject<ListTypeI>(this.standardLists[0]);
     }
 
     /**
@@ -301,7 +303,7 @@ export class modellist implements OnDestroy {
 
                     // analyse if we need to update the buckets
                     if (this.bucketfield) {
-                        if (message.messagedata.changed[this.bucketfield]) {
+                        if (message.messagedata.changed && message.messagedata.changed[this.bucketfield]) {
                             // update the bucket and if an amount is set snd in also the changed amount
 
                             let bucketamountfields = [];
@@ -322,7 +324,7 @@ export class modellist implements OnDestroy {
                             // just update the amount fields
                             let bucket = this.buckets.bucketitems.find(bucket => bucket.bucket == message.messagedata.data[this.bucketfield]);
                             for (let bucketamountfield of this.bucketamountfield) {
-                                if (message.messagedata.changed[bucketamountfield.name]) {
+                                if (message.messagedata.changed && message.messagedata.changed[bucketamountfield.name]) {
                                     bucket.values['_bucket_agg_' + bucketamountfield.name] += message.messagedata.data[bucketamountfield.name] - message.messagedata.backupdata[bucketamountfield.name];
                                 }
                             }
@@ -410,7 +412,7 @@ export class modellist implements OnDestroy {
     }
 
     public addCustomListType(listTypeData): void {
-        this.metadata.addModuleListType(this.module,listTypeData);
+        this.metadata.addModuleListType(this.module, listTypeData);
     }
 
     /**
@@ -490,7 +492,7 @@ export class modellist implements OnDestroy {
         let fielddefs = this.getFieldDefs();
 
         // if the service is embedded in a specific component then load the list fields for that component
-        const component = this.embeddedByComponent  || this.currentList.listcomponent;
+        const component = this.embeddedByComponent || this.currentList.listcomponent;
 
         // load all fields from the selected component configs
         let componentconfig = this.metadata.getComponentConfig(component, this.module);
@@ -704,7 +706,7 @@ export class modellist implements OnDestroy {
             return;
         }
         this.standardLists.forEach((list: ListTypeI) => {
-                list.listcomponent = component;
+            list.listcomponent = component;
         });
         this.determineListFields();
         this.userpreferences.setPreference('defaultlisttype', component, false, this.module);
@@ -966,10 +968,26 @@ export class modellist implements OnDestroy {
         this.selectionChanged$.emit(true);
     }
 
+    /**
+     * unselects all selected records
+     */
     public setAllUnselected() {
         this.listSelected.type = 'none';
-        for (let listItem of this.listData.list) {
+        for (let listItem of this.listData.list.filter(r => r.selected == true)) {
             listItem.selected = false;
+        }
+
+        // emit so items can trigger change detection
+        this.selectionChanged$.emit(true);
+    }
+
+    /*
+     * select functions
+     */
+    public setRangeSelected(from: number, to: number) {
+
+        for (let i = from; i <= to; i++) {
+            this.listData.list[i - 1].selected = true;
         }
 
         // emit so items can trigger change detection
@@ -980,13 +998,7 @@ export class modellist implements OnDestroy {
      * returny the number of selected IDs
      */
     public getSelectedCount() {
-        let selCount = 0;
-        for (let listItem of this.listData.list) {
-            if (listItem.selected) {
-                selCount++;
-            }
-        }
-        return selCount;
+        return this.listData.list.filter(i => i.selected == true).length;
     }
 
     /**
@@ -1080,7 +1092,8 @@ export class modellist implements OnDestroy {
             relatefilter: this.relatefilter?.active ? this.relatefilter : null
         };
 
-        this.backend.getList(this.module, this.sortArray, params).subscribe((res: any) => {
+        this.backend.getList(this.module, this.sortArray, params).subscribe(
+            (res: any) => {
                 // set the listdata
                 this.listData = res;
 
@@ -1102,12 +1115,27 @@ export class modellist implements OnDestroy {
                 retSub.next(true);
                 retSub.complete();
                 this.listDataChanged$.next(true);
+            },
+            error => {
+                this.toast.sendToast('error loading list');
+
+                // indicate that we are no longer loading
+                this.isLoading = false;
+
+                retSub.error(error);
+                retSub.complete();
             }
         );
 
         return retSub.asObservable();
     }
 
+    /**
+     * returns if the list can load more
+     */
+    public canLoadMore() {
+        return !this.isLoading && this.listData.list.length < this.listData.totalcount;
+    }
 
     /**
      * loads on top of the existing results
@@ -1192,7 +1220,7 @@ export class modellist implements OnDestroy {
 
         let selectedIds = this.getSelectedIDs();
         if (selectedIds.length > 0) {
-            this.backend.getLinkToDownload('/module/' + this.module + '/export', 'POST', {}, {
+            this.backend.getLinkToDownload(`module/${this.module}/export`, 'POST', {}, {
                 ids: selectedIds,
                 fields: fields
             }, {}).subscribe(
@@ -1205,7 +1233,7 @@ export class modellist implements OnDestroy {
             let aggregates = {};
             aggregates[this.module] = this.selectedAggregates;
             this.backend.getLinkToDownload(
-                '/module/' + this.module + '/export',
+                `module/${this.module}/export`,
                 'POST',
                 {},
                 {

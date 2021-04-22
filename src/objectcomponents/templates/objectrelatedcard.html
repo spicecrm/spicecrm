@@ -1,7 +1,7 @@
 <div *ngIf="!hidden" class="slds-card slds-card_boundary slds-m-bottom--medium">
     <object-related-card-header [componentconfig]="componentconfig"></object-related-card-header>
     <div @displaycard *ngIf="isopen">
-        <div class="slds-card__body slds-size--1-of-1">
+        <div class="slds-card__body slds-size--1-of-1" [system-overlay-loading-spinner]="paginating">
             <ng-content></ng-content>
         </div>
         <object-related-card-footer [componentconfig]="componentconfig"></object-related-card-footer>

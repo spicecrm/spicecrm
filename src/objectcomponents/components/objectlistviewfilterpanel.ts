@@ -3,13 +3,14 @@
  */
 import {
     Component,
-    ElementRef, Renderer2
+    ElementRef, OnDestroy, OnInit, Renderer2
 } from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {model} from '../../services/model.service';
 import {modellist} from '../../services/modellist.service';
 import {animate, style, transition, trigger} from "@angular/animations";
+import {Subscription} from "rxjs";
 
 declare var _: any;
 
@@ -19,11 +20,11 @@ declare var _: any;
 @Component({
     selector: 'object-listview-filter-panel',
     templateUrl: './src/objectcomponents/templates/objectlistviewfilterpanel.html',
-    host:{
-        class : 'slds-is-fixed'
+    host: {
+        class: 'slds-is-fixed'
     }
 })
-export class ObjectListViewFilterPanel {
+export class ObjectListViewFilterPanel implements OnDestroy {
 
     /**
      * the default filter object
@@ -35,11 +36,19 @@ export class ObjectListViewFilterPanel {
         conditions: []
     };
 
+    private subcriptions: Subscription = new Subscription();
+
     constructor(private elementRef: ElementRef, private language: language, private metadata: metadata, private modellist: modellist, private model: model, private renderer: Renderer2) {
         // subscribe to the list type selected to handle the filters set by the listtype
-        this.modellist.listType$.subscribe(newList => {
-            this.setFilter();
-        });
+        this.subcriptions.add(
+            this.modellist.listType$.subscribe(newList => {
+                this.setFilter();
+            })
+        );
+    }
+
+    public ngOnDestroy() {
+        this.subcriptions.unsubscribe();
     }
 
     /**

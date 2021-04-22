@@ -23,11 +23,6 @@ import {modal} from '../../services/modal.service';
 })
 export class ObjectListHeaderActionsExportTargetlistButton {
 
-    /**
-     * only "hidden" is used
-     */
-    public disabled: boolean = false;
-
     constructor(
         private language: language,
         private metadata: metadata,
@@ -35,7 +30,8 @@ export class ObjectListHeaderActionsExportTargetlistButton {
         private modellist: modellist,
         private modal: modal,
         private injector: Injector
-    ) {}
+    ) {
+    }
 
     /**
      * cheks the acl rights for the user to export
@@ -49,15 +45,22 @@ export class ObjectListHeaderActionsExportTargetlistButton {
         let fielddefs = this.metadata.getModuleFields(this.modellist.module);
         for (let field in fielddefs) {
             let fielddef = fielddefs[field];
-            if(fielddef.type == 'link' && fielddef.module == 'ProspectLists'){
+            if (fielddef.type == 'link' && fielddef.module == 'ProspectLists') {
                 hasProspectlistLink = true;
                 break;
             }
         }
-        if(!hasProspectlistLink) return true;
+        if (!hasProspectlistLink) return true;
 
         // check the export right as well
         return !this.metadata.checkModuleAcl(this.model.module, 'export');
+    }
+
+    /**
+     * ensure we have some items selected
+     */
+    get disabled() {
+        return this.modellist.getSelectedCount() == 0;
     }
 
     /**
