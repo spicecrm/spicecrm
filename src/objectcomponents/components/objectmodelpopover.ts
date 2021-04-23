@@ -101,10 +101,8 @@ export class ObjectModelPopover implements OnInit {
             this.fieldset = componentconfig.fieldset;
             this.componentset = componentconfig.componentset;
             this.headercomponentset = componentconfig.headercomponentset;
-        }
-
-        // if we did not find a fieldset and have no component set try to take the header one instead
-        if (!this.fieldset && !this.componentset) {
+        } else {
+            // if we did not find a fieldset and have no component set try to take the header one instead
             componentconfig = this.metadata.getComponentConfig('ObjectPageHeaderDetails', this.popovermodule);
             if (componentconfig.fieldset) {
                 this.fields = this.metadata.getFieldSetFields(componentconfig.fieldset);
