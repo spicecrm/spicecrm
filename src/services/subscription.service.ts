@@ -6,7 +6,7 @@ import {Injectable} from '@angular/core';
 import {configurationService} from './configuration.service';
 import {backend} from './backend.service';
 import {broadcast} from './broadcast.service';
-import {SubscriptionI} from "../globalcomponents/interfaces/globalcomponents.interfaces";
+import {SubscriptionI} from "./interfaces.service";
 import {language} from "./language.service";
 import {toast} from "./toast.service";
 import {session} from "./session.service";
