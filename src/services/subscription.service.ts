@@ -81,6 +81,7 @@ export class SubscriptionService {
      * load the notifications from the configuration service
      */
     public loadSubscriptions() {
+        this.subscriptions = this.configuration.getData('spicesubscriptions');
         this.broadcast.message$.subscribe(msg => {
             if (msg.messagetype !== 'loader.completed' || msg.messagedata !== 'loadUserData') return;
             this.subscriptions = this.configuration.getData('spicesubscriptions');
