@@ -98,7 +98,7 @@ export class socket {
      */
     public leaveRoom(namespace: string, room: string) {
 
-        if (!namespace || !room || !this.sockets[namespace].rooms[room]) {
+        if (!namespace || !room || !this.sockets[namespace] || !this.sockets[namespace].rooms[room]) {
             return;
         }
 
