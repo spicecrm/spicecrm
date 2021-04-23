@@ -17,7 +17,7 @@ export interface NotificationI {
     bean_name: string;
 }
 /**
- * holds the notification object interface
+ * holds the subscription object interface
  */
 export interface SubscriptionI {
     user_id: string;

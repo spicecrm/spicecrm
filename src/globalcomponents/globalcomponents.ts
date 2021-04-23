@@ -20,9 +20,10 @@ declare var _: any;
  */
 declare var gapi: any;
 
-import * as globalInterfaces from "./interfaces/globalcomponents.interfaces";
 import {loginService, loginCheck} from "../services/login.service";
 import {metadata} from "../services/metadata.service";
+
+import /*embed*/ * as globalInterfaces from "./interfaces/globalcomponents.interfaces";
 
 import /*embed*/ {GlobalCopyright} from "./components/globalcopyright";
 import /*embed*/ {GlobalHeader} from "./components/globalheader";
