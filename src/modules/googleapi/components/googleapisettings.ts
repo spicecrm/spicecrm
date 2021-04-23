@@ -46,7 +46,7 @@ export class GoogleAPISettings implements OnInit {
      */
     public ngOnInit() {
         this.loading = true;
-        this.backend.getRequest('configurator/editor/googleapi').subscribe(data => {
+        this.backend.getRequest('configuration/configurator/editor/googleapi').subscribe(data => {
             this.configvalues = data;
             this.loadScope();
             this.loading = false;
@@ -59,7 +59,7 @@ export class GoogleAPISettings implements OnInit {
      * @private
      */
     private save() {
-        this.backend.postRequest('configurator/editor/googleapi', [], this.configvalues);
+        this.backend.postRequest('configuration/configurator/editor/googleapi', [], { config: this.configvalues });
     }
 
     /**

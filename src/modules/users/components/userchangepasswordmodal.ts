@@ -115,7 +115,7 @@ export class UserChangePasswordModal {
      */
     private save(): void {
         if (this.canSave()) {
-            this.http.post(this.configuration.getBackendUrl() + '/changepassword', {
+            this.http.post(this.configuration.getBackendUrl() + '/authentication/changepassword', {
                 username: this.session.authData.userName,
                 password: this.password,
                 newPassword: this.newPassword

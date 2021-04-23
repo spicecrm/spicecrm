@@ -118,7 +118,7 @@ export class AccountVATIDField extends fieldGeneric implements OnInit {
      */
     public validate(countrycode, vatid, beanid) {
         this.isvalidating = true;
-        this.backend.getRequest('module/AccountVATIDs/' + countrycode + vatid).subscribe((response: any) => {
+        this.backend.getRequest(`module/Account/${countrycode + vatid}/vatids`).subscribe((response: any) => {
             if (response.status == 'success') {
                 if (response.data.valid !== true) {
                     this.toast.sendToast(this.language.getLabel('ERR_INVALID_VAT'), 'error');

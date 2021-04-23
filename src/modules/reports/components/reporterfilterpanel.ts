@@ -164,7 +164,7 @@ export class ReporterFilterPanel {
             data = {...newFilter, ...data};
         }
 
-        this.backend.postRequest(`KReporter/${this.model.id}/savedfilter/${id}`, [], data)
+        this.backend.postRequest(`module/KReports/${this.model.id}/savedfilter/${id}`, [], data)
             .subscribe(res => {
                 if (!!res && !!res.success) {
                     this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');

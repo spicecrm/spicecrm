@@ -67,7 +67,7 @@ export class ContactExchangeSyncButton implements OnDestroy {
     public execute() {
         this.isLoading = true;
         if (this.model.getField('sync_contact')) {
-            this.backend.deleteRequest(`module/Contacts/${this.model.id}/exchangeSync`).subscribe(
+            this.backend.deleteRequest(`module/Contacts/${this.model.id}/exchangesync`).subscribe(
                 success => {
                     this.model.setField('sync_contact', !this.model.getField('sync_contact'));
                     this.isLoading = false;
@@ -76,7 +76,7 @@ export class ContactExchangeSyncButton implements OnDestroy {
                     this.isLoading = false;
                 });
         } else {
-            this.backend.putRequest(`module/Contacts/${this.model.id}/exchangeSync`).subscribe(
+            this.backend.putRequest(`module/Contacts/${this.model.id}/exchangesync`).subscribe(
                 success => {
                     if (success.message) {
                         this.toast.sendToast(success.message, 'error');

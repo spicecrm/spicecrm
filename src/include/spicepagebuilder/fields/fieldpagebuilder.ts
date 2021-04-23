@@ -112,7 +112,7 @@ export class fieldPageBuilder extends fieldGeneric implements OnInit, AfterViewI
                 this.model.setField(bodySPBFieldName, res);
                 const loadingModal = this.modal.await('LBL_PARSING_HTML');
 
-                this.backend.postRequest('mjml/parseJsonToHtml', {}, {json: this.model.data[bodySPBFieldName]}).subscribe(res => {
+                this.backend.postRequest('common/mjml/json2html', {}, {json: this.model.data[bodySPBFieldName]}).subscribe(res => {
                     if (!res || !res.html) {
                         this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
                         loadingModal.emit(true);

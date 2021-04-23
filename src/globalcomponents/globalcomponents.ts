@@ -105,6 +105,10 @@ import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobt
 import /*embed*/ {GlobalObtainGDPRConsent} from './components/globalobtaingdprconsent';
 import /*embed*/ {GlobalObtainGDPRConsentContainer} from './components/globalobtaingdprconsentcontainer';
 import /*embed*/ {GlobalHeaderImage} from './components/globalheaderimage';
+import /*embed*/ {GlobalHeaderNotificationsItemChange} from './components/globalheadernotificationsitemchange';
+import /*embed*/ {GlobalHeaderNotificationsItemAssign} from './components/globalheadernotificationsitemassign';
+import /*embed*/ {GlobalHeaderNotificationsItemDelete} from './components/globalheadernotificationsitemdelete';
+import /*embed*/ {GlobalHeaderNotifications} from './components/globalheadernotifications';
 
 /**
  * GlobalComponents holds records that are rendered in the global header and footer parts of the application. This includes e.g. the header menu and other components
@@ -193,7 +197,11 @@ import /*embed*/ {GlobalHeaderImage} from './components/globalheaderimage';
         GlobalNavigationTabbedSubtabItem,
         GlobalNavigationTabbedSubTabMoreTab,
         GlobalHeaderImage,
-        GlobalLoginImage
+        GlobalLoginImage,
+        GlobalHeaderNotifications,
+        GlobalHeaderNotificationsItemChange,
+        GlobalHeaderNotificationsItemAssign,
+        GlobalHeaderNotificationsItemDelete
     ],
     entryComponents: [
         GlobalCopyright,

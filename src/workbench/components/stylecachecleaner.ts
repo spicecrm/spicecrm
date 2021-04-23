@@ -27,7 +27,7 @@ export class StyleCacheCleaner {
      */
     private cleanCache() {
         this.is_loading = true;
-        this.backend.getRequest(`cleanup/stylecache`).subscribe(
+        this.backend.getRequest(`admin/cleanup/stylecache`).subscribe(
             res => {
                 if(res) {
                     this.toast.sendToast(this.language.getLabel("LBL_CACHE_FILE_DELETED"), "success");

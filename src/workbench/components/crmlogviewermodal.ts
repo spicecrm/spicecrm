@@ -11,7 +11,7 @@ import { toast } from '../../services/toast.service';
 })
 export class CRMLogViewerModal {
 
-    @Input() private line: any;
+    @Input() private entry: any;
     @Input() private username = '';
     @Input() private routeBase: string;
 
@@ -25,22 +25,22 @@ export class CRMLogViewerModal {
 
     private ngOnInit() {
         // When the full text already has been retrieved from the backend
-        // (because this modal for this log line has already been shown)
+        // (because this modal for this log entry has already been shown)
         // the data is still stored (property "fullText") and we don´t need to do the request again:
-        if ( this.line.fullText ) this.isLoading = !( this.isLoaded = true );
+        if ( this.entry.fullText ) this.isLoading = !( this.isLoaded = true );
         else this.loadFullData();
     }
 
     // Load the full data (with the un-truncated log text) and merge the full text to the record got from parent component.
     private loadFullData() {
-        this.backend.getRequest( this.routeBase+'/fullLine/' + this.line.id ).subscribe(
+        this.backend.getRequest( this.routeBase+'/entry/'+this.entry.id ).subscribe(
             response => {
                 this.isLoaded = true;
                 this.isLoading = false;
-                this.line.fullText = response.line.txt;
+                this.entry.fullText = response.entry.txt;
             },
             error => {
-                this.toast.sendToast('Error loading line of log file!', 'error', 'Line '+this.line.lnr+' of log file '+this.line.fnr+' couldn´t be fetched.', false );
+                this.toast.sendToast('Error loading entry of log file!', 'error', 'Entry '+this.entry.id+' of CRM log couldn´t be fetched.', false );
                 this.isLoading = false;
             });
     }

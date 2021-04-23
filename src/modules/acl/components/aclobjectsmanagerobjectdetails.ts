@@ -48,7 +48,7 @@ export class ACLObjectsManagerObjectDetails implements OnInit {
     }
 
     public ngOnInit() {
-        this.backend.getRequest('spiceaclobjects/authtypes/' + this.model.getFieldValue('sysmodule_id') + '/authtypeactions').subscribe(objectactions => {
+        this.backend.getRequest('module/SpiceACLObjects/modules/' + this.model.getFieldValue('sysmodule_id') + '/actions').subscribe(objectactions => {
             this.objectactions = objectactions;
         });
     }

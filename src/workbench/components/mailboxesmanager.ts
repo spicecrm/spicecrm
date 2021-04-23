@@ -64,7 +64,7 @@ export class MailboxesManager {
         // get the transports
         if (!this.configuration.getData('mailboxtransports')) {
             this.configuration.setData('mailboxtransports', []);
-            this.backend.getRequest('mailboxes/transports').subscribe(transports => {
+            this.backend.getRequest('module/Mailboxes/transports').subscribe(transports => {
                 this.configuration.setData('mailboxtransports', transports);
             });
         }
@@ -141,7 +141,7 @@ export class MailboxesManager {
      *
      */
     private setAsDefault() {
-        this.backend.getRequest("mailboxes/setdefaultmailbox", {mailbox_id: this.model.data.id})
+        this.backend.postRequest("module/Mailboxes/default", null, {mailbox_id: this.model.data.id})
             .subscribe(
                 (res) => {
                     this.toast.sendToast(res);
