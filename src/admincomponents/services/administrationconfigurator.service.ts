@@ -32,7 +32,7 @@ export class administrationconfigurator {
      * @param fielddefs Array
      */
     public loadEntries(fielddefs = []) {
-        this.backend.getRequest('configurator/entries/' + this.dictionary).subscribe(data => {
+        this.backend.getRequest('configuration/configurator/entries/' + this.dictionary).subscribe(data => {
 
             // traverse the fielddefs
             this.fielddefobj = {};
@@ -103,7 +103,7 @@ export class administrationconfigurator {
         this.entries.some(entry => {
             if (entry.id === id) {
                 delete(entry.backup);
-                this.backend.postRequest('configurator/' + this.dictionary + '/' + id, {}, this.remapData(entry.data)).subscribe(status => {
+                this.backend.postRequest('configuration/configurator/' + this.dictionary + '/' + id, {}, { config: this.remapData(entry.data)}).subscribe(status => {
                     entry.mode = '';
                 });
                 return true;
@@ -118,7 +118,7 @@ export class administrationconfigurator {
         this.entries.some((entry, index) => {
             if (entry.id === id) {
                 delete(entry.backup);
-                this.backend.deleteRequest('configurator/' + this.dictionary + '/' + id).subscribe(status => {
+                this.backend.deleteRequest('configuration/configurator/' + this.dictionary + '/' + id).subscribe(status => {
                     this.entries.splice(index, 1);
                 });
                 return true;

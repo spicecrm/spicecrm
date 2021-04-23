@@ -38,7 +38,7 @@ export class QuestionnaireCategoryPool implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
-        this.backend.getRequest('QuestionOptionCategories/getList').subscribe(( response: any ) => {
+        this.backend.getRequest('module/QuestionOptionCategories/getList').subscribe(( response: any ) => {
             this.allCategories = response;
             for ( let category of this.allCategories ) {
                 this.allCategoryNamesUpper.push( category.name.toUpperCase() + ' [' + category.abbreviation.toUpperCase() + ']' );

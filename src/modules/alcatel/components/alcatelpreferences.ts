@@ -48,7 +48,7 @@ export class AlcatelPreferences {
      * get the preferences and check if we have a username set
      */
     private getPreferences() {
-        this.backend.getRequest('alcatel/preferences').subscribe(prefs => {
+        this.backend.getRequest('channels/voice/alcatel/preferences').subscribe(prefs => {
             this.preferences.phoneusername = prefs.phoneusername;
             this.preferences.username = prefs.username;
         });
@@ -64,7 +64,7 @@ export class AlcatelPreferences {
     private setPreferences() {
         if (this.canSet) {
             this.verifying = true;
-            this.backend.postRequest('alcatel/preferences', {}, this.preferences).subscribe(
+            this.backend.postRequest('channels/voice/alcatel/preferences', {}, this.preferences).subscribe(
                 res => {
                     this.verifying = false;
                     if (res.status == 'success') {

@@ -124,7 +124,7 @@ export class PotentialsManager extends ObjectRelatedList implements OnInit {
     private getRevenues() {
         this.cc_revenues = [];
         this.cc_revenues_loading = true;
-        this.backend.getRequest("module/Potentials/uncaptured/" + this._companyCode + '/' + this.model.id).subscribe(revenues => {
+        this.backend.getRequest("module/Accounts/" + this.model.id + "/related/potentials/revenues/" + this._companyCode ).subscribe(revenues => {
             this.cc_revenues = revenues;
             this.cc_revenues_loading = false;
         });

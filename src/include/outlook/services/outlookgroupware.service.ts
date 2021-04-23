@@ -86,17 +86,17 @@ export class OutlookGroupware extends GroupwareService {
                     bean: this.model.utils.spiceModel2backend('Emails', this.model.data)
                 };
 
-                this.backend.postRequest('module/Emails/groupware/saveOutlookEmailWithBeans', {}, data).subscribe(
+                this.backend.postRequest('channels/groupware/outlook/email', {}, data).subscribe(
                     (res) => {
                         if (this.archiveattachments.length > 0) {
                             let attachmentData = {
                                 attachmentToken: this.attachments.attachmentToken,
                                 ewsUrl: this.attachments.ewsUrl,
                                 outlookAttachments: this.archiveattachments,
-                                email_id: res.email_id,
+                                emailId: res.email_id,
                             };
 
-                            this.backend.postRequest('module/Emails/groupware/saveOutlookAttachments', {}, attachmentData).subscribe(
+                            this.backend.postRequest('channels/groupware/outlook/attachments', {}, attachmentData).subscribe(
                                 success => {
                                     this.isArchiving = false;
                                     retSubject.next(true);

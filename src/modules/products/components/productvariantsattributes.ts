@@ -63,11 +63,11 @@ export class ProductVariantsAttributes implements OnDestroy {
         switch (this.model.module) {
             case 'ProductVariants':
                 parentField = 'product_id';
-                type = 'products';
+                type = 'Products';
                 break;
             case 'Products':
                 parentField = 'productgroup_id';
-                type = 'productgroups';
+                type = 'ProductGroups';
                 break;
         }
 
@@ -75,7 +75,7 @@ export class ProductVariantsAttributes implements OnDestroy {
         if (!!parentFieldId && parentFieldId != this.parentId) {
             this.isLoading = true;
             this.parentId = parentFieldId;
-            this.backend.getRequest(`${type}/${parentFieldId}/productattributes/direct`)
+            this.backend.getRequest(`/module/${type}/${parentFieldId}/ProductAttributes/direct`)
                 .subscribe(attributes => {
                     this.attributes = attributes.sort((a, b) => +a.sort_sequence > +b.sort_sequence ? 1 : -1);
                     this.isLoading = false;

@@ -48,7 +48,7 @@ export class MailboxesmanagerTestIMAPModal {
 
         let modelData = this.model.utils.spiceModel2backend('Mailboxes', this.model.data);
 
-        this.backend.postRequest("mailboxes/test",{}, {
+        this.backend.postRequest("module/Mailboxes/test",{}, {
             data: modelData,
             test_email: this.testemailaddress
         }).subscribe(

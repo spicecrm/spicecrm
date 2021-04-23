@@ -35,7 +35,7 @@ export class MailingStatsPanel implements OnInit {
 
     public reloadData() {
         this.isLoading = true;
-        this.backend.getRequest(`CleverReach/CampaignTasks/${this.model.id}/stats`)
+        this.backend.getRequest(`channels/emarketing/cleverreach/${this.model.id}/stats`)
             .subscribe(response => {
                 this.mailingStats = response;
                 this.isLoading = false;
@@ -47,7 +47,7 @@ export class MailingStatsPanel implements OnInit {
      */
 
     public ngOnInit(): void {
-        this.backend.getRequest(`CleverReach/CampaignTasks/${this.model.id}/stats`)
+        this.backend.getRequest(`channels/emarketing/cleverreach/${this.model.id}/stats`)
         .subscribe(response => {
             this.mailingStats = response;
             this.isLoading = false;

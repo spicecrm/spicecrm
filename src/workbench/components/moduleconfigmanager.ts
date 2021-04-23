@@ -64,14 +64,14 @@ export class ModuleConfigManager {
         private modal: modal
     ) {
         // get roles
-        this.backend.getRequest('configurator/entries/sysuiroles').subscribe(roles => {
+        this.backend.getRequest('configuration/configurator/entries/sysuiroles').subscribe(roles => {
             this.sysRoles['*'] = '*';
             for (let role of roles) {
                 this.sysRoles[role.id] = role.name;
             }
         });
 
-        this.backend.getRequest('spiceui/admin/modules').subscribe(modules => {
+        this.backend.getRequest('system/spiceui/admin/modules').subscribe(modules => {
             this.sysModules = modules;
 
             this.initialized = true;
@@ -100,7 +100,7 @@ export class ModuleConfigManager {
         }
 
         if (this.change_request_required) {
-            this.backend.getRequest('systemdeploymentcrs/active').subscribe(crresponse => {
+            this.backend.getRequest('module/SystemDeploymentCRs/active').subscribe(crresponse => {
                 if (crresponse.id == "") {
                     this.setNoneMode();
                     // this.crNoneActive = true;
@@ -176,7 +176,7 @@ export class ModuleConfigManager {
             this.currentTableActive = "global";
             this.checkMode();
             if (this.currentModule != "*") {
-                this.backend.getRequest('configurator/entries/sysuicomponentmoduleconf').subscribe(data => {
+                this.backend.getRequest('configuration/configurator/entries/sysuicomponentmoduleconf').subscribe(data => {
                     this.buildTreeList(data);
                     loadingModalRef.instance.self.destroy();
                 });
@@ -194,7 +194,7 @@ export class ModuleConfigManager {
             this.currentTableActive = "custom";
             this.checkMode();
             if (this.currentModule != "*") {
-                this.backend.getRequest('configurator/entries/sysuicustomcomponentmoduleconf').subscribe(data => {
+                this.backend.getRequest('configuration/configurator/entries/sysuicustomcomponentmoduleconf').subscribe(data => {
                     this.buildTreeList(data);
                     loadingModalRef.instance.self.destroy();
                 });
@@ -208,7 +208,7 @@ export class ModuleConfigManager {
     loadDefault() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
             this.currentTableActive = "default";
-            this.backend.getRequest('configurator/entries/sysuicomponentdefaultconf').subscribe(data => {
+            this.backend.getRequest('configuration/configurator/entries/sysuicomponentdefaultconf').subscribe(data => {
                 this.buildTreeList(data);
                 loadingModalRef.instance.self.destroy();
             });
@@ -218,7 +218,7 @@ export class ModuleConfigManager {
     loadDefaultCustom() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
             this.currentTableActive = "default_custom";
-            this.backend.getRequest('configurator/entries/sysuicustomcomponentdefaultconf').subscribe(data => {
+            this.backend.getRequest('configuration/configurator/entries/sysuicustomcomponentdefaultconf').subscribe(data => {
                 this.buildTreeList(data);
                 loadingModalRef.instance.self.destroy();
             });
@@ -390,7 +390,7 @@ export class ModuleConfigManager {
 
                 switch (this.currentTableActive) {
                     case "default":
-                        this.backend.postRequest('configurator/sysuicomponentdefaultconf/' + this.selectedComponent.id, {}, this.selectedComponent).subscribe(status => {
+                        this.backend.postRequest('configuration/configurator/sysuicomponentdefaultconf/' + this.selectedComponent.id, {}, { config: this.selectedComponent }).subscribe(status => {
                             if (status.status == "success") {
                                 loadingModalRef.instance.self.destroy();
                                 this.toast.sendToast('changes saved');
@@ -398,7 +398,7 @@ export class ModuleConfigManager {
                         });
                         break;
                     case "default_custom":
-                        this.backend.postRequest('configurator/sysuicustomcomponentdefaultconf/' + this.selectedComponent.id, {}, this.selectedComponent).subscribe(status => {
+                        this.backend.postRequest('configuration/configurator/sysuicustomcomponentdefaultconf/' + this.selectedComponent.id, {}, { config: this.selectedComponent }).subscribe(status => {
                             if (status.status == "success") {
                                 loadingModalRef.instance.self.destroy();
                                 this.toast.sendToast('changes saved');
@@ -406,7 +406,7 @@ export class ModuleConfigManager {
                         });
                         break;
                     case "global":
-                        this.backend.postRequest('configurator/sysuicomponentmoduleconf/' + this.selectedComponent.id, {}, this.selectedComponent).subscribe(status => {
+                        this.backend.postRequest('configuration/configurator/sysuicomponentmoduleconf/' + this.selectedComponent.id, {}, { config: this.selectedComponent }).subscribe(status => {
                             if (status.status == "success") {
                                 loadingModalRef.instance.self.destroy();
                                 this.toast.sendToast('changes saved');
@@ -414,7 +414,7 @@ export class ModuleConfigManager {
                         });
                         break;
                     case "custom":
-                        this.backend.postRequest('configurator/sysuicustomcomponentmoduleconf/' + this.selectedComponent.id, {}, this.selectedComponent).subscribe(status => {
+                        this.backend.postRequest('configuration/configurator/sysuicustomcomponentmoduleconf/' + this.selectedComponent.id, {}, { config: this.selectedComponent }).subscribe(status => {
                             if (status.status == "success") {
                                 loadingModalRef.instance.self.destroy();
                                 this.toast.sendToast('changes saved');

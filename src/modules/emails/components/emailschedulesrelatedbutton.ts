@@ -86,7 +86,7 @@ export class EmailSchedulesRelatedButton {
             });
         }
         let params = {modules: filteredModules};
-        this.backend.getRequest(`module/EmailSchedules/checkRelated/${this.model.module}/${this.model.id}`, params).subscribe(result => {
+        this.backend.getRequest(`module/EmailSchedules/${this.model.module}/${this.model.id}`, params).subscribe(result => {
             if (result.status) {
                 this.linkedBeans = result.linkedBeans;
                 this.modelId = result.beanId;

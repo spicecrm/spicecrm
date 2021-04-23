@@ -219,7 +219,7 @@ export class ServiceDocSignatureModal {
 
         switch (this.selected_format) {
             case 'pdf':
-                this.backend.getRequest(`OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf/base64`).subscribe(
+                this.backend.getRequest(`module/OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf/base64`).subscribe(
                     pdf => {
                         let blob = this.datatoBlob( atob( pdf.content ) );
                         this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl( URL.createObjectURL( blob ) );
@@ -233,7 +233,7 @@ export class ServiceDocSignatureModal {
                 break;
             case 'html':
                 // compile the template to show the user...
-                this.backend.getRequest(`OutputTemplates/${this.selected_template.id}/compile/${this.model.id}`).subscribe(
+                this.backend.getRequest(`module/OutputTemplates/${this.selected_template.id}/compile/${this.model.id}`).subscribe(
                     res => {
                         this.compiled_selected_template = res.content;
                         this.contentForHandBack = res.content;

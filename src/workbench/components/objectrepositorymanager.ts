@@ -87,7 +87,7 @@ export class ObjectRepositoryManager {
         private view: view
     ) {
         // get module repos
-        this.backend.getRequest('configurator/entries/sysuimodulerepository').subscribe(modules => {
+        this.backend.getRequest('configuration/configurator/entries/sysuimodulerepository').subscribe(modules => {
 
             for (let module of modules) {
                 this.moduleRepos.push(module);
@@ -102,7 +102,7 @@ export class ObjectRepositoryManager {
             this.moduleReposSelect = Object.assign([], this.moduleReposSelect);
         });
 
-        this.backend.getRequest('configurator/entries/sysuicustommodulerepository').subscribe(modules => {
+        this.backend.getRequest('configuration/configurator/entries/sysuicustommodulerepository').subscribe(modules => {
             for (let module of modules) {
 
                 this.moduleRepos.push(module);
@@ -123,7 +123,7 @@ export class ObjectRepositoryManager {
         this.modulereposselecteditem = event;
 
         if (event.group == 'global') {
-            this.backend.getRequest('configurator/entries/sysuiobjectrepository').subscribe(orepos => {
+            this.backend.getRequest('configuration/configurator/entries/sysuiobjectrepository').subscribe(orepos => {
                 this.objrepoList = [];
 
                 for (let orepo of orepos) {
@@ -133,7 +133,7 @@ export class ObjectRepositoryManager {
                 }
             });
         } else if (event.group == 'custom') {
-            this.backend.getRequest('configurator/entries/sysuicustomobjectrepository').subscribe(orepos => {
+            this.backend.getRequest('configuration/configurator/entries/sysuicustomobjectrepository').subscribe(orepos => {
                 this.objrepoList = [];
 
                 for (let orepo of orepos) {
@@ -180,7 +180,7 @@ export class ObjectRepositoryManager {
         }
 
         if (this.change_request_required) {
-            this.backend.getRequest('systemdeploymentcrs/active').subscribe(crresponse => {
+            this.backend.getRequest('module/SystemDeploymentCRs/active').subscribe(crresponse => {
                 if (crresponse.id == "") {
                     this.setNoneMode();
                     this.crNoneActive = true;
@@ -300,7 +300,7 @@ export class ObjectRepositoryManager {
                 } else {
                     table = "sysuicustomobjectrepository";
                 }
-                this.backend.postRequest('configurator/' + table + '/' + this.currentObjRepo.id, null, this.currentObjRepo).subscribe(
+                this.backend.postRequest('configuration/configurator/' + table + '/' + this.currentObjRepo.id, null, { config: this.currentObjRepo }).subscribe(
                     (success) => {
                         for (let i in this.objrepoList) {
                             if (this.objrepoList[i].id == this.currentObjRepo.id) {
@@ -335,7 +335,7 @@ export class ObjectRepositoryManager {
                         } else {
                             table = "sysuicustomobjectrepository";
                         }
-                        this.backend.postRequest('configurator/' + table + '/' + this.newRepo.id, null, this.newRepo).subscribe(
+                        this.backend.postRequest('configuration/configurator/' + table + '/' + this.newRepo.id, null, { config: this.newRepo }).subscribe(
                             (success) => {
                                 this.objrepoList.push(this.newRepo);
                                 this.currentObjRepo = this.newRepo;
@@ -378,7 +378,7 @@ export class ObjectRepositoryManager {
                             scope = "custom";
                         }
                         delete (this.newModule.scope);
-                        this.backend.postRequest('configurator/' + table + '/' + this.newModule.id, null, this.newModule).subscribe(
+                        this.backend.postRequest('configuration/configurator/' + table + '/' + this.newModule.id, null, { config: this.newModule }).subscribe(
                             (success) => {
 
                                 let moduleRepoSelect = {

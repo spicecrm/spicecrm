@@ -1,5 +1,5 @@
 <system-modal size="large">
-    <system-modal-header (close)="closeModal()"><ng-container *ngIf="isLoaded">{{line.date}} • {{line.time}} • {{username}} • {{line.route}}</ng-container><ng-container *ngIf="!isLoaded">&nbsp;</ng-container></system-modal-header>
+    <system-modal-header (close)="closeModal()"><ng-container *ngIf="isLoaded">{{entry.date}} • {{entry.time}} • {{username}} • {{entry.route}}</ng-container><ng-container *ngIf="!isLoaded">&nbsp;</ng-container></system-modal-header>
     <system-modal-content [grow]="true">
         <system-spinner *ngIf="isLoading" class="slds-m-top--medium" style="display:block"></system-spinner>
         <div *ngIf="isLoaded">

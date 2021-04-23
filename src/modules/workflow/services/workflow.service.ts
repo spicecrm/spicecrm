@@ -36,7 +36,7 @@ export class workflow {
 
         this.loading = true;
 
-        this.backend.getRequest('Workflows/forparent/' + module + '/' + id).subscribe(workflows => {
+        this.backend.getRequest('module/Workflows/forparent/' + module + '/' + id).subscribe(workflows => {
 
             this.workflows = workflows;
 
@@ -60,7 +60,7 @@ export class workflow {
      */
     public addComment(taskid, comment = '') {
         let retSubject = new Subject<any>();
-        this.backend.postRequest('Workflows/addcomment/' + taskid, {}, {comment: comment}).subscribe(workflow => {
+        this.backend.postRequest('module/Workflows/addcomment/' + taskid, {}, {comment: comment}).subscribe(workflow => {
 
             this.workflows.some(wf => {
                 if (wf.id == workflow.id) {
@@ -85,7 +85,7 @@ export class workflow {
      */
     public doTaskAction(taskid, actionvalue, comment = '') {
         let retSubject = new Subject<any>();
-        this.backend.postRequest('Workflows/settaskstatus/' + taskid + '/' + actionvalue, {}, {comment: comment}).subscribe(workflow => {
+        this.backend.postRequest('module/Workflows/settaskstatus/' + taskid + '/' + actionvalue, {}, {comment: comment}).subscribe(workflow => {
 
             this.workflows.some(wf => {
                 if (wf.id == workflow.workflow.id) {

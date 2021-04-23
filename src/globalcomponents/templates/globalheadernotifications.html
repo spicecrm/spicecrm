@@ -1,0 +1,57 @@
+<ul class="slds-global-actions">
+    <li class="slds-global-actions__item slds-m-left--none">
+        <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
+            <button (click)="toggleOpenPopover(); $event.stopPropagation()" system-title="LBL_NOTIFICATIONS" class="slds-button slds-button_icon slds-button_icon-container slds-global-actions__notifications slds-global-actions__item-action slds-incoming-notification" aria-live="assertive" aria-atomic="true">
+                <system-utility-icon icon="notification" size="x-small"></system-utility-icon>
+            </button>
+            <span *ngIf="notificationService.unreadCount > 0" aria-hidden="true" class="slds-notification-badge slds-incoming-notification slds-show-notification">
+                {{notificationService.unreadCount}}
+            </span>
+        </div>
+    </li>
+</ul>
+<section *ngIf="isOpen" class="slds-popover slds-popover_large slds-nubbin_top-right slds-is-absolute slds-grid slds-grid--vertical" role="dialog" style="top: 45px; right: 45px; max-height: calc(100vh - 55px); box-shadow: 0 0 15px 5px #bbb;">
+    <div class="slds-grid slds-border--bottom">
+        <header class="slds-popover__header slds-grow slds-grid slds-grid--align-spread" style="border-bottom: 0;">
+            <h2 class="slds-text-heading_small">
+                <system-label label="LBL_NOTIFICATIONS"></system-label>
+            </h2>
+            <a (click)="markAllAsRead()" class="slds-text-link">
+                <system-label label="LBL_MARK_ALL_READ"></system-label>
+            </a>
+        </header>
+        <button (click)="closePopover()" system-title="LBL_CLOSE" class="slds-button slds-button_icon slds-button_icon-small slds-float_right slds-popover__close">
+            <system-button-icon icon="close" size="small"></system-button-icon>
+        </button>
+    </div>
+    <div #scrollContainer (scroll)="onScroll(scrollContainer)" class="slds-popover__body slds-p-around_none slds-scrollable--y">
+        <div *ngIf="notificationService.notifications?.length === 0" class="slds-p-around--small">
+            <system-label label="LBL_NO_ENTRIES"></system-label>
+        </div>
+        <ul>
+            <ng-container *ngFor="let notification of notificationService.notifications">
+                <li [ngSwitch]="notification.notification_type" [class.slds-global-header__notification_unread]="!notification.notification_read" class="slds-global-header__notification spice-hover-display-children slds-is-relative">
+                    <global-header-notifications-item-assign *ngSwitchCase="'assign'" [notification]="notification"></global-header-notifications-item-assign>
+                    <global-header-notifications-item-change *ngSwitchCase="'change'" [notification]="notification"></global-header-notifications-item-change>
+                    <global-header-notifications-item-delete *ngSwitchCase="'delete'" [notification]="notification"></global-header-notifications-item-delete>
+                    <div *ngIf="notification.notification_read != 1" (click)="markAsRead(notification.id); $event.stopPropagation()" class="slds-is-absolute slds-height_full spice-hover-child slds-grid slds-grid--vertical-align-center slds-p-right--x-small" style="right: 0; top: 0">
+                        <button system-title="LBL_MARK_AS_READ" class="slds-theme--default slds-button slds-button_icon slds-button_icon-small slds-float_right slds-popover__close slds-button--icon-border">
+                            <system-button-icon icon="check" size="small"></system-button-icon>
+                        </button>
+                    </div>
+                </li>
+            </ng-container>
+        </ul>
+        <div *ngIf="notificationService.isLoading" class="slds-align--absolute-center slds-p-around--small">
+            <system-spinner></system-spinner>
+        </div>
+    </div>
+</section>
+
+<div class="slds-notification-container">
+    <ng-container *ngFor="let notification of notificationService.newNotifications" [ngSwitch]="notification.notification_type">
+        <global-header-notifications-item-assign *ngSwitchCase="'assign'" [asBox]="true" [notification]="notification"></global-header-notifications-item-assign>
+        <global-header-notifications-item-change *ngSwitchCase="'change'" [asBox]="true" [notification]="notification"></global-header-notifications-item-change>
+        <global-header-notifications-item-delete *ngSwitchCase="'delete'" [asBox]="true" [notification]="notification"></global-header-notifications-item-delete>
+    </ng-container>
+</div>

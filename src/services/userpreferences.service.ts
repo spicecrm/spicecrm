@@ -82,7 +82,7 @@ export class userpreferences {
     public loadPreferences(category = 'global'): Observable<any> {
         let retSubject: Subject<any> = new Subject<any>();
 
-        this.backend.getRequest('user/' + this.session.authData.userId + '/preferences/' + category).subscribe((prefs) => {
+        this.backend.getRequest('module/Users/' + this.session.authData.userId + '/preferences/' + category).subscribe((prefs) => {
             this.preferences[category] = _.extendOwn(this.preferences[category], prefs);
             if (category === 'global') {
                 this.unchangedPreferences.global = _.clone(prefs);
@@ -131,7 +131,7 @@ export class userpreferences {
             let prefs = {};
             prefs[name] = value;
             const saved = new Subject();
-            this.backend.postRequest('user/' + this.session.authData.userId + '/preferences/' + category, {}, prefs).subscribe(response => {
+            this.backend.postRequest('module/Users/' + this.session.authData.userId + '/preferences/' + category, {}, prefs).subscribe(response => {
 
                 // set the preference
                 if (!this.preferences[category]) this.preferences[category] = {};
@@ -159,7 +159,7 @@ export class userpreferences {
 
     public setPreferences(prefs, category = 'global') {
         const saved = new Subject();
-        this.backend.postRequest('user/' + this.session.authData.userId + '/preferences/' + category, {}, prefs).subscribe(
+        this.backend.postRequest('module/Users/' + this.session.authData.userId + '/preferences/' + category, {}, prefs).subscribe(
             (savedprefs) => {
                 for (let prop in this.preferences[category]) {
                     if (savedprefs.hasOwnProperty(prop)) this.preferences[category][prop] = savedprefs[prop];
@@ -214,7 +214,7 @@ export class userpreferences {
 
         this.formats.nameFormats.length = 0;
         this.formats.loaded = false;
-        this.backend.getRequest('user/preferencesformats').subscribe((formats) => {
+        this.backend.getRequest('module/Users/preferencesformats').subscribe((formats) => {
             if (Array.isArray(formats.nameFormats)) {
                 for (let item of formats.nameFormats) {
                     this.formats.nameFormats.push({name: item, example: this.translateNameFormat(item)});

@@ -41,7 +41,7 @@ export class ACLTerritorriesElementmanagerElements {
      */
     private loadElements() {
         this.loading = true;
-        this.backend.getRequest('spiceaclterritories/core/orgelements').subscribe(elements => {
+        this.backend.getRequest('module/SpiceACLTerritories/core/territoryelements').subscribe(elements => {
             this.elements = elements;
 
             this.elements.sort((a, b) => {
@@ -60,7 +60,7 @@ export class ACLTerritorriesElementmanagerElements {
     private deleteElement(element) {
         this.modal.confirm('Delete Element', 'Delete').subscribe(response => {
             if (response) {
-                this.backend.deleteRequest('spiceaclterritories/core/orgelements/' + element.id).subscribe(success => {
+                this.backend.deleteRequest('module/SpiceACLTerritories/core/territoryelements/' + element.id).subscribe(success => {
                     this.elements.some((thiselement, index) => {
                         if (thiselement.id == element.id) {
                             this.elements.splice(index, 1);
@@ -82,7 +82,7 @@ export class ACLTerritorriesElementmanagerElements {
                     name: newName
                 };
 
-                this.backend.postRequest('spiceaclterritories/core/orgelements/' + newElement.id, {}, newElement).subscribe(elements => {
+                this.backend.postRequest('module/SpiceACLTerritories/core/territoryelements/' + newElement.id, {}, newElement).subscribe(elements => {
                     this.elements.push(newElement);
                     this.selectElement(newElement);
                 });

@@ -38,7 +38,7 @@ export class MailChimpCreateCampaignModal {
     }
 
     private onSubmit() {
-        this.backend.postRequest(`MailChimp/${this.model.module}/${this.model.id}/createCampaign`, null, this.campaign.value).subscribe(
+        this.backend.postRequest(`channels/emarketing/mailchimp/${this.model.module}/${this.model.id}`, null, this.campaign.value).subscribe(
             response => {
                 this.toast.sendToast(this.language.getLabel('LBL_COMPLETED'));
                 this.model.setField('ext_id', response.id);

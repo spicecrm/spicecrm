@@ -77,7 +77,7 @@ export class SpicePathWithCoaching {
      * retrieve results for checks on load
      */
     public ngOnInit() {
-        this.backend.getRequest("spicebeanguide/" + this.model.module + "/" + this.model.id).subscribe(stages => {
+        this.backend.getRequest("common/spicebeanguide/" + this.model.module + "/" + this.model.id).subscribe(stages => {
             this.beanStagesChecksResults = stages;
         });
     }

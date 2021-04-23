@@ -58,9 +58,9 @@ export class GSuiteGroupware extends GroupwareService implements OnDestroy {
 
         this.getThreadId().subscribe(threadId => {
 
-            const data = {thread_id: threadId};
+            const data = {threadId: threadId};
 
-            this.backend.postRequest('module/Emails/groupware/getemail', {}, data).subscribe(
+            this.backend.getRequest('channels/groupware/email', data).subscribe(
                 (res) => {
                     this.emailId = res.email_id;
 
@@ -120,7 +120,7 @@ export class GSuiteGroupware extends GroupwareService implements OnDestroy {
                         email: message,
                     };
 
-                    this.backend.postRequest('module/Emails/groupware/saveGSuiteEmailWithBeans', {}, data).subscribe(
+                    this.backend.postRequest('channels/groupware/gsuite/email', {}, data).subscribe(
                         (res) => {
                             this.emailId = res.email_id;
 
@@ -130,7 +130,7 @@ export class GSuiteGroupware extends GroupwareService implements OnDestroy {
                                     email_id: res.email_id,
                                 };
 
-                                this.backend.postRequest('module/Emails/groupware/saveGSuiteAttachments', {}, attachmentData).subscribe(
+                                this.backend.postRequest('channels/groupware/gsuite/attachments', {}, attachmentData).subscribe(
                                     () => {
                                         this.isArchiving = false;
                                         response.next(true);
@@ -212,7 +212,7 @@ export class GSuiteGroupware extends GroupwareService implements OnDestroy {
             const body = {addresses: res, thread_id: this.threadId};
             this.relatedBeans = [];
 
-            this.backend.postRequest('EmailAddress/searchBeans', {}, body).subscribe(
+            this.backend.postRequest('module/EmailAddress/searchbeans', {}, body).subscribe(
                 (res: any) => {
                     this.pushRelatedBeans(res);
                     response.next(this.relatedBeans);
@@ -262,7 +262,7 @@ export class GSuiteGroupware extends GroupwareService implements OnDestroy {
 
                 const body = {addresses: res.emailAddresses, thread_id: this.threadId};
 
-                this.backend.postRequest('EmailAddress/searchBeans', {}, body).subscribe(
+                this.backend.postRequest('module/EmailAddress/searchbeans', {}, body).subscribe(
                     (beans: any) => {
                         this.pushRelatedBeans(beans);
                     }

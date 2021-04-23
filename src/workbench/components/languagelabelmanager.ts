@@ -85,7 +85,7 @@ export class LanguageLabelManagerComponent {
 
         this.selected_label = null;
         this.is_searching = true;
-        this.backend.getRequest('syslanguages/labels/search/' + this.search_term).subscribe(
+        this.backend.getRequest('configuration/syslanguages/labels/search/' + this.search_term).subscribe(
             (res) => {
                 this.labels = res;
                 this.is_searching = false;
@@ -157,7 +157,7 @@ export class LanguageLabelManagerComponent {
     public deleteLabel(label) {
         this.modalservice.confirm(this.language.getLabel('LBL_DELETE_LABEL_TEXT'), this.language.getLabel('LBL_DELETE_LABEL_TITLE')).subscribe((decision) => {
             if (decision) {
-                this.backend.deleteRequest('syslanguages/labels/' + label.id + '/' + label.source).subscribe(
+                this.backend.deleteRequest('configuration/syslanguages/labels/' + label.id + '/' + label.source).subscribe(
                     (res) => {
                         for (let i = 0; i < this.labels.length; i++) {
                             let lbl = this.labels[i];
@@ -173,7 +173,7 @@ export class LanguageLabelManagerComponent {
     }
 
     public save() {
-        this.backend.postRequest('syslanguages/labels', null, [this.selected_label]).subscribe(
+        this.backend.postRequest('configuration/syslanguages/labels', null, [this.selected_label]).subscribe(
             (res) => {
                 // reload labels to show up in the application...
                 // this.language.loadLanguage();
@@ -226,7 +226,8 @@ export class LanguageLabelManagerComponent {
     }
 
     /**
-     * bad naming... don't use shortcuts, be more explicit with your arguments... if you name it language, I would guess it means a complete language object... instead it means the language_code, why not name it so?
+     * bad naming... don't use shortcuts, be more explicit with your arguments... if you name it language, I would guess it means a complete language object...
+     * instead it means the language_code, why not name it so?
      * also the "text" of a language could mean everything...
      * @param language
      * @returns {any}
@@ -239,7 +240,7 @@ export class LanguageLabelManagerComponent {
         this.modalservice.confirm('Transfering custom labels from language files will change your database content and might destroy/overwrite existing language data in your database! Do you really want to do this?', 'Caution!', 'warning' ).subscribe( (answer) => {
             if ( answer ) {
                 let stopper = this.modalservice.await('Transfering language data from files to database …');
-                this.backend.postRequest( 'syslanguages/filesToDB', {}, {confirmed:true} ).subscribe( (data) => {
+                this.backend.postRequest( 'configuration/syslanguages/filesToDB', {}, {confirmed:true} ).subscribe( (data) => {
                         stopper.emit();
                         this.modalservice.info('Language data successfully transfered ('+data.countLabels+' labels with '+data.countTranslations+' translations). Look into console for more details.','Done','success');
                         console.info(data);

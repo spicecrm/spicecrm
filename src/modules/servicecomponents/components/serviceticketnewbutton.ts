@@ -41,7 +41,7 @@ export class ServiceTicketNewButton {
         let awaitmodal = this.modal.await('loading');
 
         // request data and then create the ticket
-        this.backend.getRequest(`modules/ServiceTickets/discoverparent/${this.parentmodel.module}/${this.parentmodel.id}`).subscribe(
+        this.backend.getRequest(`module/ServiceTickets/discoverparent/${this.parentmodel.module}/${this.parentmodel.id}`).subscribe(
             res => {
                 if (!res.servicelocations) {
                     this.model.addModel("", this.parentmodel).subscribe(response => {

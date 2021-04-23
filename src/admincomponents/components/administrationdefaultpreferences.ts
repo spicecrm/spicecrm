@@ -43,7 +43,7 @@ export class AdministrationDefaultPreferences implements OnInit {
     private loadPreferences() {
         const loadingModal = this.modal.await('LBL_LOADING');
 
-        this.backend.getRequest('configurator/editor/default_preferences').subscribe(data => {
+        this.backend.getRequest('configuration/configurator/editor/default_preferences').subscribe(data => {
             this.preferences = data;
             loadingModal.emit();
             loadingModal.complete();
@@ -57,7 +57,7 @@ export class AdministrationDefaultPreferences implements OnInit {
     private save() {
         const loadingModal = this.modal.await('LBL_SAVING_DATA');
 
-        this.backend.postRequest('configurator/editor/default_preferences', [], this.preferences).subscribe(data => {
+        this.backend.postRequest('configuration/configurator/editor/default_preferences', [], { config: this.preferences }).subscribe(data => {
             this.configuration.setData('defaultuserpreferences', this.preferences);
             this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
             this.view.setViewMode();

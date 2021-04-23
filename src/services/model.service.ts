@@ -17,6 +17,7 @@ import {backend} from "./backend.service";
 import {recent} from "./recent.service";
 import {configurationService} from "./configuration.service";
 import {socket} from "./socket.service";
+import {SocketEventI} from "./interfaces.service";
 
 /**
  * @ignore
@@ -276,6 +277,12 @@ export class model implements OnDestroy {
                 */
             })
         );
+
+        this.subscriptions.add(
+            this.socket.initializeNamespace('module').subscribe(e =>
+                this.handleSocketEvents(e)
+            )
+        );
     }
 
     /**
@@ -311,6 +318,25 @@ export class model implements OnDestroy {
         this._module = val;
         this.initializeFieldsStati();
         this.registerModel();
+        if (!val) return;
+    }
+
+    /**
+     * handle socket event
+     * @param event
+     * @private
+     */
+    private handleSocketEvents(event: SocketEventI) {
+        switch (event.type) {
+            case 'update':
+                const data = this.utils.backendModel2spice(this.module, event.data.data);
+                if (!this.isEditing) {
+                    this.data = data;
+                } else if (!_.isEmpty(this.backupData)) {
+                    this.backupData = data;
+                }
+                break;
+        }
     }
 
     /**
@@ -328,6 +354,9 @@ export class model implements OnDestroy {
     set id(id) {
         this._id = id;
         this.registerModel();
+        if (!!id && !!this.module) {
+            this.socket.joinRoom('module', `${this.module}:${this.id}`);
+        }
     }
 
     /*
@@ -1697,7 +1726,11 @@ export class model implements OnDestroy {
 
 
     public ngOnDestroy(): void {
+        if (!!this.module && !!this.id) {
+            this.socket.leaveRoom('module', `${this.module}:${this.id}`);
+        }
         this.navigation.unregisterModel(this.modelRegisterId);
+
 
         // unsubscribe from any subscriptions we might have
         this.subscriptions.unsubscribe();

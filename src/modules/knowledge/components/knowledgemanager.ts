@@ -109,7 +109,7 @@ export class KnowledgeManager implements AfterViewInit {
 
     private handleTreeDrop(toEdit) {
         if (toEdit.newSortSequences) {
-            this.backend.postRequest('module/KnowledgeDocument/List/modifySortSequence', {}, toEdit.newSortSequences);
+            this.backend.postRequest('module/KnowledgeDocuments/List/modifysortsequence', {}, toEdit.newSortSequences);
         }
 
         if (!toEdit.itemWithNewParent) return;

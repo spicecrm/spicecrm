@@ -47,7 +47,7 @@ export class Five9Preferences {
      * get the preferences and check if we have a username set
      */
     private getPreferences() {
-        this.backend.getRequest('Five9/preferences').subscribe(prefs => {
+        this.backend.getRequest('channels/voice/Five9/preferences').subscribe(prefs => {
             this.preferences.username = prefs.username;
         });
     }
@@ -62,7 +62,7 @@ export class Five9Preferences {
     private setPreferences() {
         if (this.canSet) {
             this.verifying = true;
-            this.backend.postRequest('Five9/preferences', {}, this.preferences).subscribe(
+            this.backend.postRequest('channels/voice/Five9/preferences', {}, this.preferences).subscribe(
                 res => {
                     this.verifying = false;
                     if (res.status == 'success') {

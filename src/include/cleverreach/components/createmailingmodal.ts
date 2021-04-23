@@ -51,7 +51,7 @@ export class CreateMailingModal implements OnInit {
      */
 
     private loadTemplates() {
-        this.backend.getRequest(`EmailTemplates/${this.model.module}`).subscribe(
+        this.backend.getRequest(`module/EmailTemplates/${this.model.module}/load`).subscribe(
             response => {
                 this.templates = response;
             }
@@ -68,7 +68,7 @@ export class CreateMailingModal implements OnInit {
 
     private renderTemplate(id) {
         this.selectedTemplate = id;
-        this.backend.getRequest(`EmailTemplates/parse/${this.selectedTemplate}/${this.model.module}/${this.model.id}`).subscribe(
+        this.backend.getRequest(`module/EmailTemplates/${this.selectedTemplate}/parse/${this.model.module}/${this.model.id}`).subscribe(
             response => {
                 this.mailing.patchValue({html: response.body_html});
             }
@@ -83,7 +83,7 @@ export class CreateMailingModal implements OnInit {
      */
 
     private onSubmit() {
-        this.backend.postRequest(`CleverReach/${this.model.module}/${this.model.id}/sendMailing`, null, this.mailing.value).subscribe(
+        this.backend.postRequest(`channels/emarketing/cleverreach/${this.model.module}/${this.model.id}/sendmailing`, null, this.mailing.value).subscribe(
             response => {
                 this.toast.sendToast(this.language.getLabel('LBL_COMPLETED'));
                 this.model.setField('mailing_id', response.mailing_id);

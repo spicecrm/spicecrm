@@ -66,10 +66,10 @@ export class ACLTerritorriesManagerTerritories {
     }
 
     /**
-     * loads the territory typoes
+     * loads the territory types
      */
     private loadTypes() {
-        this.backend.getRequest('spiceaclterritories/core/orgobjecttypes').subscribe(types => {
+        this.backend.getRequest('module/SpiceACLTerritories/core/territorytypes').subscribe(types => {
             this.types = types;
 
             this.types.sort((a, b) => {
@@ -79,14 +79,13 @@ export class ACLTerritorriesManagerTerritories {
     }
 
     /**
-     * loads the territories for a selecterd type
+     * loads the territories for a selected type
      */
     private loadTerritories() {
         this.loading = true;
 
-        this.backend.getRequest('spiceaclterritories/core/territories', {
-            searchterm: this.searchterm,
-            territorytype_id: this.activeType
+        this.backend.getRequest('module/SpiceACLTerritories/core/territorytypes/' + this.activeType + '/territories', {
+            searchterm: this.searchterm
         }).subscribe(territories => {
             this.territorieslist = territories;
             this.loading = false;
@@ -148,8 +147,8 @@ export class ACLTerritorriesManagerTerritories {
      */
     private deleteTerritory(territory) {
         this.modal.prompt("confirm", this.language.getLabel('MSG_DELETE_RECORD', '', 'long'), this.language.getLabel('MSG_DELETE_RECORD')).subscribe(response => {
-            if(response){
-                this.backend.deleteRequest('spiceaclterritories/core/territories/' + territory.id).subscribe(response => {
+            if(response) {
+                this.backend.deleteRequest('module/SpiceACLTerritories/' + this.activeTerritoryId).subscribe(response => {
                     this.territorieslist.some((thisterritory, index) => {
                         if (thisterritory.id == territory.id) {
                             this.territorieslist.splice(index, 1);

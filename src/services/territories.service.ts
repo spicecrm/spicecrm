@@ -48,7 +48,7 @@ export class territories {
     }
 
     /**
-     * returns a list of reent used territories (if there are any. Otherwise the first n entries from the user territories
+     * returns a list of recent used territories (if there are any. Otherwise the first n entries from the user territories
      *
      * @param count the number of records to be returned
      */
@@ -62,9 +62,13 @@ export class territories {
         }
     }
 
+    /**
+     * returns the name of a specified territory
+     * @param territory
+     */
     public loadTerritoryName(territory) {
         this.addTerritories[territory] = '...';
-        this.backend.getRequest('territories/' + territory)
+        this.backend.getRequest('module/SpiceACLTerritories/' + territory)
             .subscribe((response: any) => {
                 if (response.id === territory) {
                     this.addTerritories[territory] = response.name;

@@ -39,7 +39,7 @@ export class KnowledgeReleaseAllButton {
     public execute() {
         this.modal.confirm(this.language.getLabel('MSG_RELEASE_ALL_CONFIRM'), this.language.getLabel('LBL_RELEASE_ALL')).subscribe(answer => {
             if (answer) {
-                this.backend.postRequest(`module/KnowledgeDocument/${this.model.id}/release/all`).subscribe(
+                this.backend.postRequest(`module/KnowledgeDocuments/${this.model.id}/release/all`).subscribe(
                     res => {
                         if (res && res.released) {
                             this.model.setField('status', 'Released');

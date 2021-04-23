@@ -83,7 +83,7 @@ export class assistant {
             timefilter: this.assistantFilters.timefilter
         };
 
-        this.backend.getRequest('assistant/list', reqParams).subscribe(retData => {
+        this.backend.getRequest('module/Activities/assistant/list', reqParams).subscribe(retData => {
             for (let retItem of retData) {
                 let transverseddata = [];
                 for (let fieldName in retItem.data) {

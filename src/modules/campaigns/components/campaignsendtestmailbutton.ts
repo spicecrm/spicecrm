@@ -34,11 +34,11 @@ export class CampaignSendTestMailButton {
         let await = this.modal.await('LBL_SENDING');
         if (!this.sending) {
             this.sending = true;
-            this.backend.postRequest('module/CampaignTasks/' + this.model.id + '/sendtestmail').subscribe(
+            this.backend.postRequest(`module/CampaignTasks/${this.model.id}/sendtestmail`).subscribe(
                 (results: any) => {
                     this.sending = false;
                     await.emit(true);
-                    if(results.status == 'success'){
+                    if(results.status == 'success') {
                         this.toast.sendToast('Mails sent');
                     } else {
                         this.toast.sendToast(results.msg, 'error');

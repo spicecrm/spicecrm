@@ -38,7 +38,7 @@
     "quill-image-resize-module": "^3.0.0",
     "request": "^2.88.0",
     "rxjs": "~6.6.3",
-    "socket.io-client": "^2.3.1",
+    "socket.io-client": "^4.0.1",
     "systemjs": "^0.21.6",
     "ts-md5": "^1.2.7",
     "tslib": "^1.10.0",

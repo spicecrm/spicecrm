@@ -46,7 +46,7 @@ export class ACLUserProfiles {
         private language: language
     ) {
         // load the profiles for the user
-        this.backend.getRequest("spiceaclprofiles/foruser/" + this.model.id).subscribe(res => {
+        this.backend.getRequest("module/Users/" + this.model.id + "/related/spiceaclprofiles").subscribe(res => {
             this.userProfiles = res;
         });
     }
@@ -55,7 +55,7 @@ export class ACLUserProfiles {
         if (this.selectedProfileId != profileid) {
             this.selectedProfileId = profileid;
             this.profileObjects = [];
-            this.backend.getRequest("spiceaclprofiles/" + profileid + "/aclobjects").subscribe(res => {
+            this.backend.getRequest("module/SpiceACLProfiles/" + profileid + "/related/spiceaclobjects").subscribe(res => {
                 for (let i in res) {
                     this.profileObjects.push(res[i]);
                 }

@@ -150,7 +150,7 @@ export class ActivityTimelineDropZoneWrapper {
                 }, false);
 
                 // let url = this.configurationService.getBackendUrl() + `/module/Notes/${moduleId}/noteattachment`;
-                let url = this.configurationService.getBackendUrl() + '/spiceAttachments';
+                let url = this.configurationService.getBackendUrl() + '/common/spiceattachments';
 
                 // change the url to the "add email" url if the file type is msg
                 if (moduleName != 'Notes') url = this.configurationService.getBackendUrl() + "/module/Emails/msg";

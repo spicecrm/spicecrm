@@ -31,6 +31,8 @@ import {GlobalComponents} from "../../globalcomponents/globalcomponents";
 import {configurationService} from "../../services/configuration.service";
 import {helper} from "../../services/helper.service";
 import {loginService, loginCheck} from "../../services/login.service";
+import {NotificationService} from "../../services/notification.service";
+import {SubscriptionService} from "../../services/subscription.service";
 import {session} from "../../services/session.service";
 import {
     metadata,
@@ -135,7 +137,9 @@ import /*embed*/ {GSuiteLoginPane} from "./components/gsuiteloginpane";
         cookie,
         MathExpressionCompilerService,
         modal,
-        loggerService
+        loggerService,
+        NotificationService,
+        SubscriptionService
     ]
 })
 export class ModuleGSuite {

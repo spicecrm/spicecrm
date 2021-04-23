@@ -53,7 +53,7 @@ export class ModuleFilterBuilderFilterDetails implements OnChanges {
         this.cleangroup(this.primaryGroup);
         this.filter.filterdefs = this.primaryGroup;
         this.metadata.setModuleFilter(this.filter.id, this.filter.name, this.filter.module, this.filter.type);
-        this.backend.postRequest('sysmodulefilters/' + this.filter.module + '/' + this.filter.id, {}, this.filter)
+        this.backend.postRequest('configuration/sysmodulefilters/' + this.filter.module + '/' + this.filter.id, {}, this.filter)
             .subscribe(res => this.toast.sendToast(this.language.getLabel("LBL_DATA_SAVED") + ".", "success"));
     }
 

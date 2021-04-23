@@ -47,14 +47,14 @@ export class AdministrationQuotaManagerField {
             index++;
         }
         if (quotaNumeric > 0) {
-            this.backend.postRequest('quotamanager/quota/' + this.userid
+            this.backend.postRequest('module/QuotaManager/quota/' + this.userid
                 + '/' + this.year
                 + '/' + (this.monthindex + 1)
                 + '/' + quota).subscribe(_ => {
                 // console.log("update to quota = " + quota);
             });
         } else {
-            this.backend.deleteRequest('quotamanager/quota/' + this.userid
+            this.backend.deleteRequest('module/QuotaManager/quota/' + this.userid
                 + '/' + this.year
                 + '/' + (this.monthindex + 1));
         }
