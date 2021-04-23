@@ -26,7 +26,7 @@ export class ObjectReminderButton {
 
     constructor(private language: language, private metadata: metadata, private model: model, private renderer: Renderer2, private elementRef: ElementRef, private reminder: reminder, private userpreferences: userpreferences) {
 
-        if (this.reminder.loaded$) {
+        if (!this.reminder.loaded) {
             this.reminder.loaded$.subscribe(loaded => {
                 this.loadReminder();
             });

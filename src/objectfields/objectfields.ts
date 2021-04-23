@@ -62,6 +62,7 @@ import /*embed*/ {fieldFile} from './components/fieldfile';
 import /*embed*/ {fieldUrl} from './components/fieldurl';
 import /*embed*/ {fieldEmail} from './components/fieldemail';
 import /*embed*/ {fieldEmailAddresses} from './components/fieldemailaddresses';
+import /*embed*/ {fieldEmailEmailAddressStatus} from './components/fieldemailemailaddressstatus';
 import /*embed*/ {fieldEmailEmailAddress} from './components/fieldemailemailaddress';
 import /*embed*/ {fieldEmailRecipients} from './components/fieldemailrecipients';
 import /*embed*/ {fieldEmailRecipientsShort} from './components/fieldemailrecipientsshort';
@@ -118,6 +119,7 @@ import /*embed*/ {fieldSlider} from "./components/fieldslider";
 import /*embed*/ {fieldImage} from './components/fieldimage';
 import /*embed*/ {fieldCompound} from './components/fieldcompound';
 import /*embed*/ {fieldChecklist} from './components/fieldchecklist';
+import /*embed*/ {fieldIconCondition} from './components/fieldiconcondition';
 
 /**
  * @ignore
@@ -199,6 +201,7 @@ declare var _: any;
         fieldEmailRecipients,
         fieldEmailRecipientsShort,
         fieldEmailEmailAddress,
+        fieldEmailEmailAddressStatus,
         fieldVat,
         fieldBarcode,
         fieldBarcodeRenderer,
@@ -244,7 +247,8 @@ declare var _: any;
         fieldActionset,
         fieldSlider,
         fieldCompound,
-        fieldChecklist
+        fieldChecklist,
+        fieldIconCondition
     ],
     exports: [
         fieldSet,
