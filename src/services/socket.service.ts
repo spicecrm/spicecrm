@@ -6,7 +6,7 @@ import {configurationService} from "../services/configuration.service";
 import {broadcast} from "../services/broadcast.service";
 import {session} from "../services/session.service";
 import {SocketEventI, SocketObjectI} from "./interfaces.service";
-import {Observable, Subject} from "rxjs";
+import {Observable, of, Subject} from "rxjs";
 
 declare var io: any;
 
@@ -66,7 +66,7 @@ export class socket {
         this.setSocketData();
 
         if (!this.socketUrl || !this.socketId) {
-            return;
+            return of({type: null, data: null});
         }
 
         this.sockets[namespace] = this.initializeSocket(namespace);
