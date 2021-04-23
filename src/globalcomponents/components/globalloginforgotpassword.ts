@@ -151,7 +151,7 @@ export class GlobalLoginForgotPassword {
 
             // set to sending and send the request
             this.sending = true;
-            this.http.get(this.configuration.getBackendUrl() + `/passwordtoken/email/${this.email}`).subscribe(
+            this.http.get(this.configuration.getBackendUrl() + `/authentication/passwordtoken/email/${this.email}`).subscribe(
                 (res: any) => {
                     this.display = 'token';
                     this.toast.sendToast('Successfully sent, check your inbox to get the token code', 'success');
@@ -187,7 +187,7 @@ export class GlobalLoginForgotPassword {
             // submit the request
             this.sending = true;
             this.http.post(
-                this.configuration.getBackendUrl() + `/passwordtoken/token/${this.token}`,
+                this.configuration.getBackendUrl() + `/authentication/passwordtoken/token/${this.token}`,
                 {
                     newPassword: this.password
                 }

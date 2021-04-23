@@ -13,9 +13,9 @@ import {session} from '../../services/session.service';
 })
 export class SystemDynamicRouteContainer implements AfterViewInit{
 
-    @ViewChild('componentcontainer', {read: ViewContainerRef, static: true}) componentcontainer: ViewContainerRef;
+    @ViewChild('componentcontainer', {read: ViewContainerRef, static: true}) public componentcontainer: ViewContainerRef;
 
-    routercomponent: any = null;
+    public routercomponent: any = null;
 
     constructor(
         private metadata: metadata,
@@ -25,11 +25,11 @@ export class SystemDynamicRouteContainer implements AfterViewInit{
     ) {
         // dynamic routes only are avalbe when logged in
         if (!this.session || !this.session.authData.sessionId) {
-            this.router.navigate(['/login']);
+            this.router.navigate(['/authentication/login']);
         }
     }
 
-    ngAfterViewInit(){
+    public ngAfterViewInit() {
         if(!this.routercomponent) {
             let component = this.metadata.getRouteComponent(this.route.snapshot.routeConfig.path);
             this.metadata.addComponent(component, this.componentcontainer).subscribe(component => {

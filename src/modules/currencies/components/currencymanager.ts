@@ -40,7 +40,7 @@ export class CurrencyManager implements OnInit {
      */
    public ngOnInit() {
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
-            this.backend.getRequest('currencies').subscribe(data => {
+            this.backend.getRequest('module/Currencies').subscribe(data => {
                 if (data) {
                     for (let currency of data) {
                         this.currencies.push({
@@ -68,7 +68,7 @@ export class CurrencyManager implements OnInit {
     private reload(event) {
         if(event) {
             this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
-                this.backend.getRequest('currencies').subscribe(data => {
+                this.backend.getRequest('module/Currencies').subscribe(data => {
                     if (data) {
                         this.currencies = data;
                         this.currencies.shift();

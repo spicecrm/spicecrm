@@ -51,7 +51,7 @@ export class FieldsetManager {
                 private view: view,
                 private modal: modal) {
 
-        this.backend.getRequest('spiceui/admin/modules').subscribe(modules => {
+        this.backend.getRequest('system/spiceui/admin/modules').subscribe(modules => {
             this.sysModules = modules;
 
             // iniutialize the metadata service
@@ -121,7 +121,7 @@ export class FieldsetManager {
         }
 
         if (this.change_request_required) {
-            this.backend.getRequest('systemdeploymentcrs/active').subscribe(crresponse => {
+            this.backend.getRequest('module/SystemDeploymentCRs/active').subscribe(crresponse => {
                 if (crresponse.id == "") {
                     this.setNoneMode();
                     this.crNoneActive = true;
@@ -450,7 +450,7 @@ export class FieldsetManager {
                     };
 
                     // check if component exists
-                    this.backend.getRequest('spiceui/core/fieldsetalreadyexists', checkParams).subscribe(
+                    this.backend.getRequest('configuration/spiceui/core/fieldsetalreadyexists', checkParams).subscribe(
                         data => {
                             if (data == false) {
 
@@ -481,7 +481,7 @@ export class FieldsetManager {
                                 delete fieldset.type;
 
 
-                                this.backend.postRequest('configurator/' + tablescope.fieldsetTable + '/' + fieldset.id, null, fieldset).subscribe(
+                                this.backend.postRequest('configuration/configurator/' + tablescope.fieldsetTable + '/' + fieldset.id, null, { config: fieldset }).subscribe(
                                     (success) => {
                                         let savecounter = 0;
 
@@ -489,7 +489,7 @@ export class FieldsetManager {
                                         fieldset.type = type;
 
                                         for (let save_item of save_items) {
-                                            this.backend.postRequest('configurator/' + tablescope.itemsTable + '/' + save_item.id, null, save_item).subscribe(
+                                            this.backend.postRequest('configuration/configurator/' + tablescope.itemsTable + '/' + save_item.id, null, { config: save_item }).subscribe(
                                                 (success) => {
                                                     savecounter++;
                                                     if (savecounter == save_items.length) {
@@ -497,7 +497,7 @@ export class FieldsetManager {
                                                             customizeItem.item.fieldset = fieldset.id;
                                                             let parenttablescope = this.findTable(customizeItem.parentScope);
 
-                                                            this.backend.postRequest('configurator/' + parenttablescope.itemsTable + '/' + customizeItem.id, null, customizeItem.item).subscribe(
+                                                            this.backend.postRequest('configuration/configurator/' + parenttablescope.itemsTable + '/' + customizeItem.id, null, { config: customizeItem.item }).subscribe(
                                                                 (success) => {
                                                                     loadingModalRef.instance.self.destroy();
                                                                     this.toast.sendToast('saved!');
@@ -551,7 +551,7 @@ export class FieldsetManager {
 
     private saveChanges() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingModalRef => {
-            this.backend.getRequest('spiceui/core/fieldsets').subscribe((res: any) => {
+            this.backend.getRequest('configuration/spiceui/core/fieldsets').subscribe((res: any) => {
 
 
                 let rawFieldsets = this.metadata.getRawFieldSets();
@@ -581,7 +581,7 @@ export class FieldsetManager {
                     delete: deletedFieldsets
                 };
 
-                this.backend.postRequest('spiceui/core/fieldsets', {}, postData).subscribe((res: any) => {
+                this.backend.postRequest('configuration/spiceui/core/fieldsets', {}, postData).subscribe((res: any) => {
                     this.broadcast.broadcastMessage('metadata.updatefieldsets', postData);
                     loadingModalRef.instance.self.destroy();
                     this.toast.sendToast('changes saved');

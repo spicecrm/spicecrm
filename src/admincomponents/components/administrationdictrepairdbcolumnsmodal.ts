@@ -174,7 +174,7 @@ export class AdministrationDictRepairDbColumnsModal {
                 dbcolumns: this.allFields.filter(f => f.todelete),
                 module: this.module
             };
-            this.backend.postRequest('repair/dbcolumns', {}, postData).subscribe((result: any) => {
+            this.backend.postRequest('admin/repair/dbcolumns', {}, postData).subscribe((result: any) => {
                 if (result) {
                     this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
                     this.mergeColumns();

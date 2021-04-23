@@ -78,14 +78,13 @@ export class EmailSchedulesModal {
             let selectedIds = this.modellist.getSelectedIDs();
             let body = {
                 module: this.modellist.module,
-                id: this.model.id,
                 ids: selectedIds,
                 data: this.model.data,
                 modulefilter: this.modellist.modulefilter,
                 searchterm: this.modellist.searchTerm,
                 aggregates: this.modellist.selectedAggregates
             };
-            this.backend.postRequest('modules/EmailSchedules/saveSchedule', {}, body).subscribe(result => {
+            this.backend.postRequest(`module/EmailSchedules/${this.model.id}`, {}, body).subscribe(result => {
                 loadingRef.instance.self.destroy();
                 if (result.status) {
                     this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
@@ -97,5 +96,4 @@ export class EmailSchedulesModal {
         });
     }
 }
-
 

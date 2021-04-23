@@ -1,3 +1,5 @@
+import {Observable} from "rxjs";
+
 /**
  * @module services
  */
@@ -77,4 +79,68 @@ export interface BucketsI {
     bucketfield?: string;
     bucketitems?: any[];
     buckettotal?: any[];
+}
+
+/**
+ * holds the socket service received event data interface
+ */
+export interface SocketEventDataI {
+    message: {
+        module?: string,
+        id?: string,
+        sessionId: string,
+        error?: string
+    };
+    type: 'error' | 'message';
+}
+
+/**
+ * holds the socket service socket object interface
+ */
+export interface SocketEventI {
+    type: string;
+    data?: any;
+}
+
+/**
+ * holds the socket service socket object interface
+ */
+export interface SocketObjectI {
+    instance: any;
+    isConnected: () => boolean;
+    event$: Observable<SocketEventI>;
+    /**
+     * holds the joined rooms.
+     * the key is the name of the room and the number is the number of the room participants in the current instance
+     */
+    rooms: {
+        [key: string]: number
+    };
+}
+
+/**
+ * holds the notification object interface
+ */
+export interface NotificationI {
+    id: string;
+    bean_module: string;
+    bean_id: string;
+    created_by: string;
+    created_by_name: string;
+    user_id: string;
+    notification_date: string;
+    notification_type: 'assign' | 'delete' | 'change';
+    notification_read: 1 | 0;
+    additional_infos: {
+        fieldsNames: string[]
+    } | any;
+    bean_name: string;
+}
+/**
+ * holds the subscription object interface
+ */
+export interface SubscriptionI {
+    user_id: string;
+    bean_id: string;
+    bean_module: string;
 }

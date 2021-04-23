@@ -79,17 +79,14 @@ export class EmailSchedulesRelatedModal {
             loadingRef.instance.messagelabel = 'LBL_LOADING';
             const selectedLinks = this.linkedBeans.filter(link => link.selected).map(link => link.module);
             let body = {
-                beanId: this.modelId,
-                bean: this.currentModule,
                 links: selectedLinks,
-                id: this.model.id,
                 data: this.model.data
             };
             let mailboxCondition = body.data.hasOwnProperty('mailbox_id');
             let emailsubjectCondition = body.data.hasOwnProperty('email_subject');
             let selectedLinksCondition = selectedLinks.length > 0;
             if(mailboxCondition && emailsubjectCondition && selectedLinksCondition) {
-                this.backend.postRequest('modules/EmailSchedules/saveScheduleFromRelated', {}, body).subscribe(result => {
+                this.backend.postRequest(`module/EmailSchedules/${this.model.id}/${this.parentModel.module}/${this.parentModel.id}`, {}, body).subscribe(result => {
                     loadingRef.instance.self.destroy();
                     if (result.status) {
                         this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');

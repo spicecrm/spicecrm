@@ -393,9 +393,9 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 }
 
 .spice-hover-display-children:hover .spice-hover-child {
-    display: block;
+    visibility: visible !important;
 }
 
 .spice-hover-display-children .spice-hover-child {
-    display: none;
+    visibility: hidden !important;
 }

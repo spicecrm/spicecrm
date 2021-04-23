@@ -49,7 +49,7 @@ export class ValidationRulesConditions implements OnInit {
         return this.data.conditions.push({
             id: this.utils.generateGuid(),
             sysuimodelvalidation_id: this.data.id,
-            _is_new_record: true,
+            isnewrecord: true,
         });
     }
 

@@ -69,7 +69,7 @@ export class EmailPreviewModal implements OnInit {
      * @param data the raw data of the object being passed in. When the data is pased in the bloburl is created
      */
     public ngOnInit() {
-        this.backend.getRequest('module/Emails/msg/' + this.file.id + '/preview').subscribe(response => {
+        this.backend.getRequest('module/Emails/msg/' + this.file.id).subscribe(response => {
             this.model.setFields(this.model.utils.backendModel2spice('Emails', response));
             this.isLoading = false;
         });

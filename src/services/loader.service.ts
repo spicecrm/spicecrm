@@ -55,7 +55,7 @@ export class loader {
     private getLoadTasks(): Observable<boolean> {
         let retSubject = new Subject<boolean>();
         this.http.get(
-            this.configuration.getBackendUrl() + "/spiceui/core/loadtasks", {headers: this.session.getSessionHeader()}).subscribe(
+            this.configuration.getBackendUrl() + "/system/spiceui/core/loadtasks", {headers: this.session.getSessionHeader()}).subscribe(
             (loadtasks: any) => {
 
                 // reset the primary tasks
@@ -202,7 +202,7 @@ export class loader {
     }
 
     private handleRouteElement(loadElement) {
-        let loadroute = loadElement.route ? loadElement.route : '/spiceui/core/loadtasks/'+loadElement.id;
+        let loadroute = loadElement.route ? loadElement.route : '/system/spiceui/core/loadtasks/'+loadElement.id;
         this.http.get(
             this.configuration.getBackendUrl() + loadroute,
             {headers: this.session.getSessionHeader()}

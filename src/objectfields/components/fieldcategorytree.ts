@@ -35,7 +35,7 @@ export class fieldServiceCategoryTree
         // getting the category tree...
         if( !this.config.getData('service_category_tree') )
         {
-            this.backend.getRequest('spiceui/core/servicecategories/tree').subscribe(
+            this.backend.getRequest('configuration/spiceui/core/servicecategories/tree').subscribe(
                 (res:any) => {
                     //console.log(res);
                     this.config.setData('service_category_tree', res);
