@@ -23,8 +23,6 @@ declare var gapi: any;
 import {loginService, loginCheck} from "../services/login.service";
 import {metadata} from "../services/metadata.service";
 
-import /*embed*/ * as globalInterfaces from "./interfaces/globalcomponents.interfaces";
-
 import /*embed*/ {GlobalCopyright} from "./components/globalcopyright";
 import /*embed*/ {GlobalHeader} from "./components/globalheader";
 import /*embed*/ {GlobalHeaderTrialBar} from "./components/globalheadertrialbar";
