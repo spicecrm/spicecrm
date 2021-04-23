@@ -12,7 +12,7 @@ import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {backend} from '../../services/backend.service';
 import {toast} from '../../services/toast.service';
-import {relateFilter} from "../../services/modellist.service";
+import {relateFilter} from "../../services/interfaces.service";
 
 @Component({
     selector: 'field-relate',
@@ -83,7 +83,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
         this.relateIdField = fieldDefs.id_name;
         this.relateNameField = this.fieldname;
         this.relateType = fieldDefs.module;
-        this.isAuthorized = this.metadata.checkModuleAcl(fieldDefs.module, 'list');
+        this.isAuthorized = this.metadata.checkModuleAcl(fieldDefs.module, 'list') || this.metadata.checkModuleAcl(fieldDefs.module, 'listrelated');
         this.handleRelateFIlterField();
 
     }

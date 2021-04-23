@@ -33,6 +33,11 @@ export class SystemTableStencils implements OnInit {
     @Input() private select: boolean = false;
 
     /**
+     * if set to true expects the table to have a line number column
+     */
+    @Input() private rownumbers: boolean = false;
+
+    /**
      * @ignore
      *
      * internal array for the columns

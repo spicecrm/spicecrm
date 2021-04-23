@@ -83,6 +83,13 @@ export class GlobalLogin {
      */
     private renewpassword: boolean = false;
 
+    /**
+     * inidcates that we are in the login process
+     *
+     * @private
+     */
+    private loggingIn: boolean = false;
+
     constructor(private loginService: loginService,
                 private http: HttpClient,
                 private configuration: configurationService,
@@ -139,10 +146,16 @@ export class GlobalLogin {
      */
     private login(token?, issuer?) {
 
-        // clear the current messageid if one is set
-        if (this.messageId) this.toast.clearToast(this.messageId);
-
         if (token || (this.username && this.password)) {
+            // clear the current messageid if one is set
+            if (this.messageId) this.toast.clearToast(this.messageId);
+
+            // clear all toasts
+            this.toast.clearAll();
+
+            // set the loggingin in state
+            this.loggingIn = true;
+
             if(token) {
                 this.loginService.authData.userName = null;
                 this.loginService.authData.password = null;
@@ -156,7 +169,11 @@ export class GlobalLogin {
             }
             this.loginService.login().subscribe(
                 success => {
-                    // do nothing .. be happy
+                    // clear all toasts
+                    this.toast.clearAll();
+
+                    // reset the logging in state
+                    this.loggingIn = false;
                 },
                 error => {
                     switch (error.errorCode) {
@@ -168,7 +185,13 @@ export class GlobalLogin {
                         case 2:
                             this.renewpassword = true;
                             break;
+                        default:
+                            this.messageId = this.toast.sendToast('error logging on', 'error', error.message);
+                            break;
                     }
+
+                    // reset the logging in state
+                    this.loggingIn = false;
                 }
             );
         }

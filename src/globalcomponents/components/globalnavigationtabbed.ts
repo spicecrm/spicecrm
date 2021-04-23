@@ -1,41 +1,76 @@
 /**
  * @module GlobalComponents
  */
-import {
-    Component
-} from '@angular/core';
+import {ChangeDetectorRef, Component} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
-import {navigation, objectTab} from '../../services/navigation.service';
+import {navigation} from '../../services/navigation.service';
 
 @Component({
     selector: 'global-navigation-tabbed',
     templateUrl: './src/globalcomponents/templates/globalnavigationtabbed.html',
 })
 export class GlobalNavigationTabbed {
+    /**
+     * holds the parent tab object
+     */
+    public parentTab: any;
+    /**
+     * do not show when no sub tabs are enabled or tab is main (main has no sub tabs at this point in time
+     */
+    public displaySubTabs: boolean = false;
 
-    public activetab: objectTab;
 
-    constructor(private metadata: metadata, private navigation: navigation) {
-        this.navigation.activeTab$.subscribe(tabid => {
-            if (tabid == 'main') {
-                this.activetab = this.navigation.maintab;
-            } else {
-                this.activetab = this.navigation.getTabById(tabid);
-            }
+    constructor(private metadata: metadata,
+                private navigation: navigation,
+                private cdRef: ChangeDetectorRef) {
+
+    }
+
+    /**
+     * call subscribe to navigation changes
+     */
+    public ngAfterViewInit() {
+        this.subscribeToNavigationChanges();
+    }
+
+    /**
+     * set the display sub tabs value
+     */
+    private setDisplaySubTabs(activeTab) {
+        this.displaySubTabs = this.navigation.navigationparadigm == 'subtabbed' && !!activeTab && (!!activeTab.parentid || this.navigation.getSubTabs(activeTab.id).length > 0);
+        this.cdRef.detectChanges();
+    }
+
+    /**
+     * set the parent tab object
+     * @param activeTab
+     * @private
+     */
+    private setParentTab(activeTab) {
+        this.parentTab = activeTab.parentid ? this.navigation.getTabById(activeTab.parentid) : activeTab;
+    }
+
+    /**
+     * subscribe to navigation changes to set local values
+     * @private
+     */
+    private subscribeToNavigationChanges() {
+        this.navigation.activeTab$.subscribe((tabId: string) => {
+            this.handleNavigationChanges(tabId);
+        });
+        this.navigation.objectTabsChange$.subscribe(() => {
+            this.handleNavigationChanges(this.navigation.activeTab);
         });
     }
 
     /**
-     * returns the parent tab
+     * set the parent tab and set the display sub tabs value
+     * @param tabId
+     * @private
      */
-    get parenttab() {
-        return this.activetab.parentid ? this.navigation.getTabById(this.activetab.parentid) : this.activetab;
-    }
-
-    /**
-     * do not show when no subtabs are enables or tab is main (main has no subtabs at this point in time
-     */
-    get displaySubtabs() {
-        return this.navigation.navigationparadigm == 'subtabbed' && this.activetab && (this.activetab.parentid || this.navigation.getSubTabs(this.activetab.id).length > 0);
+    private handleNavigationChanges(tabId: string) {
+        const activeTab = this.navigation.getTabById(tabId);
+        this.setParentTab(activeTab);
+        this.setDisplaySubTabs(activeTab);
     }
 }

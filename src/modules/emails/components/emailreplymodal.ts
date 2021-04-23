@@ -89,9 +89,11 @@ export class EmailReplyModal implements OnInit {
             if (address.address_type == "from") {
                 let toaddress = {...address};
                 toaddress.address_type = "to";
+                toaddress.id = '';
                 this.model.data.recipient_addresses.push(toaddress);
             } else if (address.address_type != "from" && address.address_type != "to") {
                 let addaddress = {...address};
+                addaddress.id = '';
                 this.model.data.recipient_addresses.push(addaddress);
             }
         }
@@ -127,7 +129,7 @@ export class EmailReplyModal implements OnInit {
         historytext += "</div>";
 
         historytext += '<blockquote class="crm_quote" style="margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">';
-        historytext += this.parent.data.body;
+        historytext += this.parent.data.body.replace('data-signature=""', '');
         historytext += '</blockquote>';
 
         historytext += '</div>';
