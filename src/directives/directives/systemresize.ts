@@ -44,8 +44,8 @@ export class SystemResizeDirective implements OnDestroy {
     private mouseListener: any;
 
     constructor(
-        private elementRef: ElementRef,
-        private renderer: Renderer2,
+        public elementRef: ElementRef,
+        public renderer: Renderer2,
     ) {
 
     }
@@ -62,7 +62,7 @@ export class SystemResizeDirective implements OnDestroy {
     @HostListener('mousedown', ['$event'])
     private onMouseDown(event) {
         // get the current dimensions
-        let rect = this.elementRef.nativeElement.getClientRects()[0]
+        let rect = this.elementRef.nativeElement.getClientRects()[0];
         this.elementWidth = rect.width;
         this.elementHeight = rect.height;
 

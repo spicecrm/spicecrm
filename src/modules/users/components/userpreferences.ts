@@ -158,7 +158,7 @@ export class UserPreferences implements OnDestroy {
      * @private
      */
     private loadPreferences() {
-        if (this.isCurrentUser || this.canEdit) {
+        if (this.isCurrentUser) {
 
             this.subscriptions = this.loadedSubscription.subscribe(() => {
                 this.isLoading = false;
@@ -169,7 +169,7 @@ export class UserPreferences implements OnDestroy {
             });
             this.preferencesService.getPreferences(this.loadedSubscription);
 
-        } else {
+        } else if (this.canEdit) {
             this.backend.getRequest('user/' + this.model.data.id + '/preferences/global', {}).subscribe(prefs => {
                     this.isLoading = false;
                     this.preferences = prefs;
@@ -189,12 +189,12 @@ export class UserPreferences implements OnDestroy {
      * @private
      */
     private loadDashboardsLists() {
-        this.backend.getList('Dashboards', [{sortfield: 'name', sortdirection: 'DESC'}], ['name', 'id'], {limit: -99})
+        this.backend.getList('Dashboards', [{sortfield: 'name', sortdirection: 'DESC'}], {limit: -99})
             .subscribe((dashboards: any) => {
                 this.dashboards = dashboards.list;
                 this.setHomeDashboardData(this.preferences.home_dashboard);
             });
-        this.backend.getList('DashboardSets', [{sortfield: 'name', sortdirection: 'DESC'}], ['name', 'id'], {limit: -99})
+        this.backend.getList('DashboardSets', [{sortfield: 'name', sortdirection: 'DESC'}], {limit: -99})
             .subscribe((dashboardSets: any) => {
                 this.dashboardSets = dashboardSets.list;
                 this.setDashboardSetData(this.preferences.home_dashboardset);

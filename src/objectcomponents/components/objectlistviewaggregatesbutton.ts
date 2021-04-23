@@ -36,7 +36,7 @@ export class ObjectListViewAggregatesButton {
     }
 
     get enabled() {
-        return this.modellist.aggregatesEnabled();
+        return this.modellist.aggregatesEnabled() && !this.modellist.isLoading;
     }
 
     /**

@@ -731,18 +731,11 @@ export class backend {
     /**
      *
      * @param {string} module
-     * @param {string} sortfield
-     * @param {string} sortdirection
-     * @param {Array<any>} fields
+     * @param sortfields
      * @param params
      * @returns {<Array<any>>}
      */
-    public getList(
-        module: string,
-        sortfields: any[] = [],
-        fields: any[] = [],
-        params: any = {},
-    ): Observable<any[]> {
+    public getList(module: string, sortfields: any[] = [], params: any = {}): Observable<any[]> {
         let responseSubject = new Subject<any[]>();
 
         let start: number = params.start ? params.start : 0;
@@ -758,10 +751,6 @@ export class backend {
 
         if (sortfields.length > 0) {
             reqparams.sortfields = sortfields;
-        }
-
-        if (fields && fields.length > 0) {
-            reqparams.fields = JSON.stringify(fields);
         }
 
         // todo: break out Options String
@@ -782,6 +771,10 @@ export class backend {
                     responseSubject.complete();
                 }
                 responseSubject.next(response);
+                responseSubject.complete();
+            },
+            error => {
+                responseSubject.error(error);
                 responseSubject.complete();
             }
         );

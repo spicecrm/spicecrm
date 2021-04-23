@@ -46,9 +46,9 @@ export class ObjectListHeaderActionsExportTargetlistModal {
 
             let selectedIds = this.modellist.getSelectedIDs();
             let params = {
-                listtype: this.modellist.currentList.type,
+                listtype: this.modellist.currentList.id,
                 targetlistname: this.targetlistname,
-                owner: this.modellist.currentList.type == 'owner' ? true : false,
+                owner: this.modellist.currentList.id == 'owner' ? true : false,
                 module: this.modellist.module,
                 modulefilter: this.modellist.modulefilter,
                 searchterm: this.modellist.searchTerm,

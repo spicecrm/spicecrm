@@ -58,8 +58,9 @@ export class ObjectMergeModal implements OnInit {
 
 
         // set the modellist module
-        this.modellist._module = this.model.module;
-        this.modellist.setListType('all', false, [], false);
+        this.modellist.module = this.model.module;
+        this.modellist.setListType('all', false);
+        this.modellist.getListData();
 
         // set the master id
         this.objectmerge.setModule(this.model.module);

@@ -1,0 +1,27 @@
+/**
+ * @module GlobalComponents
+ */
+import {Component, Input} from '@angular/core';
+import {NotificationI} from "../interfaces/globalcomponents.interfaces";
+import {NotificationService} from "../../services/notification.service";
+
+/**
+ * display a notification item for assignment type
+ */
+@Component({
+    selector: 'global-header-notifications-item-assign',
+    templateUrl: './src/globalcomponents/templates/globalheadernotificationsitemassign.html'
+})
+export class GlobalHeaderNotificationsItemAssign {
+    /**
+     * holds the notification data
+     */
+    @Input() public notification: NotificationI;
+    /**
+     * if true render the box template for new pushed notifications
+     */
+    @Input() public asBox: boolean = false;
+
+    constructor(public notificationService: NotificationService) {
+    }
+}

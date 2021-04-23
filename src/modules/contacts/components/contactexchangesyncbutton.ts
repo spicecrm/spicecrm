@@ -5,6 +5,7 @@ import {Component, ViewContainerRef, OnInit, OnDestroy} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
 import {modal} from "../../../services/modal.service";
+import {toast} from "../../../services/toast.service";
 import {metadata} from "../../../services/metadata.service";
 import {backend} from "../../../services/backend.service";
 import {configurationService} from "../../../services/configuration.service";
@@ -16,7 +17,7 @@ import {Subscription} from "rxjs";
 @Component({
     templateUrl: "./src/modules/contacts/templates/contactexchangesyncbutton.html"
 })
-export class ContactExchangeSyncButton implements OnDestroy{
+export class ContactExchangeSyncButton implements OnDestroy {
 
     /**
      * indicates that the systemis loading and executing a request
@@ -34,14 +35,14 @@ export class ContactExchangeSyncButton implements OnDestroy{
     private subscriptions: Subscription = new Subscription();
 
     // public disabled: boolean = true;
-    constructor(private metadata: metadata, private language: language, private model: model, private modal: modal, private backend: backend, private configuration: configurationService) {
+    constructor(private metadata: metadata, private toast: toast, private language: language, private model: model, private modal: modal, private backend: backend, private configuration: configurationService) {
 
         // set the hidden flag
         this.setHidden();
 
         // subscribe to config hcnges and potentially change the hidden flag
         this.configuration.datachanged$.subscribe(key => {
-            if(key == 'exchangeuserconfig') this.setHidden();
+            if (key == 'exchangeuserconfig') this.setHidden();
         });
 
     }
@@ -53,7 +54,7 @@ export class ContactExchangeSyncButton implements OnDestroy{
         this.subscriptions.unsubscribe();
     }
 
-    private setHidden(){
+    private setHidden() {
         let config = this.configuration.getData('exchangeuserconfig');
         let moduleData = this.metadata.getModuleDefs('Contacts');
 
@@ -64,7 +65,7 @@ export class ContactExchangeSyncButton implements OnDestroy{
      * button is clicked .. set or delete the sync state
      */
     public execute() {
-        this.isLoading = true
+        this.isLoading = true;
         if (this.model.getField('sync_contact')) {
             this.backend.deleteRequest(`module/Contacts/${this.model.id}/exchangesync`).subscribe(
                 success => {
@@ -77,7 +78,11 @@ export class ContactExchangeSyncButton implements OnDestroy{
         } else {
             this.backend.putRequest(`module/Contacts/${this.model.id}/exchangesync`).subscribe(
                 success => {
-                    this.model.setField('sync_contact', !this.model.getField('sync_contact'));
+                    if (success.message) {
+                        this.toast.sendToast(success.message, 'error');
+                    } else {
+                        this.model.setField('sync_contact', !this.model.getField('sync_contact'));
+                    }
                     this.isLoading = false;
                 },
                 error => {

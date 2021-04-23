@@ -1,0 +1,3 @@
+<button *ngIf="!!metadata.moduleDefs[model.module]?.audited" (click)="toggleSubscribe()" [system-title]="!subscriptionService.subscriptions[model.id] ? 'LBL_SUBSCRIBE' : 'LBL_UNSUBSCRIBE'" class="slds-button slds-button_icon slds-p-horizontal--xx-small slds-m-horizontal--xx-small">
+    <system-button-icon icon="preview" size="large" [addclasses]="!subscriptionService.subscriptions[model.id] ? 'slds-text-color--inverse-weak' : 'slds-text-color_success'"></system-button-icon>
+</button>
