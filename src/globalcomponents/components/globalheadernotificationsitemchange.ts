@@ -2,7 +2,7 @@
  * @module GlobalComponents
  */
 import {Component, Input} from '@angular/core';
-import {NotificationI} from "../interfaces/globalcomponents.interfaces";
+import {NotificationI} from "../../services/interfaces.service";
 import {NotificationService} from "../../services/notification.service";
 
 /**
