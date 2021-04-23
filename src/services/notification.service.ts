@@ -8,11 +8,10 @@ import {session} from './session.service';
 import {backend} from './backend.service';
 import {broadcast} from './broadcast.service';
 import {userpreferences} from "./userpreferences.service";
-import {NotificationI} from "../globalcomponents/interfaces/globalcomponents.interfaces";
 import {language} from "./language.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import {socket} from "./socket.service";
-import {SocketEventI} from "./interfaces.service";
+import {SocketEventI, NotificationI} from "./interfaces.service";
 
 /** @ignore */
 declare var moment: any;
