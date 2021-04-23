@@ -96,18 +96,18 @@ export class NotificationService {
      */
     public loadNotifications() {
 
+        this.setInitialValues(
+            this.configuration.getData('spicenotifications')
+        );
+
         this.broadcast.message$.subscribe(msg => {
 
-            const data = this.configuration.getData('spicenotifications');
-
-            if (msg.messagetype !== 'loader.completed' || msg.messagedata !== 'loadUserData' || !data || !Array.isArray(data.records)) {
+            if (msg.messagetype !== 'loader.completed' || msg.messagedata !== 'loadUserData') {
                 return;
             }
-            this.totalCount = data.count;
-            this.notifications = data.records.map(n => this.parseNotification(n));
-            this.pushDesktopNotification();
-
-            this.unreadCount = this.notifications.filter(n => n.notification_read != 1).length;
+            this.setInitialValues(
+                this.configuration.getData('spicenotifications')
+            );
         });
     }
 
@@ -124,10 +124,14 @@ export class NotificationService {
 
         this.backend.getRequest('common/SpiceNotifications', {offset: this.notifications.length})
             .subscribe((res: { count: number, records: NotificationI[] }) => {
+
                     this.isLoading = false;
-                    const parsedNotifications = res.records.map(n => this.parseNotification(n));
-                    this.notifications = this.notifications.concat(parsedNotifications);
-                    this.unreadCount = this.notifications.filter(n => n.notification_read != 1).length;
+
+                    this.notifications = this.notifications.concat(
+                        res.records.map(n => this.parseNotification(n))
+                    );
+                    this.setUnreadCount();
+
                 }, () =>
                     this.isLoading = false
             );
@@ -146,7 +150,7 @@ export class NotificationService {
         this.newNotifications.push(notification);
 
         window.setTimeout(() =>
-            this.clearTempNotification(notification),
+                this.clearTempNotification(notification),
             10000
         );
 
@@ -173,6 +177,29 @@ export class NotificationService {
         } else {
             return Promise.resolve(null);
         }
+    }
+
+    /**
+     * set the unread count
+     * @private
+     */
+    private setUnreadCount() {
+        this.unreadCount = this.notifications.filter(n => n.notification_read != 1).length;
+    }
+
+    /**
+     * set the intial values for notifications
+     * @param data
+     * @private
+     */
+    private setInitialValues(data: { records: [], count: number }) {
+
+        if (!data || !Array.isArray(data.records)) return;
+
+        this.totalCount = data.count;
+        this.notifications = data.records.map(n => this.parseNotification(n));
+        this.setUnreadCount();
+        this.pushDesktopNotification();
     }
 
     /**
