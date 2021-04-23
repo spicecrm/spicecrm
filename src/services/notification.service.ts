@@ -104,7 +104,7 @@ export class NotificationService {
                 return;
             }
             this.totalCount = data.count;
-            this.notifications = this.parseNotifications(data.records);
+            this.notifications = data.records.map(n => this.parseNotification(n));
             this.pushDesktopNotification();
 
             this.unreadCount = this.notifications.filter(n => n.notification_read != 1).length;
@@ -125,7 +125,7 @@ export class NotificationService {
         this.backend.getRequest('common/SpiceNotifications', {offset: this.notifications.length})
             .subscribe((res: { count: number, records: NotificationI[] }) => {
                     this.isLoading = false;
-                    const parsedNotifications = this.parseNotifications(res.records);
+                    const parsedNotifications = res.records.map(n => this.parseNotification(n));
                     this.notifications = this.notifications.concat(parsedNotifications);
                     this.unreadCount = this.notifications.filter(n => n.notification_read != 1).length;
                 }, () =>
@@ -138,6 +138,9 @@ export class NotificationService {
      * @param notification
      */
     public pushNotification(notification) {
+
+        notification = this.parseNotification(notification);
+
         this.notifications.unshift(notification);
         this.pushDesktopNotification(notification);
         this.newNotifications.push(notification);
@@ -242,16 +245,17 @@ export class NotificationService {
     }
 
     /**
-     * format the notifications
-     * @param notifications
+     * format notification date and parse additional infos
      * @private
+     * @param n
      */
-    private parseNotifications(notifications: NotificationI[]) {
-        const timeZone = this.session.getSessionData('timezone') || moment.tz.guess(true);
-        const dateFormat = `${this.preferences.getDateFormat()} ${this.preferences.getTimeFormat()}`;
-        return notifications.map(n => {
+    private parseNotification(n: NotificationI) {
+        {
+            const timeZone = this.session.getSessionData('timezone') || moment.tz.guess(true);
+            const dateFormat = `${this.preferences.getDateFormat()} ${this.preferences.getTimeFormat()}`;
             let pDateTime = typeof timeZone == 'string' && timeZone.length > 0 ? moment.utc(n.notification_date).tz(timeZone) : moment(n.notification_date);
             n.notification_date = pDateTime.isValid() ? pDateTime.format(dateFormat) : null;
+
             if (!!n.additional_infos && typeof n.additional_infos == 'string') {
                 n.additional_infos = JSON.parse(n.additional_infos);
                 if (n.additional_infos?.fieldsNames) {
@@ -261,6 +265,6 @@ export class NotificationService {
                 }
             }
             return n;
-        });
+        }
     }
 }
