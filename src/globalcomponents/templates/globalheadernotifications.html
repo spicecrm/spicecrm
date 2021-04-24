@@ -1,16 +1,12 @@
-<ul class="slds-global-actions">
-    <li class="slds-global-actions__item slds-m-left--none">
-        <div class="slds-dropdown-trigger slds-dropdown-trigger_click">
-            <button (click)="toggleOpenPopover(); $event.stopPropagation()" system-title="LBL_NOTIFICATIONS" class="slds-button slds-button_icon slds-button_icon-container slds-global-actions__notifications slds-global-actions__item-action slds-incoming-notification" aria-live="assertive" aria-atomic="true">
-                <system-utility-icon icon="notification" size="x-small"></system-utility-icon>
-            </button>
-            <span *ngIf="notificationService.unreadCount > 0" aria-hidden="true" class="slds-notification-badge slds-incoming-notification slds-show-notification">
-                {{notificationService.unreadCount}}
-            </span>
-        </div>
-    </li>
-</ul>
-<section *ngIf="isOpen" class="slds-popover slds-popover_large slds-nubbin_top-right slds-is-absolute slds-grid slds-grid--vertical" role="dialog" style="top: 45px; right: 45px; max-height: calc(100vh - 55px); box-shadow: 0 0 15px 5px #bbb;">
+<div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-m-right--xx-small" [ngClass]="{'slds-p-right--x-small': notificationService.unreadCount > 0}">
+    <div (click)="toggleOpenPopover(); $event.stopPropagation()" system-title="LBL_NOTIFICATIONS" class="slds-global-actions__notifications slds-global-actions__item-action slds-incoming-notification">
+        <system-utility-icon icon="notification" size="x-small"></system-utility-icon>
+    </div>
+    <div *ngIf="notificationService.unreadCount > 0" style="top:-5px; right:0px;" class="slds-notification-badge slds-incoming-notification slds-show-notification">
+        {{notificationService.unreadCount}}
+    </div>
+</div>
+<section *ngIf="isOpen" class="slds-popover slds-popover_large slds-nubbin_top-right slds-is-absolute slds-grid slds-grid--vertical" role="dialog" style="top: 45px; right: 45px; max-height: calc(100vh - 55px);">
     <div class="slds-grid slds-border--bottom">
         <header class="slds-popover__header slds-grow slds-grid slds-grid--align-spread" style="border-bottom: 0;">
             <h2 class="slds-text-heading_small">
