@@ -16,6 +16,13 @@ import {metadata} from "../../services/metadata.service";
 })
 export class ObjectSubscriptionButton {
 
+    /**
+     * indicator that we are subscribging or uinsubscribing currently
+     *
+     * @private
+     */
+    private inProcess: boolean = false;
+
     constructor(private subscriptionService: SubscriptionService,
                 private metadata: metadata,
                 private model: model) {
@@ -26,10 +33,17 @@ export class ObjectSubscriptionButton {
      * called from parent
      */
     public toggleSubscribe() {
+        this.inProcess = true;
         if (this.subscriptionService.hasSubscription(this.model.id)) {
-            this.subscriptionService.unsubscribeBean(this.model.id);
+            this.subscriptionService.unsubscribeBean(this.model.id, this.model.module).subscribe(
+                res => this.inProcess = false,
+                err => this.inProcess = false
+            );
         } else {
-            this.subscriptionService.subscribeBean(this.model.id, this.model.module);
+            this.subscriptionService.subscribeBean(this.model.id, this.model.module).subscribe(
+                res => this.inProcess = false,
+                err => this.inProcess = false
+            );
         }
     }
 }
