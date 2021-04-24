@@ -1,3 +1,11 @@
-<button *ngIf="!!metadata.moduleDefs[model.module]?.audited" (click)="toggleSubscribe()" [system-title]="!subscriptionService.subscriptions[model.id] ? 'LBL_SUBSCRIBE' : 'LBL_UNSUBSCRIBE'" class="slds-button slds-button_icon slds-p-horizontal--xx-small slds-m-horizontal--xx-small">
-    <system-button-icon icon="preview" size="large" [addclasses]="!subscriptionService.subscriptions[model.id] ? 'slds-text-color--inverse-weak' : 'slds-text-color_success'"></system-button-icon>
+<button style="text-transform:capitalize" [disabled]="inProcess" class="slds-button slds-button_neutral slds-button_stateful slds-is-selected" [ngClass]="{'slds-is-selected': subscriptionService.subscriptions[model.id], 'slds-not-selected': !subscriptionService.subscriptions[model.id]}" (click)="toggleSubscribe()">
+  <span class="slds-text-not-selected">
+    <system-button-icon class="slds-p-right--xx-small" icon="add"></system-button-icon><system-label label="LBL_FOLLOW"></system-label>
+  </span>
+  <span class="slds-text-selected">
+    <system-button-icon class="slds-p-right--xx-small" icon="check"></system-button-icon><system-label label="LBL_FOLLOWING"></system-label>
+  </span>
+  <span class="slds-text-selected-focus">
+    <system-button-icon class="slds-p-right--xx-small" icon="close"></system-button-icon><system-label label="LBL_UNFOLLOW"></system-label>
+  </span>
 </button>

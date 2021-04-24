@@ -11,6 +11,7 @@ import {language} from "./language.service";
 import {toast} from "./toast.service";
 import {session} from "./session.service";
 import {metadata} from "./metadata.service";
+import {Observable, Subject} from "rxjs";
 
 /**
  * this service handles loading and managing the user subscriptions
@@ -46,35 +47,49 @@ export class SubscriptionService {
      * @param beanId
      * @param beanModule
      */
-    public subscribeBean(beanId: string, beanModule: string) {
+    public subscribeBean(beanId: string, beanModule: string): Observable<boolean> {
+        let retSubject = new Subject<boolean>();
 
-        this.subscriptions[beanId] = {bean_id: beanId, bean_module: beanModule, user_id: this.session.authData.userId};
-
-        this.backend.postRequest(`common/SpiceSubscriptions`, null, {beanId, beanModule})
+        this.backend.postRequest(`common/SpiceSubscriptions/${beanModule}/${beanId}`)
             .subscribe(
-                () =>
-                    this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_SUBSCRIBED'), 'success')
-                ,
-                () =>
-                    this.toast.sendToast(this.language.getLabel('MSG_FAILED_TO_SUBSCRIBE'), 'error')
+                () => {
+                    this.subscriptions[beanId] = {
+                        bean_id: beanId,
+                        bean_module: beanModule,
+                        user_id: this.session.authData.userId
+                    };
+                    retSubject.next(true);
+                    retSubject.complete();
+                },
+                () => {
+                    this.toast.sendToast(this.language.getLabel('MSG_FAILED_TO_SUBSCRIBE'), 'error');
+                    retSubject.error('subscribe failed');
+                    retSubject.complete();
+                }
             );
+        return retSubject.asObservable();
     }
 
     /**
      * delete the subscription for the given bean
      * @param beanId
      */
-    public unsubscribeBean(beanId: string) {
+    public unsubscribeBean(beanId: string, beanModule: string): Observable<boolean>  {
+        let retSubject = new Subject<boolean>();
 
-        delete this.subscriptions[beanId];
-
-        this.backend.deleteRequest(`common/SpiceSubscriptions/${beanId}`).subscribe(
-            () =>
-                this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_UNSUBSCRIBED'), 'success')
-            ,
-            () =>
-                this.toast.sendToast(this.language.getLabel('MSG_FAILED_TO_UNSUBSCRIBE'), 'error')
+        this.backend.deleteRequest(`common/SpiceSubscriptions/${beanModule}/${beanId}`).subscribe(
+            () => {
+                delete this.subscriptions[beanId];
+                retSubject.next(true);
+                retSubject.complete();
+            },
+            () => {
+                this.toast.sendToast(this.language.getLabel('MSG_FAILED_TO_UNSUBSCRIBE'), 'error');
+                retSubject.error('subscribe failed');
+                retSubject.complete();
+            }
         );
+        return retSubject.asObservable();
     }
 
     /**
