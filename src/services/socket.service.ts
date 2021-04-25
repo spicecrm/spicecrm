@@ -9,6 +9,7 @@ import {SocketEventI, SocketObjectI} from "./interfaces.service";
 import {Observable, of, Subject} from "rxjs";
 
 declare var io: any;
+declare var _: any;
 
 @Injectable()
 export class socket {
@@ -40,6 +41,13 @@ export class socket {
      */
     public socketObject(namespace) {
         return this.sockets[namespace];
+    }
+
+    /**
+     * returns if we have at least one socket that is connected
+     */
+    get connected(): boolean {
+        return !_.isEmpty(this.sockets);
     }
 
     /**
