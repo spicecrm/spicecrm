@@ -2,6 +2,7 @@
  * @module services
  */
 import {Injectable, EventEmitter} from "@angular/core";
+import {Md5} from "ts-md5";
 import {Title} from "@angular/platform-browser";
 import {Observable, Subject, of, BehaviorSubject, Subscription} from "rxjs";
 import {broadcast} from "./broadcast.service";
@@ -429,7 +430,7 @@ export class navigation {
     private handleSocketEvents(event: SocketEventI) {
         switch (event.type) {
             case 'update':
-                if (event.data.sessionId != this.session.authData.sessionId && this.modelregister.find(m => m.model.module == event.data.module && m.model.id == event.data.id && !m.model.isEditing)) {
+                if (event.data.sessionId != Md5.hashStr(this.session.authData.sessionId) && this.modelregister.find(m => m.model.module == event.data.module && m.model.id == event.data.id && !m.model.isEditing)) {
                     this.backend.get(event.data.module, event.data.id).subscribe(modelData => {
                         let models = this.modelregister.filter(m => m.model.module == event.data.module && m.model.id == event.data.id && !m.model.isEditing);
                         for (let model of models) {
