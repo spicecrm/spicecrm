@@ -278,11 +278,13 @@ export class model implements OnDestroy {
             })
         );
 
+        /*
         this.subscriptions.add(
             this.socket.initializeNamespace('module').subscribe(e =>
                 this.handleSocketEvents(e)
             )
         );
+        */
     }
 
     /**
@@ -329,11 +331,11 @@ export class model implements OnDestroy {
     private handleSocketEvents(event: SocketEventI) {
         switch (event.type) {
             case 'update':
-                const data = this.utils.backendModel2spice(this.module, event.data.data);
-                if (!this.isEditing) {
-                    this.data = data;
-                } else if (!_.isEmpty(this.backupData)) {
-                    this.backupData = data;
+                // check that we have a match on id and moduel and come from another session
+                if(event.data.id == this.id && event.data.module == this.module && event.data.sessionId != this.session.authData.sessionId) {
+                    if (!this.isEditing) {
+                        this.getData(false, '', false);
+                    }
                 }
                 break;
         }

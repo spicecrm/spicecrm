@@ -3,7 +3,7 @@
  */
 import {Injectable, EventEmitter} from "@angular/core";
 import {Title} from "@angular/platform-browser";
-import {Observable, Subject, of, BehaviorSubject} from "rxjs";
+import {Observable, Subject, of, BehaviorSubject, Subscription} from "rxjs";
 import {broadcast} from "./broadcast.service";
 import {configurationService} from "./configuration.service";
 import {Router, ActivatedRouteSnapshot, CanActivate, Params, Route, UrlSegment} from "@angular/router";
@@ -12,8 +12,10 @@ import {language} from "./language.service";
 import {metadata} from "./metadata.service";
 import {session} from "./session.service";
 import {helper} from "./helper.service";
+import {socket} from "./socket.service";
+import {backend} from "./backend.service";
 import {userpreferences} from "./userpreferences.service";
-import {main} from "@angular/compiler-cli/src/main";
+import {SocketEventI} from "./interfaces.service";
 
 declare var _: any;
 
@@ -176,6 +178,12 @@ export class navigation {
     public objectTabsChange$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 
+    /**
+     * holds the various subscriptions
+     * @private
+     */
+    private subscriptions: Subscription = new Subscription();
+
     constructor(
         private title: Title,
         private session: session,
@@ -185,6 +193,8 @@ export class navigation {
         private configurationService: configurationService,
         private metadata: metadata,
         private helper: helper,
+        private socket: socket,
+        private backend: backend,
         private userpreferences: userpreferences,
         private router: Router
     ) {
@@ -192,6 +202,7 @@ export class navigation {
 
         // subscribe to the save event .. so when the title for the current displayed bean changes update the browser title
         this.broadcast.message$.subscribe(message => this.handleMessage(message));
+
 
         // setTimeout is a workaround, in simple js applications without angular it works without it.
         window.setTimeout(() => {
@@ -374,6 +385,10 @@ export class navigation {
                     active: true,
                     enablesubtabs: false
                 };
+
+                // unsubscribe from all subscriptions
+                this.subscriptions.unsubscribe();
+
                 break;
             case 'login':
                 // check if we have session data
@@ -391,8 +406,50 @@ export class navigation {
                     // set the tab title
                     this.setTabTitle();
                 }
+
+                // Subscribe to the Socket
+                this.subscriptions.add(
+                    this.socket.initializeNamespace('module').subscribe(e =>
+                        this.handleSocketEvents(e)
+                    )
+                );
+
                 break;
             default:
+                break;
+        }
+    }
+
+
+    /**
+     * handle socket event
+     * @param event
+     * @private
+     */
+    private handleSocketEvents(event: SocketEventI) {
+        switch (event.type) {
+            case 'update':
+                if (event.data.sessionId != this.session.authData.sessionId && this.modelregister.find(m => m.model.module == event.data.module && m.model.id == event.data.id && !m.model.isEditing)) {
+                    this.backend.get(event.data.module, event.data.id).subscribe(modelData => {
+                        let models = this.modelregister.filter(m => m.model.module == event.data.module && m.model.id == event.data.id && !m.model.isEditing);
+                        for (let model of models) {
+                            model.model.data = {...modelData};
+                            model.model.data$.next(model.model.data);
+                        }
+
+                        // for all we did not catch broadcast the model save event
+                        this.broadcast.broadcastMessage('model.save', {id: event.data.id, module: event.data.module, data: modelData});
+                    });
+                }
+
+                // check that we have a match on id and moduel and come from another session
+                /*
+                if(event.data.id == this.id && event.data.module == this.module && event.data.sessionId != this.session.authData.sessionId) {
+                    if (!this.isEditing) {
+                        this.getData(false, '', false);
+                    }
+                }
+                */
                 break;
         }
     }
@@ -660,15 +717,15 @@ export class navigation {
         let tab = this.getTabById(this.activeTab);
 
         let displayname = '';
-        if(tab.displayname){
+        if (tab.displayname) {
             displayname = tab.displayname;
-        } else if(tab.displaymodule){
+        } else if (tab.displaymodule) {
             displayname = this.language.getModuleName(tab.displaymodule);
-        } else if (this.activeModule){
+        } else if (this.activeModule) {
             displayname = this.language.getModuleName(this.activeModule);
         }
 
-        this.title.setTitle(this.systemName + (displayname ?  ` / ${displayname}`: ''));
+        this.title.setTitle(this.systemName + (displayname ? ` / ${displayname}` : ''));
     }
 
     /**
@@ -834,6 +891,7 @@ export class navigation {
 
 }
 
+// tslint:disable-next-line:max-classes-per-file
 @Injectable()
 export class canNavigateAway implements CanActivate {
     constructor(private navigation: navigation, private modal: modal, private language: language) {
