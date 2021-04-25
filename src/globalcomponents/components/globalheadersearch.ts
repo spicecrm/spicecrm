@@ -4,11 +4,10 @@
 import {
     Component,
     ElementRef,
-    Renderer2
+    Renderer2,
 } from '@angular/core';
 import {Router} from '@angular/router';
 import {fts} from '../../services/fts.service';
-import {language} from '../../services/language.service';
 import {broadcast} from '../../services/broadcast.service';
 
 @Component({
@@ -27,7 +26,6 @@ export class GlobalHeaderSearch {
 
 
     get searchmodule() {
-        // return this.language.getModuleName(this._searchmodule);
         return this._searchmodule;
     }
 
@@ -38,7 +36,13 @@ export class GlobalHeaderSearch {
         }
     }
 
-    constructor(public router: Router, public broadcast: broadcast, public fts: fts, public elementRef: ElementRef, public renderer: Renderer2, public language: language) {
+    constructor(
+        public router: Router,
+        public broadcast: broadcast,
+        public fts: fts,
+        public elementRef: ElementRef,
+        public renderer: Renderer2
+    ) {
     }
 
     get showModuleSelector() {
