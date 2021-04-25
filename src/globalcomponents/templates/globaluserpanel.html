@@ -27,7 +27,7 @@
     </div>
     <div class="slds-theme--shade slds-p-around--x-small slds-grid">
         <div class="slds-grid slds-grid--vertical-align-center">
-            <system-utility-icon class="slds-p-right--xx-small" *ngIf="socket.isConnected" size="xx-small" icon="omni_channel"></system-utility-icon>
+            <system-utility-icon class="slds-p-right--xx-small" *ngIf="socket.connected" size="xx-small" icon="omni_channel"></system-utility-icon>
             <system-label label="LBL_LOGGED_ON_SYSTEM"></system-label>: {{systemName}}
         </div>
         <div class="slds-col--bump-left">
