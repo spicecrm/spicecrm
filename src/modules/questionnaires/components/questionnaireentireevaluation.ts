@@ -208,7 +208,7 @@ export class QuestionnaireEntireEvaluation implements OnInit {
 
     private averageOfAnswers( questionId: string ): string {
         try {
-            return (this.userPreferences.formatMoney( this.answers[questionId].optionlessAnswerValue / this.answers[questionId].countParticipations, 2 ));
+            return (this.userPreferences.formatMoney( this.answers[questionId].answer_value / this.answers[questionId].countParticipations, 2 ));
         } catch (e) {
             return '0,00';
         }

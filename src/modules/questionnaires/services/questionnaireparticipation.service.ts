@@ -156,7 +156,7 @@ export class questionnaireParticipationService {
         if ( this.editMode === 'questionoption' ) {
             backupForNetworkError = JSON.stringify( this.answers[questionId] );
         }
-        this.answers[questionId].optionlessAnswerValue = value;
+        this.answers[questionId].answer_value = value;
         if ( this.editMode === 'questionoption' ) this.saveSingleAnswerToBackend( questionId, backupForNetworkError );
         else this.isDirty = true;
 
@@ -198,9 +198,9 @@ export class questionnaireParticipationService {
         this.questionsMeta[questionId].tempReadonly = true;
         /*
         this.backend.postRequest( 'module/Questions/' + questionId + '/answervalues/' + this.participationId, {},
-            { optionlessAnswerValue: this.answers[questionId].optionlessAnswerValue } ).subscribe(
+            { answer_value: this.answers[questionId].answer_value } ).subscribe(
             data => {
-                this.answers[questionId].optionlessAnswerValue = data.optionlessAnswerValue; // Relevant is, what´s in the database/backend.
+                this.answers[questionId].answer_value = data.answer_value; // Relevant is, what´s in the database/backend.
                 this.questionsMeta[questionId].tempReadonly = false; // Enable the input field of the question.
                 this.determineNumOfFinishedQuestionsInQuestionset( this.questions[questionId].questionset_id ); // New determination of the number of finished questions.
             },
@@ -474,7 +474,7 @@ export class questionnaireParticipationService {
                         this.answers[question.id].options[option.id] = false;
                     }
                 } else {
-                    this.answers[question.id].optionlessAnswerValue = '';
+                    this.answers[question.id].answer_value = '';
                 }
             }
         }
@@ -509,8 +509,8 @@ export class questionnaireParticipationService {
     private insertLoadedAnswers( answers: any ): void {
         for ( let questionId in answers ) {
             if ( this.answers[questionId] === undefined ) this.answers[questionId] = {};
-            if ( answers[questionId].optionlessAnswerValue !== undefined ) {
-                this.answers[questionId].optionlessAnswerValue = answers[questionId].optionlessAnswerValue;
+            if ( answers[questionId].answer_value !== undefined ) {
+                this.answers[questionId].answer_value = answers[questionId].answer_value;
             } else if ( !_.isEmpty( answers[questionId].options )) {
                 if ( this.answers[questionId].options === undefined ) this.answers[questionId].options = {};
                 for ( let optionId in answers[questionId].options ) {
@@ -543,7 +543,7 @@ export class questionnaireParticipationService {
         for ( let question of this.questionsArray[questionsetId] ) {
             switch( question.questiontype ) {
                 case 'text':
-                    if ( this.answers[question.id].length && this.answers[question.id].optionlessAnswerValue && this.answers[question.id].optionlessAnswerValue != '' ) {
+                    if ( this.answers[question.id].length && this.answers[question.id].answer_value && this.answers[question.id].answer_value != '' ) {
                         this.questionsMeta[question.id].finished = true;
                         numberFinishedQuestions++;
                     } else this.questionsMeta[question.id].finished = false;
@@ -599,7 +599,7 @@ export class questionnaireParticipationService {
                     break;
             }
 
-            if( this.answers[question.id].length && this.answers[question.id].optionlessAnswerValue && this.answers[question.id].optionlessAnswerValue != '' ) {
+            if( this.answers[question.id].length && this.answers[question.id].answer_value && this.answers[question.id].answer_value != '' ) {
                 this.questionsMeta[question.id].finished = true;
                 numberFinishedQuestions++;
             } else this.questionsMeta[question.id].finished = false;

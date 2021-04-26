@@ -31,12 +31,12 @@ export class QuestionRenderNPS extends QuestionRenderBasic implements OnInit {
     private onClick( score: number|string, $event ): boolean {
         $event.stopPropagation();
         score = score.toString();
-        if ( score === this.qp.answers[this.questionId].optionlessAnswerValue ) score = '';
+        if ( score === this.qp.answers[this.questionId].answer_value ) score = '';
         return this.qp.setAnswerValue( this.questionId, score );
     }
 
     private isChecked( questionId: string, score: number ): boolean {
-        return this.qp.answers[questionId].optionlessAnswerValue && this.qp.answers[questionId].optionlessAnswerValue == score;
+        return this.qp.answers[questionId].answer_value && this.qp.answers[questionId].answer_value == score;
     }
 
 }
