@@ -8,6 +8,7 @@ import {GroupwareService} from "../../../include/groupware/services/groupware.se
 import {session} from "../../../services/session.service";
 import {broadcast} from "../../../services/broadcast.service";
 import {model} from "../../../services/model.service";
+import {metadata} from "../../../services/metadata.service";
 
 declare var Office: any;
 
@@ -28,6 +29,7 @@ export class OutlookPane implements OnInit {
         private router: Router,
         private session: session,
         private model: model,
+        private metadata: metadata,
         private broadcast: broadcast
     ) {
         // ToDo: implement pinned pane that relaod when item is changed
@@ -53,13 +55,21 @@ export class OutlookPane implements OnInit {
         this.groupware.messageId = Office.context.mailbox.item.itemId;
     }
 
+    /**
+     * set the message id and navigate to the base route
+     * @private
+     */
     private itemChanged() {
         this.groupware.messageId = Office.context.mailbox.item.itemId;
-        if (this.router.routerState.snapshot.url == '/groupware/details') {
+        this.groupware.emailId = '';
+
+        const config = this.metadata.getComponentConfig('OutlookPane');
+        const mainRoute = !config.mainRoute ? '/groupware/details' : config.mainRoute;
+
+        if (this.router.routerState.snapshot.url == mainRoute) {
             this.broadcast.broadcastMessage('groupware.itemchanged');
         } else {
-            this.router.navigate(['/groupware/details']);
+            this.router.navigate([mainRoute]);
         }
     }
-
 }
