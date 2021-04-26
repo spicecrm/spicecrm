@@ -7,7 +7,7 @@ import {backend} from "../../../services/backend.service";
 import {language} from "../../../services/language.service";
 import {fts} from "../../../services/fts.service";
 import {metadata} from "../../../services/metadata.service";
-import {GroupwareService} from "../services/groupware.service";
+import {GroupwareService} from '../../../include/groupware/services/groupware.service';
 
 declare var _: any;
 
