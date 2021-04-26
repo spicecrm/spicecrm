@@ -250,7 +250,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
             })
         );
 
-        this.socket.joinRoom('starface', this.username);
+        this.socket.joinRoom('starface', 'starface' + this.username);
 
         // set to socket connected
         this.socketconnected = true;
