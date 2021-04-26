@@ -26,19 +26,19 @@ import {navigation} from '../../../services/navigation.service';
 })
 export class ACLTypesManagerTypesFields {
 
-    @Input() authtypefields: Array<any> = [];
-    @Input() authtypemodule: string = '';
+    @Input() public authtypefields: any[] = [];
+    @Input() public authtypemodule: string = '';
 
-    @Output() addfields: EventEmitter<any> = new EventEmitter<any>();
-    @Output() deletefield: EventEmitter<string> = new EventEmitter<string>();
+    @Output() public addfields: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public deletefield: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(private backend: backend, private modal: modal, private language: language, private modelutilities: modelutilities) {
 
     }
 
-    addField(){
+    public addField() {
 
-        //we want to hide every selected field (We can't add fields two times)
+        // we want to hide every selected field (We can't add fields two times)
         for (let afield of this.authtypefields) {
             afield.hide = true;
         }
@@ -67,9 +67,9 @@ export class ACLTypesManagerTypesFields {
         });
     }
 
-    deleteField(id){
-        this.modal.confirm( 'LBL_DELETE_FIELD', 'LBLDELETE_FIELD' ).subscribe( ( answer ) => {
-            if(answer){
+    public deleteField(id) {
+        this.modal.confirm( this.language.getLabel('MSG_DELETE_ACL_FIELD', '', 'long'), this.language.getLabel('MSG_DELETE_ACL_FIELD', '', 'default') ).subscribe( ( answer ) => {
+            if(answer) {
                 this.deletefield.emit(id);
             }
         });

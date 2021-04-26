@@ -74,7 +74,7 @@ export class AdministrationGeneralSettings implements OnInit {
      */
     public ngOnInit() {
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
-            this.backend.getRequest('admin/generalsettings').subscribe(data => {
+            this.backend.getRequest('configuration/settings').subscribe(data => {
                 this.settings = data;
                 this._loglevels = this.settings.logger.level.split(',');
                 this.loading = false;
@@ -88,7 +88,7 @@ export class AdministrationGeneralSettings implements OnInit {
      */
     private save() {
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
-            this.backend.postRequest('admin/writesettings', {}, this.settings).subscribe(response => {
+            this.backend.postRequest('configuration/settings', {}, this.settings).subscribe(response => {
                 if (response.status) {
                     this.toast.sendToast(this.language.getLabel('LBL_SUCCESS'), 'success');
                 } else {

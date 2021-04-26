@@ -63,7 +63,7 @@ export class OutlookLoginPane {
                 this.configuration.setSiteID(atob(sessionStorage[btoa(sessionStorage['OAuth-Token'] + ':siteid')]));
             }
 
-            this.http.get(this.configuration.getBackendUrl() + '/login', {
+            this.http.get(this.configuration.getBackendUrl() + '/authentication/login', {
                 headers
             }).subscribe(
                 (res: any) => {

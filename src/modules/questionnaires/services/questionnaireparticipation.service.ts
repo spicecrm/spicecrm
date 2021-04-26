@@ -289,7 +289,7 @@ export class questionnaireParticipationService {
     private loadQuestionnaire(): EventEmitter<any> {
         this.isLoadedParticipation = true; // Only in case there was no participation to load.
         let loaded$ = new EventEmitter<any>();
-        this.backend.getRequest( 'questionnaire/render/'+this.questionnaireId ).subscribe( ( response: any ) => {
+        this.backend.getRequest( 'module/Questionnaires/'+this.questionnaireId+'/render' ).subscribe( ( response: any ) => {
             this.questionnaire = response;
             this.doBasics();
             this.buildArrays();
@@ -481,7 +481,7 @@ export class questionnaireParticipationService {
     }
 
     private loadParticipation_byParent() {
-        this.backend.getRequest('QuestionAnswers/ofParticipation/byParent/'+this.parentType+'/'+this.parentId ).subscribe( response => {
+        this.backend.getRequest('module/QuestionAnswers/ofParticipation/byParent/'+this.parentType+'/'+this.parentId ).subscribe( response => {
             this.questionnaireId = response.questionnaireId;
             // In case the edit mode is "off" or "preview" there are no answer values to load:
             // if ( this.editMode === 'preview' || this.editMode === 'off' ) return;
@@ -496,7 +496,7 @@ export class questionnaireParticipationService {
     }
 
     private loadParticipation_byParticipation() {
-        this.backend.getRequest('QuestionAnswers/ofParticipation/byParticipation/'+this.participationId ).subscribe( response => {
+        this.backend.getRequest('module/QuestionAnswers/ofParticipation/byParticipation/'+this.participationId ).subscribe( response => {
             this.questionnaireId = response.questionnaireId;
             this.loadQuestionnaire().subscribe( () => {
                 this.insertLoadedAnswers( response.answers );
@@ -616,7 +616,7 @@ export class questionnaireParticipationService {
      */
     public save( setCompleted = false ): EventEmitter<boolean> {
         this.isSaving = true;
-        let route = 'QuestionAnswers/ofParticipation/';
+        let route = 'module/QuestionAnswers/ofParticipation/';
         // if ( this.participationId ) route += 'byParticipation/'+this.participationId;
         // else
         route += 'byParent/'+this.parentType+'/'+this.parentId;

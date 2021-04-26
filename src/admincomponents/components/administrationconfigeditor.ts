@@ -48,7 +48,7 @@ export class AdministrationConfigEditor implements OnInit {
      */
     public ngOnInit() {
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
-            this.backend.getRequest('configurator/editor/' + this.componentconfig.category).subscribe(data => {
+            this.backend.getRequest('configuration/configurator/editor/' + this.componentconfig.category).subscribe(data => {
                 this.configvalues = data;
                 this.loading = false;
                 modalRef.instance.self.destroy();
@@ -77,7 +77,7 @@ export class AdministrationConfigEditor implements OnInit {
         this.loading = true;
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
             modalRef.instance.messagelabel = 'LBL_SAVING_DATA';
-            this.backend.postRequest('configurator/editor/' + this.componentconfig.category, [], this.configvalues).subscribe(data => {
+            this.backend.postRequest('configuration/configurator/editor/' + this.componentconfig.category, [], { config: this.configvalues }).subscribe(data => {
                 this.loading = false;
                 modalRef.instance.self.destroy();
             });

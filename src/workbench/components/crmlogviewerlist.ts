@@ -36,12 +36,12 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
     @Output('valueClicked') private valueClicked$ = new EventEmitter();
 
     // Configuration:
-    private routeBase = 'crmlog';
-    private linesPerPage = 20;
+    private routeBase = 'admin/crmlog';
+    private entriesPerPage = 20;
 
     // The log data from the backend:
-    private lines: any[] = [];
-    private linesToShow: any[] = []; // Same as lines if no text filter is applied.
+    private entries: any[] = [];
+    private entriesToShow: any[] = []; // Same as "entries" if no text filter is applied.
 
     // The hole list of CRM users:
     private userlist: any[];
@@ -63,7 +63,7 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
     constructor( private backend: backend, private metadata: metadata, private lang: language, private prefs: userpreferences, private modalservice: modal, private toast: toast ) {
 
         // Individual route, because of bug SPICEUI-159.
-        this.backend.getRequest( 'krestlog/userlist' ).subscribe( response => {
+        this.backend.getRequest( this.routeBase+'/userlist' ).subscribe( response => {
             this.userlist = response.list;
             this.userlist.forEach( ( val, i ) => {
                 this.userlistIndexes[val.id] = i;
@@ -83,19 +83,19 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
         return this.userlist[this.userlistIndexes[userId]].name;
     }
 
-    // Load the log lines from the backend.
+    // Load the log entries from the backend.
     private loadData() {
 
         if ( this.isLoading ) return;
 
-        let route = this.routeBase;
+        let route = this.routeBase+'/entries';
         this.isLoading = true;
         this.isLoaded = false;
-        this.linesToShow = [];
+        this.entriesToShow = [];
         this.localFiltertextPositive = '';
         this.localFiltertextNegative = [];
 
-        // Build the REST route:
+        // Build the REST route query:
 
         let periodType: string;
         if ( !this.period.begin.year ) periodType = '';
@@ -104,21 +104,24 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
         else if ( !this.period.begin.hour ) periodType = 'day';
         else periodType = 'hour';
 
+        let begin, end;
+
         if ( this.period.type ) {
 
-            let begin = moment.tz( this.period.begin.year + '-'
+            begin = moment.tz( this.period.begin.year + '-'
                 + (this.period.begin.month ? this.period.begin.month : '01') + '-'
                 + (this.period.begin.day ? this.period.begin.day : '01') + ' '
                 + (this.period.begin.hour ? this.period.begin.hour : '00')
                 + ':00', this.prefs.toUse.timezone );
 
-            let end = begin.clone();
+            end = begin.clone();
             end.add( this.period.duration, this.period.type );
 
             begin.tz('UTC');
             end.tz('UTC');
 
-            route += '/' + begin.format( 'YYYYMMDDHH' ) + '/' + end.format( 'YYYYMMDDHH' );
+            // switched off after route changement on 2021-04-07
+            // route += '/' + begin.format( 'YYYYMMDDHH' ) + '/' + end.format( 'YYYYMMDDHH' );
 
         }
 
@@ -127,18 +130,22 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
             limit: this.limit ? this.limit : undefined,
             level: this.filter.level ? this.filter.level : undefined,
             processId: this.filter.processId ? this.filter.processId : undefined,
-            userId: this.filter.userId ? this.filter.userId : undefined,
+            // switched off temporarily with route changement on 2021-04-07:
+            // userId: this.filter.userId ? this.filter.userId : undefined,
             text: this.filter.text ? this.filter.text : undefined,
             transactionId: this.filter.transactionId ? this.filter.transactionId : undefined,
+            // moved parameter "begin" and "end" from path to query (route changement on 2021-04-07):
+            begin: this.period.type ? begin.format( 'YYYYMMDDHH' ) : undefined,
+            end: this.period.type ? end.format( 'YYYYMMDDHH' ) : undefined
         };
         this.toast.clearToast( this.toastId );
         this.backend.getRequest( route, queryParams ).subscribe(
         response => {
-                this.lines = response.lines;
-                this.lines.forEach( ( line, i ) => {
-                    line.date = moment.unix( line.dtx ).tz( this.prefs.toUse.timezone ).format( this.prefs.getDateFormat() );
-                    line.time = moment.unix( line.dtx ).tz( this.prefs.toUse.timezone ).format( this.prefs.getTimeFormat() );
-                    line.i = i;
+                this.entries = response.entries;
+                this.entries.forEach( ( entry, i ) => {
+                    entry.date = moment.unix( entry.dtx ).tz( this.prefs.toUse.timezone ).format( this.prefs.getDateFormat() );
+                    entry.time = moment.unix( entry.dtx ).tz( this.prefs.toUse.timezone ).format( this.prefs.getTimeFormat() );
+                    entry.i = i;
                 });
                 this.updateLocalFiltering();
                 this.isLoaded = true;
@@ -154,42 +161,44 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
 
     }
 
-    // After the angular-rendering we check for every line / table row, if the log text is truncated by the browser (because it wouldn´t fit into column) or not.
+    // After the angular-rendering we check for every log entry / table row, if the log text is truncated by the browser (because it wouldn´t fit into column) or not.
     // The trick to detect truncation: When scrollWidth > clientWidth.
     public ngAfterViewChecked() {
         let htmlTableRows;
+        let numberOfTextColumn = 5;
+        let numberOfExpandButtonColumn = 6;
         if ( this.tbody && this.tbody.nativeElement ) {
             htmlTableRows = this.tbody.nativeElement.childNodes;
             if ( htmlTableRows ) {
                 // We iterate the tbody, but we skip non tr elements and any dom elements not containing log data (for example: angular comments).
                 htmlTableRows.forEach( ( row ) => {
                     if( row.tagName !== 'TR' || row.childNodes.length < 2 ) return;
-                    let div = row.childNodes[6].childNodes[0];
-                    row.childNodes[7].childNodes[0].style.visibility = ( div.scrollWidth === div.clientWidth ? 'hidden':'auto' ); // Show the expand button only when the div is not (yet) truncated.
+                    let div = row.childNodes[numberOfTextColumn].childNodes[0];
+                    row.childNodes[numberOfExpandButtonColumn].childNodes[0].style.visibility = ( div.scrollWidth === div.clientWidth ? 'hidden':'auto' ); // Show the expand button only when the div is not (yet) truncated.
                 });
             }
         }
     }
 
-    // Open the modal window to display a log line with unusual long log text.
-    private showLineInModal(i) {
+    // Open the modal window to display a log entry with unusual long log text.
+    private showEntryInModal(i) {
         this.modalservice.openModal('CRMLogViewerModal' ).subscribe( modal => {
-            modal.instance.line = this.linesToShow[i];
-            modal.instance.username = this.getUsername( this.linesToShow[i].uid );
+            modal.instance.entry = this.entriesToShow[i];
+            modal.instance.username = this.getUsername( this.entriesToShow[i].uid );
             modal.instance.routeBase = this.routeBase;
         });
     }
 
-    // Iterate the lines to build the filtered list.
-    private buildLinesToShow() {
+    // Iterate the entries to build the filtered list.
+    private buildEntriesToShow() {
         this.isBuildingLocalTextfilter = true;
-        this.linesToShow = [];
-        this.lines.forEach( line => {
+        this.entriesToShow = [];
+        this.entries.forEach( entry => {
             let localFiltertextPositiveLowercase = this.localFiltertextPositive.toLowerCase();
-            if ( line.txt.toLowerCase().indexOf( localFiltertextPositiveLowercase ) !== -1 && !this.localFiltertextNegative.some( ( term ) => {
-                if ( line.txt.toLowerCase().indexOf( term.lowercase ) !== -1 ) return true;
+            if ( entry.txt.toLowerCase().indexOf( localFiltertextPositiveLowercase ) !== -1 && !this.localFiltertextNegative.some( ( term ) => {
+                if ( entry.txt.toLowerCase().indexOf( term.lowercase ) !== -1 ) return true;
             })) {
-                this.linesToShow.push( line );
+                this.entriesToShow.push( entry );
             }
         });
         this.updateIndexNumbers();
@@ -199,13 +208,13 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
 
     private updateIndexNumbers() {
         let i = 0;
-        this.linesToShow.forEach( line => line.i = i++ );
+        this.entriesToShow.forEach( entry => entry.i = i++ );
     }
 
-    private resetLinesToShow() {
+    private resetEntriesToShow() {
         this.isBuildingLocalTextfilter = true; // Changes opacity of the table (for a moment), to indicate that the table is changed.
-        this.linesToShow = [];
-        this.lines.forEach( line => this.linesToShow.push( line ) );
+        this.entriesToShow = [];
+        this.entries.forEach( entry => this.entriesToShow.push( entry ) );
         this.updateIndexNumbers();
         this.currPage = 1;
         window.setTimeout( () => this.isBuildingLocalTextfilter = false, 750 );
@@ -213,13 +222,13 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
 
     // A filter text has been applied?
     private get isFiltered() {
-        return this.lines.length != this.linesToShow.length;
+        return this.entries.length != this.entriesToShow.length;
     }
 
-    // Mark expand property for every line. But only neccessary for the page shown at last.
-    private collapseLinesOfPage( pageNr ) {
-        for ( let i=(pageNr-1)*this.linesPerPage; i < pageNr*this.linesPerPage; i++ ) {
-            if( this.lines[i] ) this.lines[i].expand = false;
+    // Mark expand property for every log entry. But only neccessary for the page shown at last.
+    private collapseEntriesOfPage( pageNr ) {
+        for ( let i=(pageNr-1)*this.entriesPerPage; i < pageNr*this.entriesPerPage; i++ ) {
+            if( this.entries[i] ) this.entries[i].expand = false;
         }
     }
 
@@ -236,8 +245,8 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
     }
 
     private updateLocalFiltering() {
-        if (  !this.localFiltertextPositive && !this.localFiltertextNegative.length && this.isFiltered ) this.resetLinesToShow();
-        else if ( this.lines.length) this.buildLinesToShow();
+        if (  !this.localFiltertextPositive && !this.localFiltertextNegative.length && this.isFiltered ) this.resetEntriesToShow();
+        else if ( this.entries.length) this.buildEntriesToShow();
     }
 
     private filterSelectedText() {

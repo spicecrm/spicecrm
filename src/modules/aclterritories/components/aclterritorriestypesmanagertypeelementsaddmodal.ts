@@ -26,45 +26,45 @@ import {language} from "../../../services/language.service";
 })
 export class ACLTerritorriesTypesmanagerTypeelementsAddModal {
 
-    self: any = {};
-    loading: boolean = true;
-    elements: Array<any> = [];
-    selectedElementId: any = '';
-    currentelements: Array<any> = [];
-    @Output() newelementid: EventEmitter<any> = new EventEmitter<any>();
+    public self: any = {};
+    public loading: boolean = true;
+    public elements: any[] = [];
+    public selectedElementId: any = '';
+    public currentelements: any[] = [];
+    @Output() public newelementid: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(private backend: backend, private language: language, private elementRef: ElementRef) {
-        this.backend.getRequest('spiceaclterritories/core/orgelements').subscribe(elements => {
-            for(let element of elements){
-                if(this.currentelements.indexOf(element.id) < 0){
+        this.backend.getRequest('module/SpiceACLTerritories/core/territoryelements').subscribe(elements => {
+            for(let element of elements) {
+                if(this.currentelements.indexOf(element.id) < 0) {
                     this.elements.push(element);
                 }
             }
 
             this.elements.sort((a, b) => {
                 return a.name > b.name ? 1 : -1;
-            })
+            });
 
             this.loading = false;
-        })
+        });
     }
 
-    close() {
+    public close() {
         this.self.destroy();
     }
 
-    save() {
+    public save() {
         let newElement = {
             id: this.selectedElementId,
             name: ''
-        }
+        };
 
         this.elements.some(element => {
-            if(element.id == this.selectedElementId){
+            if(element.id == this.selectedElementId) {
                 newElement.name = element.name;
                 return true;
             }
-        })
+        });
 
         this.newelementid.emit(newElement);
         this.close();

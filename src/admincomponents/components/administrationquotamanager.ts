@@ -43,7 +43,7 @@ export class AdministrationQuotaManager implements OnInit {
     }
 
     getQuotaUsers() {
-        this.backend.getRequest('quotamanager/users').subscribe(data => {
+        this.backend.getRequest('module/QuotaManager/users').subscribe(data => {
             let i = 0;
             for (let entry of data) {
                 this.users.push({
@@ -59,7 +59,7 @@ export class AdministrationQuotaManager implements OnInit {
 
     getQuotas(): Observable<Array<any>> {
         let responseSubject = new Subject<Array<any>>();
-        this.backend.getRequest('quotamanager/quotas/' + this.year).subscribe(data => {
+        this.backend.getRequest('module/QuotaManager/quotas/' + this.year).subscribe(data => {
             this.quotas = data;
             this.monthlyQuotas = {};
             this.yearlyQuotas = {};
@@ -99,13 +99,13 @@ export class AdministrationQuotaManager implements OnInit {
         if (newQuota > 0) {
             this.monthlyQuotas[userId][monthIndex] = newQuota;
             // console.log(this.monthlyQuotas);
-            this.backend.postRequest('quotamanager/quota/' + userId
+            this.backend.postRequest('module/QuotaManager/quota/' + userId
                 + '/' + this.year
                 + '/' + (monthIndex + 1)
                 + '/' + newQuota);
         } else {
             delete this.monthlyQuotas[userId][monthIndex];
-            this.backend.deleteRequest('quotamanager/quota/' + userId
+            this.backend.deleteRequest('module/QuotaManager/quota/' + userId
                 + '/' + this.year
                 + '/' + (monthIndex + 1));
         }

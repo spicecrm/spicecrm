@@ -44,7 +44,7 @@ export class AddCurrencyItem {
             iso: this.iso,
             symbol: this.symbol,
         };
-        this.backend.postRequest('currencies/add', {}, body).subscribe(res => {
+        this.backend.postRequest('module/Currencies/add', {}, body).subscribe(res => {
             if (!res.status) {
                 this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
             } else {

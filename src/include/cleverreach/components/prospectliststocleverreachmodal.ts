@@ -42,7 +42,7 @@ export class ProspectListsToCleverReachModal implements OnInit {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             loadingRef.instance.messagelabel = 'LBL_EXPORTING';
 
-            this.backend.getRequest(`CleverReach/${this.model.module}/${this.model.id}/initialize`).subscribe(result => {
+            this.backend.getRequest(`channels/emarketing/cleverreach/${this.model.module}/${this.model.id}/initialize`).subscribe(result => {
                 this.statistics = result;
                 loadingRef.instance.self.destroy();
             });
@@ -56,7 +56,7 @@ export class ProspectListsToCleverReachModal implements OnInit {
      */
 
     private transferToCleverReach() {
-        this.backend.postRequest(`CleverReach/${this.model.module}/${this.model.id}/transferToCleverReach`).subscribe(result => {
+        this.backend.postRequest(`channels/emarketing/cleverreach/${this.model.module}/${this.model.id}/transfer`).subscribe(result => {
             if (result.status == 'success') {
                 this.router.navigate([`/module/${this.model.module}/${this.model.id}`]);
                 this.close();

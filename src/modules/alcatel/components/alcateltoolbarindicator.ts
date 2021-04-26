@@ -134,7 +134,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
      */
     private getPreferences(): Observable<string> {
         let retSubject = new Subject<string>();
-        this.backend.getRequest('alcatel/preferences').subscribe(prefs => {
+        this.backend.getRequest('channels/voice/alcatel/preferences').subscribe(prefs => {
             if (prefs.username) {
                 this.username = prefs.username;
                 retSubject.next(this.username);
@@ -162,7 +162,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
      */
     private login() {
         this.alcatelstatus = "connecting";
-        this.backend.postRequest('alcatel/login').subscribe(res => {
+        this.backend.postRequest('channels/voice/alcatel/login').subscribe(res => {
             if (res.login) {
                 this.alcatelstatus = "connected";
                 this.telephony.isActive = true;
@@ -323,7 +323,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
         this.telephony.calls.push(call);
 
         // initiate the call on teh PBX
-        this.backend.postRequest('alcatel/call', {}, {msisdn: msisdn}).subscribe(call => {
+        this.backend.postRequest('channels/voice/alcatel/call', {}, {msisdn: msisdn}).subscribe(call => {
             if (call.status != 'success') {
                 this.toast.sendToast('error placing call', 'error');
                 this.telephony.removeCallById(callid);
@@ -341,7 +341,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
      */
     private terminateCall(call: telephonyCallI) {
         if (call.callid) {
-            this.backend.deleteRequest(`alcatel/call/${call.callid}`).subscribe(deleted => {
+            this.backend.deleteRequest(`channels/voice/alcatel/call/${call.callid}`).subscribe(deleted => {
                 call.status = 'disconnected';
             });
         }

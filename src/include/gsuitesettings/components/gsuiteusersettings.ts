@@ -91,7 +91,7 @@ export class GSuiteUserSettings implements OnInit {
      */
     private toggleActive(scope: string, e: MouseEvent) {
         if (e) {
-            this.backend.postRequest(`google/calendar/notifications/${this.model.id}/${scope}`).subscribe(res => {
+            this.backend.postRequest(`channels/groupware/gsuite/calendar/notifications/${this.model.id}/${scope}`).subscribe(res => {
                 this.userconfig = res.userconfig;
                 this.subscriptions = res.subscriptions;
 
@@ -99,7 +99,7 @@ export class GSuiteUserSettings implements OnInit {
                 this.configuration.setData('gsuiteuserconfig', this.userconfig);
             });
         } else {
-            this.backend.deleteRequest(`google/calendar/notifications/${this.model.id}/${scope}`).subscribe(res => {
+            this.backend.deleteRequest(`channels/groupware/gsuite/calendar/notifications/${this.model.id}/${scope}`).subscribe(res => {
                 this.userconfig = res.userconfig;
                 this.subscriptions = res.subscriptions;
 

@@ -36,7 +36,7 @@ export class ProspectListsToDialogMailModal {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             loadingRef.instance.messagelabel = 'LBL_EXPORTING';
 
-            this.backend.getRequest(`DialogMail/${this.model.module}/${this.model.id}/initialize`).subscribe(result => {
+            this.backend.getRequest(`channels/emarketing/dialogmail/${this.model.module}/${this.model.id}/initialize`).subscribe(result => {
                 this.statistics = result;
                 loadingRef.instance.self.destroy();
             });
@@ -44,7 +44,7 @@ export class ProspectListsToDialogMailModal {
     }
 
     private transferToDialogMail() {
-        this.backend.postRequest(`DialogMail/${this.model.module}/${this.model.id}/transferToDialogMail`).subscribe(result => {
+        this.backend.postRequest(`channels/emarketing/dialogmail/${this.model.module}/${this.model.id}/transfer`).subscribe(result => {
             if (result.status == 'success') {
                 this.router.navigate([`/module/${this.model.module}/${this.model.id}`]);
                 this.close();

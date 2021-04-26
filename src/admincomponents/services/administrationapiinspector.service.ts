@@ -181,7 +181,7 @@ export class administrationapiinspectorService {
      */
     public loadEndpoints() {
         this.loading = true;
-        this.backend.getRequest('routes').subscribe(
+        this.backend.getRequest('admin/routes').subscribe(
             routes => {
                 this.apiEndpoints = routes;
                 this.apiEndpoints.sort((a, b) => a.route.replace('{', '').localeCompare(b.route.replace('{', '')));

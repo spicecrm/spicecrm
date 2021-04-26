@@ -50,7 +50,7 @@ export class ComponentsetManager {
                 private view: view,
                 private configurationService: configurationService) {
 
-        this.backend.getRequest('spiceui/admin/modules').subscribe(modules => {
+        this.backend.getRequest('system/spiceui/admin/modules').subscribe(modules => {
             this.sysModules = modules;
 
             // iniutialize the metadata service
@@ -70,7 +70,7 @@ export class ComponentsetManager {
         }
 
         if (this.change_request_required) {
-            this.backend.getRequest('systemdeploymentcrs/active').subscribe(crresponse => {
+            this.backend.getRequest('module/SystemDeploymentCRs/active').subscribe(crresponse => {
                 if (crresponse.id == "") {
                     this.setNoneMode();
                     // this.crNoneActive = true;
@@ -279,7 +279,7 @@ export class ComponentsetManager {
 
     private saveChanges() {
 
-        this.backend.getRequest('spiceui/core/components').subscribe((res: any) => {
+        this.backend.getRequest('configuration/spiceui/core/components').subscribe((res: any) => {
 
             let rawComponetsets = this.metadata.getRawComponentSets();
             let addedComponentsets: any = {};
@@ -307,7 +307,7 @@ export class ComponentsetManager {
                 delete: deletedComponentsets
             };
 
-            this.backend.postRequest('spiceui/core/componentsets', {}, postData).subscribe((res: any) => {
+            this.backend.postRequest('configuration/spiceui/core/componentsets', {}, postData).subscribe((res: any) => {
                 this.broadcast.broadcastMessage('metadata.updatecomponentsets', postData);
                 this.toast.sendToast('changes saved');
             });

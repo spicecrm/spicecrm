@@ -77,7 +77,7 @@ export class MailboxesmanagerTestModal implements OnInit {
         this.testing = true;
         this.testemailaddress = this.testemailaddress.trim();
         let modelData = this.model.utils.spiceModel2backend('Mailboxes', this.model.data);
-        this.backend.postRequest("mailboxes/test", {}, {data: modelData, test_email: this.testemailaddress}).subscribe(
+        this.backend.postRequest("module/Mailboxes/test", {}, {data: modelData, test_email: this.testemailaddress}).subscribe(
             (response: any) => {
                 if (response.result === true) {
                     this.validConnection = true;

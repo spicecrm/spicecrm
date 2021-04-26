@@ -141,7 +141,7 @@ export class Five9ToolbarIndicator implements OnDestroy {
      */
     private getPreferences(): Observable<string> {
         let retSubject = new Subject<string>();
-        this.backend.getRequest('Five9/preferences').subscribe(prefs => {
+        this.backend.getRequest('channels/voice/Five9/preferences').subscribe(prefs => {
             if (prefs.username) {
                 this.username = prefs.username;
                 retSubject.next(this.username);
@@ -174,7 +174,7 @@ export class Five9ToolbarIndicator implements OnDestroy {
 
         // set status to connecting
         this.five9status = "connecting";
-        this.backend.postRequest('Five9/login').subscribe(res => {
+        this.backend.postRequest('channels/voice/Five9/login').subscribe(res => {
             if (res.login) {
                 this.five9status = "connected";
                 this.telephony.isActive = true;
@@ -327,7 +327,7 @@ export class Five9ToolbarIndicator implements OnDestroy {
         this.telephony.calls.push(call);
 
         // initiate the call on teh PBX
-        this.backend.postRequest('Five9/call', {}, {msisdn: msisdn}).subscribe(call => {
+        this.backend.postRequest('channels/voice/Five9/call', {}, {msisdn: msisdn}).subscribe(call => {
             if (call.status != 'success') {
                 this.toast.sendToast('error placing call', 'error');
                 this.telephony.removeCallById(callid);
@@ -345,7 +345,7 @@ export class Five9ToolbarIndicator implements OnDestroy {
      */
     private terminateCall(call: telephonyCallI) {
         if (call.callid) {
-            this.backend.deleteRequest(`Five9/call/${call.callid}`).subscribe(deleted => {
+            this.backend.deleteRequest(`channels/voice/Five9/call/${call.callid}`).subscribe(deleted => {
                 call.status = 'disconnected';
             });
         }

@@ -104,7 +104,7 @@ export class ACLObjectsManagerObjectFields {
             currentFields.push({name: thisfield.field, id: thisfield.id});
         }
 
-        this.modal.openModal('ACLTypesManagerTypesAddFields').subscribe(modalRef => {
+        this.modal.openModal('ACLTypesManagerTypesAddFields', true).subscribe(modalRef => {
             modalRef.instance.module = module;
             modalRef.instance.currentfields = currentFields;
 

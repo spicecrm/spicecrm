@@ -682,7 +682,7 @@ export class modellist implements OnDestroy {
     public addListType(listParams): Observable<boolean> {
         let retSub = new Subject<boolean>();
         this.backend.postRequest(
-            "spiceui/core/modules/" + this.module + "/listtypes",
+            "configuration/spiceui/core/modules/" + this.module + "/listtypes",
             {},
             JSON.stringify(listParams)
         ).subscribe((listTypeData: ListTypeI) => {
@@ -768,7 +768,7 @@ export class modellist implements OnDestroy {
 
 
         // post to the backend
-        this.backend.postRequest(`spiceui/core/modules/${this.module}/listtypes/${this.currentList.id}`, {}, listParams).subscribe(listdata => {
+        this.backend.postRequest(`configuration/spiceui/core/modules/${this.module}/listtypes/${this.currentList.id}`, {}, listParams).subscribe(listdata => {
             this.metadata.getModuleListTypes(this.module).some(item => {
                 if (item.id == this.currentList.id) {
 
@@ -814,7 +814,7 @@ export class modellist implements OnDestroy {
             id = this.currentList.id;
         }
 
-        this.backend.deleteRequest("spiceui/core/modules/" + this.module + "/listtypes/" + id).subscribe(
+        this.backend.deleteRequest("configuration/spiceui/core/modules/" + this.module + "/listtypes/" + id).subscribe(
             res => {
 
                 // remove the deleted listtype from the current list

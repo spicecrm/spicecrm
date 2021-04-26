@@ -37,7 +37,7 @@ export class WorkflowTasksDashlet {
 
     constructor(private model: model, private modelutilities: modelutilities, private backend: backend, private language: language, private elementref: ElementRef) {
         this.workflowtasks = [];
-        this.backend.getRequest('Workflows/mytasks').subscribe(wftasks => {
+        this.backend.getRequest('module/Workflows/mytasks').subscribe(wftasks => {
             for (let wftask of wftasks) {
                 this.workflowtasks.push(this.modelutilities.backendModel2spice('WorkflowTasks', wftask));
             }

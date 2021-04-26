@@ -151,7 +151,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
      */
     private getPreferences(): Observable<string> {
         let retSubject = new Subject<string>();
-        this.backend.getRequest('StarFaceVOIP/preferences').subscribe(prefs => {
+        this.backend.getRequest('channels/voice/StarFaceVOIP/preferences').subscribe(prefs => {
             if (prefs.username) {
                 this.username = prefs.username;
                 retSubject.next(this.username);
@@ -184,7 +184,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
 
         // set status to connecting
         this.starfacestatus = "connecting";
-        this.backend.postRequest('StarFaceVOIP/login').subscribe(res => {
+        this.backend.postRequest('channels/voice/StarFaceVOIP/login').subscribe(res => {
             if (res.login) {
                 this.starfacestatus = "connected";
                 this.telephony.isActive = true;
@@ -234,7 +234,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
     }
 
     private keepalive() {
-        this.backend.postRequest('StarFaceVOIP/keepalive').subscribe(
+        this.backend.postRequest('channels/voice/StarFaceVOIP/keepalive').subscribe(
             res => {
                 if (res.status != 'success') {
                     this.starfacestatus = 'disconnected';
@@ -370,7 +370,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
         this.telephony.calls.push(call);
 
         // initiate the call on teh PBX
-        this.backend.postRequest('StarFaceVOIP/call', {}, {msisdn: msisdn}).subscribe(call => {
+        this.backend.postRequest('channels/voice/StarFaceVOIP/call', {}, {msisdn: msisdn}).subscribe(call => {
             if (call.status != 'success') {
                 this.toast.sendToast('error placing call', 'error');
                 this.telephony.removeCallById(callid);
@@ -388,7 +388,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
      */
     private terminateCall(call: telephonyCallI) {
         if (call.callid) {
-            this.backend.deleteRequest(`StarFaceVOIP/call/${call.callid}`).subscribe(deleted => {
+            this.backend.deleteRequest(`channels/voice/StarFaceVOIP/call/${call.callid}`).subscribe(deleted => {
                 call.status = 'disconnected';
             });
         }

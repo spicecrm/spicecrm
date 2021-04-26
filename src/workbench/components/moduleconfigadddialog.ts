@@ -85,7 +85,7 @@ export class ModuleConfigAddDialog implements OnInit {
         }
 
         // get all modules
-        this.backend.getRequest('configurator/entries/sysmodules').subscribe(data => {
+        this.backend.getRequest('configuration/configurator/entries/sysmodules').subscribe(data => {
             this.moduleSelectList.push({id: "*", name: "*"});
             if (this.mode == "add" && "*" == this.currentModule) {
                 this.moduleSelectedItem = {id: "*", name: "*"};
@@ -100,7 +100,7 @@ export class ModuleConfigAddDialog implements OnInit {
             this.sortArray(this.moduleSelectList);
             this.moduleSelectList = Object.assign([], this.moduleSelectList);
         });
-        this.backend.getRequest('configurator/entries/syscustommodules').subscribe(data => {
+        this.backend.getRequest('configuration/configurator/entries/syscustommodules').subscribe(data => {
 
             for (let module of data) {
                 this.moduleSelectList.push({id: module.id, name: module.module, group: "custom"});
@@ -115,7 +115,7 @@ export class ModuleConfigAddDialog implements OnInit {
 
 
         // get all roles
-        this.backend.getRequest('configurator/entries/sysuiroles').subscribe(data => {
+        this.backend.getRequest('configuration/configurator/entries/sysuiroles').subscribe(data => {
 
             this.roleSelectList.push({id: "*", name: "*"});
             for (let role of data) {
@@ -131,7 +131,7 @@ export class ModuleConfigAddDialog implements OnInit {
             this.sortArray(this.roleSelectList);
             this.roleSelectList = Object.assign([], this.roleSelectList);
         });
-        this.backend.getRequest('configurator/entries/sysuicustomroles').subscribe(data => {
+        this.backend.getRequest('configuration/configurator/entries/sysuicustomroles').subscribe(data => {
             for (let role of data) {
                 this.roleSelectList.push({id: role.id, name: role.name, group: "custom"});
 
@@ -148,7 +148,7 @@ export class ModuleConfigAddDialog implements OnInit {
 
 
         // get all objectrepositories
-        this.backend.getRequest('configurator/entries/sysuiobjectrepository').subscribe(data => {
+        this.backend.getRequest('configuration/configurator/entries/sysuiobjectrepository').subscribe(data => {
 
             for (let comp of data) {
                 this.compSelectList.push({
@@ -166,7 +166,7 @@ export class ModuleConfigAddDialog implements OnInit {
             this.sortArray(this.compSelectList);
             this.compSelectList = Object.assign([], this.compSelectList);
         });
-        this.backend.getRequest('configurator/entries/sysuicustomobjectrepository').subscribe(data => {
+        this.backend.getRequest('configuration/configurator/entries/sysuicustomobjectrepository').subscribe(data => {
             for (let comp of data) {
                 this.compSelectList.push({
                     id: comp.id,
@@ -288,12 +288,12 @@ export class ModuleConfigAddDialog implements OnInit {
         }
 
         // check if component exists
-        this.backend.getRequest('spiceui/core/' + path, saveComp).subscribe(
+        this.backend.getRequest('configuration/spiceui/core/' + path, saveComp).subscribe(
             data => {
                 delete saveComp.type;
 
                 if (data == false) {
-                    this.backend.postRequest('configurator/' + table + '/' + saveComp.id, null, saveComp).subscribe(
+                    this.backend.postRequest('configuration/configurator/' + table + '/' + saveComp.id, null, { config: saveComp }).subscribe(
                         (success) => {
 
                             this.toast.sendToast('saved');

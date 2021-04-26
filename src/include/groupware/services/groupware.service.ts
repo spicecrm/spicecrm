@@ -134,10 +134,10 @@ export abstract class GroupwareService {
         let retSubject = new Subject();
 
         let data = {
-            message_id: this._messageId
+            messageId: this._messageId
         };
 
-        this.backend.postRequest('module/Emails/groupware/getemail', {}, data).subscribe(
+        this.backend.getRequest('channels/groupware/email', data).subscribe(
             (res) => {
                 this.emailId = res.email_id;
 
@@ -174,7 +174,7 @@ export abstract class GroupwareService {
         let responseSubject = new Subject<any>();
         let payload = this.getEmailAddressData();
         this.relatedBeans = [];
-        this.backend.postRequest('EmailAddress/searchBeans', {}, payload).subscribe(
+        this.backend.postRequest('module/EmailAddress/searchbeans', {}, payload).subscribe(
             (res: any) => {
                 for (let item in res) {
                     if (!this.checkRelatedBeans(res[item])) {

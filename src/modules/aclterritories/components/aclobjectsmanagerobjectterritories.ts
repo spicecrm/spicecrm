@@ -28,24 +28,24 @@ import {ACLObjectsManagerObjectTerritoriesModal} from "./aclobjectsmanagerobject
 })
 export class ACLObjectsManagerObjectTerritories {
 
-    elements: Array<any> = [];
-    elementvalues: Array<any> = [];
+    public elements: any[] = [];
+    public elementvalues: any[] = [];
 
     constructor(private backend: backend, private metadata: metadata, private model: model, private language: language, private modal: modal) {
         this.loadTerritories();
     }
 
-    loadTerritories(){
-        this.backend.getRequest('spiceaclterritories/core/orgobjecttypes/bymodule/'+this.model.getFieldValue('spiceacltype_module')).subscribe(territoryData =>{
+    public loadTerritories() {
+        this.backend.getRequest('module/SpiceACLTerritories/core/territorytypes/bymodule/'+this.model.getFieldValue('spiceacltype_module')).subscribe(territoryData => {
             this.elements = territoryData.elements;
             this.elementvalues = territoryData.elementvalues;
-        })
+        });
     }
 
-    getValue(id){
+    public getValue(id) {
         let values = this.model.getFieldValue('territoryelementvalues');
-        for(let value of values){
-            if(value.spiceaclterritoryelement_id == id){
+        for(let value of values) {
+            if(value.spiceaclterritoryelement_id == id) {
                 let parsedValue = JSON.parse(value.value);
                 return parsedValue.join(', ');
             }
@@ -53,23 +53,24 @@ export class ACLObjectsManagerObjectTerritories {
         return '';
     }
 
-    setValue(id){
+    public setValue(id) {
 
         // gather available values
         let availableValues = [{value: '*', description:'*'}];
-        for(let elementvalue of this.elementvalues){
-            if(elementvalue.spiceaclterritoryelement_id == id)
+        for(let elementvalue of this.elementvalues) {
+            if(elementvalue.spiceaclterritoryelement_id == id) {
                 availableValues.push({
                     value: elementvalue.elementvalue,
                     description: elementvalue.elementdescription,
-                })
+                });
+            }
         }
 
         // get the value
         let currentValues = [];
         let values = this.model.getFieldValue('territoryelementvalues');
-        for(let value of values){
-            if(value.spiceaclterritoryelement_id == id){
+        for(let value of values) {
+            if(value.spiceaclterritoryelement_id == id) {
                 currentValues = JSON.parse(value.value);
             }
         }
@@ -80,14 +81,14 @@ export class ACLObjectsManagerObjectTerritories {
             modalRef.instance.setValues.subscribe(setValues => {
                 let valueSet = false;
                 let values = this.model.getFieldValue('territoryelementvalues');
-                for(let value of values){
-                    if(value.spiceaclterritoryelement_id == id){
+                for(let value of values) {
+                    if(value.spiceaclterritoryelement_id == id) {
                         value.value = JSON.stringify(setValues);
                         valueSet = true;
                     }
-                };
+                }
                 // if value was not found yet ... add it
-                if(!valueSet){
+                if(!valueSet) {
                     values.push({
                         spiceaclobject_id: this.model.id,
                         spiceaclterritoryelement_id: id,
@@ -100,8 +101,8 @@ export class ACLObjectsManagerObjectTerritories {
         });
     }
 
-    get disabled(){
-        return this.model.getFieldValue('status') == 'r'
+    get disabled() {
+        return this.model.getFieldValue('status') == 'r';
     }
 
 }

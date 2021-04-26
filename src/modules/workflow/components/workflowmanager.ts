@@ -62,7 +62,7 @@ export class WorkflowManager {
 
     private getWorkflows() {
         this.workflowdefinitions = [];
-        this.backend.getRequest('WorkflowDefinitons/' + this.current_module).subscribe(wfd => {
+        this.backend.getRequest('module/WorkflowDefinitions/' + this.current_module).subscribe(wfd => {
             this.workflowdefinitions = wfd;
         });
     }
@@ -95,7 +95,7 @@ export class WorkflowManager {
 
     private save() {
         let data = this.utils.spiceModel2backend('WorkflowDefinitions', this._current_workflow_data);
-        this.backend.postRequest('WorkflowDefinitons/' + this.current_module + '/' + this._current_workflow, {}, data).subscribe(
+        this.backend.postRequest('module/WorkflowDefinitions/' + this.current_module + '/' + this._current_workflow, {}, data).subscribe(
             (success) => {
                 this.toast.sendToast('saved');
             },

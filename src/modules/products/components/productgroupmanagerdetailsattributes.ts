@@ -49,7 +49,7 @@ export class ProductGroupManagerDetailsAttributes implements OnInit, OnDestroy {
     }
 
     public ngOnInit() {
-        this.backend.getRequest(`productgroups/${this.model.id}/productattributes/direct`).subscribe(res => {
+        this.backend.getRequest(`module/ProductGroups/${this.model.id}/ProductAttributes/direct`).subscribe(res => {
             this.attributes = this.sortAttributes(res) || [];
             this.isLoading = false;
         }, err => this.isLoading = false);

@@ -68,7 +68,7 @@ export class ACLTerritorriesManagerTerritory implements OnChanges {
 
         // load type
         if (this.territorytype != '' && this.territorytype != this.loadedterritorytype) {
-            this.backend.getRequest('spiceaclterritories/core/orgobjecttypes/' + this.territorytype).subscribe(territorrytypedetails => {
+            this.backend.getRequest('module/SpiceACLTerritories/core/territorytypes/' + this.territorytype).subscribe(territorrytypedetails => {
                 this.territorrytypedetails = territorrytypedetails;
                 this.loadedterritorytype = this.territorytype;
             });

@@ -91,7 +91,7 @@ export class ProductGroupManagerTree implements OnDestroy {
 
     private getProductGroups(parentId = '') {
         this.isLoading = parentId;
-        this.backend.getRequest('productgroups/tree' + (parentId ? '/' + parentId : '')).subscribe(items => {
+        this.backend.getRequest('module/ProductGroups/tree' + (parentId ? '/' + parentId : '')).subscribe(items => {
             for (let item of items) {
                 item.expanded = false;
                 item.loaded = false;

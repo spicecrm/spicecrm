@@ -26,36 +26,36 @@ import {navigation} from '../../../services/navigation.service';
 })
 export class AclterritorriesTypesmanagerTypes {
 
-    loading: boolean = false;
-    types: Array<any> = [];
-    _selectedType: any = {};
-    @Output() selectedType: EventEmitter<any> = new EventEmitter<any>();
+    public loading: boolean = false;
+    public types: any[] = [];
+    public _selectedType: any = {};
+    @Output() public selectedType: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(private backend: backend, private modal: modal, private language: language, private modelutilities: modelutilities) {
         this.loadElements();
     }
 
-    loadElements() {
+    public loadElements() {
         this.loading = true;
-        this.backend.getRequest('spiceaclterritories/core/orgobjecttypes').subscribe(types => {
+        this.backend.getRequest('module/SpiceACLTerritories/core/territorytypes').subscribe(types => {
             this.loading = false;
             this.types = types;
 
             this.types.sort((a, b) => {
                 return a.name > b.name ? 1 : -1;
-            })
-        })
+            });
+        });
     }
 
-    selectType(type) {
+    public selectType(type) {
         this._selectedType = type;
         this.selectedType.emit(type.id);
     }
 
-    deleteType(type) {
+    public deleteType(type) {
         this.modal.confirm('Delete Type', 'Delete').subscribe(response => {
             if (response) {
-                this.backend.deleteRequest('spiceaclterritories/core/orgobjecttypes/' + type.id).subscribe(success => {
+                this.backend.deleteRequest('module/SpiceACLTerritories/core/territorytypes/' + type.id).subscribe(success => {
                     this.types.some((element, index) => {
                         if (element.id == type.id) {
                             this.types.splice(index, 1);
@@ -64,16 +64,15 @@ export class AclterritorriesTypesmanagerTypes {
                                 this._selectedType = undefined;
                                 this.selectType('');
                             }
-
                             return true;
                         }
-                    })
-                })
+                    });
+                });
             }
         });
     }
 
-    addType() {
+    public addType() {
         this.modal.openModal('ACLTerritorriesElementmanagerElementsAddModal').subscribe(modalRef => {
             modalRef.instance.newelementname.subscribe(newName => {
 
@@ -82,11 +81,11 @@ export class AclterritorriesTypesmanagerTypes {
                     name: newName
                 };
 
-                this.backend.postRequest('spiceaclterritories/core/orgobjecttypes/' + newType.id, {}, newType).subscribe(elements => {
+                this.backend.postRequest('module/SpiceACLTerritories/core/territorytypes/' + newType.id, {}, newType).subscribe(elements => {
                     this.types.push(newType);
                     this.selectType(newType);
                 });
-            })
-        })
+            });
+        });
     }
 }

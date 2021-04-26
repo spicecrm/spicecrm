@@ -57,7 +57,7 @@ export class SalesPlanningToolTree implements OnInit {
             characteristics: this.planningService.selectedCharacteristicIds,
             undoneOnly: this.unDoneOnly
         };
-        this.backend.getRequest(`module/SalesPlanningNodes/version/${this.planningService.versionId}/NodesList`, params)
+        this.backend.getRequest(`module/SalesPlanningNodes/${this.planningService.versionId}/nodeslist`, params)
             .subscribe(nodeItems => {
                 if (nodeItems) {
                     for (let item of nodeItems) {

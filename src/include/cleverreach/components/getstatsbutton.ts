@@ -37,7 +37,7 @@ export class GetStatsButton {
 
     public execute() {
         let stopper = this.modal.await('Loading');
-        this.backend.getRequest(`CleverReach/CampaignTasks/${this.model.id}/report`)
+        this.backend.getRequest(`channels/emarketing/cleverreach/${this.model.id}/report`)
             .subscribe(response => {
                     this.toast.sendToast(this.language.getLabel('LBL_COMPLETED'));
                     this.report = response;

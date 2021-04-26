@@ -31,7 +31,7 @@ export class AdministrationDictRepairItem {
      */
     public executeDB() {
         let await = this.modal.await(this.language.getLabel('LBL_LOADING'));
-        this.backend.getRequest('repair/sql').subscribe(result => {
+        this.backend.getRequest('admin/repair/sql').subscribe(result => {
             await.emit(true);
             this.sql = result.sql;
             this.wholeSQL = result.wholeSQL;

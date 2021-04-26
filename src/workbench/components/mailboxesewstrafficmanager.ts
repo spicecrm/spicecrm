@@ -53,7 +53,7 @@ export class MailboxesEWSTrafficManager {
     private getMailboxes(): Observable<any> {
         let responseSubject = new Subject<any>();
         let modelData = this.model.utils.spiceModel2backend('Mailboxes', this.model.data);
-        this.backend.postRequest("mailboxes/ews/getmailboxfolders", {}, {data: modelData})
+        this.backend.postRequest("module/Mailboxes/ews/folders", {}, {data: modelData})
             .subscribe((response: any) => {
                 if (response.result === true) {
                     responseSubject.next(response);

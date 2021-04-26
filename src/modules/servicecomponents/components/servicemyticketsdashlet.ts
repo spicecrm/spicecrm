@@ -25,7 +25,7 @@ export class ServiceMyTicketsDashlet implements OnInit{
     }
 
     ngOnInit(){
-        this.backend.getRequest('modules/ServiceTickets/myopenitems').subscribe(tickets => {
+        this.backend.getRequest('module/ServiceTickets/myopenitems').subscribe(tickets => {
             this.tickets = tickets.tickets;
             this.totalcount = tickets.totalcount;
         });
