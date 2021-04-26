@@ -439,7 +439,11 @@ export class navigation {
                         }
 
                         // for all we did not catch broadcast the model save event
-                        this.broadcast.broadcastMessage('model.save', {id: event.data.id, module: event.data.module, data: modelData});
+                        this.broadcast.broadcastMessage('model.save', {
+                            id: event.data.id,
+                            module: event.data.module,
+                            data: modelData
+                        });
                     });
                 }
 
@@ -505,6 +509,8 @@ export class navigation {
         let id = ++this.modelregisterCounter;
         this.modelregister.push({id: id, model: model, tabid: this.activeTab});
 
+        this.socket.joinRoom('module', Md5.hashStr(`${model.module}:${model.id}`).toString());
+
         return id;
     }
 
@@ -513,12 +519,15 @@ export class navigation {
      * @param id The model id.
      */
     public unregisterModel(id: number): void {
-        this.modelregister.some((model, i) => {
-            if (model.id === id) {
-                this.modelregister.splice(i, 1);
-                return true;
+        let modelIndex = this.modelregister.findIndex(m => m.id == id);
+        if (modelIndex >= 0) {
+            let module = this.modelregister[modelIndex].model.module;
+            let id = this.modelregister[modelIndex].model.id;
+            if (this.modelregister.filter(m => m.id != id && m.model.module == module && m.model.id == id).length == 0) {
+                this.socket.leaveRoom('module', Md5.hashStr(`${module}:${id}`).toString());
             }
-        });
+            this.modelregister.splice(modelIndex, 1);
+        }
     }
 
     /**
