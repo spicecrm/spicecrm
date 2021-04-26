@@ -332,7 +332,7 @@ export class model implements OnDestroy {
         switch (event.type) {
             case 'update':
                 // check that we have a match on id and moduel and come from another session
-                if(event.data.id == this.id && event.data.module == this.module && event.data.sessionId != this.session.authData.sessionId) {
+                if (event.data.id == this.id && event.data.module == this.module && event.data.sessionId != this.session.authData.sessionId) {
                     if (!this.isEditing) {
                         this.getData(false, '', false);
                     }
@@ -356,9 +356,6 @@ export class model implements OnDestroy {
     set id(id) {
         this._id = id;
         this.registerModel();
-        if (!!id && !!this.module) {
-            this.socket.joinRoom('module', `${this.module}:${this.id}`);
-        }
     }
 
     /*
@@ -606,7 +603,7 @@ export class model implements OnDestroy {
      * @param value
      *
      */
-    public setFieldStatus(field: string, status: 'editable'|'invalid'|'required'|'incomplete'|'disabled'|'hidden'|'readonly', value: boolean = true): boolean {
+    public setFieldStatus(field: string, status: 'editable' | 'invalid' | 'required' | 'incomplete' | 'disabled' | 'hidden' | 'readonly', value: boolean = true): boolean {
         try {
             let stati = this._fields_stati[field];
             if (stati[status] && !value) {
@@ -1728,11 +1725,9 @@ export class model implements OnDestroy {
 
 
     public ngOnDestroy(): void {
-        if (!!this.module && !!this.id) {
-            this.socket.leaveRoom('module', `${this.module}:${this.id}`);
+        if (this.modelRegisterId) {
+            this.navigation.unregisterModel(this.modelRegisterId);
         }
-        this.navigation.unregisterModel(this.modelRegisterId);
-
 
         // unsubscribe from any subscriptions we might have
         this.subscriptions.unsubscribe();
