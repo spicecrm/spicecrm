@@ -7,6 +7,7 @@ import {backend} from "../../../services/backend.service";
 import {language} from "../../../services/language.service";
 import {fts} from "../../../services/fts.service";
 import {metadata} from "../../../services/metadata.service";
+import {GroupwareService} from "../services/groupware.service";
 
 declare var _: any;
 
@@ -52,8 +53,28 @@ export class GroupwareEmailArchivePaneSearch {
         private backend: backend,
         private language: language,
         private metadata: metadata,
+        private groupware: GroupwareService,
         private fts: fts
     ) {
+    }
+
+    /**
+     * select/deselect all attachments based on the checkbox boolean value
+     * @param val
+     */
+    set selectAll(val) {
+        if (val) {
+            this.groupware.archiveto = this.beans.slice();
+        } else {
+            this.groupware.archiveto = [];
+        }
+    }
+
+    /**
+     * @return true if all attachments are selected
+     */
+    get selectAll() {
+        return this.groupware.archiveto.length > 0 && this.groupware.archiveto.length == this.beans.length;
     }
 
     /**

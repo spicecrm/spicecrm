@@ -9,6 +9,7 @@ import {GSuiteBrokerService} from "./gsuitebroker.service";
 import {GSuiteAttachmentI, GSuiteMessageI} from "../interfaces/gsuite.interfaces";
 import {Router} from "@angular/router";
 import {model} from "../../../services/model.service";
+import {metadata} from "../../../services/metadata.service";
 
 declare var _: any;
 
@@ -35,6 +36,7 @@ export class GSuiteGroupware extends GroupwareService implements OnDestroy {
     constructor(public backend: backend,
                 private gSuiteBroker: GSuiteBrokerService,
                 public model: model,
+                public metadata: metadata,
                 private router: Router) {
 
         super(backend, model);
@@ -271,8 +273,12 @@ export class GSuiteGroupware extends GroupwareService implements OnDestroy {
 
             if (!!res.thread_id) {
                 this.threadId = res.thread_id;
+                this.emailId = '';
                 if (this.router.routerState.snapshot.url != '/groupware/mailitem') {
-                    this.router.navigate(['/groupware/details']);
+
+                    const config = this.metadata.getComponentConfig('GSuitePane');
+                    const mainRoute = !config.mainRoute ? '/groupware/details' : config.mainRoute;
+                    this.router.navigate([mainRoute]);
                 }
             } else if (res.hasOwnProperty('thread_id') && res.thread_id == undefined) {
                 this.threadId = undefined;

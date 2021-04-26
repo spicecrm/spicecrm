@@ -37,7 +37,7 @@ export class QuestionRenderText extends QuestionRenderBasic implements OnInit {
     }
 
     private onTextChange(): boolean {
-        return this.questionnaireParticipation.setAnswerValue( this.questionId, this.qp.answers[this.questionId].optionlessAnswerValue );
+        return this.questionnaireParticipation.setAnswerValue( this.questionId, this.qp.answers[this.questionId].answer_value );
     }
 
     private forLoopArray( numElements: number ): any[] {

@@ -9,6 +9,7 @@ import {GroupwareService} from '../../../include/groupware/services/groupware.se
 import {GSuiteBrokerService} from "../services/gsuitebroker.service";
 import {GSuiteGroupware} from "../services/gsuitegroupware.service";
 import {model} from "../../../services/model.service";
+import {metadata} from "../../../services/metadata.service";
 
 /**
  * Main container for the SpiceCRM GSuite add-in. This gets rendered by the loader.
@@ -31,6 +32,7 @@ export class GSuitePane implements OnInit {
                 private router: Router,
                 private broadcast: broadcast,
                 private model: model,
+                private metadata: metadata,
                 public session: session) {
     }
 
@@ -43,10 +45,15 @@ export class GSuitePane implements OnInit {
             if (!res) return;
 
             this.groupware.threadId = res;
-            if (this.router.routerState.snapshot.url == '/groupware/details') {
+            this.groupware.emailId = '';
+
+            const config = this.metadata.getComponentConfig('GSuitePane');
+            const mainRoute = !config.mainRoute ? '/groupware/details' : config.mainRoute;
+
+            if (this.router.routerState.snapshot.url == mainRoute) {
                 this.broadcast.broadcastMessage('groupware.itemchanged');
             } else {
-                this.router.navigate(['/groupware/details']);
+                this.router.navigate([mainRoute]);
             }
         });
     }
