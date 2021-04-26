@@ -7,7 +7,7 @@
             <span *ngIf="!mainfieldsetfields">{{model.data.summary_text}}</span>
             <ul *ngIf="mainfieldsetfields" class="slds-list_horizontal slds-has-dividers_right slds-truncate">
                 <ng-container *ngFor="let fieldsetitem of mainfieldsetfields">
-                    <li *ngIf="model.getField(fieldsetitem.field)" class="slds-item">
+                    <li *ngIf="model.getField(fieldsetitem.field)" class="slds-item slds-size--1-of-1">
                         <field-container [field]="fieldsetitem.field" [fieldconfig]="fieldsetitem.fieldconfig" fielddisplayclass="slds-truncate"></field-container>
                     </li>
                 </ng-container>
