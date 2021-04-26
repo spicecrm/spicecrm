@@ -56,7 +56,11 @@ export class MailboxesManager {
         private view: view,
         private configuration: configurationService
     ) {
+        // initialize the modellist service
         this.modellist.initialize('Mailboxes');
+
+        // force the data load
+        this.modellist.getListData();
 
         this.model.module = "Mailboxes";
         this.view.isEditable = true;
