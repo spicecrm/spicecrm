@@ -119,7 +119,7 @@ export class GlobalHeaderSearch {
 
                     // navigate tot he search view
                     if (this.searchTerm.length > 0) {
-                        this.router.navigate(['/search/' + btoa(this.searchTerm)]);
+                        this.router.navigate(['/search/' + encodeURIComponent(btoa(this.searchTerm))]);
                     }
                 }
                 break;
