@@ -18,6 +18,7 @@ import {modelutilities} from '../../../services/modelutilities.service';
 import {Observable, Subject, Subscription} from "rxjs";
 import {telephony} from "../../../services/telephony.service";
 import {session} from "../../../services/session.service";
+import {socket} from "../../../services/socket.service";
 
 import {telephonyCallI} from "../../../services/interfaces.service";
 
@@ -28,7 +29,6 @@ declare var moment: any;
 })
 export class StarfaceToolbarIndicator implements OnDestroy {
 
-    private socket: any;
 
     private username: string;
 
@@ -37,15 +37,6 @@ export class StarfaceToolbarIndicator implements OnDestroy {
      */
     private starfacestatus: 'initial' | 'connecting' | 'connected' | 'disconnected' = 'initial';
 
-    /**
-     * the url for the socket connection from the backend
-     */
-    private socketurl: string;
-
-    /**
-     * a unique id for the server to connect to the socket
-     */
-    private socketid: string;
 
     /**
      * the socket status
@@ -77,6 +68,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
         private backend: backend,
         private toast: toast,
         private session: session,
+        private socket: socket,
         private telephony: telephony
     ) {
         this.initialize();
@@ -85,7 +77,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
 
     public ngOnDestroy() {
         if (this.starfacestatus == 'connected') {
-            this.socket.disconnect();
+            this.disconnectSocket();
         }
         this.subscriptions.unsubscribe();
 
@@ -136,10 +128,6 @@ export class StarfaceToolbarIndicator implements OnDestroy {
      * get the prefs and login
      */
     private initialize() {
-
-        let config = this.configuration.getCapabilityConfig('socket');
-        this.socketurl = config.socket_frontend;
-        this.socketid = config.socket_id;
 
         this.getPreferences().subscribe(username => {
             this.login();
@@ -255,11 +243,19 @@ export class StarfaceToolbarIndicator implements OnDestroy {
      * connect to the socket
      */
     private connectSocket() {
-        // ensure we have an URL
-        if (!this.socketurl) {
-            return false;
-        }
 
+        this.subscriptions.add(
+            this.socket.initializeNamespace('starface').subscribe(event => {
+                this.handleCallEvent(event.data);
+            })
+        );
+
+        this.socket.joinRoom('starface', 'starface' + this.username);
+
+        // set to socket connected
+        this.socketconnected = true;
+
+        /*
         this.socket = io(`${this.socketurl}?sysid=${this.socketid}&room=starface${this.username}&token=${this.session.authData.sessionId}`);
         this.socket.on('connect', (socket) => {
             this.socketconnected = true;
@@ -270,6 +266,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
         this.socket.on('message', (data) => {
             this.handleCallEvent(data.message);
         });
+        */
 
     }
 
@@ -278,8 +275,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
      */
     private disconnectSocket() {
         if (this.socket) {
-            this.socket.destroy();
-            this.socket = undefined;
+            this.socket.leaveRoom('starface', this.username);
             this.socketconnected = false;
         }
     }
