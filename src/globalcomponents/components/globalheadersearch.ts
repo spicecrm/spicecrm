@@ -117,7 +117,7 @@ export class GlobalHeaderSearch {
                     // close the dropdown
                     this.showRecent = false;
 
-                    // navigate tot he search view
+                    // navigate to the search view
                     if (this.searchTerm.length > 0) {
                         this.router.navigate(['/search/' + encodeURIComponent(btoa(this.searchTerm))]);
                     }
