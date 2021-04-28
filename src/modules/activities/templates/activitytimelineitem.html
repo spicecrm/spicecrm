@@ -19,8 +19,8 @@
                         </ng-template>
                     </h3>
                 </div>
-                <div style="border-radius: 10px; height: 18px; min-width: 135px;" class=" slds-timeline__date slds-p-horizontal--x-small" [ngClass]="{'slds-theme--error' : isPast, 'slds-theme--warning' : isToday}">
-                    <div class="slds-align--absolute-center">{{starttime}} | {{startdate}}</div>
+                <div style="border-radius: 10px; height: 18px;" class="slds-timeline__date slds-p-horizontal--x-small slds-theme--shade" [title]="startdate + ' ' + starttime" [ngClass]="{'slds-theme--error' : isPast, 'slds-theme--warning' : isToday}">
+                    <div class="slds-align--absolute-center">{{activitiyDate}}</div>
                 </div>
                 <div class="slds-timeline__actions slds-timeline__actions_inline">
                     <object-action-menu class="slds-show--medium" *ngIf="showtoolset" [buttonsize]="'x-small'" [actionset]="actionset"></object-action-menu>
