@@ -211,7 +211,7 @@ export class GSuiteGroupware extends GroupwareService implements OnDestroy {
         this.getAddressArray().subscribe(res => {
 
             res = res.filter((value, index, self) => self.indexOf(value) === index);
-            const body = {addresses: res, thread_id: this.threadId};
+            const body = {addresses: res};
             this.relatedBeans = [];
 
             this.backend.postRequest('module/EmailAddress/searchbeans', {}, body).subscribe(
@@ -262,7 +262,7 @@ export class GSuiteGroupware extends GroupwareService implements OnDestroy {
 
             if (!!res.emailAddresses && res.emailAddresses.length > 0) {
 
-                const body = {addresses: res.emailAddresses, thread_id: this.threadId};
+                const body = {addresses: res.emailAddresses};
 
                 this.backend.postRequest('module/EmailAddress/searchbeans', {}, body).subscribe(
                     (beans: any) => {

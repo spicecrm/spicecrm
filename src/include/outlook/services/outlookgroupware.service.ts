@@ -215,12 +215,9 @@ export class OutlookGroupware extends GroupwareService {
      * Returns the email adresses array and the message ID (Outlook ID) of the selected email.
      */
     public getEmailAddressData() {
-        let data = {
-            addresses: this.getAddressArray(),
-            message_id: Office.context.mailbox.item.itemId,
+        return {
+            addresses: this.getAddressArray()
         };
-
-        return data;
     }
 
     /**

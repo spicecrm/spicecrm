@@ -126,6 +126,10 @@ export class OutlookLoginPane {
 
     private goToSettings() {
         this.promptUser = true;
+        // empty credentials saved in office container
+        this.outlookConfiguration.username = '';
+        this.outlookConfiguration.password = '';
+        this.outlookConfiguration.saveSettings();
 
         this.selectedsite = this.cookie.getValue('spiceuibackend');
         if (this.selectedsite) {
