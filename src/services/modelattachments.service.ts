@@ -321,7 +321,7 @@ export class modelattachments {
 
         // determine the upload URL
         // if we just upload or also link to a bean
-        let url = 'spiceAttachments';
+        let url = 'common/spiceattachments';
         if (this.module && this.id) {
             url += `/module/${this.module}/${this.id}`;
         }
@@ -393,7 +393,7 @@ export class modelattachments {
 
         // determine the upload URL
         // if we just upload or also link to a bean
-        let url = 'spiceAttachments';
+        let url = 'common/spiceattachments';
         if (this.module && this.id) {
             url += `/module/${this.module}/${this.id}`;
         }

@@ -32,7 +32,7 @@
                     </div>
                 </div>
                 <div class="slds-scrollable" style="height: 100%;" [@slideInOut2]="expanded? 'open': 'closed'">
-                    <object-action-output-bean-modal-email-content #emailcontent *ngIf="showsendemail && contentForHandBack" [fieldset]="fieldset_email" [filelist]="filelist" [parent]="model" (email_sent)="emailSent()"></object-action-output-bean-modal-email-content>
+                    <object-action-output-bean-modal-email-content #emailcontent *ngIf="emailInitialized" [fieldset]="fieldset_email" [filelist]="filelist" [parent]="model" (email_sent)="emailSent()"></object-action-output-bean-modal-email-content>
                 </div>
             </div>
         </div>

@@ -1,7 +1,7 @@
 /**
  * @module ObjectComponents
  */
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
@@ -14,7 +14,7 @@ import {session} from "../../../services/session.service";
     templateUrl: './src/modules/outputtemplates/templates/objectactionoutputbeanmodalemailcontent.html',
     providers: [view, model]
 })
-export class ObjectActionOutputBeanModalEmailContent {
+export class ObjectActionOutputBeanModalEmailContent implements OnChanges {
 
     /**
      * the fieldset
@@ -27,6 +27,11 @@ export class ObjectActionOutputBeanModalEmailContent {
     @Input() public filelist: any = {};
 
     /**
+     * the content for the attachment
+     */
+    @Input() public attachmentContent: string;
+
+    /**
      * the parent model
      */
     @Input() public parent: any = {};
@@ -35,6 +40,13 @@ export class ObjectActionOutputBeanModalEmailContent {
      * email sent
      */
     @Output() public email_sent: EventEmitter<string> = new EventEmitter<string>();
+
+    /**
+     * reference to the dynamic aded compontent
+     *
+     * @private
+     */
+    private attachmentsPanelRef: any;
 
     /**
      * inidcates that we are sending
@@ -54,6 +66,14 @@ export class ObjectActionOutputBeanModalEmailContent {
     public ngOnInit() {
         this.setModelData();
         this.setViewData();
+    }
+
+    public ngOnChanges(changes: SimpleChanges) {
+        if (changes.filelist) {
+            if (this.attachmentsPanelRef) {
+                this.attachmentsPanelRef.instance.setUploadFiles(this.filelist);
+            }
+        }
     }
 
     /**
@@ -84,7 +104,6 @@ export class ObjectActionOutputBeanModalEmailContent {
         this.view.setEditMode();
         this.view.isEditable = true;
     }
-
 
 
     public sendEmail() {

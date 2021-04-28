@@ -14,7 +14,7 @@ import {
     Injector,
     Optional,
     SkipSelf,
-    AfterViewInit
+    AfterViewInit, OnChanges, SimpleChanges
 } from '@angular/core';
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
@@ -108,10 +108,30 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
     }
 
     /**
+     * sets new uploadfiles, removes any files that have been in the upload file before and are changed
+     *
+     * @param newUploadFiles
+     */
+    public setUploadFiles(newUploadFiles) {
+
+        // remove current upload files
+        for (let f of this.uploadfiles) {
+            let ff = this._modelattachments.files.find(af => af.filename == f.name);
+            if (ff) {
+                this._modelattachments.deleteAttachment(ff.id);
+            }
+        }
+
+        // set the new upload files
+        this.uploadfiles = newUploadFiles;
+        this.loadInputFiles();
+    }
+
+    /**
      * load the attachments .. unless the service is provided from teh parent .. then the parent is responsible for the load
      */
     public ngAfterViewInit() {
-        if(!this.parentmodelattachments) {
+        if (!this.parentmodelattachments) {
             setTimeout(() => this.loadFiles(), 10);
         }
     }
