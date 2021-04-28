@@ -84,7 +84,9 @@ export class SystemGooglePlacesAutocomplete implements OnDestroy {
     private doAutocomplete() {
         if (this.autocompletesearchterm.length > 5) {
             this.isSearching = true;
-            this.backend.getRequest('channels/groupware/gsuite/places/autocomplete/' + this.autocompletesearchterm).subscribe((res: any) => {
+            const term = encodeURIComponent(this.autocompletesearchterm);
+
+            this.backend.getRequest('channels/groupware/gsuite/places/autocomplete/' + term).subscribe((res: any) => {
                     if (res.predictions && res.predictions.length > 0) {
                         this.autocompleteResults = res.predictions;
                         this.openSearchResults();

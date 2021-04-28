@@ -464,7 +464,7 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
             }
             const userAddress = `${user.address_street}, ${user.address_postalcode} ${user.address_city}, ${user.address_country}`;
 
-            this.backend.getRequest(`channels/groupware/gsuite/places/autocomplete/${userAddress}`)
+            this.backend.getRequest(`channels/groupware/gsuite/places/autocomplete/${encodeURIComponent(userAddress)}`)
                 .subscribe((res: any) => {
                     if (!!res.predictions && res.predictions.length > 0) {
                         const directionStart: RoutePointI = {placeId: res.predictions[0].place_id};
