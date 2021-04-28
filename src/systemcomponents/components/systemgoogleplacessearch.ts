@@ -204,8 +204,8 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
     private doAutocomplete() {
         if (this.autocompletesearchterm.length > 3) {
             this.isSearching = true;
-            const searchTerm = encodeURIComponent(btoa(this.autocompletesearchterm));
-            const locationBias = encodeURIComponent(btoa(this.locationbias));
+            const searchTerm = encodeURIComponent(this.autocompletesearchterm);
+            const locationBias = encodeURIComponent(this.locationbias);
 
             this.backend.getRequest(`channels/groupware/gsuite/places/search/${searchTerm}/${locationBias}`).subscribe(
                 (res: any) => {
