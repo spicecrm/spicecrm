@@ -36,15 +36,14 @@ import {ObjectActionOutputBeanModalEmailContent} from "./objectactionoutputbeanm
 export class ObjectActionOutputBeanModal {
 
 
-
     /**
      * this is the child component (the email content )
      */
-    // @ViewChild(ObjectActionOutputBeanModalEmailContent, {static: true}) public emailContent;
+        // @ViewChild(ObjectActionOutputBeanModalEmailContent, {static: true}) public emailContent;
     @ViewChild(ObjectActionOutputBeanModalEmailContent) public emailContent: ObjectActionOutputBeanModalEmailContent;
 
     public modalTitle: string;
-    public forcedFormat: 'html'|'pdf';
+    public forcedFormat: 'html' | 'pdf';
     public noDownload = false;
     public handBack: EventEmitter<any>;
     public buttonText: string;
@@ -81,7 +80,6 @@ export class ObjectActionOutputBeanModal {
     private loading_output: boolean = false;
 
 
-
     /**
      * fieldset of the email area
      */
@@ -100,11 +98,20 @@ export class ObjectActionOutputBeanModal {
     /**
      * flag to show the email-content
      */
-    private showsendemail: boolean = true;
+    private showsendemail: boolean = false;
+
     /**
      * expanded email-content flag
      */
     private expanded: boolean = false;
+
+    /**
+     * keeps a flag if the email panel has been initialized
+     * this is set so we can avoid that the email pnale is loaded automatically wasting bandwith if we donot need it
+     *
+     * @private
+     */
+    private emailInitialized: boolean = false;
 
     /**
      * the blobURL. This is handled internally. When the data is sent this is created so the object can be rendered in the modal
@@ -143,9 +150,9 @@ export class ObjectActionOutputBeanModal {
      * Set the output format in case it is given from outside
      */
     private setModalData() {
-        if ( !this.modalTitle ) this.modalTitle = this.language.getLabel(this.language.getLabel('LBL_OUTPUT_TEMPLATE'));
-        if ( !this.buttonText ) this.buttonText = this.language.getLabel( this.noDownload  ? 'LBL_OK':'LBL_DOWNLOAD' );
-        if ( this.forcedFormat ) this._selected_format = this.forcedFormat;
+        if (!this.modalTitle) this.modalTitle = this.language.getLabel(this.language.getLabel('LBL_OUTPUT_TEMPLATE'));
+        if (!this.buttonText) this.buttonText = this.language.getLabel(this.noDownload ? 'LBL_OK' : 'LBL_DOWNLOAD');
+        if (this.forcedFormat) this._selected_format = this.forcedFormat;
     }
 
     /**
@@ -156,7 +163,7 @@ export class ObjectActionOutputBeanModal {
         for (let field in fields) {
             if (fields[field].type == 'relate' && fields[field].module == 'OutputTemplates') {
                 let template = this.templates.find(template => template.id == this.model.getFieldValue(fields[field].id_name));
-                if(template) {
+                if (template) {
                     this.selected_template = template;
                 }
                 break;
@@ -200,8 +207,8 @@ export class ObjectActionOutputBeanModal {
             case 'pdf':
                 this.backend.getRequest(`module/OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf/base64`).subscribe(
                     pdf => {
-                        let blob = this.datatoBlob( atob( pdf.content ) );
-                        this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl( URL.createObjectURL( blob ) );
+                        let blob = this.datatoBlob(atob(pdf.content));
+                        this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
                         this.contentForHandBack = pdf.content;
                         this.setEmailAttachmentData();
                         this.loading_output = false;
@@ -240,16 +247,16 @@ export class ObjectActionOutputBeanModal {
     }
 
     public create() {
-        if ( this.handBack ) this.handBack.emit( { name: this.selected_template.name, content: this.contentForHandBack });
-        if ( this.noDownload ) this.close();
+        if (this.handBack) this.handBack.emit({name: this.selected_template.name, content: this.contentForHandBack});
+        if (this.noDownload) this.close();
         else {
             let fileName = this.model.module + '_' + this.model.data.summary_text + '.pdf';
-            this.modal.openModal( 'SystemLoadingModal' ).subscribe( loadingCompRef => {
+            this.modal.openModal('SystemLoadingModal').subscribe(loadingCompRef => {
                 loadingCompRef.instance.messagelabel = 'MSG_GENERATING_PDF';
                 this.backend.downloadFile(
                     {
                         route: `module/OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf`
-                    }, fileName, 'application/pdf' ).subscribe(
+                    }, fileName, 'application/pdf').subscribe(
                     next => {
                         loadingCompRef.instance.self.destroy();
                         this.close();
@@ -258,7 +265,7 @@ export class ObjectActionOutputBeanModal {
                         loadingCompRef.instance.self.destroy();
                     }
                 );
-            } );
+            });
         }
     }
 
@@ -304,6 +311,11 @@ export class ObjectActionOutputBeanModal {
      * open/close email-content
      */
     private openEmailArea() {
+        if (!this.emailInitialized) {
+            this.emailInitialized = true;
+            this.setEmailAttachmentData();
+        }
+
         this.expanded = !this.expanded;
     }
 
@@ -311,25 +323,14 @@ export class ObjectActionOutputBeanModal {
      * set the filelist for the email attachment panel and reset the email-content
      */
     private setEmailAttachmentData() {
-        this.filelist = [{
-            size: this.contentForHandBack.length,
-            name: this.model.module + '_' + this.model.data.summary_text + '.' + this.selected_format,
-            type: "application/" + this.selected_format,
-            filecontent: this.contentForHandBack
-        }];
-        this.resetEmailComponent();
-    }
-
-    /**
-     * reset the objectactionoutputbeanmodalmailcontent component
-     * simple way to reload child from parent
-     */
-    private resetEmailComponent() {
-        this.showsendemail = false;
-
-        setTimeout(() => {
-            this.showsendemail = true;
-        }, 100);
+        if(this.emailInitialized) {
+            this.filelist = [{
+                size: this.contentForHandBack.length,
+                name: this.model.module + '_' + this.model.data.summary_text + '.' + this.selected_format,
+                type: "application/" + this.selected_format,
+                filecontent: this.contentForHandBack
+            }];
+        }
     }
 
     /**
