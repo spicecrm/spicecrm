@@ -310,7 +310,8 @@ class EmailsKRESTController
     public function parseMsgAttachment($req, $res, $args) {
         $attachmentId = filter_var($args['attachmentId'], FILTER_SANITIZE_STRING);
         $attachment   = json_decode(SpiceAttachments::getAttachment($attachmentId));
-        $email = Email::convertMsgToEmail($attachment->filemd5);
+        $email = BeanFactory::getBean('Emails');
+        $email->convertMsgToEmail($attachment->filemd5);
         $email->save();
         return $res->withJson($email);
     }

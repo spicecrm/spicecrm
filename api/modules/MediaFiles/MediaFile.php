@@ -41,7 +41,7 @@ class MediaFile extends SugarBean {
     }
 
     public function save( $check_notify = false, $fts_index_bean = true ) {
-        
+
 
         if ( isset( $this->file[0])){
             $fileContent = base64_decode($this->file);
@@ -176,8 +176,8 @@ class MediaFile extends SugarBean {
         return file_exists( self::getFolderOfSizes().$mediaId.'.w'.$width );
     }
 
-    function thumbSizeAllowed( $size ) {
-        
+    public static function thumbSizeAllowed( $size ) {
+
         if (( !isset( SpiceConfig::getInstance()->config['media_files_thumb_sizes'] ) or ( count( SpiceConfig::getInstance()->config['media_files_thumb_sizes'] ) === 0 ))
             and !isset( SpiceConfig::getInstance()->config['media_files_thumb_sizes_auto_step'] )) return true;
         if ( isset( SpiceConfig::getInstance()->config['media_files_thumb_sizes'] ) and in_array( $size, SpiceConfig::getInstance()->config['media_files_thumb_sizes'] )) return true;
@@ -191,7 +191,7 @@ class MediaFile extends SugarBean {
     }
 
     function widthAllowed( $width ) {
-        
+
         if (( !isset( SpiceConfig::getInstance()->config['media_files_image_widths'] ) or ( count( SpiceConfig::getInstance()->config['media_files_image_widths'] ) === 0 ))
             and !isset( SpiceConfig::getInstance()->config['media_files_image_widths_auto_step'] )) return true;
         if ( isset( SpiceConfig::getInstance()->config['media_files_image_widths'] ) and in_array( $width, SpiceConfig::getInstance()->config['media_files_image_widths'] )) return true;
@@ -210,7 +210,7 @@ class MediaFile extends SugarBean {
     }
 
     function getNextLargestWidth( $width ) {
-        
+
         if ( isset( SpiceConfig::getInstance()->config['media_files_image_widths'] ) ) {
             sort( SpiceConfig::getInstance()->config['media_files_image_widths'] );
             foreach ( SpiceConfig::getInstance()->config['media_files_image_widths'] as $v )
@@ -228,13 +228,13 @@ class MediaFile extends SugarBean {
         return $width; # $this->width;
     }
 
-    function getBestThumbSize( $size ) {
+    public static function getBestThumbSize( $size ) {
         if ( self::thumbSizeAllowed( $size )) return $size;
         else return self::getNextLargestThumbSize( $size ); # else return self::getNextLargestThumbSize( $size );
     }
 
-    function getNextLargestThumbSize( $size ) {
-        
+    public static function getNextLargestThumbSize( $size ) {
+
         if ( isset( SpiceConfig::getInstance()->config['media_files_thumb_sizes'] ) ) {
             sort( SpiceConfig::getInstance()->config['media_files_thumb_sizes'] );
             foreach ( SpiceConfig::getInstance()->config['media_files_thumb_sizes'] as $v )
@@ -308,7 +308,7 @@ class MediaFile extends SugarBean {
     }
 
     function outputHeaders() {
-        
+
         while ( ob_get_level() && @ob_end_clean() );
         # ??? header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         //header("Pragma: public");
@@ -347,7 +347,7 @@ class MediaFile extends SugarBean {
 
     public static function deleteMedia( $mediaId ) {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance();
         $result = $db->query( 'UPDATE mediafiles SET deleted = 1 WHERE id="'.$mediaId.'"' . ( !$current_user->is_admin ? ' AND user_id="' . $current_user->id . '"' : '' ));
         if ( $db->getAffectedRowCount( $result ))
             if ( $db->getAffectedRowCount( $result )) self::_deleteMediaPhysical( $mediaId );

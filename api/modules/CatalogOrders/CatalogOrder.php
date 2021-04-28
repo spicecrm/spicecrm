@@ -59,9 +59,9 @@ class CatalogOrder extends SugarBean
         return $result;
     }
 
-    public function save($check_notify = false)
+    public function save($check_notify = false, $fts_index_bean = true)
     {
-        
+
 
         if(empty($this->name) || $this->new_with_id === true){
             $this->name = SpiceNumberRanges::getNextNumberForField('CatalogOrders', 'name');
@@ -170,7 +170,7 @@ class CatalogOrder extends SugarBean
 
     public function toEmail($tmpl_id = null)
     {
-        
+
 
         if(!$tmpl_id)
             $tmpl_id = SpiceConfig::getInstance()->config['catalogorders']['email_templ_id'];
@@ -214,7 +214,7 @@ class CatalogOrder extends SugarBean
 
     public function toSpiceAttachment()
     {
-        
+
         $otempl = BeanFactory::getBean('OutputTemplates',$this->outputtemplate_id);
         if($otempl->id != $this->outputtemplate_id)
             return false;

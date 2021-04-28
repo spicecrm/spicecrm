@@ -487,7 +487,7 @@ class SpiceFTSHandler
             $indexResponse = json_decode($indexResponse,true);
             // SPICEUI-100
             // if (!$indexResponse->error) {
-            if (!in_array( 'error' ,$indexResponse)) {
+            if (is_array($indexResponse) && !in_array( 'error' ,$indexResponse)) {
                 // update the date
                 $bean->db->query("UPDATE " . $bean->table_name . " SET date_indexed = '" . $timedate->nowDb() . "' WHERE id = '" . $bean->id . "'");
             }

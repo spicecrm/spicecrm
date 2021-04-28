@@ -1058,7 +1058,7 @@ class ModuleHandler
                 throw (new ForbiddenException('Forbidden to edit record.'))->setErrorCode('noRecordEdit');
         }
 
-        if (isset($query_params['templateId']{0})) $thisBean->newFromTemplate = $query_params['templateId'];
+        if (isset($query_params['templateId']) && strlen($query_params['templateId']) > 0) $thisBean->newFromTemplate = $query_params['templateId'];
 
         if (empty($thisBean->id) && !empty($beanId)) {
             $thisBean->new_with_id = true;
@@ -1152,7 +1152,7 @@ class ModuleHandler
                         $beans = $post_params[$fieldData['name']]['beans'];
                         foreach ($beans as $thisBeanId => $beanData) {
                             $seed = BeanFactory::getBean($relModule, $thisBeanId);
-                            if ($beanData['deleted'] == 0) {
+                            if (empty($beanData['deleted'])) {
                                 // if it does not exist create new bean
                                 if (!$seed) {
                                     $seed = BeanFactory::getBean($relModule);

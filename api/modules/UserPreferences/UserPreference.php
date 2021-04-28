@@ -1,38 +1,38 @@
 <?php
 /*********************************************************************************
-* SugarCRM Community Edition is a customer relationship management program developed by
-* SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
-* 
-* This program is free software; you can redistribute it and/or modify it under
-* the terms of the GNU Affero General Public License version 3 as published by the
-* Free Software Foundation with the addition of the following permission added
-* to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
-* IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
-* OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
-* 
-* This program is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
-* details.
-* 
-* You should have received a copy of the GNU Affero General Public License along with
-* this program; if not, see http://www.gnu.org/licenses or write to the Free
-* Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-* 02110-1301 USA.
-* 
-* You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
-* SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
-* 
-* The interactive user interfaces in modified source and object code versions
-* of this program must display Appropriate Legal Notices, as required under
-* Section 5 of the GNU Affero General Public License version 3.
-* 
-* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
-* these Appropriate Legal Notices must retain the display of the "Powered by
-* SugarCRM" logo. If the display of the logo is not reasonably feasible for
-* technical reasons, the Appropriate Legal Notices must display the words
-* "Powered by SugarCRM".
-********************************************************************************/
+ * SugarCRM Community Edition is a customer relationship management program developed by
+ * SugarCRM, Inc. Copyright (C) 2004-2013 SugarCRM Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by the
+ * Free Software Foundation with the addition of the following permission added
+ * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
+ * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
+ * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with
+ * this program; if not, see http://www.gnu.org/licenses or write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301 USA.
+ *
+ * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
+ * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
+ *
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ *
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ ********************************************************************************/
 namespace SpiceCRM\modules\UserPreferences;
 
 use SpiceCRM\data\SugarBean;
@@ -66,7 +66,7 @@ class UserPreference extends SugarBean
     // Do not actually declare, use the functions statically
     public function __construct(
         User $user = null
-        )
+    )
     {
         parent::__construct();
 
@@ -84,9 +84,9 @@ class UserPreference extends SugarBean
     public function getPreference(
         $name,
         $category = 'global'
-        )
+    )
     {
-        
+
 
         $user = $this->_userFocus;
 
@@ -114,7 +114,7 @@ class UserPreference extends SugarBean
         $category = 'global'
     )
     {
-        
+
 
         $user = $this->_userFocus;
 
@@ -141,12 +141,12 @@ class UserPreference extends SugarBean
      * @param string $category name of the category to retreive, defaults to global scope
      * @return mixed the value of the preference (string, array, int etc)
      */
-    public function getDefaultPreference(
+    public static function getDefaultPreference(
         $name,
         $category = 'global'
-        )
+    )
     {
-        
+
 
         // Doesn't support any prefs but global ones
         if ( $category != 'global' )
@@ -179,7 +179,7 @@ class UserPreference extends SugarBean
         $name,
         $value,
         $category = 'global'
-        )
+    )
     {
         $user = $this->_userFocus;
 
@@ -194,9 +194,9 @@ class UserPreference extends SugarBean
         // preferences changed or a new preference, save it to DB
         if(!isset($_SESSION[$user->user_name.'_PREFERENCES'][$category][$name])
             || (isset($_SESSION[$user->user_name.'_PREFERENCES'][$category][$name]) && $_SESSION[$user->user_name.'_PREFERENCES'][$category][$name] != $value)) {
-                $GLOBALS['savePreferencesToDB'] = true;
-                if(!isset($GLOBALS['savePreferencesToDBCats'])) $GLOBALS['savePreferencesToDBCats'] = [];
-                $GLOBALS['savePreferencesToDBCats'][$category] = true;
+            $GLOBALS['savePreferencesToDB'] = true;
+            if(!isset($GLOBALS['savePreferencesToDBCats'])) $GLOBALS['savePreferencesToDBCats'] = [];
+            $GLOBALS['savePreferencesToDBCats'][$category] = true;
         }
 
         $_SESSION[$user->user_name.'_PREFERENCES'][$category][$name] = $value;
@@ -272,9 +272,9 @@ class UserPreference extends SugarBean
      */
     public function loadPreferences(
         $category = 'global'
-        )
+    )
     {
-        
+
 
         $user = $this->_userFocus;
 
@@ -354,8 +354,8 @@ class UserPreference extends SugarBean
     public function getUserDateTimePreferences()
     {
         global   $timedate;
-$current_user = AuthenticationController::getInstance()->getCurrentUser();
-$db = DBManagerFactory::getInstance();
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $db = DBManagerFactory::getInstance();
 
         $user = $this->_userFocus;
 
@@ -413,9 +413,9 @@ $db = DBManagerFactory::getInstance();
      */
     public function savePreferencesToDB(
         $all = false
-        )
+    )
     {
-        
+
         $GLOBALS['savePreferencesToDB'] = false;
 
         $user = $this->_userFocus;
@@ -425,7 +425,7 @@ $db = DBManagerFactory::getInstance();
 
         LoggerManager::getLogger()->debug('Saving Preferences to DB ' . $user->user_name);
         if(isset($_SESSION[$user->user_name. '_PREFERENCES']) && is_array($_SESSION[$user->user_name. '_PREFERENCES'])) {
-             LoggerManager::getLogger()->debug("Saving Preferences to DB: {$user->user_name}");
+            LoggerManager::getLogger()->debug("Saving Preferences to DB: {$user->user_name}");
             // only save the categories that have been modified or all?
             if(!$all && isset($GLOBALS['savePreferencesToDBCats']) && is_array($GLOBALS['savePreferencesToDBCats'])) {
                 $catsToSave = [];
@@ -460,7 +460,7 @@ $db = DBManagerFactory::getInstance();
      */
     public function resetPreferences(
         $category = null
-        )
+    )
     {
         $user = $this->_userFocus;
 
@@ -509,7 +509,7 @@ $db = DBManagerFactory::getInstance();
         $unset_value = false )
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance();
 
         // Admin-only function; die if calling as a non-admin
         if(!is_admin($current_user)){

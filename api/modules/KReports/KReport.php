@@ -1370,24 +1370,24 @@ class KReport extends SugarBean
 
                     // update object
                     $long_bean->retrieve($thisResult [$long_bean_id . 'id']);
-                    $long_bean->{$this->kQueryArray->fieldNameMap [$mapDetails->longitude] [fieldname]} = $geoCodeResult ['longitude'];
+                    $long_bean->{$this->kQueryArray->fieldNameMap [$mapDetails->longitude]['fieldname']} = $geoCodeResult ['longitude'];
 
                     //2010-12-6 format numbers after mass geocode
-                    $long_bean->format_field($long_bean->field_defs [$this->kQueryArray->fieldNameMap [$mapDetails->longitude] [fieldname]]);
+                    $long_bean->format_field($long_bean->field_defs [$this->kQueryArray->fieldNameMap [$mapDetails->longitude]['fieldname']]);
 
                     // see if we have different beans
                     // should be the exceptionbut we never know
                     if (!$longlatDiff) {
-                        $long_bean->{$this->kQueryArray->fieldNameMap [$mapDetails->latitude] [fieldname]} = $geoCodeResult ['latitude'];
+                        $long_bean->{$this->kQueryArray->fieldNameMap [$mapDetails->latitude]['fieldname']} = $geoCodeResult ['latitude'];
 
                         //2010-12-6 format numbers after mass geocode
-                        $long_bean->format_field($long_bean->field_defs [$this->kQueryArray->fieldNameMap [$mapDetails->latitude] [fieldname]]);
+                        $long_bean->format_field($long_bean->field_defs [$this->kQueryArray->fieldNameMap [$mapDetails->latitude]['fieldname']]);
                     } else {
                         $lat_bean->retrieve($thisResult [$lat_bean_id . 'id']);
-                        $lat_bean->{$this->kQueryArray->fieldNameMap [$mapDetails->latitude] [fieldname]} = $geoCodeResult ['latitude'];
+                        $lat_bean->{$this->kQueryArray->fieldNameMap [$mapDetails->latitude]['fieldname']} = $geoCodeResult ['latitude'];
 
                         //2010-12-6 format numbers after mass geocode
-                        $lat_bean->format_field($lat_bean->field_defs [$this->kQueryArray->fieldNameMap [$mapDetails->latitude] [fieldname]]);
+                        $lat_bean->format_field($lat_bean->field_defs [$this->kQueryArray->fieldNameMap [$mapDetails->latitude]['fieldname']]);
 
                         $lat_bean->save();
                     }

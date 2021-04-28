@@ -682,20 +682,20 @@ class SpiceUIRESTHandler
         $failed = false;
 
         $sql = "INSERT IGNORE INTO sysuimodelvalidations SET
-                  id = '{$data[id]}',
-                  name = '{$data[name]}',
-                  module = '{$data[module]}',
-                  onevents = '".$this->db->quote($data[onevents])."',
+                  id = '{$data['id']}',
+                  name = '{$data['name']}',
+                  module = '{$data['module']}',
+                  onevents = '".$this->db->quote($data['onevents'])."',
                   active = ".(int)$data['active'].",
-                  logicoperator = '{$data[logicoperator]}',
+                  logicoperator = '{$data['logicoperator']}',
                   priority = ".(int)$data['priority'].",
                   deleted = ".(int)$data['deleted']."
                 ON DUPLICATE KEY UPDATE
-                  name = '{$data[name]}',
-                  module = '{$data[module]}',
-                  onevents = '".$this->db->quote($data[onevents])."',
+                  name = '{$data['name']}',
+                  module = '{$data['module']}',
+                  onevents = '".$this->db->quote($data['onevents'])."',
                   active = ".(int)$data['active'].",
-                  logicoperator = '{$data[logicoperator]}',
+                  logicoperator = '{$data['logicoperator']}',
                   priority = ".(int)$data['priority'].",
                   deleted = ".(int)$data['deleted'];
         if( !$this->db->query($sql) ){  $failed = true; $error = 'INSERT INTO sysuimodelvalidations failed!';   }
@@ -703,18 +703,18 @@ class SpiceUIRESTHandler
         if( !$failed ) {
             foreach ($data['conditions'] as $con) {
                 $sql = "INSERT IGNORE INTO sysuimodelvalidationconditions SET
-                      id = '{$con[id]}',
-                      sysuimodelvalidation_id = '{$con[sysuimodelvalidation_id]}',
-                      fieldname = '{$con[fieldname]}',
-                      comparator = '{$con[comparator]}',
-                      valuations = '".$this->db->quote($con[valuations])."',
-                      onchange = '{$con[onchange]}',
+                      id = '{$con['id']}',
+                      sysuimodelvalidation_id = '{$con['sysuimodelvalidation_id']}',
+                      fieldname = '{$con['fieldname']}',
+                      comparator = '{$con['comparator']}',
+                      valuations = '".$this->db->quote($con['valuations'])."',
+                      onchange = '{$con['onchange']}',
                       deleted = ".(int)$con['deleted']."
                     ON DUPLICATE KEY UPDATE
-                      sysuimodelvalidation_id = '{$con[sysuimodelvalidation_id]}',
-                      fieldname = '{$con[fieldname]}',
-                      comparator = '{$con[comparator]}',
-                      valuations = '".$this->db->quote($con[valuations])."',
+                      sysuimodelvalidation_id = '{$con['sysuimodelvalidation_id']}',
+                      fieldname = '{$con['fieldname']}',
+                      comparator = '{$con['comparator']}',
+                      valuations = '".$this->db->quote($con['valuations'])."',
                       onchange = '{$con[onchange]}',
                       deleted = ".(int)$con['deleted'];
                 if (!$this->db->query($sql)) {
@@ -726,18 +726,18 @@ class SpiceUIRESTHandler
             foreach ($data['actions'] as $act)
             {
                 $sql = "INSERT IGNORE INTO sysuimodelvalidationactions SET
-                      id = '{$act[id]}',
-                      sysuimodelvalidation_id = '{$act[sysuimodelvalidation_id]}',
-                      fieldname = '{$act[fieldname]}',
-                      action = '{$act[action]}',
-                      params = '".$this->db->quote($act[params])."',
+                      id = '{$act['id']}',
+                      sysuimodelvalidation_id = '{$act['sysuimodelvalidation_id']}',
+                      fieldname = '{$act['fieldname']}',
+                      action = '{$act['action']}',
+                      params = '".$this->db->quote($act['params'])."',
                       priority = ".(int)$act['priority'].",
                       deleted = ".(int)$act['deleted']."
                     ON DUPLICATE KEY UPDATE
-                      sysuimodelvalidation_id = '{$act[sysuimodelvalidation_id]}',
-                      fieldname = '{$act[fieldname]}',
-                      action = '{$act[action]}',
-                      params = '".$this->db->quote($act[params])."',
+                      sysuimodelvalidation_id = '{$act['sysuimodelvalidation_id']}',
+                      fieldname = '{$act['fieldname']}',
+                      action = '{$act['action']}',
+                      params = '".$this->db->quote($act['params'])."',
                       priority = ".(int)$act['priority'].",
                       deleted = ".(int)$act['deleted'];
                 if (!$this->db->query($sql)) {
@@ -798,7 +798,7 @@ class SpiceUIRESTHandler
         $return['conditions'] = $return['actions'] = [];
 
         $sql = "SELECT * FROM sysuimodelvalidationconditions 
-                WHERE sysuimodelvalidation_id = '{$return[id]}' AND deleted = 0";
+                WHERE sysuimodelvalidation_id = '{$return['id']}' AND deleted = 0";
         $res = $this->db->query($sql);
         while($row = $this->db->fetchByAssoc($res, false))
         {
