@@ -250,23 +250,12 @@ export class StarfaceToolbarIndicator implements OnDestroy {
             })
         );
 
+        // join the room
+        // ToDo: ensure that the joining the room is authorized
         this.socket.joinRoom('starface', 'starface' + this.username);
 
         // set to socket connected
         this.socketconnected = true;
-
-        /*
-        this.socket = io(`${this.socketurl}?sysid=${this.socketid}&room=starface${this.username}&token=${this.session.authData.sessionId}`);
-        this.socket.on('connect', (socket) => {
-            this.socketconnected = true;
-        });
-        this.socket.on('disconnect', () => {
-            this.socketconnected = false;
-        });
-        this.socket.on('message', (data) => {
-            this.handleCallEvent(data.message);
-        });
-        */
 
     }
 
