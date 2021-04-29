@@ -198,7 +198,9 @@ export class NotificationService {
         this.totalCount = data.count;
         this.notifications = data.records.map(n => this.parseNotification(n));
         this.setUnreadCount();
-        this.pushDesktopNotification();
+        if (this.unreadCount > 0) {
+            this.pushDesktopNotification();
+        }
     }
 
     /**
