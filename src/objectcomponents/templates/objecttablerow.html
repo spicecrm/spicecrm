@@ -1,5 +1,5 @@
-<td *ngIf="selectable" class="slds-cell-shrink" [attr.data-label]="language.getLabel('LBL_SELECT_ROW')">
-    <system-checkbox (click)="toggleSelection()" [ngModel]="selected"><system-label label="LBL_SELECT_ROW"></system-label></system-checkbox>
+<td *ngIf="selectable" class="slds-cell-shrink" system-title="LBL_SELECT_ROW">
+    <system-checkbox (click)="toggleSelection()" [ngModel]="selected"></system-checkbox>
 </td>
 <td *ngFor="let field of fields" [attr.data-label]="language.getFieldDisplayName(model.module, field.field, field.fieldconfig)">
     <div class="slds-truncate">
