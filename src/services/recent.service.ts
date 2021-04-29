@@ -111,7 +111,7 @@ export class recent {
             } else {
                 let responseSubject = new Subject<any[]>();
                 if (!this.moduleItems[module]) {
-                    this.backend.getRequest('modules/Trackers/recent', {
+                    this.backend.getRequest('module/Trackers/recent', {
                         module: module,
                         limit: 5
                     }).subscribe(response => {
