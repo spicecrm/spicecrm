@@ -193,6 +193,22 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
         return startdate ? startdate.format(this.userpreferences.getDateFormat()) : '';
     }
 
+    get activitiyDate() {
+
+        const date = new moment.utc(this.activity.date_activity).tz(this.session.getSessionData('timezone') || moment.tz.guess(true));
+
+        const isToday = moment(date.format('YYYY M D')).isSame(new moment().format('YYYY M D'));
+        const isThisYear = date.isSame(new moment(), 'year');
+
+        if (isToday) {
+            return date.format(this.userpreferences.getTimeFormat());
+        } else if (isThisYear) {
+            return date.format('MMM D');
+        } else {
+            return date.format(this.userpreferences.getDateFormat());
+        }
+    }
+
     /**
      * returns ture if the date is today / day based
      */
