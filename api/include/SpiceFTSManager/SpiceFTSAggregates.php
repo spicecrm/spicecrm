@@ -241,7 +241,7 @@ class SpiceFTSAggregates
             $aggregations[$aggField]['name'] = $this->aggregateFields[$aggField]['name'];
             $aggregations[$aggField]['type'] = $this->aggregateFields[$aggField]['type'];
 
-            $buckets = $aggregations[$aggField]['buckets'] ?: $aggregations[$aggField][$aggField]['buckets'];
+            $buckets = !empty($aggregations[$aggField]['buckets']) ? $aggregations[$aggField]['buckets'] : (!empty($aggregations[$aggField][$aggField]['buckets']) ? $aggregations[$aggField][$aggField]['buckets'] : []);
 
             foreach ($buckets as $aggItemIndex => &$aggItemData) {
 
