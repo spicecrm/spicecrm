@@ -3189,7 +3189,7 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
             foreach ($bean->field_defs as $field => $value) {
                 if (isset($row[$field])) {
                     $bean->$field = $row[$field];
-                    LoggerManager::getLogger()->debug("process_full_list: $bean->object_name({$row['id']}): " . $field . " = " . $bean->$field);
+                    LoggerManager::getLogger()->debug("process_full_list: ".$bean->object_name." ".$row['id'].": " . $field . " = " . $bean->$field);
                 } else {
                     $bean->$field = '';
                 }
