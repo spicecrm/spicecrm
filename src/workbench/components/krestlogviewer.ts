@@ -28,7 +28,7 @@ declare var moment: any;
 export class KRESTLogViewer {
 
     // Configuration:
-    private routeBase = 'admin/restlog';
+    private routeBase = 'admin/apilog';
     private methods = [ 'CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PATCH', 'PUT', 'TRACE' ];
     private limit = '5000';
     private entriesPerPage = 20;
