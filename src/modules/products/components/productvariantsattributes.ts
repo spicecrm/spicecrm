@@ -75,7 +75,7 @@ export class ProductVariantsAttributes implements OnDestroy {
         if (!!parentFieldId && parentFieldId != this.parentId) {
             this.isLoading = true;
             this.parentId = parentFieldId;
-            this.backend.getRequest(`/module/${type}/${parentFieldId}/ProductAttributes/direct`)
+            this.backend.getRequest(`module/${type}/${parentFieldId}/ProductAttributes/direct`)
                 .subscribe(attributes => {
                     this.attributes = attributes.sort((a, b) => +a.sort_sequence > +b.sort_sequence ? 1 : -1);
                     this.isLoading = false;
