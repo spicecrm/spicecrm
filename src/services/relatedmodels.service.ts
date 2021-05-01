@@ -84,11 +84,6 @@ export class relatedmodels implements OnDestroy {
     public loaditems = 5;
 
     /**
-     * ToDo: check wha this is for
-     */
-    private relationshipFields: string[] = [];
-
-    /**
      * inidcates if the servic eis currently retrieving data from teh backend
      */
     public isloading = false;
@@ -260,8 +255,9 @@ export class relatedmodels implements OnDestroy {
      *
      * @param silent if set to true all items will remain in the list and the user will not dierclty see that the related list is loading
      */
-    public getData(silent: boolean = false): Observable<any>  {
+    public getData(silent: boolean = false): Observable<any> {
         let responseSubject = new Subject<any>();
+
         // check if we can list per acl
         if (this.metadata.checkModuleAcl(this.relatedModule, "list") === false && this.metadata.checkModuleAcl(this.relatedModule, "listrelated") === false) {
             return of(false);
@@ -272,17 +268,27 @@ export class relatedmodels implements OnDestroy {
             this.resetData();
             this.isloading = true;
         }
-        let params = {
+
+        // build the params
+        let params: any = {
             module: this.relatedModule,
             getcount: true,
             offset: this.offset,
             limit: this.loaditems,
-            modulefilter: this.modulefilter,
-            fieldfilters: this.fieldfilters,
-            relationshipFields: JSON.stringify(this.relationshipFields),
-            sort: this.sort.sortfield ? JSON.stringify(this.sort) : ""
+            fieldfilters: this.fieldfilters
         };
 
+        // check if we have a sortfield
+        if (this.modulefilter) {
+            params.modulefilter = this.modulefilter;
+        }
+
+        // check if we have a sortfield
+        if (this.sort.sortfield) {
+            params.sort = JSON.stringify(this.sort);
+        }
+
+        // get the data
         let url = `module/${this.module}/${this.id}/` + (this.linkEndPoint ? this.linkEndPoint : `related/${this._linkName}`);
         this.backend.getRequest(url, params).subscribe(
             (response: any) => {
@@ -350,15 +356,22 @@ export class relatedmodels implements OnDestroy {
 
         this.isloading = true;
 
-        let params = {
+        let params: any = {
             module: this.relatedModule,
             getcount: true,
             offset: this.items.length,
-            limit: this.items.length + loaditems,
-            modulefilter: this.modulefilter,
-            relationshipFields: JSON.stringify(this.relationshipFields),
-            sort: this.sort.sortfield ? JSON.stringify(this.sort) : ""
+            limit: this.items.length + loaditems
         };
+
+        // check if we have a sortfield
+        if (this.modulefilter) {
+            params.modulefilter = this.modulefilter;
+        }
+
+        // check if we have a sortfield
+        if (this.sort.sortfield) {
+            params.sort = JSON.stringify(this.sort);
+        }
 
         let retSubject = new Subject<any>();
 

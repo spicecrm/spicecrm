@@ -93,6 +93,12 @@ export class administrationapiinspectorService {
     private _apiFilterAdminOnly: boolean = false;
 
     /**
+     * filter variable for all admin only routes
+     */
+
+    private _apiFilterValidatedOnly: boolean = false;
+
+    /**
      * the current selected API
      *
      * @public
@@ -175,6 +181,26 @@ export class administrationapiinspectorService {
     }
 
     /**
+     * getter for the current api filter
+     */
+    get apiFilterValidatedOnly() {
+        return this._apiFilterValidatedOnly;
+    }
+
+    /**
+     * setter for the current api filter
+     * also resets the selection and also the complete tree
+     *
+     * @param value
+     */
+    set apiFilterValidatedOnly(value) {
+        this._apiFilterValidatedOnly = value;
+
+        // rebuild the tree with the searchterm
+        this.buildTree();
+    }
+
+    /**
      * loads all available endpoints from the backend
      *
      * @public
@@ -219,6 +245,11 @@ export class administrationapiinspectorService {
 
             // check for adminonly
             if (this._apiFilterAdminOnly && a.options.adminOnly !== true) {
+                return false;
+            }
+
+            // check for adminonly
+            if (this._apiFilterValidatedOnly && a.options.validate === true) {
                 return false;
             }
 

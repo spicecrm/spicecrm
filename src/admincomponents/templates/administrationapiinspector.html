@@ -9,6 +9,7 @@
                 <input class="slds-input" system-placeholder="LBL_FILTER" [(ngModel)]="apiinspector.apiFilter"/>
                 <system-utility-icon class="slds-p-left--xx-small" (click)="toggleUnauthorized($event)" icon="unlock" size="x-small" [colorclass]="apiinspector.apiFilterUnauthorized ? 'slds-icon-text-warning' : 'slds-icon-text-light'"></system-utility-icon>
                 <system-utility-icon class="slds-p-left--xx-small" (click)="toggleAdminOnly($event)" icon="user_role" size="x-small" [colorclass]="apiinspector.apiFilterAdminOnly ? 'slds-icon-text-warning' : 'slds-icon-text-light'" ></system-utility-icon>
+                <system-utility-icon class="slds-p-left--xx-small" (click)="toggleValidatedOnly($event)" icon="ribbon" size="x-small" [colorclass]="apiinspector.apiFilterValidatedOnly ? 'slds-icon-text-warning' : 'slds-icon-text-light'" ></system-utility-icon>
             </div>
         </div>
         <div system-to-bottom>
