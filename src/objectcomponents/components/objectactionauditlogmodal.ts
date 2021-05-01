@@ -15,11 +15,33 @@ import {language} from "../../services/language.service";
 })
 export class ObjectActionAuditlogModal implements OnInit {
 
+    /**
+     * referenbce to the modal itself
+     */
     public self: any = null;
 
-    private auditLog: Array<any> = [];
+    /**
+     * the audit log records
+     *
+     * @private
+     */
+    private auditLog: any[] = [];
+
+    /**
+     * the list of transaction IDs
+     *
+     * @private
+     */
+    private auditTransactions: any[] = [];
+
+    /**
+     * indicates that we are loading
+     *
+     * @private
+     */
     private loading: boolean = true;
-    private moduleFields: Array<any> = [];
+
+    private moduleFields: any[] = [];
 
     private _userfilter: string = '';
     private _fieldfilter: string = '';
@@ -73,10 +95,25 @@ export class ObjectActionAuditlogModal implements OnInit {
     private loadAuditLog() {
         if (this.model) {
             this.auditLog = [];
+            this.auditTransactions = [];
+
             this.loading = true;
-            this.model.getAuditLog({user: this._userfilter, field: this._fieldfilter}).subscribe(
+            this.model.getAuditLog({user: this._userfilter, field: this._fieldfilter, grouped: true}).subscribe(
                 log => {
                     this.auditLog = log;
+
+                    // extract the transaction IDs
+                    for(let logEntry of this.auditLog){
+                        if(this.auditTransactions.indexOf(logEntry.transaction_id) == -1){
+                            this.auditTransactions.push({
+                                transaction_id: logEntry.transaction_id,
+                                created_by: logEntry.created_by,
+                                user_name: logEntry.user_name,
+                                date_created: logEntry.date_created
+                            });
+                        }
+                    }
+
                     this.loading = false;
                 },
                 error => {
