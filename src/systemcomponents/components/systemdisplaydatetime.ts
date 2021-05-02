@@ -16,6 +16,8 @@ import {userpreferences} from '../../services/userpreferences.service';
 import {currency} from '../../services/currency.service';
 import {Subscription} from "rxjs";
 
+declare var moment: any;
+
 /**
  * displays a date and/or time in the format of the user
  */
@@ -113,7 +115,11 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
         if (this.displayDate) formatArray.push(this.userpreferences.getDateFormat());
         if (this.displayTime) formatArray.push(this.userpreferences.getTimeFormat());
 
-        return this.date.format(formatArray.join(' '));
+        if(moment.isMoment(this.date)) {
+            return this.date.format(formatArray.join(' '));
+        } else {
+            return moment(this.date).format(formatArray.join(' '));
+        }
     }
 
 }

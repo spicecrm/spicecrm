@@ -9,10 +9,10 @@ import {notification} from "../../services/notification.service";
  * display a notification item for assignment type
  */
 @Component({
-    selector: 'global-header-notifications-item-delete',
-    templateUrl: './src/globalcomponents/templates/globalheadernotificationsitemdelete.html'
+    selector: 'global-header-notifications-item-reminder',
+    templateUrl: './src/globalcomponents/templates/globalheadernotificationsitemreminder.html'
 })
-export class GlobalHeaderNotificationsItemDelete {
+export class GlobalHeaderNotificationsItemReminder {
     /**
      * holds the notification data
      */

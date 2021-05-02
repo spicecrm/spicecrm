@@ -8,7 +8,9 @@ import {Observable, Subject} from 'rxjs';
 import {session} from './session.service';
 import {modelutilities} from './modelutilities.service';
 import {backend} from './backend.service';
+import {notification} from './notification.service';
 import {broadcast} from "./broadcast.service";
+import {NotificationI} from "./interfaces.service";
 
 declare var moment: any;
 
@@ -36,7 +38,7 @@ export class assistant {
     /**
      * inidicates that the service is loading
      */
-    public loading: boolean = false;
+    public loading: boolean = true;
 
     /**
      * the reminder interval
@@ -45,7 +47,7 @@ export class assistant {
      */
     private reminder: any = null;
 
-    constructor(private modelutilities: modelutilities, private backend: backend, private broadcast: broadcast, private session: session) {
+    constructor(private modelutilities: modelutilities, private backend: backend, private broadcast: broadcast, private session: session, private notification: notification) {
         // subscribe to the broadcast service
         this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
@@ -105,7 +107,22 @@ export class assistant {
             if(i.data.reminder_time && i.data.reminder_time != '-1') {
                 let reminder = new moment.utc(i.date_activity).subtract(parseInt(i.data.reminder_time, 10), 'seconds');
                 if (reminder.isSame(moment.utc(), 'minute')) {
-                    alert('event: ' + i.data.summary_text);
+                    let n: NotificationI = {
+                        id: this.modelutilities.generateGuid(),
+                        bean_module: i.module,
+                        bean_id: i.data.id,
+                        created_by: i.data.created_by,
+                        created_by_name: i.data.created_by,
+                        user_id: i.data.created_by,
+                        notification_date: i.date_activity,
+                        notification_type: 'reminder',
+                        notification_read:  0,
+                        additional_infos: {},
+                        bean_name: i.data.summary_text
+                    };
+                    this.notification.pushDesktopNotification(n);
+                    this.notification.newNotifications.push(n);
+                    // alert('event: ' + i.data.summary_text);
                 }
             }
         }

@@ -129,7 +129,7 @@ export interface NotificationI {
     created_by_name: string;
     user_id: string;
     notification_date: string;
-    notification_type: 'generic' | 'assign' | 'delete' | 'change';
+    notification_type: 'generic' | 'assign' | 'delete' | 'change' |'reminder';
     notification_read: 1 | 0;
     additional_infos: {
         fieldsNames: string[]
