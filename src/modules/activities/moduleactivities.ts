@@ -28,6 +28,7 @@ import /*embed*/ {ActivitiesPopoverAddBarButton} from "./components/activitiespo
 import /*embed*/ {fieldActivitiesAddActions} from "./fields/fieldactivitiesaddactions";
 import /*embed*/ {fieldActivitiesAddActionsButton} from "./fields/fieldactivitiesaddactionsbutton";
 import /*embed*/ {fieldActivitiesTaskWithCloseCheckbox} from "./fields/fieldactivitiestaskwithclosecheckbox";
+import /*embed*/ {fieldActivityReminder} from "./fields/fieldactivityreminder";
 
 import /*embed*/ {ActivityParticipationPanel} from "./components/activityparticipationpanel";
 import /*embed*/ {fieldActivityParticipationPanel} from "./fields/fieldactivityparticipationpanel";
@@ -84,6 +85,7 @@ import /*embed*/ {fieldActivityDate} from './fields/fieldactivitydate';
         fieldActivitiesAddActionsButton,
         fieldActivitiesTaskWithCloseCheckbox,
         fieldActivityParticipationPanel,
+        fieldActivityReminder,
         ActivityParticipationPanel,
         ActivityParticipationPanelHeader,
         ActivityParticipationPanelParticipant,

@@ -38,13 +38,20 @@ export class assistant {
      */
     public loading: boolean = false;
 
+    /**
+     * the reminder interval
+     *
+     * @private
+     */
+    private reminder: any = null;
+
     constructor(private modelutilities: modelutilities, private backend: backend, private broadcast: broadcast, private session: session) {
         // subscribe to the broadcast service
         this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         });
 
-        if(this.session.authData.sessionId){
+        if (this.session.authData.sessionId) {
             this.initialize();
         }
     }
@@ -53,15 +60,23 @@ export class assistant {
         let itemIndex = 0;
         switch (message.messagetype) {
             case 'logout':
+                // clear the items
                 this.assitantItems = [];
+
+                // cancel the reminder interval if we have any
+                if (this.reminder) {
+                    clearInterval(this.reminder);
+                }
                 break;
             case 'login':
+                // load the records
                 this.initialize();
+
                 break;
             case 'model.delete':
             case 'model.save':
                 // ToDo: smarter chck if the module shoudl be listed here
-                if(this.assistantModules.indexOf(message.messagedata.module) >= 0){
+                if (this.assistantModules.indexOf(message.messagedata.module) >= 0) {
                     this.loadItems(true);
                 }
                 break;
@@ -73,6 +88,27 @@ export class assistant {
      */
     public initialize() {
         this.loadItems();
+
+        // set the interval function
+        this.reminder = setInterval(() => {
+            this.remind();
+        }, 60000);
+    }
+
+    /**
+     * runs every minutes and checks if we have a reminder to process
+     *
+     * @private
+     */
+    private remind() {
+        for (let i of this.assitantItems) {
+            if(i.data.reminder_time && i.data.reminder_time != '-1') {
+                let reminder = new moment.utc(i.date_activity).subtract(parseInt(i.data.reminder_time, 10), 'seconds');
+                if (reminder.isSame(moment.utc(), 'minute')) {
+                    alert('event: ' + i.data.summary_text);
+                }
+            }
+        }
     }
 
     /**
@@ -83,7 +119,7 @@ export class assistant {
     public loadItems(silent: boolean = true): Observable<any> {
 
         // set to loading if we are not silent
-        if(!silent) this.loading = true;
+        if (!silent) this.loading = true;
 
 
         let retSubject = new Subject<any>();
@@ -126,9 +162,9 @@ export class assistant {
                 if (this.assistantFilters.objectfilters.length > 0 && this.assistantFilters.objectfilters.indexOf(i.module) == -1) return false;
 
                 if (this.assistantFilters.timefilter != 'all') {
-                    let date = new moment(i.date_activity);
-                    if (this.assistantFilters.timefilter == 'today' && !date.isSame(new moment(), 'day')) return false;
-                    if (this.assistantFilters.timefilter == 'overdue' && !date.isBefore(new moment(), 'day')) return false;
+                    let date = new moment.utc(i.date_activity);
+                    if (this.assistantFilters.timefilter == 'today' && !date.isSame(moment.utc(), 'day')) return false;
+                    if (this.assistantFilters.timefilter == 'overdue' && !date.isBefore(moment.utc(), 'day')) return false;
                 }
 
                 return true;
