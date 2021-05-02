@@ -58,7 +58,7 @@ export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
 
         this.subscriptions.add(
             this.model.data$.subscribe((data) => {
-                if (data[this.fieldstart] && data[this.fieldend]) {
+                if (this.startDate && this.endDate) {
                     this.duration = moment.duration(this.endDate.diff(this.startDate));
                 }
             })
