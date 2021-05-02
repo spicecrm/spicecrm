@@ -42,49 +42,53 @@ export class fieldDateTimeDuration extends fieldGeneric {
         return this.fieldconfig.field_end ? this.fieldconfig.field_end : 'date_end';
     }
 
-    get fieldminutes() {
-        return this.fieldconfig.field_minutes ? this.fieldconfig.field_minutes : 'duration_minutes';
+    get dateEnd() {
+        return this.model.getField(this.fieldend);
     }
 
-    get fieldhours() {
-        return this.fieldconfig.field_hours ? this.fieldconfig.field_hours : 'duration_hours';
+    get currentHours() {
+        if(!this.dateEnd) return 0;
+
+        let duration = moment.duration(this.dateEnd.diff(this.value));
+        return duration.get('hours');
     }
 
-    get minutes() {
-        let minutes = 0;
-        if (this.model.data[this.fieldhours]) {
-            minutes += parseInt(this.model.data[this.fieldhours], 10) * 60;
-        }
-        if (this.model.data[this.fieldminutes]) {
-            minutes += parseInt(this.model.data[this.fieldminutes], 10);
-        }
+    get currentMinutes() {
+        if(!this.dateEnd) return 0;
 
-        return minutes;
+        let duration = moment.duration(this.dateEnd.diff(this.value));
+        return duration.get('minutes');
     }
 
     get editDurationHours() {
-        return this.model.data[this.fieldhours];
+        return this.currentHours; // this.model.data[this.fieldhours];
     }
 
     set editDurationHours(hours) {
-        this.model.setField(this.fieldhours, hours);
+        let cMinutes = this.currentMinutes;
+        let end = new moment(this.value);
+        end.add(hours, 'h').add(cMinutes, 'm');
+        this.model.setField(this.fieldend, end);
     }
 
     get editDurationMinutes() {
-        return this.model.data[this.fieldminutes];
+        return this.currentMinutes; // this.model.data[this.fieldminutes];
     }
 
     set editDurationMinutes(minutes) {
-        this.model.setField(this.fieldminutes, minutes);
+        let cHours = this.currentHours;
+        let end = new moment(this.value);
+        end.add(cHours, 'h').add(minutes, 'm');
+        this.model.setField(this.fieldend, end);
     }
 
     private getDisplay() {
         if (this.model.data.date_start) {
-            if (!this.model.data.date_end) {
-                this.model.data[this.fieldend] = new moment(this.model.data.date_start).add(this.minutes, 'm');
+            if(this.dateEnd) {
+                return this.model.data.date_start.format(this.userpreferences.getDateFormat() + ' ' + this.userpreferences.getTimeFormat()) + ' - ' + this.model.data.date_end.format(this.userpreferences.getDateFormat() + ' ' + this.userpreferences.getTimeFormat());
+            } else {
+                return this.model.data.date_start.format(this.userpreferences.getDateFormat() + ' ' + this.userpreferences.getTimeFormat());
             }
-
-            return this.model.data.date_start.format(this.userpreferences.getDateFormat() + ' ' + this.userpreferences.getTimeFormat()) + ' - ' + this.model.data.date_end.format(this.userpreferences.getDateFormat() + ' ' + this.userpreferences.getTimeFormat());
         }
     }
 
