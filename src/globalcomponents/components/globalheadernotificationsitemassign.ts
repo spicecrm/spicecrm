@@ -3,7 +3,7 @@
  */
 import {Component, Input} from '@angular/core';
 import {NotificationI} from "../../services/interfaces.service";
-import {NotificationService} from "../../services/notification.service";
+import {notification} from "../../services/notification.service";
 
 /**
  * display a notification item for assignment type
@@ -22,6 +22,6 @@ export class GlobalHeaderNotificationsItemAssign {
      */
     @Input() public asBox: boolean = false;
 
-    constructor(public notificationService: NotificationService) {
+    constructor(public notificationService: notification) {
     }
 }
