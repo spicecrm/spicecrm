@@ -2,7 +2,7 @@
  * @module ObjectComponents
  */
 import {Component} from '@angular/core';
-import {SubscriptionService} from "../../services/subscription.service";
+import {subscription} from "../../services/subscription.service";
 import {model} from "../../services/model.service";
 import {metadata} from "../../services/metadata.service";
 
@@ -23,7 +23,7 @@ export class ObjectSubscriptionButton {
      */
     private inProcess: boolean = false;
 
-    constructor(private subscriptionService: SubscriptionService,
+    constructor(private subscriptionService: subscription,
                 private metadata: metadata,
                 private model: model) {
     }

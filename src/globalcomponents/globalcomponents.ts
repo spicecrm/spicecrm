@@ -109,6 +109,7 @@ import /*embed*/ {GlobalHeaderNotificationsItemGeneric} from './components/globa
 import /*embed*/ {GlobalHeaderNotificationsItemChange} from './components/globalheadernotificationsitemchange';
 import /*embed*/ {GlobalHeaderNotificationsItemAssign} from './components/globalheadernotificationsitemassign';
 import /*embed*/ {GlobalHeaderNotificationsItemDelete} from './components/globalheadernotificationsitemdelete';
+import /*embed*/ {GlobalHeaderNotificationsItemReminder} from './components/globalheadernotificationsitemreminder';
 import /*embed*/ {GlobalHeaderNotifications} from './components/globalheadernotifications';
 
 /**
@@ -201,6 +202,7 @@ import /*embed*/ {GlobalHeaderNotifications} from './components/globalheadernoti
         GlobalLoginImage,
         GlobalHeaderNotifications,
         GlobalHeaderNotificationsItemGeneric,
+        GlobalHeaderNotificationsItemReminder,
         GlobalHeaderNotificationsItemChange,
         GlobalHeaderNotificationsItemAssign,
         GlobalHeaderNotificationsItemDelete
