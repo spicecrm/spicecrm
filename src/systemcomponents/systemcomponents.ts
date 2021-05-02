@@ -43,6 +43,7 @@ import /*embed*/ {SystemComponentMissing} from "./components/systemcomponentmiss
 import /*embed*/ {SystemComponentSet} from "./components/systemcomponentset";
 import /*embed*/ {SystemConfirmDialog} from "./components/systemconfirmdialog";
 import /*embed*/ {SystemCustomIcon} from "./components/systemcustomicon";
+import /*embed*/ {SystemDisplayDatetime} from "./components/systemdisplaydatetime";
 import /*embed*/ {SystemDisplayNumber} from "./components/systemdisplaynumber";
 import /*embed*/ {SystemDynamicComponent} from "./components/systemdynamiccomponent";
 import /*embed*/ {SystemDynamicRouteContainer} from "./components/systemdynamicroutecontainer";
@@ -197,6 +198,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemComponentSet,
         SystemConfirmDialog,
         SystemCustomIcon,
+        SystemDisplayDatetime,
         SystemDisplayNumber,
         SystemDynamicComponent,
         SystemDynamicRouteContainer,
@@ -333,6 +335,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemComponentMissing,
         SystemComponentSet,
         SystemCustomIcon,
+        SystemDisplayDatetime,
         SystemDisplayNumber,
         SystemDynamicComponent,
         SystemFilterBuilderFilterExpression,
