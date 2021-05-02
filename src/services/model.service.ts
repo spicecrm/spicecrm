@@ -1391,7 +1391,7 @@ export class model implements OnDestroy {
                 }
                 if (!params.number || !params.unit) return fromFieldDate;
 
-                return new moment(fromFieldDate.format()).add(params.number, params.unit);
+                return fromFieldDate.add(params.number, params.unit);
         }
         return "";
     }
