@@ -123,7 +123,7 @@ export class fieldGeneric implements OnInit, AfterViewInit, OnDestroy {
     }
 
     /**
-     * a setter thjat returns the value to the model and triggers the validation
+     * a setter that returns the value to the model and triggers the validation
      *
      * @param val the new value
      */
