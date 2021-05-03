@@ -122,7 +122,6 @@ export class assistant {
                     };
                     this.notification.pushDesktopNotification(n);
                     this.notification.newNotifications.push(n);
-                    // alert('event: ' + i.data.summary_text);
                 }
             }
         }
