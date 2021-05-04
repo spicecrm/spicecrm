@@ -2,7 +2,7 @@
  * @module GlobalComponents
  */
 import {Component, ElementRef, Renderer2} from '@angular/core';
-import {NotificationService} from "../../services/notification.service";
+import {notification} from "../../services/notification.service";
 import {Subscription} from "rxjs";
 
 /**
@@ -25,7 +25,7 @@ export class GlobalHeaderNotifications {
     private clickListener: () => void;
     private subscription = new Subscription();
 
-    constructor(private notificationService: NotificationService,
+    constructor(private notificationService: notification,
                 private elementRef: ElementRef,
                 private renderer: Renderer2) {
     }

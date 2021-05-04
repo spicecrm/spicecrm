@@ -30,6 +30,8 @@
                     <global-header-notifications-item-assign *ngSwitchCase="'assign'" [notification]="notification"></global-header-notifications-item-assign>
                     <global-header-notifications-item-change *ngSwitchCase="'change'" [notification]="notification"></global-header-notifications-item-change>
                     <global-header-notifications-item-delete *ngSwitchCase="'delete'" [notification]="notification"></global-header-notifications-item-delete>
+                    <global-header-notifications-item-reminder *ngSwitchCase="'reminder'" [notification]="notification"></global-header-notifications-item-reminder>
+                    <global-header-notifications-item-generic *ngSwitchDefault [notification]="notification"></global-header-notifications-item-generic>
                     <div *ngIf="notification.notification_read != 1" (click)="markAsRead(notification.id); $event.stopPropagation()" class="slds-is-absolute slds-height_full spice-hover-child slds-grid slds-grid--vertical-align-center slds-p-right--x-small" style="right: 0; top: 0">
                         <button system-title="LBL_MARK_AS_READ" class="slds-theme--default slds-button slds-button_icon slds-button_icon-small slds-float_right slds-popover__close slds-button--icon-border">
                             <system-button-icon icon="check" size="small"></system-button-icon>
@@ -49,5 +51,7 @@
         <global-header-notifications-item-assign *ngSwitchCase="'assign'" [asBox]="true" [notification]="notification"></global-header-notifications-item-assign>
         <global-header-notifications-item-change *ngSwitchCase="'change'" [asBox]="true" [notification]="notification"></global-header-notifications-item-change>
         <global-header-notifications-item-delete *ngSwitchCase="'delete'" [asBox]="true" [notification]="notification"></global-header-notifications-item-delete>
+        <global-header-notifications-item-reminder *ngSwitchCase="'reminder'" [asBox]="true" [notification]="notification"></global-header-notifications-item-reminder>
+        <global-header-notifications-item-generic *ngSwitchDefault [asBox]="true" [notification]="notification"></global-header-notifications-item-generic>
     </ng-container>
 </div>

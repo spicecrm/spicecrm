@@ -65,15 +65,11 @@ export class DashboardGenericDashlet implements OnInit, OnDestroy {
     }
 
     get params() {
-        let fieldArray: string[] = [];
-        let params: any = {fields: fieldArray};
+        let params: any = {};
 
         if (this.dashletconfig) {
             if (this.dashletconfig.fieldset) {
                 this.dashletFields = this.metadata.getFieldSetFields(this.dashletconfig.fieldset);
-                for (let field of this.dashletFields) {
-                    fieldArray.push(field.field);
-                }
                 this.dashletFieldSet = this.dashletconfig.fieldset;
             }
             if (this.dashletconfig.filters) {
@@ -86,8 +82,8 @@ export class DashboardGenericDashlet implements OnInit, OnDestroy {
             if (this.dashletconfig.modulefilter) {
                 params.modulefilter = this.dashletconfig.modulefilter;
             }
-            params.sortfield = this.sortparams.sortfield ? this.sortparams.sortfield : this.dashletconfig.sortfield;
-            params.sortdirection = this.sortparams.sortdirection ? this.sortparams.sortdirection : (this.dashletconfig.sortdirection ? this.dashletconfig.sortdirection : 'ASC');
+            // params.sortfield = this.sortparams.sortfield ? this.sortparams.sortfield : this.dashletconfig.sortfield;
+            // params.sortdirection = this.sortparams.sortdirection ? this.sortparams.sortdirection : (this.dashletconfig.sortdirection ? this.dashletconfig.sortdirection : 'ASC');
             params.sortfields = [{ sortfield:params.sortfield, sortdirection:params.sortdirection }];
         }
         params.limit = this.loadLimit;

@@ -17,7 +17,7 @@ import {Observable, Subject} from "rxjs";
  * this service handles loading and managing the user subscriptions
  */
 @Injectable()
-export class SubscriptionService {
+export class subscription {
     /**
      * holds the notifications
      */
