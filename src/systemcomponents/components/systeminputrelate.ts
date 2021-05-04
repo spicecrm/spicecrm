@@ -33,6 +33,11 @@ export class SystemInputRelate implements ControlValueAccessor {
     @Input() private module: string;
 
     /**
+     * The field of the related name.
+     */
+    @Input() private nameField = 'summary_text';
+
+    /**
      * the related id
      */
     private _relatedid: string;
@@ -80,7 +85,7 @@ export class SystemInputRelate implements ControlValueAccessor {
      * @param value value to be executed when there is a change in contenteditable
      */
     public writeValue(value: any): void {
-        if(value){
+        if (value) {
             let valArray = value.split('::');
             this._relatedid = valArray[0];
             this._relatedname = valArray[1];
@@ -99,7 +104,7 @@ export class SystemInputRelate implements ControlValueAccessor {
             selectModal.instance.selectedItems.subscribe(items => {
                 if (items.length) {
                     this._relatedid = items[0].id;
-                    this._relatedname = items[0].summary_text;
+                    this._relatedname = items[0][this.nameField];
                     this.onChange(this._relatedid + '::' + this._relatedname);
                 }
             });
