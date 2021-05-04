@@ -54,6 +54,13 @@ export class StarfaceToolbarIndicator implements OnDestroy {
     private keepAlive: any;
 
     /**
+     * allows to track if we are ina  keep alive loop currently
+     *
+     * @private
+     */
+    private inKeepAlive: boolean = false;
+
+    /**
      * indicator if the subscriptions for the events are active
      */
     private starfacesubscription: boolean = false;
@@ -221,7 +228,15 @@ export class StarfaceToolbarIndicator implements OnDestroy {
         this.subscriptions.unsubscribe();
     }
 
+    /**
+     * starface needs a timed ping to keep the session
+     *
+     * @private
+     */
     private keepalive() {
+        if(this.inKeepAlive) return;
+
+        this.inKeepAlive = true;
         this.backend.postRequest('channels/voice/StarFaceVOIP/keepalive').subscribe(
             res => {
                 if (res.status != 'success') {
@@ -229,8 +244,14 @@ export class StarfaceToolbarIndicator implements OnDestroy {
                     clearInterval(this.keepAlive);
                     this.login();
                 }
+
+                // reset the inidicator
+                this.inKeepAlive = false;
             },
             error => {
+                // reset the inidicator
+                this.inKeepAlive = false;
+
                 // disconnect
                 this.disconnect();
 

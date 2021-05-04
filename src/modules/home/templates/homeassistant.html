@@ -8,12 +8,12 @@
             </div>
         </div>
     </div>
-    <div system-to-bottom class="spice-scrollbar">
+    <div system-to-bottom>
         <div *ngIf="noActivities" class="slds-align--absolute-center slds-height_full">
-            <system-illustration-no-task></system-illustration-no-task>
+            <system-illustration-no-task class="slds-p-around--medium"></system-illustration-no-task>
         </div>
-        <ul #itemcontainer class="slds-timeline">
-            <li *ngFor="let item of assistant.assitantItems" class="slds-p-around--xx-small">
+        <ul class="slds-timeline">
+            <li *ngFor="let item of assistant.filteredItems" class="slds-p-around--xx-small">
                 <activitytimeline-item-container module="Activities" [activity]="item"></activitytimeline-item-container>
             </li>
         </ul>

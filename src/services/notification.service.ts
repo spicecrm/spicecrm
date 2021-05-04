@@ -20,7 +20,7 @@ declare var moment: any;
  * this service handles loading and managing the user notifications
  */
 @Injectable()
-export class NotificationService {
+export class notification {
     /**
      * holds the unread notifications count
      */
@@ -216,14 +216,14 @@ export class NotificationService {
      * creates desktop notifications from the notifications array
      * @param n
      */
-    private pushDesktopNotification(n?: NotificationI) {
+    public pushDesktopNotification(n?: NotificationI) {
 
         const body = !n ? this.language.getLabel('MSG_NEW_NOTIFICATIONS') : this.generateDesktopNotificationTitle(n);
 
         this.desktopNotifications.unshift(
             new Notification(this.configuration.systemName, {
                 body: body,
-                icon: this.configuration.getCapabilityConfig('theme').header_image
+                icon: 'config/headerimage'
             })
         );
     }
@@ -235,6 +235,8 @@ export class NotificationService {
      */
     private generateDesktopNotificationTitle(n: NotificationI): string {
         switch (n.notification_type) {
+            case 'reminder':
+                return `${n.bean_name}\n${n.notification_date}`;
             case 'assign':
                 return `${n.bean_name} ${this.language.getLabel('MSG_NOTIFICATION_ASSIGNED')} ${n.created_by_name}`;
             case 'change':

@@ -105,8 +105,13 @@ export class language {
             }
         }
 
+        // consturct the URL
+        let url = this.configurationService.getBackendUrl() + '/system/language';
+        if(this.currentlanguage) url += '/' + this.currentlanguage;
+
+        // get the language
         this.http.get(
-            this.configurationService.getBackendUrl() + '/system/language/'+this.currentlanguage,
+            url,
             {headers: this.session.getSessionHeader(), observe: "response", params: {setPreferences: '1'}}
         ).subscribe(
             (res: any) => {

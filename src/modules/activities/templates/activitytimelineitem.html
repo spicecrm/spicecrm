@@ -1,7 +1,7 @@
 <div class="slds-timeline__item_expandable slds-p-vertical--none" [ngClass]="{'slds-is-open': isopen}">
     <div class="slds-media">
         <div class="slds-media__figure">
-            <button class="slds-button slds-button_icon" (click)="toggleexpand()" [disabled]="cantexpand">
+            <button class="slds-button slds-button_icon" (click)="toggleexpand()" [ngClass]="{'slds-hidden': cantexpand}" [disabled]="cantexpand">
                 <system-button-icon icon="switch" addclasses="slds-timeline__details-action-icon"></system-button-icon>
             </button>
             <system-icon [module]="model.module" [title]="language.getModuleName(model.module, true)" size="small" divClass="slds-icon_container slds-timeline__icon"></system-icon>

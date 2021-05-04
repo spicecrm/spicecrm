@@ -4,7 +4,7 @@
 import {
     Component,
     ElementRef,
-    EventEmitter,
+    EventEmitter, Input,
     OnDestroy,
     Output,
 } from '@angular/core';
@@ -26,14 +26,51 @@ declare var _;
 
 export class ProductGroupManagerTree implements OnDestroy {
 
+    /**
+     * an emitter when the selection changs
+     * @private
+     */
     @Output() private selectionchanged: EventEmitter<any> = new EventEmitter<any>();
 
+    /**
+     * an option to disable the productfinder that loads parameters when a group is selected
+     *
+     * @private
+     */
+    @Input() private productFinderActive: boolean = true;
+
+    /**
+     * the raw product groups retrieved in array list form
+     * @private
+     */
     private productGroups: any[] = [];
+
+    /**
+     * the prduct groups traversed into a tree structure
+     *
+     * @private
+     */
     private productGroupTree: any[] = [];
+
+    /**
+     * the current selected id
+     *
+     * @private
+     */
     private selectedId: string = '';
-    private subscription: Subscription = new Subscription();
+
+    /**
+     * set to the current loading ID so wecan not load further nodes and also indicate which tree node is currently in loading state
+     * @private
+     */
     private isLoading: string = '';
-    private data: any = {};
+
+    /**
+     * any subscriptions the component might have to be unsubscribed whent he component is destroyed
+     *
+     * @private
+     */
+    private subscription: Subscription = new Subscription();
 
     constructor(private language: language,
                 private backend: backend,
@@ -44,14 +81,29 @@ export class ProductGroupManagerTree implements OnDestroy {
         this.getProductGroups();
     }
 
+    /**
+     * make sure all subscriptions are destroyed
+     */
     public ngOnDestroy() {
         this.subscription.unsubscribe();
     }
 
+    /**
+     * trackFn for the list to increase performance
+     *
+     * @param index
+     * @param item
+     * @private
+     */
     private trackByFn(index, item) {
         return item.id;
     }
 
+    /**
+     * subscribe to model changes that might occur
+     *
+     * @private
+     */
     private subscribeModelChanges() {
         this.subscription = this.broadcast.message$.subscribe(msg => {
             if (msg.messagetype == 'model.save' && msg.messagedata.module == 'ProductGroups') {
@@ -89,6 +141,12 @@ export class ProductGroupManagerTree implements OnDestroy {
         });
     }
 
+    /**
+     * retrieves the product groups for the treenode
+     *
+     * @param parentId
+     * @private
+     */
     private getProductGroups(parentId = '') {
         this.isLoading = parentId;
         this.backend.getRequest('module/ProductGroups/tree' + (parentId ? '/' + parentId : '')).subscribe(items => {
@@ -109,6 +167,11 @@ export class ProductGroupManagerTree implements OnDestroy {
 
     }
 
+    /**
+     * sorts the results
+     *
+     * @private
+     */
     private sortProductGroups() {
         this.productGroups.sort((a, b) => {
             if (!isNaN(a.sortseq) && !isNaN(b.sortseq) && a.sortseq != b.sortseq) {
@@ -119,6 +182,13 @@ export class ProductGroupManagerTree implements OnDestroy {
         });
     }
 
+    /**
+     * toggle a node open or closed
+     *
+     * @param productgroup
+     * @param e
+     * @private
+     */
     private toggle(productgroup, e) {
         this.productGroups.some(item => {
                 if (item.id == productgroup.id) {
@@ -142,12 +212,24 @@ export class ProductGroupManagerTree implements OnDestroy {
         if (e.stopPropagation) e.stopPropagation();
     }
 
+    /**
+     * builds the tree from the array
+     *
+     * @private
+     */
     private buildTree() {
         this.productGroupTree = [];
         this.sortProductGroups();
         this.addTreeNode();
     }
 
+    /**
+     * adds a tree node
+     *
+     * @param parentId
+     * @param level
+     * @private
+     */
     private addTreeNode(parentId = '', level = 1) {
         for (let productgroup of this.productGroups) {
             if (productgroup.parent_productgroup_id == parentId) {
@@ -161,13 +243,33 @@ export class ProductGroupManagerTree implements OnDestroy {
         }
     }
 
+    /**
+     * select a group
+     * @param group
+     * @private
+     */
     private selectGroup(group) {
+        // define the object type
         let obj = {type: 'ProductGroup', object: group};
-        this.productfinder.setSearchFocus(obj);
+
+        // set the data in the product finder
+        if (this.productFinderActive) {
+            this.productfinder.setSearchFocus(obj);
+        }
+
+        // set the selected id
         this.selectedId = group.id;
+
+        // emit the change of selecttion
         this.selectionchanged.emit(obj);
     }
 
+    /**
+     * getter to highlight the selected entry in the tree
+     *
+     * @param id
+     * @private
+     */
     private isSelected(id) {
         return this.selectedId == id;
     }

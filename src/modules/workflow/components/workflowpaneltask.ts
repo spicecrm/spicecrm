@@ -43,10 +43,23 @@ export class WorkflowPanelTask {
 
             this.model.data = this.modelutilities.backendModel2spice(this.model.module, parent);
 
+            /**
+             * broadcast that we saved the model
+             */
             this.broadcast.broadcastMessage('model.save', {
                 id: this.model.id,
                 module: this.model.module,
                 data: this.model.data
+            });
+
+            /**
+             * broadcast that we updated the workflowtask
+             * this is mainly important so the assistant and other objects that might old it can also pick up the changes
+             */
+            this.broadcast.broadcastMessage('model.save', {
+                id: this.workflowtask.id,
+                module: 'WorkflowTasks',
+                data: {}
             });
 
             this.posting = false;
