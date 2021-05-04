@@ -248,7 +248,7 @@ export class fieldRichText extends fieldGeneric {
 
         Array.from(tempElement.querySelectorAll('div[data-signature]'))
             .forEach(el => {
-                this.signaturePreviousPosition = this.value.indexOf(el.outerHTML);
+                this.signaturePreviousPosition = tempElement.innerHTML.indexOf(el.outerHTML);
                 el.parentNode.removeChild(el);
             });
         this.value = tempElement.innerHTML;

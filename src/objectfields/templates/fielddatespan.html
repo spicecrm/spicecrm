@@ -1,8 +1,7 @@
 <ng-container *ngIf="!isEditMode()">
     <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
-    <field-generic-display [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()"
-                           [fieldconfig]="fieldconfig">
-        {{formattedStartDate}}&nbsp;-&nbsp;{{formattedEndDate}}
+    <field-generic-display [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
+        <system-display-datetime [date]="startDate" [displayTime]="false"></system-display-datetime> &nbsp;-&nbsp;<system-display-datetime [date]="endDate" [displayTime]="false"></system-display-datetime>
     </field-generic-display>
 </ng-container>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small"

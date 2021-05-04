@@ -20,6 +20,7 @@ import {configurationService} from '../../../services/configuration.service';
 import {userpreferences} from '../../../services/userpreferences.service';
 import {CdkDragDrop} from "@angular/cdk/drag-drop";
 import {ListTypeI} from "../../../services/interfaces.service";
+import {skip} from "rxjs/operators";
 
 declare var _: any;
 
@@ -144,7 +145,7 @@ export class SpiceKanban implements OnInit, OnDestroy {
 
         // subscribe to changes of the list type
         // since this is a behavior subject this will also fire the initial list load
-        this.modellistsubscribe = this.modellist.listType$.subscribe(newType =>
+        this.modellistsubscribe = this.modellist.listType$.pipe(skip(1)).subscribe(newType =>
             this.handleListTypeChange(newType)
         );
     }

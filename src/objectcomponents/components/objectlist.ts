@@ -10,6 +10,7 @@ import {modellist} from '../../services/modellist.service';
 import {Subscription} from "rxjs";
 import {ListTypeI} from "../../services/interfaces.service";
 import {modal} from "../../services/modal.service";
+import {skip} from "rxjs/operators";
 
 /**
  * renders the modellist
@@ -82,7 +83,7 @@ export class ObjectList implements OnDestroy, OnInit {
         }
 
         this.subscriptions.add(
-            this.modellist.listType$.subscribe(newType =>
+            this.modellist.listType$.pipe(skip(1)).subscribe(newType =>
                 this.handleListTypeChange(newType)
             )
         );
