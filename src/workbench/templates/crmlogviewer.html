@@ -95,6 +95,10 @@
             </div>
         </div>
 
+        <div class="slds-m-right--x-small">
+            <system-input-relate [module]="'Users'" [(ngModel)]="filterUser" [nameField]="'user_name'" (ngModelChange)="hallo()"></system-input-relate>
+        </div>
+
         <!--
         <div class="slds-form-element slds-m-right--x-small">
             <label class="slds-form-element__label" for="user">{{lang.getLabel('LBL_USER')}}</label>
