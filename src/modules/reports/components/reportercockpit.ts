@@ -9,6 +9,7 @@ import {configurationService} from "../../../services/configuration.service";
 import {language} from "../../../services/language.service";
 import {Subscription} from "rxjs";
 import {ListTypeI} from "../../../services/interfaces.service";
+import {skip} from "rxjs/operators";
 
 /**
  * renders the reporter cockpit
@@ -76,7 +77,7 @@ export class ReporterCockpit implements OnInit, OnDestroy {
         }
 
         this.subscriptions.add(
-            this.modellist.listType$.subscribe(newType =>
+            this.modellist.listType$.pipe(skip(1)).subscribe(newType =>
                 this.handleListTypeChange(newType)
             )
         );
