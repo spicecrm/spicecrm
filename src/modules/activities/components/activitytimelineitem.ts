@@ -229,7 +229,7 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
      * returns true if no fieldset for the expanded form is set and thus expanding is not possible
      */
     get cantexpand() {
-        return this.formFieldSet == '';
+        return !this.formFieldSet;
     }
 
     /**

@@ -1368,22 +1368,31 @@ export class model implements OnDestroy {
     }
 
     public getCalculatedValue(copyRule, fromField?) {
-
+        let params;
+        let timeZone = this.session.getSessionData('timezone') || moment.tz.guess(true);
         switch (copyRule.calculatedvalue) {
             case "now":
-                return new moment();
+                return new moment.utc().tz(timeZone);
             case "nextfullhour":
-                let date = new moment();
-                if (date.minute() == 0) {
-                    return date;
-                } else {
+                let date = new moment.utc().tz(timeZone);
+                if (date.minute() != 0) {
                     date.minute(0);
                     date.add(1, "h");
+                }
+
+                // see if we should add some units
+                try {
+                    params = JSON.parse(copyRule.params);
+                    if (params.number && params.unit) {
+                        date.add(params.number, params.unit);
+                    }
+                    return date;
+                } catch {
                     return date;
                 }
+                break;
             case "addDate":
-                const fromFieldDate = moment.isMoment(fromField) ? new moment(fromField) : new moment();
-                let params;
+                const fromFieldDate = moment.isMoment(fromField) ? new moment(fromField) : new moment.utc().tz(timeZone);
                 try {
                     params = JSON.parse(copyRule.params);
                 } catch {
@@ -1391,7 +1400,7 @@ export class model implements OnDestroy {
                 }
                 if (!params.number || !params.unit) return fromFieldDate;
 
-                return new moment(fromFieldDate.format()).add(params.number, params.unit);
+                return fromFieldDate.add(params.number, params.unit);
         }
         return "";
     }

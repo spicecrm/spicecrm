@@ -1,7 +1,7 @@
 /**
  * @module services
  */
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {backend} from './backend.service';
 import {toast} from './toast.service';
@@ -54,6 +54,11 @@ export class userpreferences {
     };
 
     public formats = {nameFormats: [], loaded: false};
+
+    /**
+     * an emitter allowing to subscribe to prference changes
+     */
+    public preferences$: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(private backend: backend, private toast: toast, private configuration: configurationService, private language: language, private broadcast: broadcast, private modalservice: modal, private session: session) {
         this.toUse = this.preferences.global;
@@ -144,6 +149,10 @@ export class userpreferences {
                 this.completePreferencesWithDefaults();
                 if (category === 'global' && name === 'timezone') this.session.setTimezone(this.toUse.timezone); // Tell the UI the current time zone.
                 saved.next(response);
+
+                // emit the changes
+                this.preferences$.emit(prefs);
+
             }, error => {
                 saved.error(error);
             });
@@ -169,6 +178,9 @@ export class userpreferences {
                 this.completePreferencesWithDefaults();
                 this.session.setTimezone(this.toUse.timezone); // Tell the UI the current time zone. It might got changed.
                 saved.next(true);
+
+                // emit the changes
+                this.preferences$.emit(prefs);
             },
             (error) => {
                 saved.error(error);

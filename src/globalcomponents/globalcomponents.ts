@@ -105,9 +105,11 @@ import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobt
 import /*embed*/ {GlobalObtainGDPRConsent} from './components/globalobtaingdprconsent';
 import /*embed*/ {GlobalObtainGDPRConsentContainer} from './components/globalobtaingdprconsentcontainer';
 import /*embed*/ {GlobalHeaderImage} from './components/globalheaderimage';
+import /*embed*/ {GlobalHeaderNotificationsItemGeneric} from './components/globalheadernotificationsitemgeneric';
 import /*embed*/ {GlobalHeaderNotificationsItemChange} from './components/globalheadernotificationsitemchange';
 import /*embed*/ {GlobalHeaderNotificationsItemAssign} from './components/globalheadernotificationsitemassign';
 import /*embed*/ {GlobalHeaderNotificationsItemDelete} from './components/globalheadernotificationsitemdelete';
+import /*embed*/ {GlobalHeaderNotificationsItemReminder} from './components/globalheadernotificationsitemreminder';
 import /*embed*/ {GlobalHeaderNotifications} from './components/globalheadernotifications';
 
 /**
@@ -199,6 +201,8 @@ import /*embed*/ {GlobalHeaderNotifications} from './components/globalheadernoti
         GlobalHeaderImage,
         GlobalLoginImage,
         GlobalHeaderNotifications,
+        GlobalHeaderNotificationsItemGeneric,
+        GlobalHeaderNotificationsItemReminder,
         GlobalHeaderNotificationsItemChange,
         GlobalHeaderNotificationsItemAssign,
         GlobalHeaderNotificationsItemDelete
