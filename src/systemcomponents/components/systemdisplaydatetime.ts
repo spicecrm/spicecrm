@@ -13,7 +13,7 @@ import {
 
 import {language} from '../../services/language.service';
 import {userpreferences} from '../../services/userpreferences.service';
-import {currency} from '../../services/currency.service';
+import {session} from '../../services/session.service';
 import {Subscription} from "rxjs";
 
 declare var moment: any;
@@ -47,9 +47,14 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
      */
     @Input() private displayTime: boolean = true;
 
+    /**
+     * holds the components subscriptions
+     *
+     * @private
+     */
     private subscriptions: Subscription = new Subscription();
 
-    constructor(private language: language, private cdRef: ChangeDetectorRef, private currency: currency, private userpreferences: userpreferences) {
+    constructor(private language: language, private cdRef: ChangeDetectorRef, private session: session, private userpreferences: userpreferences) {
 
     }
 
@@ -118,7 +123,9 @@ export class SystemDisplayDatetime implements AfterViewInit, OnChanges, OnDestro
         if(moment.isMoment(this.date)) {
             return this.date.format(formatArray.join(' '));
         } else {
-            return moment(this.date).format(formatArray.join(' '));
+            let timeZone = this.session.getSessionData('timezone') || moment.tz.guess(true);
+            // set the Time Zone for the Field Value only if the Time Zone is set
+            return moment.utc(this.date).tz(timeZone).format(formatArray.join(' '));
         }
     }
 

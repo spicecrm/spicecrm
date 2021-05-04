@@ -44,6 +44,7 @@ import /*embed*/ {WorkflowPanelTasksItem} from "./components/workflowpaneltasksi
 import /*embed*/ {WorkflowPanelTask} from "./components/workflowpaneltask";
 import /*embed*/ {WorkflowPanelTasksComments} from "./components/workflowpaneltaskscomments";
 import /*embed*/ {WorkflowTasksDashlet} from "./components/workflowtasksdashlet";
+import /*embed*/ {fieldWorkflowTaskName} from "./fields/fieldworkflowtaskname";
 
 import /*embed*/ {WorkflowCloseWorkflowButton} from "./components/workflowcloseworkflowbutton";
 
@@ -88,7 +89,8 @@ import /*embed*/ {WorkflowCloseWorkflowButton} from "./components/workflowclosew
         WorkflowPanelTasksComments,
         WorkflowPanelTask,
         WorkflowTasksDashlet,
-        WorkflowCloseWorkflowButton
+        WorkflowCloseWorkflowButton,
+        fieldWorkflowTaskName
     ]
 })
 export class ModuleWorkflow {}
