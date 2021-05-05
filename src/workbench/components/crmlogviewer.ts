@@ -1,7 +1,7 @@
 /**
  * @module WorkbenchModule
  */
-import { Component, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, ViewChild } from '@angular/core';
 import { language } from '../../services/language.service';
 import { backend } from '../../services/backend.service';
 
@@ -26,24 +26,23 @@ export class CRMLogViewer {
     // Various:
     private filter = { level: 'fatal', processId: '', userId: '', text: '', transactionId: '' };
     private period = { type: '', start: { year: '', month: '', day: '', hour: '' }, begin: { year: '', month: '', day: '', hour: '' }, duration: '1' };
-
-    // The hole list of CRM users:
-    private userlist: any[];
-    private userlistIndexes = {};
+    private filterUserName: string;
 
     private load$ = new EventEmitter();
 
-    constructor( private lang: language, private backend: backend ) {
-
-        // Individual route, because of bug SPICEUI-159.
-        this.backend.getRequest( this.routeBase+'/userlist' ).subscribe( response => {
-            this.userlist = response.list;
-            this.userlist.forEach( ( val, i ) => {
-                this.userlistIndexes[val.id] = i;
-            });
-        });
-
+    private set filterUser( idAndName: string ) {
+        if (!idAndName) return;
+        const valueArray = idAndName.split('::');
+        this.filter.userId = valueArray[0];
+        this.filterUserName = valueArray[1];
     }
+
+    private get filterUser(): string {
+        if ( !this.filter.userId ) return undefined;
+        return this.filter.userId+'::'+this.filterUserName;
+    }
+
+    constructor( private lang: language, private backend: backend ) { }
 
     // Are all the inputs correct and ready for the backend request?
     private canLoad() {
@@ -137,7 +136,11 @@ export class CRMLogViewer {
                 this.period.begin.hour = items[0];
                 break;
             case 'tid': this.filter.transactionId = click.value; break;
-            case 'uid': this.filter.userId = click.value; break;
+            case 'usr': {
+                this.filter.userId = click.value.uid;
+                this.filterUserName = click.value.uname;
+                break;
+            }
             case 'lev': this.filter.level = click.value; break;
             case 'pid': this.filter.processId = click.value.toString(); break;
         }

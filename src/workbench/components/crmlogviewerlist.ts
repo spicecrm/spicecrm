@@ -43,6 +43,9 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
     private entries: any[] = [];
     private entriesToShow: any[] = []; // Same as "entries" if no text filter is applied.
 
+    // Users
+    private users: any[];
+
     // The hole list of CRM users:
     private userlist: any[];
     private userlistIndexes = {};
@@ -62,6 +65,7 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
 
     constructor( private backend: backend, private metadata: metadata, private lang: language, private prefs: userpreferences, private modalservice: modal, private toast: toast ) {
 
+        /*
         // Individual route, because of bug SPICEUI-159.
         this.backend.getRequest( this.routeBase+'/userlist' ).subscribe( response => {
             this.userlist = response.list;
@@ -70,17 +74,13 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
             });
         });
 
+         */
+
     }
 
     public ngOnInit() {
         if ( this.load$ ) this.load$.subscribe( () => this.loadData() );
         else this.loadData();
-    }
-
-    // Get the name for a specific user.
-    private getUsername( userId ) {
-        if ( !userId || !this.userlistIndexes.hasOwnProperty( userId )) return userId;
-        return this.userlist[this.userlistIndexes[userId]].name;
     }
 
     // Load the log entries from the backend.
@@ -131,7 +131,7 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
             level: this.filter.level ? this.filter.level : undefined,
             processId: this.filter.processId ? this.filter.processId : undefined,
             // switched off temporarily with route changement on 2021-04-07:
-            // userId: this.filter.userId ? this.filter.userId : undefined,
+            userId: this.filter.userId ? this.filter.userId : undefined,
             text: this.filter.text ? this.filter.text : undefined,
             transactionId: this.filter.transactionId ? this.filter.transactionId : undefined,
             // moved parameter "begin" and "end" from path to query (route changement on 2021-04-07):
@@ -148,10 +148,9 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
                     entry.i = i;
                 });
                 this.updateLocalFiltering();
+                this.users = response.users;
                 this.isLoaded = true;
                 this.isLoading = false;
-                // The backend has to use "SpiceLogger" instead of "SugarLogger", because only SpiceLogger logs to the database. Warning in case of wrong configuration in config.php.
-                if ( !response.SpiceLogger ) this.toastId = this.toast.sendToast('SpiceLogger not used for logging!', 'warning', 'The CRM Log Viewer needs logging by „SpiceLogger“. Define it´s usage in config.php.', false );
             },
             error => {
                 this.toast.sendToast('Error loading log data!', 'error' );
@@ -165,8 +164,8 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
     // The trick to detect truncation: When scrollWidth > clientWidth.
     public ngAfterViewChecked() {
         let htmlTableRows;
-        let numberOfTextColumn = 5;
-        let numberOfExpandButtonColumn = 6;
+        let numberOfTextColumn = 6;
+        let numberOfExpandButtonColumn = 7;
         if ( this.tbody && this.tbody.nativeElement ) {
             htmlTableRows = this.tbody.nativeElement.childNodes;
             if ( htmlTableRows ) {
@@ -184,7 +183,7 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
     private showEntryInModal(i) {
         this.modalservice.openModal('CRMLogViewerModal' ).subscribe( modal => {
             modal.instance.entry = this.entriesToShow[i];
-            modal.instance.username = this.getUsername( this.entriesToShow[i].uid );
+            modal.instance.username = this.entriesToShow[i].uname;
             modal.instance.routeBase = this.routeBase;
         });
     }
