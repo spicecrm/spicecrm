@@ -84,6 +84,7 @@ export class EmailReplyModal implements OnInit {
         this.model.startEdit(false);
         // set the from-addresses to to-addresses and vice versa
         this.model.data.recipient_addresses = [];
+        this.model.data.reference_id = this.parent.id;
 
         for (let address of this.parent.data.recipient_addresses) {
             if (address.address_type == "from") {
@@ -176,11 +177,13 @@ export class EmailReplyModal implements OnInit {
             modalRef.instance.messagelabel = 'LBL_SENDING';
 
             this.sending = true;
-            this.model.setField('type', 'outbound');
-            this.model.setField('to_be_sent', '1');
-            this.model.setField('from_addr', this.model.data.from_addr_name);
-            this.model.setField('to_addrs', this.model.data.to_addrs_names);
-            this.model.setField('cc_addrs', this.model.data.cc_addrs_names);
+            this.model.setFields({
+                type: 'outbound',
+                to_be_sent: '1',
+                from_addr: this.model.data.from_addr_name,
+                to_addrs: this.model.data.to_addrs_names,
+                cc_addrs: this.model.data.cc_addrs_names,
+            });
 
             this.model.save().subscribe(
                 success => {
