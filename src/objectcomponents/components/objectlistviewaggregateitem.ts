@@ -47,6 +47,13 @@ export class ObjectListViewAggregateItem {
     }
 
     /**
+     * returns if the modellist is loading and thus disabled the checkboxes
+     */
+    get loading() {
+        return this.modellist.isLoading;
+    }
+
+    /**
      * a setter for the checked value of teh checkbox. A change triggers teh set int eh listservice and a refiltering
      *
      * @param value
