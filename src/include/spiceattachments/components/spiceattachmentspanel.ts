@@ -58,7 +58,11 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      *
      * passed in component config
      */
-    private componentconfig: any = {};
+    private componentconfig: {
+        systemCateogryId?: string,
+        requiredmodelstate?: string,
+        disableupload?: boolean
+    } = {};
 
     /**
      * contructor sets the module and id for the laoder
@@ -74,6 +78,13 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
     constructor(private _modelattachments: modelattachments, @Optional() @SkipSelf() private parentmodelattachments: modelattachments, private language: language, private modal: modal, private model: model, private renderer: Renderer2, private toast: toast, private metadata: metadata, private modalservice: modal, private injector: Injector) {
         this._modelattachments.module = this.model.module;
         this._modelattachments.id = this.model.id;
+    }
+
+    /**
+     * @return matchedModelState: boolean
+     */
+    get isHidden() {
+        return (!!this.componentconfig.requiredmodelstate && !this.model.checkModelState(this.componentconfig.requiredmodelstate));
     }
 
     /**
@@ -94,7 +105,7 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      * initializes the model attachments service and loads the attachments
      */
     private loadFiles() {
-        this.modelattachments.getAttachments().subscribe(loaded => {
+        this.modelattachments.getAttachments(this.componentconfig.systemCateogryId).subscribe(loaded => {
             this.attachmentsLoaded.emit(true);
             this.loadInputFiles();
         });
@@ -212,7 +223,7 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      * @param files an array with files
      */
     private doupload(files) {
-        this.modelattachments.uploadAttachmentsBase64(files);
+        this.modelattachments.uploadAttachmentsBase64(files, this.componentconfig.systemCateogryId);
     }
 
     /**
