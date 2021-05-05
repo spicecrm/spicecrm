@@ -29,16 +29,12 @@ export class KRESTLogViewer {
 
     // Configuration:
     private routeBase = 'admin/apilog';
-    private methods = [ 'CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PATCH', 'PUT', 'TRACE' ];
+    private methods = [ 'CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PATCH', 'PUT', 'SOAP', 'TRACE' ];
     private limit = '5000';
     private entriesPerPage = 20;
 
     // The log data from the backend:
     private entries: any[] = [];
-
-    // The hole list of CRM users:
-    private userlist: any[];
-    private userlistIndexes = {};
 
     // The hole list of routes:
     private routes: any[];
@@ -46,8 +42,9 @@ export class KRESTLogViewer {
 
     // Various:
     private currPage = 1;
-    private filter = { method: 'POST', sessionId: '', userId: '', urlParams: '', postParams: '', routeArgs: '', ipAddress: '', url: '', route: '', status: '', transactionId: '' };
+    private filter = { method: 'POST', sessionId: '', userId: '', urlParams: '', postParams: '', routeArgs: '', ipAddress: '', url: '', route: '', status: '', transactionId: '', direction: '' };
     private period = { type: '', begin: { year: '', month: '', day: '', hour: '' }, end: { year: '', month: '', day: '', hour: '' }, duration: '1' };
+    private filterUserName: string;
     private filtertext = '';
     private yearNow: string;
     private toastId = '';
@@ -58,18 +55,27 @@ export class KRESTLogViewer {
     private isLoading = false;
     private isLoaded = false;
 
+    private directionLabels: any;
+
     @ViewChild('tbody', {static: true}) private tbody: ElementRef; // Reference to the tbody dom element of the data table.
 
+    private set filterUser( idAndName: string ) {
+        if (!idAndName) {
+            this.filter.userId = '';
+            this.filterUserName = undefined;
+            return;
+        }
+        const valueArray = idAndName.split('::');
+        this.filter.userId = valueArray[0];
+        this.filterUserName = valueArray[1];
+    }
+
+    private get filterUser(): string {
+        if ( !this.filter.userId ) return undefined;
+        return this.filter.userId+'::'+this.filterUserName;
+    }
+
     constructor( private backend: backend, private metadata: metadata, private lang: language, private prefs: userpreferences, private modalservice: modal, private toast: toast ) {
-
-        // Individual route, because of bug SPICEUI-159.
-        this.backend.getRequest( this.routeBase+'/userlist' ).subscribe( response => {
-            this.userlist = response.list;
-            this.userlist.forEach( ( val, i ) => {
-                this.userlistIndexes[val.id] = i;
-            });
-        });
-
         this.yearNow = (new Date()).getFullYear().toString();
         this.backend.getRequest( this.routeBase+'/routes' ).subscribe( response => {
             this.routes = response.routes;
@@ -77,13 +83,8 @@ export class KRESTLogViewer {
                 this.routesIndexes[val.id] = i;
             });
         });
+        this.directionLabels = this.lang.getDisplayOptions('apilog_direction_dom');
    }
-
-    // Get the name for a specific user.
-    private getUsername( userId ) {
-        if ( !userId || !this.userlistIndexes.hasOwnProperty( userId )) return userId;
-        return this.userlist[this.userlistIndexes[userId]].name;
-    }
 
     // Load the log entries from the backend.
     private loadData() {
@@ -131,6 +132,7 @@ export class KRESTLogViewer {
             ipAddress: this.filter.ipAddress.length ? this.filter.ipAddress : undefined,
             status: this.filter.status.length ? this.filter.status : undefined,
             transactionId: this.filter.transactionId.length ? this.filter.transactionId : undefined,
+            direction: this.filter.direction.length ? this.filter.direction : undefined,
             // moved parameter "begin" and "end" from path to query (route changement on 2021-04-07):
             begin: this.period.type ? begin.format( 'YYYYMMDDHH' ) : undefined,
             end: this.period.type ? end.format( 'YYYYMMDDHH' ) : undefined
@@ -220,7 +222,7 @@ export class KRESTLogViewer {
         this.currPage = Math.ceil( (lineNr+1) / 20 );
         this.modal.instance.lineNr = lineNr;
         this.modal.instance.entry = this.entries[lineNr];
-        this.modal.instance.username = this.getUsername( this.entries[lineNr].uid );
+        this.modal.instance.username = this.entries[lineNr].uname;
         this.modal.instance.load();
     }
 
@@ -277,7 +279,7 @@ export class KRESTLogViewer {
     }
 
     // The values in the list can be clicked to be transfered to the corresponding filter input field.
-    private valueClicked( type: string, value: string ) {
+    private valueClicked( type: string, value: any ) {
         let items: string[];
         switch ( type ) {
             case 'date':
@@ -291,10 +293,15 @@ export class KRESTLogViewer {
                 this.period.begin.hour = items[0];
                 break;
             case 'tid': this.filter.transactionId = value; break;
-            case 'uid': this.filter.userId = value; break;
+            case 'usr': {
+                this.filter.userId = value.uid;
+                this.filterUserName = value.uname;
+                break;
+            }
             case 'route': this.filter.route = value; break;
             case 'method': this.filter.method = value; break;
             case 'status': this.filter.status = value; break;
+            case 'dir': this.filter.direction = value; break;
         }
     }
 
