@@ -101,12 +101,12 @@ export class modelattachments {
     /**
      * loads the attachments
      */
-    public getAttachments(): Observable<any> {
+    public getAttachments(categoryId?: string): Observable<any> {
         let retSubject = new Subject();
 
         this.files = [];
         this.loading = true;
-        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}`).subscribe(
+        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}`, {categoryId}).subscribe(
             response => {
                 for (let attId in response) {
                     if (!this.files.find(a => a.id == attId)) {
@@ -206,8 +206,9 @@ export class modelattachments {
      * upload files from teh files passed back from a drop or a file select input
      *
      * @param files
+     * @param systemCategoryId
      */
-    public uploadAttachmentsBase64(files): Observable<any> {
+    public uploadAttachmentsBase64(files, systemCategoryId?: string): Observable<any> {
         if (files.length === 0) {
             return;
         }
@@ -228,6 +229,7 @@ export class modelattachments {
                 file_mime_type: file.type ? file.type : 'application/octet-stream',
                 filesize: file.size,
                 filename: file.name,
+                category_ids: systemCategoryId,
                 filemd5: undefined,
                 id: '',
                 text: '',
@@ -316,7 +318,8 @@ export class modelattachments {
         let fileBody = {
             file: file.filecontent,
             filename: file.name,
-            filemimetype: file.type ? file.type : 'application/octet-stream'
+            filemimetype: file.type ? file.type : 'application/octet-stream',
+            category_ids: newfile.category_ids
         };
 
         // determine the upload URL
@@ -420,13 +423,13 @@ export class modelattachments {
      */
     private readFile(file): Observable<any> {
         let responseSubject = new Subject<any>();
-        let reader = new FileReader();
-        reader['file'] = file;
+        let reader: any = new FileReader();
+        reader.file = file;
         reader.onloadend = (e) => {
             let filecontent = reader.result.toString();
             filecontent = filecontent.substring(filecontent.indexOf('base64,') + 7);
 
-            let file = reader['file'];
+            let file = reader.file;
             file.filecontent = filecontent;
             responseSubject.next(file);
             responseSubject.complete();
