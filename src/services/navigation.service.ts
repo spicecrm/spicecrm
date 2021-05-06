@@ -416,6 +416,12 @@ export class navigation {
                 );
 
                 break;
+            case 'model.delete':
+                // find matching tabs and close the tab
+                for(let tab of this.objectTabs.filter(t => t.params.module == message.messagedata.module && t.params.id == message.messagedata.id)){
+                    this.closeObjectTab(tab.id, true);
+                }
+                break;
             default:
                 break;
         }
