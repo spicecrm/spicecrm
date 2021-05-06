@@ -2,7 +2,7 @@
     <div class="slds-text-align--center slds-text-body--small slds-text-color--inverse-weak">#</div>
 </th>
 <th *ngIf="showSelectColumn" style="width:2rem" scope="col">
-    <object-list-header-actionmenu class="slds-p-left--x-small" [actionset]="actionset" [displayasicon]="isSmall"></object-list-header-actionmenu>
+    <object-list-header-actionmenu class="slds-p-left--x-small" *ngIf="actionset" [actionset]="actionset" [displayasicon]="isSmall"></object-list-header-actionmenu>
 </th>
 <th *ngFor="let item of listfields" scope="col" class="slds-resizable" (system-resize)="onresize($event)" [resizeid]="item.id" [width]="columnWidth(item.id)">
     <ng-container *ngIf="isSortable(item); else nosort">
