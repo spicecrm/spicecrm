@@ -130,8 +130,8 @@ import /*embed*/ {CRMLogViewerList} from './components/crmlogviewerlist';
 import /*embed*/ {CRMLogViewerModal} from './components/crmlogviewermodal';
 import /*embed*/ {CRMLogViewerListModal} from './components/crmlogviewerlistmodal';
 
-import /*embed*/ {KRESTLogViewer} from './components/krestlogviewer';
-import /*embed*/ {KRESTLogViewerModal} from './components/krestlogviewermodal';
+import /*embed*/ {APIlogViewer} from './components/apilogviewer';
+import /*embed*/ {APIlogViewerModal} from './components/apilogviewermodal';
 
 import /*embed*/ {ModuleFilterBuilder} from "./components/modulefilterbuilder";
 import /*embed*/ {ModuleFilterBuilderFilters} from "./components/modulefilterbuilderfilters";
@@ -253,8 +253,8 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         CRMLogViewerList,
         CRMLogViewerModal,
         CRMLogViewerListModal,
-        KRESTLogViewer,
-        KRESTLogViewerModal,
+        APIlogViewer,
+        APIlogViewerModal,
         ModuleFilterBuilder,
         ModuleFilterBuilderFilters,
         ModuleFilterBuilderFilterDetails,
@@ -282,8 +282,8 @@ import /*embed*/ {DashletGeneratorDashletDetails} from "./components/dashletgene
         CRMLogViewerList,
         CRMLogViewerModal,
         CRMLogViewerListModal,
-        KRESTLogViewer,
-        KRESTLogViewerModal,
+        APIlogViewer,
+        APIlogViewerModal,
         ConfigTransfer
     ],
     exports: [

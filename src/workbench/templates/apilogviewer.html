@@ -1,4 +1,4 @@
-<h2 class="slds-m-horizontal--medium slds-m-top--medium slds-m-bottom--small slds-text-heading--medium">KREST Log Viewer</h2>
+<h2 class="slds-m-horizontal--medium slds-m-top--medium slds-m-bottom--small slds-text-heading--medium">API Log Viewer</h2>
 
 <div class="slds-section slds-is-open">
 
@@ -104,6 +104,19 @@
             </div>
 
             <div class="slds-form-element slds-m-right--x-small">
+                <label class="slds-form-element__label" for="method">{{lang.getLabel('LBL_DIRECTION')}}</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" id="direction" [(ngModel)]="filter.direction">
+                            <option></option>
+                            <option value="I">{{this.directionLabels.I}}</option>
+                            <option value="O">{{this.directionLabels.O}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slds-form-element slds-m-right--x-small">
                 <label class="slds-form-element__label" for="status">{{lang.getLabel('LBL_STATUS')}}</label>
                 <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                     <input id="status" class="slds-input" type="text" system-trim-input size="3" [(ngModel)]="filter.status" />
@@ -159,16 +172,8 @@
 
         <div class="slds-section__content slds-grid slds-grid--vertical-align-end slds-m-horizontal--medium slds-m-bottom--medium" style="padding-top:0">
 
-            <div class="slds-form-element slds-m-right--x-small">
-                <label class="slds-form-element__label" for="user">{{lang.getLabel('LBL_USER')}}</label>
-                <div class="slds-form-element__control">
-                    <div class="slds-select_container">
-                        <select class="slds-select" id="user" [(ngModel)]="filter.userId">
-                            <option value=""></option>
-                            <option *ngFor="let user of userlist" value="{{user.id}}">{{user.name}}</option>
-                        </select>
-                    </div>
-                </div>
+            <div class="slds-m-right--x-small">
+                <system-input-relate module="Users" [(ngModel)]="filterUser" nameField="user_name"></system-input-relate>
             </div>
 
             <div class="slds-form-element slds-m-right--x-small">
@@ -240,6 +245,7 @@
                             <th style="width:1%">{{lang.getLabel('LBL_USER')}}</th>
                             <th style="width:1%">{{lang.getLabel('LBL_ROUTE')}}</th>
                             <th style="width:1%">{{lang.getLabel('LBL_METHOD')}}</th>
+                            <th style="width:1%">{{lang.getLabel('LBL_DIRECTION')}}</th>
                             <th style="width:1%" class="slds-text-align--right">{{lang.getLabel('LBL_STATUS')}}</th>
                             <th style="width:100%">{{lang.getLabel('LBL_ROUTE_ARGUMENTS')}}</th>
                             <th style="width:100%">{{lang.getLabel('LBL_URL_PARAMETERS')}}</th>
@@ -251,9 +257,10 @@
                             <td class="slds-text-align--right"><a (click)="valueClicked( 'date', entry.date )">{{entry.date}}</a></td>
                             <td class="slds-text-align--right"><a (click)="valueClicked( 'date', entry.date );valueClicked( 'time', entry.time )">{{entry.time}}</a></td>
                             <td><a *ngIf="entry.clr" (click)="showCRMlog(entry.tid)"><b>[ {{entry.clr}} ]</b></a></td>
-                            <td><a (click)="valueClicked( 'uid', entry.uid )">{{getUsername(entry.uid)}}</a></td>
+                            <td><a (click)="valueClicked( 'usr', {uid:entry.uid,uname:entry.uname})">{{entry.uname}}</a></td>
                             <td><a (click)="valueClicked( 'route', entry.route )">{{entry.route}}</a></td>
                             <td><a (click)="valueClicked( 'method', entry.method )">{{entry.method}}</a></td>
+                            <td><a (click)="valueClicked( 'dir', entry.dir )">{{directionLabels[entry.dir]}}</a></td>
                             <td class="slds-text-align--right status"><a (click)="valueClicked( 'status', entry.status )">{{entry.status}}</a></td>
                             <td>{{entry.routeArgs}}</td>
                             <td>{{entry.getParams}}</td>
