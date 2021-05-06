@@ -1015,13 +1015,7 @@ export class modellist implements OnDestroy {
     }
 
     public getSelectedItems() {
-        let items = [];
-        for (let listItem of this.listData.list) {
-            if (listItem.selected) {
-                items.push(listItem);
-            }
-        }
-        return items;
+        return this.listData.list.filter(i => i.selected);
     }
 
     /**
