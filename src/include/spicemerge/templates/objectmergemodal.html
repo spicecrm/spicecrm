@@ -1,9 +1,9 @@
 <system-modal size="large">
-    <system-modal-header (close)="closeModal()"><system-label label="LBL_MERGE_RECORD"></system-label> - {{model.data.summary_text}}</system-modal-header>
+    <system-modal-header (close)="closeModal()"><system-label label="LBL_MERGE_RECORD"></system-label><span *ngIf="model.id">&nbsp;-&nbsp;{{model.data.summary_text}}</span></system-modal-header>
     <system-modal-content margin="none" [grow]="true">
-        <object-merge-modal-records  [hidden]="currentMergeStep!==0"></object-merge-modal-records>
-        <object-merge-modal-data  [hidden]="currentMergeStep!==1"></object-merge-modal-data>
-        <object-merge-modal-execute [hidden]="currentMergeStep!==2"></object-merge-modal-execute>
+        <object-merge-modal-records  [hidden]="getCurrentStep() != 'records'"></object-merge-modal-records>
+        <object-merge-modal-data  [hidden]="getCurrentStep() != 'fields'"></object-merge-modal-data>
+        <object-merge-modal-execute [hidden]="getCurrentStep() != 'execute'"></object-merge-modal-execute>
     </system-modal-content>
     <system-modal-footer>
         <div class="slds-grid slds-grid--align-spread">
