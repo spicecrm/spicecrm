@@ -7,9 +7,9 @@ import { backend } from '../../services/backend.service';
 import { toast } from '../../services/toast.service';
 
 @Component({
-    templateUrl: './src/workbench/templates/krestlogviewermodal.html',
+    templateUrl: './src/workbench/templates/apilogviewermodal.html',
 })
-export class KRESTLogViewerModal {
+export class APIlogViewerModal {
 
     @Input() private entry: any;
     @Input() private username = '';
