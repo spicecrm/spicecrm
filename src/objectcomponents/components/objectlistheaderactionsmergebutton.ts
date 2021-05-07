@@ -61,8 +61,7 @@ export class ObjectListHeaderActionsMergeButton {
      * returns the number of sleected items or all in the modellist
      */
     get mergeCount() {
-        let selectedCount = this.modellist.getSelectedCount();
-        return selectedCount ? selectedCount : this.modellist.listData.totalcount;
+        return this.modellist.getSelectedCount();
     }
 
     public execute() {
