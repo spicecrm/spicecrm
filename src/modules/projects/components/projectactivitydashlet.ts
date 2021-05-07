@@ -74,7 +74,7 @@ export class ProjectActivityDashlet implements OnInit {
      * returns the sortfield from the config
      */
     get sortfield() {
-        if(this.componentconfig?.sortfield) {
+        if(this.componentconfig?.sortfield && this.componentconfig.sortfield !== '') {
             return this.componentconfig.sortfield;
         }
         return 'date_entered';
@@ -84,7 +84,7 @@ export class ProjectActivityDashlet implements OnInit {
      * returns the sortdirection from the componentconfig
      */
     get sortdirection() {
-        if(this.componentconfig?.sortdirection !== undefined) {
+        if(this.componentconfig?.sortdirection && this.componentconfig.sortdirection !== '') {
             return this.componentconfig.sortdirection ;
         }
         return 'desc';
