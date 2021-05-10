@@ -162,7 +162,7 @@ export class UserAddModal implements OnInit {
 
     private getPassInfo() {
         let extConf = this.configuration.getCapabilityConfig('userpassword');
-        this.pwdCheck = new RegExp('/' + extConf.regex + '/');
+        this.pwdCheck = new RegExp(extConf.regex);
 
         let requArray = [];
         if(extConf.onelower) requArray.push(this.language.getLabel('MSG_PASSWORD_ONELOWER'));
