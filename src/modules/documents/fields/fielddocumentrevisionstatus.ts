@@ -1,7 +1,7 @@
 /**
  * @module ModuleCurrencies
  */
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Output, SimpleChanges} from '@angular/core';
 import {Router} from '@angular/router';
 
 import {model} from '../../../services/model.service';
@@ -26,11 +26,20 @@ export class fieldDocumentRevisionStatus extends fieldGeneric {
     constructor(public model: model, private navigation: navigation, view: view, public language: language, public metadata: metadata, public router: Router, public modal: modal, public relatedmodels: relatedmodels, public backend: backend) {
         super(model, view, language, metadata, router);
 
+
     }
     public ngOnInit() {
         super.ngOnInit();
         this.parent = this.navigation.getRegisteredModel(this.model.data.document_id, 'Documents');
+        this.subscriptions.add(
+            this.parent.observeFieldChanges('status_id').subscribe(value => {
+                if(value == 'Expired') {
+                    this.value = 'a';
+                }
+            }));
+
     }
+
 
     /**
      * returns the translated value
