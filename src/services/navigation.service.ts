@@ -537,7 +537,7 @@ export class navigation {
      * @param module
      */
     public getRegisteredModel(id: string, module: string) {
-        return this.modelregister.find(model => model.id == id && model.model.module == module)?.model;
+        return this.modelregister.find(model => model.model.id == id && model.model.module == module)?.model;
     }
 
     /**
