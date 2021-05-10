@@ -22,10 +22,14 @@ import {navigation} from "../../../services/navigation.service";
 })
 
 export class fieldDocumentRevisionStatus extends fieldGeneric {
-
+    private parent:any;
     constructor(public model: model, private navigation: navigation, view: view, public language: language, public metadata: metadata, public router: Router, public modal: modal, public relatedmodels: relatedmodels, public backend: backend) {
         super(model, view, language, metadata, router);
 
+    }
+    public ngOnInit() {
+        super.ngOnInit();
+        this.parent = this.navigation.getRegisteredModel(this.model.data.document_id, 'Documents');
     }
 
     /**
@@ -39,7 +43,7 @@ export class fieldDocumentRevisionStatus extends fieldGeneric {
      * boolean to display the activation button
      */
     get canActivate(){
-        return !this.model.isEditing && this.value == 'c' && this.model.checkAccess('edit');
+        return !this.model.isEditing && this.value == 'c' && this.model.checkAccess('edit') && this.parent.getField('status_id') != 'Expired';
     }
 
     /**
@@ -52,11 +56,10 @@ export class fieldDocumentRevisionStatus extends fieldGeneric {
                     this.model.startEdit();
                     this.value = 'r';
                     this.model.save().subscribe( save => {
-                        const parent = this.navigation.getRegisteredModel(this.model.data.document_id, 'Documents');
-                        if(!parent) {
+                        if(!this.parent) {
                             return;
                         }
-                        parent.setField('revision', this.model.data.revision);
+                        this.parent.setField('revision', this.model.data.revision);
                     });
                 }
             }
