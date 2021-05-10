@@ -181,7 +181,10 @@ export class SpiceUI {
     ]
 })
 export class SpiceUIModule {
-    constructor(private socket: socket) {
+    constructor(
+        private socket: socket,
+        private assistant: assistant
+    ) {
 
     }
 }
