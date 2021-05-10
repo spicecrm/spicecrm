@@ -57,7 +57,7 @@ export class ProjectActivityDashlet implements OnInit {
         this.modellist.loadlimit = this.limit;
         this.modellist.initialize(this.module);
         if(!this.modellist.currentList.sortfields) {
-            this.modellist.currentList.sortfields = btoa('{"sortfield": "date_entered", "sortdirection": "DESC"}');
+            this.modellist.currentList.sortfields = btoa('{"sortfield": "' + this.sortfield + '" , "sortdirection": "' + this.sortdirection + '"}');
         }
 
         // load the list and initialize from session data if this is set
@@ -74,20 +74,20 @@ export class ProjectActivityDashlet implements OnInit {
      * returns the sortfield from the config
      */
     get sortfield() {
-        if(this.componentconfig?.sortfield) {
+        if(this.componentconfig?.sortfield && this.componentconfig.sortfield !== '') {
             return this.componentconfig.sortfield;
         }
-        return '';
+        return 'date_entered';
     }
 
     /**
      * returns the sortdirection from the componentconfig
      */
     get sortdirection() {
-        if(this.componentconfig?.sortdirection !== undefined) {
+        if(this.componentconfig?.sortdirection && this.componentconfig.sortdirection !== '') {
             return this.componentconfig.sortdirection ;
         }
-        return '';
+        return 'desc';
     }
 
     /**
@@ -124,7 +124,7 @@ export class ProjectActivityDashlet implements OnInit {
      * @param loadfromcache
      */
     private loadRecentActivities() {
-        this.modellist.setListType('owner', false, [{sortfield: "date_entered", sortdirection: "DESC"}]);
+        this.modellist.setListType('owner', false, [{sortfield: this.sortfield, sortdirection: this.sortdirection}]);
         this.modellist.getListData();
     }
 }
