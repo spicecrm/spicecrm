@@ -18,6 +18,6 @@
         <button class="slds-button slds-button--neutral" (click)="closePopup()">
             <system-label label="LBL_CANCEL"></system-label>
         </button>
-        <button class="slds-button slds-button--brand" (click)="upload()" [disabled]="!metadata.checkModuleAcl('MediaFiles','edit')"><system-label label="LBL_UPLOAD_NEW_FILE"></system-label> …</button>
+        <button class="slds-button slds-button--brand" (click)="upload()" [disabled]="!metadata.checkModuleAcl('MediaFiles','create')"><system-label label="LBL_UPLOAD_NEW_FILE"></system-label> …</button>
     </system-modal-footer>
 </system-modal>

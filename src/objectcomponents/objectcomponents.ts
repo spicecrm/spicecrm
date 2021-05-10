@@ -31,6 +31,9 @@ import /*embed*/ {ObjectActionContainer} from './components/objectactioncontaine
 import /*embed*/ {ObjectListHeader} from './components/objectlistheader';
 import /*embed*/ {ObjectListHeaderSort} from './components/objectlistheadersort';
 import /*embed*/ {ObjectListHeaderActionMenu} from './components/objectlistheaderactionmenu';
+import /*embed*/ {ObjectListHeaderActionsAssignButton} from './components/objectlistheaderactionsassignbutton';
+import /*embed*/ {ObjectListHeaderActionsAssignModal} from './components/objectlistheaderactionsassignmodal';
+import /*embed*/ {ObjectListHeaderActionsMergeButton} from './components/objectlistheaderactionsmergebutton';
 import /*embed*/ {ObjectListHeaderActionsExportCSVButton} from './components/objectlistheaderactionsexportcsvbutton';
 import /*embed*/ {ObjectListHeaderActionsExportCSVSelectFields} from './components/objectlistheaderactionsexportcsvselectfields';
 import /*embed*/ {ObjectListHeaderActionsExportTargetlistButton} from './components/objectlistheaderactionsexporttargetlistbutton';
@@ -208,6 +211,9 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectActionContainer,
         ObjectActionContainerItem,
         ObjectListHeaderActionMenu,
+        ObjectListHeaderActionsAssignButton,
+        ObjectListHeaderActionsAssignModal,
+        ObjectListHeaderActionsMergeButton,
         ObjectListHeaderActionsExportCSVButton,
         ObjectFieldFilterPipe,
         ObjectListHeaderActionsExportCSVSelectFields,
