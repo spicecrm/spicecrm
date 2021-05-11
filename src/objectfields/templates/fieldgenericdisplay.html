@@ -3,7 +3,10 @@
     <ng-template #displaycontent>
         <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread" style="min-height: 19px;">
             <div class="slds-truncate" style="width:100%">
-                <span system-model-popover [enablelink]="link"><ng-container *ngTemplateOutlet="content"></ng-container></span>
+                <span *ngIf="link;else nolink" system-model-popover><ng-container *ngTemplateOutlet="content"></ng-container></span>
+                <ng-template #nolink>
+                    <ng-container *ngTemplateOutlet="content"></ng-container>
+                </ng-template>
             </div>
             <button *ngIf="editable" style="float: right" class="slds-button slds-button--icon spice-button-icon-light slds-m-left--xx-small" (click)="setEditMode()">
                 <system-button-icon [icon]="'edit'"></system-button-icon>

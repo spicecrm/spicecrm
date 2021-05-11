@@ -120,17 +120,6 @@ export class fieldParent extends fieldGeneric implements OnInit {
         }
     }
 
-    /**
-     * simple getter to determine if the field has a link, the view allows for links and if the user has ACL rights to navigate to thte the of the record
-     */
-    get link() {
-        try {
-            return this.view.displayLinks;
-        } catch (e) {
-            return false;
-        }
-    }
-
     private closePopups() {
         if (this.model.data[this.parentIdField]) {
             this.parentSearchTerm = '';
