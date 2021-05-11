@@ -29,7 +29,6 @@ import /*embed*/ {SystemActionIcon} from "./components/systemactionicon";
 import /*embed*/ {SystemButtonCustomIcon} from "./components/systembuttoncustomicon";
 import /*embed*/ {SystemButtonGroup} from "./components/systembuttongroup";
 import /*embed*/ {SystemButtonIcon} from "./components/systembuttonicon";
-import /*embed*/ {SystemCaptureImage} from "./components/systemcaptureimage";
 import /*embed*/ {SystemCard} from "./components/systemcard";
 import /*embed*/ {SystemCardHeader} from "./components/systemcardheader";
 import /*embed*/ {SystemCardBody} from "./components/systemcardbody";
@@ -184,7 +183,6 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemButtonCustomIcon,
         SystemButtonGroup,
         SystemButtonIcon,
-        SystemCaptureImage,
         SystemCard,
         SystemCardBody,
         SystemCardFooter,
