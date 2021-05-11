@@ -18,6 +18,7 @@ import {recent} from "./recent.service";
 import {configurationService} from "./configuration.service";
 import {socket} from "./socket.service";
 import {SocketEventI} from "./interfaces.service";
+import {filter, map} from "rxjs/operators";
 
 /**
  * @ignore
@@ -95,6 +96,11 @@ export class model implements OnDestroy {
      *```
      */
     public data$: BehaviorSubject<any>;
+
+    /**
+     * holds observable of a field and its value
+     */
+    public field$: BehaviorSubject<{field: string, value: any}> = new BehaviorSubject({field: null, value: null});
 
     /**
      * indicates wheter the model is currently saving
@@ -921,14 +927,26 @@ export class model implements OnDestroy {
      */
     public setField(field, value) {
         if (!field) return false;
+        if(this.data[field] !== value) {
+            this.field$.next({field, value});
+        }
         this.data[field] = value;
         this.data$.next(this.data);
+
         this.evaluateValidationRules(field, "change");
 
         // run the duplicate check
         this.duplicateCheckOnChange([field]);
     }
 
+    /**
+     * returns an observable for the given field name to subscribe on to track the field changes
+     * @param field
+     */
+    public observeFieldChanges(field: string): Observable<any> {
+        if(!this.fields[field]) return of(null);
+        return this.field$.pipe(filter(fieldObj => fieldObj.field == field), map(v => v.value));
+    }
     /**
      * serts an object of fields on a model
      *

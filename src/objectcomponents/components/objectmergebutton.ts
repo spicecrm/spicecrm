@@ -29,16 +29,18 @@ export class ObjectMergeButton {
     }
 
     /**
+     * returns if the button shoudl be enabled
+     */
+    get enabled() {
+        return this.mergemodels?.length > 0 && this.model.checkAccess('edit') && this.mergemodels.filter(d => d.acl?.delete == true).length > 0;
+    }
+
+    /**
      * execute the merge
      */
     private doMerge() {
-        this.modal.openModal('ObjectMergeModal', true, this.injector).subscribe(componentRef =>{
+        this.modal.openModal('ObjectMergeModal', true, this.injector).subscribe(componentRef => {
             componentRef.instance.mergemodels = this.mergemodels;
-            componentRef.instance.merged$.subscribe(merged => {
-                this.merged.emit(merged);
-            });
         });
     }
-
-
 }
