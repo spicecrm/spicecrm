@@ -15,7 +15,7 @@ import { toast } from '../../services/toast.service';
 declare var moment: any;
 
 @Component({
-    templateUrl: './src/workbench/templates/krestlogviewer.html',
+    templateUrl: './src/workbench/templates/apilogviewer.html',
     styles: [
         'td.expanded { white-space: normal; word-break: break-word; }',
         'td.expanded div { overflow-wrap: break-word; }',
@@ -25,7 +25,7 @@ declare var moment: any;
         'tr.notStatus200 td.status { font-weight: bold !important; }'
     ]
 })
-export class KRESTLogViewer {
+export class APIlogViewer {
 
     // Configuration:
     private routeBase = 'admin/apilog';
@@ -96,7 +96,7 @@ export class KRESTLogViewer {
         this.isLoaded = false;
         this.filtertext = '';
 
-        // Build the REST route query:
+        // Build the API route query:
 
         let begin, end;
 
@@ -193,7 +193,7 @@ export class KRESTLogViewer {
     // Open the modal window to display a log entry with unusual long log text.
     private showEntryInModal( lineNr ) {
         if ( !this.modal || this.modal.instance.isClosed ) {
-            this.modalservice.openModal( 'KRESTLogViewerModal' ).subscribe( modal => {
+            this.modalservice.openModal( 'APIlogViewerModal' ).subscribe( modal => {
                 this.modal = modal;
                 this.modal.instance.routeBase = this.routeBase;
                 this.modal.instance.nrOfLines = this.entries.length;

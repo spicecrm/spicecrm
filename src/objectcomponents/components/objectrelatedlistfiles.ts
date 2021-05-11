@@ -12,6 +12,8 @@ import {footer} from "../../services/footer.service";
 import {modal} from "../../services/modal.service";
 import {configurationService} from "../../services/configuration.service";
 import {backend} from "../../services/backend.service";
+import {broadcast} from "../../services/broadcast.service";
+import {Subscription} from "rxjs";
 
 /**
  * a generic component that renders a panel in teh contect of a model. This allows uploading files and also has a drag and drop functionality to cimply drop files over the component and upload the file
@@ -91,6 +93,14 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
      * @private
      */
     private filterTimeout: number;
+
+    /**
+     * holds the components subscriptions
+     *
+     * @private
+     */
+    private subscriptions: Subscription = new Subscription();
+
     /**
      * contructor sets the module and id for the laoder
      * @param modelattachments
@@ -112,6 +122,7 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
                 private footer: footer,
                 private metadata: metadata,
                 private backend: backend,
+                private broadcast: broadcast,
                 private configurationService: configurationService,
                 private modalservice: modal) {
     }
@@ -122,6 +133,12 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
     public ngAfterViewInit() {
         this.setModelData();
         setTimeout(() => this.loadFiles(), 10);
+
+        // subscribe to the braidcast to get a merge notification
+        this.subscriptions.add(
+            this.broadcast.message$.subscribe(message => this.handleMessage(message))
+        );
+
     }
 
     /**
@@ -137,6 +154,18 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
             this.categories = res;
             this.configurationService.setData('spiceattachments_categories', res);
         });
+    }
+
+    /**
+     * handle merge message and if the model has beenmerged reload the attachments
+     *
+     * @param message
+     * @private
+     */
+    private handleMessage(message: any) {
+        if(message.messagetype == 'model.merge' && message.messagedata.module == this.model.module && message.messagedata.id == this.model.id){
+            this.loadFiles();
+        }
     }
 
     /**
