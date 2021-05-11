@@ -246,20 +246,6 @@ export class ObjectRelatedlistFiles implements AfterViewInit {
     }
 
     /**
-     * @deprecated
-     *
-     * helper function to take a foto
-     */
-    private takeFoto() {
-        this.modalservice.openModal("SystemCaptureImage").subscribe(modal => {
-            modal.instance.model = this.model;
-            modal.instance.response$.subscribe(file => {
-                this.modelattachments.files.push(file);
-            });
-        });
-    }
-
-    /**
      * set filtered files by action
      * @param action
      * @param value
