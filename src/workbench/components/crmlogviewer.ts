@@ -31,7 +31,11 @@ export class CRMLogViewer {
     private load$ = new EventEmitter();
 
     private set filterUser( idAndName: string ) {
-        if (!idAndName) return;
+        if (!idAndName) {
+            this.filter.userId = '';
+            this.filterUserName = undefined;
+            return;
+        }
         const valueArray = idAndName.split('::');
         this.filter.userId = valueArray[0];
         this.filterUserName = valueArray[1];
