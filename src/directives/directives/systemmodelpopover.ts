@@ -17,6 +17,7 @@ import {Router} from '@angular/router';
 import {metadata} from "../../services/metadata.service";
 import {footer} from "../../services/footer.service";
 import {model} from "../../services/model.service";
+import {view} from "../../services/view.service";
 import {navigationtab} from "../../services/navigationtab.service";
 
 
@@ -25,8 +26,8 @@ import {navigationtab} from "../../services/navigationtab.service";
  */
 @Directive({
     selector: '[system-model-popover]',
-    host:{
-        '[class.slds-text-link_faux]' : 'enablelink'
+    host: {
+        '[class.slds-text-link_faux]': '!disableLink'
     },
     providers: [model]
 })
@@ -70,6 +71,7 @@ export class SystemModelPopOverDirective implements OnInit, OnDestroy {
         @Optional() private navigationtab: navigationtab,
         private popovermodel: model,
         private elementRef: ElementRef,
+        @Optional() private view: view,
         private router: Router
     ) {
 
@@ -98,7 +100,7 @@ export class SystemModelPopOverDirective implements OnInit, OnDestroy {
      */
     @HostListener('click')
     private goRelated() {
-        if (this.modelPopOver === false || !this.enablelink) return false;
+        if (this.modelPopOver === false || this.disableLink) return false;
 
         // if we have apopover close it
         if (this.popoverCmp) {
@@ -119,10 +121,17 @@ export class SystemModelPopOverDirective implements OnInit, OnDestroy {
     }
 
     /**
+     * checks if the view disables the links and then onlyrneders a popover
+     */
+    get disableLink() {
+        return (this.view && this.view.displayLinks === false) || this.enablelink === false;
+    }
+
+    /**
      * renders the popover if a footer container if in the footer service
      */
     private renderPopover() {
-        if(this.footer.footercontainer){
+        if (this.footer.footercontainer) {
             this.metadata.addComponent('ObjectModelPopover', this.footer.footercontainer).subscribe(
                 popover => {
                     popover.instance.popovermodule = this.module;
