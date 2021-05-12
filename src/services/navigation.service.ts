@@ -416,6 +416,12 @@ export class navigation {
                 );
 
                 break;
+            case 'model.delete':
+                // find matching tabs and close the tab
+                for(let tab of this.objectTabs.filter(t => t.params.module == message.messagedata.module && t.params.id == message.messagedata.id)){
+                    this.closeObjectTab(tab.id, true);
+                }
+                break;
             default:
                 break;
         }
@@ -537,7 +543,7 @@ export class navigation {
      * @param module
      */
     public getRegisteredModel(id: string, module: string) {
-        return this.modelregister.find(model => model.id == id && model.model.module == module)?.model;
+        return this.modelregister.find(model => model.model.id == id && model.model.module == module)?.model;
     }
 
     /**

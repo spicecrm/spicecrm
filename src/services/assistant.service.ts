@@ -35,6 +35,14 @@ export class assistant {
         timefilter: 'all'
     };
 
+
+    /**
+     * indicates that we are initialized
+     *
+     * @private
+     */
+    private initialized: boolean = false;
+
     /**
      * inidicates that the service is loading
      */
@@ -89,24 +97,25 @@ export class assistant {
      * initialize the service
      */
     public initialize() {
-        this.loadItems();
+        if(!this.initialized) {
+            this.initialized = true;
+            this.loadItems();
 
-        // set the interval function
-        this.reminder = setInterval(() => {
-            this.remind();
-        }, 60000);
+            // set the interval function
+            this.reminder = setInterval(() => {
+                this.remind();
+            }, 60000);
+        }
     }
 
-    /**
-     * runs every minutes and checks if we have a reminder to process
-     *
-     * @private
-     */
+
     private remind() {
+        // get a now timestamp
+        let now = moment.utc();
         for (let i of this.assitantItems) {
             if(i.data.reminder_time && i.data.reminder_time != '-1') {
                 let reminder = new moment.utc(i.date_activity).subtract(parseInt(i.data.reminder_time, 10), 'seconds');
-                if (reminder.isSame(moment.utc(), 'minute')) {
+                if (now.format('YYYYMMDDHHmm') ==  reminder.format('YYYYMMDDHHmm')) {
                     let n: NotificationI = {
                         id: this.modelutilities.generateGuid(),
                         bean_module: i.module,
@@ -140,13 +149,8 @@ export class assistant {
 
         let retSubject = new Subject<any>();
 
-        // build the filter
-        let reqParams = {
-            objectfilters: JSON.stringify(this.assistantFilters.objectfilters),
-            timefilter: this.assistantFilters.timefilter
-        };
 
-        this.backend.getRequest('module/Activities/assistant/list', reqParams).subscribe(retData => {
+        this.backend.getRequest('module/Activities/assistant/list').subscribe(retData => {
             let newItems = [];
             for (let retItem of retData.items) {
                 newItems.push({

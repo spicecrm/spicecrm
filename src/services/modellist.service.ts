@@ -299,7 +299,14 @@ export class modellist implements OnDestroy {
             case 'model.save':
                 let savedItemIndex = this.listData.list.findIndex(item => item.id == message.messagedata.id);
                 if (savedItemIndex >= 0) {
+                    // keep the selection status even id we are updating
+                    let selected = this.listData.list[savedItemIndex].selected;
+
+                    // update the data
                     this.listData.list[savedItemIndex] = message.messagedata.data;
+
+                    // if the record was selected before select it again
+                    if (selected) this.listData.list[savedItemIndex].selected = true;
 
                     // analyse if we need to update the buckets
                     if (this.bucketfield) {
@@ -1015,13 +1022,7 @@ export class modellist implements OnDestroy {
     }
 
     public getSelectedItems() {
-        let items = [];
-        for (let listItem of this.listData.list) {
-            if (listItem.selected) {
-                items.push(listItem);
-            }
-        }
-        return items;
+        return this.listData.list.filter(i => i.selected);
     }
 
     /**
