@@ -71,9 +71,9 @@ export class modelattachments {
     /**
      * returns the count of the attachments
      */
-    public getCount(): Observable<any> {
+    public getCount(categoryId?: string): Observable<any> {
         let retSubject = new Subject();
-        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/count`).subscribe(
+        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/count`, {categoryId}).subscribe(
             response => {
                 // set the count
                 this.count = response.count;
@@ -149,10 +149,11 @@ export class modelattachments {
      * clones the attachments from another model
      *
      * @param parentModel
+     * @param categoryId
      */
-    public cloneAttachments(parentModel: model): Observable<any> {
+    public cloneAttachments(parentModel: model, categoryId?: string): Observable<any> {
         let retSubject = new Subject();
-        this.backend.postRequest(`common/spiceattachments/module/${this.module}/${this.id}/clone/${parentModel.module}/${parentModel.id}`).subscribe(
+        this.backend.postRequest(`common/spiceattachments/module/${this.module}/${this.id}/clone/${parentModel.module}/${parentModel.id}`, {}, {categoryId}).subscribe(
             response => {
                 for (let attId in response) {
                     if (!this.files.find(a => a.id == attId)) {
