@@ -269,7 +269,10 @@ export class notification {
     private handleSocketEvents(event: SocketEventI) {
         switch (event.type) {
             case 'new':
-                this.pushNotification(event.data);
+                // push only if we also have event data
+                if(event.data) {
+                    this.pushNotification(event.data);
+                }
                 break;
         }
     }
@@ -280,21 +283,19 @@ export class notification {
      * @param n
      */
     private parseNotification(n: NotificationI) {
-        {
-            const timeZone = this.session.getSessionData('timezone') || moment.tz.guess(true);
-            const dateFormat = `${this.preferences.getDateFormat()} ${this.preferences.getTimeFormat()}`;
-            let pDateTime = typeof timeZone == 'string' && timeZone.length > 0 ? moment.utc(n.notification_date).tz(timeZone) : moment(n.notification_date);
-            n.notification_date = pDateTime.isValid() ? pDateTime.format(dateFormat) : null;
+        const timeZone = this.session.getSessionData('timezone') || moment.tz.guess(true);
+        const dateFormat = `${this.preferences.getDateFormat()} ${this.preferences.getTimeFormat()}`;
+        let pDateTime = typeof timeZone == 'string' && timeZone.length > 0 ? moment.utc(n.notification_date).tz(timeZone) : moment(n.notification_date);
+        n.notification_date = pDateTime.isValid() ? pDateTime.format(dateFormat) : null;
 
-            if (!!n.additional_infos && typeof n.additional_infos == 'string') {
-                n.additional_infos = JSON.parse(n.additional_infos);
-                if (n.additional_infos?.fieldsNames) {
-                    n.additional_infos.fieldsNames = n.additional_infos.fieldsNames
-                        .map(f => this.language.getFieldDisplayName(n.bean_module, f))
-                        .join(',');
-                }
+        if (!!n.additional_infos && typeof n.additional_infos == 'string') {
+            n.additional_infos = JSON.parse(n.additional_infos);
+            if (n.additional_infos?.fieldsNames) {
+                n.additional_infos.fieldsNames = n.additional_infos.fieldsNames
+                    .map(f => this.language.getFieldDisplayName(n.bean_module, f))
+                    .join(',');
             }
-            return n;
         }
+        return n;
     }
 }
