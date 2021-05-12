@@ -111,7 +111,9 @@ export class ObjectModalModuleLookup implements OnInit, OnDestroy {
         // this.model.module = this.module;
         this.modellist.modulefilter = this.modulefilter;
         this.modellist.relatefilter = this.relatefilter;
+        this.modellist.useCache = false;
         this.modellist.initialize(this.module);
+        this.modellist.getListData();
 
         // set hte module on the model
         this.model.module = this.module;

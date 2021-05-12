@@ -17,6 +17,7 @@ export class GlobalHeaderNotificationsItemReminder {
      * holds the notification data
      */
     @Input() public notification: NotificationI;
+
     /**
      * if true render the box template for new pushed notifications
      */

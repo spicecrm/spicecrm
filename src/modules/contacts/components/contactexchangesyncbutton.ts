@@ -58,7 +58,7 @@ export class ContactExchangeSyncButton implements OnDestroy {
         let config = this.configuration.getData('exchangeuserconfig');
         let moduleData = this.metadata.getModuleDefs('Contacts');
 
-        this.hidden = config.findIndex(cr => cr.sysmodule_id == moduleData.id) == -1;
+        this.hidden = !config || (config && config?.findIndex(cr => cr.sysmodule_id == moduleData.id) == -1);
     }
 
     /**
