@@ -197,8 +197,8 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
 
         const date = new moment.utc(this.activity.date_activity).tz(this.session.getSessionData('timezone') || moment.tz.guess(true));
 
-        const isToday = moment(date.format('YYYY M D')).isSame(new moment().format('YYYY M D'));
-        const isThisYear = date.isSame(new moment(), 'year');
+        const isToday = date.format('YYYYMMDD') == new moment().format('YYYYMMDD');
+        const isThisYear = date.format('YYYY') == new moment().format('YYYY');
 
         if (isToday) {
             return date.format(this.userpreferences.getTimeFormat());
