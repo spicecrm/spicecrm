@@ -58,7 +58,7 @@ export class fieldEmailEmailAddressStatus {
             case 'opted_out':
                 return 'LBL_OPTED_OUT';
             default:
-                return '';
+                return 'LBL_OPT_IN_STATUS';
         }
     }
 }
