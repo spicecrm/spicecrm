@@ -80,7 +80,7 @@ export class SystemModelPopOverDirective implements OnInit, OnDestroy {
     @HostListener('mouseenter')
     private onMouseOver() {
         if (this.modelPopOver !== false) {
-            this.showPopoverTimeout = window.setTimeout(() => this.renderPopover(), 500);
+            this.showPopoverTimeout = window.setTimeout(() => this.renderPopover(), 1000);
         }
     }
 
@@ -112,12 +112,16 @@ export class SystemModelPopOverDirective implements OnInit, OnDestroy {
             window.clearTimeout(this.showPopoverTimeout);
         }
 
+        // check if the link is the model that is in the focus
         // go to the record
-        this.popovermodel.id = this.id;
-        this.popovermodel.module = this.module;
-        this.popovermodel.getData(true).subscribe(loaded => {
+        if(this.model.id == this.id && this.model.module == this.module){
+            this.model.goDetail(this.navigationtab?.tabid);
+        } else {
             this.popovermodel.goDetail(this.navigationtab?.tabid);
-        });
+            this.popovermodel.getData(true).subscribe(loaded => {
+                this.popovermodel.goDetail(this.navigationtab?.tabid);
+            });
+        }
     }
 
     /**
