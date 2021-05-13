@@ -9,7 +9,7 @@ import {
     ElementRef,
     OnInit,
     Optional,
-    AfterViewInit,
+    Injector,
     SkipSelf
 } from '@angular/core';
 import {Router} from '@angular/router';
@@ -64,6 +64,9 @@ export class SystemModelPopOverDirective implements OnInit, OnDestroy {
      */
     private showPopoverTimeout: any = {};
 
+
+    private popoverModelInitialized: boolean = false;
+
     constructor(
         private metadata: metadata,
         private footer: footer,
@@ -72,7 +75,8 @@ export class SystemModelPopOverDirective implements OnInit, OnDestroy {
         private popovermodel: model,
         private elementRef: ElementRef,
         @Optional() private view: view,
-        private router: Router
+        private router: Router,
+        private injector: Injector
     ) {
 
     }
@@ -114,10 +118,11 @@ export class SystemModelPopOverDirective implements OnInit, OnDestroy {
 
         // check if the link is the model that is in the focus
         // go to the record
-        if(this.model.id == this.id && this.model.module == this.module){
+        if (this.model.id == this.id && this.model.module == this.module) {
             this.model.goDetail(this.navigationtab?.tabid);
-        } else {
+        } else if (this.popoverModelInitialized) {
             this.popovermodel.goDetail(this.navigationtab?.tabid);
+        } else {
             this.popovermodel.getData(true).subscribe(loaded => {
                 this.popovermodel.goDetail(this.navigationtab?.tabid);
             });
@@ -136,12 +141,23 @@ export class SystemModelPopOverDirective implements OnInit, OnDestroy {
      */
     private renderPopover() {
         if (this.footer.footercontainer) {
-            this.metadata.addComponent('ObjectModelPopover', this.footer.footercontainer).subscribe(
-                popover => {
-                    popover.instance.popovermodule = this.module;
-                    popover.instance.popoverid = this.id;
-                    popover.instance.parentElementRef = this.elementRef;
 
+            // if we are no tiojnitiaolized load the data
+            if(!this.popoverModelInitialized) {
+                if (this.model.module == this.module && this.model.id == this.id) {
+                    this.popovermodel.data = this.model.data;
+                    this.popoverModelInitialized = true;
+                } else {
+                    this.popovermodel.getData().subscribe(() => {
+                        this.popoverModelInitialized = true;
+                    });
+                }
+            }
+
+            // render the popover
+            this.metadata.addComponent('ObjectModelPopover', this.footer.footercontainer, this.injector).subscribe(
+                popover => {
+                    popover.instance.parentElementRef = this.elementRef;
                     this.popoverCmp = popover.instance;
                 }
             );
@@ -155,6 +171,10 @@ export class SystemModelPopOverDirective implements OnInit, OnDestroy {
         if (!this.id && this.model) {
             this.id = this.model.id;
         }
+
+        // set the data for the popover model
+        this.popovermodel.id = this.id;
+        this.popovermodel.module = this.module;
     }
 
     public ngOnDestroy() {

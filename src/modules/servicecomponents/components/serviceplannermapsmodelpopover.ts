@@ -13,7 +13,7 @@ import {model} from "../../../services/model.service";
 @Component({
     selector: 'service-planner-maps-model-popover',
     templateUrl: './src/objectcomponents/templates/objectmodelpopover.html',
-    providers: [model, view]
+    providers: [view]
 })
 export class ServicePlannerMapsModelPopover extends ObjectModelPopover implements OnInit {
 
@@ -28,13 +28,9 @@ export class ServicePlannerMapsModelPopover extends ObjectModelPopover implement
      * initialize the model data and calculate the route
      */
     public ngOnInit() {
-        // load the model
-        this.model.module = this.popovermodule;
-        this.model.id = this.popoverid;
-        this.model.getData();
 
         // load the fields
-        let componentconfig = this.metadata.getComponentConfig('ServicePlannerMapsModelPopover', this.popovermodule);
+        let componentconfig = this.metadata.getComponentConfig('ServicePlannerMapsModelPopover', this.model.module);
         if (componentconfig.fieldset || componentconfig.componentset) {
             this.fields = this.metadata.getFieldSetFields(componentconfig.fieldset);
 
@@ -45,7 +41,7 @@ export class ServicePlannerMapsModelPopover extends ObjectModelPopover implement
 
         // if we did not find a fieldset try to take the header one instead
         if (!this.fieldset) {
-            componentconfig = this.metadata.getComponentConfig('ObjectPageHeaderDetails', this.popovermodule);
+            componentconfig = this.metadata.getComponentConfig('ObjectPageHeaderDetails', this.model.module);
             if (componentconfig.fieldset) {
                 this.fields = this.metadata.getFieldSetFields(componentconfig.fieldset);
                 this.fieldset = componentconfig.fieldset;
