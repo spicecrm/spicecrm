@@ -15,10 +15,10 @@ declare var moment: any;
 })
 export class GlobalNewsFeedItem {
 
-    @Input() private item: any = {}
+    @Input() private item: any = {};
 
     private getDate() {
-        return moment(this.item.date).fromNow()
+        return moment(this.item.date).fromNow();
     }
 
     private getExcerpt() {
