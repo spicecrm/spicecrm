@@ -17,7 +17,7 @@ export class GlobalNewsFeed {
      * the news items to be displayed
      * @private
      */
-    private news: Array<any> = [];
+    private news: any[] = [];
 
     /**
      * an indicator while the news feed is being retrieved
@@ -37,7 +37,7 @@ export class GlobalNewsFeed {
      * @private
      */
     private loadNewsFeed(){
-        let posturl = btoa('https://www.spicecrm.io/wp-json/wp/v2/posts');
+        let posturl = btoa('https://www.spicecrm.com/wp-json/wp/v2/posts?context=embed');
         this.http.get('proxy?useurl=' + posturl)
             .subscribe((res: any) => {
                 this.news = res;
