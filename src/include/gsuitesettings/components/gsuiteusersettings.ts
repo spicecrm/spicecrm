@@ -48,7 +48,7 @@ export class GSuiteUserSettings implements OnInit {
      * loads the config from the backend
      */
     private getConfig() {
-        this.backend.getRequest(`google/calendar/config/${this.model.id}`).subscribe(response => {
+        this.backend.getRequest(`channels/groupware/gsuite/calendar/config/${this.model.id}`).subscribe(response => {
             this.userconfig = response.userconfig;
             this.subscriptions = response.subscriptions;
         });
