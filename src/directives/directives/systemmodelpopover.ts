@@ -7,7 +7,7 @@ import {
     HostListener,
     OnDestroy,
     ElementRef,
-    OnInit,
+    OnChanges,
     Optional,
     Injector,
     SkipSelf
@@ -31,7 +31,7 @@ import {navigationtab} from "../../services/navigationtab.service";
     },
     providers: [model]
 })
-export class SystemModelPopOverDirective implements OnInit, OnDestroy {
+export class SystemModelPopOverDirective implements OnChanges, OnDestroy {
     /**
      * the module for the popover
      */
@@ -142,9 +142,12 @@ export class SystemModelPopOverDirective implements OnInit, OnDestroy {
     private renderPopover() {
         if (this.footer.footercontainer) {
 
-            // if we are no tiojnitiaolized load the data
+            // if we are no initialized load the data
             if(!this.popoverModelInitialized) {
-                if (this.model.module == this.module && this.model.id == this.id) {
+                if (!this.model || !this.id || (this.model.module == this.module && this.model.id == this.id)) {
+                    this.popovermodel.module = this.model.module;
+                    this.popovermodel.id = this.model.id;
+                    this.popovermodel.initialize();
                     this.popovermodel.data = this.model.data;
                     this.popoverModelInitialized = true;
                 } else {
@@ -164,17 +167,14 @@ export class SystemModelPopOverDirective implements OnInit, OnDestroy {
         }
     }
 
-    public ngOnInit() {
-        if (!this.module && this.model) {
-            this.module = this.model.module;
+    public ngOnChanges() {
+        // set the data for the popover model and if we had it initialized reset it to false
+        if(this.id && this.module && this.id != this.popovermodel.id && this.module != this.popovermodel.module) {
+            this.popoverModelInitialized = false;
+            this.popovermodel.initialize();
+            this.popovermodel.id = this.id;
+            this.popovermodel.module = this.module;
         }
-        if (!this.id && this.model) {
-            this.id = this.model.id;
-        }
-
-        // set the data for the popover model
-        this.popovermodel.id = this.id;
-        this.popovermodel.module = this.module;
     }
 
     public ngOnDestroy() {
