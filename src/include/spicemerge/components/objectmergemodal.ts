@@ -116,36 +116,6 @@ export class ObjectMergeModal implements OnInit {
         return this.mergeSteps[this.currentMergeStep];
     }
 
-    /**
-     * returns the calss for the step indicator at the bottom
-     *
-     * @param convertStep
-     * @private
-     */
-    private getStepClass(convertStep) {
-        let thisIndex = this.mergeSteps.indexOf(convertStep);
-        if (thisIndex == this.currentMergeStep) {
-            return 'slds-is-active';
-        }
-        if (thisIndex < this.currentMergeStep) {
-            return 'slds-is-completed';
-        }
-    }
-
-    private getStepComplete(convertStep) {
-        let thisIndex = this.mergeSteps.indexOf(convertStep);
-        if (thisIndex < this.currentMergeStep) {
-            return true;
-        }
-        return false;
-    }
-
-    get progressBarWidth() {
-        return {
-            width: (this.currentMergeStep / (this.mergeSteps.length - 1) * 100) + '%'
-        };
-    }
-
     private nextStep() {
         if (this.currentMergeStep < this.mergeSteps.length - 1) {
             switch (this.currentMergeStep) {
