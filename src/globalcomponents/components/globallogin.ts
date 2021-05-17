@@ -13,6 +13,7 @@ import {toast} from '../../services/toast.service';
 import {language} from '../../services/language.service';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import {Md5} from "ts-md5";
 
 
 /**
@@ -123,7 +124,8 @@ export class GlobalLogin {
         } else {
             this.promptUser = true;
 
-            this.selectedsite = this.cookie.getValue('spiceuibackend');
+            let siteHash = Md5.hashStr('spiceuibackend' + window.location.origin + window.location.pathname).toString();
+            let selectedsite = sessionStorage.getItem(siteHash);
             if (this.selectedsite) {
                 this.configuration.setSiteID(this.selectedsite);
             }
