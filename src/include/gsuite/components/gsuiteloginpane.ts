@@ -9,6 +9,7 @@ import {session} from '../../../services/session.service';
 import {cookie} from '../../../services/cookie.service';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {libloader} from "../../../services/libloader.service";
+import {Md5} from "ts-md5";
 
 /**
  * A component that handles the display of the SpiceCRM login form in the GSuite add-in
@@ -175,7 +176,8 @@ export class GSuiteLoginPane {
     private goToSettings() {
         this.promptUser = true;
 
-        this.selectedsite = this.cookie.getValue('spiceuibackend');
+        let siteHash = Md5.hashStr('spiceuibackend' + window.location.origin + window.location.pathname).toString();
+        let selectedsite = sessionStorage.getItem(siteHash);
         if (this.selectedsite) {
             this.configuration.setSiteID(this.selectedsite);
         }

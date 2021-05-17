@@ -12,6 +12,7 @@ import {cookie} from '../../../services/cookie.service';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 
 import {OutlookConfiguration} from '../services/outlookconfiguration.service';
+import {Md5} from "ts-md5";
 
 declare var _: any;
 
@@ -131,7 +132,8 @@ export class OutlookLoginPane {
         this.outlookConfiguration.password = '';
         this.outlookConfiguration.saveSettings();
 
-        this.selectedsite = this.cookie.getValue('spiceuibackend');
+        let siteHash = Md5.hashStr('spiceuibackend' + window.location.origin + window.location.pathname).toString();
+        let selectedsite = sessionStorage.getItem(siteHash);
         if (this.selectedsite) {
             this.configuration.setSiteID(this.selectedsite);
         }

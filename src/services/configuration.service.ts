@@ -12,6 +12,8 @@ import {HttpClient} from "@angular/common/http";
 import {Title} from "@angular/platform-browser";
 import {BehaviorSubject} from "rxjs";
 
+import {Md5} from "ts-md5";
+
 /**
  * @ignore
  */
@@ -64,6 +66,8 @@ export class configurationService {
      */
     public datachanged$: EventEmitter<string> = new EventEmitter<string>();
 
+    private locationHash: string;
+
     constructor(private http: HttpClient,
                 private cookie: cookie,
                 private session: session,
@@ -74,11 +78,15 @@ export class configurationService {
         // add a new behaviour subject
         this.loaded$ = new BehaviorSubject<boolean>(false);
 
-        let storedSites = localStorage.spiceuisites;
+        this.locationHash = Md5.hashStr('spiceuisites' + window.location.origin + window.location.pathname).toString();
+        let storedSites = localStorage.getItem(this.locationHash);
 
         if (storedSites) {
             this.sites = JSON.parse(atob(storedSites));
-            let selectedsite = this.cookie.getValue('spiceuibackend');
+
+            let siteHash = Md5.hashStr('spiceuibackend' + window.location.origin + window.location.pathname).toString();
+            let selectedsite = sessionStorage.getItem(siteHash);
+
             let siteFound = false;
             this.sites.some(site => {
                 if (site.id == selectedsite) {
@@ -120,10 +128,11 @@ export class configurationService {
                         this.sites = sites;
 
                         // this.session.setSessionData('sites', sites);
-                        localStorage.spiceuisites = btoa(JSON.stringify(sites));
+                        localStorage.setItem(this.locationHash, btoa(JSON.stringify(sites)));
 
                         if (!this.data.id) {
-                            let selectedsite = this.cookie.getValue('spiceuibackend');
+                            let siteHash = Md5.hashStr('spiceuibackend' + window.location.origin + window.location.pathname).toString();
+                            let selectedsite = sessionStorage.getItem(siteHash);
                             let siteFound = false;
                             this.sites.some(site => {
                                 if (site.id == selectedsite) {
@@ -169,7 +178,7 @@ export class configurationService {
             this.data[attrname] = data[attrname];
         } // before: this.data = data;
         // this.session.setSessionData('sites', sites);
-        localStorage.spiceuisites = btoa(JSON.stringify(this.sites));
+        localStorage.setItem(this.locationHash, btoa(JSON.stringify(this.sites)));
 
         this.getSysinfo();
     }
@@ -180,7 +189,9 @@ export class configurationService {
                 for (let attrname in site) {
                     this.data[attrname] = site[attrname];
                 } // before: this.data = site;
-                this.cookie.setValue('spiceuibackend', id);
+                // this.cookie.setValue('spiceuibackend', id);
+                let siteHash = Md5.hashStr('spiceuibackend' + window.location.origin + window.location.pathname).toString();
+                sessionStorage.setItem(siteHash, id);
                 return true;
             }
         });
