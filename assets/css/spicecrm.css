@@ -399,3 +399,12 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 .spice-hover-display-children .spice-hover-child {
     visibility: hidden !important;
 }
+
+/* general fix for ios devices */
+textarea,
+input[type="text"],
+input[type="button"],
+input[type="search"],
+input[type="submit"] {
+    -webkit-appearance: none;
+}
