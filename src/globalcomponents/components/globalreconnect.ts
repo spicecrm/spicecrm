@@ -45,7 +45,7 @@ export class GlobalReConnect implements OnInit, OnDestroy {
      * a timer to the reconnect check
      * @private
      */
-    private timeToNextCheck: number = 500;
+    private timeToNextCheck: number = 1000;
 
     /**
      * the subscription to countdown the time
@@ -87,7 +87,7 @@ export class GlobalReConnect implements OnInit, OnDestroy {
     }
 
     get progress() {
-        return this.timeToNextCheck / 5;
+        return this.timeToNextCheck / 10;
     }
 
     /**
@@ -105,7 +105,7 @@ export class GlobalReConnect implements OnInit, OnDestroy {
             },
             (err: any) => {
                 console.log(err);
-                this.timeToNextCheck = 500;
+                this.timeToNextCheck = 1000;
             }
         );
 
