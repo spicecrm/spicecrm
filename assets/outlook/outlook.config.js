@@ -25,7 +25,7 @@
             '@angular/cdk/portal': 'vendor:@angular/cdk-portal.umd.min.js?v=12.0.0',
             'socket.io-client': 'vendor:socket.io-client/dist/socket.io.js',
             'rxjs': 'vendor:rxjs',
-            'rxjs/operators': 'vendor:rxjs/operators/index.js',
+            'rxjs/operators': 'vendor:rxjs/operators/index',
             'tslib': 'vendor:tslib/tslib.js',
             'google-auth-library': 'vendor:google-auth-library',
             'hammerjs': 'vendor:hammerjs/hammer.min.js',
