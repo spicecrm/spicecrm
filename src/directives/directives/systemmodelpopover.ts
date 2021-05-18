@@ -118,7 +118,7 @@ export class SystemModelPopOverDirective implements OnChanges, OnDestroy {
 
         // check if the link is the model that is in the focus
         // go to the record
-        if (this.model.id == this.id && this.model.module == this.module) {
+        if (!this.model || !this.id || (this.model.id == this.id && this.model.module == this.module)) {
             this.model.goDetail(this.navigationtab?.tabid);
         } else if (this.popoverModelInitialized) {
             this.popovermodel.goDetail(this.navigationtab?.tabid);
