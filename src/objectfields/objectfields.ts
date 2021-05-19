@@ -118,7 +118,6 @@ import /*embed*/ {fieldActionset} from "./components/fieldactionset";
 import /*embed*/ {fieldSlider} from "./components/fieldslider";
 import /*embed*/ {fieldImage} from './components/fieldimage';
 import /*embed*/ {fieldCompound} from './components/fieldcompound';
-import /*embed*/ {fieldChecklist} from './components/fieldchecklist';
 import /*embed*/ {fieldIconCondition} from './components/fieldiconcondition';
 
 /**
@@ -247,7 +246,6 @@ declare var _: any;
         fieldActionset,
         fieldSlider,
         fieldCompound,
-        fieldChecklist,
         fieldIconCondition
     ],
     exports: [
