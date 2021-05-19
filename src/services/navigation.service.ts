@@ -361,6 +361,7 @@ export class navigation {
                 if (!this.enforcednavigationparadigm && message.messagedata == 'loadUserData') {
                     let navparadigm = this.userpreferences.getPreference('navigation_paradigm');
                     this.navigationparadigm = navparadigm ? navparadigm : 'simple';
+                    this.session.setSessionData('navigation_paradigm', this.navigationparadigm);
                 }
                 break;
             case 'userpreferences.save':
@@ -374,6 +375,7 @@ export class navigation {
                         this.router.navigate(['module/Home']);
                     }
                     this.navigationparadigm = nvp;
+                    this.session.setSessionData('navigation_paradigm', this.navigationparadigm);
                 }
                 break;
             case 'logout':
@@ -393,6 +395,10 @@ export class navigation {
                 break;
             case 'login':
                 // check if we have session data
+                let snvp = this.session.getSessionData('navigation_paradigm');
+                if (snvp) {
+                    this.navigationparadigm = snvp;
+                }
                 let sessiondata = this.session.getSessionData('navigation');
                 if (!_.isEmpty(sessiondata)) {
                     this.maintab = sessiondata.main;

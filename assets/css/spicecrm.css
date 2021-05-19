@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Titillium+Web');
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web&display=swap');
 
 @import "./imports/spiceloader.css";
 @import "./imports/spicequill.css";
@@ -398,4 +398,13 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
 
 .spice-hover-display-children .spice-hover-child {
     visibility: hidden !important;
+}
+
+/* general fix for ios devices */
+textarea,
+input[type="text"],
+input[type="button"],
+input[type="search"],
+input[type="submit"] {
+    -webkit-appearance: none;
 }

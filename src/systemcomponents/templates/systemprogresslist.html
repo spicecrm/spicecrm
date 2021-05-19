@@ -1,0 +1,12 @@
+<div class="slds-progress" [ngClass]="{'slds-progress--shade': _shade}">
+  <ol class="slds-progress__list">
+    <li *ngFor="let step of steps" class="slds-progress__item" [ngClass]="getStepClass(step)">
+      <button class="slds-button slds-progress__marker" [ngClass]="{'slds-button--icon slds-progress__marker--icon': getStepComplete(step)}">
+        <system-button-icon *ngIf="getStepComplete(step)" [icon]="'success'"></system-button-icon>
+      </button>
+    </li>
+  </ol>
+  <div class="slds-progress-bar slds-progress-bar_x-small" role="progressbar">
+    <div class="slds-progress-bar__value" [ngStyle]="progressBarWidth"></div>
+  </div>
+</div>
