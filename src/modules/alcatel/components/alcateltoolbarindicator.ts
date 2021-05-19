@@ -20,7 +20,8 @@ import {configurationService} from "../../../services/configuration.service";
 import {modelutilities} from '../../../services/modelutilities.service';
 import {Observable, Subject, Subscription} from "rxjs";
 import {telephony} from "../../../services/telephony.service";
-import {telephonyCallI} from "../../../services/interfaces.service";
+import {SocketEventI, telephonyCallI} from "../../../services/interfaces.service";
+import {socket} from "../../../services/socket.service";
 
 
 @Component({
@@ -28,7 +29,6 @@ import {telephonyCallI} from "../../../services/interfaces.service";
 })
 export class AlcatelToolbarIndicator implements OnDestroy {
 
-    private socket: any;
     private status_socket: any;
 
     private username: string;
@@ -76,7 +76,8 @@ export class AlcatelToolbarIndicator implements OnDestroy {
         private modelutilities: modelutilities,
         private telephony: telephony,
         private toast: toast,
-        private session: session
+        private session: session,
+        private socket: socket
     ) {
         this.initialize();
     }
@@ -84,7 +85,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
 
     public ngOnDestroy() {
         if (this.alcatelstatus == 'connected') {
-            this.socket.disconnect();
+            this.socket.disconnect('alcatel');
         }
         this.subscriptions.unsubscribe();
 
@@ -210,16 +211,11 @@ export class AlcatelToolbarIndicator implements OnDestroy {
             return false;
         }
 
+        this.socket.initializeNamespace('alcatel').subscribe(event => {
+            this.handleCallEvent(event);
+        });
         this.socket = io(`${this.socketurl}?sysid=${this.socketid}&room=alcatel${this.session.authData.sessionId}&token=${this.session.authData.sessionId}`);
-        this.socket.on('connect', (socket) => {
-            this.socketconnected = true;
-        });
-        this.socket.on('disconnect', () => {
-            this.socketconnected = false;
-        });
-        this.socket.on('message', (data) => {
-            this.handleCallEvent(data.message);
-        });
+
 
         this.status_socket = io(`${this.socketurl}?sysid=${this.socketid}&room=alcatel&token=${this.session.authData.sessionId}`);
         this.status_socket.on('restart', () => {
@@ -232,34 +228,36 @@ export class AlcatelToolbarIndicator implements OnDestroy {
      * disconnect from the socket
      */
     private disconnectSocket() {
-        if (this.socket) {
-            this.socket.destroy();
-            this.socket = undefined;
-            this.socketconnected = false;
-        }
+        this.socket.disconnect('alcatel');
     }
 
     /**
      * handle the event from the socket
      *
-     * @param eventData
+     * @param event
      */
-    private handleCallEvent(eventData: any) {
-        let call = this.telephony.calls.find(c => c.callid == eventData.id);
-        if (call) {
-            call.status = this.translateStatus(eventData.state);
-            // in case we get to connetced set start
-            if (eventData.state == 'CONNECTED' && !call.start) {
-                call.start = moment();
-            }
+    private handleCallEvent(event: SocketEventI) {
+        switch (event.type) {
+            case 'update':
+                let call = this.telephony.calls.find(c => c.callid == event.data.id);
+                if (call) {
+                    call.status = this.translateStatus(event.data.state);
+                    // in case we get to connetced set start
+                    if (event.data.state == 'CONNECTED' && !call.start) {
+                        call.start = moment();
+                    }
 
-            // in case we get a hangup log the end date
-            if (eventData.state == 'HANGUP' && !call.end) {
-                call.end = moment();
-            }
-        } else {
-            this.addCall(eventData);
+                    // in case we get a hangup log the end date
+                    if (event.data.state == 'HANGUP' && !call.end) {
+                        call.end = moment();
+                    }
+                } else {
+                    this.addCall(event.data);
+                }
+
+                break;
         }
+
     }
 
     /**
