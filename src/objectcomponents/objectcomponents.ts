@@ -13,6 +13,8 @@ import {DirectivesModule} from "../directives/directives";
 import {ObjectFields} from '../objectfields/objectfields';
 import {SystemComponents} from '../systemcomponents/systemcomponents';
 
+import /*embed*/ {ChecklistItemI, ChecklistI} from "./interfaces/objectcomponents.interfaces";
+
 import {loginCheck} from '../services/login.service';
 import {metadata, aclCheck} from '../services/metadata.service';
 import {canNavigateAway} from '../services/navigation.service';
@@ -185,6 +187,7 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
 import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmessagesbadge";
 import /*embed*/ {ObjectActionDeactivateBeansButton} from "./components/objectactiondeactivatebeansbutton";
 import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectactiondeactivatebeansmodal";
+import /*embed*/ {ObjectChecklists} from "./components/objectchecklists";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -348,7 +351,8 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectModelPopoverRelatedItem,
         ObjectRecordMessagesBadge,
         ObjectActionDeactivateBeansButton,
-        ObjectActionDeactivateBeansModal
+        ObjectActionDeactivateBeansModal,
+        ObjectChecklists
     ],
     exports: [
         ObjectListViewHeader,
@@ -393,7 +397,8 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectModalModuleLookup,
         ObjectModalModuleLookupHeader,
         ObjectModalModuleLookupAggregates,
-        ObjectModelPopoverHeader
+        ObjectModelPopoverHeader,
+        ObjectChecklists
     ]
 })
 export class ObjectComponents {}
