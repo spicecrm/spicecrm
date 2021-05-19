@@ -31,7 +31,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let recentItem of recent.items" class="slds-hint-parent">
+            <tr *ngFor="let recentItem of recent.items" [system-model-provider]="{module: recentItem.module_name, data: recentItem.data}" class="slds-hint-parent">
                 <td role="gridcell" class="slds-cell-shrink">
                     <system-icon [module]="recentItem.module_name" size="small" divClass=""></system-icon>
                 </td>

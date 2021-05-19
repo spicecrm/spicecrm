@@ -103,6 +103,7 @@ import /*embed*/ {SystemModalWrapper} from "./components/systemmodalwrapper";
 import /*embed*/ {SystemModal} from "./components/systemmodal";
 import /*embed*/ {SystemNumberSpinner} from "./components/systemnumberspinner";
 import /*embed*/ {SystemObjectPreviewModal} from "./components/systemobjectpreviewmodal";
+import /*embed*/ {SystemProgressList} from "./components/systemprogresslist";
 import /*embed*/ {SystemProgressRing} from "./components/systemprogressring";
 import /*embed*/ {SystemProgressBar} from "./components/systemprogressbar";
 import /*embed*/ {SystemPrompt} from "./components/systemprompt";
@@ -266,6 +267,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemFilterBuilderFilterExpressionValues,
         SystemFilterBuilderFilterExpressionValue,
         SystemPopover,
+        SystemProgressList,
         SystemProgressRing,
         SystemProgressBar,
         SystemPrompt,
@@ -391,6 +393,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemModalHeaderTagline,
         SystemModalWrapper,
         SystemNumberSpinner,
+        SystemProgressList,
         SystemProgressRing,
         SystemProgressBar,
         SystemPrompt,
