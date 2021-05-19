@@ -250,22 +250,26 @@ export class ObjectActionOutputBeanModal {
         if (this.handBack) this.handBack.emit({name: this.selected_template.name, content: this.contentForHandBack});
         if (this.noDownload) this.close();
         else {
-            let fileName = this.model.module + '_' + this.model.data.summary_text + '.pdf';
-            this.modal.openModal('SystemLoadingModal').subscribe(loadingCompRef => {
-                loadingCompRef.instance.messagelabel = 'MSG_GENERATING_PDF';
-                this.backend.downloadFile(
-                    {
-                        route: `module/OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf`
-                    }, fileName, 'application/pdf').subscribe(
-                    next => {
-                        loadingCompRef.instance.self.destroy();
-                        this.close();
-                    },
-                    err => {
-                        loadingCompRef.instance.self.destroy();
-                    }
-                );
-            });
+            // generate a link element for the download
+            let a = document.createElement("a");
+            document.body.appendChild(a);
+
+            // generate a blob file from the content
+            // base64 decode in case wehave a PDF
+            let blob = this.datatoBlob(this.selected_format == 'pdf' ? atob(this.contentForHandBack) : this.contentForHandBack);
+            let blobUrl =URL.createObjectURL(blob);
+
+            // set as href and set the type
+            a.href = blobUrl;
+            a.type = this.selected_format == 'pdf' ? 'application/pdf' : 'text/html';
+
+            // genereate a filename
+            let fileName = this.model.module + '_' + this.model.data.summary_text + '.' + this.selected_format;
+            a.download = fileName;
+
+            // start download and then remove the element from the document again
+            a.click();
+            a.remove();
         }
     }
 

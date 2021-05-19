@@ -5,6 +5,7 @@ import {Injectable, Inject, Injector, NgZone, EventEmitter,  isDevMode,  Compone
 import {Title, DomSanitizer} from '@angular/platform-browser';
 import {Location, LocationStrategy} from "@angular/common";
 import {filter, map} from "rxjs/operators";
+import {Md5} from "ts-md5";
 /**
 * @ignore
 */
