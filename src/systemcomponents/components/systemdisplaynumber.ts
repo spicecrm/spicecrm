@@ -42,6 +42,17 @@ export class SystemDisplayNumber implements OnChanges {
      */
     @Input() private noDigits: boolean = false;
 
+    /**
+     * an attribute that can be set and doies not require the value true poassed in
+     * @param value
+     */
+    @Input('system-display-number-nodigits') set inputGrow(value) {
+        if (value === false) {
+            this.noDigits = false;
+        } else {
+            this.noDigits = true;
+        }
+    }
 
     constructor(private language: language, private cdRef: ChangeDetectorRef, private currency: currency, private userpreferences: userpreferences) {
 
