@@ -1,83 +1,148 @@
 /**
  * @module WorkbenchModule
  */
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { language } from '../../services/language.service';
-import { backend } from '../../services/backend.service';
-import { toast } from '../../services/toast.service';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {language} from '../../services/language.service';
+import {backend} from '../../services/backend.service';
+import {toast} from '../../services/toast.service';
 
 @Component({
     templateUrl: './src/workbench/templates/apilogviewermodal.html',
 })
 export class APIlogViewerModal {
 
-    @Input() private entry: any;
-    @Input() private username = '';
-    @Input() private routeBase: string;
-    @Input() private canSwitchToLeft: boolean;
-    @Input() private canSwitchToRight: boolean;
-
-    @Output() public toLeft$ = new EventEmitter();
-    @Output() public toRight$ = new EventEmitter();
-
-    // Stati:
-    private isLoaded = false;
-    private isLoading = false;
-    private isClosed = false;
-
-    private nrOfLines: number;
-    private lineNr: number;
-
+    /**
+     * reference to itself for closing the modal
+     * @private
+     */
     private self;
 
-    constructor( private language: language, private backend: backend, private toast: toast ) { }
+    /**
+     * the entry
+     * @private
+     */
+    @Input() private entry: any;
+
+    private record: any = {};
+
+    /**
+     * indicates we are loading
+     *
+     * @private
+     */
+    private isLoading = true;
+
+    private activeTab: 'record' | 'headers' | 'post' | 'response' = 'record';
+
+    constructor(private language: language, private backend: backend, private toast: toast) {
+    }
 
     private ngOnInit() {
+        this.loadFullData();
     }
 
-    public load() {
-        console.log('load!');
-        // When the full text already has been retrieved from the backend
-        // (because this modal for this log entry has already been shown)
-        // the data is still stored (property "fullText") and we don´t need to do the request again:
-        this.isLoaded = this.entry.fullLoaded && true;
-        if ( !this.isLoaded ) this.loadFullData();
-    }
-
-    // Load the full data (with the un-truncated log text) and merge the full text to the record got from parent component.
+    /**
+     * Load the full data (with the un-truncated log text) and merge the full text to the record got from parent component.
+     *
+     * @private
+     */
     private loadFullData() {
         this.isLoading = true;
-        this.backend.getRequest( this.routeBase+'/entry/'+ this.entry.id ).subscribe(
+        this.backend.getRequest(`admin/apilog/${this.entry.id}`).subscribe(
             response => {
-                this.isLoaded = true;
                 this.isLoading = false;
-                this.entry.postParams = response.entry.postParams;
-                this.entry.response = response.entry.response;
-                this.entry.headers = response.entry.headers;
-                this.entry.fullLoaded = true;
+                this.record = response;
             },
             error => {
-                this.toast.sendToast('Error loading entry of log file!', 'error', 'Entry '+this.entry.id+' of REST log couldn´t be fetched.', false );
+                this.toast.sendToast('Error loading entry of log file!', 'error', 'Entry ' + this.entry.id + ' of REST log couldn´t be fetched.', false);
                 this.isLoading = false;
+                this.close();
             });
     }
 
-    private canLeft() {
-        return !this.isLoading && this.lineNr > 0;
+    /**
+     * returns the parsed request headers as table
+     */
+    get requestHeaders() {
+        if (this.record.headers) {
+            try {
+                let retArray = [];
+                let headers = JSON.parse(this.record.headers);
+                for (let entry in headers) {
+                    retArray.push({
+                        name: entry,
+                        value: headers[entry]
+                    });
+                }
+                return retArray;
+            } catch (e) {
+                return [];
+            }
+        }
+        return [];
     }
-    private canRight() {
-        return !this.isLoading && this.lineNr < this.nrOfLines-1;
+
+    /**
+     * returns the parsed request headers as table
+     */
+    get requestArguments() {
+        if (this.record.args) {
+            try {
+                let retArray = [];
+                let args = JSON.parse(this.record.args);
+                for (let arg in args) {
+                    retArray.push({
+                        name: arg,
+                        value: args[arg]
+                    });
+                }
+                return retArray;
+            } catch (e) {
+                return [];
+            }
+        }
+        return [];
+    }
+
+    /**
+     * returns the parsed request Paramaters
+     */
+    get requestParams() {
+        if (this.record.get_params) {
+            try {
+                let retArray = [];
+                let params = JSON.parse(this.record.get_params);
+                for (let param in params) {
+                    retArray.push({
+                        name: param,
+                        value: params[param]
+                    });
+                }
+                return retArray;
+            } catch (e) {
+                return [];
+            }
+        }
+        return [];
+    }
+
+    /**
+     * retruns if we have a non empty request
+     */
+    get hasRequest() {
+        return this.record.post_params && this.record.post_params != "{}";
+    }
+
+    /**
+     * retruns if we have a non empty response
+     */
+    get hasResponse() {
+        return this.record.response && this.record.response != "{}";
     }
 
     // Close the modal.
-    private closeModal() {
-        this.isClosed = true;
+    private close() {
         this.self.destroy();
-    }
-
-    // Escape pressed or [x] clicked.
-    public onModalEscX() {
-        this.closeModal();
     }
 
     /**
@@ -85,9 +150,9 @@ export class APIlogViewerModal {
      */
     private formatted(param) {
         try {
-            return JSON.stringify(JSON.parse(this.entry[param]), null, '\t');
+            return JSON.stringify(JSON.parse(this.record[param]), null, '\t');
         } catch (e) {
-            return this.entry[param];
+            return this.record[param];
         }
     }
 }
