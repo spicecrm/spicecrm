@@ -49,11 +49,6 @@ export class AlcatelToolbarIndicator implements OnDestroy {
     private socketid: string;
 
     /**
-     * the socket status
-     */
-    private socketconnected: boolean = false;
-
-    /**
      * holds the subscriptions
      */
     private subscriptions: Subscription = new Subscription();
@@ -188,6 +183,10 @@ export class AlcatelToolbarIndicator implements OnDestroy {
         });
     }
 
+    get socketConnected() {
+        return this.socket.socketObject('alcatel').instance.connected;
+    }
+
     /**
      * disconnects
      */
@@ -204,6 +203,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
 
     /**
      * connect to the socket
+     * todo handle restart if needed
      */
     private connectSocket() {
         // ensure we have an URL
@@ -214,14 +214,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
         this.socket.initializeNamespace('alcatel').subscribe(event => {
             this.handleCallEvent(event);
         });
-        this.socket = io(`${this.socketurl}?sysid=${this.socketid}&room=alcatel${this.session.authData.sessionId}&token=${this.session.authData.sessionId}`);
-
-
-        this.status_socket = io(`${this.socketurl}?sysid=${this.socketid}&room=alcatel&token=${this.session.authData.sessionId}`);
-        this.status_socket.on('restart', () => {
-            this.login();
-        });
-
+        this.socket.joinRoom('alcatel', `alcatel::${this.username}`);
     }
 
     /**

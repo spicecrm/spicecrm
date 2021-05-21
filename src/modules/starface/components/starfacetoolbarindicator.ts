@@ -273,7 +273,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
 
         // join the room
         // ToDo: ensure that the joining the room is authorized
-        this.socket.joinRoom('starface', 'starface' + this.username);
+        this.socket.joinRoom('starface', `starface::${this.username}`);
 
         // set to socket connected
         this.socketconnected = true;
@@ -285,7 +285,7 @@ export class StarfaceToolbarIndicator implements OnDestroy {
      */
     private disconnectSocket() {
         if (this.socket) {
-            this.socket.leaveRoom('starface', this.username);
+            this.socket.leaveRoom('starface', `starface::${this.username}`);
             this.socketconnected = false;
         }
     }
