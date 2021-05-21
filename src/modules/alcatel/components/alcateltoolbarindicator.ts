@@ -32,6 +32,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
     private status_socket: any;
 
     private username: string;
+    private phoneusername: string;
 
     /**
      * the status of the connection
@@ -131,6 +132,9 @@ export class AlcatelToolbarIndicator implements OnDestroy {
     private getPreferences(): Observable<string> {
         let retSubject = new Subject<string>();
         this.backend.getRequest('channels/voice/alcatel/preferences').subscribe(prefs => {
+            if (prefs.phoneusername) {
+                this.phoneusername = prefs.phoneusername;
+            }
             if (prefs.username) {
                 this.username = prefs.username;
                 retSubject.next(this.username);
@@ -214,7 +218,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
         this.socket.initializeNamespace('alcatel').subscribe(event => {
             this.handleCallEvent(event);
         });
-        this.socket.joinRoom('alcatel', `alcatel::${this.username}`);
+        this.socket.joinRoom('alcatel', `alcatel::${this.phoneusername}`);
     }
 
     /**
