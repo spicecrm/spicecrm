@@ -15,7 +15,7 @@ import {view} from "../../../services/view.service";
     templateUrl: './src/include/groupware/templates/groupwareemailarchivepane.html',
     providers: [view]
 })
-export class GroupwareEmailArchivePane implements OnInit{
+export class GroupwareEmailArchivePane implements OnInit {
     /**
      * Currently active tab.
      */
@@ -32,6 +32,13 @@ export class GroupwareEmailArchivePane implements OnInit{
         private groupware: GroupwareService,
     ) {
         this.groupware.getEmailFromSpice();
+    }
+
+    /**
+     * @return boolean if the system is archiving
+     */
+    get isLoading(): boolean {
+        return this.groupware.isArchiving;
     }
 
     /**
