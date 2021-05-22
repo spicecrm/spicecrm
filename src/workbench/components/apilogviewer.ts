@@ -30,7 +30,7 @@ export class APIlogViewer {
 
     // Various:
     private filter = {
-        method: 'POST',
+        method: '',
         session_id: '',
         userId: '',
         term: '',
