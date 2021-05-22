@@ -7,7 +7,7 @@
                 <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active' : activeTab == 'record'}" (click)="activeTab = 'record'">
                     <a class="slds-tabs_default__link"><system-label label="LBL_RECORD"></system-label></a>
                 </li>
-                <li *ngIf="record.headers" class="slds-tabs_default__item" [ngClass]="{'slds-is-active' : activeTab == 'headers'}" (click)="activeTab = 'headers'">
+                <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active' : activeTab == 'headers'}" (click)="activeTab = 'headers'">
                     <a class="slds-tabs_default__link"><system-label label="LBL_HEADERS"></system-label></a>
                 </li>
                 <li *ngIf="hasRequest" class="slds-tabs_default__item" [ngClass]="{'slds-is-active' : activeTab == 'post'}" (click)="activeTab = 'post'">
@@ -70,6 +70,10 @@
                             <td><system-label label="LBL_URL"></system-label></td>
                             <td>{{record.url}}</td>
                         </tr>
+                        <tr>
+                            <td><system-label label="LBL_IP"></system-label></td>
+                            <td>{{record.ip}}</td>
+                        </tr>
                     </tbody>
                 </table>
 
@@ -127,6 +131,7 @@
                 </div>
             </div>
             <div class="slds-tabs_default__content slds-show" [ngClass]="{'slds-hide' : activeTab != 'headers'}">
+                <h3 class="slds-p-around--x-small"><system-label label="LBL_REQUEST_HEADERS"></system-label></h3>
                 <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--fixed-layout" >
                     <thead>
                         <tr class="slds-line-height_reset">
@@ -149,16 +154,72 @@
                         </tr>
                     </tbody>
                 </table>
+                <ng-container *ngIf="record.response_headers">
+                    <h3 class="slds-p-around--x-small"><system-label label="LBL_RESPONSE_HEADERS"></system-label></h3>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--fixed-layout" >
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="slds-size--1-of-4" scope="col">
+                                    <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                                </th>
+                                <th class="slds-size--3-of-4" scope="col">
+                                    <div class="slds-truncate"><system-label label="LBL_VALUE"></system-label></div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="slds-hint-parent" *ngFor="let responseHeader of responseHeaders">
+                                <td>
+                                    <div class="slds-truncate">{{responseHeader.name}}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate">{{responseHeader.value}}</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </ng-container>
             </div>
             <div *ngIf="hasRequest" class="slds-tabs_default__content slds-show" [ngClass]="{'slds-hide' : activeTab != 'post'}">
-                <div class="slds-m-horizontal--x-small slds-box slds-theme--shade">
-                    <pre class="slds-text-font_monospace" style="overflow-wrap:break-word">{{formatted('post_params')}}</pre>
-                </div>
+                <ng-container [ngSwitch]="determineContentType(_requestheaders)">
+                    <div *ngSwitchCase="'application/x-www-form-urlencoded'">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--fixed-layout" >
+                            <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="slds-size--1-of-4" scope="col">
+                                    <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                                </th>
+                                <th class="slds-size--3-of-4" scope="col">
+                                    <div class="slds-truncate"><system-label label="LBL_VALUE"></system-label></div>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="slds-hint-parent" *ngFor="let rline of formattedRequest()">
+                                <td>
+                                    <div class="slds-truncate">{{rline.name}}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate">{{rline.value}}</div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div *ngSwitchDefault class="slds-m-horizontal--x-small slds-box slds-theme--shade">
+                        <pre class="slds-text-font_monospace" style="overflow-wrap:break-word">{{formattedRequest()}}</pre>
+                    </div>
+                </ng-container>
             </div>
             <div *ngIf="hasResponse" class="slds-tabs_default__content slds-show" [ngClass]="{'slds-hide' : activeTab != 'response'}">
-                <div class="slds-m-horizontal--x-small slds-box slds-theme--shade">
-                    <pre class="slds-text-font_monospace" style="overflow-wrap:break-word">{{formatted('response')}}</pre>
-                </div>
+                <ng-container [ngSwitch]="determineContentType(_responseheaders)">
+                    <div *ngSwitchCase="'application/x-www-form-urlencoded'">
+                        url encoded
+                    </div>
+                    <div *ngSwitchDefault class="slds-m-horizontal--x-small slds-box slds-theme--shade">
+                        <pre class="slds-text-font_monospace" style="overflow-wrap:break-word">{{formattedResponse()}}</pre>
+                    </div>
+                </ng-container>
             </div>
         </div>
     </system-modal-content>
