@@ -1,5 +1,5 @@
 <system-modal size="large">
-    <system-modal-header (close)="closeModal()">API Log for API Request {{filter.transactionId}}</system-modal-header>
+    <system-modal-header (close)="closeModal()">CRM Log Entries for API Request {{crmLogId}}</system-modal-header>
     <system-modal-content style="height:100%">
         <crm-log-viewer-list [filter]="filter" [valuesNotClickable]="true"></crm-log-viewer-list>
     </system-modal-content>

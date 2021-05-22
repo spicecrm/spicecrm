@@ -5,6 +5,7 @@ import { Component, Input } from '@angular/core';
 import { language } from '../../services/language.service';
 import { backend } from '../../services/backend.service';
 import { toast } from '../../services/toast.service';
+import { userpreferences } from '../../services/userpreferences.service';
 
 @Component({
     templateUrl: './src/workbench/templates/crmlogviewermodal.html',
@@ -21,7 +22,7 @@ export class CRMLogViewerModal {
 
     private self;
 
-    constructor( private language: language, private backend: backend, private toast: toast ) { }
+    constructor( private language: language, private backend: backend, private toast: toast, private prefs: userpreferences ) { }
 
     private ngOnInit() {
         // When the full text already has been retrieved from the backend
