@@ -4,7 +4,8 @@
 import { Component, EventEmitter } from '@angular/core';
 import { language } from '../../services/language.service';
 import { backend } from '../../services/backend.service';
-import { Moment } from 'moment';
+
+declare var moment: any;
 
 /**
  * @ignore
@@ -46,7 +47,7 @@ export class CRMLogViewer {
         return this.filter.userId+'::'+this.filterUserName;
     }
 
-    private get filterStart(): Moment {
+    private get filterStart() {
         return this.filter.start;
     }
 
@@ -56,7 +57,7 @@ export class CRMLogViewer {
         // this.filterStd2Alt();
     }
 
-    private get filterEnd(): Moment {
+    private get filterEnd() {
         return this.filter.end;
     }
 
