@@ -1,6 +1,7 @@
 <workbench-header titlelabel="LBL_API_LOG_VIEWER" icon="custom:custom62">
     ({{entries.length}} <system-label label="LBL_RECORDS"></system-label>)
     <workbench-header-controls>
+        <button class="slds-button slds-button--neutral" (click)="truncate()" [disabled]="isLoading"><system-label label="LBL_TRUNCATE"></system-label></button>
         <button class="slds-button slds-button--brand" (click)="buttonLoad()" [disabled]="isLoading"><system-label label="LBL_LOAD"></system-label></button>
     </workbench-header-controls>
 </workbench-header>
@@ -114,7 +115,7 @@
         </thead>
         <tbody #tbody>
             <tr *ngFor="let entry of entries" [ngClass]="{'slds-theme--error' :entry.http_status_code!=200}">
-                <td><system-display-datetime [date]="entry.requested_at"></system-display-datetime></td>
+                <td><system-display-datetime [date]="entry.date_entered"></system-display-datetime></td>
                 <td><div class="slds-truncate">{{entry.user_name}}</div></td>
                 <td><div class="slds-truncate"><a (click)="valueClicked( 'route', entry.route )">{{entry.route}}</a></div></td>
                 <td class="slds-text-align--center"><div class="slds-truncate"><a (click)="valueClicked( 'method', entry.method )">{{entry.method}}</a></div></td>
