@@ -115,9 +115,28 @@ export class APIlogViewer {
         this.loadData();
     }
 
-    // Get the number of days for a specific month/year (28, 29, 30 or 31).
-    private daysInMonth(month: string, year: string) {
-        return new Date(parseInt(year, 10), parseInt(month, 10), 0).getDate();
+    /**
+     * truncates the log
+     * @private
+     */
+    private truncate() {
+        this.modal.prompt('confirm', 'Truncate the API log and delete all entries?', 'Truncate API Log').subscribe(
+            res => {
+                if (res) {
+                    this.isLoading = true;
+                    this.backend.deleteRequest('admin/apilog').subscribe(
+                        () => {
+                            this.isLoading = false;
+                            this.loadData();
+                        },
+                        () => {
+                            this.toast.sendToast('Error truncating log', 'error');
+                            this.isLoading = false;
+                        }
+                    );
+                }
+            }
+        )
     }
 
     // Open the modal window to display a log entry with unusual long log text.
