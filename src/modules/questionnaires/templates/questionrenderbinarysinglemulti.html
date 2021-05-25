@@ -94,8 +94,7 @@
             </ng-container>
 
             <ng-container *ngSwitchCase="'single'">
-
-                <div class="slds-box slds-p-around_none question-render-question" [ngStyle]="styleQuestionMerging()">
+                <div class="slds-box slds-p-around_none question-render-question" [ngStyle]="questionMeta.parameter.formatOptionsHorizontal ? styleQuestionMerging() : null">
                     <div *ngIf="hasTitleTextOrImage" class="slds-p-around_small slds-border_bottom">
                         <h3 *ngIf="question.questiontext && ( !question.image_id || questionset.showonlyimages !== '1' )">{{question.questiontext}}</h3>
                         <media-file-image *ngIf="question.image_id" [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="qp.imageWidthQuestion" [classOuter]="'slds-m-vertical_small'"></media-file-image>

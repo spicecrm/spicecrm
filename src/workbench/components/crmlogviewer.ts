@@ -4,6 +4,8 @@
 import { Component, EventEmitter } from '@angular/core';
 import { language } from '../../services/language.service';
 import { backend } from '../../services/backend.service';
+import { modal } from '../../services/modal.service';
+import {toast} from '../../services/toast.service';
 
 declare var moment: any;
 
@@ -30,6 +32,8 @@ export class CRMLogViewer {
     private filterUserName: string;
 
     private load$ = new EventEmitter();
+
+    private countEntries: number;
 
     private set filterUser( idAndName: string ) {
         if (!idAndName) {
@@ -68,7 +72,7 @@ export class CRMLogViewer {
 
     private altTimeInput = false;
 
-    constructor( private lang: language, private backend: backend ) { }
+    constructor( private lang: language, private backend: backend, private modal: modal, private toast: toast ) { }
 
     // Are all the inputs correct and ready for the backend request?
     private canLoad() {
@@ -187,5 +191,29 @@ export class CRMLogViewer {
                         !this.period.begin.hour ? 'day' : 'hour';
     }
     */
+
+    /**
+     * truncates the log
+     * @private
+     */
+    private truncate() {
+        this.modal.prompt('confirm', 'Truncate the API log and delete all entries?', 'Empty the API Log?').subscribe(
+            res => {
+                if (res) {
+                    // this.isLoading = true;
+                    this.backend.deleteRequest('admin/crmlog').subscribe(
+                        () => {
+                            // this.isLoading = false;
+                            this.load$.emit();
+                        },
+                        () => {
+                            this.toast.sendToast('Error truncating log', 'error');
+                            // this.isLoading = false;
+                        }
+                    );
+                }
+            }
+        )
+    }
 
 }

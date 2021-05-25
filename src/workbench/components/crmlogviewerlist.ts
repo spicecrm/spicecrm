@@ -18,6 +18,7 @@ import { language } from '../../services/language.service';
 import { userpreferences } from '../../services/userpreferences.service';
 import { modal } from '../../services/modal.service';
 import { toast } from '../../services/toast.service';
+import { BehaviorSubject } from 'rxjs';
 
 /**
  * @ignore
@@ -40,8 +41,10 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
     @Input() private period = { type: '', begin: { year: '', month: '', day: '', hour: '' }, end: { year: '', month: '', day: '', hour: '' }, duration: '' };
     @Input('load') private load$: EventEmitter<null>;
     @Input() private valuesNotClickable = false;
+    @Output() private countEntries$ = new BehaviorSubject<number>(0);
 
     private countTotalEntries: number;
+    private countEntries: number;
 
     @Output('valueClicked') private valueClicked$ = new EventEmitter();
 
@@ -169,7 +172,9 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
                     entry.datetime = moment.unix( entry.dtx ).tz( this.prefs.toUse.timezone );
                     entry.i = i;
                 });
+
                 this.countTotalEntries = response.totalCount;
+                this.countEntries$.next( this.entries.length );
                 this.isLoading = false;
                 this.isInitialLoaded = true;
                 if( !this.entries.length ) this.currPage = 0;
