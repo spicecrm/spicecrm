@@ -28,7 +28,7 @@ export class SystemAutofocusDirective implements AfterViewInit {
      */
     public ngAfterViewInit() {
         setTimeout(() => {
-            if (!this.elementRef.nativeElement.tabIndex) this.elementRef.nativeElement.tabIndex = ' -1';
+            if (!this.elementRef.nativeElement.tabIndex) this.elementRef.nativeElement.tabIndex = '-1';
             this.elementRef.nativeElement.focus();
         });
     }

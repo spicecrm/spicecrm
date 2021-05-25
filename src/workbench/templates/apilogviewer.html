@@ -100,36 +100,38 @@
 <div system-to-bottom class="slds-border--top">
     <table class="slds-table slds-table--bordered slds-table--fixed-layout slds-table--col-bordered slds-no-row-hover slds-table_header-fixed">
         <thead>
-            <tr>
-                <th style="width: 8rem;"><system-label class="slds-th__action" label="LBL_DATE"></system-label></th>
-                <th style="width: 8rem" class="slds-resizable"><system-label class="slds-th__action" label="LBL_USER"></system-label></th>
-                <th class="slds-resizable"><system-label class="slds-th__action" label="LBL_ROUTE"></system-label></th>
-                <th style="width: 4rem"><system-label class="slds-th__action" label="LBL_METHOD"></system-label></th>
-                <th style="width: 2rem" class="slds-text-align_center"><system-utility-icon icon="signpost" size="x-small"></system-utility-icon></th>
-                <th style="width: 3rem;"><system-label class="slds-th__action" label="LBL_STATUS"></system-label></th>
-                <th style="width: 3rem;" class="slds-text-align_center"><system-utility-icon icon="clock" size="x-small"></system-utility-icon></th>
-                <th class="slds-resizable"><system-label class="slds-th__action" label="LBL_ROUTE_ARGUMENTS"></system-label></th>
-                <th class="slds-resizable"><system-label class="slds-th__action" label="LBL_URL_PARAMETERS"></system-label></th>
-                <th style="width:2.5rem"></th>
-            </tr>
+        <tr>
+            <th style="width: 8rem;"><system-label class="slds-th__action" label="LBL_DATE"></system-label></th>
+            <th style="width: 8rem" class="slds-resizable"><system-label class="slds-th__action" label="LBL_USER"></system-label></th>
+            <th style="width: 8rem" class="slds-resizable"><system-label class="slds-th__action" label="LBL_TRANSACTION_ID"></system-label></th>
+            <th class="slds-resizable"><system-label class="slds-th__action" label="LBL_ROUTE"></system-label></th>
+            <th style="width: 4rem"><system-label class="slds-th__action" label="LBL_METHOD"></system-label></th>
+            <th style="width: 2rem" class="slds-text-align_center"><system-utility-icon icon="signpost" size="x-small"></system-utility-icon></th>
+            <th style="width: 3rem;"><system-label class="slds-th__action" label="LBL_STATUS"></system-label></th>
+            <th style="width: 3rem;" class="slds-text-align_center"><system-utility-icon icon="clock" size="x-small"></system-utility-icon></th>
+            <th class="slds-resizable"><system-label class="slds-th__action" label="LBL_ROUTE_ARGUMENTS"></system-label></th>
+            <th class="slds-resizable"><system-label class="slds-th__action" label="LBL_URL_PARAMETERS"></system-label></th>
+            <th style="width:2.5rem"></th>
+        </tr>
         </thead>
         <tbody #tbody>
-            <tr *ngFor="let entry of entries" [ngClass]="{'slds-theme--error' :entry.http_status_code!=200}">
-                <td><system-display-datetime [date]="entry.date_entered"></system-display-datetime></td>
-                <td><div class="slds-truncate">{{entry.user_name}}</div></td>
-                <td><div class="slds-truncate"><a (click)="valueClicked( 'route', entry.route )">{{entry.route}}</a></div></td>
-                <td class="slds-text-align--center"><div class="slds-truncate"><a (click)="valueClicked( 'method', entry.method )">{{entry.method}}</a></div></td>
-                <td class="slds-text-align--center">{{entry.direction}}</td>
-                <td class="slds-text-align--right status"><a (click)="valueClicked( 'status', entry.http_status_code )">{{entry.http_status_code}}</a></td>
-                <td class="slds-text-align--center"><system-display-number [number]="entry.runtime" system-display-number-nodigits></system-display-number></td>
-                <td><div class="slds-truncate">{{entry.request_args}}</div></td>
-                <td><div class="slds-truncate">{{entry.request_params}}</div></td>
-                <td>
-                    <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="showEntryInModal(entry)">
-                        <system-button-icon [icon]="'expand'" [size]="'medium'"></system-button-icon>
-                    </button>
-                </td>
-            </tr>
+        <tr *ngFor="let entry of entries" [ngClass]="{'slds-theme--error' :entry.http_status_code!=200}">
+            <td><system-display-datetime [date]="entry.date_entered"></system-display-datetime></td>
+            <td><div class="slds-truncate">{{entry.user_name}}</div></td>
+            <td><div class="slds-truncate">{{entry.transaction_id}}</div></td>
+            <td><div class="slds-truncate"><a (click)="valueClicked( 'route', entry.route )">{{entry.route}}</a></div></td>
+            <td class="slds-text-align--center"><div class="slds-truncate"><a (click)="valueClicked( 'method', entry.method )">{{entry.method}}</a></div></td>
+            <td class="slds-text-align--center">{{entry.direction}}</td>
+            <td class="slds-text-align--right status"><a (click)="valueClicked( 'status', entry.http_status_code )">{{entry.http_status_code}}</a></td>
+            <td class="slds-text-align--center"><system-display-number [number]="entry.runtime" system-display-number-nodigits></system-display-number></td>
+            <td><div class="slds-truncate">{{entry.request_args}}</div></td>
+            <td><div class="slds-truncate">{{entry.request_params}}</div></td>
+            <td>
+                <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="showEntryInModal(entry)">
+                    <system-button-icon [icon]="'expand'" [size]="'medium'"></system-button-icon>
+                </button>
+            </td>
+        </tr>
         </tbody>
     </table>
     <div *ngIf="entries.length == 0" class="slds-height_full slds-align--absolute-center">
