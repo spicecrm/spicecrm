@@ -1,6 +1,11 @@
 <div class="slds-grid slds-grid_vertical" style="height:100%">
-
-    <workbench-header titlelabel="LBL_CRM_LOG_VIEWER" icon="custom:custom62">{{lang.getLabel('LBL_CRM_LOG_VIEWER', '', 'long')}}</workbench-header>
+    <workbench-header titlelabel="LBL_CRM_LOG_VIEWER" icon="custom:custom62">
+        ({{countEntries}} <system-label label="LBL_RECORDS"></system-label>)
+        <workbench-header-controls>
+            <button class="slds-button slds-button--neutral" (click)="truncate()"><system-label label="LBL_TRUNCATE"></system-label></button><!-- [disabled]="0 && isLoading" -->
+            <button class="slds-button slds-button_brand" (click)="buttonLoad()" [attr.disabled]="!canLoad()?true:null"><system-label label="LBL_LOAD"></system-label></button>
+        </workbench-header-controls>
+    </workbench-header>
 
     <div class="slds-section slds-is-open">
 
@@ -179,7 +184,7 @@
                 -->
 
                 <div class="slds-m-left_large">
-                    <button class="slds-button slds-button_brand" (click)="buttonLoad()" [attr.disabled]="!canLoad()?true:null">{{lang.getLabel('LBL_LOAD')}}</button>
+
                 </div>
 
             </div>
@@ -188,6 +193,6 @@
 
     </div>
 
-    <crm-log-viewer-list [load]='load$' [period]="period" [filter]="filter" (valueClicked)="valueClicked($event.type,$event.value)"></crm-log-viewer-list>
+    <crm-log-viewer-list [load]='load$' [filter]="filter" (countEntries$)="countEntries=$event" (valueClicked)="valueClicked($event.type,$event.value)"></crm-log-viewer-list><!-- [period]="period" -->
 
 </div>
