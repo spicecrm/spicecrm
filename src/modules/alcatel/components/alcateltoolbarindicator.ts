@@ -32,6 +32,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
     private status_socket: any;
 
     private username: string;
+    private phoneusername: string;
 
     /**
      * the status of the connection
@@ -47,11 +48,6 @@ export class AlcatelToolbarIndicator implements OnDestroy {
      * a unique id for the server to connect to the socket
      */
     private socketid: string;
-
-    /**
-     * the socket status
-     */
-    private socketconnected: boolean = false;
 
     /**
      * holds the subscriptions
@@ -136,6 +132,9 @@ export class AlcatelToolbarIndicator implements OnDestroy {
     private getPreferences(): Observable<string> {
         let retSubject = new Subject<string>();
         this.backend.getRequest('channels/voice/alcatel/preferences').subscribe(prefs => {
+            if (prefs.phoneusername) {
+                this.phoneusername = prefs.phoneusername;
+            }
             if (prefs.username) {
                 this.username = prefs.username;
                 retSubject.next(this.username);
@@ -188,6 +187,10 @@ export class AlcatelToolbarIndicator implements OnDestroy {
         });
     }
 
+    get socketConnected() {
+        return this.socket.socketObject('alcatel').instance.connected;
+    }
+
     /**
      * disconnects
      */
@@ -204,6 +207,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
 
     /**
      * connect to the socket
+     * todo handle restart if needed
      */
     private connectSocket() {
         // ensure we have an URL
@@ -214,14 +218,7 @@ export class AlcatelToolbarIndicator implements OnDestroy {
         this.socket.initializeNamespace('alcatel').subscribe(event => {
             this.handleCallEvent(event);
         });
-        this.socket = io(`${this.socketurl}?sysid=${this.socketid}&room=alcatel${this.session.authData.sessionId}&token=${this.session.authData.sessionId}`);
-
-
-        this.status_socket = io(`${this.socketurl}?sysid=${this.socketid}&room=alcatel&token=${this.session.authData.sessionId}`);
-        this.status_socket.on('restart', () => {
-            this.login();
-        });
-
+        this.socket.joinRoom('alcatel', `alcatel::${this.phoneusername}`);
     }
 
     /**

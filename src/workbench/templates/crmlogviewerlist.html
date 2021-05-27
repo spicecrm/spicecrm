@@ -1,21 +1,21 @@
-<div *ngIf="isLoading || isLoaded" class="slds-section slds-is-open">
+<div class="slds-section slds-is-open slds-grid slds-grid_vertical" [ngStyle]="!isInitialLoaded?{opacity:0}:undefined" style="height:100%">
 
-    <h3 class="slds-section__title slds-theme_shade slds-m-horizontal--x-small">
-        <span class="slds-truncate slds-p-horizontal_x-small" title="Filter">Log Entries</span>
+    <h3 class="slds-section__title slds-theme_shade slds-m-horizontal_x-small">
+        <span class="slds-truncate slds-p-horizontal_x-small" title="Filter"><system-label label="LBL_LOG_ENTRIES"></system-label></span>
     </h3>
 
-    <div class="slds-section__content slds-m-bottom--medium" style="padding-top:0"><!-- slds-p-right--xx-large -->
+    <div class="slds-section__content slds-m-bottom_medium slds-grid slds-grid_vertical" style="padding-top:0;height:100%">
 
-        <system-spinner *ngIf="isLoading" class="slds-m-top--x-large" style="display:block"></system-spinner>
+        <div>
 
-        <div *ngIf="isLoaded">
+            <div class="slds-grid slds-grid_vertical-align-center slds-grid_align-spread slds-m-horizontal_medium"><!--*ngIf="entries.length"-->
 
-            <div *ngIf="entries.length" class="slds-grid slds-grid--vertical-align-center slds-grid_align-spread slds-m-horizontal--medium">
+                <pagination-controls class="slds-col_bump-right slds-m-vertical_small" [page]="currPage" (pageChange)="setCurrPage($event)" [limit]="entriesPerPage" [total_records]="countTotalEntries" (leftPage)="collapseEntriesOfPage($event)" [canSwitch]="canLoad()"></pagination-controls>
+                <!--pagination-controls class="slds-col_bump-right slds-m-right--large" [(page)]="currPage" [limit]="entriesPerPage" [total_records]="entriesToShow.length" (leftPage)="collapseEntriesOfPage($event)"></pagination-controls-->
 
-                <pagination-controls class="slds-col_bump-right slds-m-right--large" [(page)]="currPage" [limit]="entriesPerPage" [total_records]="entriesToShow.length" (leftPage)="collapseEntriesOfPage($event)"></pagination-controls>
+                <!--div *ngIf="isFiltered"><span style="text-transform:uppercase">{{lang.getLabel('LBL_FILTERED')}}</span> ({{entries.length-entriesToShow.length}} {{lang.getLabel('LBL_NOT_SHOWN')}})</div-->
 
-                <div *ngIf="isFiltered"><span style="text-transform:uppercase">{{lang.getLabel('LBL_FILTERED')}}</span> ({{entries.length-entriesToShow.length}} {{lang.getLabel('LBL_NOT_SHOWN')}})</div>
-
+                <!--
                 <div class="slds-form-element slds-m-left--medium slds-m-vertical--x-small">
                     <div class="slds-form-element__control slds-grid">
                         <input id="localFiltertextPositive" class="slds-input" type="text" system-trim-input="blur" [(ngModel)]="localFiltertextPositive" placeholder="{{lang.getLabel('LBL_TEXT_FILTER')}}, client-side" style="border-bottom-color:#090" />
@@ -35,59 +35,65 @@
                         </button>
                     </div>
                 </div>
+                -->
+
             </div>
 
-            <div *ngIf="entries.length">
-
-                <table class="slds-table slds-table--bordered slds-table--col-bordered slds-table--striped slds-table_cell-buffer" style="max-height:400px" [ngStyle]="{'opacity':isBuildingLocalTextfilter?0.25:1}"><!-- slds-table--header-fixed -->
+            <div [system-overlay-loading-spinner]="isLoading" style="height:100%" class="slds-grid slds-grid_vertical" #content>
+                <table class="slds-table slds-table--bordered slds-table--col-bordered slds-table--striped slds-table_cell-buffer" [ngStyle]="isLoading?{opacity:0.33}:undefined"><!-- slds-table--header-fixed --><!--[ngStyle]="{'opacity':isBuildingLocalTextfilter?0.25:1}"-->
                     <thead>
-                        <tr>
-                            <th style="width:1%">{{lang.getLabel('LBL_DATE')}}</th>
-                            <th style="width:1%">{{lang.getLabel('LBL_TIME')}}</th>
-                            <th style="width:1%" class="slds-text-align--right">PID</th>
-                            <th style="width:1%" class="slds-text-align--right">{{lang.getLabel('LBL_TRANSACTION')}}</th>
-                            <th style="width:1%">{{lang.getLabel('LBL_USER')}}</th>
-                            <th style="width:1%">{{lang.getLabel('LBL_LEVEL')}}</th>
-                            <th style="width:100%">{{lang.getLabel('LBL_TEXT')}}</th>
-                            <th style="width:2rem;border-left:0"></th>
-                            <th style="width:2rem;border-left:0"></th>
-                        </tr>
+                    <tr>
+                        <th style="width:1%"><system-label label="LBL_DATE"></system-label></th>
+                        <th style="width:1%"><system-label label="LBL_TIME"></system-label></th>
+                        <th style="width:1%" class="slds-text-align--right">PID</th>
+                        <th style="width:1%" class="slds-text-align--right"><system-label label="LBL_TRANSACTION"></system-label></th>
+                        <th style="width:1%"><system-label label="LBL_USER"></system-label></th>
+                        <th style="width:1%"><system-label label="LBL_LEVEL"></system-label></th>
+                        <th style="width:100%"><system-label label="LBL_TEXT"></system-label></th>
+                        <th style="width:2rem;border-left:0"></th>
+                        <th style="width:2rem;border-left:0"></th>
+                    </tr>
                     </thead>
                     <tbody #tbody>
-                        <tr *ngFor="let entry of entriesToShow | paginate: { page: currPage, limit: 20 }">
-                            <td class="slds-text-align--right"><a (click)="valuesNotClickable || valueClicked$.emit({type:'date',value:entry.date})" [ngClass]="{notClickable:valuesNotClickable}">{{entry.date}}</a></td>
-                            <td class="slds-text-align--right"><a (click)="valuesNotClickable || valueClicked$.emit({type:'date',value:entry.date});valueClicked$.emit({type:'time',value:entry.time})" [ngClass]="{notClickable:valuesNotClickable}">{{entry.time}}</a></td>
-                            <td class="slds-text-align--right"><a (click)="valuesNotClickable || valueClicked$.emit({type:'pid',value:entry.pid})" [ngClass]="{notClickable:valuesNotClickable}">{{entry.pid}}</a></td>
-                            <td class="slds-text-align--right"><a (click)="valuesNotClickable || valueClicked$.emit({type:'tid',value:entry.tid})" [ngClass]="{notClickable:valuesNotClickable}">{{entry.tid}}</a></td>
-                            <td><a (click)="valuesNotClickable || valueClicked$.emit({type:'usr',value:{uid:entry.uid,uname:entry.uname}})" [ngClass]="{notClickable:valuesNotClickable}">{{entry.uname}}</a></td>
-                            <td><a (click)="valuesNotClickable || valueClicked$.emit({type:'lev',value:entry.lev})" [ngClass]="{notClickable:valuesNotClickable}">{{entry.lev}}</a></td>
-                            <td [ngClass]="{expanded:entry.expand,collapsed:!entry.expand}">
-                                <div class="slds-text-font_monospace" [ngClass]="{'slds-truncate':!entry.expand}">{{entry.txt}}</div>
-                            </td>
-                            <td class="slds-p-left--none" style="border-left:0">
-                                <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="entry.expand=true" >
-                                    <system-button-icon [icon]="'threedots'" [size]="'small'"></system-button-icon>
-                                </button>
-                            </td>
-                            <td>
-                                <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="showEntryInModal(entry.i)" [ngClass]="{'slds-hidden':!entry.txtTruncated}">
-                                    <system-button-icon [icon]="'expand'" [size]="'medium'"></system-button-icon>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr *ngIf="isFiltered && entriesToShow.length === 0">
-                            <td colspan="8" class="slds-p-around--x-large">
-                                <div class="slds-p-vertical--x-large slds-text-align--center slds-text-heading--small">Empty list (filter is active).</div>
-                            </td>
-                        </tr>
+                    <ng-container *ngIf="!isInitialLoaded"><tr #measurementRowHeight><td colspan="9" class="slds-text-align_center">
+                        &hellip;&hellip;&hellip;
+                        <button class="slds-button slds-button_icon-border slds-button_icon-small">
+                            <system-button-icon [icon]="'expand'" [size]="'medium'"></system-button-icon>
+                        </button>
+                    </td></tr></ng-container>
+                    <tr *ngFor="let entry of entries">
+                        <td class="slds-text-align--right"><a *ngIf="!valuesNotClickable" (click)="valueClicked$.emit({type:'datetime',value:entry.datetime})">{{entry.datetime.format( this.prefs.getDateFormat() )}}</a><ng-container *ngIf="valuesNotClickable">{{entry.datetime.format( this.prefs.getDateFormat() )}}</ng-container></td>
+                        <td class="slds-text-align--right"><a *ngIf="!valuesNotClickable" (click)="valueClicked$.emit({type:'datetime',value:entry.datetime})">{{entry.datetime.format( prefs.getTimeFormat() )}}</a><ng-container *ngIf="valuesNotClickable">{{entry.datetime.format( prefs.getTimeFormat() )}}</ng-container></td>
+                        <td class="slds-text-align--right"><a *ngIf="!valuesNotClickable" (click)="valueClicked$.emit({type:'pid',value:entry.pid})">{{entry.pid}}</a><ng-container *ngIf="valuesNotClickable">{{entry.pid}}</ng-container></td>
+                        <td class="slds-text-align--right"><a *ngIf="!valuesNotClickable" (click)="valueClicked$.emit({type:'tid',value:entry.tid})">{{entry.tid}}</a><ng-container *ngIf="valuesNotClickable">{{entry.tid}}</ng-container></td>
+                        <td><a *ngIf="!valuesNotClickable" (click)="valueClicked$.emit({type:'usr',value:{uid:entry.uid,uname:entry.uname}})">{{entry.uname}}</a><ng-container *ngIf="valuesNotClickable">{{entry.uname}}</ng-container></td>
+                        <td><a *ngIf="!valuesNotClickable" (click)="valueClicked$.emit({type:'lev',value:entry.lev})">{{entry.lev}}</a><ng-container *ngIf="valuesNotClickable">{{entry.lev}}</ng-container></td>
+                        <td [ngClass]="{expanded:entry.expand,collapsed:!entry.expand}">
+                            <div class="slds-text-font_monospace" [ngClass]="{'slds-truncate':!entry.expand}">{{entry.txt}}</div>
+                        </td>
+                        <td class="slds-p-left--none" style="border-left:0">
+                            <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="entry.expand=true" >
+                                <system-button-icon [icon]="'threedots'" [size]="'small'"></system-button-icon>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="showEntryInModal(entry.i)" [ngClass]="{'slds-hidden':!entry.txtTruncated}">
+                                <system-button-icon [icon]="'expand'" [size]="'medium'"></system-button-icon>
+                            </button>
+                        </td>
+                    </tr>
+                    <!--tr *ngIf="isFiltered && entriesToShow.length === 0">
+                        <td colspan="8" class="slds-p-around--x-large">
+                            <div class="slds-p-vertical--x-large slds-text-align--center slds-text-heading--small">Empty list (filter is active).</div>
+                        </td>
+                    </tr-->
                     </tbody>
                 </table>
-
             </div>
 
-            <div *ngIf="entries.length == 0" class="slds-p-vertical--x-large slds-text-align--center slds-text-heading--small">No entries found.</div>
-
         </div>
+
+        <div #measurementAvailableSpace style="height:100%"></div>
 
     </div>
 
