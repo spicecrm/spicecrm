@@ -8,13 +8,26 @@ import {language} from "../../services/language.service";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {Subscription} from "rxjs";
 import {ChecklistI, ChecklistItemI} from "../interfaces/objectcomponents.interfaces";
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 /**
  * renders a checklist from a json object and enable managing checklist entries
  */
 @Component({
     selector: 'object-checklists',
-    templateUrl: './src/objectcomponents/templates/objectchecklists.html'
+    templateUrl: './src/objectcomponents/templates/objectchecklists.html',
+    animations: [
+        trigger('tabAnimation', [
+            state('true', style({height: '*', opacity: 1})),
+            state('false', style({height: '0px', opacity: 0})),
+            transition('true => false', [
+                style({overflow: 'hidden'}), animate('.5s')
+            ]),
+            transition('false => true', [
+                animate('.5s'), style({overflow: 'inherit'})
+            ])
+        ])
+    ]
 })
 export class ObjectChecklists implements OnInit, OnDestroy {
     /**
@@ -51,6 +64,8 @@ export class ObjectChecklists implements OnInit, OnDestroy {
      * @private
      */
     private fieldName: string = 'checklists';
+
+    public panelExpanded: boolean = false;
 
     constructor(public model: model,
                 public language: language,
@@ -157,9 +172,10 @@ export class ObjectChecklists implements OnInit, OnDestroy {
      * @param checklist
      * @param event
      * @param container
+     * @param input
      */
-    public onChecklistBlur(checklist: ChecklistI, event: FocusEvent, container: HTMLElement) {
-        if (container.contains(event.relatedTarget as Node)) return;
+    public onChecklistBlur(checklist: ChecklistI, event: FocusEvent, container: HTMLElement, input: HTMLInputElement) {
+        if (container.contains(event.relatedTarget as Node) || (!container.contains(event.relatedTarget as Node) && !!input.value)) return;
         checklist.showAddButton = true;
     }
 
@@ -184,7 +200,7 @@ export class ObjectChecklists implements OnInit, OnDestroy {
      */
     public save(item: ChecklistI | ChecklistItemI) {
 
-        if ('isChanged' in item && item?.isChanged === false) {
+        if (('isChanged' in item && item?.isChanged === false) || ('items' in item && !item.name)) {
             return;
         }
 
@@ -321,5 +337,9 @@ export class ObjectChecklists implements OnInit, OnDestroy {
         }
         event.item.data.isChanged = true;
         this.save(event.item.data);
+    }
+
+    public toggleExpansion() {
+        this.panelExpanded = !this.panelExpanded;
     }
 }
