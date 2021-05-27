@@ -1,13 +1,17 @@
 /**
  * @module WorkbenchModule
  */
-import { Component, EventEmitter, ViewChild } from '@angular/core';
+import { Component, EventEmitter } from '@angular/core';
 import { language } from '../../services/language.service';
 import { backend } from '../../services/backend.service';
+import { modal } from '../../services/modal.service';
+import {toast} from '../../services/toast.service';
+
+declare var moment: any;
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
@@ -20,15 +24,16 @@ export class CRMLogViewer {
 
     // Configuration:
     private levels = [ 'debug', 'info', 'warn', 'deprecated', 'login', 'error', 'fatal', 'security' ];
-    private limit = '5000';
     private routeBase = 'admin/crmlog';
 
     // Various:
-    private filter = { level: 'fatal', processId: '', userId: '', text: '', transactionId: '' };
-    private period = { type: '', start: { year: '', month: '', day: '', hour: '' }, begin: { year: '', month: '', day: '', hour: '' }, duration: '1' };
+    private filter = { level: 'fatal', processId: '', userId: '', text: '', transactionId: '', start: undefined, end: undefined };
+    // private period = { type: '', start: { year: '', month: '', day: '', hour: '' }, begin: { year: '', month: '', day: '', hour: '' }, duration: '1' };
     private filterUserName: string;
 
     private load$ = new EventEmitter();
+
+    private countEntries: number;
 
     private set filterUser( idAndName: string ) {
         if (!idAndName) {
@@ -46,14 +51,34 @@ export class CRMLogViewer {
         return this.filter.userId+'::'+this.filterUserName;
     }
 
-    constructor( private lang: language, private backend: backend ) { }
+    private get filterStart() {
+        return this.filter.start;
+    }
+
+    private set filterStart( value) {
+        this.filter.start = value;
+        // if ( moment.isMoment( this.filter.start ) && !moment.isMoment( this.filter.end )) this.filter.end = this.filter.start.clone();
+        // this.filterStd2Alt();
+    }
+
+    private get filterEnd() {
+        return this.filter.end;
+    }
+
+    private set filterEnd( value) {
+        this.filter.end = value;
+        // this.filterStd2Alt();
+    }
+
+    private altTimeInput = false;
+
+    constructor( private lang: language, private backend: backend, private modal: modal, private toast: toast ) { }
 
     // Are all the inputs correct and ready for the backend request?
     private canLoad() {
-        if ( this.period.begin.year && !this.period.begin.year.match(/^\d{4}$/) ) return false;
+        // if ( this.period.begin.year && !this.period.begin.year.match(/^\d{4}$/) ) return false;
         if ( this.filter.processId && !this.filter.processId.match(/\d$/) ) return false;
-        if ( this.limit && !this.limit.match(/\d$/) ) return false;
-        if ( this.period.begin.hour && !this.period.begin.day ) return false;
+        // if ( this.period.begin.hour && !this.period.begin.day ) return false;
         return true;
     }
 
@@ -67,6 +92,7 @@ export class CRMLogViewer {
         return new Date( parseInt( year, 10 ), parseInt( month, 10 ), 0 ).getDate();
     }
 
+    /*
     // Get a simple array of day numbers (for ngIf).
     private get daylist() {
         let daysInMonth = ( !this.period.begin.month || !this.period.begin.year ) ? 31 : this.daysInMonth( this.period.begin.month, this.period.begin.year );
@@ -124,32 +150,25 @@ export class CRMLogViewer {
             if ( this.period.begin.day.length === 1 ) this.period.begin.day = '0'+this.period.begin.day;
         }
     }
+    */
 
     // The values in the list can be clicked to be transfered to the corresponding filter input field.
-    private valueClicked( click: any ) {
-        let items: string[];
-        switch ( click.type ) {
-            case 'date':
-                items = click.value.split('\.');
-                this.period.begin.day = items[0];
-                this.period.begin.month = items[1];
-                this.period.begin.year = items[2];
-                break;
-            case 'time':
-                items = click.value.split(':');
-                this.period.begin.hour = items[0];
-                break;
-            case 'tid': this.filter.transactionId = click.value; break;
+    private valueClicked( type: string, value: any ) {
+        switch ( type ) {
+            case 'datetime':
+                this.filter.start = new moment( value ); break;
+            case 'tid': this.filter.transactionId = value; break;
             case 'usr': {
-                this.filter.userId = click.value.uid;
-                this.filterUserName = click.value.uname;
+                this.filter.userId = value.uid;
+                this.filterUserName = value.uname;
                 break;
             }
-            case 'lev': this.filter.level = click.value; break;
-            case 'pid': this.filter.processId = click.value.toString(); break;
+            case 'lev': this.filter.level = value; break;
+            case 'pid': this.filter.processId = value.toString(); break;
         }
     }
 
+    /*
     private sanitizeDuration() {
         if ( !this.period.duration.match( /\d+/ )) this.period.duration = '1';
     }
@@ -170,6 +189,31 @@ export class CRMLogViewer {
                 !this.period.begin.month ? 'year' :
                     !this.period.begin.day ? 'month' :
                         !this.period.begin.hour ? 'day' : 'hour';
+    }
+    */
+
+    /**
+     * truncates the log
+     * @private
+     */
+    private truncate() {
+        this.modal.prompt('confirm', 'Truncate the API log and delete all entries?', 'Empty the API Log?').subscribe(
+            res => {
+                if (res) {
+                    // this.isLoading = true;
+                    this.backend.deleteRequest('admin/crmlog').subscribe(
+                        () => {
+                            // this.isLoading = false;
+                            this.load$.emit();
+                        },
+                        () => {
+                            this.toast.sendToast('Error truncating log', 'error');
+                            // this.isLoading = false;
+                        }
+                    );
+                }
+            }
+        )
     }
 
 }
