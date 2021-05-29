@@ -35,6 +35,7 @@ import /*embed*/ {ObjectListHeaderSort} from './components/objectlistheadersort'
 import /*embed*/ {ObjectListHeaderActionMenu} from './components/objectlistheaderactionmenu';
 import /*embed*/ {ObjectListHeaderActionsAssignButton} from './components/objectlistheaderactionsassignbutton';
 import /*embed*/ {ObjectListHeaderActionsAssignModal} from './components/objectlistheaderactionsassignmodal';
+import /*embed*/ {ObjectListHeaderActionsDeleteButton} from './components/objectlistheaderactionsdeletebutton';
 import /*embed*/ {ObjectListHeaderActionsMergeButton} from './components/objectlistheaderactionsmergebutton';
 import /*embed*/ {ObjectListHeaderActionsExportCSVButton} from './components/objectlistheaderactionsexportcsvbutton';
 import /*embed*/ {ObjectListHeaderActionsExportCSVSelectFields} from './components/objectlistheaderactionsexportcsvselectfields';
@@ -216,6 +217,7 @@ import /*embed*/ {ObjectChecklists} from "./components/objectchecklists";
         ObjectListHeaderActionMenu,
         ObjectListHeaderActionsAssignButton,
         ObjectListHeaderActionsAssignModal,
+        ObjectListHeaderActionsDeleteButton,
         ObjectListHeaderActionsMergeButton,
         ObjectListHeaderActionsExportCSVButton,
         ObjectFieldFilterPipe,
