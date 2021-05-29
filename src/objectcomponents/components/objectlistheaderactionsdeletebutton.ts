@@ -79,6 +79,7 @@ export class ObjectListHeaderActionsDeleteButton {
             } else {
                 this.modal.confirm(this.language.getLabelFormatted('MSG_DELETE_RECORDS', [this.modellist.getSelectedCount()], "long"), this.language.getLabel('MSG_DELETE_RECORDS')).subscribe(res => {
                     if (res) {
+                        let spinner = this.modal.await('... processing ...');
                         let body = {
                             ids: this.modellist.getSelectedIDs(),
                             action: 'DELETE'
@@ -90,9 +91,11 @@ export class ObjectListHeaderActionsDeleteButton {
                                         module: this.model.module
                                     });
                                 }
+                                spinner.emit(true);
                             },
                             () => {
                                 this.toast.sendToast('ERROR deleting records', 'error');
+                                spinner.emit(true);
                             }
                         );
                     }
