@@ -262,7 +262,7 @@ export class APIlogViewerModal {
                     let c = ce.split('=');
                     cArray.push({
                         name: c[0],
-                        value: decodeURI(c[1])
+                        value: decodeURIComponent(c[1].replaceAll('+', ' '))
                     });
                 }
                 return cArray;
