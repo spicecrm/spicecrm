@@ -1087,6 +1087,7 @@ export class model implements OnDestroy {
                         case 409:
                             this.modal.openModal("ObjectOptimisticLockingModal", false, this.injector).subscribe(lockingModalRef => {
                                 lockingModalRef.instance.conflicts = error.error.error.conflicts;
+                                lockingModalRef.instance.responseSubject = responseSubject;
                             });
                             break;
                         default:
