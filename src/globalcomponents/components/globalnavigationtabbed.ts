@@ -1,15 +1,16 @@
 /**
  * @module GlobalComponents
  */
-import {ChangeDetectorRef, Component} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
 import {metadata} from '../../services/metadata.service';
 import {navigation} from '../../services/navigation.service';
+import {Subscription} from "rxjs";
 
 @Component({
     selector: 'global-navigation-tabbed',
     templateUrl: './src/globalcomponents/templates/globalnavigationtabbed.html',
 })
-export class GlobalNavigationTabbed {
+export class GlobalNavigationTabbed implements OnDestroy {
     /**
      * holds the parent tab object
      */
@@ -19,6 +20,8 @@ export class GlobalNavigationTabbed {
      */
     public displaySubTabs: boolean = false;
 
+
+    private subscriptions: Subscription = new Subscription();
 
     constructor(private metadata: metadata,
                 private navigation: navigation,
@@ -31,6 +34,13 @@ export class GlobalNavigationTabbed {
      */
     public ngAfterViewInit() {
         this.subscribeToNavigationChanges();
+    }
+
+    /**
+     * unsubscribe from any subscription we still might have
+     */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
     }
 
     /**
@@ -55,12 +65,16 @@ export class GlobalNavigationTabbed {
      * @private
      */
     private subscribeToNavigationChanges() {
-        this.navigation.activeTab$.subscribe((tabId: string) => {
-            this.handleNavigationChanges(tabId);
-        });
-        this.navigation.objectTabsChange$.subscribe(() => {
-            this.handleNavigationChanges(this.navigation.activeTab);
-        });
+        this.subscriptions.add(
+            this.navigation.activeTab$.subscribe((tabId: string) => {
+                this.handleNavigationChanges(tabId);
+            })
+        );
+        this.subscriptions.add(
+            this.navigation.objectTabsChange$.subscribe(() => {
+                this.handleNavigationChanges(this.navigation.activeTab);
+            })
+        );
     }
 
     /**
