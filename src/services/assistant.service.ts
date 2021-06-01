@@ -73,7 +73,7 @@ export class assistant {
                 // clear the items
                 this.assitantItems = [];
 
-                // reset the iniailtized status so we will load again on the next login
+                // reset the initialized status so we will load again on the next login
                 this.initialized = false;
 
                 // cancel the reminder interval if we have any
