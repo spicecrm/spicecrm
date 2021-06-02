@@ -38,6 +38,7 @@ export class SystemModelProviderDirective {
      */
     @Input('system-model-provider')
     set provided_model(provided_model: { module: string, id: string, data: any }) {
+
         this.model.module = provided_model.module;
         if (provided_model.id) {
             this.model.id = provided_model.id;
@@ -46,7 +47,15 @@ export class SystemModelProviderDirective {
         }
 
         if (provided_model.data) {
-            this.model.data = this.model.utils.backendModel2spice(provided_model.module, provided_model.data);
+
+            if (provided_model.data.isNew) {
+                this.model.initialize();
+            }
+
+            this.model.setFields(
+                this.model.utils.backendModel2spice(provided_model.module, provided_model.data)
+            );
+
             this.model.isLoading = false;
             this.model.data$.next(this.model.data);
 
@@ -57,7 +66,8 @@ export class SystemModelProviderDirective {
         } else if (this.model.id) {
             // if no data was found BUT an ID, load it from backend... isLoading will be set inside getData()
             this.model.getData();
+        } else {
+            this.model.initialize();
         }
-
     }
 }
