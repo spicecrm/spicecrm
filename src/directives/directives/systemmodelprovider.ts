@@ -1,8 +1,9 @@
 /**
  * @module DirectivesModule
  */
-import {Directive, Input} from '@angular/core';
+import {Directive, Input, Output, EventEmitter, OnDestroy} from '@angular/core';
 import {model} from "../../services/model.service";
+import {Subscription} from "rxjs";
 
 /**
  * a directive that does nothing else but to provide a model service instance, populated by an model like object
@@ -17,12 +18,26 @@ import {model} from "../../services/model.service";
     selector: '[system-model-provider]',
     providers: [model]
 })
-export class SystemModelProviderDirective {
+export class SystemModelProviderDirective implements OnDestroy {
+    /**
+     * emit when the model data$ emits
+     */
+    @Output() public data$ = new EventEmitter<any>();
+    /**
+     * holds subscription to unsubscribe
+     * @private
+     */
+    private subscription = new Subscription();
+
     constructor(
         public model: model
     ) {
         // in case the host component is listening to the loading status and waits for it!
         this.model.isLoading = true;
+
+        this.subscription.add(
+            this.model.data$.subscribe(data => this.data$.next(data))
+        );
     }
 
     /**
@@ -52,6 +67,7 @@ export class SystemModelProviderDirective {
                 this.model.initialize();
             }
 
+
             this.model.setFields(
                 this.model.utils.backendModel2spice(provided_model.module, provided_model.data)
             );
@@ -69,5 +85,12 @@ export class SystemModelProviderDirective {
         } else {
             this.model.initialize();
         }
+    }
+
+    /**
+     * unsubscribe from subscription
+     */
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 }
