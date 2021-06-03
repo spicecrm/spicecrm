@@ -123,7 +123,6 @@ export class APIlogViewer {
         this.modal.prompt('confirm', 'Truncate the API log and delete all entries?', 'Truncate API Log').subscribe(
             res => {
                 if (res) {
-                    this.isLoading = true;
                     this.backend.deleteRequest('admin/apilog').subscribe(
                         () => {
                             this.isLoading = false;
@@ -134,9 +133,10 @@ export class APIlogViewer {
                             this.isLoading = false;
                         }
                     );
+                    this.isLoading = true;
                 }
             }
-        )
+        );
     }
 
     // Open the modal window to display a log entry with unusual long log text.
