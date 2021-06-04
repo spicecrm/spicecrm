@@ -255,6 +255,16 @@ export class APIlogViewerModal {
             case 'application/json':
                 return JSON.stringify(JSON.parse(content), null, '\t');
                 break;
+            case 'application/x-ndjson':
+                let res = [];
+                let cItems = content.split('\n');
+                for(let cItem of cItems) {
+                    if(cItem) {
+                        res.push(JSON.stringify(JSON.parse(cItem), null, '\t'));
+                    }
+                }
+                return res.join('\r\n\r\n');
+                break;
             case 'application/x-www-form-urlencoded':
                 let cArray = [];
                 let ca = content.split('&');
