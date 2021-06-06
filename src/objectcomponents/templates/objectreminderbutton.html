@@ -1,5 +1,5 @@
 <div class="slds-form-element slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open': showDialog}">
-    <a class="slds-button slds-button--neutral slds-m-horizontal--xxx-small" [ngClass]="{'slds-not-selected': !hasReminder, 'slds-is-selected': hasReminder }"><!-- [disabled]="isEditing"-->
+    <a class="slds-button slds-button_stateful slds-button--neutral slds-m-horizontal--xxx-small" [ngClass]="{'slds-not-selected': !hasReminder, 'slds-is-selected': hasReminder }"><!-- [disabled]="isEditing"-->
         <span class="slds-text-not-selected" (click)="toggleDatePicker()">
             <system-button-icon class="slds-p-right--xx-small" icon="add"></system-button-icon><system-label label="LBL_REMINDER"></system-label>
         </span>
