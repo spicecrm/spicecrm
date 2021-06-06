@@ -36,6 +36,16 @@
     --color-progressbar_item-completed: #080707;
     --color-background-alt-inverse: #002D31;
     --color-border-brand: #CA1B21;
+    --sds-c-button-brand-color-background: #CA1B21;
+    --sds-c-button-neutral-color-background-hover: #CA1B21;
+    --sds-c-button-brand-color-border-hover: #ffffff;
+    --sds-c-button-brand-color-background-active: #CA1B21;
+    --sds-c-button-brand-color-border-active: #ffffff;
+    --sds-c-button-brand-color-background-hover: #CA1B21;
+    --sds-c-input-shadow-focus: 0 0 3px #CA1B21;
+    --sds-c-textarea-shadow-focus: 0 0 3px #CA1B21;
+    --sds-c-select-shadow-focus: 0 0 3px #CA1B21;
+    --sds-c-button-text-color-hover: #ffffff;
 }
 
 html {
@@ -347,6 +357,18 @@ global-navigation-menu-item li.slds-dropdown-trigger, global-navigation-menu-mor
     -webkit-box-align:center;
     -ms-flex-align:center;
     align-items:center;
+}
+
+/** overwrite dropdown triggers and icon button to not be styled like regular button, excluding the stateful button for the reminders **/
+.slds-button--icon:hover,
+.slds-button--icon:focus,
+.slds-button--icon:active,
+.slds-dropdown-trigger > .slds-button:not(.slds-button_stateful):hover,
+.slds-dropdown-trigger > .slds-button:not(.slds-button_stateful):focus,
+.slds-dropdown-trigger > .slds-button:not(.slds-button_stateful):active {
+    color: var(--color-border-brand);
+    -webkit-box-shadow: none;
+    box-shadow: none;
 }
 
 .spice-display-block {
