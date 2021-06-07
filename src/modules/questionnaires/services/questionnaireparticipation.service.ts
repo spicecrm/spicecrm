@@ -44,7 +44,13 @@ export class questionnaireParticipationService {
 
     public hideFinishedQuestions = false;
 
-    public editMode: 'off'|'preview'|'questionnaire'|'questionoption' = 'questionnaire';
+    // The edit modes:
+    // 'off' ... For the customer. To fill out the questionnaire is not / is no longer possible.
+    // 'preview' ... For the user to preview and test the questionnaire. Filling out is possible, but the answers will not get saved.
+    // 'postview' ... For the user. To view the completed questionnaire.
+    // 'questionnaire' ... For the customer.
+    // 'questionoption' ... For the customer. Every answer (option) will get saved immediately.
+    public editMode: 'off'|'preview'|'postview'|'questionnaire'|'questionoption' = 'questionnaire';
 
     public percentOfFinishedQuestionsInQuestionset: any = {};
     public numOfFinishedQuestionsInQuestionset: any = {};
