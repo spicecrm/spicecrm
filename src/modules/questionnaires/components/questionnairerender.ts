@@ -25,7 +25,7 @@ export class QuestionnaireRender implements OnInit, OnDestroy, OnChanges {
     @Input() private parentType: string;
     @Input() private participationId: string;
 
-    @Input() private editMode: 'off'|'preview'|'questionnaire'|'questionoption' = 'questionnaire';
+    @Input() private editMode: 'off'|'preview'|'postview'|'questionnaire'|'questionoption' = 'questionnaire';
 
     @Input() private showQuestionnaireTitle = true;
     @Input() private showQuestionnaireTextBefore = true;
