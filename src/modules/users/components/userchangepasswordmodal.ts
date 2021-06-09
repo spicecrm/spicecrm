@@ -81,7 +81,7 @@ export class UserChangePasswordModal {
      * simple getter for the password error
      */
     get pwderror() {
-        return !this.newPassword || !this.pwdCheck.test(this.newPassword) ? false : this.language.getLabel("MSG_PWD_NOT_LEGAL");
+        return !this.newPassword || !this.pwdCheck.test(this.newPassword) ? this.language.getLabel("MSG_PWD_NOT_LEGAL") : false;
     }
 
     /**
