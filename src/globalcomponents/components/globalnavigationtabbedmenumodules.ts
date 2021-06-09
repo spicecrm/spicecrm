@@ -89,6 +89,7 @@ export class GlobalNavigationTabbedMenuModules {
         switch (message.messagetype) {
             case 'applauncher.setrole':
             case 'loader.reloaded':
+            case 'loader.primarycompleted':
                 this.buildMenuItems();
                 break;
 
