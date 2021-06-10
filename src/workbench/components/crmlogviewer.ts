@@ -31,7 +31,7 @@ export class CRMLogViewer {
 
     // private dateEnd: any;
 
-    private limit: 250;
+    private limit = '250';
 
     private load$ = new EventEmitter();
 
