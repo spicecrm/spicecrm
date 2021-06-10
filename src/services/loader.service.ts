@@ -196,6 +196,11 @@ export class loader {
             this.setComplete();
             // switch to secondary phase
             this.loadPhase = 'secondary';
+
+            // emit that the primary loader completed
+            // allowing basic UI initialization if required in any area of the app
+            this.broadcast.broadcastMessage('loader.primarycompleted');
+
             this.handleLoaderHandler();
         }
 
