@@ -72,16 +72,20 @@ export class fieldCronInterval extends fieldGeneric {
                 public language: language,
                 private userPreferences: userpreferences,
                 public metadata: metadata,
-                public session: session,
                 public router: Router) {
         super(model, view, language, metadata, router);
     }
 
     /**
-     * call to subscribe to field changes
+     * set weekdays
+     * initialize value if new
+     * set local value
+     * subscribe to field changes
+     * subscribe to language changes
      */
     public ngOnInit() {
         this.setWeekdays();
+        this.initializeValue();
         this.setLocalValue(this.value);
         this.subscribeToFieldChanges();
         this.subscribeToLanguageChanges();
@@ -125,8 +129,7 @@ export class fieldCronInterval extends fieldGeneric {
             if (!this.expression.everyAtValue) this.expression.everyAtValue = {};
         }
         if (this.expression.every == 'daysAt') {
-            const timezone = this.session.getSessionData('timezone') || moment.tz.guess(true);
-            this.expression.everyAtValue = moment().hour(0).minute(0).tz(timezone);
+            this.expression.everyAtValue = moment().hour(0).minute(0).tz(this.userPreferences.toUse.timezone);
         }
         if (this.expression.everyQuantity != undefined && this.expression.every != 'daysAt' && this.expression.every != 'monthsAt') {
             this.setFieldValue();
@@ -308,6 +311,15 @@ export class fieldCronInterval extends fieldGeneric {
     }
 
     /**
+     * initialize the value if the model is new
+     * @private
+     */
+    private initializeValue() {
+        if (!this.model.isNew) return;
+        this.value = '*::*::*::*::*';
+    }
+
+    /**
      * set the local cron expression value from the field value
      * @private
      */
@@ -400,8 +412,7 @@ export class fieldCronInterval extends fieldGeneric {
             if (monthDay.startsWith('*/') && +hour > -1 && +min > -1) {
                 this.expression.every = 'daysAt';
                 this.expression.everyQuantity = +monthDay.substring(2);
-                const timezone = this.session.getSessionData('timezone') || moment.tz.guess(true);
-                this.expression.everyAtValue = moment(moment.utc().hour(+hour).minute(+min)).tz(timezone);
+                this.expression.everyAtValue = moment(moment.utc().hour(+hour).minute(+min)).tz(this.userPreferences.toUse.timezone);
             }
         } else {
             if (month.startsWith('*/') && +min == 0 && +hour == 0 && weekDay == '*') {
@@ -459,8 +470,7 @@ export class fieldCronInterval extends fieldGeneric {
                 )}`;
 
             } else if (this.expression.every == 'daysAt' && moment.isMoment(this.expression.everyAtValue)) {
-                const timezone = this.session.getSessionData('timezone') || moment.tz.guess(true);
-                this.expression.displayValue += ` ${everyAtVal.tz(timezone).format(this.userPreferences.getTimeFormat())} ${this.language.getLabel('LBL_O_CLOCK')}`;
+                this.expression.displayValue += ` ${everyAtVal.tz(this.userPreferences.toUse.timezone).format(this.userPreferences.getTimeFormat())} ${this.language.getLabel('LBL_O_CLOCK')}`;
             } else if (this.expression.every == 'weekdays') {
                 this.expression.displayValue += ` ${this.expression.everyAtValue.map(e => this.weekdays[e]).join(', ')}`;
             }
