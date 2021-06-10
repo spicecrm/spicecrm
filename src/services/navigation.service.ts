@@ -405,7 +405,7 @@ export class navigation {
                     this.objectTabs = sessiondata.tabs;
 
                     // check if we have a module set in the maintab
-                    if (this.maintab.params.module) this.activeModule = this.maintab.params.module;
+                    if (this.maintab.params?.module) this.activeModule = this.maintab.params.module;
 
                     // check for the activetab
                     this.activeTab$.next(this.activeTab);
