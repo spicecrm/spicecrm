@@ -26,7 +26,7 @@
                     <label class="slds-form-element__label"><system-label label="LBL_ROWS"></system-label></label>
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="limit">
-                            <option selected>250</option>
+                            <option>250</option>
                             <option>500</option>
                             <option>1000</option>
                         </select>
@@ -40,7 +40,7 @@
                 <div class="slds-form-element slds-p-right_x-small slds-size--1-of-5">
                     <label class="slds-form-element__label" for="pid">{{lang.getLabel('LBL_PROCESS_ID')}}</label>
                     <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-                        <input id="pid" class="slds-input slds-text-align_right" type="text" size="5" [(ngModel)]="filter.pid" /><!-- system-trim-input -->
+                        <input id="pid" system-trim-input class="slds-input slds-text-align_right" type="text" size="5" [(ngModel)]="filter.pid" />
                         <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.pid=''">
                             <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                         </button>
@@ -50,7 +50,7 @@
                 <div class="slds-form-element slds-p-right_x-small slds-size--1-of-5">
                     <label class="slds-form-element__label" for="transaction_id">{{lang.getLabel('LBL_TRANSACTION')}}</label>
                     <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-                        <input id="transaction_id" class="slds-input slds-text-align_right" type="text" [(ngModel)]="filter.transaction_id" /><!-- system-trim-input -->
+                        <input system-trim-input id="transaction_id" class="slds-input slds-text-align_right" type="text" [(ngModel)]="filter.transaction_id" />
                         <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.transaction_id=''">
                             <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                         </button>
@@ -76,7 +76,7 @@
                 <div class="slds-form-element slds-size--1-of-5">
                     <label class="slds-form-element__label" for="filtertextBackend">Text</label>
                     <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-                        <input id="filtertextBackend" class="slds-input" type="text" [(ngModel)]="filter.text" /><!-- system-trim-input -->
+                        <input id="filtertextBackend" system-trim-input class="slds-input" type="text" [(ngModel)]="filter.text" />
                         <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.text=''">
                             <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                         </button>
