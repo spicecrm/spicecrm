@@ -14,20 +14,16 @@ import {Subscription} from "rxjs";
 /**
  * @ignore
  */
-declare var _;
-/**
- * @ignore
- */
 declare var moment;
 
 @Component({
-    selector: 'administration-scheduler-job-log',
-    templateUrl: './src/admincomponents/templates/administrationschedulerjoblog.html',
+    selector: 'administration-job-log',
+    templateUrl: './src/admincomponents/templates/administrationjoblog.html',
     providers: [relatedmodels]
 })
-export class AdministrationSchedulerJobLog implements OnInit, OnDestroy {
+export class AdministrationJobLog implements OnInit, OnDestroy {
 
-    public schedulerLogs: any[] = [];
+    public jobLogs: any[] = [];
     private isLoading = false;
     private isReLoading = false;
     private subscription: Subscription = new Subscription();
@@ -54,20 +50,15 @@ export class AdministrationSchedulerJobLog implements OnInit, OnDestroy {
 
     private getData() {
         let params = {
-            sort: {
-                sortfield: 'execute_time',
-                sortdirection: 'DESC'
-            },
             offset: 0,
-            limit: 10,
-            getcount: true
+            limit: 10
         };
         this.totalLimit = 10;
         this.isLoading = true;
-        this.backend.getRequest("module/Schedulers/" + this.model.id + "/related/schedulers_times", params)
+        this.backend.getRequest(`module/Jobs/${this.model.id}/joblog`, params)
             .subscribe(
                 (response: any) => {
-                    this.schedulerLogs = _.values(response.list);
+                    this.jobLogs = this.mapList(response.list);
                     this.sortList();
                     this.totalLines = response.count;
                     this.isLoading = false;
@@ -80,16 +71,16 @@ export class AdministrationSchedulerJobLog implements OnInit, OnDestroy {
                 sortfield: 'execute_time',
                 sortdirection: 'DESC'
             },
-            offset: this.schedulerLogs.length,
+            offset: this.jobLogs.length,
             limit: 10,
             getcount: true
         };
         this.totalLimit += 10;
         this.isLoading = true;
-        this.backend.getRequest("module/Schedulers/" + this.model.id + "/related/schedulers_times", params)
+        this.backend.getRequest(`module/Jobs/${this.model.id}/joblog`, params)
             .subscribe(
                 (response: any) => {
-                    this.schedulerLogs = [...this.schedulerLogs, ..._.values(response.list)];
+                    this.jobLogs = [...this.jobLogs, ...this.mapList(response.list)];
                     this.sortList();
                     this.totalLines = response.count;
                     this.isLoading = false;
@@ -97,48 +88,33 @@ export class AdministrationSchedulerJobLog implements OnInit, OnDestroy {
     }
 
     private reloadData() {
+        if (this.isLoading) return;
         let params = {
-            sort: {
-                sortfield: 'execute_time',
-                sortdirection: 'DESC'
-            },
             offset: 0,
-            limit: this.totalLimit,
-            getcount: true
+            limit: this.totalLimit
         };
         this.isLoading = this.isReLoading = true;
-        this.backend.getRequest("module/Schedulers/" + this.model.id + "/related/schedulers_times", params)
+        this.backend.getRequest(`module/Jobs/${this.model.id}/joblog`, params)
             .subscribe(
                 (response: any) => {
-                    this.schedulerLogs = _.values(response.list);
+                    this.jobLogs = this.mapList(response.list);
                     this.sortList();
                     this.totalLines = response.count;
                     this.isLoading = this.isReLoading = false;
                 }, err => this.isLoading = this.isReLoading = false);
     }
 
+    private mapList(list: any[]) {
+        return list.map(i => {
+            i.executed_on = moment(moment.utc(i.executed_on)).tz( this.userpreferences.toUse.timezone )
+                .format(this.userpreferences.getDateFormat() + ' ' + this.userpreferences.getTimeFormat());
+            i.resolutionClass = `slds-text-color_${(i.resolution == 'failure' ? 'error' : i.resolution == 'success' ? 'success' : 'default')}`;
+            return i;
+        });
+    }
+
     public ngOnDestroy() {
         this.subscription.unsubscribe();
-    }
-
-    private getResolutionClass(status) {
-        switch (status) {
-            case 'failure':
-                return 'slds-text-color_error';
-            case 'success':
-                return 'slds-text-color_success';
-            default:
-                return 'slds-text-color--default';
-        }
-    }
-
-    private displayDateValue(date) {
-        if (!date) {
-            return '';
-        }
-        date = moment(date).tz( this.userpreferences.toUse.timezone );
-        date.add(date.utcOffset(), "m");
-        return date.format(this.userpreferences.getDateFormat() + ' ' + this.userpreferences.getTimeFormat());
     }
 
     private trackByFn(index, item) {
@@ -146,7 +122,7 @@ export class AdministrationSchedulerJobLog implements OnInit, OnDestroy {
     }
 
     private sortList() {
-        this.schedulerLogs.sort( ( a, b ) => a.execute_time < b.execute_time ? 1 : a.execute_time > b.execute_time ? -1 : 0 );
+        this.jobLogs.sort( (a, b ) => a.executed_on < b.executed_on ? 1 : a.executed_on > b.executed_on ? -1 : 0 );
     }
 
 }

@@ -63,10 +63,10 @@ import /*embed*/ {AdministrationDictRepairDbColumns} from "./components/administ
 import /*embed*/ {AdministrationDictRepairDbColumnsModal} from "./components/administrationdictrepairdbcolumnsmodal";
 import /*embed*/ { AdministrationConfigEditor } from './components/administrationconfigeditor';
 
-import /*embed*/ { AdministrationSchedulerJobsEnum } from './components/administrationschedulerjobsenum';
-import /*embed*/ { AdministrationSchedulerJobLog } from './components/administrationschedulerjoblog';
-import /*embed*/ { AdministrationSchedulerRunButton } from './components/administrationschedulerrunbutton';
-import /*embed*/ { AdministrationSchedulerScheduleButton } from './components/administrationschedulerschedulebutton';
+import /*embed*/ { AdministrationJobMethods } from './components/administrationjobmethods';
+import /*embed*/ { AdministrationJobLog } from './components/administrationjoblog';
+import /*embed*/ { AdministrationJobRunButton } from './components/administrationjobrunbutton';
+import /*embed*/ { AdministrationJobScheduleButton } from './components/administrationjobschedulebutton';
 
 import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryManagerItem, AdministrationDictionaryManagerItemField } from './components/administrationdictionarymanager';
 import /*embed*/ {AdministrationGeneralSettings} from "./components/administrationgeneralsettings";
@@ -121,10 +121,10 @@ import /*embed*/ {AdministrationDefaultPreferences} from './components/administr
         AdministrationDictRepairDbColumns,
         AdministrationDictRepairDbColumnsModal,
         AdministrationConfigEditor,
-        AdministrationSchedulerJobsEnum,
-        AdministrationSchedulerJobLog,
-        AdministrationSchedulerRunButton,
-        AdministrationSchedulerScheduleButton,
+        AdministrationJobMethods,
+        AdministrationJobLog,
+        AdministrationJobRunButton,
+        AdministrationJobScheduleButton,
         AdministrationSystemStats,
         AdministrationSystemVersions,
         AdministrationFtsManagerIndexModal,

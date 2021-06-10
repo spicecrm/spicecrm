@@ -16,10 +16,10 @@ import {broadcast} from "../../services/broadcast.service";
 declare var _;
 
 @Component({
-    selector: 'administration-scheduler-run-button',
-    templateUrl: './src/admincomponents/templates/administrationschedulerrunbutton.html'
+    selector: 'administration-job-schedule-button',
+    templateUrl: './src/admincomponents/templates/administrationjobschedulebutton.html'
 })
-export class AdministrationSchedulerRunButton {
+export class AdministrationJobScheduleButton {
 
     constructor(public model: model,
                 public language: language,
@@ -32,7 +32,7 @@ export class AdministrationSchedulerRunButton {
 
     public execute() {
         this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {
-            this.backend.postRequest('module/Schedulers/'+ this.model.id +'/runjob').subscribe(res => {
+            this.backend.postRequest('module/Jobs/'+ this.model.id +'/schedulejob').subscribe(res => {
                 modalRef.instance.self.destroy();
                 if (res) {
                     this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');

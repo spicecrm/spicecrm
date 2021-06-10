@@ -1,0 +1,48 @@
+<div class="slds-grid slds-grid_align-spread slds-m-bottom--medium">
+    <div><system-label label="LBL_RECENT_ENTRIES"></system-label> ({{jobLogs.length}} <system-label label="LBL_OF"></system-label> {{totalLines}})</div>
+    <system-button-icon class="slds-p-horizontal--xxx-small" icon="refresh" (click)="reloadData()"></system-button-icon>
+</div>
+
+<table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--fixed-layout" role="grid">
+    <thead>
+    <tr class="slds-line-height_reset">
+        <th scope="col">
+            <div class="slds-truncate"><system-label label="LBL_TASK"></system-label></div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate"><system-label label="LBL_EXECUTE_TIME"></system-label></div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate"><system-label label="LBL_RESOLUTION"></system-label></div>
+        </th>
+        <th scope="col">
+            <div class="slds-truncate"><system-label label="LBL_MESSAGE"></system-label></div>
+        </th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let log of jobLogs; trackBy: trackByFn" [system-model-provider]="{module: 'JobTasks', id: log.jobtask_id, data: null}" class="slds-hint-parent" [ngStyle]="{'opacity':isReLoading?0.33:1}">
+            <td system-model-popover>
+                <div class="slds-truncate">{{log.taskName}}</div>
+            </td>
+            <td>
+                <div class="slds-truncate">{{log.executed_on}}</div>
+            </td>
+            <td>
+                <div class="slds-truncate" [ngClass]="log.resolutionClass">{{log.resolution}}</div>
+            </td>
+            <td class="slds-grid">
+                <div class="slds-truncate" aria-describedby="more" [title]="log.message">{{log.message}}&nbsp;</div>
+            </td>
+        </tr>
+    <tr *ngIf="jobLogs.length == 0" style="min-height: 30px">
+        <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="slds-grid slds-grid--align-spread slds-grid--vertical-align-center slds-m-top--medium">
+    <div class="slds-text-align--center" style="width:100%">
+        <system-spinner *ngIf="isLoading"></system-spinner>
+    </div>
+    <button class="slds-button slds-button_neutral" [disabled]="isLoading || jobLogs.length == totalLines" (click)="getMoreData()"><system-label label="LBL_MORE"></system-label></button>
+</div>
