@@ -32,7 +32,7 @@ export class ObjectRelatedlistTable implements OnInit {
     /**
      * define a separate edit componentset that will be rendered with the edit dialog if the user chooses to edit a record
      *
-     * typical usecase is to add fields fromt eh linkl (e.g. in teh buying center) to the fieldset. Those fields are specific to a relationship and can only be added as part of that
+     * typical usecase is to add fields fromt eh linkl (e.g. in the buying center) to the fieldset. Those fields are specific to a relationship and can only be added as part of that
      */
     @Input() private editcomponentset: boolean = false;
 
