@@ -147,9 +147,9 @@ export class APIlogViewer {
     }
 
     // Open the modal window to display a log entry with unusual long log text.
-    private showCRMlog(transactionId: string) {
+    private showCRMlog(transaction_id: string) {
         this.modal.openModal('CRMLogViewerListModal').subscribe(modal => {
-            modal.instance.filter = {transactionId: transactionId};
+            modal.instance.filter = {transaction_id: transaction_id};
         });
     }
 
