@@ -11,6 +11,9 @@ declare var html_beautify: any;
 declare var js_beautify: any;
 declare var _: any;
 
+/**
+ * a modal to dsiplay an API Log entry record
+ */
 @Component({
     templateUrl: './src/workbench/templates/apilogviewermodal.html',
 })
