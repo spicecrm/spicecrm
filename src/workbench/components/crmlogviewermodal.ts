@@ -13,7 +13,7 @@ import { userpreferences } from '../../services/userpreferences.service';
 export class CRMLogViewerModal {
 
     @Input() private entry: any;
-    @Input() private username = '';
+    @Input() private user_name = '';
     @Input() private routeBase: string;
 
     // Stati:
