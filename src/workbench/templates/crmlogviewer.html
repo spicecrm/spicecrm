@@ -9,182 +9,78 @@
 
     <div class="slds-section slds-is-open">
 
-        <h3 class="slds-section__title slds-theme_shade slds-m-horizontal_x-small">
-            <span class="slds-truncate slds-p-horizontal_x-small" title="Filter"><system-label label="LBL_FILTER"></system-label></span>
-        </h3>
-
         <div class="slds-section__content slds-m-horizontal_medium slds-m-bottom_medium" style="padding-top:0;margin-bottom:0">
 
             <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_xxx-small" style="padding-top:0">
 
-                <div *ngIf="!altTimeInput" class="slds-grid slds-grid_vertical-align-end">
-                    <div>
-                        <label class="slds-form-element__label"><system-label label="LBL_DATE_START"></system-label></label>
-                        <system-input-date [(ngModel)]="filterStart"></system-input-date>
-                    </div>
-                    <div class="slds-m-left_x-small">
-                        <label class="slds-form-element__label"><system-label label="LBL_TIME_START"></system-label></label>
-                        <system-input-time [(ngModel)]="filterStart"></system-input-time>
-                    </div>
-                    <div class="slds-m-left_xx-small slds-m-bottom_x-small">&mdash;</div>
-                    <div class="slds-m-left_xx-small">
-                        <label class="slds-form-element__label"><system-label label="LBL_DATE_END"></system-label></label>
-                        <system-input-date [(ngModel)]="filterEnd"></system-input-date>
-                    </div>
-                    <div class="slds-m-left_x-small">
-                        <label class="slds-form-element__label"><system-label label="LBL_TIME_END"></system-label></label>
-                        <system-input-time [(ngModel)]="filterEnd"></system-input-time>
+                <div class="slds-col slds-size--4-of-5">
+                    <label class="slds-form-element__label"><system-label label="LBL_END"></system-label></label>
+                    <div class="slds-grid slds-grid--vertical-align-center slds-p-right--small">
+                        <system-input-date [(ngModel)]="filter.end" class="slds-grow"></system-input-date>
+                        <system-input-time [(ngModel)]="filter.end" class="slds-grow slds-p-horizontal--xx-small"></system-input-time>
+                        <system-utility-icon system-title="LBL_NOW" icon="clock" size="x-small" (click)="setNow()"></system-utility-icon>
                     </div>
                 </div>
 
-                <!--
-                <div *ngIf="altTimeInput" class="slds-grid">
-                    <div class="slds-form-element slds-m-right_x-small">
-                        <label class="slds-form-element__label" for="year">{{lang.getLabel('LBL_YEAR')}}</label>
-                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-                            <input id="year" class="slds-input slds-text-align_right" size="4" type="text" maxlength="4" system-trim-input [(ngModel)]="period.begin.year" (change)="changedYear()"/>
-                            <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="period.begin.year='';changedYear()" >
-                                <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
-                            </button>
-                        </div>
+                <div class="slds-col slds-size--1-of-5">
+                    <label class="slds-form-element__label"><system-label label="LBL_ROWS"></system-label></label>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="limit">
+                            <option>250</option>
+                            <option>500</option>
+                            <option>1000</option>
+                        </select>
                     </div>
-
-                    <div class="slds-form-element slds-m-right_x-small">
-                        <label class="slds-form-element__label" for="month">{{lang.getLabel('LBL_MONTH')}}</label>
-                        <div class="slds-form-element__control">
-                            <div class="slds-select_container">
-                                <select class="slds-select" id="month" [(ngModel)]="period.begin.month" (change)="changedMonth()">
-                                    <option value=""></option>
-                                    <option value="01">{{lang.getLabel('LBL_JANUARY')}}</option>
-                                    <option value="02">{{lang.getLabel('LBL_FEBRUARY')}}</option>
-                                    <option value="03">{{lang.getLabel('LBL_MARCH')}}</option>
-                                    <option value="04">{{lang.getLabel('LBL_APRIL')}}</option>
-                                    <option value="05">{{lang.getLabel('LBL_MAY')}}</option>
-                                    <option value="06">{{lang.getLabel('LBL_JUNE')}}</option>
-                                    <option value="07">{{lang.getLabel('LBL_JULY')}}</option>
-                                    <option value="08">{{lang.getLabel('LBL_AUGUST')}}</option>
-                                    <option value="09">{{lang.getLabel('LBL_SEPTEMBER')}}</option>
-                                    <option value="10">{{lang.getLabel('LBL_OCTOBER')}}</option>
-                                    <option value="11">{{lang.getLabel('LBL_NOVEMBER')}}</option>
-                                    <option value="12">{{lang.getLabel('LBL_DECEMBER')}}</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="slds-form-element slds-m-right_x-small">
-                        <label class="slds-form-element__label" for="day">{{lang.getLabel('LBL_DAY')}}</label>
-                        <div class="slds-form-element__control">
-                            <div class="slds-select_container">
-                                <select class="slds-select" id="day" [(ngModel)]="period.begin.day" (change)="changedDay()">
-                                    <option value=""></option>
-                                    <option *ngFor="let day of daylist">{{day}}</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="slds-form-element slds-m-right_x-small">
-                        <label class="slds-form-element__label" for="hour">{{lang.getLabel('LBL_HOUR')}}</label>
-                        <div class="slds-form-element__control">
-                            <div class="slds-select_container">
-                                <select class="slds-select" id="hour" [(ngModel)]="period.begin.hour" (change)="changedHour()">
-                                    <option value=""></option>
-                                    <option *ngFor="let hour of [ '00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23' ]">{{hour}}</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="slds-form-element slds-m-right_x-small">
-                        <label class="slds-form-element__label" for="duration">{{lang.getLabel('LBL_DURATION')}}<span *ngIf="period.type"> ({{lang.getLabel(durationLabel)}})</span></label>
-                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-                            <input [disabled]="!period.type" id="duration" class="slds-input slds-text-align_right" size="2" type="text" system-trim-input [(ngModel)]="period.duration" (change)="sanitizeDuration()"/>
-                            <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right">
-                                <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
-                            </button>
-                        </div>
-                    </div>
-
                 </div>
-
-                <div class="slds-form-element slds-col_bump-left">
-                    <label class="slds-checkbox_toggle slds-grid">
-                        <span class="slds-form-element__label slds-m-bottom_none">Altern. Time Input</span>
-                        <input type="checkbox" name="checkbox-toggle-16" value="checkbox-toggle-16" aria-describedby="checkbox-alt-time-input" checked="" [(ngModel)]="altTimeInput" />
-                        <span id="checkbox-toggle-16" class="slds-checkbox_faux_container" aria-live="assertive">
-                                <span class="slds-checkbox_faux"></span>
-                            <!- -span class="slds-checkbox_on">Enabled</span- ->
-                            <!- -span class="slds-checkbox_off">Disabled</span- ->
-                            </span>
-                    </label>
-                </div>
-                -->
 
             </div>
 
             <div class="slds-grid slds-grid_vertical-align-end slds-m-bottom_xxx-small" style="padding-top:0">
 
-                <div class="slds-form-element slds-m-right_x-small">
-                    <label class="slds-form-element__label" for="processId">{{lang.getLabel('LBL_PROCESS_ID')}}</label>
+                <div class="slds-form-element slds-p-right_x-small slds-size--1-of-5">
+                    <label class="slds-form-element__label" for="pid">{{lang.getLabel('LBL_PROCESS_ID')}}</label>
                     <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-                        <input id="processId" class="slds-input slds-text-align_right" type="text" size="5" system-trim-input [(ngModel)]="filter.processId" />
-                        <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.processId=''">
+                        <input id="pid" system-trim-input class="slds-input slds-text-align_right" type="text" size="5" [(ngModel)]="filter.pid" />
+                        <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.pid=''">
                             <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                         </button>
                     </div>
                 </div>
 
-                <div class="slds-form-element slds-m-right_x-small">
-                    <label class="slds-form-element__label" for="transactionId">{{lang.getLabel('LBL_TRANSACTION')}}</label>
+                <div class="slds-form-element slds-p-right_x-small slds-size--1-of-5">
+                    <label class="slds-form-element__label" for="transaction_id">{{lang.getLabel('LBL_TRANSACTION')}}</label>
                     <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-                        <input id="transactionId" class="slds-input slds-text-align_right" type="text" system-trim-input [(ngModel)]="filter.transactionId" />
-                        <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.transactionId=''">
+                        <input system-trim-input id="transaction_id" class="slds-input slds-text-align_right" type="text" [(ngModel)]="filter.transaction_id" />
+                        <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.transaction_id=''">
                             <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                         </button>
                     </div>
                 </div>
 
-                <div class="slds-m-right_x-small">
+                <div class="slds-p-right_x-small slds-size--1-of-5">
                     <system-input-relate module="Users" [(ngModel)]="filterUser" nameField="user_name"></system-input-relate>
                 </div>
 
-                <div class="slds-form-element slds-m-right_x-small">
+                <div class="slds-form-element slds-p-right_x-small slds-size--1-of-5">
                     <label class="slds-form-element__label" for="level">{{lang.getLabel('LBL_LEVEL')}}</label>
                     <div class="slds-form-element__control">
                         <div class="slds-select_container">
-                            <select class="slds-select" id="level" [(ngModel)]="filter.level">
+                            <select class="slds-select" id="level" [(ngModel)]="filter.log_level">
                                 <option value=""></option>
-                                <option *ngFor="let level of levels" value="{{level}}">{{level}}</option>
+                                <option *ngFor="let level of log_levels" value="{{level}}">{{level}}</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
-                <div class="slds-form-element slds-m-right_x-small">
+                <div class="slds-form-element slds-size--1-of-5">
                     <label class="slds-form-element__label" for="filtertextBackend">Text</label>
                     <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-                        <input id="filtertextBackend" class="slds-input" type="text" system-trim-input [(ngModel)]="filter.text" />
+                        <input id="filtertextBackend" system-trim-input class="slds-input" type="text" [(ngModel)]="filter.text" />
                         <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.text=''">
                             <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
                         </button>
                     </div>
-                </div>
-
-                <!--
-                <div class="slds-form-element slds-m-right_x-small">
-                    <label class="slds-form-element__label" for="level">Zeilenlimit</label>
-                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-                        <input id="limit" class="slds-input slds-text-align_right" type="text" size="8" system-trim-input [(ngModel)]="limit" />
-                        <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="limit=''">
-                            <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
-                        </button>
-                    </div>
-                </div>
-                -->
-
-                <div class="slds-m-left_large">
-
                 </div>
 
             </div>
