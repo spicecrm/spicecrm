@@ -11,24 +11,38 @@ import {toast} from '../../services/toast.service';
  */
 declare var moment: any;
 
+/**
+ * the api log viwer rendered as part of the admin setion in the system
+ */
 @Component({
     templateUrl: './src/workbench/templates/apilogviewer.html'
 })
 export class APIlogViewer {
 
-    // Configuration:
+    /**
+     * the methods allowed for selection in teh filter
+     * @private
+     */
     private methods = ['CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PATCH', 'PUT', 'SOAP', 'TRACE'];
+
+    /**
+     * the load limit in the list
+     *
+     * @private
+     */
     private limit = '250';
 
-    // The log data from the backend:
+    /**
+     * the data loaded fromt he backend
+     * @private
+     */
     private entries: any[] = [];
 
-    // The hole list of routes:
-    private routes: any[];
-
-    private routesIndexes = {};
-
-    // Various:
+    /**
+     * an object holding the filter settings
+     *
+     * @private
+     */
     private filter = {
         method: '',
         session_id: '',
@@ -40,15 +54,31 @@ export class APIlogViewer {
         direction: ''
     };
 
+    /**
+     * the username picked forthe filtered userid
+     * @private
+     */
     private filterUserName: string;
 
+    /**
+     * the date end set in the filters
+     * @private
+     */
     private dateEnd: any;
 
-    // Stati:
+    /**
+     * inidcates that we are loading
+     *
+     * @private
+     */
     private isLoading = false;
 
-    @ViewChild('tbody', {static: true}) private tbody: ElementRef; // Reference to the tbody dom element of the data table.
-
+    /**
+     * sets the filter for a specific user
+     *
+     * @param idAndName
+     * @private
+     */
     private set filterUser(idAndName: string) {
         if (!idAndName) {
             this.filter.userId = '';
@@ -60,6 +90,11 @@ export class APIlogViewer {
         this.filterUserName = valueArray[1];
     }
 
+    /**
+     * returns the data for the set user filter
+     *
+     * @private
+     */
     private get filterUser(): string {
         if (!this.filter.userId) return undefined;
         return this.filter.userId + '::' + this.filterUserName;
@@ -69,11 +104,20 @@ export class APIlogViewer {
 
     }
 
+    /**
+     * littel helper to enable the user to set a default date with now
+     *
+     * @private
+     */
     private setNow() {
         this.dateEnd = new moment();
     }
 
-    // Load the log entries from the backend.
+    /**
+     * loads the data from teh backend
+     *
+     * @private
+     */
     private loadData() {
 
         if (!this.isLoading) {
@@ -110,13 +154,17 @@ export class APIlogViewer {
         }
     }
 
-    // Load button was pressed.
+    /**
+     * button action for the load button
+     * @private
+     */
     private buttonLoad() {
         this.loadData();
     }
 
     /**
      * truncates the log
+     *
      * @private
      */
     private truncate() {
@@ -139,14 +187,25 @@ export class APIlogViewer {
         );
     }
 
-    // Open the modal window to display a log entry with unusual long log text.
+    /**
+     * open the entry in a modal with all details
+     *
+     * @param entry
+     * @private
+     */
     private showEntryInModal(entry) {
         this.modal.openModal('APIlogViewerModal').subscribe(modal => {
             modal.instance.entry = entry;
         });
     }
 
-    // Open the modal window to display a log entry with unusual long log text.
+    /**
+     * open a CRM Log viewer modal with thetransaction
+     * ToDo: reimplement this
+     *
+     * @param transaction_id
+     * @private
+     */
     private showCRMlog(transaction_id: string) {
         this.modal.openModal('CRMLogViewerListModal').subscribe(modal => {
             modal.instance.filter = {transaction_id: transaction_id};
@@ -154,7 +213,13 @@ export class APIlogViewer {
     }
 
 
-    // The values in the list can be clicked to be transfered to the corresponding filter input field.
+    /**
+     * reacts when a value was clicked and helps set a filter with the clicked value
+     *
+     * @param type
+     * @param value
+     * @private
+     */
     private valueClicked(type: string, value: any) {
         let items: string[];
         switch (type) {
