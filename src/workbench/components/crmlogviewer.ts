@@ -15,10 +15,7 @@ declare var moment: any;
 declare var moment: any;
 
 @Component({
-    templateUrl: './src/workbench/templates/crmlogviewer.html',
-    styles: [
-        'input::placeholder { font-style: italic; color: #666 !important; }'
-    ]
+    templateUrl: './src/workbench/templates/crmlogviewer.html'
 })
 export class CRMLogViewer {
 
@@ -26,10 +23,8 @@ export class CRMLogViewer {
     private log_levels = [ 'debug', 'info', 'warn', 'deprecated', 'login', 'error', 'fatal', 'security' ];
 
     // Various:
-    private filter = { log_level: 'fatal', pid: '', user_id: '', text: '', transaction_id: '', end: undefined };
+    private filter = { log_level: '', pid: '', user_id: '', text: '', transaction_id: '', end: undefined };
     private filterUserName: string;
-
-    // private dateEnd: any;
 
     private limit = '250';
 
