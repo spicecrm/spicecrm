@@ -3,14 +3,10 @@
  */
 import {
     Component,
-    ViewChild,
-    ElementRef,
     Input,
     Output,
     EventEmitter,
-    OnInit,
-    AfterViewChecked,
-    ApplicationRef, ChangeDetectorRef
+    OnInit
 } from '@angular/core';
 import { backend } from '../../services/backend.service';
 import { metadata } from '../../services/metadata.service';
@@ -27,15 +23,9 @@ declare var moment: any;
 
 @Component({
     selector: 'crm-log-viewer-list',
-    templateUrl: './src/workbench/templates/crmlogviewerlist.html',
-    styles: [
-        'td.expanded { white-space: normal; word-break: break-word; }',
-        'td.expanded div { overflow-wrap: break-word; line-height: unset; }',
-        'td.collapsed > div { position: absolute; top:0; bottom:0; right:0; left:0; padding: calc(0.25rem + 4px) calc(0.5rem + 0px); line-height: 1.17; }',
-        ':host { display: block; height: 100%; }'
-    ]
+    templateUrl: './src/workbench/templates/crmlogviewerlist.html'
 })
-export class CRMLogViewerList implements OnInit, AfterViewChecked {
+export class CRMLogViewerList implements OnInit {
 
     @Input() private filter = { log_level: '', pid: '', user_id: '', text: '', transaction_id: '', end: undefined };
     @Input() private period = { type: '', begin: { year: '', month: '', day: '', hour: '' }, end: { year: '', month: '', day: '', hour: '' }, duration: '' };
@@ -46,27 +36,27 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
 
     @Output('valueClicked') private valueClicked$ = new EventEmitter();
 
-    // Configuration:
-    private routeBase = 'admin/crmlog';
-
-    // The log data from the backend:
+    /**
+     * The log data from the backend
+     * @private
+     */
     private entries: any[] = [];
-    // private entriesToShow: any[] = []; // Same as "entries" if no text filter is applied.
 
-    // Various:
-    private localFiltertextPositive = '';
-    private localFiltertextNegative: any[] = [];
+    /**
+     * toast id
+     * @private
+     */
     private toastId = '';
 
-    // Stati:
+    /**
+     * stati
+     * @private
+     */
     private isLoading = false;
     private isLoaded = false;
-    // private isBuildingLocalTextfilter = false;
     private isInitialLoaded = false;
 
-    @ViewChild('tbody', {static: true}) private tbody: ElementRef; // Reference to the tbody dom element of the data table.
-
-    constructor( private backend: backend, private metadata: metadata, private lang: language, private prefs: userpreferences, private modalservice: modal, private toast: toast, private changeDetector: ChangeDetectorRef ) { }
+    constructor( private backend: backend, private metadata: metadata, private lang: language, private prefs: userpreferences, private modalservice: modal, private toast: toast ) { }
 
     public ngOnInit() {
         if ( this.load$ ) {
@@ -76,21 +66,20 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
         } else this.loadData();
     }
 
-    // Load the log entries from the backend.
+    /**
+     * Load the log entries from the backend
+     * @private
+     */
     private loadData() {
 
-        if ( !this.canLoad()) return;
-
-        let route = this.routeBase+'/entries';
+        if ( this.isLoading ) return;
 
         this.isLoaded = false;
-        // this.entriesToShow = [];
-        this.localFiltertextPositive = '';
-        this.localFiltertextNegative = [];
-
         this.isLoading = true;
 
-        // Build the query parameters for the request:
+        /**
+         * Build the query parameters for the request
+         */
         let queryParams = {
             log_level: this.filter.log_level ? this.filter.log_level : undefined,
             pid: this.filter.pid ? this.filter.pid : undefined,
@@ -102,7 +91,7 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
         };
 
         this.toast.clearToast( this.toastId );
-        this.backend.getRequest( route, queryParams ).subscribe(
+        this.backend.getRequest( 'admin/crmlog/entries', queryParams ).subscribe(
             response => {
                 this.entries = response.entries;
                 this.countEntries$.next( this.entries.length );
@@ -117,37 +106,15 @@ export class CRMLogViewerList implements OnInit, AfterViewChecked {
 
     }
 
-    // Are all the inputs correct and ready for the backend request?
-    private canLoad() {
-        if ( this.isLoading ) return false;
-        return true;
-    }
-
-    // After the angular-rendering we check for every log entry / table row, if the log text is truncated by the browser (because it wouldn´t fit into column) or not.
-    // The trick to detect truncation: When scrollWidth > clientWidth.
-    public ngAfterViewChecked() {
-        let htmlTableRows;
-        let numberOfTextColumn = 5;
-        let numberOfExpandButtonColumn = 6;
-        if ( this.tbody && this.tbody.nativeElement ) {
-            htmlTableRows = this.tbody.nativeElement.childNodes;
-            if ( htmlTableRows ) {
-                // We iterate the tbody, but we skip non tr elements and any dom elements not containing log data (for example: angular comments).
-                htmlTableRows.forEach( ( row ) => {
-                    if( row.tagName !== 'TR' || row.childNodes.length < 2 ) return;
-                    let div = row.childNodes[numberOfTextColumn].childNodes[0];
-                    row.childNodes[numberOfExpandButtonColumn].childNodes[0].style.visibility = ( div.scrollWidth === div.clientWidth ? 'hidden':'auto' ); // Show the expand button only when the div is not (yet) truncated.
-                });
-            }
-        }
-    }
-
-    // Open the modal window to display a log entry with unusual long log text.
+    /**
+     * Open the modal window to display a log entry with unusual long log text.
+     * @param i index of entries
+     * @private
+     */
     private showEntryInModal(i) {
         this.modalservice.openModal('CRMLogViewerModal' ).subscribe( modal => {
             modal.instance.entry = this.entries[i];
             modal.instance.user_name = this.entries[i].user_name;
-            modal.instance.routeBase = this.routeBase;
         });
     }
 
