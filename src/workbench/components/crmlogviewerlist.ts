@@ -27,7 +27,7 @@ declare var moment: any;
 })
 export class CRMLogViewerList implements OnInit {
 
-    @Input() private filter = { log_level: '', pid: '', user_id: '', text: '', transaction_id: '', end: undefined };
+    @Input() private filter = { loglevels: '', pid: '', user_id: '', text: '', transaction_id: '', end: undefined };
     @Input() private period = { type: '', begin: { year: '', month: '', day: '', hour: '' }, end: { year: '', month: '', day: '', hour: '' }, duration: '' };
     @Input('load') private load$: EventEmitter<null>;
     @Input() private valuesNotClickable = false;
@@ -81,7 +81,7 @@ export class CRMLogViewerList implements OnInit {
          * Build the query parameters for the request
          */
         let queryParams = {
-            log_level: this.filter.log_level ? this.filter.log_level : undefined,
+            loglevels: this.filter.loglevels ? this.filter.loglevels : undefined,
             pid: this.filter.pid ? this.filter.pid : undefined,
             user_id: this.filter.user_id ? this.filter.user_id : undefined,
             text: this.filter.text ? this.filter.text : undefined,

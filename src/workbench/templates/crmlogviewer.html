@@ -13,7 +13,7 @@
 
             <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_xxx-small" style="padding-top:0">
 
-                <div class="slds-col slds-size--4-of-5">
+                <div class="slds-col slds-size--5-of-12">
                     <label class="slds-form-element__label"><system-label label="LBL_END"></system-label></label>
                     <div class="slds-grid slds-grid--vertical-align-center slds-p-right--small">
                         <system-input-date [(ngModel)]="filter.end" class="slds-grow"></system-input-date>
@@ -22,7 +22,7 @@
                     </div>
                 </div>
 
-                <div class="slds-col slds-size--1-of-5">
+                <div class="slds-col slds-size--1-of-12 slds-p-right_x-small">
                     <label class="slds-form-element__label"><system-label label="LBL_ROWS"></system-label></label>
                     <div class="slds-select_container">
                         <select class="slds-select" [(ngModel)]="limit">
@@ -33,11 +33,7 @@
                     </div>
                 </div>
 
-            </div>
-
-            <div class="slds-grid slds-grid_vertical-align-end slds-m-bottom_xxx-small" style="padding-top:0">
-
-                <div class="slds-form-element slds-p-right_x-small slds-size--1-of-5">
+                <div class="slds-form-element slds-p-right_x-small slds-size--3-of-12">
                     <label class="slds-form-element__label" for="pid">{{lang.getLabel('LBL_PROCESS_ID')}}</label>
                     <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                         <input id="pid" system-trim-input class="slds-input slds-text-align_right" type="text" size="5" [(ngModel)]="filter.pid" />
@@ -47,7 +43,7 @@
                     </div>
                 </div>
 
-                <div class="slds-form-element slds-p-right_x-small slds-size--1-of-5">
+                <div class="slds-form-element slds-size--3-of-12">
                     <label class="slds-form-element__label" for="transaction_id">{{lang.getLabel('LBL_TRANSACTION')}}</label>
                     <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                         <input system-trim-input id="transaction_id" class="slds-input slds-text-align_right" type="text" [(ngModel)]="filter.transaction_id" />
@@ -57,23 +53,28 @@
                     </div>
                 </div>
 
-                <div class="slds-p-right_x-small slds-size--1-of-5">
+            </div>
+
+            <div class="slds-grid slds-grid_vertical-align-end slds-m-bottom_xxx-small" style="padding-top:0">
+
+                <div class="slds-p-right_x-small slds-size--3-of-12">
+                    <label class="slds-form-element__label">{{lang.getLabel('LBL_USER')}}</label>
                     <system-input-relate module="Users" [(ngModel)]="filterUser" nameField="user_name"></system-input-relate>
                 </div>
 
-                <div class="slds-form-element slds-p-right_x-small slds-size--1-of-5">
-                    <label class="slds-form-element__label" for="level">{{lang.getLabel('LBL_LEVEL')}}</label>
-                    <div class="slds-form-element__control">
-                        <div class="slds-select_container">
-                            <select class="slds-select" id="level" [(ngModel)]="filter.log_level">
-                                <option value=""></option>
-                                <option *ngFor="let level of log_levels" value="{{level}}">{{level}}</option>
-                            </select>
-                        </div>
-                    </div>
+                <div class="slds-form-element slds-p-right_x-small slds-size--6-of-12">
+                    <system-label label="LBL_LOGFILE_LEVEL"></system-label>
+                    <system-checkbox-group #loglevelsCheckboxes [(ngModel)]="filter.loglevels" class="slds-grid slds-wrap">
+                        <system-checkbox-group-checkbox value="debug" class="slds-size--1-of-6 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_DEBUG"></system-label></system-checkbox-group-checkbox>
+                        <system-checkbox-group-checkbox value="info" class="slds-size--1-of-6 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_INFO"></system-label></system-checkbox-group-checkbox>
+                        <system-checkbox-group-checkbox value="error" class="slds-size--1-of-6 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_ERROR"></system-label></system-checkbox-group-checkbox>
+                        <system-checkbox-group-checkbox value="warn" class="slds-size--1-of-6 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_WARN"></system-label></system-checkbox-group-checkbox>
+                        <system-checkbox-group-checkbox value="security" class="slds-size--1-of-6 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_SECURITY"></system-label></system-checkbox-group-checkbox>
+                        <system-checkbox-group-checkbox value="fatal" class="slds-size--1-of-6 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_FATAL"></system-label></system-checkbox-group-checkbox>
+                    </system-checkbox-group>
                 </div>
 
-                <div class="slds-form-element slds-size--1-of-5">
+                <div class="slds-form-element slds-size--3-of-12">
                     <label class="slds-form-element__label" for="filtertextBackend">Text</label>
                     <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
                         <input id="filtertextBackend" system-trim-input class="slds-input" type="text" [(ngModel)]="filter.text" />
