@@ -12,11 +12,17 @@ import { userpreferences } from '../../services/userpreferences.service';
 })
 export class CRMLogViewerModal {
 
+    /**
+     * component inputs
+     * @private
+     */
     @Input() private entry: any;
     @Input() private user_name = '';
-    @Input() private routeBase: string;
 
-    // Stati:
+    /**
+     * stati
+     * @private
+     */
     private isLoaded = false;
     private isLoading = true;
 
@@ -27,18 +33,23 @@ export class CRMLogViewerModal {
     private ngOnInit() {
         // When the full text already has been retrieved from the backend
         // (because this modal for this log entry has already been shown)
-        // the data is still stored (property "fullText") and we don´t need to do the request again:
-        if ( this.entry.fullText ) this.isLoading = !( this.isLoaded = true );
+        // the data is still stored (property "fullDescription") and we don´t need to do the request again:
+        if ( this.entry.fullDescription ) this.isLoading = !( this.isLoaded = true );
         else this.loadFullData();
+        console.log(this.entry);
     }
 
-    // Load the full data (with the un-truncated log text) and merge the full text to the record got from parent component.
+    /**
+     * Load the full data (with the un-truncated log text) and merge the full text to the record got from parent component.
+     * @private
+     */
     private loadFullData() {
-        this.backend.getRequest( this.routeBase+'/entry/'+this.entry.id ).subscribe(
+        this.backend.getRequest( 'admin/crmlog/entry/'+this.entry.id ).subscribe(
             response => {
                 this.isLoaded = true;
                 this.isLoading = false;
-                this.entry.fullText = response.entry.txt;
+                this.entry.fullDescription = response.entry.description;
+                console.log(this.entry.fullDescription);
             },
             error => {
                 this.toast.sendToast('Error loading entry of log file!', 'error', 'Entry '+this.entry.id+' of CRM log couldn´t be fetched.', false );
@@ -46,12 +57,16 @@ export class CRMLogViewerModal {
             });
     }
 
-    // Close the modal.
+    /**
+     * Close the modal
+     */
     private closeModal() {
         this.self.destroy();
     }
 
-    // Escape pressed or [x] clicked.
+    /**
+     * Escape pressed or [x] clicked.
+     */
     public onModalEscX() {
         this.closeModal();
     }
