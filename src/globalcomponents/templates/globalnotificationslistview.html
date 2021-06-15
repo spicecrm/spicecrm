@@ -122,7 +122,7 @@
                     </div>
                 </td>
                 <td class="slds-cell-shrink" system-title="LBL_MARK_AS_READ">
-                    <button (click)="markAsRead(notification.id)" class="slds-button slds-button_icon slds-button--icon-border spice-hover-child">
+                    <button (click)="markAsRead(notification.id)" [disabled]="notification.notification_read == 1" class="slds-button slds-button_icon slds-button--icon-border spice-hover-child">
                         <system-button-icon icon="check" size="small"></system-button-icon>
                     </button>
                 </td>
