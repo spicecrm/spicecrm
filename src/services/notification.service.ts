@@ -11,7 +11,7 @@ import {userpreferences} from "./userpreferences.service";
 import {language} from "./language.service";
 import {DomSanitizer} from "@angular/platform-browser";
 import {socket} from "./socket.service";
-import {SocketEventI, NotificationI} from "./interfaces.service";
+import {NotificationI, SocketEventI} from "./interfaces.service";
 
 /** @ignore */
 declare var moment: any;
@@ -33,6 +33,10 @@ export class notification {
      * holds the notifications
      */
     public notifications: NotificationI[] = [];
+    /**
+     * holds the notifications
+     */
+    public unreadNotifications: NotificationI[] = [];
     /**
      * holds the notifications
      */
@@ -62,10 +66,31 @@ export class notification {
     }
 
     /**
+     * check if the notification api is supported by the browser and request permission if the user did not take action yet.
+     */
+    protected initializeDesktopNotification() {
+
+        if (!('Notification' in window)) {
+
+            window.console.error('This browser does not support desktop notification');
+            return Promise.resolve(null);
+
+        } else if (Notification.permission === 'default') {
+
+            return Notification.requestPermission().then((p: NotificationPermission) => {
+                this.preferences.setPreference('displayDesktopNotifications', (p == 'granted'), true);
+            });
+        } else {
+            return Promise.resolve(null);
+        }
+    }
+
+    /**
      * mark notification as read
      * @param id
      */
     public markAsRead(id: string) {
+
         this.notifications.some(n => {
             if (n.id == id) {
                 n.notification_read = 1;
@@ -74,6 +99,8 @@ export class notification {
             }
         });
 
+        this.unreadNotifications = this.unreadNotifications.filter(n => n.id !== id);
+        this.unreadCount--;
         this.backend.postRequest(`common/SpiceNotifications/${id}/markasread`);
     }
 
@@ -81,10 +108,11 @@ export class notification {
      * mark all notifications as read
      */
     public markAllAsRead() {
+
         this.notifications.forEach(n => {
             n.notification_read = 1;
         });
-
+        this.unreadNotifications = [];
         this.unreadCount = 0;
 
         this.backend.postRequest(`common/SpiceNotifications/all/read`);
@@ -111,6 +139,18 @@ export class notification {
     }
 
     /**
+     * reload the notifications from backend
+     */
+    public reloadNotifications() {
+
+        this.notifications = [];
+        this.unreadNotifications = [];
+        this.desktopNotifications = [];
+
+        this.loadNotificationsFromBackend();
+    }
+
+    /**
      * load more notifications from the backend
      */
     public loadMoreNotifications() {
@@ -118,6 +158,15 @@ export class notification {
         if (this.isLoading || this.notifications.length >= this.totalCount) {
             return;
         }
+
+        this.loadNotificationsFromBackend();
+    }
+
+    /**
+     * load the notifications from the backend
+     * @private
+     */
+    private loadNotificationsFromBackend() {
 
         this.isLoading = true;
 
@@ -129,6 +178,8 @@ export class notification {
                     this.notifications = this.notifications.concat(
                         res.records.map(n => this.parseNotification(n))
                     );
+                    this.unreadNotifications = this.notifications.filter(n => n.notification_read != 1);
+
                     this.setUnreadCount();
 
                 }, () =>
@@ -145,15 +196,34 @@ export class notification {
         notification = this.parseNotification(notification);
 
         this.notifications.unshift(notification);
-        this.pushDesktopNotification(notification);
-        this.newNotifications.push(notification);
+        this.unreadNotifications.unshift(notification);
 
-        window.setTimeout(() =>
-                this.clearTempNotification(notification),
-            10000
-        );
+        this.pushDesktopNotification(notification);
+
+        if (!!this.preferences.toUse.showRealtimeNotifications) {
+            this.displayRealtimeNotification(notification);
+        }
 
         this.unreadCount++;
+    }
+
+    /**
+     * display a realtime notification only without saving it to the notification list
+     * @param n
+     * @param autoClose
+     */
+    public displayRealtimeNotification(n: NotificationI, autoClose: boolean = true) {
+
+        this.newNotifications.push(n);
+
+        this.pushDesktopNotification(n);
+
+        if (!autoClose) return;
+
+        window.setTimeout(() =>
+                this.clearTempNotification(n),
+            10000
+        );
     }
 
     /**
@@ -165,17 +235,21 @@ export class notification {
     }
 
     /**
-     * check if the notification api is supported by the browser and request permission if the user did not take action yet.
+     * creates desktop notifications from the notifications array
+     * @param n
      */
-    protected initializeDesktopNotification() {
-        if (!('Notification' in window)) {
-            window.console.error('This browser does not support desktop notification');
-            return Promise.resolve(null);
-        } else if (Notification.permission === 'default') {
-            return Notification.requestPermission();
-        } else {
-            return Promise.resolve(null);
-        }
+    public pushDesktopNotification(n?: NotificationI) {
+
+        if (!this.preferences.toUse.displayDesktopNotifications) return;
+
+        const body = !n ? this.language.getLabel('MSG_NEW_NOTIFICATIONS') : this.generateDesktopNotificationTitle(n);
+
+        this.desktopNotifications.unshift(
+            new Notification(this.configuration.systemName, {
+                body: body,
+                icon: 'config/headerimage'
+            })
+        );
     }
 
     /**
@@ -183,7 +257,7 @@ export class notification {
      * @private
      */
     private setUnreadCount() {
-        this.unreadCount = this.notifications.filter(n => n.notification_read != 1).length;
+        this.unreadCount = this.unreadNotifications.length;
     }
 
     /**
@@ -197,6 +271,7 @@ export class notification {
 
         this.totalCount = data.count;
         this.notifications = data.records.map(n => this.parseNotification(n));
+        this.unreadNotifications = this.notifications.filter(n => n.notification_read != 1);
         this.setUnreadCount();
         if (this.unreadCount > 0) {
             this.pushDesktopNotification();
@@ -213,22 +288,6 @@ export class notification {
     }
 
     /**
-     * creates desktop notifications from the notifications array
-     * @param n
-     */
-    public pushDesktopNotification(n?: NotificationI) {
-
-        const body = !n ? this.language.getLabel('MSG_NEW_NOTIFICATIONS') : this.generateDesktopNotificationTitle(n);
-
-        this.desktopNotifications.unshift(
-            new Notification(this.configuration.systemName, {
-                body: body,
-                icon: 'config/headerimage'
-            })
-        );
-    }
-
-    /**
      * generate a notification text
      * @param n
      * @private
@@ -236,13 +295,13 @@ export class notification {
     private generateDesktopNotificationTitle(n: NotificationI): string {
         switch (n.notification_type) {
             case 'reminder':
-                return `${n.bean_name}\n${n.notification_date}`;
+                return `${this.language.getLabel('LBL_REMINDER')} ${n.bean_name}\n${n.notification_date}`;
             case 'assign':
-                return `${n.bean_name} ${this.language.getLabel('MSG_NOTIFICATION_ASSIGNED')} ${n.created_by_name}`;
+                return `${this.language.getLabel('LBL_ASSIGNED')} ${n.bean_name} ${this.language.getLabel('LBL_BY')} ${n.created_by_name}`;
             case 'change':
-                return `${this.language.getLabel('LBL_FIELDS')} (${n.additional_infos.fieldsNames}) ${this.language.getLabel('LBL_IN')} ${n.bean_name} ${this.language.getLabel('MSG_NOTIFICATION_CHANGED')} ${n.created_by_name}`;
+                return `${this.language.getLabel('LBL_CHANGED')} ${n.bean_name} ${this.language.getLabel('LBL_BY')} ${n.created_by_name}`;
             case 'delete':
-                return `${n.bean_name} ${this.language.getLabel('MSG_NOTIFICATION_DELETED')} ${n.created_by_name}`;
+                return `${this.language.getLabel('LBL_DELETED')} ${n.bean_name} ${this.language.getLabel('LBL_BY')} ${n.created_by_name}`;
         }
     }
 
@@ -270,7 +329,7 @@ export class notification {
         switch (event.type) {
             case 'new':
                 // push only if we also have event data
-                if(event.data) {
+                if (event.data) {
                     this.pushNotification(event.data);
                 }
                 break;
@@ -290,11 +349,6 @@ export class notification {
 
         if (!!n.additional_infos && typeof n.additional_infos == 'string') {
             n.additional_infos = JSON.parse(n.additional_infos);
-            if (n.additional_infos?.fieldsNames) {
-                n.additional_infos.fieldsNames = n.additional_infos.fieldsNames
-                    .map(f => this.language.getFieldDisplayName(n.bean_module, f))
-                    .join(',');
-            }
         }
         return n;
     }
