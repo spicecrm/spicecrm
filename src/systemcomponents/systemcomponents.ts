@@ -36,6 +36,7 @@ import /*embed*/ {SystemCardFooter} from "./components/systemcardfooter";
 import /*embed*/ {SystemCheckboxGroup} from "./components/systemcheckboxgroup";
 import /*embed*/ {SystemCheckboxGroupCheckbox} from "./components/systemcheckboxgroupcheckbox";
 import /*embed*/ {SystemCheckbox} from "./components/systemcheckbox";
+import /*embed*/ {SystemCheckboxToggle} from "./components/systemcheckboxtoggle";
 import /*embed*/ {SystemCollabsableTab} from "./components/systemcollabsabletab";
 import /*embed*/ {SystemComponentContainer} from "./components/systemcomponentcontainer";
 import /*embed*/ {SystemComponentMissing} from "./components/systemcomponentmissing";
@@ -191,6 +192,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemCheckbox,
         SystemCheckboxGroup,
         SystemCheckboxGroupCheckbox,
+        SystemCheckboxToggle,
         SystemCollabsableTab,
         SystemComponentContainer,
         SystemComponentMissing,
@@ -331,6 +333,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemCheckbox,
         SystemCheckboxGroup,
         SystemCheckboxGroupCheckbox,
+        SystemCheckboxToggle,
         SystemCollabsableTab,
         SystemComponentMissing,
         SystemComponentSet,
