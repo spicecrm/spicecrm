@@ -132,8 +132,7 @@ export class assistant {
                         additional_infos: {},
                         bean_name: i.data.summary_text
                     };
-                    this.notification.pushDesktopNotification(n);
-                    this.notification.newNotifications.push(n);
+                    this.notification.displayRealtimeNotification(n, false);
                 }
             }
         }
