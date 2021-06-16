@@ -26,12 +26,6 @@ export class CRMLogViewer {
     @ViewChild('loglevelsCheckboxes') private loglevelsCheckboxes;
 
     /**
-     * the possible log levels
-     * @private
-     */
-    private loglevels = [ 'debug', 'info', 'warn', 'deprecated', 'login', 'error', 'fatal', 'security' ];
-
-    /**
      * filter
      * @private
      */
