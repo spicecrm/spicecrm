@@ -6,28 +6,53 @@ import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {model} from "../../services/model.service";
 import {backend} from "../../services/backend.service";
-import {relatedmodels} from "../../services/relatedmodels.service";
 import {broadcast} from "../../services/broadcast.service";
 import {userpreferences} from "../../services/userpreferences.service";
 import {Subscription} from "rxjs";
+import {modal} from "../../services/modal.service";
 
 /**
  * @ignore
  */
 declare var moment;
 
+/**
+ * renders a list of job log
+ */
 @Component({
     selector: 'administration-job-log',
-    templateUrl: './src/admincomponents/templates/administrationjoblog.html',
-    providers: [relatedmodels]
+    templateUrl: './src/admincomponents/templates/administrationjoblog.html'
 })
 export class AdministrationJobLog implements OnInit, OnDestroy {
 
-    public jobLogs: any[] = [];
+    /**
+     * holds the job log entries
+     */
+    public jobLogs: Array<{ id, name, job_id, jobtask_id, message, rel_id, rel_module, resolution, executed_on, resolutionClass? }> = [];
+    /**
+     * ture if we are loading from backend
+     * @private
+     */
     private isLoading = false;
-    private isReLoading = false;
+    /**
+     * true if we are reloading the entries from backend
+     * @private
+     */
+    private isReloading = false;
+    /**
+     * holds a subscription to enable unsubscribe
+     * @private
+     */
     private subscription: Subscription = new Subscription();
-    private totalLimit: number;
+    /**
+     * total limit of the loaded entires
+     * @private
+     */
+    private totalLimit: number = 10;
+    /**
+     * total count of the log entries
+     * @private
+     */
     private totalLines: number;
 
     constructor(public model: model,
@@ -35,19 +60,63 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
                 public metadata: metadata,
                 public broadcast: broadcast,
                 public elementRef: ElementRef,
+                public modal: modal,
                 public userpreferences: userpreferences,
                 public backend: backend) {
+    }
+
+    /**
+     * load the log entries
+     */
+    public ngOnInit() {
+        this.getData();
+        this.subscribeToJobActions();
+    }
+
+    /**
+     * unsubscribe from subscriptions
+     */
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+
+    /**
+     * open the error message in an extra info modal
+     * @param text
+     * @param resolution
+     */
+    public openMessageInModal(text: string, resolution: 'failed' | 'done') {
+        const theme = resolution == 'failed' ? 'error' : 'success';
+        this.modal.info(text, this.language.getLabel('LBL_MESSAGE'), theme);
+    }
+
+    /**
+     * A function that defines how to track changes for items in the iterable (ngForOf).
+     * https://angular.io/api/common/NgForOf#properties
+     * @param index
+     * @param item
+     * @return item.id
+     */
+    protected trackByFn(index, item) {
+        return item.id;
+    }
+
+    /**
+     * subscribe to job actions to reload the list
+     * @private
+     */
+    private subscribeToJobActions() {
         this.subscription = this.broadcast.message$.subscribe(res => {
-            if (res.messagetype == 'scheduler.run') {
+            if (res.messagetype == 'job.run') {
                 this.reloadData();
             }
         });
     }
 
-    public ngOnInit() {
-        this.getData();
-    }
-
+    /**
+     * load the log entries from backend
+     * @private
+     */
     private getData() {
         let params = {
             offset: 0,
@@ -55,7 +124,7 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
         };
         this.totalLimit = 10;
         this.isLoading = true;
-        this.backend.getRequest(`module/Jobs/${this.model.id}/joblog`, params)
+        this.backend.getRequest(`module/${this.model.module}/${this.model.id}/log`, params)
             .subscribe(
                 (response: any) => {
                     this.jobLogs = this.mapList(response.list);
@@ -65,10 +134,14 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
                 }, err => this.isLoading = false);
     }
 
+    /**
+     * get more log entries
+     * @private
+     */
     private getMoreData() {
         let params = {
             sort: {
-                sortfield: 'execute_time',
+                sortfield: 'executed_on',
                 sortdirection: 'DESC'
             },
             offset: this.jobLogs.length,
@@ -77,7 +150,7 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
         };
         this.totalLimit += 10;
         this.isLoading = true;
-        this.backend.getRequest(`module/Jobs/${this.model.id}/joblog`, params)
+        this.backend.getRequest(`module/${this.model.module}/${this.model.id}/log`, params)
             .subscribe(
                 (response: any) => {
                     this.jobLogs = [...this.jobLogs, ...this.mapList(response.list)];
@@ -87,42 +160,46 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
                 }, err => this.isLoading = false);
     }
 
+    /**
+     * reload the log entries
+     * @private
+     */
     private reloadData() {
         if (this.isLoading) return;
         let params = {
             offset: 0,
             limit: this.totalLimit
         };
-        this.isLoading = this.isReLoading = true;
-        this.backend.getRequest(`module/Jobs/${this.model.id}/joblog`, params)
+        this.isLoading = this.isReloading = true;
+        this.backend.getRequest(`module/${this.model.module}/${this.model.id}/log`, params)
             .subscribe(
                 (response: any) => {
                     this.jobLogs = this.mapList(response.list);
                     this.sortList();
                     this.totalLines = response.count;
-                    this.isLoading = this.isReLoading = false;
-                }, err => this.isLoading = this.isReLoading = false);
+                    this.isLoading = this.isReloading = false;
+                }, err => this.isLoading = this.isReloading = false);
     }
 
+    /**
+     * map the log list
+     * @param list
+     * @private
+     */
     private mapList(list: any[]) {
         return list.map(i => {
-            i.executed_on = moment(moment.utc(i.executed_on)).tz( this.userpreferences.toUse.timezone )
+            i.executed_on = moment(moment.utc(i.executed_on)).tz(this.userpreferences.toUse.timezone)
                 .format(this.userpreferences.getDateFormat() + ' ' + this.userpreferences.getTimeFormat());
-            i.resolutionClass = `slds-text-color_${(i.resolution == 'failure' ? 'error' : i.resolution == 'success' ? 'success' : 'default')}`;
+            i.resolutionClass = `slds-text-color_${(i.resolution == 'failed' ? 'error' : 'success')}`;
             return i;
         });
     }
 
-    public ngOnDestroy() {
-        this.subscription.unsubscribe();
-    }
-
-    private trackByFn(index, item) {
-        return item.id;
-    }
-
+    /**
+     * sort the list by the execution date
+     * @private
+     */
     private sortList() {
-        this.jobLogs.sort( (a, b ) => a.executed_on < b.executed_on ? 1 : a.executed_on > b.executed_on ? -1 : 0 );
+        this.jobLogs.sort((a, b) => a.executed_on < b.executed_on ? 1 : a.executed_on > b.executed_on ? -1 : 0);
     }
-
 }

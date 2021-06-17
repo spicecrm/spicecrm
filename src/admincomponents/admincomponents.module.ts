@@ -67,6 +67,8 @@ import /*embed*/ { AdministrationJobMethods } from './components/administrationj
 import /*embed*/ { AdministrationJobLog } from './components/administrationjoblog';
 import /*embed*/ { AdministrationJobRunButton } from './components/administrationjobrunbutton';
 import /*embed*/ { AdministrationJobScheduleButton } from './components/administrationjobschedulebutton';
+import /*embed*/ { AdministrationJobKillButton } from './components/administrationjobkillbutton';
+import /*embed*/ { AdministrationJobTaskRunButton } from './components/administrationjobtaskrunbutton';
 
 import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryManagerItem, AdministrationDictionaryManagerItemField } from './components/administrationdictionarymanager';
 import /*embed*/ {AdministrationGeneralSettings} from "./components/administrationgeneralsettings";
@@ -125,6 +127,8 @@ import /*embed*/ {AdministrationDefaultPreferences} from './components/administr
         AdministrationJobLog,
         AdministrationJobRunButton,
         AdministrationJobScheduleButton,
+        AdministrationJobKillButton,
+        AdministrationJobTaskRunButton,
         AdministrationSystemStats,
         AdministrationSystemVersions,
         AdministrationFtsManagerIndexModal,
