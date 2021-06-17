@@ -5,24 +5,26 @@
 
 <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--fixed-layout" role="grid">
     <thead>
-    <tr class="slds-line-height_reset">
-        <th scope="col">
-            <div class="slds-truncate"><system-label label="LBL_TASK"></system-label></div>
-        </th>
-        <th scope="col">
-            <div class="slds-truncate"><system-label label="LBL_EXECUTE_TIME"></system-label></div>
-        </th>
-        <th scope="col">
-            <div class="slds-truncate"><system-label label="LBL_RESOLUTION"></system-label></div>
-        </th>
-        <th scope="col">
-            <div class="slds-truncate"><system-label label="LBL_MESSAGE"></system-label></div>
-        </th>
+        <tr class="slds-line-height_reset">
+            <th scope="col">
+                <div class="slds-truncate"><system-label [label]="model.module == 'Jobs' ? 'LBL_TASK' : 'LBL_JOB'"></system-label></div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate"><system-label label="LBL_EXECUTE_TIME"></system-label></div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate"><system-label label="LBL_RESOLUTION"></system-label></div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate"><system-label label="LBL_MESSAGE"></system-label></div>
+            </th>
+            <th class="slds-cell-shrink" scope="col"></th>
+        </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let log of jobLogs; trackBy: trackByFn" [system-model-provider]="{module: 'JobTasks', id: log.jobtask_id, data: null}" class="slds-hint-parent" [ngStyle]="{'opacity':isReLoading?0.33:1}">
-            <td system-model-popover>
-                <div class="slds-truncate">{{log.taskName}}</div>
+        <tr *ngFor="let log of jobLogs; trackBy: trackByFn" [system-model-provider]="{module: log.rel_module, id: log.rel_id, data: null}" class="slds-hint-parent" [ngStyle]="{'opacity':isReLoading?0.33:1}">
+            <td [system-model-popover]="!!log.rel_id" [enablelink]="!!log.rel_id">
+                <div class="slds-truncate">{{log.name}}</div>
             </td>
             <td>
                 <div class="slds-truncate">{{log.executed_on}}</div>
@@ -30,19 +32,24 @@
             <td>
                 <div class="slds-truncate" [ngClass]="log.resolutionClass">{{log.resolution}}</div>
             </td>
-            <td class="slds-grid">
-                <div class="slds-truncate" aria-describedby="more" [title]="log.message">{{log.message}}&nbsp;</div>
+            <td>
+                <div class="slds-truncate" [title]="log.message">{{log.message}}&nbsp;</div>
+            </td>
+            <td class="slds-cell-shrink">
+                <button (click)="openMessageInModal(log.message, log.resolution)" class="slds-button slds-button--icon">
+                    <system-button-icon icon="info"></system-button-icon>
+                </button>
             </td>
         </tr>
-    <tr *ngIf="jobLogs.length == 0" style="min-height: 30px">
-        <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
-    </tr>
     </tbody>
 </table>
+<div *ngIf="!isLoading && !isReloading && jobLogs.length == 0" class="slds-align_absolute-center slds-p-around--medium">
+    <system-label label="LBL_NO_ENTRIES"></system-label>
+</div>
+<div *ngIf="isLoading || isReloading" class="slds-align_absolute-center slds-p-around--medium">
+    <system-spinner></system-spinner>
+</div>
 
 <div class="slds-grid slds-grid--align-spread slds-grid--vertical-align-center slds-m-top--medium">
-    <div class="slds-text-align--center" style="width:100%">
-        <system-spinner *ngIf="isLoading"></system-spinner>
-    </div>
     <button class="slds-button slds-button_neutral" [disabled]="isLoading || jobLogs.length == totalLines" (click)="getMoreData()"><system-label label="LBL_MORE"></system-label></button>
 </div>
