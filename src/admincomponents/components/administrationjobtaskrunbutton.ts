@@ -11,15 +11,13 @@ import {toast} from "../../services/toast.service";
 import {broadcast} from "../../services/broadcast.service";
 
 /**
-* @ignore
-*/
-declare var _;
-
+ * an action button to run a job task immediately
+ */
 @Component({
-    selector: 'administration-job-schedule-button',
-    templateUrl: './src/admincomponents/templates/administrationjobschedulebutton.html'
+    selector: 'administration-job-task-run-button',
+    templateUrl: './src/admincomponents/templates/administrationjobtaskrunbutton.html'
 })
-export class AdministrationJobScheduleButton {
+export class AdministrationJobTaskRunButton {
 
     constructor(public model: model,
                 public language: language,
@@ -30,10 +28,17 @@ export class AdministrationJobScheduleButton {
                 public backend: backend) {
     }
 
+    /**
+     * call to run the job task immediately
+     */
     public execute() {
+
         this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {
-            this.backend.postRequest('module/Jobs/'+ this.model.id +'/schedule').subscribe(res => {
+
+            this.backend.postRequest('module/JobTasks/' + this.model.id + '/run').subscribe(res => {
+
                 modalRef.instance.self.destroy();
+
                 if (res) {
                     this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
                 } else {
@@ -45,6 +50,7 @@ export class AdministrationJobScheduleButton {
                 this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
                 this.broadcast.broadcastMessage('job.run');
             });
+
         });
     }
 }
