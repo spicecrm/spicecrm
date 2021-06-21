@@ -13,7 +13,7 @@
     <system-modal-footer>
         <div class="slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
             <div>
-                <span *ngIf="qpIsLoaded && qp?.isCompleted">Participation is formally completed.</span>
+                <span *ngIf="qpIsLoaded && qp?.isCompleted"><system-label label="MSG_PARTICIPATION_FORMALLY_COMPLETED"></system-label></span>
             </div>
             <div>
                 <button [disabled]="!qpIsDirty || qpIsSaving" class="slds-button slds-button_neutral" (click)="saveAndClose(false)"><system-label label="LBL_SAVE"></system-label></button>

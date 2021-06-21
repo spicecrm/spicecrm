@@ -74,7 +74,7 @@ export class QuestionnaireRender implements OnInit, OnDestroy, OnChanges {
     private questionnaireIsToBeDisplayed(): boolean {
         if ( this.qp.isLoaded ) {
             if ( this.qp.participationId ) return true;
-            if ( this.qp.questionnaireId && this.qp.editMode !== 'off' ) return true;
+            if ( this.qp.questionnaireId && this.qp.editMode !== 'off' && this.qp.editMode !== 'postview') return true;
         }
         return false;
     }

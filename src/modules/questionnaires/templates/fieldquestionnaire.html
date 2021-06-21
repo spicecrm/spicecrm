@@ -1,6 +1,6 @@
 <questionnaire-render *ngIf="model.getField('questionnaire_id')"
         [questionnaireId]="questionnaireId"
-        [editMode]="view.getMode() === 'edit' ? 'questionnaire':'off'"
+        [editMode]="view.getMode() === 'edit' ? 'questionnaire':'postview'"
         [showQuestionnaireTitle]="false"
         [inModal]="false"
         [parentType]="model.module"

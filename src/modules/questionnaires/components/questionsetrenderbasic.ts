@@ -34,8 +34,7 @@ export class QuestionsetRenderBasic implements OnInit {
     }
 
     private isDisabled( questionId: string ): boolean {
-        return false;
-        return this.questionsMeta[questionId].readonly || this.qp.editMode === 'off';
+        return this.questionsMeta[questionId].readonly || this.qp.editMode === 'off' || this.qp.editMode === 'postview';
     }
 
 }

@@ -13,7 +13,7 @@
                       *ngIf="qp.editMode !== 'preview'"
                       [(ngModel)]="qp.answers[question.id].answer_value"
                       (change)="onTextChange()"
-                      [attr.disabled]="questionMeta.tempReadonly || qp.editMode === 'off' ? '':null"></textarea>
+                      [attr.disabled]="questionMeta.tempReadonly || qp.editMode === 'off' || qp.editMode === 'postview' ? '':null"></textarea>
             </div>
         </div>
 
@@ -26,7 +26,7 @@
                 <input [system-trim-input] type="text" *ngIf="qp.editMode !== 'preview'"
                        [ngModel]="qp.answers[question.id].answer_value"
                        (change)="onTextChange()"
-                       [attr.disabled]="questionMeta.tempReadonly || qp.editMode === 'off' ? '':null"
+                       [attr.disabled]="questionMeta.tempReadonly || qp.editMode === 'off' || qp.editMode === 'postview' ? '':null"
                        size="5" style="width:auto"
                        class="slds-input">
             </div>
