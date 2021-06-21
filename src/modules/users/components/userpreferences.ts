@@ -170,7 +170,7 @@ export class UserPreferences implements OnDestroy {
             this.preferencesService.getPreferences(this.loadedSubscription);
 
         } else if (this.canEdit) {
-            this.backend.getRequest('user/' + this.model.data.id + '/preferences/global', {}).subscribe(prefs => {
+            this.backend.getRequest('module/Users/' + this.model.data.id + '/preferences/global', {}).subscribe(prefs => {
                     this.isLoading = false;
                     this.preferences = prefs;
 
@@ -236,7 +236,7 @@ export class UserPreferences implements OnDestroy {
     private save() {
 
         if (!this.isCurrentUser) {
-            this.backend.postRequest('user/' + this.model.data.id + '/preferences/global', {}, this.preferences).subscribe(
+            this.backend.postRequest('module/Users/' + this.model.data.id + '/preferences/global', {}, this.preferences).subscribe(
                 savedprefs => {
                     this.preferences = savedprefs;
                     this.view.setViewMode();
