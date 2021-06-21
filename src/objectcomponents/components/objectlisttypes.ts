@@ -23,6 +23,13 @@ export class ObjectListTypes {
     }
 
     /**
+     * disable if there can onlybe one list selected
+     */
+    get disabled() {
+        return this.modellist.isLoading || (this.modellist.standardLists.length + this.listTypes.length <= 1);
+    }
+
+    /**
      * load the list types and subscribe to list type changes
      * @private
      */
