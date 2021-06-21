@@ -9,7 +9,6 @@ import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {Router} from '@angular/router';
 import {userpreferences} from "../../services/userpreferences.service";
-import {session} from "../../services/session.service";
 
 /** @ignore */
 declare var moment;
@@ -42,6 +41,10 @@ export class fieldCronInterval extends fieldGeneric {
      * holds the moment weekdays
      */
     public weekdays = [];
+    /**
+     * holds the moment weekdays
+     */
+    public months = [];
     /**
      * holds the every labels for display value
      * @private
@@ -84,7 +87,7 @@ export class fieldCronInterval extends fieldGeneric {
      * subscribe to language changes
      */
     public ngOnInit() {
-        this.setWeekdays();
+        this.setSelectOptionsFromMoment();
         this.initializeValue();
         this.setLocalValue(this.value);
         this.subscribeToFieldChanges();
@@ -110,6 +113,7 @@ export class fieldCronInterval extends fieldGeneric {
      */
     public onRecurrenceSet() {
         if (this.expression.recurrence != 'custom' && this.expression.recurrence != 'cron') {
+            this.setDefaultRecurrenceEveryAtValue();
             this.setFieldValue();
         } else {
             this.expression.every = 'minutes';
@@ -138,13 +142,35 @@ export class fieldCronInterval extends fieldGeneric {
     }
 
     /**
+     * set the default recurrence every at value
+     * @private
+     */
+    private setDefaultRecurrenceEveryAtValue() {
+
+        switch (this.expression.recurrence) {
+            case 'daily':
+                this.expression.everyAtValue = moment(moment().utc().hour(0).minute(0));
+                break;
+            case 'weekly':
+                this.expression.everyAtValue = '0';
+                break;
+            case 'monthly':
+                this.expression.everyAtValue = '1';
+                break;
+            case 'annually':
+                this.expression.everyAtValue = '1';
+                break;
+        }
+    }
+
+    /**
      * subscribe to language changes to reset the labels
      * @private
      */
     private subscribeToLanguageChanges() {
         this.subscriptions.add(
             this.language.currentlanguage$.subscribe(() => {
-                this.setWeekdays();
+                this.setSelectOptionsFromMoment();
                 this.setDisplayValue();
             })
         );
@@ -154,8 +180,9 @@ export class fieldCronInterval extends fieldGeneric {
      * set the weekdays from moment
      * @private
      */
-    private setWeekdays() {
+    private setSelectOptionsFromMoment() {
         this.weekdays = moment.weekdays();
+        this.months = moment.months();
     }
 
     /**
@@ -283,13 +310,13 @@ export class fieldCronInterval extends fieldGeneric {
 
         switch (this.expression.recurrence) {
             case 'daily':
-                this.expression.minutes = '0';
-                this.expression.hours = '0';
+                this.expression.minutes = `${this.expression.everyAtValue.utc().minute()}`;
+                this.expression.hours = `${this.expression.everyAtValue.utc().hour()}`;
                 break;
             case 'weekly':
                 this.expression.minutes = '0';
                 this.expression.hours = '0';
-                this.expression.weekDay = '0';
+                this.expression.weekDay = this.expression.everyAtValue;
                 break;
             case 'everyWeekday':
                 this.expression.minutes = '0';
@@ -299,12 +326,12 @@ export class fieldCronInterval extends fieldGeneric {
             case 'monthly':
                 this.expression.minutes = '0';
                 this.expression.hours = '0';
-                this.expression.monthDay = '1';
+                this.expression.monthDay = this.expression.everyAtValue;
                 break;
             case 'annually':
                 this.expression.minutes = '0';
                 this.expression.hours = '0';
-                this.expression.month = '1';
+                this.expression.month = this.expression.everyAtValue;
                 this.expression.monthDay = '1';
                 break;
         }
@@ -356,7 +383,7 @@ export class fieldCronInterval extends fieldGeneric {
             stringValue: val
         };
 
-        this.setRecurrenceFromString(val);
+        this.setRecurrenceAtFromInput(val);
 
         if (this.expression.recurrence == 'custom') {
             this.setEveryValueFromExpression();
@@ -368,17 +395,33 @@ export class fieldCronInterval extends fieldGeneric {
      * @param val
      * @private
      */
-    private setRecurrenceFromString(val: string) {
-        if (val == '0::0::*::*::*') {
+    private setRecurrenceAtFromInput(val: string) {
+
+        const isDaily = !isNaN(+(this.expression.minutes + this.expression.hours)) && val.endsWith('::*::*::*');
+        const isWeekly = !isNaN(+(this.expression.minutes + this.expression.hours + this.expression.weekDay)) && this.expression.month == '*' && this.expression.monthDay == '*';
+        const isEveryWeekDay = val == '0::0::*::*::1-5';
+        const isMonthly = !isNaN(+(this.expression.minutes + this.expression.hours + this.expression.monthDay)) && val.endsWith('::*::*');
+        const isAnnually = !isNaN(+(this.expression.minutes + this.expression.hours + this.expression.monthDay + this.expression.monthDay)) && val.endsWith('::*');
+
+        if (isDaily) {
             this.expression.recurrence = 'daily';
-        } else if (val == '0::0::*::*::0') {
+            this.expression.everyAtValue = moment(moment.utc().hour(+this.expression.hours).minute(+this.expression.minutes)).tz(this.userPreferences.toUse.timezone);
+
+        } else if (isWeekly) {
             this.expression.recurrence = 'weekly';
-        } else if (val == '0::0::*::*::1-5') {
+            this.expression.everyAtValue = this.expression.weekDay;
+
+        } else if (isEveryWeekDay) {
             this.expression.recurrence = 'everyWeekday';
-        } else if (val == '0::0::1::*::*') {
+
+        } else if (isMonthly) {
             this.expression.recurrence = 'monthly';
-        } else if (val == '0::0::1::1::*') {
+            this.expression.everyAtValue = this.expression.monthDay;
+
+        } else if (isAnnually) {
             this.expression.recurrence = 'annually';
+            this.expression.everyAtValue = this.expression.month;
+
         } else {
             this.expression.recurrence = 'custom';
         }
@@ -447,7 +490,31 @@ export class fieldCronInterval extends fieldGeneric {
         }
 
         if (this.expression.recurrence != 'custom') {
-            return this.expression.displayValue = this.language.getLabel(this.recurrenceLabels[this.expression.recurrence]);
+            this.expression.displayValue = `${this.language.getLabel(this.recurrenceLabels[this.expression.recurrence])} `;
+            this.expression.displayValue += `${this.language.getLabel(this.expression.recurrence == 'daily' ? 'LBL_AT_HOUR' : 'LBL_ON_DATE', '', 'short')} `;
+
+            switch (this.expression.recurrence) {
+                case 'daily':
+                    if (!moment.isMoment(this.expression.everyAtValue)) break;
+                    this.expression.displayValue += `${this.expression.everyAtValue.tz(this.userPreferences.toUse.timezone).format(this.userPreferences.getTimeFormat())} ${this.language.getLabel('LBL_O_CLOCK')}`;
+                    break;
+                case 'monthly':
+                    this.expression.displayValue += ` ${this.expression.everyAtValue}${this.language.getLabel(
+                        this.expression.everyAtValue == 1 || this.expression.everyAtValue == 21 || this.expression.everyAtValue == 31 ? 'LBL_ST_DAY'
+                            : this.expression.everyAtValue == 2 || this.expression.everyAtValue == 22 ? 'LBL_ND_DAY'
+                            : this.expression.everyAtValue == 3 || this.expression.everyAtValue == 23 ? 'LBL_RD_DAY' : ''
+                    )}`;
+                    break;
+                case 'weekly':
+                    this.expression.displayValue += ` ${this.weekdays[this.expression.everyAtValue]}`;
+                    break;
+                case 'annually':
+                    this.expression.displayValue += ` ${this.months[this.expression.everyAtValue - 1]}`;
+                    break;
+                default:
+                    this.expression.displayValue += `${this.expression.everyAtValue}`;
+            }
+            return;
         }
 
         this.expression.displayValue = `${this.language.getLabel('LBL_EVERY')} `;
