@@ -144,7 +144,7 @@ export class SystemModelPopOverDirective implements OnChanges, OnDestroy {
 
             // if we are no initialized load the data
             if(!this.popoverModelInitialized) {
-                if (!this.model || !this.id || (this.model.module == this.module && this.model.id == this.id)) {
+                if (!!this.model && (!this.model || !this.id || (this.model.module == this.module && this.model.id == this.id))) {
                     this.popovermodel.module = this.model.module;
                     this.popovermodel.id = this.model.id;
                     this.popovermodel.initialize();
