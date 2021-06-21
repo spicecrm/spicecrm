@@ -30,6 +30,7 @@ export class QuestionnaireRender implements OnInit, OnDestroy, OnChanges {
     @Input() private showQuestionnaireTitle = true;
     @Input() private showQuestionnaireTextBefore = true;
     @Input() private showQuestionnaireTextAfter = true;
+    @Input() private showProgress = false;
     @Input() private inModal = true;
 
     @Output() private isDirty$ = new BehaviorSubject( false );
