@@ -37,16 +37,20 @@
             </div>
         </div>
     </div>
-    <ng-container *ngIf="expression.recurrence == 'custom'">
-        <div *ngIf="expression.every != 'weekdays'" class="slds-form-element slds-grid slds-grid--vertical-align-center slds-m-left--xx-small">
+    <label *ngIf="expression.recurrence != 'custom' && expression.recurrence != 'cron' && expression.recurrence != 'everyWeekday'" class="slds-form-element__label slds-align-middle slds-m-left--small">
+        <system-label *ngIf="expression.recurrence =='daily'" label="LBL_AT_HOUR" length="short"></system-label>
+        <system-label *ngIf="expression.recurrence !='daily'" label="LBL_ON_DATE" length="short"></system-label>
+    </label>
+    <ng-container *ngIf="expression.recurrence != 'cron'">
+        <div *ngIf="expression.every != 'weekdays' && expression.recurrence == 'custom'" class="slds-form-element slds-grid slds-grid--vertical-align-center slds-m-left--xx-small">
             <label class="slds-form-element__label">
-                <system-label label="LBL_EVERY"></system-label>
+                <system-label label="LBL_EVERY" ></system-label>
             </label>
             <div class="slds-form-element__control">
                 <input type="text" [(ngModel)]="expression.everyQuantity" (ngModelChange)="setFieldValue()" size="3" maxlength="3" class="slds-input">
             </div>
         </div>
-        <div class="slds-form-element slds-grid slds-m-left--xx-small">
+        <div *ngIf="expression.recurrence == 'custom'" class="slds-form-element slds-grid slds-m-left--xx-small">
             <div class="slds-form-element__control">
                 <div class="slds-select_container">
                     <select [(ngModel)]="expression.every" (ngModelChange)="onEverySet()" class="slds-select">
@@ -75,13 +79,13 @@
                 </div>
             </div>
         </div>
-        <div *ngIf="expression.every == 'daysAt'" class="slds-form-element slds-m-left--xx-small">
+        <div *ngIf="expression.every == 'daysAt' || expression.recurrence == 'daily'" class="slds-form-element slds-m-left--xx-small">
             <div class="slds-form-element__control slds-input-has-fixed-addon">
                 <system-input-time [(ngModel)]="expression.everyAtValue" (ngModelChange)="setFieldValue()" class="slds-size--1-of-2 slds-p-left--xxx-small"></system-input-time>
                 <span class="slds-form-element__addon" style="white-space: nowrap;"> <system-label label="LBL_O_CLOCK"></system-label> </span>
             </div>
         </div>
-        <div *ngIf="expression.every == 'monthsAt'" class="slds-form-element slds-m-left--xx-small">
+        <div *ngIf="expression.every == 'monthsAt' || expression.recurrence == 'monthly'" class="slds-form-element slds-m-left--xx-small">
             <div class="slds-form-element__control slds-input-has-fixed-addon">
                 <input type="text" [(ngModel)]="expression.everyAtValue" (ngModelChange)="setFieldValue()" size="3" maxlength="6" class="slds-input">
                 <span class="slds-form-element__addon" style="white-space: nowrap;">
@@ -105,6 +109,28 @@
                 '5': weekdays[5],
                 '6': weekdays[6]
                 }"></system-multiple-select>
+            </div>
+        </div>
+        <div *ngIf="expression.recurrence == 'weekly'" class="slds-form-element slds-m-left--xx-small slds-grid slds-grid--vertical-align-center">
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select [(ngModel)]="expression.everyAtValue" (ngModelChange)="setFieldValue()" class="slds-select">
+                        <option *ngFor="let weekDay of weekdays; let index = index" [value]="index">
+                            {{weekDay}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="expression.recurrence == 'annually'" class="slds-form-element slds-m-left--xx-small slds-grid slds-grid--vertical-align-center">
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select [(ngModel)]="expression.everyAtValue" (ngModelChange)="setFieldValue()" class="slds-select">
+                        <option *ngFor="let month of months; let index = index" [value]="index + 1">
+                            {{month}}
+                        </option>
+                    </select>
+                </div>
             </div>
         </div>
     </ng-container>
