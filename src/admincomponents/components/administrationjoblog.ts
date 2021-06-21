@@ -10,6 +10,7 @@ import {broadcast} from "../../services/broadcast.service";
 import {userpreferences} from "../../services/userpreferences.service";
 import {Subscription} from "rxjs";
 import {modal} from "../../services/modal.service";
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 /**
  * @ignore
@@ -21,7 +22,19 @@ declare var moment;
  */
 @Component({
     selector: 'administration-job-log',
-    templateUrl: './src/admincomponents/templates/administrationjoblog.html'
+    templateUrl: './src/admincomponents/templates/administrationjoblog.html',
+    animations: [
+        trigger('animateicon', [
+            state('open', style({ transform: 'scale(1, 1)'})),
+            state('closed', style({ transform: 'scale(1, -1)'})),
+            transition('open => closed', [
+                animate('.5s'),
+            ]),
+            transition('closed => open', [
+                animate('.5s'),
+            ])
+        ])
+    ]
 })
 export class AdministrationJobLog implements OnInit, OnDestroy {
 
@@ -45,15 +58,18 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
      */
     private subscription: Subscription = new Subscription();
     /**
-     * total limit of the loaded entires
+     * total limit of the loaded entries
      * @private
      */
     private totalLimit: number = 10;
     /**
      * total count of the log entries
-     * @private
      */
-    private totalLines: number;
+    public totalLines: number;
+    /**
+     * holds card expansion boolean
+     */
+    public expanded: boolean = true;
 
     constructor(public model: model,
                 public language: language,
@@ -165,7 +181,10 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
      * @private
      */
     private reloadData() {
+
         if (this.isLoading) return;
+        this.jobLogs = [];
+
         let params = {
             offset: 0,
             limit: this.totalLimit
@@ -201,5 +220,13 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
      */
     private sortList() {
         this.jobLogs.sort((a, b) => a.executed_on < b.executed_on ? 1 : a.executed_on > b.executed_on ? -1 : 0);
+    }
+
+    /**
+     * toggle expanding the card
+     */
+    private toggleExpand(e: MouseEvent) {
+        e.stopPropagation();
+        this.expanded = !this.expanded;
     }
 }
