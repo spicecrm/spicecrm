@@ -1386,8 +1386,13 @@ export class model implements OnDestroy {
         }
     }
 
-    public getCalculatedValue(copyRule, fromField?) {
-        let params;
+    /**
+     * the the copy rule calculated value
+     * @param copyRule
+     * @param fromField
+     */
+    public getCalculatedValue(copyRule: {fromfield: string, tofield: string, fixedvalue: string, calculatedvalue: string, params: any}, fromField?: string) {
+
         let timeZone = this.session.getSessionData('timezone') || moment.tz.guess(true);
         switch (copyRule.calculatedvalue) {
             case "now":
@@ -1400,26 +1405,18 @@ export class model implements OnDestroy {
                 }
 
                 // see if we should add some units
-                try {
-                    params = JSON.parse(copyRule.params);
-                    if (params.number && params.unit) {
-                        date.add(params.number, params.unit);
-                    }
-                    return date;
-                } catch {
-                    return date;
+                if (copyRule.params.number && copyRule.params.unit) {
+                    date.add(copyRule.params.number, copyRule.params.unit);
                 }
-                break;
+
+                return date;
+
             case "addDate":
                 const fromFieldDate = moment.isMoment(fromField) ? new moment(fromField) : new moment.utc().tz(timeZone);
-                try {
-                    params = JSON.parse(copyRule.params);
-                } catch {
-                    return fromFieldDate;
-                }
-                if (!params.number || !params.unit) return fromFieldDate;
 
-                return fromFieldDate.add(params.number, params.unit);
+                if (!copyRule.params.number || !copyRule.params.unit) return fromFieldDate;
+
+                return fromFieldDate.add(copyRule.params.number, copyRule.params.unit);
         }
         return "";
     }
