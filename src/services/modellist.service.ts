@@ -895,13 +895,18 @@ export class modellist implements OnDestroy {
                 global: '1',
                 name: `${this.language.getLabel('LBL_ALL')} ${this.language.getModuleName(this.module)}`,
                 listcomponent: 'ObjectList'
-            }, {
+            }
+        ];
+
+        // my items only if the module has an assigned user id field
+        if (this.metadata.getFieldDefs(this.module, 'assigned_user_id')) {
+            this.standardLists.push({
                 id: 'owner',
                 global: '1',
                 name: `${this.language.getLabel('LBL_MY')} ${this.language.getModuleName(this.module)}`,
                 listcomponent: 'ObjectList'
-            }
-        ];
+            });
+        }
     }
 
     /**
