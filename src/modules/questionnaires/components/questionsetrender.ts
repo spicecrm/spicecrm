@@ -31,6 +31,7 @@ export class QuestionsetRender implements OnInit {
     public qp: questionnaireParticipationService;
 
     @Input() public questionsetId: string;
+    @Input() public showProgress = false;
 
     public questionset: any;
 

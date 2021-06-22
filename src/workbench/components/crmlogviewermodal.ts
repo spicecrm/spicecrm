@@ -36,7 +36,6 @@ export class CRMLogViewerModal {
         // the data is still stored (property "fullDescription") and we don´t need to do the request again:
         if ( this.entry.fullDescription ) this.isLoading = !( this.isLoaded = true );
         else this.loadFullData();
-        console.log(this.entry);
     }
 
     /**
@@ -49,7 +48,6 @@ export class CRMLogViewerModal {
                 this.isLoaded = true;
                 this.isLoading = false;
                 this.entry.fullDescription = response.entry.description;
-                console.log(this.entry.fullDescription);
             },
             error => {
                 this.toast.sendToast('Error loading entry of log file!', 'error', 'Entry '+this.entry.id+' of CRM log couldn´t be fetched.', false );

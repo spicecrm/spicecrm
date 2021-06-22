@@ -152,7 +152,7 @@ export class questionnaireParticipationService {
     public setAnswerValue( questionId: string, value: string ): boolean {
 
         // If the edit mode is 'off', a input/change is not allowed and is not to be treated. --> Do nothing and return false.
-        if ( this.editMode === 'off' ) return false;
+        if ( this.editMode === 'off' || this.editMode === 'postview' ) return false;
 
         // Is the input field of the question currently disabled? --> Do nothing and return.
         // Info: While waiting for the response of the server the input field is disabled.
@@ -176,7 +176,7 @@ export class questionnaireParticipationService {
         let question = this.questionoptions[optionId].parentQuestion;
 
         // If the edit mode is 'off', a input/change is not allowed. --> Do nothing and return false.
-        if ( this.editMode === 'off' ) return false;
+        if ( this.editMode === 'off' || this.editMode === 'postview') return false;
 
         // Is the input field of the question currently disabled? --> Do nothing and return.
         // Info: While waiting for the response of the server the input field is disabled.
@@ -241,8 +241,8 @@ export class questionnaireParticipationService {
         event.stopPropagation();
         let question = this.questionoptions[optionId].parentQuestion;
 
-        // If the edit mode is 'off', a input/change is not allowed. --> Do nothing and return false.
-        if ( this.editMode === 'off' ) return false;
+        // If the edit mode is 'off' or 'postview', a input/change is not allowed. --> Do nothing and return false.
+        if ( this.editMode === 'off' || this.editMode === 'postview' ) return false;
 
         // Is the input field of the question currently disabled? --> Do nothing and return.
         // Info: While waiting for the response of the server the input field is disabled.

@@ -13,7 +13,7 @@
                         <div class="slds-form-element slds-p-horizontal_x-small" *ngIf="textitem.type == 'option'">
                             <div class="slds-form-element__control">
                                 <div *ngIf="qp.questionoptionsArray[question.id][textitem.index*1].description && qp.questionoptionsArray[question.id][textitem.index].description != ''" class="slds-select_container">
-                                    <select  class="slds-select" [disabled]="questionMeta.tempReadonly || qp.editMode === 'off'" [value]="getAnswerValue(textitem.index)" (change)="onChange(textitem.index, $event)">
+                                    <select  class="slds-select" [disabled]="questionMeta.tempReadonly || qp.editMode === 'off' || qp.editMode === 'postview'" [value]="getAnswerValue(textitem.index)" (change)="onChange(textitem.index, $event)">
                                         <option value=""></option>
                                         <option *ngFor="let seloption of qp.questionoptionsArray[question.id][textitem.index].description|questiontypeistoptionspipe"
                                                 [ngValue]="seloption">{{seloption}}

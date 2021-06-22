@@ -56,4 +56,12 @@ export class QuestionnaireResults implements OnInit {
         });
     }
 
+    /**
+     * In case we know it (parent ist ServiceFeedbacks): Is the Questionnaire completed (filled out)?
+     * @private
+     */
+    private get questionnaireIsCompleted(): boolean {
+        return this.model.module === 'ServiceFeedbacks' && this.model.getField('servicefeedback_status') === 'completed';
+    }
+
 }
