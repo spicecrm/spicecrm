@@ -80,7 +80,7 @@ export class ObjectRelatedlistTable implements OnInit {
         if (!this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName] && ! this.relatedmodels.linkEndPoint) {
             this.logger.error('Missing link or wrong link name ("' + this.relatedmodels._linkName + '")!');
         } else {
-            if (!this.sequencefield && this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName].sequence_field) {
+            if (!this.sequencefield && this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName]?.sequence_field) {
                 this.sequencefield = this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName].sequence_field;
             }
         }
