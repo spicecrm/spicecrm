@@ -144,7 +144,7 @@ export class TelephonyDockedCall {
      * gets a formatted MSISDN
      */
     get msisdnFormatted() {
-        if (libphonenumber && libphonenumber.parsePhoneNumberFromString) {
+        if (libphonenumber && libphonenumber.parsePhoneNumberFromString && this.calldata.msisdn.length > 5) {
             let msisdn = this.calldata.msisdn;
             return libphonenumber.parsePhoneNumberFromString(msisdn, 'AT').formatInternational();
         } else {

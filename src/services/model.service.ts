@@ -1405,7 +1405,7 @@ export class model implements OnDestroy {
                 }
 
                 // see if we should add some units
-                if (copyRule.params.number && copyRule.params.unit) {
+                if (copyRule.params?.number && copyRule.params?.unit) {
                     date.add(copyRule.params.number, copyRule.params.unit);
                 }
 
@@ -1414,7 +1414,7 @@ export class model implements OnDestroy {
             case "addDate":
                 const fromFieldDate = moment.isMoment(fromField) ? new moment(fromField) : new moment.utc().tz(timeZone);
 
-                if (!copyRule.params.number || !copyRule.params.unit) return fromFieldDate;
+                if (!copyRule.params?.number || !copyRule.params?.unit) return fromFieldDate;
 
                 return fromFieldDate.add(copyRule.params.number, copyRule.params.unit);
         }

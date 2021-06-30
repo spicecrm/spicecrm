@@ -4,6 +4,7 @@
 import { Component, OnInit } from '@angular/core';
 import { questionnaireParticipationService } from '../services/questionnaireparticipation.service';
 import { QuestionRenderBasic } from './questionrenderbasic';
+import { userpreferences} from '../../../services/userpreferences.service';
 
 @Component( {
     selector: 'question-render-text',
@@ -19,8 +20,9 @@ export class QuestionRenderText extends QuestionRenderBasic implements OnInit {
 
     private lengthLongestSequence = 0;
     private questionNameSplitted: any[] = [];
+    private isInputInvalid = false;
 
-    constructor( public questionnaireParticipation: questionnaireParticipationService ) {
+    constructor( public questionnaireParticipation: questionnaireParticipationService, public userpreferences: userpreferences ) {
         super( questionnaireParticipation );
     }
 
@@ -36,8 +38,38 @@ export class QuestionRenderText extends QuestionRenderBasic implements OnInit {
 
     }
 
-    private onTextChange(): boolean {
-        return this.questionnaireParticipation.setAnswerValue( this.questionId, this.qp.answers[this.questionId].answer_value );
+    /**
+     * Setter for the text value.
+     * Can handle numeric values.
+     * @param val
+     * @private
+     */
+    private set value( val: string ) {
+        val = val.trim();
+        if ( this.questionMeta.parameter.numeric && val !== '' ) {
+            let pref = this.userpreferences.toUse;
+            val = val.split(pref.num_grp_sep).join('');
+            val = val.split(pref.dec_sep).join('.');
+            this.isInputInvalid = isNaN( Number( val ));
+            if( !this.isInputInvalid ) this.questionnaireParticipation.setAnswerValue( this.questionId, (parseFloat( val )).toString() );
+            else this.questionnaireParticipation.setAnswerValue( this.questionId, val );
+            return;
+        }
+        this.questionnaireParticipation.setAnswerValue( this.questionId, val );
+        this.isInputInvalid = false;
+    }
+
+    /**
+     * Getter for the text value.
+     * Can handle numeric values.
+     * @private
+     */
+    private get value(): string {
+        let val = this.qp.answers[this.questionId].answer_value;
+        if ( this.questionMeta.parameter.numeric ) {
+            val = val.split( '.' ).join( this.userpreferences.toUse.dec_sep );
+        }
+        return val;
     }
 
     private forLoopArray( numElements: number ): any[] {
