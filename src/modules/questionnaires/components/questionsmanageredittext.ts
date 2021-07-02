@@ -30,15 +30,31 @@ export class QuestionsManagerEditText extends QuestionsManagerEditBasic implemen
         this.writeQuestionparametersToModel();
     }
 
+    /**
+     * Getter for the numeric flag (answer has to be numeric), stored in the question parameters.
+     */
+    public get numeric(): boolean {
+        return !!this.questionparameters.numeric;
+    }
+
+    /**
+     * Setter for the numeric flag (answer has to be numeric), stored in the question parameters.
+     */
+    public set numeric( value: boolean ) {
+        this.questionparameters.numeric = value;
+        this.writeQuestionparametersToModel();
+    }
+
     constructor( public language: language, public model: model, public view: view ) {
         super( language, model, view );
     }
 
     public ngOnInit(): void {
         super.ngOnInit();
-        // Create the property "sequenced", if not yet existing in the question parameter object.
-        // "sequenced" is specific for questions of type "text".
+        // Create the properties "sequenced" and "numeric", if not yet existing in the question parameter object.
+        // "sequenced" and "numeric" are specific for questions of type "text".
         if ( this.questionparameters.sequenced === undefined ) this.sequenced = false;
+        if ( this.questionparameters.numeric === undefined ) this.numeric = false;
 
         if ( !this.model.data.questionoptions || !this.model.data.questionoptions.beans ) {
             this.model.data.questionoptions = { beans: {} };
