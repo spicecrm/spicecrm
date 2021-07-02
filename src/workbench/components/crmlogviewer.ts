@@ -6,6 +6,7 @@ import { language } from '../../services/language.service';
 import { backend } from '../../services/backend.service';
 import { modal } from '../../services/modal.service';
 import { toast } from '../../services/toast.service';
+import { userpreferences } from '../../services/userpreferences.service';
 
 declare var moment: any;
 
@@ -79,7 +80,7 @@ export class CRMLogViewer {
         return this.filter.user_id+'::'+this.filterUserName;
     }
 
-    constructor( private lang: language, private backend: backend, private modal: modal, private toast: toast ) { }
+    constructor( private lang: language, private backend: backend, private modal: modal, private toast: toast, private userpreferences: userpreferences ) { }
 
     /**
      * Are all the inputs correct and ready for the backend request?
@@ -106,7 +107,7 @@ export class CRMLogViewer {
     private valueClicked( type: string, value: any ) {
         switch ( type ) {
             case 'date_entered':
-                this.filter.end = new moment( value ); break;
+                this.filter.end = new moment.utc( value ).tz( this.userpreferences.toUse.timezone ); break;
             case 'transaction_id': this.filter.transaction_id = value; break;
             case 'user': {
                 this.filter.user_id = value.user_id;
