@@ -29,6 +29,7 @@ export class fieldQuestionnaire extends fieldGeneric implements OnInit, OnDestro
     }
 
     public ngOnInit() {
+        this.questionnaireId = this.model.getField('questionnaire_id');
         this.subscribeToModelDataChange();
         this.subscribeToModelEditCancel();
     }
@@ -77,6 +78,10 @@ export class fieldQuestionnaire extends fieldGeneric implements OnInit, OnDestro
         let answers = _.clone( this.questionnaireParticipation.getData());
         let data = { answers: answers, questionnaireId: this.model.getField('questionnaire_id') };
         this.value = data;
+    }
+
+    private showQuestionnaire(): boolean {
+        return !this.model.isNew && !!this.questionnaireId;
     }
 
 }
