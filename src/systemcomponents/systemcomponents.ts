@@ -353,6 +353,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemIllustrationNoData,
         SystemIllustrationNoRecords,
         SystemIllustrationNoTask,
+        SystemIllustrationPageNotAvailable,
         SystemInputText,
         SystemInputInteger,
         SystemInputEnum,
