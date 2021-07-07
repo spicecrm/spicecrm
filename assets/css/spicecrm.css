@@ -431,3 +431,7 @@ input[type="search"],
 input[type="submit"] {
     -webkit-appearance: none;
 }
+
+.slds-is-sortable:not(.slds-is-sorted) .slds-th__action:focus .slds-is-sortable__icon {
+    display: none !important;
+}
