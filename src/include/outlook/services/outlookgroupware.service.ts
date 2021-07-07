@@ -5,6 +5,7 @@ import {Injectable} from "@angular/core";
 import {GroupwareService} from "../../../include/groupware/services/groupware.service";
 import {Observable, of, Subject} from "rxjs";
 import {OutlookAttachmentI} from "../interfaces/outlook.interfaces";
+import {GroupwareEmail} from "../../../include/groupware/interfaces/groupwareemail.interface";
 
 declare var Office: any;
 declare var _: any;
