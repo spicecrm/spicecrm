@@ -89,7 +89,7 @@ export class ContactPortalDetails implements OnInit {
     private testUsername() {
         if ( this.user.name ) {
             this.usernameTesting = true;
-            this.backend.getRequest( "portal/" + this.model.id + "/testUsername", { username: this.user.name } ).subscribe( ( data ) => {
+            this.backend.getRequest('module/Contacts/'+this.model.id+'/testUsername', { username: this.user.name } ).subscribe( ( data ) => {
                 if ( !data.error ) {
                     this.usernameAlreadyExists = data.exists;
                     this.loaded = true;
