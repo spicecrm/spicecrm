@@ -54,7 +54,7 @@ export class ContactPortalDetails implements OnInit {
         this.getInfo();
 
         // check data from the backend
-        this.backend.getRequest("module/Contacts/" + this.model.id + "/portalAccess", { lang: this.language.currentlanguage } ).subscribe((userdata: any) => {
+        this.backend.getRequest('module/Contacts/' + this.model.id + '/portalAccess').subscribe((userdata: any) => {
 
             this.aclRoles = userdata.aclRoles;
             this.portalRoles = userdata.portalRoles;
