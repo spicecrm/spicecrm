@@ -4,6 +4,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
+import {reporterconfig} from "../services/reporterconfig";
 
 @Component({
     selector: 'reporter-filter-item-reference',
@@ -17,7 +18,9 @@ export class ReporterFilterItemReference implements OnInit {
 
     private fieldName: string;
 
-    constructor(private language: language, private model: model) {
+    constructor(private language: language,
+                private reporterConfig: reporterconfig,
+                private model: model) {
     }
 
     set referenceField(value: string) {
@@ -31,7 +34,8 @@ export class ReporterFilterItemReference implements OnInit {
 
     get referenceFields() {
         const whereConditions = this.model.getField('whereconditions');
-        return whereConditions.filter(condition => condition.type == this.whereCondition.type && !!condition.reference && this.whereCondition.fieldid != condition.fieldid);
+        const operatorType = this.reporterConfig.operatorAssignments[this.whereCondition.overrideType || this.whereCondition.type] || 'varchar';
+        return whereConditions.filter(condition => !!condition.reference && (this.reporterConfig.operatorAssignments[condition.type] || 'varchar') == operatorType && this.whereCondition.fieldid != condition.fieldid);
     }
 
     /**
