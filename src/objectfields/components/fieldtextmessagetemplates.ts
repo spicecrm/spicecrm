@@ -11,6 +11,7 @@ import {backend} from "../../services/backend.service";
 import {modal} from "../../services/modal.service";
 import {fieldGeneric} from "./fieldgeneric";
 import {SystemLoadingModal} from "../../systemcomponents/components/systemloadingmodal";
+import {configurationService} from "../../services/configuration.service";
 
 @Component({
     selector: 'field-textmessage-templates',
@@ -38,7 +39,8 @@ export class fieldTextMessageTemplates extends fieldGeneric implements OnInit {
     }
 
     get isDisabled() {
-        return !this.model.getFieldValue('parent_type') || this.model.getFieldValue('parent_type') == '' || !this.isLoaded ? true : false || this.availableTemplates.length == 0;
+        // return !this.model.getFieldValue('parent_type') || this.model.getFieldValue('parent_type') == '' || !this.isLoaded ? true : false || this.availableTemplates.length == 0;
+        return !this.isLoaded ? true : false || this.availableTemplates.length == 0;
     }
 
     private getValue() {
@@ -66,7 +68,7 @@ export class fieldTextMessageTemplates extends fieldGeneric implements OnInit {
 
         if(this.value != '') {
             this.modal.openModal('SystemLoadingModal', false ).subscribe(modalRef => {
-                this.backend.getRequest('TextMessageTemplates/parse/' + this.value + '/' + this.model.getFieldValue('parent_type') + '/' + this.model.getFieldValue('parent_id')).subscribe((data: any) => {
+                 this.backend.getRequest('module/TextMessageTemplates/' + this.value + '/parse/' + this.model.getFieldValue('parent_type') + '/' + this.model.getFieldValue('parent_id')).subscribe((data: any) => {
                     this.model.setField(this.bodyField, data.body_html);
                     modalRef.instance.self.destroy();
                 });
