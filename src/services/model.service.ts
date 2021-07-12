@@ -1120,6 +1120,23 @@ export class model implements OnDestroy {
         return responseSubject.asObservable();
     }
 
+
+    /**
+     * saves the changes on the model and sends it
+     * Be aware that send functionality is triggered in backend within save logic itself
+     * @param notify if set to true a toast is sent once the send is completed (defaults to false)
+     */
+    public saveAndSend(notify: boolean = false, toastLabel: string = 'LBL_DATA_SENT'): Observable<boolean> {
+        let _notify = notify;
+        let _observable = this.save(false);
+
+        // if notification is on send a toast
+        if (_notify) {
+            this.toast.sendToast(this.language.getLabel(toastLabel) + ".", "success");
+        }
+        return _observable;
+    }
+
     /**
      * resets all model"s data to a blank state
      */
