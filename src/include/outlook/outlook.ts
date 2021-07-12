@@ -162,6 +162,6 @@ export class Outlook {
 // set prod mode
 enableProdMode();
 
-Office.initialize = reason => {
+Office.onReady().then(() => {
     platformBrowserDynamic().bootstrapModule(Outlook).catch(error => console.error(error));
-};
+});
