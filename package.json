@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "dependencies": {
     "@angular-devkit/build-angular": "^0.1002.0",
+    "@angular-devkit/schematics": "^12.1.1",
     "@angular/animations": "~12.1.0",
     "@angular/cdk": "^12.1.0",
     "@angular/cli": "^6.2.7",
@@ -17,6 +18,7 @@
     "@angular/router": "~12.1.0",
     "@angular/upgrade": "^12.1.0",
     "@compodoc/compodoc": "^1.1.11",
+    "@schematics/angular": "^12.1.1",
     "@types/gapi": "0.0.39",
     "@types/gapi.auth2": "0.0.52",
     "@types/underscore": "^1.10.1",
