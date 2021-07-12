@@ -66,6 +66,7 @@ import /*embed*/ {ObjectActionRemoveButton} from "./components/objectactionremov
 import /*embed*/ {ObjectActionAuditlogModal} from './components/objectactionauditlogmodal';
 import /*embed*/ {ObjectActionNewButton} from './components/objectactionnewbutton';
 import /*embed*/ {ObjectActionDuplicateButton} from './components/objectactionduplicatebutton';
+import /*embed*/ {ObjectActionSaveSendButton} from './components/objectactionsavesendbutton';
 import /*embed*/ {ObjectActionSaveButton} from './components/objectactionsavebutton';
 import /*embed*/ {ObjectActionSaveRelatedButton} from './components/objectactionsaverelatedbutton';
 import /*embed*/ {ObjectActionNewrelatedButton} from './components/objectactionnewrelatedbutton';
@@ -252,6 +253,7 @@ import /*embed*/ {ObjectChecklists} from "./components/objectchecklists";
         ObjectListViewSettingsSetfieldsModal,
         ObjectActionEditButton,
         ObjectActionEditRelatedButton,
+        ObjectActionSaveSendButton,
         ObjectActionSaveButton,
         ObjectActionSaveRelatedButton,
         ObjectActionDeleteButton,
