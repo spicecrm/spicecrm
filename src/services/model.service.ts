@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -13,7 +13,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 /**
  * @module services
  */
-import {Injectable, EventEmitter, Injector, OnDestroy, Optional} from "@angular/core";
+import {Injectable, EventEmitter, Injector, OnDestroy} from "@angular/core";
 import {of, BehaviorSubject, Subject, Observable, Subscription} from "rxjs";
 import {Router} from "@angular/router";
 
@@ -29,8 +29,8 @@ import {backend} from "./backend.service";
 import {recent} from "./recent.service";
 import {configurationService} from "./configuration.service";
 import {socket} from "./socket.service";
-
-declare var _: any;
+import {SocketEventI} from "./interfaces.service";
+import {filter, map} from "rxjs/operators";
 
 /**
  * @ignore
@@ -108,6 +108,11 @@ export class model implements OnDestroy {
      *```
      */
     public data$: BehaviorSubject<any>;
+
+    /**
+     * holds observable of a field and its value
+     */
+    public field$: BehaviorSubject<{field: string, value: any}> = new BehaviorSubject({field: null, value: null});
 
     /**
      * indicates wheter the model is currently saving
@@ -290,6 +295,14 @@ export class model implements OnDestroy {
                 */
             })
         );
+
+        /*
+        this.subscriptions.add(
+            this.socket.initializeNamespace('module').subscribe(e =>
+                this.handleSocketEvents(e)
+            )
+        );
+        */
     }
 
     /**
@@ -325,6 +338,25 @@ export class model implements OnDestroy {
         this._module = val;
         this.initializeFieldsStati();
         this.registerModel();
+        if (!val) return;
+    }
+
+    /**
+     * handle socket event
+     * @param event
+     * @private
+     */
+    private handleSocketEvents(event: SocketEventI) {
+        switch (event.type) {
+            case 'update':
+                // check that we have a match on id and moduel and come from another session
+                if (event.data.id == this.id && event.data.module == this.module && event.data.sessionId != this.session.authData.sessionId) {
+                    if (!this.isEditing) {
+                        this.getData(false, '', false);
+                    }
+                }
+                break;
+        }
     }
 
     /**
@@ -421,10 +453,7 @@ export class model implements OnDestroy {
      * @param field the field to be checked
      */
     public checkFieldAccess(field): boolean {
-        if (this.data && this.data.acl_fieldcontrol && this.data.acl_fieldcontrol[field] && this.data.acl_fieldcontrol[field] == '1') {
-            return false;
-        }
-        return true;
+        return !(this.data && this.data.acl_fieldcontrol && this.data.acl_fieldcontrol[field] && this.data.acl_fieldcontrol[field] == '1');
     }
 
     /**
@@ -584,7 +613,15 @@ export class model implements OnDestroy {
         }
     }
 
-    public setFieldStatus(field: string, status: string, value: boolean = true): boolean {
+    /**
+     * sets the field status
+     *
+     * @param field the name if the field
+     * @param status the status to be set
+     * @param value
+     *
+     */
+    public setFieldStatus(field: string, status: 'editable' | 'invalid' | 'required' | 'incomplete' | 'disabled' | 'hidden' | 'readonly', value: boolean = true): boolean {
         try {
             let stati = this._fields_stati[field];
             if (stati[status] && !value) {
@@ -611,6 +648,7 @@ export class model implements OnDestroy {
 
     public setFieldStati(field: string, stati: object): boolean {
         for (let status in stati) {
+            // @ts-ignore
             let result = this.setFieldStatus(field, status, stati[status]);
             if (!result) return false;
         }
@@ -713,7 +751,7 @@ export class model implements OnDestroy {
         }
 
         let val_left = this.data[condition.fieldname];
-        let val_right = null;
+        let val_right: null;
         if (condition.comparator.match(/regex/g)) {
             val_right = condition.valuations;
         } else {
@@ -792,7 +830,7 @@ export class model implements OnDestroy {
         }
     }
 
-    public evaluateValidationParams(params, targettype?: string) {
+    public evaluateValidationParams(params) {
         if (typeof params == "string") {
             // replace placeholders...
             if (/(\<[a-z\_]+\>)/.test(params)) {
@@ -901,14 +939,26 @@ export class model implements OnDestroy {
      */
     public setField(field, value) {
         if (!field) return false;
+        if(this.data[field] !== value) {
+            this.field$.next({field, value});
+        }
         this.data[field] = value;
         this.data$.next(this.data);
+
         this.evaluateValidationRules(field, "change");
 
         // run the duplicate check
         this.duplicateCheckOnChange([field]);
     }
 
+    /**
+     * returns an observable for the given field name to subscribe on to track the field changes
+     * @param field
+     */
+    public observeFieldChanges(field: string): Observable<any> {
+        if(!this.fields[field]) return of(null);
+        return this.field$.pipe(filter(fieldObj => fieldObj.field == field), map(v => v.value));
+    }
     /**
      * serts an object of fields on a model
      *
@@ -991,7 +1041,7 @@ export class model implements OnDestroy {
         }
 
         // determine changed fields
-        let changedData: any = {};
+        let changedData: any;
         if (this.isEditing && !this.isNew) {
             changedData = this.getDirtyFields();
             // in any case send back date_modified
@@ -1049,6 +1099,7 @@ export class model implements OnDestroy {
                         case 409:
                             this.modal.openModal("ObjectOptimisticLockingModal", false, this.injector).subscribe(lockingModalRef => {
                                 lockingModalRef.instance.conflicts = error.error.error.conflicts;
+                                lockingModalRef.instance.responseSubject = responseSubject;
                             });
                             break;
                         default:
@@ -1068,7 +1119,7 @@ export class model implements OnDestroy {
     public delete(): Observable<boolean> {
         let responseSubject = new Subject<boolean>();
 
-        this.backend.deleteRequest(`module/${this.module}/${this.id}`).subscribe(res => {
+        this.backend.deleteRequest(`module/${this.module}/${this.id}`).subscribe(() => {
                 this.broadcast.broadcastMessage("model.delete", {
                     id: this.id,
                     module: this.module,
@@ -1289,6 +1340,8 @@ export class model implements OnDestroy {
      *
      * @param toField
      * @param value
+     * @param params
+     * @private
      */
     private copyValue(toField, value, params: any = {}) {
         let fieldDef = this.metadata.getFieldDefs(this.module, toField);
@@ -1345,31 +1398,37 @@ export class model implements OnDestroy {
         }
     }
 
-    public getCalculatedValue(copyRule, fromField?) {
+    /**
+     * the the copy rule calculated value
+     * @param copyRule
+     * @param fromField
+     */
+    public getCalculatedValue(copyRule: {fromfield: string, tofield: string, fixedvalue: string, calculatedvalue: string, params: any}, fromField?: string) {
 
+        let timeZone = this.session.getSessionData('timezone') || moment.tz.guess(true);
         switch (copyRule.calculatedvalue) {
             case "now":
-                return new moment();
+                return new moment.utc().tz(timeZone);
             case "nextfullhour":
-                let date = new moment();
-                if (date.minute() == 0) {
-                    return date;
-                } else {
+                let date = new moment.utc().tz(timeZone);
+                if (date.minute() != 0) {
                     date.minute(0);
                     date.add(1, "h");
-                    return date;
                 }
-            case "addDate":
-                const fromFieldDate = moment.isMoment(fromField) ? new moment(fromField) : new moment();
-                let params;
-                try {
-                    params = JSON.parse(copyRule.params);
-                } catch {
-                    return fromFieldDate;
-                }
-                if (!params.number || !params.unit) return fromFieldDate;
 
-                return new moment(fromFieldDate.format()).add(params.number, params.unit);
+                // see if we should add some units
+                if (copyRule.params.number && copyRule.params.unit) {
+                    date.add(copyRule.params.number, copyRule.params.unit);
+                }
+
+                return date;
+
+            case "addDate":
+                const fromFieldDate = moment.isMoment(fromField) ? new moment(fromField) : new moment.utc().tz(timeZone);
+
+                if (!copyRule.params.number || !copyRule.params.unit) return fromFieldDate;
+
+                return fromFieldDate.add(copyRule.params.number, copyRule.params.unit);
         }
         return "";
     }
@@ -1447,7 +1506,7 @@ export class model implements OnDestroy {
                         retSubject.next(true);
                         retSubject.complete();
                     },
-                    error => {
+                    () => {
                         retSubject.next(false);
                         retSubject.complete();
                     });
@@ -1479,7 +1538,7 @@ export class model implements OnDestroy {
                             responseSubject.complete();
                             this.duplicateChecking = false;
                         },
-                        error => {
+                        () => {
                             responseSubject.next([]);
                             responseSubject.complete();
                             this.duplicateChecking = false;
@@ -1491,7 +1550,7 @@ export class model implements OnDestroy {
                             responseSubject.complete();
                             this.duplicateChecking = false;
                         },
-                        error => {
+                        () => {
                             responseSubject.next([]);
                             responseSubject.complete();
                             this.duplicateChecking = false;
@@ -1598,11 +1657,7 @@ export class model implements OnDestroy {
 
     private isFieldARelationLink(field_name) {
         try {
-            if (this.fields[field_name].type == "link") {
-                return true;
-            } else {
-                return false;
-            }
+            return (this.fields[field_name].type == "link");
         } catch (e) {
             return false;
         }
@@ -1707,7 +1762,9 @@ export class model implements OnDestroy {
 
 
     public ngOnDestroy(): void {
-        this.navigation.unregisterModel(this.modelRegisterId);
+        if (this.modelRegisterId) {
+            this.navigation.unregisterModel(this.modelRegisterId);
+        }
 
         // unsubscribe from any subscriptions we might have
         this.subscriptions.unsubscribe();

@@ -91,13 +91,13 @@ class Mailbox extends SugarBean {
             $this->initializeSettings();
         }
 
-        $class_name = "\SpiceCRM\modules\\Mailboxes\\Handlers\\" . ucfirst($this->transport) . "Handler";
+        $class_name = "\\SpiceCRM\\\custom\\modules\\Mailboxes\\Handlers\\" . ucfirst($this->transport) . "Handler";
 
         if (!class_exists($class_name)) {
-            $class_name = "\SpiceCRM\custom\\modules\\Mailboxes\\Handlers\\" . ucfirst($this->transport) . "Handler";
+            $class_name = "\\SpiceCRM\\modules\\Mailboxes\\Handlers\\" . ucfirst($this->transport) . "Handler";
             if (!class_exists($class_name)) {
                 throw new Exception('Transport Handler '
-                    . "\SpiceCRM\modules\\Mailboxes\\Handlers\\" . ucfirst($this->transport) . "Handler"
+                    . "\\SpiceCRM\\modules\\Mailboxes\\Handlers\\" . ucfirst($this->transport) . "Handler"
                     . ' or ' . $class_name . ' do not exist.');
             }
         }
@@ -376,7 +376,7 @@ class Mailbox extends SugarBean {
         $db = DBManagerFactory::getInstance();
 
         $query = "SELECT COUNT(*) as cnt from " . $this->getMessagesTable() . " WHERE mailbox_id='" . $this->id . "'"
-            . " AND status='read'";
+            . " AND status='read' AND deleted = 0";
         $q = $db->query($query);
         $result = $db->fetchByAssoc($q);
 
@@ -387,7 +387,7 @@ class Mailbox extends SugarBean {
         $db = DBManagerFactory::getInstance();
 
         $query = "SELECT COUNT(*) as cnt from " . $this->getMessagesTable() . " WHERE mailbox_id='" . $this->id . "'"
-            . " AND status='closed'";
+            . " AND status='closed' AND deleted = 0";
         $q = $db->query($query);
         $result = $db->fetchByAssoc($q);
 
@@ -489,7 +489,11 @@ class Mailbox extends SugarBean {
     public function isConnected() {
         if ($this->transport == self::TRANSPORT_PERSONAL_EWS) {
             $this->initTransportHandler();
-            if ($this->transport_handler->checkConnection() == false) {
+            try {
+                if ($this->transport_handler->checkConnection() == false) {
+                    return false;
+                }
+            } catch (\SoapFault $exception) {
                 return false;
             }
         }

@@ -5,6 +5,10 @@ use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\Emails\Email;
+use SpiceCRM\modules\EmailTemplates\EmailTemplate;
 use SpiceCRM\modules\UserPreferences\UserPreference;
 
 class CampaignTask extends SugarBean
@@ -54,7 +58,7 @@ class CampaignTask extends SugarBean
         $insert_query .= " AND prospect_lists.deleted=0";
         $insert_query .= " AND plc.deleted=0";
         $insert_query .= " AND plp.deleted=0";
-        $insert_query .= " AND prospect_lists.list_type!='test' AND prospect_lists.list_type not like 'exempt%'";
+        $insert_query .= " AND prospect_lists.list_type!='test' AND prospect_lists.list_type not like 'exempt%' GROUP BY plp.related_id";
         $this->db->query($insert_query);
 
         $prospect_list_filters = "SELECT plf.module, plf.module_filter, plf.prospectlist_id FROM prospect_list_filters plf";
@@ -63,7 +67,7 @@ class CampaignTask extends SugarBean
         $prospect_list_filters = $this->db->query($prospect_list_filters);
 
         while ($row = $this->db->fetchByAssoc($prospect_list_filters)) {
-            $where = $sysModuleFilters->generareWhereClauseForFilterId($row['module_filter']);
+            $where = $sysModuleFilters->generateWhereClauseForFilterId($row['module_filter']);
             $seed = BeanFactory::getBean($row['module']);
             $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted)";
             $insert_query .= " SELECT {$guidSQL}, $current_date, '{$this->campaign_id}',  '$thisId' , {$guidSQL}, '{$row['prospectlist_id']}', id, '{$row['module']}','$status',0";
@@ -103,7 +107,7 @@ class CampaignTask extends SugarBean
         $prospect_list_filters = $this->db->query($prospect_list_filters);
 
         while ($row = $this->db->fetchByAssoc($prospect_list_filters)) {
-            $where = $sysModuleFilters->generareWhereClauseForFilterId($row['module_filter']);
+            $where = $sysModuleFilters->generateWhereClauseForFilterId($row['module_filter']);
             $seed = BeanFactory::getBean($row['module']);
             $filter_query = " SELECT id recordid, '{$row['module']}' recordmodule FROM {$seed->table_name} WHERE deleted=0 AND $where";
             $targets_query .= " UNION $filter_query";
@@ -200,41 +204,45 @@ class CampaignTask extends SugarBean
      */
     function sendEmail($seed, $saveEmail = false, $test = false)
     {
-
-        $tpl = BeanFactory::getBean('EmailTemplates');
-        if(!empty($this->email_template_id)){
-            $tpl->retrieve($this->email_template_id);
-        } else {
-            $tpl->subject = $this->email_subject;
-            $tpl->body_html = $this->email_body;
-            $tpl->style = $this->email_stylesheet_id;
-        }
-        $parsedTpl = $tpl->parse($seed);
-        $email = BeanFactory::getBean('Emails');
-        $email->mailbox_id = $this->mailbox_id;
-        $email->name = $parsedTpl['subject'];
-
-        if($test)
-            $email->name = '[TEST] ' . $email->name;
-
-        $email->body = $parsedTpl['body_html'];
-        $primnaryAddress = $seed->emailAddress->getPrimaryAddress($seed);
-        if(!$primnaryAddress)
+        if(!$seed->emailAddress->getPrimaryAddress($seed)) {
             return false;
+        }
+
+        $emailTemplate = (function(): EmailTemplate {return BeanFactory::getBean('EmailTemplates');})();
+        $email = (function(): Email {return BeanFactory::getBean('Emails');})();
+        $mailbox = BeanFactory::getBean('Mailboxes', $this->mailbox_id);
+
+        if(!empty($this->email_template_id)){
+            $emailTemplate->retrieve($this->email_template_id);
+        } else {
+            $emailTemplate->subject = $this->email_subject;
+            $emailTemplate->body_html = $this->email_body;
+            $emailTemplate->style = $this->email_stylesheet_id;
+        }
+        $parsedHtml = $emailTemplate->parse($seed);
+
+        $email->id = SpiceUtils::createGuid();
+        $email->new_with_id = true;
+        $email->mailbox_id = $this->mailbox_id;
+        $email->name = $test ? ('[TEST] ' . $this->email_subject) : $this->email_subject;
+        $email->body = $parsedHtml['body_html'];
 
         $email->addEmailAddress('to', $seed->emailAddress->getPrimaryAddress($seed));
-
-        // add the from address
-        $mailbox = BeanFactory::getBean('Mailboxes', $this->mailbox_id);
         $email->addEmailAddress('from', $mailbox->imap_pop3_username);
-        // $email->from_addr = $mailbox->imap_pop3_username;
 
-        $email->sendEmail();
+        $categories = SpiceAttachments::getAttachmentCategories('CampaignTasks', true);
+        $categoryId = !empty($categories) ? $categories[0]['id'] : null;
+        $email->setAttachments(
+            SpiceAttachments::cloneAttachmentsForBean('Emails', $email->id, 'CampaignTasks', $this->id, $saveEmail, $categoryId)
+        );
 
         if($saveEmail){
             $email->parent_type = $seed->module_dir;
             $email->parent_ide = $seed->id;
+            $email->to_be_sent = true;
             $email->save();
+        } else {
+            $email->sendEmail();
         }
 
         return $email;

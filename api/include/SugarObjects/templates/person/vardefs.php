@@ -34,6 +34,9 @@
 * "Powered by SugarCRM".
 ********************************************************************************/
 
+/** @var string $object_name */
+/** @var string $module */
+
 $vardefs = [
     'fields' => [
         'salutation' => [
@@ -44,6 +47,13 @@ $vardefs = [
             'massupdate' => false,
             'len' => '255',
             'comment' => 'Contact salutation (e.g., Mr, Ms)'
+        ],
+        'form_of_address' => [
+            'name' => 'form_of_address',
+            'vname' => 'LBL_FORM_OF_ADDRESS',
+            'type' => 'enum',
+            'options' => 'form_of_address_dom',
+            'comment' => 'Form of address of a contact (formal, normal, amicable)'
         ],
         'first_name' => [
             'name' => 'first_name',
@@ -564,7 +574,7 @@ $vardefs = [
         ],
     ],
     'relationships' => [
-        strtolower($module) . '_email_addresses' =>
+        strtolower($object_name) . '_email_addresses' =>
             [
                 'lhs_module' => $module, 'lhs_table' => strtolower($module), 'lhs_key' => 'id',
                 'rhs_module' => 'EmailAddresses', 'rhs_table' => 'email_addresses', 'rhs_key' => 'id',
@@ -573,7 +583,7 @@ $vardefs = [
                 'relationship_role_column' => 'bean_module',
                 'relationship_role_column_value' => $module
             ],
-        strtolower($module) . '_email_addresses_primary' =>
+        strtolower($object_name) . '_email_addresses_primary' =>
             ['lhs_module' => $module, 'lhs_table' => strtolower($module), 'lhs_key' => 'id',
                 'rhs_module' => 'EmailAddresses', 'rhs_table' => 'email_addresses', 'rhs_key' => 'id',
                 'relationship_type' => 'many-to-many',

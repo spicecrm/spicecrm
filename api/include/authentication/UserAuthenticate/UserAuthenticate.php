@@ -69,14 +69,29 @@ class UserAuthenticate
      * @return User
      * @throws UnauthorizedException
      */
-    function authenticate($authUser, $password)
+    function authenticate($authUser, $password, $impersonatingUserName = null )
     {
+        $db = DBManagerFactory::getInstance();
+        $impersonatingUser = null;
         $sqlWhere = "( is_group IS NULL OR is_group != 1 ) AND deleted = 0 and external_auth_only = 0";
-        $row = User::findUserPassword($authUser, md5($password), $sqlWhere);
-        if ($row) {
+        # In case impersonation is used,
+        # then the user name of the admin is given as impersonationuser
+        # and the password in $password is the password of the impersonating admin.
+        if ( !empty( $impersonatingUserName )) {
+            # First check the password of the impersonating admin:
+            if ( $impersonatingUser = User::findUserPassword($impersonatingUserName, $password, $sqlWhere)) {
+                # Now fetch the user the admin wants to impersonate:
+                $row = $db->fetchOne( sprintf("SELECT * from users where user_name='%s' AND " . $sqlWhere, $db->quote($authUser)));
+            }
+        } else {
+            # Usual case, no impersonation:
+            $row = User::findUserPassword($authUser, $password, $sqlWhere);
+        }
 
+        if ($row) {
             /** @var User $userObj */
             $userObj = BeanFactory::getBean("Users", $row['id']);
+            if ( $impersonatingUser ) $userObj->impersonating_user_id = $impersonatingUser['id'];
             return $userObj;
         }
         throw new UnauthorizedException("Invalid Username/Password combination", 1);
@@ -321,10 +336,12 @@ class UserAuthenticate
         }
 
         $token = User::generatePassword();
-        $db->query(sprintf('INSERT INTO users_password_tokens ( id, user_id, date_generated ) VALUES ( "%s", "%s", "%s" )', $db->quote($token), ($user_id), $db->now()));
+
+        // store the new token
+        $db->query(sprintf("INSERT INTO users_password_tokens ( id, user_id, date_generated ) VALUES ( '%s', '%s', '%s' )", $db->quote($token), ($user_id), TimeDate::getInstance()->nowDb()));
 
         //delete old token
-        $db->query(sprintf("delete from users_password_tokens where id != %s and user_id = %s", $db->quote($token), $user_id));
+        $db->query(sprintf("delete from users_password_tokens where id != '%s' and user_id = '%s'", $db->quote($token), $user_id));
 
         $emailTempl = $this->getProperEmailTemplate($user_id, 'sendTokenForNewPassword');
         $emailTempl->disable_row_level_security = true;

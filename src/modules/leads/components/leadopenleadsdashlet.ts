@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -25,27 +25,23 @@ import {backend} from '../../../services/backend.service';
     providers: [model]
 })
 export class LeadOpenLeadsDashlet implements OnInit {
-    myLeads: Array<any> = [];
-    myLeadsCount: number = 0;
+    private myLeads: any[] = [];
+    private myLeadsCount: number = 0;
 
-    @ViewChild('tableheader', {read: ViewContainerRef, static: true}) tableheader: ViewContainerRef;
-    @ViewChild('dashletcontainer', {read: ViewContainerRef, static: true}) dashletcontainer: ViewContainerRef;
+    @ViewChild('tableheader', {read: ViewContainerRef, static: true}) private tableheader: ViewContainerRef;
+    @ViewChild('dashletcontainer', {read: ViewContainerRef, static: true}) private dashletcontainer: ViewContainerRef;
 
     constructor(private language: language, private metadata: metadata, private backend: backend, private model: model, private elementRef: ElementRef) {
 
     }
 
-    ngOnInit() {
+    public ngOnInit() {
 
-        let params = {
-            searchmyitems: true,
-            fields: JSON.stringify(['id', 'first_name', 'last_name', 'account_name', 'status', 'phone_mobile'])
-        }
 
-        this.backend.getRequest('module/Leads', params).subscribe((leads : any) => {
+        this.backend.getRequest('module/Leads').subscribe((leads: any) => {
             this.myLeads = leads.list;
-            this.myLeadsCount = leads.totalcount
-        })
+            this.myLeadsCount = leads.totalcount;
+        });
     }
 
     get containerstyle() {
@@ -53,9 +49,9 @@ export class LeadOpenLeadsDashlet implements OnInit {
             let rectc = this.dashletcontainer.element.nativeElement.getBoundingClientRect();
             let rectt = this.tableheader.element.nativeElement.getBoundingClientRect();
             return {
-                height: rectc.bottom - rectt.bottom + 'px',
+                'height': rectc.bottom - rectt.bottom + 'px',
                 'margin-top': '-1px'
-            }
+            };
         }
     }
 

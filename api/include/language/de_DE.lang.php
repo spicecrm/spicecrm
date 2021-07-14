@@ -240,6 +240,7 @@ $app_list_strings = [
         '' => '',
         'Mr.' => 'Herr',
         'Ms.' => 'Frau',
+        'Mx.' => 'divers'
         //'Mrs.' => 'Frau',
         //'Dr.' => 'Dr.',
         //'Prof.' => 'Prof.',
@@ -248,9 +249,15 @@ $app_list_strings = [
         '' => '',
         'Mr.' => 'Sehr geehrter Herr',
         'Ms.' => 'Sehr geehrte Frau',
+        'Mx.' => 'Sehr geehrte*r'
         //'Mrs.' => 'Frau',
         //'Dr.' => 'Dr.',
         //'Prof.' => 'Prof.',
+    ],
+    'form_of_address_dom' => [
+        'formal' => 'formal',
+        'normal' => 'normal',
+        'friendly' => 'amikal'
     ],
     'gdpr_marketing_agreement_dom' => [
         '' => '',
@@ -695,10 +702,8 @@ $app_list_strings = [
     'document_status_dom' => [
         'Active' => 'Aktiv',
         'Draft' => 'Entwurf',
-        'FAQ' => 'FAQ',
         'Expired' => ' Nicht mehr gültig',
         'Under Review' => 'In Prüfung',
-        'Pending' => 'Ausstehend',
     ],
     'document_template_type_dom' => [
         '' => '',
@@ -871,10 +876,10 @@ $app_list_strings = [
         'vscancelled' => 'cancelled'
     ],
     'salesvoucher_status_dom' => [
-        'created' => 'erstellt',
-        'paid' => 'bezahlt',
-        'redeemed' => 'eingelöst',
-        'canceled' => 'storniert'
+        'created' => 'Erstellt',
+        'paid' => 'Bezahlt',
+        'redeemed' => 'Eingelöst',
+        'canceled' => 'Storniert'
     ],
     'resource_status_dom' => [
         'planned' => 'Geplannt',
@@ -948,7 +953,11 @@ $app_list_strings = [
     'page_orientation_dom' => [
         'P' => 'Hochformat',
         'L' => 'Querformat'
-    ]
+    ],
+    'apilog_direction_dom' => [
+        'I' => 'Eingehend',
+        'O' => 'Ausgehend',
+    ],
 ];
 $app_list_strings['project_priority_options'] = [
     'High' => 'Hoch',
@@ -1526,6 +1535,7 @@ $app_list_strings['cruser_role_dom'] = [
 ];
 
 $app_list_strings['crstatus_dom'] = [
+    '-1' => 'backlog',
     '0' => 'angelegt',
     '1' => 'in Arbeit',
     '2' => 'unit tested',
@@ -1702,6 +1712,7 @@ $app_list_strings['vat_country_dom'] = [
 ];
 
 $app_list_strings['landingpage_content_type_dom'] = [
+    'gate' => 'Gate',
     'html' => 'HTML',
     'questionnaire' => 'Questionnaire'
 ];
@@ -1730,4 +1741,32 @@ $app_list_strings['payments_type_dom'] = [
     'cash' => 'Bar',
     'ATM_card' => 'Bankomatkarte',
     'credit_card' => 'Kreditkarte'
+];
+
+$app_list_strings['qualification_type_dom'] = [];
+
+$app_list_strings['qualification_sub_type_dom'] = [];
+
+$app_list_strings['relationship_type_dom'] = [
+    'mother' => 'Mutter',
+    'father' => 'Vater',
+    'daughter' => 'Tochter',
+    'son' => 'Sohn',
+    'stepmother' => 'Stiefmutter',
+    'stepfather' => 'Stiefvater',
+    'brother' => 'Bruder',
+    'sister' => 'Schwester',
+    'stepbrother' => 'Stiefbruder',
+    'stepsister' => 'Stiefschwester',
+    'aunt' => 'Tante',
+    'uncle' => 'Onkel',
+    'grandfather' => 'Großvater',
+    'grandmother' => 'Großmutter',
+    'female grandchild' => 'Enkelin',
+    'male grandchild' => 'Enkel',
+    'female cousin' => 'Cousine',
+    'male cousin' => 'Cousin',
+    'acquaintance' => 'Bekannter',
+    'partner' => 'Partner',
+    'colleague' => 'Arbeitskollege'
 ];

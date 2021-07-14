@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -57,17 +57,6 @@ export class ObjectListHeaderSort {
     }
 
     /**
-     * sets the field as sort parameter
-     *
-     * @param field the field from the fieldset
-     */
-    private setSortField(): void {
-        if (this.isSortable) {
-            this.modellist.setSortField(this.field.field);
-        }
-    }
-
-    /**
      * a helper function to determine the sort icon based on the set sort criteria
      */
     get sortIcon(): string {
@@ -82,7 +71,7 @@ export class ObjectListHeaderSort {
         return '';
     }
 
-    get sortindex(){
+    get sortindex() {
         let sortdata = this.modellist.getSortField(this.field.field);
         if(sortdata && sortdata.sortitems > 1) {
             return sortdata.sortindex + 1;

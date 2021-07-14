@@ -65,7 +65,7 @@ class M2MRelationship extends SugarRelationship
         $this->rhsLinkDef = $this->getLinkedDefForModuleByRelationship($rhsModule);
         $this->rhsLink = $this->rhsLinkDef['name'];
 
-        $this->self_referencing = $lhsModule == $rhsModule && $this->def['reverse'] !== false;
+        $this->self_referencing = $lhsModule == $rhsModule && $this->def['reverse'] != false;
     }
 
     /**
@@ -323,7 +323,7 @@ class M2MRelationship extends SugarRelationship
         $result = $db->query($query);
         $rows = [];
         $idField = $link->getSide() == REL_LHS ? $this->def['join_key_rhs'] : $this->def['join_key_lhs'];
-        while ($row = $db->fetchByAssoc($result, FALSE))
+        while ($row = $db->fetchByAssoc($result))
         {
             if (empty($row['id']) && empty($row[$idField]))
                 continue;
@@ -528,7 +528,7 @@ class M2MRelationship extends SugarRelationship
         {
             $ret .= " AND ".$this->getRelationshipTable().'.'.$this->relationship_role_column;
             //role column value.
-            if (empty($this->relationship_role_column_value))
+            if (empty($this->relationship_role_column_value) && $this->relationship_role_column_value != 0)
             {
                 $ret.=' IS NULL';
             } else {

@@ -216,15 +216,7 @@ $dictionary['Meeting'] = [
             'type'                => 'datetimecombo',
             'dbType'              => 'datetime',
             'comment'             => 'Date of start of meeting',
-            'importable'          => 'required',
-            'required'            => true,
-            'enable_range_search' => true,
-            'options'             => 'date_range_search_dom',
-            'validation'          => [
-                'type'      => 'isbefore',
-                'compareto' => 'date_end',
-                'blank'     => false,
-            ],
+            'required'            => true
         ],
         'date_end' => [
             'name'                => 'date_end',
@@ -232,9 +224,8 @@ $dictionary['Meeting'] = [
             'type'                => 'datetimecombo',
             'dbType'              => 'datetime',
             'massupdate'          => false,
+            'required'            => true,
             'comment'             => 'Date meeting ends',
-            'enable_range_search' => true,
-            'options'             => 'date_range_search_dom',
         ],
         'parent_type' => [
             'name'    => 'parent_type',
@@ -300,43 +291,21 @@ $dictionary['Meeting'] = [
             'comment'    => 'ID of item indicated by parent_type',
             'studio'     => ['searchview' => false],
         ],
-        'reminder_checked' => [
-            'name'       => 'reminder_checked',
-            'vname'      => 'LBL_REMINDER',
-            'type'       => 'bool',
-            'source'     => 'non-db',
-            'comment'    => 'checkbox indicating whether or not the reminder value is set (Meta-data only)',
-            'massupdate' => false,
-        ],
         'reminder_time' => [
             'name'       => 'reminder_time',
             'vname'      => 'LBL_REMINDER_TIME',
-            'type'       => 'enum',
+            'type'       => 'activityreminder',
             'dbType'     => 'int',
-            'options'    => 'reminder_time_options',
-            'reportable' => false,
-            'massupdate' => false,
             'default'    => -1,
-            'comment'    => 'Specifies when a reminder alert should be issued; -1 means no alert; otherwise the number of seconds prior to the start'
-        ],
-        'email_reminder_checked' => [
-            'name'       => 'email_reminder_checked',
-            'vname'      => 'LBL_EMAIL_REMINDER',
-            'type'       => 'bool',
-            'source'     => 'non-db',
-            'comment'    => 'checkbox indicating whether or not the email reminder value is set (Meta-data only)',
-            'massupdate' => false,
+            'comment'    => 'Specifies when a reminder alert should be issued; -1 means no alert; otherwise the number of seconds prior to the start',
         ],
         'email_reminder_time' => [
             'name'       => 'email_reminder_time',
             'vname'      => 'LBL_EMAIL_REMINDER_TIME',
-            'type'       => 'enum',
+            'type'       => 'activityreminder',
             'dbType'     => 'int',
-            'options'    => 'reminder_time_options',
-            'reportable' => false,
-            'massupdate' => false,
             'default'    => -1,
-            'comment'    => 'Specifies when a email reminder alert should be issued; -1 means no alert; otherwise the number of seconds prior to the start'
+            'comment'    => 'Specifies when a email reminder alert should be issued; -1 means no alert; otherwise the number of seconds prior to the start',
         ],
         'email_reminder_sent' => [
             'name'       => 'email_reminder_sent',
@@ -344,7 +313,6 @@ $dictionary['Meeting'] = [
             'default'    => 0,
             'type'       => 'bool',
             'comment'    => 'Whether email reminder is already sent',
-            'studio'     => false,
             'massupdate' => false,
         ],
         'outlook_id' => [

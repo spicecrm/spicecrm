@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -176,7 +176,7 @@ export class mailboxesEmails implements OnDestroy {
 
     private getMailboxes() {
 
-        this.backend.getRequest("mailboxes/getmailboxes", {scope: 'inbound'}).subscribe(
+        this.backend.getRequest("module/Mailboxes/scope", {scope: 'inbound'}).subscribe(
             (results: any) => {
                 for (let mailbox of results) {
                     this.mailboxes.push({
@@ -233,7 +233,7 @@ export class mailboxesEmails implements OnDestroy {
     public fetchEmails() {
         let responseSubject = new Subject<any>();
 
-        this.backend.getRequest("modules/Mailboxes/" + this.activeMailBox.id + "/fetchemails").subscribe(
+        this.backend.getRequest("module/Mailboxes/" + this.activeMailBox.id + "/fetchemails").subscribe(
             // todo a spinner or sth similar while waiting for the response
             (response: any) => {
                 if (response.new_mail_count > 0) {

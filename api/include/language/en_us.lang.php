@@ -286,6 +286,7 @@ $app_list_strings = [
         '' => '',
         'Mr.' => 'Mr.',
         'Ms.' => 'Ms.',
+        'Mx.' => 'Mx.'
         // 'Mrs.' => 'Mrs.',
         // 'Dr.' => 'Dr.',
         //  'Prof.' => 'Prof.',
@@ -294,9 +295,15 @@ $app_list_strings = [
         '' => '',
         'Mr.' => 'Dear Mr.',
         'Ms.' => 'Dear Ms.',
+        'Mx.' => 'Dear Mx.'
         // 'Mrs.' => 'Mrs.',
         // 'Dr.' => 'Dr.',
         //  'Prof.' => 'Prof.',
+    ],
+    'form_of_address_dom' => [
+        'formal' => 'formal',
+        'normal' => 'normal',
+        'friendly' => 'friendly'
     ],
     'gdpr_marketing_agreement_dom' => [
         '' => '',
@@ -777,10 +784,8 @@ $app_list_strings = [
     'document_status_dom' => [
         'Active' => 'Active',
         'Draft' => 'Draft',
-        'FAQ' => 'FAQ',
         'Expired' => 'Expired',
         'Under Review' => 'Under Review',
-        'Pending' => 'Pending',
     ],
     'document_template_type_dom' => [
         '' => '',
@@ -1049,7 +1054,11 @@ $app_list_strings = [
     'serviceorderitem_status_dom' => [
         'active' => 'Active',
         'inactive' => 'Inactive'
-    ]
+    ],
+    'apilog_direction_dom' => [
+    'I' => 'Inbound',
+    'O' => 'Outbound',
+],
 ];
 $app_list_strings['project_priority_default'] = 'Medium';
 $app_list_strings['project_priority_options'] = [
@@ -1526,6 +1535,7 @@ $app_list_strings['cruser_role_dom'] = [
 ];
 
 $app_list_strings['crstatus_dom'] = [
+    '-1' => 'backlog',
     '0' => 'created',
     '1' => 'in progress',
     '2' => 'unit tested',
@@ -1557,6 +1567,7 @@ $app_list_strings['emailschedule_status_dom'] = [
 $app_list_strings['email_schedule_status_dom'] = [
     'open' => 'open',
     'done' => 'done',
+    'done_with_errors' => 'done with errors',
 ];
 $app_list_strings['moduleList']['KReleasePackages'] = 'K Releasepackages';
 
@@ -1994,6 +2005,7 @@ $app_list_strings['vat_country_dom'] = [
 ];
 
 $app_list_strings['landingpage_content_type_dom'] = [
+    'gate' => 'Gate',
     'html' => 'HTML',
     'questionnaire' => 'Questionnaire'
 ];
@@ -2029,4 +2041,32 @@ $app_list_strings['payments_type_dom'] = [
     'cash' => 'cash',
     'ATM_card' => 'ATM card',
     'credit_card' => 'credit card'
+];
+
+$app_list_strings['qualification_type_dom'] = [];
+
+$app_list_strings['qualification_sub_type_dom'] = [];
+
+$app_list_strings['relationship_type_dom'] = [
+    'mother' => 'mother',
+    'father' => 'father',
+    'daughter' => 'daughter',
+    'son' => 'son',
+    'stepmother' => 'stepmother',
+    'stepfather' => 'stepfather',
+    'brother' => 'brother',
+    'sister' => 'sister',
+    'stepbrother' => 'stepbrother',
+    'stepsister' => 'stepsister',
+    'aunt' => 'aunt',
+    'uncle' => 'uncle',
+    'grandfather' => 'grandfather',
+    'grandmother' => 'grandmother',
+    'female grandchild' => 'female grandchild',
+    'male grandchild' => 'male grandchild',
+    'female cousin' => 'female cousin',
+    'male cousin' => 'male cousin',
+    'acquaintance' => 'acquaintance',
+    'partner' => 'partner',
+    'colleague' => 'colleague'
 ];

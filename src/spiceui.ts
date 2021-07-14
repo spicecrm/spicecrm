@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -38,6 +38,8 @@ import {loggerService} from './services/logger.service';
 import {configurationService} from "./services/configuration.service";
 import {helper} from "./services/helper.service";
 import {loginService, loginCheck} from "./services/login.service";
+import {subscription} from "./services/subscription.service";
+import {notification} from "./services/notification.service";
 import {session} from "./services/session.service";
 import {metadata, aclCheck, noBack} from "./services/metadata.service";
 import {MathExpressionCompilerService} from "./services/mathexpressioncompiler";
@@ -185,11 +187,16 @@ export class SpiceUI {
         loggerService,
         libloader,
         toast,
-        userpreferences
+        userpreferences,
+        notification,
+        subscription
     ]
 })
 export class SpiceUIModule {
-    constructor(private socket: socket) {
+    constructor(
+        private socket: socket,
+        private assistant: assistant
+    ) {
 
     }
 }

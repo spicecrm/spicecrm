@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -24,7 +24,7 @@ import {model} from '../../services/model.service';
     selector: 'object-listview-header-list-selector',
     templateUrl: './src/objectcomponents/templates/objectlistviewheaderlistselector.html'
 })
-export class ObjectListViewHeaderListSelector {
+export class ObjectListViewHeaderListSelector implements OnInit {
 
     /**
      * the componentconfig
@@ -42,31 +42,62 @@ export class ObjectListViewHeaderListSelector {
      * @param elementRef
      * @param renderer
      */
-    constructor(private metadata: metadata, private userpreferences: userpreferences, private modellist: modellist, private language: language, private model: model, private elementRef: ElementRef, private renderer: Renderer2) {
-        let componentconfig = this.metadata.getComponentConfig('ObjectListView', this.model.module);
-        let items = this.metadata.getComponentSetObjects(componentconfig.componentset);
+    constructor(private metadata: metadata,
+                private userpreferences: userpreferences,
+                private modellist: modellist,
+                private language: language,
+                private model: model,
+                private elementRef: ElementRef,
+                private renderer: Renderer2) {
+    }
+
+    /**
+     * call the initialize method
+     */
+    public ngOnInit() {
+        this.initialize();
+    }
+
+    /**
+     * load the component config and update the standard list component if selected
+     * @private
+     */
+    private initialize() {
+
+        this.loadComponentConfig();
+
+        if (!this.modellist.currentList) {
+            return;
+        }
+        // set the default list component if the current list id is all or owner
+        if (['all', 'owner'].indexOf(this.modellist.currentList.id) != -1) {
+            this.modellist.updateStandardListsComponent(this.modellist.currentList.id, this.getDefaultComponent());
+        }
+    }
+
+    /**
+     * get the default component
+     * @private
+     */
+    private getDefaultComponent() {
+        let component = this.userpreferences.getPreference('defaultlisttype', this.modellist.module);
+        return component || this.componentconfig.lists[0].component;
+    }
+
+    /**
+     * load the component config and build the list of the available component
+     * @private
+     */
+    private loadComponentConfig() {
+        let config = this.metadata.getComponentConfig('ObjectListView', this.model.module);
+        let items = this.metadata.getComponentSetObjects(config.componentset);
         this.componentconfig = {
-            lists: []
-        };
-        for (let item of items) {
-            this.componentconfig.lists.push({
+            lists: items.map(item => ({
                 component: item.component,
                 icon: item.componentconfig.icon ? item.componentconfig.icon : 'list',
                 label: item.componentconfig.name
-            });
-        }
-
-        // set the first as default list if not already one is set on the modellist
-        // if (!this.modellist.listcomponent) {
-        let defaultlist = this.userpreferences.getPreference('defaultlisttype', this.modellist.module);
-        if (!defaultlist) {
-            defaultlist = this.componentconfig.lists[0].component;
-        }
-
-        // set the default list component if the current list id is all or owner
-        if (this.modellist.currentList && ['all', 'owner'].indexOf(this.modellist.currentList.id) != -1) {
-            this.modellist.listcomponent = defaultlist;
-        }
+            }))
+        };
     }
 
     /**
@@ -75,8 +106,8 @@ export class ObjectListViewHeaderListSelector {
     get currentListIcon() {
         let icon: string = '';
         if (this.componentconfig.lists) {
-            let thislist = this.componentconfig.lists.find(list => list.component == this.modellist.listcomponent);
-            icon = thislist.icon;
+            let thislist = this.componentconfig.lists.find(list => list.component == this.modellist.currentList.listcomponent);
+            icon = thislist?.icon;
         }
 
         return icon;
@@ -86,7 +117,7 @@ export class ObjectListViewHeaderListSelector {
      * simple getter if the button shoudl be disabled
      */
     get disabled() {
-        return !(this.componentconfig.lists.length > 1);
+        return !(this.componentconfig.lists.length > 1) || this.modellist.isLoading;
     }
 
     /**
@@ -94,8 +125,14 @@ export class ObjectListViewHeaderListSelector {
      *
      * @param component
      */
-    private setListtype(component) {
-        // trigger the listtype on the modellist service
-        this.modellist.listcomponent = component;
+    private setListComponent(component) {
+        if (!this.modellist.currentList) {
+            return;
+        }
+        if (['all', 'owner'].indexOf(this.modellist.currentList.id) != -1) {
+            this.modellist.updateStandardListsComponent(this.modellist.currentList.id, component);
+        } else {
+            this.modellist.updateListTypeComponent(component);
+        }
     }
 }

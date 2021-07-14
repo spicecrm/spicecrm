@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -24,7 +24,7 @@ import {metadata} from '../../services/metadata.service';
 import {fieldGeneric} from './fieldgeneric';
 import {backend} from '../../services/backend.service';
 import {toast} from '../../services/toast.service';
-import {relateFilter} from "../../services/modellist.service";
+import {relateFilter} from "../../services/interfaces.service";
 
 @Component({
     selector: 'field-relate',
@@ -73,17 +73,6 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
     }
 
     /**
-     * simple getter to determine if the field has a link, the view allows for links and if the user has ACL rights to navigate to thte the of the record
-     */
-    get link() {
-        try {
-            return this.view.displayLinks;
-        } catch (e) {
-            return false;
-        }
-    }
-
-    /**
      * returns the currently set id;
      */
     get id() {
@@ -95,7 +84,7 @@ export class fieldRelate extends fieldGeneric implements OnInit, OnDestroy {
         this.relateIdField = fieldDefs.id_name;
         this.relateNameField = this.fieldname;
         this.relateType = fieldDefs.module;
-        this.isAuthorized = this.metadata.checkModuleAcl(fieldDefs.module, 'list');
+        this.isAuthorized = this.metadata.checkModuleAcl(fieldDefs.module, 'list') || this.metadata.checkModuleAcl(fieldDefs.module, 'listrelated');
         this.handleRelateFIlterField();
 
     }

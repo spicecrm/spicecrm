@@ -29,6 +29,7 @@
 namespace SpiceCRM\includes\SpiceFTSManager;
 
 use DateTime;
+use SpiceCRM\includes\SugarObjects\SpiceModules;
 
 /**
  * Class SpiceFTSAggregates
@@ -39,11 +40,16 @@ use DateTime;
 class SpiceFTSAggregates
 {
 
+    var $module;
     var $aggregateFields = [];
     var $aggregatesFilters = [];
 
-    function __construct($indexProperties, $aggregatesFilters, $indexSettings = [])
+    function __construct($module, $indexProperties, $aggregatesFilters, $indexSettings = [])
     {
+
+        // set the module
+        $this->module = $module;
+
         foreach ($indexProperties as $indexProperty) {
             if ($indexProperty['search']) {
                 $searchFields[] = $indexProperty['indexfieldname'];
@@ -155,7 +161,7 @@ class SpiceFTSAggregates
                     break;
                 case 'term':
                     $aggParams = ['terms' => [
-                        'size' => isset($aggregateIndexFieldData['aggregatesize']) ? $aggregateIndexFieldData['aggregatesize'] : 10,
+                        'size' => !empty($aggregateIndexFieldData['aggregatesize']) ? (int) $aggregateIndexFieldData['aggregatesize'] : 10,
                         'field' => $aggregateIndexFieldData['indexfieldname'] . '.agg'
                     ]];
 
@@ -191,30 +197,35 @@ class SpiceFTSAggregates
             }
         }
 
-        // add tags
-        $tagAggregator = [
-            'terms' => [
-                'field' => 'tags.agg',
-                'size' => 25
-            ]
-        ];
+
 
         $aggFilters = [];
         foreach ($this->aggregatesFilters as $aggregatesFilter => $aggregatesFilterValues) {
-            if ($aggregatesFilter != 'tags') {
+            if (SpiceModules::getInstance()->taggingActive($this->module) && $aggregatesFilter != 'tags') {
                 $aggFilters['bool']['must'][] = SpiceFTSFilters::buildFiltersFromAggregate('tags', $aggregatesFilterValues);
             }
         }
-        if (count($aggFilters) > 0) {
-            $aggs['tags'] = [
-                'filter' => $aggFilters,
-                'aggs' => [
-                    'tags' => $tagAggregator
+
+        // add tags
+        if(SpiceModules::getInstance()->taggingActive($this->module)) {
+            $tagAggregator = [
+                'terms' => [
+                    'field' => 'tags.agg',
+                    'size' => 25
                 ]
             ];
-        } else {
-            $aggs['tags'] = $tagAggregator;
+            if (count($aggFilters) > 0) {
+                $aggs['tags'] = [
+                    'filter' => $aggFilters,
+                    'aggs' => [
+                        'tags' => $tagAggregator
+                    ]
+                ];
+            } else {
+                $aggs['tags'] = $tagAggregator;
+            }
         }
+
 
         // add the field info so we can later on enrich thje reponse
         /*
@@ -230,7 +241,7 @@ class SpiceFTSAggregates
 
     function processAggregations(&$aggregations)
     {
-        $appListStrings = return_app_list_strings_language($GLOBALS['current_language']);
+        // $appListStrings = return_app_list_strings_language($GLOBALS['current_language']);
 
         foreach ($aggregations as $aggField => $aggData) {
 
@@ -241,6 +252,7 @@ class SpiceFTSAggregates
             $aggregations[$aggField]['name'] = $this->aggregateFields[$aggField]['name'];
             $aggregations[$aggField]['type'] = $this->aggregateFields[$aggField]['type'];
 
+//            $buckets = $aggregations[$aggField]['buckets'] ?: $aggregations[$aggField][$aggField]['buckets'];
             $buckets = !empty($aggregations[$aggField]['buckets']) ? $aggregations[$aggField]['buckets'] : (!empty($aggregations[$aggField][$aggField]['buckets']) ? $aggregations[$aggField][$aggField]['buckets'] : []);
 
             foreach ($buckets as $aggItemIndex => &$aggItemData) {
@@ -293,21 +305,8 @@ class SpiceFTSAggregates
                         $aggItemData['aggdata'] = $this->getAggItemData($aggItemData);
                         break;
                     default:
-                        switch ($this->aggregateFields[$aggField]['metadata']['type']) {
-                            case 'multienum':
-                            case 'enum':
-                                $aggItemData['displayName'] = $appListStrings[$this->aggregateFields[$aggField]['metadata']['options']][$aggItemData['key']] ?: $aggItemData['key'];
-                                $aggItemData['aggdata'] = $this->getAggItemData($aggItemData);
-                                break;
-                            case 'bool':
-                                $aggItemData['displayName'] = $appListStrings['dom_int_bool'][$aggItemData['key']];
-                                $aggItemData['aggdata'] = $this->getAggItemData($aggItemData);
-                                break;
-                            default:
-                                $aggItemData['displayName'] = $aggItemData['key'];
-                                $aggItemData['aggdata'] = $this->getAggItemData($aggItemData);
-                                break;
-                        }
+                        $aggItemData['displayName'] = $aggItemData['key'];
+                        $aggItemData['aggdata'] = $this->getAggItemData($aggItemData);
                         break;
                 }
 

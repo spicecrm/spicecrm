@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -50,7 +50,7 @@ export class ACLObjectsManagerObjectFieldvalues {
         if (aclTypeId && this.loadedtype != aclTypeId) {
             this.loadedtype = aclTypeId;
             // get the fields
-            this.backend.getRequest('spiceaclobjects/authtypes/' + aclTypeId).subscribe(typedata => {
+            this.backend.getRequest('module/SpiceACLObjects/modules/' + aclTypeId).subscribe(typedata => {
                 this.fields = typedata.authtypefields;
             });
         }

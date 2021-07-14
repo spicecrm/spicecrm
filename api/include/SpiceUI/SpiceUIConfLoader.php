@@ -91,12 +91,12 @@ class SpiceUIConfLoader
     public function __construct($endpoint = null)
     {
         global $dictionary;
-$current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $this->loader = new SpiceUILoader($endpoint);
 
         // module dictionaries are unknown at that time
         // load them to make sure DBManager will have proper content in global $dictionary
-        SpiceModules::loadModules();
+        SpiceModules::getInstance()->loadModules();
         foreach($_SESSION['modules']['moduleList'] as $idx => $module){
             VardefManager::loadVardef($module, $_SESSION['modules']['beanList'][$module]);
         }
@@ -236,6 +236,38 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
         }
 
         $this->sysuitables = array_keys($response);
+
+        // workaround for packages in which a config entries refer to table that hasn't been created yet
+        // e.g. uomunits in productmanagement package
+        // check if you already have the tables in the database
+        // create them if not and send a repair notification
+        foreach($this->sysuitables as $tb){
+            if(!$db->tableExists($tb)){
+                // add the sysmodule entry that should be contained in this package
+                if(isset($response['sysmodules']) && !empty($response['sysmodules'])) {
+                    foreach($response['sysmodules'] as $moduleId => $encoded){
+                        if ($decodeData = json_decode(base64_decode($encoded), true)){
+                            //prepare values for DB query
+                            foreach ($decodeData as $key => $value) {
+                                $decodeData[$key] = (is_null($value) || $value === "" ? NULL :  $value);
+                            }
+                            // echo print_r($decodeData, true);
+                            //delete before insert
+                            $delWhere = ['id' => $decodeData['id']];
+                            if(!$db->deleteQuery($tb, $delWhere)){
+                                LoggerManager::getLogger()->fatal("error deleting entry {$decodeData['id']} ".$db->lastError());
+                            }
+                            if(!$db->insertQuery('sysmodules', $decodeData, true)){
+                                $db->transactionRollback();
+                                die('Error inserting record into sysmodules '.$db->lastDbError());
+                            }
+                        }
+                    }
+                    $db->transactionCommit();
+                    die('Please log out, relogin, run repair/ rebuild, then reload this package');
+                }
+            }
+        }
 
         if (!empty($response['nodata'])) {
             die($response['nodata']);

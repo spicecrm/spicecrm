@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -86,9 +86,8 @@ export class fieldRelateList extends fieldGeneric implements OnInit {
         if (!this.relateType) {
             return;
         }
-        let fields = ['id', 'summary_text'];
         let params = {limit: this.fieldconfig.limit || -1, modulefilter: this.fieldconfig.modulefilter};
-        this.backend.getList(this.relateType, [{sortfield: 'name', sortirection: 'ASC'}], fields, params)
+        this.backend.getList(this.relateType, [{sortfield: 'name', sortirection: 'ASC'}], params)
             .subscribe((res: any) => {
                 if (res && res.list) {
                     this.relatedList = res.list;

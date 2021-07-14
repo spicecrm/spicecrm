@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -68,18 +68,53 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
             if (modelFields.currency_id) this.currencyidfield = 'currency_id';
         }
 
+        // set teh default currency ID
+        this.setDefaultCurrencyId();
+
         // get the formatted value
         this.textvalue = this.getValAsText();
         this.subscriptions.add(this.model.data$.subscribe(() => {
             this.textvalue = this.getValAsText();
         }));
+
+        this.setCurrencyFromPreferences();
     }
 
-    get currencyId(){
+    /**
+     * sets a default currency id fromt he preferences or if nothing is set to -99
+     * @private
+     */
+    private setDefaultCurrencyId() {
+        if (this.currencyidfield) {
+            if (!this.model.getField(this.currencyidfield)) {
+                let preferredCurrency = this.userpreferences.getPreference('currency');
+                if (preferredCurrency) {
+                    this.currencyId = preferredCurrency;
+                } else {
+                    this.currencyId = '-99';
+                }
+            }
+        }
+    }
+
+    /**
+     * setter for teh currency ID
+     *
+     * @param currencyId
+     */
+    set currencyId(currencyId) {
+        if (this.currencyidfield) {
+            this.model.setField(this.currencyidfield, currencyId);
+        }
+    }
+
+    /**
+     * a getter for the currency ID
+     */
+    get currencyId() {
         let currencyid = -99;
         if (this.currencyidfield) {
-            if (!this.model.data[this.currencyidfield]) return '';
-            else currencyid = this.model.data[this.currencyidfield];
+            return this.model.getField(this.currencyidfield);
         }
         return currencyid;
     }
@@ -131,7 +166,7 @@ export class fieldCurrency extends fieldGeneric implements OnInit {
         }
         this.textvalue = this.getValAsText();
         // set a brieftimeout and set the current pos back to the field tricking the Change Detection
-        setTimeout(()=> {
+        setTimeout(() => {
             this.inputel.nativeElement.selectionEnd = curpos;
         });
     }

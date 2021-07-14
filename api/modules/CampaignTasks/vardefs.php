@@ -172,14 +172,15 @@ $dictionary['CampaignTask'] = [
             'type' => 'text',
             'comment' => 'Plain text body to be used in resulting email',
             'stylesheet_id_field' => 'email_stylesheet_id',
-            'comment' => 'the body when an email is composed right in the campaigntask'
+            'audited' => false
         ],
         'email_spb' => [
             'name' => 'email_spb',
             'vname' => 'LBL_EMAIL_SPB',
             'type' => 'json',
             'dbType' => 'text',
-            'comment' => 'save the json structure of the page builder'
+            'comment' => 'save the json structure of the page builder',
+            'audited' => false
         ],
         'via_spb' => [
             'name' => 'via_spb',

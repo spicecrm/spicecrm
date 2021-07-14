@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -45,6 +45,7 @@ import /*embed*/ {EmailActionSetReadButton} from "./components/emailactionsetrea
 import /*embed*/ {EmailTemplatesEditor} from "./components/emailtemplateseditor";
 import /*embed*/ {EmailTemplatesPreview} from "./components/emailtemplatespreview";
 import /*embed*/ {fieldEmailSubject} from "./fields/fieldemailsubject";
+import /*embed*/ {fieldEmailActivityOpenness} from "./fields/fieldemailactivityopenness";
 
 @NgModule({
     imports: [
@@ -77,7 +78,8 @@ import /*embed*/ {fieldEmailSubject} from "./fields/fieldemailsubject";
         EmailActionSetReadButton,
         EmailTemplatesEditor,
         EmailTemplatesPreview,
-        fieldEmailSubject
+        fieldEmailSubject,
+        fieldEmailActivityOpenness
     ]
 })
 export class ModuleEmails {}

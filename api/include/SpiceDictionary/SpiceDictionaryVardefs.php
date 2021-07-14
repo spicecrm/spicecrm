@@ -970,7 +970,7 @@ AND sysdi.deleted = 0 AND sysdi.status = 'a'
                 'fieldtype' => $fieldDef['type'],
                 'fielddefinition' => json_encode($fieldDef)
             ];
-            file_put_contents('spicecrm.log', 'calling '.__FUNCTION__.print_r($GLOBALS['dictionary']['name'], true)."\n", FILE_APPEND);
+            //file_put_contents('spicecrm.log', 'calling '.__FUNCTION__.print_r($GLOBALS['dictionary']['name'], true)."\n", FILE_APPEND);
 
             if(!$db->insertQuery('sysdictionaryfields', $insertParams, true)){
                 $GLOBALS['log']->fatal('error insert to sysdictionaryfields cached entry with dictionary id '.$dict['id'].' '.$db->lastError());

@@ -247,6 +247,12 @@ $dictionary['email_addr_bean_rel'] = [
             'type' => 'datetime'
         ],
         [
+            'name' => 'opt_in_status',
+            'type' => 'varchar',
+            'len' => 24,
+            'comment' => 'possible values opted_in, opted_out, pending'
+        ],
+        [
             'name' => 'deleted',
             'type' => 'bool',
             'default' => 0,
@@ -254,19 +260,24 @@ $dictionary['email_addr_bean_rel'] = [
     ],
     'indices' => [
         [
-            'name' => 'email_addresses_relpk',
+            'name' => 'email_addr_bean_relpk',
             'type' => 'primary',
             'fields' => ['id']
         ],
         [
-            'name' => 'idx_email_address_id',
+            'name' => 'idx_email_addr_bean_rel_email_address_id',
             'type' => 'index',
             'fields' => ['email_address_id']
         ],
         [
-            'name' => 'idx_bean_id',
+            'name' => 'idx_email_addr_bean_rel_bean_id_module',
             'type' => 'index',
             'fields' => ['bean_id', 'bean_module'],
+        ],
+        [
+            'name' => 'idx_email_addr_bean_rel_optinstatus_del',
+            'type' => 'index',
+            'fields' => ['opt_in_status', 'deleted'],
         ],
     ],
     'relationships' => [//Defined in Person/Company template vardefs

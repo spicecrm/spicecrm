@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -59,6 +59,13 @@ export class ObjectListViewAggregateItem {
     }
 
     /**
+     * returns if the modellist is loading and thus disabled the checkboxes
+     */
+    get loading() {
+        return this.modellist.isLoading;
+    }
+
+    /**
      * a setter for the checked value of teh checkbox. A change triggers teh set int eh listservice and a refiltering
      *
      * @param value
@@ -67,8 +74,10 @@ export class ObjectListViewAggregateItem {
         this.isChecked = value;
         if (value) {
             this.modellist.setAggregate(this.aggregatename, this.bucketitem.aggdata);
+            this.modellist.reLoadList();
         } else {
-            this.modellist.removeAggregate(this.aggregatename, this.bucketitem.aggdata);
+            const removed = this.modellist.removeAggregate(this.aggregatename, this.bucketitem.aggdata);
+            if (removed) this.modellist.reLoadList();
         }
     }
 

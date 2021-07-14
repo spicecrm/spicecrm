@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -112,7 +112,7 @@ export class fieldEmailTemplates extends fieldGeneric implements OnInit {
     private chooseTemplate(event) {
         if (this.value != '') {
             this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {
-                this.backend.getRequest('EmailTemplates/parse/' + this.value + '/' + this.model.getFieldValue('parent_type') + '/' + this.model.getFieldValue('parent_id')).subscribe((data: any) => {
+                this.backend.getRequest('module/EmailTemplates/' + this.value + '/parse/' + this.model.getFieldValue('parent_type') + '/' + this.model.getFieldValue('parent_id')).subscribe((data: any) => {
                     // nur überschreiben wenn nicht bereits ein subject angegeben wurde.
                     if (!this.model.data[this.subjectField]) {
                         this.model.setField(this.subjectField, data.subject);

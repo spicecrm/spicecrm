@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -111,7 +111,7 @@ export class SpiceGoogleMapsListHeader implements OnInit, OnDestroy {
     private doSearch() {
         this.searchTermOld = this.searchTerm;
         this.modellist.searchTerm = this.searchTerm;
-        this.modellist.getListData(this.requestfields);
+        this.modellist.getListData();
     }
 
     /**

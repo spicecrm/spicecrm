@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -39,7 +39,7 @@ export class SpiceAttachmentStats {
      */
     private analyze() {
         this.analysisresults = [];
-        this.backend.getRequest('spiceAttachments/admin').subscribe(res => {
+        this.backend.getRequest('common/spiceattachments/admin').subscribe(res => {
             for (let module in res) {
                 this.analysisresults.push({
                     module: module,
@@ -67,7 +67,7 @@ export class SpiceAttachmentStats {
      * @private
      */
     private delete() {
-        this.backend.postRequest('spiceAttachments/admin/cleanup').subscribe(res => {
+        this.backend.postRequest('common/spiceattachments/admin/cleanup').subscribe(res => {
             this.analyze();
         });
     }

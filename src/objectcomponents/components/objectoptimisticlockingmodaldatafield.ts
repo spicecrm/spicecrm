@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -20,7 +20,7 @@ import {view} from '../../services/view.service';
 @Component({
     selector: 'object-optimisitclocking-modal-data-field',
     templateUrl: './src/objectcomponents/templates/objectoptimisticlockingmodaldatafield.html',
-    providers: [model, view]
+    providers: [model]
 })
 export class ObjectOptimisticLockingModalDataField implements OnInit {
 

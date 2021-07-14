@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -113,7 +113,7 @@ export class fieldModelAttachment extends fieldGeneric {
     public getAttachment(): Observable<any> {
         let retSubject = new Subject();
         // somewhat ugly logic to get the prefix from the field .. it has to end with name
-        this.backend.getRequest(`spiceAttachments/module/${this.model.module}/${this.model.id}/byfield/${this.prefix}`).subscribe(
+        this.backend.getRequest(`common/spiceattachments/module/${this.model.module}/${this.model.id}/byfield/${this.prefix}`).subscribe(
             fileData => {
                 retSubject.next(fileData.file);
                 retSubject.complete();

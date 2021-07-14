@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -90,7 +90,7 @@ export class ACLProfilesManagerProfiles {
     }
 
     private activateProfile(profileid) {
-        this.backend.postRequest('spiceaclprofiles/' + profileid + '/activate').subscribe(aclobjects => {
+        this.backend.postRequest('module/SpiceACLProfiles/' + profileid + '/activation').subscribe(aclobjects => {
             this.aclprofiles.some(profile => {
                 if (profile.id == profileid) {
                     profile.status = 'r';
@@ -101,7 +101,7 @@ export class ACLProfilesManagerProfiles {
     }
 
     private deactivateProfile(profileid) {
-        this.backend.postRequest('spiceaclprofiles/' + profileid + '/deactivate').subscribe(aclobjects => {
+        this.backend.deleteRequest('module/SpiceACLProfiles/' + profileid + '/activation').subscribe(aclobjects => {
             this.aclprofiles.some(profile => {
                 if (profile.id == profileid) {
                     profile.status = 'd';

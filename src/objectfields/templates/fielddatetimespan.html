@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -13,35 +13,56 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 <ng-container *ngIf="!isEditMode()">
     <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
     <field-generic-display  [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
-        {{formattedStartDate}}&nbsp;-&nbsp;{{formattedEndDate}}
+        <system-display-datetime [date]="startDate"></system-display-datetime>&nbsp;-&nbsp;<system-display-datetime [date]="endDate" [displayDate]="showToDate"></system-display-datetime>
     </field-generic-display>
 </ng-container>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-p-around--xx-small" [ngClass]="css_classes">
-    <fieldset class="slds-form--compound">
-        <div class="slds-form-element__group">
-            <div class="slds-form-element__row">
-                <div class="slds-form-element slds-size--1-of-2">
+    <div *ngIf="vertical; else horizontal" class="slds-grid slds-grid--vertical">
+        <div class="slds-grid slds-gutters_xx-small">
+            <div class="slds-form-element slds-col slds-size--1-of-2" >
+                <label class="slds-form-element__label"><abbr *ngIf="stati.editable && stati.required" class="slds-required">*</abbr><system-label label="LBL_DATE_START"></system-label></label>
+                <system-input-date [(ngModel)]="startDate"></system-input-date>
+            </div>
+            <div class="slds-form-element slds-col slds-size--1-of-2 slds-m-top--none">
+                <label class="slds-form-element__label"><system-label label="LBL_TIME_START"></system-label></label>
+                <system-input-time [(ngModel)]="startDate"></system-input-time>
+            </div>
+        </div>
+        <div class="slds-grid slds-gutters_xx-small">
+            <div class="slds-form-element slds-col slds-size--1-of-2">
+                <label class="slds-form-element__label"><abbr *ngIf="stati.editable && stati.required" class="slds-required">*</abbr><system-label label="LBL_DATE_END"></system-label></label>
+                <system-input-date [(ngModel)]="endDate"></system-input-date>
+            </div>
+            <div class="slds-form-element slds-col slds-size--1-of-2 slds-m-top--none">
+                <label class="slds-form-element__label"><system-label label="LBL_TIME_END"></system-label></label>
+                <system-input-time [(ngModel)]="endDate"></system-input-time>
+            </div>
+        </div>
+    </div>
+    <!-- for the horizontal representation-->
+    <ng-template #horizontal>
+        <div class="slds-grid slds-wrap slds-gutters_xx-small">
+            <div class="slds-grid slds-col slds-gutters_xx-small slds-size--1-of-1 slds-large-size--1-of-2">
+                <div class="slds-form-element slds-col slds-size--1-of-2" >
                     <label class="slds-form-element__label"><abbr *ngIf="stati.editable && stati.required" class="slds-required">*</abbr><system-label label="LBL_DATE_START"></system-label></label>
                     <system-input-date [(ngModel)]="startDate"></system-input-date>
                 </div>
-                <div class="slds-form-element slds-size--1-of-2 slds-m-top--none">
+                <div class="slds-form-element slds-col slds-size--1-of-2 slds-m-top--none">
                     <label class="slds-form-element__label"><system-label label="LBL_TIME_START"></system-label></label>
                     <system-input-time [(ngModel)]="startDate"></system-input-time>
                 </div>
             </div>
-        </div>
-        <div class="slds-form-element__group">
-            <div class="slds-form-element__row">
-                <div class="slds-form-element slds-size--1-of-2">
+            <div class="slds-grid slds-col slds-gutters_xx-small slds-size--1-of-1 slds-large-size--1-of-2">
+                <div class="slds-form-element slds-col slds-size--1-of-2">
                     <label class="slds-form-element__label"><abbr *ngIf="stati.editable && stati.required" class="slds-required">*</abbr><system-label label="LBL_DATE_END"></system-label></label>
                     <system-input-date [(ngModel)]="endDate"></system-input-date>
                 </div>
-                <div class="slds-form-element slds-size--1-of-2 slds-m-top--none">
+                <div class="slds-form-element slds-col slds-size--1-of-2 slds-m-top--none">
                     <label class="slds-form-element__label"><system-label label="LBL_TIME_END"></system-label></label>
                     <system-input-time [(ngModel)]="endDate"></system-input-time>
                 </div>
             </div>
         </div>
-    </fieldset>
+    </ng-template>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>

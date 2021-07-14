@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -44,7 +44,7 @@ export class fieldSelectTreeSearch
     ngOnInit(){
         if( !this.config.getData('select_tree_tree') )
         {
-            this.backend.getRequest('spiceui/core/selecttree/tree/'+ this.treekey).subscribe(
+            this.backend.getRequest('configuration/spiceui/core/selecttree/tree/'+ this.treekey).subscribe(
                 (res:any) => {
                     this.config.setData('select_tree_tree', res);
                     this.flatteningOutCategoryTree(res);

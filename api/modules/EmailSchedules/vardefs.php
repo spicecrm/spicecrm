@@ -1,6 +1,7 @@
 <?php
 
 use SpiceCRM\includes\SugarObjects\VardefManager;
+
 global $dictionary;
 $dictionary['EmailSchedule'] = [
     'table' => 'emailschedules',
@@ -46,9 +47,49 @@ $dictionary['EmailSchedule'] = [
             'vname' => 'LBL_STYLESHEET',
             'type' => 'varchar',
             'len' => 36
-        ]
+        ],
+        'prospectlists' => [
+            'name' => 'prospectlists',
+            'vname' => 'LBL_PROSPECTLISTS',
+            'type' => 'link',
+            'relationship' => 'prospectlist_emailschedules',
+            'source' => 'non-db',
+            'module' => 'ProspectLists'
+        ],
+        'parent_name' => [
+            'name'       => 'parent_name',
+            'type_name'   => 'parent_type',
+            'id_name'     => 'parent_id',
+            'type'       => 'parent',
+            'vname'      => 'LBL_RELATED_TO',
+            'source'     => 'non-db',
+        ],
+        'parent_type' => [
+            'name'       => 'parent_type',
+            'type'       => 'varchar',
+            'len'        => 100,
+            'comment'    => 'Identifier of Sugar module to which this email schedule is associated',
+        ],
+        'parent_id' => [
+            'name'       => 'parent_id',
+            'type'       => 'id',
+            'comment'    => 'ID of Sugar object referenced by parent_type',
+        ],
     ],
-    'relationships' => [],
+    'relationships' => [
+        'prospectlist_emailschedules' =>
+            [
+                'lhs_module' => 'ProspectLists',
+                'lhs_table' => 'prospect_lists',
+                'lhs_key' => 'id',
+                'rhs_module' => 'EmailSchedules',
+                'rhs_table' => 'emailschedules',
+                'rhs_key' => 'parent_id',
+                'relationship_type' => 'one-to-many',
+                'relationship_role_column' => 'parent_type',
+                'relationship_role_column_value' => 'ProspectLists'
+            ]
+    ],
     'indices' => [],
 ];
 

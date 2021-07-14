@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -51,7 +51,7 @@ export class EmailSchedulesView {
      */
     private getData() {
         this.isLoading = true;
-        this.backend.getRequest(`module/${this.model.module}/${this.model.id}/myOpenSchedules`).subscribe(result => {
+        this.backend.getRequest(`module/EmailSchedules/myopen/${this.model.id}`).subscribe(result => {
             if (result.status) {
                 this.isLoading = false;
                 this.emailschedules = result.openschedules;

@@ -1,4 +1,3 @@
-Options -Indexes
 RewriteEngine On
 
 # Some hosts may require you to use the `RewriteBase` directive.
@@ -17,7 +16,8 @@ RewriteCond %{REQUEST_URI} ^(.*)KREST(.*)$
 RewriteRule ^ KREST/krestlegacy.php [QSA,L]
 
 RewriteCond %{REQUEST_URI} ^(.*)soap(.*)$
-RewriteRule ^ soap.php [QSA,L]
+RewriteRule ^ service/v4_1/soap.php [QSA,L]
+#RewriteRule ^ soap.php [QSA,L]
 
 RewriteCond %{REQUEST_URI} !^(.*)KREST(.*)$
 RewriteRule ^ index.php [QSA,L]

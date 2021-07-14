@@ -10,8 +10,10 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\utils\SpiceUtils;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use SpiceCRM\includes\SpiceSlim\SpiceResponse as Response;
 
-class coreController
+class CoreController
 {
     /**
      * helper to generate a GUID
@@ -21,7 +23,7 @@ class coreController
      * @param $args
      * @return mixed
      */
-    public function generateGuid($req, $res, $args)
+    public function generateGuid(Request $req, Response $res, $args): Response
     {
         return $res->withJson(['id' => SpiceUtils::createGuid()]);
     }
@@ -50,7 +52,7 @@ class coreController
      * @param $args
      * @return mixed
      */
-    public function getSysinfo($req, $res, $args) {
+    public function getSysinfo(Request $req, Response $res, array $args): Response {
 
         if (isset(SpiceConfig::getInstance()->config['syslanguages']['spiceuisource']) && SpiceConfig::getInstance()->config['syslanguages']['spiceuisource'] == 'db') {
 
@@ -110,7 +112,7 @@ class coreController
      * @param $args
      * @return mixed
      */
-    function postHttpErrors($req, $res, $args)
+    function postHttpErrors(Request $req, Response $res, $args): Response
     {
         $errors = $req->getParsedBody()['errors'];
         $logtext = '';
@@ -128,11 +130,11 @@ class coreController
      * @param $args
      * @return mixed
      */
-    function storeTmpFile($req, $res, $args)
+    function storeTmpFile(Request $req, Response $res, $args): Response
     {
         $postBody = file_get_contents('php://input');
         $temppath = sys_get_temp_dir();
-        $filename = create_guid();
+        $filename = SpiceUtils::createGuid();
         file_put_contents($temppath . '/' . $filename, base64_decode($postBody));
         return $res->withJson(['filepath' => $temppath . '/' . $filename]);
     }
@@ -202,7 +204,7 @@ class coreController
     /**
      * get redirection data for a short url
      */
-    function getRedirection($req, $res, $args)
+    function getRedirection(Request $req, Response $res, $args): Response
     {
         $redirectTo = DBManagerFactory::getInstance()->getOne(sprintf('SELECT route FROM sysshorturls WHERE urlkey = "%s" AND active = 1 AND deleted = 0', $args['key']));
         return $res->withJson(['redirection' => $redirectTo]);
@@ -224,10 +226,11 @@ class coreController
      */
     public function getSwagger($req, $res, $args) {
         $postBody = $req->getParsedBody();
+        $node       = $postBody['node'] ?: "/";
         $extensions = $postBody['extensions'];
         $modules    = $postBody['modules'];
 //        $extensionName = $args['extensionName'] ?: '';
-        $res->getBody()->write(RESTManager::getInstance()->getSwagger($extensions, $modules));
+        $res->getBody()->write(RESTManager::getInstance()->getSwagger($extensions, $modules, $node));
         return $res->withHeader('Content-Type', 'text/yaml');
     }
 

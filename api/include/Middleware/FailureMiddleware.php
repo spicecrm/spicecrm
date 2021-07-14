@@ -4,7 +4,7 @@ namespace SpiceCRM\includes\Middleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
-use Slim\Psr7\Response;
+use SpiceCRM\includes\SpiceSlim\SpiceResponse;
 
 abstract class FailureMiddleware
 {
@@ -19,14 +19,15 @@ abstract class FailureMiddleware
      * @return ResponseInterface
      */
     protected function generateResponse($payload, $httpCode, $specialResponseHeaders = null): ResponseInterface {
-        $response = (new Response())->withStatus($httpCode?:500);
+        $response = (new SpiceResponse())->withStatus($httpCode?:500);
         $response->withHeader('Content-Type', 'application/json');
         if (!empty($specialResponseHeaders)) {
             foreach ($specialResponseHeaders as $k => $v) {
                 $response = $response->withHeader($k, $v);
             }
         }
-        $response->getBody()->write(json_encode(['error' => $payload]));
+
+        $response->withJson(['error' => $payload]);
         // todo JSON_PARTIAL_OUTPUT_ON_ERROR is missing
         return $response;
     }

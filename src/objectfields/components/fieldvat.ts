@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -21,57 +21,59 @@ import {metadata} from '../../services/metadata.service';
 import {backend} from '../../services/backend.service';
 import {toast} from '../../services/toast.service';
 import {fieldGeneric} from './fieldgeneric';
-import {Router}   from '@angular/router';
+import {Router} from '@angular/router';
 
 @Component({
     selector: 'field-vat',
     templateUrl: './src/objectfields/templates/fieldvat.html'
 })
 
-export class fieldVat extends fieldGeneric
-{
+export class fieldVat extends fieldGeneric {
 
-    isvalidating: boolean = false;
+    private isvalidating: boolean = false;
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private backend: backend, private toast: toast) {
         super(model, view, language, metadata, router);
     }
 
     get vatDetailsField() {
-        return this.fieldconfig['vatdetails'] ? this.fieldconfig['vatdetails'] : 'vat_details';
+        return this.fieldconfig.vatdetails ? this.fieldconfig.vatdetails : 'vat_details';
     }
 
-    validate() {
+    private validate() {
         this.isvalidating = true;
-        this.backend.getRequest('module/Accounts/VIES/' + this.model.data[this.fieldname]).subscribe((response: any) => {
-            if (response.status == 'success') {
-                if (response.data.valid !== true) {
-                    this.toast.sendToast(this.language.getLabel('ERR_INVALID_VAT'), 'error');
+        this.backend.getRequest(`common/VIES/${this.value}`).subscribe(
+            (response: any) => {
+                if (response.status == 'success') {
+                    if (response.data.valid !== true) {
+                        this.toast.sendToast(this.language.getLabel('ERR_INVALID_VAT'), 'error');
+                    }
+                    this.model.data.vat_details = JSON.stringify(response.data);
+                } else {
+                    this.toast.sendToast(this.language.getLabel('ERR_CHECK_VAT'), 'error');
                 }
-                this.model.data.vat_details = JSON.stringify(response.data);
-            } else {
+                this.isvalidating = false;
+            },
+            () => {
+                this.isvalidating = false;
                 this.toast.sendToast(this.language.getLabel('ERR_CHECK_VAT'), 'error');
             }
-            this.isvalidating = false;
-        })
+        );
     }
 
     get cancheck() {
-        if (this.model.data[this.fieldname] && this.model.data[this.fieldname].length > 3)
-            return true;
-        else
-            return false;
+        return (this.value && this.value.length > 3);
     }
 
     get isvalid() {
-        if (!this.model.data[this.vatDetailsField]) return false;
+        if (!this.model.getField(this.vatDetailsField)) return false;
 
-        let vatInfo = JSON.parse(this.model.data[this.vatDetailsField]);
+        let vatInfo = JSON.parse(this.model.getField(this.vatDetailsField));
         return vatInfo.valid;
     }
 
     get vatInfo() {
-        let vatInfo = JSON.parse(this.model.data[this.vatDetailsField]);
+        let vatInfo = JSON.parse(this.model.getField(this.vatDetailsField));
         return vatInfo.name + '\n' + vatInfo.address;
     }
 }

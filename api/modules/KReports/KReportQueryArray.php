@@ -1,5 +1,5 @@
 <?php
-
+/***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\KReports;
 

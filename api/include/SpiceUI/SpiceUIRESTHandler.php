@@ -80,7 +80,7 @@ class SpiceUIRESTHandler
     function getModules()
     {
         global $moduleList, $modInvisList;
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+$current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         SpiceACL::getInstance()->filterModuleList($moduleList);
         SpiceACL::getInstance()->filterModuleList($modInvisList);
@@ -205,7 +205,7 @@ class SpiceUIRESTHandler
     function setComponentSets($data)
     {
 
-        $db = DBManagerFactory::getInstance();
+$db = DBManagerFactory::getInstance();
 
         $this->checkAdmin();
 
@@ -432,7 +432,7 @@ class SpiceUIRESTHandler
         $sysuirole_id = $args['roleid'];
         $retArray = [];
 
-        switch ($args['default']) {
+        switch ($args['action']) {
             case 'new':
                 $guid = create_guid();
                 $entry = $this->db->fetchByAssoc($this->db->query("SELECT * FROM sysuiuserroles WHERE sysuirole_id = '$sysuirole_id' AND user_id = '$user_id'"));
@@ -715,7 +715,7 @@ class SpiceUIRESTHandler
                       fieldname = '{$con['fieldname']}',
                       comparator = '{$con['comparator']}',
                       valuations = '".$this->db->quote($con['valuations'])."',
-                      onchange = '{$con[onchange]}',
+                      onchange = '{$con['onchange']}',
                       deleted = ".(int)$con['deleted'];
                 if (!$this->db->query($sql)) {
                     $failed = true;
@@ -780,7 +780,7 @@ class SpiceUIRESTHandler
                 WHERE `module` = '{$module}' AND deleted = 0 AND active = 1
                 ORDER BY priority ASC";
         $res = $this->db->query($sql);
-        while($row = $this->db->fetchByAssoc($res, false))
+        while($row = $this->db->fetchByAssoc($res))
         {
             $return['validations'] = $this->getModelValidations($row['id']);
         }
@@ -791,7 +791,7 @@ class SpiceUIRESTHandler
     {
         $sql = "SELECT * FROM sysuimodelvalidations WHERE id = '{$id}'";
         $res = $this->db->query($sql);
-        $return = $this->db->fetchByAssoc($res, false);
+        $return = $this->db->fetchByAssoc($res);
         if( !$return['logicoperator'] ){    $return['logicoperator'] = 'and';   }
         if( json_decode($return['onevents']) ){$return['onevents'] = json_decode($return['onevents']);}
 
@@ -800,17 +800,17 @@ class SpiceUIRESTHandler
         $sql = "SELECT * FROM sysuimodelvalidationconditions 
                 WHERE sysuimodelvalidation_id = '{$return['id']}' AND deleted = 0";
         $res = $this->db->query($sql);
-        while($row = $this->db->fetchByAssoc($res, false))
+        while($row = $this->db->fetchByAssoc($res))
         {
             if( json_decode($row['valuations']) ){$row['valuations'] = json_decode($row['valuations']);}
             $return['conditions'][] = $row;
         }
 
         $sql = "SELECT * FROM sysuimodelvalidationactions 
-                WHERE sysuimodelvalidation_id = '{$return[id]}' AND deleted = 0
+                WHERE sysuimodelvalidation_id = '{$return['id']}' AND deleted = 0
                 ORDER BY priority ASC";
         $res = $this->db->query($sql);
-        while($row = $this->db->fetchByAssoc($res, false))  // <--- fucking dont encode html entities...!!!
+        while($row = $this->db->fetchByAssoc($res))  // <--- fucking dont encode html entities...!!!
         {
             if( json_decode($row['params']) ){$row['params'] = json_decode($row['params']);}
             $return['actions'][] = $row;
@@ -847,7 +847,7 @@ class SpiceUIRESTHandler
         $return = [];
         $sql = "SELECT * FROM (SELECT * FROM sysuilibs UNION SELECT * FROM sysuicustomlibs) libs ORDER BY libs.rank ASC";
         $res = $this->db->query($sql);
-        while ($row = $this->db->fetchByAssoc($res, false)) {
+        while ($row = $this->db->fetchByAssoc($res)) {
             $return[$row['name']][] = ['loaded' => false, 'src' => $row['src']];
         }
 
@@ -859,7 +859,7 @@ class SpiceUIRESTHandler
         $return = [];
         $sql = "SELECT * FROM sysservicecategories ORDER BY keyname ASC, name ASC";
         $res = $this->db->query($sql);
-        while ($row = $this->db->fetchByAssoc($res, false)) {
+        while ($row = $this->db->fetchByAssoc($res)) {
             $return[$row['id']] = $row;
         }
         return $return;
@@ -874,7 +874,7 @@ class SpiceUIRESTHandler
                 WHERE IFNULL(parent_id,'') = ''
                 ORDER BY keyname ASC, cat.name ASC";
         $res = $this->db->query($sql);
-        while ($row = $this->db->fetchByAssoc($res, false)) {
+        while ($row = $this->db->fetchByAssoc($res)) {
             $row['level'] = 0;
             $return[] = $this->getServiceCategoryChilds($row);
         }
@@ -889,7 +889,7 @@ class SpiceUIRESTHandler
                 WHERE parent_id = '" . $cat['id'] . "' 
                 ORDER BY keyname ASC, cat.name ASC";
         $res = $this->db->query($sql);
-        while($row = $this->db->fetchByAssoc($res, false))
+        while($row = $this->db->fetchByAssoc($res))
         {
             $row['level'] = $cat['level'] + 1;
             $cat['categories'][] = $this->getServiceCategoryChilds($row);
@@ -946,7 +946,7 @@ class SpiceUIRESTHandler
         $return = [];
         $sql = "SELECT * FROM sysselecttree_tree ORDER BY name ASC";
         $res = $this->db->query($sql);
-        while ($row = $this->db->fetchByAssoc($res, false)) {
+        while ($row = $this->db->fetchByAssoc($res)) {
 //           /* $return[$row['id']] = $row;*/
             array_push($return, $row);
         }
@@ -960,7 +960,7 @@ class SpiceUIRESTHandler
                 WHERE tree = '" . $id . "'
                 ORDER BY keyname ASC, name ASC";
         $res = $this->db->query($sql);
-        while ($row = $this->db->fetchByAssoc($res, false)) {
+        while ($row = $this->db->fetchByAssoc($res)) {
             $return[$row['id']] = $row;
         }
         return $return;
@@ -974,7 +974,7 @@ class SpiceUIRESTHandler
                 AND IFNULL(parent_id,'') = '' 
                 ORDER BY name ASC";
         $res = $this->db->query($sql);
-        while ($row = $this->db->fetchByAssoc($res, false)) {
+        while ($row = $this->db->fetchByAssoc($res)) {
             $row['level'] = 0;
             $return[] = $this->getSelectTreeChilds($row);
         }
@@ -987,7 +987,7 @@ class SpiceUIRESTHandler
                 WHERE parent_id = '" . $cat['id'] . "' 
                 ORDER BY keyname ASC, name ASC";
         $res = $this->db->query($sql);
-        while ($row = $this->db->fetchByAssoc($res, false)) {
+        while ($row = $this->db->fetchByAssoc($res)) {
             $row['level'] = $cat['level'] + 1;
             $cat['childs'][] = $this->getSelectTreeChilds($row);
         }
@@ -1105,26 +1105,19 @@ class SpiceUIRESTHandler
     }
 
     // for the listtypes
-    function addListType($module, $list, $global)
+    function addListType($module, $params)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $newGuid = create_guid();
-        $insertData = [
+        $insertData = array_merge([
             'id' => $newGuid,
             'created_by_id' => $current_user->id,
             'module' => $module,
-            'name' => $list,
-            'global' => ($global ? 1 : 0)
-
-        ];
+        ],
+            $params
+        );
         $this->db->insertQuery('sysmodulelists', $insertData);
-        return [
-            'id' => $newGuid,
-            'module' => $module,
-            'name' => $list,
-            'basefilter' => 'all',
-            'global' => $global
-        ];
+        return $insertData;
     }
 
     function setListType($id, $params)
@@ -1146,7 +1139,7 @@ class SpiceUIRESTHandler
     function getAdminNavigation()
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $db = DBManagerFactory::getInstance();
+$db = DBManagerFactory::getInstance();
         $navElements = [];
 
         // admin only
@@ -1176,7 +1169,7 @@ class SpiceUIRESTHandler
     function getAllModules()
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $db = DBManagerFactory::getInstance();
+$db = DBManagerFactory::getInstance();
 
         $modules = [];
         $modulestmp = []; // CR1000442
@@ -1215,12 +1208,12 @@ class SpiceUIRESTHandler
         $response = ['stylesheets' => []];
 
         $dbResult = $db->query('SELECT id, name, csscode FROM sysuihtmlstylesheets WHERE inactive <> 1');
-        while ($row = $db->fetchByAssoc($dbResult, false)) {
+        while ($row = $db->fetchByAssoc($dbResult)) {
             $response['stylesheets'][$row['id']] = $row;
         }
 
         $dbResult = $db->query('SELECT id, name, inline, block, classes, styles, stylesheet_id, wrapper FROM sysuihtmlformats WHERE inactive <> 1 ORDER BY name');
-        while ($row = $db->fetchByAssoc($dbResult, false)) {
+        while ($row = $db->fetchByAssoc($dbResult)) {
             if (isset($response['stylesheets'][$row['stylesheet_id']])) {
                 $response['stylesheets'][$row['stylesheet_id']]['formats'][] = $row;
             }

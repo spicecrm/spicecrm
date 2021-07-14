@@ -39,6 +39,7 @@ namespace SpiceCRM\includes\resource;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\resource\Observers\SoapResourceObserver;
 
 /**
  * ResourceManager.php
@@ -84,10 +85,8 @@ class ResourceManager
         }
 
         if($module == 'Soap') {
-          require_once('include/resource/Observers/SoapResourceObserver.php');
           $observer = new SoapResourceObserver('Soap');
         } else {
-          require_once('include/resource/Observers/WebResourceObserver.php');
           $observer = new WebResourceObserver($module);
         }
 
@@ -157,4 +156,3 @@ class ResourceManager
     }
 
 }
-?>

@@ -951,10 +951,8 @@ $app_list_strings = [
         [
             'Active' => 'نشط',
             'Draft' => 'مسودة',
-            'FAQ' => 'أسئلة المتكررة',
             'Expired' => 'منتهية الصلاحية',
             'Under Review' => 'تحت المراجعة',
-            'Pending' => 'قيد الانتظار',
         ],
     'document_template_type_dom' =>
         [
@@ -2109,6 +2107,7 @@ $app_list_strings['proposalstatus_dom'] = [
 ];
 
 $app_list_strings['crstatus_dom'] = [
+    '-1' => 'backlog',
     '0' => 'تم إنشائه',
     '1' => 'جار العمل عليه',
     '2' => 'جار تجربته',

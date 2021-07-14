@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -60,7 +60,7 @@ export class territories {
     }
 
     /**
-     * returns a list of reent used territories (if there are any. Otherwise the first n entries from the user territories
+     * returns a list of recent used territories (if there are any. Otherwise the first n entries from the user territories
      *
      * @param count the number of records to be returned
      */
@@ -74,9 +74,13 @@ export class territories {
         }
     }
 
+    /**
+     * returns the name of a specified territory
+     * @param territory
+     */
     public loadTerritoryName(territory) {
         this.addTerritories[territory] = '...';
-        this.backend.getRequest('territories/' + territory)
+        this.backend.getRequest('module/SpiceACLTerritories/' + territory)
             .subscribe((response: any) => {
                 if (response.id === territory) {
                     this.addTerritories[territory] = response.name;

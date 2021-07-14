@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -96,14 +96,17 @@ export class EmailReplyModal implements OnInit {
         this.model.startEdit(false);
         // set the from-addresses to to-addresses and vice versa
         this.model.data.recipient_addresses = [];
+        this.model.data.reference_id = this.parent.id;
 
         for (let address of this.parent.data.recipient_addresses) {
             if (address.address_type == "from") {
                 let toaddress = {...address};
                 toaddress.address_type = "to";
+                toaddress.id = '';
                 this.model.data.recipient_addresses.push(toaddress);
             } else if (address.address_type != "from" && address.address_type != "to") {
                 let addaddress = {...address};
+                addaddress.id = '';
                 this.model.data.recipient_addresses.push(addaddress);
             }
         }
@@ -139,7 +142,7 @@ export class EmailReplyModal implements OnInit {
         historytext += "</div>";
 
         historytext += '<blockquote class="crm_quote" style="margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">';
-        historytext += this.parent.data.body;
+        historytext += this.parent.data.body.replace('data-signature=""', '');
         historytext += '</blockquote>';
 
         historytext += '</div>';
@@ -186,11 +189,13 @@ export class EmailReplyModal implements OnInit {
             modalRef.instance.messagelabel = 'LBL_SENDING';
 
             this.sending = true;
-            this.model.setField('type', 'outbound');
-            this.model.setField('to_be_sent', '1');
-            this.model.setField('from_addr', this.model.data.from_addr_name);
-            this.model.setField('to_addrs', this.model.data.to_addrs_names);
-            this.model.setField('cc_addrs', this.model.data.cc_addrs_names);
+            this.model.setFields({
+                type: 'outbound',
+                to_be_sent: '1',
+                from_addr: this.model.data.from_addr_name,
+                to_addrs: this.model.data.to_addrs_names,
+                cc_addrs: this.model.data.cc_addrs_names,
+            });
 
             this.model.save().subscribe(
                 success => {

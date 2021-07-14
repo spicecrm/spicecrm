@@ -139,7 +139,9 @@ class OCI8Manager extends DBManager
         'enum' => 'varchar2(255)',
         'relate' => 'varchar2',
         'text' => 'clob',
+        'shorttext'=> 'varchar2(2000)',
         'longtext' => 'clob',
+        'mediumtext' => 'clob',
         'multienum' => 'clob',
         'html' => 'clob',
         'longhtml' => 'clob',
@@ -162,26 +164,23 @@ class OCI8Manager extends DBManager
         'decimal_tpl' => 'number(%d, %d)',
     ];
 
-//--------------------------------------------------------------------------
-//   Extended the functionality of implemented functions in DB Manager
-//--------------------------------------------------------------------------	
+    /**
+     * holds a list of all indices
+     *
+     * @var
+     */
+    private $allIndices = false;
+
+    public $transactional = false;
+
+
+    //--------------------------------------------------------------------------
+    //   Extended the functionality of implemented functions in DB Manager
+    //--------------------------------------------------------------------------
 
     public function repairTableParams($tablename, $fielddefs, $indices, $execute = true, $engine = null)
     {
         return parent::repairTableParams($tablename, $fielddefs, $indices, $execute, $engine);
-    }
-
-
-    /**
-     * Don't do anything. Table name will not be accepted by oracle sind it comtains audit
-     * @param $tablename
-     * @param $fielddefs
-     * @param $indices
-     * @param bool $execute
-     * @return string|void
-     */
-    public function repairAuditTable($tablename, $fielddefs, $indices, $execute){
-        return '';
     }
 
     public function getAffectedRowCount($result)
@@ -389,7 +388,7 @@ class OCI8Manager extends DBManager
         $this->log->info('EXECUTING Query: ' . $sql);
 
         $stmt = $suppress ? @oci_parse($this->database, $sql) : oci_parse($this->database, $sql);
-        $exec_result = $suppress ? @oci_execute($stmt) : oci_execute($stmt);
+        $exec_result = $suppress ? @oci_execute($stmt, $this->transactional ? OCI_DEFAULT : OCI_COMMIT_ON_SUCCESS) : oci_execute($stmt, $this->transactional ? OCI_DEFAULT : OCI_COMMIT_ON_SUCCESS);
 
         $this->query_time = microtime(true) - $this->query_time;
 
@@ -512,6 +511,41 @@ class OCI8Manager extends DBManager
         return "ALTER TABLE " . $tablename . " RENAME COLUMN '" . $column . "' TO '" . $newname . "'";
     }
 
+
+    /**
+     * loads all indices
+     */
+    private function get_all_indices(){
+        $this->allIndices = [];
+
+        $result = $this->query("SELECT  ui.table_name, ui.index_name, uc.constraint_type, uic.column_name FROM user_indexes ui INNER JOIN user_ind_columns uic ON uic.index_name = ui.index_name LEFT JOIN user_constraints uc ON uc.constraint_name = ui.index_name AND uc.table_name=ui.table_name WHERE ui.index_type='NORMAL'");
+        while ($row = $this->fetchRow($result)) {
+            $this->allIndices[] = $row;
+        }
+    }
+
+    /**
+     * returns the indexes from the fetched indexes
+     *
+     * @param $table_name
+     * @return array
+     */
+    private function get_table_indices($table_name, $index_name = null){
+        if($this->allIndices === false){
+            $this->get_all_indices();
+        }
+
+        $retRows = [];
+
+        foreach($this->allIndices as $index){
+            if($index['table_name'] == $table_name && (!$index_name || ($index_name && $index['index_name']))){
+                $retRows[] = $index;
+            }
+        }
+
+        return $retRows;
+    }
+
     /**
      * @param string $tablename
      * @param string $indexname
@@ -524,40 +558,29 @@ class OCI8Manager extends DBManager
         $tablename = strtoupper($tablename);
         $indexname = strtoupper($this->getValidDBName($indexname, false, 'index'));
 
-        /**
-         * USER_INDEXES describes indexes owned by the current user. To gather statistics for this view, use the SQL ANALYZE statement.
-         * This view supports parallel partitioned index scans. Its columns (except for OWNER) are the same as those in "ALL_INDEXES".
-         */
-        $query = "SELECT ui.index_name, uc.constraint_type, uic.column_name FROM user_indexes ui INNER JOIN user_ind_columns uic ON uic.index_name = ui.index_name LEFT JOIN user_constraints uc ON uc.constraint_name = ui.index_name AND uc.table_name='" . $tablename . "' WHERE ui.table_name='" . $tablename . "' AND ui.index_type='NORMAL'";
-
-        if (!empty($indexname)) {
-            $query .= " AND ui.index_name='" . $indexname . "'";
-        }
-
-        $query .= " ORDER BY ui.index_name,uic.column_position";
-
-        $result = $this->query($query);
+        $dbIndexes = $this->get_table_indices($tablename, $indexname);
 
         $indices = [];
-        while ($row = $this->fetchRow($result)) {
-            $name = strtolower($row['index_name']);
+        foreach($dbIndexes as $dbIndex){
+            $name = strtolower($dbIndex['index_name']);
 
             $indices[$name]['name'] = $name;
             $indices[$name]['type'] = 'index';
 
-            if ($row['constraint_type'] == 'P') {
+            if ($dbIndex['constraint_type'] == 'P') {
                 $indices[$name]['type'] = 'primary';
             }
 
-            if ($row['constraint_type'] == 'U') {
+            if ($dbIndex['constraint_type'] == 'U') {
                 $indices[$name]['type'] = 'unique';
             }
 
-            $indices[$name]['fields'][] = strtolower($row['column_name']);
+            $indices[$name]['fields'][] = strtolower($dbIndex['column_name']);
         }
 
         return $indices;
     }
+
 
     /**
      * @param string $tablename
@@ -1187,6 +1210,15 @@ class OCI8Manager extends DBManager
     }
 
     /**
+     * Returns a DB specific piece of SQL which will generate a datetiem repesenting now
+     * @abstract
+     * @return string
+     */
+    public function getNowSQL(){
+        return 'SYSDATE';
+    }
+
+    /**
      * @see DBHelper::getAutoIncrement()
      */
     public function getAutoIncrementSQL($table, $field_name)
@@ -1436,7 +1468,7 @@ class OCI8Manager extends DBManager
         foreach ($dictionary as $dictionaryName => $dictionaryDefs) {
             if ($dictionaryDefs['table'] == $table) {
                 foreach ($dictionaryDefs['fields'] as $field => $vardef) {
-                    if ($vardef['type'] == 'text') {
+                    if ($this->type_map[$vardef['type']] == 'clob') {
                         $copy[$field] = from_html($data[$field]);
                         $data[$field] = $this->getEmptyClob();
                         $lob_fields[$field] = ":" . $field;
@@ -1459,6 +1491,58 @@ class OCI8Manager extends DBManager
     }
 
     /**
+     * custom function, to update an existing record in db, no warranty
+     * created by sebastian franz
+     * @param string $table the table name
+     * @param array $pks key/value pairs of primary/unique keys
+     * @param array $data key/values of fields to update
+     * @return bool query result
+     */
+    public function updateQuery($table, array $pks, array $data, $execute = true)
+    {
+        global $dictionary;
+        $retVal = false;
+
+        $copy = array_merge([], $data);
+        $lob_fields = [];
+        $lob_dataType = [];
+
+        foreach ($dictionary as $dictionaryName => $dictionaryDefs) {
+            if ($dictionaryDefs['table'] == $table) {
+
+
+                foreach ($data as $key => $val) {
+                    // get the vardefs
+                    $vardef = $dictionaryDefs['fields'][$key];
+                    if(!$vardef) continue;
+
+                    if (!empty($val) && $this->type_map[$vardef['type']] == 'clob') {
+                        $copy[$key] = from_html($val);
+                        $sets[] = "$key = {$this->getEmptyClob()}";
+                        $lob_fields[$key] = ":" . $key;
+                        $lob_dataType[$key] = OCI_B_CLOB;
+                    } elseif (!empty($val) && $vardef['type'] == 'blob') {
+                        $sets[] = "$key = {$this->getEmptyBlob()}";
+                        $lob_fields[$key] = ":" . $key;
+                        $lob_dataType[$key] = OCI_B_CLOB;
+                    } else {
+                        $sets[] = "$key = '{$this->quote($val)}'";
+                    }
+                }
+
+                foreach ($pks as $key => $val) {
+                    $wheres[] = "$key = '{$this->quote($val)}'";
+                }
+
+                $query = "UPDATE $table SET " . implode(',', $sets) . " WHERE " . implode(' AND ', $wheres);
+                $retVal = $this->oracleLOBBackDoor($query, $copy, $lob_fields, $lob_dataType);
+
+            }
+        }
+        return $retVal;
+    }
+
+    /**
      * @see DBManager::upsertQuery()
      */
     public function upsertQuery($table, array $pks, array $data)
@@ -1473,7 +1557,8 @@ class OCI8Manager extends DBManager
             foreach ($data as $col => $val) {
                 $sets[] = "$col = '{$this->quote($val)}'";
             }
-            $this->query("UPDATE " . $table . " SET " . implode(',', $sets) . " WHERE id = '" . $pks['id'] . "'");
+            $this->updateQuery($table, $pks, $data);
+            // $this->query("UPDATE " . $table . " SET " . implode(',', $sets) . " WHERE id = '" . $pks['id'] . "'");
         } else {
             $this->insertQuery($table, $data);
         }
@@ -1566,7 +1651,11 @@ class OCI8Manager extends DBManager
                     }
                 }
             }
-            $result = oci_commit($this->database);
+            if(!$this->transactional) {
+                $result = oci_commit($this->database);
+            } else {
+                $result = true;
+            }
             $this->checkError();
             $this->log->info("Oracle Execute COMMITTED");
         }
@@ -1643,7 +1732,7 @@ class OCI8Manager extends DBManager
     public
     function transactionStart()
     {
-        return $this->query('START TRANSACTION');
+        return $this->transactional = true;
     }
 
     /**

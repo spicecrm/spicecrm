@@ -244,26 +244,6 @@ $dictionary['Contact'] = [
                 'source' => 'non-db',
                 'vname' => 'LBL_REPORTS_TO',
             ],
-            'email_addresses' => [
-                'name' => 'email_addresses',
-                'type' => 'link',
-                'relationship' => 'contacts_email_addresses',
-                'module' => 'EmailAddress',
-                'bean_name' => 'EmailAddress',
-                'source' => 'non-db',
-                'vname' => 'LBL_EMAIL_ADDRESSES',
-                'reportable' => false,
-                'rel_fields' => ['primary_address' => ['type' => 'bool']],
-                'unified_search' => true,
-            ],
-            'email_addresses_primary' => [
-                'name' => 'email_addresses_primary',
-                'type' => 'link',
-                'relationship' => 'contacts_email_addresses_primary',
-                'source' => 'non-db',
-                'vname' => 'LBL_EMAIL_ADDRESS_PRIMARY',
-                'duplicate_merge' => 'disabled',
-            ],
 // CR1000426 cleanup backend, module Bugs removed
 //            'bugs' => array(
 //                'name' => 'bugs',
@@ -286,6 +266,13 @@ $dictionary['Contact'] = [
                 'relationship' => 'contact_calls_parent',
                 'source' => 'non-db',
                 'vname' => 'LBL_CALLS',
+            ],
+            'callattempts_parent' => [
+                'name' => 'callattempts_parent',
+                'type' => 'link',
+                'relationship' => 'contact_callattempts_parent',
+                'source' => 'non-db',
+                'vname' => 'LBL_CALLATTEMPTS',
             ],
 // CR1000426 cleanup backend, module Cases removed
 //            'cases' => array(
@@ -602,6 +589,31 @@ $dictionary['Contact'] = [
                 'module' => 'Inquiries',
                 'relationship' => 'contact_inquiries',
                 'source' => 'non-db'
+            ],
+            'relationship_type' => [
+                'name' => 'relationship_type',
+                'type' => 'enum',
+                'source' => 'non-db',
+                'options' => 'relationship_type_dom',
+                'vname' => 'LBL_RELATIONSHIP_TYPE'
+            ],
+            'environments' => [
+                'name' => 'environments',
+                'type' => 'link',
+                'relationship' => 'contacts_contacts',
+                'module' => 'Contacts',
+                'bean_name' => 'Contact',
+                'source' => 'non-db',
+                'vname' => 'LBL_ENVIRONMENT_CONTACTS',
+                'duplicate_merge' => 'disabled',
+                'link_type' => 'one',
+                'rel_fields' =>
+                    [
+                        'relationship_type' =>
+                            [
+                                'map' => 'relationship_type'
+                            ],
+                    ],
             ]
             /*
             'portal_user_id' => array(
@@ -792,7 +804,13 @@ $dictionary['Contact'] = [
             'rhs_module' => 'Meetings', 'rhs_table' => 'meetings', 'rhs_key' => 'parent_id',
             'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
             'relationship_role_column_value' => 'Contacts'
-        ]
+        ],
+        'contact_callattempts_parent' => [
+            'lhs_module' => 'Contacts', 'lhs_table' => 'contacts', 'lhs_key' => 'id',
+            'rhs_module' => 'CallAttempts', 'rhs_table' => 'callattempts', 'rhs_key' => 'parent_id',
+            'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+            'relationship_role_column_value' => 'Contacts'
+        ],
         /*
         'portalusers_contacts' => array (
             'lhs_module' => 'Contacts',
@@ -941,6 +959,16 @@ if (is_file('modules/SalesVouchers/SalesVoucher.php')) {
         'module' => 'SalesVouchers',
         'source' => 'non-db',
         'vname' => 'LBL_SALESVOUCHERS',
+    ];
+}
+if (is_file('modules/Potentials/Potential.php')) {
+    $dictionary['Contact']['fields']['potentials'] = [
+        'name' => 'potentials',
+        'type' => 'link',
+        'relationship' => 'contacts_potentials',
+        'module' => 'Potentials',
+        'source' => 'non-db',
+        'vname' => 'LBL_POTENTIALS',
     ];
 }
 VardefManager::createVardef('Contacts', 'Contact', ['default', 'assignable', 'person']);

@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -33,6 +33,7 @@ import /*embed*/ {SystemOverlayLoadingSpinnerDirective} from './directives/syste
 import /*embed*/ {SystemResizeDirective} from './directives/systemresize';
 import /*embed*/ {SystemTitleDirective} from './directives/systemtitle';
 import /*embed*/ {SystemPlaceholderDirective} from './directives/systemplaceholder';
+import /*embed*/ {SystemMultiSelectCheckboxesDirective} from './directives/systemmultiselectcheckboxes';
 
 /**
  * the angular module that collects all teh directives and can be imported by other modules to use the set of directives
@@ -56,7 +57,8 @@ import /*embed*/ {SystemPlaceholderDirective} from './directives/systemplacehold
         SystemOverlayLoadingSpinnerDirective,
         SystemResizeDirective,
         SystemPlaceholderDirective,
-        SystemTitleDirective
+        SystemTitleDirective,
+        SystemMultiSelectCheckboxesDirective
     ],
     exports: [
         SystemModelPopOverDirective,
@@ -73,7 +75,8 @@ import /*embed*/ {SystemPlaceholderDirective} from './directives/systemplacehold
         SystemOverlayLoadingSpinnerDirective,
         SystemResizeDirective,
         SystemPlaceholderDirective,
-        SystemTitleDirective
+        SystemTitleDirective,
+        SystemMultiSelectCheckboxesDirective
     ]
 })
 export class DirectivesModule {

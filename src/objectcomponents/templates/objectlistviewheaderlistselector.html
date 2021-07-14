@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -20,7 +20,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
             <li class="slds-dropdown__header" role="separator">
                 <span class="slds-text-title--caps"><system-label label="LBL_DISPLAYAS"></system-label></span>
             </li>
-            <li *ngFor="let list of componentconfig.lists" class="slds-dropdown__item slds-is-selected" role="presentation" (click)="setListtype(list.component)">
+            <li *ngFor="let list of componentconfig.lists" class="slds-dropdown__item slds-is-selected" role="presentation" (click)="setListComponent(list.component)">
                 <a href="javascript:void(0);" role="menuitemcheckbox" aria-checked="true" tabindex="0">
                     <span class="slds-truncate"><system-label [label]="list.label"></system-label></span>
                     <system-utility-icon [icon]="list.icon" size="x-small"></system-utility-icon>

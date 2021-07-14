@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -16,11 +16,11 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 import {
     Component,
     ElementRef,
-    Renderer2
+    Renderer2,
 } from '@angular/core';
 import {Router} from '@angular/router';
 import {fts} from '../../services/fts.service';
-import {language} from '../../services/language.service';
+import {configurationService} from '../../services/configuration.service';
 import {broadcast} from '../../services/broadcast.service';
 
 @Component({
@@ -39,7 +39,6 @@ export class GlobalHeaderSearch {
 
 
     get searchmodule() {
-        // return this.language.getModuleName(this._searchmodule);
         return this._searchmodule;
     }
 
@@ -50,7 +49,14 @@ export class GlobalHeaderSearch {
         }
     }
 
-    constructor(public router: Router, public broadcast: broadcast, public fts: fts, public elementRef: ElementRef, public renderer: Renderer2, public language: language) {
+    constructor(
+        public router: Router,
+        public broadcast: broadcast,
+        public fts: fts,
+        public configuration: configurationService,
+        public elementRef: ElementRef,
+        public renderer: Renderer2
+    ) {
     }
 
     get showModuleSelector() {
@@ -108,7 +114,7 @@ export class GlobalHeaderSearch {
     }
 
     private search(_e) {
-        // make sur ethe popup is open
+        // make sure the popup is open
         this.showRecent = true;
 
         // handle the key pressed
@@ -118,24 +124,43 @@ export class GlobalHeaderSearch {
                 break;
             case 'Enter':
                 this.searchTerm = this.searchTermUntrimmed.trim();
-                if (this.searchTerm.length) {
+                if (this.searchTerm.length && this.searchTermsValid(this.searchTerm)) {
                     // if we wait for completion kill the timeout
                     if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
 
                     // close the dropdown
                     this.showRecent = false;
 
-                    // navigate tot he search view
+                    // navigate to the search view
                     if (this.searchTerm.length > 0) {
-                        this.router.navigate(['/search/' + btoa(this.searchTerm)]);
+                        this.router.navigate(['/search/' + encodeURIComponent(btoa(this.searchTerm))]);
                     }
                 }
                 break;
             default:
                 if (this.searchTimeOut) window.clearTimeout(this.searchTimeOut);
-                this.searchTimeOut = window.setTimeout(() => this.doSearch(), 1000);
+                if (this.searchTermsValid(this.searchTermUntrimmed.trim())) {
+                    this.searchTimeOut = window.setTimeout(() => this.doSearch(), 1000);
+                } else if (this.searchTermUntrimmed.trim() == '') {
+                    this.searchTerm = '';
+                }
                 break;
         }
+    }
+
+
+    /**
+     * checks if we have the proper length of searchterms
+     *
+     * @param searchTerm
+     * @private
+     */
+    private searchTermsValid(searchTerm) {
+        let config = this.configuration.getCapabilityConfig('search');
+        let minNgram = config.min_ngram ? parseInt(config.min_ngram, 10) : 3;
+        let maxNgram = config.max_ngram ? parseInt(config.max_ngram, 10) : 20;
+        let items = searchTerm.split(' ');
+        return items.filter(i => i.length < minNgram || i.length > maxNgram).length == 0;
     }
 
     public onClick(event: MouseEvent): void {

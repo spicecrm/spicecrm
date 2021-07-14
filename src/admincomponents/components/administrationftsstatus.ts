@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -75,7 +75,7 @@ export class AdministrationFTSStatus {
         // reset the indices
         this.indices = [];
 
-        this.backend.getRequest('fts/status').subscribe(
+        this.backend.getRequest('admin/elastic/status').subscribe(
             response => {
                 this.version = response.version;
 
@@ -119,7 +119,7 @@ export class AdministrationFTSStatus {
      * @private
      */
     private unlock() {
-        this.backend.putRequest('fts/unblock').subscribe(resp => {
+        this.backend.putRequest('admin/elastic/unblock').subscribe(resp => {
             console.log(resp);
             this.loadstatus();
         });

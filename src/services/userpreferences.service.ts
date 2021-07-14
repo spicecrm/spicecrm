@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -13,7 +13,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 /**
  * @module services
  */
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {backend} from './backend.service';
 import {toast} from './toast.service';
@@ -67,6 +67,11 @@ export class userpreferences {
 
     public formats = {nameFormats: [], loaded: false};
 
+    /**
+     * an emitter allowing to subscribe to prference changes
+     */
+    public preferences$: EventEmitter<any> = new EventEmitter<any>();
+
     constructor(private backend: backend, private toast: toast, private configuration: configurationService, private language: language, private broadcast: broadcast, private modalservice: modal, private session: session) {
         this.toUse = this.preferences.global;
         // this.retrievePrefsFromConfigService();
@@ -94,7 +99,7 @@ export class userpreferences {
     public loadPreferences(category = 'global'): Observable<any> {
         let retSubject: Subject<any> = new Subject<any>();
 
-        this.backend.getRequest('user/' + this.session.authData.userId + '/preferences/' + category).subscribe((prefs) => {
+        this.backend.getRequest('module/Users/' + this.session.authData.userId + '/preferences/' + category).subscribe((prefs) => {
             this.preferences[category] = _.extendOwn(this.preferences[category], prefs);
             if (category === 'global') {
                 this.unchangedPreferences.global = _.clone(prefs);
@@ -143,7 +148,7 @@ export class userpreferences {
             let prefs = {};
             prefs[name] = value;
             const saved = new Subject();
-            this.backend.postRequest('user/' + this.session.authData.userId + '/preferences/' + category, {}, prefs).subscribe(response => {
+            this.backend.postRequest('module/Users/' + this.session.authData.userId + '/preferences/' + category, {}, prefs).subscribe(response => {
 
                 // set the preference
                 if (!this.preferences[category]) this.preferences[category] = {};
@@ -156,6 +161,10 @@ export class userpreferences {
                 this.completePreferencesWithDefaults();
                 if (category === 'global' && name === 'timezone') this.session.setTimezone(this.toUse.timezone); // Tell the UI the current time zone.
                 saved.next(response);
+
+                // emit the changes
+                this.preferences$.emit(prefs);
+
             }, error => {
                 saved.error(error);
             });
@@ -171,7 +180,7 @@ export class userpreferences {
 
     public setPreferences(prefs, category = 'global') {
         const saved = new Subject();
-        this.backend.postRequest('user/' + this.session.authData.userId + '/preferences/' + category, {}, prefs).subscribe(
+        this.backend.postRequest('module/Users/' + this.session.authData.userId + '/preferences/' + category, {}, prefs).subscribe(
             (savedprefs) => {
                 for (let prop in this.preferences[category]) {
                     if (savedprefs.hasOwnProperty(prop)) this.preferences[category][prop] = savedprefs[prop];
@@ -181,6 +190,9 @@ export class userpreferences {
                 this.completePreferencesWithDefaults();
                 this.session.setTimezone(this.toUse.timezone); // Tell the UI the current time zone. It might got changed.
                 saved.next(true);
+
+                // emit the changes
+                this.preferences$.emit(prefs);
             },
             (error) => {
                 saved.error(error);
@@ -226,7 +238,7 @@ export class userpreferences {
 
         this.formats.nameFormats.length = 0;
         this.formats.loaded = false;
-        this.backend.getRequest('user/preferencesformats').subscribe((formats) => {
+        this.backend.getRequest('module/Users/preferencesformats').subscribe((formats) => {
             if (Array.isArray(formats.nameFormats)) {
                 for (let item of formats.nameFormats) {
                     this.formats.nameFormats.push({name: item, example: this.translateNameFormat(item)});

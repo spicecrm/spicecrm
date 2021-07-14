@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -16,11 +16,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 import {Component} from '@angular/core';
 import {metadata} from '../../../services/metadata.service';
 import {modellist} from '../../../services/modellist.service';
-import {language} from '../../../services/language.service';
+import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
 
 import {objectmerge} from '../services/objectmerge.service';
 
+/**
+ * renders the content for the selection of the ducpliate fields and how they are to be merged
+ */
 @Component({
     selector: 'object-merge-modal-data',
     templateUrl: './src/include/spicemerge/templates/objectmergemodaldata.html',
@@ -28,22 +31,41 @@ import {objectmerge} from '../services/objectmerge.service';
 })
 export class ObjectMergeModalData {
 
-    private modelFields: any = {};
-
-    constructor(private language: language, private metadata: metadata, private modellist: modellist, private objectmerge: objectmerge) {
-
+    constructor(private view: view, private metadata: metadata, private modellist: modellist, private objectmerge: objectmerge, private model: model) {
+        this.view.displayLabels = false;
     }
 
+    /**
+     * simple getter to check if a switch of the master is allowed
+     */
+    get canSwitchMaster() {
+        return this.objectmerge.allowSwitchMaster;
+    }
+
+    /**
+     * returns the selected items from teh listview
+     *
+     * @private
+     */
     private getSelected() {
-        let selItems = [];
-        for (let listItem of this.modellist.listData.list) {
-            if (listItem.selected) {
-                selItems.push(listItem);
-            }
-        }
-        return selItems;
+        return this.modellist.listData.list.filter(i => i.selected);
     }
 
+    /**
+     * reeturns true if called in the context of an active model and the model equasl teh current id
+     *
+     * @param id
+     * @private
+     */
+    private isCurrentModel(id) {
+        return this.model.id && (this.model.id == id || this.model.data.id == id);
+    }
+
+    /**
+     * selects all fields
+     * @param id
+     * @private
+     */
     private selectAllFields(id) {
         this.objectmerge.setAllfieldSources(id);
     }

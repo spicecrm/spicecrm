@@ -63,14 +63,17 @@ class SpiceFTSActivityHandler
      *
      * @return array and array with the element totalcount, aggregates and items
      */
-    public static function loadActivities($activitiesmodule, $parentid, $start = 0, $limit = 10, $searchterm = '', $ownerfiler = '', $objects = [])
+    public static function loadActivities($activitiesmodule, $parentid = null, $start = 0, $limit = 10, $searchterm = '', $ownerfiler = '', $objects = [])
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
-        $modules = SpiceFTSUtils::getActivitiyModules($activitiesmodule);
+        $modules = SpiceFTSUtils::getActivityModules($activitiesmodule);
         $moduleQueries = [];
         $queryModules = [];
         $postFilters = [];
+
+        // all modules that potentially could be listed
+        $candidateModules = [];
 
         // create an instance of the elastichandler
         $elastichandler = new ElasticHandler();
@@ -82,6 +85,9 @@ class SpiceFTSActivityHandler
             if (!SpiceACL::getInstance()->checkAccess($module, 'list') || !$elastichandler->checkIndex($module)) {
                 continue;
             }
+
+            // add to the candidates
+            $candidateModules[] = $module;
 
             // if access is granted build the module query
             $beanHandler = new SpiceFTSBeanHandler($module);
@@ -96,7 +102,9 @@ class SpiceFTSActivityHandler
             }
 
             // add the activities filters
-            $moduleQuery['bool']['filter']['bool']['must'][] = ['term' => ["_activityparentids" => $parentid]];
+            if($parentid) {
+                $moduleQuery['bool']['filter']['bool']['must'][] = ['term' => ["_activityparentids" => $parentid]];
+            }
             $moduleQuery['bool']['filter']['bool']['must'][] = ['term' => ["_index" => SpiceFTSUtils::getIndexNameForModule($module)]];
 
             switch ($ownerfiler) {
@@ -186,35 +194,18 @@ class SpiceFTSActivityHandler
             if(!$seed = BeanFactory::getBean($elastichandler->getHitModule($hit), $hit['_id'])){
                 LoggerManager::getLogger()->fatal(__CLASS__. 'on line '.__LINE__.': no '.$elastichandler->getHitModule($hit).' found with id='.$hit['_id'].'. Check if bean is indexed properly');
                 LoggerManager::getLogger()->fatal($hit);
-                // make correction in total count
-// not sure it's a good idea because of debugging since "correct total" doesn't point to any problem
-//                $newtotal = $elastichandler->getHitsTotalValue($results);
-//                $newtotal--;
-//                $elastichandler->setHitsTotalValue($results, $newtotal);
                 continue;
-            }
-            foreach ($seed->field_name_map as $field => $fieldData) {
-                //if (!isset($hit['_source']{$field}))
-                $hit['_source'][$field] = $seed->{$field} && is_string($seed->{$field}) ? html_entity_decode($seed->{$field}, ENT_QUOTES) : null;
             }
 
             // get the email addresses
             $krestHandler = new ModuleHandler();
-            $hit['_source']['emailaddresses'] = $krestHandler->getEmailAddresses($elastichandler->getHitModule($hit), $hit['_id']);
 
-            $hit['acl'] = $seed->getACLActions();
-            // $hit['acl_fieldcontrol'] = $krestHandler->get_acl_fieldaccess($seed);
-
-            // unset hidden fields
-            foreach ($hit['acl_fieldcontrol'] as $field => $control) {
-                if ($control == 1 && isset($hit['_source'][$field])) unset($hit['_source'][$field]);
-            }
             $items[] = [
                 'id' => $seed->id,
                 'module' => $elastichandler->getHitModule($hit),
                 'date_activity' => $hit['_source']['_activitydate'],
                 'related_ids' => $hit['_source']['related_ids'],
-                'data' => $krestHandler->mapBeanToArray($elastichandler->getHitModule($hit), $seed, [], false, false, false)
+                'data' => $krestHandler->mapBeanToArray($elastichandler->getHitModule($hit), $seed, false)
             ];
         }
 
@@ -243,7 +234,7 @@ class SpiceFTSActivityHandler
             }
         }
 
-        return ['totalcount' => $elastichandler->getHitsTotalValue($results), 'aggregates' => $aggregates, 'items' => $items];
+        return ['totalcount' => $elastichandler->getHitsTotalValue($results), 'aggregates' => $aggregates, 'items' => $items, 'modules' => $candidateModules];
     }
 
     /**
@@ -386,7 +377,7 @@ class SpiceFTSActivityHandler
                 'start' => $hit['_source']['_activitydate'],
                 'end' => $hit['_source']['_activityenddate'],
                 'type' => $elastichandler->getHitModule($hit) == 'UserAbsences' ? 'absence' : 'event',
-                'data' => $moduleHandler->mapBeanToArray($elastichandler->getHitModule($hit), $seed, [], false, false, true)
+                'data' => $moduleHandler->mapBeanToArray($elastichandler->getHitModule($hit), $seed)
             ];
         }
 

@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -48,8 +48,8 @@ export class fieldEmail extends fieldGeneric {
          */
         this.subscriptions.add(
             this.model.data$.subscribe(modeldata => {
-                if ((!this.value || (this.value && modeldata.email1 && this.value != modeldata.email1.toLowerCase())) && modeldata.email1) {
-                    this.value = modeldata.email1;
+                if (!this.value || (!!this.value  && this.value != modeldata.email1)) {
+                    this._value = modeldata.email1;
                 }
             })
         );

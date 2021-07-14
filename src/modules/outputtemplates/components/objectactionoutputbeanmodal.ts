@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -48,15 +48,14 @@ import {ObjectActionOutputBeanModalEmailContent} from "./objectactionoutputbeanm
 export class ObjectActionOutputBeanModal {
 
 
-
     /**
      * this is the child component (the email content )
      */
-    // @ViewChild(ObjectActionOutputBeanModalEmailContent, {static: true}) public emailContent;
+        // @ViewChild(ObjectActionOutputBeanModalEmailContent, {static: true}) public emailContent;
     @ViewChild(ObjectActionOutputBeanModalEmailContent) public emailContent: ObjectActionOutputBeanModalEmailContent;
 
     public modalTitle: string;
-    public forcedFormat: 'html'|'pdf';
+    public forcedFormat: 'html' | 'pdf';
     public noDownload = false;
     public handBack: EventEmitter<any>;
     public buttonText: string;
@@ -93,7 +92,6 @@ export class ObjectActionOutputBeanModal {
     private loading_output: boolean = false;
 
 
-
     /**
      * fieldset of the email area
      */
@@ -112,11 +110,20 @@ export class ObjectActionOutputBeanModal {
     /**
      * flag to show the email-content
      */
-    private showsendemail: boolean = true;
+    private showsendemail: boolean = false;
+
     /**
      * expanded email-content flag
      */
     private expanded: boolean = false;
+
+    /**
+     * keeps a flag if the email panel has been initialized
+     * this is set so we can avoid that the email pnale is loaded automatically wasting bandwith if we donot need it
+     *
+     * @private
+     */
+    private emailInitialized: boolean = false;
 
     /**
      * the blobURL. This is handled internally. When the data is sent this is created so the object can be rendered in the modal
@@ -155,9 +162,9 @@ export class ObjectActionOutputBeanModal {
      * Set the output format in case it is given from outside
      */
     private setModalData() {
-        if ( !this.modalTitle ) this.modalTitle = this.language.getLabel(this.language.getLabel('LBL_OUTPUT_TEMPLATE'));
-        if ( !this.buttonText ) this.buttonText = this.language.getLabel( this.noDownload  ? 'LBL_OK':'LBL_DOWNLOAD' );
-        if ( this.forcedFormat ) this._selected_format = this.forcedFormat;
+        if (!this.modalTitle) this.modalTitle = this.language.getLabel(this.language.getLabel('LBL_OUTPUT_TEMPLATE'));
+        if (!this.buttonText) this.buttonText = this.language.getLabel(this.noDownload ? 'LBL_OK' : 'LBL_DOWNLOAD');
+        if (this.forcedFormat) this._selected_format = this.forcedFormat;
     }
 
     /**
@@ -168,7 +175,7 @@ export class ObjectActionOutputBeanModal {
         for (let field in fields) {
             if (fields[field].type == 'relate' && fields[field].module == 'OutputTemplates') {
                 let template = this.templates.find(template => template.id == this.model.getFieldValue(fields[field].id_name));
-                if(template) {
+                if (template) {
                     this.selected_template = template;
                 }
                 break;
@@ -210,10 +217,10 @@ export class ObjectActionOutputBeanModal {
 
         switch (this.selected_format) {
             case 'pdf':
-                this.backend.getRequest(`OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf/base64`).subscribe(
+                this.backend.getRequest(`module/OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf/base64`).subscribe(
                     pdf => {
-                        let blob = this.datatoBlob( atob( pdf.content ) );
-                        this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl( URL.createObjectURL( blob ) );
+                        let blob = this.datatoBlob(atob(pdf.content));
+                        this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
                         this.contentForHandBack = pdf.content;
                         this.setEmailAttachmentData();
                         this.loading_output = false;
@@ -225,7 +232,7 @@ export class ObjectActionOutputBeanModal {
                 break;
             case 'html':
                 // compile the template to show the user...
-                this.backend.getRequest(`OutputTemplates/${this.selected_template.id}/compile/${this.model.id}`).subscribe(
+                this.backend.getRequest(`module/OutputTemplates/${this.selected_template.id}/compile/${this.model.id}`).subscribe(
                     res => {
                         this.compiled_selected_template = res.content;
                         this.contentForHandBack = res.content;
@@ -252,25 +259,29 @@ export class ObjectActionOutputBeanModal {
     }
 
     public create() {
-        if ( this.handBack ) this.handBack.emit( { name: this.selected_template.name, content: this.contentForHandBack });
-        if ( this.noDownload ) this.close();
+        if (this.handBack) this.handBack.emit({name: this.selected_template.name, content: this.contentForHandBack});
+        if (this.noDownload) this.close();
         else {
-            let fileName = this.model.module + '_' + this.model.data.summary_text + '.pdf';
-            this.modal.openModal( 'SystemLoadingModal' ).subscribe( loadingCompRef => {
-                loadingCompRef.instance.messagelabel = 'MSG_GENERATING_PDF';
-                this.backend.downloadFile(
-                    {
-                        route: `OutputTemplates/${this.selected_template.id}/convert/${this.model.id}/to/pdf`
-                    }, fileName, 'application/pdf' ).subscribe(
-                    next => {
-                        loadingCompRef.instance.self.destroy();
-                        this.close();
-                    },
-                    err => {
-                        loadingCompRef.instance.self.destroy();
-                    }
-                );
-            } );
+            // generate a link element for the download
+            let a = document.createElement("a");
+            document.body.appendChild(a);
+
+            // generate a blob file from the content
+            // base64 decode in case wehave a PDF
+            let blob = this.datatoBlob(this.selected_format == 'pdf' ? atob(this.contentForHandBack) : this.contentForHandBack);
+            let blobUrl =URL.createObjectURL(blob);
+
+            // set as href and set the type
+            a.href = blobUrl;
+            a.type = this.selected_format == 'pdf' ? 'application/pdf' : 'text/html';
+
+            // genereate a filename
+            let fileName = this.model.module + '_' + this.model.data.summary_text + '.' + this.selected_format;
+            a.download = fileName;
+
+            // start download and then remove the element from the document again
+            a.click();
+            a.remove();
         }
     }
 
@@ -316,6 +327,11 @@ export class ObjectActionOutputBeanModal {
      * open/close email-content
      */
     private openEmailArea() {
+        if (!this.emailInitialized) {
+            this.emailInitialized = true;
+            this.setEmailAttachmentData();
+        }
+
         this.expanded = !this.expanded;
     }
 
@@ -323,25 +339,14 @@ export class ObjectActionOutputBeanModal {
      * set the filelist for the email attachment panel and reset the email-content
      */
     private setEmailAttachmentData() {
-        this.filelist = [{
-            size: this.contentForHandBack.length,
-            name: this.model.module + '_' + this.model.data.summary_text + '.' + this.selected_format,
-            type: "application/" + this.selected_format,
-            filecontent: this.contentForHandBack
-        }];
-        this.resetEmailComponent();
-    }
-
-    /**
-     * reset the objectactionoutputbeanmodalmailcontent component
-     * simple way to reload child from parent
-     */
-    private resetEmailComponent() {
-        this.showsendemail = false;
-
-        setTimeout(() => {
-            this.showsendemail = true;
-        }, 100);
+        if(this.emailInitialized) {
+            this.filelist = [{
+                size: this.contentForHandBack.length,
+                name: this.model.module + '_' + this.model.data.summary_text + '.' + this.selected_format,
+                type: "application/" + this.selected_format,
+                filecontent: this.contentForHandBack
+            }];
+        }
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -48,6 +48,21 @@ export class fieldGenericDisplay {
      */
     @Input() public fieldid: string = '';
 
+    /**
+     * internal variable for the truncation setting of the field
+     * @private
+     */
+    private _truncate: boolean = true;
+
+    /**
+     * an attribute to disable truncation on the field
+     *
+     * @param value
+     */
+    @Input('field-generic-display-notruncate') set truncate(value) {
+        this._truncate = false;
+    }
+
     constructor(
         public model: model,
         public view: view,
@@ -68,11 +83,22 @@ export class fieldGenericDisplay {
     }
 
     /**
+     * returns the max with for the ngStyle directive
+     */
+    get fieldMaxWidth() {
+        if (this.editable) {
+            return {
+                'max-width': 'calc(100% - 20px)'
+            };
+        }
+    }
+
+    /**
      * simple getter to determine if the field has a link, the view allows for links and if the user has ACL rights to navigate to thte the of the record
      */
     get link() {
         try {
-            return this.view.displayLinks && this.fieldconfig.link && this.model.checkAccess('detail');
+            return this.fieldconfig.link && this.model.checkAccess('detail');
         } catch (e) {
             return false;
         }
@@ -96,14 +122,6 @@ export class fieldGenericDisplay {
             this.model.goDetail(this.navigationtab?.tabid);
         }
     }
-
-    /*
-    public onClick() {
-        if(this.editable && !this.isEditMode()) {
-            this.setEditMode();
-        }
-    }
-    */
 
 }
 

@@ -25,7 +25,8 @@ $dictionary['sysdomaindefinitions'] = [
             ],
             'description' => [
                 'name' => 'description',
-                'type' => 'text'
+                'type' => 'shorttext',
+                'len' => 1000
             ],
             'version' => [
                 'name' => 'version',
@@ -140,7 +141,8 @@ $dictionary['sysdomainfields'] = [
             ],
             'description' => [
                 'name' => 'description',
-                'type' => 'text'
+                'type' => 'shorttext',
+                'len' => 1000
             ],
             'version' => [
                 'name' => 'version',
@@ -233,7 +235,8 @@ $dictionary['sysdomainfieldvalidations'] = [
             ],
             'description' => [
                 'name' => 'description',
-                'type' => 'text'
+                'type' => 'shorttext',
+                'len' => 1000
             ],
             'version' => [
                 'name' => 'version',
@@ -321,7 +324,8 @@ $dictionary['sysdomainfieldvalidationvalues'] = [
             ],
             'description' => [
                 'name' => 'description',
-                'type' => 'text'
+                'type' => 'shorttext',
+                'len' => 1000
             ],
             'version' => [
                 'name' => 'version',
@@ -405,7 +409,8 @@ $dictionary['sysdictionarydefinitions'] = [
             ],
             'description' => [
                 'name' => 'description',
-                'type' => 'text'
+                'type' => 'shorttext',
+                'len' => 1000
             ],
             'version' => [
                 'name' => 'version',
@@ -532,7 +537,8 @@ $dictionary['sysdictionaryitems'] = [
             ],
             'description' => [
                 'name' => 'description',
-                'type' => 'text'
+                'type' => 'shorttext',
+                'len' => 1000
             ],
             'version' => [
                 'name' => 'version',
@@ -610,7 +616,8 @@ $dictionary['sysdictionaryindexes'] = [
             ],
             'description' => [
                 'name' => 'description',
-                'type' => 'text'
+                'type' => 'shorttext',
+                'len' => 1000
             ],
             'version' => [
                 'name' => 'version',
@@ -694,7 +701,8 @@ $dictionary['sysdictionaryindexitems'] = [
             ],
             'description' => [
                 'name' => 'description',
-                'type' => 'text'
+                'type' => 'shorttext',
+                'len' => 1000
             ],
             'version' => [
                 'name' => 'version',
@@ -911,7 +919,8 @@ $dictionary['sysdictionaryrelationships'] = [
         ],
         'description' => [
             'name' => 'description',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 1000
         ],
         'version' => [
             'name' => 'version',
@@ -981,7 +990,8 @@ $dictionary['sysdictionaryrelationshipfields'] = [
         ],
         'description' => [
             'name' => 'description',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 1000
         ],
         'version' => [
             'name' => 'version',
@@ -1044,7 +1054,8 @@ $dictionary['sysdictionaryrelationshiprelatefields'] = [
         ],
         'description' => [
             'name' => 'description',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 1000
         ],
         'sequence' => [
             'name' => 'sequence',

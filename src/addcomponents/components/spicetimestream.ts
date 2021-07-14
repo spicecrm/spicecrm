@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -24,6 +24,7 @@ import {modellist} from '../../services/modellist.service';
 import {modelutilities} from '../../services/modelutilities.service';
 import {userpreferences} from '../../services/userpreferences.service';
 import {language} from '../../services/language.service';
+import {ListTypeI} from "../../services/interfaces.service";
 
 /**
 * @ignore
@@ -36,35 +37,40 @@ declare var moment: any;
 })
 export class SpiceTimestream {
 
-    @ViewChild('streamwindow', {read: ViewContainerRef, static: true}) streamwindow: ViewContainerRef;
+    @ViewChild('streamwindow', {read: ViewContainerRef, static: true}) private streamwindow: ViewContainerRef;
 
-    modellistsubscribe: any = undefined;
-    requestedFields: Array<string> = [];
+    private modellistsubscribe: any = undefined;
 
-    focusDate = new moment();
+    private focusDate = new moment();
 
-    timestream: any = {
+    private timestream: any = {
         period: 'y',
         dateStart: null,
         dateEnd: null,
-    }
+    };
 
     constructor(private language: language, private userpreferences: userpreferences, private model: model, private modellist: modellist, private modelutilities: modelutilities, private metadata: metadata) {
 
-        // subscribe to changes of the listtype
-        this.modellistsubscribe = this.modellist.listtype$.subscribe(newType => this.switchListtype());
+        // subscribe to changes of the list type
+        this.modellistsubscribe = this.modellist.listType$.subscribe(newType =>
+            this.handleListTypeChange(newType)
+        );
 
-        this.requestedFields = ['name', 'account_name', 'account_id', 'sales_stage', 'amount_usdollar', 'amount'];
-        this.modellist.getListData(this.requestedFields);
+        this.modellist.getListData();
 
         // set start and end
         this.period = 'y';
 
     }
 
-    switchListtype() {
-        let requestedFields = [];
-        this.modellist.getListData(this.requestedFields);
+    /**
+     * handle the list type change to reload the data only if for this component to prevent possible actions after destroy
+     * @param newType
+     * @private
+     */
+    private handleListTypeChange(newType: ListTypeI) {
+        if (newType.listcomponent != 'SpiceTimestream') return;
+        this.modellist.reLoadList();
     }
 
     get period() {
@@ -87,7 +93,7 @@ export class SpiceTimestream {
                 this.timestream.dateEnd.month(curmonth);
                 this.timestream.dateEnd.date(31);
                 this.timestream.dateEnd.day(6);
-                this.timestream.dateEnd.hour(23)
+                this.timestream.dateEnd.hour(23);
                 this.timestream.dateEnd.minute(59);
                 break;
             case 'Q':
@@ -103,11 +109,11 @@ export class SpiceTimestream {
                 this.timestream.dateEnd = new moment(this.focusDate);
                 this.timestream.dateEnd.month((3 * Math.floor(month / 3)) + 3);
                 this.timestream.dateEnd.date(31);
-                this.timestream.dateEnd.hour(23)
+                this.timestream.dateEnd.hour(23);
                 this.timestream.dateEnd.minute(59);
                 break;
             case 'y':
-                this.timestream.dateStart = new moment(this.focusDate)
+                this.timestream.dateStart = new moment(this.focusDate);
                 this.timestream.dateStart.month(0);
                 this.timestream.dateStart.date(1);
                 this.timestream.dateStart.hour(0);
@@ -116,7 +122,7 @@ export class SpiceTimestream {
                 this.timestream.dateEnd = new moment(this.focusDate);
                 this.timestream.dateEnd.month(11);
                 this.timestream.dateEnd.date(31);
-                this.timestream.dateEnd.hour(23)
+                this.timestream.dateEnd.hour(23);
                 this.timestream.dateEnd.minute(59);
                 break;
         }
@@ -127,7 +133,7 @@ export class SpiceTimestream {
     get periodText() {
         switch (this.timestream.period) {
             case 'M':
-                return moment(this.timestream.dateStart).day(6).format('MMM/Y')
+                return moment(this.timestream.dateStart).day(6).format('MMM/Y');
             case 'Q':
                 return this.timestream.dateStart.format('Q/Y');
             case 'y':
@@ -135,7 +141,7 @@ export class SpiceTimestream {
         }
     }
 
-    prev() {
+    private prev() {
         this.focusDate.subtract(1, this.timestream.period);
         this.period = this.timestream.period;
         /*
@@ -152,7 +158,7 @@ export class SpiceTimestream {
         */
     }
 
-    next() {
+    private next() {
         this.focusDate.add(1, this.timestream.period);
         this.period = this.timestream.period;
         /*

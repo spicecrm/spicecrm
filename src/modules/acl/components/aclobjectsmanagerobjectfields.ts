@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -116,7 +116,7 @@ export class ACLObjectsManagerObjectFields {
             currentFields.push({name: thisfield.field, id: thisfield.id});
         }
 
-        this.modal.openModal('ACLTypesManagerTypesAddFields').subscribe(modalRef => {
+        this.modal.openModal('ACLTypesManagerTypesAddFields', true).subscribe(modalRef => {
             modalRef.instance.module = module;
             modalRef.instance.currentfields = currentFields;
 

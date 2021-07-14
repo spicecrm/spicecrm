@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -14,7 +14,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  * @module services
  */
 
-import {EventEmitter, Injectable, OnDestroy} from "@angular/core";
+import {Injectable, OnDestroy} from "@angular/core";
 import {broadcast} from "./broadcast.service";
 import {backend} from "./backend.service";
 import {metadata} from "./metadata.service";
@@ -74,10 +74,16 @@ export class relatedmodels implements OnDestroy {
      * add filters by fieldname and fieldvalue
      */
     public fieldfilters: any = {};
+
     /**
      * an array with the related records
      */
     public items: any[] = [];
+
+    /**
+     * the offset to load from
+     */
+    public offset: number = 0;
 
     /**
      * the total count o related records
@@ -88,11 +94,6 @@ export class relatedmodels implements OnDestroy {
      * default value for number of items loaded with a backend request
      */
     public loaditems = 5;
-
-    /**
-     * ToDo: check wha this is for
-     */
-    private relationshipFields: string[] = [];
 
     /**
      * inidcates if the servic eis currently retrieving data from teh backend
@@ -200,8 +201,7 @@ export class relatedmodels implements OnDestroy {
      * getter for the sequencefield
      */
     get sortBySequencefield() {
-        if (this.sequencefield && !this.modulefilter && !this.sort.sortfield) return true;
-        else return false;
+        return (this.sequencefield && !this.modulefilter && !this.sort.sortfield);
     }
 
     /**
@@ -267,8 +267,9 @@ export class relatedmodels implements OnDestroy {
      *
      * @param silent if set to true all items will remain in the list and the user will not dierclty see that the related list is loading
      */
-    public getData(silent: boolean = false): Observable<any>  {
+    public getData(silent: boolean = false): Observable<any> {
         let responseSubject = new Subject<any>();
+
         // check if we can list per acl
         if (this.metadata.checkModuleAcl(this.relatedModule, "list") === false && this.metadata.checkModuleAcl(this.relatedModule, "listrelated") === false) {
             return of(false);
@@ -279,18 +280,28 @@ export class relatedmodels implements OnDestroy {
             this.resetData();
             this.isloading = true;
         }
-        let params = {
+
+        // build the params
+        let params: any = {
             module: this.relatedModule,
             getcount: true,
-            offset: 0,
+            offset: this.offset,
             limit: this.loaditems,
-            modulefilter: this.modulefilter,
-            fieldfilters: this.fieldfilters,
-            relationshipFields: JSON.stringify(this.relationshipFields),
-            sort: this.sort.sortfield ? JSON.stringify(this.sort) : ""
+            fieldfilters: this.fieldfilters
         };
 
-        let url = `module/${this.module}/${this.id}/` + (this.linkEndPoint ? this.linkEndPoint : `related/${this._linkName}`)
+        // check if we have a sortfield
+        if (this.modulefilter) {
+            params.modulefilter = this.modulefilter;
+        }
+
+        // check if we have a sortfield
+        if (this.sort.sortfield) {
+            params.sort = JSON.stringify(this.sort);
+        }
+
+        // get the data
+        let url = `module/${this.module}/${this.id}/` + (this.linkEndPoint ? this.linkEndPoint : `related/${this._linkName}`);
         this.backend.getRequest(url, params).subscribe(
             (response: any) => {
 
@@ -327,7 +338,7 @@ export class relatedmodels implements OnDestroy {
                 responseSubject.next(true);
                 responseSubject.complete();
             },
-            error => {
+            () => {
                 // set loaded
                 this.isloading = false;
             }
@@ -357,20 +368,27 @@ export class relatedmodels implements OnDestroy {
 
         this.isloading = true;
 
-        let params = {
+        let params: any = {
             module: this.relatedModule,
             getcount: true,
             offset: this.items.length,
-            limit: this.items.length + loaditems,
-            modulefilter: this.modulefilter,
-            relationshipFields: JSON.stringify(this.relationshipFields),
-            sort: this.sort.sortfield ? JSON.stringify(this.sort) : ""
+            limit: this.items.length + loaditems
         };
+
+        // check if we have a sortfield
+        if (this.modulefilter) {
+            params.modulefilter = this.modulefilter;
+        }
+
+        // check if we have a sortfield
+        if (this.sort.sortfield) {
+            params.sort = JSON.stringify(this.sort);
+        }
 
         let retSubject = new Subject<any>();
 
         // compose a URL depending if wee have a specific endpoint defined
-        let url = `module/${this.module}/${this.id}/` + (this.linkEndPoint ? this.linkEndPoint : `related/${this._linkName}`)
+        let url = `module/${this.module}/${this.id}/` + (this.linkEndPoint ? this.linkEndPoint : `related/${this._linkName}`);
 
         // get the data
         this.backend.getRequest(url, params).subscribe(
@@ -426,7 +444,7 @@ export class relatedmodels implements OnDestroy {
 
         if (sortfield) {
             this.items.sort((a, b) => {
-                let sortval = 0;
+                let sortval;
                 // check if we can sort as integer
                 if (!isNaN(parseInt(a[sortfield], 10)) && !isNaN(parseInt(b[sortfield], 10))) {
                     sortval = parseInt(a[sortfield], 10) > parseInt(b[sortfield], 10) ? 1 : -1;
@@ -458,7 +476,7 @@ export class relatedmodels implements OnDestroy {
             for (let item of items) {
                 relatedIds.push(item.id);
             }
-            this.backend.postRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], relatedIds).subscribe(res => {
+            this.backend.postRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], relatedIds).subscribe(() => {
 
                 for (let item of items) {
                     // check if we shoudl add this item or it is already in the related models list
@@ -496,7 +514,7 @@ export class relatedmodels implements OnDestroy {
     public setItem(item): Observable<any> {
         if (!this.isonlyfiltered) {
             let retSubject = new Subject<any>();
-            this.backend.putRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], this.modelutilities.spiceModel2backend(this.relatedModule, item)).subscribe(res => {
+            this.backend.putRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, [], this.modelutilities.spiceModel2backend(this.relatedModule, item)).subscribe(() => {
                     retSubject.next(true);
                     retSubject.complete();
                 },
@@ -523,7 +541,7 @@ export class relatedmodels implements OnDestroy {
             let params = {
                 relatedids: relatedids
             };
-            this.backend.deleteRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, params).subscribe(res => {
+            this.backend.deleteRequest("module/" + this.module + "/" + this.id + "/related/" + this._linkName, params).subscribe(() => {
                 this.items.some((item, index) => {
                     if (item.id == id) {
                         this.items.splice(index, 1);

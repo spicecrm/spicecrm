@@ -68,6 +68,10 @@ class Person extends Basic
     {
         $ret_val = parent::retrieve($id, $encode, $deleted, $relationships);
         $this->_create_proper_name_field();
+        // call fill_in_relationship_fields again .... workaround till we get the SugarBean::fill_in_relationship_fields clean
+        if($relationships) {
+            $this->fill_in_relationship_fields();
+        }
         return $ret_val;
     }
 

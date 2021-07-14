@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -20,9 +20,12 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     </ng-template>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-is-relative" [ngClass]="getFieldClass()" style="position:relative;">
-    <textarea #focus #textField class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" [(ngModel)]="value" [ngStyle]="getTextAreaStyle()" (system-resize)="resize($event)" (change)="change($event)"></textarea>
+    <textarea [maxlength]="fieldlength" #focus #textField class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" [(ngModel)]="value" [ngStyle]="getTextAreaStyle()" (system-resize)="resize($event)" (change)="change($event)"></textarea>
     <button *ngIf="speechRecognition" class="slds-button slds-button_small slds-button_icon slds-is-absolute" style="right:8px;" (click)="speechRecognitionStart()">
         <system-button-icon [size]="'small'" [icon]="'unmuted'"></system-button-icon>
     </button>
-    <field-messages [fieldname]="fieldname"></field-messages>
+    <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+        <field-messages class="slds-grow" [fieldname]="fieldname"></field-messages>
+        <span *ngIf="fieldlength > 0">{{textLength}}/{{fieldlength}}</span>
+    </div>
 </div>

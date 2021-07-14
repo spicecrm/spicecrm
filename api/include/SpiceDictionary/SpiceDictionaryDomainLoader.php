@@ -52,6 +52,13 @@ class SpiceDictionaryDomainLoader
 
     }
 
+    /**
+     * Loads all enum values for a domain field.
+     *
+     * @param string $domain
+     * @return array
+     * @throws \Exception
+     */
     public function loadValidationValuesForDomain(string $domain): array {
         $db = DBManagerFactory::getInstance();
         $enumValues = [];

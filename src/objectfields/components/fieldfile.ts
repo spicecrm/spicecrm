@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -157,7 +157,6 @@ export class fieldFile extends fieldGeneric {
                     retSub.next({progress: {total: e.total, loaded: e.loaded}});
                 }, false);
 
-                // request.open("POST", this.configurationService.getBackendUrl() + "/module/" + this.module + "/" + this.id + "/attachment", true);
                 request.open('POST', this.configurationService.getBackendUrl() + '/module/' + this.model.module + '/' + this.model.id + '/noteattachment', true);
                 request.setRequestHeader("OAuth-Token", this.session.authData.sessionId);
                 request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");

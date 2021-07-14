@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -14,13 +14,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
     <div *ngSwitchDefault>
         <span class="slds-m-right--x-small">
-            <button class="slds-button slds-button_icon slds-button--icon-small slds-button--icon-border" [disabled]="page < 2" (click)="page = 1"><system-button-custom-icon [icon]="'chevrondoubleleft'" title="go to first page"></system-button-custom-icon></button>
-            <button class="slds-button slds-button_icon slds-button--icon-small slds-button--icon-border" [disabled]="page <= 1" (click)="pageDown()" title="go to previous page"><system-button-icon [icon]="'chevronleft'"></system-button-icon></button>
+            <button class="slds-button slds-button_icon slds-button--icon-small slds-button--icon-border" [disabled]="!canSwitch || page < 2" (click)="page = 1"><system-button-custom-icon [icon]="'chevrondoubleleft'" title="go to first page"></system-button-custom-icon></button>
+            <button class="slds-button slds-button_icon slds-button--icon-small slds-button--icon-border" [disabled]="!canSwitch || page <= 1" (click)="pageDown()" title="go to previous page"><system-button-icon [icon]="'chevronleft'"></system-button-icon></button>
         </span>
-        <span>{{page}} <system-label label="LBL_OF"></system-label> {{max_page}} <system-label label="LBL_PAGES"></system-label> (showing up to {{limit}} <system-label label="LBL_OF"></system-label> {{total_records}} <system-label label="LBL_RECORDS"></system-label>)</span>
+        <span><ng-container *ngIf="page">{{page}} <system-label label="LBL_OF"></system-label> </ng-container>{{max_page}} <system-label label="LBL_PAGES"></system-label> (showing up to {{limit}} <system-label label="LBL_OF"></system-label> {{total_records}} <system-label label="LBL_RECORDS"></system-label>)</span>
         <span class="slds-m-left--x-small">
-            <button class="slds-button slds-button_icon slds-button--icon-small slds-button--icon-border" [disabled]="page >= max_page" (click)="pageUp()" title="go to next page"><system-button-icon [icon]="'chevronright'"></system-button-icon></button>
-            <button class="slds-button slds-button_icon slds-button--icon-small slds-button--icon-border" [disabled]="page >= max_page-1" (click)="page = max_page"><system-button-custom-icon [icon]="'chevrondoubleright'" title="go to last page"></system-button-custom-icon></button>
+            <button class="slds-button slds-button_icon slds-button--icon-small slds-button--icon-border" [disabled]="!canSwitch || page >= max_page" (click)="pageUp()" title="go to next page"><system-button-icon [icon]="'chevronright'"></system-button-icon></button>
+            <button class="slds-button slds-button_icon slds-button--icon-small slds-button--icon-border" [disabled]="!canSwitch || page >= max_page-1" (click)="page = max_page"><system-button-custom-icon [icon]="'chevrondoubleright'" title="go to last page"></system-button-custom-icon></button>
         </span>
     </div>
 

@@ -70,27 +70,27 @@ class SpiceDictionaryHandler{
     /**
      * save the dict definitions
      *
-     * @param $definitons
+     * @param $definitions
      * @throws Exception
      */
-    public function setDictionaryDefinitions($definitons){
+    public function setDictionaryDefinitions($definitions){
         $db = DBManagerFactory::getInstance();
 
         // check if we have a CR set
         if ($_SESSION['SystemDeploymentCRsActiveCR'])
             $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
 
-        foreach($definitons as $definiton){
-            switch($definiton['scope']){
+        foreach($definitions as $definition){
+            switch($definition['scope']){
                 case 'c':
-                    unset($definiton['scope']);
-                    $db->upsertQuery('syscustomdictionarydefinitions', ['id' => $definiton['id']], $definiton);
-                    if ($cr) $cr->addDBEntry("syscustomdictionarydefinitions", $definiton['id'], 'I', $definiton['name']);
+                    unset($definition['scope']);
+                    $db->upsertQuery('syscustomdictionarydefinitions', ['id' => $definition['id']], $definition);
+                    if ($cr) $cr->addDBEntry("syscustomdictionarydefinitions", $definition['id'], 'I', $definition['name']);
                     break;
                 default:
-                    unset($definiton['scope']);
-                    $db->upsertQuery('sysdictionarydefinitions', ['id' => $definiton['id']], $definiton);
-                    if ($cr) $cr->addDBEntry("sysdictionarydefinitions", $definiton['id'], 'I', $definiton['name']);
+                    unset($definition['scope']);
+                    $db->upsertQuery('sysdictionarydefinitions', ['id' => $definition['id']], $definition);
+                    if ($cr) $cr->addDBEntry("sysdictionarydefinitions", $definition['id'], 'I', $definition['name']);
                     break;
             }
         }
@@ -124,7 +124,7 @@ class SpiceDictionaryHandler{
     /**
      * save the dict definitions
      *
-     * @param $definitons
+     * @param $definitions
      * @throws Exception
      */
     public function setDictionaryItems($items){
@@ -441,24 +441,24 @@ class SpiceDictionaryHandler{
         return $defArray;
     }
 
-    public function setDomainDefinitions($definitons){
+    public function setDomainDefinitions($definitions){
         $db = DBManagerFactory::getInstance();
 
         // check if we have a CR set
         if ($_SESSION['SystemDeploymentCRsActiveCR'])
             $cr = BeanFactory::getBean('SystemDeploymentCRs', $_SESSION['SystemDeploymentCRsActiveCR']);
 
-        foreach($definitons as $definiton){
-            switch($definiton['scope']){
+        foreach($definitions as $definition){
+            switch($definition['scope']){
                 case 'c':
-                    unset($definiton['scope']);
-                    $db->upsertQuery('syscustomdomaindefinitions', ['id' => $definiton['id']], $definiton);
-                    if ($cr) $cr->addDBEntry("syscustomdomaindefinitions", $definiton['id'], 'I', $definiton['name']);
+                    unset($definition['scope']);
+                    $db->upsertQuery('syscustomdomaindefinitions', ['id' => $definition['id']], $definition);
+                    if ($cr) $cr->addDBEntry("syscustomdomaindefinitions", $definition['id'], 'I', $definition['name']);
                     break;
                 default:
-                    unset($definiton['scope']);
-                    $db->upsertQuery('sysdomaindefinitions', ['id' => $definiton['id']], $definiton);
-                    if ($cr) $cr->addDBEntry("sysdomaindefinitions", $definiton['id'], 'I', $definiton['name']);
+                    unset($definition['scope']);
+                    $db->upsertQuery('sysdomaindefinitions', ['id' => $definition['id']], $definition);
+                    if ($cr) $cr->addDBEntry("sysdomaindefinitions", $definition['id'], 'I', $definition['name']);
                     break;
             }
         }

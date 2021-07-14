@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -44,7 +44,7 @@ export class ObjectRelatedlistTable implements OnInit {
     /**
      * define a separate edit componentset that will be rendered with the edit dialog if the user chooses to edit a record
      *
-     * typical usecase is to add fields fromt eh linkl (e.g. in teh buying center) to the fieldset. Those fields are specific to a relationship and can only be added as part of that
+     * typical usecase is to add fields fromt eh linkl (e.g. in the buying center) to the fieldset. Those fields are specific to a relationship and can only be added as part of that
      */
     @Input() private editcomponentset: boolean = false;
 
@@ -89,7 +89,7 @@ export class ObjectRelatedlistTable implements OnInit {
             return;
         }
 
-        if (!this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName]) {
+        if (!this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName] && ! this.relatedmodels.linkEndPoint) {
             this.logger.error('Missing link or wrong link name ("' + this.relatedmodels._linkName + '")!');
         } else {
             if (!this.sequencefield && this.metadata.fieldDefs[this.model.module][this.relatedmodels._linkName].sequence_field) {

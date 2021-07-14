@@ -29,15 +29,14 @@
 
 use SpiceCRM\includes\RESTManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
-use SpiceCRM\KREST\controllers\coreController;
-
-$RESTManager = RESTManager::getInstance();
+use SpiceCRM\KREST\controllers\CoreController;
+use SpiceCRM\includes\Middleware\ValidationMiddleware;
 
 $routes = [
     [
         'method'      => 'get',
         'route'       => '/',
-        'class'       => coreController::class,
+        'class'       => CoreController::class,
         'function'    => 'getExtensions',
         'description' => 'get the loaded Extensions',
         'options'     => ['noAuth' => true, 'adminOnly' => false],
@@ -45,132 +44,141 @@ $routes = [
     [
         'method'      => 'get',
         'route'       => '/sysinfo',
-        'class'       => coreController::class,
+        'oldroute'    => '/sysinfo',
+        'class'       => CoreController::class,
         'function'    => 'getSysinfo',
-        'description' => 'get vital sysinfo for the startup',
+        'description' => 'get vital system information for the startup',
         'options'     => ['noAuth' => true, 'adminOnly' => false],
     ],
     [
         'method'      => 'get',
-        'route'       => '/language',
-        'class'       => coreController::class,
+        'oldroute'    => '/language/{language}',
+        'route'       => '/system/language',
+        'class'       => CoreController::class,
         'function'    => 'getLanguage',
-        'description' => 'routes for the language',
-        'options'     => ['noAuth' => true, 'adminOnly' => false],
+        'summary'     => 'loads the specific language strings',
+        'description' => 'loads the specific language strings',
+        'options'     => ['noAuth' => true, 'adminOnly' => false, 'validate' => true],
+        'parameters' => [
+            'setPreferences' => [
+                'in' => 'query',
+                'description' => 'set the preferences',
+                'type' => ValidationMiddleware::TYPE_BOOL,
+                'example' => 'de_DE'
+            ]
+        ]
     ],
     [
         'method'      => 'get',
-        'route'       => '/language/{language}',
-        'class'       => coreController::class,
+        'oldroute'    => '/language/{language}',
+        'route'       => '/system/language/{language}',
+        'class'       => CoreController::class,
         'function'    => 'getLanguage',
-        'summary'     => 'routes for the language',
-        'description' => 'routes for the language lorem ipsum dolor sit amet',
+        'summary'     => 'loads the specific language strings',
+        'description' => 'loads the specific language strings',
         'options'     => ['noAuth' => true, 'adminOnly' => false],
-        'requestBody' => [ // optional. use only if there actually is a post body
-            'description' => 'lorem ipsum',
-            'example' => 'beispiel als text',
-            'content' => [
-                'setLanguage' => [
-                    'type' => 'boolean',
-                    'required' => false,
-                    'description' => 'lorem ipsum dolor sit amet',
-                    // todo later add some validation rules
-                ],
-                // die struktur erweitern und verschachteln abhängig davon was die methode erwartet
-            ],
-        ],
-        'parameters'  => [
+        'parameters' => [
             'language' => [
-                'in' => 'path', // path or query
-                'description' => 'Language lorem ipsum',
-                'type' => 'enum',
-                'options' => [], // entweder hardcoden, oder ein string (dann ist das ein Domain)
-                'example' => 'optional',
+                'in' => 'path',
+                'description' => 'requested language',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => false,
+                'example' => 'de_DE'
             ],
-            'lorem' => [
-                'in' => 'path', // path or query
-                'description' => 'Language lorem ipsum',
-                'type' => 'string',
-                'example' => 'optional',
-            ],
-        ],
-        'responses'   => [
-            404 => [
-                'description' => 'not found',
-            ],
-            200 => [
-                'description' => 'OK',
-//                'content' // leave it for now
-            ],
-        ],
+            'setPreferences' => [
+                'in' => 'query',
+                'description' => 'set the preferences',
+                'type' => ValidationMiddleware::TYPE_BOOL,
+                'example' => 'de_DE'
+            ]
+        ]
     ],
-    // begin workaround when {language} in the route above is empty
-    // the / for the route is set and RESTManager would throw a 404 error
-    // it usually happens after installation
-    [
-        'method'      => 'get',
-        'route'       => '/language/',
-        'class'       => coreController::class,
-        'function'    => 'getLanguage',
-        'description' => 'routes for the language',
-        'options'     => ['noAuth' => true, 'adminOnly' => false],
-    ],
-    // end
     [
         'method'      => 'get',
         'route'       => '/system/guid',
-        'class'       => coreController::class,
+        'class'       => CoreController::class,
         'function'    => 'generateGuid',
         'description' => 'helper to generate a GUID',
         'options'     => ['noAuth' => true, 'adminOnly' => false],
     ],
     [
         'method'      => 'post',
-        'route'       => '/tmpfile',
-        'class'       => coreController::class,
-        'function'    => 'storeTmpFile',
-        'description' => 'called from teh proxy to store a temp file storeTmpFile',
-        'options'     => ['noAuth' => true, 'adminOnly' => false],
+        'route'       => '/system/httperrors',
+        'oldroute'    => '/httperrors',
+        'class'       => CoreController::class,
+        'function'    => 'postHttpErrors',
+        'description' => 'Logs HTTP errors got from the frontend.',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true, 'excludeBodyValidation' => true],
+        'parameters'  => [
+            'errors' => [
+                'in'          => 'body',
+                'description' => 'Data of the errors occurred in the frontend.',
+                'type' => ValidationMiddleware::TYPE_ARRAY,
+                'subtype' => ValidationMiddleware::TYPE_COMPLEX,
+                'required' => true
+            ],
+        ],
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/system/shorturl/{key}',
+        'class'       => CoreController::class,
+        'function'    => 'getRedirection',
+        'description' => 'get redirection data for a short url',
+        'options'     => ['noAuth' => true, 'adminOnly' => false, 'validate' => true],
+        'parameters'  => [
+            'key' => [
+                'in'          => 'path',
+                'description' => 'Short URL key',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'required' => true,
+                'example'     => 'gX2qwKsKc',
+                'validationOptions' => [
+                    ValidationMiddleware::VOPT_REGEX => '#^[a-km-zA-HJ-NP-Z2-9]+$#'
+                ]
+            ],
+        ],
+    ],
+    [
+        'method'      => 'get',
+        'route'       => '/admin/routes',
+        'oldroute'    => '/routes',
+        'class'       => CoreController::class,
+        'function'    => 'getRoutes',
+        'description' => 'get the routes from the restmanager',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
     ],
     [
         'method'      => 'post',
-        'route'       => '/httperrors',
-        'class'       => coreController::class,
-        'function'    => 'postHttpErrors',
-        'description' => 'logs http errors',
-        'options'     => ['noAuth' => false, 'adminOnly' => false],
-    ],
-    [
-        'method'      => 'get',
-        'route'       => '/shorturl/{key}',
-        'class'       => coreController::class,
-        'function'    => 'getRedirection',
-        'description' => 'get redirection data for a short url',
-        'options'     => ['noAuth' => false, 'adminOnly' => false],
-    ],
-    [
-        'method'      => 'get',
-        'route'       => '/shorturl/{key}',
-        'class'       => coreController::class,
-        'function'    => 'getRedirection',
-        'description' => 'get redirection data for a short url',
-        'options'     => ['noAuth' => false, 'adminOnly' => false],
-    ],
-    [
-        'method'      => 'get',
-        'route'       => '/routes',
-        'class'       => coreController::class,
-        'function'    => 'getRoutes',
-        'description' => 'get the routes from the restmanager',
-        'options'     => ['noAuth' => false, 'adminOnly' => false],
-    ],
-    [
-        'method'      => 'get',
-        'route'       => '/swagger',
-        'class'       => coreController::class,
+        'route'       => '/common/Swagger',
+        'oldroute'    => '/swagger',
+        'class'       => CoreController::class,
         'function'    => 'getSwagger',
-        'description' => 'Returns the swagger definition of the API',
-        'options'     => ['noAuth' => true, 'adminOnly' => false],
+        'description' => 'Returns all swagger definitions of the API',
+        'options'     => ['noAuth' => false, 'adminOnly' => false, 'validate' => true],
+        'parameters'  => [
+            'modules'    => [
+                'in'          => 'body',
+                'description' => 'The modules names for which the generic routes will be instantiated.',
+                'type' => ValidationMiddleware::TYPE_ARRAY,
+                'subtype'     => 'module',
+                'required'    => false,
+            ],
+            'extensions' => [
+                'in'          => 'body',
+                'description' => 'The extension names for which the swagger file will be generated.',
+                'type' => ValidationMiddleware::TYPE_ARRAY,
+                'subtype'     => 'extension',
+                'required'    => false,
+            ],
+            'node' => [
+                'in'          => 'body',
+                'description' => 'A (partial) API path. All routes including the node at the beginning of its path will be included in the generated swagger file.',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'example'     => '/example',
+                'required'    => false,
+            ],
+        ],
     ],
 ];
 
@@ -178,7 +186,7 @@ $routes = [
  * register the extension
  */
 
-$RESTManager->registerExtension(
+RESTManager::getInstance()->registerExtension(
     'core',
     '2.0',
     ['edit_mode' => SpiceConfig::getInstance()->config['workbench_edit_mode']['mode'] ?: 'custom'],

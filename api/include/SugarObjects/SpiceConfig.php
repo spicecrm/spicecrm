@@ -105,19 +105,12 @@ class SpiceConfig
      */
     public function loadConfigFromDB()
     {
-        $entries = [];
         $db = DBManagerFactory::getInstance();
         if ($db) {
             $result = $db->query("SELECT * FROM config");
             while ($configEntry = $db->fetchByAssoc($result)) {
-                $entries[$configEntry['category']][$configEntry['name']] = $configEntry['value'];
+                $this->config[$configEntry['category']][$configEntry['name']] = $configEntry['value'];
             }
-            //if(count($entries))
-            {
-                $this->config = array_merge($this->config, $entries);
-            }
-        } else {
-            //todo clarify if we should throw an error...
         }
         return true;
     }

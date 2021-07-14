@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -10,70 +10,29 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 -->
 
-<div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-p-horizontal--xxx-small"
-     [ngClass]="{'slds-is-open': isOpen}">
-        <system-utility-icon [icon]="'filterList'" [size]="'xx-small'" (click)="toggleOpen($event)" [colorclass]="filterColorClass" [title]="language.getLabel('LBL_FILTER')"></system-utility-icon>
-    <div class="slds-is-absolute slds-dropdown slds-dropdown_right slds-nubbin_top-right" style="right:-10px;top:25px;">
+<div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-p-horizontal--xxx-small"  [ngClass]="{'slds-is-open': isOpen}">
+    <system-utility-icon icon="filterList" size="xx-small" (click)="toggleOpen($event)" [colorclass]="filterColorClass" [title]="language.getLabel('LBL_FILTER')"></system-utility-icon>
+    <div class="slds-is-absolute slds-dropdown slds-dropdown_right slds-nubbin_top-right" style="right:-15px;top:25px;">
         <div class="slds-grid">
-            <div class="slds-p-horizontal--small slds-border--right" style="min-width: 180px">
+            <div class="slds-p-horizontal--small slds-border--right" style="min-width: 120px">
                 <div class="slds-p-vertical--x-small"><system-label label="LBL_TYPE"></system-label></div>
                 <div class="slds-form-element slds-p-vertical--xx-small">
-                    <div class="slds-form-element__control" (click)="setFilter($event, 'all')">
-                        <span class="slds-checkbox">
-                          <input type="checkbox" id="alltypes" [checked]="getChecked('all')"/>
-                          <label class="slds-checkbox__label" for="alltypes">
-                            <span class="slds-checkbox_faux"></span>
-                            <span class="slds-form-element__label"><system-label label="LBL_ALL"></system-label></span>
-                          </label>
-                        </span>
-                    </div>
+                    <system-checkbox [disabled]="getChecked('all')" [ngModel]="getChecked('all')" (ngModelChange)="setFilter('all', $event)"><system-label label="LBL_ALL"></system-label></system-checkbox>
                 </div>
                 <div class="slds-form-element slds-p-vertical--xx-small" *ngFor="let activityType of activityTypes">
-                    <div class="slds-form-element__control" (click)="setFilter($event, activityType.type)">
-                        <span class="slds-checkbox">
-                          <input type="checkbox" [id]="activityType.type" [checked]="getChecked(activityType.type)"/>
-                          <label class="slds-checkbox__label" [attr.for]="activityType.type">
-                            <span class="slds-checkbox_faux"></span>
-                            <span class="slds-form-element__label">{{activityType.name}}</span>
-                          </label>
-                        </span>
-                    </div>
+                    <system-checkbox [ngModel]="getChecked(activityType)" (ngModelChange)="setFilter(activityType, $event)"><system-label-modulename [module]="activityType"></system-label-modulename></system-checkbox>
                 </div>
             </div>
-            <div class="slds-p-horizontal--small" style="min-width: 180px">
+            <div class="slds-p-horizontal--small" style="min-width: 120px">
                 <div class="slds-p-vertical--x-small"><system-label label="LBL_FILTER"></system-label></div>
                 <fieldset class="slds-form-element">
                     <div class="slds-form-element__control">
-                        <span class="slds-radio">
-                          <input type="radio" id="timeall" name="filters" value="all" [(ngModel)]="timefilter"/>
-                          <label class="slds-radio__label" for="timeall">
-                            <span class="slds-radio_faux"></span>
-                            <span class="slds-form-element__label"><system-label label="LBL_ALL"></system-label></span>
-                          </label>
-                        </span>
-                        <span class="slds-radio">
-                          <input type="radio" id="timeoverdue" name="filters" value="overdue" [(ngModel)]="timefilter" />
-                          <label class="slds-radio__label" for="timeoverdue">
-                            <span class="slds-radio_faux"></span>
-                            <span class="slds-form-element__label"><system-label label="LBL_OVERDUE"></system-label></span>
-                          </label>
-                        </span>
-                        <span class="slds-radio">
-                          <input type="radio" id="timetoday" name="filters" value="today" [(ngModel)]="timefilter" />
-                          <label class="slds-radio__label" for="timetoday">
-                            <span class="slds-radio_faux"></span>
-                            <span class="slds-form-element__label"><system-label label="LBL_TODAY"></system-label></span>
-                          </label>
-                        </span>
+                        <system-input-radio name="filters" value="all" [(ngModel)]="assistant.assistantFilters.timefilter"><system-label label="LBL_ALL"></system-label></system-input-radio>
+                        <system-input-radio name="filters" value="overdue" [(ngModel)]="assistant.assistantFilters.timefilter"><system-label label="LBL_OVERDUE"></system-label></system-input-radio>
+                        <system-input-radio name="filters" value="today" [(ngModel)]="assistant.assistantFilters.timefilter"><system-label label="LBL_TODAY"></system-label></system-input-radio>
                     </div>
                 </fieldset>
             </div>
         </div>
-        <footer class="slds-popover__footer">
-           <div class="slds-grid">
-               <button class="slds-col--bump-left slds-button slds-button_neutral" (click)="closeDialog(false)"><system-label label="LBL_CANCEL"></system-label></button>
-               <button class="slds-button slds-button--brand" (click)="closeDialog(true)"><system-label label="LBL_APPLY"></system-label></button>
-           </div>
-        </footer>
     </div>
 </div>

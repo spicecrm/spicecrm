@@ -5,6 +5,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\ErrorHandlers\ValidationException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
@@ -13,11 +14,33 @@ class ExceptionMiddleware extends FailureMiddleware
     public function __invoke(Request $request, RequestHandler $handler): ResponseInterface {
         try {
             return $handler->handle($request);
+        } catch (ValidationException $exception) {
+            return $this->handleValidationException($exception);
         } catch (Exception $exception) {
             return $this->handleSpiceException($exception);
         } catch (\Exception $exception) {
             return $this->handleException($exception);
         }
+    }
+
+    /**
+     * Handles API validation exceptions.
+     * Returns the validation errors and if the developer mode is set also the error trace.
+     *
+     * @param ValidationException $exception
+     * @return ResponseInterface
+     */
+    private function handleValidationException(ValidationException $exception): ResponseInterface {
+        if ($exception->isFatal()) {
+            LoggerManager::getLogger()->fatal($exception->getMessageToLog() . ' in ' . $exception->getFile()
+                . ':' . $exception->getLine() );
+        }
+        $responseData = $exception->getValidationErrors();
+
+        $httpCode = $exception->getHttpCode();
+        $specialResponseHeaders = $exception->getHttpHeaders();
+
+        return $this->generateResponse($responseData, $httpCode, $specialResponseHeaders);
     }
 
     /**
@@ -37,7 +60,7 @@ class ExceptionMiddleware extends FailureMiddleware
         if (get_class($exception) === Exception::class) {
             $responseData['line']  = $exception->getLine();
             $responseData['file']  = $exception->getFile();
-            $responseData['trace'] = $exception->getTrace();
+            $responseData['trace'] = $exception->getTraceAsString();
         }
         $httpCode = $exception->getHttpCode();
         $specialResponseHeaders = $exception->getHttpHeaders();

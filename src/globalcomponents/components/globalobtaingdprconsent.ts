@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -50,7 +50,7 @@ export class GlobalObtainGDPRConsent {
     private retrieveConsentText() {
         let headers = new HttpHeaders();
         headers = headers.set('OAuth-Token', this.session.authData.sessionId);
-        this.http.get(this.configuration.getBackendUrl() + '/gdpr/portalGDPRconsentText', { headers: headers }).subscribe(( response: any ) => {
+        this.http.get(this.configuration.getBackendUrl() + '/common/gdpr/portalGDPRconsentText', { headers: headers }).subscribe(( response: any ) => {
             this.consentText = response.portalGDPRconsentText;
         });
     }
@@ -61,7 +61,7 @@ export class GlobalObtainGDPRConsent {
     public save() {
         if ( this.isSaving ) return;
         this.isSaving = true;
-        this.backend.postRequest('gdpr/portalGDPRconsent', null, { consentText: this.consentText } ).subscribe(
+        this.backend.postRequest('common/gdpr/portalGDPRconsent', null, { consentText: this.consentText } ).subscribe(
             ( response: any ) => {
                 this.loginService.session.authData.obtainGDPRconsent = false; // The GDPR consent is no longer missing.
             },

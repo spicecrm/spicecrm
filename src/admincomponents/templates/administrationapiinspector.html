@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -21,6 +21,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                 <input class="slds-input" system-placeholder="LBL_FILTER" [(ngModel)]="apiinspector.apiFilter"/>
                 <system-utility-icon class="slds-p-left--xx-small" (click)="toggleUnauthorized($event)" icon="unlock" size="x-small" [colorclass]="apiinspector.apiFilterUnauthorized ? 'slds-icon-text-warning' : 'slds-icon-text-light'"></system-utility-icon>
                 <system-utility-icon class="slds-p-left--xx-small" (click)="toggleAdminOnly($event)" icon="user_role" size="x-small" [colorclass]="apiinspector.apiFilterAdminOnly ? 'slds-icon-text-warning' : 'slds-icon-text-light'" ></system-utility-icon>
+                <system-utility-icon class="slds-p-left--xx-small" (click)="toggleValidatedOnly($event)" icon="ribbon" size="x-small" [colorclass]="apiinspector.apiFilterValidatedOnly ? 'slds-icon-text-warning' : 'slds-icon-text-light'" ></system-utility-icon>
             </div>
         </div>
         <div system-to-bottom>

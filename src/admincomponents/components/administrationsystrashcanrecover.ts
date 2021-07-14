@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -42,19 +42,19 @@ declare var moment: any;
 })
 export class AdministrationSysTrashcanRecover implements OnInit {
 
-    @Input() record: any = {};
-    self: any = {};
-    relatedRecords: Array<any> = [];
-    loading: boolean = true;
-    recoverrelated: boolean = false;
-    recovering: boolean = false;
-    recovered: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Input() public record: any = {};
+    public self: any = {};
+    public relatedRecords: any[] = [];
+    public loading: boolean = true;
+    public recoverrelated: boolean = false;
+    public recovering: boolean = false;
+    public recovered: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     constructor(private metadata: metadata, private backend: backend, private language: language, private toast: toast) {
     }
 
     public ngOnInit() {
-        this.backend.getRequest('systrashcan/related/' + this.record.transactionid + '/' + this.record.recordid).subscribe(related => {
+        this.backend.getRequest('admin/systrashcan/related/' + this.record.transactionid + '/' + this.record.recordid).subscribe(related => {
                 this.relatedRecords = related;
 
                 if (this.relatedRecords.length > 0) {
@@ -74,17 +74,17 @@ export class AdministrationSysTrashcanRecover implements OnInit {
     }
 
     private getModule(singular) {
-        return this.metadata.getModuleFromSingular(singular)
+        return this.metadata.getModuleFromSingular(singular);
     }
 
     get recorverDisabled() {
-        return this.relatedRecords.length == 0
+        return this.relatedRecords.length == 0;
     }
 
     private doRecover() {
         this.recovering = true;
-        this.backend.postRequest('systrashcan/recover/' + this.record.id, {recoverrelated: this.recoverrelated}).subscribe(result => {
-            this.toast.sendToast('record ' + this.record.recordname + ' recovered')
+        this.backend.postRequest('admin/systrashcan/recover/' + this.record.id, {recoverrelated: this.recoverrelated}).subscribe(result => {
+            this.toast.sendToast('record ' + this.record.recordname + ' recovered');
             this.recovered.emit(true);
             this.self.destroy();
         });

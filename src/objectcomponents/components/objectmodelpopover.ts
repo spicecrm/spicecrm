@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -18,31 +18,93 @@ import {model} from '../../services/model.service';
 import {view} from '../../services/view.service';
 import {metadata} from '../../services/metadata.service';
 
+/**
+ * renders a popover for a model. The element that calls this needs to provide the model
+ */
 @Component({
+    selector: 'object-model-popover',
     templateUrl: './src/objectcomponents/templates/objectmodelpopover.html',
-    providers: [model, view]
+    providers: [view]
 })
 export class ObjectModelPopover implements OnInit {
-    public popovermodule: string = '';
-    public popoverid: string = '';
-    public popoverside: string = 'right';
-    public popoverpos: string = 'top';
+
+    /**
+     * the side for the popover
+     */
+    public popoverside: 'right'|'left' = 'right';
+
+    /**
+     * the position of the popover
+     */
+    public popoverpos: 'top'|'bottom' = 'top';
+
+    /**
+     * additonal styles
+     */
     public styles = null;
 
+    /**
+     *
+     * @private
+     */
     private hidePopoverTimeout: any = {};
 
+    /**
+     * reference to the popover for calculaiton of the size and position
+     *
+     * @private
+     */
     @ViewChild('popover', {read: ViewContainerRef, static: true}) private popover: ViewContainerRef;
+
+    /**
+     * the related container if there are related elements rendered
+     *
+     * @private
+     */
     @ViewChild('relatedcontainer', {read: ViewContainerRef, static: true}) private relatedContainer: ViewContainerRef;
 
+    /**
+     * the elementref to the parent element. Passd in when the modal is rendered to get the position for the overlay
+     */
     public parentElementRef: any = null;
+
+    /**
+     * reference to the popover itsefl for destruction
+     */
     public self: any = null;
 
+    /**
+     * the fields if they are rendered
+     */
     public fields: any[] = [];
+
+    /**
+     * the fieldset if one is defined
+     */
     public fieldset: string = '';
+
+    /**
+     * the componentset to be displayes
+     */
     public componentset: string = '';
+
+    /**
+     * a header componentset if one is defined
+     */
     public headercomponentset: string = '';
 
+    /**
+     * needed to position properly
+     *
+     * @private
+     */
     private heightcorrection = 30;
+
+    /**
+     * needed to position the poopover properly
+     *
+     * @private
+     */
     private widthcorrection = 30;
 
     constructor(
@@ -53,24 +115,36 @@ export class ObjectModelPopover implements OnInit {
         this.view.displayLinks = false;
     }
 
+    /**
+     * get the style for the relate container limniting the height
+     */
     get relatedStyle() {
         return {'max-height': `calc(100vh - ${(this.relatedContainer.element.nativeElement.getBoundingClientRect().top  + 5)}px)`};
     }
 
-    private goDetail() {
-        this.model.goDetail();
-    }
-
+    /**
+     * catch the mouse entry
+     *
+     * @private
+     */
     private onMouseOver() {
         if (this.hidePopoverTimeout) {
             window.clearTimeout(this.hidePopoverTimeout);
         }
     }
 
+    /**
+     * catch the mouse leave and close the modal
+     *
+     * @private
+     */
     private onMouseOut() {
-        this.closePopover(true);
+        this.closePopover();
     }
 
+    /**
+     * determine the style for the popover depending on the size and the parent element position
+     */
     get popoverStyle() {
         let rect = this.parentElementRef.nativeElement.getBoundingClientRect();
         let poprect = this.popover.element.nativeElement.getBoundingClientRect();
@@ -98,25 +172,21 @@ export class ObjectModelPopover implements OnInit {
         }
     }
 
+    /**
+     * initialize the component
+     */
     public ngOnInit() {
-        // load the model
-        this.model.module = this.popovermodule;
-        this.model.id = this.popoverid;
-        this.model.getData();
-
         // load the fields
-        let componentconfig = this.metadata.getComponentConfig('ObjectModelPopover', this.popovermodule);
+        let componentconfig = this.metadata.getComponentConfig('ObjectModelPopover', this.model.module);
         if (componentconfig.fieldset || componentconfig.componentset) {
             this.fields = this.metadata.getFieldSetFields(componentconfig.fieldset);
 
             this.fieldset = componentconfig.fieldset;
             this.componentset = componentconfig.componentset;
             this.headercomponentset = componentconfig.headercomponentset;
-        }
-
-        // if we did not find a fieldset try to take the header one instead
-        if (!this.fieldset) {
-            componentconfig = this.metadata.getComponentConfig('ObjectPageHeaderDetails', this.popovermodule);
+        } else {
+            // if we did not find a fieldset and have no component set try to take the header one instead
+            componentconfig = this.metadata.getComponentConfig('ObjectPageHeaderDetails', this.model.module);
             if (componentconfig.fieldset) {
                 this.fields = this.metadata.getFieldSetFields(componentconfig.fieldset);
                 this.fieldset = componentconfig.fieldset;
@@ -127,6 +197,11 @@ export class ObjectModelPopover implements OnInit {
         this.styles = this.popoverStyle;
     }
 
+    /**
+     * determine the nubbin side
+     *
+     * @private
+     */
     private getNubbinClass() {
         return (this.popoverside == 'left' ? 'slds-nubbin--right-' : 'slds-nubbin--left-') + this.popoverpos;
     }

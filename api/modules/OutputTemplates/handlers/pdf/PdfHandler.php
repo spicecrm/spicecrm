@@ -5,7 +5,7 @@ use SpiceCRM\modules\OutputTemplates\OutputTemplate;
 
 abstract class PdfHandler
 {
-    protected $html_content = '';
+    public $html_content = '';
     protected $options = [];
     protected $content = '';
     protected $template;

@@ -230,22 +230,6 @@ $dictionary['Task'] = ['table' => 'tasks',
             'source'       => 'non-db',
             'vname'        => 'LBL_MEETINS',
         ],
-// CR1000426 cleanup backend, module Cases removed
-//        'cases' => [
-//            'name'         => 'cases',
-//            'type'         => 'link',
-//            'relationship' => 'case_tasks',
-//            'source'       => 'non-db',
-//            'vname'        => 'LBL_CASE',
-//        ],
-// CR1000426 cleanup backend, module Bugs removed
-//        'bugs' => [
-//            'name'         => 'bugs',
-//            'type'         => 'link',
-//            'relationship' => 'bug_tasks',
-//            'source'       => 'non-db',
-//            'vname'        => 'LBL_BUGS',
-//        ],
         'leads' => [
             'name'         => 'leads',
             'type'         => 'link',
@@ -267,13 +251,6 @@ $dictionary['Task'] = ['table' => 'tasks',
             'source'       => 'non-db',
             'vname'        => 'LBL_PROJECTWBSS',
         ],
-//        'projectplannedactivities' => [
-//            'name'         => 'projectplannedactivities',
-//            'type'         => 'link',
-//            'relationship' => 'projectplannedactivities_tasks',
-//            'source'       => 'non-db',
-//            'vname'        => 'LBL_PROJECTPLANNEDACTIVITY',
-//        ],
         'notes' => [
             'name'         => 'notes',
             'type'         => 'link',
@@ -305,7 +282,7 @@ $dictionary['Task'] = ['table' => 'tasks',
             'dbtype'         => 'text',
             'vname'        => 'LBL_CHECKLISTS',
             'comment' => 'stores the checklist for the task to detail the task in more granular actions'
-        ],
+        ]
     ]
     ,
     'relationships' => [

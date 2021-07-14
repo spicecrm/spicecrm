@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -22,7 +22,7 @@ import {metadata} from '../../../services/metadata.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {modal} from '../../../services/modal.service';
 import {fieldGeneric} from "../../../objectfields/components/fieldgeneric";
-import {relateFilter} from "../../../services/modellist.service";
+import {relateFilter} from "../../../services/interfaces.service";
 
 @Component({
     templateUrl: './src/modules/activities/templates/fieldactivityparticipationpanel.html'

@@ -263,7 +263,7 @@ class ACLAction extends SugarBean
                     WHERE acl_actions.deleted=0 $additional_where ORDER BY category,name";
         $result = $db->query($query);
         $selected_actions = [];
-        while($row = $db->fetchByAssoc($result, FALSE) ){
+        while($row = $db->fetchByAssoc($result) ){
             $acl = new ACLAction();
             $isOverride  = false;
             $acl->populateFromRow($row);
@@ -311,13 +311,13 @@ class ACLAction extends SugarBean
             }
             }
         }
-        
+
         // Sort by translated categories
         uksort($selected_actions, "ACLAction::langCompare");
         return $selected_actions;
     }
-    
-    private static function langCompare($a, $b) 
+
+    private static function langCompare($a, $b)
     {
         global $app_list_strings;
         // Fallback to array key if translation is empty
@@ -327,7 +327,7 @@ class ACLAction extends SugarBean
             return 0;
         return ($a < $b) ? -1 : 1;
     }
-    
+
     /**
     * (static/ non-static)function hasAccess($is_owner= false , $access = 0)
     * checks if a user has access to this acl if the user is an owner it will check if owners have access
@@ -403,7 +403,7 @@ class ACLAction extends SugarBean
             {
                 // If you have admin access for a module, all ACL's are allowed
                 return $_SESSION['ACL'][$user_id][$category][$type]['admin']['aclaccess'];
-            }            
+            }
             return  $_SESSION['ACL'][$user_id][$category][$type][$action]['aclaccess'];
         }
     }

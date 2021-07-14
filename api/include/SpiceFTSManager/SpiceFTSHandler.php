@@ -1,31 +1,32 @@
 <?php
 /*********************************************************************************
- * This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
- * and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
- * You can contact us at info@spicecrm.io
- *
- * SpiceCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU Affero General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "Powered by
- * SugarCRM" logo. If the display of the logo is not reasonably feasible for
- * technical reasons, the Appropriate Legal Notices must display the words
- * "Powered by SugarCRM".
- *
- * SpiceCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ********************************************************************************/
+* This file is part of SpiceCRM. SpiceCRM is an enhancement of SugarCRM Community Edition
+* and is developed by aac services k.s.. All rights are (c) 2016 by aac services k.s.
+* You can contact us at info@spicecrm.io
+* 
+* SpiceCRM is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version
+* 
+* The interactive user interfaces in modified source and object code versions
+* of this program must display Appropriate Legal Notices, as required under
+* Section 5 of the GNU Affero General Public License version 3.
+* 
+* In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+* these Appropriate Legal Notices must retain the display of the "Powered by
+* SugarCRM" logo. If the display of the logo is not reasonably feasible for
+* technical reasons, the Appropriate Legal Notices must display the words
+* "Powered by SugarCRM".
+* 
+* SpiceCRM is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+********************************************************************************/
+
 namespace SpiceCRM\includes\SpiceFTSManager;
 
 use SpiceCRM\data\BeanFactory;
@@ -44,16 +45,56 @@ use SpiceCRM\modules\UserPreferences\UserPreference;
 class SpiceFTSHandler
 {
 
-    // instance of an elastichandler
+    /**
+     * an instance of the elastic handler
+     *
+     * @var ElasticHandler|null
+     */
     var $elasticHandler = null;
 
+    /**
+     * the instance for the singelton
+     *
+     * @var
+     */
     private static $instance;
 
-    private final function __construct() {
+    /**
+     * set internally if we are in a transaction and shoudl collect the entries
+     *
+     * @var bool
+     */
+    var $inTransaction = false;
+
+    /**
+     * indicates that we should process this call syncronously
+     * @var bool
+     */
+    var $transactionSyncronous = false;
+
+    /**
+     * array collection the transactional updates to be then executed on commit
+     *
+     * @var array
+     */
+    var $transactionEntries = [
+        'database' => [],
+        'elastic' => []
+    ];
+
+    public final function __construct()
+    {
         $this->elasticHandler = new ElasticHandler();
     }
-    private  function __clone() {}
-    private  function __wakeup() {}
+
+    private function __clone()
+    {
+    }
+
+    private function __wakeup()
+    {
+    }
+
     /**
      * @return SpiceFTSHandler
      */
@@ -109,12 +150,12 @@ class SpiceFTSHandler
 
         // CR1000458: when no fts configuration is set fall back to backend global search and query on database
         $modArray = $postBody['modules'];
-        if(!is_array($postBody['modules'])){
+        if (!is_array($postBody['modules'])) {
             $modArray = explode(",", $postBody['modules']);
         }
-        if(is_array($modArray)){
-            foreach($modArray as $module){
-                if(!self::checkModule($module, false)){
+        if (is_array($modArray)) {
+            foreach ($modArray as $module) {
+                if (!$this->checkModule($module, false)) {
                     $useFts = false;
                     break;
                 }
@@ -122,25 +163,25 @@ class SpiceFTSHandler
         }
 
         // use FTS
-        if($useFts){
+        if ($useFts) {
             $result = $this->getGlobalSearchResults($postBody['modules'], $postBody['searchterm'], json_decode($postBody['searchtags']), $postBody, $postBody['aggregates'], $postBody['sort']);
-        } else{
+        } else {
             // else go for a DB query and guess global modules
 
             // loop modules
-            foreach($modArray as $module) {
+            foreach ($modArray as $module) {
                 $krestHandler = new ModuleHandler();
                 $listData = $krestHandler->get_bean_list($module, ['searchterm' => $postBody['searchterm']]);
                 $result[$module]['aggregations'] = [];
                 $result[$module]['total'] = intval($listData['totalcount']);
                 $result[$module]['hits'] = [];
-                foreach($listData['list'] as $hit){
+                foreach ($listData['list'] as $hit) {
                     $hit['_module'] = $module;
                     $result[$module]['hits'][] = [
                         '_id' => $hit['id'],
                         '_source' => $hit,
                         '_type' => $module,
-                        '_index' => 'spice_'.strtolower($module)
+                        '_index' => 'spice_' . strtolower($module)
                     ];
                 }
             }
@@ -235,7 +276,7 @@ class SpiceFTSHandler
     /*
     * static function to check if a module has a FTE definition
     */
-    static function checkModule($module, $checkIndex = false)
+    public function checkModule($module, $checkIndex = false)
     {
         $db = DBManagerFactory::getInstance();
 
@@ -254,7 +295,7 @@ class SpiceFTSHandler
     /*
     * static function to check if a module has a FTE definition
     */
-    static function checkFilterDefs($module, $filterdefs)
+    public function checkFilterDefs($module, $filterdefs)
     {
         // check that a filter def has been passed in
         if (!$filterdefs) return true;
@@ -355,17 +396,17 @@ class SpiceFTSHandler
             $modules[] = $row;
         }
         // BWC when no FTS is set. Fall back on unified search definition
-        if(empty($modules)){
+        if (empty($modules)) {
             // try unified search
             require_once 'include/utils/UnifiedSearchAdvanced.php';
             $usa = new UnifiedSearchAdvanced();
             $modListUS = $usa->getUnifiedSearchModules();
-            foreach($modListUS as $modName => $modData){
+            foreach ($modListUS as $modName => $modData) {
                 $modules[] = ['module' => $modName, 'settings' => '{"globalsearch":true}'];
             }
         }
 
-        foreach ($modules as $module)  {
+        foreach ($modules as $module) {
             $settings = json_decode(html_entity_decode($module['settings']), true);
 
             if (!$settings['globalsearch']) continue;
@@ -481,17 +522,35 @@ class SpiceFTSHandler
         $indexProperties = SpiceFTSUtils::getBeanIndexProperties($beanModule);
         if ($indexProperties) {
             $indexArray = $beanHandler->normalizeBean();
-            $indexResponse = $this->elasticHandler->document_index($beanModule, $indexArray);
 
-            // check if we had success
-            $indexResponse = json_decode($indexResponse,true);
-            // SPICEUI-100
-            // if (!$indexResponse->error) {
-            if (is_array($indexResponse) && !in_array( 'error' ,$indexResponse)) {
-                // update the date
-                $bean->db->query("UPDATE " . $bean->table_name . " SET date_indexed = '" . $timedate->nowDb() . "' WHERE id = '" . $bean->id . "'");
+            // check if we are in a transaction then collect the entries
+            if ($this->inTransaction) {
+                // check if we shoudl set the transaction to syncronous processing
+                if(!$this->transactionSyncronous) {
+                    $indexSettings = SpiceFTSUtils::getBeanIndexSettings($beanModule);
+                    if ($indexSettings['waitfor']) $this->transactionSyncronous = true;
+                }
+
+                $this->transactionEntries['elastic'][] = json_encode([
+                    'index' => [
+                        '_index' => $this->elasticHandler->indexPrefix . strtolower($beanModule),
+                        '_id' => $bean->id
+                    ]
+                ]);
+                $this->transactionEntries['elastic'][] = json_encode($indexArray);
+                $this->transactionEntries['database'][] = "UPDATE {$bean->table_name} SET date_indexed = '" . $timedate->nowDb() . "' WHERE id = '{$bean->id}'";
+            } else {
+                $indexResponse = $this->elasticHandler->document_index($beanModule, $indexArray);
+
+                // check if we had success
+                $indexResponse = json_decode($indexResponse, true);
+                // SPICEUI-100
+                // if (!$indexResponse->error) {
+                if ($indexResponse && !in_array('error', $indexResponse)) {
+                    // update the date
+                    $bean->db->query("UPDATE {$bean->table_name} SET date_indexed = '" . $timedate->nowDb() . "' WHERE id = '{$bean->id}'");
+                }
             }
-
         }
 
         // check all related beans
@@ -502,7 +561,18 @@ class SpiceFTSHandler
                 $relatedBean = BeanFactory::getBean($this->elasticHandler->getHitModule($relatedRecord), $relatedRecord['_id']);
                 if ($relatedBean) {
                     $relBeanHandler = new SpiceFTSBeanHandler($relatedBean);
-                    $this->elasticHandler->document_index($this->elasticHandler->getHitModule($relatedRecord), $relBeanHandler->normalizeBean());
+                    // check if we are in a transaction then collect the entries
+                    if ($this->inTransaction) {
+                        $this->transactionEntries['elastic'][] = json_encode([
+                            'index' => [
+                                '_index' => $this->elasticHandler->indexPrefix . strtolower($this->elasticHandler->getHitModule($relatedRecord)),
+                                '_id' => $relatedBean->id
+                            ]
+                        ]);
+                        $this->transactionEntries['elastic'][] = json_encode($relBeanHandler->normalizeBean());
+                    } else {
+                        $this->elasticHandler->document_index($this->elasticHandler->getHitModule($relatedRecord), $relBeanHandler->normalizeBean());
+                    }
                 }
             }
         }
@@ -510,18 +580,34 @@ class SpiceFTSHandler
         return true;
     }
 
+    /**
+     * handles the removal from a bean record form the proper index
+     *
+     * @param $bean
+     * @return bool
+     */
     function deleteBean($bean)
     {
         $beanModule = $bean->_module;
         $indexProperties = SpiceFTSUtils::getBeanIndexProperties($beanModule);
         if ($indexProperties) {
-            $this->elasticHandler->document_delete($beanModule, $bean->id);
-            $bean->db->query("UPDATE " . $bean->table_name . " SET date_indexed = NULL WHERE id = '" . $bean->id . "'");
+            // check if we are in a transaction then collect the entries
+            if ($this->inTransaction) {
+                $this->transactionEntries['elastic'][] = json_encode([
+                    'delete' => [
+                        '_index' => $this->elasticHandler->indexPrefix . strtolower($beanModule),
+                        '_id' => $bean->id
+                    ]
+                ]);
+                $this->transactionEntries['database'][] = "UPDATE {$bean->table_name} SET date_indexed = NULL WHERE id = '{$bean->id}'";
+            } else {
+                $this->elasticHandler->document_delete($beanModule, $bean->id);
+                $bean->db->query("UPDATE {$bean->table_name} SET date_indexed = NULL WHERE id = '{$bean->id}'");
+            }
         }
 
         return true;
     }
-
 
     /*
      * function to search in a module
@@ -575,7 +661,7 @@ class SpiceFTSHandler
                 if ($indexProperty['metadata']['sort_on']) {
                     return [$indexProperty['metadata']['sort_on'] . '.raw' => $sortdirection];
                 } else {
-                    switch($indexProperty['indextype']){
+                    switch ($indexProperty['indextype']) {
                         case 'date';
                         case 'double';
                             return [$sortfield => $sortdirection];
@@ -632,7 +718,7 @@ class SpiceFTSHandler
             }
         }
 
-        $aggregates = new SpiceFTSAggregates($indexProperties, $aggregatesFilters, $indexSettings);
+        $aggregates = new SpiceFTSAggregates($module, $indexProperties, $aggregatesFilters, $indexSettings);
 
         if (count($searchFields) == 0)
             return [];
@@ -650,7 +736,7 @@ class SpiceFTSHandler
         }
 
         $queryParam['sort'] = [];
-        if ($sort['sortfield'] && $sort['sortdirection']) {
+        if (isset($sort['sortfield']) && isset($sort['sortdirection']) && !empty($sort['sortfield']) && !empty($sort['sortdirection'])) {
             // catch if entry is valid. Field name might habe changed
             $entry = $this->getSortArrayEntry($seed, $indexProperties, $sort['sortfield'], $sort['sortdirection']);
             if (!empty($entry)) {
@@ -1137,7 +1223,9 @@ class SpiceFTSHandler
                         $seed = BeanFactory::getBean($module, $hit['_id']);
                         foreach ($seed->field_name_map as $field => $fieldData) {
                             //if (!isset($hit['_source']{$field}))
-                            $hit['_source'][$field] = html_entity_decode($seed->$field, ENT_QUOTES);
+                            if (is_string($seed->$field)) {
+                                $hit['_source'][$field] = html_entity_decode($seed->$field, ENT_QUOTES);
+                            }
                         }
 
                         // get the email addresses
@@ -1182,11 +1270,11 @@ class SpiceFTSHandler
                     $seed = BeanFactory::getBean($module, $hit['_id']);
 
                     // if we do not find the record .. do not return it
-                    if(!$seed) continue;
+                    if (!$seed) continue;
 
                     foreach ($seed->field_name_map as $field => $fieldData) {
                         //if (!isset($hit['_source']{$field}))
-                        if(is_string($seed->$field)){
+                        if(is_string($seed->$field)) { // might be Link2 Object! so check on it
                             $hit['_source'][$field] = html_entity_decode($seed->$field, ENT_QUOTES);
                         }
                     }
@@ -1225,16 +1313,8 @@ class SpiceFTSHandler
      */
     function getModuleSearchResults($module, $searchterm, $searchtags, $params, $aggregates = [], $sort = [], $required = [])
     {
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-
         $searchterm = strtolower(trim((string)$searchterm));
 
-        if (empty($modules)) {
-            $modulesArray = $this->getGlobalSearchModules();
-            $modArray = $modulesArray['modules'];
-        } else {
-            $modArray = explode(',', $modules);
-        }
         $searchresults = [];
 
         // prepare the aggregates
@@ -1246,28 +1326,6 @@ class SpiceFTSHandler
 
         // check if we have an owner set as parameter
         $addFilters = [];
-
-        /* removed - shoudl no longer be used ... iuse filters and groupscope instead
-        if ($params['owner'] == 1) {
-            $addFilters[] = array(
-                'bool' => array(
-                    'should' => array(
-                        array(
-                            'term' => array(
-                                'assigned_user_id' => $current_user->id
-                            )
-                        ),
-                        array(
-                            'term' => array(
-                                'assigned_user_ids' => $current_user->id
-                            )
-                        )
-                    ),
-                    'minimum_should_match' => '1'
-                )
-            );
-        }
-        */
 
         // get the index settings
         $indexSettings = SpiceFTSUtils::getBeanIndexSettings($module);
@@ -1337,7 +1395,7 @@ class SpiceFTSHandler
             $useWildcard = true;
 
         $params['buckets'] = json_decode($params['buckets'], true);
-        if (is_array($params['buckets'])   && count($params['buckets']) > 0) {
+        if (is_array($params['buckets']) && count($params['buckets']) > 0) {
 
             $terms = [];
             foreach ($params['buckets']['bucketitems'] as &$bucketitem) {
@@ -1430,7 +1488,7 @@ class SpiceFTSHandler
         $krestHandler = new ModuleHandler();
         foreach ($searchresultsraw['hits']['hits'] as &$hit) {
             $seed = BeanFactory::getBean($module, $hit['_id']);
-            $exportresults[] = $krestHandler->mapBeanToArray($module, $seed, $fields);
+            $exportresults[] = $krestHandler->mapBeanToArray($module, $seed);
         }
 
         return $exportresults;
@@ -1561,6 +1619,7 @@ class SpiceFTSHandler
     function bulkIndexBeans($packagesize, $module = null, $toConsole = false)
     {
         global $timedate;
+
         $db = DBManagerFactory::getInstance();
 
         $beanCounter = 0;
@@ -1708,6 +1767,49 @@ class SpiceFTSHandler
             }
         }
         echo 'Indexing finished. All done.';
+    }
+
+
+    /**
+     * sets the transaciton flag and starts collectiing index and delete requests
+     */
+    public function startTransaction(){
+        $this->inTransaction = true;
+    }
+
+    /**
+     * commit Transaction, indexing the collected updates and deletes
+     * execute the updates to the database
+     * reset the transaction array and transaction flag
+     *
+     * @throws \Exception
+     */
+    public function commitTransaction(){
+        $db = DBManagerFactory::getInstance();
+
+        if($this->transactionEntries['elastic'] != []) {
+
+            // add parameters if we shoudl process syncronously
+            $params = [];
+            if($this->transactionSyncronous){
+                $params['refresh'] = 'wait_for';
+            }
+
+            // run the bulk update
+            $indexResponse = $this->elasticHandler->bulk($this->transactionEntries['elastic'], $params);
+
+            // update the database if we had a success
+            if (!$indexResponse->errors) {
+                foreach ($this->transactionEntries['database'] as $query) {
+                    $db->query($query);
+                }
+            }
+        }
+
+        // reset the transaction array and flag
+        $this->transactionEntries['elastic'] = [];
+        $this->transactionEntries['database'] = [];
+        $this->inTransaction = false;
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -13,14 +13,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 /**
  * @module ObjectFields
  */
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {model} from '../../services/model.service';
-import {view} from '../../services/view.service';
-import {language} from '../../services/language.service';
-import {metadata} from '../../services/metadata.service';
+import {Component, Input, OnInit} from '@angular/core';
 import {fieldGeneric} from './fieldgeneric';
-import {Router} from '@angular/router';
-import {Subscription} from "rxjs";
 
 declare var _;
 
@@ -28,55 +22,51 @@ declare var _;
     selector: 'field-grouped-enum',
     templateUrl: './src/objectfields/templates/fieldgroupedenum.html'
 })
-export class fieldGroupedEnum extends fieldGeneric implements OnInit, OnDestroy {
-    private valuearray: any[] = [];
-    public groups: any[] = [];
-    public options: any[] = [];
-    private hasGroupItems = false;
-    private viewmodevalue: string = '';
-    private languageSubscription: Subscription = new Subscription();
+export class fieldGroupedEnum extends fieldGeneric implements OnInit {
+    /**
+     * holds the groups objects
+     */
+    public groups: Array<{ value: string, display: string, options: any[] }> = [];
 
-    constructor(
-        public model: model,
-        public view: view,
-        public language: language,
-        public metadata: metadata,
-        public router: Router
-    ) {
-        super(model, view, language, metadata, router);
-        this.subscribeToLanguage();
-    }
+    /**
+     * the fieldconfig .. typically passed in from the fieldset
+     */
+    @Input() public fieldconfig: { groupSeparator?: string, columns?: string, displayCheckboxes?: boolean } = {};
 
+    /**
+     * holds the local value array
+     * @private
+     */
+    private localValue: { valueText: string, valueArray: string[], valueDisplay: string, valueGroups: object } = {
+        valueText: '',
+        valueArray: [],
+        valueDisplay: '',
+        valueGroups: {}
+    };
+    /**
+     * holds the columns class
+     */
+    public columnsClass: string = 'slds-size--1-of-4';
+
+    /**
+     * call to build the option groups and set the local values
+     */
     public ngOnInit() {
+        this.setColumnsClass();
         this.buildOptionGroups();
+        this.setLocalValues(this.value);
+        this.subscribeToLanguage();
+        this.subscribeToModelChanges();
     }
 
-    public ngOnDestroy() {
-        this.languageSubscription.unsubscribe();
-    }
+    /**
+     * set the columns class
+     * @private
+     */
+    private setColumnsClass() {
+        const columns = +this.fieldconfig.columns < 13 && +this.fieldconfig.columns > 0 ? this.fieldconfig.columns : '4';
+        this.columnsClass = `slds-size--1-of-${columns}`;
 
-    get checkboxClass() {
-        let ofColumns = this.fieldconfig.columns ? parseInt(this.fieldconfig.columns, 10) : 4;
-        return 'slds-size--1-of-' + ofColumns;
-    }
-
-    get displayCheckboxes() {
-        return !!this.fieldconfig.displaycheckboxes;
-    }
-
-    get viewModeValue() {
-        if (this.viewmodevalue.length == 0 && this.value) {
-            let languageOptions = this.language.getFieldDisplayOptions(this.model.module, this.fieldname);
-            this.viewmodevalue = this.fieldValueArray.map(item => languageOptions[item]).join(', ');
-        }
-        return this.viewmodevalue;
-    }
-
-    get fieldValueArray() {
-        if (this.valuearray.length == 0 && this.value) {
-            return this.valuearray = this.value.replace(/\^/g, '').split(',');
-        }
-        return this.valuearray;
     }
 
     /*
@@ -84,45 +74,87 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit, OnDestroy 
     * @return void
     */
     private subscribeToLanguage() {
-        this.languageSubscription = this.language.currentlanguage$.subscribe((newlang) => {
-            this.buildOptionGroups();
+        this.subscriptions.add(
+            this.language.currentlanguage$.subscribe(() =>
+                this.buildOptionGroups()
+            )
+        );
+    }
+
+    /**
+     * set the local values
+     * @private
+     */
+    private setLocalValues(value: string) {
+
+        if (!value) {
+            return this.localValue = {valueText: '', valueArray: [], valueDisplay: '', valueGroups: {}};
+        }
+
+        const languageOptions = this.language.getFieldDisplayOptions(this.model.module, this.fieldname);
+        const valueArray = value.replace(/\^/g, '').split(',').map(v => v.trim());
+
+        this.localValue = {
+            valueText: value,
+            valueArray: valueArray,
+            valueDisplay: valueArray.map(v => languageOptions[v]).join(', '),
+            valueGroups: {}
+        };
+
+        const separator = this.fieldconfig.groupSeparator ?? '_';
+
+        this.localValue.valueArray.forEach(v => {
+            this.localValue.valueGroups[v] = !v.includes(separator);
         });
     }
 
-    /*
-    * disable the group value if one of its items is checked
-    * @param groupValue
-    * @return bool
-    */
-    private isDisabled(groupValue) {
-        let disabled = false;
-        this.fieldValueArray.some(item => {
-            const splitted = item.split('_');
-            return disabled = (splitted.length == 2 && splitted[0] == groupValue);
-        });
-        return disabled;
+    /**
+     * subscribe to model changes
+     * @private
+     */
+    private subscribeToModelChanges() {
+        this.subscriptions.add(
+            this.model.data$.subscribe(data => {
+                if (this.localValue.valueText === data[this.fieldname]) return;
+                this.setLocalValues(data[this.fieldname]);
+            })
+        );
     }
 
-    /*
-    * set the field value and add the group value of the group item if it is not set
-    * @param valueArray
-    * @param group
-    * @return void
-    */
-    private setFieldValue(valueArray, group) {
-        let groupNotExist = this.fieldValueArray.indexOf(group.value) == -1;
-        let groupHasItems = valueArray.some(item => {
-            const splitted = item.split('_');
-            return (splitted.length == 2 && splitted[0] == group.value);
-        });
-        if (groupNotExist) {
-            this.setGroupValue(true, group);
+    /**
+     * set the group item value locally and update the model value
+     * @param valueArray
+     * @private
+     */
+    private setItemValue(valueArray) {
+
+        const value = valueArray.map(item => `^${item}^`).join(',');
+        this.setLocalValues(value);
+        this.value = value;
+    }
+
+    /**
+     * set the group value locally and update the model value
+     * @param checked
+     * @param group
+     * @private
+     */
+    private setGroupValue(checked: boolean, group: { value: string, display: string, options: any[] }) {
+
+        let value = this.value;
+
+        if (!checked) {
+
+            value = this.localValue.valueArray
+                .filter(v => v !== group.value)
+                .map(item => `^${item}^`).join(',');
+
+        } else if (checked && this.localValue.valueArray.indexOf(group.value) == -1) {
+
+            value = `${this.localValue.valueText},^${group.value}^`;
         }
-        if (!groupHasItems) {
-            this.setGroupValue(false, group);
-        }
-        this.viewmodevalue = '';
-        this.value = valueArray.map(item => `^${item}^`).join(',');
+        this.setLocalValues(value);
+        this.value = value;
     }
 
     /*
@@ -131,76 +163,26 @@ export class fieldGroupedEnum extends fieldGeneric implements OnInit, OnDestroy 
     * @return index
     */
     private trackByFn(index, item) {
-        return index;
+        return item.value;
     }
 
-    /*
-    * @param group
-    * @return groupValue
-    */
-    private getGroupValue(group) {
-        return this.fieldValueArray[this.fieldValueArray.indexOf(group.value)];
-    }
-
-    /*
-    * @param checked
-    * @param group
-    * @return void
-    */
-    private setGroupValue(checked, group) {
-        let newArray = this.fieldValueArray;
-        let groupIndex = newArray.indexOf(group.value);
-        if (checked) {
-            if (groupIndex == -1) newArray.push(group.value);
-        } else {
-            newArray.splice(groupIndex, 1);
-        }
-        this.viewmodevalue = '';
-        this.value = newArray.map(item => `^${item}^`).join(',');
-    }
-
-    /*
-    * build the checkbox groups and their items
-    * @return void
-    */
+    /**
+     * build the checkbox groups their options
+     * @private
+     */
     private buildOptionGroups() {
-        this.hasGroupItems = false;
+
         this.groups = [];
-        let newGroups = {};
-        let languageOptions = this.language.getFieldDisplayOptions(this.model.module, this.fieldname);
-        // define groups
-        for (let optionKey in languageOptions) {
-            if (!optionKey.includes('_')) {
-                newGroups[optionKey] = {
-                    value: optionKey,
-                    display: languageOptions[optionKey],
-                    disabled: false,
-                    options: []
-                };
-            } else {
-                this.hasGroupItems = true;
-            }
-        }
 
-        // define group options
-        for (let optionKey in languageOptions) {
-            if (!this.hasGroupItems) {
-                this.options.push({
-                    value: optionKey,
-                    display: languageOptions[optionKey]
-                });
-            } else {
-                let enumValue = optionKey.split('_');
-                if (enumValue.length == 2 && newGroups[enumValue[0]]) {
-                    newGroups[enumValue[0]].options.push({
-                        value: optionKey,
-                        display: languageOptions[optionKey]
-                    });
-                }
-            }
+        const languageOptions: Array<{ value: string, display: string }> = this.language.getFieldDisplayOptions(this.model.module, this.fieldname, true);
+        const separator = this.fieldconfig.groupSeparator ?? '_';
 
-        }
+        const allOptions = languageOptions.filter(o => o.value.includes(separator));
 
-        this.groups = _.toArray(newGroups);
+        this.groups = languageOptions.filter(o => !o.value.includes(separator))
+            .map(obj => ({
+                ...obj,
+                options: allOptions.filter(o => o.value.startsWith(obj.value))
+            }));
     }
 }

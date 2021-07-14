@@ -155,7 +155,7 @@ function pruneDatabase() {
 			$rDel = $db->query($qDel);
 
 			// make a backup INSERT query if we are deleting.
-			while($aDel = $db->fetchByAssoc($rDel, false)) {
+			while($aDel = $db->fetchByAssoc($rDel)) {
 				// build column names
 
 				$queryString[] = $db->insertParams($table, $columns, $aDel, null, false);
@@ -286,7 +286,7 @@ function fullTextIndex(){
 
 function fullTextIndexBulk(){
     // no date formatting
-    
+
 
     // determine package size
     $packagesize = SpiceConfig::getInstance()->config['fts']['schedulerpackagesize'] ?: 5000;

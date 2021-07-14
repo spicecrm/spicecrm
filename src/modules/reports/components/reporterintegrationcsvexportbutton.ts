@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -80,7 +80,7 @@ export class ReporterIntegrationCSVexportButton {
 
         // render the loading modal and trigger the download
         let awaitpromise = this.modal.await(this.language.getLabel('LBL_LOADING'));
-        this.backend.getDownloadPostRequestFile('KReporter/plugins/action/kcsvexport/export', {
+        this.backend.getDownloadPostRequestFile('module/KReports/plugins/action/kcsvexport/export', {
             record: this.model.id,
             dynamicoptions: JSON.stringify(whereConditions)
         }).subscribe(

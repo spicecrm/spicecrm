@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -42,62 +42,124 @@ export class fieldDateTimeDuration extends fieldGeneric {
      */
     private durationMinutes: string[] = ['0', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'];
 
+    /**
+     * the duration, held intrnally so we can move the end date when the start date moves
+     *
+     * @private
+     */
+    private duration: any;
+
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private userpreferences: userpreferences) {
         super(model, view, language, metadata, router);
     }
 
-    get fieldstart() {
-        return this.fieldconfig.field_start ? this.fieldconfig.field_start : 'date_start';
+    /**
+     * subscribe to the model data$ changes to have an accurate and up to date duration
+     */
+    public ngOnInit() {
+        super.ngOnInit();
+
+        this.subscriptions.add(
+            this.model.data$.subscribe((data) => {
+                if (this.value && this.dateEnd) {
+                    this.duration = moment.duration(this.dateEnd.diff(this.value));
+                }
+            })
+        );
     }
 
     get fieldend() {
         return this.fieldconfig.field_end ? this.fieldconfig.field_end : 'date_end';
     }
 
-    get fieldminutes() {
-        return this.fieldconfig.field_minutes ? this.fieldconfig.field_minutes : 'duration_minutes';
+    /**
+     * a getter for the value bound top the model
+     */
+    get value() {
+        return this.model.getField(this.fieldname);
     }
 
-    get fieldhours() {
-        return this.fieldconfig.field_hours ? this.fieldconfig.field_hours : 'duration_hours';
-    }
+    /**
+     * a setter that returns the value to the model and triggers the validation
+     *
+     * @param val the new value
+     */
+    set value(val) {
+        // build the fields object
+        let fields: any = {};
+        fields[this.fieldname] = val;
 
-    get minutes() {
-        let minutes = 0;
-        if (this.model.data[this.fieldhours]) {
-            minutes += parseInt(this.model.data[this.fieldhours], 10) * 60;
+        if (this.duration) {
+            // calculate the new end date
+            let newEndDate = new moment(val).add(this.duration.asSeconds(), 's');
+
+            // add the end date
+            fields[this.fieldend] = newEndDate;
         }
-        if (this.model.data[this.fieldminutes]) {
-            minutes += parseInt(this.model.data[this.fieldminutes], 10);
-        }
 
-        return minutes;
+        // set the fields on the model
+        this.model.setFields(fields);
     }
 
+    /**
+     * getter for the end date
+     */
+    get dateEnd() {
+        return this.model.getField(this.fieldend);
+    }
+
+    /**
+     * returns the hours from teh duration object
+     */
+    get currentHours() {
+        if(!this.duration) return 0;
+        return this.duration.get('hours');
+    }
+
+    /**
+     * returns the minuts from the duration object
+     */
+    get currentMinutes() {
+        if(!this.duration) return 0;
+        return this.duration.get('minutes');
+    }
+
+    /**
+     * returns the number of hours from the duration
+     */
     get editDurationHours() {
-        return this.model.data[this.fieldhours];
+        return this.currentHours; // this.model.data[this.fieldhours];
     }
 
+    /**
+     * sets the new hours and calcuates the new end date
+     *
+     * @param hours
+     */
     set editDurationHours(hours) {
-        this.model.setField(this.fieldhours, hours);
+        let cMinutes = this.currentMinutes;
+        let end = new moment(this.value);
+        end.add(hours, 'h').add(cMinutes, 'm');
+        this.model.setField(this.fieldend, end);
     }
 
+    /**
+     * getter for teh duration minutes
+     */
     get editDurationMinutes() {
-        return this.model.data[this.fieldminutes];
+        return this.currentMinutes; // this.model.data[this.fieldminutes];
     }
 
+    /**
+     * setter for the durtion minutes
+     *
+     * @param minutes
+     */
     set editDurationMinutes(minutes) {
-        this.model.setField(this.fieldminutes, minutes);
-    }
-
-    private getDisplay() {
-        if (this.model.data.date_start) {
-            if (!this.model.data.date_end) {
-                this.model.data[this.fieldend] = new moment(this.model.data.date_start).add(this.minutes, 'm');
-            }
-
-            return this.model.data.date_start.format(this.userpreferences.getDateFormat() + ' ' + this.userpreferences.getTimeFormat()) + ' - ' + this.model.data.date_end.format(this.userpreferences.getDateFormat() + ' ' + this.userpreferences.getTimeFormat());
-        }
+        let cHours = this.currentHours;
+        let end = new moment(this.value);
+        end.add(cHours, 'h').add(minutes, 'm');
+        this.model.setField(this.fieldend, end);
     }
 
 }

@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -14,62 +14,67 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <system-modal-header (close)="close()">
         <system-label label="LBL_CLEAN_DB_COLUMNS"></system-label>
     </system-modal-header>
-    <system-modal-content>
-
+    <system-modal-content margin="none" [grow]="true">
         <div class="slds-p-around--x-small slds-border--bottom">
             <div class="slds-form-element slds-grid slds-grid--vertical-align-center">
-                <label for="moduleselect" class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
+                <label for="moduleselect" class="slds-form-element__label">
+                    <system-label label="LBL_MODULE"></system-label>
+                </label>
                 <div class="slds-form-element__control slds-col">
                     <div class="slds-select_container">
                         <select id="moduleselect" class="slds-select" [(ngModel)]="module">
-                            <option value=""><system-label label="LBL_SELECT"></system-label></option>
+                            <option value="">
+                                <system-label label="LBL_SELECT"></system-label>
+                            </option>
                             <option *ngFor="let thismodule of modules" [value]="thismodule">{{thismodule}}</option>
                         </select>
                     </div>
                 </div>
             </div>
         </div>
-
-<div *ngIf="module">
-        <table class="slds-table slds-table--bordered slds-table--cell-buffer">
-            <thead>
-            <tr class="slds-text-title--caps">
-                <th scope="col">Vardef</th>
-                <th scope="col">Database column</th>
-                <th scope="col"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let field of allFields | keyvalue" [ngStyle]="field.value.vardef_available && field.value.db_available?{'background-color':'#C7D6A9'} : {'background-color': '#EDD0AB'}">
-                <td>
-                    <div *ngIf="field.value.vardef_available">
-                        {{field.value.name}}
-                    </div>
-                    <div *ngIf="!field.value.vardef_available">
-                        <system-icon icon="first_non_empty" size="x-small"></system-icon>
-                    </div>
-                </td>
-                <td class="slds-truncate">
-                    <div *ngIf="field.value.db_available">
-                        {{field.value.name}}
-                    </div>
-                    <div *ngIf="!field.value.db_available">
-                        <system-icon icon="first_non_empty" size="x-small"></system-icon>
-                    </div>
-                </td>
-                <td>
-                    <div *ngIf="field.value.db_available && !field.value.vardef_available">
-                        <system-checkbox (change)="selectColumn(field.value, field.key)" [(ngModel)]="field.value.todelete" [disabled]="!field.value.db_available" class="slds-size--1-of-3"></system-checkbox>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-</div>
-
+        <div *ngIf="module">
+            <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+                <thead>
+                <tr class="slds-text-title--caps">
+                    <th scope="col">Vardef</th>
+                    <th scope="col">Database column</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let field of allFields | keyvalue"
+                    [ngStyle]="field.value.vardef_available && field.value.db_available?{'background-color':'#C7D6A9'} : {'background-color': '#EDD0AB'}">
+                    <td>
+                        <div *ngIf="field.value.vardef_available">
+                            {{field.value.name}}
+                        </div>
+                        <div *ngIf="!field.value.vardef_available">
+                            <system-icon icon="first_non_empty" size="x-small"></system-icon>
+                        </div>
+                    </td>
+                    <td class="slds-truncate">
+                        <div *ngIf="field.value.db_available">
+                            {{field.value.name}}
+                        </div>
+                        <div *ngIf="!field.value.db_available">
+                            <system-icon icon="first_non_empty" size="x-small"></system-icon>
+                        </div>
+                    </td>
+                    <td>
+                        <div *ngIf="field.value.db_available && !field.value.vardef_available">
+                            <system-checkbox [(ngModel)]="field.value.todelete" [disabled]="!field.value.db_available"></system-checkbox>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </system-modal-content>
     <system-modal-footer>
-        <button class="slds-button slds-button--brand" (click)="doRepair()">
+        <button class="slds-button slds-button--neutral" [disabled]="!canSelectAll" (click)="selectAll()">
+            <system-label label="LBL_SELECT_ALL"></system-label>
+        </button>
+        <button class="slds-button slds-button--brand" [disabled]="!canDelete" (click)="doRepair()">
             <system-label label="LBL_DELETE_IRREVOCABLY"></system-label>
         </button>
     </system-modal-footer>

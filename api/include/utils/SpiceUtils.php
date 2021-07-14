@@ -3,7 +3,13 @@
 namespace SpiceCRM\includes\utils;
 
 use DateTime;
+use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\Exception;
+use SpiceCRM\includes\ErrorHandlers\ValidationException;
+use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 
 /**
  * Class SpiceUtils
@@ -34,7 +40,7 @@ class SpiceUtils
          * if yes add it to the basepath
          * ToDo: remove in later version when we abandon KREST bwd compatibility
          */
-        if(strpos($_SERVER['REQUEST_URI'], 'KREST') !== false){
+        if (strpos($_SERVER['REQUEST_URI'], 'KREST') !== false) {
             $appBasePath .= '/KREST';
         }
 
@@ -49,7 +55,8 @@ class SpiceUtils
      * All Rights Reserved.
      * Contributor(s): ______________________________________..
      */
-    public static function createGuid(): string {
+    public static function createGuid(): string
+    {
         $microTime = microtime();
         list($a_dec, $a_sec) = explode(" ", $microTime);
 
@@ -75,7 +82,8 @@ class SpiceUtils
         return $guid;
     }
 
-    public static function createGuidSection($characters): string {
+    public static function createGuidSection($characters): string
+    {
         $return = "";
         for ($i = 0; $i < $characters; $i++) {
             $return .= dechex(mt_rand(0, 15));
@@ -83,7 +91,8 @@ class SpiceUtils
         return $return;
     }
 
-    public static function ensureLength(&$string, $length): void {
+    public static function ensureLength(&$string, $length): void
+    {
         $strlen = strlen($string);
         if ($strlen < $length) {
             $string = str_pad($string, $length, "0");
@@ -141,5 +150,77 @@ class SpiceUtils
     public static function getMinDate($arr, $property)
     {
         return min(array_column($arr, $property));
+    }
+
+    /**
+     * An example validation rule for the validation middleware.
+     * An exception is thrown if the string length is odd.
+     * Otherwise the validation is passed.
+     *
+     * @param $value
+     * @throws Exception
+     */
+    public static function exampleValidationRule($value)
+    {
+        if (strlen($value) % 2) {
+            throw new ValidationException('String length is odd.');
+        }
+    }
+
+    /**
+     * Checks if a module name string corresponds to a module name that is registered in the system.
+     *
+     * @param string $moduleName
+     * @return bool
+     */
+    public static function isValidModule(string $moduleName): bool
+    {
+        $controller = new SpiceUIModulesController();
+        $moduleList = $controller->geUnfilteredModules();
+        if (array_key_exists($moduleName, $moduleList)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * A cleanup function that is registered to run after a script has finished or exit() was called.
+     *
+     * @param bool $exit
+     */
+    public static function spiceCleanup(bool $exit = false)
+    {
+        // todo check if there's even a database
+        if (!$GLOBALS['installing']) { // workaround for installer for now. variable is set in SpiceInstallerController ... find a better way
+            $db = DBManagerFactory::getInstance();
+            $db->disconnect();
+        }
+        if ($exit) {
+            exit;
+        }
+    }
+
+    /**
+     * returns the current client IP
+     *
+     * @return mixed|string
+     */
+    public static function getClientIP()
+    {
+        if ($_SERVER['HTTP_CLIENT_IP'])
+            return $_SERVER['HTTP_CLIENT_IP'];
+        else if ($_SERVER['HTTP_X_FORWARDED_FOR'])
+            return $_SERVER['HTTP_X_FORWARDED_FOR'];
+        else if ($_SERVER['HTTP_X_FORWARDED'])
+            return $_SERVER['HTTP_X_FORWARDED'];
+        else if ($_SERVER['HTTP_FORWARDED_FOR'])
+            return $_SERVER['HTTP_FORWARDED_FOR'];
+        else if ($_SERVER['HTTP_FORWARDED'])
+            return $_SERVER['HTTP_FORWARDED'];
+        else if ($_SERVER['REMOTE_ADDR'])
+            return $_SERVER['REMOTE_ADDR'];
+        else
+            return 'UNKNOWN';
+
     }
 }

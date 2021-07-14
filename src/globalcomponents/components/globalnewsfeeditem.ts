@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -27,10 +27,10 @@ declare var moment: any;
 })
 export class GlobalNewsFeedItem {
 
-    @Input() private item: any = {}
+    @Input() private item: any = {};
 
     private getDate() {
-        return moment(this.item.date).fromNow()
+        return moment(this.item.date).fromNow();
     }
 
     private getExcerpt() {

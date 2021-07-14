@@ -1,0 +1,106 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-section" [class.slds-is-open]="panelExpanded">
+    <div class="slds-section__title slds-m-bottom--small">
+        <div aria-expanded="true" class="slds-section__title-action slds-grid" (click)="toggleExpansion()">
+            <system-utility-icon icon="switch" size="x-small" addclasses="slds-section__title-action-icon slds-button__icon slds-button__icon_left"></system-utility-icon>
+            <div class="slds-grid slds-grid--vertical-align-center slds-grow">
+                <span class="slds-truncate"><system-label label="LBL_CHECKLISTS"></system-label></span>
+            </div>
+            <div (click)="$event.stopPropagation()" class="slds-grid slds-grid--align-end">
+                <button (click)="setShowAddChecklist(true)" [class.slds-hide]="isAddingChecklist" system-title="LBL_ADD_CHECKLIST" class="slds-button slds-button--icon slds-button--icon-border slds-button slds-align--absolute-center" style="height: 1.4rem; width: 1.6rem;">
+                    <system-button-icon icon="add" size="medium"></system-button-icon>
+                </button>
+                <div *ngIf="isAddingChecklist" class="slds-grid slds-grid--vertical-align-center">
+                    <input #addChecklistInput system-autofocus (keyup.enter)="addChecklist(addChecklistInput.value)" type="text" class="slds-input slds-grow slds-truncate slds-m-right--xx-small" style="min-height: 0;height: 1.6rem;">
+                    <button (click)="addChecklist(addChecklistInput.value)" [disabled]="!addChecklistInput.value" system-title="LBL_CHECK" class="slds-button slds-button--icon slds-button--icon-border-filled" style="height: 1.4rem; width: 1.6rem;">
+                        <system-button-icon icon="check"></system-button-icon>
+                    </button>
+                    <button (click)="setShowAddChecklist(false)" system-title="LBL_CANCEL" class="slds-button slds-button--icon slds-button--icon-border-filled" style="height: 1.4rem; width: 1.6rem;">
+                        <system-button-icon icon="close" size="medium"></system-button-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div [@tabAnimation]="panelExpanded" [style.display]="!panelExpanded ? 'none': 'block'">
+        <div [system-overlay-loading-spinner]="model.isLoading || isSaving" class="slds-form-element__control objectchecklistdragboundary">
+            <div cdkDropList [cdkDropListData]="checklists" (cdkDropListDropped)="onDrop($event)" cdkDropListLockAxis="y" cdkDropListGroup>
+                <div *ngFor="let checklist of checklists" (click)="setActiveChecklist(checklist)" cdkDrag [cdkDragData]="checklist" cdkDragBoundary=".objectchecklistdragboundary" class="slds-box slds-p-around--none slds-m-bottom--small slds-drag--preview">
+                    <div class="slds-grid slds-grid--vertical-align-center slds-m-bottom--large slds-border--bottom slds-p-around--small slds-theme--shade spice-hover-display-children" style="min-height: 58px">
+                        <div style="min-width: 32px;">
+                            <system-utility-icon [class.spice-hover-child]="checklist != activeChecklist" class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
+                        </div>
+                        <div *ngIf="currentEditingChecklist != checklist" class="slds-grow slds-truncate">
+                            <span (click)="setCurrentEditingChecklist(checklist); $event.stopPropagation()" [system-title]="checklist.name" style="min-width: 20px">{{checklist.name}}</span>
+                        </div>
+                        <input system-autofocus (click)="$event.stopPropagation()" *ngIf="currentEditingChecklist == checklist" type="text" [ngModel]="checklist.name" (ngModelChange)="setChecklistName($event, checklist)" (keyup.enter)="save(checklist)" (blur)="save(checklist)" class="slds-input slds-m-right--xx-small">
+                        <button *ngIf="checklist.showAddButton" (click)="setShowAddButton(checklist, false)" [class.spice-hover-child]="checklist != activeChecklist" system-title="LBL_ADD_ITEM" class="slds-button slds-button--icon slds-button--icon-border-filled slds-button slds-align--absolute-center">
+                            <system-button-icon icon="add" size="medium"></system-button-icon>
+                        </button>
+                        <button (click)="deleteChecklist(checklist)" [class.spice-hover-child]="checklist != activeChecklist" system-title="LBL_DELETE" class="slds-button slds-button--icon slds-button--icon-border-filled">
+                            <system-button-icon icon="delete" size="medium"></system-button-icon>
+                        </button>
+                        <button (click)="toggleShowCompleted(checklist)" [system-title]="checklist.showCompleted ? 'LBL_HIDE_COMPLETED' : 'LBL_SHOW_COMPLETED'" [class.spice-hover-child]="checklist != activeChecklist" class="slds-button slds-button--neutral">
+                            <system-button-icon icon="toggle" size="medium" addclasses="slds-button__icon_left"></system-button-icon>
+                            <system-label [label]="checklist.showCompleted ? 'LBL_HIDE_COMPLETED' : 'LBL_SHOW_COMPLETED'" class="slds-truncate"></system-label>
+                        </button>
+                    </div>
+                    <div cdkDropList [cdkDropListData]="checklist.items" (cdkDropListDropped)="onDrop($event)" cdkDropListLockAxis="y" style="min-height: 20px;">
+                        <div #itemContainer *ngFor="let item of checklist.items" [class.slds-hide]="!checklist.showCompleted && item.isCompleted" [class.slds-theme--warning]="currentEditingItem != item && item.isChanged" class="slds-p-vertical--xx-small spice-hover-display-children">
+                            <div cdkDrag [cdkDragData]="item" (click)="setCurrentEditingItem(item); $event.stopPropagation()" cdkDragBoundary=".objectchecklistdragboundary" class="slds-grid slds-grid--vertical-align-center slds-drag--preview slds-p-right--x-small">
+                                <div style="min-width: 32px;">
+                                    <system-utility-icon [class.spice-hover-child]="item != currentEditingItem" class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
+                                </div>
+                                <system-checkbox [(ngModel)]="item.isCompleted" (ngModelChange)="save(item)"></system-checkbox>
+                                <div *ngIf="item == currentEditingItem; else itemTextContainer" class="slds-grid slds-grow slds-p-right--xx-small">
+                                    <input type="text" [ngModel]="item.text" system-autofocus (ngModelChange)="setItemTextValue($event, item)" (keyup.enter)="save(item)" class="slds-input slds-m-right--xx-small" (blur)="onItemBlur($event, itemContainer)">
+                                    <button (click)="save(item); $event.stopPropagation()" [disabled]="!item.isChanged" system-title="LBL_CHECK" class="slds-button slds-button--icon slds-button--icon-border-filled">
+                                        <system-button-icon icon="check"></system-button-icon>
+                                    </button>
+                                    <button (click)="cancelItemChanges(item, $event)" system-title="LBL_CANCEL" class="slds-button slds-button--icon slds-button--icon-border-filled">
+                                        <system-button-icon icon="close" size="medium"></system-button-icon>
+                                    </button>
+                                </div>
+                                <ng-template #itemTextContainer>
+                                    <div [system-title]="item.text" [style.text-decoration]="item.isCompleted ? 'line-through' : 'initial'" class="slds-grow slds-p-right--xx-small slds-truncate">
+                                        {{item.text}}
+                                    </div>
+                                </ng-template>
+                                <div style="width: 32px; height: 32px">
+                                    <button (click)="deleteChecklistItem(item, checklist)" [class.spice-hover-child]="item != currentEditingItem" class="slds-button slds-button--icon slds-button--icon-border-filled">
+                                        <system-button-icon icon="delete" size="medium"></system-button-icon>
+                                    </button>
+                                </div>
+                            </div>
+                            <div *ngIf="currentEditingItem != item && item.isChanged" (click)="setCurrentEditingItem(item)" class="slds-p-horizontal--small slds-p-bottom--xx-small">
+                                <system-label label="MSG_HAS_UNSAVED"></system-label>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="!checklist.showAddButton" class="slds-box slds-m-top--large slds-m-around--small">
+                        <div #addItemContainer class="slds-grid">
+                            <input #addItemInput system-autofocus (keyup.enter)="addChecklistItem(checklist, addItemInput)" (blur)="onChecklistBlur(checklist, $event, addItemContainer, addItemInput)" type="text" class="slds-input slds-m-right--x-small">
+                            <button (click)="addChecklistItem(checklist, addItemInput)" [disabled]="!addItemInput.value" system-title="LBL_SAVE" class="slds-button slds-button--icon slds-button--icon-border-filled slds-button slds-align--absolute-center">
+                                <system-button-icon icon="check" size="medium"></system-button-icon>
+                            </button>
+                            <button (click)="setShowAddButton(checklist, true)" system-title="LBL_CANCEL" class="slds-button slds-button--icon slds-button--icon-border-filled slds-button slds-align--absolute-center">
+                                <system-button-icon icon="clear" size="medium"></system-button-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

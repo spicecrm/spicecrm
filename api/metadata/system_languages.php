@@ -169,7 +169,8 @@ $dictionary['syslanguagetranslations'] = [
         'translation_long' => [
             'name' => 'translation_long',
             'vname' => 'LBL_TRANSLATION_LONG',
-            'type' => 'text',
+            'type' => 'shorttext',
+            'len' => 2000,
             'required' => false,
         ],
     ],

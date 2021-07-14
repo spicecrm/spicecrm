@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -60,7 +60,7 @@ export class ACLObjectsManagerObjectDetails implements OnInit {
     }
 
     public ngOnInit() {
-        this.backend.getRequest('spiceaclobjects/authtypes/' + this.model.getFieldValue('sysmodule_id') + '/authtypeactions').subscribe(objectactions => {
+        this.backend.getRequest('module/SpiceACLObjects/modules/' + this.model.getFieldValue('sysmodule_id') + '/actions').subscribe(objectactions => {
             this.objectactions = objectactions;
         });
     }

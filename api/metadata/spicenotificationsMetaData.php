@@ -83,6 +83,12 @@ $dictionary['spicenotifications'] = [
             'default' => 0,
             'comment' => 'indicates that the user has read the notification'
         ],
+        'additional_infos' => [
+            'name'    => 'additional_infos',
+            'type'    => 'json',
+            'dbType'  => 'text',
+            'comment' => 'a json that holds the additional infos required for the notification text'
+        ],
         'deleted' => [
             'name' => 'deleted',
             'type' => 'bool',

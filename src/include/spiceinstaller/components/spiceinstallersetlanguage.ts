@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -42,7 +42,7 @@ export class SpiceInstallerSetLanguage {
         // checks the reference
         this.checkReference();
         // loads the languages
-        this.http.get(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/spiceinstaller/getlanguages`).subscribe((result: any) => {
+        this.http.get(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/install/getlanguages`).subscribe((result: any) => {
             this.languages = result.languages;
         });
     }
@@ -53,7 +53,7 @@ export class SpiceInstallerSetLanguage {
 
     private checkReference() {
         this.loading = true;
-        this.http.get(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/spiceinstaller/checkreference`).subscribe(result => {
+        this.http.get(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/install/checkreference`).subscribe(result => {
             this.loading = false;
             if (!result) {
                 this.toast.sendToast('cannot connect to reference server', "error");

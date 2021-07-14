@@ -50,6 +50,8 @@ class ImapHandler extends TransportHandler
         'imap_pop3_encryption',
         'imap_pop3_username',
         'imap_pop3_password',
+//        'shared_mailbox_auth_user',
+//        'shared_mailbox_user',
 //        'imap_delete_after_fetch',
     ];
 
@@ -79,11 +81,11 @@ class ImapHandler extends TransportHandler
             ))
                 ->setUsername($this->mailbox->imap_pop3_username)
                 ->setPassword($this->mailbox->imap_pop3_password)
-                ->setStreamOptions([
+                ->setStreamOptions([$this->mailbox->smtp_encryption => [
                     'verify_peer' => $this->mailbox->smtp_verify_peer,
                     'verify_peer_name' => $this->mailbox->smtp_verify_peer_name,
                     'allow_self_signed' => $this->mailbox->smtp_allow_self_signed,
-                ]);
+                ]]);
 
             // initialize mailer
             $this->transport_handler = new Swift_Mailer($this->transport);
@@ -118,10 +120,7 @@ class ImapHandler extends TransportHandler
      *
      * @return array
      */
-    public function fetchEmails()
-    {
-
-
+    public function fetchEmails(): array {
         $imap_status = $this->checkConfiguration($this->incoming_settings);
         if (!$imap_status['result']) {
             $this->log(Mailbox::LOG_DEBUG,
@@ -301,6 +300,14 @@ class ImapHandler extends TransportHandler
     {
         $mailboxes = imap_getmailboxes($this->getImapStream(), $this->mailbox->getRef(), '*');
 
+        // in case we had an error return false
+        if(!$mailboxes){
+            return [
+                'result'    => false
+            ];
+        }
+
+        // we have a list of mailboxes .. get the names
         return [
             'result'    => true,
             'mailboxes' => $this->getMailboxNames($mailboxes),
@@ -312,10 +319,10 @@ class ImapHandler extends TransportHandler
      *
      * Gets IMAP connection stream
      *
+     * @param string $folder
      * @return resource
      */
-    private function getImapStream($folder = "INBOX")
-    {
+    private function getImapStream($folder = "INBOX") {
         $stream = imap_open(
             $this->mailbox->getRef() . $folder,
             $this->mailbox->imap_pop3_username,
@@ -532,7 +539,7 @@ class ImapHandler extends TransportHandler
         }
 
         if ($email->id) {
-            foreach (json_decode (SpiceAttachments::getAttachmentsForBean('Emails', $email->id)) as $att) {
+            foreach ($email->attachments as $att) {
                 $message->attach(
                     Swift_Attachment::fromPath('upload://' . $att->filemd5)->setFilename($att->filename)
                 );

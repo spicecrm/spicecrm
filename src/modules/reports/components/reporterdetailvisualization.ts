@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -124,7 +124,7 @@ export class ReporterDetailVisualization implements AfterViewInit, OnDestroy {
         }
         params.whereConditions = JSON.stringify(whereConditions);
 
-        this.backend.getRequest('KReporter/' + this.model.id + '/visualization', params).subscribe(vizData => {
+        this.backend.getRequest('module/KReports/' + this.model.id + '/visualization', params).subscribe(vizData => {
             this.vizData = vizData;
             this.loading = false;
             this.cdRef.detectChanges();

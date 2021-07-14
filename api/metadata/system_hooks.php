@@ -42,7 +42,8 @@ $dictionary['syshooks'] = [
         ],
         'description' => [
             'name' => 'description',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 1000
         ],
         'version' => [
             'name' => 'version',
@@ -112,7 +113,8 @@ $dictionary['syscustomhooks'] = [
         ],
         'description' => [
             'name' => 'description',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 1000
         ]
     ],
     'indices' => [

@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -59,14 +59,14 @@ export class AdministrationQuotaManagerField {
             index++;
         }
         if (quotaNumeric > 0) {
-            this.backend.postRequest('quotamanager/quota/' + this.userid
+            this.backend.postRequest('module/QuotaManager/quota/' + this.userid
                 + '/' + this.year
                 + '/' + (this.monthindex + 1)
                 + '/' + quota).subscribe(_ => {
                 // console.log("update to quota = " + quota);
             });
         } else {
-            this.backend.deleteRequest('quotamanager/quota/' + this.userid
+            this.backend.deleteRequest('module/QuotaManager/quota/' + this.userid
                 + '/' + this.year
                 + '/' + (this.monthindex + 1));
         }

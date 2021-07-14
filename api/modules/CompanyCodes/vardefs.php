@@ -133,6 +133,15 @@ $dictionary['CompanyCode'] = [
             'vname' => 'LBL_COMPANYCODE',
             'type' => 'varchar',
             'len' => 12
+        ],
+        'shops' => [
+            'name' => 'shops',
+            'type' => 'link',
+            'vname' => 'LBL_SHOPS',
+            'relationship' => 'companycode_shops',
+            'rname' => 'name',
+            'source' => 'non-db',
+            'module' => 'Shops',
         ]
     ],
     'indices' => [
@@ -148,7 +157,17 @@ $dictionary['CompanyCode'] = [
                 'rhs_table' => 'accountkpis',
                 'rhs_key' => 'companycode_id',
                 'relationship_type' => 'one-to-many',
-            ]
+            ],
+        'companycode_shops' => [
+            'name' => 'companycode_shops',
+            'lhs_module' => 'CompanyCodes',
+            'lhs_table' => 'companycodes',
+            'lhs_key' => 'id',
+            'rhs_module' => 'Shops',
+            'rhs_table' => 'shops',
+            'rhs_key' => 'companycode_id',
+            'relationship_type' => 'one-to-many'
+        ]
     ],
     'optimistic_lock' => true,
 ];

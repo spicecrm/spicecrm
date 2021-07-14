@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -216,10 +216,10 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
     private doAutocomplete() {
         if (this.autocompletesearchterm.length > 3) {
             this.isSearching = true;
-            const searchTerm = encodeURIComponent(btoa(this.autocompletesearchterm));
-            const locationBias = encodeURIComponent(btoa(this.locationbias));
+            const searchTerm = encodeURIComponent(this.autocompletesearchterm);
+            const locationBias = encodeURIComponent(this.locationbias);
 
-            this.backend.getRequest(`googleapi/places/search/${searchTerm}/${locationBias}`).subscribe(
+            this.backend.getRequest(`channels/groupware/gsuite/places/search/${searchTerm}/${locationBias}`).subscribe(
                 (res: any) => {
                     if (res.candidates && res.candidates.length > 0) {
                         this.autocompleteResults = res.candidates;
@@ -253,7 +253,7 @@ export class SystemGooglePlacesSearch implements ControlValueAccessor {
 
         this.isSearching = true;
 
-        this.backend.getRequest('googleapi/places/' + placedetails.place_id).subscribe((res: any) => {
+        this.backend.getRequest('channels/groupware/gsuite/places/' + placedetails.place_id).subscribe((res: any) => {
                 this.details.emit({
                     address: {
                         street: res.address.street,

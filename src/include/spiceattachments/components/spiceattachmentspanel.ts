@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -26,7 +26,7 @@ import {
     Injector,
     Optional,
     SkipSelf,
-    AfterViewInit
+    AfterViewInit, OnChanges, SimpleChanges
 } from '@angular/core';
 import {metadata} from "../../../services/metadata.service";
 import {model} from "../../../services/model.service";
@@ -70,7 +70,11 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      *
      * passed in component config
      */
-    private componentconfig: any = {};
+    private componentconfig: {
+        systemCateogryId?: string,
+        requiredmodelstate?: string,
+        disableupload?: boolean
+    } = {};
 
     /**
      * contructor sets the module and id for the laoder
@@ -86,6 +90,13 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
     constructor(private _modelattachments: modelattachments, @Optional() @SkipSelf() private parentmodelattachments: modelattachments, private language: language, private modal: modal, private model: model, private renderer: Renderer2, private toast: toast, private metadata: metadata, private modalservice: modal, private injector: Injector) {
         this._modelattachments.module = this.model.module;
         this._modelattachments.id = this.model.id;
+    }
+
+    /**
+     * @return matchedModelState: boolean
+     */
+    get isHidden() {
+        return (!!this.componentconfig.requiredmodelstate && !this.model.checkModelState(this.componentconfig.requiredmodelstate));
     }
 
     /**
@@ -106,7 +117,7 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      * initializes the model attachments service and loads the attachments
      */
     private loadFiles() {
-        this.modelattachments.getAttachments().subscribe(loaded => {
+        this.modelattachments.getAttachments(this.componentconfig.systemCateogryId).subscribe(loaded => {
             this.attachmentsLoaded.emit(true);
             this.loadInputFiles();
         });
@@ -120,10 +131,30 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
     }
 
     /**
+     * sets new uploadfiles, removes any files that have been in the upload file before and are changed
+     *
+     * @param newUploadFiles
+     */
+    public setUploadFiles(newUploadFiles) {
+
+        // remove current upload files
+        for (let f of this.uploadfiles) {
+            let ff = this._modelattachments.files.find(af => af.filename == f.name);
+            if (ff) {
+                this._modelattachments.deleteAttachment(ff.id);
+            }
+        }
+
+        // set the new upload files
+        this.uploadfiles = newUploadFiles;
+        this.loadInputFiles();
+    }
+
+    /**
      * load the attachments .. unless the service is provided from teh parent .. then the parent is responsible for the load
      */
     public ngAfterViewInit() {
-        if(!this.parentmodelattachments) {
+        if (!this.parentmodelattachments) {
             setTimeout(() => this.loadFiles(), 10);
         }
     }
@@ -204,7 +235,7 @@ export class SpiceAttachmentsPanel implements AfterViewInit {
      * @param files an array with files
      */
     private doupload(files) {
-        this.modelattachments.uploadAttachmentsBase64(files);
+        this.modelattachments.uploadAttachmentsBase64(files, this.componentconfig.systemCateogryId);
     }
 
     /**

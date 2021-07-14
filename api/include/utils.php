@@ -38,145 +38,6 @@ function get_languages() {
 }
 
 
-function get_assigned_user_name($assigned_user_id, $is_group = '') {
-    static $saved_user_list = null;
-
-    if (empty($saved_user_list)) {
-        $saved_user_list = get_user_array(false, '', '', false, null, $is_group);
-    }
-
-    if (isset($saved_user_list[$assigned_user_id])) {
-        return $saved_user_list[$assigned_user_id];
-    }
-
-    return '';
-}
-
-
-//TODO Update to use global cache
-/**
- * get_user_array
- *
- * This is a helper function to return an Array of users depending on the parameters passed into the function.
- * This function uses the get_register_value function by default to use a caching layer where supported.
- * This function has been updated return the array sorted by user preference of name display (bug 62712)
- *
- * @param bool $add_blank Boolean value to add a blank entry to the array results, true by default
- * @param string $status String value indicating the status to filter users by, "Active" by default
- * @param string $user_id String value to specify a particular user id value (searches the id column of users table), blank by default
- * @param bool $use_real_name Boolean value indicating whether or not results should include the full name or just user_name, false by default
- * @param String $user_name_filter String value indicating the user_name filter (searches the user_name column of users table) to optionally search with, blank by default
- * @param string $portal_filter String query filter for portal users (defaults to searching non-portal users), change to blank if you wish to search for all users including portal users
- * @param bool $from_cache Boolean value indicating whether or not to use the get_register_value function for caching, true by default
- * @return array Array of users matching the filter criteria that may be from cache (if similar search was previously run)
- */
-function get_user_array($add_blank = true, $status = "Active", $user_id = '', $use_real_name = false, $user_name_filter = '', $portal_filter = ' AND portal_only=0 ', $from_cache = true) {
-    global $locale,  $current_user;
-
-    if (empty($locale)) {
-        $locale = new SpiceCRM\includes\Localization\Localization();
-    }
-
-    if ($from_cache) {
-        $key_name = $add_blank . $status . $user_id . $use_real_name . $user_name_filter . $portal_filter;
-        $user_array = get_register_value('user_array', $key_name);
-    }
-
-    if (empty($user_array)) {
-        $db = DBManagerFactory::getInstance();
-        $temp_result = [];
-        // Including deleted users for now.
-        if (empty($status)) {
-            $query = "SELECT id, first_name, last_name, user_name from users WHERE 1=1" . $portal_filter;
-        } else {
-            $query = "SELECT id, first_name, last_name, user_name from users WHERE status='$status'" . $portal_filter;
-        }
-
-        if (!empty($user_name_filter)) {
-            $user_name_filter = $db->quote($user_name_filter);
-            $query .= " AND user_name LIKE '$user_name_filter%' ";
-        }
-        if (!empty($user_id)) {
-            $query .= " OR id='{$user_id}'";
-        }
-
-        //get the user preference for name formatting, to be used in order by
-        $order_by_string = ' user_name ASC ';
-        if (!empty($current_user) && !empty($current_user->id)) {
-            $formatString = $current_user->getPreference('default_locale_name_format');
-
-            //create the order by string based on position of first and last name in format string
-            $order_by_string = ' user_name ASC ';
-            $firstNamePos = strpos($formatString, 'f');
-            $lastNamePos = strpos($formatString, 'l');
-            if ($firstNamePos !== false || $lastNamePos !== false) {
-                //its possible for first name to be skipped, check for this
-                if ($firstNamePos === false) {
-                    $order_by_string = 'last_name ASC';
-                } else {
-                    $order_by_string = ($lastNamePos < $firstNamePos) ? "last_name, first_name ASC" : "first_name, last_name ASC";
-                }
-            }
-        }
-
-        $query = $query . ' ORDER BY ' . $order_by_string;
-        LoggerManager::getLogger()->debug("get_user_array query: $query");
-        $result = $db->query($query, true, "Error filling in user array: ");
-
-        if ($add_blank == true) {
-            // Add in a blank row
-            $temp_result[''] = '';
-        }
-
-        // Get the id and the name.
-        while ($row = $db->fetchByAssoc($result)) {
-            if ($use_real_name == true || showFullName()) {
-                if (isset($row['last_name'])) { // cn: we will ALWAYS have both first_name and last_name (empty value if blank in db)
-                    $temp_result[$row['id']] = $locale->getLocaleFormattedName($row['first_name'], $row['last_name']);
-                } else {
-                    $temp_result[$row['id']] = $row['user_name'];
-                }
-            } else {
-                $temp_result[$row['id']] = $row['user_name'];
-            }
-        }
-
-        $user_array = $temp_result;
-        if ($from_cache) {
-            set_register_value('user_array', $key_name, $temp_result);
-        }
-    }
-
-
-    return $user_array;
-}
-
-
-/**
- *
- * based on user pref then system pref
- */
-function showFullName() {
-
-    $current_user = AuthenticationController::getInstance()->getCurrentUser();
-    static $showFullName = null;
-
-    if (is_null($showFullName)) {
-        $sysPref = !empty(SpiceConfig::getInstance()->config['use_real_names']);
-        $userPref = (is_object($current_user)) ? $current_user->getPreference('use_real_names') : null;
-
-        if ($userPref != null) {
-            $showFullName = ($userPref == 'on');
-        } else {
-            $showFullName = $sysPref;
-        }
-    }
-
-    return $showFullName;
-}
-
-
-
 /**
  * This function retrieves an application language file and returns the array of strings included in the $app_list_strings var.
  *
@@ -674,44 +535,13 @@ function display_notice($msg = false) {
     }
 }
 
-
+/**
+ * @param false $exit
+ * @deprecated moved to SpiceUtils
+ */
 function sugar_cleanup($exit = false) {
-    static $called = false;
-    if ($called)
-        return;
-    $called = true;
-    set_include_path(realpath(dirname(__FILE__) . '/..') . PATH_SEPARATOR . get_include_path());
-    chdir(realpath(dirname(__FILE__) . '/..'));
-
-    //added this check to avoid errors during install.
-    if (empty(SpiceConfig::getInstance()->config['dbconfig'])) {
-        if ($exit)
-            exit;
-        else
-            return;
-    }
-
-    // require_once('include/utils/LogicHook.php');
-    LogicHook::initialize();
-    $GLOBALS['logic_hook']->call_custom_logic('', 'server_round_trip');
-
-
-
-    // \SpiceCRM\modules\Trackers\Tracker::logPage();
-    // Now write the cached tracker_queries
-    if (!empty($GLOBALS['savePreferencesToDB']) && $GLOBALS['savePreferencesToDB']) {
-        if (AuthenticationController::getInstance()->getCurrentUser() && AuthenticationController::getInstance()->getCurrentUser() instanceOf User)
-            AuthenticationController::getInstance()->getCurrentUser()->savePreferencesToDB();
-    }
-
-        $db = DBManagerFactory::getInstance();
-        $db->disconnect();
-        if ($exit) {
-            exit;
-        }
+    SpiceUtils::spiceCleanup($exit);
 }
-
-register_shutdown_function('sugar_cleanup');
 
 
 function display_stack_trace($textOnly = false) {
@@ -1178,7 +1008,7 @@ function createShorturl( $route, $active = 1 )
     do {
         $attemptCounter++;
         $key = generateShorturlKey( 6 );
-        $guid = create_guid();
+        $guid = SpiceUtils::createGuid();
         $result = $db->query( sprintf(
             'INSERT INTO sysshorturls ( id, urlkey, route, active ) SELECT * FROM ( SELECT "%s" AS id, "%s" AS urlkey, "%s" AS route, %d AS active) AS tmp WHERE NOT EXISTS ( SELECT urlkey FROM sysshorturls WHERE urlkey = "%s" ) LIMIT 1',
             $guid, $key, $route, $active, $key ));

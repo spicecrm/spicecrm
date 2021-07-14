@@ -40,6 +40,14 @@ class SpiceACL
 
 
     var $useraclobjects = [];
+
+    /**
+     * caches the modules actions so they are not loaded repeatedly
+     *
+     * @var array
+     */
+    var $moduleActions = [];
+
     var $aclObject = null;
     var $territory = null;
 
@@ -130,9 +138,7 @@ class SpiceACL
      */
     public function addACLAccessToListArray(&$selectArray, $bean, $tableName = '', $retArray = false)
     {
-        global $beanList, $beanFiles;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $db = DBManagerFactory::getInstance();
 
         // admin sees everything
         if ($current_user->is_admin)
@@ -293,13 +299,11 @@ class SpiceACL
 
 
     /*
-    * our own functions
-    */
-    private function getActivityValueByAction($action, $module)
+     *
+     * our own functions
+     */
+    private function getActivityValueByAction($action)
     {
-        ;
-        $db = DBManagerFactory::getInstance();
-
         switch ($action) {
             case 'index':
             case 'listview':
@@ -375,7 +379,7 @@ class SpiceACL
         $isCustomActivity = false;
 
         // get the activitiy
-        $thisActivity = $this->getActivityValueByAction($view, $bean->_module ?: $bean->module_dir);
+        $thisActivity = $this->getActivityValueByAction($view);
         // if activitiy is not found return false
         if ($thisActivity === false) {
             return false;
@@ -454,21 +458,24 @@ class SpiceACL
      */
     private function getModuleActions($module)
     {
-        $db = DBManagerFactory::getInstance();
-        $actions = [];
+        if(!isset($this->moduleActions[$module])){
+            $db = DBManagerFactory::getInstance();
+            $actions = [];
 
-        // get the standard Actions
-        $standardActions = $db->query("SELECT action FROM spiceaclstandardactions");
-        while ($standardAction = $db->fetchByAssoc($standardActions)) {
-            $actions[$standardAction['action']] = $standardAction['action'];
+            // get the standard Actions
+            $standardActions = $db->query("SELECT action FROM spiceaclstandardactions");
+            while ($standardAction = $db->fetchByAssoc($standardActions)) {
+                $actions[$standardAction['action']] = $standardAction['action'];
+            }
+
+            $customActions = $db->query("SELECT spiceaclmoduleactions.id, action FROM spiceaclmoduleactions, sysmodules WHERE spiceaclmoduleactions.sysmodule_id = sysmodules.id AND sysmodules.module = '$module'");
+            while ($customAction = $db->fetchByAssoc($customActions)) {
+                $actions[$customAction['id']] = $customAction['action'];
+            }
+            $this->moduleActions[$module] = $actions;
         }
 
-        $customActions = $db->query("SELECT spiceaclmoduleactions.id, action FROM spiceaclmoduleactions, sysmodules WHERE spiceaclmoduleactions.sysmodule_id = sysmodules.id AND sysmodules.module = '$module'");
-        while ($customAction = $db->fetchByAssoc($customActions)) {
-            $actions[$customAction['id']] = $customAction['action'];
-        }
-
-        return $actions;
+        return $this->moduleActions[$module];
     }
 
     /**
@@ -576,7 +583,7 @@ class SpiceACL
             return [];
 
         // get the activitiy
-        $thisActivity = $this->getActivityValueByAction($view, $bean->_module ?: $bean->module_dir);
+        $thisActivity = $this->getActivityValueByAction($view);
         // if activitiy is not found return false
         if ($thisActivity === false) {
             return false;

@@ -6,17 +6,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>SpiceCRM for Outlook</title>
         <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js"></script>
-        <link rel="stylesheet" href="vendor/sldassets/styles/salesforce-lightning-design-system.min.css?v=2.14.1">
+        <link rel="stylesheet" href="vendor/sldassets/styles/salesforce-lightning-design-system.min.css?v=2.15.8">
         <link rel="stylesheet" href="assets/css/spicecrm.min.css?v={{ buildNumber }}">
         <link rel="stylesheet" href="./config/stylesheet">
         <link href="assets/outlook/app.css" rel="stylesheet" type="text/css" />
-        <script src="vendor/underscorejs/underscore-min.js"></script>
-        <script src="vendor/core-js/client/shim.min.js"></script>
-        <script src="vendor/zone.js/dist/zone.min.js"></script>
+        <script src="vendor/underscorejs/underscore-umd-min.js"></script>
+        <script src="vendor/zone.js/zone.umd.min.js"></script>
         <script src="vendor/reflect-metadata/Reflect.js"></script>
         <script src="vendor/systemjs/system.js"></script>
         <script src="vendor/moment/moment.min.js"></script>
         <script src="vendor/moment/moment-timezone.min.js"></script>
+        <script src="vendor/socket.io-client/socket.io.js"></script>
         <script src="outlook.config.js?v={{ buildNumber }}"></script>
         <script>
             System.import('app').catch(function (err) {

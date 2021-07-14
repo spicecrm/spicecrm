@@ -1,6 +1,7 @@
 <?php
 namespace SpiceCRM\includes\SpiceSwagger;
 
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainLoader;
 
 class SpiceSwaggerPath
@@ -40,29 +41,10 @@ class SpiceSwaggerPath
             $parameters = [];
 
             foreach ($this->route['parameters'] as $name => $parameter) {
-                $currentParameters = [
-                    'in'          => $parameter['in'],
-                    'name'        => $name,
-                    'required'    => true,
-                    'description' => $parameter['description'],
-                    'schema'      => [
-                        'type'    => $parameter['type'],
-                        'example' => $parameter['example'],
-                    ],
-                ];
-                 if ($parameter['type'] == 'enum' && isset($parameter['options'])) {
-                     if (is_array($parameter['options'])) {
-                         $currentParameters['schema']['type'] = 'string';
-                         $currentParameters['schema']['enum'] = $parameter['options'];
-                         unset($currentParameters['schema']['example']);
-                     } elseif (is_string($parameter['options'])) {
-                         $domainLoader = new SpiceDictionaryDomainLoader();
-                         $currentParameters['schema']['type'] = 'string';
-                         $currentParameters['schema']['enum'] = $domainLoader->loadValidationValuesForDomain($parameter['options']);
-                     }
-                 }
-
-                $parameters[] = $currentParameters;
+                if ($parameter['in'] != 'body') {
+                    $currentParameter = new SpiceSwaggerParameter($name, $parameter);
+                    $parameters[] = $currentParameter->generateSwaggerParameter();
+                }
             }
 
             if (!empty($parameters)) {
@@ -89,6 +71,9 @@ class SpiceSwaggerPath
     private function getRouteTags(): void {
         if (!empty($this->route['extension'])) {
             $this->pathArray['tags'][] = $this->route['extension'];
+        }
+        if (!empty($this->route['custom']) && $this->route['custom'] == true) {
+            $this->pathArray['tags'][] = 'custom';
         }
     }
 
@@ -126,38 +111,39 @@ class SpiceSwaggerPath
 
     /**
      * Generates an array with the route response body.
-     * todo add schemas for the reponses later on
+     * todo add schemas for the responses later on
      */
     private function getRouteRequestBody(): void {
         if ($this->route['method'] == 'get') {
             return;
         }
 
-        if (!empty($this->route['requestBody'])) {
+        if (!empty($this->route['parameters'])) {
             $requestBody = [];
 
-            if (!empty($this->route['requestBody']['description'])) {
-                $requestBody['description'] = $this->route['requestBody']['description'];
+            foreach ($this->route['parameters'] as $paramName => $paramDefinition) {
+                if ($paramDefinition['in'] != 'body') {
+                    continue;
+                }
+                $swaggerParameter = new SpiceSwaggerParameter($paramName, $paramDefinition);
+                $requestBody['content']['application/json']['schema']['properties'][$paramName] =
+                    $swaggerParameter->generateSwaggerParameter();
             }
-//            if (!empty($this->route['requestBody']['example'])) {
-//                $requestBody['example'] = $this->route['requestBody']['example'];
+//            if (!empty($this->route['requestBody']['content'])) {
+//                $bodyContent = [
+//                    'schema' => [
+//                        '$ref' => '#/components/schemas/GenericSchema',
+//                    ],
+//                ];
+//
+//                if (isset($this->route['requestBody']['example'])) {
+//                    $bodyContent['example'] = $this->route['requestBody']['example'];
+//                } else {
+//                    $bodyContent['example'] = "{key: 'value'}";
+//                }
+//
+//                $requestBody['content']['application/json'] = $bodyContent;
 //            }
-            // todo in getParsedBody validate post body against the definition from the routes array
-        if (!empty($this->route['requestBody']['content'])) {
-            $bodyContent = [
-                'schema' => [
-                    '$ref' => '#/components/schemas/GenericSchema',
-                ],
-            ];
-
-            if (isset($this->route['requestBody']['example'])) {
-                $bodyContent['example'] = $this->route['requestBody']['example'];
-            } else {
-                $bodyContent['example'] = "{key: 'value'}";
-            }
-
-            $requestBody['content']['application/json'] = $bodyContent;
-        }
 
             $this->pathArray['requestBody'] = $requestBody;
         }

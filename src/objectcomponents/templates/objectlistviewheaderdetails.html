@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -13,11 +13,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 <ul class="slds-list_horizontal slds-has-dividers_left slds-has-block-links_space">
     <li class="slds-item">
         <span>
-            {{modellist.listData.list.length}}
+            <system-display-number class="slds-p-right--xxx-small" [number]="modellist.listData.list.length" [noDigits]="true"></system-display-number>
             <system-label label="LBL_OF"></system-label>
-            {{modellist.listData.totalcount}}
+            <system-display-number class="slds-p-horizontal--xxx-small" [number]="modellist.listData.totalcount" [noDigits]="true"></system-display-number>
             <system-label label="LBL_ITEMS"></system-label>
         </span>
+    </li>
+    <li *ngIf="modellist.getSelectedCount() > 0" class="slds-item slds-show--medium">
+        <span>{{modellist.getSelectedCount()}} <system-label label="LBL_SELECTED"></system-label></span>
     </li>
     <li *ngIf="modellist.isSorted" class="slds-item"><span><system-label label="LBL_SORTEDBY"></system-label> {{modellist.getSortFields()}}</span></li>
     <li class="slds-item slds-show--medium"><span><system-label label="LBL_LASTUPDATE"></system-label> {{modellist.getLastLoadTime()}}</span></li>

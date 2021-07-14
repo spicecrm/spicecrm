@@ -64,11 +64,11 @@ LoggerManager::getLogger();
 SpiceDictionaryHandler::loadMetaDataDefinitions();
 
 // load the modules
-SpiceModules::loadModules();
+SpiceModules::getInstance()->loadModules();
 
 // require_once('modules/ACL/ACLController.php');
-$controllerfile = isset( SpiceConfig::getInstance()->config['acl']['controller'][0] ) ? SpiceConfig::getInstance()->config['acl']['controller'] : 'modules/SpiceACL/SpiceACLController.php';
-require_once ($controllerfile);
+//$controllerfile = isset( SpiceConfig::getInstance()->config['acl']['controller'][0] ) ? SpiceConfig::getInstance()->config['acl']['controller'] : 'modules/SpiceACL/SpiceACLController.php';
+//require_once ($controllerfile);
 
 UploadStream::register();
 
@@ -79,7 +79,7 @@ if (empty($GLOBALS['installing'])) {
     }
 
     // load the config from the db and populate to \SpiceCRM\includes\SugarObjects\SpiceConfig::getInstance()->config
-    SpiceConfig::loadConfigFromDB();
+    SpiceConfig::getInstance()->loadConfigFromDB();
 
     $GLOBALS['timedate'] = TimeDate::getInstance();
 

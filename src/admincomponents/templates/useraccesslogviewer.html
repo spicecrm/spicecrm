@@ -1,0 +1,92 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-p-around--medium slds-theme--shade">
+    <div class="slds-page-header__row">
+        <div class="slds-page-header__col-title">
+            <div class="slds-media">
+                <system-icon icon="lightning_usage"></system-icon>
+                <div class="slds-media__body">
+                    <div class="slds-page-header__name">
+                        <div class="slds-page-header__name-title">
+                            <h1>
+                                <span class="slds-page-header__title slds-truncate"><system-label label="LBL_USERACCESSLOG"></system-label></span>
+                            </h1>
+                        </div>
+                    </div>
+                    <p class="slds-page-header__name-meta">{{entries.length}} <system-label label="LBL_RECORDS"></system-label></p>
+                </div>
+            </div>
+        </div>
+        <button class="slds-button slds-button--neutral" (click)="loadData()"><system-label label="LBL_LOAD"></system-label></button>
+    </div>
+</div>
+<div class="slds-section slds-is-open slds-p-around--xx-small">
+    <div class="slds-grid slds-grid--vertical-align-end slds-gutters_direct-xxx-small">
+        <div class="slds-col slds-size--1-of-2">
+            <label class="slds-form-element__label"><system-label label="LBL_FILTER"></system-label></label>
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <div class="slds-grow slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                    <input class="slds-input" type="text" system-trim-input [(ngModel)]="filter" />
+                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter=''">
+                        <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
+                    </button>
+                </div>
+                <system-checkbox [(ngModel)]="failedOnly"><system-label label="LBL_FAILEDONLY"></system-label></system-checkbox>
+            </div>
+        </div>
+        <div class="slds-col slds-size--1-of-4">
+            <label class="slds-form-element__label"><system-label label="LBL_END"></system-label></label>
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <system-input-date [(ngModel)]="dateEnd" class="slds-grow"></system-input-date>
+                <system-input-time [(ngModel)]="dateEnd" class="slds-grow slds-p-horizontal--xx-small"></system-input-time>
+                <system-utility-icon system-title="LBL_NOW" icon="clock" size="x-small" (click)="setNow()"></system-utility-icon>
+            </div>
+        </div>
+        <div class="slds-col slds-size--1-of-4">
+            <label class="slds-form-element__label"><system-label label="LBL_ROWS"></system-label></label>
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="limit">
+                    <option>250</option>
+                    <option>500</option>
+                    <option>1000</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div system-to-bottom class="slds-border--top">
+    <table class="slds-table slds-table--bordered slds-table--fixed-layout slds-table--col-bordered slds-no-row-hover slds-table_header-fixed">
+        <thead>
+        <tr>
+            <th style="width: 8rem;"><system-label class="slds-th__action" label="LBL_DATE"></system-label></th>
+            <th class="slds-resizable"><system-label class="slds-th__action" label="LBL_USER"></system-label></th>
+            <th style="width: 8rem"><system-label class="slds-th__action" label="LBL_IP_ADDRESS"></system-label></th>
+            <th style="width: 8rem;"><system-label class="slds-th__action" label="LBL_ACTION"></system-label></th>
+        </tr>
+        </thead>
+        <tbody #tbody>
+        <tr *ngFor="let entry of entries" [ngClass]="{'slds-theme--error' :entry.action=='loginfail'}">
+            <td><system-display-datetime [date]="entry.date_entered"></system-display-datetime></td>
+            <td><div class="slds-truncate">{{entry.login_name}}</div></td>
+            <td><div class="slds-truncate">{{entry.ipaddress}}</div></td>
+            <td class="slds-text-align--center">{{entry.action}}</td>
+        </tr>
+        </tbody>
+    </table>
+    <div *ngIf="entries.length == 0" class="slds-height_full slds-align--absolute-center">
+        <system-illustration-no-records><system-label label="LBL_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
+    </div>
+    <div *ngIf="entries.length > 0" class="slds-p-around--small slds-align--absolute-center">
+        <button class="slds-button slds-button--neutral" (click)="loadMore()"><system-label label="LBL_LOAD_MORE"></system-label></button>
+    </div>
+</div>

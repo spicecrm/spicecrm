@@ -271,6 +271,9 @@ class SpiceImport extends SugarBean
                 $newBean->{$field->field} = $this->objectimport->fixedFieldsValues->{$field->field};
 
             $newBeanId = $newBean->save();
+            $assignedUser = BeanFactory::getBean('Users', $newBean->assigned_user_id);
+            $notify = boolval(!$assignedUser ? false : $assignedUser->receive_notifications);
+            $newBean->save($notify);
             $list[] = ['status' => 'imported', 'recordId' => $newBeanId, 'data' => [$row[0], $row[1], $row[2], $row[3]]];
 
             if ($this->objectimport->importDuplicateAction == 'log') {
@@ -307,6 +310,9 @@ class SpiceImport extends SugarBean
                 $newBean->{$field->field} = $this->objectimport->fixedFieldsValues->{$field->field};
 
             $newBeanId = $newBean->save();
+            $assignedUser = BeanFactory::getBean('Users', $newBean->assigned_user_id);
+            $notify = boolval(!$assignedUser ? false : $assignedUser->receive_notifications);
+            $newBean->save($notify);
             LoggerManager::getLogger()->debug('SpiceImports saved id ' . $newBeanId);
             $list[] = ['status' => 'updated', 'recordId' => $newBeanId, 'data' => [$row[0], $row[1], $row[2], $row[3]]];
         } else {

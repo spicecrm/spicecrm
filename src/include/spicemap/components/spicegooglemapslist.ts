@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -22,6 +22,7 @@ import {model} from "../../../services/model.service";
 import {Subscription} from "rxjs";
 import {broadcast} from "../../../services/broadcast.service";
 import {navigation} from "../../../services/navigation.service";
+import {ListTypeI} from "../../../services/interfaces.service";
 
 /**
  * renders a list of records on google maps
@@ -120,7 +121,6 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
     public ngOnDestroy() {
         this.subscriptions.unsubscribe();
         this.modelList.searchGeo = undefined;
-        this.modelList.reLoadList();
     }
 
     /**
@@ -327,13 +327,23 @@ export class SpiceGoogleMapsList implements OnInit, AfterViewInit, OnDestroy {
      * subscribe to model list type and data reloaded changes to reset records
      */
     private subscribeToModelListChanges() {
-        this.subscriptions.add(this.modelList.listtype$.subscribe(() => {
-            this.setRecords();
+        this.subscriptions.add(this.modelList.listType$.subscribe(newType => {
+            this.handleListTypeChange(newType);
         }));
         this.subscriptions.add(this.modelList.listDataChanged$.subscribe(() => {
             this.setRecords();
             this.setFixedCircle();
         }));
+    }
+
+    /**
+     * handle the list type change to reload the data only if for this component to prevent possible actions after destroy
+     * @param newType
+     * @private
+     */
+    private handleListTypeChange(newType: ListTypeI) {
+        if (newType.listcomponent != 'SpiceGoogleMapsList') return;
+        this.setRecords();
     }
 
     /**

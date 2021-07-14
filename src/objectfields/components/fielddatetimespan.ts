@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -25,76 +25,129 @@ import {Router} from "@angular/router";
 /**
  * @ignore
  */
-/**
- * @ignore
- */
 declare var moment: any;
 
+/**
+ * renders a field with a date time span
+ */
 @Component({
     selector: 'field-date-time-span',
     templateUrl: './src/objectfields/templates/fielddatetimespan.html'
 })
 export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
+
+    /**
+     * inidcates that we have a valid field
+     *
+     * @private
+     */
     private isValid: boolean = true;
+
+    /**
+     * collected error messages
+     *
+     * @private
+     */
     private errorMessage: string = '';
+
+    /**
+     * the duration, held intrnally so we can move the end date when the start date moves
+     *
+     * @private
+     */
+    private duration: any;
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private userpreferences: userpreferences) {
         super(model, view, language, metadata, router);
+
     }
 
+    /**
+     * subscribe to the model data$ changes to have an accurate and up to date duration
+     */
+    public ngOnInit() {
+        super.ngOnInit();
+
+        this.subscriptions.add(
+            this.model.data$.subscribe((data) => {
+                if (this.startDate && this.endDate) {
+                    this.duration = moment.duration(this.endDate.diff(this.startDate));
+                }
+            })
+        );
+    }
+
+    /**
+     * a getter to get if the fields houdl be vertical (default) or horizontal
+     */
+    get vertical() {
+        return this.fieldconfig.horizontal !== true;
+    }
+
+    get showToDate() {
+        if (this.startDate && this.endDate) {
+            return !this.startDate.isSame(this.endDate, 'day');
+        }
+        return true;
+    }
+
+    /**
+     * returns the name fo the start field date
+     */
     get fieldstart() {
         return this.fieldconfig.date_start ? this.fieldconfig.date_start : 'date_start';
     }
 
+    /**
+     * returns the name fo the end field date
+     */
     get fieldend() {
         return this.fieldconfig.date_end ? this.fieldconfig.date_end : 'date_end';
     }
 
-    get fieldminutes() {
-        return this.fieldconfig.duration_minutes ? this.fieldconfig.duration_minutes : 'duration_minutes';
-    }
-
-    get fieldhours() {
-        return this.fieldconfig.duration_hours ? this.fieldconfig.duration_hours : 'duration_hours';
-    }
-
-    public ngOnInit() {
-        this.calculateEndDate();
-    }
-
-    get duration() {
-        let hours = this.model.getFieldValue(this.fieldhours);
-        let minutes = this.model.getFieldValue(this.fieldminutes);
-
-        return parseInt(hours, 10) * 60 + parseInt(minutes, 10);
-    }
-
-    get formattedStartDate() {
-        return this.startDate ? this.startDate.format(this.userpreferences.getDateFormat() + ' ' + this.userpreferences.getTimeFormat()) : '';
-    }
-
-    get formattedEndDate() {
-        return this.endDate ? this.endDate.format(this.userpreferences.getDateFormat() + ' ' + this.userpreferences.getTimeFormat()) : '';
-    }
-
+    /**
+     * getter for the start date
+     */
     get startDate() {
         return this.model.getField(this.fieldstart);
     }
 
+    /**
+     * setter for the start date so we can calulate and update the end time
+     *
+     * @param date
+     */
     set startDate(date) {
-        this.model.setField(this.fieldstart, date);
-        this.calculateEndDate();
-        // console.log('start set');
+        // build the fields object
+        let fields: any = {};
+        fields[this.fieldstart] = date;
+
+        if (this.duration) {
+            // calculate the new end date
+            let newEndDate = new moment(date).add(this.duration.asSeconds(), 's');
+
+            // add the end date
+            fields[this.fieldend] = newEndDate;
+        }
+
+        // set the fields on the model
+        this.model.setFields(fields);
     }
 
+    /**
+     * getter for the end date
+     */
     get endDate() {
         return this.model.getField(this.fieldend);
     }
 
+    /**
+     * setter for the start date also checks that we have a valid span with the start before the end
+     */
     set endDate(date) {
         // if startdate is not set .. set it ...
         if (!this.model.getFieldValue(this.fieldstart)) {
-            this.startDate = new moment(date).subtract(this.duration, 'minutes');
+            this.startDate = new moment(date);
         }
 
         if (date.isBefore(this.model.getFieldValue(this.fieldstart))) {
@@ -105,7 +158,6 @@ export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
         } else {
             this.model.resetFieldMessages(this.fieldname, 'error', 'sequencecheck');
             this.model.setField(this.fieldend, date);
-            this.calculateDuration();
             this.isValid = true;
         }
     }
@@ -124,24 +176,5 @@ export class fieldDateTimeSpan extends fieldGeneric implements OnInit {
         }
 
         return stati;
-    }
-
-    private calculateEndDate() {
-        if (this.startDate && this.duration) {
-            this.endDate = new moment(this.startDate).add(this.duration, 'minutes');
-        }
-    }
-
-    private calculateDuration() {
-        // set the seconds to 0
-        this.model.getFieldValue(this.fieldend).seconds(0);
-        this.model.getFieldValue(this.fieldstart).seconds(0);
-
-        let duration = moment.duration(this.model.getFieldValue(this.fieldend).diff(this.model.getFieldValue(this.fieldstart)));
-        let hours = Math.floor(duration.asHours());
-        let minutes = duration.asMinutes() - 60 * hours;
-
-        this.model.setField(this.fieldhours, hours);
-        this.model.setField(this.fieldminutes, minutes);
     }
 }

@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -74,6 +74,7 @@ import /*embed*/ {fieldFile} from './components/fieldfile';
 import /*embed*/ {fieldUrl} from './components/fieldurl';
 import /*embed*/ {fieldEmail} from './components/fieldemail';
 import /*embed*/ {fieldEmailAddresses} from './components/fieldemailaddresses';
+import /*embed*/ {fieldEmailEmailAddressStatus} from './components/fieldemailemailaddressstatus';
 import /*embed*/ {fieldEmailEmailAddress} from './components/fieldemailemailaddress';
 import /*embed*/ {fieldEmailRecipients} from './components/fieldemailrecipients';
 import /*embed*/ {fieldEmailRecipientsShort} from './components/fieldemailrecipientsshort';
@@ -129,7 +130,7 @@ import /*embed*/ {fieldActionset} from "./components/fieldactionset";
 import /*embed*/ {fieldSlider} from "./components/fieldslider";
 import /*embed*/ {fieldImage} from './components/fieldimage';
 import /*embed*/ {fieldCompound} from './components/fieldcompound';
-import /*embed*/ {fieldChecklist} from './components/fieldchecklist';
+import /*embed*/ {fieldIconCondition} from './components/fieldiconcondition';
 
 /**
  * @ignore
@@ -211,6 +212,7 @@ declare var _: any;
         fieldEmailRecipients,
         fieldEmailRecipientsShort,
         fieldEmailEmailAddress,
+        fieldEmailEmailAddressStatus,
         fieldVat,
         fieldBarcode,
         fieldBarcodeRenderer,
@@ -256,7 +258,7 @@ declare var _: any;
         fieldActionset,
         fieldSlider,
         fieldCompound,
-        fieldChecklist
+        fieldIconCondition
     ],
     exports: [
         fieldSet,

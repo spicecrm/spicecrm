@@ -85,6 +85,11 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
             'Dompdf\\' => 7,
             'DI\\' => 3,
         ),
+        'C' => 
+        array (
+            'Com\\Tecnick\\Color\\' => 18,
+            'Com\\Tecnick\\Barcode\\' => 20,
+        ),
         'B' => 
         array (
             'Brick\\Math\\' => 11,
@@ -225,6 +230,14 @@ class ComposerStaticInit91604407326b7423faa9c75e3a2ce1a1
         'DI\\' => 
         array (
             0 => __DIR__ . '/..' . '/php-di/php-di/src',
+        ),
+        'Com\\Tecnick\\Color\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/tecnickcom/tc-lib-color/src',
+        ),
+        'Com\\Tecnick\\Barcode\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/tecnickcom/tc-lib-barcode/src',
         ),
         'Brick\\Math\\' => 
         array (

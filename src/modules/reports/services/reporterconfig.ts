@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -46,7 +46,7 @@ export class reporterconfig {
     constructor(private configurationService: configurationService, private backend: backend) {
         let repConfig = this.configurationService.getData('reporterConfig');
         if (!repConfig) {
-            this.backend.getRequest('KReporter/core/whereoperators/all').subscribe(repConfig => {
+            this.backend.getRequest('module/KReports/core/whereoperators/all').subscribe(repConfig => {
                 this.configurationService.setData('reporterConfig', repConfig);
                 this.parseConfifg(repConfig);
             });
@@ -58,7 +58,7 @@ export class reporterconfig {
     }
 
     private getWhereFunctions() {
-        this.backend.getRequest('KReporter/core/wherefunctions').subscribe(res => {
+        this.backend.getRequest('module/KReports/core/wherefunctions').subscribe(res => {
            this.whereFunctions = res;
         });
     }

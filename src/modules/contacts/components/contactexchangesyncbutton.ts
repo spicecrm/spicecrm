@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -17,6 +17,7 @@ import {Component, ViewContainerRef, OnInit, OnDestroy} from "@angular/core";
 import {model} from "../../../services/model.service";
 import {language} from "../../../services/language.service";
 import {modal} from "../../../services/modal.service";
+import {toast} from "../../../services/toast.service";
 import {metadata} from "../../../services/metadata.service";
 import {backend} from "../../../services/backend.service";
 import {configurationService} from "../../../services/configuration.service";
@@ -28,7 +29,7 @@ import {Subscription} from "rxjs";
 @Component({
     templateUrl: "./src/modules/contacts/templates/contactexchangesyncbutton.html"
 })
-export class ContactExchangeSyncButton implements OnDestroy{
+export class ContactExchangeSyncButton implements OnDestroy {
 
     /**
      * indicates that the systemis loading and executing a request
@@ -46,14 +47,14 @@ export class ContactExchangeSyncButton implements OnDestroy{
     private subscriptions: Subscription = new Subscription();
 
     // public disabled: boolean = true;
-    constructor(private metadata: metadata, private language: language, private model: model, private modal: modal, private backend: backend, private configuration: configurationService) {
+    constructor(private metadata: metadata, private toast: toast, private language: language, private model: model, private modal: modal, private backend: backend, private configuration: configurationService) {
 
         // set the hidden flag
         this.setHidden();
 
         // subscribe to config hcnges and potentially change the hidden flag
         this.configuration.datachanged$.subscribe(key => {
-            if(key == 'exchangeuserconfig') this.setHidden();
+            if (key == 'exchangeuserconfig') this.setHidden();
         });
 
     }
@@ -65,20 +66,20 @@ export class ContactExchangeSyncButton implements OnDestroy{
         this.subscriptions.unsubscribe();
     }
 
-    private setHidden(){
+    private setHidden() {
         let config = this.configuration.getData('exchangeuserconfig');
         let moduleData = this.metadata.getModuleDefs('Contacts');
 
-        this.hidden = config.findIndex(cr => cr.sysmodule_id == moduleData.id) == -1;
+        this.hidden = !config || (config && config?.findIndex(cr => cr.sysmodule_id == moduleData.id) == -1);
     }
 
     /**
      * button is clicked .. set or delete the sync state
      */
     public execute() {
-        this.isLoading = true
+        this.isLoading = true;
         if (this.model.getField('sync_contact')) {
-            this.backend.deleteRequest(`module/Contacts/${this.model.id}/exchangeSync`).subscribe(
+            this.backend.deleteRequest(`module/Contacts/${this.model.id}/exchangesync`).subscribe(
                 success => {
                     this.model.setField('sync_contact', !this.model.getField('sync_contact'));
                     this.isLoading = false;
@@ -87,9 +88,13 @@ export class ContactExchangeSyncButton implements OnDestroy{
                     this.isLoading = false;
                 });
         } else {
-            this.backend.putRequest(`module/Contacts/${this.model.id}/exchangeSync`).subscribe(
+            this.backend.putRequest(`module/Contacts/${this.model.id}/exchangesync`).subscribe(
                 success => {
-                    this.model.setField('sync_contact', !this.model.getField('sync_contact'));
+                    if (success.message) {
+                        this.toast.sendToast(success.message, 'error');
+                    } else {
+                        this.model.setField('sync_contact', !this.model.getField('sync_contact'));
+                    }
                     this.isLoading = false;
                 },
                 error => {

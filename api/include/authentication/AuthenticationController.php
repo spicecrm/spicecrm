@@ -39,6 +39,7 @@ namespace SpiceCRM\includes\authentication;
 use http\Exception\UnexpectedValueException;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\authentication\SpiceCRMAuthenticate\SpiceCRMAuthenticate;
+use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\ErrorHandlers\ForbiddenException;
@@ -46,6 +47,7 @@ use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\LogicHook\LogicHook;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
+use SpiceCRM\includes\TimeDate;
 use SpiceCRM\modules\Administration\Administration;
 use SpiceCRM\modules\Contacts\Contact;
 use SpiceCRM\modules\SystemTenants\SystemTenant;
@@ -53,7 +55,7 @@ use SpiceCRM\modules\UserAccessLogs\UserAccessLog;
 use SpiceCRM\modules\Users\User;
 use SpiceCRM\includes\authentication\UserAuthenticate\UserAuthenticate;
 use SpiceCRM\includes\authentication\LDAPAuthenticate\LDAPAuthenticate;
-use SpiceCRM\includes\authentication\TwoFactorAuthenticate\TwoFactorAuthenticate;
+use SpiceCRM\includes\authentication\TOTPAuthentication\TwoFactorAuthenticate;
 
 class AuthenticationController
 {
@@ -191,7 +193,7 @@ class AuthenticationController
      * @return array
      * @throws UnauthorizedException
      */
-    public function authenticate(string $username = null, string $password = null, $token = null, $tokenIssuer = null)
+    public function authenticate($username = null, $password = null, $token = null, $tokenIssuer = null, $impersonationUser = null )
     {
         try {
             /** @var User $userObj */
@@ -199,35 +201,33 @@ class AuthenticationController
             if ($token) {
                 $userObj = $this->handleTokenAuth($token, $tokenIssuer);
             } elseif ($username && $password) {
-                $userObj = $this->handleUserPassAuth($username, $password);
+                $userObj = $this->handleUserPassAuth($username, $password, $impersonationUser );
             } else {
                 throw new UnauthorizedException("Invalid authentication method", 6);
             }
 
-
             //check status field on user
             $this->checkUserStatus($userObj);
 
+            $this->setCurrentUser($userObj);
 
             if (($username && $password) || $tokenIssuer !== 'SpiceCRM') { //login was via user/pass therefore create session and log login
-                $this->token = SpiceCRMAuthenticate::createSession($userObj);
+                $this->token = SpiceCRMAuthenticate::createSession($this->currentUser);
 
                 //should we log successful login?
                 if (array_key_exists("logSuccessLogin", SpiceConfig::getInstance()->config)) {
                     $this->logSuccessLogin($userObj);
                 }
+
             }
 
-            $this->setCurrentUser($userObj);
             $this->handleTenants();
 
         } catch (UnauthorizedException $e) {
             //log login attempt
             /** @var UserAccessLog $userAccessLogObj */
             $userAccessLogObj = BeanFactory::getBean('UserAccessLogs');
-            $userAccessLogObj->addRecord("loginfail", $username);
-
-
+            $userAccessLogObj->addRecord("loginfail", empty( $impersonationUser ) ? $username : $impersonationUser.'#as#'.$username );
             if ($username) {
                 $amountFailedLogins = $userAccessLogObj->getAmountFailedLoginsWithinByUsername($username);
                 if ($amountFailedLogins > 10) { //todo use a config variable
@@ -247,7 +247,7 @@ class AuthenticationController
         return [ //todo find a solution to specify return format
             'token' => $this->token,
             'user' => $userObj,
-            'pwChangeEnabled' => LDAPAuthenticate::isLdapEnabled() === false && $userObj->external_auth_only === false
+            'pwChangeEnabled' => LDAPAuthenticate::isLdapEnabled() === false && $userObj->external_auth_only === false && TOTPAuthentication::checkTOTPActive($userObj->id) === false
         ];
 
     }
@@ -346,7 +346,7 @@ class AuthenticationController
      * Handles the authentication with username/password credentials.
      * @return User | false
      */
-    private function handleUserPassAuth(string $authUser, string $authPass)
+    private function handleUserPassAuth($authUser, $authPass, $impersonationUser = null )
     {
         //first check if ldap authentication is enabled
         if (LDAPAuthenticate::isLdapEnabled()) {
@@ -363,10 +363,9 @@ class AuthenticationController
         }
 
         //second use sugar authentication
-
         try {
             $sugarAuthenticationController = new UserAuthenticate();
-            $userObj = $sugarAuthenticationController->authenticate($authUser, $authPass);
+            $userObj = $sugarAuthenticationController->authenticate( $authUser, $authPass, $impersonationUser );
             //check if password is expired
             if ($this->hasPasswordExpired($userObj)) {
                 throw new UnauthorizedException("Password expired", 2);
@@ -386,6 +385,9 @@ class AuthenticationController
         if (!empty($this->getCurrentUser()->systemtenant_id)) {
             $tenant = new SystemTenant();
             $tenant->retrieve($this->getCurrentUser()->systemtenant_id);
+            if ($tenant->valid_until < TimeDate::getInstance()->nowDbDate()) {
+                throw new UnauthorizedException('Tenant expired', 401);
+            }
             $tenant->switchToTenant();
             $this->systemtenantid = $tenant->id;
             $this->systemtenantname = $tenant->name;
@@ -416,7 +418,6 @@ class AuthenticationController
             'user_name' => $currentUser->user_name,
             'userid' => $currentUser->id,
             'user_image' => $currentUser->user_image,
-            'dev' => $currentUser->is_dev == '1' ? true : false,
             'companycode_id' => $currentUser->companycode_id,
             'tenant_id' => $currentUser->systemtenant_id,
             'tenant_name' => $this->systemtenantname,

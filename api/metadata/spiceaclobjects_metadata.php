@@ -38,13 +38,15 @@ $dictionary ['SpiceACLModuleFields'] = [
         'addjoin' => [
             'name' => 'addjoin',
             'vname' => 'LBL_ADDJOIN',
-            'type' => 'text',
+            'type' => 'shorttext',
+            'len' => 4000,
             'comment' => 'for custom coding iof we need to join fields'
         ],
         'addwhere' => [
             'name' => 'addwhere',
             'vname' => 'LBL_ADDWHERE',
-            'type' => 'text',
+            'type' => 'shorttext',
+            'len' => 4000,
             'comment' => 'for custom coding iof we need a custom where statement'
         ],
     ],
@@ -209,12 +211,14 @@ $dictionary['spiceaclobjectvalues'] = [
         'value1' => [
             'name' => 'value1',
             'vname' => 'LBL_VALUE1',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 1000
         ],
         'value2' => [
             'name' => 'value2',
             'vname' => 'LBL_VALUE2',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 1000
         ],
     ],
     'indices' => [

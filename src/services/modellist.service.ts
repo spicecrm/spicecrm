@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -14,7 +14,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  * @module services
  */
 import {EventEmitter, Injectable, OnDestroy} from '@angular/core';
-import {Observable, Subject, of, BehaviorSubject} from 'rxjs';
+import {Observable, Subject, of, BehaviorSubject, Subscription} from 'rxjs';
 import {backend} from './backend.service';
 import {userpreferences} from './userpreferences.service';
 import {language} from './language.service';
@@ -23,6 +23,7 @@ import {broadcast} from "./broadcast.service";
 import {session} from "./session.service";
 import {configurationService} from "./configuration.service";
 import {toast} from "./toast.service";
+import {BucketsI, geoSearch, listDataI, ListTypeI, relateFilter} from "./interfaces.service";
 
 /**
  * @ignore
@@ -30,32 +31,13 @@ import {toast} from "./toast.service";
 declare var moment: any;
 declare var _: any;
 
-interface geoSearch {
-    radius: number;
-    lat: number;
-    lng: number;
-}
-
-/**
- * refines an interface for the relate filter
- * this can be used to limit results to relationships
- */
-export interface relateFilter {
-    module: string;
-    relationship: string;
-    id: string;
-    display: string;
-    active: boolean;
-    required: boolean;
-}
-
 @Injectable()
 export class modellist implements OnDestroy {
 
     /**
      * the module the list is for
      */
-    public _module: string = '';
+    public module: string = '';
 
     /**
      * an optional modulefilter
@@ -79,18 +61,21 @@ export class modellist implements OnDestroy {
     public filtercontextbeanid: string;
 
     /**
-     * a behavioural subject for the listtype to catch changes in other components
+     * event emitter for the list type to catch changes in other components
      */
-    public listtype$: BehaviorSubject<string>;
+    public listType$: BehaviorSubject<ListTypeI>;
+
+    /**
+     * event emitter for the list type to catch changes in other components
+     */
+    public listTypeComponent$: EventEmitter<string> = new EventEmitter<string>();
 
     /**
      * the list data
      */
-    public listData: any = {
+    public listData: listDataI = {
         list: [],
-        totalcount: 0,
-        source: undefined,
-        listcomponent: undefined
+        totalcount: 0
     };
 
     /**
@@ -105,12 +90,6 @@ export class modellist implements OnDestroy {
      * emits when the selection of the list has been changed via select all .. to trigger chanmge detection on the components
      */
     public selectionChanged$: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-    /**
-     * keeps the last retrieved fields
-     * ToDo: check if keep that
-     */
-    public lastFields: any[] = [];
 
     /**
      * holds an array of fields and direction for multidimensional sorting
@@ -131,8 +110,6 @@ export class modellist implements OnDestroy {
      * an indicator that the list is loading
      */
     public isLoading: boolean = false;
-
-    // public searchConditions: any[] = [];
 
     /**
      * the search term
@@ -162,66 +139,27 @@ export class modellist implements OnDestroy {
     /**
      * for the bucketed views
      */
-    public buckets: any = {};
+    public buckets: BucketsI = {};
 
     /**
      * set to true if the data when retrieved should be cached in the session
      */
-    public usecache: boolean = true;
+    public useCache: boolean = true;
 
     /**
      * the default lists any module has
      */
-    public standardLists: any[] = [
-        {
-            id: 'all',
-            type: 'all',
-            name: '<LBL_ALL> <module>',
-            config: {
-                showSearch: true,
-                enableFilter: false,
-                enableAggregates: true,
-                enableDelete: false
-            }
-        }, {
-            id: 'owner',
-            type: 'owner',
-            name: '<LBL_MY> <module>',
-            config: {
-                showSearch: true,
-                enableFilter: false,
-                enableAggregates: true,
-                enableDelete: false
-            }
-        }
-    ];
-
-    /**
-     * the available list types for the module
-     *
-     * ToDo ... decide if we need them here at all or just keep them on the metadata service where they belong
-     */
-    public listTypes: any[] = [];
+    public standardLists: ListTypeI[] = [];
 
     /**
      * the current seletced list
      */
-    public currentList: any = {};
-
-    /**
-     * the listcomponent used to render the list
-     */
-    public _listcomponent: string = 'ObjectList';
-
-    /**
-     * an eventemitter for the listcompoonent
-     */
-    public listcomponent$: BehaviorSubject<any>;
+    public currentList: ListTypeI;
 
     /**
      * any other service that is subscribed .. to ensure we unsubscribe on destroy
      */
-    public serviceSubscriptions: any[] = [];
+    public serviceSubscriptions = new Subscription();
 
     /**
      * to help navigation set to display the aggregates
@@ -234,11 +172,6 @@ export class modellist implements OnDestroy {
     public displayFilters: boolean = false;
 
     /**
-     * a relaod timeout .. set when the sort is changed to reacxt to subsequent changes and not relaod immediately
-     */
-    private reloadTimeOut: any;
-
-    /**
      * holds the listfields .. supports the regular list service where fields can be selected
      */
     public _listfields: any[] = [];
@@ -247,26 +180,38 @@ export class modellist implements OnDestroy {
      * an emitter when the listfields have been updated
      */
     public listfield$: EventEmitter<any> = new EventEmitter<any>();
+    /**
+     * holds the embedded by component name
+     * @private
+     */
+    private embeddedByComponent: string;
+    /**
+     * holds the default value for disable autoload boolean from the spice config
+     */
+    public disableAutoloadListAll: boolean = false;
 
     constructor(
         private broadcast: broadcast,
         private backend: backend,
-        // private fts: fts,
-        private metadata: metadata,
+        public metadata: metadata,
         private language: language,
         private userpreferences: userpreferences,
         private session: session,
         private configuration: configurationService,
         private toast: toast
     ) {
-        // create the event behaviour Subject
-        this.listtype$ = new BehaviorSubject<string>('all');
+        this.setDisableAutoloadListAll();
+        this.subscribeToBroadcast();
+        this.generateStandardLists();
+        this.listType$ = new BehaviorSubject<ListTypeI>(this.standardLists[0]);
+    }
 
-        // emit the list component
-        this.listcomponent$ = new BehaviorSubject<any>(this._listcomponent);
-
-        // subscribe to the broadcast service
-        this.serviceSubscriptions.push(
+    /**
+     * subscribe to broadcast service
+     * @private
+     */
+    private subscribeToBroadcast() {
+        this.serviceSubscriptions.add(
             this.broadcast.message$.subscribe(message => {
                 this.handleMessage(message);
             })
@@ -274,75 +219,55 @@ export class modellist implements OnDestroy {
     }
 
     /**
-     * simple getter for the module
+     * set the default value for dsiabled autoload boolean from the spice config
+     * @private
      */
-    get module() {
-        return this._module;
+    private setDisableAutoloadListAll() {
+        this.disableAutoloadListAll = !!this.configuration.getCapabilityConfig('module').disableAutoloadListAll;
     }
 
     /**
-     * setter for the module to also trigger the key aspects that need to happen when the module is changed
-     *
-     * @param module
-     */
-    set module(module: string) {
-        this.setModule(module);
-    }
-
-    /**
-     * sets the mopdule
+     * trigger the key aspects that need to happen when the module is changed
      *
      * @param module the module
-     * @param embedded set to true if the listservice is run embedded ina  component and setting listtype etc is not needed, this is used e.g. when used in builöt in lists
+     * @param embeddedByComponent
      */
-    public setModule(module: string, embedded: boolean = false) {
-        // check if the module has changed
-        if (!this._module || this._module != module) {
-            // set the module internally
-            this._module = module;
+    public initialize(module: string, embeddedByComponent?: string) {
 
-            // reset the list data
-            this.resetListData();
+        this.module = module;
 
-            // set the aggergates for the module
-            this.moduleAggregates = [];
-            for (let moduleAggregate of this.metadata.getModuleAggregates(module)) {
-                this.moduleAggregates.push({...moduleAggregate});
-            }
-            this.moduleAggregates.sort((a, b) => {
-                if (!a.priority && !b.priority) return 0;
-                return (!a.priority || a.priority > b.priority) ? 1 : -1;
-            });
+        this.generateStandardLists();
 
-            // load the list types for the module
-            this.loadListTypes();
+        this.embeddedByComponent = embeddedByComponent;
 
-            // if we are in embedded mode stop processing and return
-            if(embedded) return;
+        // reset the list data
+        this.resetListData();
 
-            // try to get the list data from the session if there is session data stored
-            if (!this.getFromSession()) {
-                // try to get a default list type
-                let modulepreferences = this.userpreferences.getPreference(module);
-                if (modulepreferences && modulepreferences.lastlisttype && this.listtypeexists(modulepreferences.lastlisttype)) {
-                    this.setListType(modulepreferences.lastlisttype, false);
-                } else {
-                    this.setListType('all', false);
-                }
-            } else {
-                // reload quite if we did retrive from cache
-                this.reLoadList(true);
-            }
+        this.loadModuleAggregates();
 
+        // set the current list type from user preferences or "all" by default
+        let listId = 'all';
 
+        let modulepreferences = this.userpreferences.getPreference(module);
+        if (modulepreferences?.lastListTypeId && this.listTypeExists(modulepreferences.lastListTypeId)) {
+            listId = modulepreferences.lastListTypeId;
         }
+        this.setListType(listId, false);
     }
 
     /**
-     * the current list type
+     * loads the module aggregates
+     * @private
      */
-    get listtype() {
-        return this.currentList.id;
+    private loadModuleAggregates() {
+        this.moduleAggregates = [];
+        for (let moduleAggregate of this.metadata.getModuleAggregates(this.module)) {
+            this.moduleAggregates.push({...moduleAggregate});
+        }
+        this.moduleAggregates.sort((a, b) => {
+            if (!a.priority && !b.priority) return 0;
+            return (!a.priority || a.priority > b.priority) ? 1 : -1;
+        });
     }
 
 
@@ -367,28 +292,37 @@ export class modellist implements OnDestroy {
                     // analyse if we need to update the buckets
                     if (this.bucketfield) {
                         let bucketamountfields = [];
-                        for (let bucketamountfield of this.bucketamountfield) {
-                            bucketamountfields.push({
-                                fieldname: bucketamountfield.name,
-                                value: message.messagedata.data[bucketamountfield.name],
-                            });
+
+                        if (this.bucketamountfield) {
+                            for (let bucketamountfield of this.bucketamountfield) {
+                                bucketamountfields.push({
+                                    fieldname: bucketamountfield.name,
+                                    value: message.messagedata.data[bucketamountfield.name],
+                                });
+                            }
                         }
 
                         this.removeItemFromBucket(message.messagedata.data[this.bucketfield], bucketamountfields);
                     }
+                    this.listDataChanged$.next(true);
                 }
-                this.listDataChanged$.next(true);
 
                 break;
             case 'model.save':
-                let eventHandled = false;
                 let savedItemIndex = this.listData.list.findIndex(item => item.id == message.messagedata.id);
                 if (savedItemIndex >= 0) {
+                    // keep the selection status even id we are updating
+                    let selected = this.listData.list[savedItemIndex].selected;
+
+                    // update the data
                     this.listData.list[savedItemIndex] = message.messagedata.data;
+
+                    // if the record was selected before select it again
+                    if (selected) this.listData.list[savedItemIndex].selected = true;
 
                     // analyse if we need to update the buckets
                     if (this.bucketfield) {
-                        if (message.messagedata.changed[this.bucketfield]) {
+                        if (message.messagedata.changed && message.messagedata.changed[this.bucketfield]) {
                             // update the bucket and if an amount is set snd in also the changed amount
 
                             let bucketamountfields = [];
@@ -409,14 +343,14 @@ export class modellist implements OnDestroy {
                             // just update the amount fields
                             let bucket = this.buckets.bucketitems.find(bucket => bucket.bucket == message.messagedata.data[this.bucketfield]);
                             for (let bucketamountfield of this.bucketamountfield) {
-                                if (message.messagedata.changed[bucketamountfield.name]) {
+                                if (message.messagedata.changed && message.messagedata.changed[bucketamountfield.name]) {
                                     bucket.values['_bucket_agg_' + bucketamountfield.name] += message.messagedata.data[bucketamountfield.name] - message.messagedata.backupdata[bucketamountfield.name];
                                 }
                             }
 
                         }
+                        this.listDataChanged$.next(true);
                     }
-                    this.listDataChanged$.next(true);
 
                 } else {
                     this.reLoadList();
@@ -425,51 +359,11 @@ export class modellist implements OnDestroy {
         }
     }
 
+    /**
+     * unsubscribe from subscriptions
+     */
     public ngOnDestroy() {
-        // unsubscribe from broadcast
-        for (let serviceSubscription of this.serviceSubscriptions) {
-            serviceSubscription.unsubscribe();
-        }
-    }
-
-
-    /**
-     * loads the list types from the metadata service
-     */
-    private loadListTypes() {
-        // get the custom listtypes
-        this.listTypes = [];
-        for (let listtype of this.metadata.getModuleListTypes(this.module)) {
-            this.listTypes.push(listtype);
-        }
-    }
-
-    /**
-     * simple getter for the listcomponent
-     */
-    get listcomponent() {
-        return this._listcomponent ? this._listcomponent : 'ObjectList';
-    }
-
-    /**
-     * setter fo the listcomponent that also emits the component via hte behaviour subject
-     *
-     * @param listcomponent
-     */
-    set listcomponent(listcomponent) {
-        if(this._listcomponent != listcomponent) {
-            this._listcomponent = listcomponent;
-            this.listcomponent$.next(listcomponent);
-
-            // set it to the preferences when we are on a general list
-            if (this.currentList.id == 'all' || this.currentList.id == 'owner') {
-                this.userpreferences.setPreference('defaultlisttype', listcomponent, false, this.module);
-            }
-
-            // reset current list fielddefs and redetermine its fields from the component config
-
-            this.determineListFields();
-        }
+        this.serviceSubscriptions.unsubscribe();
     }
 
     /**
@@ -497,12 +391,6 @@ export class modellist implements OnDestroy {
                 sortfield: field,
                 sortdirection: sortDirection ? sortDirection : 'ASC'
             });
-        }
-
-        // reload with a lsight delay
-        if (reload) {
-            if (this.reloadTimeOut) window.clearTimeout(this.reloadTimeOut);
-            this.reloadTimeOut = window.setTimeout(() => this.reLoadList(), 500);
         }
     }
 
@@ -542,14 +430,8 @@ export class modellist implements OnDestroy {
         return this.sortArray.length > 0;
     }
 
-    public addCustomListtype(id, name, fielddefs, filterdefs, global): void {
-        this.listTypes.push({
-            id: id,
-            name: name,
-            global: global,
-            fielddefs: fielddefs,
-            filterdefs: filterdefs
-        });
+    public addCustomListType(listTypeData): void {
+        this.metadata.addModuleListType(this.module, listTypeData);
     }
 
     /**
@@ -557,32 +439,36 @@ export class modellist implements OnDestroy {
      *
      * @param listType
      */
-    private listtypeexists(listType: string) {
-        return this.getListTypes().find(lt => lt.id == listType) ? true : false;
+    private listTypeExists(listType: string) {
+        return !!this.getListTypes().find(lt => lt.id == listType);
     }
 
     /**
      * sets the listtype and also sets it to the preferences
      *
-     * @param listType
+     * @param listTypeId
      * @param setPreference
+     * @param sortArray
      */
-    public setListType(listType: string, setPreference = true, sortArray = [], loadlist: boolean = true): void {
+    public setListType(listTypeId: string, setPreference = true, sortArray = []): void {
 
-        // close filters and aggegarts if they are being displayed
+        if (listTypeId == this.currentList?.id) {
+            return;
+        }
+
+        const previousListComponent = this.currentList?.listcomponent;
+
+        // close filters and aggregates if they are being displayed
         this.displayAggregates = false;
         this.displayFilters = false;
 
-        // set the listtype
-        // this.listtype = listType;
-        for (let thisListType of this.getListTypes()) {
-            if (thisListType.id === listType) {
-                this.currentList = thisListType;
-            }
+        this.currentList = this.getListTypes().find(type => type.id === listTypeId);
+
+        if (!this.currentList) {
+            return;
         }
 
-        // determine the listfields
-        this.determineListFields(listType);
+        this.determineListFields();
 
         // set the user preferences
         if (setPreference) {
@@ -590,7 +476,7 @@ export class modellist implements OnDestroy {
             if (!modulepreferences) {
                 modulepreferences = {};
             }
-            modulepreferences.lastlisttype = listType;
+            modulepreferences.lastListTypeId = listTypeId;
             this.userpreferences.setPreference(this.module, modulepreferences);
         }
 
@@ -607,20 +493,10 @@ export class modellist implements OnDestroy {
             this.sortArray = sortArray;
         }
 
-        // set the listtype
-        if (this.currentList.listcomponent) {
-            this.listcomponent = this.currentList.listcomponent;
-        } else {
-            let preflist = this.userpreferences.getPreference('defaultlisttype', this.module);
-            if (preflist) this.listcomponent = preflist;
-        }
+        this.emitListTypeChange();
 
-        // emit the change
-        this.listtype$.next(listType);
-
-        // get the list data
-        if(loadlist) {
-            this.getListData();
+        if (this.currentList.listcomponent != previousListComponent) {
+            this.emitListTypeComponentChange();
         }
     }
 
@@ -628,14 +504,17 @@ export class modellist implements OnDestroy {
     /**
      * build the listfields based on the listtype
      */
-    private determineListFields(listtype?) {
+    private determineListFields() {
         this._listfields = [];
 
         // check if we have fielddefs
         let fielddefs = this.getFieldDefs();
 
+        // if the service is embedded in a specific component then load the list fields for that component
+        const component = this.embeddedByComponent || this.currentList.listcomponent;
+
         // load all fields from the selected component configs
-        let componentconfig = this.metadata.getComponentConfig(this.listcomponent, this.module);
+        let componentconfig = this.metadata.getComponentConfig(component, this.module);
         let allFields = this.metadata.getFieldSetFields(componentconfig.fieldset);
         for (let listField of allFields) {
             // check if we have the field in the defs
@@ -665,12 +544,14 @@ export class modellist implements OnDestroy {
 
 
     /**
-     * get the defined listfields
+     * @returns true if the list with the given id is a standard list and compare with current list id if the id was not defined
      */
-    get listfields() {
-        return this._listfields;
+    public isCustomList(id?) {
+        if (!id) {
+            id = this.currentList.id;
+        }
+        return !this.standardLists.some(stdList => stdList.id == id);
     }
-
 
     /**
      * sets the defined listfields
@@ -705,13 +586,21 @@ export class modellist implements OnDestroy {
 
 
     /**
+     * get the defined listfields
+     */
+    get listfields() {
+        return this._listfields;
+    }
+
+
+    /**
      * check if the current lst can be deleted
      *
      * ToDo: check if still needed
      */
     public canDelete(): boolean {
         try {
-            return this.currentList != 'all' && this.currentList != 'owner';
+            return this.currentList.id != 'all' && this.currentList.id != 'owner';
         } catch (e) {
             return false;
         }
@@ -740,17 +629,13 @@ export class modellist implements OnDestroy {
     }
 
     /**
-     * handles the saving or retrieving of list results
+     * save the list data in the configuration service
      */
-    private setToSession() {
-        // only if the results shoudl be cached
-        if (!this.usecache) return false;
+    public setToSession() {
 
-        // set to the session
+        if (!this.useCache) return;
+
         this.configuration.setData('lastlist_' + this.module, {
-            module: this.module,
-            listtype: this.listtype,
-            listcomponent: this.listcomponent,
             listdata: this.listData,
             sortarray: this.sortArray,
             searchterm: this.searchTerm,
@@ -761,31 +646,19 @@ export class modellist implements OnDestroy {
     }
 
     /**
-     * gets the latest search from the session
+     * set use cache to true to tell the set method it should cache to session on destroy
+     * load the list data from the configuration service
      */
-    public getFromSession() {
-        // let listData = this.session.getSessionData('lastlist_' + this.module, false);
-        let listData = this.configuration.getData('lastlist_' + this.module);
-        if (listData) {
-            // set the module and load the list types
-            this._module = listData.module;
-            this.loadListTypes();
-
-            for (let thisListType of this.getListTypes()) {
-                if (thisListType.id === listData.listtype) {
-                    this.currentList = thisListType;
-                }
-            }
-            this.listcomponent = listData.listcomponent;
-            this.listData = listData.listdata;
-            this.searchTerm = listData.searchterm;
-            this.searchAggregates = listData.searchaggregates;
-            this.selectedAggregates = listData.selectedaggregates;
-            this.sortArray = listData.sortarray;
-            this.buckets = listData.buckets;
-
-            // determine the list fields
-            this.determineListFields();
+    public loadFromSession(): boolean {
+        this.useCache = true;
+        let sessionData = this.configuration.getData('lastlist_' + this.module);
+        if (!!sessionData) {
+            this.listData = sessionData.listdata;
+            this.searchTerm = sessionData.searchterm;
+            this.searchAggregates = sessionData.searchaggregates;
+            this.selectedAggregates = sessionData.selectedaggregates;
+            this.sortArray = sessionData.sortarray;
+            this.buckets = sessionData.buckets;
 
             return true;
         } else {
@@ -793,19 +666,8 @@ export class modellist implements OnDestroy {
         }
     }
 
-    /*
-     getter functions
-     */
-    public getListTypeName(listType: string = '') {
-        try {
-            return this.getListTypes().find(lt => lt.id == (listType ? listType : this.currentList.id)).name;
-        } catch (e) {
-            return listType ? listType : this.currentList.id;
-        }
-    }
-
     public getGlobal(): boolean {
-        return this.currentList.global == '1' ? true : false;
+        return this.currentList.global == '1';
     }
 
     public getFieldDefs(): any[] {
@@ -834,30 +696,18 @@ export class modellist implements OnDestroy {
     /**
      * adds a new list type
      *
-     * @param name
-     * @param global
+     * @param listParams
      */
-    public addListType(name, global): Observable<boolean> {
+    public addListType(listParams): Observable<boolean> {
         let retSub = new Subject<boolean>();
-        let listParams = {
-            list: name,
-            global: global
-        };
         this.backend.postRequest(
-            "spiceui/core/modules/" + this.module + "/listtypes",
+            "configuration/spiceui/core/modules/" + this.module + "/listtypes",
             {},
             JSON.stringify(listParams)
-        ).subscribe((listdata: any) => {
-            this.addCustomListtype(listdata.id, listdata.name, null, null, listdata.global);
+        ).subscribe((listTypeData: ListTypeI) => {
+            this.addCustomListType(listTypeData);
 
-            // ad it to the metadata colection as well
-            this.metadata.addModuleListType(this.module, {
-                id: listdata.id,
-                name: listdata.name,
-                fielddefs: null
-            });
-
-            this.setListType(listdata.id);
+            this.setListType(listTypeData.id);
             retSub.next(true);
             retSub.complete();
         });
@@ -865,12 +715,51 @@ export class modellist implements OnDestroy {
     }
 
     /**
-     * update the listtype on the backend
+     * update a standard list component
+     * @param id
+     * @param component
+     */
+    public updateStandardListsComponent(id: string, component: string) {
+
+        if (this.standardLists[0].listcomponent == component) {
+            return;
+        }
+        this.standardLists.forEach((list: ListTypeI) => {
+            list.listcomponent = component;
+        });
+        this.determineListFields();
+        this.userpreferences.setPreference('defaultlisttype', component, false, this.module);
+        this.emitListTypeComponentChange();
+    }
+
+    /**
+     * update a list type component
+     * @param component
+     */
+    public updateListTypeComponent(component: string) {
+
+        if (this.currentList?.listcomponent == component) {
+            return;
+        }
+        this.metadata.updateModuleListType(this.module, {
+            id: this.currentList.id,
+            listcomponent: component
+        });
+        this.currentList.listcomponent = component;
+        this.determineListFields();
+        this.emitListTypeComponentChange();
+    }
+
+    private emitListTypeComponentChange() {
+        this.listTypeComponent$.next(this.currentList.listcomponent);
+    }
+
+    /**
+     * update the list type on the backend
      *
      * @param listParams
-     * @param reload default to true and the list will be reloaded
      */
-    public updateListType(listParams?, reload: boolean = false): Observable<boolean> {
+    public updateListType(listParams?): Observable<boolean> {
         let retSub = new Subject<boolean>();
 
         // initialize the list params if they are not set
@@ -878,28 +767,28 @@ export class modellist implements OnDestroy {
             listParams = {};
         }
 
+        const previousListComponent = this.currentList?.listcomponent;
+
         // set the aggregates
         listParams.aggregates = btoa(JSON.stringify(this.selectedAggregates));
-
-        // set the list component
-        listParams.listcomponent = this.listcomponent;
 
         // set the sort data
         listParams.sortfields = btoa(JSON.stringify(this.sortArray));
 
-        // set the listfields
-        let fielddefs = [];
-        for (let listfield of this.listfields) {
-            fielddefs.push({
-                id: listfield.id,
-                width: listfield.width
-            });
+        // set the list fields
+        listParams.fielddefs = btoa(JSON.stringify(
+            this.listfields.map(f => ({id: f.id, width: f.width}))
+        ));
+
+        // if the listcomponent was not updated
+        if (!listParams.listcomponent) {
+            listParams.listcomponent = this.currentList.listcomponent;
         }
-        listParams.fielddefs = btoa(JSON.stringify(fielddefs));
+
 
         // post to the backend
-        this.backend.postRequest(`spiceui/core/modules/${this.module}/listtypes/${this.currentList.id}`, {}, listParams).subscribe(listdata => {
-            this.listTypes.some(item => {
+        this.backend.postRequest(`configuration/spiceui/core/modules/${this.module}/listtypes/${this.currentList.id}`, {}, listParams).subscribe(listdata => {
+            this.metadata.getModuleListTypes(this.module).some(item => {
                 if (item.id == this.currentList.id) {
 
                     for (let key in listParams) {
@@ -913,18 +802,26 @@ export class modellist implements OnDestroy {
             });
             listParams.id = this.currentList.id;
             this.metadata.updateModuleListType(this.module, listParams);
+            this.emitListTypeChange();
 
-            // reload the list
-            if (reload) {
-                this.reLoadList();
+            if (this.currentList.listcomponent != previousListComponent) {
+                this.emitListTypeComponentChange();
             }
-
             // return message to Observable and complete it
             retSub.next(true);
             retSub.complete();
         });
         return retSub.asObservable();
     }
+
+    /**
+     * emit the current list type change
+     * @private
+     */
+    private emitListTypeChange() {
+        this.listType$.next(this.currentList);
+    }
+
 
     /**
      * delete a listtype
@@ -936,13 +833,14 @@ export class modellist implements OnDestroy {
             id = this.currentList.id;
         }
 
-        this.backend.deleteRequest("spiceui/core/modules/" + this.module + "/listtypes/" + id).subscribe(
+        this.backend.deleteRequest("configuration/spiceui/core/modules/" + this.module + "/listtypes/" + id).subscribe(
             res => {
-                // set the new default listtype
-                this.setListType('all');
 
                 // remove the deleted listtype from the current list
-                this.listTypes = this.metadata.deleteModuleListType(this.module, id);
+                this.metadata.deleteModuleListType(this.module, id);
+
+                // set the new default listtype
+                this.setListType('all');
             },
             error => {
                 this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
@@ -957,46 +855,10 @@ export class modellist implements OnDestroy {
     }
 
     /**
-     * resets the list and loads the data
-     *
-     * @param fields
-     * @param checkSession
-     */
-    public getListData(fields?: any[]): Observable<boolean> {
-        this.resetListData();
-
-        // check if we have fields defined or use the last fields
-        if (!fields) {
-            fields = this.lastFields;
-        } else {
-            this.lastFields = fields;
-        }
-
-        return this.loadList(fields);
-    }
-
-    /**
-     * @deprecated
-     *
-     * @param listType
-     */
-    public showSearch(listType?) {
-        if (!listType) {
-            listType = this.listtype;
-        }
-        for (let thisListType of this.getListTypes()) {
-            if (thisListType.id === listType) {
-                return thisListType.config.showSearch;
-            }
-        }
-        return false;
-    }
-
-    /**
      * reloads the last loaded list
      */
     public reLoadList(quiet: boolean = false) {
-        return this.loadList(this.lastFields, quiet);
+        return this.getListData(quiet);
     }
 
     /**
@@ -1026,26 +888,37 @@ export class modellist implements OnDestroy {
      *
      * @param base set to ture to include the standrad listtypes 'all' & 'owner'
      */
-    public getListTypes(base = true) {
-        let listTypes: any[] = [];
-
+    public getListTypes(base: boolean = true): ListTypeI[] {
         if (base) {
-            for (let list of this.standardLists) {
-                listTypes.push({
-                    id: list.id,
-                    type: list.type,
-                    global: 1,
-                    name: list.name.replace('<module>', this.language.getModuleName(this.module)).replace('<LBL_MY>', this.language.getLabel('LBL_MY')).replace('<LBL_ALL>', this.language.getLabel('LBL_ALL')),
-                    config: list.config
-                });
+            return this.standardLists.concat(this.metadata.getModuleListTypes(this.module));
+        } else {
+            return this.metadata.getModuleListTypes(this.module);
+        }
+    }
+
+    /**
+     * generate the standard lists
+     * @private
+     */
+    private generateStandardLists() {
+        this.standardLists = [
+            {
+                id: 'all',
+                global: '1',
+                name: `${this.language.getLabel('LBL_ALL')} ${this.language.getModuleName(this.module)}`,
+                listcomponent: 'ObjectList'
             }
-        }
+        ];
 
-        for (let list of this.listTypes) {
-            listTypes.push(list);
+        // my items only if the module has an assigned user id field
+        if (this.metadata.getFieldDefs(this.module, 'assigned_user_id')) {
+            this.standardLists.push({
+                id: 'owner',
+                global: '1',
+                name: `${this.language.getLabel('LBL_MY')} ${this.language.getModuleName(this.module)}`,
+                listcomponent: 'ObjectList'
+            });
         }
-
-        return listTypes;
     }
 
     /**
@@ -1063,7 +936,6 @@ export class modellist implements OnDestroy {
      */
     public setAggregate(aggregate, aggdata) {
         this.selectedAggregates.push(aggregate + '::' + aggdata);
-        this.reLoadList();
     }
 
     /**
@@ -1093,10 +965,11 @@ export class modellist implements OnDestroy {
      */
     public removeAggregate(aggregate, aggdata) {
         let index = this.selectedAggregates.indexOf(aggregate + '::' + aggdata);
-        if (index >= 0) {
-            this.selectedAggregates.splice(index, 1);
-            this.reLoadList();
+        if (index < 0) {
+            return false;
         }
+        this.selectedAggregates.splice(index, 1);
+        return true;
     }
 
     /**
@@ -1104,7 +977,6 @@ export class modellist implements OnDestroy {
      */
     public removeAllAggregates() {
         this.selectedAggregates = [];
-        this.reLoadList();
     }
 
     /*
@@ -1120,10 +992,26 @@ export class modellist implements OnDestroy {
         this.selectionChanged$.emit(true);
     }
 
+    /**
+     * unselects all selected records
+     */
     public setAllUnselected() {
         this.listSelected.type = 'none';
-        for (let listItem of this.listData.list) {
+        for (let listItem of this.listData.list.filter(r => r.selected == true)) {
             listItem.selected = false;
+        }
+
+        // emit so items can trigger change detection
+        this.selectionChanged$.emit(true);
+    }
+
+    /*
+     * select functions
+     */
+    public setRangeSelected(from: number, to: number) {
+
+        for (let i = from; i <= to; i++) {
+            this.listData.list[i - 1].selected = true;
         }
 
         // emit so items can trigger change detection
@@ -1134,13 +1022,7 @@ export class modellist implements OnDestroy {
      * returny the number of selected IDs
      */
     public getSelectedCount() {
-        let selCount = 0;
-        for (let listItem of this.listData.list) {
-            if (listItem.selected) {
-                selCount++;
-            }
-        }
-        return selCount;
+        return this.listData.list.filter(i => i.selected == true).length;
     }
 
     /**
@@ -1157,13 +1039,7 @@ export class modellist implements OnDestroy {
     }
 
     public getSelectedItems() {
-        let items = [];
-        for (let listItem of this.listData.list) {
-            if (listItem.selected) {
-                items.push(listItem);
-            }
-        }
-        return items;
+        return this.listData.list.filter(i => i.selected);
     }
 
     /**
@@ -1198,10 +1074,9 @@ export class modellist implements OnDestroy {
     /**
      * loads a list with the current settings
      *
-     * @param fields
-     * @param checksession
+     * @param quiet
      */
-    public loadList(fields: any[], quiet: boolean = false): Observable<boolean> {
+    public getListData(quiet: boolean = false): Observable<boolean> {
         let retSub = new Subject<boolean>();
         if (!quiet) {
             // set the service to loading state
@@ -1222,7 +1097,7 @@ export class modellist implements OnDestroy {
         let aggregates = {};
         aggregates[this.module] = this.selectedAggregates;
 
-        this.backend.getList(this.module, this.sortArray, fields, {
+        const params = {
             modulefilter: this.modulefilter,
             filtercontextbeanid: this.filtercontextbeanid,
             start: 0,
@@ -1233,17 +1108,17 @@ export class modellist implements OnDestroy {
             aggregates: aggregates,
             buckets: this.buckets,
             relatefilter: this.relatefilter?.active ? this.relatefilter : null
-        }).subscribe((res: any) => {
+        };
+
+        this.backend.getList(this.module, this.sortArray, params).subscribe(
+            (res: any) => {
                 // set the listdata
                 this.listData = res;
-
-                // set also the listcomponent for which the data was retrieved
-                this.listData.listcomponent = this.listcomponent;
 
                 // update the timestamp for the last load
                 this.lastLoad = new moment();
 
-                // inidcate that we are no longer loading
+                // indicate that we are no longer loading
                 this.isLoading = false;
 
                 // set the aggregates
@@ -1252,19 +1127,33 @@ export class modellist implements OnDestroy {
                 // set the buckets
                 this.buckets = res.buckets;
 
-                // save the current result
                 this.setToSession();
 
                 // return & close the subject
                 retSub.next(true);
                 retSub.complete();
                 this.listDataChanged$.next(true);
+            },
+            error => {
+                this.toast.sendToast('error loading list');
+
+                // indicate that we are no longer loading
+                this.isLoading = false;
+
+                retSub.error(error);
+                retSub.complete();
             }
         );
 
         return retSub.asObservable();
     }
 
+    /**
+     * returns if the list can load more
+     */
+    public canLoadMore() {
+        return !this.isLoading && this.listData.list.length < this.listData.totalcount;
+    }
 
     /**
      * loads on top of the existing results
@@ -1276,7 +1165,7 @@ export class modellist implements OnDestroy {
         this.isLoading = true;
         let aggregates = {};
         aggregates[this.module] = this.selectedAggregates;
-        this.backend.getList(this.module, this.sortArray, this.lastFields, {
+        this.backend.getList(this.module, this.sortArray, {
             modulefilter: this.modulefilter,
             filtercontextbeanid: this.filtercontextbeanid,
             start: this.listData.list.length,
@@ -1294,10 +1183,6 @@ export class modellist implements OnDestroy {
                 this.lastLoad = new moment();
 
                 this.isLoading = false;
-
-                // save the current result
-                this.setToSession();
-
             });
         // }
     }
@@ -1316,7 +1201,7 @@ export class modellist implements OnDestroy {
         this.isLoading = true;
         let aggregates = {};
         aggregates[this.module] = this.selectedAggregates;
-        this.backend.getList(this.module, this.sortArray, this.lastFields, {
+        this.backend.getList(this.module, this.sortArray, {
             modulefilter: this.modulefilter,
             filtercontextbeanid: this.filtercontextbeanid,
             start: this.listData.list.length,
@@ -1337,9 +1222,6 @@ export class modellist implements OnDestroy {
                 this.lastLoad = new moment();
                 this.listDataChanged$.next(true);
                 this.isLoading = false;
-
-                // save the current result
-                this.setToSession();
             });
         // }
     }
@@ -1356,9 +1238,9 @@ export class modellist implements OnDestroy {
 
         let selectedIds = this.getSelectedIDs();
         if (selectedIds.length > 0) {
-            this.backend.getLinkToDownload('/module/' + this.module + '/export', 'POST', {}, {
+            this.backend.getLinkToDownload(`module/${this.module}/export`, 'POST', {}, {
                 ids: selectedIds,
-                fields: fields ? fields : this.lastFields
+                fields: fields
             }, {}).subscribe(
                 (downloadurl) => {
                     retSub.next(downloadurl);
@@ -1369,14 +1251,14 @@ export class modellist implements OnDestroy {
             let aggregates = {};
             aggregates[this.module] = this.selectedAggregates;
             this.backend.getLinkToDownload(
-                '/module/' + this.module + '/export',
+                `module/${this.module}/export`,
                 'POST',
                 {},
                 {
                     listid: this.currentList.id,
                     modulefilter: this.modulefilter,
                     sortfields: this.sortArray,
-                    fields: fields ? fields : this.lastFields,
+                    fields: fields,
                     searchterm: this.searchTerm,
                     searchgeo: this.searchGeo,
                     aggregates: aggregates,
@@ -1410,7 +1292,7 @@ export class modellist implements OnDestroy {
      *
      * @param from the from status
      * @param to the to status
-     * @param valuefrom optionala from value, added in the safesubscribe method to get the old value from the backupdata so the update is done properly
+     * @param bucketamountfields from optionala from value, added in the safe subscribe method to get the old value from the backup data so the update is done properly
      */
     // private updateBuckets(from, to, valuefrom?, valueto?) {
     private updateBuckets(from, to, bucketamountfields = []) {
@@ -1440,7 +1322,7 @@ export class modellist implements OnDestroy {
      * removes one item from a bucket and recues the total by the value
      *
      * @param from
-     * @param value
+     * @param bucketamountfields
      */
     private removeItemFromBucket(from, bucketamountfields = []) {
         // reduce from buckets

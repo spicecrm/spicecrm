@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -11,15 +11,15 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 -->
 
 <div class="slds-form-element slds-dropdown-trigger slds-dropdown-trigger_click" [ngClass]="{'slds-is-open': showDialog}">
-    <a class="slds-button slds-button--neutral slds-m-horizontal--xxx-small" [ngClass]="{'slds-not-selected': !hasReminder, 'slds-is-selected': hasReminder }"><!-- [disabled]="isEditing"-->
+    <a class="slds-button slds-button_stateful slds-button--neutral slds-m-horizontal--xxx-small" [ngClass]="{'slds-not-selected': !hasReminder, 'slds-is-selected': hasReminder }"><!-- [disabled]="isEditing"-->
         <span class="slds-text-not-selected" (click)="toggleDatePicker()">
-            <system-button-icon [icon]="'add'"></system-button-icon><system-label label="LBL_REMINDER"></system-label>
+            <system-button-icon class="slds-p-right--xx-small" icon="add"></system-button-icon><system-label label="LBL_REMINDER"></system-label>
         </span>
         <span class="slds-text-selected">
-            <system-button-icon [icon]="'check'"></system-button-icon>{{getReminderDate()}}
+            <system-button-icon class="slds-p-right--xx-small" icon="check"></system-button-icon>{{getReminderDate()}}
         </span>
         <span class="slds-text-selected-focus">
-            <system-button-icon [icon]="'close'" (click)="clearReminder()"></system-button-icon> <span (click)="toggleDatePicker()">{{getReminderDate()}}</span>
+            <system-button-icon class="slds-p-right--xx-small" icon="close" (click)="clearReminder()"></system-button-icon> <span (click)="toggleDatePicker()">{{getReminderDate()}}</span>
         </span>
     </a>
     <div class="slds-datepicker slds-dropdown slds-dropdown_right" role="dialog">

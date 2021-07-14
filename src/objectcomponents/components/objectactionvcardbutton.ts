@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -42,7 +42,7 @@ export class ObjectActionVCardButton {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingCompRef => {
             loadingCompRef.instance.messagelabel = 'MSG_GENERATING_VCARD';
             this.backend.downloadFile(
-                {route: `/${this.model.module}/convert/${this.model.id}/to/VCard`}, fileName, 'text/bin')
+                {route: `/module/${this.model.module}/${this.model.id}/vcard`}, fileName, 'text/bin')
                 .subscribe(
                     next => {
                         loadingCompRef.instance.self.destroy();

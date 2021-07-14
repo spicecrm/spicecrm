@@ -155,14 +155,14 @@ $dictionary['Relationship'] =[
 			'name' => 'reverse',
 			'vname' => 'LBL_REVERSE',
 			'type' => 'bool',
-			'default' => '0'
+			'default' => 0
 		],
 		'deleted' => [
 			'name' => 'deleted',
 			'vname' => 'LBL_DELETED',
 			'type' => 'bool',
 			'reportable'=>false,
-			'default' => '0'
+			'default' => 0
 		],
 	], 
 	'indices' => [

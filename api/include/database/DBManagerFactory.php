@@ -54,7 +54,17 @@ use SpiceCRM\includes\SugarObjects\SpiceConfig;
  */
 class DBManagerFactory
 {
+    /**
+     * hold the instances
+     * @var array
+     */
     static $instances = [];
+
+    /**
+     * name of the instance
+     * @var string
+     */
+    static $instanceName = '';
 
     /**
      * Returns a reference to the DB object of specific type
@@ -103,29 +113,26 @@ class DBManagerFactory
      */
     public static function getInstance($instanceName = '')
     {
-
+        self::$instanceName = $instanceName;
         static $count = 0, $old_count = 0;
 
         //fall back to the default instance name
-        if (empty(SpiceConfig::getInstance()->config['db'][$instanceName])) {
-            $instanceName = '';
-        }
-        if (!isset(self::$instances[$instanceName])) {
+        if (!isset(self::$instances[self::$instanceName])) {
             $config = SpiceConfig::getInstance()->config['dbconfig'];
             $count++;
-            self::$instances[$instanceName] = self::getTypeInstance($config['db_type'], $config);
+            self::$instances[self::$instanceName] = self::getTypeInstance($config['db_type'], $config);
             if (!empty(SpiceConfig::getInstance()->config['dbconfigoption'])) {
-                self::$instances[$instanceName]->setOptions(SpiceConfig::getInstance()->config['dbconfigoption']);
+                self::$instances[self::$instanceName]->setOptions(SpiceConfig::getInstance()->config['dbconfigoption']);
             }
-            self::$instances[$instanceName]->connect($config, true);
-            self::$instances[$instanceName]->count_id = $count;
-            self::$instances[$instanceName]->references = 0;
-            self::$instances[$instanceName]->resetQueryCount();
+            self::$instances[self::$instanceName]->connect($config, true);
+            self::$instances[self::$instanceName]->count_id = $count;
+            self::$instances[self::$instanceName]->references = 0;
+            self::$instances[self::$instanceName]->resetQueryCount();
         } else {
             $old_count++;
-            self::$instances[$instanceName]->references = $old_count;
+            self::$instances[self::$instanceName]->references = $old_count;
         }
-        return self::$instances[$instanceName];
+        return self::$instances[self::$instanceName];
     }
 
     /**
@@ -134,17 +141,17 @@ class DBManagerFactory
      * @param $dbName
      * @param string $instanceName
      */
-    public static function switchInstance($dbName, $instanceName = '')
+    public static function switchInstance($dbName, $config, $instanceName = '')
     {
-        if (isset(self::$instances[$instanceName])){
+        if (isset(self::$instances[$instanceName])) {
             self::$instances[$instanceName]->disconnect();
-            $config = SpiceConfig::getInstance()->config['dbconfig'];
-            $config['db_name'] = $dbName;
-            self::$instances[$instanceName] = self::getTypeInstance($config['db_type'], $config);
-            if (!empty(SpiceConfig::getInstance()->config['dbconfigoption'])) {
-                self::$instances[$instanceName]->setOptions(SpiceConfig::getInstance()->config['dbconfigoption']);
+            //    $config = SpiceConfig::getInstance()->config['dbconfig'];
+            $config['dbconfig']['db_name'] = $dbName;
+            self::$instances[$instanceName] = self::getTypeInstance($config['dbconfig']['db_type'], $config['dbconfig']);
+            if (!empty($config['dbconfigoption'])) {
+                self::$instances[$instanceName]->setOptions($config['dbconfigoption']);
             }
-            self::$instances[$instanceName]->connect($config, true);
+            self::$instances[$instanceName]->connect($config['dbconfig'], true);
             self::$instances[$instanceName]->references = 0;
             self::$instances[$instanceName]->resetQueryCount();
 
@@ -163,6 +170,7 @@ class DBManagerFactory
         self::$instances = [];
     }
 
+    // TODO add hasInstance: boolean function
 
     /**
      * Get DB manager class name by type name

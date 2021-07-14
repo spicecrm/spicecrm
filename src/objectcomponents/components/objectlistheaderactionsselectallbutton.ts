@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,6 @@ import {modal} from '../../services/modal.service';
 })
 export class ObjectListHeaderActionsSelectAllButton {
 
-    public disabled: boolean = false;
     /**
      * defautls to true and is set in ngOnInit
      */
@@ -40,6 +39,10 @@ export class ObjectListHeaderActionsSelectAllButton {
         private modellist: modellist,
         private modal: modal
     ) {
+    }
+
+    get disabled(): boolean {
+        return this.modellist.listData.list.length == 0;
     }
 
     public execute() {

@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -92,7 +92,7 @@ export class DashboardAddElement {
     private getDashlets() {
         this.isLoading = true;
         this.dashboarddashlets = [];
-        this.backend.getRequest('dashboards/dashlets')
+        this.backend.getRequest('module/Dashboards/dashlets')
             .subscribe((dashboardDashlets: any) => {
                 this.dashboarddashlets = dashboardDashlets;
                 this.isLoading = false;

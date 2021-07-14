@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -39,7 +39,7 @@ export class accountHierarchy {
             addfields.push(field.field);
         }
 
-        this.backend.getRequest("AccountsHierachy/" + parent_id + "/" + JSON.stringify(addfields)).subscribe(members => {
+        this.backend.getRequest(`module/Accounts/${parent_id}/hierarchy/${JSON.stringify(addfields)}`).subscribe(members => {
             for (let member of members) {
                 this.members.push({
                     parent_id: parent_id,

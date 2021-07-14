@@ -37,9 +37,12 @@ namespace SpiceCRM\includes\Logger;
 
 
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * Default SugarCRM Logger
@@ -126,9 +129,21 @@ class SpiceLogger implements LoggerTemplate
         $this->log_dir = $log_dir . (empty($log_dir)?'':'/');
         //unset($config);
         $this->_doInitialization();
-        LoggerManager::setLogger('default','\SpiceCRM\includes\Logger\SpiceLogger');
+        LoggerManager::setLogger('default','\\SpiceCRM\\includes\\Logger\\SpiceLogger');
 
 
+    }
+
+    static function getTimestamp(){
+        if(function_exists('hrtime' && 1 == 2)) {
+            return  hrtime(true);
+        } else {
+            $thisMS = round(microtime() * 1000);
+            while (strlen($thisMS) < 3)
+                $thisMS = '0' . $thisMS;
+
+            return   time() . $thisMS;
+        }
     }
 
 
@@ -230,31 +245,22 @@ class SpiceLogger implements LoggerTemplate
         //do not log on install!
         if ( !empty( $GLOBALS['installing'] )) return true;
 
-        //check if level is set for user
-//        if(!empty(\SpiceCRM\includes\authentication\AuthenticationController::getInstance()->getCurrentUser()->id) &&
-//            isset($_SESSION['authenticated_user_syslogconfig']) &&
-//            !empty($_SESSION['authenticated_user_syslogconfig']) &&
-//            $_SESSION['authenticated_user_syslogconfig']['user_id'] == \SpiceCRM\includes\authentication\AuthenticationController::getInstance()->getCurrentUser()->id &&
-//            $_SESSION['authenticated_user_syslogconfig']['level'][$level] > 0
-//        ) {
+        $td = new TimeDate();
+        $log = ["id" => SpiceUtils::createGuid(),
+            "table_name" => "syslogs",
+            "log_level" => $level,
+            "pid" => getmypid(),
+            "created_by" => (!empty($logparams['user']) ?: '-none-'),
+            'microtime' => $this->getTimestamp(),
+            "date_entered" => $td->nowDb(),
+            "description" => $message,
+            "transaction_id" => LoggerManager::getLogger()->getTransactionId()];
 
-            $td = new TimeDate();
-            $log = ["id" => create_guid(),
-                "table_name" => "syslogs",
-                "log_level" => $level,
-                "pid" => getmypid(),
-                "created_by" => (!empty($logparams['user']) ?: '-none-'),
-                'microtime' => microtime(true),
-                "date_entered" => $td->nowDb(),
-                "description" => $message,
-                "transaction_id" => isset( $GLOBALS['transactionID'] ) ? $GLOBALS['transactionID']:null];
-
-            global $dictionary;
-            $sql = DBManagerFactory::getInstance()->insertParams("syslogs", $dictionary['syslogs']['fields'], $log, null, false);
-            DBManagerFactory::getInstance()->queryOnly($sql);
-//        }
-        //END
-
+        try {
+            DBManagerFactory::getInstance('spicelogger')->insertQuery("syslogs", $log, true);
+        } catch(Exception $e){
+            return false;
+        }
     }
 
     /**

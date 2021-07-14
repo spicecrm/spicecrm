@@ -204,7 +204,7 @@ class One2MBeanRelationship extends One2MRelationship
                 return ["rows" => []];
             }
             $result = $db->query($query);
-            while ($row = $db->fetchByAssoc($result, FALSE))
+            while ($row = $db->fetchByAssoc($result))
             {
                 $id = $row['id'];
                 $rows[$id] = $row;

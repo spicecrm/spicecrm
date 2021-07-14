@@ -30,7 +30,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'e65d72ea1bef0824ff92e6690a79bf0e86106ece',
+    'reference' => 'b4fb8054ff68ca1da5c7b164b584ba2eaa82c8a2',
     'name' => '__root__',
   ),
   'versions' => 
@@ -42,7 +42,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'e65d72ea1bef0824ff92e6690a79bf0e86106ece',
+      'reference' => 'b4fb8054ff68ca1da5c7b164b584ba2eaa82c8a2',
     ),
     'brick/math' => 
     array (
@@ -73,12 +73,12 @@ private static $installed = array (
     ),
     'giggsey/libphonenumber-for-php' => 
     array (
-      'pretty_version' => '8.12.19',
-      'version' => '8.12.19.0',
+      'pretty_version' => '8.12.20',
+      'version' => '8.12.20.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f3c196dcb3e76e456783a38bab87d99b4d727918',
+      'reference' => '743585979ef96f2be123518c0a58083cf678bd47',
     ),
     'giggsey/locale' => 
     array (
@@ -91,12 +91,12 @@ private static $installed = array (
     ),
     'hfig/mapi' => 
     array (
-      'pretty_version' => 'v1.1.3',
-      'version' => '1.1.3.0',
+      'pretty_version' => 'v1.2.0',
+      'version' => '1.2.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '8fa6f64ed2969e7422b4053c2dc6ca018aa31c83',
+      'reference' => '692ff02edf35580cba1988590fb58d569cea1003',
     ),
     'jamesiarmes/php-ntlm' => 
     array (
@@ -154,12 +154,12 @@ private static $installed = array (
     ),
     'pear/pear_exception' => 
     array (
-      'pretty_version' => 'v1.0.1',
-      'version' => '1.0.1.0',
+      'pretty_version' => 'v1.0.2',
+      'version' => '1.0.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'dbb42a5a0e45f3adcf99babfb2a1ba77b8ac36a7',
+      'reference' => 'b14fbe2ddb0b9f94f5b24cf08783d599f776fff0',
     ),
     'phenx/php-font-lib' => 
     array (
@@ -190,12 +190,12 @@ private static $installed = array (
     ),
     'php-di/php-di' => 
     array (
-      'pretty_version' => '6.3.0',
-      'version' => '6.3.0.0',
+      'pretty_version' => '6.3.1',
+      'version' => '6.3.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '955cacea6b0beaba07e8c11b8367f5b3d5abe89f',
+      'reference' => '78278800b18e7c5582fd4d4e629715f5eebbfcc0',
     ),
     'php-di/phpdoc-reader' => 
     array (
@@ -217,12 +217,12 @@ private static $installed = array (
     ),
     'psr/container' => 
     array (
-      'pretty_version' => '1.0.0',
-      'version' => '1.0.0.0',
+      'pretty_version' => '1.1.1',
+      'version' => '1.1.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'b7ce3b176482dbbc1245ebf52b181af44c2cf55f',
+      'reference' => '8622567409010282b7aeebe4bb841fe98b58dcaf',
     ),
     'psr/container-implementation' => 
     array (
@@ -396,12 +396,30 @@ private static $installed = array (
     ),
     'symfony/yaml' => 
     array (
-      'pretty_version' => 'v4.4.19',
-      'version' => '4.4.19.0',
+      'pretty_version' => 'v4.4.21',
+      'version' => '4.4.21.0',
       'aliases' => 
       array (
       ),
-      'reference' => '17ed9f14c1aa05b1a5cf2e2c5ef2d0be28058ef9',
+      'reference' => '3871c720871029f008928244e56cf43497da7e9d',
+    ),
+    'tecnickcom/tc-lib-barcode' => 
+    array (
+      'pretty_version' => '1.17.6',
+      'version' => '1.17.6.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'a8a7183e2be6379e522dc825a3b7a3af5394a9e7',
+    ),
+    'tecnickcom/tc-lib-color' => 
+    array (
+      'pretty_version' => '1.14.6',
+      'version' => '1.14.6.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '83cdb57fd900901c6aa2af8cfd67202518fb69b2',
     ),
   ),
 );

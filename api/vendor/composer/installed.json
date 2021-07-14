@@ -195,17 +195,17 @@
         },
         {
             "name": "giggsey/libphonenumber-for-php",
-            "version": "8.12.19",
-            "version_normalized": "8.12.19.0",
+            "version": "8.12.20",
+            "version_normalized": "8.12.20.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/giggsey/libphonenumber-for-php.git",
-                "reference": "f3c196dcb3e76e456783a38bab87d99b4d727918"
+                "reference": "743585979ef96f2be123518c0a58083cf678bd47"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/f3c196dcb3e76e456783a38bab87d99b4d727918",
-                "reference": "f3c196dcb3e76e456783a38bab87d99b4d727918",
+                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/743585979ef96f2be123518c0a58083cf678bd47",
+                "reference": "743585979ef96f2be123518c0a58083cf678bd47",
                 "shasum": ""
             },
             "require": {
@@ -222,7 +222,7 @@
                 "symfony/console": "^2.8|^3.0",
                 "symfony/phpunit-bridge": "^4.2 || ^5"
             },
-            "time": "2021-03-01T16:07:56+00:00",
+            "time": "2021-03-17T11:05:55+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -327,25 +327,25 @@
         },
         {
             "name": "hfig/mapi",
-            "version": "v1.1.3",
-            "version_normalized": "1.1.3.0",
+            "version": "v1.2.0",
+            "version_normalized": "1.2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hfig/MAPI.git",
-                "reference": "8fa6f64ed2969e7422b4053c2dc6ca018aa31c83"
+                "reference": "692ff02edf35580cba1988590fb58d569cea1003"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hfig/MAPI/zipball/8fa6f64ed2969e7422b4053c2dc6ca018aa31c83",
-                "reference": "8fa6f64ed2969e7422b4053c2dc6ca018aa31c83",
+                "url": "https://api.github.com/repos/hfig/MAPI/zipball/692ff02edf35580cba1988590fb58d569cea1003",
+                "reference": "692ff02edf35580cba1988590fb58d569cea1003",
                 "shasum": ""
             },
             "require": {
                 "ext-bcmath": "*",
                 "ext-mbstring": "*",
-                "pear/ole": "^1.0.0RC5",
+                "pear/ole": "^1.0.0RC8",
                 "pear/pear-core-minimal": "^1.10",
-                "php": "^7.1",
+                "php": "^7.1||^8.0",
                 "psr/log": "^1.0",
                 "ramsey/uuid": "^3.8 || ^4.0",
                 "symfony/yaml": "^4.1 || ^5.0"
@@ -357,7 +357,7 @@
             "suggest": {
                 "swiftmailer/swiftmailer": "Conversion to MIME (eml file) message format"
             },
-            "time": "2020-12-05T06:32:44+00:00",
+            "time": "2021-03-18T09:36:08+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -372,7 +372,7 @@
             "description": "Pure PHP library for reading and manipulating Microsoft Outlook .msg messages (MAPI documents)",
             "support": {
                 "issues": "https://github.com/hfig/MAPI/issues",
-                "source": "https://github.com/hfig/MAPI/tree/v1.1.3"
+                "source": "https://github.com/hfig/MAPI/tree/v1.2.0"
             },
             "install-path": "../hfig/mapi"
         },
@@ -712,26 +712,26 @@
         },
         {
             "name": "pear/pear_exception",
-            "version": "v1.0.1",
-            "version_normalized": "1.0.1.0",
+            "version": "v1.0.2",
+            "version_normalized": "1.0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pear/PEAR_Exception.git",
-                "reference": "dbb42a5a0e45f3adcf99babfb2a1ba77b8ac36a7"
+                "reference": "b14fbe2ddb0b9f94f5b24cf08783d599f776fff0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pear/PEAR_Exception/zipball/dbb42a5a0e45f3adcf99babfb2a1ba77b8ac36a7",
-                "reference": "dbb42a5a0e45f3adcf99babfb2a1ba77b8ac36a7",
+                "url": "https://api.github.com/repos/pear/PEAR_Exception/zipball/b14fbe2ddb0b9f94f5b24cf08783d599f776fff0",
+                "reference": "b14fbe2ddb0b9f94f5b24cf08783d599f776fff0",
                 "shasum": ""
             },
             "require": {
-                "php": ">=4.4.0"
+                "php": ">=5.2.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "*"
+                "phpunit/phpunit": "<9"
             },
-            "time": "2019-12-10T10:24:42+00:00",
+            "time": "2021-03-21T15:43:46+00:00",
             "type": "class",
             "extra": {
                 "branch-alias": {
@@ -915,17 +915,17 @@
         },
         {
             "name": "php-di/php-di",
-            "version": "6.3.0",
-            "version_normalized": "6.3.0.0",
+            "version": "6.3.1",
+            "version_normalized": "6.3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-DI/PHP-DI.git",
-                "reference": "955cacea6b0beaba07e8c11b8367f5b3d5abe89f"
+                "reference": "78278800b18e7c5582fd4d4e629715f5eebbfcc0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-DI/PHP-DI/zipball/955cacea6b0beaba07e8c11b8367f5b3d5abe89f",
-                "reference": "955cacea6b0beaba07e8c11b8367f5b3d5abe89f",
+                "url": "https://api.github.com/repos/PHP-DI/PHP-DI/zipball/78278800b18e7c5582fd4d4e629715f5eebbfcc0",
+                "reference": "78278800b18e7c5582fd4d4e629715f5eebbfcc0",
                 "shasum": ""
             },
             "require": {
@@ -942,7 +942,7 @@
                 "doctrine/annotations": "~1.2",
                 "friendsofphp/php-cs-fixer": "^2.4",
                 "mnapoli/phpunit-easymock": "^1.2",
-                "ocramius/proxy-manager": "~2.0.2",
+                "ocramius/proxy-manager": "^2.0.2",
                 "phpstan/phpstan": "^0.12",
                 "phpunit/phpunit": "^8.5|^9.0"
             },
@@ -950,7 +950,7 @@
                 "doctrine/annotations": "Install it if you want to use annotations (version ~1.2)",
                 "ocramius/proxy-manager": "Install it if you want to use lazy injection (version ~2.0)"
             },
-            "time": "2020-10-12T14:39:15+00:00",
+            "time": "2021-03-25T10:29:47+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -978,7 +978,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-DI/PHP-DI/issues",
-                "source": "https://github.com/PHP-DI/PHP-DI/tree/6.3.0"
+                "source": "https://github.com/PHP-DI/PHP-DI/tree/6.3.1"
             },
             "funding": [
                 {
@@ -1093,29 +1093,24 @@
         },
         {
             "name": "psr/container",
-            "version": "1.0.0",
-            "version_normalized": "1.0.0.0",
+            "version": "1.1.1",
+            "version_normalized": "1.1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/container.git",
-                "reference": "b7ce3b176482dbbc1245ebf52b181af44c2cf55f"
+                "reference": "8622567409010282b7aeebe4bb841fe98b58dcaf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/container/zipball/b7ce3b176482dbbc1245ebf52b181af44c2cf55f",
-                "reference": "b7ce3b176482dbbc1245ebf52b181af44c2cf55f",
+                "url": "https://api.github.com/repos/php-fig/container/zipball/8622567409010282b7aeebe4bb841fe98b58dcaf",
+                "reference": "8622567409010282b7aeebe4bb841fe98b58dcaf",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "php": ">=7.2.0"
             },
-            "time": "2017-02-14T16:28:37+00:00",
+            "time": "2021-03-05T17:36:06+00:00",
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
@@ -1129,7 +1124,7 @@
             "authors": [
                 {
                     "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
+                    "homepage": "https://www.php-fig.org/"
                 }
             ],
             "description": "Common Container Interface (PHP FIG PSR-11)",
@@ -1143,7 +1138,7 @@
             ],
             "support": {
                 "issues": "https://github.com/php-fig/container/issues",
-                "source": "https://github.com/php-fig/container/tree/master"
+                "source": "https://github.com/php-fig/container/tree/1.1.1"
             },
             "install-path": "../psr/container"
         },
@@ -2223,17 +2218,17 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v4.4.19",
-            "version_normalized": "4.4.19.0",
+            "version": "v4.4.21",
+            "version_normalized": "4.4.21.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "17ed9f14c1aa05b1a5cf2e2c5ef2d0be28058ef9"
+                "reference": "3871c720871029f008928244e56cf43497da7e9d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/17ed9f14c1aa05b1a5cf2e2c5ef2d0be28058ef9",
-                "reference": "17ed9f14c1aa05b1a5cf2e2c5ef2d0be28058ef9",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/3871c720871029f008928244e56cf43497da7e9d",
+                "reference": "3871c720871029f008928244e56cf43497da7e9d",
                 "shasum": ""
             },
             "require": {
@@ -2249,7 +2244,7 @@
             "suggest": {
                 "symfony/console": "For validating YAML files using the lint command"
             },
-            "time": "2021-01-27T09:09:26+00:00",
+            "time": "2021-03-05T17:58:50+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2277,7 +2272,7 @@
             "description": "Loads and dumps YAML files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/yaml/tree/v4.4.19"
+                "source": "https://github.com/symfony/yaml/tree/v4.4.21"
             },
             "funding": [
                 {
@@ -2294,6 +2289,181 @@
                 }
             ],
             "install-path": "../symfony/yaml"
+        },
+        {
+            "name": "tecnickcom/tc-lib-barcode",
+            "version": "1.17.6",
+            "version_normalized": "1.17.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tecnickcom/tc-lib-barcode.git",
+                "reference": "a8a7183e2be6379e522dc825a3b7a3af5394a9e7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/a8a7183e2be6379e522dc825a3b7a3af5394a9e7",
+                "reference": "a8a7183e2be6379e522dc825a3b7a3af5394a9e7",
+                "shasum": ""
+            },
+            "require": {
+                "ext-bcmath": "*",
+                "ext-date": "*",
+                "ext-gd": "*",
+                "ext-pcre": "*",
+                "php": ">=5.4",
+                "tecnickcom/tc-lib-color": "^1.14"
+            },
+            "require-dev": {
+                "pdepend/pdepend": "2.8.0",
+                "phploc/phploc": "7.0.2 || 6.0.2 || 5.0.0 || 4.0.1 || 3.0.1 || 2.1.5",
+                "phpmd/phpmd": "2.9.1",
+                "phpunit/phpunit": "9.5.0 || 8.5.13 || 7.5.20 || 6.5.14 || 5.7.27 || 4.8.36",
+                "sebastian/phpcpd": "6.0.3 || 5.0.2 || 4.1.0 || 3.0.1 || 2.0.4",
+                "squizlabs/php_codesniffer": "3.5.8 || 2.9.2"
+            },
+            "time": "2021-02-07T13:18:02+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Com\\Tecnick\\Barcode\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Nicola Asuni",
+                    "email": "info@tecnick.com",
+                    "role": "lead"
+                }
+            ],
+            "description": "PHP library to generate linear and bidimensional barcodes",
+            "homepage": "http://www.tecnick.com",
+            "keywords": [
+                "3 of 9",
+                "ANSI MH10.8M-1983",
+                "CBC",
+                "CODABAR",
+                "CODE 11",
+                "CODE 128 A B C",
+                "CODE 39",
+                "CODE 93",
+                "EAN 13",
+                "EAN 8",
+                "ECC200",
+                "Intelligent Mail Barcode",
+                "Interleaved 2 of 5",
+                "KIX",
+                "Klant",
+                "MSI",
+                "Onecode",
+                "PHARMACODE",
+                "PHARMACODE TWO-TRACKS",
+                "POSTNET",
+                "RMS4CC",
+                "Standard 2 of 5",
+                "UPC-A",
+                "UPC-E",
+                "USD-3",
+                "USPS-B-3200",
+                "USS-93",
+                "barcode",
+                "datamatrix",
+                "pdf417",
+                "planet",
+                "qr-code",
+                "royal mail",
+                "tc-lib-barcode",
+                "upc"
+            ],
+            "support": {
+                "issues": "https://github.com/tecnickcom/tc-lib-barcode/issues",
+                "source": "https://github.com/tecnickcom/tc-lib-barcode/tree/1.17.6"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&currency_code=GBP&business=paypal@tecnick.com&item_name=donation%20for%20tc-lib-barcode%20project",
+                    "type": "custom"
+                }
+            ],
+            "install-path": "../tecnickcom/tc-lib-barcode"
+        },
+        {
+            "name": "tecnickcom/tc-lib-color",
+            "version": "1.14.6",
+            "version_normalized": "1.14.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tecnickcom/tc-lib-color.git",
+                "reference": "83cdb57fd900901c6aa2af8cfd67202518fb69b2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-color/zipball/83cdb57fd900901c6aa2af8cfd67202518fb69b2",
+                "reference": "83cdb57fd900901c6aa2af8cfd67202518fb69b2",
+                "shasum": ""
+            },
+            "require": {
+                "ext-pcre": "*",
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "pdepend/pdepend": "2.8.0",
+                "phploc/phploc": "7.0.2 || 6.0.2 || 5.0.0 || 4.0.1 || 3.0.1 || 2.1.5",
+                "phpmd/phpmd": "2.9.1",
+                "phpunit/phpunit": "9.5.0 || 8.5.13 || 7.5.20 || 6.5.14 || 5.7.27 || 4.8.36",
+                "sebastian/phpcpd": "6.0.3 || 5.0.2 || 4.1.0 || 3.0.1 || 2.0.4",
+                "squizlabs/php_codesniffer": "3.5.8 || 2.9.2"
+            },
+            "time": "2021-02-07T13:13:45+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Com\\Tecnick\\Color\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Nicola Asuni",
+                    "email": "info@tecnick.com",
+                    "role": "lead"
+                }
+            ],
+            "description": "PHP library to manipulate various color representations",
+            "homepage": "http://www.tecnick.com",
+            "keywords": [
+                "cmyk",
+                "color",
+                "colors",
+                "colour",
+                "colours",
+                "hsl",
+                "hsla",
+                "javascript",
+                "rgb",
+                "rgba",
+                "tc-lib-color",
+                "web"
+            ],
+            "support": {
+                "issues": "https://github.com/tecnickcom/tc-lib-color/issues",
+                "source": "https://github.com/tecnickcom/tc-lib-color/tree/1.14.6"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&currency_code=GBP&business=paypal@tecnick.com&item_name=donation%20for%20tc-lib-color%20project",
+                    "type": "custom"
+                }
+            ],
+            "install-path": "../tecnickcom/tc-lib-color"
         }
     ],
     "dev": true,

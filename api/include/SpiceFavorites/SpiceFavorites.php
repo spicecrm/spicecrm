@@ -10,10 +10,16 @@ use Sugar_Smarty;
 
 class SpiceFavorites
 {
-    public static function get_favorite($beanModule, $beanId)
+    /**
+     * @param $beanModule
+     * @param $beanId
+     * @return bool
+     * @throws \Exception
+     */
+    public static function getFavorite($beanModule, $beanId)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance();
 
         if ($db->fetchByAssoc($db->query("SELECT beanid FROM spicefavorites WHERE bean='$beanModule' AND beanid='$beanId' AND user_id='$current_user->id'")))
             return true;
@@ -21,35 +27,54 @@ $db = DBManagerFactory::getInstance();
             return false;
     }
 
-    public static function set_favorite($beanModule, $beanId)
+    /**
+     * @param $beanModule
+     * @param $beanId
+     * @throws \Exception
+     */
+    public static function setFavorite($beanModule, $beanId)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-$db = DBManagerFactory::getInstance();
-        if (!self::get_favorite($beanModule, $beanId))
+        $db = DBManagerFactory::getInstance();
+        if (!self::getFavorite($beanModule, $beanId))
             $db->query("INSERT INTO spicefavorites (bean, beanid, user_id, date_entered) VALUES('$beanModule', '$beanId', '$current_user->id', NOW())");
     }
 
-    public static function delete_favorite($beanModule, $beanId)
+    /**
+     * @param $beanModule
+     * @param $beanId
+     * @throws \Exception
+     */
+    public static function deleteFavorite($beanModule, $beanId)
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance();
         $db->query("DELETE FROM spicefavorites WHERE bean='$beanModule' AND beanid='$beanId' AND user_id='$current_user->id'");
     }
 
     /**
-     * called from the loadtasks to load the favorites for the user intiially
+     * called from the loadtasks to load the favorites for the user initially
      *
      * @return array
+     * @throws \Exception
      */
-    public static function loadFavorites(){
+    public static function loadFavorites(): array
+    {
         return SpiceFavorites::getFavoritesRaw('', 50);
     }
 
-    public static function getFavoritesRaw($beanModule = '', $lastN = 10)
+    /**
+     * get all favorites for current user
+     *
+     * @param string $beanModule
+     * @param int $lastN
+     * @return array
+     * @throws \Exception
+     */
+    public static function getFavoritesRaw($beanModule = '', $lastN = 10): array
     {
-        global  $beanFiles, $beanList;
-$current_user = AuthenticationController::getInstance()->getCurrentUser();
-$db = DBManagerFactory::getInstance();
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $db = DBManagerFactory::getInstance();
 
         $moduleHandler = new ModuleHandler();
 
@@ -75,7 +100,7 @@ $db = DBManagerFactory::getInstance();
                     'data' => $moduleHandler->mapBeanToArray($thisFav['bean'], $seed)
                 ];
             } else {
-                self::delete_favorite($thisFav['module'], $thisFav['beanid']);
+                self::deleteFavorite($thisFav['module'], $thisFav['beanid']);
             }
         }
         return $favorites;
@@ -86,20 +111,16 @@ $db = DBManagerFactory::getInstance();
      * @param int $lastN
      * @return mixed|string|void
      */
-    public static function getFavorites($beanModule = '', $lastN = 10)
-    {
-        global  $beanFiles, $beanList;
-$current_user = AuthenticationController::getInstance()->getCurrentUser();
-$db = DBManagerFactory::getInstance();
-
-        $favorites = self::getFavoritesRaw($beanModule);
-        if (count($favorites) > 0) {
-            $ss = new Sugar_Smarty();
-            $ss->assign('items', $favorites);
-            $ss->assign('title', 'Favorites');
-            return $ss->fetch('modules/SpiceThemeController/tpls/SpiceGenericMenuItems.tpl');
-        }
-
-        return '';
-    }
+//    public static function getFavorites($beanModule = '', $lastN = 10)
+//    {
+//        $favorites = self::getFavoritesRaw($beanModule);
+//        if (count($favorites) > 0) {
+//            $ss = new Sugar_Smarty();
+//            $ss->assign('items', $favorites);
+//            $ss->assign('title', 'Favorites');
+//            return $ss->fetch('modules/SpiceThemeController/tpls/SpiceGenericMenuItems.tpl');
+//        }
+//
+//        return '';
+//    }
 }

@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -89,7 +89,7 @@ export class PackageLoaderPackage implements OnInit {
 
     private loadPackage(packagename) {
         this.loading = 'package';
-        this.backend.getRequest('packages/package/' + packagename + this.repositoryaddurl).subscribe(
+        this.backend.getRequest('configuration/packages/package/' + packagename + this.repositoryaddurl).subscribe(
             response => {
                 this.loading = 'configuration';
                 this.loader.reloadPrimary().subscribe(status => {
@@ -105,7 +105,7 @@ export class PackageLoaderPackage implements OnInit {
 
     private deletePackage(packagename) {
         this.loading = 'package';
-        this.backend.deleteRequest('packages/package/' + packagename).subscribe(response => {
+        this.backend.deleteRequest('configuration/packages/package/' + packagename).subscribe(response => {
             this.loading = 'configuration';
             this.package.installed = false;
             this.loader.reloadPrimary().subscribe(status => {

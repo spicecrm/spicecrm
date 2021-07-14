@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -129,17 +129,6 @@ export class fieldParent extends fieldGeneric implements OnInit {
         const clickedInside = this.elementRef.nativeElement.contains(event.target);
         if (!clickedInside) {
             this.closePopups();
-        }
-    }
-
-    /**
-     * simple getter to determine if the field has a link, the view allows for links and if the user has ACL rights to navigate to thte the of the record
-     */
-    get link() {
-        try {
-            return this.view.displayLinks;
-        } catch (e) {
-            return false;
         }
     }
 

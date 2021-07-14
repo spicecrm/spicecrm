@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -124,7 +124,7 @@ export class fieldPageBuilder extends fieldGeneric implements OnInit, AfterViewI
                 this.model.setField(bodySPBFieldName, res);
                 const loadingModal = this.modal.await('LBL_PARSING_HTML');
 
-                this.backend.postRequest('mjml/parseJsonToHtml', {}, {json: this.model.data[bodySPBFieldName]}).subscribe(res => {
+                this.backend.postRequest('common/mjml/json2html', {}, {json: this.model.data[bodySPBFieldName]}).subscribe(res => {
                     if (!res || !res.html) {
                         this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
                         loadingModal.emit(true);

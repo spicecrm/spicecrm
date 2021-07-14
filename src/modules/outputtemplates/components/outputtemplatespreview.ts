@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -20,6 +20,7 @@ import {model} from "../../../services/model.service";
 import {modal} from "../../../services/modal.service";
 import {metadata} from "../../../services/metadata.service";
 import {language} from "../../../services/language.service";
+import {toast} from "../../../services/toast.service";
 import {Subscription} from "rxjs";
 
 declare var moment: any;
@@ -64,7 +65,7 @@ export class OutputTemplatesPreview {
      */
     private blobUrl: any;
 
-    constructor(private language: language, private backend: backend, private metadata: metadata, private model: model, private modal: modal, private sanitizer: DomSanitizer, private cdRef: ChangeDetectorRef) {
+    constructor(private language: language, private backend: backend, private metadata: metadata, private model: model, private modal: modal, private sanitizer: DomSanitizer, private cdRef: ChangeDetectorRef, private toast: toast ) {
         this.model.data$.subscribe(data => {
             this.checkModelChanges();
         });
@@ -188,13 +189,13 @@ export class OutputTemplatesPreview {
             margin_left: this.model.getField('margin_left'),
             margin_top: this.model.getField('margin_top'),
             margin_right: this.model.getField('margin_right'),
-            margin_bottom: this.model.getField('margin_bottom')
-
+            margin_bottom: this.model.getField('margin_bottom'),
+            id: this.model.id
         };
 
         switch (this.outputformat) {
             case 'pdf':
-                this.backend.postRequest(`OutputTemplates/previewpdf`, {}, postBody).subscribe(
+                this.backend.postRequest(`module/OutputTemplates/previewpdf`, {}, postBody).subscribe(
                     pdf => {
                         let blob = this.datatoBlob(atob(pdf.content));
                         this.blobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
@@ -202,6 +203,7 @@ export class OutputTemplatesPreview {
                         this.cdRef.detectChanges();
                     },
                     err => {
+                        this.toast.sendToast(this.language.getLabel('ERR_PROCESSING_OUTPUT_TEMPLATE'), 'error', err.error.error.message );
                         this.loading_output = false;
                         this.cdRef.detectChanges();
                     }
@@ -210,13 +212,14 @@ export class OutputTemplatesPreview {
             case 'html':
 
                 // compile the template to show the user...
-                this.backend.postRequest(`OutputTemplates/previewhtml`, {}, postBody).subscribe(
+                this.backend.postRequest(`module/OutputTemplates/previewhtml`, {}, postBody).subscribe(
                     res => {
                         this.compiled_selected_template = res.content;
                         this.loading_output = false;
                         this.cdRef.detectChanges();
                     },
                     err => {
+                        this.toast.sendToast(this.language.getLabel('ERR_PROCESSING_OUTPUT_TEMPLATE'), 'error', err.error.error.message );
                         this.loading_output = false;
                         this.cdRef.detectChanges();
                     }

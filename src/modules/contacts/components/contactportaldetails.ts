@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -56,7 +56,7 @@ export class ContactPortalDetails implements OnInit {
 
     public ngOnInit() {
         // check data from the backend
-        this.backend.getRequest("portal/" + this.model.id + "/portalaccess", { lang: this.lang.currentlanguage } ).subscribe((userdata: any) => {
+        this.backend.getRequest("module/Contacts/" + this.model.id + "/portalAccess", { lang: this.lang.currentlanguage } ).subscribe((userdata: any) => {
 
             this.aclRoles = userdata.aclRoles;
             this.portalRoles = userdata.portalRoles;
@@ -149,15 +149,27 @@ export class ContactPortalDetails implements OnInit {
                 setDateTimePrefsWithSystemDefaults: this.user.setDateTimePrefsWithSystemDefaults
             };
             this.toast.clearToast( this.lastToast );
-            this.backend.postRequest( "portal/" + this.model.id + "/portalaccess/" + ( this.isNewUser ? 'create':'update' ), {}, body ).subscribe( ( response: any ) => {
-                if ( response.success ) {
-                    this.lastToast= this.toast.sendToast( 'Portal user '+ ( response.type === 'new' ? 'created':'edited' ) + ' successfully.', 'success' );
-                }
-                this.closeModal();
-            }, ( errorResponse ) => {
-                this.lastToast = this.toast.sendToast( 'Error saving data of portal user.', 'error', errorResponse.error.error.message, false );
-                this.isSaving = false;
-            });
+            if ( this.isNewUser ) {
+                this.backend.postRequest( "module/Contacts/" + this.model.id + "/portalAccess", {}, body ).subscribe( ( response: any ) => {
+                    if( response.success ) {
+                        this.lastToast = this.toast.sendToast( 'Portal user created successfully.', 'success' );
+                    }
+                    this.closeModal();
+                }, ( errorResponse ) => {
+                    this.lastToast = this.toast.sendToast( 'Error saving data of portal user.', 'error', errorResponse.error.error.message, false );
+                    this.isSaving = false;
+                } );
+            } else {
+                this.backend.putRequest( "module/Contacts/" + this.model.id + "/portalAccess", {}, body ).subscribe( ( response: any ) => {
+                    if( response.success ) {
+                        this.lastToast = this.toast.sendToast( 'Portal user edited successfully.', 'success' );
+                    }
+                    this.closeModal();
+                }, ( errorResponse ) => {
+                    this.lastToast = this.toast.sendToast( 'Error saving data of portal user.', 'error', errorResponse.error.error.message, false );
+                    this.isSaving = false;
+                } );
+            }
         }
     }
 }

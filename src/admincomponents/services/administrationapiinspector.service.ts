@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -17,11 +17,8 @@ import {Injectable, Injector} from '@angular/core';
 import {Subject, Observable, Subscription} from 'rxjs';
 
 import {backend} from '../../services/backend.service';
-import {classNames} from "@angular/cdk/schematics";
 import {toast} from '../../services/toast.service';
 import {modelutilities} from '../../services/modelutilities.service';
-import {start} from "repl";
-
 
 @Injectable()
 
@@ -108,6 +105,12 @@ export class administrationapiinspectorService {
     private _apiFilterAdminOnly: boolean = false;
 
     /**
+     * filter variable for all admin only routes
+     */
+
+    private _apiFilterValidatedOnly: boolean = false;
+
+    /**
      * the current selected API
      *
      * @public
@@ -190,13 +193,33 @@ export class administrationapiinspectorService {
     }
 
     /**
+     * getter for the current api filter
+     */
+    get apiFilterValidatedOnly() {
+        return this._apiFilterValidatedOnly;
+    }
+
+    /**
+     * setter for the current api filter
+     * also resets the selection and also the complete tree
+     *
+     * @param value
+     */
+    set apiFilterValidatedOnly(value) {
+        this._apiFilterValidatedOnly = value;
+
+        // rebuild the tree with the searchterm
+        this.buildTree();
+    }
+
+    /**
      * loads all available endpoints from the backend
      *
      * @public
      */
     public loadEndpoints() {
         this.loading = true;
-        this.backend.getRequest('routes').subscribe(
+        this.backend.getRequest('admin/routes').subscribe(
             routes => {
                 this.apiEndpoints = routes;
                 this.apiEndpoints.sort((a, b) => a.route.replace('{', '').localeCompare(b.route.replace('{', '')));
@@ -234,6 +257,11 @@ export class administrationapiinspectorService {
 
             // check for adminonly
             if (this._apiFilterAdminOnly && a.options.adminOnly !== true) {
+                return false;
+            }
+
+            // check for adminonly
+            if (this._apiFilterValidatedOnly && a.options.validate === true) {
                 return false;
             }
 

@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -205,6 +205,22 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
         return startdate ? startdate.format(this.userpreferences.getDateFormat()) : '';
     }
 
+    get activitiyDate() {
+
+        const date = new moment.utc(this.activity.date_activity).tz(this.session.getSessionData('timezone') || moment.tz.guess(true));
+
+        const isToday = date.format('YYYYMMDD') == new moment().format('YYYYMMDD');
+        const isThisYear = date.format('YYYY') == new moment().format('YYYY');
+
+        if (isToday) {
+            return date.format(this.userpreferences.getTimeFormat());
+        } else if (isThisYear) {
+            return date.format('MMM D');
+        } else {
+            return date.format(this.userpreferences.getDateFormat());
+        }
+    }
+
     /**
      * returns ture if the date is today / day based
      */
@@ -225,7 +241,7 @@ export class ActivityTimelineItem implements OnInit, OnDestroy, AfterViewInit {
      * returns true if no fieldset for the expanded form is set and thus expanding is not possible
      */
     get cantexpand() {
-        return this.formFieldSet == '';
+        return !this.formFieldSet;
     }
 
     /**

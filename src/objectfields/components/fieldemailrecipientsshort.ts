@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -138,11 +138,12 @@ export class fieldEmailRecipientsShort extends fieldGeneric {
 
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.handleClick(event));
 
-            this.backend.postRequest('EmailAddresses/' + this.addAddress).subscribe(results => {
-                if (results.length > 0)
+            this.backend.getRequest('module/EmailAddresses/' + this.addAddress).subscribe(results => {
+                if (results.length > 0) {
                     this.searchResults = results;
-                else
+                } else {
                     this.closeSearchDialog();
+                }
 
                 this.searchResultsLoading = false;
             });

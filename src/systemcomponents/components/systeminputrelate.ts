@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -43,6 +43,11 @@ export class SystemInputRelate implements ControlValueAccessor {
      * the module so the enum can be determined
      */
     @Input() private module: string;
+
+    /**
+     * The field of the related name.
+     */
+    @Input() private nameField = 'summary_text';
 
     /**
      * the related id
@@ -92,7 +97,7 @@ export class SystemInputRelate implements ControlValueAccessor {
      * @param value value to be executed when there is a change in contenteditable
      */
     public writeValue(value: any): void {
-        if(value){
+        if (value) {
             let valArray = value.split('::');
             this._relatedid = valArray[0];
             this._relatedname = valArray[1];
@@ -111,7 +116,7 @@ export class SystemInputRelate implements ControlValueAccessor {
             selectModal.instance.selectedItems.subscribe(items => {
                 if (items.length) {
                     this._relatedid = items[0].id;
-                    this._relatedname = items[0].summary_text;
+                    this._relatedname = items[0][this.nameField];
                     this.onChange(this._relatedid + '::' + this._relatedname);
                 }
             });

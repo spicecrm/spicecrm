@@ -101,7 +101,7 @@ class SugarWebServiceImplv4 extends SugarWebServiceImplv3_1
         $_SESSION['ip_address'] = query_client_ip();
         $_SESSION['user_id'] = $current_user->id;
         $_SESSION['type'] = 'user';
-        $_SESSION['avail_modules'] = self::$helperObject->get_user_module_list($current_user);
+        // $_SESSION['avail_modules'] = self::$helperObject->get_user_module_list($current_user);
         $_SESSION['authenticated_user_id'] = $current_user->id;
         $_SESSION['unique_key'] = SpiceConfig::getInstance()->config['unique_key'];
         $current_user->call_custom_logic('after_login');

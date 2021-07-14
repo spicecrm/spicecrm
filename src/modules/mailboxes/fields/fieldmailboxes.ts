@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -109,7 +109,7 @@ export class fieldMailboxes extends fieldGeneric implements OnInit {
     public getOptions() {
         let options = this.configuration.getData(`mailboxes${this.scope}`);
         if (_.isEmpty(options)) {
-            this.backend.getRequest("mailboxes/getmailboxes", {scope: this.scope}).subscribe(
+            this.backend.getRequest("module/Mailboxes/scope", {scope: this.scope}).subscribe(
                 (results: any) => {
                     // sort the options
                     this.options = results.sort((a, b) => a.display.localeCompare(b.display));

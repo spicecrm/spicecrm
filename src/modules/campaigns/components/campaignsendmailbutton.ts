@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -41,7 +41,7 @@ export class CampaignSendMailButton {
     public execute() {
         if (!this.sending) {
             this.sending = true;
-            this.backend.postRequest('module/CampaignTasks/' + this.model.id + '/queuemail').subscribe((results: any) => {
+            this.backend.postRequest(`module/CampaignTasks/${this.model.id}/queuemail`).subscribe((results: any) => {
                 this.sending = false;
                 this.toast.sendToast('Mails queued');
 

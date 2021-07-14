@@ -1,0 +1,69 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div *ngIf="!asBox; else boxContainer" class="slds-media slds-has-flexi-truncate slds-p-around_x-small">
+    <div system-model-popover [id]="notification.bean_id" [module]="notification.bean_module" class="slds-media__figure">
+        <span *ngIf="notification.bean_module" class="slds-icon_container" style="width:40px;height:40px;">
+            <system-icon icon="all"></system-icon>
+        </span>
+    </div>
+    <div class="slds-media__body">
+        <div class="slds-grid slds-grid_align-spread" [class.slds-text-title_bold]="notification.notification_read != 1">
+            <a href="javascript:void(0);" class="slds-text-link_reset slds-has-flexi-truncate">
+                <h3 class="slds-truncate">
+                    <span system-model-popover [id]="notification.bean_id" [module]="notification.bean_module" [system-title]="notification.bean_name" class="slds-m-right--xxx-small" style="text-decoration: underline;">
+                        {{notification.bean_name}}
+                    </span>
+                    <span system-title="MSG_NOTIFICATION_GENERIC">
+                        <system-label label="MSG_NOTIFICATION_GENERIC"></system-label>
+                    </span>
+                    <span system-model-popover [id]="notification.created_by" module="Users" [system-title]="notification.created_by_name" class="slds-m-right--xxx-small" style="text-decoration: underline;">
+                        {{notification.created_by_name}}
+                    </span>
+                </h3>
+                <p class="slds-text-color_weak">
+                    {{notification.notification_date}}
+                    <abbr *ngIf="notification.notification_read != 1" system-title="LBL_UNREAD" class="slds-text-link slds-m-horizontal_xxx-small slds-text-color_success">●</abbr>
+                </p>
+            </a>
+        </div>
+    </div>
+</div>
+
+<ng-template #boxContainer>
+    <section class="slds-notification slds-m-vertical--xxx-small" role="dialog">
+        <div class="slds-notification__body">
+            <a class="slds-notification__target slds-media">
+                <system-icon icon="all"></system-icon>
+                <div class="slds-media__body">
+                    <h2 class="slds-text-heading_small slds-m-bottom_xx-small">
+                        <span system-model-popover [id]="notification.bean_id" [module]="notification.bean_module" [system-title]="notification.bean_name" class="slds-m-right--xxx-small" style="text-decoration: underline;">
+                            {{notification.bean_name}}
+                        </span>
+                        <span system-title="MSG_NOTIFICATION_GENERIC">
+                            <system-label label="MSG_NOTIFICATION_GENERIC"></system-label>
+                        </span>
+                        <span system-model-popover [id]="notification.created_by" module="Users" [system-title]="notification.created_by_name" class="slds-m-right--xxx-small" style="text-decoration: underline;">
+                        {{notification.created_by_name}}
+                    </span>
+                    </h2>
+                    <p>
+                        {{notification.notification_date}}
+                    </p>
+                </div>
+            </a>
+            <button (click)="notificationService.clearTempNotification(notification)" class="slds-button slds-button_icon slds-button_icon-container slds-notification__close" system-title="LBL_CLOSE">
+                <system-button-icon icon="close"></system-button-icon>
+            </button>
+        </div>
+    </section>
+</ng-template>

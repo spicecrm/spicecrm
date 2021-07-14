@@ -4,10 +4,12 @@ namespace SpiceCRM\KREST\handlers;
 
 use LanguageManager;
 use NoteSoap;
+use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSHandler;
 use SpiceCRM\includes\SpiceFTSManager\SpiceFTSUtils;
+use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\SysModuleFilters\SysModuleFilters;
 use SpiceCRM\includes\UploadFile;
@@ -54,17 +56,15 @@ class ModuleHandler
 
     }
 
-    protected function _trackAction($action, $module, $bean)
-    {
+    protected function _trackAction(string $action, string $module, SugarBean $bean): void {
         $action = strtolower($action);
         //Skip save, tracked in SugarBean instead
         if ($action == 'save') {
             return;
         }
 
-
         $tracker = BeanFactory::getBean('Trackers');
-        $tracker->monitor_id = create_guid();
+        $tracker->monitor_id = SpiceUtils::createGuid();
         $tracker->user_id = AuthenticationController::getInstance()->getCurrentUser()->id;
         $tracker->module_name = $module;
         $tracker->action = $action;
@@ -74,7 +74,6 @@ class ModuleHandler
         $tracker->item_summary = $bean->get_summary_text();
         $tracker->session_id = session_id();
         $tracker->save();
-
     }
 
     public function get_mod_language($modules, $lang)
@@ -151,15 +150,35 @@ class ModuleHandler
 
         // check if we have an ft config
 
-        if (@$searchParams['source'] !== 'db' and SpiceFTSHandler::getInstance()::checkModule($beanModule, true) and SpiceFTSHandler::getInstance()::checkFilterDefs($beanModule, json_decode(html_entity_decode($listDef['filterdefs']))) and SpiceFTSHandler::getInstance()::checkFilterDefs($beanModule, json_decode(html_entity_decode($searchParams['filter'])))) {
+        if (@$searchParams['source'] !== 'db'
+            and SpiceFTSHandler::getInstance()->checkModule($beanModule, true)
+            and SpiceFTSHandler::getInstance()->checkFilterDefs($beanModule, json_decode(html_entity_decode($listDef['filterdefs'])))
+            and SpiceFTSHandler::getInstance()->checkFilterDefs($beanModule, json_decode(html_entity_decode($searchParams['filter'])))
+        ) {
             //  $results = SpiceFTSHandler::getInstance()->getGlobalSearchResults([$beanModule], $searchParams['searchterm'])
             $searchParams['records'] = $searchParams['limit'];
-            $result = SpiceFTSHandler::getInstance()->getModuleSearchResults($beanModule, $searchParams['searchterm'], json_decode($searchParams['searchtags']), $searchParams, json_decode(html_entity_decode($searchParams['aggregates']), true), json_decode($searchParams['sortfields'], true) ?: []);
+            $result = SpiceFTSHandler::getInstance()
+                ->getModuleSearchResults(
+                    $beanModule,
+                    $searchParams['searchterm'],
+                    json_decode($searchParams['searchtags']),
+                    $searchParams,
+                    json_decode(html_entity_decode($searchParams['aggregates']), true),
+                    json_decode($searchParams['sortfields'], true)
+                        ?: []);
             $totalcount = $result['total'];
             foreach ($result['hits'] as $hit) {
-                $thisBean = BeanFactory::getBean($beanModule, $hit['_id'], ['encode' => false]);
+                // load the Bean
+                $thisBean = BeanFactory::getBean($beanModule, $hit['_id'], ['encode' => false, 'forceRetrieve' => true]);
+
+                // if we had an error retrieving continue
                 if (!$thisBean) continue;
-                $beanData[] = $this->mapBeanToArray($beanModule, $thisBean, []);
+
+                // get the list details
+                $thisBean->retrieveListDetails();
+
+                // map and add to the array
+                $beanData[] = $this->mapBeanToArray($beanModule, $thisBean);
             }
             $retArray['aggregations'] = $result['aggregations'];
             $retArray['buckets'] = $result['buckets'];
@@ -307,7 +326,7 @@ class ModuleHandler
         }
 
         if (!empty($searchParams['modulefilter'])) {
-            $filterWhere = $moduleFilter->generareWhereClauseForFilterId($searchParams['modulefilter']);
+            $filterWhere = $moduleFilter->generateWhereClauseForFilterId($searchParams['modulefilter']);
             if ($filterWhere) {
                 $whereClauses[] = '(' . $filterWhere . ')';
             }
@@ -415,8 +434,14 @@ class ModuleHandler
                 $beanList = $thisBean->process_list_query($query, $bucketitem['items'] ?: 0, $searchParams['limit'], $searchParams['limit']);
 
                 foreach ($beanList['list'] as $thisBean) {
+                    // retrieve the bean
                     $thisBean->retrieve();
-                    $beanData[] = $this->mapBeanToArray($beanModule, $thisBean, []);
+
+                    // retrieve the additonal list details
+                    $thisBean->retrieveListDetails();
+
+                    // map and add to the array
+                    $beanData[] = $this->mapBeanToArray($beanModule, $thisBean);
                 }
 
                 $bucketitem['items'] = $bucketitem['items'] + count($beanList['list']);
@@ -444,8 +469,13 @@ class ModuleHandler
             $beanList = $thisBean->process_list_query($query, $searchParams['start'], $searchParams['limit'], $searchParams['limit']);
 
             foreach ($beanList['list'] as $thisBean) {
+                // retrieve the bean
                 $thisBean->retrieve();
-                $beanData[] = $this->mapBeanToArray($beanModule, $thisBean, []);
+
+                // retrieve the additonal list details
+                $thisBean->retrieveListDetails();
+
+                $beanData[] = $this->mapBeanToArray($beanModule, $thisBean);
             }
 
             // get the count
@@ -548,7 +578,7 @@ class ModuleHandler
 
             // check if we have an ft config
 
-            if (@$searchParams['source'] !== 'db' and SpiceFTSHandler::getInstance()::checkModule($beanModule, true) and SpiceFTSHandler::getInstance()::checkFilterDefs($beanModule, json_decode(html_entity_decode($listDef['filterdefs']))) and SpiceFTSHandler::getInstance()::checkFilterDefs($beanModule, json_decode(html_entity_decode($searchParams['filter'])))) {
+            if (@$searchParams['source'] !== 'db' and SpiceFTSHandler::getInstance()->checkModule($beanModule, true) and SpiceFTSHandler::getInstance()->checkFilterDefs($beanModule, json_decode(html_entity_decode($listDef['filterdefs']))) and SpiceFTSHandler::getInstance()->checkFilterDefs($beanModule, json_decode(html_entity_decode($searchParams['filter'])))) {
                 //  $results = SpiceFTSHandler::getInstance()->getGlobalSearchResults([$beanModule], $searchParams['searchterm'])
                 $searchParams['records'] = SpiceConfig::getInstance()->config['getAllLimit'] ?: 10000;
                 $result = SpiceFTSHandler::getInstance()->getModuleSearchResults($beanModule, $searchParams['searchterm'], json_decode($searchParams['searchtags']), $searchParams, json_decode(html_entity_decode($searchParams['aggregates']), true), json_decode($searchParams['sortfields'], true) ?: []);
@@ -573,7 +603,7 @@ class ModuleHandler
         }
 
         // determine the delimiter
-        $delimiter = UserPreference::getDefaultPreference('export_delimiter');
+        $delimiter = UserPreference::getDefaultPreference('export_delimiter') ?: ';';
         if (!empty(AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_delimiter'))) $delimiter = AuthenticationController::getInstance()->getCurrentUser()->getPreference('export_delimiter');
 
         // determine the charset
@@ -586,7 +616,7 @@ class ModuleHandler
         }
 
         // prepare the output
-        $fh = @fopen('php://output', 'w');
+        $fh = fopen('php://temp', 'rw');
         fputcsv($fh, $returnFields, $delimiter);
         foreach ($beans as $thisBean) {
             $entryArray = [];
@@ -594,14 +624,15 @@ class ModuleHandler
                 $entryArray[] = !empty($charsetTo) ? mb_convert_encoding($thisBean->$returnField, $charsetTo) : $thisBean->$returnField;
             fputcsv($fh, $entryArray, $delimiter);
         }
+        rewind($fh);
+        $csv = stream_get_contents($fh);
         fclose($fh);
 
-        return $charsetTo;
+        return ['charset' => $charsetTo , 'csv' => $csv];
     }
 
     public function merge_bean($beanModule, $beanId, $requestParams)
     {
-        global $current_language;
         // acl check if user can get the detail
         if (!SpiceACL::getInstance()->checkAccess($beanModule, 'delete', true))
             throw (new ForbiddenException("Forbidden to delete in module $beanModule."))->setErrorCode('noModuleDelete');
@@ -613,8 +644,6 @@ class ModuleHandler
 
     public function get_bean_detail($beanModule, $beanId, $requestParams)
     {
-        global $current_language, $app_list_strings;
-
         // acl check if user can get the detail
         if (!SpiceACL::getInstance()->checkAccess($beanModule, 'view', true))
             throw (new ForbiddenException("Forbidden to view in module $beanModule."))->setErrorCode('noModuleView');
@@ -626,7 +655,8 @@ class ModuleHandler
             throw (new ForbiddenException("not allowed to view this record"))->setErrorCode('noModuleView');
         }
 
-        $app_list_strings = return_app_list_strings_language($current_language);
+        // load the view details
+        $thisBean->retrieveViewDetails();
 
         if ($requestParams['trackaction']) {
             $this->_trackAction($requestParams['trackaction'], $beanModule, $thisBean);
@@ -635,7 +665,7 @@ class ModuleHandler
         $includeReminder = $requestParams['includeReminder'] ? true : false;
         $includeNotes = $requestParams['includeNotes'] ? true : false;
 
-        return $this->mapBeanToArray($beanModule, $thisBean, [], $includeReminder, $includeNotes);
+        return $this->mapBeanToArray($beanModule, $thisBean);
 
     }
 
@@ -663,17 +693,37 @@ class ModuleHandler
         $query .= " ORDER BY date_created DESC";
 
         $auditRecords = $db->query($query);
-        while ($auditRecord = $db->fetchByAssoc($auditRecords))
-            $auditLog[] = $auditRecord;
+        while ($auditRecord = $db->fetchByAssoc($auditRecords)) {
+            if($params['grouped']){
+                // add a record if we dont have it
+                if(!isset($auditLog[$auditRecord['transaction_id']])) {
+                    $auditLog[$auditRecord['transaction_id']] = [
+                        'transaction_id' => $auditRecord['transaction_id'],
+                        'date_created' => $auditRecord['date_created'],
+                        'created_by' => $auditRecord['created_by'],
+                        'user_name' => $auditRecord['user_name'],
+                        'audit_log' => []
+                    ];
+                }
 
-        return $auditLog;
+                // add the log record
+                $auditLog[$auditRecord['transaction_id']]['audit_log'][] = [
+                    'field_name' => $auditRecord['field_name'],
+                    'data_type' => $auditRecord['data_type'],
+                    'before_value_string' => $auditRecord['before_value_string'],
+                    'before_value_text' => $auditRecord['before_value_text'],
+                    'after_value_string' => $auditRecord['after_value_string'],
+                    'after_value_text' => $auditRecord['after_value_text'],
+                ];
+            } else {
+                $auditLog[] = $auditRecord;
+            }
+        }
+
+        return $params['grouped'] ? array_values($auditLog) : $auditLog;
 
     }
 
-    public function get_bean_surrounding($beanModule, $beanId, $params)
-    {
-        $db = DBManagerFactory::getInstance();
-    }
 
     public function check_bean_duplicates($beanModule, $beanData)
     {
@@ -693,10 +743,7 @@ class ModuleHandler
         return ['count' => $duplicates['count'], 'records' => $retArray];
     }
 
-    public function get_bean_duplicates($beanModule, $beanId)
-    {
-        $db = DBManagerFactory::getInstance();
-
+    public function get_bean_duplicates(string $beanModule, string $beanId): array {
         // acl check if user can get the detail
         if (!SpiceACL::getInstance()->checkAccess($beanModule, 'view', true))
             throw (new ForbiddenException("Forbidden to view in module $beanModule."))->setErrorCode('noModuleView');
@@ -711,12 +758,10 @@ class ModuleHandler
             $retArray[] = $this->mapBeanToArray($beanModule, $duplicate);
         }
         return ['count' => $duplicates['count'], 'records' => $retArray];
-
     }
 
 
-    public function get_bean_attachment($beanModule, $beanId)
-    {
+    public function get_bean_attachment(string $beanModule, string $beanId): array {
         // acl check if user can get the detail
         if (!SpiceACL::getInstance()->checkAccess($beanModule, 'view', true))
             throw (new ForbiddenException("Forbidden to view in for module $beanModule."))->setErrorCode('noModuleView');
@@ -748,9 +793,7 @@ class ModuleHandler
         throw (new NotFoundException('Attachment/File not found.'));
     }
 
-    public function set_bean_attachment($beanModule, $beanId, $post = '')
-    {
-
+    public function set_bean_attachment(string $beanModule, string $beanId, ?array $post) {
         $upload_file = new UploadFile('file');
         if ($post['file']) {
             $decodedFile = base64_decode($post['file']);
@@ -778,8 +821,7 @@ class ModuleHandler
         return $file_md5;
     }
 
-    public function download_bean_attachment($beanModule, $beanId)
-    {
+    public function download_bean_attachment(string $beanModule, string $beanId): void {
         $seed = BeanFactory::getBean($beanModule, $beanId);
         if ($seed) {
             $download_location = "upload://" . $beanId;
@@ -799,9 +841,7 @@ class ModuleHandler
     }
 
 
-    public function get_related($beanModule, $beanId, $linkName, $params)
-    {
-
+    public function get_related(string $beanModule, string $beanId, string $linkName, array $params): array {
         // acl check if user can get the detail
         if (!SpiceACL::getInstance()->checkAccess($beanModule, 'view', true))
             throw (new ForbiddenException("Forbidden to view in module $beanModule."))->setErrorCode('noModuleView');
@@ -823,7 +863,7 @@ class ModuleHandler
         // apply module filter if one is set
         if ($params['modulefilter']) {
             $sysModuleFilters = new SysModuleFilters();
-            $addWhere = $sysModuleFilters->generareWhereClauseForFilterId($params['modulefilter'], '', $thisBean);
+            $addWhere = $sysModuleFilters->generateWhereClauseForFilterId($params['modulefilter'], '', $thisBean);
             $sortBySequenceField = false;
         }
 
@@ -863,7 +903,7 @@ class ModuleHandler
         $retArray = [];
         foreach ($relBeans as $relBean) {
             if (empty($relBean->relid))
-                $relBean->relid = create_guid();
+                $relBean->relid = SpiceUtils::createGuid();
             $retArray[$relBean->relid] = $this->mapBeanToArray($relModule, $relBean);
 
             // add relationship fields
@@ -871,10 +911,11 @@ class ModuleHandler
                 $retArray[$relBean->relid]['relationhshipfields'] = $relBean->relationhshipfields;
             }
 
-            if ($params['relationshipFields']) {
-                $relFields = json_decode(html_entity_decode($params['relationshipFields']), true);
-                if (count($relFields) > 0) ;
-            }
+            // this code block is completely pointless
+//            if ($params['relationshipFields']) {
+//                $relFields = json_decode(html_entity_decode($params['relationshipFields']), true);
+//                if (count($relFields) > 0) ;
+//            }
         }
 
         // wtf? retrieve all the related data and at the end, ignore all this and count it new? (╯°□°)╯︵ ┻━┻
@@ -981,9 +1022,7 @@ class ModuleHandler
         return $beanResponse;
     }
 
-    public function delete_related($beanModule, $beanId, $linkName, $postParams)
-    {
-
+    public function delete_related(string $beanModule, string $beanId, string $linkName, ?array $queryParams): array {
         if (!SpiceACL::getInstance()->checkAccess($beanModule, 'edit', true))
             throw (new ForbiddenException("Forbidden to edit in module $beanModule."))->setErrorCode('noModuleEdit');
 
@@ -1000,13 +1039,13 @@ class ModuleHandler
 
         $thisBean->load_relationship($linkName);
 
-        $relatedArray = json_decode($postParams['relatedids'], true);
+        $relatedArray = json_decode($queryParams['relatedids'], true);
         if ($relatedArray) {
             foreach ($relatedArray as $relatedId) {
                 $thisBean->$linkName->delete($beanId, $relatedId);
             }
         } else {
-            $thisBean->$linkName->delete($beanId, $postParams['relatedids']);
+            $thisBean->$linkName->delete($beanId, $queryParams['relatedids']);
         }
 
         // reindex the curent bean since the added relationship might add to the indexed data
@@ -1191,7 +1230,7 @@ class ModuleHandler
             }
         }
 
-        if ($post_params['emailaddresses']) {
+        if (is_array($post_params['emailaddresses'])) {
             $this->setEmailAddresses($beanModule, $thisBean->id, $post_params['emailaddresses']);
         }
 
@@ -1287,7 +1326,7 @@ class ModuleHandler
     {
         $spiceFavoriteClass = $this->getSpiceFavoritesClass();
         if ($spiceFavoriteClass)
-            return $spiceFavoriteClass::get_favorite($beanModule, $beanId);
+            return $spiceFavoriteClass::getFavorite($beanModule, $beanId);
         else
             return [];
     }
@@ -1410,9 +1449,7 @@ class ModuleHandler
     }
 
 
-    public function get_modules()
-    {
-
+    public function get_modules(): array {
         global $current_language;
 
         $app_list_strings = return_app_list_strings_language($current_language);
@@ -1430,30 +1467,27 @@ class ModuleHandler
     }
 
     //private helper functions
-    function mapBeanToArray($beanModule, $thisBean, $returnFields = [], $includeReminder = false, $includeNotes = false, $resolvelinks = true)
+    function mapBeanToArray($beanModule, $thisBean, $resolvelinks = true)
     {
 
         global $current_language;
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
-        $app_list_strings = return_app_list_strings_language($current_language);
         $beanDataArray = [];
         foreach ($thisBean->field_name_map as $fieldId => $fieldData) {
             switch ($fieldData['type']) {
                 case 'relate':
                 case 'parent':
-                    if (count($returnFields) == 0 || (count($returnFields) > 0 && in_array($fieldId, $returnFields))) {
-                        $beanDataArray[$fieldId] = $thisBean->$fieldId;
-                        if ($fieldData['id_name']) {
-                            $beanDataArray[$fieldData['id_name']] = $thisBean->{$fieldData['id_name']};
-                        } else if (!empty($thisBean->parent_id)) {
-                            $beanDataArray['parent_id'] = $thisBean->parent_id;
-                        }
-                        if ($fieldData['type_name']) {
-                            $beanDataArray[$fieldData['type_name']] = $thisBean->{$fieldData['type_name']};
-                        } else if (!empty($thisBean->parent_type)) {
-                            $beanDataArray['parent_type'] = $thisBean->parent_type;
-                        }
+                    $beanDataArray[$fieldId] = $thisBean->$fieldId;
+                    if ($fieldData['id_name']) {
+                        $beanDataArray[$fieldData['id_name']] = $thisBean->{$fieldData['id_name']};
+                    } else if (!empty($thisBean->parent_id)) {
+                        $beanDataArray['parent_id'] = $thisBean->parent_id;
+                    }
+                    if ($fieldData['type_name']) {
+                        $beanDataArray[$fieldData['type_name']] = $thisBean->{$fieldData['type_name']};
+                    } else if (!empty($thisBean->parent_type)) {
+                        $beanDataArray['parent_type'] = $thisBean->parent_type;
                     }
                     break;
                 case 'link':
@@ -1473,9 +1507,7 @@ class ModuleHandler
                     }
                     break;
                 default:
-                    if ($fieldId == 'id' || count($returnFields) == 0 || (count($returnFields) > 0 && in_array($fieldId, $returnFields))) {
-                        $beanDataArray[$fieldId] = is_string($thisBean->$fieldId) ? html_entity_decode($thisBean->$fieldId, ENT_QUOTES) : $thisBean->$fieldId;
-                    }
+                    $beanDataArray[$fieldId] = is_string($thisBean->$fieldId) ? html_entity_decode($thisBean->$fieldId, ENT_QUOTES) : $thisBean->$fieldId;
                     break;
             }
         }
@@ -1488,11 +1520,10 @@ class ModuleHandler
         // get the summary text
         $beanDataArray['summary_text'] = $thisBean ? $thisBean->get_summary_text() : '';
 
-        // load if it is a favorite
-        $beanDataArray['favorite'] = $this->get_favorite($beanModule, $thisBean->id) ? 1 : 0;
-
         // get the email addresses
-        $beanDataArray['emailaddresses'] = $this->getEmailAddresses($beanModule, $thisBean->id);
+        if($thisBean->hasEmails()) {
+            $beanDataArray['emailaddresses'] = $this->getEmailAddresses($beanModule, $thisBean->id);
+        }
 
         // get the ACL Array
         $beanDataArray['acl'] = $thisBean->getACLActions();
@@ -1518,15 +1549,7 @@ class ModuleHandler
             }
 
             $beanDataArray['acl_fieldcontrol'] = $controlArray;
-        } /* else {
-            //workaround to unset edit icon when bean edit is prohibited until we have our ACLController
-            //build fake $beanDataArray['acl_fieldcontrol']['edit']
-            if (!$beanDataArray['acl']['edit']) {
-                foreach ($thisBean->field_defs as $field => $def) {
-                    $beanDataArray['acl_fieldcontrol'][$def['name']] = 1;
-                }
-            }
-        } */
+        }
         return $beanDataArray;
     }
 

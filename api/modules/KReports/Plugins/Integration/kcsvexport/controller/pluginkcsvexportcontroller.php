@@ -56,10 +56,7 @@ class pluginkcsvexportcontroller {
 
         $output = $thisReport->createCSV($dynamicolsOverride, $parentbean);
 
-        if ($requestParams['rawResult'])
-            return $output;
-        else
-            echo $output;
+        return $output;
     }
 
 }

@@ -570,25 +570,6 @@ $dictionary['Lead'] = ['table' => 'leads', 'audited' => true, 'unified_search' =
                 'unified_search' => true,
                 'vname' => 'LBL_EMAILS',
             ],
-        'email_addresses' =>
-            [
-                'name' => 'email_addresses',
-                'type' => 'link',
-                'relationship' => 'leads_email_addresses',
-                'source' => 'non-db',
-                'vname' => 'LBL_EMAIL_ADDRESSES',
-                'reportable' => false,
-                'rel_fields' => ['primary_address' => ['type' => 'bool']],
-            ],
-        'email_addresses_primary' =>
-            [
-                'name' => 'email_addresses_primary',
-                'type' => 'link',
-                'relationship' => 'leads_email_addresses_primary',
-                'source' => 'non-db',
-                'vname' => 'LBL_EMAIL_ADDRESS_PRIMARY',
-                'duplicate_merge' => 'disabled',
-            ],
         'campaigns' =>
             [
                 'name' => 'campaigns',

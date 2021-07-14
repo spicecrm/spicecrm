@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -68,10 +68,10 @@ export class DashboardView implements OnInit {
         // load for the selector
         let lastDashboardId = this.userpreferences.getPreference('last_dashboard');
         this.model.module = 'Dashboards';
-        this.modellist.module = 'Dashboards';
+        this.modellist.initialize('Dashboards');
         // ToDo: add infinite scrolling and reload on change of searchterm
         this.modellist.loadlimit = 250;
-        this.modellist.getListData(['name', 'global'])
+        this.modellist.getListData()
             .subscribe(() => {
                 if (lastDashboardId) {
                     this.modellist.listData.list.some(dashboard => {

@@ -1,19 +1,10 @@
 <?php
-
-/* * *******************************************************************************
-* This file is part of KReporter. KReporter is an enhancement developed
-* by aac services k.s.. All rights are (c) 2016 by aac services k.s.
-*
-* This Version of the KReporter is licensed software and may only be used in
-* alignment with the License Agreement received with this Software.
-* This Software is copyrighted and may not be further distributed without
-* witten consent of aac services k.s.
-*
-* You can contact us at info@kreporter.org
-******************************************************************************* */
+/***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
 
 namespace SpiceCRM\modules\KReports;
 
+use DateInterval;
+use DateTime;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 use SpiceCRM\modules\KReports\KReportUtil;
 use SpiceCRM\modules\KReports\KReportQueryArray;
@@ -79,7 +70,7 @@ class KReportQuery
     var $exclusiveGroupinbgByAddParams = false;
     // array for all fields we are selcting from the database
     var $fieldArray = [];
-    // for MSSQL 
+    // for MSSQL
     var $isGrouped = false;
 
     // constructor
@@ -148,7 +139,7 @@ class KReportQuery
                 return ' INNER JOIN ';
                 break;
             case "notexisting":
-                // 2011-12-29 retun no jointype 
+                // 2011-12-29 retun no jointype
                 //return ' LEFT JOIN ';
                 return '';
                 break;
@@ -255,12 +246,12 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
         $kOrgUnits = false;
 
         //check if we do the Org Check
-
+/*
         if (file_exists('modules/KOrgObjects/KOrgObject.php') && $GLOBALS['sugarconfig']['orgmanaged']) {
             require_once('modules/KOrgObjects/KOrgObject.php');
             $thisKOrgObject = new KOrgObject();
             $kOrgUnits = true;
-        }
+        }*/
 
         /*
          * Build the array for the joins based on the various Path we have
@@ -333,7 +324,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                         $rightArray = explode(':', $rightPath);
                         $leftArray = explode(':', $leftPath);
 
-                        // 2011-07-21 add check for audit records 
+                        // 2011-07-21 add check for audit records
                         if ($rightArray[2] == 'audit') {
                             //handle audit link
                             $this->fromString .= $thisPathJoinType . $this->joinSegments[$leftPath]['object']->table_name . '_audit ' . $this->joinSegments[$thisPath]['alias'] . ' ON ' . $this->joinSegments[$thisPath]['alias'] . '.parent_id = ' . $this->joinSegments[$leftPath]['alias'] . '.id';
@@ -409,7 +400,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                             if ($this->authChecklevel != 'none' && $this->authChecklevel != 'top') {
                                 $selectArray = array('where' => '', 'from' => '', 'select' => '');
                                 if(method_exists(SpiceACL::getInstance(), 'addACLAccessToListArray'))
-                                    SpiceACL::getInstance()->addACLAccessToListArray($selectArray, $this->joinSegments['root:' . $this->root_module]['object'], $this->joinSegments['root:' . $this->root_module]['alias'], $true);
+                                    SpiceACL::getInstance()->addACLAccessToListArray($selectArray, $this->joinSegments['root:' . $this->root_module]['object'], $this->joinSegments['root:' . $this->root_module]['alias'], true);
                                 if (!empty($selectArray['where'])) {
                                     if (empty($this->whereString)) {
                                         $this->whereString = " " . $selectArray['where'] . " ";
@@ -1941,7 +1932,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                     return '(' . preg_replace(array('/\$/', '/{t}/'), $thisAlias, $thisEval) . ')';
             } elseif (isset($thisFieldIdEntry['customsqlfunction']) && $thisFieldIdEntry['customsqlfunction'] != '') {
                 {
-                    //2012-11-28 srip unicode characters with the pregreplace [^(\x20-\x7F)]* from the string .. 
+                    //2012-11-28 srip unicode characters with the pregreplace [^(\x20-\x7F)]* from the string ..
                     //2013-01-22 changed to rawurldecode
                     //$functionRaw = preg_replace('/[^(\x20-\x7F)]*/', '', urldecode(base64_decode($thisFieldIdEntry['customsqlfunction'], true)));
                     $functionRaw = preg_replace('/[^(\x20-\x7F)]*/', '', rawurldecode(base64_decode($thisFieldIdEntry['customsqlfunction'], true)));
@@ -2007,7 +1998,7 @@ $db = \SpiceCRM\includes\database\DBManagerFactory::getInstance();
                 return $listFieldEntry;
         }
         // 2013-05-16 ... bug #480 since we might query for fields that are not in the report
-        // those fields are created dynamically in the pivot for the grid ... 
+        // those fields are created dynamically in the pivot for the grid ...
         // there the formatter set in the Pivot Paraeters is then used
         // if we do not find the field return false
         foreach ($this->whereArray as $thisIndex => $listFieldEntry) {

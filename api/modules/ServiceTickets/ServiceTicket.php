@@ -26,6 +26,7 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************************/
+
 namespace SpiceCRM\modules\ServiceTickets;
 
 use SpiceCRM\data\BeanFactory;
@@ -33,6 +34,7 @@ use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\SpiceNumberRanges\SpiceNumberRanges;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\modules\QuestionAnswers\QuestionAnswer;
 
 class ServiceTicket extends SugarBean
 {
@@ -90,7 +92,8 @@ class ServiceTicket extends SugarBean
     public function save($check_notify = false, $fts_index_bean = true)
     {
         global $timedate;
-$current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+
         //set serviceticket_number
         if (empty($this->serviceticket_number)) {
             $this->serviceticket_number = str_pad(SpiceNumberRanges::getNextNumberForField('ServiceTickets', 'serviceticket_number'), 10, '0', STR_PAD_LEFT);
@@ -141,7 +144,10 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
         // determine SLAs
         if (empty($this->serviceticketsla_id)) {
             $sla = BeanFactory::getBean('ServiceTicketSLAs');
-            $sla->determineSLAforTicket($this);
+            if($sla) {
+                $sla->determineSLAforTicket($this);
+            }
+
         }
         /**
          * if(!empty($this->serviceticket_type) && !empty($this->serviceticket_class) && empty($this->resolve_until)){
@@ -171,7 +177,11 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
         }
 
         // determine the notification status
-        $this->determineNotificationStatus();
+        $this->has_notification = $this->determineNotificationStatus();
+
+        if (!empty(json_decode($this->questionnaire_answers, true))) {
+            (new QuestionAnswer())->saveAnswers_byParent(json_decode($this->questionnaire_answers, true)['answers'], 'ServiceTickets', $this->id, true);
+        }
 
         return parent::save($check_notify);
 
@@ -180,11 +190,11 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
     /**
      * check if there are unread emails resp also to be extended to serviceticketnotes
      */
-    private function determineNotificationStatus()
+    public function determineNotificationStatus()
     {
         $unreadEmailCount = $this->db->fetchByAssoc($this->db->query("SELECT COUNT(id) total FROM emails WHERE parent_id = '{$this->id}' and status = 'unread' AND deleted = 0"));
         $unreadNoteCount = $this->db->fetchByAssoc($this->db->query("SELECT COUNT(id) total FROM servicetickets WHERE serviceticket_id = '{$this->id}' and servicenote_status = 'unread' AND deleted = 0"));
-        $this->has_notification = $unreadEmailCount['total'] > 0 || $unreadNoteCount['total'] > 0? 1 : 0;
+        return $unreadEmailCount['total'] > 0 || $unreadNoteCount['total'] > 0 ? 1 : 0;
     }
 
     /**

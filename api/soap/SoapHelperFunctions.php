@@ -374,7 +374,7 @@ function get_name_value_list($value, $returnDomValue = false){
 					}
 				}
 
-                        //PHP7 COMPAT        
+                        //PHP7 COMPAT
 			//if(isset($value->$var['name'])){
                         $var_name = $var['name'];
                         if(isset($value->$var_name)){
@@ -936,7 +936,7 @@ function add_create_account($seed)
             $query .=" ORDER BY deleted ASC";
             $result = $seed->db->query($query, true);
 
-            $row = $seed->db->fetchByAssoc($result, false);
+            $row = $seed->db->fetchByAssoc($result);
 
             if (!empty($row['id']))
             {

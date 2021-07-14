@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -93,7 +93,7 @@ export class UserChangePasswordModal {
      * simple getter for the password error
      */
     get pwderror() {
-        return !this.newPassword || !this.pwdCheck.test(this.newPassword) ? false : this.language.getLabel("MSG_PWD_NOT_LEGAL");
+        return !this.newPassword || this.pwdCheck.test(this.newPassword) ? false : this.language.getLabel("MSG_PWD_NOT_LEGAL");
     }
 
     /**
@@ -127,7 +127,7 @@ export class UserChangePasswordModal {
      */
     private save(): void {
         if (this.canSave()) {
-            this.http.post(this.configuration.getBackendUrl() + '/changepassword', {
+            this.http.post(this.configuration.getBackendUrl() + '/authentication/changepassword', {
                 username: this.session.authData.userName,
                 password: this.password,
                 newPassword: this.newPassword
@@ -151,7 +151,7 @@ export class UserChangePasswordModal {
      */
     private getInfo() {
         let extConf = this.configuration.getCapabilityConfig('userpassword');
-        this.pwdCheck = new RegExp('/' + extConf.regex + '/');
+        this.pwdCheck = new RegExp(extConf.regex);
 
         let requArray = [];
         if (extConf.onelower) requArray.push(this.language.getLabel('MSG_PASSWORD_ONELOWER'));

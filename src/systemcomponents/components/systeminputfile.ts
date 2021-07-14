@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -181,7 +181,7 @@ export class SystemInputFile implements ControlValueAccessor {
             file_mime_type: this.file.file_mime_type
         };
 
-        this.backend.postRequestWithProgress('bean/file/upload', null, fileBody, progressSubscription)
+        this.backend.postRequestWithProgress('common/bean/file/upload', null, fileBody, progressSubscription)
             .subscribe(res => {
                 this.file.file_md5 = res.file_md5;
                 this.onChange({

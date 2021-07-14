@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -98,7 +98,7 @@ export class EmailSchedulesRelatedButton {
             });
         }
         let params = {modules: filteredModules};
-        this.backend.getRequest(`module/EmailSchedules/checkRelated/${this.model.module}/${this.model.id}`, params).subscribe(result => {
+        this.backend.getRequest(`module/EmailSchedules/${this.model.module}/${this.model.id}`, params).subscribe(result => {
             if (result.status) {
                 this.linkedBeans = result.linkedBeans;
                 this.modelId = result.beanId;

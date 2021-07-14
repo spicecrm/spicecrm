@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -54,7 +54,7 @@ export class ObjectListViewFilterButton {
      * returns if the filter shoudl be enabled
      */
     get enabled() {
-        return this.modellist.filterEnabled();
+        return this.modellist.filterEnabled() && !this.modellist.isLoading;
     }
 
     /**

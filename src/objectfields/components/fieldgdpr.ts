@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -50,7 +50,7 @@ export class fieldGDPR extends fieldGeneric implements OnInit {
      * load the data on intialization
      */
     public ngOnInit() {
-        this.backend.getRequest('gdpr/' + this.model.module + '/' + this.model.id).subscribe(gdprData => {
+        this.backend.getRequest('common/gdpr/' + this.model.module + '/' + this.model.id ).subscribe(gdprData => {
             this.gdprData = gdprData;
             this.loaded = true;
         });

@@ -33,9 +33,7 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
-
-
-require_once('include/resource/Observers/ResourceObserver.php');
+namespace SpiceCRM\includes\resource\Observers;
 
 /**
  * WebResourceObserver.php
@@ -44,21 +42,19 @@ require_once('include/resource/Observers/ResourceObserver.php');
  */
 class WebResourceObserver extends ResourceObserver {
 
-function __construct($module) {
-   parent::__construct($module);
-}
+    function __construct($module) {
+       parent::__construct($module);
+    }
 
-/**
- * notify
- * Web implementation to notify the browser
- * @param msg String message to possibly display
- * 
- */
-public function notify($msg = '') {
-   echo $msg;
-   sugar_cleanup(true);
-}	
+    /**
+     * notify
+     * Web implementation to notify the browser
+     * @param msg String message to possibly display
+     *
+     */
+    public function notify($msg = '') {
+       echo $msg;
+       sugar_cleanup(true);
+    }
 	
 }
-
-?>

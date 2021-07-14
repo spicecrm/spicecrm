@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -30,8 +30,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                           </span>
                             </div>
                         </div>
-                        <div *ngIf="!selectedItem" class="slds-input-has-icon slds-input-has-icon--right slds-grow">
-                            <input [disabled]="module"  type="text" class="slds-lookup__search-input slds-input--bare" (focus)="searchWithModal()" [placeholder]="placeholder"  role="combobox"/>
+                        <div *ngIf="!selectedItem" class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right">
+                            <input  type="text" class="slds-input slds-combobox__input"  (focus)="searchWithModal()" [placeholder]="placeholder" autocomplete="none" role="combobox"/>
                             <button (click)="searchWithModal()" class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"><system-button-icon [icon]="'search'"></system-button-icon></button>
                         </div>
                     </div>

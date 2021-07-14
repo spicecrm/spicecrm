@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -10,32 +10,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 -->
 
-<div class="slds-grid slds-gutters slds-wrap slds-grid--vertical-align-center ">
-    <div class=" slds-col slds-size--1-of-1 slds-large-size--1-of-2 slds-m-bottom--x-small">
-        <div class="slds-form-element slds-truncate">
-            <div class="slds-form-element__control">
-                <span *ngIf="invalid_email" class="slds-p-left--small" style="text-decoration: line-through">{{emailadr}}</span>
-                <input #inputText *ngIf="!invalid_email" type="text" class="slds-input" [(ngModel)]="emailadr" (blur)="onBlur.emit()">
-            </div>
-        </div>
+<div class="slds-form-element slds-truncate slds-size--1-of-1" [class.slds-has-error]="emailAddress.invalid_email == 1">
+    <div class="slds-form-element__control">
+        <input *ngIf="!emailAddress.hasFocus; else hasFocusContainer" type="text" class="slds-input" [(ngModel)]="emailAddressText">
+        <ng-template #hasFocusContainer>
+            <input type="text" class="slds-input" [(ngModel)]="emailAddressText" system-autofocus>
+        </ng-template>
     </div>
-    <div class="slds-col slds-size--1-of-1 slds-large-size--1-of-2 slds-m-bottom--x-small">
-        <div class="slds-grid slds-grid--align-spread">
-            <div class="slds-truncate">
-                <system-input-radio value="1" [name]="primaryInputRadioName" [(ngModel)]="primary" [disabled]="invalid_email || this.emailaddress.email_address == ''" class="slds-size--1-of-3">
-                    <system-label label="LBL_EMAILADDRESS_FIELD_PRIMARY"></system-label>
-                </system-input-radio>
-            </div>
-            <div class="slds-truncate">
-                <system-checkbox [(ngModel)]="opt_out" [disabled]="invalid_email || this.emailaddress.email_address == ''" class="slds-size--1-of-3">
-                    <system-label label="LBL_EMAILADDRESS_FIELD_OPT_OUT"></system-label>
-                </system-checkbox>
-            </div>
-            <div class="slds-truncate">
-                <system-checkbox [ngModel]="invalid_email" [disabled]="true" class="slds-size--1-of-3">
-                    <system-label label="LBL_EMAILADDRESS_FIELD_INVALID"></system-label>
-                </system-checkbox>
-            </div>
-        </div>
+    <div *ngIf="emailAddress.invalid_email == 1" class="slds-form-element__help">
+        <system-label label="LBL_INPUT_INVALID"></system-label>
     </div>
 </div>

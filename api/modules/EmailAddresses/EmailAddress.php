@@ -70,8 +70,7 @@ class EmailAddress extends SugarBean
 
     public $email_address;
 
-    function __construct()
-    {
+    public function __construct() {
         parent::__construct();
     }
 
@@ -87,8 +86,7 @@ class EmailAddress extends SugarBean
     }
     */
 
-    function search($searchterm)
-    {
+    public function search($searchterm): array {
         $db = DBManagerFactory::getInstance();
 
         $emailAddresses = [];
@@ -331,7 +329,7 @@ class EmailAddress extends SugarBean
                     if (isset($current_links[$emailId])) {
                         if (!$isConversion) { // do not update anything if this is for lead conversion
                             if ($address['primary_address'] != $current_links[$emailId]['primary_address'] or $address['reply_to_address'] != $current_links[$emailId]['reply_to_address'] ) {
-                                $upd_eabr="UPDATE email_addr_bean_rel SET primary_address='".$this->db->quote($address['primary_address'])."', reply_to_address='".$this->db->quote((empty($address['reply_to_address']) ? 0 : $address['reply_to_address']))."' WHERE id='".$this->db->quote($current_links[$emailId]['id'])."'";
+                                $upd_eabr = "UPDATE email_addr_bean_rel SET opt_in_status = '{$address['opt_in_status']}', primary_address='" . $this->db->quote($address['primary_address']) . "', reply_to_address='" . $this->db->quote((empty($address['reply_to_address']) ? 0 : $address['reply_to_address'])) . "' WHERE id='" . $this->db->quote($current_links[$emailId]['id']) . "'";
                             }
 
                             unset($current_links[$emailId]);
@@ -348,7 +346,7 @@ class EmailAddress extends SugarBean
                             }
                         }
                         $now = $this->db->now();
-                        $upd_eabr = "INSERT INTO email_addr_bean_rel (id, email_address_id,bean_id, bean_module,primary_address,reply_to_address,date_created,date_modified,deleted) VALUES('".$this->db->quote($guid)."', '".$this->db->quote($emailId)."', '".$this->db->quote($id)."', '".$this->db->quote($module)."', ".intval($primary).", ".intval($address['reply_to_address']).", $now, $now, 0)";
+                        $upd_eabr = "INSERT INTO email_addr_bean_rel (id, email_address_id,bean_id, bean_module,primary_address,reply_to_address,date_created,date_modified,deleted, opt_in_status) VALUES('" . $this->db->quote($guid) . "', '" . $this->db->quote($emailId) . "', '" . $this->db->quote($id) . "', '" . $this->db->quote($module) . "', " . intval($primary) . ", " . intval($address['reply_to_address']) . ", $now, $now, 0, '{$address['opt_in_status']}')";
                     }
 
                     if (!empty($upd_eabr)) {
@@ -803,8 +801,7 @@ class EmailAddress extends SugarBean
         $return = [];
         $module = $this->getCorrectedModule($module);
 
-        $q = "SELECT ea.email_address, ea.email_address_caps, ea.invalid_email, ea.opt_out, ea.date_created, ea.date_modified,
-                ear.id, ear.email_address_id, ear.bean_id, ear.bean_module, ear.primary_address, ear.reply_to_address, ear.deleted
+        $q = "SELECT ea.email_address, ea.email_address_caps, ea.invalid_email, ea.opt_out, ea.date_created, ea.date_modified, ear.*
                 FROM email_addresses ea LEFT JOIN email_addr_bean_rel ear ON ea.id = ear.email_address_id
                 WHERE ear.bean_module = '".$this->db->quote($module)."'
                 AND ear.bean_id = '".$this->db->quote($id)."'
@@ -812,7 +809,7 @@ class EmailAddress extends SugarBean
                 ORDER BY ear.reply_to_address, ear.primary_address DESC";
         $r = $this->db->query($q);
 
-        while($a = $this->db->fetchByAssoc($r, FALSE)) {
+        while($a = $this->db->fetchByAssoc($r)) {
             $return[] = $a;
         }
 
@@ -835,7 +832,7 @@ class EmailAddress extends SugarBean
         $result = $this->db->query("select email_address_id from email_addr_bean_rel eabr WHERE eabr.bean_id = '".$this->db->quote($parentBeanId)."' AND eabr.bean_module = '".$this->db->quote($moduleName)."' and eabr.deleted=0");
         $this->stateBeforeWorkflow = [];
         $ids = [];
-        while ($row = $this->db->fetchByAssoc($result, false))
+        while ($row = $this->db->fetchByAssoc($result))
         {
             $ids[] =$this->db->quote($row['email_address_id']); // avoid 2nd order SQL Injection
         }
@@ -844,7 +841,7 @@ class EmailAddress extends SugarBean
             $ids = implode("', '", $ids);
             $queryEmailData = "SELECT id, email_address, invalid_email, opt_out FROM {$this->table_name} WHERE id IN ('$ids') AND deleted=0";
             $result = $this->db->query($queryEmailData);
-            while ($row = $this->db->fetchByAssoc($result, false))
+            while ($row = $this->db->fetchByAssoc($result))
             {
                 $this->stateBeforeWorkflow[$row['id']] = array_diff_key($row, ['id' => null]);
             }

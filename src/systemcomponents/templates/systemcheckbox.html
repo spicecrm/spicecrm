@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -10,10 +10,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 -->
 
-<span class="slds-checkbox slds-truncate">
+<span class="slds-checkbox">
     <input #inputCheckbox type="checkbox" id="checkbox-{{id}}" [attr.aria-labelledby]="'checkbox-button-label-'+id+' check-group-header'" (click)="click($event)" [disabled]="disabled" [value]="value" [(ngModel)]="model_value" />
-    <label class="slds-checkbox__label" for="checkbox-{{id}}" id="checkbox-button-label-{{id}}">
-        <span class="slds-checkbox_faux"></span>
+    <label class="slds-checkbox__label slds-truncate" for="checkbox-{{id}}" id="checkbox-button-label-{{id}}">
+        <span class="slds-checkbox_faux slds-m-horizontal--xxx-small"></span>
         <span *ngIf="!hidelabel" class="slds-form-element__label slds-p-horizontal--xx-small"><ng-content></ng-content></span>
     </label>
 </span>

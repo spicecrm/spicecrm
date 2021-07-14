@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -80,13 +80,8 @@ export class SpiceGoogleMapsRecordContainer implements OnInit, OnDestroy {
      * set the module for the module list service and activate cache
      */
     private initializeModelList() {
-        // set usecahce to false
-        this.modelList.usecache = false;
         // set the module in an embedded mode so not the full list is loaded
-        this.modelList.setModule(this.model.module, true);
-
-        // set the container component so we
-        this.modelList.listcomponent = 'SpiceGoogleMapsRecordContainer';
+        this.modelList.initialize(this.model.module, 'SpiceGoogleMapsRecordContainer');
     }
 
     /**

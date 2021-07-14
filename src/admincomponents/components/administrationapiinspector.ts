@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -67,6 +67,17 @@ export class AdministrationAPIInspector {
        this.apiinspector.apiFilterAdminOnly = !this.apiinspector.apiFilterAdminOnly;
     }
 
+    /**
+     * toggels the admin only filter
+     *
+     * @param e
+     * @private
+     */
+    private toggleValidatedOnly(e: MouseEvent) {
+       e.preventDefault();
+       e.stopPropagation();
+       this.apiinspector.apiFilterValidatedOnly = !this.apiinspector.apiFilterValidatedOnly;
+    }
 
     /**
      * opens a modal to details more details

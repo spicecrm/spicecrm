@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -13,8 +13,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 /**
  * @module DirectivesModule
  */
-import {Directive, Input} from '@angular/core';
+import {Directive, Input, Output, EventEmitter, OnDestroy} from '@angular/core';
 import {model} from "../../services/model.service";
+import {Subscription} from "rxjs";
 
 /**
  * a directive that does nothing else but to provide a model service instance, populated by an model like object
@@ -29,12 +30,26 @@ import {model} from "../../services/model.service";
     selector: '[system-model-provider]',
     providers: [model]
 })
-export class SystemModelProviderDirective {
+export class SystemModelProviderDirective implements OnDestroy {
+    /**
+     * emit when the model data$ emits
+     */
+    @Output() public data$ = new EventEmitter<any>();
+    /**
+     * holds subscription to unsubscribe
+     * @private
+     */
+    private subscription = new Subscription();
+
     constructor(
         public model: model
     ) {
         // in case the host component is listening to the loading status and waits for it!
         this.model.isLoading = true;
+
+        this.subscription.add(
+            this.model.data$.subscribe(data => this.data$.next(data))
+        );
     }
 
     /**
@@ -50,6 +65,7 @@ export class SystemModelProviderDirective {
      */
     @Input('system-model-provider')
     set provided_model(provided_model: { module: string, id: string, data: any }) {
+
         this.model.module = provided_model.module;
         if (provided_model.id) {
             this.model.id = provided_model.id;
@@ -58,7 +74,16 @@ export class SystemModelProviderDirective {
         }
 
         if (provided_model.data) {
-            this.model.data = this.model.utils.backendModel2spice(provided_model.module, provided_model.data);
+
+            if (provided_model.data.isNew) {
+                this.model.initialize();
+            }
+
+
+            this.model.setFields(
+                this.model.utils.backendModel2spice(provided_model.module, provided_model.data)
+            );
+
             this.model.isLoading = false;
             this.model.data$.next(this.model.data);
 
@@ -69,7 +94,15 @@ export class SystemModelProviderDirective {
         } else if (this.model.id) {
             // if no data was found BUT an ID, load it from backend... isLoading will be set inside getData()
             this.model.getData();
+        } else {
+            this.model.initialize();
         }
+    }
 
+    /**
+     * unsubscribe from subscription
+     */
+    public ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 }

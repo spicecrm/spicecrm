@@ -165,9 +165,7 @@ $vardefs = [
                 'name' => 'description',
                 'vname' => 'LBL_DESCRIPTION',
                 'type' => 'text',
-                'comment' => 'Full text of the note',
-                'rows' => 6,
-                'cols' => 80,
+                'comment' => 'Full text of the note'
             ],
         'deleted' =>
             [

@@ -1,6 +1,7 @@
 <?php
 namespace SpiceCRM\includes\google;
 
+use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
@@ -14,9 +15,17 @@ class GoogleAPIRestHandler
             'status' => 'NOK'
         ];
 
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $currentLanguage = $current_user->getPreference('language');
+
+        $lang = 'en';
+        if (!empty($currentLanguage)) {
+            $lang = strtolower(substr($currentLanguage, 0, 2));
+        }
+
         $ch = curl_init();
         // https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=sol4 it&inputtype=textquery&fields=photos,formatted_address,name,place_id&key=AIzaSyCmw4Z9h4lf9eUGVyjKPyr9yr1s8WeXlPM
-        $url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?key=". SpiceConfig::getInstance()->config['googleapi']['mapskey']."&locationbias=".trim($locationbias)."&inputtype=textquery&fields=photos,formatted_address,name,place_id&input=" . urlencode($term);
+        $url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?key=". SpiceConfig::getInstance()->config['googleapi']['mapskey']."&locationbias=".trim($locationbias)."&inputtype=textquery&language=$lang&fields=photos,formatted_address,name,place_id&input=" . urlencode($term);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -43,8 +52,16 @@ class GoogleAPIRestHandler
             'status' => 'NOK'
         ];
 
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $currentLanguage = $current_user->getPreference('language');
+
+        $lang = 'en';
+        if (!empty($currentLanguage)) {
+            $lang = strtolower(substr($currentLanguage, 0, 2));
+        }
+
         $ch = curl_init();
-        $url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?key=" . SpiceConfig::getInstance()->config['googleapi']['mapskey'] . "&types=geocode&input=" . urlencode($term);
+        $url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?key=" . SpiceConfig::getInstance()->config['googleapi']['mapskey'] . "&types=geocode&language=$lang&input=" . urlencode($term);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -71,8 +88,16 @@ class GoogleAPIRestHandler
             'status' => 'NOK'
         ];
 
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $currentLanguage = $current_user->getPreference('language');
+
+        $lang = 'en';
+        if (!empty($currentLanguage)) {
+            $lang = strtolower(substr($currentLanguage, 0, 2));
+        }
+
         $ch = curl_init();
-        $url = "https://maps.googleapis.com/maps/api/place/details/json?language=en&key=" . SpiceConfig::getInstance()->config['googleapi']['mapskey'] . "&placeid=" . $placeid;
+        $url = "https://maps.googleapis.com/maps/api/place/details/json?language=$lang&key=" . SpiceConfig::getInstance()->config['googleapi']['mapskey'] . "&placeid=" . $placeid;
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

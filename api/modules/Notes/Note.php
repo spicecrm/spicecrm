@@ -120,7 +120,6 @@ class Note extends SugarBean {
 	 */
 	function mark_deleted($id) {
 
-
 		if($this->parent_type == 'Emails') {
 			if(isset(SpiceConfig::getInstance()->config['email_default_delete_attachments']) && SpiceConfig::getInstance()->config['email_default_delete_attachments'] == true) {
 				$removeFile = "upload://$id";
@@ -168,24 +167,6 @@ class Note extends SugarBean {
 
 	function fill_in_additional_list_fields() {
 		$this->fill_in_additional_detail_fields();
-	}
-
-	function fill_in_additional_detail_fields() {
-		parent::fill_in_additional_detail_fields();
-		//TODO:  Seems odd we need to clear out these values so that list views don't show the previous rows value if current value is blank
-		$this->getRelatedFields('Contacts', $this->contact_id, ['name'=>'contact_name', 'phone_work'=>'contact_phone']);
-		if(!empty($this->contact_name)){
-
-			$emailAddress = BeanFactory::getBean('EmailAddresses');
-			$this->contact_email = $emailAddress->getPrimaryAddress(false, $this->contact_id, 'Contacts');
-		}
-
-		if(isset($this->contact_id) && $this->contact_id != '') {
-            $contact = BeanFactory::getBean('Contacts', $this->contact_id);
-            if($contact) {
-                $this->contact_name = $contact->full_name;
-            }
-		}
 	}
 
 

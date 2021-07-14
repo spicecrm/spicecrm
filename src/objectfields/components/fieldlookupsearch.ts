@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -15,7 +15,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  */
 import {Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges} from '@angular/core';
 import {model} from '../../services/model.service';
-import {modellist, relateFilter} from '../../services/modellist.service';
+import {modellist} from '../../services/modellist.service';
+import {relateFilter} from "../../services/interfaces.service";
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
 import {modal} from '../../services/modal.service';
@@ -109,7 +110,9 @@ export class fieldLookupSearch implements OnInit, OnChanges {
         this.modellist.loadlimit = 5;
 
         // set the module
-        this.modellist.setModule(this.module, true);
+        this.modellist.initialize(this.module);
+
+        this.modellist.getListData();
     }
 
     /**
@@ -118,7 +121,7 @@ export class fieldLookupSearch implements OnInit, OnChanges {
      * @param changes
      */
     public ngOnChanges(changes: SimpleChanges): void {
-        if (changes.relateId) {
+        if (changes.relateId && !!this.modellist.currentList) {
             this.modellist.getListData();
         }
     }

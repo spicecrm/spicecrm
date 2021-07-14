@@ -23,7 +23,8 @@ $dictionary['sysmodulefilters'] = [
         ],
         'filterdefs' => [
             'name' => 'filterdefs',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 2000
         ],
         'filtermethod' => [
             'name' => 'filtermethod',
@@ -72,7 +73,8 @@ $dictionary['syscustommodulefilters'] = [
         ],
         'filterdefs' => [
             'name' => 'filterdefs',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 2000
         ],
         'filtermethod' => [
             'name' => 'filtermethod',

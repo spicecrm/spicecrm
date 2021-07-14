@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -58,11 +58,11 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                         <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left slds-global-search__form-element"
                              role="none">
                             <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
-                            <input class="slds-input slds-combobox__input" type="search" [placeholder]="language.getLabel('LBL_SEARCH_SPICE')" (focus)="onFocus()" [(ngModel)]="searchTermUntrimmed" (keyup)="search($event)"/>
+                            <input class="slds-input slds-combobox__input" role="textbox" type="search" system-placeholder="LBL_SEARCH_SPICE" (focus)="onFocus()" [(ngModel)]="searchTermUntrimmed" (keyup)="search($event)"/>
                         </div>
                         <div class="slds-dropdown slds-dropdown_fluid" role="listbox">
-                            <global-header-search-recent-items *ngIf="searchTerm === ''" (selected)="selected($event)"></global-header-search-recent-items>
-                            <global-header-search-results-items *ngIf="searchTerm !== ''" [searchTerm]="searchTerm" [searchResults]="searchresults" (selected)="selected($event)"></global-header-search-results-items>
+                            <global-header-search-recent-items *ngIf="showRecent && searchTerm === ''" (selected)="selected($event)"></global-header-search-recent-items>
+                            <global-header-search-results-items *ngIf="searchTerm !== '' && searchTermsValid(searchTerm)" [searchTerm]="searchTerm" [searchResults]="searchresults" (selected)="selected($event)"></global-header-search-results-items>
                         </div>
                     </div>
                 </div>

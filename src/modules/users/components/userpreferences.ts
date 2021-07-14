@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -170,7 +170,7 @@ export class UserPreferences implements OnDestroy {
      * @private
      */
     private loadPreferences() {
-        if (this.isCurrentUser || this.canEdit) {
+        if (this.isCurrentUser) {
 
             this.subscriptions = this.loadedSubscription.subscribe(() => {
                 this.isLoading = false;
@@ -181,8 +181,8 @@ export class UserPreferences implements OnDestroy {
             });
             this.preferencesService.getPreferences(this.loadedSubscription);
 
-        } else {
-            this.backend.getRequest('user/' + this.model.data.id + '/preferences/global', {}).subscribe(prefs => {
+        } else if (this.canEdit) {
+            this.backend.getRequest('module/Users/' + this.model.data.id + '/preferences/global', {}).subscribe(prefs => {
                     this.isLoading = false;
                     this.preferences = prefs;
 
@@ -201,12 +201,12 @@ export class UserPreferences implements OnDestroy {
      * @private
      */
     private loadDashboardsLists() {
-        this.backend.getList('Dashboards', [{sortfield: 'name', sortdirection: 'DESC'}], ['name', 'id'], {limit: -99})
+        this.backend.getList('Dashboards', [{sortfield: 'name', sortdirection: 'DESC'}], {limit: -99})
             .subscribe((dashboards: any) => {
                 this.dashboards = dashboards.list;
                 this.setHomeDashboardData(this.preferences.home_dashboard);
             });
-        this.backend.getList('DashboardSets', [{sortfield: 'name', sortdirection: 'DESC'}], ['name', 'id'], {limit: -99})
+        this.backend.getList('DashboardSets', [{sortfield: 'name', sortdirection: 'DESC'}], {limit: -99})
             .subscribe((dashboardSets: any) => {
                 this.dashboardSets = dashboardSets.list;
                 this.setDashboardSetData(this.preferences.home_dashboardset);
@@ -248,7 +248,7 @@ export class UserPreferences implements OnDestroy {
     private save() {
 
         if (!this.isCurrentUser) {
-            this.backend.postRequest('user/' + this.model.data.id + '/preferences/global', {}, this.preferences).subscribe(
+            this.backend.postRequest('module/Users/' + this.model.data.id + '/preferences/global', {}, this.preferences).subscribe(
                 savedprefs => {
                     this.preferences = savedprefs;
                     this.view.setViewMode();

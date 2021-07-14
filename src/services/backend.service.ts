@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -231,6 +231,52 @@ export class backend {
             }
 
             this.http.post(
+                this.configurationService.getBackendUrl() + "/" + encodeURI(route),
+                body,
+                {headers: headers, observe: "response", params: this.prepareParams(params)}
+            ).subscribe(
+                (res) => {
+                    responseSubject.next(res.body);
+                    responseSubject.complete();
+                },
+                err => {
+                    if (!this.handleError(err, route, 'POST', {getParams: params, body: body}, responseSubject)) {
+                        responseSubject.error(err);
+                    }
+                }
+            );
+        }
+        return responseSubject.asObservable();
+    }
+
+    /**
+     * generic request function for a PATCH request to the backend
+     *
+     * @param route  the route to be called on the backend e.g. 'modules/Account/<guid>'
+     * @param params an object with additonal params to be sent to the backend with the get request
+     * @param body an object being sent as body/payload with the request
+     * @param httpErrorReport a boolen indicator to specify if the erro is one occurs shoudl be logged, defaults to true
+     *
+     * @return an Observable that is resolved with the JSON decioded response from the request. If an error occurs the error is returnes as error from the Observable
+     */
+    public patchRequest(route: string = "", params: any = {}, body: any = {}, responseSubject?: Subject<any>): Observable<any> {
+        if (!responseSubject) {
+            responseSubject = new Subject<any>();
+        }
+
+        // if requests shoud be staged do not even attempt to process currently
+        if (this.stageRequests) {
+            this.stageRequest('PATCH', route, {getParams: params, body: body}, responseSubject);
+        } else {
+
+            let headers = this.getHeaders();
+            if (body) {
+                headers = headers.set("Content-Type", "application/json");
+            } else {
+                headers = headers.set("Content-Type", "application/x-www-form-urlencoded");
+            }
+
+            this.http.patch(
                 this.configurationService.getBackendUrl() + "/" + encodeURI(route),
                 body,
                 {headers: headers, observe: "response", params: this.prepareParams(params)}
@@ -617,6 +663,9 @@ export class backend {
                 case 'POST':
                     this.postRequest(stagedRequest.route, stagedRequest.data.getParams, stagedRequest.data.body, stagedRequest.responseSubject);
                     break;
+                case 'PATCH':
+                    this.patchRequest(stagedRequest.route, stagedRequest.data.getParams, stagedRequest.data.body, stagedRequest.responseSubject);
+                    break;
                 case 'POSTWITHPROGRESS':
                     this.postRequestWithProgress(stagedRequest.route, stagedRequest.data.getParams, stagedRequest.data.body, stagedRequest.data.progress, stagedRequest.responseSubject);
                     break;
@@ -667,7 +716,7 @@ export class backend {
      */
     private errorsToBackend() {
         if (this.httpErrorsToReport.length) {
-            this.postRequest('httperrors', null, {errors: this.httpErrorsToReport}).subscribe(
+            this.postRequest('system/httperrors', null, {errors: this.httpErrorsToReport}).subscribe(
                 () => {
                     this.httpErrorsToReport.length = 0;
                     this.httpErrorReporting = false;
@@ -743,18 +792,11 @@ export class backend {
     /**
      *
      * @param {string} module
-     * @param {string} sortfield
-     * @param {string} sortdirection
-     * @param {Array<any>} fields
+     * @param sortfields
      * @param params
      * @returns {<Array<any>>}
      */
-    public getList(
-        module: string,
-        sortfields: any[] = [],
-        fields: any[] = [],
-        params: any = {},
-    ): Observable<any[]> {
+    public getList(module: string, sortfields: any[] = [], params: any = {}): Observable<any[]> {
         let responseSubject = new Subject<any[]>();
 
         let start: number = params.start ? params.start : 0;
@@ -770,10 +812,6 @@ export class backend {
 
         if (sortfields.length > 0) {
             reqparams.sortfields = sortfields;
-        }
-
-        if (fields && fields.length > 0) {
-            reqparams.fields = JSON.stringify(fields);
         }
 
         // todo: break out Options String
@@ -794,6 +832,10 @@ export class backend {
                     responseSubject.complete();
                 }
                 responseSubject.next(response);
+                responseSubject.complete();
+            },
+            error => {
+                responseSubject.error(error);
                 responseSubject.complete();
             }
         );

@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -162,7 +162,7 @@ export class ActivityTimelineDropZoneWrapper {
                 }, false);
 
                 // let url = this.configurationService.getBackendUrl() + `/module/Notes/${moduleId}/noteattachment`;
-                let url = this.configurationService.getBackendUrl() + '/spiceAttachments';
+                let url = this.configurationService.getBackendUrl() + '/common/spiceattachments';
 
                 // change the url to the "add email" url if the file type is msg
                 if (moduleName != 'Notes') url = this.configurationService.getBackendUrl() + "/module/Emails/msg";

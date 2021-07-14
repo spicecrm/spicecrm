@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -28,7 +28,7 @@ export class view {
     /**
      * an event emitter that fires when the mode changes
      */
-    public mode$: BehaviorSubject<string>;
+    public mode$: BehaviorSubject<'view'|'edit'>;
 
     /**
      * defines if the view can be set to edit mode or not
@@ -74,8 +74,14 @@ export class view {
      */
     public linkedToModel: boolean = false;
 
+    /**
+     * an additional loading indicator. This helps in embedded views is subparts are loading.
+     * Fields will present a stencial if this is set to true
+     */
+    public isLoading: boolean = false;
+
     constructor(@Optional() private model: model, private layout: layout) {
-        this.mode$ = new BehaviorSubject<string>(this.mode);
+        this.mode$ = new BehaviorSubject<'view'|'edit'>(this.mode);
 
         if (this.model) {
             this.model.mode$.subscribe(mode => {

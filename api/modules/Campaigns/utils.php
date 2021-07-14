@@ -45,7 +45,7 @@
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\TimeDate;
-
+use SpiceCRM\modules\ProspectLists\ProspectList;
 
 /**
  * Queries for the list

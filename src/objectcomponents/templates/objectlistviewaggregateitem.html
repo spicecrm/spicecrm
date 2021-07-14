@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -11,12 +11,12 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 -->
 
 <div class="slds-grid slds-grid--vertical-align-center">
-    <system-checkbox [(ngModel)]="checked"></system-checkbox>
+    <system-checkbox [disabled]="loading" [(ngModel)]="checked"></system-checkbox>
     <!-- switch between the different display types-->
     <ng-container [ngSwitch]="aggregate.type">
         <object-listview-aggregate-item-range *ngSwitchCase="'range'" [aggregate]="aggregate" [item]="bucketitem"></object-listview-aggregate-item-range>
         <object-listview-aggregate-item-term *ngSwitchCase="'term'" [aggregate]="aggregate" [item]="bucketitem"></object-listview-aggregate-item-term>
         <div *ngSwitchDefault>{{bucketitem.displayName}}</div>
     </ng-container>
-    <div class="slds-p-left--xx-small">({{bucketitem.doc_count}})</div>
+    <div class="slds-p-left--xx-small">(<system-display-number [number]="bucketitem.doc_count" [noDigits]="true"></system-display-number>)</div>
 </div>

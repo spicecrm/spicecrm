@@ -54,4 +54,22 @@ class OpportunityStage extends SugarBean {
 
         return parent::ACLAccess($view, $is_owner);
     }
+
+
+    /**
+     * mainly for KReporter purpose
+     *
+     */
+    function calculateTimeBetweenCurrentStageAndPreviousStage (){
+       // current stage
+
+       // next stage
+    }
+
+    /**
+     * the next stage will be the one found in history with the first higher date_entered value
+     */
+    function getNextStage(){
+
+    }
 }

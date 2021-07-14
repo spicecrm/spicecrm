@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -117,8 +117,13 @@ export class language {
             }
         }
 
+        // consturct the URL
+        let url = this.configurationService.getBackendUrl() + '/system/language';
+        if(this.currentlanguage) url += '/' + this.currentlanguage;
+
+        // get the language
         this.http.get(
-            this.configurationService.getBackendUrl() + '/language/'+this.currentlanguage,
+            url,
             {headers: this.session.getSessionHeader(), observe: "response", params: {setPreferences: '1'}}
         ).subscribe(
             (res: any) => {
@@ -532,7 +537,7 @@ export class language {
      */
     public setDefaultLanguage(language) {
         this.http.post(
-            this.configurationService.getBackendUrl() + '/syslanguages/setdefault/' + language, {},
+            this.configurationService.getBackendUrl() + '/configuration/syslanguages/setdefault/' + language, {},
             {headers: this.session.getSessionHeader(), observe: "response"}
         ).subscribe(
             (res: any) => {

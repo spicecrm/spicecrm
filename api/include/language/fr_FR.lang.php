@@ -658,12 +658,10 @@ $app_list_strings = [
         ],
     'document_status_dom' =>
         [
-            'FAQ' => 'FAQ',
             'Active' => 'Actif',
             'Draft' => 'Brouillon',
             'Expired' => 'Périmé',
             'Under Review' => 'En cours de révision',
-            'Pending' => 'En attente',
         ],
     'document_template_type_dom' =>
         [
@@ -2642,6 +2640,7 @@ $app_list_strings['cruser_role_dom'] = [
 ];
 
 $app_list_strings['crstatus_dom'] = [
+    '-1' => 'backlog',
     '0' => 'créé',
     '1' => 'mise en oeuvre',
     '2' => 'unit tested',

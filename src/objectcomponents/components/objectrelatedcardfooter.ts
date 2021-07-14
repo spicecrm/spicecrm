@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -13,7 +13,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 /**
  * @module ObjectComponents
  */
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, Output} from '@angular/core';
 import {relatedmodels} from '../../services/relatedmodels.service';
 import {model} from '../../services/model.service';
 import {language} from '../../services/language.service';
@@ -62,6 +62,13 @@ export class ObjectRelatedCardFooter implements OnInit {
      */
     private componentid: string;
 
+    /**
+     * indicates that we are paginating and the service is loading
+     *
+     * @private
+     */
+    public paginating: boolean = false;
+
     constructor(private language: language, private relatedmodels: relatedmodels, private model: model, private router: Router, private navigationtab: navigationtab) {
         this.componentid = this.model.utils.generateGuid();
     }
@@ -103,8 +110,8 @@ export class ObjectRelatedCardFooter implements OnInit {
     /**
      * a helper to check if the view All button shoudl be displayed or not
      */
-    private canViewAll() {
-        return this.relatedmodels.count > 0; // this.relatedmodels.items.length;
+    get canViewAll() {
+        return this.relatedmodels.count > 0 && this.relatedmodels.count > this.relatedmodels.items.length; // this.relatedmodels.items.length;
     }
 
     private canSetCount() {
@@ -116,8 +123,8 @@ export class ObjectRelatedCardFooter implements OnInit {
      */
     private showAll() {
         let routePrefix = '';
-        if(this.navigationtab?.tabid){
-            routePrefix = '/tab/'+this.navigationtab.tabid;
+        if (this.navigationtab?.tabid) {
+            routePrefix = '/tab/' + this.navigationtab.tabid;
         }
 
         if (this.fieldset && this.fieldset != '') {
@@ -131,6 +138,90 @@ export class ObjectRelatedCardFooter implements OnInit {
      * triggers the reload of the related models service
      */
     private reload() {
-        this.relatedmodels.getData();
+        this.relatedmodels.offset = 0;
+        this.paginating = true;
+        this.relatedmodels.getData().subscribe(() => this.paginating = false);
+    }
+
+    /**
+     * getter if the next button should be disabled
+     */
+    get nextDisabled() {
+        return this.relatedmodels.offset + this.relatedmodels.loaditems >= this.relatedmodels.count;
+    }
+
+    /**
+     * navigate one page forward
+     *
+     * @private
+     */
+    private nextPage() {
+        if (!this.nextDisabled) {
+            this.relatedmodels.offset = this.relatedmodels.offset + this.relatedmodels.loaditems;
+            this.paginating = true;
+            this.relatedmodels.getData(true).subscribe(() => this.paginating = false);
+        }
+    }
+
+    /**
+     * navigate to the last page
+     *
+     * @private
+     */
+    private lastPage() {
+        if (!this.nextDisabled) {
+            let lastOffset = Math.floor(this.relatedmodels.count / this.relatedmodels.loaditems) * this.relatedmodels.loaditems;
+            this.relatedmodels.offset = lastOffset;
+            this.paginating = true;
+            this.relatedmodels.getData(true).subscribe(() => this.paginating = false);
+        }
+    }
+
+    /**
+     * getter if the previous and first buttons sh9udl be disabled
+     */
+    get previousDisabled() {
+        return this.relatedmodels.offset == 0;
+    }
+
+    /**
+     * navigate to the previous page
+     *
+     * @private
+     */
+    private previousPage() {
+        if (!this.previousDisabled) {
+            this.relatedmodels.offset = this.relatedmodels.offset - this.relatedmodels.loaditems;
+            if (this.relatedmodels.offset < 0) this.relatedmodels.offset = 0;
+            this.paginating = true;
+            this.relatedmodels.getData(true).subscribe(() => this.paginating = false);
+        }
+    }
+
+    /**
+     * navigate to the first page
+     *
+     * @private
+     */
+    private firstPage() {
+        if (!this.previousDisabled) {
+            this.relatedmodels.offset = 0;
+            this.paginating = true;
+            this.relatedmodels.getData(true).subscribe(() => this.paginating = false);
+        }
+    }
+
+    /**
+     * gets the current page number
+     */
+    get page() {
+        return this.relatedmodels.offset / this.relatedmodels.loaditems + 1;
+    }
+
+    /**
+     * gets the total number of pages
+     */
+    get pages() {
+        return Math.floor(this.relatedmodels.count / this.relatedmodels.loaditems) + 1;
     }
 }

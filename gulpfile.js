@@ -139,15 +139,14 @@ gulp.task('js:build:subtask:dobuild', function(done){
         'src/services/territories.service.ts',
         'src/services/favorite.service.ts',
         'src/services/reminder.service.ts',
-        'src/services/assistant.service.ts',
         'src/services/currency.service.ts',
         'src/services/loader.service.ts',
         'src/services/login.service.ts',
         'src/services/dockedcomposer.service.ts',
         'src/services/fts.service.ts',
+        'src/services/socket.service.ts',
         'src/services/navigation.service.ts',
         'src/services/navigationtab.service.ts',
-        'src/services/socket.service.ts',
         'src/services/model.service.ts',
         'src/services/mediafiles.service.ts',
         'src/services/modelattachments.service.ts',
@@ -156,11 +155,14 @@ gulp.task('js:build:subtask:dobuild', function(done){
         'src/services/view.service.ts',
         'src/services/relatedmodels.service.ts',
         'src/services/activitiytimeline.service.ts',
-        'src/services/fielderrorgrouping.service.ts'
+        'src/services/fielderrorgrouping.service.ts',
+        'src/services/notification.service.ts',
+        'src/services/assistant.service.ts',
+        'src/services/subscription.service.ts'
     ])
         .pipe(concat('services.ts'))
-        .pipe(replace(/import[a-zA-Z\-\s{}'",.\/\n\r@]*;/g, ''))
-        .pipe(replace(/declare[a-zA-Z\-\s{}'",.:\/\n\r@]*;/g, ''))
+        .pipe(replace(/import[a-zA-Z0-9\-\s{}'",.\/\n\r@]*;/g, ''))
+        .pipe(replace(/declare[a-zA-Z0-9\-\s{}'",.:\/\n\r@]*;/g, ''))
         .pipe(header(fs.readFileSync('src/services/buildheader.file', 'utf8')))
         //.pipe(removeEmptyLines()) => removed. Generates occasionally errors in files
         .pipe(header(headerText))

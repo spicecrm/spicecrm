@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -41,7 +41,7 @@ export class fieldRichText extends fieldGeneric {
     /**
      * holds the available signatures
      */
-    public signatures: Array<{label: string, content: string, id: string}> = [];
+    public signatures: Array<{ label: string, content: string, id: string }> = [];
     /**
      * holds the spice page builder html code
      * @private
@@ -81,6 +81,8 @@ export class fieldRichText extends fieldGeneric {
      * @private
      */
     private useStylesheets: boolean;
+
+    private signaturePreviousPosition: number = -1;
 
     constructor(public model: model,
                 public view: view,
@@ -146,6 +148,44 @@ export class fieldRichText extends fieldGeneric {
     }
 
     /**
+     * render the selected signature to the dom
+     */
+    public renderSelectedSignature() {
+
+        this.clearSignature();
+
+        if (!this.selectedSignatureId) return;
+
+        if (!this.value) this.value = '';
+
+        const signature = this.signatures.find(s => s.id == this.selectedSignatureId);
+        const html = `<div data-signature="" style="margin: 10px 0">${signature.content}</div>`;
+
+        if (this.signaturePreviousPosition > -1) {
+            this.value = `${this.value.slice(0, this.signaturePreviousPosition)} ${html} ${this.value.slice(html.length + this.signaturePreviousPosition)}`;
+        } else {
+            this.value = `<p><br></p> ${html} ${this.value}`;
+        }
+    }
+
+    /**
+     * sets the edit mode on the view and the model into editmode itself
+     */
+    public setEditMode() {
+        this.model.startEdit();
+        this.view.setEditMode();
+        this.cdRef.detectChanges();
+    }
+
+    protected encodeHtml(value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    /**
      * load mailbox signature from backend or from cache and render the signature
      * push the signature option
      * @private
@@ -162,13 +202,13 @@ export class fieldRichText extends fieldGeneric {
             return this.backend.get('Mailboxes', mailboxId)
                 .toPromise()
                 .then((data: any) => {
-                if (!data.email_signature) return;
-                this.configurationService.setData('mailbox_signature_' + mailboxId, data.email_signature);
+                    if (!data.email_signature) return;
+                    this.configurationService.setData('mailbox_signature_' + mailboxId, data.email_signature);
 
-                this.addSignature(mailboxId, data.email_signature, 'LBL_MAILBOX');
-                this.selectedSignatureId = mailboxId;
-                this.renderSelectedSignature();
-            });
+                    this.addSignature(mailboxId, data.email_signature, 'LBL_MAILBOX');
+                    this.selectedSignatureId = mailboxId;
+                    this.renderSelectedSignature();
+                });
         } else {
             this.addSignature(mailboxId, signatureContent, 'LBL_MAILBOX');
             this.selectedSignatureId = mailboxId;
@@ -208,46 +248,22 @@ export class fieldRichText extends fieldGeneric {
     }
 
     /**
-     * render the selected signature to the dom
-     */
-    public renderSelectedSignature() {
-        this.clearSignature();
-        if (!this.selectedSignatureId) return;
-        if (!this.value) this.value = '';
-        const signature = this.signatures.find(s => s.id == this.selectedSignatureId);
-        this.value = `<div data-signature>${signature.content}</div> ${this.value}`;
-    }
-
-    /**
      * clear the signature from the body
      * @private
      */
     private clearSignature() {
+
         if (!this.value) return;
+
         const tempElement: HTMLElement = document.createElement('div');
         tempElement.innerHTML = this.value;
+
         Array.from(tempElement.querySelectorAll('div[data-signature]'))
-            .forEach(el =>
-                el.parentNode.removeChild(el)
-            );
+            .forEach(el => {
+                this.signaturePreviousPosition = tempElement.innerHTML.indexOf(el.outerHTML);
+                el.parentNode.removeChild(el);
+            });
         this.value = tempElement.innerHTML;
-    }
-
-    /**
-     * sets the edit mode on the view and the model into editmode itself
-     */
-    public setEditMode() {
-        this.model.startEdit();
-        this.view.setEditMode();
-        this.cdRef.detectChanges();
-    }
-
-    protected encodeHtml(value) {
-        return String(value)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;');
     }
 
     private setStylesheetField() {

@@ -267,7 +267,15 @@ $dictionary['ProspectList'] = [
             'relationship' => 'prospectlists_prospect_list_filters',
             'source' => 'non-db',
             'module' => 'ProspectListFilters'
-        ]
+        ],
+        'emailschedules' => [
+            'name' => 'emailschedules',
+            'vname' => 'LBL_EMAIL_SCHEDULES',
+            'type' => 'link',
+            'relationship' => 'prospectlist_emailschedules',
+            'source' => 'non-db',
+            'module' => 'EmailSchedules'
+        ],
     ],
 
     'indices' => [

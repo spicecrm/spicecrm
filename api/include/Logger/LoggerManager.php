@@ -39,29 +39,30 @@ namespace SpiceCRM\includes\Logger;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * Log management
  * Modifications introduced in spicecrm 20180900 to support SpiceLogger
  * @api
  */
-
-
 class LoggerManager
 {
-	//this the the current log level
-	private $_level = 'fatal';
 
-	//this is a list of different loggers that have been loaded
-	protected static $_loggers = [];
+    //this the the current log level
+    private $_level = 'fatal';
 
-	//this is the instance of the LoggerManager
-	private static $_instance = NULL;
+    //this is a list of different loggers that have been loaded
+    protected static $_loggers = [];
+
+    //this is the instance of the LoggerManager
+    private static $_instance = NULL;
 
 	//these are the mappings for levels to different log types
 	private static $_logMapping = [
-		'default' => '\SpiceCRM\includes\Logger\SpiceLogger',
-		'fatal' => '\SpiceCRM\includes\Logger\SpiceLogger',
+		'default' => '\\SpiceCRM\\includes\\Logger\\SpiceLogger',
+		'fatal' => '\\SpiceCRM\\includes\\Logger\\SpiceLogger',
     ];
 
 	//these are the log level mappings anything with a lower value than your current log level will be logged
@@ -84,6 +85,8 @@ class LoggerManager
 
     ];
 
+    protected $transactionId;
+
 
 	//only let the getLogger instantiate this object
 	private function __construct()
@@ -95,6 +98,9 @@ class LoggerManager
 		if ( empty(self::$_loggers) )
 		    $this->_findAvailableLoggers();
 
+		if (empty($this->transactionId)) {
+		    $this->transactionId = SpiceUtils::createGuid();
+        }
 	}
 
 
@@ -155,19 +161,27 @@ class LoggerManager
             || $all
 
         ){
-        //END
+            //END
 
- 			//now we get the logger type this allows for having a file logger an email logger, a firebug logger or any other logger you wish you can set different levels to log differently
- 			$logger = (!empty(self::$_logMapping[$method])) ?
- 			    self::$_logMapping[$method] : self::$_logMapping['default'];
- 			//if we haven't instantiated that logger let's instantiate
- 			if (!isset(self::$_loggers[$logger])) {
- 			    self::$_loggers[$logger] = new $logger();
- 			}
- 			//tell the logger to log the message
+            //now we get the logger type this allows for having a file logger an email logger, a firebug logger or any other logger you wish you can set different levels to log differently
+            $logger = (!empty(self::$_logMapping[$method])) ?
+                self::$_logMapping[$method] : self::$_logMapping['default'];
+            //if we haven't instantiated that logger let's instantiate
+            if (!isset(self::$_loggers[$logger])) {
+                self::$_loggers[$logger] = new $logger();
+            }
             self::$_loggers[$logger]->log($method, $message, $logparams);
- 		}
+        }
  	}
+
+    /**
+     * Getter for the transaction ID.
+     *
+     * @return string
+     */
+ 	public function getTransactionId(): string {
+ 	    return $this->transactionId;
+    }
 
  	/**
  	 * Check if this log level will be producing any logging
@@ -246,7 +260,7 @@ class LoggerManager
      *
      */
     public static function getLevelCategories(){
-        if(empty(self::$_levelCategories) && isset( SpiceConfig::getInstance()->config['logger']['default'] ) && SpiceConfig::getInstance()->config['logger']['default'] === '\SpiceCRM\includes\Logger\SpiceLogger'){
+        if(empty(self::$_levelCategories) && isset( SpiceConfig::getInstance()->config['logger']['default'] ) && (SpiceConfig::getInstance()->get('logger.default') ?: '\\SpiceCRM\\includes\\Logger\\SpiceLogger') === '\\SpiceCRM\\includes\\Logger\\SpiceLogger'){
             $levelCategories = [];
             if(DBManagerFactory::getInstance()) {
                 $res = DBManagerFactory::getInstance()->queryOnly("SELECT * FROM syslogusers WHERE logstatus > 0 ORDER BY level");
@@ -267,7 +281,7 @@ class LoggerManager
 	{
 		if(!LoggerManager::$_instance){
 			LoggerManager::$_instance = new LoggerManager();
-            self::setLogger('default',(SpiceConfig::getInstance()->get('logger.default') ?: '\SpiceCRM\includes\Logger\SpiceLogger'));
+            self::setLogger('default',(SpiceConfig::getInstance()->get('logger.default') ?: '\\SpiceCRM\\includes\\Logger\\SpiceLogger'));
             self::setDbConfig(SpiceConfig::getInstance()->get('dbconfig'));
             self::getLevelCategories();
 		}
@@ -302,7 +316,7 @@ class LoggerManager
                             || $file == "."
                             || $file == "LoggerTemplate.php"
                             || $file == "LoggerManager.php"
-                            || $file == "RESTLogViewer.php"
+                            || $file == "APIlogViewer.php"
                             || !is_file("$location/$file")
                             )
                         continue;
@@ -329,13 +343,15 @@ class LoggerManager
  	    return $loggerLevels;
  	}
 
- 	public static function formatBackTrace($backTrace) {
- 	    $traces = "";
- 	    foreach ($backTrace as $entry) {
- 	        $traces .= "\n  " . $entry['file'] . '(' . $entry['line'] . '): ' .
+    public static function formatBackTrace($backTrace)
+    {
+        $traces = "";
+        foreach ($backTrace as $entry) {
+            $traces .= "\n  " . $entry['file'] . '(' . $entry['line'] . '): ' .
                 @$entry['class'] . '->' . $entry['function'];
         }
 
         return $traces;
     }
+
 }

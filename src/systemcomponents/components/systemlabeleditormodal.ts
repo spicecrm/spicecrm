@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -158,7 +158,7 @@ export class SystemLabelEditorModal implements OnInit {
 
         this.isLoading = true;
 
-        this.backend.getRequest('syslanguages/labels/' + this.labelData.name).subscribe(
+        this.backend.getRequest('configuration/syslanguages/labels/' + this.labelData.name).subscribe(
             (res) => {
                 this.isLoading = false;
                 if (res) {
@@ -191,7 +191,7 @@ export class SystemLabelEditorModal implements OnInit {
      */
     private save() {
         this.close();
-        this.backend.postRequest('syslanguages/labels', null, [this.labelData]).subscribe(
+        this.backend.postRequest('configuration/syslanguages/labels', null, [this.labelData]).subscribe(
             () => {
                 let currentTranslation = this.translations.find(translation => translation.syslanguage == this.language.currentlanguage);
                 this.language.addLabel(this.labelData.name, currentTranslation.translation_default, currentTranslation.translation_short, currentTranslation.translation_long);

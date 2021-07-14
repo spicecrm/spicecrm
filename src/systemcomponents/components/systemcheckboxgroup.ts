@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -78,7 +78,7 @@ export class SystemCheckboxGroup implements ControlValueAccessor, AfterViewInit 
      */
     public writeValue(value: string[]): void {
         if(value && !_.isEqual(value, this._value)) {
-            this._value = value;
+            this._value = _.clone(value);
             this.cdRef.detectChanges();
             this.valueEmitter.emit();
         }

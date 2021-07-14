@@ -465,6 +465,13 @@ $dictionary['Email'] = [
             'len'     => 160,
             'comment' => 'Email ID for external app API',
         ],
+        'reference_id' => [
+            'name'    => 'reference_id',
+            'vname'   => 'LBL_REFERENCE_ID',
+            'type'    => 'varchar',
+            'len'    => 36,
+            'comment' => 'Reference Email ID to trace reply forward emails',
+        ],
         /* end relationship collections */
 
     ], /* end fields() array */

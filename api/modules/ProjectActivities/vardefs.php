@@ -185,7 +185,7 @@ $dictionary['ProjectActivity'] = [
     'indices' => [
         ['name' => 'idx_pwbsid', 'type' => 'index', 'fields' => ['projectwbs_id']],
         ['name' => 'idx_pwbsdel', 'type' => 'index', 'fields' => ['projectwbs_id', 'deleted']],
-        ['name' => 'idx_pwbsdel', 'type' => 'index', 'fields' => ['projectplannedactivity_id', 'deleted']]
+        ['name' => 'idx_ppadel', 'type' => 'index', 'fields' => ['projectplannedactivity_id', 'deleted']]
     ]
 ];
 

@@ -126,7 +126,8 @@ $dictionary['sysuipackagerepositories'] = [
         ],
         'description' => [
             'name' => 'description',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 1000
         ],
     ],
     'indices' => [
@@ -441,7 +442,8 @@ $dictionary['sysuimodulerepository'] = [
         ],
         'description' => [
             'name' => 'description',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 1000
         ],
         'version' => [
             'name' => 'version',
@@ -511,11 +513,13 @@ $dictionary['sysuiobjectrepository'] = [
         ],
         'description' => [
             'name' => 'description',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 1000
         ],
         'componentconfig' => [
             'name' => 'componentconfig',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 2000
         ],
         'version' => [
             'name' => 'version',
@@ -624,7 +628,8 @@ $dictionary['sysuicomponentsetscomponents'] = [
         ],
         'componentconfig' => [
             'name' => 'componentconfig',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 2000
         ],
         'version' => [
             'name' => 'version',
@@ -746,7 +751,8 @@ $dictionary['sysuifieldsetsitems'] = [
         ],
         'fieldconfig' => [
             'name' => 'fieldconfig',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 2000
         ],
         'version' => [
             'name' => 'version',
@@ -869,7 +875,8 @@ $dictionary['sysuiactionsetitems'] = [
         ],
         'actionconfig' => [
             'name' => 'actionconfig',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 2000
         ],
         'singlebutton' => [
             'name' => 'singlebutton',
@@ -1251,7 +1258,8 @@ $dictionary['sysuicomponentdefaultconf'] = [
         ],
         'componentconfig' => [
             'name' => 'componentconfig',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 2000
         ],
         'version' => [
             'name' => 'version',
@@ -1290,7 +1298,8 @@ $dictionary['sysuicustomcomponentdefaultconf'] = [
         ],
         'componentconfig' => [
             'name' => 'componentconfig',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 2000
         ],
         'version' => [
             'name' => 'version',
@@ -1338,7 +1347,8 @@ $dictionary['sysuicomponentmoduleconf'] = [
         ],
         'componentconfig' => [
             'name' => 'componentconfig',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 2000
         ],
         'version' => [
             'name' => 'version',
@@ -1386,7 +1396,8 @@ $dictionary['sysuicustomcomponentmoduleconf'] = [
         ],
         'componentconfig' => [
             'name' => 'componentconfig',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 2000
         ],
         'version' => [
             'name' => 'version',
@@ -1531,11 +1542,13 @@ $dictionary['sysuidashboarddashlets'] = [
         ],
         'description' => [
             'name' => 'description',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 1000
         ],
         'componentconfig' => [
             'name' => 'componentconfig',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 2000
         ],
         'version' => [
             'name' => 'version',
@@ -1595,11 +1608,13 @@ $dictionary['sysuicustomdashboarddashlets'] = [
         ],
         'description' => [
             'name' => 'description',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 1000
         ],
         'componentconfig' => [
             'name' => 'componentconfig',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 2000
         ],
         'version' => [
             'name' => 'version',
@@ -1671,7 +1686,8 @@ $dictionary['sysuiroles'] = [
         ],
         'description' => [
             'name' => 'description',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 1000
         ],
         'default_dashboard' => [
             'name' => 'default_dashboard',
@@ -1744,7 +1760,8 @@ $dictionary['sysuicustomroles'] = [
         ],
         'description' => [
             'name' => 'description',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 1000
         ],
         'default_dashboard' => [
             'name' => 'default_dashboard',
@@ -2015,7 +2032,8 @@ $dictionary['sysuiadmincomponents'] = [
         ],
         'componentconfig' => [
             'name' => 'componentconfig',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 2000
         ],
         'sequence' => [
             'name' => 'sequence',
@@ -2080,7 +2098,8 @@ $dictionary['sysuicustomadmincomponents'] = [
         ],
         'componentconfig' => [
             'name' => 'componentconfig',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 2000
         ],
         'sequence' => [
             'name' => 'sequence',
@@ -2236,12 +2255,8 @@ $dictionary['sysuicopyrules'] = [
         'params' => [
             'name' => 'params',
             'type' => 'json',
-            'dbtype' => 'text'
-        ],
-        'params' => [
-            'name' => 'params',
-            'type' => 'varchar',
-            'len' => 100
+            'dbtype' => 'shorttext',
+            'len' => 1000
         ],
         'version' => [
             'name' => 'version',
@@ -2303,12 +2318,8 @@ $dictionary['sysuicustomcopyrules'] = [
         'params' => [
             'name' => 'params',
             'type' => 'json',
-            'dbtype' => 'text'
-        ],
-        'params' => [
-            'name' => 'params',
-            'type' => 'varchar',
-            'len' => 100
+            'dbtype' => 'shorttext',
+            'len' => 1000
         ],
         'version' => [
             'name' => 'version',
@@ -2617,6 +2628,53 @@ $dictionary['sysuicustomlibs'] = [
     'indices' => [
         [
             'name' => 'idx_sysuicustomlibs',
+            'type' => 'primary',
+            'fields' => ['id'],
+        ]
+    ],
+];
+
+
+/**
+ * managing model states
+ */
+$dictionary['sysuimodelstates'] = [
+    'table' => 'sysuimodelstates',
+    'changerequests' => [
+        'active' => true,
+        'name' => 'modelstate'
+    ],
+    'fields' => [
+        'id' => [
+            'name' => 'id',
+            'type' => 'id'
+        ],
+        'module' => [
+            'name' => 'module',
+            'type' => 'varchar',
+            'len' => 50,
+        ],
+        'modelstate' => [
+            'name' => 'modelstate',
+            'type' => 'varchar',
+            'len' => 50,
+        ]
+    ],
+    'indices' => [
+        [
+            'name' => 'idx_sysuimodelstates',
+            'type' => 'primary',
+            'fields' => ['id'],
+        ]
+    ],
+];
+
+$dictionary['sysuicustommodelstates'] = [
+    'table' => 'sysuicustommodelstates',
+    'fields' => $dictionary['sysuimodelstates']['fields'],
+    'indices' => [
+        [
+            'name' => 'idx_sysuicustommodelstates',
             'type' => 'primary',
             'fields' => ['id'],
         ]

@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -22,21 +22,34 @@ import {modal} from "../../services/modal.service";
 import {metadata} from "../../services/metadata.service";
 import {helper} from "../../services/helper.service";
 
-
 @Component({
     selector: 'administration-dict-repair-db-columns-modal',
     templateUrl: './src/admincomponents/templates/administrationdictrepairdbcolumnsmodal.html'
 })
 export class AdministrationDictRepairDbColumnsModal {
 
+    /**
+     * reference to the modal
+     * @private
+     */
     private self: any = {};
 
+    /**
+     * the module selected
+     * @private
+     */
     private _module: string = '';
+
+    /**
+     * the list of modules
+     */
     public modules: string[];
 
+    /**
+     * list of all fields in teh module
+     * @private
+     */
     private allFields: any = [];
-    private selectedFields: any = [];
-
 
     constructor(
         private backend: backend,
@@ -74,7 +87,7 @@ export class AdministrationDictRepairDbColumnsModal {
 
             // Step 1: Set all the vardef fields into a new array
             for (let field in moduleFields) {
-                if(moduleFields[field].source != 'non-db') {
+                if (moduleFields[field].source != 'non-db') {
                     this.allFields.unshift({
                         name: moduleFields[field].name,
                         vardef_available: true
@@ -90,20 +103,20 @@ export class AdministrationDictRepairDbColumnsModal {
                 let withvardef = false;
 
                 for (let allfield in this.allFields) {
-                    if(this.allFields[allfield].name == dbname) {
+                    if (this.allFields[allfield].name == dbname) {
 
                         this.allFields[allfield].db_available = true;
 
                         // Fields with both should be moved to the end of the list (these are not interesting)
                         this.allFields.push(this.allFields[allfield]);
-                        this.allFields.splice (allfield, 1);
+                        this.allFields.splice(allfield, 1);
 
                         withvardef = true;
                     }
                 }
 
                 // if there is a db field without vardef
-                if(!withvardef) {
+                if (!withvardef) {
                     this.allFields.unshift({
                         name: dbname,
                         db_available: true
@@ -115,14 +128,28 @@ export class AdministrationDictRepairDbColumnsModal {
     }
 
     /**
-     * changed selection
+     * select all that can be deleted
+     *
+     * @private
      */
-    private selectColumn(field, keyvalue) {
-        if(field.todelete) {
-            this.selectedFields[keyvalue] = field;
-        } else {
-            this.selectedFields.splice(keyvalue);
+    private selectAll() {
+        for (let field of this.allFields.filter(f => f.db_available && !f.vardef_available)) {
+            field.todelete = true;
         }
+    }
+
+    /**
+     * getter if we can select all
+     */
+    get canSelectAll() {
+        return this.allFields && this.allFields.filter(f => f.db_available && !f.vardef_available && !f.todelete).length > 0;
+    }
+
+    /**
+     * getter if we can select all
+     */
+    get canDelete() {
+        return this.allFields && this.allFields.filter(f => f.todelete).length > 0;
     }
 
     /**
@@ -139,10 +166,10 @@ export class AdministrationDictRepairDbColumnsModal {
 
         // build the list of selected columns and set it into the helper message
         let todeleteString = '';
-        for (let selfield of this.selectedFields) {
-            todeleteString += selfield.name + ', ';
+        for (let selfield of this.allFields.filter(f => f.todelete)) {
+            todeleteString += '- ' + selfield.name + '\r\n';
         }
-        this.helper.confirm(this.language.getLabel('LBL_CLEAN_DB_COLUMNS'), this.language.getLabel('MSG_DELETE_COLUMNS', 'long') + ' ' +  todeleteString)
+        this.helper.confirm(this.language.getLabel('LBL_CLEAN_DB_COLUMNS'), this.language.getLabel('MSG_DELETE_COLUMNS', 'long') + '\r\n\r\n' + todeleteString)
             .subscribe(answer => {
                 if (answer) {
                     this.delete();
@@ -156,16 +183,16 @@ export class AdministrationDictRepairDbColumnsModal {
     private delete() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
             let postData = {
-                dbcolumns: this.selectedFields,
+                dbcolumns: this.allFields.filter(f => f.todelete),
                 module: this.module
             };
-            this.backend.postRequest('repair/dbcolumns', {}, postData).subscribe((result: any) => {
+            this.backend.postRequest('admin/repair/dbcolumns', {}, postData).subscribe((result: any) => {
                 if (result) {
                     this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
-                    this.close();
+                    this.mergeColumns();
                 } else {
                     this.toast.sendToast(this.language.getLabel('LBL_ERROR'), 'error');
-                    this.close();
+                    this.mergeColumns();
                 }
                 loadingRef.instance.self.destroy();
             });

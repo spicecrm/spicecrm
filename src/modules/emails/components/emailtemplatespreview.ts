@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -186,7 +186,7 @@ export class EmailTemplatesPreview implements AfterViewInit {
         if (!this.model.id) return;
         const loadingModal = this.modal.await('LBL_PARSING_HTML');
         const body = {html: this.model.data[this.bodyHtmlField]};
-        this.backend.postRequest(`${this.model.module}/liveCompile/${this.previewForBean}/${this.selectedItem.id}`, {}, body)
+        this.backend.postRequest(`module/${this.model.module}/livecompile/${this.previewForBean}/${this.selectedItem.id}`, {}, body)
             .subscribe((data: any) => {
                 if (!data || !data.html) {
                     loadingModal.emit(false);

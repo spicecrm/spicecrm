@@ -1,12 +1,12 @@
 <?php
 namespace SpiceCRM\modules\Mailboxes\Handlers;
 
+use SpiceCRM\includes\Logger\APILogEntryHandler;
 use Swift_Attachment;
 use Swift_Message;
 use Swift_TransportException;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 
 trait GmailApiTrait
 {
@@ -92,7 +92,7 @@ trait GmailApiTrait
         }
 
         if ($email->id) {
-            foreach (json_decode (SpiceAttachments::getAttachmentsForBean('Emails', $email->id)) as $att) {
+            foreach ($email->attachments as $att) {
                 $message->attach(
                     Swift_Attachment::fromPath('upload://' . $att->filemd5)->setFilename($att->filename)
                 );
@@ -117,8 +117,7 @@ trait GmailApiTrait
         $url = self::API_URL . "/gmail/v1/users/{$this->userName}/messages/send";
 
         $curl = curl_init();
-
-        curl_setopt_array($curl, [
+        $curlOptions = [
             CURLOPT_SSL_VERIFYPEER => $this->ssl_verifypeer,
             CURLOPT_SSL_VERIFYHOST => $this->ssl_verifyhost,
             CURLOPT_RETURNTRANSFER => true,
@@ -129,9 +128,15 @@ trait GmailApiTrait
                 'Content-Type:message/rfc822',
                 'Authorization: Bearer ' . $this->accessToken['access_token'],
             ],
-        ]);
+        ];
+        curl_setopt_array($curl, $curlOptions);
+        $logEntryHandler = new APILogEntryHandler();
+        $logEntryHandler->generateOutgoingLogEntry($curlOptions, 'gmail_dispatch');
+        $logEntryHandler->writeOutogingLogEntry();
+        $response = curl_exec($curl);
+        $logEntryHandler->updateOutgoingLogEntry($curl, $response);
 
-        $response = json_decode(curl_exec($curl));
+        $responseObject = json_decode($response);
         $errors = curl_error($curl);
         $info = curl_getinfo($curl);
         curl_close($curl);
@@ -139,12 +144,12 @@ trait GmailApiTrait
         if ($info['http_code'] >= 200 && $info['http_code'] < 300) {
             $result = [
                 'result'     => true,
-                'message_id' => $response->id,
+                'message_id' => $responseObject->id,
             ];
         } else {
             $result = [
                 'result' => false,
-                'errors' => $response->error->message,
+                'errors' => $responseObject->error->message,
             ];
         }
 

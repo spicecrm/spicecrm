@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -27,6 +27,7 @@ import {model} from "../../services/model.service";
 import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
 import {ObjectRelatedCardHeader} from "./objectrelatedcardheader";
+import {ObjectRelatedCardFooter} from "./objectrelatedcardfooter";
 
 /**
  * renders a related card underneath an object with a model loaded
@@ -55,7 +56,13 @@ export class ObjectRelatedCard {
     /**
      * a selector for the Header in teh card. This will trigger the open or collapsed stated
      */
-    @ViewChild(ObjectRelatedCardHeader, {static: false}) private cardheaders: ObjectRelatedCardHeader;
+    @ViewChild(ObjectRelatedCardHeader, {static: false}) private cardheader: ObjectRelatedCardHeader;
+
+    /**
+     * catches the card footer
+     * @private
+     */
+    @ViewChild(ObjectRelatedCardFooter, {static: false}) private cardfooter: ObjectRelatedCardFooter;
 
     /**
      * the component config as key paramater into the component
@@ -90,11 +97,23 @@ export class ObjectRelatedCard {
      * a helper to get if we have related models and the state is open
      */
     get isopen() {
-        if (this.cardheaders && !this.cardheaders.isopen) {
+        if (this.cardheader && !this.cardheader.isopen) {
             return false;
         }
 
         return this.relatedmodels.count > 0 || this.isloading;
+    }
+
+    /**
+     * getter to check from the footer if we are paginating
+     * in that case put a loading spinner on the grid
+     */
+    get paginating() {
+        // check that we are not loading, we have a footer and the footer is paginating
+        if (!this.relatedmodels.isloading && this.cardfooter && this.cardfooter.paginating) return true;
+
+        // return false by default
+        return false;
     }
 
 

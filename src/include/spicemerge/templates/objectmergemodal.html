@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -11,27 +11,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 -->
 
 <system-modal size="large">
-    <system-modal-header (close)="closeModal()"><system-label label="LBL_MERGE_RECORD"></system-label> - {{model.data.summary_text}}</system-modal-header>
+    <system-modal-header (close)="closeModal()"><system-label label="LBL_MERGE_RECORD"></system-label><span *ngIf="model.id">&nbsp;-&nbsp;{{model.data.summary_text}}</span></system-modal-header>
     <system-modal-content margin="none" [grow]="true">
-        <object-merge-modal-records  [hidden]="currentMergeStep!==0"></object-merge-modal-records>
-        <object-merge-modal-data  [hidden]="currentMergeStep!==1"></object-merge-modal-data>
-        <object-merge-modal-execute [hidden]="currentMergeStep!==2"></object-merge-modal-execute>
+        <object-merge-modal-records  [hidden]="getCurrentStep() != 'records'"></object-merge-modal-records>
+        <object-merge-modal-data  [hidden]="getCurrentStep() != 'fields'"></object-merge-modal-data>
+        <object-merge-modal-execute [hidden]="getCurrentStep() != 'execute'"></object-merge-modal-execute>
     </system-modal-content>
     <system-modal-footer>
-        <div class="slds-grid slds-grid--align-spread">
-            <div class="slds-progress slds-progress--shade slds-order--2">
-                <ol class="slds-progress__list">
-                    <li *ngFor="let mergeStep of mergeSteps" class="slds-progress__item" [ngClass]="getStepClass(mergeStep)">
-                        <button class="slds-button slds-progress__marker" [ngClass]="{'slds-button--icon slds-progress__marker--icon': getStepComplete(mergeStep)}">
-                            <system-button-icon *ngIf="getStepComplete(mergeStep)" [icon]="'success'"></system-button-icon>
-                        </button>
-                    </li>
-                </ol>
-                <div class="slds-progress-bar slds-progress-bar_x-small">
-                    <div class="slds-progress-bar__value" [ngStyle]="progressBarWidth"></div>
-                </div>
-            </div>
+        <div class="slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
             <button class="slds-button slds-button--neutral slds-order--1" (click)="prevStep()" [disabled]="prevDisabled"><system-label label="LBL_PREVIOUS"></system-label></button>
+            <system-progress-list class="slds-grow slds-order--2" system-progress-list-shade [steps]="mergeSteps" [step]="currentMergeStep"></system-progress-list>
             <button class="slds-button slds-button--brand slds-order--3" (click)="nextStep()" [disabled]="nextDisabled"><system-label label="LBL_NEXT"></system-label></button>
         </div>
     </system-modal-footer>

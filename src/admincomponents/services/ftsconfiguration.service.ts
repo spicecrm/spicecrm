@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -43,8 +43,8 @@ export class ftsconfiguration {
         private modal: modal,
         private toast: toast
     ) {
-        this.backend.getRequest('ftsmanager/core/modules').subscribe(modules => this.modules = modules);
-        this.backend.getRequest('ftsmanager/core/analyzers').subscribe(analyzers => this.analyzers = analyzers.sort((a, b) => a.value > b.value ? 1 : -1));
+        this.backend.getRequest('configuration/elastic/core/modules').subscribe(modules => this.modules = modules);
+        this.backend.getRequest('configuration/elastic/core/analyzers').subscribe(analyzers => this.analyzers = analyzers.sort((a, b) => a.value > b.value ? 1 : -1));
     }
 
     /**
@@ -70,14 +70,14 @@ export class ftsconfiguration {
 
     public getModuleFtsFields() {
         this.moduleFtsFields = [];
-        this.backend.getRequest('ftsmanager/' + this.module + '/fields').subscribe(fields => {
+        this.backend.getRequest('configuration/elastic/' + this.module + '/fields').subscribe(fields => {
             this.moduleFtsFields = fields;
         });
     }
 
     public getModuleSettings() {
         this.moduleFtsSettings = [];
-        this.backend.getRequest('ftsmanager/' + this.module + '/settings').subscribe(settings => {
+        this.backend.getRequest('configuration/elastic/' + this.module + '/settings').subscribe(settings => {
             this.moduleFtsSettings = settings;
         });
     }
@@ -96,7 +96,7 @@ export class ftsconfiguration {
     }
 
     public deleteModule(module) {
-        this.backend.deleteRequest(`ftsmanager/${this.module}`).subscribe(done => {
+        this.backend.deleteRequest(`configuration/elastic/${this.module}`).subscribe(done => {
             this.modules.splice(this.modules.indexOf(module), 1);
             this.module = '';
         });
@@ -108,7 +108,7 @@ export class ftsconfiguration {
             fields: this.moduleFtsFields,
             settings: this.moduleFtsSettings
         };
-        this.backend.postRequest('ftsmanager/' + this.module, {}, postData).subscribe(response => {
+        this.backend.postRequest('configuration/elastic/' + this.module, {}, postData).subscribe(response => {
             responseSubject.next(response);
             if (!notify) return;
             if (response) {
@@ -137,15 +137,15 @@ export class ftsconfiguration {
         let label = '';
         switch (action) {
             case 'bulk':
-                url = `ftsmanager/${this.module}/index`;
+                url = `configuration/elastic/${this.module}/index`;
                 label = 'LBL_INDEX';
                 break;
             case 'init':
-                url = `ftsmanager/core/initialize`;
+                url = `configuration/elastic/core/initialize`;
                 label = 'LBL_INITIALIZE';
                 break;
             case 'reset':
-                url = `ftsmanager/${this.module}/index/reset`;
+                url = `configuration/elastic/${this.module}/index/reset`;
                 label = 'LBL_RESET';
                 break;
         }

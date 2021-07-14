@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -83,9 +83,9 @@ export class modelattachments {
     /**
      * returns the count of the attachments
      */
-    public getCount(): Observable<any> {
+    public getCount(categoryId?: string): Observable<any> {
         let retSubject = new Subject();
-        this.backend.getRequest(`spiceAttachments/module/${this.module}/${this.id}/count`).subscribe(
+        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/count`, {categoryId}).subscribe(
             response => {
                 // set the count
                 this.count = response.count;
@@ -113,12 +113,12 @@ export class modelattachments {
     /**
      * loads the attachments
      */
-    public getAttachments(): Observable<any> {
+    public getAttachments(categoryId?: string): Observable<any> {
         let retSubject = new Subject();
 
         this.files = [];
         this.loading = true;
-        this.backend.getRequest(`spiceAttachments/module/${this.module}/${this.id}`).subscribe(
+        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}`, {categoryId}).subscribe(
             response => {
                 for (let attId in response) {
                     if (!this.files.find(a => a.id == attId)) {
@@ -161,10 +161,11 @@ export class modelattachments {
      * clones the attachments from another model
      *
      * @param parentModel
+     * @param categoryId
      */
-    public cloneAttachments(parentModel: model): Observable<any> {
+    public cloneAttachments(parentModel: model, categoryId?: string): Observable<any> {
         let retSubject = new Subject();
-        this.backend.postRequest(`spiceAttachments/module/${this.module}/${this.id}/clone/${parentModel.module}/${parentModel.id}`).subscribe(
+        this.backend.postRequest(`common/spiceattachments/module/${this.module}/${this.id}/clone/${parentModel.module}/${parentModel.id}`, {}, {categoryId}).subscribe(
             response => {
                 for (let attId in response) {
                     if (!this.files.find(a => a.id == attId)) {
@@ -218,8 +219,9 @@ export class modelattachments {
      * upload files from teh files passed back from a drop or a file select input
      *
      * @param files
+     * @param systemCategoryId
      */
-    public uploadAttachmentsBase64(files): Observable<any> {
+    public uploadAttachmentsBase64(files, systemCategoryId?: string): Observable<any> {
         if (files.length === 0) {
             return;
         }
@@ -240,6 +242,7 @@ export class modelattachments {
                 file_mime_type: file.type ? file.type : 'application/octet-stream',
                 filesize: file.size,
                 filename: file.name,
+                category_ids: systemCategoryId,
                 filemd5: undefined,
                 id: '',
                 text: '',
@@ -328,12 +331,13 @@ export class modelattachments {
         let fileBody = {
             file: file.filecontent,
             filename: file.name,
-            filemimetype: file.type ? file.type : 'application/octet-stream'
+            filemimetype: file.type ? file.type : 'application/octet-stream',
+            category_ids: newfile.category_ids
         };
 
         // determine the upload URL
         // if we just upload or also link to a bean
-        let url = 'spiceAttachments';
+        let url = 'common/spiceattachments';
         if (this.module && this.id) {
             url += `/module/${this.module}/${this.id}`;
         }
@@ -405,7 +409,7 @@ export class modelattachments {
 
         // determine the upload URL
         // if we just upload or also link to a bean
-        let url = 'spiceAttachments';
+        let url = 'common/spiceattachments';
         if (this.module && this.id) {
             url += `/module/${this.module}/${this.id}`;
         }
@@ -432,13 +436,13 @@ export class modelattachments {
      */
     private readFile(file): Observable<any> {
         let responseSubject = new Subject<any>();
-        let reader = new FileReader();
-        reader['file'] = file;
+        let reader: any = new FileReader();
+        reader.file = file;
         reader.onloadend = (e) => {
             let filecontent = reader.result.toString();
             filecontent = filecontent.substring(filecontent.indexOf('base64,') + 7);
 
-            let file = reader['file'];
+            let file = reader.file;
             file.filecontent = filecontent;
             responseSubject.next(file);
             responseSubject.complete();
@@ -454,7 +458,7 @@ export class modelattachments {
      * @param id
      */
     public deleteAttachment(id) {
-        this.backend.deleteRequest(`spiceAttachments/module/${this.module}/${this.id}/${id}`)
+        this.backend.deleteRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`)
             .subscribe(res => {
                 let index = this.files.findIndex(f => f.id == id);
                 this.files.splice(index, 1);
@@ -475,7 +479,7 @@ export class modelattachments {
      * @param name
      */
     public downloadAttachment(id, name?) {
-        this.backend.getRequest(`spiceAttachments/module/${this.module}/${this.id}/${id}`).subscribe(fileData => {
+        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`).subscribe(fileData => {
             let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
             let blobUrl = URL.createObjectURL(blob);
             let a = document.createElement("a");
@@ -496,7 +500,7 @@ export class modelattachments {
      * @param name
      */
     public downloadAttachmentForField(module, id, field, name?) {
-        this.backend.getRequest(`spiceAttachments/module/${module}/${id}/byfield/${field}`).subscribe(fileData => {
+        this.backend.getRequest(`common/spiceattachments/module/${module}/${id}/byfield/${field}`).subscribe(fileData => {
             let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
             let blobUrl = URL.createObjectURL(blob);
             let a = document.createElement("a");
@@ -517,7 +521,7 @@ export class modelattachments {
     public getAttachment(id): Observable<any> {
         let retSubject = new Subject();
 
-        this.backend.getRequest(`spiceAttachments/module/${this.module}/${this.id}/${id}`).subscribe(
+        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`).subscribe(
             fileData => {
                 retSubject.next(fileData.file);
                 retSubject.complete();
@@ -565,7 +569,7 @@ export class modelattachments {
      * @param name
      */
     public openAttachment(id, name?) {
-        this.backend.getRequest(`spiceAttachments/module/${this.module}/${this.id}/${id}`).subscribe(fileData => {
+        this.backend.getRequest(`common/spiceattachments/module/${this.module}/${this.id}/${id}`).subscribe(fileData => {
             let blob = this.b64toBlob(fileData.file, fileData.file_mime_type);
             let blobUrl = URL.createObjectURL(blob);
             window.open(blobUrl, "_blank");

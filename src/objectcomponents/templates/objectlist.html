@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -13,13 +13,19 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 <div class="slds-theme--default" (system-to-bottom)="onScroll()" style="min-height: 100px">
     <table class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal slds-table--header-fixed" [ngClass]="{'slds-table--bordered':!issmall}" role="grid">
         <thead>
-            <tr class="slds-text-title--caps" object-list-header [actionset]="actionset"></tr>
+            <tr class="slds-text-title--caps" object-list-header [actionset]="actionset" [showRowNumber]="rowNumbers"></tr>
         </thead>
         <tbody>
-            <tr object-list-item *ngFor="let listItem of modellist.listData.list"  [listItem]="listItem" [inlineedit]="inlineedit" [rowselect]="true" class="slds-hint-parent"></tr>
+            <tr object-list-item *ngFor="let listItem of modellist.listData.list; let i = index" [rownumbers]="rowNumbers" [rowNumber]="i + 1" [listItem]="listItem" [inlineedit]="inlineedit" [rowselect]="true" class="slds-hint-parent"></tr>
         </tbody>
-        <tbody system-table-stencils [columns]="modellist.listfields.length" [select]="true" [tools]="true" [rows]="20" *ngIf="isloading"></tbody>
+        <tbody system-table-stencils [columns]="modellist.listfields.length" [select]="true" [rownumbers]="rowNumbers" [tools]="true" [rows]="20" *ngIf="isloading"></tbody>
     </table>
+    <div class="slds-size--1-of-1 slds-p-around--small slds-align--absolute-center" *ngIf="noAutoLoad && canLoadMore">
+        <button class="slds-button slds-button--neutral" (click)="loadMore()">
+            <system-button-icon class="slds-p-right--x-small" icon="skip_forward"></system-button-icon>
+            <system-label label="LBL_LOAD_MORE"></system-label>
+        </button>
+    </div>
     <div *ngIf="!modellist.isLoading && modellist.listData.totalcount == 0" class="slds-align--absolute-center" style="height: calc(100% - 35px)">
         <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
     </div>

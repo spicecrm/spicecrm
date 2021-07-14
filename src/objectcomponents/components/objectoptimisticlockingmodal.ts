@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -23,6 +23,7 @@ import {modal} from '../../services/modal.service';
 import {language} from '../../services/language.service';
 import {view} from '../../services/view.service';
 import {metadata} from '../../services/metadata.service';
+import {Subject} from "rxjs";
 
 /**
 * @ignore
@@ -39,11 +40,23 @@ declare var moment: any;
 })
 export class ObjectOptimisticLockingModal implements OnInit {
 
+    /**
+     * reference to the modal itsefl
+     * @private
+     */
     private self: any = {};
+
+    /**
+     * the conflicts
+     */
     public conflicts: any = {};
+
+
     private _conflicts = [];
     private originaldata: any = {};
     private fieldsToCopy = {};
+
+    private responseSubject: Subject<any>;
 
     constructor(
         private language: language,
@@ -52,8 +65,7 @@ export class ObjectOptimisticLockingModal implements OnInit {
         private metadata: metadata,
         private modal: modal
     ) {
-        // this.view.isEditable = true;
-        // this.view.setEditMode();
+        this.view.displayLabels = false;
     }
 
     public ngOnInit() {
@@ -70,11 +82,15 @@ export class ObjectOptimisticLockingModal implements OnInit {
     }
 
     private cancel() {
+
+        this.responseSubject.error(true);
+        this.responseSubject.complete();
+
         // cancel the edit process and roll back
-        this.model.cancelEdit();
+        // this.model.cancelEdit();
 
         // retrieve the model
-        this.model.getData();
+        // this.model.getData();
 
         // destroy the component
         this.self.destroy();
@@ -107,8 +123,12 @@ export class ObjectOptimisticLockingModal implements OnInit {
                     // destroy the component
                     this.self.destroy();
                 }
+
                 modalRef.instance.self.destroy();
             });
+            // complete the subject
+            this.responseSubject.next(true);
+            this.responseSubject.complete();
         });
     }
 

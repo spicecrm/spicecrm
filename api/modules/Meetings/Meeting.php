@@ -44,7 +44,6 @@ use SpiceCRM\includes\utils\SpiceUtils;
 use SpiceCRM\modules\Contacts\Contact;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
 
-// todo move functions from GoogleCalendarEventInterface
 class Meeting extends SugarBean
 {
 
@@ -96,30 +95,6 @@ class Meeting extends SugarBean
 
 
         return $return_id;
-    }
-
-
-    public function removeGcalId()
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $query = "UPDATE meetings SET external_id = NULL WHERE id = '" . $this->id . "'";
-        $result = $db->query($query);
-
-        return $result;
-    }
-
-
-    function get_contacts($params = [])
-    {
-        // First, get the list of IDs.
-        $query = "SELECT contact_id as id from meetings_contacts where meeting_id='$this->id' AND deleted=0 ";
-        if (!empty($params)) {
-            if (isset($params['order_by']) && !empty($params['order_by'])) {
-                $query .= " ORDER BY " . $params['order_by'] . " ";
-            }
-        }
-        return $this->build_related_list($query, new Contact());
     }
 
 
@@ -198,45 +173,6 @@ class Meeting extends SugarBean
 
     }
 
-    function set_accept_status(&$user, $status)
-    {
-        if ($user->object_name == 'User') {
-            $relate_values = ['user_id' => $user->id, 'meeting_id' => $this->id];
-            $data_values = ['accept_status' => $status];
-            $this->set_relationship($this->rel_users_table, $relate_values, true, true, $data_values);
-            $current_user = AuthenticationController::getInstance()->getCurrentUser();
-
-        } else if ($user->object_name == 'Contact') {
-            $relate_values = ['contact_id' => $user->id, 'meeting_id' => $this->id];
-            $data_values = ['accept_status' => $status];
-            $this->set_relationship($this->rel_contacts_table, $relate_values, true, true, $data_values);
-        } else if ($user->object_name == 'Lead') {
-            $relate_values = ['lead_id' => $user->id, 'meeting_id' => $this->id];
-            $data_values = ['accept_status' => $status];
-            $this->set_relationship($this->rel_leads_table, $relate_values, true, true, $data_values);
-        }
-    }
-
-
-
-    function save_relationship_changes($is_update, $exclude = [])
-    {
-        if (empty($this->in_workflow)) {
-            if (empty($this->in_import)) {//if a meeting is being imported then contact_id  should not be excluded
-                //if the global soap_server_object variable is not empty (as in from a soap/OPI call), then process the assigned_user_id relationship, otherwise
-                //add assigned_user_id to exclude list and let the logic from MeetingFormBase determine whether assigned user id gets added to the relationship
-                if (!empty($GLOBALS['soap_server_object'])) {
-                    $exclude = ['contact_id', 'user_id'];
-                } else {
-                    $exclude = ['contact_id', 'user_id', 'assigned_user_id'];
-                }
-            } else {
-                $exclude = ['user_id'];
-            }
-        }
-        parent::save_relationship_changes($is_update, $exclude);
-    }
-
     /*
      * function to retrieve a query string for the activity stream
      */
@@ -284,14 +220,5 @@ class Meeting extends SugarBean
         return $queryArray['select'] . ' ' . $queryArray['from'] . ' ' . $queryArray['where'] . ' ' . $queryArray['order_by'];
     }
 
-    /**
-     * Returns a translated abbreviation for a week day of date_start.
-     *
-     * @return string
-     */
-    function getShortWeekdayName__date_start(): string {
-        return SpiceUtils::getShortWeekdayName( new \DateTime($this->date_start, new \DateTimeZone('UTC')));
-    }
-
-} // end class def
+}
 

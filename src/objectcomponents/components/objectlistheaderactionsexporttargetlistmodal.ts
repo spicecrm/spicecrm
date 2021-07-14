@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -58,9 +58,9 @@ export class ObjectListHeaderActionsExportTargetlistModal {
 
             let selectedIds = this.modellist.getSelectedIDs();
             let params = {
-                listtype: this.modellist.currentList.type,
+                listtype: this.modellist.currentList.id,
                 targetlistname: this.targetlistname,
-                owner: this.modellist.currentList.type == 'owner' ? true : false,
+                owner: this.modellist.currentList.id == 'owner' ? true : false,
                 module: this.modellist.module,
                 modulefilter: this.modellist.modulefilter,
                 searchterm: this.modellist.searchTerm,
@@ -68,7 +68,7 @@ export class ObjectListHeaderActionsExportTargetlistModal {
                 listid: this.modellist.currentList.id,
                 ids: selectedIds
             };
-            this.backend.postRequest('modules/ProspectLists/exportFromList', {}, params).subscribe(result => {
+            this.backend.postRequest('module/ProspectLists/exportfromlist', {}, params).subscribe(result => {
                 loadingRef.instance.self.destroy();
                 if (result.status == 'success') {
                     this.router.navigate(['/module/ProspectLists/' + result.id]);

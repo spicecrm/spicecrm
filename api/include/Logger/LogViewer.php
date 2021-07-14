@@ -47,20 +47,7 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 
 class LogViewer {
 
-    private static $levelMapping = [
-        'debug'      => 100,
-        'info'       => 70,
-        'warn'       => 50,
-        'deprecated' => 40,
-        'login'      => 30,
-        'error'      => 25,
-        'fatal'      => 10,
-        'security'   => 5
-    ];
-
     private $maxLength;
-
-    private $dbTableName = 'syslogs';
 
     # Constructor. Reads settings from config file.
     public function __construct() {
@@ -74,84 +61,47 @@ class LogViewer {
 
     }
 
-    private function updateLevelValues() {
+    public function getEntries($queryParams, $period = null ) {
         $db = DBManagerFactory::getInstance();
-        if ( $wert=$db->getOne('SELECT count(*) FROM '.$this->dbTableName.' WHERE level_value IS NULL')) {
-            foreach ( self::$levelMapping as $level => $value ) {
-                $db->query( $s='UPDATE '.$this->dbTableName.' SET level_value = '.$value.' WHERE level_value IS NULL AND log_level = "'.$level.'"' );
-            }
-        }
-    }
+        $response = ['entries'=>[]];
 
-    public function getLines( $queryParams, $period = null ) {
-        $db = DBManagerFactory::getInstance();
-        $response = [];
-
-        $this->updateLevelValues();
+        $loglevels = ( isset( $queryParams['loglevels'][0] ) ? json_decode( $queryParams['loglevels'] ) : [] );
 
         $whereClauseParts = [];
-
-        if ( $period ) {
-
-            $begin = gmmktime( $period['begin']['hour'], 0, 0, $period['begin']['month'], $period['begin']['day'], $period['begin']['year'] );
-            $end = gmmktime( $period['end']['hour'], 0, 0, $period['end']['month'], $period['end']['day'], $period['end']['year'] );
-
-            $whereClauseParts[] = 'FLOOR( microtime ) >= '.$begin.' AND FLOOR( microtime ) < '.$end;
-
-        }
-
-        $filter = [];
-        if ( isset( $queryParams['userId'][0])) $filter[] = 'created_by = "'.$db->quote($queryParams['userId']).'"';
-        if ( isset( $queryParams['level'][0])) $filter[] = 'level_value <= '.self::$levelMapping[$queryParams['level']];
-        if ( isset( $queryParams['processId'][0])) $filter[] = 'pid = "'.$db->quote($queryParams['processId']).'"';
-        if ( isset( $queryParams['text'][0])) $filter[] = 'description like "%'.$db->quote($queryParams['text']).'%"';
-        if ( isset( $queryParams['transactionId'][0])) $filter[] = 'transaction_id = "'.$db->quote($queryParams['transactionId']).'"';
-        if ( count( $filter )) $whereClauseParts[] = implode( ' AND ', $filter );
-
+        if ( isset( $queryParams['end'][0] )) $whereClauseParts[] = "l.date_entered <= '{$db->quote($queryParams['end'])}'";
+        if ( isset( $queryParams['user_id'][0])) $whereClauseParts[] = "l.created_by = '".$db->quote($queryParams['user_id'])."'";
+        if ( count( $loglevels )) $whereClauseParts[] = "',".$db->quote( implode(',', $loglevels )).",' like CONCAT('%,',l.log_level,',%')";
+        if ( isset( $queryParams['pid'][0])) $whereClauseParts[] = "l.pid = ".( $queryParams['pid']*1 );
+        if ( isset( $queryParams['text'][0])) $whereClauseParts[] = "l.description like '%".$db->quote($queryParams['text'])."%'";
+        if ( isset( $queryParams['transaction_id'][0])) $whereClauseParts[] = "l.transaction_id = '".$db->quote($queryParams['transaction_id'])."'";
         $whereClause = count( $whereClauseParts ) ? 'WHERE '.implode( ' AND ', $whereClauseParts ):'';
+        if ( isset( $queryParams['limit'][0] )) $limit = ( @$queryParams['limit'] * 1 );
+        else $limit = 250;
 
-        $limitClause = '';
-        if ( isset( $queryParams['limit'][0])) {
-            $queryParams['limit'] *= 1;
-            $limitClause = 'LIMIT '.$queryParams['limit'];
-        }
+        $sql = 'SELECT u.id as user_id, l.date_entered, l.id, l.pid, l.log_level, l.transaction_id, SUBSTR( l.description, 1, '.$this->maxLength.' ) AS description, l.created_by, u.user_name, if ( LENGTH( l.description ) <> LENGTH( SUBSTR( l.description, 1, '.$this->maxLength.' )), 1, 0 ) AS descriptionTruncated FROM syslogs l LEFT JOIN users u ON u.id = l.created_by '.$whereClause.' ORDER BY l.date_entered DESC';
+        $sqlResult = $db->limitQuery( $sql, 0, $limit );
 
-        $sql = 'SELECT id, pid, log_level as lev, transaction_id as tid, LEFT( description, '.$this->maxLength.' ) AS txt, created_by as uid, if ( LENGTH( description ) <> LENGTH( LEFT( description, '.$this->maxLength.' )), 1, 0 ) AS txtTruncated, microtime as dtx FROM '.$this->dbTableName.' '.$whereClause.' ORDER BY microtime DESC '.$limitClause;
-
-        $sqlResult = $db->query( $sql );
         while ( $row = $db->fetchByAssoc( $sqlResult )) {
-            $row['txtTruncated'] = (boolean)$row['txtTruncated'];
+            $row['descriptionTruncated'] = (boolean)$row['descriptionTruncated'];
             $row['pid'] = isset( $row['pid'][0]) ? (int)$row['pid']:null;
-            $row['dtx'] = (float)$row['dtx'];
-            $response[] = $row;
+            $response['entries'][] = $row;
         }
+
+        $response['totalCount'] = $db->getOne('SELECT COUNT(*) FROM syslogs AS l LEFT JOIN users AS u ON l.created_by = u.id '.$whereClause ) * 1;
 
         return $response;
     }
 
-    public function getLinesOfPeriod( $begin, $end, $queryParams ) {
-        $period = [];
-        $period['begin']['year'] = substr( $begin, 0, 4 );
-        $period['begin']['month'] = substr( $begin, 4, 2 );
-        $period['begin']['day'] = substr( $begin, 6, 2 );
-        $period['begin']['hour'] = substr( $begin, 8, 2 );
-        $period['end']['year'] = substr( $end, 0, 4 );
-        $period['end']['month'] = substr( $end, 4, 2 );
-        $period['end']['day'] = substr( $end, 6, 2 );
-        $period['end']['hour'] = substr( $end, 8, 2 );
-        return $this->getLines( $queryParams, $period );
-    }
-
-    function getFullLine( $lineId ) {
+    function getFullEntry($entryId ) {
         $db = DBManagerFactory::getInstance();
 
-        $sql = 'SELECT id, pid, log_level as lev, description AS txt, created_by as uid, microtime as dtx, transaction_id as tid FROM '.$this->dbTableName.' WHERE id = "'.$db->quote( $lineId ).'"';
+        $sql = 'SELECT id, pid, log_level, description, created_by, transaction_id FROM syslogs WHERE id = \''.$db->quote( $entryId ).'\'';
 
-        $line = $db->fetchOne( $sql );
-        if ( $line === false )
-            throw ( new NotFoundException( 'Log line not found.'))->setLookedFor( $lineId );
+        $entry = $db->fetchOne( $sql );
+        if ( $entry === false )
+            throw ( new NotFoundException( 'Log entry not found.'))->setLookedFor( $entryId );
 
-        return $line;
+        return $entry;
 
     }
 

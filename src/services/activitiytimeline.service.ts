@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -207,54 +207,19 @@ export class activitiytimeline {
     private handleMessage(message: any) {
         let messageType = message.messagetype.split('.');
         if (messageType[0] === 'model') {
-
             // handle the message type
             switch (messageType[1]) {
-                case 'save':
-                    // in case of fts do a simple reload .. no guessing on status etc
-                    if (this.usefts) {
-                        // let moduledefs = this.metadata.getModuleDefs(message.messagedata.module);
-                        if (this.metadata.getModuleDefs(message.messagedata.module).ftsactivities.Activities) this.getTimeLineData('Activities', true);
-                        if (this.metadata.getModuleDefs(message.messagedata.module).ftsactivities.History) this.getTimeLineData('History', true);
-                    } else {
-                        // legacy handling from the database
-                        // decide if the bean is in activities or History
-                        let module: 'Activities' | 'History' = 'History';
-                        if (message.messagedata.data.status && this.activeStates.indexOf(message.messagedata.data.status) >= 0) {
-                            module = 'Activities';
-                        } else {
-                            this.activities.Activities.list.some((item, index) => {
-                                if (item.id == message.messagedata.id) {
-                                    this.activities.Activities.list.splice(index, 1);
-                                    return true;
-                                }
-                            });
-                        }
-
-                        if ((message.messagedata.data.parent_id === this.parent.id || message.messagedata.data.contact_id === this.parent.id) && this.timelineModules.indexOf(message.messagedata.module) >= 0) {
-                            let foundItem = false;
-                            this.activities[module].list.some((item, index) => {
-                                if (item.id == message.messagedata.id) {
-                                    foundItem = true;
-                                    this.activities[module].list[index].data = message.messagedata.data;
-
-                                    return true;
-                                }
-                            });
-
-                            if (!foundItem) {
-                                this.activities[module].list.push({
-                                    module: message.messagedata.module,
-                                    id: message.messagedata.id,
-                                    data: message.messagedata.data
-                                });
-                                this.activities[module].totalcount++;
-                            }
-
-                            // reschuffle the list
-                            this.sortListdata(module);
-                        }
+                case 'merge':
+                    // check if the current parent just finished a merge so we shoudl reload the activities
+                    if (this.parent && message.messagedata.module == this.parent.module && message.messagedata.id == this.parent.id) {
+                        this.getTimeLineData('Activities', true);
+                        this.getTimeLineData('History', true);
                     }
+                    break;
+                case 'save':
+                    // let moduledefs = this.metadata.getModuleDefs(message.messagedata.module);
+                    if (this.metadata.getModuleDefs(message.messagedata.module).ftsactivities.Activities) this.getTimeLineData('Activities', true);
+                    if (this.metadata.getModuleDefs(message.messagedata.module).ftsactivities.History) this.getTimeLineData('History', true);
                     break;
                 case 'delete':
                     let deleted = false;

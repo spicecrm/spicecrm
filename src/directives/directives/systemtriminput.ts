@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -52,7 +52,7 @@ export class SystemTrimInputDirective {
 
     }
 
-    private trimValue (el, value) {
+    private trimValue(el, value) {
 
         el.value = value.trim();
 
@@ -72,6 +72,7 @@ export class SystemTrimInputDirective {
 
     }
 
+    /*
     @HostListener('input', ['$event.target', '$event.target.value'])
     private onInput(el: any, value: string): void {
 
@@ -93,5 +94,6 @@ export class SystemTrimInputDirective {
         }
 
     }
+    */
 
 }

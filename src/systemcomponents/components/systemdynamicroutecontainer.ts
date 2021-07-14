@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -25,9 +25,9 @@ import {session} from '../../services/session.service';
 })
 export class SystemDynamicRouteContainer implements AfterViewInit{
 
-    @ViewChild('componentcontainer', {read: ViewContainerRef, static: true}) componentcontainer: ViewContainerRef;
+    @ViewChild('componentcontainer', {read: ViewContainerRef, static: true}) public componentcontainer: ViewContainerRef;
 
-    routercomponent: any = null;
+    public routercomponent: any = null;
 
     constructor(
         private metadata: metadata,
@@ -41,7 +41,7 @@ export class SystemDynamicRouteContainer implements AfterViewInit{
         }
     }
 
-    ngAfterViewInit(){
+    public ngAfterViewInit() {
         if(!this.routercomponent) {
             let component = this.metadata.getRouteComponent(this.route.snapshot.routeConfig.path);
             this.metadata.addComponent(component, this.componentcontainer).subscribe(component => {

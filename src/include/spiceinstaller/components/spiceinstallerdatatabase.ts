@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -101,7 +101,7 @@ export class SpiceInstallerDatabase {
 
         if (this.hostNameCondition && this.userNameCondition && this.dbNameCondition) {
             this.loading = true;
-            this.http.post(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/spiceinstaller/checkdb`, body).subscribe(
+            this.http.post(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/install/checkdb`, body).subscribe(
                 (response: any) => {
                     this.loading = false;
                     let res = response;

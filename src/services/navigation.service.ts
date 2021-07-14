@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -14,8 +14,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  * @module services
  */
 import {Injectable, EventEmitter} from "@angular/core";
+import {Md5} from "ts-md5";
 import {Title} from "@angular/platform-browser";
-import {Observable, Subject, of, BehaviorSubject} from "rxjs";
+import {Observable, Subject, of, BehaviorSubject, Subscription} from "rxjs";
 import {broadcast} from "./broadcast.service";
 import {configurationService} from "./configuration.service";
 import {Router, ActivatedRouteSnapshot, CanActivate, Params, Route, UrlSegment} from "@angular/router";
@@ -24,8 +25,10 @@ import {language} from "./language.service";
 import {metadata} from "./metadata.service";
 import {session} from "./session.service";
 import {helper} from "./helper.service";
+import {socket} from "./socket.service";
+import {backend} from "./backend.service";
 import {userpreferences} from "./userpreferences.service";
-import {main} from "@angular/compiler-cli/src/main";
+import {SocketEventI} from "./interfaces.service";
 
 declare var _: any;
 
@@ -110,7 +113,7 @@ export class navigation {
     /**
      * determines the navigatioon paradigm if set to tabbed or simple
      */
-    public navigationparadigm: 'simple' | 'tabbed' | 'subtabbed' = 'simple';
+    public navigationparadigm: 'simple' | 'tabbed' | 'subtabbed' = 'tabbed';
 
     /**
      * determines the navigatioon paradigm if set to tabbed or simple
@@ -188,6 +191,12 @@ export class navigation {
     public objectTabsChange$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
 
+    /**
+     * holds the various subscriptions
+     * @private
+     */
+    private subscriptions: Subscription = new Subscription();
+
     constructor(
         private title: Title,
         private session: session,
@@ -197,6 +206,8 @@ export class navigation {
         private configurationService: configurationService,
         private metadata: metadata,
         private helper: helper,
+        private socket: socket,
+        private backend: backend,
         private userpreferences: userpreferences,
         private router: Router
     ) {
@@ -204,6 +215,7 @@ export class navigation {
 
         // subscribe to the save event .. so when the title for the current displayed bean changes update the browser title
         this.broadcast.message$.subscribe(message => this.handleMessage(message));
+
 
         // setTimeout is a workaround, in simple js applications without angular it works without it.
         window.setTimeout(() => {
@@ -360,7 +372,8 @@ export class navigation {
                 // once the laoder completed set the paradigm
                 if (!this.enforcednavigationparadigm && message.messagedata == 'loadUserData') {
                     let navparadigm = this.userpreferences.getPreference('navigation_paradigm');
-                    this.navigationparadigm = navparadigm ? navparadigm : 'simple';
+                    this.navigationparadigm = navparadigm ? navparadigm : 'tabbed';
+                    this.session.setSessionData('navigation_paradigm', this.navigationparadigm);
                 }
                 break;
             case 'userpreferences.save':
@@ -374,6 +387,7 @@ export class navigation {
                         this.router.navigate(['module/Home']);
                     }
                     this.navigationparadigm = nvp;
+                    this.session.setSessionData('navigation_paradigm', this.navigationparadigm);
                 }
                 break;
             case 'logout':
@@ -386,16 +400,24 @@ export class navigation {
                     active: true,
                     enablesubtabs: false
                 };
+
+                // unsubscribe from all subscriptions
+                this.subscriptions.unsubscribe();
+
                 break;
             case 'login':
                 // check if we have session data
+                let snvp = this.session.getSessionData('navigation_paradigm');
+                if (snvp) {
+                    this.navigationparadigm = snvp;
+                }
                 let sessiondata = this.session.getSessionData('navigation');
                 if (!_.isEmpty(sessiondata)) {
                     this.maintab = sessiondata.main;
                     this.objectTabs = sessiondata.tabs;
 
                     // check if we have a module set in the maintab
-                    if (this.maintab.params.module) this.activeModule = this.maintab.params.module;
+                    if (this.maintab.params?.module) this.activeModule = this.maintab.params.module;
 
                     // check for the activetab
                     this.activeTab$.next(this.activeTab);
@@ -403,8 +425,60 @@ export class navigation {
                     // set the tab title
                     this.setTabTitle();
                 }
+
+                // Subscribe to the Socket
+                this.subscriptions.add(
+                    this.socket.initializeNamespace('module').subscribe(e =>
+                        this.handleSocketEvents(e)
+                    )
+                );
+
+                break;
+            case 'model.delete':
+                // find matching tabs and close the tab
+                for(let tab of this.objectTabs.filter(t => t.params.module == message.messagedata.module && t.params.id == message.messagedata.id)){
+                    this.closeObjectTab(tab.id, true);
+                }
                 break;
             default:
+                break;
+        }
+    }
+
+
+    /**
+     * handle socket event
+     * @param event
+     * @private
+     */
+    private handleSocketEvents(event: SocketEventI) {
+        switch (event.type) {
+            case 'update':
+                if (event.data.sessionId != Md5.hashStr(this.session.authData.sessionId) && this.modelregister.find(m => m.model.module == event.data.module && m.model.id == event.data.id && !m.model.isEditing)) {
+                    this.backend.get(event.data.module, event.data.id).subscribe(modelData => {
+                        let models = this.modelregister.filter(m => m.model.module == event.data.module && m.model.id == event.data.id && !m.model.isEditing);
+                        for (let model of models) {
+                            model.model.data = {...modelData};
+                            model.model.data$.next(model.model.data);
+                        }
+
+                        // for all we did not catch broadcast the model save event
+                        this.broadcast.broadcastMessage('model.save', {
+                            id: event.data.id,
+                            module: event.data.module,
+                            data: modelData
+                        });
+                    });
+                }
+
+                // check that we have a match on id and moduel and come from another session
+                /*
+                if(event.data.id == this.id && event.data.module == this.module && event.data.sessionId != this.session.authData.sessionId) {
+                    if (!this.isEditing) {
+                        this.getData(false, '', false);
+                    }
+                }
+                */
                 break;
         }
     }
@@ -459,6 +533,8 @@ export class navigation {
         let id = ++this.modelregisterCounter;
         this.modelregister.push({id: id, model: model, tabid: this.activeTab});
 
+        this.socket.joinRoom('module', Md5.hashStr(`${model.module}:${model.id}`).toString());
+
         return id;
     }
 
@@ -467,12 +543,15 @@ export class navigation {
      * @param id The model id.
      */
     public unregisterModel(id: number): void {
-        this.modelregister.some((model, i) => {
-            if (model.id === id) {
-                this.modelregister.splice(i, 1);
-                return true;
+        let modelIndex = this.modelregister.findIndex(m => m.id == id);
+        if (modelIndex >= 0) {
+            let module = this.modelregister[modelIndex].model.module;
+            let id = this.modelregister[modelIndex].model.id;
+            if (this.modelregister.filter(m => m.id != id && m.model.module == module && m.model.id == id).length == 0) {
+                this.socket.leaveRoom('module', Md5.hashStr(`${module}:${id}`).toString());
             }
-        });
+            this.modelregister.splice(modelIndex, 1);
+        }
     }
 
     /**
@@ -482,7 +561,7 @@ export class navigation {
      * @param module
      */
     public getRegisteredModel(id: string, module: string) {
-        return this.modelregister.find(model => model.id == id && model.model.module == module)?.model;
+        return this.modelregister.find(model => model.model.id == id && model.model.module == module)?.model;
     }
 
     /**
@@ -672,15 +751,15 @@ export class navigation {
         let tab = this.getTabById(this.activeTab);
 
         let displayname = '';
-        if(tab.displayname){
+        if (tab.displayname) {
             displayname = tab.displayname;
-        } else if(tab.displaymodule){
+        } else if (tab.displaymodule) {
             displayname = this.language.getModuleName(tab.displaymodule);
-        } else if (this.activeModule){
+        } else if (this.activeModule) {
             displayname = this.language.getModuleName(this.activeModule);
         }
 
-        this.title.setTitle(this.systemName + (displayname ?  ` / ${displayname}`: ''));
+        this.title.setTitle(this.systemName + (displayname ? ` / ${displayname}` : ''));
     }
 
     /**
@@ -846,6 +925,7 @@ export class navigation {
 
 }
 
+// tslint:disable-next-line:max-classes-per-file
 @Injectable()
 export class canNavigateAway implements CanActivate {
     constructor(private navigation: navigation, private modal: modal, private language: language) {

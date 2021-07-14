@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -18,6 +18,7 @@ import {model} from '../../../services/model.service';
 import {modellist} from '../../../services/modellist.service';
 import {broadcast} from '../../../services/broadcast.service';
 import {navigation} from '../../../services/navigation.service';
+import {ListTypeI} from "../../../services/interfaces.service";
 
 /**
  * a separate view on tasks that presents a tasklist and a split view with the tasks for quick task handling for the user
@@ -41,7 +42,9 @@ export class TasksManagerView implements OnDestroy {
     constructor(private broadcast: broadcast, private navigation: navigation, private elementRef: ElementRef, private model: model, private modellist: modellist) {
 
         // subscribe to changes of the listtype
-        this.modellistsubscribe = this.modellist.listtype$.subscribe(newType => this.loadList());
+        this.modellistsubscribe = this.modellist.listType$.subscribe(newType =>
+            this.handleListTypeChange(newType)
+        );
 
         this.loadList();
 
@@ -52,12 +55,22 @@ export class TasksManagerView implements OnDestroy {
     }
 
     /**
+     * handle the list type change to reload the data only if for this component to prevent possible actions after destroy
+     * @param newType
+     * @private
+     */
+    private handleListTypeChange(newType: ListTypeI) {
+        if (newType.listcomponent != 'TasksManagerView') return;
+        this.loadList();
+    }
+
+    /**
      * loads the lost of tasks from the modellist service
      */
     private loadList() {
         this.focus = null;
-        this.modellist.setSortField('date_due', 'ASC', false);
-        this.modellist.getListData(['name', 'parent_type', 'parent_name', 'parent_id', 'date_due', 'assigned_user_name', 'assigned_user_id', 'created_by', 'created_by_name']);
+        this.modellist.setSortField('date_due', 'ASC');
+        this.modellist.getListData();
     }
 
     /**

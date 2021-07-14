@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -117,6 +117,13 @@ import /*embed*/ {GlobalObtainImportantPreferences} from './components/globalobt
 import /*embed*/ {GlobalObtainGDPRConsent} from './components/globalobtaingdprconsent';
 import /*embed*/ {GlobalObtainGDPRConsentContainer} from './components/globalobtaingdprconsentcontainer';
 import /*embed*/ {GlobalHeaderImage} from './components/globalheaderimage';
+import /*embed*/ {GlobalHeaderNotificationsItemGeneric} from './components/globalheadernotificationsitemgeneric';
+import /*embed*/ {GlobalHeaderNotificationsItemChange} from './components/globalheadernotificationsitemchange';
+import /*embed*/ {GlobalHeaderNotificationsItemAssign} from './components/globalheadernotificationsitemassign';
+import /*embed*/ {GlobalHeaderNotificationsItemDelete} from './components/globalheadernotificationsitemdelete';
+import /*embed*/ {GlobalHeaderNotificationsItemReminder} from './components/globalheadernotificationsitemreminder';
+import /*embed*/ {GlobalHeaderNotifications} from './components/globalheadernotifications';
+import /*embed*/ {GlobalNotificationsListView} from './components/globalnotificationslistview';
 
 /**
  * GlobalComponents holds records that are rendered in the global header and footer parts of the application. This includes e.g. the header menu and other components
@@ -205,7 +212,14 @@ import /*embed*/ {GlobalHeaderImage} from './components/globalheaderimage';
         GlobalNavigationTabbedSubtabItem,
         GlobalNavigationTabbedSubTabMoreTab,
         GlobalHeaderImage,
-        GlobalLoginImage
+        GlobalLoginImage,
+        GlobalHeaderNotifications,
+        GlobalHeaderNotificationsItemGeneric,
+        GlobalHeaderNotificationsItemReminder,
+        GlobalHeaderNotificationsItemChange,
+        GlobalHeaderNotificationsItemAssign,
+        GlobalHeaderNotificationsItemDelete,
+        GlobalNotificationsListView
     ],
     entryComponents: [
         GlobalCopyright,

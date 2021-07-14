@@ -1,16 +1,5 @@
 <?php
-
-/* * *******************************************************************************
-* This file is part of KReporter. KReporter is an enhancement developed
-* by aac services k.s.. All rights are (c) 2016 by aac services k.s.
-*
-* This Version of the KReporter is licensed software and may only be used in
-* alignment with the License Agreement received with this Software.
-* This Software is copyrighted and may not be further distributed without
-* witten consent of aac services k.s.
-*
-* You can contact us at info@kreporter.org
-******************************************************************************* */
+/***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
@@ -25,6 +14,8 @@ use SpiceCRM\modules\KReports\KReportUtil;
 use SpiceCRM\modules\KReports\KReportPresentationManager;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\modules\SpiceACL\SpiceACL;
+
+require_once 'modules/KReports/KReportVisualizationManager.php';
 
 class KReporterRESTHandler
 {
@@ -470,7 +461,7 @@ $db = DBManagerFactory::getInstance();
     {
 
         global $current_language;
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance();
 
         $returnArray = [];
 
@@ -975,7 +966,7 @@ $db = DBManagerFactory::getInstance();
     {
 
         global $current_language, $app_list_strings;
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance();
         $app_list_strings = return_app_list_strings_language($current_language);
 
         // initialize Return Array
@@ -1296,7 +1287,7 @@ $db = DBManagerFactory::getInstance();
         $vizData = json_decode(html_entity_decode($thisReport->visualization_params, ENT_QUOTES, 'UTF-8'), true);
 
         // get the managers
-        $vizManager = new KReportVisualizationManager();
+        $vizManager = new \KReportVisualizationManager();
         $pluginManager = new KReportPluginManager();
 
         if (!is_array($reportParams)) $reportParams = [];
@@ -1370,6 +1361,26 @@ $db = DBManagerFactory::getInstance();
         return ['success' => true];
     }
 
+
+
+    /**
+     * set deleted true for the given id in kreportsavedfilters
+     * @param $id : string
+     * @return array
+     */
+    public function deleteSavedFilter($id)
+    {
+        $db = DBManagerFactory::getInstance();
+        $id = $db->quote($id);
+        $query = "UPDATE kreportsavedfilters SET deleted = 1 WHERE id='$id'";
+        if ($db->query($query)) {
+            $returnArray = ['success' => 1, 'savedFilterId' => $id];
+        } else
+            $returnArray = ['success' => 0, 'msg' => 'Could not set record deleted into DB.kreportsavedfilters'];
+
+        echo json_encode($returnArray);
+    }
+
 ###################### BEGIN BucketManager ######################
 
     /**
@@ -1437,6 +1448,7 @@ $db = DBManagerFactory::getInstance();
     }
 
     /**
+     * Handler for Bucketmanager
      * @param type $params
      * @return array
      * @global type $app_strings
@@ -1591,6 +1603,12 @@ $db = DBManagerFactory::getInstance();
         return ['items' => $fieldsArray, 'total' => $totalCount];
     }
 
+    /**
+     * Handler for Bucketmanager
+     * @param $params
+     * @return array
+     * @throws Exception
+     */
     public function saveNewGrouping($params)
     {
         $returnArray = [];
@@ -1604,24 +1622,13 @@ $db = DBManagerFactory::getInstance();
         return $returnArray;
     }
 
+
     /**
-     * set deleted true for the given id in kreportsavedfilters
-     * @param $id : string
+     * Handler for Bucketmanager
+     * @param $params
      * @return array
+     * @throws Exception
      */
-    public function deleteSavedFilter($id)
-    {
-        $db = DBManagerFactory::getInstance();
-        $id = $db->quote($id);
-        $query = "UPDATE kreportsavedfilters SET deleted = 1 WHERE id='$id'";
-        if ($db->query($query)) {
-            $returnArray = ['success' => 1, 'savedFilterId' => $id];
-        } else
-            $returnArray = ['success' => 0, 'msg' => 'Could not set record deleted into DB.kreportsavedfilters'];
-
-        echo json_encode($returnArray);
-    }
-
     public function deleteGrouping($params)
     {
         $returnArray = [];
@@ -1636,6 +1643,12 @@ $db = DBManagerFactory::getInstance();
         return $returnArray;
     }
 
+    /**
+     * Handler for Bucketmanager
+     * @param $params
+     * @return array
+     * @throws Exception
+     */
     public function updateGrouping($params)
     {
         $returnArray = [];
@@ -1728,6 +1741,10 @@ $db = DBManagerFactory::getInstance();
         return $returnArray;
     }
 
+    /**
+     * @param $params
+     * @return array
+     */
     public function getUsers($params)
     {
         $returnArray = [];
@@ -1778,6 +1795,10 @@ $db = DBManagerFactory::getInstance();
         return $returnArray;
     }
 
+    /**
+     * @param $params
+     * @return array
+     */
     public function getContacts($params)
     {
         $returnArray = [];
@@ -1917,201 +1938,6 @@ $db = DBManagerFactory::getInstance();
         return $returnArray;
     }
 ###################### END DListManager ######################
-
-###################### BEGIN SecurityGroups ######################
-// Old implementation. Keeping in it in case needed in future KReporter 5.x releases
-//    public function saveSecurityGroups($record)
-//    {
-////        file_put_contents("sugarcrm.log", print_r($record, true)."\n", FILE_APPEND);
-//        if (!empty($record['id']) && !empty($record['securitygroup_id'])) {
-//            \SpiceCRM\includes\database\DBManagerFactory::getInstance()->query("DELETE FROM securitygroups_records WHERE record_id = '" . $record['id'] . "'");
-//            \SpiceCRM\includes\database\DBManagerFactory::getInstance()->query("INSERT INTO securitygroups_records (id, securitygroup_id, record_id, module, modified_user_id, created_by, deleted, date_modified) values ('" . create_guid() . "', '" . $record['securitygroup_id'] . "', '" . $record['id'] . "', 'KReports', '" . \SpiceCRM\includes\authentication\AuthenticationController::getInstance()->getCurrentUser()->id . "', '" . \SpiceCRM\includes\authentication\AuthenticationController::getInstance()->getCurrentUser()->id . "', 0, '" . gmdate('Y-m-d H:i:s') . "')");
-//        }
-//    }
-//
-//    public function getSecurityGroups($report_id)
-//    {
-//        if (!empty($report_id)) {
-//            $res = \SpiceCRM\includes\database\DBManagerFactory::getInstance()->query("SELECT securitygroup_id, name securitygroup_name
-//              FROM securitygroups_records
-//              INNER JOIN securitygroups ON securitygroups.id = securitygroups_records.securitygroup_id
-//              WHERE securitygroups_records.record_id='" . $report_id . "' AND securitygroups_records.deleted=0");
-//            $row = \SpiceCRM\includes\database\DBManagerFactory::getInstance()->fetchByAssoc($res);
-//            return (empty($row) ? [] : $row);
-//        }
-//        return [];
-//    }
-###################### END SecurityGroups ######################
-
-
-###################### BEGIN CategoriesManager ######################
-
-    /**
-     * Handler for CategoriesManager
-     * @param type $nodeid
-     * @return array
-     * @global type $beanList
-     * @global type $_REQUEST
-     * @global type $beanFiles
-     */
-    public function getCategories($params = [])
-    {
-
-        $returnArray = [];
-        if ($params['addBlank']) {
-            $returnArray[] = [
-                'id' => '',
-                'name' => '-',
-                'priority' => null,
-                'is_admin_only' => false,
-            ];
-        }
-
-        $queryOnTable = false;
-
-        //check first if table exists (PRO version). If not, just return empty array
-        $resArray = DBManagerFactory::getInstance()->query("SHOW TABLES like 'kreportcategories'");
-        if (DBManagerFactory::getInstance()->getRowCount($resArray) > 0) $queryOnTable = true;
-
-        //get dlists
-        if ($queryOnTable) {
-            $resArray = DBManagerFactory::getInstance()->query('SELECT id, name, priority, is_admin_only 
-            FROM kreportcategories WHERE deleted = \'0\'');
-            while ($thisEntry = DBManagerFactory::getInstance()->fetchByAssoc($resArray)) {
-                $returnArray[] = [
-                    'id' => $thisEntry['id'],
-                    'name' => $thisEntry['name'],
-                    'priority' => $thisEntry['priority'],
-                    'is_admin_only' => $thisEntry['is_admin_only'],
-                ];
-            }
-        }
-        return $returnArray;
-    }
-
-    /**
-     * Handler for DListManager
-     * @param type $nodeid
-     * @return array
-     * @global type $beanList
-     * @global type $_REQUEST
-     * @global type $beanFiles
-     */
-    public function getCategory($id)
-    {
-        $returnArray = [];
-        $resArray = DBManagerFactory::getInstance()->query('SELECT id, name, priority, is_admin_only 
-          FROM kreportcategories WHERE id = \'' . $id . '\'');
-
-        while ($thisEntry = DBManagerFactory::getInstance()->fetchByAssoc($resArray)) {
-            $returnArray[] = [
-                'id' => $thisEntry['id'],
-                'name' => $thisEntry['name'],
-                'priority' => $thisEntry['priority'],
-                'is_admin_only' => $thisEntry['is_admin_only'],
-            ];
-        }
-        return $returnArray;
-    }
-
-    public function saveNewCategory($params)
-    {
-        $returnArray = [];
-        $q = "INSERT INTO kreportcategories (id, name, priority, is_admin_only) "
-            . "VALUES('" . $params['id'] . "','" . DBManagerFactory::getInstance()->quote($params['name']) . "', " . $params['priority'] . ", " . $params['is_admin_only'] . ")";
-        if (DBManagerFactory::getInstance()->query($q)) {
-            $returnArray = ['success' => 1, 'categoryid' => $params['id']];
-        } else
-            $returnArray = ['success' => 0, 'msg' => 'Could not insert record into DB.kreportcategories'];
-
-        return $returnArray;
-    }
-
-    public function deleteCategory($params)
-    {
-
-        $returnArray = [];
-        $q = "UPDATE kreportcategories SET "
-            . "deleted = 1 "
-            . "WHERE id='" . $params['id'] . "'";
-        if (DBManagerFactory::getInstance()->query($q)) {
-            $qD = "UPDATE kreports SET category_id = null, category_priority = null WHERE category_id='" . $params['id'] . "';";
-            DBManagerFactory::getInstance()->query($qD);
-            $returnArray = ['success' => 1, 'catgoryid' => $params['id']];
-        } else
-            $returnArray = ['success' => 0, 'msg' => 'Could not set record deleted into DB.kreportcategories'];
-
-        return $returnArray;
-    }
-
-    public function updateCategory($params)
-    {
-        $returnArray = [];
-        $q = "UPDATE kreportcategories SET "
-            . "name = '" . DBManagerFactory::getInstance()->quote($params['name']) . "', "
-            . "priority = " . intval($params['priority']) . ", "
-            . "is_admin_only = " . intval($params['is_admin_only']) . " "
-            . "WHERE id='" . $params['id'] . "'";
-
-        if (DBManagerFactory::getInstance()->query($q)) {
-            $returnArray = ['success' => 1, 'categoryid' => $params['id']];
-        } else
-            $returnArray = ['success' => 0, 'msg' => 'Could not update record in DB.kreportcategories'];
-
-        return $returnArray;
-    }
-###################### END CategoriesManager ######################
-
-###################### BEGIN Cockpit ######################
-    public function getCockpit()
-    {
-        $db = DBManagerFactory::getInstance();
-        $returnArray = [];
-        $queryOnTable = false;
-
-        //check first if table exists (PRO version). If not, just return empty array
-        $resArray = $db->query("SHOW TABLES like 'kreportcategories'");
-        if ($db->getRowCount($resArray) > 0) $queryOnTable = true;
-
-        //get dlists
-        if ($queryOnTable) {
-            $addWhere = "";
-            if (!AuthenticationController::getInstance()->getCurrentUser()->is_admin)
-                $addWhere .= " AND  kc.is_admin_only < 1";
-
-            $q = 'SELECT kreports.id kreport_id, kreports.name kreport_name, kreports.report_module,
-              kreports.category_priority kreport_priority, kreports.description kreport_description,
-              kc.id category_id, kc.name category_name, kc.is_admin_only category_is_admin
-            FROM kreports 
-            INNER JOIN kreportcategories kc ON kc.id = kreports.category_id AND kc.deleted=0           
-            WHERE kreports.deleted = \'0\' ' . $addWhere . '
-            ORDER BY kc.priority ASC, category_name ASC, kreport_priority ASC, kreport_name ASC';
-
-            $resArray = $db->query($q);
-            while ($thisEntry = $db->fetchByAssoc($resArray)) {
-                //make a bean of it and check on access
-                $kreport = new KReport();
-                $kreport->retrieve($thisEntry['kreport_id']);
-                if (SpiceACL::getInstance()->checkAccess($kreport, 'list', false, $kreport->acltype)) {
-                    $returnArray[$thisEntry['category_name']][] = [
-                        'kreport_id' => $thisEntry['kreport_id'],
-                        'kreport_name' => html_entity_decode($thisEntry['kreport_name']),
-                        'report_module' => html_entity_decode($thisEntry['report_module']),
-                        'kreport_description' => html_entity_decode($thisEntry['kreport_description']),
-                        'kreport_priority' => $thisEntry['kreport_priority'],
-                        'category_id' => $thisEntry['category_id'],
-                        'category_name' => html_entity_decode($thisEntry['category_name']),
-                        'category_is_admin' => $thisEntry['category_is_admin'],
-                    ];
-                }
-                unset($kreport);
-            }
-        }
-        return $returnArray;
-    }
-
-###################### END Cockpit ######################
-
 
     public function getFieldType($modulename, $fieldname)
     {

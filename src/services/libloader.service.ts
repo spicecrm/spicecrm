@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -108,6 +108,8 @@ export class libloader {
             return of({script: name, loaded: false, status: "Unknown"});
         } else if (this.isLibLoaded(name)) {
             return of({script: name, loaded: true, status: "Already Loaded"});
+        } else if (this.isLibLoading(name)) {
+            return this.loadedLibs$;
         } else {
             this.loadedLibs.push({name: name, status: 'loading'});
             let sub = new Subject<object>();

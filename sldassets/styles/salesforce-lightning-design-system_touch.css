@@ -1,4 +1,4 @@
-/*! Lightning Design System 2.14.1 */
+/*! Lightning Design System 2.15.8 */
 @charset "UTF-8";
 @media (pointer: coarse) and (hover: none){
   body{
@@ -10,7 +10,7 @@
   }
 
   .slds-button{
-    line-height:2.625rem;
+    --sds-c-button-line-height:2.625rem;
     font-weight:700;
   }
 

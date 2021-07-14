@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -36,7 +36,7 @@ export class AdministrationDictRepairLanguage {
      */
     public executeLG() {
         let await = this.modal.await(this.language.getLabel('LBL_LOADING'));
-        this.backend.getRequest('repair/language').subscribe(result => {
+        this.backend.getRequest('admin/repair/language').subscribe(result => {
             await.emit(true);
             if(result.response) {
                 this.language.getLanguage(this.loaderHandler);

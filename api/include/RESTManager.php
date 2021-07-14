@@ -29,7 +29,6 @@
 
 namespace SpiceCRM\includes;
 
-
 /**
  * @OA\Info(title="SpiceCRM Api", version="0.1")
  */
@@ -50,7 +49,9 @@ use SpiceCRM\includes\Middleware\ExceptionMiddleware;
 use SpiceCRM\includes\Middleware\LoggerMiddleware;
 use SpiceCRM\includes\Middleware\ModuleRouteMiddleware;
 use SpiceCRM\includes\Middleware\RequireAuthenticationMiddleware;
+use SpiceCRM\includes\Middleware\TransactionMiddleware;
 use SpiceCRM\includes\Middleware\ValidationMiddleware;
+use SpiceCRM\includes\SpiceDictionary\SpiceDictionaryDomainLoader;
 use SpiceCRM\includes\SpiceSwagger\SpiceSwaggerGenerator;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
@@ -73,12 +74,25 @@ class RESTManager
      * @var null
      */
     public $app = null;
-    private $sessionId = null;
-    private $requestParams = [];
-    private $noAuthentication = false;
-    private $adminOnly = false;
+    /**
+     * All extensions registered in the API.
+     *
+     * @var array
+     */
     public $extensions = [];
+    /**
+     * All routes registered in the API.
+     *
+     * @var array
+     */
     private $routes = [];
+    /**
+     * Used during route registration to decide if a route is custom or not.
+     *
+     * @var bool
+     */
+    private $isCustomExtension = false;
+
     private function __construct()
     {
     }
@@ -92,8 +106,7 @@ class RESTManager
      *
      * @return RESTManager|null
      */
-    public static function getInstance()
-    {
+    public static function getInstance(): ?RESTManager {
         if (!is_object(self::$_instance)) {
             self::$_instance = new RESTManager();
         }
@@ -108,7 +121,7 @@ class RESTManager
      */
     public function initialize(App $app)
     {
-        // link the app and the request paramas
+        // link the app and the request params
         $this->app = $app;
 
         $this->initGlobals();
@@ -117,6 +130,7 @@ class RESTManager
         $this->app->options('/{routes:.+}', function ($request, $response, $args) {
             return $response;
         });
+        $this->app->add(TransactionMiddleware::class);
 
         $this->app->add(function ($req, $next) {
             return $next->handle($req)
@@ -131,6 +145,7 @@ class RESTManager
         if (!($_GET['installer'])) {
             $this->initLogging();
         }
+
 
         $this->app->addRoutingMiddleware();
 
@@ -154,6 +169,7 @@ class RESTManager
     public function registerRoutes(array $routeArray, string $extension = null): void {
         foreach ($routeArray as $route) {
             $route['extension'] = $extension;
+            $route['custom']    = $this->isCustomExtension;
             $this->routes[$route['method'].':'.$route['route']] = $route;
         }
     }
@@ -222,8 +238,7 @@ class RESTManager
      *
      * @return array
      */
-    private function getHeaders()
-    {
+    private function getHeaders(): array {
         $retHeaders = [];
         $headers = $this->getallheaders();
         foreach ($headers as $key => $value) {
@@ -237,8 +252,7 @@ class RESTManager
      *
      * @throws UnauthorizedException
      */
-    public function authenticate()
-    {
+    public function authenticate() {
         // set SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1 in .htaccessfile
 
         // get the headers
@@ -272,7 +286,8 @@ class RESTManager
          */
         if($user || $token) {
             $authController = AuthenticationController::getInstance();
-            return $authController->authenticate($user, $pass, $token, $tokenIssuer);
+            $impersonationUser = @SpiceConfig::getInstance()->config['system']['impersonation_enabled'] === true ? $_GET['impersonationuser'] : null;
+            return $authController->authenticate($user, $pass, $token, $tokenIssuer, $impersonationUser);
         }
     }
 
@@ -280,9 +295,7 @@ class RESTManager
      * Initialize Error Handling
      * Each thrown Exception is caught here and is available in $exception.
      */
-    private function initErrorHandling()
-    {
-
+    private function initErrorHandling() {
         $this->app->add(ErrorMiddleware::class);
         $this->app->add(ExceptionMiddleware::class);
         $this->app->addErrorMiddleware(true, true, true);
@@ -295,8 +308,7 @@ class RESTManager
      * @param $exception
      * @return string
      */
-    public function outputError($exception)
-    {
+    public function outputError($exception): string {
         $inDevMode = (isset(SpiceConfig::getInstance()->config['developerMode'])
                     and SpiceConfig::getInstance()->config['developerMode']);
 
@@ -347,20 +359,20 @@ class RESTManager
 
     /**
      * Generates the swagger definition of the API;
+     * @param string $node
      * @param array|null $extensions
      * @param array|null $modules
      * @return string
      */
-    public function getSwagger(?array $extensions, ?array $modules): string {
-        $swaggerGenerator = new SpiceSwaggerGenerator($this->routes, $this->extensions, $extensions, $modules);
+    public function getSwagger(?array $extensions, ?array $modules, string $node = "/"): string {
+        $swaggerGenerator = new SpiceSwaggerGenerator($this->routes, $this->extensions, $extensions, $modules, $node);
         return $swaggerGenerator->generateSwaggerFile();
     }
 
     /**
-     * Initializes the logger middleware. It logs the traffic into the syskrestlog table.
+     * Initializes the logger middleware. It logs the traffic into the sysapilog table.
      */
-    private function initLogging()
-    {
+    private function initLogging(): void {
         $this->app->add(LoggerMiddleware::class);
     }
 
@@ -368,14 +380,11 @@ class RESTManager
     /**
      * Sets general global settings.
      */
-    private function initGlobals() {
+    private function initGlobals(): void {
         // some general global settings
         // disable fixup format added to pürevent fixup format in sugarbean .. invalidates float based on user settings
         global $disable_fixup_format;
         $disable_fixup_format = true;
-
-        // set a global transaction id
-        $GLOBALS['transactionID'] = SpiceUtils::createGuid();
 
         if (isset(SpiceConfig::getInstance()->config['sessionMaxLifetime'])) {
             ini_set('session.gc_maxlifetime', SpiceConfig::getInstance()->config['sessionMaxLifetime']);
@@ -410,6 +419,7 @@ class RESTManager
 
     /**
      * Initializes extensions and routes.
+     * todo in the route definition save an info if a route is custom or core
      */
     private function initExtensions() {
         // check if we have extension in the local path
@@ -418,36 +428,45 @@ class RESTManager
             $KRestDirHandle = opendir("./$checkRootPath");
             if ($KRestDirHandle) {
                 while (($KRestNextDir = readdir($KRestDirHandle)) !== false) {
-                    if ($KRestNextDir != '.' && $KRestNextDir != '..' && is_dir("./$checkRootPath/$KRestNextDir") && file_exists("./$checkRootPath/$KRestNextDir/KREST/extensions")) {
-                        $KRestSubDirHandle = opendir("./$checkRootPath/$KRestNextDir/KREST/extensions");
-                        if ($KRestSubDirHandle) {
-                            while (false !== ($KRestNextFile = readdir($KRestSubDirHandle))) {
-                                if (preg_match('/.php$/', $KRestNextFile)) {
-                                    require_once("./$checkRootPath/$KRestNextDir/KREST/extensions/$KRestNextFile");
-                                }
-                            }
-                        }
+                    if ($KRestNextDir != '.' && $KRestNextDir != '..' && is_dir("./$checkRootPath/$KRestNextDir")) {
+
+                        $this->initExtensionsInFolder("./$checkRootPath/$KRestNextDir");
+
+//                        $KRestSubDirHandle = opendir("./$checkRootPath/$KRestNextDir/api/extensions");
+//                        if ($KRestSubDirHandle) {
+//                            while (false !== ($KRestNextFile = readdir($KRestSubDirHandle))) {
+//                                if (preg_match('/.php$/', $KRestNextFile)) {
+//                                    $this->isCustomExtension = (bool) strpos($checkRootPath, 'custom');
+//                                    require_once("./$checkRootPath/$KRestNextDir/api/extensions/$KRestNextFile");
+//                                }
+//                            }
+//                        }
                     }
                 }
             }
         }
 
-        $KRestDirHandle = opendir('./KREST/extensions');
-        while (false !== ($KRestNextFile = readdir($KRestDirHandle))) {
-            $statusInclude = 'NOP';
-            if (preg_match('/.php$/', $KRestNextFile)) {
-                $statusInclude = 'included';
-                require_once('./KREST/extensions/' . $KRestNextFile);
-            }
+        $this->initExtensionsInFolder('.');
+        $this->initExtensionsInFolder('./custom');
+    }
+
+    private function initExtensionsInFolder(string $folderPath) {
+        $apiExtensionPath = $folderPath . '/api/extensions';
+        $krestExtensionPath = $folderPath . '/KREST/extensions';
+        if (file_exists($apiExtensionPath)) {
+            $extensionPath = $apiExtensionPath;
+        } elseif (file_exists($krestExtensionPath)) {
+            $extensionPath = $krestExtensionPath;
+        } else {
+            return;
         }
 
-        if (file_exists('./custom/KREST/extensions')) {
-            $KRestDirHandle = opendir('./custom/KREST/extensions');
-            if ($KRestDirHandle) {
-                while (false !== ($KRestNextFile = readdir($KRestDirHandle))) {
-                    if (preg_match('/.php$/', $KRestNextFile)) {
-                        require_once('./custom/KREST/extensions/' . $KRestNextFile);
-                    }
+        $this->isCustomExtension = (bool) strpos($extensionPath, 'custom');
+        $dirHandle = opendir($extensionPath);
+        if ($dirHandle) {
+            while (false !== ($nextFile = readdir($dirHandle))) {
+                if (preg_match('/.php$/', $nextFile)) {
+                    require_once ($extensionPath . '/' . $nextFile);
                 }
             }
         }
@@ -466,25 +485,29 @@ class RESTManager
                     continue;
                 }
 
+                $routeObject = $this->app->{$route['method']}($route['route'], [new $route['class'](), $route['function']]);
+
                 if (isset($route['options']['adminOnly']) && $route['options']['adminOnly'] == true) {
-                    $this->app->{$route['method']}($route['route'], [new $route['class'](), $route['function']])
-                        ->add(AdminOnlyAccessMiddleware::class);
-                    continue;
+                    $routeObject->add(AdminOnlyAccessMiddleware::class);
                 }
 
                 if (isset($route['options']['moduleRoute']) && $route['options']['moduleRoute'] == true) {
-                    $this->app->{$route['method']}($route['route'], [new $route['class'](), $route['function']])
-                        ->add(ModuleRouteMiddleware::class);
-                    continue;
+                    $routeObject->add(ModuleRouteMiddleware::class);
                 }
 
                 if (isset($route['options']['validate']) && $route['options']['validate'] == true) {
-                    $this->app->{$route['method']}($route['route'], [new $route['class'](), $route['function']])
-                        ->add(ValidationMiddleware::class);
-                    continue;
+                    $routeObject->add(ValidationMiddleware::class);
                 }
 
-                $this->app->{$route['method']}($route['route'], [new $route['class'](), $route['function']]);
+                if (isset($route['options']['middleware']) && is_array($route['options']['middleware'])) {
+                    foreach ($route['options']['middleware'] as $middlewareClass) {
+                        if (class_exists($middlewareClass)) {
+                            $routeObject->add($middlewareClass);
+                        }
+                    }
+                }
+
+//                $this->app->{$route['method']}($route['route'], [new $route['class'](), $route['function']]);
 
 //                if (isset($route['options']['noAuth']) && $route['options']['noAuth'] == true) {
 //                    $this->app->{$route['method']}($route['route'], [new $route['class'](), $route['function']]);
@@ -507,9 +530,32 @@ class RESTManager
         if (isset($routes[$routeIdentifier])) {
             $routeKey = $method . ':' . $routes[$routeIdentifier]->getPattern();
 
-            return $this->routes[$routeKey];
+            $route = $this->routes[$routeKey];
+
+            foreach ($route['parameters'] as $paramName => $paramDefinition) {
+                if ($paramDefinition['type'] == 'enum' && is_string($paramDefinition['options'])) {
+                    $domainLoader = new SpiceDictionaryDomainLoader();
+                    $route['parameters'][$paramName]['options'] = $domainLoader->loadValidationValuesForDomain($paramDefinition['options']);
+                }
+            }
+
+            return $route;
+        }
+    }
+
+    /**
+     * Performs a check if the given is string is a name of a extension registered in the system.
+     *
+     * @param string $searchedExtension
+     * @return bool
+     */
+    public function extensionExists(string $searchedExtension): bool {
+        foreach ($this->extensions as $extensionName => $extension) {
+            if ($extensionName == $searchedExtension) {
+                return true;
+            }
         }
 
-
+        return false;
     }
 }

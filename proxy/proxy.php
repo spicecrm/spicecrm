@@ -15,7 +15,7 @@ require "../config/configHandler.php";
 
 // $baseurl = 'http://127.0.0.1/spicecrm_dev/KREST';
 
-if ( isset( $_REQUEST['useurl']{0} )) {
+if ( isset( $_REQUEST['useurl'][0] )) {
     $url = base64_decode($_REQUEST['useurl']);
 } else {
 
@@ -90,8 +90,11 @@ switch ($_SERVER['REQUEST_METHOD']) {
         $fields = array();
         $fields_string = '';
 
-        // check if we have files ..
-        // if yes send them first and then add the temnp files to the header so thje REST proxy will digest them
+        /*
+         * @deprecated - this will not happen any longer
+         *
+         * check if we have files ..
+         * if yes send them first and then add the temnp files to the header so thje REST proxy will digest them
         if ($_FILES && count($_FILES) > 0) {
             $files = Array();
             $headersForFileUpload = $headerarray;
@@ -103,7 +106,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 curl_setopt($chf, CURLOPT_HTTPHEADER, $headersForFileUpload );
                 curl_setopt($chf, CURLOPT_SSL_VERIFYPEER, false);
                 curl_setopt($chf, CURLOPT_POSTFIELDS, base64_encode(file_get_contents($fileData['tmp_name'])));
-                curl_setopt($chf, CURLOPT_URL, $baseurl.'/tmpfile');
+                curl_setopt($chf, CURLOPT_URL, $baseurl.'/system/tmpfile');
                 curl_setopt($chf, CURLOPT_POST, 1);
                 $result = json_decode( curl_exec($chf),true);
                 curl_close($chf);
@@ -119,6 +122,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headerarray);
 
         }
+        */
 
         curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents('php://input'));
 

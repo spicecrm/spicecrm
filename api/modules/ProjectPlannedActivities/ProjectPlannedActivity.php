@@ -30,7 +30,7 @@ namespace SpiceCRM\modules\ProjectPlannedActivities;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
-        
+
 
 class ProjectPlannedActivity extends SugarBean {
     public $module_dir = 'ProjectPlannedActivities';
@@ -57,14 +57,13 @@ class ProjectPlannedActivity extends SugarBean {
         if($bean){
             $this->consumed = 0;
             $activitySeed = BeanFactory::getBean('ProjectActivities');
-            $activities = $activitySeed->get_full_list('', "projectplannedactivity_id='{$bean->id}'");
 
             $activities = $this->db->query("SELECT activity_start, activity_end FROM projectactivities WHERE projectplannedactivity_id='{$bean->id}' AND deleted = 0");
             while($activity = $this->db->fetchByAssoc($activities)){
                 $duration = (strtotime($activity['activity_end']) - strtotime($activity['activity_start'])) / 3600;
                 $this->consumed += $duration;
             }
-            $this->ratio = $this->consumed / $this->effort;
+            $this->ratio = $this->effort > 0 ? round($this->consumed / $this->effort, 2) : 0;
 
             // set project_name
             $wbs = BeanFactory::getBean('ProjectWBSs', $this->projectwbs_id);

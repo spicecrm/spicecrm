@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -15,7 +15,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
     <tr class="slds-text-title--caps">
         <th *ngIf="selectable" class="slds-cell-shrink" scope="col">
             <span class="slds-assistive-text" id="check-group-header"><system-label label="LBL_CHOOSE_ROWS_TO_SELECT"></system-label></span>
-            <system-checkbox [ngModel]="areAllObjectsSelected()" (click)="toggleAll()" [disabled]="objects.length > max_selections"></system-checkbox>
+            <system-checkbox [ngModel]="areAllObjectsSelected()" (ngModelChange)="toggleAll()" [disabled]="objects.length > max_selections"></system-checkbox>
         </th>
         <th *ngFor="let field of fields" scope="col">
             <div *ngIf="!field.fieldconfig || !field.fieldconfig.hidelabel" class="slds-truncate"><system-label-fieldname [module]="module" [field]="field.field" [fieldconfig]="field.fieldconfig"></system-label-fieldname></div>

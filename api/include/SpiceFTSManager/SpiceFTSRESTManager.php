@@ -174,6 +174,11 @@ class SpiceFTSRESTManager
         return $deleteIndex;
     }
 
+    /**
+     * @param $module
+     * @return array|mixed
+     * @throws ForbiddenException
+     */
     function getFTSFields($module)
     {
         $db = DBManagerFactory::getInstance();
@@ -260,7 +265,7 @@ class SpiceFTSRESTManager
                 $setFields[] = "ftsfields = '" . addslashes(json_encode($items["fields"])) . "'"; // CR1000343 added addslahes
             }
             if ($items["settings"] != '') {
-                $setFields[] = "index_priority='" . $items["settings"]["index_priority"] . "'";
+                $setFields[] = "index_priority=" . intval($items["settings"]["index_priority"]);
                 $setFields[] = "settings = '" . json_encode($items["settings"]) . "'";
             }
             if (count($setFields) > 0) {

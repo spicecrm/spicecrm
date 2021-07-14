@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -38,29 +38,29 @@ import {modelutilities} from '../../../services/modelutilities.service';
 })
 export class ACLProfilesManagerAddObjectModal {
 
-    @ViewChild('header', {read: ViewContainerRef, static: true}) header: ViewContainerRef;
+    @ViewChild('header', {read: ViewContainerRef, static: true}) public header: ViewContainerRef;
 
-    self: any = {};
-    acltypes: Array<any> = [];
-    aclobjects: Array<any> = [];
-    activeTypeId: string = '';
-    activeObjectId: string = '';
-    searchterm: string = '';
-    loading: boolean = false;
+    public self: any = {};
+    public acltypes: any[] = [];
+    public aclobjects: any[] = [];
+    public activeTypeId: string = '';
+    public activeObjectId: string = '';
+    public searchterm: string = '';
+    public loading: boolean = false;
 
-    @Output() aclobject: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public aclobject: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(private language: language, private backend: backend) {
-        this.backend.getRequest('spiceaclobjects/authtypes').subscribe(acltypes => {
+        this.backend.getRequest('module/SpiceACLObjects/modules').subscribe(acltypes => {
             this.acltypes = acltypes;
 
             this.acltypes.sort((a, b) => {
                 return a.module > b.module ? 1 : -1;
-            })
-        })
+            });
+        });
     }
 
-    keyUp(_e) {
+    public keyUp(_e) {
         switch (_e.key) {
             case 'Enter':
                 this.getObjects();
@@ -68,51 +68,52 @@ export class ACLProfilesManagerAddObjectModal {
         }
     }
 
-    getObjects() {
+    public getObjects() {
         this.loading = true;
         this.aclobjects = [];
 
         let params = {
-            sysmodule_id: this.activeTypeId,
+            moduleid: this.activeTypeId,
             searchterm: this.searchterm
-        }
+        };
 
-        this.backend.getRequest('spiceaclobjects', params).subscribe(aclobjects => {
+        this.backend.getRequest('module/SpiceACLObjects', params).subscribe(aclobjects => {
             this.aclobjects = aclobjects;
 
             this.aclobjects.sort((a, b) => {
                 return a.name > b.name ? 1 : -1;
-            })
+            });
             this.loading = false;
-        })
+        });
     }
 
-    getType(type){
+    public getType(type) {
         return this.language.getFieldDisplayOptionValue('SpiceACLObjects', 'spiceaclobjecttype', type);
     }
 
-    selectType(event) {
+    public selectType(event) {
         this.getObjects();
         this.activeObjectId = '';
     }
 
-    get currentModule(){
-        for(let acltype of this.acltypes){
-            if(acltype.id == this.activeTypeId)
+    get currentModule() {
+        for(let acltype of this.acltypes) {
+            if(acltype.id == this.activeTypeId) {
                 return acltype.module;
+            }
         }
 
         return '';
     }
 
-    selectObject(aclobject){
+    public selectObject(aclobject) {
 
         aclobject.spiceacltype_module = this.currentModule;
         this.aclobject.emit(aclobject);
         this.close();
     }
 
-    close() {
+    public close() {
         this.self.destroy();
     }
 

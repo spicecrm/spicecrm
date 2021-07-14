@@ -29,7 +29,7 @@
 
 use SpiceCRM\includes\SugarObjects\VardefManager;
 use SpiceCRM\modules\SpiceACL\SpiceACLUsers;
-use SpiceCRM\includes\SpiceUI\KREST\controllers\SpiceUIModulesController;
+use SpiceCRM\includes\SpiceUI\api\controllers\SpiceUIModulesController;
 
 /**
  * Class SpiceACLHooks

@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -28,7 +28,9 @@ import {toast} from "../../../services/toast.service";
 })
 export class EmailSchedulesButton implements OnInit {
 
-    public disabled: boolean = false;
+    /**
+     * the hidden property hiding the button if the user does not have the proper access rights
+     */
     public hidden: boolean = true;
 
     constructor(
@@ -47,6 +49,14 @@ export class EmailSchedulesButton implements OnInit {
     }
 
     /**
+     * checks the acl rights for the user to export and that we have some items selected
+     */
+    get disabled() {
+        return  this.modellist.getSelectedCount() == 0;
+    }
+
+
+    /**
      * get the count of the selected objects
      */
     get exportcount() {
@@ -55,6 +65,10 @@ export class EmailSchedulesButton implements OnInit {
     }
 
     private findEmailsLink() {
+        // check that the user has the right to create email schedules
+        if(!this.metadata.checkModuleAcl('EmailSchedules', 'create')) return;
+
+        // check if there is an emails link field on the current module
         let moduleFields = this.metadata.getModuleFields(this.model.module);
         for (let fieldname in moduleFields) {
             let field = moduleFields[fieldname];

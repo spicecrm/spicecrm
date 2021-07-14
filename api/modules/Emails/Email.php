@@ -40,17 +40,18 @@ use DOMDocument;
 use DOMNodeList;
 use DOMXPath;
 use Exception;
-use SpiceCRM\includes\database\DBManagerFactory;
-use SpiceCRM\includes\Logger\LoggerManager;
-use SpiceCRM\modules\Mailboxes\Mailbox;
+use Hfig\MAPI;
+use Hfig\MAPI\Mime\Swiftmailer;
+use Hfig\MAPI\OLE\Pear;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
-use SpiceCRM\includes\SugarCleaner;
-use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
-use Hfig\MAPI;
-use Hfig\MAPI\OLE\Pear;
-use Hfig\MAPI\Mime\Swiftmailer;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\Logger\LoggerManager;
+use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
+use SpiceCRM\includes\SugarCleaner;
+use SpiceCRM\includes\utils\SpiceUtils;
+use SpiceCRM\modules\Mailboxes\Mailbox;
 
 class Email extends SugarBean
 {
@@ -66,19 +67,24 @@ class Email extends SugarBean
     public $processors = [];
 
     public $mailbox;
+    /**
+     * holds the attachments
+     * @var array
+     */
+    public $attachments = [];
 
     /**
      * Openness Statuses
      */
-    const OPENNESS_OPEN          = 'open';
-    const OPENNESS_USER_CLOSED   = 'user_closed';
+    const OPENNESS_OPEN = 'open';
+    const OPENNESS_USER_CLOSED = 'user_closed';
     const OPENNESS_SYSTEM_CLOSED = 'system_closed';
 
-    const STATUS_UNREAD  = 'unread';
-    const STATUS_READ    = 'read';
+    const STATUS_UNREAD = 'unread';
+    const STATUS_READ = 'read';
     const STATUS_CREATED = 'created';
 
-    const TYPE_INBOUND  = 'inbound';
+    const TYPE_INBOUND = 'inbound';
     const TYPE_OUTBOUND = 'out';
 
     /**
@@ -101,7 +107,7 @@ class Email extends SugarBean
     public function add_fts_fields()
     {
 
-        if($this->date_sent){
+        if ($this->date_sent) {
             $retvalue = $this->date_sent;
         } else {
 
@@ -111,12 +117,13 @@ class Email extends SugarBean
         return ['date_activity' => $retvalue];
     }
 
-        /**
+    /**
      * Overrides
      */
     ///////////////////////////////////////////////////////////////////////////
     ////	SAVERS
-    public function save($check_notify = false, $fts_index_bean = true) {
+    public function save($check_notify = false, $fts_index_bean = true)
+    {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         global $timedate;
 
@@ -124,18 +131,23 @@ class Email extends SugarBean
             LoggerManager::getLogger()->debug("EMAIL - tried to save a duplicate Email record");
         } else {
 
-            if(!empty($this->mailbox_id)) {
+            if (!empty($this->mailbox_id)) {
                 $mailbox = BeanFactory::getBean('Mailboxes', $this->mailbox_id);
                 if ($mailbox) // check on object (mainly for spicecrm installation process)
                     $mailbox->initTransportHandler();
             }
 
             if (empty($this->id)) {
-                $this->id = create_guid();
+                $this->id = SpiceUtils::createGuid();
                 $this->new_with_id = true;
             }
+
+            if (!empty($this->reference_id) && $this->new_with_id) {
+                $this->cloneRelatedBeansFromReference();
+            }
+
             if ($this->to_be_sent) {
-                $this->type   = self::TYPE_OUTBOUND;
+                $this->type = self::TYPE_OUTBOUND;
                 $this->status = self::STATUS_CREATED;
             }
 
@@ -180,21 +192,22 @@ class Email extends SugarBean
         // send the email only if the send flag is set
         if ($this->to_be_sent) {
             try {
+                $this->loadAttachments();
                 $result = $this->sendEmail();
                 $this->to_be_sent = false;
             } catch (Exception $e) {
                 $result = [
-                    'result'  => false,
+                    'result' => false,
                     'message' => 'Mail not sent: ' . $e->getMessage(),
                 ];
             }
 
 
             if ($result['result'] == true) {
-                $this->status      = 'sent';
+                $this->status = 'sent';
 
             } else {
-                if($result['errors']){
+                if ($result['errors']) {
                     $this->status = 'send_error';
                 } else {
                     $this->status = 'created';
@@ -205,7 +218,77 @@ class Email extends SugarBean
 
             return $result;
         }
+        $this->updateParentNotificationStatus();
+
+
     }
+
+    /**
+     * clone the related beans from the reference email
+     */
+    private function cloneRelatedBeansFromReference()
+    {
+        global $resavingRelatedBeans;
+        if ($resavingRelatedBeans) return;
+        $referenceEmail = BeanFactory::getBean('Emails', $this->reference_id);
+        $linked_fields = array_filter(
+            $this->get_linked_fields(),
+            function ($key) {return !in_array($key, ['assigned_user_link', 'created_by_link', 'modified_user_link']);},
+            ARRAY_FILTER_USE_KEY
+        );
+        foreach ($linked_fields as $name => $properties) {
+            $linkedBeans = $referenceEmail->get_linked_beans($name);
+            foreach ($linkedBeans as $linkedBean) {
+                if (!$this->load_relationship($name)) continue;
+                $this->{$name}->add($linkedBean->id);
+            }
+        }
+    }
+
+    /**
+     * load attachments from database for send
+     */
+    public function loadAttachments()
+    {
+        if (!empty($this->attachments) || empty($this->id)) {
+            return;
+        }
+        $attachments = SpiceAttachments::getAttachmentsForBean('Emails', $this->id);
+        $this->attachments = json_decode($attachments);
+        $this->attachments_count = count($this->attachments);
+    }
+
+    /**
+     * set the local property attachments for send
+     * @param $attachments
+     */
+    public function setAttachments($attachments)
+    {
+        $this->attachments = json_decode(json_encode($attachments));
+        $this->attachments_count = count($this->attachments);
+    }
+
+    /**
+     * check if parent has a determineNotificationStatus method
+     * if method exists, and current status is different to has_notification, update the field on parent and call save.
+     */
+    private function updateParentNotificationStatus()
+    {
+        if (!$this->parent_type || !$this->parent_id) {
+            return;
+        }
+
+        $parentObj = BeanFactory::getBean($this->parent_type, $this->parent_id);
+        if ($parentObj->id && method_exists($parentObj, "determineNotificationStatus")) {
+            $parentNotificationStatus = $parentObj->determineNotificationStatus();
+
+            if ($parentNotificationStatus !== $parentObj->has_notification) {
+                $parentObj->has_notification = $parentNotificationStatus;
+                $parentObj->save();
+            }
+        }
+    }
+
 
     /**
      * Handles normalization of Email Addressess
@@ -264,7 +347,9 @@ class Email extends SugarBean
     /**
      * Sets the from address in case it is not set for an outgoing Email.
      */
-    private function handleFromAddress() {
+    private
+    function handleFromAddress()
+    {
         if ($this->type != 'out') {
             return;
         }
@@ -327,15 +412,15 @@ class Email extends SugarBean
                 if (empty($recipient_address['id'])) {
                     $recordid = $this->db->fetchByAssoc($this->db->query("SELECT id FROM emails_email_addr_rel WHERE email_id = '$this->id' AND address_type='{$recipient_address['address_type']}' AND email_address_id='{$recipient_address['email_address_id']}' AND deleted = 0"));
                     $doUpdate = false;
-                    if($recordid['id']){
+                    if ($recordid['id']) {
                         $doUpdate = true;
                     }
-                    $recipient_address['id'] = $recordid['id'] ?: create_guid();
+                    $recipient_address['id'] = $recordid['id'] ?: SpiceUtils::createGuid();
                 }
 
                 // save the relationship record
                 //check if relationship exists.... linkEmailToAddress() might have been called before this (happens during installation when loading demo data)
-                if($doUpdate){
+                if ($doUpdate) {
                     $this->db->query(
                         "UPDATE emails_email_addr_rel SET
                             email_id = '{$this->id}',
@@ -347,8 +432,7 @@ class Email extends SugarBean
                             WHERE id='{$recipient_address['id']}'
                         "
                     );
-                }
-                else {
+                } else {
                     $this->db->query(
                         "INSERT INTO emails_email_addr_rel (
                             id,
@@ -397,7 +481,7 @@ class Email extends SugarBean
         if (!empty($a1) && !empty($a1['id'])) {
             return $a1['id'];
         } else {
-            $guid = create_guid();
+            $guid = SpiceUtils::createGuid();
             $q2 = "INSERT INTO emails_email_addr_rel (id, email_id, address_type, email_address_id, deleted) VALUES('{$guid}', '{$this->id}', '{$type}', '{$id}', 0)";
             $r2 = $this->db->query($q2);
         }
@@ -410,7 +494,8 @@ class Email extends SugarBean
      *
      * @param $id
      */
-    public function mark_deleted($id)
+    public
+    function mark_deleted($id)
     {
         if (!empty($this->mailbox_id)) {
             $mailbox = BeanFactory::getBean('Mailboxes', $this->mailbox_id);
@@ -461,36 +546,37 @@ class Email extends SugarBean
         // cn: bug 11915, return SugarBean's retrieve() call bean instead of $this
         $ret = parent::retrieve($id, $encoded, $deleted, $relationships);
 
-        if ($ret) {
-            //$ret->raw_source = SugarCleaner::cleanHtml($ret->raw_source);
-            $ret->description = to_html($ret->description);
-            //$ret->description_html = SugarCleaner::cleanHtml($ret->description_html);
+        // if bean was not found --- return false
+        if(!$ret) return false;
 
-            // BEGIN CR1000307
-            if(empty($this->body)){
-                if(!empty($ret->description)){
-                    $this->body = $ret->description;
-                }
-                if(!empty($ret->description_html)){
-                    $this->body = $ret->description_html;
-                }
-            }
-            // END
+        //$ret->raw_source = SugarCleaner::cleanHtml($ret->raw_source);
+        $ret->description = to_html($ret->description);
+        //$ret->description_html = SugarCleaner::cleanHtml($ret->description_html);
 
-            $ret->retrieveEmailAddresses();
+        // BEGIN CR1000307
+        if (empty($this->body)) {
+            if (!empty($ret->description)) {
+                $this->body = $ret->description;
+            }
+            if (!empty($ret->description_html)) {
+                $this->body = $ret->description_html;
+            }
+        }
+        // END
 
-            $ret->date_start = '';
-            $ret->time_start = '';
-            $dateSent = explode(' ', $ret->date_sent);
-            if (!empty($dateSent)) {
-                $ret->date_start = $dateSent[0];
-                if (isset($dateSent[1]))
-                    $ret->time_start = $dateSent[1];
-            }
-            // for Email 2.0
-            foreach ($ret as $k => $v) {
-                $this->$k = $v;
-            }
+        $ret->retrieveEmailAddresses();
+
+        $ret->date_start = '';
+        $ret->time_start = '';
+        $dateSent = explode(' ', $ret->date_sent);
+        if (!empty($dateSent)) {
+            $ret->date_start = $dateSent[0];
+            if (isset($dateSent[1]))
+                $ret->time_start = $dateSent[1];
+        }
+        // for Email 2.0
+        foreach ($ret as $k => $v) {
+            $this->$k = $v;
         }
 
         // forec utf8 encode if body cannot be encoded
@@ -501,11 +587,11 @@ class Email extends SugarBean
 
         // check for embedded files, if they are attached embed them as base64 ref
         $matches = [];
-        if(preg_match_all('/src\s*=\s*"(.+?)"/', html_entity_decode($this->body), $matches)){
+        if (preg_match_all('/src\s*=\s*"(.+?)"/', html_entity_decode($this->body), $matches)) {
             $attachments = SpiceAttachments::getAttachmentsForBean('Emails', $this->id, 100, false);
-            foreach($attachments as $attachment){
-                foreach($matches[1] as $match){
-                    if(strpos($match, $attachment['filename']) !== false){
+            foreach ($attachments as $attachment) {
+                foreach ($matches[1] as $match) {
+                    if (strpos($match, $attachment['filename']) !== false) {
                         $attachmentDetails = SpiceAttachments::getAttachment($attachment['id'], false);
                         $this->body = str_replace($match, "data:{$attachmentDetails['file_mime_type']};charset=utf-8;base64,{$attachmentDetails['file']}", $this->body);
                     }
@@ -597,13 +683,14 @@ class Email extends SugarBean
      * @return mixed
      * @throws Exception
      */
-    public function sendEmail()
+    public
+    function sendEmail()
     {
         if ($this->mailbox_id) {
             $mailbox = BeanFactory::getBean('Mailboxes', $this->mailbox_id);
         }
 
-        if(!$mailbox) {
+        if (!$mailbox) {
             try {
                 $mailbox = Mailbox::getDefaultMailbox();
                 $this->mailbox_id = $mailbox->id;
@@ -639,8 +726,6 @@ class Email extends SugarBean
     }
 
 
-
-
     private
     function extractAddresses($items)
     {
@@ -673,7 +758,8 @@ class Email extends SugarBean
      *
      * @return Email
      */
-    public static function getTestEmail(Mailbox $mailbox, $testEmailAddress)
+    public
+    static function getTestEmail(Mailbox $mailbox, $testEmailAddress)
     {
         $testEmail = new Email();
 
@@ -698,7 +784,8 @@ class Email extends SugarBean
      *
      * @return array
      */
-    public function to()
+    public
+    function to()
     {
         if (!empty($this->recipient_addresses)) {
             $emailAddresses = [];
@@ -725,7 +812,8 @@ class Email extends SugarBean
      *
      * @return array
      */
-    public function from()
+    public
+    function from()
     {
         $emailAddresses = [];
 
@@ -752,7 +840,8 @@ class Email extends SugarBean
      *
      * @return array
      */
-    public function cc()
+    public
+    function cc()
     {
         if (!empty($this->recipient_addresses)) {
             $emailAddresses = [];
@@ -779,7 +868,8 @@ class Email extends SugarBean
      *
      * @return array
      */
-    public function bcc()
+    public
+    function bcc()
     {
         if (!empty($this->recipient_addresses)) {
             $emailAddresses = [];
@@ -807,7 +897,8 @@ class Email extends SugarBean
      * @param $items
      * @return array
      */
-    private function extractEmailAddress($items)
+    private
+    function extractEmailAddress($items)
     {
         $email_array = [];
 
@@ -841,7 +932,8 @@ class Email extends SugarBean
      *
      * @return void
      */
-    public function addressesToArray()
+    public
+    function addressesToArray()
     {
         if ($this->recipient_addresses == '') {
             $this->recipient_addresses = [];
@@ -867,7 +959,6 @@ class Email extends SugarBean
                     'address_type' => $type,
                     'email_address' => $item['email'],
                     'name' => $item['name'],
-                    // 'id' => create_guid(),
                 ];
 
                 array_push($this->recipient_addresses, $address);
@@ -888,7 +979,8 @@ class Email extends SugarBean
      *
      * Initializes the mailbox processors
      */
-    public function initProcessors()
+    public
+    function initProcessors()
     {
         $db = DBManagerFactory::getInstance();
 
@@ -905,7 +997,8 @@ class Email extends SugarBean
      *
      * Goes thru the list of email processors assigned to this email's mailbox and runs the processing.
      */
-    public function processEmail()
+    public
+    function processEmail()
     {
         if (empty($this->processors)) {
             $this->initProcessors();
@@ -943,7 +1036,8 @@ class Email extends SugarBean
      * @param SugarBean $bean
      * @return bool
      */
-    public function assignToBean(SugarBean $bean)
+    public
+    function assignToBean(SugarBean $bean)
     {
         return $this->assignBeanToEmail($bean->id, $bean->module_name);
     }
@@ -953,14 +1047,15 @@ class Email extends SugarBean
      *
      * Assigns a Bean to Email
      *
-     * @param $bean the bean or a string with te bean id
+     * @param $bean / the bean or a string with te bean id
      * @param $bean_module
      * @return bool
      */
-    public function assignBeanToEmail($bean, $bean_module)
+    public
+    function assignBeanToEmail($bean, $bean_module)
     {
         // if no bean is passed in we assume it is an id and load the bean
-        if(is_string($bean)){
+        if (is_string($bean)) {
             $bean = BeanFactory::getBean($bean_module, $bean);
         }
 
@@ -974,9 +1069,9 @@ class Email extends SugarBean
 
         // try to find a relationship between Emails and the module
         $rels = $db->query("SELECT relationship_name FROM relationships WHERE lhs_module = 'Emails' AND rhs_module = '$bean_module'");
-        while($rel = $db->fetchByAssoc($rels)){
-            foreach($this->field_name_map as $field => $fieldDetails){
-                if($fieldDetails['type'] == 'link' && $fieldDetails['relationship'] == $rel['relationship_name']){
+        while ($rel = $db->fetchByAssoc($rels)) {
+            foreach ($this->field_name_map as $field => $fieldDetails) {
+                if ($fieldDetails['type'] == 'link' && $fieldDetails['relationship'] == $rel['relationship_name']) {
                     $this->load_relationship($field);
                     $this->{$field}->add($bean->id);
                     return;
@@ -1014,7 +1109,9 @@ class Email extends SugarBean
      *
      * @param $stylesheet_id
      */
-    public function addStylesheet($stylesheet_id) {
+    public
+    function addStylesheet($stylesheet_id)
+    {
         $db = DBManagerFactory::getInstance();
 
         $query = "SELECT * FROM sysuihtmlstylesheets WHERE id='" . $stylesheet_id . "'";
@@ -1025,13 +1122,15 @@ class Email extends SugarBean
         }
     }
 
-    public static function findByMessageId($message_id) {
+    public
+    static function findByMessageId($message_id)
+    {
         $db = DBManagerFactory::getInstance();
 
         $query = "SELECT id FROM emails WHERE message_id='" . $message_id . "'";
         $q = $db->query($query);
 
-        while($row = $db->fetchRow($q)) {
+        while ($row = $db->fetchRow($q)) {
             $email = BeanFactory::getBean('Emails', $row['id']);
         }
 
@@ -1042,13 +1141,16 @@ class Email extends SugarBean
         }
     }
 
-    public function getMailbox() {
+    public
+    function getMailbox()
+    {
         $mailbox = BeanFactory::getBean('Mailboxes', $this->mailbox_id);
 
         return $mailbox;
     }
 
-    public function setParent(SugarBean $bean)
+    public
+    function setParent(SugarBean $bean)
     {
         $this->parent_type = $bean->module_name;
         $this->parent_id = $bean->id;
@@ -1064,15 +1166,12 @@ class Email extends SugarBean
      * @param $sentiment
      * @param $magnitude
      */
-    public function saveSentiment($sentiment, $magnitude) {
+    public
+    function saveSentiment($sentiment, $magnitude)
+    {
         $this->sentiment = $sentiment;
         $this->magnitude = $magnitude;
         parent::save();
-    }
-
-
-    public function getExternalAttachments() {
-        return SpiceAttachments::getAttachmentsForBean('Emails', $this->id, 10, false);
     }
 
     /**
@@ -1081,17 +1180,17 @@ class Email extends SugarBean
      * @param SugarBean $bean
      * @return array of Emails or empty
      */
-    public function retrieve_for_bean(SugarBean $bean)
+    public
+    function retrieve_for_bean(SugarBean $bean)
     {
         $emails = [];
         $sql = "SELECT email_id FROM emails_beans WHERE bean_id = '{$bean->id}' AND deleted = 0";
         $res = $this->db->query($sql);
-        while($row = $this->db->fetchByAssoc($res))
-        {
+        while ($row = $this->db->fetchByAssoc($res)) {
             $emails[] = $this->retrieve($row['email_id']);
         }
         return $emails;
-      }
+    }
 
     /**
      * convertMsgToEmail
@@ -1104,13 +1203,15 @@ class Email extends SugarBean
      *
      * @throws Exception
      */
-    public  function convertMsgToEmail($fileId, $beanModule = null, $beanId = null) {
-        $messageFactory  = new MAPI\MapiMessageFactory(new Swiftmailer\Factory());
+    public
+    function convertMsgToEmail($fileId, $beanModule = null, $beanId = null)
+    {
+        $messageFactory = new MAPI\MapiMessageFactory(new Swiftmailer\Factory());
         $documentFactory = new Pear\DocumentFactory();
         $this->convertMessageToBean($messageFactory->parseMessage($documentFactory->createFromFile('upload://' . $fileId)));
 
         // set the parent
-        $this->parent_id   = $beanId;
+        $this->parent_id = $beanId;
         $this->parent_type = $beanModule;
     }
 
@@ -1123,10 +1224,12 @@ class Email extends SugarBean
      * @return SugarBean
      * @throws Exception
      */
-    private function convertMessageToBean(Swiftmailer\Message $message) {
+    private
+    function convertMessageToBean(Swiftmailer\Message $message)
+    {
 
         // process the message
-        $this->name       = $message->properties['subject'];
+        $this->name = $message->properties['subject'];
         try {
             set_time_limit(60);
             $this->body = utf8_encode($message->getBodyHTML());
@@ -1139,21 +1242,21 @@ class Email extends SugarBean
             }
         }
         $this->message_id = $message->properties['internet_message_id'];
-        $dateSent  = isset($message->properties['message_delivery_time']) ? $message->properties['message_delivery_time'] :
+        $dateSent = isset($message->properties['message_delivery_time']) ? $message->properties['message_delivery_time'] :
             (isset($message->properties['client_submit_time']) ? $message->properties['client_submit_time'] :
                 (isset($message->properties['last_modification_time']) ? $message->properties['last_modification_time'] :
                     (isset($message->properties['creation_time']) ? $message->properties['creation_time'] : null)));
-        $this->date_sent  = date('Y-m-d H:i:s', $dateSent);
-        $this->from_addr  = $message->getSender();
+        $this->date_sent = date('Y-m-d H:i:s', $dateSent);
+        $this->from_addr = $message->getSender();
         foreach ($message->getRecipients() as $recipient) {
             $this->recipient_addresses[strtolower($recipient->getType()) . '_addrs'] = [
                 'email_address' => $recipient->getEmail(),
-                'address_type'  => strtolower($recipient->getType()),
+                'address_type' => strtolower($recipient->getType()),
             ];
         }
-        $this->type       = self::TYPE_INBOUND;
-        $this->status     = self::STATUS_UNREAD;
-        $this->openness   = self::OPENNESS_OPEN;
+        $this->type = self::TYPE_INBOUND;
+        $this->status = self::STATUS_UNREAD;
+        $this->openness = self::OPENNESS_OPEN;
         $this->to_be_sent = false;
 
         // todo deal with attachments lol
@@ -1170,7 +1273,9 @@ class Email extends SugarBean
     /**
      * Searches for inline base64 images in the email body.
      */
-    public function findInlineImages(): DOMNodeList {
+    public
+    function findInlineImages(): DOMNodeList
+    {
         $doc = new DOMDocument();
         $doc->loadHTML($this->body);
         $selector = new DOMXPath($doc);

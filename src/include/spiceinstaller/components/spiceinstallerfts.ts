@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -65,7 +65,7 @@ export class SpiceInstallerFTS {
 
         if (this.serverCondition && this.portCondition && this.prefixCondition) {
             this.loading = true;
-            this.http.post(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/spiceinstaller/checkfts`, body).subscribe(
+            this.http.post(`${this.spiceinstaller.configObject.backendconfig.backendUrl}/install/checkfts`, body).subscribe(
                 (response: any) => {
                     this.loading = false;
                     let res = response;

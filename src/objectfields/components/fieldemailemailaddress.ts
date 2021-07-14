@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -13,8 +13,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 /**
  * @module ObjectFields
  */
-import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
-import {language} from '../../services/language.service';
+import {Component, EventEmitter, Input, NgZone, Output} from '@angular/core';
 
 @Component({
     selector: 'field-email-emailaddress',
@@ -22,85 +21,57 @@ import {language} from '../../services/language.service';
 })
 export class fieldEmailEmailAddress {
     /*
-    * @output primaryaddress: EventEmitter: boolean
+    * emit after typing
     */
-    @Output() public primaryaddress: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() public onBlur = new EventEmitter<void>();
     /*
-    * @output onBlur: EventEmitter: boolean
+    * @input email address data
     */
-    @Output() public onBlur: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @ViewChild('inputText', {static: false}) private inputText: ElementRef;
-    /*
-    * @input emailaddress: object
-    */
-    @Input() private emailaddress: any = {};
+    @Input() private emailAddress: any = {};
     /**
-     * holds the input radio unique name for the primary radio button
+     * holds the typing timeout
+     * @private
      */
-    @Input() public primaryInputRadioName: string;
+    private typingTimeout: number;
 
-    constructor(public language: language) {
-
+    constructor(private zone: NgZone) {
     }
 
-    /*
-    * @return emailadr: string
-    */
-    get emailadr() {
-        return this.emailaddress.email_address;
+    /**
+     * @return the email address string
+     */
+    get emailAddressText() {
+        return this.emailAddress.email_address;
     }
 
-    /*
-    * @param emailaddress: string
-    * @set email_address: string
-    * @set email_address_caps: string
-    */
-    set emailadr(emailaddress) {
-        this.emailaddress.email_address = emailaddress;
-        this.emailaddress.email_address_caps = emailaddress.toUpperCase();
+    /**
+     * set the email address string
+     * @param value
+     */
+    set emailAddressText(value) {
+
+        this.emailAddress.email_address = value;
+        this.emailAddress.email_address_caps = value.toUpperCase();
+
+        this.zone.runOutsideAngular(() => {
+            window.clearTimeout(this.typingTimeout);
+            this.typingTimeout = window.setTimeout(() =>
+                    this.zone.run(() => {
+                        this.validateEmailAddress();
+                        this.onBlur.emit();
+                    })
+                ,
+                500
+            );
+        });
     }
 
-    /*
-    * @return primary_address: '1' | '0'
-    */
-    get primary() {
-        return this.emailaddress.primary_address;
-    }
-
-    /*
-    * @param value: string
-    * @set primary_address
-    * @emit boolean by primaryaddress
-    * @emit void by onBlur
-    */
-    set primary(value) {
-        if (this.emailaddress.invalid_email != 1 && this.emailaddress.email_address != '') {
-            this.emailaddress.primary_address = '1';
-            this.primaryaddress.emit(true);
-        }
-        this.onBlur.emit();
-    }
-
-    /*
-    * @return opt_out: boolean
-    */
-    get opt_out() {
-        return this.emailaddress.opt_out == 1;
-    }
-
-    /*
-    * @set opt_out: 1 | 0
-    */
-    set opt_out(value) {
-        if (this.emailaddress.invalid_email != 1) {
-            this.emailaddress.opt_out = value ? 1 : 0;
-        }
-    }
-
-    /*
-    * @return invalid_email: boolean
-    */
-    get invalid_email() {
-        return this.emailaddress.invalid_email == 1;
+    /**
+     * validate the email address by regex
+     * @private
+     */
+    private validateEmailAddress() {
+        const validation = new RegExp('^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$');
+        this.emailAddress.invalid_email = validation.test(this.emailAddress.email_address) ? 0 : 1;
     }
 }

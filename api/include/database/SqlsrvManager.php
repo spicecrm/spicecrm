@@ -124,6 +124,7 @@ class SqlsrvManager extends DBManager
             'short'    => 'smallint',
             'varchar'  => 'nvarchar',
             'text'     => 'nvarchar(max)',
+            'shorttext'=> 'nvarchar(max)',
             'longtext' => 'nvarchar(max)',
             'date'     => 'datetime',
             'enum'     => 'nvarchar',
@@ -1674,6 +1675,15 @@ EOSQL;
     public function getGuidSQL()
     {
         return 'NEWID()';
+    }
+
+    /**
+     * Returns a DB specific piece of SQL which will generate a datetiem repesenting now
+     * @abstract
+     * @return string
+     */
+    public function getNowSQL(){
+        return 'GETDATE()';
     }
 
     /**

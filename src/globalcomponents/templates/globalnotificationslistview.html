@@ -1,0 +1,148 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div system-to-bottom-noscroll class="slds-grid slds-grid--vertical">
+    <div class="slds-grid slds-border--bottom slds-p-around--medium">
+        <header class="slds-grow slds-grid slds-grid--align-spread" style="border-bottom: 0;">
+            <div>
+                <h2 class="slds-page-header__title">
+                    <system-utility-icon icon="notification" size="x-small"></system-utility-icon>
+                    <system-label label="LBL_NOTIFICATIONS"></system-label>
+                </h2>
+                <p class="slds-text-body--small slds-m-left--large">
+                    {{notificationService.notifications.length}} <system-label label="LBL_OF"></system-label> {{notificationService.totalCount}} <system-label label="LBL_ITEMS"></system-label>
+                </p>
+            </div>
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <a (click)="markAllAsRead()" class="slds-text-link">
+                    <system-label label="LBL_MARK_ALL_READ"></system-label>
+                </a>
+                <button (click)="reload()" system-title="LBL_RELOAD" class="slds-button slds-button--icon slds-m-left--xx-small slds-button--icon-border-filled">
+                    <system-button-icon icon="refresh"></system-button-icon>
+                </button>
+                <div class="slds-dropdown-trigger slds-dropdown-trigger_click" system-dropdown-trigger role="combobox">
+                    <button system-title="LBL_SETTINGS" class="slds-button slds-button--icon slds-m-left--xx-small slds-button--icon-border-filled">
+                        <system-button-icon icon="settings"></system-button-icon>
+                    </button>
+                    <div (click)="$event.stopPropagation()" class="slds-dropdown slds-dropdown_x-small slds-dropdown_left">
+                        <div class="slds-has-divider--bottom-space slds-p-horizontal--small slds-p-top--xx-small slds-text-title--caps">
+                            <system-label label="LBL_SETTINGS"></system-label>
+                        </div>
+                        <div class="slds-p-around--small">
+                            <system-checkbox-toggle [ngModel]="userPreferences.toUse.showRealtimeNotifications" (ngModelChange)="setSetting('showRealtimeNotifications', $event)" label="LBL_REALTIME_NOTIFICATIONS" class="slds-m-bottom--xx-small spice-display-block"></system-checkbox-toggle>
+                            <system-checkbox-toggle *ngIf="desktopNotificationsStatus !== 'denied' && !desktopNotificationsDisabled; else desktopNotificationDeniedContainer" [ngModel]="userPreferences.toUse.displayDesktopNotifications" (ngModelChange)="setDisplayDesktopNotification($event)" label="LBL_DESKTOP_NOTIFICATIONS" class="slds-m-bottom--xx-small spice-display-block"></system-checkbox-toggle>
+                            <ng-template #desktopNotificationDeniedContainer>
+                                <div class="slds-grid slds-grid--align-spread">
+                                    <span class="slds-grow slds-text-body--small">
+                                        <system-label label="LBL_DESKTOP_NOTIFICATIONS"></system-label>
+                                    </span>
+                                    <span class="slds-text-color_error">
+                                           <system-label label="LBL_DENIED"></system-label>
+                                    </span>
+                                </div>
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </header>
+    </div>
+    <div #scrollContainer (scroll)="onScroll(scrollContainer)" class="slds-scrollable--y slds-theme--default slds-height_full">
+        <div *ngIf="notificationService.notifications?.length === 0 && !notificationService.isLoading" class="slds-p-around--small">
+            <system-label label="LBL_NO_ENTRIES"></system-label>
+        </div>
+        <table class="slds-table slds-table_bordered slds-max-medium-table_stacked-horizontal slds-table--header-fixed">
+            <thead>
+            <tr class="slds-text-title--caps">
+                <th scope="col" class="slds-cell-shrink"></th>
+                <th scope="col">
+                    <div class="slds-truncate slds-p-around--x-small">
+                        <system-label label="LBL_TYPE"></system-label>
+                    </div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate slds-p-around--x-small">
+                        <system-label label="LBL_MODULE"></system-label>
+                    </div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate slds-p-around--x-small">
+                        <system-label label="LBL_RECORD"></system-label>
+                    </div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate slds-p-around--x-small">
+                        <system-label label="LBL_CREATED_BY"></system-label>
+                    </div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate slds-p-around--x-small">
+                        <system-label label="LBL_DATE"></system-label>
+                    </div>
+                </th>
+                <th scope="col" class="slds-cell-shrink"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let notification of notificationService.notifications" [class.slds-text-title_bold]="notification.notification_read != 1" class="spice-hover-display-children">
+                <td class="slds-cell-shrink">
+                    <div [ngSwitch]="notification.notification_type">
+                        <system-icon *ngSwitchCase="'assign'" icon="individual"></system-icon>
+                        <system-icon *ngSwitchCase="'change'" icon="custom18" sprite="custom"></system-icon>
+                        <system-icon *ngSwitchCase="'delete'" icon="record_delete"></system-icon>
+                        <system-icon *ngSwitchCase="'reminder'" icon="custom25" sprite="custom"></system-icon>
+                        <system-icon *ngSwitchDefault icon="all"></system-icon>
+                    </div>
+                </td>
+                <td>
+                    <div [ngSwitch]="notification.notification_type" class="slds-truncate">
+                        <system-label *ngSwitchCase="'assign'" label="LBL_ASSIGNMENT"></system-label>
+                        <system-label *ngSwitchCase="'change'" label="LBL_CHANGE"></system-label>
+                        <system-label *ngSwitchCase="'delete'" label="LBL_DELETION"></system-label>
+                        <system-label *ngSwitchCase="'reminder'" label="LBL_REMINDER"></system-label>
+                        <system-label *ngSwitchDefault label="LBL_NOT_SET"></system-label>
+                    </div>
+                </td>
+                <td system-model-popover [id]="notification.bean_id" [module]="notification.bean_module" [system-title]="notification.bean_module">
+                    <div class="slds-truncate">
+                        {{notification.bean_module}}
+                    </div>
+                </td>
+                <td system-model-popover [id]="notification.bean_id" [module]="notification.bean_module" [system-title]="notification.bean_name">
+                    <div class="slds-truncate">
+                        {{notification.bean_name}}
+                    </div>
+                </td>
+                <td system-model-popover [id]="notification.created_by_name" module="Users" [system-title]="notification.created_by_name">
+                    <div class="slds-truncate">
+                        {{notification.created_by_name}}
+                    </div>
+                </td>
+                <td [system-title]="notification.notification_date">
+                    <div class="slds-truncate">
+                        {{notification.notification_date}}
+                    </div>
+                </td>
+                <td class="slds-cell-shrink" system-title="LBL_MARK_AS_READ">
+                    <button (click)="markAsRead(notification.id)" [disabled]="notification.notification_read == 1" class="slds-button slds-button_icon slds-button--icon-border spice-hover-child">
+                        <system-button-icon icon="check" size="small"></system-button-icon>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div *ngIf="notificationService.isLoading" class="slds-align--absolute-center slds-p-around--small slds-height_full">
+            <system-spinner></system-spinner>
+        </div>
+    </div>
+</div>

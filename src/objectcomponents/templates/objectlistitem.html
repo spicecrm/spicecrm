@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -10,11 +10,11 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 -->
 
-<td *ngIf="rowselect" role="gridcell" class="slds-cell-shrink slds-show--medium" style="min-width: 1rem">
-    <label class="slds-checkbox">
-        <input type="checkbox" [disabled]="rowselectdisabled" [(ngModel)]="listItem.selected"/>
-        <span class="slds-checkbox--faux"></span>
-    </label>
+<td *ngIf="rownumbers" role="gridcell" class="slds-show--medium" style="min-width: 3rem">
+    <div class="slds-text-align--center slds-text-body--small slds-text-color--inverse-weak">{{rowNumber}}</div>
+</td>
+<td *ngIf="rowselect" role="gridcell" class="slds-show--medium">
+    <system-checkbox [disabled]="rowselectdisabled" [(ngModel)]="listItem.selected"></system-checkbox>
 </td>
 <td style="min-width: 2rem" *ngFor="let item of listFields" scope="row" [attr.data-label]="language.getFieldDisplayName(model.module, item.field)">
     <field-container [field]="item.field" [fieldconfig]="item.fieldconfig" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>

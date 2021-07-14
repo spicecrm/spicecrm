@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -20,15 +20,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
             <thead>
                 <tr class="slds-text-title--caps">
                     <th scope="col">
-                        <div class="slds-truncate"><system-label label="LBL_DATE"></system-label></div>
-                    </th>
-                    <!--th scope="col">
-                        <div class="slds-truncate"><system-label label="LBL_TRANSACTION"></system-label></div>
-                    </th-->
-                    <th scope="col">
-                        <div class="slds-truncate"><system-label label="LBL_USER"></system-label></div>
-                    </th>
-                    <th scope="col">
                         <div class="slds-truncate"><system-label label="LBL_FIELD"></system-label></div>
                     </th>
                     <th scope="col">
@@ -40,28 +31,28 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let auditEntry of auditLog">
-                    <td scope="row">
-                        <div class="slds-truncate">{{auditEntry.date_created}}</div>
-                    </td>
-                    <!--td scope="row">
-                        <div class="slds-truncate">{{auditEntry.transaction_id}}</div>
-                    </td-->
-                    <td scope="row">
-                        <div class="slds-truncate">{{auditEntry.user_name}}</div>
-                    </td>
-                    <td scope="row">
-                        <div class="slds-truncate">{{language.getFieldDisplayName(model.module,
-                            auditEntry.field_name)}}
-                        </div>
-                    </td>
-                    <td scope="row">
-                        <div class="slds-truncate">{{auditEntry.before_value_string}}</div>
-                    </td>
-                    <td scope="row">
-                        <div class="slds-truncate">{{auditEntry.after_value_string}}</div>
-                    </td>
-                </tr>
+                <ng-container *ngFor="let auditTransaction of auditLog">
+                    <tr>
+                        <td class="slds-theme--shade" colspan="3">
+                            <div class="slds-text-heading--label">
+                                {{auditTransaction.user_name}} / {{auditTransaction.date_created}}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngFor="let auditEntry of auditTransaction.audit_log">
+                        <td scope="row">
+                            <div class="slds-truncate">{{language.getFieldDisplayName(model.module,
+                                auditEntry.field_name)}}
+                            </div>
+                        </td>
+                        <td scope="row">
+                            <div class="slds-truncate">{{auditEntry.before_value_string}}</div>
+                        </td>
+                        <td scope="row">
+                            <div class="slds-truncate">{{auditEntry.after_value_string}}</div>
+                        </td>
+                    </tr>
+                </ng-container>
             </tbody>
         </table>
         <div *ngIf="!loading && auditLog.length === 0" class="slds-text-heading--small slds-p-around--medium">

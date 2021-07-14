@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -19,6 +19,7 @@ import {
     Component, ElementRef,
     Renderer2,
     OnDestroy,
+    Injector,
     ViewChild,
     ViewContainerRef, Input
 } from '@angular/core';
@@ -26,6 +27,7 @@ import {
 import {Router} from '@angular/router';
 import {Subscription} from "rxjs";
 import {metadata} from '../../../services/metadata.service';
+import {modal} from '../../../services/modal.service';
 import {language} from '../../../services/language.service';
 import {layout} from '../../../services/layout.service';
 import {modellist} from '../../../services/modellist.service';
@@ -46,8 +48,9 @@ export class MediaFilesList extends ObjectList implements OnDestroy {
      */
     private resizeHandler: any;
 
-    constructor(public router: Router, public cdRef: ChangeDetectorRef, public metadata: metadata, public modellist: modellist, public language: language, public layout: layout, private renderer: Renderer2, private elementRef: ElementRef) {
-        super(router, cdRef, metadata, modellist, language, layout);
+    constructor(public router: Router, public cdRef: ChangeDetectorRef, public metadata: metadata, public modellist: modellist, public language: language, public injector: Injector, public modal: modal, public layout: layout, private renderer: Renderer2, private elementRef: ElementRef) {
+
+        super(router, cdRef, metadata, modellist, language, injector, modal, layout);
 
         this.resizeHandler = this.renderer.listen('window', 'resize', () => this.onResize());
     }

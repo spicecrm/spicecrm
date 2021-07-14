@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -10,40 +10,33 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 -->
 
-<div class="slds-media__body slds-dropdown-trigger slds-dropdown-trigger--click" system-dropdown-trigger-simple>
+<div class="slds-media__body slds-dropdown-trigger slds-dropdown-trigger--click" [system-dropdown-trigger-simple]="!disabled">
     <div class="slds-grid slds-grid--vertical-align-center slds-truncate slds-p-right--small">
-        <h1 class="slds-page-header__title slds-show--medium slds-p-right--xx-small">{{modellist.getListTypeName()}}</h1>
-        <system-utility-icon icon="down" size="x-small"></system-utility-icon>
+        <h1 class="slds-page-header__title slds-show--medium slds-p-right--xx-small">{{modellist.currentList.name}}</h1>
+        <button class="slds-button" [disabled]="disabled">
+            <system-button-icon icon="down" size="small" ></system-button-icon>
+        </button>
     </div>
     <div class="slds-dropdown slds-dropdown--left slds-dropdown--medium">
         <ul class="slds-dropdown__list" role="menu">
             <li class="slds-dropdown__header slds-has-divider--bottom" role="separator">
                 <span class="slds-text-title--caps"><system-label label="LBL_LIST_TYPES"></system-label></span>
             </li>
-            <li class="slds-dropdown__item" [ngClass]="{'slds-is-selected': modellist.listtype == 'all'}" role="presentation" (click)="setListType('all')">
+            <li *ngFor="let standardList of modellist.standardLists" class="slds-dropdown__item" [ngClass]="{'slds-is-selected': modellist.currentList.id == standardList.id}" role="presentation" (click)="setListType(standardList.id)">
                 <a href="javascript:void(0);" role="menuitemcheckbox">
                   <span class="slds-truncate">
                       <system-utility-icon size="x-small" icon="check" addclasses="slds-icon slds-icon_selected slds-icon_x-small slds-icon-text-default slds-m-right_x-small"></system-utility-icon>
-                      {{language.getModuleCombinedLabel('LBL_ALL', modellist.module)}}
+                      {{standardList.name}}
                   </span>
                 </a>
             </li>
-            <li class="slds-dropdown__item " [ngClass]="{'slds-is-selected': modellist.listtype == 'owner', 'slds-has-divider--bottom': listtypes.length > 0}" role="presentation" (click)="setListType('owner')">
-                <a href="javascript:void(0);" role="menuitemcheckbox">
-                  <span class="slds-truncate">
-                      <system-utility-icon size="x-small" icon="check"
-                                           addclasses="slds-icon slds-icon_selected slds-icon_x-small slds-icon-text-default slds-m-right_x-small"></system-utility-icon>
-                      {{language.getModuleCombinedLabel('LBL_MY', modellist.module)}}
-                  </span>
-                </a>
-            </li>
-            <li *ngFor="let listtype of listtypes" class="slds-dropdown__item" [ngClass]="{'slds-is-selected': listtype.id == modellist.listtype}" role="presentation" (click)="setListType(listtype.id)">
+            <li *ngFor="let listType of listTypes" class="slds-dropdown__item" [ngClass]="{'slds-is-selected': listType.id == modellist.currentList.id}" role="presentation" (click)="setListType(listType.id)">
                 <a href="javascript:void(0);" role="menuitemcheckbox">
                   <span class="slds-truncate">
                       <system-utility-icon size="x-small" icon="check" addclasses="slds-icon slds-icon_selected slds-icon_x-small slds-icon-text-default slds-m-right_x-small"></system-utility-icon>
-                      {{listtype.name}}
+                      {{listType.name}}
                   </span>
-                    <system-utility-icon [icon]="getListtypeIcon(listtype)" size="x-small"></system-utility-icon>
+                    <system-utility-icon [icon]="listType.icon" size="x-small"></system-utility-icon>
                 </a>
             </li>
         </ul>

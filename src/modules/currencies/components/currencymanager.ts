@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -52,7 +52,7 @@ export class CurrencyManager implements OnInit {
      */
    public ngOnInit() {
         this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
-            this.backend.getRequest('currencies').subscribe(data => {
+            this.backend.getRequest('module/Currencies').subscribe(data => {
                 if (data) {
                     for (let currency of data) {
                         this.currencies.push({
@@ -80,7 +80,7 @@ export class CurrencyManager implements OnInit {
     private reload(event) {
         if(event) {
             this.modal.openModal('SystemLoadingModal').subscribe(modalRef => {
-                this.backend.getRequest('currencies').subscribe(data => {
+                this.backend.getRequest('module/Currencies').subscribe(data => {
                     if (data) {
                         this.currencies = data;
                         this.currencies.shift();

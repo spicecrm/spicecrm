@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -83,7 +83,7 @@ export class ObjectRecordView implements OnInit, OnDestroy {
 
         // retrieve the model data
         this.model.getData(true, 'detailview', true, true).subscribe(data => {
-            this.navigationtab.setTabInfo({displayname: data.summary_text, displaymodule: this.model.module});
+            // this.navigationtab.setTabInfo({displayname: data.summary_text, displaymodule: this.model.module});
             this.modelloaded = true;
         });
 
@@ -92,14 +92,29 @@ export class ObjectRecordView implements OnInit, OnDestroy {
          */
         this.componentconfig = this.metadata.getComponentConfig('ObjectRecordView', this.moduleName);
 
+        /**
+         * subscribe to the broadcast
+         */
+        this.componentSubscriptions.add(
+            this.broadcast.message$.subscribe(message => {
+                this.handleMessage(message);
+            })
+        );
+
+        /**
+         * subscribe to the model data changes
+         */
+        this.componentSubscriptions.add(
+            this.model.data$.subscribe(() => this.setTabTitle())
+        );
+
     }
 
     /**
-     * unsbscribve from all subscriptions
+     * unsbscribe from all subscriptions
      */
     public ngOnDestroy() {
         this.componentSubscriptions.unsubscribe();
-
     }
 
     /**
@@ -122,5 +137,12 @@ export class ObjectRecordView implements OnInit, OnDestroy {
                 }
                 break;
         }
+    }
+
+    private setTabTitle() {
+        this.navigationtab.setTabInfo({
+            displayname: this.model.getField('summary_text'),
+            displaymodule: this.model.module
+        });
     }
 }

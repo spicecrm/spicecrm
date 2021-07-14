@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -41,7 +41,6 @@ import /*embed*/ {SystemActionIcon} from "./components/systemactionicon";
 import /*embed*/ {SystemButtonCustomIcon} from "./components/systembuttoncustomicon";
 import /*embed*/ {SystemButtonGroup} from "./components/systembuttongroup";
 import /*embed*/ {SystemButtonIcon} from "./components/systembuttonicon";
-import /*embed*/ {SystemCaptureImage} from "./components/systemcaptureimage";
 import /*embed*/ {SystemCard} from "./components/systemcard";
 import /*embed*/ {SystemCardHeader} from "./components/systemcardheader";
 import /*embed*/ {SystemCardBody} from "./components/systemcardbody";
@@ -49,12 +48,14 @@ import /*embed*/ {SystemCardFooter} from "./components/systemcardfooter";
 import /*embed*/ {SystemCheckboxGroup} from "./components/systemcheckboxgroup";
 import /*embed*/ {SystemCheckboxGroupCheckbox} from "./components/systemcheckboxgroupcheckbox";
 import /*embed*/ {SystemCheckbox} from "./components/systemcheckbox";
+import /*embed*/ {SystemCheckboxToggle} from "./components/systemcheckboxtoggle";
 import /*embed*/ {SystemCollabsableTab} from "./components/systemcollabsabletab";
 import /*embed*/ {SystemComponentContainer} from "./components/systemcomponentcontainer";
 import /*embed*/ {SystemComponentMissing} from "./components/systemcomponentmissing";
 import /*embed*/ {SystemComponentSet} from "./components/systemcomponentset";
 import /*embed*/ {SystemConfirmDialog} from "./components/systemconfirmdialog";
 import /*embed*/ {SystemCustomIcon} from "./components/systemcustomicon";
+import /*embed*/ {SystemDisplayDatetime} from "./components/systemdisplaydatetime";
 import /*embed*/ {SystemDisplayNumber} from "./components/systemdisplaynumber";
 import /*embed*/ {SystemDynamicComponent} from "./components/systemdynamiccomponent";
 import /*embed*/ {SystemDynamicRouteContainer} from "./components/systemdynamicroutecontainer";
@@ -115,6 +116,7 @@ import /*embed*/ {SystemModalWrapper} from "./components/systemmodalwrapper";
 import /*embed*/ {SystemModal} from "./components/systemmodal";
 import /*embed*/ {SystemNumberSpinner} from "./components/systemnumberspinner";
 import /*embed*/ {SystemObjectPreviewModal} from "./components/systemobjectpreviewmodal";
+import /*embed*/ {SystemProgressList} from "./components/systemprogresslist";
 import /*embed*/ {SystemProgressRing} from "./components/systemprogressring";
 import /*embed*/ {SystemProgressBar} from "./components/systemprogressbar";
 import /*embed*/ {SystemPrompt} from "./components/systemprompt";
@@ -195,7 +197,6 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemButtonCustomIcon,
         SystemButtonGroup,
         SystemButtonIcon,
-        SystemCaptureImage,
         SystemCard,
         SystemCardBody,
         SystemCardFooter,
@@ -203,12 +204,14 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemCheckbox,
         SystemCheckboxGroup,
         SystemCheckboxGroupCheckbox,
+        SystemCheckboxToggle,
         SystemCollabsableTab,
         SystemComponentContainer,
         SystemComponentMissing,
         SystemComponentSet,
         SystemConfirmDialog,
         SystemCustomIcon,
+        SystemDisplayDatetime,
         SystemDisplayNumber,
         SystemDynamicComponent,
         SystemDynamicRouteContainer,
@@ -278,6 +281,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemFilterBuilderFilterExpressionValues,
         SystemFilterBuilderFilterExpressionValue,
         SystemPopover,
+        SystemProgressList,
         SystemProgressRing,
         SystemProgressBar,
         SystemPrompt,
@@ -341,10 +345,12 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemCheckbox,
         SystemCheckboxGroup,
         SystemCheckboxGroupCheckbox,
+        SystemCheckboxToggle,
         SystemCollabsableTab,
         SystemComponentMissing,
         SystemComponentSet,
         SystemCustomIcon,
+        SystemDisplayDatetime,
         SystemDisplayNumber,
         SystemDynamicComponent,
         SystemFilterBuilderFilterExpression,
@@ -402,6 +408,7 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemModalHeaderTagline,
         SystemModalWrapper,
         SystemNumberSpinner,
+        SystemProgressList,
         SystemProgressRing,
         SystemProgressBar,
         SystemPrompt,

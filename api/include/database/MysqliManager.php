@@ -125,6 +125,7 @@ class MysqliManager extends DBManager
         'short'    => 'smallint',
         'varchar'  => 'varchar',
         'text'     => 'text',
+        'shorttext'=> 'text',
         'longtext' => 'longtext',
         'date'     => 'date',
         'enum'     => 'varchar',
@@ -397,7 +398,8 @@ class MysqliManager extends DBManager
         if (empty($charset)) {
             $charset = 'utf8';
         }
-	    mysqli_query($this->database,"SET CHARACTER SET ".$charset."");
+        mysqli_set_charset($this->database, $charset);
+	    // mysqli_query($this->database,"SET CHARACTER SET ".$charset."");
 	    $names = "SET NAMES '$charset'";
 	    $collation = $this->getOption('collation');
 	    if(!empty($collation)) {
@@ -505,8 +507,7 @@ class MysqliManager extends DBManager
         }
 
         if (!empty($fieldDef['len'])) {
-            if (in_array($colBaseType, ['nvarchar', 'nchar', 'varchar', 'varchar2', 'char',
-                'clob', 'blob', 'text'])) {
+            if (in_array($colBaseType, ['nvarchar', 'nchar', 'varchar', 'varchar2', 'char'])) {
                 $colType = "$colBaseType(${fieldDef['len']})";
             } elseif (($colBaseType == 'decimal' || $colBaseType == 'float')) {
                 if (!empty($fieldDef['precision']) && is_numeric($fieldDef['precision']))
@@ -584,6 +585,8 @@ class MysqliManager extends DBManager
     {
         $cols = array_keys($data);
         $vals = array_values($data);
+        foreach ( $cols as $k => $v ) $cols[$k] = $this->quote( $v );
+        foreach ( $vals as $k => $v ) $vals[$k] = is_null( $v ) ? 'null' : $this->quote( $v );
         $this->query("REPLACE INTO " . $table . " (" . implode(',', $cols) . ") VALUES ('" . implode("','", $vals) . "')");
     }
 
@@ -959,9 +962,11 @@ class MysqliManager extends DBManager
         $charset = $this->getOption('charset');
         if(empty($collation)) {
             $collation = 'utf8_general_ci';
+            // $collation = 'utf8mb4_unicode_ci';
         }
         if(empty($charset)) {
             $charset = 'utf8';
+            // $charset = 'utf8mb4';
         }
 
         $sql = "CREATE TABLE $tablename ($columns $keys) CHARACTER SET $charset COLLATE $collation";
@@ -1365,6 +1370,7 @@ class MysqliManager extends DBManager
     public function createDatabase($dbname)
     {
         $this->query("CREATE DATABASE `$dbname` CHARACTER SET utf8 COLLATE utf8_general_ci", true);
+        //$this->query("CREATE DATABASE `$dbname` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci", true);
     }
 
     /**
@@ -1425,6 +1431,15 @@ class MysqliManager extends DBManager
     public function getGuidSQL()
     {
         return 'UUID()';
+    }
+
+    /**
+     * Returns a DB specific piece of SQL which will generate a datetiem repesenting now
+     * @abstract
+     * @return string
+     */
+    public function getNowSQL(){
+        return 'NOW()';
     }
 
     /**

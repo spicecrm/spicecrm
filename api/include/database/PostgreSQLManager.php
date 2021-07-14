@@ -93,6 +93,7 @@ class PostgreSQLManager extends DBManager
         'short'    => 'smallint',
         'varchar'  => 'varchar',
         'text'     => 'text',
+        'shorttext'=> 'text',
         'longtext' => 'text',
         'longhtml' => 'text',
         'date'     => 'date',
@@ -1355,6 +1356,16 @@ class PostgreSQLManager extends DBManager
     {
         return "uuid_generate_v1()";
     }
+
+    /**
+     * Returns a DB specific piece of SQL which will generate a datetiem repesenting now
+     * @abstract
+     * @return string
+     */
+    public function getNowSQL(){
+        return 'NOW()';
+    }
+
     /**
      * Compares two vardefs
      *

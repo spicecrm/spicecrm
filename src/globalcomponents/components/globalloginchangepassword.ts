@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -150,7 +150,7 @@ export class GlobalLoginChangePassword {
     private setPassword() {
         if (this.canSave) {
             this.posting = true;
-            this.http.post(this.configuration.getBackendUrl() + '/changepassword', {
+            this.http.post(this.configuration.getBackendUrl() + '/authentication/changepassword', {
                 username: this.username,
                 password: this.password,
                 newPassword: this.newPassword

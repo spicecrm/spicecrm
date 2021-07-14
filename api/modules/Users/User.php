@@ -38,6 +38,7 @@ namespace SpiceCRM\modules\Users;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
+use SpiceCRM\includes\authentication\TOTPAuthentication\TOTPAuthentication;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -59,6 +60,7 @@ class User extends Person
     var $module_dir = 'Users';
     var $object_name = "User";
     var $user_preferences;
+    var $impersonating_user_id;
 
     public function __construct()
     {
@@ -347,22 +349,6 @@ class User extends Person
         return $encrypted_password;
     }
 
-    /**
-     * Authenicates the user; returns true if successful
-     *
-     * @param string $password MD5-encoded password
-     * @return bool
-     */
-    public function authenticate_user($password)
-    {
-        $row = self::findUserPassword($this->user_name, $password);
-        if (empty($row)) {
-            return false;
-        } else {
-            $this->id = $row['id'];
-            return true;
-        }
-    }
 
     /**
      * retrieves an User bean
@@ -391,52 +377,6 @@ class User extends Person
         }
 
         return $ret;
-    }
-
-    /**
-     * Load a user based on the user_name in $this
-     * @param string $user_password Password
-     * @param bool $password_encoded Is password md5-encoded or plain text?
-     * @return -- this if load was successul and null if load failed.
-     */
-    function load_user($user_password, $password_encoded = false)
-    {
-        global $login_error;
-        unset($GLOBALS['login_error']);
-        if (isset($_SESSION['loginattempts'])) {
-            $_SESSION['loginattempts'] += 1;
-        } else {
-            $_SESSION['loginattempts'] = 1;
-        }
-        if ($_SESSION['loginattempts'] > 5) {
-            LoggerManager::getLogger()->fatal('SECURITY: ' . $this->user_name . ' has attempted to login ' . $_SESSION['loginattempts'] . ' times from IP address: ' . $_SERVER['REMOTE_ADDR'] . '.');
-            return null;
-        }
-
-        LoggerManager::getLogger()->debug("Starting user load for $this->user_name");
-
-        if (!isset($this->user_name) || $this->user_name == "" || !isset($user_password) || $user_password == "")
-            return null;
-
-        if (!$password_encoded) {
-            $user_password = md5($user_password);
-        }
-        $row = self::findUserPassword($this->user_name, $user_password);
-        if (empty($row) || !empty($GLOBALS['login_error'])) {
-            LoggerManager::getLogger()->fatal('SECURITY: User authentication for ' . $this->user_name . ' failed - could not Load User from Database');
-            return null;
-        }
-
-        // now fill in the fields.
-        $this->loadFromRow($row);
-        $this->loadPreferences();
-
-
-        if ($this->status != "Inactive")
-            $this->authenticated = true;
-
-        unset($_SESSION['loginattempts']);
-        return $this;
     }
 
     /**
@@ -485,15 +425,20 @@ class User extends Person
     public static function findUserPassword($name, $password, $where = '')
     {
         $db = DBManagerFactory::getInstance();
-        $name = $db->quote($name);
         $query = "SELECT * from users where user_name='" . $db->quote($name) . "'";
         if (!empty($where)) {
             $query .= " AND $where";
         }
-        $result = $db->limitQuery($query, 0, 1, false);
-        if (!empty($result)) {
-            $row = $db->fetchByAssoc($result);
-            if (self::checkPasswordMD5($password, $row['user_hash'])) {
+        $row = $db->fetchOne($query);
+        if (!empty($row)) {
+
+            // check if we have a google authenticator password
+            $totpAuth = new TOTPAuthentication();
+            if(TOTPAuthentication::checkTOTPActive($row['id'])){
+                if($totpAuth->checkTOTPCode($row['id'], $password)){
+                    return $row;
+                }
+            } else if (self::checkPasswordMD5(md5($password), $row['user_hash'])) {
                 return $row;
             }
         }
@@ -522,40 +467,6 @@ class User extends Person
         $this->call_custom_logic('after_save', '');
     }
 
-    /**
-     * Verify that the current password is correct and write the new password to the DB.
-     *
-     * @param string $user_password - Must be non null and at least 1 character.
-     * @param string $new_password - Must be non null and at least 1 character.
-     * @param string $system_generated
-     * @return boolean - If passwords pass verification and query succeeds, return true, else return false.
-     */
-    function changePassword($user_password, $new_password, $system_generated = '0')
-    {
-        global $mod_strings;
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        LoggerManager::getLogger()->debug("Starting password change for $this->user_name");
-
-        if (!isset($new_password) || $new_password == "") {
-            $this->error_string = $mod_strings['ERR_PASSWORD_CHANGE_FAILED_1'] . $current_user->user_name . $mod_strings['ERR_PASSWORD_CHANGE_FAILED_2'];
-            return false;
-        }
-
-
-        //check old password current user is not an admin or current user is an admin editing themselves
-        if (!$current_user->isAdminForModule('Users') || ($current_user->isAdminForModule('Users') && ($current_user->id == $this->id))) {
-            //check old password first
-            $row = self::findUserPassword($this->user_name, md5($user_password));
-            if (empty($row)) {
-                LoggerManager::getLogger()->warn("Incorrect old password for " . $this->user_name . "");
-                $this->error_string = $mod_strings['ERR_PASSWORD_INCORRECT_OLD_1'] . $this->user_name . $mod_strings['ERR_PASSWORD_INCORRECT_OLD_2'];
-                return false;
-            }
-        }
-
-        $this->setNewPassword($new_password, $system_generated);
-        return true;
-    }
 
     function is_authenticated()
     {
@@ -605,51 +516,6 @@ class User extends Person
         return $userFocus->id;
     }
 
-    /**
-     * getAllUsers
-     *
-     * Returns all active and inactive users
-     * @return Array of all users in the system
-     */
-    public static function getAllUsers()
-    {
-        $active_users = get_user_array(FALSE);
-        $inactive_users = get_user_array(FALSE, "Inactive");
-        $result = $active_users + $inactive_users;
-        asort($result);
-        return $result;
-    }
-
-    /**
-     * getActiveUsers
-     *
-     * Returns all active users
-     * @return Array of active users in the system
-     */
-    public static function getActiveUsers()
-    {
-        $active_users = get_user_array(FALSE);
-        asort($active_users);
-        return $active_users;
-    }
-
-
-    /**
-     * Helper function to remap some modules around ACL wise
-     *
-     * @return string
-     */
-    protected function _fixupModuleForACL($module)
-    {
-        if ($module == 'ContractTypes') {
-            $module = 'Contracts';
-        }
-        if (preg_match('/Product[a-zA-Z]*/', $module)) {
-            $module = 'Products';
-        }
-
-        return $module;
-    }
 
     /**
      * Helper function that enumerates the list of modules and checks if they are an admin/dev.
@@ -745,8 +611,6 @@ class User extends Person
         }
 
         $adminModules = $this->getAdminModules();
-
-        $module = $this->_fixupModuleForACL($module);
 
         if (in_array($module, $adminModules)) {
             return true;
@@ -977,7 +841,7 @@ class User extends Person
     public static function usernameAlreadyExists($username, $userIdToIgnore)
     {
         $db = DBManagerFactory::getInstance();
-        $sql = 'SELECT id,user_name FROM users WHERE status = "Active" AND deleted = 0';
+        $sql = 'SELECT id,user_name FROM users WHERE status = \'Active\' AND deleted = 0';
         if (!empty($userIdToIgnore))
             $sql .= ' AND id <> "' . $db->quote($userIdToIgnore) . '"';
         $sql .= ' AND LOWER(user_name) = "' . $db->quote(mb_strtolower($username)) . '" LIMIT 1';

@@ -1,6 +1,7 @@
 <?php
 namespace SpiceCRM\includes\SpiceSwagger;
 
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\utils\SpiceUtils;
 use Symfony\Component\Yaml\Yaml;
@@ -26,8 +27,9 @@ class SpiceSwaggerGenerator
      * @param array $allExtensions
      * @param array|null $extensions
      * @param array|null $modules
+     * @param string|null $node
      */
-    public function __construct(array $allRoutes, array $allExtensions, ?array $extensions, ?array $modules) {
+    public function __construct(array $allRoutes, array $allExtensions, ?array $extensions, ?array $modules, string $node = "/") {
         $this->allRoutes     = $allRoutes;
         $this->routes        = $allRoutes;
         $this->extensions    = $allExtensions;
@@ -37,8 +39,9 @@ class SpiceSwaggerGenerator
             $this->instantiateGenericRoutes($modules);
         }
 
+        $this->filterRoutes($extensions, $node);
+
         if ($extensions) {
-            $this->filterRoutes($extensions);
             $this->filterExtensions($extensions);
         }
     }
@@ -80,21 +83,17 @@ class SpiceSwaggerGenerator
 
     private function generateInfo():void {
         $infoArray = [];
-        // todo what is exactly supposed to be in the description?
         $infoArray['description']    = 'Lorem ipsum dolor sit amet';
-        $infoArray['version']        = SpiceConfig::getInstance()->get('sugar_version');
-        // todo is the title ok?
+        //$infoArray['version']        = SpiceConfig::getInstance()->get('sugar_version');
         $infoArray['title']          = 'SpiceCRM';
-        // todo is this necessary?
         $infoArray['termsOfService'] = '';
         $infoArray['contact']        = [
-            // todo is this ok?
-            'email' => 'office@twentyreasons.com',
+            'email' => 'info@spicecrm.io',
         ];
-        $infoArray['license']        = [
+        /*$infoArray['license']        = [
             'name' => 'AGPL-3.0',
             'url'  => 'https://github.com/spicecrm/spicecrm_be_release_core/blob/master/LICENSE',
-        ];
+        ];*/
 
         $this->structureArray['info'] = $infoArray;
     }
@@ -112,6 +111,11 @@ class SpiceSwaggerGenerator
             ];
         }
 
+        $tags[] = [
+            'name'        => 'custom',
+            'description' => 'Customer specific routes',
+        ];
+
         $this->structureArray['tags'] = $tags;
     }
 
@@ -119,7 +123,6 @@ class SpiceSwaggerGenerator
      * Generates schemes.
      */
     private function generateSchemes(): void {
-        // todo always both?
         $this->structureArray['schemes'][] = 'https';
         $this->structureArray['schemes'][] = 'http';
     }
@@ -146,10 +149,6 @@ class SpiceSwaggerGenerator
         $secDefsArray['basicAuth'] = [
             'type' => 'basic',
         ];
-        // todo add all the other auth types
-//        $secDefsArray['OAuth'] = [
-//            'type' => 'oauth2',
-//        ];
 
         $this->structureArray['securityDefinitions'] = $secDefsArray;
     }
@@ -175,7 +174,6 @@ class SpiceSwaggerGenerator
      * Generates external docs.
      */
     private function generateExternalDocs(): void {
-        // todo what is supposed to be here?
         $this->structureArray['externalDocs']['description'] = 'Find out more about SpiceCRM';
         $this->structureArray['externalDocs']['url']         = 'https://www.spicecrm.io/';
     }
@@ -193,20 +191,56 @@ class SpiceSwaggerGenerator
      * Filters the routes.
      * Only the routes belonging to the $extensions will be added to the swagger file output.
      *
+     * @param string $node
      * @param array $extensions
      */
-    private function filterRoutes(array $extensions): void {
+    private function filterRoutes(?array $extensions, string $node = "/"): void {
         $routes = [];
-        foreach ($extensions as $extensionName) {
-            if ($this->extensionExists($extensionName)) {
-                foreach ($this->allRoutes as $route) {
-                    if ($route['extension'] == $extensionName) {
-                        $routes[] = $route;
-                    }
-                }
+
+        foreach ($this->allRoutes as $route) {
+            if ($this->belongsToNode($route, $node) && $this->belongsToExtensions($route, $extensions)) {
+                $routes[] = $route;
             }
         }
+
         $this->routes = $routes;
+    }
+
+    /**
+     * Checks if a given route belongs to the node.
+     *
+     * @param array $route
+     * @param string $node
+     * @return bool
+     */
+    private function belongsToNode(array $route, string $node): bool {
+        if (strpos($route['route'], $node) === 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if a given route belongs to any of the given extensions.
+     *
+     * @param array $route
+     * @param array $extensions
+     * @return bool
+     */
+    private function belongsToExtensions(array $route, ?array $extensions): bool {
+        // Empty extension array means that there is no extension filtering
+        if (empty($extensions)) {
+            return true;
+        }
+
+        foreach ($extensions as $extensionName) {
+            if ($route['extension'] == $extensionName) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -250,7 +284,10 @@ class SpiceSwaggerGenerator
         foreach ($this->allRoutes as $route) {
             if (strpos($route['route'], '{beanName}') !== false) {
                 foreach ($modules as $moduleName) {
-                    // todo first of all check if it's a valid module
+                    if (!SpiceUtils::isValidModule($moduleName)) {
+//                        throw new Exception('Invalid module name ' . $moduleName);
+                        continue;
+                    }
 
                     $routeCopy = $route;
                     $routeCopy['route'] = str_replace('{beanName}', $moduleName, $route['route']);

@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -64,12 +64,19 @@ export class AdministrationDictRepairModal {
     }
 
     /**
+     * hides copy to clipboard button if clipoard is undefined
+     */
+    get hidden() {
+        return typeof navigator.clipboard == undefined;
+    }
+
+    /**
      * execute db repair and save the response
      */
     private doRepair() {
         this.modal.openModal('SystemLoadingModal').subscribe(loadingRef => {
-            const selectedQueries = this.sql.filter(query => query.selected);
-        this.backend.postRequest('repair/database', {}, {selectedQueries}).subscribe((result: any) => {
+            const selectedqueries = this.sql.filter(query => query.selected);
+        this.backend.postRequest('admin/repair/database', {}, {selectedqueries}).subscribe((result: any) => {
             if (!result.response) {
                 this.dbErrors = result.errors;
             } else if (result.synced) {
@@ -96,10 +103,13 @@ export class AdministrationDictRepairModal {
 
 
     /**
-     * copy the whole SQL to clipboard
+     * copy the selected SQL statements to the clipboard
      */
     private copy2clipboard() {
-        navigator.clipboard.writeText(this.wholeSQL).then(success => {
+        const selectedQueries = this.sql.filter(query => query.selected);
+        const selectedStatements = selectedQueries.map(query => query.statement);
+        const text = selectedStatements.toString().replace(/;,/g, ';\n');
+        navigator.clipboard.writeText(text).then(success => {
             this.toast.sendToast(this.language.getLabel('LBL_COPIED_TO_CLIPBOARD'), "info");
         });
     }
@@ -112,3 +122,4 @@ export class AdministrationDictRepairModal {
     }
 
 }
+

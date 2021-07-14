@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -24,7 +24,9 @@ import {favorite} from '../../services/favorite.service';
 import {broadcast} from '../../services/broadcast.service';
 import {navigation} from '../../services/navigation.service';
 
-
+/**
+ * the module dropdown list in the tabbed navigation
+ */
 @Component({
     selector: 'global-navigation-tabbed-menu-modules',
     templateUrl: './src/globalcomponents/templates/globalnavigationtabbedmenumodules.html',
@@ -43,8 +45,18 @@ export class GlobalNavigationTabbedMenuModules {
      */
     private menuItems: string[] = [];
 
+    /**
+     * indicates that the menu is open
+     *
+     * @private
+     */
     private isopen: boolean = false;
 
+    /**
+     * the current active module
+     *
+     * @private
+     */
     private activeModule: string = '';
 
     constructor(private metadata: metadata, private broadcast: broadcast, private navigation: navigation, private router: Router, private language: language, private recent: recent, private favorite: favorite, private elementRef: ElementRef) {
@@ -52,7 +64,6 @@ export class GlobalNavigationTabbedMenuModules {
         this.broadcast.message$.subscribe(message => {
             this.handleMessage(message);
         });
-
     }
 
     /**
@@ -101,9 +112,9 @@ export class GlobalNavigationTabbedMenuModules {
         switch (message.messagetype) {
             case 'applauncher.setrole':
             case 'loader.reloaded':
+            case 'loader.primarycompleted':
                 this.buildMenuItems();
                 break;
-
         }
     }
 
@@ -136,6 +147,4 @@ export class GlobalNavigationTabbedMenuModules {
         this.isopen = false;
         this.router.navigate(['/module/' + module]);
     }
-
-
 }

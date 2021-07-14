@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -40,6 +40,7 @@ import /*embed*/ {ActivitiesPopoverAddBarButton} from "./components/activitiespo
 import /*embed*/ {fieldActivitiesAddActions} from "./fields/fieldactivitiesaddactions";
 import /*embed*/ {fieldActivitiesAddActionsButton} from "./fields/fieldactivitiesaddactionsbutton";
 import /*embed*/ {fieldActivitiesTaskWithCloseCheckbox} from "./fields/fieldactivitiestaskwithclosecheckbox";
+import /*embed*/ {fieldActivityReminder} from "./fields/fieldactivityreminder";
 
 import /*embed*/ {ActivityParticipationPanel} from "./components/activityparticipationpanel";
 import /*embed*/ {fieldActivityParticipationPanel} from "./fields/fieldactivityparticipationpanel";
@@ -96,6 +97,7 @@ import /*embed*/ {fieldActivityDate} from './fields/fieldactivitydate';
         fieldActivitiesAddActionsButton,
         fieldActivitiesTaskWithCloseCheckbox,
         fieldActivityParticipationPanel,
+        fieldActivityReminder,
         ActivityParticipationPanel,
         ActivityParticipationPanelHeader,
         ActivityParticipationPanelParticipant,

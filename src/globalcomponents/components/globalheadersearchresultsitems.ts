@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -45,7 +45,7 @@ export class GlobalHeaderSearchResultsItems {
         // navigate tot he search view
         if (this.searchTerm.length > 0) {
             this.selected.emit(true);
-            this.router.navigate(['/search/' + btoa(this.searchTerm)]);
+            this.router.navigate(['/search/' + encodeURIComponent(btoa(this.searchTerm))]);
         }
     }
 }

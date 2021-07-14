@@ -54,7 +54,8 @@ $dictionary['spicebeanguides'] = [
         ],
         'build_language' => [
             'name' => 'build_language',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 1000
         ]
     ],
     'indices' => [
@@ -82,7 +83,8 @@ $dictionary['spicebeancustomguides'] = [
         ],
         'build_language' => [
             'name' => 'build_language',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 1000
         ]
     ],
     'indices' => [
@@ -129,7 +131,8 @@ $dictionary['spicebeanguidestages'] = [
         ],
         'stage_add_data' => [
             'name' => 'stage_add_data',
-            'type' => 'text'
+            'type' => 'shorttext',
+            'len' => 1000
         ],
         'stage_label' => [
             'name' => 'stage_label',

@@ -182,6 +182,10 @@ class Opportunity extends SugarBean
             //unlink the old record.
             $this->load_relationship('accounts');
             $this->accounts->delete($this->id, $this->rel_fields_before_value['account_id']);
+            $this->accounts->add($this->account_id);
+        } else if (!empty($this->account_id)){
+            $this->load_relationship('accounts');
+            $this->accounts->add($this->account_id);
         }
         // Bug 38529 & 40938 - exclude currency_id
         parent::save_relationship_changes($is_update, ['currency_id']);

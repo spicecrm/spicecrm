@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -67,7 +67,7 @@ export class loader {
     private getLoadTasks(): Observable<boolean> {
         let retSubject = new Subject<boolean>();
         this.http.get(
-            this.configuration.getBackendUrl() + "/spiceui/core/loadtasks", {headers: this.session.getSessionHeader()}).subscribe(
+            this.configuration.getBackendUrl() + "/system/spiceui/core/loadtasks", {headers: this.session.getSessionHeader()}).subscribe(
             (loadtasks: any) => {
 
                 // reset the primary tasks
@@ -208,13 +208,18 @@ export class loader {
             this.setComplete();
             // switch to secondary phase
             this.loadPhase = 'secondary';
+
+            // emit that the primary loader completed
+            // allowing basic UI initialization if required in any area of the app
+            this.broadcast.broadcastMessage('loader.primarycompleted');
+
             this.handleLoaderHandler();
         }
 
     }
 
     private handleRouteElement(loadElement) {
-        let loadroute = loadElement.route ? loadElement.route : '/spiceui/core/loadtasks/'+loadElement.id;
+        let loadroute = loadElement.route ? loadElement.route : '/system/spiceui/core/loadtasks/'+loadElement.id;
         this.http.get(
             this.configuration.getBackendUrl() + loadroute,
             {headers: this.session.getSessionHeader()}

@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -23,15 +23,15 @@ export class SystemTooltip {
     @Input() private tooltiptext: string = '';
     private displayHelp: boolean = false;
 
-    private toggleHelp(){
+    private toggleHelp() {
         this.displayHelp = !this.displayHelp;
     }
 
-    private openHelp(){
+    private openHelp() {
         this.displayHelp = true;
     }
 
-    private closeHelp(){
+    private closeHelp() {
         this.displayHelp = false;
     }
 }

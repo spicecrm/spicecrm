@@ -74,10 +74,14 @@ class SpiceACLObject extends SugarBean
         return $this->name;
     }
 
+    /**
+     * get usage count of SpiceACLObjects for all modules
+     * @return array
+     */
     public function generateTypes()
     {
         global $beanList;
-$current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $typeRecords = [];
         if (is_admin($current_user)) {
             foreach ($beanList as $module => $class) {

@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -87,6 +87,6 @@ export class ObjectListHeaderActionMenu extends ObjectActionContainer {
      * returns if we do not have a standrad list and thus can edit
      */
     get canChooseFields() {
-        return this.modellist.listtype != 'all' && this.modellist.listtype != 'owner' && this.modellist.checkAccess('edit');
+        return this.modellist.currentList.id != 'all' && this.modellist.currentList.id != 'owner' && this.modellist.checkAccess('edit');
     }
 }

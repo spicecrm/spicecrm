@@ -451,15 +451,6 @@ $dictionary['Account'] = ['table' => 'accounts', 'audited' => true, 'unified_sea
             'default' => true, //UI: load related beans on account load. module property required!
             'module' => 'AccountCCDetails'
         ],
-        'servicecalls' => [
-            'vname' => 'LBL_SERVICECALLS',
-            'name' => 'servicecalls',
-            'type' => 'link',
-            'module' => 'ServiceCalls',
-            'relationship' => 'servicecalls_contacts',
-            'source' => 'non-db'
-        ],
-
         'events_account_role' => [
             'name' => 'events_account_role',
             'vname' => 'LBL_ROLE',
@@ -806,9 +797,14 @@ if(is_file('modules/SystemDeploymentReleases/SystemDeploymentRelease.php')){
         'vname' => 'LBL_SYSTEMDEPLOYMENTRELEASES',
     ];
     $dictionary['Account']['relationships']['account_systemdeploymentreleases'] = [
-        'lhs_module' => 'Accounts', 'lhs_table' => 'accounts', 'lhs_key' => 'id',
-        'rhs_module' => 'SystemDeploymentReleases', 'rhs_table' => 'systemdeploymentreleases', 'rhs_key' => 'parent_id',
-        'relationship_type' => 'one-to-many', 'relationship_role_column' => 'parent_type',
+        'lhs_module' => 'Accounts',
+        'lhs_table' => 'accounts',
+        'lhs_key' => 'id',
+        'rhs_module' => 'SystemDeploymentReleases',
+        'rhs_table' => 'systemdeploymentreleases',
+        'rhs_key' => 'parent_id',
+        'relationship_type' => 'one-to-many',
+        'relationship_role_column' => 'parent_type',
         'relationship_role_column_value' => 'Accounts'
     ];
 }

@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -51,7 +51,7 @@ export class PackageLoader {
         private metadata: metadata
     ) {
 
-        this.backend.getRequest('packages/repositories').subscribe(
+        this.backend.getRequest('configuration/packages/repositories').subscribe(
             (res) => {
                 this.loading = false;
                 this.repositories = res;
@@ -90,7 +90,7 @@ export class PackageLoader {
         this.opencrs = false;
         this.errorpackages = [];
 
-        this.backend.getRequest('packages' + this.repositoryaddurl).subscribe(
+        this.backend.getRequest('configuration/packages' + this.repositoryaddurl).subscribe(
             (res) => {
                 this.loading = false;
                 try {

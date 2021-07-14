@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -174,7 +174,7 @@ export class UserAddModal implements OnInit {
 
     private getPassInfo() {
         let extConf = this.configuration.getCapabilityConfig('userpassword');
-        this.pwdCheck = new RegExp('/' + extConf.regex + '/');
+        this.pwdCheck = new RegExp(extConf.regex);
 
         let requArray = [];
         if(extConf.onelower) requArray.push(this.language.getLabel('MSG_PASSWORD_ONELOWER'));

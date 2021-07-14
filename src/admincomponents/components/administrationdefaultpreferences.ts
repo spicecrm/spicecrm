@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -55,7 +55,7 @@ export class AdministrationDefaultPreferences implements OnInit {
     private loadPreferences() {
         const loadingModal = this.modal.await('LBL_LOADING');
 
-        this.backend.getRequest('configurator/editor/default_preferences').subscribe(data => {
+        this.backend.getRequest('configuration/configurator/editor/default_preferences').subscribe(data => {
             this.preferences = data;
             loadingModal.emit();
             loadingModal.complete();
@@ -69,7 +69,7 @@ export class AdministrationDefaultPreferences implements OnInit {
     private save() {
         const loadingModal = this.modal.await('LBL_SAVING_DATA');
 
-        this.backend.postRequest('configurator/editor/default_preferences', [], this.preferences).subscribe(data => {
+        this.backend.postRequest('configuration/configurator/editor/default_preferences', [], { config: this.preferences }).subscribe(data => {
             this.configuration.setData('defaultuserpreferences', this.preferences);
             this.toast.sendToast(this.language.getLabel('LBL_DATA_SAVED'), 'success');
             this.view.setViewMode();

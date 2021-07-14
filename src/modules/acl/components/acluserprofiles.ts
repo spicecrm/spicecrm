@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -58,7 +58,7 @@ export class ACLUserProfiles {
         private language: language
     ) {
         // load the profiles for the user
-        this.backend.getRequest("spiceaclprofiles/foruser/" + this.model.id).subscribe(res => {
+        this.backend.getRequest("module/Users/" + this.model.id + "/related/spiceaclprofiles").subscribe(res => {
             this.userProfiles = res;
         });
     }
@@ -67,7 +67,7 @@ export class ACLUserProfiles {
         if (this.selectedProfileId != profileid) {
             this.selectedProfileId = profileid;
             this.profileObjects = [];
-            this.backend.getRequest("spiceaclprofiles/" + profileid + "/aclobjects").subscribe(res => {
+            this.backend.getRequest("module/SpiceACLProfiles/" + profileid + "/related/spiceaclobjects").subscribe(res => {
                 for (let i in res) {
                     this.profileObjects.push(res[i]);
                 }

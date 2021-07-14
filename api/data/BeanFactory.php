@@ -59,9 +59,11 @@ class BeanFactory {
         'EmailAddresses' => ['beanclass' => '\\SpiceCRM\\modules\\EmailAddresses\\EmailAddress', 'beanname' => 'EmailAddress'],
         'SpiceACLObjects' => ['beanclass' => '\\SpiceCRM\\modules\\SpiceACLObjects\\SpiceACLObject', 'beanname' => 'SpiceACLObjects'],
         'Trackers' => ['beanclass' => '\\SpiceCRM\\modules\\Trackers\\Tracker', 'beanname' => 'Trackers'],
-        'Users' => ['beanclass' => '\\SpiceCRM\\modules\\Users\\User', 'beanname' => 'User'],
+        'Users' => ['beanclass' => '\\SpiceCRM\\modules\\Users\\User', 'beanname' => 'Users'],
         'UserAbsences' => ['beanclass' => '\\SpiceCRM\\modules\\UserAbsences\\UserAbsence', 'beanname' => 'UserAbsences'],
-        'UserAccessLogs' => ['beanclass' => '\\SpiceCRM\\modules\\UserAccessLogs\\UserAccessLog', 'beanname' => 'UserAccessLogs']
+        'UserAccessLogs' => ['beanclass' => '\\SpiceCRM\\modules\\UserAccessLogs\\UserAccessLog', 'beanname' => 'UserAccessLogs'],
+        'SystemTenants' => ['beanclass' => '\\SpiceCRM\\modules\\SystemTenants\\SystemTenant', 'beanname' => 'SystemTenants'],
+        'Currencies' => ['beanclass' => '\\SpiceCRM\\modules\\Currencies\\Currency', 'beanname' => 'Currencies'],
     ];
 
     /**
@@ -91,9 +93,10 @@ class BeanFactory {
     	}
 
     	// Pull values from $params array
-    	$encode = isset($params['encode']) ? $params['encode'] : true;
+    	$encode = isset($params['encode']) ? $params['encode'] : false;
     	$deleted = isset($params['deleted']) ? $params['deleted'] : $deleted;
         $relationships = isset($params['relationships']) ? $params['relationships'] : true;
+        $forceRetrieve = isset($params['forceRetrieve']) ? $params['forceRetrieve'] : false;
 
         if (!isset(self::$loadedBeans[$module])) {
             self::$loadedBeans[$module] = [];
@@ -110,7 +113,10 @@ class BeanFactory {
         };
 
         // check that we have a bean name .. otherwise the module is unknown
-        if(empty($beanName)) return false;
+        if(empty($beanName)) {
+            LoggerManager::getLogger()->error("Unable to instantiate bean of unknown module \"{$module}\".");
+            return false;
+        }
 
         if($beanClass && class_exists($beanClass)){
             $bean = new $beanClass();
@@ -124,7 +130,7 @@ class BeanFactory {
 
         if (!empty($id))
         {
-            if (empty(self::$loadedBeans[$module][$id]))
+            if ($forceRetrieve || empty(self::$loadedBeans[$module][$id]))
             {
 
                 $result = $bean->retrieve($id, $encode, $deleted, $relationships);

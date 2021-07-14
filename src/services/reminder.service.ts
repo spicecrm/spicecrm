@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -91,7 +91,7 @@ export class reminder {
     }
 
     public setReminder(model, reminderDate) {
-        this.backend.postRequest('SpiceReminders/' + model.module + '/' + model.id + '/' + reminderDate.format('YYYY-MM-DD')).subscribe((fav: any) => {
+        this.backend.postRequest('common/spicereminders/' + model.module + '/' + model.id + '/' + reminderDate.format('YYYY-MM-DD')).subscribe((fav: any) => {
             this.reminders.splice(0, 0, {
                 item_id: model.id,
                 module_name: model.module,
@@ -103,7 +103,7 @@ export class reminder {
 
     public deleteReminder(module, id): Observable<any> {
         let retSubject = new Subject<any>();
-        this.backend.deleteRequest('SpiceReminders/' + module + '/' + id).subscribe(fav => {
+        this.backend.deleteRequest('common/spicereminders/' + module + '/' + id).subscribe(fav => {
             this.reminders.some((rem, remindex) => {
                 if (rem.module_name === module && rem.item_id === id) {
                     this.reminders.splice(remindex, 1);

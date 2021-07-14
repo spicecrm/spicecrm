@@ -1,0 +1,93 @@
+<!--
+SpiceUI 2018.10.001
+
+Copyright (c) 2016-present, aac services.k.s - All rights reserved.
+Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
+- Redistributions of source code must retain this copyright and license notice, this list of conditions and the following disclaimer.
+- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+- If used the SpiceCRM Logo needs to be displayed in the upper left corner of the screen in a minimum dimension of 31x31 pixels and be clearly visible, the icon needs to provide a link to http://www.spicecrm.io
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+
+<div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-m-right--xx-small" [ngClass]="{'slds-p-right--x-small': notificationService.unreadCount > 0}">
+    <div (click)="toggleOpenPopover(); $event.stopPropagation()" system-title="LBL_NOTIFICATIONS" class="slds-global-actions__notifications slds-global-actions__item-action slds-incoming-notification">
+        <system-utility-icon icon="notification" size="x-small"></system-utility-icon>
+    </div>
+    <div *ngIf="notificationService.unreadCount > 0" style="top:-5px; right:0px;" class="slds-notification-badge slds-incoming-notification slds-show-notification">
+        {{notificationService.unreadCount}}
+    </div>
+</div>
+<section *ngIf="isOpen" class="slds-popover slds-popover_large slds-nubbin_top-right slds-is-absolute slds-grid slds-grid--vertical" role="dialog" style="top: 48px; right: 35px; max-height: calc(100vh - 55px);">
+    <div class="slds-grid slds-border--bottom">
+        <header class="slds-popover__header slds-grow slds-grid slds-grid--align-spread" style="border-bottom: 0;">
+            <h2 class="slds-text-heading_small">
+                <system-label label="LBL_UNREAD_NOTIFICATIONS"></system-label>
+            </h2>
+            <a *ngIf="notificationService.unreadNotifications.length > 0" (click)="markAllAsRead()" class="slds-text-link">
+                <system-label label="LBL_MARK_ALL_READ"></system-label>
+            </a>
+        </header>
+        <button (click)="toggleShowSettings()" system-title="LBL_SETTINGS" class="slds-button slds-button--icon slds-float_right slds-popover__close">
+            <system-button-icon icon="settings" [addclasses]="showSettings ? 'slds-text-color--error' : ''"></system-button-icon>
+        </button>
+        <button (click)="closePopover()" system-title="LBL_CLOSE" class="slds-button slds-button--icon slds-float_right slds-m-right--x-small">
+            <system-button-icon icon="close"></system-button-icon>
+        </button>
+    </div>
+    <div *ngIf="!showSettings; else showSettingsContainer" class="slds-popover__body slds-p-around_none slds-grow slds-grid slds-grid--vertical" style="min-height: 0">
+        <div *ngIf="notificationService.unreadNotifications?.length === 0" class="slds-p-around--small">
+            <system-label label="LBL_NO_ENTRIES"></system-label>
+        </div>
+        <ul class="slds-scrollable--y slds-grow" style="min-height: 0">
+            <ng-container *ngFor="let notification of notificationService.unreadNotifications">
+                <li *ngIf="notification.notification_type != 'reminder'" [ngSwitch]="notification.notification_type" class="slds-global-header__notification spice-hover-display-children slds-is-relative">
+                    <global-header-notifications-item-assign *ngSwitchCase="'assign'" [notification]="notification"></global-header-notifications-item-assign>
+                    <global-header-notifications-item-change *ngSwitchCase="'change'" [notification]="notification"></global-header-notifications-item-change>
+                    <global-header-notifications-item-delete *ngSwitchCase="'delete'" [notification]="notification"></global-header-notifications-item-delete>
+                    <global-header-notifications-item-generic *ngSwitchDefault [notification]="notification"></global-header-notifications-item-generic>
+                    <div (click)="markAsRead(notification.id); $event.stopPropagation()" class="slds-is-absolute slds-height_full spice-hover-child slds-grid slds-grid--vertical-align-center slds-p-right--x-small" style="right: 0; top: 0">
+                        <button system-title="LBL_MARK_AS_READ" class="slds-theme--default slds-button slds-button_icon slds-button_icon-small slds-float_right slds-popover__close slds-button--icon-border">
+                            <system-button-icon icon="check" size="small"></system-button-icon>
+                        </button>
+                    </div>
+                </li>
+            </ng-container>
+        </ul>
+        <div *ngIf="notificationService.isLoading" class="slds-align--absolute-center slds-p-around--small">
+            <system-spinner></system-spinner>
+        </div>
+        <div class="slds-grid slds-grid--align-center slds-has-divider--top slds-p-around--xx-small">
+            <a (click)="showAllNotifications()" class="slds-text-link">
+                <system-label label="LBL_SHOW_ALL"></system-label>
+            </a>
+        </div>
+    </div>
+    <ng-template #showSettingsContainer>
+        <div class="slds-p-around--small">
+            <system-checkbox-toggle [ngModel]="userPreferences.toUse.showRealtimeNotifications" (ngModelChange)="setSetting('showRealtimeNotifications', $event)" label="LBL_REALTIME_NOTIFICATIONS" class="slds-m-bottom--xx-small spice-display-block"></system-checkbox-toggle>
+            <system-checkbox-toggle *ngIf="desktopNotificationsStatus !== 'denied' && !desktopNotificationsDisabled; else desktopNotificationDeniedContainer" [ngModel]="userPreferences.toUse.displayDesktopNotifications" (ngModelChange)="setDisplayDesktopNotification($event)" label="LBL_DESKTOP_NOTIFICATIONS" class="slds-m-bottom--xx-small spice-display-block"></system-checkbox-toggle>
+            <ng-template #desktopNotificationDeniedContainer>
+                <div class="slds-grid slds-grid--align-spread">
+                    <span class="slds-grow slds-text-body--small">
+                        <system-label label="LBL_DESKTOP_NOTIFICATIONS"></system-label>
+                    </span>
+                    <span class="slds-text-color_error">
+                           <system-label label="LBL_DENIED"></system-label>
+                    </span>
+                </div>
+            </ng-template>
+
+        </div>
+    </ng-template>
+</section>
+
+<div class="slds-notification-container" [class.slds-hidden]="notificationService.newNotifications.length === 0">
+    <ng-container *ngFor="let notification of notificationService.newNotifications" [ngSwitch]="notification.notification_type">
+        <global-header-notifications-item-assign *ngSwitchCase="'assign'" [asBox]="true" [notification]="notification"></global-header-notifications-item-assign>
+        <global-header-notifications-item-change *ngSwitchCase="'change'" [asBox]="true" [notification]="notification"></global-header-notifications-item-change>
+        <global-header-notifications-item-delete *ngSwitchCase="'delete'" [asBox]="true" [notification]="notification"></global-header-notifications-item-delete>
+        <global-header-notifications-item-reminder *ngSwitchCase="'reminder'" [asBox]="true" [notification]="notification"></global-header-notifications-item-reminder>
+        <global-header-notifications-item-generic *ngSwitchDefault [asBox]="true" [notification]="notification"></global-header-notifications-item-generic>
+    </ng-container>
+</div>

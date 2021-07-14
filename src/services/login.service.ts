@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -76,9 +76,13 @@ export class loginService {
      * logs into the backend
      */
     public login(): Observable<boolean> {
+
+        // the impersonateion name
+        let impersonationUser: string;
+
         let loginSuccess = new Subject<any>();
 
-        let loginUrl: string = this.configurationService.getBackendUrl() + '/login';
+        let loginUrl: string = this.configurationService.getBackendUrl() + '/authentication/login';
 
         /**
          * the headers to be passed in
@@ -86,13 +90,12 @@ export class loginService {
         let headers = new HttpHeaders();
 
         if (this.authData.userName && this.authData.password) {
-            /**
-             let asUsernamePos: number = this.authData.userName.indexOf('#as#');
-             if (asUsernamePos > -1) {
-                loginBy = this.authData.userName.slice(0, asUsernamePos);
+
+            let asUsernamePos: number = this.authData.userName.indexOf('#as#');
+            if (asUsernamePos > -1) {
+                impersonationUser = this.authData.userName.slice(0, asUsernamePos);
                 this.authData.userName = this.authData.userName.slice(asUsernamePos + 4);
             }
-             */
 
             headers = headers.set(
                 'Authorization',
@@ -110,8 +113,9 @@ export class loginService {
         } else {
             throw new Error('Cannot Log In');
         }
-
-        this.http.get(loginUrl, {headers})
+        let params: any = {};
+        if ( impersonationUser ) params.impersonationuser = encodeURIComponent( impersonationUser );
+        this.http.get(loginUrl, { headers, params })
             .subscribe(
                 (res: any) => {
                     if (res.result == false) {
@@ -160,6 +164,7 @@ export class loginService {
                             break;
                         default:
                             this.toast.sendToast('Application Error', 'error', 'Error Authenticating');
+                            loginSuccess.error(err.statusText);
                             break;
                     }
                     loginSuccess.complete();
@@ -172,7 +177,7 @@ export class loginService {
      * logs back into the backend
      */
     public relogin(password, token): Observable<boolean> {
-        let loginUrl: string = this.configurationService.getBackendUrl() + '/login';
+        let loginUrl: string = this.configurationService.getBackendUrl() + '/authentication/login';
 
         let loginSuccess = new Subject<boolean>();
 
@@ -219,6 +224,7 @@ export class loginService {
                             break;
                         default:
                             this.toast.sendToast('Application Error', 'error', 'Error Authenticating');
+                            loginSuccess.error(err.statusText);
                             break;
                     }
                     loginSuccess.complete();
@@ -283,7 +289,7 @@ export class loginService {
         // check if we shoudl also logout on the server
         if(!localonly) {
             this.http.delete(
-                this.configurationService.getBackendUrl() + '/login?session_id=' + this.session.authData.sessionId
+                this.configurationService.getBackendUrl() + '/authentication/login?session_id=' + this.session.authData.sessionId
             );
         }
         this.session.endSession();

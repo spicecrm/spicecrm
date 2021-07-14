@@ -33,6 +33,7 @@
 * technical reasons, the Appropriate Legal Notices must display the words
 * "Powered by SugarCRM".
 ********************************************************************************/
+namespace SpiceCRM\includes\resource\Observers;
 
 
 /**
@@ -64,5 +65,3 @@ class ResourceObserver
     }
 	
 }
-
-?>

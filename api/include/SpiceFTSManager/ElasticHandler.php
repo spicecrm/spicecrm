@@ -26,13 +26,16 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ********************************************************************************/
+
 namespace SpiceCRM\includes\SpiceFTSManager;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 
+use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\TimeDate;
 
 class ElasticHandler
 {
@@ -66,17 +69,26 @@ class ElasticHandler
         $this->port = SpiceConfig::getInstance()->config['fts']['port'];
         $this->indexPrefix = SpiceConfig::getInstance()->config['fts']['prefix'];
 
-        if(AuthenticationController::getInstance()->systemtenantid){
-            $this->indexPrefix .=  AuthenticationController::getInstance()->systemtenantid . '_';
+        if (AuthenticationController::getInstance()->systemtenantid) {
+            $this->indexPrefix .= AuthenticationController::getInstance()->systemtenantid . '_';
         }
 
-        if(isset(SpiceConfig::getInstance()->config['fts']['protocol'])){$this->protocol = SpiceConfig::getInstance()->config['fts']['protocol'];}
-        if(isset(SpiceConfig::getInstance()->config['fts']['ssl_verifyhost'])){$this->ssl_verifyhost = SpiceConfig::getInstance()->config['fts']['ssl_verifyhost'];}
-        if(isset(SpiceConfig::getInstance()->config['fts']['ssl_verifypeer'])){$this->ssl_verifypeer = SpiceConfig::getInstance()->config['fts']['ssl_verifypeer'];}
+        if (isset(SpiceConfig::getInstance()->config['fts']['protocol'])) {
+            $this->protocol = SpiceConfig::getInstance()->config['fts']['protocol'];
+        }
+        if (isset(SpiceConfig::getInstance()->config['fts']['ssl_verifyhost'])) {
+            $this->ssl_verifyhost = SpiceConfig::getInstance()->config['fts']['ssl_verifyhost'];
+        }
+        if (isset(SpiceConfig::getInstance()->config['fts']['ssl_verifypeer'])) {
+            $this->ssl_verifypeer = SpiceConfig::getInstance()->config['fts']['ssl_verifypeer'];
+        }
 
-        if(isset($sugar_config['fts']['number_of_shards'])){$this->standardSettings['index']['number_of_shards'] = $sugar_config['fts']['number_of_shards'];}
-        if(isset($sugar_config['fts']['number_of_replicas'])){$this->standardSettings['index']['number_of_replicas'] = $sugar_config['fts']['number_of_replicas'];}
-
+        if (isset(SpiceConfig::getInstance()->config['fts']['number_of_shards'])) {
+            $this->standardSettings['index']['number_of_shards'] = SpiceConfig::getInstance()->config['fts']['fts']['number_of_shards'];
+        }
+        if (isset(SpiceConfig::getInstance()->config['fts']['number_of_replicas'])) {
+            $this->standardSettings['index']['number_of_replicas'] = SpiceConfig::getInstance()->config['fts']['fts']['number_of_replicas'];
+        }
 
 
         // get the elastic version - only themajor number is important
@@ -89,8 +101,9 @@ class ElasticHandler
     /**
      * returns the current elastic version
      */
-    function getVersion(){
-        if(!isset($_SESSION['SpiceFTS']['elastic'])){
+    function getVersion()
+    {
+        if (!isset($_SESSION['SpiceFTS']['elastic'])) {
             $response = json_decode($this->query('GET', ''));
             $_SESSION['SpiceFTS']['elastic'] = $response;
         }
@@ -98,7 +111,8 @@ class ElasticHandler
         return $_SESSION['SpiceFTS']['elastic']->version->number;
     }
 
-    function getMajorVersion(){
+    function getMajorVersion()
+    {
         $fullVersion = $this->getVersion();
         return substr($fullVersion, 0, 1);
     }
@@ -106,8 +120,9 @@ class ElasticHandler
     /**
      * returns the current status of the elastic cluster
      */
-    function getStatus(){
-        return  json_decode($this->query('GET', ''));
+    function getStatus()
+    {
+        return json_decode($this->query('GET', ''));
     }
 
     /**
@@ -117,8 +132,9 @@ class ElasticHandler
      * @param $hit
      * @return mixed
      */
-    function getHitModule($hit){
-        if($hit['_type'] != '_doc'){
+    function getHitModule($hit)
+    {
+        if ($hit['_type'] != '_doc') {
             return $hit['_type'];
         } else {
             return $hit['_source']['_module'];
@@ -132,8 +148,9 @@ class ElasticHandler
      * @param $hit
      * @return mixed
      */
-    function gettModuleTermFieldName(){
-        if($this->getMajorVersion() == '6'){
+    function gettModuleTermFieldName()
+    {
+        if ($this->getMajorVersion() == '6') {
             return '_type';
         }
         return '_module';
@@ -148,8 +165,9 @@ class ElasticHandler
      * @param $queryResponse Array
      * @return mixed
      */
-    public function getHitsTotalValue($queryResponse){
-        if(is_integer($queryResponse['hits']['total'])){
+    public function getHitsTotalValue($queryResponse)
+    {
+        if (is_integer($queryResponse['hits']['total'])) {
             return $queryResponse['hits']['total'];
         }
         return $queryResponse['hits']['total']['value'] ?: 0;
@@ -163,10 +181,11 @@ class ElasticHandler
      * @param $newtotal
      * @return int|mixed
      */
-    public function setHitsTotalValue(&$queryResponse, $newtotal){
-        if(is_integer($queryResponse['hits']['total'])){
+    public function setHitsTotalValue(&$queryResponse, $newtotal)
+    {
+        if (is_integer($queryResponse['hits']['total'])) {
             $queryResponse['hits']['total'] = $newtotal;
-        } else{
+        } else {
             $queryResponse['hits']['total']['value'] = $newtotal;
         }
     }
@@ -213,7 +232,7 @@ class ElasticHandler
         $indexes = [];
 
         //catch installation process and abort. table sysfts will not exist at the point during installation
-        if( !empty( $GLOBALS['installing'] ))
+        if (!empty($GLOBALS['installing']))
             return [];
 
         $indexObjects = $db->query("SELECT module FROM sysfts");
@@ -231,7 +250,7 @@ class ElasticHandler
      */
     function getStats()
     {
-        $response = json_decode($this->query('GET',$this->indexPrefix . '*/_stats'), true);
+        $response = json_decode($this->query('GET', $this->indexPrefix . '*/_stats'), true);
         $response['_prefix'] = $this->indexPrefix;
         return $response;
     }
@@ -244,7 +263,7 @@ class ElasticHandler
      */
     function getSettings()
     {
-        $response = json_decode($this->query('GET',$this->indexPrefix . '*/_settings'), true);
+        $response = json_decode($this->query('GET', $this->indexPrefix . '*/_settings'), true);
         $response['_prefix'] = $this->indexPrefix;
         return $response;
     }
@@ -256,7 +275,7 @@ class ElasticHandler
      */
     function unblock()
     {
-        $response = json_decode($this->query('PUT',$this->indexPrefix . '*/_settings', [], ['index.blocks.read_only_allow_delete' => null]), true);
+        $response = json_decode($this->query('PUT', $this->indexPrefix . '*/_settings', [], ['index.blocks.read_only_allow_delete' => null]), true);
         $response['_prefix'] = $this->indexPrefix;
         return $response;
     }
@@ -274,8 +293,8 @@ class ElasticHandler
         // determein if we send the wait_for param .. for activity stream
         $params = [];
         $indexSettings = SpiceFTSUtils::getBeanIndexSettings($module);
-        if($indexSettings['waitfor']) $params['refresh'] = 'wait_for';
-        if($this->getMajorVersion() == '6') {
+        if ($indexSettings['waitfor']) $params['refresh'] = 'wait_for';
+        if ($this->getMajorVersion() == '6') {
             $response = $this->query('POST', $this->indexPrefix . strtolower($module) . '/' . $module . '/' . $data['id'], $params, $data);
         } else {
             $response = $this->query('POST', $this->indexPrefix . strtolower($module) . '/_doc/' . $data['id'], $params, $data);
@@ -294,9 +313,9 @@ class ElasticHandler
     {
         $params = [];
         $indexSettings = SpiceFTSUtils::getBeanIndexSettings($module);
-        if($indexSettings['waitfor']) $params['refresh'] = 'wait_for';
+        if ($indexSettings['waitfor']) $params['refresh'] = 'wait_for';
 
-        if($this->getMajorVersion() == '6'){
+        if ($this->getMajorVersion() == '6') {
             $response = $this->query('DELETE', $this->indexPrefix . strtolower($module) . '/' . $module . '/' . $id, $params);
         } else {
             $response = $this->query('DELETE', $this->indexPrefix . strtolower($module) . '/_doc/' . $id, $params);
@@ -363,7 +382,7 @@ class ElasticHandler
 
     function filter($filterfield, $filtervalue)
     {
-        $response = json_decode($this->query('POST', '/' . $this->indexPrefix . '*/_search', [], ['query' => ['bool' => ['filter' => ['term' => [$filterfield => $filtervalue]]]]]), true);
+        $response = json_decode($this->query('POST', $this->indexPrefix . '*/_search', [], ['query' => ['bool' => ['filter' => ['term' => [$filterfield => $filtervalue]]]]]), true);
         return $response;
     }
 
@@ -380,8 +399,9 @@ class ElasticHandler
      * @param $module
      * @return bool
      */
-    function checkIndex($module, $force = false){
-        if(!isset($_SESSION['SpiceFTS']['indexes'][$module]['exists'])) {
+    function checkIndex($module, $force = false)
+    {
+        if (!isset($_SESSION['SpiceFTS']['indexes'][$module]['exists'])) {
             $response = json_decode($this->query('GET', $this->indexPrefix . strtolower($module)));
             $_SESSION['SpiceFTS']['indexes'][$module]['exists'] = $response->{$this->indexPrefix . strtolower($module)} ? true : false;
         }
@@ -416,7 +436,7 @@ class ElasticHandler
      */
     function putMapping($module, $properties)
     {
-        if($this->getMajorVersion() == '6'){
+        if ($this->getMajorVersion() == '6') {
             $mapping = [
                 '_all' => [
                     'analyzer' => 'spice_ngram'
@@ -455,82 +475,111 @@ class ElasticHandler
     function query($method, $url, $params = [], $body = [])
     {
 
-
         $data_string = !empty($body) ? json_encode($body) : '';
 
         $cURL = $this->protocol . '://' . $this->server . ':' . $this->port . '/';
-        if (!empty($url)) $cURL .=  $url;
+        if (!empty($url)) $cURL .= $url;
 
-        if(!empty($params)){
-            if(substr($cURL, -1 ) != '?')
-                $cURL.= '?';
-            $cURL.= http_build_query($params);
+        if (!empty($params)) {
+            if (substr($cURL, -1) != '?')
+                $cURL .= '?';
+            $cURL .= http_build_query($params);
         }
 
         $ch = curl_init($cURL);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $this->ssl_verifyhost);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $this->ssl_verifypeer);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+
+        $curlOptions = [
+            CURLOPT_CUSTOMREQUEST => $method,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POSTFIELDS => $data_string,
+            CURLOPT_SSL_VERIFYHOST => $this->ssl_verifyhost,
+            CURLOPT_SSL_VERIFYPEER => $this->ssl_verifypeer,
+            CURLOPT_HEADER => 1,
+            CURLOPT_HTTPHEADER => [
                 'Content-Type: application/json',
-                'Content-Length: ' . strlen($data_string)]
-        );
+                'Content-Length: ' . strlen($data_string)
+            ]
+        ];
+        curl_setopt_array($ch, $curlOptions);
 
-
-        $start = microtime();
-        $result = curl_exec($ch);
-        $end = microtime();
-
-        $rt_local = microtime_diff($start, $end) * 1000;
-        $resultdec = json_decode($result);
-
+        $logEntryHandler = new APILogEntryHandler();
         switch (SpiceConfig::getInstance()->config['fts']['loglevel']) {
-            case '2':
-                $this->addLogEntry($method, $cURL, @$resultdec->status, $data_string, $result ); # , $rt_local, $resultdec->took);
-                break;
             case '1':
-                if ( @$resultdec->status > 0 )
-                    $this->addLogEntry($method, $cURL, @$resultdec->status, $data_string, $result ); # , $rt_local, $resultdec->took);
+            case '2':
+                $logEntryHandler->generateOutgoingLogEntry($curlOptions, "/elasticsearch/$url");
                 break;
         }
 
-        return $result;
+        $result = curl_exec($ch);
+
+        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $resultdec = json_decode(substr($result, $header_size));
+
+        switch (SpiceConfig::getInstance()->config['fts']['loglevel']) {
+            case '2':
+                $logEntryHandler->updateOutgoingLogEntry($ch, $result);
+                $logEntryHandler->writeOutogingLogEntry(true);
+                break;
+            case '1':
+                if (@$resultdec->status > 0) {
+                    $logEntryHandler->updateOutgoingLogEntry($ch, $result);
+                    $logEntryHandler->writeOutogingLogEntry(true);
+                }
+                break;
+        }
+        return substr($result, $header_size);
     }
 
-    function bulk($lines = [])
+    function bulk($lines = [], $params = [])
     {
-
-
         $body = implode("\n", $lines) . "\n";
 
         $cURL = $this->protocol . '://' . $this->server . ':' . $this->port . '/_bulk';
+
+        // check if we have params for the synchronous processing
+        if (!empty($params)) {
+            if (substr($cURL, -1) != '?')
+                $cURL .= '?';
+            $cURL .= http_build_query($params);
+        }
+
         $ch = curl_init($cURL);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $this->ssl_verifyhost);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $this->ssl_verifypeer);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($body)]
-        );
+        $curlOptions = [
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POSTFIELDS => $body,
+            CURLOPT_SSL_VERIFYHOST => $this->ssl_verifyhost,
+            CURLOPT_SSL_VERIFYPEER => $this->ssl_verifypeer,
+            CURLOPT_HEADER => 1,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/x-ndjson',
+                'Content-Length: ' . strlen($body)
+            ]
+        ];
+        curl_setopt_array($ch, $curlOptions);
 
-        $start = microtime();
+        $logEntryHandler = new APILogEntryHandler();
+        switch (SpiceConfig::getInstance()->config['fts']['loglevel']) {
+            case '1':
+            case '2':
+                $logEntryHandler->generateOutgoingLogEntry($curlOptions, '/elasticsearch/_bulk');
+                break;
+        }
+
         $result = curl_exec($ch);
-        $end = microtime();
-
-        $rt_local = microtime_diff($start, $end) * 1000;
-        $resultdec = json_decode($result);
+        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $resultdec = json_decode(substr($result, $header_size));
 
         switch (SpiceConfig::getInstance()->config['fts']['loglevel']) {
             case '2':
-                $this->addLogEntry('POST', $cURL, @$resultdec->status, $body, $result ); # , $rt_local, $resultdec->took);
+                $logEntryHandler->updateOutgoingLogEntry($ch, $result);
+                $logEntryHandler->writeOutogingLogEntry(true);
                 break;
             case '1':
-                if ( @$resultdec->status > 0 )
-                    $this->addLogEntry('POST', $cURL, @$resultdec->status, $body, $result ); # , $rt_local, $resultdec->took);
+                if (@$resultdec->status > 0) {
+                    $logEntryHandler->updateOutgoingLogEntry($ch, $result);
+                    $logEntryHandler->writeOutogingLogEntry(true);
+                }
                 break;
         }
 
@@ -547,13 +596,13 @@ class ElasticHandler
      * @param $response
      * @return bool
      */
-    private function addLogEntry($method, $url, $status=null, $request, $response ) # , $rtlocal, $rtremote )
+    private function addLogEntry($method, $url, $status = null, $request, $response) # , $rtlocal, $rtremote )
     {
         global $timedate;
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance('spicelogger');
         //catch installation process and abort. table sysftslog will not exist at the point during installation
-        if( !empty( $GLOBALS['installing'] ))
+        if (!empty($GLOBALS['installing']))
             return false;
-        $db->query( sprintf('INSERT INTO sysftslog ( id, date_created, request_method, request_url, response_status, index_request, index_response ) values( "%s", now(), "%s", "%s", "%s", "%s", "%s" )', create_guid(),  $db->quote( $method ), $db->quote( $url ), $db->quote( $status ), $db->quote( str_replace("\\n", "", $request) ), $db->quote( $response )));
+        $db->query(sprintf("INSERT INTO sysftslog ( id, date_created, request_method, request_url, response_status, index_request, index_response ) values( '%s', '" . TimeDate::getInstance()->nowDb() . "', '%s', '%s', '%s', '%s', '%s')", create_guid(), $db->quote($method), $db->quote($url), $db->quote($status), $db->quote(str_replace("\\n", "", $request)), $db->quote($response)));
     }
 }

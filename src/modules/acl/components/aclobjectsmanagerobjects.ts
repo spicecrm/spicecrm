@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -34,23 +34,21 @@ import {backend} from '../../../services/backend.service';
 })
 export class ACLObjectsManagerObjects {
 
-    @ViewChild('header', {read: ViewContainerRef, static: true}) header: ViewContainerRef;
+    @ViewChild('header', {read: ViewContainerRef, static: true}) public header: ViewContainerRef;
 
-    loading: boolean = false;
+    public loading: boolean = false;
+    public acltypes: any[] = [];
+    public activeTypeId: string = '';
+    public aclobjects: any[] = [];
+    public activeObjectId: string = '';
+    public searchterm: string = '';
 
-    acltypes: Array<any> = [];
-    activeTypeId: String = '';
-
-    aclobjects: Array<any> = [];
-    activeObjectId: String = '';
-    searchterm: String = '';
-
-    @Output() objectselected: EventEmitter<any> = new EventEmitter<any>();
-    @Output() typeselected: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public objectselected: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public typeselected: EventEmitter<any> = new EventEmitter<any>();
 
     constructor(private backend: backend, private modal: modal, private language: language) {
 
-        this.backend.getRequest('spiceaclobjects/authtypes').subscribe(acltypes => {
+        this.backend.getRequest('module/SpiceACLObjects/modules').subscribe(acltypes => {
             this.acltypes = acltypes;
 
             this.acltypes.sort((a, b) => {
@@ -74,11 +72,11 @@ export class ACLObjectsManagerObjects {
         this.aclobjects = [];
 
         let params = {
-            sysmodule_id: this.activeTypeId,
+            moduleid: this.activeTypeId,
             searchterm: this.searchterm
         };
 
-        this.backend.getRequest('spiceaclobjects', params).subscribe(aclobjects => {
+        this.backend.getRequest('module/SpiceACLObjects', params).subscribe(aclobjects => {
             this.aclobjects = aclobjects;
 
             this.aclobjects.sort((a, b) => {
@@ -122,29 +120,42 @@ export class ACLObjectsManagerObjects {
         });
     }
 
+    /**
+     * add default ACL objects to module
+     * @private
+     */
     private addDefaultObjects() {
         if(this.aclobjects.length == 0 && this.activeTypeId) {
             this.loading = true;
 
-            let params = {
-                sysmodule_id: this.activeTypeId,
-                sysmodule_name: this.acltypes.find(x => x.id == this.activeTypeId).module
+            let body = {
+                moduleid: this.activeTypeId,
+                modulename: this.acltypes.find(x => x.id == this.activeTypeId).module
             };
-            this.backend.postRequest('spiceaclobjects/createdefaultobjects', params).subscribe(aclobjects => {
+            this.backend.postRequest('module/SpiceACLObjects/defaultobjects', {}, body).subscribe(aclobjects => {
                 this.getObjects();
                 this.loading = false;
             });
         }
     }
 
+    /**
+     *
+     * @param aclobject
+     * @private
+     */
     private selectObject(aclobject) {
         this.activeObjectId = aclobject.id;
-
         this.objectselected.emit(this.activeObjectId);
     }
 
+    /**
+     * activate the acl object
+     * @param objectid
+     * @private
+     */
     private activateObject(objectid) {
-        this.backend.postRequest('spiceaclobjects/activation/' + objectid).subscribe(response => {
+        this.backend.postRequest('module/SpiceACLObjects/' + objectid + '/activation').subscribe(response => {
             this.aclobjects.some(object => {
                 if (object.id == objectid) {
                     object.status = 'r';
@@ -154,8 +165,13 @@ export class ACLObjectsManagerObjects {
         });
     }
 
+    /**
+     * deactivate the acl object
+     * @param objectid
+     * @private
+     */
     private deactivateObject(objectid) {
-        this.backend.deleteRequest('spiceaclobjects/activation/' + objectid).subscribe(response => {
+        this.backend.deleteRequest('module/SpiceACLObjects/' + objectid + '/activation').subscribe(response => {
             this.aclobjects.some(object => {
                 if (object.id == objectid) {
                     object.status = 'd';

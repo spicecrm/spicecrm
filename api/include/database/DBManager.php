@@ -41,6 +41,7 @@ use SpiceCRM\includes\resource\ResourceManager;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
 use SpiceCRM\includes\TimeDate;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\ErrorHandlers\DatabaseException;
 
 /*********************************************************************************
 
@@ -307,44 +308,42 @@ abstract class DBManager
 	 */
 	public function checkError($msg = '', $dieOnError = false)
 	{
+
 		if (empty($this->database)) {
 			$this->registerError($msg, "Database Is Not Connected", $dieOnError);
 			return true;
 		}
 
-		$dberror = $this->lastDbError();
-		if($dberror === false) {
-    		$this->last_error = false;
-	    	return false;
-		}
-		$this->registerError($msg, $dberror, $dieOnError);
+        $dberror = $this->lastDbError();
+        if ($dberror === false) {
+            $this->last_error = false;
+            return false;
+        }
+        $this->registerError($msg, $dberror, $dieOnError);
         return true;
-	}
+    }
 
-	/**
-	 * Register database error
-	 * If die-on-error flag is set, logs the message and dies,
-	 * otherwise sets last_error to the message
-	 * @param string $userMessage Message from function user
-	 * @param string $message Message from SQL driver
-	 * @param bool $dieOnError
-	 */
-	protected function registerError($userMessage, $message, $dieOnError = false)
-	{
-		if(!empty($message)) {
-			if(!empty($userMessage)) {
-				$message = "$userMessage: $message";
-			}
-			if(empty($message)) {
-			    $message = "Database error";
-			}
-			LoggerManager::getLogger()->fatal($message);
+    /**
+     * Register database error
+     * If die-on-error flag is set, logs the message and dies,
+     * otherwise sets last_error to the message
+     * @param string $userMessage Message from function user
+     * @param string $message Message from SQL driver
+     * @param bool $dieOnError
+     * @throws DatabaseException
+     */
+    protected function registerError($userMessage, $message, $dieOnError = false)
+    {
+        if (!empty($message)) {
+            if (!empty($userMessage)) {
+                $message = "$userMessage: $message";
+            }
+            if (empty($message)) {
+                $message = "Database error";
+            }
+            LoggerManager::getLogger()->fatal($message);
 			if ($dieOnError || $this->dieOnError) {
-				if(isset($GLOBALS['app_strings']['ERR_DB_FAIL'])) {
-					sugar_die($GLOBALS['app_strings']['ERR_DB_FAIL']);
-				} else {
-					sugar_die("Database error. Please check spicecrm.log for details.");
-				}
+                throw new DatabaseException($message);
 			} else {
 				$this->last_error = $message;
 			}
@@ -371,7 +370,7 @@ abstract class DBManager
 	 */
 	protected function dump_slow_queries($query)
 	{
-		
+
 
 		$do_the_dump = isset(SpiceConfig::getInstance()->config['dump_slow_queries'])
 			? SpiceConfig::getInstance()->config['dump_slow_queries'] : false;
@@ -1472,7 +1471,7 @@ protected function checkQuery($sql, $object_name = false)
 	public function generateInsertSQL(SugarBean $bean, $select_query, $start, $count = -1, $table, $is_related_query = false)
 	{
 		LoggerManager::getLogger()->info('call to DBManager::generateInsertSQL() is deprecated');
-		
+
 
 		$rows_found = 0;
 		$count_query = $bean->create_list_count_query($select_query);
@@ -2979,12 +2978,12 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         $values = [];
         $values['id'] = $this->massageValue(create_guid(), $fieldDefs['id']);
-        // $values['transactionid']= $GLOBALS['transactionID'];
+        // $values['transactionid']= LoggerManager::getLogger()->getTransactionId();
         $values['parent_id'] = $this->massageValue($bean->id, $fieldDefs['parent_id']);
-        $values['transaction_id'] = $this->massageValue($GLOBALS['transactionID'], $fieldDefs['transaction_id']);
+        $values['transaction_id'] = $this->massageValue(LoggerManager::getLogger()->getTransactionId(), $fieldDefs['transaction_id']);
 		$values['field_name']= $this->massageValue($changes['field_name'], $fieldDefs['field_name']);
 		$values['data_type'] = $this->massageValue($changes['data_type'], $fieldDefs['data_type']);
-		if ($changes['data_type']=='text') {
+		if (in_array($changes['data_type'], ['text', 'longtext'])) {
 			$values['before_value_text'] = $this->massageValue($changes['before'], $fieldDefs['before_value_text']);
 			$values['after_value_text'] = $this->massageValue($changes['after'], $fieldDefs['after_value_text']);
 		} else {
@@ -3048,18 +3047,15 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
             foreach ($field_defs as $field => $properties) {
                 $before_value = $fetched_row[$field];
                 $after_value=$bean->$field;
-                if (isset($properties['type'])) {
-                    $field_type=$properties['type'];
+
+                if (isset($properties['dbType'])) {
+                    $field_type = $properties['dbType'];
+
+                } else if (isset($properties['dbtype'])) {
+                    $field_type = $properties['dbtype'];
+
                 } else {
-                    if (isset($properties['dbType'])) {
-                        $field_type=$properties['dbType'];
-                    }
-                    else if(isset($properties['data_type'])) {
-                        $field_type=$properties['data_type'];
-                    }
-                    else {
-                        $field_type=$properties['dbtype'];
-                    }
+                    $field_type = $properties['type'];
                 }
 
                 //Because of bug #25078(sqlserver haven't 'date' type, trim extra "00:00:00" when insert into *_cstm table).
@@ -3126,15 +3122,15 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
                     //$before_value = $fieldDefs[$field]['default'];
                     $before_value = null;
                     $after_value=$bean->$field;
-                    if (isset($properties['type'])) {
-                        $field_type=$properties['type'];
+
+                    if (isset($properties['dbType'])) {
+                        $field_type = $properties['dbType'];
+
+                    } else if (isset($properties['dbtype'])) {
+                        $field_type = $properties['dbtype'];
+
                     } else {
-                        if (isset($properties['dbType']))
-                            $field_type=$properties['dbType'];
-                        else if(isset($properties['data_type']))
-                            $field_type=$properties['data_type'];
-                        else
-                            $field_type=$properties['dbtype'];
+                        $field_type = $properties['type'];
                     }
 
                     //Because of bug #25078(sqlserver haven't 'date' type, trim extra "00:00:00" when insert into *_cstm table).
@@ -3642,29 +3638,18 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
 		return $last;
 	}
 
-	/**
-	 * Fetches the next row in the query result into an associative array
-	 *
-	 * @param  resource $result
-	 * @param  bool $encode Need to HTML-encode the result?
-	 * @return array    returns false if there are no more rows available to fetch
-	 */
-	public function fetchByAssoc($result, $encode = false)
-	{
-	    if (empty($result))	return false;
+    /**
+     * Fetches the next row in the query result into an associative array
+     *
+     * @param  resource $result
+     * @return array|false
+     */
+    public function fetchByAssoc($result)
+    {
+        if (empty($result))	return false;
 
-	    if(is_int($encode) && func_num_args() == 3) {
-	        // old API: $result, $rowNum, $encode
-	        LoggerManager::getLogger()->deprecated("Using row number in fetchByAssoc is not portable and no longer supported. Please fix your code.");
-	        $encode = func_get_arg(2);
-	    }
-	    $row = $this->fetchRow($result);
-	    if (!empty($row) && $encode && $this->encode) {
-	    	return array_map('to_html', $row);
-	    } else {
-	       return $row;
-	    }
-	}
+        return $this->fetchRow($result);
+    }
 
 	/**
 	 * Get DB driver name used for install/upgrade scripts
@@ -4157,4 +4142,12 @@ $current_user = AuthenticationController::getInstance()->getCurrentUser();
      * @return string
      */
 	abstract public function getGuidSQL();
+
+    /**
+     * Returns a DB specific piece of SQL which will generate a datetiem repesenting now
+     * @abstract
+     * @return string
+     */
+	abstract public function getNowSQL();
+
 }

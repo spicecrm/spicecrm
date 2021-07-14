@@ -969,7 +969,7 @@ class SoapHelperWebServices
             }
             $result = $seed->db->query($query, true);
 
-            $row = $seed->db->fetchByAssoc($result, false);
+            $row = $seed->db->fetchByAssoc($result);
 
             // we found a row with that id
             if (isset($row['id']) && $row['id'] != -1) {

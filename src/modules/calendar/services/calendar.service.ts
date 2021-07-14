@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -404,7 +404,7 @@ export class calendar implements OnDestroy {
             let responseSubject = new Subject<any[]>();
             let format = "YYYY-MM-DD HH:mm:ss";
             let params = {start: start.tz('utc').format(format), end: end.tz('utc').format(format), users};
-            let endPoint = users.length > 0 ? 'calendar/users/' : 'calendar/';
+            let endPoint = users.length > 0 ? 'module/Calendar/users/' : 'module/Calendar/';
             this.currentEnd[userId] = end;
             this.currentStart[userId] = start;
 
@@ -492,7 +492,7 @@ export class calendar implements OnDestroy {
             this.currentEnd.google = endDate;
             this.currentStart.google = startDate;
 
-            this.backend.getRequest("google/calendar/getgoogleevents", params)
+            this.backend.getRequest("channels/groupware/gsuite/calendar/events", params)
                 .subscribe(res => {
                     if (res.events && res.events.length > 0) {
                         for (let event of res.events) {
@@ -822,7 +822,7 @@ export class calendar implements OnDestroy {
      * load the modules which have the flag 'show in calendar' in the fts configs
      */
     private loadCalendarModules() {
-        this.backend.getRequest('calendar/modules').subscribe(modules => {
+        this.backend.getRequest('module/Calendar/modules').subscribe(modules => {
             if (!modules) return;
             this.modules = modules;
             this.cdRef.detectChanges();

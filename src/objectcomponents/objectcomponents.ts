@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -25,6 +25,8 @@ import {DirectivesModule} from "../directives/directives";
 import {ObjectFields} from '../objectfields/objectfields';
 import {SystemComponents} from '../systemcomponents/systemcomponents';
 
+import /*embed*/ {ChecklistItemI, ChecklistI} from "./interfaces/objectcomponents.interfaces";
+
 import {loginCheck} from '../services/login.service';
 import {metadata, aclCheck} from '../services/metadata.service';
 import {canNavigateAway} from '../services/navigation.service';
@@ -43,12 +45,18 @@ import /*embed*/ {ObjectActionContainer} from './components/objectactioncontaine
 import /*embed*/ {ObjectListHeader} from './components/objectlistheader';
 import /*embed*/ {ObjectListHeaderSort} from './components/objectlistheadersort';
 import /*embed*/ {ObjectListHeaderActionMenu} from './components/objectlistheaderactionmenu';
+import /*embed*/ {ObjectListHeaderActionsAssignButton} from './components/objectlistheaderactionsassignbutton';
+import /*embed*/ {ObjectListHeaderActionsAssignModal} from './components/objectlistheaderactionsassignmodal';
+import /*embed*/ {ObjectListHeaderActionsDeleteButton} from './components/objectlistheaderactionsdeletebutton';
+import /*embed*/ {ObjectListHeaderActionsMergeButton} from './components/objectlistheaderactionsmergebutton';
 import /*embed*/ {ObjectListHeaderActionsExportCSVButton} from './components/objectlistheaderactionsexportcsvbutton';
 import /*embed*/ {ObjectListHeaderActionsExportCSVSelectFields} from './components/objectlistheaderactionsexportcsvselectfields';
 import /*embed*/ {ObjectListHeaderActionsExportTargetlistButton} from './components/objectlistheaderactionsexporttargetlistbutton';
 import /*embed*/ {ObjectListHeaderActionsExportTargetlistModal} from './components/objectlistheaderactionsexporttargetlistmodal';
 import /*embed*/ {ObjectListHeaderActionsSelectAllButton} from "./components/objectlistheaderactionsselectallbutton";
 import /*embed*/ {ObjectListHeaderActionsUnselectAllButton} from "./components/objectlistheaderactionsunselectallbutton";
+import /*embed*/ {ObjectListHeaderActionsSelectRangeButton} from "./components/objectlistheaderactionsselectrangebutton";
+import /*embed*/ {ObjectListHeaderActionsSelectRangeModal} from "./components/objectlistheaderactionsselectrangemodal";
 
 import /*embed*/ {ObjectListItem} from './components/objectlistitem';
 import /*embed*/ {ObjectListItemField} from './components/objectlistitemfield';
@@ -75,6 +83,7 @@ import /*embed*/ {ObjectActionSaveRelatedButton} from './components/objectaction
 import /*embed*/ {ObjectActionNewrelatedButton} from './components/objectactionnewrelatedbutton';
 import /*embed*/ {ObjectActionNewCopyRuleBeanButton, ObjectActionNewCopyRuleBeanButtonModelHelper} from './components/objectactionnewcopyrulebeanbutton';
 import /*embed*/ {ObjectReminderButton} from './components/objectreminderbutton';
+import /*embed*/ {ObjectSubscriptionButton} from './components/objectsubscriptionbutton';
 import /*embed*/ {ObjectActionSelectButton} from './components/objectactionselectbutton';
 import /*embed*/ {ObjectActionBeanToMailButton} from './components/objectactionbeantomailbutton';
 import /*embed*/ {ObjectActionMailModal} from './components/objectactionmailmodal';
@@ -122,8 +131,8 @@ import /*embed*/ {ObjectVerticalTabContainerItem} from './components/objectverti
 import /*embed*/ {ObjectVerticalTabContainerItemHeader} from './components/objectverticaltabcontaineritemheader';
 import /*embed*/ {ObjectRelateContainer} from './components/objectrelatecontainer';
 import /*embed*/ {ObjectRelatedCardHeader} from './components/objectrelatedcardheader';
-import /*embed*/ {ObjectRelatedCard} from './components/objectrelatedcard';
 import /*embed*/ {ObjectRelatedCardFooter} from './components/objectrelatedcardfooter';
+import /*embed*/ {ObjectRelatedCard} from './components/objectrelatedcard';
 import /*embed*/ {ObjectRelatedList} from './components/objectrelatedlist';
 import /*embed*/ {ObjectRelatedlistList} from './components/objectrelatedlistlist';
 import /*embed*/ {ObjectRelatedListItem} from './components/objectrelatedlistitem';
@@ -191,6 +200,7 @@ import /*embed*/ {ObjectModelPopoverRelatedItem} from "./components/objectmodelp
 import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmessagesbadge";
 import /*embed*/ {ObjectActionDeactivateBeansButton} from "./components/objectactiondeactivatebeansbutton";
 import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectactiondeactivatebeansmodal";
+import /*embed*/ {ObjectChecklists} from "./components/objectchecklists";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -217,6 +227,10 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectActionContainer,
         ObjectActionContainerItem,
         ObjectListHeaderActionMenu,
+        ObjectListHeaderActionsAssignButton,
+        ObjectListHeaderActionsAssignModal,
+        ObjectListHeaderActionsDeleteButton,
+        ObjectListHeaderActionsMergeButton,
         ObjectListHeaderActionsExportCSVButton,
         ObjectFieldFilterPipe,
         ObjectListHeaderActionsExportCSVSelectFields,
@@ -224,6 +238,8 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectListHeaderActionsExportTargetlistModal,
         ObjectListHeaderActionsSelectAllButton,
         ObjectListHeaderActionsUnselectAllButton,
+        ObjectListHeaderActionsSelectRangeButton,
+        ObjectListHeaderActionsSelectRangeModal,
         ObjectListItem,
         ObjectListItemField,
         ObjectActionMenu,
@@ -324,6 +340,7 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectModalModuleLookupAggregates,
         ObjectSelectButton,
         ObjectReminderButton,
+        ObjectSubscriptionButton,
         ObjectActionBeanToMailButton,
         ObjectActionMailModal,
         ObjectMergeButton,
@@ -348,7 +365,8 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectModelPopoverRelatedItem,
         ObjectRecordMessagesBadge,
         ObjectActionDeactivateBeansButton,
-        ObjectActionDeactivateBeansModal
+        ObjectActionDeactivateBeansModal,
+        ObjectChecklists
     ],
     exports: [
         ObjectListViewHeader,
@@ -393,7 +411,8 @@ import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectact
         ObjectModalModuleLookup,
         ObjectModalModuleLookupHeader,
         ObjectModalModuleLookupAggregates,
-        ObjectModelPopoverHeader
+        ObjectModelPopoverHeader,
+        ObjectChecklists
     ]
 })
 export class ObjectComponents {}

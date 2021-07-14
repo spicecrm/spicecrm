@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -37,15 +37,19 @@ import {view} from '../../services/view.service';
 export class ObjectListItem implements OnInit, OnDestroy {
 
     /**
-     * set to treu if the rowselect checkboy should be displayed
+     * set to true if the rowselect checkboy should be displayed
      */
     @Input() private rowselect: boolean = false;
+
+    /**
+     * set to true if row numbers shoudl be displayed
+     */
+    @Input() private rownumbers: boolean = false;
 
     /**
      * if the select ois to be displayed but disabled
      */
     @Input() private rowselectdisabled: boolean = false;
-
 
     /**
      * the item
@@ -62,6 +66,13 @@ export class ObjectListItem implements OnInit, OnDestroy {
      * by default links are dislayed. But in some views the links hsoudl be disabled
      */
     @Input() private displaylinks: boolean = true;
+
+    /**
+     * set to true to display line numbers
+     *
+     * @private
+     */
+    @Input() private rowNumber: number;
 
     /**
      * if set to true an action item is rendered

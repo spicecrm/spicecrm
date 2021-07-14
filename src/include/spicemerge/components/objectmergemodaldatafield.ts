@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -24,12 +24,20 @@ import {modellist} from '../../../services/modellist.service';
 })
 export class ObjectMergeModalDataField implements OnInit {
 
+    /**
+     * the name of the field
+     * @private
+     */
     @Input() private fieldname: string = '';
+
+    /**
+     * the data of the field
+     * @private
+     */
     @Input() private fielddata: any = {};
 
     constructor(private model: model, private modellist: modellist) {
         this.model.module = this.modellist.module;
-
     }
 
     public ngOnInit() {

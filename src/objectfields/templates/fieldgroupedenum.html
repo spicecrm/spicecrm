@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -12,52 +12,38 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
 <field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig">
-    <span *ngIf="!displayCheckboxes">{{viewModeValue}}</span>
-    <div *ngIf="displayCheckboxes">
-        <ng-container *ngIf="hasGroupItems">
-            <div *ngFor="let group of groups; trackBy: trackByFn" class="slds-m-bottom--medium">
-                <div class="slds-p-vertical--xx-small slds-text-title_bold">
-                    <system-checkbox [ngModel]="getGroupValue(group)" disabled="true">{{group.display}}</system-checkbox>
-                </div>
-                <div class="slds-form-element__control" [ngClass]="getFieldClass()" >
-                    <system-checkbox-group [ngModel]="fieldValueArray" class="slds-grid slds-wrap slds-p-vertical--xxx-small">
-                        <div *ngFor="let option of group.options; trackBy: trackByFn" class="slds-truncate" [ngClass]="checkboxClass">
-                            <system-checkbox-group-checkbox [value]="option.value" disabled="true"> {{option.display}}</system-checkbox-group-checkbox>
-                        </div>
-                    </system-checkbox-group>
-                </div>
-            </div>
-        </ng-container>
-        <ng-container *ngIf="!hasGroupItems">
-            <div class="slds-grid slds-grid--align-spread">
-                <div class="slds-form-element__control" [ngClass]="getFieldClass()" >
-                    <field-multienum-checkbox *ngFor="let option of options" [fieldname]="fieldname" [option]="option" [disabled]="true" class="slds-checkbox"></field-multienum-checkbox>
-                </div>
-            </div>
-        </ng-container>
-    </div>
-</field-generic-display>
-<div *ngIf="isEditMode()" class="slds-form-element">
-    <ng-container *ngIf="hasGroupItems">
-    <div *ngFor="let group of groups; trackBy: trackByFn" class="slds-m-bottom--medium">
+    <span *ngIf="!fieldconfig.displayCheckboxes">{{localValue.valueDisplay}}</span>
+    <div *ngIf="!!fieldconfig.displayCheckboxes">
+        <div *ngFor="let group of groups; trackBy: trackByFn" class="slds-m-bottom--medium">
             <div class="slds-p-vertical--xx-small slds-text-title_bold">
-                <system-checkbox [ngModel]="getGroupValue(group)" (ngModelChange)="setGroupValue($event, group)" [disabled]="isDisabled(group.value)">{{group.display}}</system-checkbox>
+                <system-checkbox [ngModel]="group.value" [disabled]="true">{{group.display}}</system-checkbox>
             </div>
-            <div class="slds-form-element__control" [ngClass]="getFieldClass()" >
-                <system-checkbox-group [ngModel]="fieldValueArray" (ngModelChange)="setFieldValue($event, group)" class="slds-grid slds-wrap slds-p-vertical--xxx-small">
-                    <div *ngFor="let option of group.options; trackBy: trackByFn" class="slds-truncate" [ngClass]="checkboxClass">
-                        <system-checkbox-group-checkbox [value]="option.value"> {{option.display}}</system-checkbox-group-checkbox>
+            <div class="slds-form-element__control" [ngClass]="css_classes" >
+                <system-checkbox-group [ngModel]="localValue.valueArray" class="slds-grid slds-wrap slds-p-vertical--xxx-small">
+                    <div *ngFor="let option of group.options; trackBy: trackByFn" class="slds-truncate" [ngClass]="columnsClass">
+                        <system-checkbox-group-checkbox [value]="option.value" [disabled]="true"> {{option.display}}</system-checkbox-group-checkbox>
                     </div>
                 </system-checkbox-group>
             </div>
         </div>
-    </ng-container>
-    <ng-container *ngIf="!hasGroupItems">
-        <div class="slds-form-element__control slds-grid slds-wrap slds-p-vertical--xxx-small" [ngClass]="getFieldClass()">
-            <div *ngFor="let option of options; trackBy: trackByFn" class="slds-truncate" [ngClass]="checkboxClass">
-                <field-multienum-checkbox [fieldname]="fieldname" [option]="option" class="slds-checkbox"></field-multienum-checkbox>
-            </div>
+    </div>
+</field-generic-display>
+<div *ngIf="isEditMode()" class="slds-form-element">
+    <div *ngFor="let group of groups; trackBy: trackByFn" class="slds-m-bottom--medium">
+        <div class="slds-p-vertical--xx-small slds-text-title_bold">
+            <system-checkbox [ngModel]="this.localValue.valueGroups[group.value]" (ngModelChange)="setGroupValue($event, group)">
+                {{group.display}}
+            </system-checkbox>
         </div>
-    </ng-container>
+        <div class="slds-form-element__control" [ngClass]="css_classes" >
+            <system-checkbox-group [ngModel]="localValue.valueArray" (ngModelChange)="setItemValue($event)" class="slds-grid slds-wrap slds-p-vertical--xxx-small">
+                <div *ngFor="let option of group.options; trackBy: trackByFn" class="slds-truncate" [ngClass]="columnsClass">
+                    <system-checkbox-group-checkbox [value]="option.value">
+                        {{option.display}}
+                    </system-checkbox-group-checkbox>
+                </div>
+            </system-checkbox-group>
+        </div>
+    </div>
     <field-messages [fieldname]="fieldname"></field-messages>
 </div>

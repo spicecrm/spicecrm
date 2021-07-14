@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -35,33 +35,53 @@ declare var moment: any;
     templateUrl: './src/objectfields/templates/fielddatespan.html'
 })
 export class fieldDateSpan extends fieldGeneric implements OnInit {
+
+    /**
+     * inidcates that we have a valid field
+     *
+     * @private
+     */
     private isValid: boolean = true;
+
+    /**
+     * collected error messages
+     *
+     * @private
+     */
     private errorMessage: string = '';
+
+    /**
+     * the duration, held intrnally so we can move the end date when the start date moves
+     *
+     * @private
+     */
+    private duration: any;
 
     constructor(public model: model, public view: view, public language: language, public metadata: metadata, public router: Router, private userpreferences: userpreferences) {
         super(model, view, language, metadata, router);
     }
 
+    /**
+     * initialize and subscribe to the model data changes so we can calculate a duration if we have one
+     */
+    public ngOnInit() {
+        super.ngOnInit();
+
+        this.subscriptions.add(
+            this.model.data$.subscribe((data) => {
+                if (this.startDate && this.endDate) {
+                    this.duration = moment.duration(this.endDate.diff(this.startDate));
+                }
+            })
+        );
+    }
+
     get fieldstart() {
-        return this.fieldconfig.field_start ? this.fieldconfig.field_start : 'date_start';
+        return this.fieldconfig.date_start ? this.fieldconfig.date_start : 'date_start';
     }
 
     get fieldend() {
-        return this.fieldconfig.field_end ? this.fieldconfig.field_end : 'date_end';
-    }
-
-
-    public ngOnInit() {
-        this.calculateEndDate();
-    }
-
-
-    get formattedStartDate() {
-        return this.startDate ? moment(this.startDate).format(this.userpreferences.getDateFormat()) : '';
-    }
-
-    get formattedEndDate() {
-        return this.endDate ? moment(this.endDate).format(this.userpreferences.getDateFormat()) : '';
+        return this.fieldconfig.date_end ? this.fieldconfig.date_end : 'date_end';
     }
 
     get startDate() {
@@ -69,9 +89,20 @@ export class fieldDateSpan extends fieldGeneric implements OnInit {
     }
 
     set startDate(date) {
-        this.model.setField(this.fieldstart, date);
-        this.calculateEndDate();
-        // console.log('start set');
+        // build the fields object
+        let fields: any = {};
+        fields[this.fieldstart] = date;
+
+        if (this.duration) {
+            // calculate the new end date
+            let newEndDate = new moment(date).add(this.duration.asSeconds(), 's');
+
+            // add the end date
+            fields[this.fieldend] = newEndDate;
+        }
+
+        // set the fields on the model
+        this.model.setFields(fields);
     }
 
     get endDate() {
@@ -93,12 +124,6 @@ export class fieldDateSpan extends fieldGeneric implements OnInit {
             this.model.resetFieldMessages(this.fieldname, 'error', 'sequencecheck');
             this.model.setField(this.fieldend, date);
             this.isValid = true;
-        }
-    }
-
-    private calculateEndDate() {
-        if (this.startDate) {
-            this.endDate = new moment(this.startDate);
         }
     }
 

@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -26,7 +26,7 @@ import {
 } from '@angular/core';
 import {modelutilities} from '../../services/modelutilities.service';
 import {model} from '../../services/model.service';
-import {modellist, relateFilter} from '../../services/modellist.service';
+import {modellist} from '../../services/modellist.service';
 import {view} from '../../services/view.service';
 import {language} from '../../services/language.service';
 import {layout} from '../../services/layout.service';
@@ -77,18 +77,6 @@ export class ObjectModalModuleLookupHeader {
         this.autoCompleteKiller = this.modelutilities.generateGuid();
     }
 
-    /**
-     * a getter that builds teh request fields from the listfields from the modellistservice
-     */
-    get requestfields() {
-        let requestfields = [];
-        for (let listfield of this.modellist.listfields) {
-            if (requestfields.indexOf(listfield.field) != -1) {
-                requestfields.push(listfield.field);
-            }
-        }
-        return requestfields;
-    }
 
     get relatefilter() {
         return this.modellist.relatefilter;
@@ -134,7 +122,7 @@ export class ObjectModalModuleLookupHeader {
     private doSearch() {
         this.searchTermOld = this.searchTerm;
         this.modellist.searchTerm = this.searchTerm;
-        this.modellist.getListData(this.requestfields);
+        this.modellist.getListData();
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -33,6 +33,18 @@ export class SystemModalContent {
      * if set to true the modal will consume as muchheight as possible
      */
     @Input() private grow: boolean = false;
+
+    /**
+     * an attribute that can be set and doies not require the value true poassed in
+     * @param value
+     */
+    @Input('system-modal-content-grow') set inputGrow(value) {
+        if (value === false) {
+            this.grow = false;
+        } else {
+            this.grow = true;
+        }
+    }
 
     /**
      * returs the margin class and the groth for the modal

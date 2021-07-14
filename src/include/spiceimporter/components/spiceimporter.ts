@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -82,7 +82,7 @@ export class SpiceImporter implements OnInit {
         });
 
         // get saved imports
-        this.backend.getRequest('modules/SpiceImports/savedImports/' + this.model.module).subscribe(res => {
+        this.backend.getRequest('module/SpiceImports/savedimports/' + this.model.module).subscribe(res => {
             this.spiceImporter.savedImports = res;
         });
 
@@ -291,7 +291,7 @@ export class SpiceImporter implements OnInit {
         this.spiceImporter.result = {};
         this.processing = true;
 
-        this.backend.postRequest('modules/SpiceImports/import', {
+        this.backend.postRequest('module/SpiceImports/import', {
             objectimport: preparedObjectImport,
         }).subscribe(res => {
 

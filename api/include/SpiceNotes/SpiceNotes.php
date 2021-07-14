@@ -30,6 +30,7 @@ namespace SpiceCRM\includes\SpiceNotes;
 
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 /**
  * Class SpiceNotes
@@ -50,8 +51,8 @@ class SpiceNotes {
      */
     public static function getQuickNotesForBean($beanName, $beanId,$lastN = 10) {
         global  $beanFiles, $beanList;
-$current_user = AuthenticationController::getInstance()->getCurrentUser();
-$db = DBManagerFactory::getInstance();
+        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+        $db = DBManagerFactory::getInstance();
         $quicknotes = [];
 
         if (DBManagerFactory::getInstance()->dbType == 'mssql'){
@@ -74,8 +75,7 @@ $db = DBManagerFactory::getInstance();
                 ];
 			}
 		}
-
-		return json_encode($quicknotes);
+		return $quicknotes;
 	}
 
     /**
@@ -88,7 +88,7 @@ $db = DBManagerFactory::getInstance();
      */
 	public static function getQuickNotesCount($beanName, $beanId,$lastN = 10){
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance();
         $quicknotesRec = $db->fetchByAssoc($db->query("SELECT count(*) AS noteCount FROM spicenotes WHERE bean_id='{$beanId}' AND bean_type='{$beanName}'  AND (user_id = '".$current_user->id."' OR trglobal = '1') AND deleted = 0"));
 
         return $quicknotesRec['noteCount'];
@@ -104,8 +104,8 @@ $db = DBManagerFactory::getInstance();
      */
 	public static function saveQuickNote($beanName, $beanId, $data) {
 		$current_user = AuthenticationController::getInstance()->getCurrentUser();
-$db = DBManagerFactory::getInstance();
-		$guid = create_guid();
+        $db = DBManagerFactory::getInstance();
+		$guid = SpiceUtils::createGuid();
 		$db->query( sprintf('INSERT INTO spicenotes ( id, bean_type, bean_id, user_id, trdate, trglobal, text, deleted ) VALUES ( "%s", "%s", "%s", "%s", "%s", "%s", "%s", 0 )', $guid, $db->quote( $beanName ), $db->quote( $beanId ), $current_user->id, gmdate('Y-m-d H:i:s'), $data['global'] ? 1:0, $db->quote( $data['text'] )));
 		$quicknotes[]= [
 				'id' => $guid,
@@ -116,7 +116,7 @@ $db = DBManagerFactory::getInstance();
 				'text' => nl2br($data['text']),
 				'global' => $data['global'] ? true : false
         ];
-		return json_encode($quicknotes);
+		return $quicknotes;
 	}
 
     /**
@@ -130,7 +130,7 @@ $db = DBManagerFactory::getInstance();
      */
 	public static function editQuickNote($beanName, $beanId, $noteId, $data) {
 		$current_user = AuthenticationController::getInstance()->getCurrentUser();
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance();
 		$db->query("UPDATE spicenotes SET text = '{$data['text']}', trglobal = '{$data['global']}' WHERE id = '{$noteId}'" . (!$current_user->is_admin ? " AND user_id='".$current_user->id."'":""));
 		return true;
 	}
@@ -143,8 +143,8 @@ $db = DBManagerFactory::getInstance();
      */
 	public static function deleteQuickNote($noteId) {
 		$current_user = AuthenticationController::getInstance()->getCurrentUser();
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance();
 		$db->query("UPDATE spicenotes SET deleted = 1 WHERE id='{$noteId}'" . (!$current_user->is_admin ? " AND user_id='".$current_user->id."'":""));
-		return json_encode(['status' => 'success']);
+		return ['status' => 'success'];
 	}
 }

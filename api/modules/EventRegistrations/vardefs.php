@@ -25,6 +25,46 @@ $dictionary['EventRegistration'] = [
             'len' => 16,
             'comment' => 'registration state: registered|canceled|attended|notattended'
         ],
+        'salutation' => [
+            'name' => 'salutation',
+            'type' => 'enum',
+            'options' => 'salutation_dom',
+            'massupdate' => false,
+            'len' => 255,
+            'vname' => 'LBL_SALUTATION',
+        ],
+        'first_name' => [
+            'name' => 'first_name',
+            'type' => 'varchar',
+            'len' => 100,
+            'vname' => 'LBL_FIRST_NAME',
+        ],
+        'last_name' => [
+            'name' => 'last_name',
+            'type' => 'varchar',
+            'len' => 100,
+            'vname' => 'LBL_LAST_NAME',
+        ],
+        'email' => [
+            'name' => 'email',
+            'type' => 'varchar',
+            'len' => 100,
+            'vname' => 'LBL_EMAIL'
+        ],
+        'phone_mobile' => [
+            'name' => 'phone_mobile',
+            'vname' => 'LBL_PHONE_MOBILE',
+            'type' => 'phone',
+            'dbType' => 'varchar',
+            'len' => 100,
+            'unified_search' => true,
+        ],
+        'registration_source' => [
+            'name' => 'registration_source',
+            'type' => 'varchar',
+            'len' => 255,
+            'vname' => 'LBL_URL',
+        ],
         'campaign_id' => [
             'name' => 'campaign_id',
             'vname' => 'LBL_CAMPAIGN_ID',
@@ -119,7 +159,7 @@ $dictionary['EventRegistration'] = [
             'type' => 'id',
             'comment' => 'Contact identifier',
             'reportable' => false,
-            'required' => true,
+            'required' => false,
         ],
         'contact_name' => [
             'name' => 'contact_name',
@@ -134,7 +174,7 @@ $dictionary['EventRegistration'] = [
             'link' => 'contact_link',
             'len' => '255',
             'source' => 'non-db',
-            'required' => true,
+            'required' => false,
         ],
         'contact_link' => [
             'name' => 'contact_link',

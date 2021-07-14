@@ -166,8 +166,6 @@ class Role extends SugarBean {
 	function get_users()
 	{
 		// First, get the list of IDs.
-
-		
 		
 		$query = "SELECT user_id as id FROM roles_users WHERE role_id='$this->id' AND deleted=0";
 		

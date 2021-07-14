@@ -57,26 +57,6 @@ $dictionary['Consumer'] = [
             'type' => 'date',
             'comment' => 'The birthdate of the consumer'
         ],
-        'email_addresses' => [
-            'name' => 'email_addresses',
-            'type' => 'link',
-            'relationship' => 'consumers_email_addresses',
-            'module' => 'EmailAddress',
-            'bean_name' => 'EmailAddress',
-            'source' => 'non-db',
-            'vname' => 'LBL_EMAIL_ADDRESSES',
-            'reportable' => false,
-            'rel_fields' => ['primary_address' => ['type' => 'bool']],
-            'unified_search' => true,
-        ],
-        'email_addresses_primary' => [
-            'name' => 'email_addresses_primary',
-            'type' => 'link',
-            'relationship' => 'consumers_email_addresses_primary',
-            'source' => 'non-db',
-            'vname' => 'LBL_EMAIL_ADDRESS_PRIMARY',
-            'duplicate_merge' => 'disabled',
-        ],
         'calls_participant' => [
             'name' => 'calls',
             'type' => 'link',

@@ -110,7 +110,6 @@ class SchedulersJob extends Basic
 	{
         // Hack to work around the mess with dates being auto-converted to user format on retrieve
 	    $this->execute_time_db = $this->db->fromConvert($this->execute_time, 'datetime');
-	    parent::check_date_relationships_load();
     }
 	/**
      * handleDateFormat

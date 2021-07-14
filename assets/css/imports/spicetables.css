@@ -13,7 +13,7 @@
 .slds-table_header-fixed tbody tr:first-child td,
 .slds-table_header-fixed tbody tr:first-child th
 {
-    border: 0;
+    border-top: 0;
 }
 
 /* sticky headers */

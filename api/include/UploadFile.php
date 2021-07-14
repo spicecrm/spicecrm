@@ -399,6 +399,8 @@ class UploadFile
             if (!file_put_contents($destination, $this->file)) {
                 LoggerManager::getLogger()->fatal("ERROR: can't save file to $destination");
                 return false;
+            } else {
+                return true;
             }
         }
         if ($this->use_proxy) {

@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -24,10 +24,27 @@ import {metadata} from '../../services/metadata.service';
 })
 export class GlobalHeaderActions implements AfterViewInit {
 
-    @ViewChild('actioncontainerheader', {read: ViewContainerRef, static: true}) private actioncontainerheader: ViewContainerRef;
+    @ViewChild('actioncontainerheader', {
+        read: ViewContainerRef,
+        static: true
+    }) private actioncontainerheader: ViewContainerRef;
 
+    /**
+     * the open boolean indicator
+     *
+     * @private
+     */
     private isOpen: boolean = false;
+
     private clickListener: any;
+
+    /**
+     * indicates that the add is visible
+     * requires that we can ate last add one of the modules
+     *
+     * @private
+     */
+    private isVisible: boolean = false;
 
     constructor(private renderer: Renderer2, private elementRef: ElementRef, private session: session, private metadata: metadata, private language: language) {
 
@@ -38,6 +55,16 @@ export class GlobalHeaderActions implements AfterViewInit {
         if (componentconfig && componentconfig.actionset) {
             let actionsetitems = this.metadata.getActionSetItems(componentconfig.actionset);
             for (let actionsetitem of actionsetitems) {
+                // check if we have a module and if we can add
+                if (actionsetitem.actionconfig?.module) {
+                    if (!this.metadata.checkModuleAcl(actionsetitem.actionconfig?.module, 'create')) {
+                        continue;
+                    }
+                }
+
+                // set to visible if we at least found one item
+                this.isVisible = true;
+
                 this.metadata.addComponent(actionsetitem.component, this.actioncontainerheader).subscribe((componentRef) => {
                     componentRef.instance.actionconfig = actionsetitem.actionconfig;
                     if (componentRef.instance.closemenu) {
@@ -60,13 +87,10 @@ export class GlobalHeaderActions implements AfterViewInit {
     }
 
     private onClick(event: MouseEvent): void {
-
         const clickedInside = this.elementRef.nativeElement.contains(event.target);
         if (!clickedInside) {
             this.isOpen = false;
             this.clickListener();
         }
     }
-
-
 }

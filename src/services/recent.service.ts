@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -38,40 +38,32 @@ export class recent {
     private handleMessage(message: any) {
         switch (message.messagetype) {
             case 'model.save':
-                this.items.some((item, index) => {
-                    if (item.module_name === message.messagedata.module && item.item_id == message.messagedata.id) {
-                        this.items[index].item_summary = message.messagedata.data.summary_text;
-                        this.items[index].data = message.messagedata.data;
-                        return true;
-                    }
-                });
+                let item = this.items.find(i => i.module_name == message.messagedata.module && i.item_id == message.messagedata.id);
+                if (item) {
+                    item.data = message.messagedata.data;
+                    item.item_summary = message.messagedata.data.summary_text;
+                }
 
                 if (this.moduleItems[message.messagedata.module]) {
-                    this.moduleItems[message.messagedata.module].some((item, index) => {
-                        if (item.item_id == message.messagedata.id) {
-                            this.moduleItems[message.messagedata.module][index].item_summary = message.messagedata.data.summary_text;
-                            this.moduleItems[message.messagedata.module][index].data = message.messagedata.data;
-                            return true;
-                        }
-                    });
+                    let mitem = this.moduleItems[message.messagedata.module].find(i => i.module_name == message.messagedata.module && i.item_id == message.messagedata.id);
+                    if (mitem) {
+                        mitem.data = message.messagedata.data;
+                        mitem.item_summary = message.messagedata.data.summary_text;
+                    }
                 }
 
                 break;
             case 'model.delete':
-                this.items.some((item, index) => {
-                    if (item.module_name === message.messagedata.module && item.item_id == message.messagedata.id) {
-                        this.items.splice(index, 1);
-                        return true;
-                    }
-                });
+                let itemIndex = this.items.findIndex(i => i.module_name == message.messagedata.module && i.item_id == message.messagedata.id);
+                if (itemIndex) {
+                    this.items.splice(itemIndex, 1);
+                }
 
                 if (this.moduleItems[message.messagedata.module]) {
-                    this.moduleItems[message.messagedata.module].some((item, index) => {
-                        if (item.item_id == message.messagedata.id) {
-                            this.items.splice(index, 1);
-                            return true;
-                        }
-                    });
+                    let mitemIndex = this.moduleItems[message.messagedata.module].findIndex(i => i.module_name == message.messagedata.module && i.item_id == message.messagedata.id);
+                    if (mitemIndex) {
+                        this.items.splice(mitemIndex, 1);
+                    }
                 }
 
                 break;
@@ -131,7 +123,7 @@ export class recent {
             } else {
                 let responseSubject = new Subject<any[]>();
                 if (!this.moduleItems[module]) {
-                    this.backend.getRequest('modules/Trackers/recent', {
+                    this.backend.getRequest('module/Trackers/recent', {
                         module: module,
                         limit: 5
                     }).subscribe(response => {

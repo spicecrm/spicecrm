@@ -934,10 +934,8 @@ $app_list_strings = [
     'document_status_dom' => [
         'Active'                                           => 'Activo',
         'Draft'                                            => 'Borrador',
-        'FAQ'                                              => 'FAQ',
         'Expired'                                          => 'Caducado',
         'Under Review'                                     => 'En Revisión',
-        'Pending'                                          => 'Pendiente',
     ],
 
 
@@ -3006,4 +3004,27 @@ $app_list_strings['textmessage_delivery_status'] = [
     'sent'         => 'Enviado',
     'failed'       => 'Fallado',
     'transmitting' => 'Transmitting',
+];
+
+// CR1000333
+$app_list_strings['cruser_role_dom'] = [
+    'developer' => 'developer',
+    'tester' => 'tester',
+];
+
+$app_list_strings['crstatus_dom'] = [
+    '-1' => 'backlog',
+    '0' => 'created',
+    '1' => 'in progress',
+    '2' => 'unit tested',
+    '3' => 'integration test',
+    '4' => 'completed', // was 3 before CR1000333
+    '5' => 'canceled/deferred' // was 4 before CR1000333
+];
+
+$app_list_strings['crtype_dom'] = [
+    '0' => 'bug',
+    '1' => 'feature request',
+    '2' => 'change request',
+    '3' => 'hotfix'
 ];

@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -66,6 +66,7 @@ export class EmailForwardModal extends EmailReplyModal {
         this.model.startEdit(false);
         // set the from-addresses to to-addresses and vice versa
         this.model.data.recipient_addresses = [];
+        this.model.data.reference_id = this.parent.id;
 
         // set the email-history into the body
         this.model.setFields({

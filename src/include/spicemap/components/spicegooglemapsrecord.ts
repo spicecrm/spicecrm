@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -476,7 +476,7 @@ export class SpiceGoogleMapsRecord extends SpiceGoogleMapsList implements OnInit
             }
             const userAddress = `${user.address_street}, ${user.address_postalcode} ${user.address_city}, ${user.address_country}`;
 
-            this.backend.getRequest(`googleapi/places/autocomplete/${userAddress}`)
+            this.backend.getRequest(`channels/groupware/gsuite/places/autocomplete/${encodeURIComponent(userAddress)}`)
                 .subscribe((res: any) => {
                     if (!!res.predictions && res.predictions.length > 0) {
                         const directionStart: RoutePointI = {placeId: res.predictions[0].place_id};

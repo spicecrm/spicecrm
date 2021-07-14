@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -53,7 +53,7 @@ export class ReporterIntegrationTargetlistexportModal {
                 whereConditions: btoa(JSON.stringify(this.whereConditions))
             };
 
-            this.backend.postRequest('KReporter/plugins/action/ktargetlistexport/export_to_targetlist', {}, requestbody).subscribe(result => {
+            this.backend.postRequest('module/KReports/plugins/action/ktargetlistexport/export_to_targetlist', {}, requestbody).subscribe(result => {
                 modalRef.instance.self.destroy();
                 this.closeModal();
             });

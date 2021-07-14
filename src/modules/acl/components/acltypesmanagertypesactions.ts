@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -37,27 +37,27 @@ import {navigation} from '../../../services/navigation.service';
 })
 export class ACLTypesManagerTypesActions {
 
-    @Input() authtypeactions = [];
+    @Input() public authtypeactions = [];
 
-    @Output() addaction: EventEmitter<string> = new EventEmitter<string>();
-    @Output() deleteaction: EventEmitter<string> = new EventEmitter<string>();
+    @Output() public addaction: EventEmitter<string> = new EventEmitter<string>();
+    @Output() public deleteaction: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(private backend: backend, private modal: modal, private language: language, private modelutilities: modelutilities) {
 
     }
 
-    addAction(){
-        this.modal.openModal('ACLTypesManagerTypesAddAction').subscribe(modalRef => {
+    public addAction() {
+        this.modal.openModal('ACLTypesManagerTypesAddAction', true).subscribe(modalRef => {
             modalRef.instance.currentactions = this.authtypeactions;
             modalRef.instance.addaction.subscribe(addaction => {
                 this.addaction.emit(addaction);
-            })
-        })
+            });
+        });
     }
 
-    deleteAction(id){
-        this.modal.confirm( 'LBL_DELETE_ACTION', 'LBL_DELETE_ACTION' ).subscribe( ( answer ) => {
-            if(answer){
+    public deleteAction(id) {
+        this.modal.confirm( 'MSG_DELETE_ACL_ACTION', 'MSG_DELETE_ACL_ACTION' ).subscribe( ( answer ) => {
+            if(answer) {
                 this.deleteaction.emit(id);
             }
         });

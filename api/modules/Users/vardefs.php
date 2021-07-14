@@ -901,6 +901,7 @@ $dictionary['User'] = [
             'name' => 'systemtenant_name',
             'rname' => 'name',
             'id_name' => 'systemtenant_id',
+            'link' => 'systemtenant',
             'vname' => 'LBL_SYSTEMTENANT',
             'type' => 'relate',
             'isnull' => 'true',
@@ -915,7 +916,39 @@ $dictionary['User'] = [
             'relationship' => 'systemtenant_users',
             'module' => 'SystemTenants',
             'source' => 'non-db'
-        ]
+        ],
+        'qualifications' => [
+            'name' => 'qualifications',
+            'rel_fields' => [
+                'qualification_start_date' => ['map' => 'bean_qualification_start_date'],
+                'qualification_end_date' => ['map' => 'bean_qualification_end_date'],
+            ],
+            'type' => 'link',
+            'relationship' => 'users_qualifications',
+            'source' => 'non-db',
+            'rname' => 'name',
+            'module' => 'Qualifications'
+        ],
+        'shop_id' => [
+            'name' => 'shop_id',
+            'vname' => 'LBL_SHOP',
+            'type' => 'varchar',
+            'len' => 36,
+            'required' => false
+        ],
+        'shop_name' => [
+            'name' => 'shop_name',
+            'rname' => 'name',
+            'id_name' => 'shop_id',
+            'vname' => 'LBL_SHOP',
+            'type' => 'relate',
+            'link' => 'shop',
+            'isnull' => 'true',
+            'table' => 'shops',
+            'module' => 'Shops',
+            'source' => 'non-db',
+        ],
+
     ],
     'indices' => [
         [
@@ -1011,7 +1044,16 @@ $dictionary['User'] = [
             'rhs_key' => 'costcenter_id',
             'relationship_type' => 'one-to-many',
             'default' => true
-        ]
+        ],
+        'shop_users' => [
+            'lhs_module' => 'Shops',
+            'lhs_table' => 'shops',
+            'lhs_key' => 'id',
+            'rhs_module' => 'Users',
+            'rhs_table' => 'users',
+            'rhs_key' => 'shop_id',
+            'relationship_type' => 'one-to-many'
+        ],
     ]
 ];
 
@@ -1085,5 +1127,16 @@ if (is_file("modules/ServiceTickets/ServiceTicket.php")) {
 //        'default' => false
 //    );
 //}
+if (is_file("modules/Shops/Shop.php")) {
+    $dictionary['User']['fields']['shops'] = [
+        'name' => 'shops',
+        'type' => 'link',
+        'vname' => 'LBL_SHOP',
+        'relationship' => 'shop_users',
+        'rname' => 'name',
+        'source' => 'non-db',
+        'module' => 'Shops'
+    ];
+}
 
 

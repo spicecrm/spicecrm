@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -77,7 +77,7 @@ export class UserRolesAddModal {
     }
 
     private add() {
-        this.backend.postRequest(`spiceui/core/roles/${this.sysuirole_id}/${this.user_id}/new`)
+        this.backend.postRequest(`configuration/spiceui/core/roles/${this.sysuirole_id}/${this.user_id}/new`)
             .subscribe(
                 res => {
                     if (res.status == "error") {

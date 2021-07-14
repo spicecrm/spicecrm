@@ -36,6 +36,9 @@ use SpiceCRM\includes\authentication\AuthenticationController;
 class SpiceACLProfilesRESTHandler
 {
 
+    /**
+     * @throws UnauthorizedException
+     */
     private function checkAdmin(){
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         if(!$current_user->is_admin){
@@ -43,6 +46,12 @@ class SpiceACLProfilesRESTHandler
         }
     }
 
+    /**
+     * get SpiceACLObjects allocated to specified profile
+     * @param guid $id
+     * @return array
+     * @throws \Exception
+     */
     public function getProfileObjects($id)
     {
         $db = DBManagerFactory::getInstance();
@@ -60,25 +69,45 @@ class SpiceACLProfilesRESTHandler
         return $retArray;
     }
 
+    /**
+     * allocate a spiceaclobject to specified profile
+     *
+     * @param guid $id
+     * @param guid $objectid
+     * @return bool
+     * @throws \Exception
+     */
     public function addProfileObject($id, $objectid)
     {
         global $timedate;
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance();
 
         $db->query("INSERT INTO spiceaclprofiles_spiceaclobjects (id, spiceaclprofile_id, spiceaclobject_id, date_modified, deleted) VALUES('".create_guid()."', '$id', '$objectid', '".$timedate->nowDb()."', '0')");
         return true;
     }
 
+    /**
+     * remove allocation of a spiceaclobject for a specified profile
+     *
+     * @param guid $id
+     * @param guid $objectid
+     * @return bool
+     * @throws \Exception
+     */
     public function deleteProfileObject($id, $objectid)
     {
         global $timedate;
-$db = DBManagerFactory::getInstance();
-
+        $db = DBManagerFactory::getInstance();
         $db->query("UPDATE spiceaclprofiles_spiceaclobjects SET deleted = 1, date_modified='" . $timedate->nowDb() . "' WHERE spiceaclprofile_id = '$id'AND spiceaclobject_id = '$objectid' AND deleted = 0");
-
         return true;
     }
 
+    /**
+     * activate an ACL Profile
+     *
+     * @param guid $id profile id
+     * @return bool
+     */
     public function activateProfile($id)
     {
         $authProfile = BeanFactory::getBean('SpiceACLProfiles', $id);
@@ -87,6 +116,12 @@ $db = DBManagerFactory::getInstance();
         return true;
     }
 
+    /**
+     * deactivate an ACL Profile
+     *
+     * @param guid $id profile id
+     * @return bool
+     */
     public function deactivateProfile($id)
     {
         $authProfile = BeanFactory::getBean('SpiceACLProfiles', $id);
@@ -96,6 +131,12 @@ $db = DBManagerFactory::getInstance();
     }
 
 
+    /**
+     * get the users having specified profile
+     * @param guid $id
+     * @return array
+     * @throws \Exception
+     */
     public function getProfileUsers($id)
     {
         $db = DBManagerFactory::getInstance();
@@ -110,44 +151,46 @@ $db = DBManagerFactory::getInstance();
         return $retArray;
     }
 
+    /**
+     * allocate a profile to a list of users
+     *
+     * @param guid $id
+     * @param array $userids
+     * @return bool
+     * @throws \Exception
+     */
     public function addProfileUsers($id, $userids){
         global $timedate;
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance();
         foreach($userids as $userid) {
             $db->query("INSERT INTO spiceaclprofiles_users (id, user_id, spiceaclprofile_id, deleted, date_modified) VALUES(".$db->getGuidSQL().", '$userid', '$id', 0, '" . $timedate->nowDb() . "')");
         }
         return true;
     }
 
+    /**
+     * remove a profile for specified user
+     *
+     * @param guid $id
+     * @param guid $userid
+     * @return bool
+     * @throws \Exception
+     */
     public function deleteProfileUser($id, $userid){
         global $timedate;
-$db = DBManagerFactory::getInstance();
+        $db = DBManagerFactory::getInstance();
         $db->query("UPDATE spiceaclprofiles_users SET deleted = 1, date_modified='" . $timedate->nowDb() . "' WHERE spiceaclprofile_id = '$id' AND user_id = '$userid' AND deleted = 0");
         return true;
     }
 
-    public function getAuthUsers($params)
-    {
-        $db = DBManagerFactory::getInstance();
 
-        $retArray = [];
-
-        $addFilter = '';
-        if ($params['searchterm'])
-            $addFilter = " AND (users.user_name like '%" . $params['searchterm'] . "%' OR users.last_name like '%" . $params['searchterm'] . "%' OR users.first_name like '%" . $params['searchterm'] . "%') ";
-
-        $records = $db->limitQuery("SELECT * FROM users WHERE deleted = 0 $addFilter ORDER BY user_name", $params['start'], $params['limit']);
-        while ($record = $db->fetchByAssoc($records))
-            $retArray[] = $record;
-
-        $count = $db->fetchByAssoc($db->query("SELECT count(*) totalcount FROM users WHERE deleted = 0 $addFilter"));
-
-        return [
-            'records' => $retArray,
-            'totalcount' => $count['totalcount']
-        ];
-    }
-
+    /**
+     * get profiles allocated to specified user
+     *
+     * @param guid $userid
+     * @return array
+     * @throws \Exception
+     */
     public function getUserProfiles($userid){
         $db = DBManagerFactory::getInstance();
 
@@ -160,4 +203,27 @@ $db = DBManagerFactory::getInstance();
 
         return $retArray;
     }
+
+
+//    public function getAuthUsers($params)
+//    {
+//        $db = DBManagerFactory::getInstance();
+//
+//        $retArray = [];
+//
+//        $addFilter = '';
+//        if ($params['searchterm'])
+//            $addFilter = " AND (users.user_name like '%" . $params['searchterm'] . "%' OR users.last_name like '%" . $params['searchterm'] . "%' OR users.first_name like '%" . $params['searchterm'] . "%') ";
+//
+//        $records = $db->limitQuery("SELECT * FROM users WHERE deleted = 0 $addFilter ORDER BY user_name", $params['start'], $params['limit']);
+//        while ($record = $db->fetchByAssoc($records))
+//            $retArray[] = $record;
+//
+//        $count = $db->fetchByAssoc($db->query("SELECT count(*) totalcount FROM users WHERE deleted = 0 $addFilter"));
+//
+//        return [
+//            'records' => $retArray,
+//            'totalcount' => $count['totalcount']
+//        ];
+//    }
 }

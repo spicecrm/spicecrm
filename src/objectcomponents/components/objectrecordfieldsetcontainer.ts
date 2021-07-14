@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -28,6 +28,7 @@ import {view} from '../../services/view.service';
  * requires a component that provides a model and view
  */
 @Component({
+    selector: 'object-record-fieldset-container',
     templateUrl: './src/objectcomponents/templates/objectrecordfieldsetcontainer.html'
 })
 export class ObjectRecordFieldsetContainer {
@@ -45,6 +46,15 @@ export class ObjectRecordFieldsetContainer {
         return this.componentconfig.direction;
     }
 
-    constructor(private metadata: metadata, private model: model, private view: view) {
+    constructor(public metadata: metadata, public model: model, public view: view) {
+    }
+
+    /**
+     * determine if the fieldset as such is hidden
+     *
+     * this is mainly driven by the required model state
+     */
+    get hidden() {
+        return (this.componentconfig.requiredmodelstate && !this.model.checkModelState(this.componentconfig.requiredmodelstate));
     }
 }

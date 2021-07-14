@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -72,7 +72,7 @@ export class CampaignTaskActivateButton {
         this.activating = true;
 
         // execute on backend
-        this.backend.postRequest('module/CampaignTasks/' + this.model.id + '/activate').subscribe(status => {
+        this.backend.postRequest(`module/CampaignTasks/${this.model.id}/activate`).subscribe(status => {
             this.activating = false;
 
             // send toast and set actrive

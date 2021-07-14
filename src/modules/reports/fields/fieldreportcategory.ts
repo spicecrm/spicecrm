@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -62,7 +62,7 @@ export class FieldReportCategory extends fieldGeneric {
     private loadCategories() {
         const categories = this.configuration.getData('reportcategories');
         if (!categories) {
-            this.backend.getRequest('KReporter/categoriesmanager/categories').subscribe(categories => {
+            this.backend.getRequest('module/KReports/categoriesmanager/categories').subscribe(categories => {
                 if (!!categories) this.categories = categories;
             });
         } else {

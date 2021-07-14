@@ -1,5 +1,5 @@
 <!--
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -21,25 +21,25 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
             <div *ngIf="!displayimage" class="slds-align--absolute-center slds-p-vertical--medium">
                 <global-header-image></global-header-image>
             </div>
-            <div class="slds-box--border slds-theme--shade" *ngIf="!loginService.session.authData.sessionId && promptUser">
+            <div class="slds-box--border slds-theme--shade" *ngIf="!loginService.session.authData.sessionId && promptUser" [system-overlay-loading-spinner]="loggingIn">
                 <div class="slds-p-around--medium" [system-overlay-loading-spinner]="configuration.reloading">
                     <form *ngIf="!showForgotPass" (submit)="login()">
                         <div class="slds-form-element slds-m-vertical--small">
                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
                                 <system-utility-icon [icon]="'user'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
-                                <input type="text" name="username" autocomplete  [(ngModel)]="username" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="1" placeholder="Username" />
+                                <input [disabled]="loggingIn" type="text" name="username" autocomplete  [(ngModel)]="username" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="1" placeholder="Username" />
                             </div>
                         </div>
                         <div class="slds-form-element slds-m-vertical--small">
                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--left">
                                 <system-utility-icon [icon]="'lock'" [addclasses]="'slds-input__icon slds-icon-text-default'"></system-utility-icon>
-                                <input type="password" name="password" autocomplete  [(ngModel)]="password" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="2" placeholder="Password" />
+                                <input [disabled]="loggingIn" type="password" name="password" autocomplete  [(ngModel)]="password" class="slds-input slds-p-horizontal--large slds-p-vertical--small" tabindex="2" placeholder="Password" />
                             </div>
                         </div>
                         <div *ngIf="sites.length > 1" class="slds-form-element slds-m-vertical--small">
                             <div class="slds-form-element__control">
                                 <div class="slds-select_container slds-m-vertical--xx-small">
-                                    <select name="currentsite" class="slds-select slds-p-horizontal--large" [ngModel]="currentSiteId" (change)="setSite($event)">
+                                    <select [disabled]="loggingIn" name="currentsite" class="slds-select slds-p-horizontal--large" [ngModel]="currentSiteId" (change)="setSite($event)">
                                         <option *ngFor="let site of sites" [value]="site.id">
                                             {{site.display}}
                                         </option>
@@ -50,7 +50,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                         <div *ngIf="getLanguages().length > 1" class="slds-form-element slds-m-vertical--small">
                             <div class="slds-form-element__control">
                                 <div class="slds-select_container slds-m-vertical--xx-small">
-                                    <select class="slds-select slds-p-horizontal--large" name="selectLang" [(ngModel)]="selectedlanguage">
+                                    <select [disabled]="loggingIn" class="slds-select slds-p-horizontal--large" name="selectLang" [(ngModel)]="selectedlanguage">
                                         <option *ngFor="let lang of getLanguages()" [value]="lang.language">
                                             {{lang.text}}
                                         </option>
@@ -58,7 +58,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" value="Submit" class="slds-button slds-button--brand slds-button_stretch" tabindex="0">Login</button>
+                        <button [disabled]="loggingIn" type="submit" value="Submit" class="slds-button slds-button--brand slds-button_stretch" tabindex="0">Login</button>
                         <div class="slds-p-top--small">
                             <global-login-google class="slds-size--1-of-1" (token)="login($event, 'Google')"></global-login-google>
                         </div>
@@ -66,7 +66,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                     <div class="slds-p-vertical--x-small slds-grid slds-grid--align-spread slds-grid_vertical-align-center"
                          *ngIf="configuration.data.allowForgotPass">
                         <div class="slds-truncate slds-text-body_small" title="Forgot password">Forgot password</div>
-                        <button class="slds-button" (click)="showForgotPassword()">
+                        <button [disabled]="loggingIn" class="slds-button" (click)="showForgotPassword()">
                             <system-button-icon *ngIf="!showForgotPass" [icon]="'chevrondown'" [size]="'xx-small'"></system-button-icon>
                             <system-button-icon *ngIf="showForgotPass" [icon]="'chevronup'" [size]="'xx-small'"></system-button-icon>
                         </button>

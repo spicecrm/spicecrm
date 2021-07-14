@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -84,6 +84,7 @@ import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryMana
 import /*embed*/ {AdministrationGeneralSettings} from "./components/administrationgeneralsettings";
 import /*embed*/ {AdministrationLanguages} from "./components/administrationlanguages";
 import /*embed*/ {AdministrationDefaultPreferences} from './components/administrationdefaultpreferences';
+import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
 
 
 
@@ -145,7 +146,8 @@ import /*embed*/ {AdministrationDefaultPreferences} from './components/administr
         AdministrationHomeScreenCardItem,
         AdministrationGeneralSettings,
         AdministrationLanguages,
-        AdministrationDefaultPreferences
+        AdministrationDefaultPreferences,
+        UserAccessLogViewer
     ],
     entryComponents: [
         AdministrationMain,

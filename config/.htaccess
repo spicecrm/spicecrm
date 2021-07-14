@@ -1,4 +1,3 @@
-Options -Indexes
 RewriteEngine On
 
 # Some hosts may require you to use the `RewriteBase` directive.

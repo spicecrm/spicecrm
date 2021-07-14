@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -1339,8 +1339,26 @@ export class metadata {
         return modules;
     }
 
-    public getCopyRules(from, to) {
-        return this.copyrules[from] && this.copyrules[from][to] ? this.copyrules[from][to] : [];
+    /**
+     * return the system copy rules
+     * @param from
+     * @param to
+     */
+    public getCopyRules(from: string, to: string): Array<{fromfield: string, tofield: string, fixedvalue: string, calculatedvalue: string, params: object}> {
+        const copyRules = this.copyrules[from] && this.copyrules[from][to] ? this.copyrules[from][to] : [];
+
+        copyRules.forEach(copyRule => {
+
+            if (!copyRule.params || _.isObject(copyRule.params)) return;
+
+            try {
+                copyRule.params = JSON.parse(copyRule.params);
+            } catch (e) {
+                copyRule.params = {};
+            }
+        });
+
+        return copyRules;
     }
 
     /*

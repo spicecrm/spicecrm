@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -27,27 +27,14 @@ export class HomeAssistantFilter {
     private isOpen: boolean = false;
     private clickListener: any;
 
-    private activityObjects: string[] = ['Tasks', 'Meetings', 'Calls', 'Opportunities', 'Reminders'];
-    private activityTypes: any[] = [];
-
-    private objectfilters: any[] = [];
-    private timefilter: string = 'all';
-
     constructor(private renderer: Renderer2, private elementRef: ElementRef, private language: language, private metadata: metadata, private assistant: assistant) {
-        this.setFromService();
+
     }
 
-    private setFromService(){
-        this.objectfilters = JSON.parse(JSON.stringify(this.assistant.assistantFilters.objectfilters));
-        this.timefilter = JSON.parse(JSON.stringify(this.assistant.assistantFilters.timefilter));
+    get activityTypes() {
+        return this.assistant.activityTypes;
     }
 
-    private setToService(){
-        this.assistant.assistantFilters.objectfilters = JSON.parse(JSON.stringify(this.objectfilters));
-        this.assistant.assistantFilters.timefilter = JSON.parse(JSON.stringify(this.timefilter));
-
-        this.assistant.loadItems();
-    }
 
     private toggleOpen(e: MouseEvent) {
         // stop the event propagation
@@ -57,14 +44,12 @@ export class HomeAssistantFilter {
         this.isOpen = !this.isOpen;
         if (this.isOpen) {
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onClick(event));
-        } else if (this.clickListener)
+        } else if (this.clickListener) {
             this.clickListener();
+        }
     }
 
     public onClick(event: MouseEvent): void {
-
-        // buildTypes
-        this.buildTypes();
 
         // regitser the click listener
         const clickedInside = this.elementRef.nativeElement.contains(event.target);
@@ -74,56 +59,52 @@ export class HomeAssistantFilter {
         }
     }
 
-    private buildTypes() {
-        this.activityTypes = [];
-
-        for (let activityObject of this.activityObjects) {
-            this.activityTypes.push({
-                type: activityObject,
-                name: this.language.getModuleName(activityObject)
-            })
-        }
-
-        this.activityTypes.sort((a, b) => {
-            return a.name > b.name ? 1 : -1;
-        })
-    }
-
     get filterColorClass() {
-        return this.assistant.assistantFilters.objectfilters.length > 0 || this.assistant.assistantFilters.timefilter != 'all' ? 'slds-icon-text-error' : 'slds-icon-text-default' ;
+        return this.assistant.assistantFilters.objectfilters.length > 0 || this.assistant.assistantFilters.timefilter != 'all' ? 'slds-icon-text-error' : 'slds-icon-text-default';
     }
 
-    private setFilter(event, filter) {
-        event.preventDefault();
+    /**
+     * sets the filter
+     *
+     * @param filter
+     * @param e
+     * @private
+     */
+    private setFilter(filter, e) {
         if (filter == 'all') {
-            this.objectfilters = [];
+            this.assistant.assistantFilters.objectfilters = [];
         } else {
-            let index = this.objectfilters.indexOf(filter);
-            if (index >= 0) {
-                this.objectfilters.splice(index, 1);
+            if(!e) {
+                let index = this.assistant.assistantFilters.objectfilters.indexOf(filter);
+                this.assistant.assistantFilters.objectfilters.splice(index, 1);
             } else {
-                this.objectfilters.push(filter);
+                this.assistant.assistantFilters.objectfilters.push(filter);
             }
         }
     }
 
+    /**
+     * returns if a filter module is set .. if non e is set all returns true
+     *
+     * @param filter
+     * @private
+     */
     private getChecked(filter) {
         if (filter == 'all') {
-            return this.objectfilters.length == 0 ? true : false;
+            return this.assistant.assistantFilters.objectfilters.length == 0 ? true : false;
         } else {
-            return this.objectfilters.indexOf(filter) >= 0 ? true : false;
+            return this.assistant.assistantFilters.objectfilters.indexOf(filter) >= 0 ? true : false;
         }
     }
 
-    private closeDialog(apply) {
-        if (this.clickListener){
+    /**
+     * closes the dialog
+     *
+     * @private
+     */
+    private closeDialog() {
+        if (this.clickListener) {
             this.clickListener();
-        }
-
-        if(apply){
-            this.setToService();
-        } else {
-            this.setFromService();
         }
 
         this.isOpen = false;

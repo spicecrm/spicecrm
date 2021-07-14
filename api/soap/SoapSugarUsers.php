@@ -111,7 +111,7 @@ function login($user_auth, $application)
     login_success();
     $current_user->loadPreferences();
     $_SESSION['is_valid_session'] = true;
-    $_SESSION['ip_address'] = query_client_ip();
+    $_SESSION['ip_address'] = \SpiceCRM\includes\utils\SpiceUtils::getClientIP();
     $_SESSION['user_id'] = $current_user->id;
     $_SESSION['type'] = 'user';
     $_SESSION['avail_modules'] = get_user_module_list($current_user);

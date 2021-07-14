@@ -32,6 +32,7 @@ namespace SpiceCRM\includes\SysTrashCan;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\authentication\AuthenticationController;
+use SpiceCRM\includes\Logger\LoggerManager;
 
 class SysTrashCan
 {
@@ -53,7 +54,7 @@ class SysTrashCan
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
         $db = DBManagerFactory::getInstance();
         $now = $timedate->nowDb();
-        $db->query("INSERT INTO systrashcan (id, transactionid, date_deleted, user_deleted, recordtype, recordmodule, recordid, recordname, linkname, linkmodule, linkid, recorddata) VALUES('" . create_guid() . "', '" . $GLOBALS['transactionID'] . "', '$now', '$current_user->id','$recordtype', '$recordmodule', '$recordid', '$recordname', '$linkname', '$linkmodule', '$linkid', '".base64_encode($recorddata)."' )");
+        $db->query("INSERT INTO systrashcan (id, transactionid, date_deleted, user_deleted, recordtype, recordmodule, recordid, recordname, linkname, linkmodule, linkid, recorddata) VALUES('" . create_guid() . "', '" . LoggerManager::getLogger()->getTransactionId() . "', '$now', '$current_user->id','$recordtype', '$recordmodule', '$recordid', '$recordname', '$linkname', '$linkmodule', '$linkid', '".base64_encode($recorddata)."' )");
     }
 
     /**
@@ -79,7 +80,8 @@ class SysTrashCan
      * @return array
      * @throws \Exception
      */
-    static function getRelated($transactionid, $recordid){
+    static function getRelated($transactionid, $recordid): array
+    {
         $db = DBManagerFactory::getInstance();
 
         $retArray = [];
@@ -117,7 +119,7 @@ class SysTrashCan
                 $focus->load_relationships();
 
                 // set as recovered
-                $db->query("UPDATE systrashcan SET recovered = '1' WHERE id='$id'");
+                $db->query("UPDATE systrashcan SET recovered = 1 WHERE id='$id'");
 
                 $relRecords = SysTrashCan::getRelated($record['transactionid'], $focus->id);
                 foreach($relRecords as $relRecord){
@@ -125,7 +127,7 @@ class SysTrashCan
                         $focus->{$relRecord['linkname']}->add($relRecord['linkid']);
                     }
                     // set as recovered
-                    $db->query("UPDATE systrashcan SET recovered = '1' WHERE id='".$relRecord['id']."'");
+                    $db->query("UPDATE systrashcan SET recovered = 1 WHERE id='".$relRecord['id']."'");
                 }
             }
 

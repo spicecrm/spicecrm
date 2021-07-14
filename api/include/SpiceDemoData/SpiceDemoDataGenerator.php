@@ -36,57 +36,18 @@ use SpiceCRM\includes\authentication\AuthenticationController;
  * Class SpiceDemoDataGenerator
  *
  * this class supports generation of demo data using mockaroo.com as a service
- *
+ * method names shall be written as in following pattern: generateModulename.
+ * Example generateAccounts
  * @package SpiceCRM\includes\SpiceDemoData
  */
 class SpiceDemoDataGenerator
 {
-    var $key = '08e28c80';
+    public $key = '08e28c80';
 
     /**
-     * generate all demo data possible
-     * @param $req
-     * @param $res
-     * @param $args
-     * @return mixed
+     * generate some Accounts
      */
-    public function generateAll($req, $res, $args){
-        //@todo: content should be dynamic, coming from sysmodule or any oher solution
-        $this->GenerateAccounts();
-        $this->GenerateContacts();
-        $this->GenerateLeads();
-        return $res->withJson(['status' => 'success']);
-    }
-
-    /**
-     * generate demo data for specified module
-     * @param $req
-     * @param $res
-     * @param $args
-     * @return mixed
-     */
-    public function generateForModule($req, $res, $args){
-        switch ($args['module']){
-            case 'Accounts':
-                $this->GenerateAccounts();
-                break;
-            case 'Contacts':
-                $this->GenerateContacts();
-                break;
-            case 'Consumers':
-                $this->GenerateConsumers();
-                break;
-            case 'Leads':
-                $this->GenerateLeads();
-                break;
-        }
-        return $res->withJson(['status' => 'success']);
-    }
-
-    /**
-     * generates Accounts
-     */
-    public function GenerateAccounts(){
+    public function generateAccounts(){
         $accounts = $this->makeCall('accounts');
         foreach($accounts as $account){
             $seed = BeanFactory::getBean('Accounts');
@@ -108,9 +69,9 @@ class SpiceDemoDataGenerator
     }
 
     /**
-     * generates Accounts
+     * generate some Contacts
      */
-    public function GenerateContacts(){
+    public function generateContacts(){
         $db = DBManagerFactory::getInstance();
 
         $contacts = $this->makeCall('contacts');
@@ -138,9 +99,9 @@ class SpiceDemoDataGenerator
     }
 
     /**
-     * generates Accounts
+     * generate some Consumers
      */
-    public function GenerateConsumers(){
+    public function generateConsumers(){
         $db = DBManagerFactory::getInstance();
 
         $contacts = $this->makeCall('consumers');
@@ -164,9 +125,9 @@ class SpiceDemoDataGenerator
     }
 
     /**
-     * generates Leads
+     * generate some Leads
      */
-    public function GenerateLeads(){
+    public function generateLeads(){
         $db = DBManagerFactory::getInstance();
 
         $leads = $this->makeCall('leads');
@@ -205,7 +166,7 @@ class SpiceDemoDataGenerator
      * @return mixed
      */
     private function makeCall($api){
-        $cURL = "https://my.api.mockaroo.com/$api.json?key=08e28c80";
+        $cURL = "https://my.api.mockaroo.com/$api.json?key=".$this->key;
         $ch = curl_init($cURL);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

@@ -40,6 +40,7 @@ use SpiceCRM\data\SugarBean;
 use SpiceCRM\includes\authentication\AuthenticationController;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\TimeDate;
+use SpiceCRM\includes\utils\SpiceUtils;
 
 class UserAccessLog extends SugarBean
 {
@@ -76,27 +77,6 @@ class UserAccessLog extends SugarBean
             return $count[0];
         }
     }
-    private function getRemoteAddress()
-    { //todo refactor to a central place for ip address handling
-        //maybe query_client_ip()?
-        $ipaddress = '';
-        if ($_SERVER['HTTP_CLIENT_IP'])
-            $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
-        else if ($_SERVER['HTTP_X_FORWARDED_FOR'])
-            $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        else if ($_SERVER['HTTP_X_FORWARDED'])
-            $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
-        else if ($_SERVER['HTTP_FORWARDED_FOR'])
-            $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
-        else if ($_SERVER['HTTP_FORWARDED'])
-            $ipaddress = $_SERVER['HTTP_FORWARDED'];
-        else if ($_SERVER['REMOTE_ADDR'])
-            $ipaddress = $_SERVER['REMOTE_ADDR'];
-        else
-            $ipaddress = 'UNKNOWN';
-
-        return $ipaddress;
-    }
 
     /**
      * @param string $action loginsuccess | loginfail
@@ -109,10 +89,11 @@ class UserAccessLog extends SugarBean
         if ($loginName === null && $currentUser !== null) {
             $loginName = $currentUser->name;
         }
-        $this->ipaddress = $this->getRemoteAddress();
+        $this->ipaddress = SpiceUtils::getClientIP();
         $this->assigned_user_id = $currentUser ? $currentUser->id : null;
         $this->action = $action;
         $this->login_name = $loginName;
+        $this->impersonating_user_id = isset( $currentUser->impersonating_user_id[0] ) ? $currentUser->impersonating_user_id : null;
         if(!$this->save()) {
             throw new \Exception("unable to save useraccess log record");
         }

@@ -1,16 +1,6 @@
 <?php
+/***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
 
-/* * *******************************************************************************
-* This file is part of KReporter. KReporter is an enhancement developed
-* by aac services k.s.. All rights are (c) 2016 by aac services k.s.
-*
-* This Version of the KReporter is licensed software and may only be used in
-* alignment with the License Agreement received with this Software.
-* This Software is copyrighted and may not be further distributed without
-* witten consent of aac services k.s.
-*
-* You can contact us at info@kreporter.org
-******************************************************************************* */
 namespace SpiceCRM\modules\KReports;
 
 use SpiceCRM\data\BeanFactory;
@@ -125,6 +115,13 @@ class KReport extends SugarBean
         return $xtpl;
     }
 
+    /**
+     * @param int $id
+     * @param false $encode
+     * @param bool $deleted
+     * @param bool $relationships
+     * @return $this|false|KReport|null
+     */
     function retrieve($id = -1, $encode = false, $deleted = true, $relationships = true)
     {
 
@@ -567,7 +564,7 @@ class KReport extends SugarBean
     function getXtypeRenderer($fieldType, $fieldID = '')
     {
         global $mod_strings;
-        $current_user = AuthenticationController::getInstance()->getCurrentUser();
+$current_user = AuthenticationController::getInstance()->getCurrentUser();
 
         // check if we have a custom SQL function -- then reset the value .. we do  not know how to format
         if($this->kQueryArray->queryArray['root']['kQuery']){
@@ -636,8 +633,8 @@ class KReport extends SugarBean
     {
 
         // check if we have a custom SQL function -- then reset the value .. we do  not know how to format
-        if($this->kQueryArray->queryArray['root']['kQuery']) //fix 20171128 check if object!
-            $listFieldArray = $this->kQueryArray->queryArray['root']['kQuery']->get_listfieldentry_by_fieldid($fieldID);
+		if($this->kQueryArray->queryArray['root']['kQuery']) //fix 20171128 check if object!
+			$listFieldArray = $this->kQueryArray->queryArray['root']['kQuery']->get_listfieldentry_by_fieldid($fieldID);
 
         //2013-03-01 maual alignmetn setting rules
         if (!empty($listFieldArray ['overridealignment']) && $listFieldArray ['overridealignment'] != "-")
@@ -790,7 +787,7 @@ class KReport extends SugarBean
     function createTargeList($listname, $campaign_id = '')
     {
         $current_user = AuthenticationController::getInstance()->getCurrentUser();
-        $db = DBManagerFactory::getInstance();
+$db = DBManagerFactory::getInstance();
 
         $results = $this->getSelectionResults([]);
 
@@ -1284,8 +1281,17 @@ class KReport extends SugarBean
 
     function deleteSnapshot($snapshotId)
     {
-        $this->db->query("DELETE FROM kreportsnapshotsdata WHERE snapshot_id = '$snapshotId'");
-        $this->db->query("DELETE FROM kreportsnapshots WHERE id = '$snapshotId'");
+        $errors = [];
+        $success = true;
+        if(!$this->db->query("DELETE FROM kreportsnapshotsdata WHERE snapshot_id = '$snapshotId'")){
+            $errors[] = $this->db->lastError();
+            $success = false;
+        }
+        if(!$this->db->query("DELETE FROM kreportsnapshots WHERE id = '$snapshotId'")){
+            $errors[] = $this->db->lastError();
+            $success = false;
+        }
+        return ['success' => $success, 'errors' => $errors ];
     }
 
     function getListFields()
@@ -1343,7 +1349,7 @@ class KReport extends SugarBean
         $serverName = dirname($_SERVER ['HTTP_HOST'] . $_SERVER ['SCRIPT_NAME']);
 
         // get the report results
-        $results = $this->getSelectionResults();
+        $results = $this->getSelectionResults([]);
 
         // get the ids for longitude and latitude
         $long_bean_id = $this->kQueryArray->queryArray ['root'] ['kQuery']->joinSegments [$this->kQueryArray->fieldNameMap [$mapDetails->longitude] ['path']] ['alias'];
@@ -1370,24 +1376,24 @@ class KReport extends SugarBean
 
                     // update object
                     $long_bean->retrieve($thisResult [$long_bean_id . 'id']);
-                    $long_bean->{$this->kQueryArray->fieldNameMap [$mapDetails->longitude]['fieldname']} = $geoCodeResult ['longitude'];
+                    $long_bean->{$this->kQueryArray->fieldNameMap [$mapDetails->longitude] ['fieldname']} = $geoCodeResult ['longitude'];
 
                     //2010-12-6 format numbers after mass geocode
-                    $long_bean->format_field($long_bean->field_defs [$this->kQueryArray->fieldNameMap [$mapDetails->longitude]['fieldname']]);
+                    $long_bean->format_field($long_bean->field_defs [$this->kQueryArray->fieldNameMap [$mapDetails->longitude] ['fieldname']]);
 
                     // see if we have different beans
                     // should be the exceptionbut we never know
                     if (!$longlatDiff) {
-                        $long_bean->{$this->kQueryArray->fieldNameMap [$mapDetails->latitude]['fieldname']} = $geoCodeResult ['latitude'];
+                        $long_bean->{$this->kQueryArray->fieldNameMap [$mapDetails->latitude] ['fieldname']} = $geoCodeResult ['latitude'];
 
                         //2010-12-6 format numbers after mass geocode
-                        $long_bean->format_field($long_bean->field_defs [$this->kQueryArray->fieldNameMap [$mapDetails->latitude]['fieldname']]);
+                        $long_bean->format_field($long_bean->field_defs [$this->kQueryArray->fieldNameMap [$mapDetails->latitude] ['fieldname']]);
                     } else {
                         $lat_bean->retrieve($thisResult [$lat_bean_id . 'id']);
-                        $lat_bean->{$this->kQueryArray->fieldNameMap [$mapDetails->latitude]['fieldname']} = $geoCodeResult ['latitude'];
+                        $lat_bean->{$this->kQueryArray->fieldNameMap [$mapDetails->latitude] ['fieldname']} = $geoCodeResult ['latitude'];
 
                         //2010-12-6 format numbers after mass geocode
-                        $lat_bean->format_field($lat_bean->field_defs [$this->kQueryArray->fieldNameMap [$mapDetails->latitude]['fieldname']]);
+                        $lat_bean->format_field($lat_bean->field_defs [$this->kQueryArray->fieldNameMap [$mapDetails->latitude] ['fieldname']]);
 
                         $lat_bean->save();
                     }
@@ -1614,7 +1620,7 @@ class KReport extends SugarBean
     {
 
         global $app_list_strings;
-        $db = DBManagerFactory::getInstance();
+$db = DBManagerFactory::getInstance();
 
         // explode the path
         $pathArray = explode('::', $path);
@@ -1708,7 +1714,7 @@ class KReport extends SugarBean
 
     // for the listing (exclude utility Reports unless we ae admin
     function create_new_list_query($order_by, $where, $filter = [], $params = [], $show_deleted = 0, $join_type = '', $return_array = false, $parentbean = null, $singleSelect = false, $ifListForExport = false)
-    {
+        {
         $ret_array = parent::create_new_list_query($order_by, $where, $filter, $params, $show_deleted, $join_type, true, $parentbean, $singleSelect, $ifListForExport);
 
         // add selection clause to $ret:array['where']

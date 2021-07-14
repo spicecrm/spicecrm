@@ -37,6 +37,7 @@
 namespace SpiceCRM\includes\authentication\LDAPAuthenticate;
 
 
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\includes\database\DBManagerFactory;
 use SpiceCRM\includes\ErrorHandlers\UnauthorizedException;
@@ -58,10 +59,10 @@ class LDAPAuthenticate
     private $port = 389;
     private $adminUser = null;
     private $adminPassword = null;
-    private $baseDn = null;
+    public $baseDn = null;
     private $loginAttr = null;
     private $bindAttr = null;
-    private $ldapConn = null;
+    public $ldapConn = null;
     private $loginFilter = null;
     private $autoCreateUser = false;
     private $ldapAcl = false;
@@ -69,7 +70,7 @@ class LDAPAuthenticate
     private $ldapGroupMemberships = null;
     private $ldapUsernameAttribute = null;
     private $userDn = null;
-
+    private $ldapInfos = [];
     private $config = [
         'users' =>
             [
@@ -147,6 +148,7 @@ class LDAPAuthenticate
                 }
 
                 if ($userObj = $this->ldapAuthenticate($name, $password)) {
+                    $userObj->call_custom_logic('after_ldap_login',$this);
                     return $userObj;
                 }
 
@@ -214,6 +216,11 @@ class LDAPAuthenticate
             throw new Exception("unable to query ldap: " . $error);
         }
         $entries = ldap_get_entries($this->ldapConn, $result);
+        if (is_array($entries) && $entries['count'] === 0) {
+            //todo log username not found?
+            LoggerManager::getLogger()->warn("Username ".$name." not found in ldap");
+            throw new UnauthorizedException("Invalid username/password combination ", 10);
+        }
         if ($this->bindAttr) {
             if (isset($entries[0]) && $entries[0][$this->bindAttr]) {
                 $this->userDn = $entries[0][$this->bindAttr][0];
@@ -369,29 +376,14 @@ class LDAPAuthenticate
 
             foreach ($this->requiredLdapGroups as $requiredLdapGroup) {
                 if (!in_array($requiredLdapGroup, $this->ldapGroupMemberships)) {
+                    LoggerManager::getLogger()->warn($username." not in required ldap group".$requiredLdapGroup.". Available Groups: ".json_encode($this->ldapGroupMemberships));
                     throw new UnauthorizedException("Group Membership " . $requiredLdapGroup . " missing", 9);
                 }
             }
         }
     }
-    /**
-     * takes in a name and creates the appropriate search filter for that user name including any additional filters specified in the system settings page
-     * @param $name
-     * @return String
-     */
-    private function getUserNameFilter($name)
-    {
-        $name_filter = "(" . $this->loginAttr . " = " . $name . ")";
-        //add the additional user filter if it is specified
-        if (!empty($this->loginFilter)) {
-            $add_filter = $this->loginFilter;
-            if (substr($add_filter, 0, 1) !== "(") {
-                $add_filter = "(" . $add_filter . ")";
-            }
-            $name_filter = "(&" . $name_filter . $add_filter . ")";
-        }
-        return $name_filter;
-    }
+
+
     private function synchronizeLdapFields(User $userObj, $save = true)
     {
 
@@ -409,6 +401,7 @@ class LDAPAuthenticate
         if (isset($ldapGetEntriesResult[0]) && is_array($ldapGetEntriesResult[0])) {
             $dirty = false;
             foreach ($ldapGetEntriesResult[0] as $ldapField => $entry) {
+                $this->ldapInfos[$ldapField]=$entry[0];
                 if (is_array($entry) && array_key_exists($ldapField, $this->config['users']['fields'])) {
                     $targetField = $this->config['users']['fields'][$ldapField];
                     $ldapValue = $entry[0];
@@ -452,9 +445,9 @@ class LDAPAuthenticate
 */
     function getDN($basedn)
     {
-        $attributes = array('dn');
+        $attributes = ['dn'];
         $result = ldap_search($this->ldapConn, $basedn,
-            "(".$this->bindAttr."={$this->userDn})", $attributes);
+            "(" . $this->bindAttr . "={$this->userDn})", $attributes);
         if ($result === FALSE) {
             return '';
         }
@@ -465,6 +458,7 @@ class LDAPAuthenticate
             return '';
         };
     }
+
     private static function getLdapConfig()
     {
         $rows = [];

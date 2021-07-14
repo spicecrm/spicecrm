@@ -1,5 +1,5 @@
 /*
-SpiceUI 2021.01.001
+SpiceUI 2018.10.001
 
 Copyright (c) 2016-present, aac services.k.s - All rights reserved.
 Redistribution and use in source and binary forms, without modification, are permitted provided that the following conditions are met:
@@ -19,6 +19,9 @@ import {modellist} from "../../../services/modellist.service";
 import {metadata} from "../../../services/metadata.service";
 import {configurationService} from "../../../services/configuration.service";
 import {language} from "../../../services/language.service";
+import {Subscription} from "rxjs";
+import {ListTypeI} from "../../../services/interfaces.service";
+import {skip} from "rxjs/operators";
 
 /**
  * renders the reporter cockpit
@@ -30,6 +33,12 @@ import {language} from "../../../services/language.service";
 export class ReporterCockpit implements OnInit, OnDestroy {
 
     public componentconfig: any = {};
+
+    /**
+     * the subscription to the modellist
+     */
+    public subscriptions: Subscription = new Subscription();
+
     /**
      * holds the cockpits returned from teh abckend in which reports are sorted in
      */
@@ -40,7 +49,6 @@ export class ReporterCockpit implements OnInit, OnDestroy {
                 private language: language,
                 private configuration: configurationService,
                 private metadata: metadata) {
-        this.componentconfig = this.metadata.getComponentConfig('ReporterCockpit', this.modellist.module);
     }
 
     /**
@@ -58,22 +66,77 @@ export class ReporterCockpit implements OnInit, OnDestroy {
     }
 
     public ngOnInit() {
+        this.initialize();
+    }
+
+    /**
+     * subscribe to detect list data changes
+     * load the component config
+     * call to get the list data
+     * @private
+     */
+    private initialize() {
+
+        this.componentconfig = this.metadata.getComponentConfig('ReporterCockpit', this.modellist.module);
+
+        // set the limit for the loading
+        this.modellist.loadlimit = 15;
+
         this.loadCategories();
+
+        if (this.sortField) {
+            this.modellist.setSortField(this.sortField, this.sortDirection);
+        }
+
+        this.subscriptions.add(
+            this.modellist.listType$.pipe(skip(1)).subscribe(newType =>
+                this.handleListTypeChange(newType)
+            )
+        );
+    }
+
+    /**
+     * handle the list type change to reload the data only if for this component to prevent possible actions after destroy
+     * @param newType
+     * @private
+     */
+    private handleListTypeChange(newType: ListTypeI) {
+        if (newType.listcomponent != 'ReporterCockpit') return;
+        this.modellist.reLoadList();
     }
 
 
     /**
-     * load reports categories from backend
+     * load reports categories from backend the get the list data by the service
      */
     private loadCategories() {
         const categories = this.configuration.getData('reportcategories');
         if (!categories) {
-            this.backend.getRequest('KReporter/categoriesmanager/categories').subscribe(categories => {
-                if (!!categories) this.loadList(categories);
+            this.backend.getRequest('module/KReports/categoriesmanager/categories').subscribe(categories => {
+                if (!categories) return;
+                this.setBuckets(categories);
+                this.modellist.getListData();
             });
         } else {
-            this.loadList(categories);
+            this.setBuckets(categories);
+            this.modellist.getListData();
         }
+    }
+
+    /**
+     * set the buckets on the model list service from the loaded categories
+     * @param categories
+     * @private
+     */
+    private setBuckets(categories) {
+        this.modellist.buckets = {
+            bucketfield: 'category_name',
+            bucketitems: categories.map(category => ({
+                bucket: category.name,
+                values: {},
+                items: 0
+            }))
+        };
     }
 
     /**
@@ -81,31 +144,6 @@ export class ReporterCockpit implements OnInit, OnDestroy {
      */
     public ngOnDestroy(): void {
         this.modellist.buckets = {};
-        this.modellist.reLoadList();
-    }
-
-    /**
-     * function to load the listdata. Checks on the listdata if the component is the same .. if yes .. no reload is needed
-     * this can happen when the list is loaded from the appdata service that cahces the previous list
-     */
-    private loadList(categories) {
-
-        const bucketItems = categories.map(category => ({
-            bucket: category.name,
-            values: {},
-            items: 0
-        }));
-
-        if (this.sortField) {
-            this.modellist.setSortField(this.sortField, this.sortDirection, false);
-        }
-        this.modellist.buckets = {
-            bucketfield: 'category_name',
-            bucketitems: bucketItems
-        };
-        this.modellist.loadlimit = 15;
-
-        this.modellist.getListData();
     }
 
     /**

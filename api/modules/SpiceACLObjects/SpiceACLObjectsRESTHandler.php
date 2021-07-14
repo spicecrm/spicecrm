@@ -36,28 +36,21 @@ use stdClass;
 
 class SpiceACLObjectsRESTHandler
 {
-    public function getAuthTypes()
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $retArray = [];
-
+    /**
+     * get usage count of SpiceACLObjects for all modules
+     * @return mixed
+     */
+    public function getAuthTypes(){
         $seed = BeanFactory::getBean('SpiceACLObjects');
         return $seed->generateTypes();
-
     }
 
-    public function deleteAuthType($id)
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $db->query("DELETE FROM kauthtypes WHERE id = '$id'");
-
-        return true;
-    }
-
-    public function getAuthType($id)
-    {
+    /**
+     * @param string $id sysmoduleid
+     * @return array
+     * @throws \Exception
+     */
+    public function getACLModule($id) {
         $db = DBManagerFactory::getInstance();
 
         $retArray = [
@@ -81,10 +74,15 @@ class SpiceACLObjectsRESTHandler
         return $retArray;
     }
 
-    public function addAuthTypeField($typeId, $field)
+    /**
+     * @param $typeId
+     * @param $field
+     * @return array
+     * @throws \Exception
+     */
+    public function addACLModuleField($typeId, $field)
     {
         $db = DBManagerFactory::getInstance();
-
         $newId = create_guid();
         $db->query("INSERT INTO spiceaclmodulefields (id, sysmodule_id, name) VALUES('$newId','$typeId','$field')");
 
@@ -94,60 +92,80 @@ class SpiceACLObjectsRESTHandler
         ];
     }
 
-    public function deleteAuthTypeField($id)
+    /**
+     * delete record in table spiceaclmodulefields
+     *
+     * @param $id
+     * @return bool[]
+     * @throws \Exception
+     */
+    public function deleteACLModuleField($id)
     {
         $db = DBManagerFactory::getInstance();
-
         $db->query("DELETE FROM spiceaclmodulefields WHERE id = '$id'");
-
         return ['success' => true];
     }
 
-    public function getAuthTypeAction($authhtypeid){
+    /**
+     * get actions defined for module
+     *
+     * @param $sysmoduleid
+     * @return array
+     * @throws \Exception
+     */
+    public function getACLModuleActions($sysmoduleid) {
         $db = DBManagerFactory::getInstance();
-
         $actions = [];
-
-        $actionsObj = $db->query("SELECT * FROM spiceaclmoduleactions WHERE sysmodule_id ='$authhtypeid'");
-        while($action = $db->fetchByassoc($actionsObj))
+        $actionsObj = $db->query("SELECT * FROM spiceaclmoduleactions WHERE sysmodule_id ='$sysmoduleid'");
+        while($action = $db->fetchByassoc($actionsObj)){
             $actions[] = [
                 'id' => $action['id'],
                 'action' => $action['action']
             ];
-
+        }
         return $actions;
     }
 
-    public function addAuthTypeAction($authhtypeid, $action)
+    /**
+     * @param $sysmoduleid
+     * @param $action
+     * @return array
+     * @throws \Exception
+     */
+    public function addACLModuleAction($sysmoduleid, $action)
     {
         $db = DBManagerFactory::getInstance();
-
-        $actionID = create_guid();
-        $db->query("INSERT INTO spiceaclmoduleactions (id, sysmodule_id, action) VALUES('$actionID', '$authhtypeid', '$action')");
-
+        $actionId = create_guid();
+        $db->query("INSERT INTO spiceaclmoduleactions (id, sysmodule_id, action) VALUES('$actionId', '$sysmoduleid', '$action')");
         return [
-            'id' => $actionID,
+            'id' => $actionId,
             'action' => $action
         ];
     }
 
-    public function deleteAuthTypeAction($id)
+    /**
+     * @param $id
+     * @return bool[]
+     * @throws \Exception
+     */
+    public function deleteACLModuleAction($id)
     {
         $db = DBManagerFactory::getInstance();
-
         $db->query("DELETE FROM spiceaclmoduleactions WHERE id = '$id'");
-
         return ['success' => true];
     }
 
-    public function getAuthObjects($params)
+    /**
+     * get SpiceACLObjects all | by module | by search term
+     * @param $params
+     * @return array
+     */
+    public function getSpiceACLObjects($params)
     {
-        $db = DBManagerFactory::getInstance();
-
         $addFilter = '';
 
-        if (isset($params['sysmodule_id'])){
-            $addFilter= "spiceaclobjects.sysmodule_id = '" . $params['sysmodule_id'] . "'";
+        if (isset($params['moduleid'])){
+            $addFilter= "spiceaclobjects.sysmodule_id = '" . $params['moduleid'] . "'";
         }
 
         if (isset($params['searchterm'])) {
@@ -167,327 +185,48 @@ class SpiceACLObjectsRESTHandler
         return $retArray;
     }
 
-
-    public function getAuthObject($id)
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $retArray = [
-            'object' => $db->fetchByAssoc($db->query("SELECT * FROM kauthobjects WHERE id = '$id'"))
-        ];
-
-        $orgValues = $db->query("SELECT value, korgobjectelement_id FROM kauthobjectorgelementvalues WHERE kauthobject_id = '$id'");
-        while ($orgValue = $db->fetchByAssoc($orgValues)) {
-            $orgValue['displayvalue'] = implode(', ', json_decode(html_entity_decode($orgValue['value']), true));
-            $retArray['orgvalues'][] = $orgValue;
-        }
-
-        $fieldValues = $db->query("SELECT kauthtypefield_id, operator, value1, value2 FROM kauthobjectvalues WHERE kauthobject_id = '$id'");
-        while ($fieldValue = $db->fetchByAssoc($fieldValues))
-            $retArray['fieldvalues'][] = $fieldValue;
-
-        $fieldControls = $db->query("SELECT kauthobject_id, field, control FROM kauthobjectfields WHERE kauthobject_id = '$id'");
-        while ($fieldControl = $db->fetchByAssoc($fieldControls)) {
-            $retArray['fieldcontrols'][] = $fieldControl;
-        }
-
-        return $retArray;
-    }
-
-    public function addAuthObject($id, $params)
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $db->query("INSERT INTO kauthobjects (id, kauthtype_id, kauthobjecttype, name, status, kauthorgassignment, kauthowner, allorgobjects, activity) values ('$id', '" . $params['kauthtype_id'] . "', '0', '" . $params['name'] . "', 'd', '0', '0', '0', '0' )");
-
-        return true;
-    }
-
-    public function setAuthObject($id, $params)
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $setarray = [];
-        foreach ($params as $name => $value) {
-            if ($name != 'id')
-                $setarray[] = $name . "='" . $value . "'";
-        }
-
-        $db->query("UPDATE kauthobjects SET " . implode(',', $setarray) . " WHERE id = '$id'");
-
-        return true;
-    }
-
-
-    public function getAuthObjectOrgValues($id)
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $retArray = [];
-
-        $records = $db->query("SELECT * FROM kauthobjects WHERE kauthtype_id = '" . $id . "'");
-        while ($record = $db->fetchByAssoc($records))
-            $retArray[] = $record;
-
-        return $retArray;
-    }
-
-    public function setAuthObjectOrgValues($id, $params)
-    {
-        $db = DBManagerFactory::getInstance();
-
-        // delete all current records;
-        $db->query("DELETE FROM kauthobjectorgelementvalues WHERE kauthobject_id = '$id'");
-
-        foreach ($params as $objectvalue) {
-            if ($objectvalue !== '') {
-                $valueArray = explode(',', $objectvalue['displayvalue']);
-                $db->query("INSERT INTO kauthobjectorgelementvalues (kauthobject_id, korgobjectelement_id, value) VALUES ('$id', '" . $objectvalue['id'] . "', '" . json_encode($valueArray) . "')");
-            }
-        }
-
-        return true;
-    }
-
-    public function addAuthObjectFieldControl($params)
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $db->query("INSERT INTO kauthobjectfields (kauthobject_id, field, control) VALUES('" . $params['kauthobject_id'] . "', '" . $params['field'] . "', '" . $params['control'] . "')");
-
-        return true;
-    }
-
-    public function setAuthObjectFieldControl($params)
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $db->query("UPDATE kauthobjectfields SET control = '" . $params['control'] . "' WHERE field = '" . $params['field'] . "' AND kauthobject_id = '" . $params['kauthobject_id'] . "'");
-
-        return true;
-    }
-
-    public function deleteAuthObjectFieldControl($params)
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $db->query("DELETE FROM kauthobjectfields WHERE field = '" . $params['field'] . "' AND kauthobject_id = '" . $params['kauthobject_id'] . "'");
-
-        return true;
-    }
-
-    public function getAuthObjectFieldControlFields($params)
-    {
-        global $beanList;
-        $db = DBManagerFactory::getInstance();
-
-        $retArray = [];
-
-        // determine the object we are on
-        $object = $db->fetchByAssoc($db->query("SELECT kauthobjects.*, kauthtypes.bean FROM kauthobjects, kauthtypes WHERE kauthobjects.kauthtype_id = kauthtypes.id AND kauthobjects.id = '" . $params['authobjectid'] . "'"));
-
-        // get all modules for which definitons exist
-        $fArray = [];
-        $records = $db->query("SELECT field FROM kauthobjectfields WHERE kauthobject_id = '" . $params['authtypeid'] . "'");
-        while ($record = $db->fetchByAssoc($records)) {
-            $fArray[] = $record['name'];
-        }
-
-
-        $module = array_search($object['bean'], $beanList);
-        $seed = BeanFactory::getBean($module);
-        foreach ($seed->field_name_map as $fieldname => $fielddata) {
-            if (array_search($fieldname, $fArray) === false)
-                $retArray[] = ['name' => $fieldname];
-        }
-
-        return $retArray;
-    }
-
+    /**
+     * activate SpiceACLObject
+     *
+     * @param $id
+     * @return mixed
+     */
     public function activateObject($id)
     {
         $object = BeanFactory::getBean('SpiceACLObjects', $id);
         return $object->activate();
     }
 
+    /**
+     * deactivate SpiceACLObject
+     *
+     * @param $id
+     * @return mixed
+     */
     public function deactivateObject($id)
     {
         $object = BeanFactory::getBean('SpiceACLObjects', $id);
         return $object->deactivate();
     }
 
-
-    public function getAuthProfiles($params)
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $retArray = [];
-
-        $addFilter = '';
-        if ($params['searchterm'])
-            $addFilter .= " AND kauthprofiles.name like '%" . $params['searchterm'] . "%'";
-
-        if ($params['authuserid'])
-            $addFilter .= " AND NOT EXISTS (SELECT * FROM kauthprofiles_users WHERE user_id = '" . $params['authuserid'] . "' AND kauthprofile_id = kauthprofiles.id)";
-
-        $records = $db->limitQuery("SELECT * FROM kauthprofiles WHERE deleted = 0 $addFilter ORDER BY NAME", $params['start'], $params['limit']);
-        while ($record = $db->fetchByAssoc($records))
-            $retArray[] = $record;
-
-        $count = $db->fetchByAssoc($db->query("SELECT count(*) totalcount FROM kauthprofiles WHERE deleted = 0 $addFilter"));
-
-        return [
-            'records' => $retArray,
-            'totalcount' => $count['totalcount']
-        ];
-    }
-
-
-    public function addAuthProfile($id, $params)
-    {
-        $authProfile = BeanFactory::getBean('KAuthProfiles');
-        $authProfile->name = $params['name'];
-        $authProfile->id = $id;
-        $authProfile->status = $params['status'];
-        $authProfile->new_with_id = true;
-        $authProfile->save();
-        return true;
-    }
-
-    public function setAuthProfile($id, $params)
-    {
-        $authProfile = BeanFactory::getBean('KAuthProfiles', $id);
-        $authProfile->name = $params['name'];
-        $authProfile->save();
-        return true;
-    }
-
-    public function deleteAuthProfile($id)
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $db->query("UPDATE kauthprofiles SET deleted = 1 WHERE id='$id'");
-        $db->query("DELETE FROM  kauthprofiles_kauthobjects WHERE kauthprofile_id='$id'");
-
-        return true;
-    }
-
-
-    public function getAuthProfileObjects($id)
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $retArray = [];
-
-        $records = $db->query("SELECT kauthobjects.id, kauthobjects.name, kauthobjects.status, kauthtypes.bean  FROM kauthobjects, kauthprofiles_kauthobjects, kauthtypes WHERE kauthobjects.id = kauthprofiles_kauthobjects.kauthobject_id AND kauthtypes.id = kauthobjects.kauthtype_id AND kauthprofiles_kauthobjects.kauthprofile_id = '$id' ORDER BY kauthtypes.bean, kauthobjects.name");
-        while ($record = $db->fetchByAssoc($records))
-            $retArray[] = $record;
-
-        return $retArray;
-    }
-
-    public function addAuthProfileObject($id, $objectid)
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $db->query("INSERT INTO kauthprofiles_kauthobjects (kauthprofile_id, kauthobject_id) VALUES('$id', '$objectid')");
-        return true;
-    }
-
-    public function deleteAuthProfileObject($id, $objectid)
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $db->query("DELETE FROM  kauthprofiles_kauthobjects WHERE kauthprofile_id = '$id'AND kauthobject_id = '$objectid'");
-
-        return true;
-    }
-
-    public function activateAuthProfile($id)
-    {
-        $authProfile = BeanFactory::getBean('KAuthProfiles', $id);
-        $authProfile->activate();
-        $authProfile->save();
-        return true;
-    }
-
-    public function deactivateAuthProfile($id)
-    {
-        $authProfile = BeanFactory::getBean('KAuthProfiles', $id);
-        $authProfile->deactivate();
-        $authProfile->save();
-        return true;
-    }
-
-    public function getAuthUsers($params)
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $retArray = [];
-
-        $addFilter = '';
-        if (isset($params['searchterm'])){
-            $addFilter = " AND (users.user_name like '%" . $params['searchterm'] . "%' OR users.last_name like '%" . $params['searchterm'] . "%' OR users.first_name like '%" . $params['searchterm'] . "%') ";
-        }
-
-        $records = $db->limitQuery("SELECT * FROM users WHERE deleted = 0 $addFilter ORDER BY user_name", $params['start'], $params['limit']);
-        while ($record = $db->fetchByAssoc($records))
-            $retArray[] = $record;
-
-        $count = $db->fetchByAssoc($db->query("SELECT count(*) totalcount FROM users WHERE deleted = 0 $addFilter"));
-
-        return [
-            'records' => $retArray,
-            'totalcount' => $count['totalcount']
-        ];
-    }
-
-    public function getAuthUserProfiles($id)
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $retArray = [];
-
-        $records = $db->query("SELECT kauthprofiles.id, kauthprofiles.name, kauthprofiles.status FROM kauthprofiles,  kauthprofiles_users WHERE kauthprofiles_users.kauthprofile_id = kauthprofiles.id AND kauthprofiles_users.user_id = '$id' ORDER BY kauthprofiles.name");
-        while ($record = $db->fetchByAssoc($records))
-            $retArray[] = $record;
-
-
-        return $retArray;
-    }
-
-    public function addAuthUserProfile($id, $profileid)
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $db->query("INSERT INTO kauthprofiles_users (user_id, kauthprofile_id, deleted) VALUES('$id', '$profileid', 0)");
-
-        return true;
-    }
-
-    public function deleteAuthUserProfile($id, $profileid)
-    {
-        $db = DBManagerFactory::getInstance();
-
-        $db->query("DELETE FROM kauthprofiles_users WHERE user_id = '$id' AND kauthprofile_id = '$profileid'");
-
-        return true;
-    }
-
-    /*
-* function to set default ACLObjects for module
-*/
+    /**
+     * function to set default ACLObjects for module
+     *
+     * @param $app
+     * @param $module_params
+     * @return array|null
+     * @throws \SpiceCRM\includes\ErrorHandlers\ConflictException
+     * @throws \SpiceCRM\includes\ErrorHandlers\Exception
+     * @throws \SpiceCRM\includes\ErrorHandlers\NotFoundException
+     */
     public function createDefaultACLObjectsForModule($app, $module_params)
     {
-
         //get the module name
-
-
         //get all objects for the module
-        $module = $module_params["sysmodule_id"];
-        $module_name = $module_params["sysmodule_name"];
+        $module = $module_params["moduleid"];
+        $module_name = $module_params["modulename"];
 
-        $objects = json_encode($this->getAuthObjects($module));
+        $objects = json_encode($this->getSpiceACLObjects($module));
 
         // check if the module has no objects and the module supports acl
         if(empty($objects)){
@@ -608,5 +347,308 @@ class SpiceACLObjectsRESTHandler
         }
         return $returnArray;
     }
+
+///////////////////////////////////////////////////////////////////////////////////////
+//    public function deleteAuthType($id)
+//    {
+//        $db = DBManagerFactory::getInstance();
+//
+//        $db->query("DELETE FROM kauthtypes WHERE id = '$id'");
+//
+//        return true;
+//    }
+//
+//    public function getAuthObject($id)
+//    {
+//        $db = DBManagerFactory::getInstance();
+//
+//        $retArray = [
+//            'object' => $db->fetchByAssoc($db->query("SELECT * FROM kauthobjects WHERE id = '$id'"))
+//        ];
+//
+//        $orgValues = $db->query("SELECT value, korgobjectelement_id FROM kauthobjectorgelementvalues WHERE kauthobject_id = '$id'");
+//        while ($orgValue = $db->fetchByAssoc($orgValues)) {
+//            $orgValue['displayvalue'] = implode(', ', json_decode(html_entity_decode($orgValue['value']), true));
+//            $retArray['orgvalues'][] = $orgValue;
+//        }
+//
+//        $fieldValues = $db->query("SELECT kauthtypefield_id, operator, value1, value2 FROM kauthobjectvalues WHERE kauthobject_id = '$id'");
+//        while ($fieldValue = $db->fetchByAssoc($fieldValues))
+//            $retArray['fieldvalues'][] = $fieldValue;
+//
+//        $fieldControls = $db->query("SELECT kauthobject_id, field, control FROM kauthobjectfields WHERE kauthobject_id = '$id'");
+//        while ($fieldControl = $db->fetchByAssoc($fieldControls)) {
+//            $retArray['fieldcontrols'][] = $fieldControl;
+//        }
+//
+//        return $retArray;
+//    }
+
+//    public function addAuthObject($id, $params)
+//    {
+//        $db = DBManagerFactory::getInstance();
+//
+//        $db->query("INSERT INTO kauthobjects (id, kauthtype_id, kauthobjecttype, name, status, kauthorgassignment, kauthowner, allorgobjects, activity) values ('$id', '" . $params['kauthtype_id'] . "', '0', '" . $params['name'] . "', 'd', '0', '0', '0', '0' )");
+//
+//        return true;
+//    }
+
+//    public function setAuthObject($id, $params)
+//    {
+//        $db = DBManagerFactory::getInstance();
+//
+//        $setarray = [];
+//        foreach ($params as $name => $value) {
+//            if ($name != 'id')
+//                $setarray[] = $name . "='" . $value . "'";
+//        }
+//
+//        $db->query("UPDATE kauthobjects SET " . implode(',', $setarray) . " WHERE id = '$id'");
+//
+//        return true;
+//    }
+//
+//
+//    public function getAuthObjectOrgValues($id)
+//    {
+//        $db = DBManagerFactory::getInstance();
+//
+//        $retArray = [];
+//
+//        $records = $db->query("SELECT * FROM kauthobjects WHERE kauthtype_id = '" . $id . "'");
+//        while ($record = $db->fetchByAssoc($records))
+//            $retArray[] = $record;
+//
+//        return $retArray;
+//    }
+//
+//    public function setAuthObjectOrgValues($id, $params)
+//    {
+//        $db = DBManagerFactory::getInstance();
+//
+//        // delete all current records;
+//        $db->query("DELETE FROM kauthobjectorgelementvalues WHERE kauthobject_id = '$id'");
+//
+//        foreach ($params as $objectvalue) {
+//            if ($objectvalue !== '') {
+//                $valueArray = explode(',', $objectvalue['displayvalue']);
+//                $db->query("INSERT INTO kauthobjectorgelementvalues (kauthobject_id, korgobjectelement_id, value) VALUES ('$id', '" . $objectvalue['id'] . "', '" . json_encode($valueArray) . "')");
+//            }
+//        }
+//
+//        return true;
+//    }
+//
+//    public function addAuthObjectFieldControl($params)
+//    {
+//        $db = DBManagerFactory::getInstance();
+//
+//        $db->query("INSERT INTO kauthobjectfields (kauthobject_id, field, control) VALUES('" . $params['kauthobject_id'] . "', '" . $params['field'] . "', '" . $params['control'] . "')");
+//
+//        return true;
+//    }
+//
+//    public function setAuthObjectFieldControl($params)
+//    {
+//        $db = DBManagerFactory::getInstance();
+//
+//        $db->query("UPDATE kauthobjectfields SET control = '" . $params['control'] . "' WHERE field = '" . $params['field'] . "' AND kauthobject_id = '" . $params['kauthobject_id'] . "'");
+//
+//        return true;
+//    }
+//
+//    public function deleteAuthObjectFieldControl($params)
+//    {
+//        $db = DBManagerFactory::getInstance();
+//
+//        $db->query("DELETE FROM kauthobjectfields WHERE field = '" . $params['field'] . "' AND kauthobject_id = '" . $params['kauthobject_id'] . "'");
+//
+//        return true;
+//    }
+//
+//    public function getAuthObjectFieldControlFields($params)
+//    {
+//        global $beanList;
+//        $db = DBManagerFactory::getInstance();
+//
+//        $retArray = [];
+//
+//        // determine the object we are on
+//        $object = $db->fetchByAssoc($db->query("SELECT kauthobjects.*, kauthtypes.bean FROM kauthobjects, kauthtypes WHERE kauthobjects.kauthtype_id = kauthtypes.id AND kauthobjects.id = '" . $params['authobjectid'] . "'"));
+//
+//        // get all modules for which definitons exist
+//        $fArray = [];
+//        $records = $db->query("SELECT field FROM kauthobjectfields WHERE kauthobject_id = '" . $params['authtypeid'] . "'");
+//        while ($record = $db->fetchByAssoc($records)) {
+//            $fArray[] = $record['name'];
+//        }
+//
+//
+//        $module = array_search($object['bean'], $beanList);
+//        $seed = BeanFactory::getBean($module);
+//        foreach ($seed->field_name_map as $fieldname => $fielddata) {
+//            if (array_search($fieldname, $fArray) === false)
+//                $retArray[] = ['name' => $fieldname];
+//        }
+//
+//        return $retArray;
+//    }
+
+//    public function getAuthProfiles($params)
+//    {
+//        $db = DBManagerFactory::getInstance();
+//
+//        $retArray = [];
+//
+//        $addFilter = '';
+//        if ($params['searchterm'])
+//            $addFilter .= " AND kauthprofiles.name like '%" . $params['searchterm'] . "%'";
+//
+//        if ($params['authuserid'])
+//            $addFilter .= " AND NOT EXISTS (SELECT * FROM kauthprofiles_users WHERE user_id = '" . $params['authuserid'] . "' AND kauthprofile_id = kauthprofiles.id)";
+//
+//        $records = $db->limitQuery("SELECT * FROM kauthprofiles WHERE deleted = 0 $addFilter ORDER BY NAME", $params['start'], $params['limit']);
+//        while ($record = $db->fetchByAssoc($records))
+//            $retArray[] = $record;
+//
+//        $count = $db->fetchByAssoc($db->query("SELECT count(*) totalcount FROM kauthprofiles WHERE deleted = 0 $addFilter"));
+//
+//        return [
+//            'records' => $retArray,
+//            'totalcount' => $count['totalcount']
+//        ];
+//    }
+//
+//
+//    public function addAuthProfile($id, $params)
+//    {
+//        $authProfile = BeanFactory::getBean('KAuthProfiles');
+//        $authProfile->name = $params['name'];
+//        $authProfile->id = $id;
+//        $authProfile->status = $params['status'];
+//        $authProfile->new_with_id = true;
+//        $authProfile->save();
+//        return true;
+//    }
+//
+//    public function setAuthProfile($id, $params)
+//    {
+//        $authProfile = BeanFactory::getBean('KAuthProfiles', $id);
+//        $authProfile->name = $params['name'];
+//        $authProfile->save();
+//        return true;
+//    }
+//
+//    public function deleteAuthProfile($id)
+//    {
+//        $db = DBManagerFactory::getInstance();
+//
+//        $db->query("UPDATE kauthprofiles SET deleted = 1 WHERE id='$id'");
+//        $db->query("DELETE FROM  kauthprofiles_kauthobjects WHERE kauthprofile_id='$id'");
+//
+//        return true;
+//    }
+//
+//
+//    public function getAuthProfileObjects($id)
+//    {
+//        $db = DBManagerFactory::getInstance();
+//
+//        $retArray = [];
+//
+//        $records = $db->query("SELECT kauthobjects.id, kauthobjects.name, kauthobjects.status, kauthtypes.bean  FROM kauthobjects, kauthprofiles_kauthobjects, kauthtypes WHERE kauthobjects.id = kauthprofiles_kauthobjects.kauthobject_id AND kauthtypes.id = kauthobjects.kauthtype_id AND kauthprofiles_kauthobjects.kauthprofile_id = '$id' ORDER BY kauthtypes.bean, kauthobjects.name");
+//        while ($record = $db->fetchByAssoc($records))
+//            $retArray[] = $record;
+//
+//        return $retArray;
+//    }
+//
+//    public function addAuthProfileObject($id, $objectid)
+//    {
+//        $db = DBManagerFactory::getInstance();
+//
+//        $db->query("INSERT INTO kauthprofiles_kauthobjects (kauthprofile_id, kauthobject_id) VALUES('$id', '$objectid')");
+//        return true;
+//    }
+//
+//    public function deleteAuthProfileObject($id, $objectid)
+//    {
+//        $db = DBManagerFactory::getInstance();
+//
+//        $db->query("DELETE FROM  kauthprofiles_kauthobjects WHERE kauthprofile_id = '$id'AND kauthobject_id = '$objectid'");
+//
+//        return true;
+//    }
+//
+//    public function activateAuthProfile($id)
+//    {
+//        $authProfile = BeanFactory::getBean('KAuthProfiles', $id);
+//        $authProfile->activate();
+//        $authProfile->save();
+//        return true;
+//    }
+//
+//    public function deactivateAuthProfile($id)
+//    {
+//        $authProfile = BeanFactory::getBean('KAuthProfiles', $id);
+//        $authProfile->deactivate();
+//        $authProfile->save();
+//        return true;
+//    }
+//
+//    public function getAuthUsers($params)
+//    {
+//        $db = DBManagerFactory::getInstance();
+//
+//        $retArray = [];
+//
+//        $addFilter = '';
+//        if (isset($params['searchterm'])){
+//            $addFilter = " AND (users.user_name like '%" . $params['searchterm'] . "%' OR users.last_name like '%" . $params['searchterm'] . "%' OR users.first_name like '%" . $params['searchterm'] . "%') ";
+//        }
+//
+//        $records = $db->limitQuery("SELECT * FROM users WHERE deleted = 0 $addFilter ORDER BY user_name", $params['start'], $params['limit']);
+//        while ($record = $db->fetchByAssoc($records))
+//            $retArray[] = $record;
+//
+//        $count = $db->fetchByAssoc($db->query("SELECT count(*) totalcount FROM users WHERE deleted = 0 $addFilter"));
+//
+//        return [
+//            'records' => $retArray,
+//            'totalcount' => $count['totalcount']
+//        ];
+//    }
+//
+//    public function getAuthUserProfiles($id)
+//    {
+//        $db = DBManagerFactory::getInstance();
+//
+//        $retArray = [];
+//
+//        $records = $db->query("SELECT kauthprofiles.id, kauthprofiles.name, kauthprofiles.status FROM kauthprofiles,  kauthprofiles_users WHERE kauthprofiles_users.kauthprofile_id = kauthprofiles.id AND kauthprofiles_users.user_id = '$id' ORDER BY kauthprofiles.name");
+//        while ($record = $db->fetchByAssoc($records))
+//            $retArray[] = $record;
+//
+//
+//        return $retArray;
+//    }
+//
+//    public function addAuthUserProfile($id, $profileid)
+//    {
+//        $db = DBManagerFactory::getInstance();
+//
+//        $db->query("INSERT INTO kauthprofiles_users (user_id, kauthprofile_id, deleted) VALUES('$id', '$profileid', 0)");
+//
+//        return true;
+//    }
+//
+//    public function deleteAuthUserProfile($id, $profileid)
+//    {
+//        $db = DBManagerFactory::getInstance();
+//
+//        $db->query("DELETE FROM kauthprofiles_users WHERE user_id = '$id' AND kauthprofile_id = '$profileid'");
+//
+//        return true;
+//    }
 
 }

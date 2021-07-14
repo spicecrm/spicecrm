@@ -4,6 +4,7 @@ namespace SpiceCRM\modules\Mailboxes\Handlers;
 
 use SpiceCRM\includes\authentication\GoogleAuthenticate\GoogleAuthenticate;
 use SpiceCRM\includes\database\DBManagerFactory;
+use SpiceCRM\includes\Logger\APILogEntryHandler;
 use SpiceCRM\includes\Logger\LoggerManager;
 use SpiceCRM\modules\Emails\Email;
 use SpiceCRM\modules\GoogleOAuth\GoogleOAuthImpersonation;
@@ -141,8 +142,7 @@ class GmailHandler extends TransportHandler
         $url .= '?' . $this->generateSearchParameters($pageToken);
 
         $curl = curl_init();
-
-        curl_setopt_array($curl, [
+        $curlOptions = [
             CURLOPT_SSL_VERIFYPEER => $this->ssl_verifypeer,
             CURLOPT_SSL_VERIFYHOST => $this->ssl_verifyhost,
             CURLOPT_RETURNTRANSFER => true,
@@ -152,9 +152,13 @@ class GmailHandler extends TransportHandler
                 'Content-Type:application/json',
                 'Authorization: Bearer ' . $this->accessToken['access_token'],
             ],
-        ]);
-
+        ];
+        curl_setopt_array($curl, $curlOptions);
+        $logEntryHandler = new APILogEntryHandler();
+        $logEntryHandler->generateOutgoingLogEntry($curlOptions, 'gmail_fetch_message_list');
+        $logEntryHandler->writeOutogingLogEntry();
         $response = curl_exec($curl);
+        $logEntryHandler->updateOutgoingLogEntry($curl, $response);
         $errors = curl_error($curl);
         $info = curl_getinfo($curl);
         curl_close($curl);
@@ -177,8 +181,7 @@ class GmailHandler extends TransportHandler
         $url = self::API_URL . "/gmail/v1/users/{$this->userName}/messages/{$messageId}";
 
         $curl = curl_init();
-
-        curl_setopt_array($curl, [
+        $curlOptions = [
             CURLOPT_SSL_VERIFYPEER => $this->ssl_verifypeer,
             CURLOPT_SSL_VERIFYHOST => $this->ssl_verifyhost,
             CURLOPT_RETURNTRANSFER => true,
@@ -188,9 +191,13 @@ class GmailHandler extends TransportHandler
                 'Content-Type:application/json',
                 'Authorization: Bearer ' . $this->accessToken['access_token'],
             ],
-        ]);
-
+        ];
+        curl_setopt_array($curl, $curlOptions);
+        $logEntryHandler = new APILogEntryHandler();
+        $logEntryHandler->generateOutgoingLogEntry($curlOptions, 'gmail_fetch_message');
+        $logEntryHandler->writeOutogingLogEntry();
         $response = curl_exec($curl);
+        $logEntryHandler->updateOutgoingLogEntry($curl, $response);
         $errors = curl_error($curl);
         $info = curl_getinfo($curl);
         curl_close($curl);
@@ -210,8 +217,7 @@ class GmailHandler extends TransportHandler
         $url = self::API_URL . "/gmail/v1/users/{$this->userName}/messages/{$messageId}/attachments/{$attachmentId}";
 
         $curl = curl_init();
-
-        curl_setopt_array($curl, [
+        $curlOptions = [
             CURLOPT_SSL_VERIFYPEER => $this->ssl_verifypeer,
             CURLOPT_SSL_VERIFYHOST => $this->ssl_verifyhost,
             CURLOPT_RETURNTRANSFER => true,
@@ -221,9 +227,13 @@ class GmailHandler extends TransportHandler
                 'Content-Type:application/json',
                 'Authorization: Bearer ' . $this->accessToken['access_token'],
             ],
-        ]);
-
+        ];
+        curl_setopt_array($curl, $curlOptions);
+        $logEntryHandler = new APILogEntryHandler();
+        $logEntryHandler->generateOutgoingLogEntry($curlOptions, 'gmail_fetch_attachment');
+        $logEntryHandler->writeOutogingLogEntry();
         $response = curl_exec($curl);
+        $logEntryHandler->updateOutgoingLogEntry($curl, $response);
         $errors = curl_error($curl);
         $info = curl_getinfo($curl);
         curl_close($curl);
@@ -241,8 +251,7 @@ class GmailHandler extends TransportHandler
         $url = self::API_URL . "/gmail/v1/users/{$this->userName}/labels";
 
         $curl = curl_init();
-
-        curl_setopt_array($curl, [
+        $curlOptions = [
             CURLOPT_SSL_VERIFYPEER => $this->ssl_verifypeer,
             CURLOPT_SSL_VERIFYHOST => $this->ssl_verifyhost,
             CURLOPT_RETURNTRANSFER => true,
@@ -252,9 +261,13 @@ class GmailHandler extends TransportHandler
                 'Content-Type:application/json',
                 'Authorization: Bearer ' . $this->accessToken['access_token'],
             ],
-        ]);
-
+        ];
+        curl_setopt_array($curl, $curlOptions);
+        $logEntryHandler = new APILogEntryHandler();
+        $logEntryHandler->generateOutgoingLogEntry($curlOptions, 'gmail_get_labels');
+        $logEntryHandler->writeOutogingLogEntry();
         $response = curl_exec($curl);
+        $logEntryHandler->updateOutgoingLogEntry($curl, $response);
         $errors = curl_error($curl);
         $info = curl_getinfo($curl);
         curl_close($curl);
@@ -278,8 +291,7 @@ class GmailHandler extends TransportHandler
         $url = self::API_URL . "/gmail/v1/users/{$this->userName}/messages/{$email->external_id}/trash";
 
         $curl = curl_init();
-
-        curl_setopt_array($curl, [
+        $curlOptions = [
             CURLOPT_SSL_VERIFYPEER => $this->ssl_verifypeer,
             CURLOPT_SSL_VERIFYHOST => $this->ssl_verifyhost,
             CURLOPT_RETURNTRANSFER => true,
@@ -289,9 +301,13 @@ class GmailHandler extends TransportHandler
                 'Content-Type:application/json',
                 'Authorization: Bearer ' . $this->accessToken['access_token'],
             ],
-        ]);
-
+        ];
+        curl_setopt_array($curl, $curlOptions);
+        $logEntryHandler = new APILogEntryHandler();
+        $logEntryHandler->generateOutgoingLogEntry($curlOptions, 'gmail_delete_email');
+        $logEntryHandler->writeOutogingLogEntry();
         $response = curl_exec($curl);
+        $logEntryHandler->updateOutgoingLogEntry($curl, $response);
         $errors = curl_error($curl);
         $info = curl_getinfo($curl);
         curl_close($curl);
