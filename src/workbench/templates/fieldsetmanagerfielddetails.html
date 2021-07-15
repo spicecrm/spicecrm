@@ -64,7 +64,12 @@
         <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="configValues.width"/>
     </div>
 </div>
-
+<div class="slds-form-element slds-m-vertical--xxx-small">
+    <label class="slds-form-element__label"><system-label label="LBL_REQUIREDMODELSTATE"></system-label>if this field is conditional to a specific model state</label>
+    <div class="slds-form-element__control">
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="configValues.requiredmodelstate"/>
+    </div>
+</div>
 <div class="slds-form-element slds-m-vertical--xxx-small">
     <label class="slds-form-element__label"><system-label label="LBL_FIELDTYPE"></system-label></label>
     <div class="slds-form-element__control">
