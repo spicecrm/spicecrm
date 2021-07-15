@@ -132,7 +132,7 @@ $routes = [
     ],
     [
         'method'      => 'post',
-        'route'       => '/module/CampaignTasks/livecompile/{parentmodule}/{parentid}',
+        'route'       => '/module/CampaignTasks/{id}/livecompile/{parentmodule}/{parentid}',
         'oldroute'    => '/CampaignTasks/liveCompile/{module}/{parent}',
         'class'       => CampaignTasksController::class,
         'function'    => 'liveCompileEmailBody',

@@ -94,9 +94,7 @@ export class DashboardGenericDashlet implements OnInit, OnDestroy {
             if (this.dashletconfig.modulefilter) {
                 params.modulefilter = this.dashletconfig.modulefilter;
             }
-            // params.sortfield = this.sortparams.sortfield ? this.sortparams.sortfield : this.dashletconfig.sortfield;
-            // params.sortdirection = this.sortparams.sortdirection ? this.sortparams.sortdirection : (this.dashletconfig.sortdirection ? this.dashletconfig.sortdirection : 'ASC');
-            params.sortfields = [{ sortfield:params.sortfield, sortdirection:params.sortdirection }];
+            params.sortfields = [{ sortfield:this.dashletconfig.sortfield, sortdirection:this.dashletconfig.sortdirection }];
         }
         params.limit = this.loadLimit;
 

@@ -205,6 +205,17 @@ class SpiceInstaller
             $requirements['custom_dir'] = true;
         }
 
+        // create the media directory if it does not exist
+        if (!file_exists('./media')) {
+            mkdir('./media', 0777, true);
+        }
+        // check if media directory exists and is writable
+        if (!is_dir('./media') && !is_writable('./media')) {
+            $requirements['media_files_dir'] = false;
+        } else {
+            $requirements['media_files_dir'] = true;
+        }
+
         // create the upload directory if it does not exist
         if (!file_exists('./upload')) {
             mkdir('./upload', 0777, true);
@@ -398,6 +409,7 @@ class SpiceInstaller
             'sugar_version' => '2020.01.00',
             'default_language' => $postData['language']['language_code'],
             'tmp_dir' => 'cache/xml/',
+            'media_files_dir' => 'media/',
             'upload_dir' => 'upload/',
             'upload_maxsize' => 30000000,
             'import_max_records_per_file' => 500,

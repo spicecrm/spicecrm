@@ -85,7 +85,7 @@ $routes = [
     ],
     [
         'method'      => 'post',
-        'route'       => '/module/EmailTemplates/livecompile/{parentmodule}/{parentid}',
+        'route'       => '/module/EmailTemplates/{id}/livecompile/{parentmodule}/{parentid}',
         'class'       => EmailTemplatesController::class,
         'function'    => 'getEmailBody',
         'description' => 'gets the body of an email',

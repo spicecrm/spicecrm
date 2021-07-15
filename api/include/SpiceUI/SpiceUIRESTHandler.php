@@ -998,7 +998,7 @@ $db = DBManagerFactory::getInstance();
     {
         $this->checkAdmin();
         $table = 'sysselecttree_fields';
-        $sql = "DELETE FROM {$table} WHERE tree = '" . $selecttree[0][tree] . "'";
+        $sql = "DELETE FROM {$table} WHERE tree = '" . $selecttree[0]['tree'] . "'";
         $this->db->query($sql);
         $categories = $this->flattenOutSelectTree($selecttree);
         //var_dump($tree, $categories);

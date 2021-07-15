@@ -79,8 +79,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
                 </div>
             </div>
             <div class="slds-form-element">
-                <label *ngIf="isNewUser" class="slds-form-element__label">{{lang.getLabel('LBL_SET_DATE_TIME_PREFS')}} <system-icon-help-text [helpText]="lang.getLabel('HLP_SET_DATE_TIME_PREFS')"></system-icon-help-text></label>
-                <label *ngIf="!isNewUser" class="slds-form-element__label">{{lang.getLabel('LBL_RESET_DATE_TIME_PREFS')}} <system-icon-help-text [helpText]="lang.getLabel('HLP_RESET_DATE_TIME_PREFS')"></system-icon-help-text></label>
+                <label *ngIf="isNewUser" class="slds-form-element__label">{{language.getLabel('LBL_SET_DATE_TIME_PREFS')}} <system-icon-help-text [helpText]="language.getLabel('HLP_SET_DATE_TIME_PREFS')"></system-icon-help-text></label>
+                <label *ngIf="!isNewUser" class="slds-form-element__label">{{language.getLabel('LBL_RESET_DATE_TIME_PREFS')}} <system-icon-help-text [helpText]="language.getLabel('HLP_RESET_DATE_TIME_PREFS')"></system-icon-help-text></label>
                 <div class="slds-form-element__control">
                     <label class="slds-checkbox_toggle slds-grid">
                         <input type="checkbox" name="active" [(ngModel)]="user.setDateTimePrefsWithSystemDefaults">

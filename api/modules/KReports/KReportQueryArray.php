@@ -150,7 +150,7 @@ class KReportQueryArray
                 $this->whereArray[$whereId]['valuetokey'] = '';
 
             // do time handling treating passed in values as User Timezone converting to UTS
-            if($whereArrayEntry['type'] == 'datetime'){
+            if($whereArrayEntry['type'] == 'datetime' && $whereArrayEntry['operator'] != 'reference'){
                 $userTimezZone = AuthenticationController::getInstance()->getCurrentUser()->getPreference('timezone');
                 // check on format
                 if($whereArrayEntry['valuekey'] != ''){

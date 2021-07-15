@@ -274,6 +274,11 @@ $routes = [
                 'type'        => ValidationMiddleware::TYPE_STRING,
                 'description' => 'the file Name',
                 'required' => true
+            ],
+            'category_ids' => [
+                'in' => 'body',
+                'type' => ValidationMiddleware::TYPE_STRING,
+                'description' => 'ids of categories joined with ,',
             ]
         ]
     ],

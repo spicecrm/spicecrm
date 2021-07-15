@@ -186,7 +186,7 @@ export class EmailTemplatesPreview implements AfterViewInit {
         if (!this.model.id) return;
         const loadingModal = this.modal.await('LBL_PARSING_HTML');
         const body = {html: this.model.data[this.bodyHtmlField]};
-        this.backend.postRequest(`module/${this.model.module}/livecompile/${this.previewForBean}/${this.selectedItem.id}`, {}, body)
+        this.backend.postRequest(`module/${this.model.module}/${this.model.id}/livecompile/${this.previewForBean}/${this.selectedItem.id}`, {}, body)
             .subscribe((data: any) => {
                 if (!data || !data.html) {
                     loadingModal.emit(false);

@@ -56,6 +56,12 @@ class EmailTemplate extends SugarBean {
 	var $module_dir = "EmailTemplates";
 
 
+    /**
+     * List of IDs of possible parent templates (to prevent recursions).
+     * @var
+     */
+    public $idsOfParentTemplates = [];
+
 	function __construct() {
 		parent::__construct();
 	}
@@ -79,14 +85,16 @@ class EmailTemplate extends SugarBean {
 
     public function parseHTMLTextField( $field, $parentbean = null, $additionalValues = null )
     {
-        $templateCompiler = new Compiler();
+        $templateCompiler = new Compiler('EmailTemplates', 'body_html');
+        $templateCompiler->idsOfParentTemplates = array_merge( $this->idsOfParentTemplates, [$this->id] );
         $html = $templateCompiler->compile($this->$field, $parentbean, $this->language, $additionalValues );
         return html_entity_decode($html);
     }
 
     public function parsePlainTextField($field, $parentbean = null, $additionalValues = null )
     {
-        $templateCompiler = new Compiler();
+        $templateCompiler = new Compiler('EmailTemplates', 'body_html');
+        $templateCompiler->idsOfParentTemplates = array_merge( $this->idsOfParentTemplates, [$this->id] );
         $text = $templateCompiler->compileblock($this->$field, [ 'bean' => $parentbean ], $this->language, $additionalValues );
         return $text;
     }

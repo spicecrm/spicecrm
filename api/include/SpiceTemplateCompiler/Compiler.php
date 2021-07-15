@@ -80,15 +80,24 @@ class Compiler
     public $lang;
     public $pipeFunctions = null;
     public $noPipeFunctions = null;
-    public $outputTemplateId = null; // used to prevent recursions with embedded templates
+    public $templateModule = null;
+    public $templateBodyFieldName = 'body';
     public $app_list_strings = [];
 
-    public function __construct()
+    public function __construct($templateModule = null, $templateBodyFieldName = 'body')
     {
-        $this->initialize();
+        $this->initialize($templateModule, $templateBodyFieldName);
     }
 
-    private function initialize(){
+    /**
+     * set the template module and field name
+     * initialize a DOM Document
+     * @param null $templateModule
+     * @param string $templateBodyFieldName
+     */
+    private function initialize($templateModule = null, $templateBodyFieldName = 'body'){
+        $this->templateModule = $templateModule;
+        $this->templateBodyFieldName = $templateBodyFieldName;
         $this->doc = new DOMDocument('1.0');
         $this->root = $this->doc->appendChild( $this->doc->createElement('html') );
     }
@@ -198,19 +207,21 @@ class Compiler
                     } else if( $node->getAttribute('data-spicetemplate')) {
                         $templateId = $node->getAttribute('data-spicetemplate');
                         if ( !in_array( $templateId, $this->idsOfParentTemplates )) { # prevents recursion (sub template is the same as template)
-                            $subTemplate = BeanFactory::getBean('OutputTemplates');
+                            $subTemplate = BeanFactory::getBean($this->templateModule);
                             $subTemplate->idsOfParentTemplates = $this->idsOfParentTemplates;
                             $subTemplate->retrieve( $templateId );
                             if ( !isset( $subTemplate->id[0] )) {
-                                throw new BadRequestException('Output templates: Subtemplate with ID "'.$templateId.'" not found.');
+                                throw new BadRequestException("{$this->templateModule}: Subtemplate with ID '$templateId' not found.");
                             }
                             $subDoc = new DOMDocument();
-                            $subDoc->loadHTML( $subTemplate->body, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
+                            # The empty span is a workaround to make loadHTML() work with things like <div data-spiceif="....">...</div>.
+                            # LIBXML_HTML_NOIMPLIED is necessary to prevent loadHTML from adding <html> and <body> around.
+                            $subDoc->loadHTML( '<span></span>'.mb_convert_encoding($subTemplate->{$this->templateBodyFieldName}, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
                             foreach ( $subDoc->childNodes as $item ) {
                                 $elements[] = $this->createNewElement( $item, $beans );
                             }
                         } else {
-                            throw new BadRequestException('Output templates: Recursion with embedded template detected/prevented.');
+                            throw new BadRequestException("{$this->templateModule}: Recursion with embedded template detected/prevented.");
                         }
                     } else {
                         $elements[] = $this->createNewElement($node, $beans);
@@ -676,7 +687,7 @@ class Compiler
         $this->loadTemplateFunctions();
 
         if (( !$noPipe and !isset( $this->pipeFunctions[$name] )) or ( $noPipe and !isset( $this->noPipeFunctions[$name] ))) {
-            throw new BadRequestException('Output templates: Invalid template function "'.$name.'"');
+            throw new BadRequestException("{$this->templateModule} Invalid template function '$name'");
         }
 
         $functionDef = ( $noPipe ? $this->noPipeFunctions[$name] : $this->pipeFunctions[$name] );

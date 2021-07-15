@@ -3,6 +3,7 @@ namespace SpiceCRM\modules\OutputTemplates;
 
 use SpiceCRM\data\BeanFactory;
 use SpiceCRM\data\SugarBean;
+use SpiceCRM\includes\ErrorHandlers\Exception;
 use SpiceCRM\includes\SpiceAttachments\SpiceAttachments;
 use SpiceCRM\includes\SpiceTemplateCompiler\Compiler;
 use SpiceCRM\includes\SugarObjects\SpiceConfig;
@@ -104,7 +105,7 @@ class OutputTemplate extends SugarBean
         if(!$bean)
             throw new Exception("No Bean found, translation aborted!");
 
-        $templateCompiler = new Compiler();
+        $templateCompiler = new Compiler('OutputTemplates');
         $templateCompiler->idsOfParentTemplates = array_merge( $this->idsOfParentTemplates, [$this->id] );
         if ($bodyOnly) {
             $html = $templateCompiler->compile(html_entity_decode( $this->body), $bean, $this->language, $this->additonalValues);

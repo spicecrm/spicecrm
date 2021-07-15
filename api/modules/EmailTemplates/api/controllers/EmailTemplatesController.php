@@ -68,7 +68,7 @@ class EmailTemplatesController{
      */
     public function getEmailBody(Request $req, Response $res, array $args): Response {
         $params = $req->getParsedBody();
-        $emailTemplate = BeanFactory::getBean("EmailTemplates");
+        $emailTemplate = BeanFactory::getBean("EmailTemplates", $args['id']);
         $emailTemplate->body_html = $params['html'];
         $bean = BeanFactory::getBean($args['parentmodule'], $args['parentid']);
         $parsedTpl = $emailTemplate->parse($bean);

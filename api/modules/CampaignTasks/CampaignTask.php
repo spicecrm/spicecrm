@@ -37,11 +37,22 @@ class CampaignTask extends SugarBean
         return false;
     }
 
+    /**
+     * remove entries from campign log for passed status
+     * created entries in campign log with passed status
+     * set campaign task to activated
+     * set camapign task status to Active
+     * @todo find another way to bild query so that sql_mode workaround may be removed
+     * @param string $status
+     */
     function activate($status = 'targeted')
     {
         $db = DBManagerFactory::getInstance();
         $thisId = $db->quote($this->id);
         $sysModuleFilters = new \SpiceCRM\includes\SysModuleFilters\SysModuleFilters();
+
+        // disable ONLY_FULL_GROUP_BY if this is set
+        $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
 
         $delete_query = "DELETE FROM campaign_log WHERE campaign_id='" . $this->campaign_id . "' AND campaigntask_id='" . $this->id . "' AND activity_type='$status'";
         $this->db->query($delete_query);
@@ -50,8 +61,8 @@ class CampaignTask extends SugarBean
         $guidSQL = $this->db->getGuidSQL();
 
         $insert_query = "INSERT INTO campaign_log (id,activity_date, campaign_id, campaigntask_id, target_tracker_key,list_id, target_id, target_type, activity_type, deleted";
-        $insert_query .= ')';
-        $insert_query .= "SELECT {$guidSQL}, $current_date, '{$this->campaign_id}' campaign_id,  plc.campaigntask_id , {$guidSQL},plp.prospect_list_id, plp.related_id, plp.related_type,'$status',0 ";
+        $insert_query .= ') ';
+        $insert_query .= "SELECT {$guidSQL}, $current_date, '{$this->campaign_id}' campaign_id,  plc.campaigntask_id , {$guidSQL}, plp.prospect_list_id, plp.related_id, plp.related_type,'$status',0 ";
         $insert_query .= "FROM prospect_lists INNER JOIN prospect_lists_prospects plp ON plp.prospect_list_id = prospect_lists.id";
         $insert_query .= " INNER JOIN prospect_list_campaigntasks plc ON plc.prospect_list_id = prospect_lists.id";
         $insert_query .= " WHERE plc.campaigntask_id='$thisId'";
@@ -78,6 +89,7 @@ class CampaignTask extends SugarBean
 
         // set to activated
         $this->activated = true;
+        $this->status = 'Active';
         $this->save();
 
     }

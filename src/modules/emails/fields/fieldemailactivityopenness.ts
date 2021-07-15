@@ -50,7 +50,7 @@ export class fieldEmailActivityOpenness extends fieldGeneric {
 
         this.model.setField("openness", openness);
 
-        this.backend.postRequest(`module/${this.model.module}/${this.model.id}/setopenness/${openness}`).subscribe(
+        this.backend.postRequest(`module/${this.model.module}/${this.model.id}/openness`, null, {openness}).subscribe(
             (res: any) => {
                 // also set it in the service
             },

@@ -48,6 +48,27 @@ class Company extends Basic
  		parent::__construct();
  		$this->emailAddress = BeanFactory::getBean('EmailAddresses');
  	}
+
+    /**
+     * override the retrieve function in order to properly map email1 value
+     *
+     * @see parent::retrieve()
+     */
+
+    public function retrieve($id = -1, $encode = false, $deleted = true, $relationships = true)
+    {
+
+        $retVal = parent::retrieve($id, $encode, $deleted, $relationships);
+        if ($relationships) {
+            $this->fill_in_relationship_fields();
+        }
+        if ($relationships == false) {
+            $EmailAddress = BeanFactory::getBean('EmailAddresses');
+            $EmailAddress->handleLegacyRetrieve($this);
+        }
+
+        return $retVal;
+    }
  	
  	/**
  	 * @see parent::save()

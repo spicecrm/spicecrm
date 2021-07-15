@@ -32,7 +32,7 @@ class ContactsPortalController {
      * @throws ForbiddenException
      * @throws NotFoundException
      */
-    public function getPortalUser( Request $req, Response $res, array $args ): Response {
+    public function getPortalUser( Request $req, Response $res, $args ): Response {
         $db = DBManagerFactory::getInstance();
 
         $retArray = [
@@ -79,10 +79,6 @@ class ContactsPortalController {
             }
         }
 
-        $retArray['pwdCheck'] = [
-            'regex' => '^'.UserAuthenticate::getPwdCheckRegex().'$',
-            'guideline' => UserAuthenticate::getPwdGuideline( $req->getQueryParams()['lang'] )
-        ];
         return $res->withJson( $retArray );
 
     }
@@ -94,10 +90,10 @@ class ContactsPortalController {
      * @throws NotFoundException
      */
     public function loadContact( string $contactId ) {
-        $contact = BeanFactory::getBean('Contacts');
-        $contact->retrieve( $contactId );
-        if ( !isset( $contact->id )) throw ( new NotFoundException('Contact not found.'))->setLookedFor([ 'id' => $contactId, 'module' => 'Contacts' ]);
-        if ( !$contact->ACLAccess( 'edit' )) throw ( new ForbiddenException('Forbidden to edit contact.'))->setErrorCode('noModuleEdit');
+        $this->contact = BeanFactory::getBean('Contacts');
+        $this->contact->retrieve( $contactId );
+        if ( !isset( $this->contact->id )) throw ( new NotFoundException('Contact not found.'))->setLookedFor([ 'id' => $contactId, 'module' => 'Contacts' ]);
+        if ( !$this->contact->ACLAccess( 'edit' )) throw ( new ForbiddenException('Forbidden to edit contact.'))->setErrorCode('noModuleEdit');
     }
 
     /**
@@ -107,11 +103,11 @@ class ContactsPortalController {
      * @param $args
      * @return Response
      */
-    public function createPortalUser( Request $req, Response $res, array $args ): Response {
+    public function createPortalUser( Request $req, Response $res, $args ): Response {
         $this->bodyParams = $req->getParsedBody();
         foreach ($this->bodyParams as $k => $v ) $this->bodyParams[$k] = trim( $v );
         $this->loadContact( $args['id'] );
-        return $res->withJson(['success' => true, 'action' => 'create', 'userId' => self::createOrUpdatePortalUser('create') ]);
+        return $res->withJson(['success' => true, 'userId' => self::createOrUpdatePortalUser('create') ]);
     }
 
     /**
@@ -121,11 +117,11 @@ class ContactsPortalController {
      * @param $args
      * @return Response
      */
-    public function updatePortalUser( Request $req, Response $res, array $args ): Response {
+    public function updatePortalUser( Request $req, Response $res, $args ): Response {
         $this->bodyParams = $req->getParsedBody();
         foreach ($this->bodyParams as $k => $v ) $this->bodyParams[$k] = trim( $v );
         $this->loadContact( $args['id'] );
-        return $res->withJson(['success' => true, 'action' => 'update', 'userId' => $this->createOrUpdatePortalUser('update') ]);
+        return $res->withJson(['success' => true, 'userId' => $this->createOrUpdatePortalUser('update') ]);
     }
 
     /**
@@ -137,7 +133,7 @@ class ContactsPortalController {
      * @throws ForbiddenException
      * @throws NotFoundException
      */
-    public function createOrUpdatePortalUser( string $action ): Response {
+    public function createOrUpdatePortalUser( string $action ) {
         $db = DBManagerFactory::getInstance();
 
         $db->transactionStart();
@@ -145,16 +141,16 @@ class ContactsPortalController {
         $user = BeanFactory::getBean('Users');
 
         if ( $action === 'update' ) {
-            if ( !empty( $contact->portal_user_id ) ) $user->retrieve( $contact->portal_user_id );
-            if ( empty( $user->id ) ) throw ( new NotFoundException( 'Portal user not found.' ) )->setLookedFor([ 'id' => $contact->portal_user_id, 'module' => 'Users' ]);
+            if ( !empty( $this->contact->portal_user_id ) ) $user->retrieve( $this->contact->portal_user_id );
+            if ( empty( $user->id ) ) throw ( new NotFoundException( 'Portal user not found.' ) )->setLookedFor([ 'id' => $this->contact->portal_user_id, 'module' => 'Users' ]);
             $isNewUser = false;
         } else {
             $isNewUser = true;
-            if ( !empty( $contact->portal_user_id ))
+            if ( !empty( $this->contact->portal_user_id ))
                 throw ( new BadRequestException('Contact already has portal user data. Creation of another portal user is not possible.'))->setErrorCode('contactAlreadyHasPortalUser');
         }
 
-        if ( $db->fetchOne( sprintf('SELECT id FROM users WHERE user_name = "%s" AND id <> "%s" AND deleted = 0 LIMIT 1', $db->quote( $this->bodyParams['username']), $contact->portal_user_id )))
+        if ( $db->fetchOne( sprintf('SELECT id FROM users WHERE user_name = "%s" AND id <> "%s" AND deleted = 0 LIMIT 1', $db->quote( $this->bodyParams['username']), $this->contact->portal_user_id )))
             throw ( new BadRequestException('User name already taken.'))->setErrorCode('usernameAlreadyTaken');
         if ( empty( $this->bodyParams['username'] ))
             throw ( new BadRequestException('Missing user name.'))->setErrorCode('missingUserName');
@@ -168,8 +164,8 @@ class ContactsPortalController {
 
         $user->status = @$this->bodyParams['status'] ? 'Active':'Inactive';
 
-        $user->first_name = $contact->first_name;
-        $user->last_name = $contact->last_name;
+        $user->first_name = $this->contact->first_name;
+        $user->last_name = $this->contact->last_name;
 
         # if ( $isNewUser and !isset( $this->bodyParams['password'][0]) )
         #    throw ( new BadRequestException('Missing Password of New User'))->setErrorCode('missingPassword');
@@ -196,9 +192,9 @@ class ContactsPortalController {
         }
 
         if ( $isNewUser ) {
-            $contact->portal_user_id = $user->id;
+            $this->contact->portal_user_id = $user->id;
             try {
-                $contact->save();
+                $this->contact->save();
             } catch( Exception $e ) {
                 $db->transactionRollback();
                 LoggerManager::getLogger()->fatal( 'Create/Edit portal user: Could not save contact '.$this->contact->id.'.' );
@@ -256,11 +252,11 @@ class ContactsPortalController {
      * @return mixed
      * @throws NotFoundException
      */
-    public function checkUsernameExistance( Request $req, Response $res, array $args ): Response {
+    public function checkUsernameExistance( Request $req, Response $res, $args ): Response {
         $db = DBManagerFactory::getInstance();
         $queryParams = $req->getQueryParams();
 
-        $contact = $db->fetchOne( sprintf('SELECT portal_user_id FROM contacts WHERE id = "%s" AND deleted = 0', $db->quote( $this->contact->id )));
+        $contact = $db->fetchOne( sprintf('SELECT portal_user_id FROM contacts WHERE id = "%s" AND deleted = 0', $db->quote( $args['id'] )));
         if ( !$contact ) throw ( new NotFoundException( 'Contact Not Found' ))->setLookedFor(['id'=>$this->contact->id,'module'=>'Contacts']);
 
         $user = $db->fetchOne( sprintf('SELECT id FROM users WHERE user_name = "%s" AND id <> "%s" AND deleted = 0 LIMIT 1', $db->quote( $queryParams['username']), $contact['portal_user_id'] ));

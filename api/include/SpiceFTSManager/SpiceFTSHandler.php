@@ -1667,7 +1667,7 @@ class SpiceFTSHandler
                     echo sprintf("%${numRowsLength}d", $counterIndexed + $counterDeleted + 1); // output current counter
                 }
                 if ($indexBean['deleted'] == 0) {
-                    $seed->retrieve($indexBean['id']);
+                    $seed->retrieve($indexBean['id'], false, false, false );
 
                     if ($this->elasticHandler->getMajorVersion() == '6') {
                         $bulkItems[] = json_encode([
@@ -1694,7 +1694,7 @@ class SpiceFTSHandler
                     $beanCounter++;
                     $counterIndexed++;
                 } else {
-                    $seed->retrieve($indexBean['id'], true, false);
+                    $seed->retrieve($indexBean['id'], true, false, false);
                     $bulkItems[] = json_encode([
                         'delete' => [
                             '_index' => $this->elasticHandler->indexPrefix . strtolower($bean['module']),

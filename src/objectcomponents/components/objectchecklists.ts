@@ -77,7 +77,7 @@ export class ObjectChecklists implements OnInit, OnDestroy {
      */
     private fieldName: string = 'checklists';
 
-    public panelExpanded: boolean = false;
+    public panelExpanded: boolean = true;
 
     constructor(public model: model,
                 public language: language,

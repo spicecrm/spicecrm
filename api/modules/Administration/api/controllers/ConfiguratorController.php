@@ -189,6 +189,13 @@ class ConfiguratorController{
 
         // no error handling, fire and forget :)
         if (count($postBody['config']) > 0) {
+            // make sure array is only 1 level
+            foreach($postBody['config'] as $key => $val){
+                if(is_array($val)){
+                    $postBody['config'][$key] = json_encode($val);
+                }
+            }
+
             $db->upsertQuery($args['table'], ['id' => $postBody['config']['id']], $postBody['config']);
 
             /*

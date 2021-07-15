@@ -84,7 +84,7 @@ class SpiceACLUsers{
         ];
         $usersObject = $db->query("SELECT user_id FROM spiceaclusers_hash WHERE hash_id = '$bean->spiceacl_users_hash' AND deleted = 0");
         while($userId = $db->fetchByAssoc($usersObject)){
-            $ftArray[assigned_user_ids][] = $userId['user_id'];
+            $ftArray['assigned_user_ids'][] = $userId['user_id'];
         }
         return $ftArray;
     }

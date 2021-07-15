@@ -19,6 +19,7 @@ import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
 import {language} from "../../../services/language.service";
 import {toast} from '../../../services/toast.service';
+import { configurationService } from '../../../services/configuration.service';
 
 @Component({
     selector: "contact-portal-details",
@@ -38,8 +39,14 @@ export class ContactPortalDetails implements OnInit {
         setDateTimePrefsWithSystemDefaults: true
     };
 
-    private pwdGuideline: string = "";
+    private pwdGuideline = '';
+
+    /**
+     * a regex for the password check that is built from the password requirements
+     * @private
+     */
     private pwdCheckRegex: RegExp = new RegExp("//");
+
 
     private aclRoles = [];
     private portalRoles = [];
@@ -52,11 +59,14 @@ export class ContactPortalDetails implements OnInit {
 
     private isSaving = false;
 
-    constructor( private lang: language, private backend: backend, private metadata: metadata, private model: model, private toast: toast ) { }
+    constructor( private language: language, private backend: backend, private metadata: metadata, private model: model, private toast: toast, private configuration: configurationService ) { }
 
     public ngOnInit() {
+
+        this.getInfo();
+
         // check data from the backend
-        this.backend.getRequest("module/Contacts/" + this.model.id + "/portalAccess", { lang: this.lang.currentlanguage } ).subscribe((userdata: any) => {
+        this.backend.getRequest('module/Contacts/' + this.model.id + '/portalAccess').subscribe((userdata: any) => {
 
             this.aclRoles = userdata.aclRoles;
             this.portalRoles = userdata.portalRoles;
@@ -84,9 +94,6 @@ export class ContactPortalDetails implements OnInit {
                 });
             }
 
-            this.pwdGuideline = userdata.pwdCheck.guideline;
-            this.pwdCheckRegex = new RegExp( userdata.pwdCheck.regex );
-
             if ( this.user.id ) {
                 this.user.name = userdata.user.username;
                 this.loaded = true;
@@ -101,7 +108,7 @@ export class ContactPortalDetails implements OnInit {
     private testUsername() {
         if ( this.user.name ) {
             this.usernameTesting = true;
-            this.backend.getRequest( "portal/" + this.model.id + "/testUsername", { username: this.user.name } ).subscribe( ( data ) => {
+            this.backend.getRequest('module/Contacts/'+this.model.id+'/testUsername', { username: this.user.name } ).subscribe( ( data ) => {
                 if ( !data.error ) {
                     this.usernameAlreadyExists = data.exists;
                     this.loaded = true;
@@ -113,7 +120,7 @@ export class ContactPortalDetails implements OnInit {
 
     get pwdError() {
         if ( !this.loaded ) { return false; }
-        return !this.user.password || this.pwdCheckRegex.test( this.user.password ) ? false : this.lang.getLabel("MSG_PWD_NOT_LEGAL");
+        return !this.user.password || this.pwdCheckRegex.test( this.user.password ) ? false : this.language.getLabel("MSG_PWD_NOT_LEGAL");
     }
 
     private closeModal() {
@@ -172,4 +179,23 @@ export class ContactPortalDetails implements OnInit {
             }
         }
     }
+
+    /**
+     * fetches and builds the guideline for passwords
+     *
+     * @private
+     */
+    private getInfo() {
+        let extConf = this.configuration.getCapabilityConfig('userpassword');
+        this.pwdCheckRegex = new RegExp(extConf.regex);
+
+        let requArray = [];
+        if (extConf.onelower) requArray.push(this.language.getLabel('MSG_PASSWORD_ONELOWER'));
+        if (extConf.oneupper) requArray.push(this.language.getLabel('MSG_PASSWORD_ONEUPPER'));
+        if (extConf.onenumber) requArray.push(this.language.getLabel('MSG_PASSWORD_ONENUMBER'));
+        if (extConf.minpwdlength) requArray.push(this.language.getLabel('MSG_PASSWORD_LENGTH') + ' ' + extConf.minpwdlength);
+
+        this.pwdGuideline = requArray.join(', ');
+    }
+
 }

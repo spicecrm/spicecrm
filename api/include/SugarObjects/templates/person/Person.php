@@ -72,6 +72,11 @@ class Person extends Basic
         if($relationships) {
             $this->fill_in_relationship_fields();
         }
+        // Fix call and meeting participants: populate email1 in beans that are retrieved as related
+        if ($relationships == false) {
+            $EmailAddress = BeanFactory::getBean('EmailAddresses');
+            $EmailAddress->handleLegacyRetrieve($this);
+        }
         return $ret_val;
     }
 
@@ -285,7 +290,7 @@ class Person extends Basic
         // get audit fields
         if($this->is_AuditEnabled()){
             $audittablename = $this->get_audit_table_name();
-            $auditFields = $db->query("SELECT * FROM $audittablename WHERE field_name like 'gdpr_%' ORDER BY date_created DESC");
+            $auditFields = $db->query("SELECT * FROM $audittablename WHERE parent_id = '{$this->id}' AND field_name like 'gdpr_%' ORDER BY date_created DESC");
             while($auditField = $db->fetchByAssoc($auditFields)){
                 $createdUser = BeanFactory::getBean('Users', $auditField['created_by']);
                 $createdUser->_create_proper_name_field();
