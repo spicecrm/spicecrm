@@ -202,22 +202,20 @@ export class questionnaireParticipationService {
     public saveSingleAnswerToBackend( questionId: string, backupForNetworkError: string ): void {
         // At the beginning disable the input field of the question. It will stay disabled until server response at the end.
         this.questionsMeta[questionId].tempReadonly = true;
-        /*
-        this.backend.postRequest( 'module/Questions/' + questionId + '/answervalues/' + this.participationId, {},
-            { answer_value: this.answers[questionId].answer_value } ).subscribe(
-            data => {
-                this.answers[questionId].answer_value = data.answer_value; // Relevant is, what´s in the database/backend.
-                this.questionsMeta[questionId].tempReadonly = false; // Enable the input field of the question.
+        let route = 'module/QuestionAnswers/ofParticipation/';
+        // if ( this.participationId ) route += 'byParticipation/'+this.participationId;
+        // else
+        route += 'byParent/'+this.parentType+'/'+this.parentId+'/'+questionId;
+        this.backend.postRequest( route, {}, { answer: this.answers[questionId] } ).subscribe( response => {
+                // this.answers[questionId].answer_value = response.answer_value; // Relevant is, what´s in the database/backend.
+                this.questionsMeta[questionId].tempReadonly = false;
                 this.determineNumOfFinishedQuestionsInQuestionset( this.questions[questionId].questionset_id ); // New determination of the number of finished questions.
             },
             error => {
                 this.questionsMeta[questionId].tempReadonly = false; // Enable the input field of the question.
                 this.toast.sendToast( this.language.getLabel( 'ERR_NETWORK_SAVING' ), 'error', error.message, false ); // Error toast for the user.
                 this.answers[questionId] = JSON.parse( backupForNetworkError ); // Restore old question answer.
-            }
-        );
-
-         */
+            });
     }
 
     /**
