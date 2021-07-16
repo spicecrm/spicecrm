@@ -1,0 +1,76 @@
+<div style="height: 30vh">
+    <ng-container *ngIf="dictionarymanager.currentDictionaryDefinition; else selectdefinition">
+        <table  class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th style="width:2.5rem" scope="col"></th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_TEMPLATE"></system-label></div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_TYPE"></system-label></div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_ITEMS"></system-label></div>
+                    </th>
+                    <th style="width:2rem" scope="col"></th>
+                </tr>
+            </thead>
+            <tbody >
+                <tr class="slds-hint-parent" *ngFor="let dictionaryindex of dictionaryIndexes"  (click)="setActiveId(dictionaryindex.id)"  [ngClass]="{'slds-is-selected': dictionarymanager.currentDictionaryIndex == dictionaryindex.id}">
+                    <td>
+                        <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionaryindex.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
+                        <dictionary-manager-item-status [(ngModel)]="dictionaryindex.status"></dictionary-manager-item-status>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{dictionaryindex.name}}</div>
+                    </td>
+                    <td></td>
+                    <td>
+                        <div class="slds-truncate">{{dictionaryindex.indextype}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{getIndexFields(dictionaryindex.id)}}</div>
+                    </td>
+                    <td class="slds-align--absolute-center" style="width: 2rem;">
+                        <system-utility-icon size="xx-small" icon="delete" (click)="deleteIndex($event, dictionaryindex.id)"></system-utility-icon>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody *ngFor="let dictionaryIndexesForTemplate of dictionaryIndexesForTemplates">
+                <tr class="slds-hint-parent" *ngFor="let dictionaryindex of dictionaryIndexesForTemplate.indexes">
+                    <td>
+                        <!-- no action acions for the reference-->
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{dictionaryindex.name}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{dictionarymanager.getDictionaryDefinitionName(dictionaryIndexesForTemplate.relatedTemplateId)}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{dictionaryindex.indextype}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{getIndexFields(dictionaryindex.id)}}</div>
+                    </td>
+                    <td>
+                        <!-- no delete for the reference-->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div *ngIf="dictionarymanager.changescope != 'none'" class="slds-align--absolute-center slds-p-around--small">
+            <system-utility-icon icon="new" size="x-small" (click)="addIndex($event)"></system-utility-icon>
+        </div>
+    </ng-container>
+    <ng-template #selectdefinition>
+        <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+            <system-label label="LBL_SELECT_A_DICTIONARYDEFINITION"></system-label>
+        </div>
+    </ng-template>
+</div>
+<dictionary-manager-index-details [indexid]="dictionarymanager.currentDictionaryIndex"></dictionary-manager-index-details>

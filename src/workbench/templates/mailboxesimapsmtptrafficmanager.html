@@ -1,0 +1,159 @@
+<div class="slds-m-vertical--xx-small slds-box--border">
+    <div class="slds-p-around--x-small">
+        <h1><system-label label="LBL_USER"></system-label></h1>
+        <div class="slds-grid">
+            <div class="slds-form-element slds-size--1-of-1">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_DISPLAY_NAME"></system-label></label>
+                <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.imap_pop3_display_name" class="slds-input"/>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_USER_NAME"></system-label></label>
+                <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.imap_pop3_username" class="slds-input"/>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_PASSWORD"></system-label></label>
+                <system-input-password [disabled]="!view.isEditMode()"  [(ngModel)]="model.data.settings.imap_pop3_password"></system-input-password>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_SHARED_MAILBOX_AUTH_USER"></system-label></label>
+                <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.shared_mailbox_auth_user" class="slds-input"/>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_SHARED_MAILBOX_USER"></system-label></label>
+                <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.shared_mailbox_user" class="slds-input"/>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--small">
+            <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()" [disabled]="!view.isEditMode()"><system-label label="LBL_TEST_CONNECTION"></system-label></button>
+        </div>
+    </div>
+</div>
+<div *ngIf="isInbound" class="slds-m-vertical--xx-small slds-box--border">
+    <div class="slds-p-around--x-small">
+        <h1><system-label label="LBL_IMAP"></system-label></h1>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_PROTOCOL_TYPE"></system-label></label>
+                <select type="text" [disabled]="!view.isEditMode()"
+                        [(ngModel)]="model.data.settings.imap_pop3_protocol_type"
+                        class="slds-select ng-pristine ng-valid">
+                    <option value="imap"><system-label label="LBL_IMAP"></system-label></option>
+                    <option value="pop3"><system-label label="LBL_POP3"></system-label></option>
+                </select>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_HOST"></system-label></label>
+                <input type="text" [(ngModel)]="model.data.settings.imap_pop3_host" [disabled]="!view.isEditMode()" class="slds-input"/>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_PORT"></system-label></label>
+                <input type="text" [(ngModel)]="model.data.settings.imap_pop3_port" [disabled]="!view.isEditMode()" class="slds-input"/>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_ENCRYPTION"></system-label></label>
+                <select type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.imap_pop3_encryption" class="slds-select ng-pristine ng-valid">
+                    <option value="none"><system-label label="LBL_NOENCRYPTION"></system-label></option>
+                    <option value="ssl"><system-label label="LBL_SSL"></system-label></option>
+                    <option value="tls"><system-label label="LBL_TLS"></system-label></option>
+                </select>
+            </div>
+        </div>
+        <div class="slds-grid--vertical slds-p-vertical--xx-small">
+            <div class="slds-form-element">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_INBOX_FOLDER"></system-label></label>
+                <input class="slds-input" [ngModel]="model.data.settings.imap_inbox_dir" disabled >
+            </div>
+            <div class="slds-form-element">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_SENT_FOLDER"></system-label></label>
+                <input class="slds-input" [ngModel]="model.data.settings.imap_sent_dir" disabled >
+            </div>
+            <div class="slds-form-element">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_TRASH_FOLDER"></system-label></label>
+                <input class="slds-input" [ngModel]="model.data.settings.imap_trash_dir" disabled >
+            </div>
+        </div>
+        <div class="slds-grid--vertical slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <div class="slds-form-element">
+                    <label class="slds-truncate slds-form-element__label"><system-label label="LBL_IMAP_DELETE_AFTER_FETCH"></system-label></label>
+                </div>
+                <div class="slds-form-element">
+                    <system-checkbox [disabled]="!view.isEditMode()"id="imap_delete_after_fetch" [(ngModel)]="model.data.settings.imap_delete_after_fetch"></system-checkbox>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--small">
+            <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="displayFoldersModal()" [disabled]="!view.isEditMode()"><system-label label="LBL_IMAP_SELECT_FOLDERS"></system-label></button>
+        </div>
+    </div>
+</div>
+<div *ngIf="isOutbound" class="slds-m-vertical--xx-small slds-box--border">
+    <div class="slds-p-around--x-small">
+        <h1><system-label label="LBL_SMTP"></system-label></h1>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_HOST"></system-label></label>
+                <input type="text" [(ngModel)]="model.data.settings.smtp_host" [disabled]="!view.isEditMode()" class="slds-input"/>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <div class="slds-form-element">
+                    <label class="slds-truncate slds-form-element__label"><system-label label="LBL_AUTHENTICATION"></system-label></label>
+                </div>
+                <div class="slds-form-element">
+                    <system-checkbox [disabled]="!view.isEditMode()"id="smtp_auth" [(ngModel)]="model.data.settings.smtp_auth"></system-checkbox>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_PORT"></system-label></label>
+                <input type="text" [(ngModel)]="model.data.settings.smtp_port" [disabled]="!view.isEditMode()" class="slds-input"/>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_ENCRYPTION"></system-label></label>
+                <select type="text" [disabled]="!view.isEditMode()"
+                        [(ngModel)]="model.data.settings.smtp_encryption"
+                        class="slds-select ng-pristine ng-valid">
+                    <option value="none"><system-label label="LBL_NOENCRYPTION"></system-label></option>
+                    <option value="ssl"><system-label label="LBL_SSL"></system-label></option>
+                    <option value="tls"><system-label label="LBL_TLS"></system-label></option>
+                </select>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_REPLY_TO"></system-label></label>
+                <input type="text" [(ngModel)]="model.data.settings.reply_to" [disabled]="!view.isEditMode()" class="slds-input"/>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-4">
+                <div class="slds-form-element">
+                    <system-checkbox [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.smtp_verify_peer"></system-checkbox>
+                </div>
+            </div>
+            <div class="slds-form-element slds-size--1-of-4">
+                <div class="slds-form-element">
+                    <system-checkbox [disabled]="!view.isEditMode()" [(ngModel)]="model.data.smtp_verify_peer_name"><system-label label="LBL_SMTP_VERIFY_PEER_NAME"></system-label></system-checkbox>
+                </div>
+            </div>
+            <div class="slds-form-element slds-size--1-of-4">
+                <div class="slds-form-element">
+                    <system-checkbox [disabled]="!view.isEditMode()" [(ngModel)]="model.data.allow_external_delete"><system-label label="LBL_IMAP_SMTP_ALLOW_EXTERNAL_DELETE"></system-label></system-checkbox>
+                </div>
+            </div>
+            <div class="slds-form-element slds-size--1-of-4">
+                <div class="slds-form-element">
+                    <system-checkbox [disabled]="!view.isEditMode()" [(ngModel)]="model.data.smtp_allow_self_signed"><system-label label="LBL_SMTP_ALLOW_SELF_SIGNED"></system-label></system-checkbox>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

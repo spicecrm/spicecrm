@@ -1,0 +1,79 @@
+<div class="slds-form-element slds-m-vertical--xxx-small">
+    <label class="slds-form-element__label"><system-label label="LBL_NAME"></system-label></label>
+    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
+        <!--system-icon [icon]="'down'" [size]="'x-small'" [sprite]="'utility'" [addclasses]="'slds-input__icon slds-icon-text-default'" ></system-icon-->
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" placeholder="name" [(ngModel)]="currentField.field"/>
+    </div>
+</div>
+<div class="slds-form-element slds-m-bottom--x-small">
+    <label class="slds-form-element__label" >ID</label>
+    <div class="slds-form-element__control">
+        <input type="text" class="slds-input" [ngModel]="currentField.id" disabled/>
+    </div>
+</div>
+<div class="slds-form-element slds-m-vertical--xxx-small">
+    <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
+    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" placeholder="package" [(ngModel)]="currentField.package"/>
+    </div>
+</div>
+<div class="slds-form-element slds-m-vertical--xx-small">
+    <label class="slds-form-element__label"><system-label label="LBL_LABEL"></system-label></label>
+    <system-input-label *ngIf="view.isEditMode()" [(ngModel)]="configValues.label"></system-input-label>
+    <input class="slds-input" disabled *ngIf="!view.isEditMode()" [(ngModel)]="configValues.label"/>
+</div>
+<fieldset class="slds-form-element slds-m-vertical--xxx-small">
+    <legend class="slds-form-element__legend slds-form-element__label"><system-label label="LBL_OPTIONS"></system-label></legend>
+    <div class="slds-form-element__control">
+        <label class="slds-checkbox" for="link">
+            <input [disabled]="!view.isEditMode()" type="checkbox" id="link" [(ngModel)]="configValues.link"/>
+            <span class="slds-checkbox--faux"></span>
+            <span class="slds-form-element__label"><system-label label="LBL_LINK"></system-label></span>
+        </label>
+        <label class="slds-checkbox" for="default">
+            <input [disabled]="!view.isEditMode()" type="checkbox" id="default" [(ngModel)]="configValues.default"/>
+            <span class="slds-checkbox--faux"></span>
+            <span class="slds-form-element__label"><system-label label="LBL_DEFAULT"></system-label></span>
+        </label>
+        <label class="slds-checkbox" for="hidelabel">
+            <input [disabled]="!view.isEditMode()" type="checkbox" id="hidelabel" [(ngModel)]="configValues.hidelabel"/>
+            <span class="slds-checkbox--faux"></span>
+            <span class="slds-form-element__label"><system-label label="LBL_HIDE_LABEL"></system-label></span>
+        </label>
+        <label class="slds-checkbox" for="readonly">
+            <input [disabled]="!view.isEditMode()" type="checkbox" id="readonly" [(ngModel)]="configValues.readonly"/>
+            <span class="slds-checkbox--faux"></span>
+            <span class="slds-form-element__label"><system-label label="LBL_READONLY"></system-label></span>
+        </label>
+        <label class="slds-checkbox" for="sortable">
+            <input [disabled]="!view.isEditMode()" type="checkbox" id="sortable" [(ngModel)]="configValues.sortable"/>
+            <span class="slds-checkbox--faux"></span>
+            <span class="slds-form-element__label"><system-label label="LBL_SORTABLE"></system-label></span>
+        </label>
+    </div>
+</fieldset>
+<div *ngIf="configValues.sortable" class="slds-form-element slds-m-vertical--xxx-small">
+    <label class="slds-form-element__label"><system-label label="LBL_SORTFIELD"></system-label></label>
+    <div class="slds-form-element__control">
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="configValues.sortfield"/>
+    </div>
+</div>
+<div class="slds-form-element slds-m-vertical--xxx-small">
+    <label class="slds-form-element__label"><system-label label="LBL_WIDTH"></system-label> (number of parts, leave blank for 1)</label>
+    <div class="slds-form-element__control">
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="configValues.width"/>
+    </div>
+</div>
+
+<div class="slds-form-element slds-m-vertical--xxx-small">
+    <label class="slds-form-element__label"><system-label label="LBL_FIELDTYPE"></system-label></label>
+    <div class="slds-form-element__control">
+        <div class="slds-select_container">
+            <select [disabled]="!view.isEditMode()" class="slds-select" [(ngModel)]="configValues.fieldtype" (change)="selectFieldType()">
+                <option *ngFor="let fieldtype of fieldtypes">{{fieldtype}}</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<workbench-config [component]="component" [configValues]="configValues"></workbench-config>

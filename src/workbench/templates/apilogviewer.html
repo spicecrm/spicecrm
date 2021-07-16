@@ -1,0 +1,140 @@
+<workbench-header titlelabel="LBL_API_LOG_VIEWER" icon="custom:custom62">
+    ({{entries.length}} <system-label label="LBL_RECORDS"></system-label>)
+    <workbench-header-controls>
+        <button class="slds-button slds-button--neutral" (click)="truncate()" [disabled]="isLoading"><system-label label="LBL_TRUNCATE"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="buttonLoad()" [disabled]="isLoading"><system-label label="LBL_LOAD"></system-label></button>
+    </workbench-header-controls>
+</workbench-header>
+<div class="slds-section slds-is-open slds-p-around--xx-small">
+    <div class="slds-grid slds-grid--vertical-align-end slds-gutters_direct-xxx-small">
+        <div class="slds-col slds-size--1-of-4">
+            <label class="slds-form-element__label"><system-label label="LBL_ROUTE"></system-label></label>
+            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                <input class="slds-input" type="text" system-trim-input [(ngModel)]="filter.route" />
+                <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.route=''">
+                    <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
+                </button>
+            </div>
+        </div>
+        <div class="slds-col slds-size--1-of-4">
+            <label class="slds-form-element__label"><system-label label="LBL_FILTER"></system-label></label>
+            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                <input class="slds-input" type="text" system-trim-input [(ngModel)]="filter.term" />
+                <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.term=''">
+                    <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
+                </button>
+            </div>
+        </div>
+        <div class="slds-col slds-size--1-of-4">
+            <label class="slds-form-element__label"><system-label label="LBL_END"></system-label></label>
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <system-input-date [(ngModel)]="dateEnd" class="slds-grow"></system-input-date>
+                <system-input-time [(ngModel)]="dateEnd" class="slds-grow slds-p-horizontal--xx-small"></system-input-time>
+                <system-utility-icon system-title="LBL_NOW" icon="clock" size="x-small" (click)="setNow()"></system-utility-icon>
+            </div>
+        </div>
+        <div class="slds-col slds-size--1-of-4">
+            <label class="slds-form-element__label"><system-label label="LBL_ROWS"></system-label></label>
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="limit">
+                    <option>250</option>
+                    <option>500</option>
+                    <option>1000</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid slds-gutters_direct-xxx-small">
+        <div class="slds-col slds-size--1-of-8">
+            <label class="slds-form-element__label"><system-label label="LBL_USER"></system-label></label>
+            <system-input-relate module="Users" [(ngModel)]="filterUser" nameField="user_name"></system-input-relate>
+        </div>
+        <div class="slds-col slds-size--1-of-8">
+            <label class="slds-form-element__label"><system-label label="LBL_METHOD"></system-label></label>
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="filter.method">
+                    <option value=""></option>
+                    <option *ngFor="let method of methods">{{method}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="slds-col slds-size--1-of-8">
+            <label class="slds-form-element__label"><system-label label="LBL_DIRECTION"></system-label></label>
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="filter.direction">
+                    <option></option>
+                    <option value="I"><system-label label="LBL_DIRECTION_I"></system-label></option>
+                    <option value="O"><system-label label="LBL_DIRECTION_O"></system-label></option>
+                </select>
+            </div>
+        </div>
+        <div class="slds-col slds-size--1-of-8">
+            <label class="slds-form-element__label"><system-label label="LBL_STATUS"></system-label></label>
+            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                <input class="slds-input" type="text" system-trim-input size="3" [(ngModel)]="filter.status" />
+                <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.status=''">
+                    <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
+                </button>
+            </div>
+        </div>
+        <div class="slds-col slds-size--1-of-4">
+            <label class="slds-form-element__label"><system-label label="LBL_IP_ADDRESS"></system-label></label>
+            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                <input class="slds-input" type="text" system-trim-input [(ngModel)]="filter.ip" />
+                <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.ip=''">
+                    <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
+                </button>
+            </div>
+        </div>
+        <div class="slds-col slds-size--1-of-4">
+            <label class="slds-form-element__label"><system-label label="LBL_SESSION_ID"></system-label></label>
+            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                <input class="slds-input" type="text" system-trim-input [(ngModel)]="filter.session_id" />
+                <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.session_id=''">
+                    <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div system-to-bottom class="slds-border--top">
+    <table class="slds-table slds-table--bordered slds-table--fixed-layout slds-table--col-bordered slds-no-row-hover slds-table_header-fixed">
+        <thead>
+        <tr>
+            <th style="width: 8rem;"><system-label class="slds-th__action" label="LBL_DATE"></system-label></th>
+            <th style="width: 8rem" class="slds-resizable"><system-label class="slds-th__action" label="LBL_USER"></system-label></th>
+            <th style="width: 8rem" class="slds-resizable"><system-label class="slds-th__action" label="LBL_TRANSACTION_ID"></system-label></th>
+            <th class="slds-resizable"><system-label class="slds-th__action" label="LBL_ROUTE"></system-label></th>
+            <th style="width: 4rem"><system-label class="slds-th__action" label="LBL_METHOD"></system-label></th>
+            <th style="width: 2rem" class="slds-text-align_center"><system-utility-icon icon="signpost" size="x-small"></system-utility-icon></th>
+            <th style="width: 3rem;"><system-label class="slds-th__action" label="LBL_STATUS"></system-label></th>
+            <th style="width: 3rem;" class="slds-text-align_center"><system-utility-icon icon="clock" size="x-small"></system-utility-icon></th>
+            <th class="slds-resizable"><system-label class="slds-th__action" label="LBL_ROUTE_ARGUMENTS"></system-label></th>
+            <th class="slds-resizable"><system-label class="slds-th__action" label="LBL_URL_PARAMETERS"></system-label></th>
+            <th style="width:2.5rem"></th>
+        </tr>
+        </thead>
+        <tbody #tbody>
+        <tr *ngFor="let entry of entries" [ngClass]="{'slds-theme--error' :entry.http_status_code!=200}">
+            <td><system-display-datetime [date]="entry.date_entered"></system-display-datetime></td>
+            <td><div class="slds-truncate">{{entry.user_name}}</div></td>
+            <td><div class="slds-truncate">{{entry.transaction_id}}</div></td>
+            <td><div class="slds-truncate"><a (click)="valueClicked( 'route', entry.route )">{{entry.route}}</a></div></td>
+            <td class="slds-text-align--center"><div class="slds-truncate"><a (click)="valueClicked( 'method', entry.method )">{{entry.method}}</a></div></td>
+            <td class="slds-text-align--center">{{entry.direction}}</td>
+            <td class="slds-text-align--right status"><a (click)="valueClicked( 'status', entry.http_status_code )">{{entry.http_status_code}}</a></td>
+            <td class="slds-text-align--center"><system-display-number [number]="entry.runtime" system-display-number-nodigits></system-display-number></td>
+            <td><div class="slds-truncate">{{entry.request_args}}</div></td>
+            <td><div class="slds-truncate">{{entry.request_params}}</div></td>
+            <td>
+                <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="showEntryInModal(entry)">
+                    <system-button-icon [icon]="'expand'" [size]="'medium'"></system-button-icon>
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div *ngIf="entries.length == 0" class="slds-height_full slds-align--absolute-center">
+        <system-illustration-no-records><system-label label="LBL_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
+    </div>
+</div>

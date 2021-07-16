@@ -1,0 +1,19 @@
+<system-modal>
+    <system-modal-header (close)="closeModal()">Object Repository Export</system-modal-header>
+    <system-modal-content>
+        <system-spinner *ngIf="isLoading"></system-spinner>
+        <div *ngIf="!isLoading" class="slds-text-align--center slds-grid">
+            <div class="slds-m-right--medium" style="width:100%">
+                <input #inputField class="slds-input" type="text" value="{{repostring}}" style="width:100%" />
+            </div>
+            <!--
+            <button class="slds-button slds-button--icon-border-filled" (click)="copyToClipboard()" [disabled]="isLoading">
+                <system-button-icon icon="copy" size="medium"></system-button-icon>
+            </button>
+            -->
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="closeModal()">{{lang.getLabel('LBL_CLOSE')}}</button>
+    </system-modal-footer>
+</system-modal>

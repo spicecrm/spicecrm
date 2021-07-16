@@ -1,0 +1,44 @@
+<div *ngIf="filter">
+    <div class="slds-p-vertical--x-small slds-grid slds-grid--vertical-align-center slds-border--bottom ">
+        <div class="slds-col slds-grid slds-grid--vertical-align-center slds-size--1-of-2 slds-p-horizontal--x-small">
+            <label class="slds-form-element__label" ><system-label label="LBL_NAME"></system-label></label>
+            <div class="slds-form-element slds-col">
+                <div class="slds-form-element__control">
+                    <input  class="slds-input" type="text" [(ngModel)]="filter.name"/>
+                </div>
+            </div>
+        </div>
+        <div class="slds-col slds-grid slds-grid--vertical-align-center slds-size--1-of-4 slds-p-horizontal--x-small">
+            <label class="slds-form-element__label" ><system-label label="LBL_PACKAGE"></system-label></label>
+            <div class="slds-form-element slds-col">
+                <div class="slds-form-element__control">
+                    <input  class="slds-input" type="text" [(ngModel)]="filter.package"/>
+                </div>
+            </div>
+        </div>
+        <div class="slds-col slds-grid slds-grid--vertical-align-center slds-size--1-of-4 slds-p-horizontal--x-small">
+            <label class="slds-form-element__label" ><system-label label="LBL_VERSION"></system-label></label>
+            <div class="slds-form-element slds-col">
+                <div class="slds-form-element__control">
+                    <input  class="slds-input" type="text" [(ngModel)]="filter.version"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-p-around--x-small">
+        <div system-to-bottom class="slds-expression">
+            <h2 class="slds-expression__title"><system-label label="LBL_CONDITIONS"></system-label></h2>
+            <ul>
+                <system-filter-builder-expression-group [filtergroup]="primaryGroup" [module]="filter.module"></system-filter-builder-expression-group>
+            </ul>
+            <h2 class="slds-expression__title"><system-label label="LBL_METHOD"></system-label></h2>
+            <div class="slds-p-around--xx-small">
+                <system-input-backend-method [(ngModel)]="filter.filtermethod"></system-input-backend-method>
+            </div>
+            <div class="slds-expression__buttons">
+                <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+            </div>
+        </div>
+    </div>
+
+</div>

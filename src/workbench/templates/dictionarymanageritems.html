@@ -1,0 +1,59 @@
+<div system-to-bottom-noscroll>
+    <ng-container *ngIf="dictionarymanager.currentDictionaryDefinition; else selectdefinition">
+        <div style="height: calc(100% - 350px);" class="slds-scrollable--y">
+            <table  class="slds-table slds-table_cell-buffer slds-table_bordered">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th style="width:2.5rem" scope="col"></th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_DOMAIN"></system-label></div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_TEMPLATE"></system-label></div>
+                        </th>
+                        <th style="width:2rem" scope="col">
+                            <system-utility-icon icon="new" size="x-small" (click)="addDictionaryItem($event)" ></system-utility-icon>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="dragboundary"  cdkDropList (cdkDropListDropped)="drop($event)">
+                    <tr class="slds-hint-parent" *ngFor="let dictionaryitem of dictionaryitems" (click)="setActiveId(dictionaryitem.id)" [ngClass]="{'slds-is-selected': dictionarymanager.currentDictionaryItem == dictionaryitem.id}" cdkDrag [cdkDragDisabled]="!canShuffle" cdkDragBoundary=".dragboundary">
+                        <td>
+                            <system-utility-icon *ngIf="canShuffle" class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
+                            <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionaryitem.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
+                            <dictionary-manager-item-status [(ngModel)]="dictionaryitem.status"></dictionary-manager-item-status>
+                        </td>
+                        <td data-label="Domain">
+                            <div class="slds-truncate">{{dictionaryitem.name}}</div>
+                        </td>
+                        <td data-label="Type">
+                            <div class="slds-truncate">{{dictionarymanager.getDomainName(dictionaryitem.sysdomaindefinition_id)}}</div>
+                        </td>
+                        <td data-label="Type">
+                            <div class="slds-truncate">{{dictionarymanager.getDictionaryDefinitionName(dictionaryitem.sysdictionary_ref_id)}}</div>
+                        </td>
+                        <td>
+                            <button class="slds-button slds-button--icon" [disabled]="!dictionarymanager.canChange(dictionaryitem.scope)" (click)="deleteDictionaryItem($event, dictionaryitem.id)">
+                                <system-button-icon size="xx-small" icon="delete"></system-button-icon>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div *ngIf="dictionarymanager.changescope != 'none'" class="slds-align--absolute-center slds-p-around--small">
+                <system-utility-icon icon="new" size="x-small" (click)="addDictionaryItem($event)" ></system-utility-icon>
+            </div>
+        </div>
+        <div class="slds-border--top">
+            <dictionary-manager-item-details [dictionaryitem]="dictionaryitem"></dictionary-manager-item-details>
+        </div>
+    </ng-container>
+    <ng-template #selectdefinition>
+        <div class="slds-size--1-of-1 slds-height_full slds-align--absolute-center">
+            <system-label label="LBL_SELECT_A_DICTIONARYDEFINITION"></system-label>
+        </div>
+    </ng-template>
+</div>

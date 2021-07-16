@@ -1,0 +1,237 @@
+<system-modal size="large">
+    <system-modal-header (close)="close()">{{entry.route}}</system-modal-header>
+    <system-modal-content system-modal-content-grow margin="none">
+        <system-spinner *ngIf="isLoading" class="slds-m-top--medium" style="display:block"></system-spinner>
+        <div *ngIf="!isLoading" class="slds-tabs_default">
+            <ul class="slds-tabs_default__nav" role="tablist">
+                <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active' : activeTab == 'record'}" (click)="activeTab = 'record'">
+                    <a class="slds-tabs_default__link"><system-label label="LBL_RECORD"></system-label></a>
+                </li>
+                <li class="slds-tabs_default__item" [ngClass]="{'slds-is-active' : activeTab == 'headers'}" (click)="activeTab = 'headers'">
+                    <a class="slds-tabs_default__link"><system-label label="LBL_HEADERS"></system-label></a>
+                </li>
+                <li *ngIf="hasRequest" class="slds-tabs_default__item" [ngClass]="{'slds-is-active' : activeTab == 'post'}" (click)="activeTab = 'post'">
+                    <a class="slds-tabs_default__link"><system-label label="LBL_REQUEST"></system-label></a>
+                </li>
+                <li *ngIf="hasResponse" class="slds-tabs_default__item" [ngClass]="{'slds-is-active' : activeTab == 'response'}" (click)="activeTab = 'response'">
+                    <a class="slds-tabs_default__link"><system-label label="LBL_RESPONSE"></system-label></a>
+                </li>
+            </ul>
+            <div class="slds-tabs_default__content slds-show" [ngClass]="{'slds-hide' : activeTab != 'record'}">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--fixed-layout" >
+                    <thead>
+                    <tr class="slds-line-height_reset">
+                        <th class="slds-size--1-of-4" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                        </th>
+                        <th class="slds-size--3-of-4" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_VALUE"></system-label></div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><system-label label="LBL_ID"></system-label></td>
+                        <td>{{entry.id}}</td>
+                    </tr>
+                    <tr>
+                        <td><system-label label="LBL_TRANSACTIONID"></system-label></td>
+                        <td>{{record.transaction_id}}</td>
+                    </tr>
+                    <tr>
+                        <td><system-label label="LBL_SESSIONID"></system-label></td>
+                        <td>{{record.session_id}}</td>
+                    </tr>
+                    <tr>
+                        <td><system-label label="LBL_DATE"></system-label></td>
+                        <td><system-display-datetime [date]="entry.date_entered"></system-display-datetime></td>
+                    </tr>
+                    <tr>
+                        <td><system-label label="LBL_DIRECTION"></system-label></td>
+                        <td>{{entry.direction}}</td>
+                    </tr>
+                    <tr>
+                        <td><system-label label="LBL_STATUS"></system-label></td>
+                        <td>{{entry.http_status_code}}</td>
+                    </tr>
+                    <tr>
+                        <td><system-label label="LBL_METHOD"></system-label></td>
+                        <td>{{entry.method}}</td>
+                    </tr>
+                    <tr>
+                        <td><system-label label="LBL_RUNTIME"></system-label></td>
+                        <td>{{entry.runtime}}</td>
+                    </tr>
+                    <tr>
+                        <td><system-label label="LBL_USER"></system-label></td>
+                        <td>{{entry.user_name}}</td>
+                    </tr>
+                    <tr>
+                        <td><system-label label="LBL_ROUTE"></system-label></td>
+                        <td>{{entry.route}}</td>
+                    </tr>
+                    <tr>
+                        <td><system-label label="LBL_URL"></system-label></td>
+                        <td>{{record.url}}</td>
+                    </tr>
+                    <tr>
+                        <td><system-label label="LBL_IP"></system-label></td>
+                        <td>{{record.ip}}</td>
+                    </tr>
+                    <tr>
+                        <td><system-label label="LBL_ERROR"></system-label></td>
+                        <td>{{record.response_error}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <!-- the arguments table-->
+                <div *ngIf="requestArguments.length > 0" class="slds-p-vertical--small">
+                    <h3 class="slds-p-around--x-small"><system-label label="LBL_REQUEST_ARGUMENTS"></system-label></h3>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--fixed-layout" >
+                        <thead>
+                        <tr class="slds-line-height_reset">
+                            <th class="slds-size--1-of-4" scope="col">
+                                <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                            </th>
+                            <th class="slds-size--3-of-4" scope="col">
+                                <div class="slds-truncate"><system-label label="LBL_VALUE"></system-label></div>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="slds-hint-parent" *ngFor="let requestArgument of requestArguments">
+                            <td>
+                                <div class="slds-truncate">{{requestArgument.name}}</div>
+                            </td>
+                            <td>
+                                <div class="slds-truncate">{{requestArgument.value}}</div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- the params table-->
+                <div *ngIf="requestParams.length > 0" class="slds-p-vertical--small">
+                    <h3 class="slds-p-around--x-small"><system-label label="LBL_REQUEST_PARAMS"></system-label></h3>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--fixed-layout" >
+                        <thead>
+                        <tr class="slds-line-height_reset">
+                            <th class="slds-size--1-of-4" scope="col">
+                                <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                            </th>
+                            <th class="slds-size--3-of-4" scope="col">
+                                <div class="slds-truncate"><system-label label="LBL_VALUE"></system-label></div>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="slds-hint-parent" *ngFor="let requestParam of requestParams">
+                            <td>
+                                <div class="slds-truncate">{{requestParam.name}}</div>
+                            </td>
+                            <td>
+                                <div class="slds-truncate">{{requestParam.value}}</div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="slds-tabs_default__content slds-show" [ngClass]="{'slds-hide' : activeTab != 'headers'}">
+                <h3 class="slds-p-around--x-small"><system-label label="LBL_REQUEST_HEADERS"></system-label></h3>
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--fixed-layout" >
+                    <thead>
+                    <tr class="slds-line-height_reset">
+                        <th class="slds-size--1-of-4" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                        </th>
+                        <th class="slds-size--3-of-4" scope="col">
+                            <div class="slds-truncate"><system-label label="LBL_VALUE"></system-label></div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="slds-hint-parent" *ngFor="let requestHeader of requestHeaders">
+                        <td>
+                            <div class="slds-truncate">{{requestHeader.name}}</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate">{{requestHeader.value}}</div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <ng-container *ngIf="record.response_headers">
+                    <h3 class="slds-p-around--x-small"><system-label label="LBL_RESPONSE_HEADERS"></system-label></h3>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--fixed-layout" >
+                        <thead>
+                        <tr class="slds-line-height_reset">
+                            <th class="slds-size--1-of-4" scope="col">
+                                <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                            </th>
+                            <th class="slds-size--3-of-4" scope="col">
+                                <div class="slds-truncate"><system-label label="LBL_VALUE"></system-label></div>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="slds-hint-parent" *ngFor="let responseHeader of responseHeaders">
+                            <td>
+                                <div class="slds-truncate">{{responseHeader.name}}</div>
+                            </td>
+                            <td>
+                                <div class="slds-truncate">{{responseHeader.value}}</div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </ng-container>
+            </div>
+            <div *ngIf="hasRequest" class="slds-tabs_default__content slds-show" [ngClass]="{'slds-hide' : activeTab != 'post'}">
+                <ng-container [ngSwitch]="determineContentType(_requestheaders)">
+                    <div *ngSwitchCase="'application/x-www-form-urlencoded'">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--fixed-layout" >
+                            <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="slds-size--1-of-4" scope="col">
+                                    <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                                </th>
+                                <th class="slds-size--3-of-4" scope="col">
+                                    <div class="slds-truncate"><system-label label="LBL_VALUE"></system-label></div>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="slds-hint-parent" *ngFor="let rline of formattedRequest()">
+                                <td>
+                                    <div class="slds-truncate">{{rline.name}}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate">{{rline.value}}</div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div *ngSwitchDefault class="slds-m-horizontal--x-small slds-box slds-theme--shade">
+                        <pre class="slds-text-font_monospace" style="overflow-wrap:break-word; white-space: pre-wrap;">{{formattedRequest()}}</pre>
+                    </div>
+                </ng-container>
+            </div>
+            <div *ngIf="hasResponse" class="slds-tabs_default__content slds-show" [ngClass]="{'slds-hide' : activeTab != 'response'}">
+                <ng-container [ngSwitch]="determineContentType(_responseheaders)">
+                    <div *ngSwitchCase="'application/x-www-form-urlencoded'">
+                        url encoded
+                    </div>
+                    <div *ngSwitchDefault class="slds-m-horizontal--x-small slds-box slds-theme--shade">
+                        <pre class="slds-text-font_monospace" style="overflow-wrap:break-word; white-space: pre-wrap;">{{formattedResponse()}}</pre>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

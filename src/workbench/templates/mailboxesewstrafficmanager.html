@@ -1,0 +1,49 @@
+<div class="slds-m-vertical--xx-small slds-box--border">
+    <div class="slds-p-around--x-small">
+        <h1><system-label label="LBL_EWS"></system-label></h1>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-1">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_HOST"></system-label></label>
+                <input type="text" [disabled]="!view.isEditMode()" [(ngModel)]="model.data.settings.ews_host" class="slds-input"/>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_USER_NAME"></system-label></label>
+                <input type="text" [(ngModel)]="model.data.settings.ews_username" class="slds-input" [disabled]="!view.isEditMode()"/>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_PASSWORD"></system-label></label>
+                <system-input-password  [(ngModel)]="model.data.settings.ews_password" [disabled]="!view.isEditMode()"></system-input-password>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_MAILBOX_EMAIL"></system-label></label>
+                <input type="text" [(ngModel)]="model.data.settings.ews_email" class="slds-input" [disabled]="!view.isEditMode()"/>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_MAILBOX_FOLDER"></system-label></label>
+                <input type="text" [ngModel]="foldername" class="slds-input" disabled/>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_PUSH"></system-label></label>
+                <div>
+                    <system-checkbox [(ngModel)]="model.data.settings.ews_push"></system-checkbox>
+                </div>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <label class="slds-truncate slds-form-element__label"><system-label label="LBL_SUBSCRIPTION"></system-label></label>
+                <input type="text" [(ngModel)]="model.data.settings.ews_subscriptionid" class="slds-input" disabled/>
+            </div>
+        </div>
+        <div class="slds-grid slds-p-vertical--xx-small">
+            <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="displayFoldersModal()" [disabled]="!view.isEditMode()"><system-label label="LBL_EWS_SELECT_FOLDERS"></system-label></button>
+            <button type="button" class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()" [disabled]="!view.isEditMode()">
+                <system-label label="LBL_TEST_CONNECTION"></system-label>
+            </button>
+        </div>
+    </div>
+</div>

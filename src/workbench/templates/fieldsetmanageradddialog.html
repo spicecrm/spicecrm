@@ -1,0 +1,78 @@
+<div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+    <div class="slds-modal__container">
+        <div class="slds-modal__header slds-theme--shade">
+            <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" (click)="closeDialog()">
+                <system-button-icon [icon]="'close'" [size]="'large'"></system-button-icon>
+            </button>
+            <h2 id="header43" class="slds-text-heading--medium"><system-label label="LBL_ADD_ITEM"></system-label></h2>
+        </div>
+        <div class="slds-modal__content slds-p-around--medium">
+            <div class="slds-grid slds-col--bump-left">
+                    <span class="slds-radio">
+                        <input type="radio" name="addType" value="fieldsetadd" id="fieldsetaddradio" [(ngModel)]="addType">
+                        <label class="slds-radio__label" for="fieldsetaddradio">
+                            <span class="slds-radio_faux"></span>
+                            <span class="slds-form-element__label"><system-label label="LBL_ADD_FIELDSET"></system-label></span>
+                        </label>
+                    </span>
+                    <span class="slds-radio">
+                        <input type="radio" name="addType" value="fieldsetselect" id="fieldsetselectradio" [(ngModel)]="addType">
+                        <label class="slds-radio__label" for="fieldsetselectradio">
+                            <span class="slds-radio_faux"></span>
+                            <span class="slds-form-element__label"><system-label label="LBL_SELECT_FIELDSET"></system-label></span>
+                        </label>
+                    </span>
+                    <span class="slds-radio">
+                        <input type="radio" name="addType" value="field" id="fieldradio" [(ngModel)]="addType"/>
+                        <label class="slds-radio__label" for="fieldradio">
+                            <span class="slds-radio_faux"></span>
+                            <span class="slds-form-element__label"><system-label label="LBL_FIELD"></system-label></span>
+                        </label>
+                    </span>
+            </div>
+            <div *ngIf="addType=='field'" class="slds-form-element">
+                <label class="slds-form-element__label" ><system-label label="LBL_FIELDNAME"></system-label></label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select  class="slds-select" [(ngModel)]="addName">
+                            <option *ngFor="let fieldname of getFieldNames()">{{fieldname}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-m-top--small">
+                    <label class="slds-form-element__label"><system-label label="LBL_ITEM_NAME"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" placeholder="name" [(ngModel)]="addName" />
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="addType=='fieldsetadd'" class="slds-form-element">
+                <label class="slds-form-element__label"><system-label label="LBL_SCOPE"></system-label></label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="fieldsettype">
+                            <option *ngIf="edit_mode == 'all'" value="global"><system-label label="LBL_GLOBAL"></system-label></option>
+                            <option value="custom"><system-label label="LBL_CUSTOM"></system-label></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-m-top--small">
+                    <label class="slds-form-element__label"><system-label label="LBL_ITEM_NAME"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" placeholder="name" [(ngModel)]="addName" />
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="addType=='fieldsetselect'" class="slds-form-element">
+                <label class="slds-form-element__label"><system-label label="LBL_FIELDSET"></system-label></label>
+                <div class="slds-form-element__control">
+                    <system-input-fieldset [(ngModel)]="addFieldset"></system-input-fieldset>
+                </div>
+            </div>
+        </div>
+        <div class="slds-modal__footer">
+            <button class="slds-button slds-button--neutral" (click)="closeDialog()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button class="slds-button slds-button--brand" (click)="add()"><system-label label="LBL_ADD"></system-label></button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,13 @@
+<workbench-header titlelabel="LBL_DICTIONARY_MANAGER">
+    <workbench-header-controls>
+        <button class="slds-button slds-button--neutral" (click)="dictionarymanager.save()"><system-label label="LBL_SAVE"></system-label></button>
+    </workbench-header-controls>
+</workbench-header>
+<div class="slds-grid">
+    <div class="slds-size--1-of-3">
+        <dictionary-manager-definitions></dictionary-manager-definitions>
+    </div>
+    <div class="slds-size--2-of-3 slds-theme--default slds-border--left">
+        <dictionary-manager-definition-tabs></dictionary-manager-definition-tabs>
+    </div>
+</div>

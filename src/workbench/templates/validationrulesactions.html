@@ -1,0 +1,47 @@
+<table class="slds-table slds-table--bordered slds-table--cell-buffer">
+    <thead>
+    <tr class="slds-text-title--caps">
+        <th scope="col" style="width:2rem;">Fieldname</th>
+        <th scope="col" style="width:1rem;">Action</th>
+        <th scope="col" style="width:4rem;">Parameter(s)</th>
+        <th scope="col" style="width:1rem;">Priority</th>
+        <th scope="col" style="width:1rem;"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let c of actions" class="slds-theme--shade">
+        <td>
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="c.fieldname">
+                    <option></option>
+                    <option *ngFor="let opt of fieldname_options" value="{{opt}}">{{opt}}</option>
+                </select>
+            </div>
+        </td>
+        <td>
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="c.action">
+                    <option *ngFor="let opt of action_options" value="{{opt}}">{{opt}}</option>
+                </select>
+            </div>
+        </td>
+        <td>
+            <div class="slds-form-element__control">
+                <textarea class="slds-textarea" [ngModel]="c.params | maybejson" (ngModelChange)="c.params=$event"></textarea>
+            </div>
+        </td>
+        <td>
+            <div class="slds-form-element__control">
+                <input type="number" min="0" max="99" class="slds-input" [(ngModel)]="c.priority"/>
+            </div>
+        </td>
+        <td>
+            <button class="slds-button slds-button--negative" (click)="removeAction(c.id)"><system-button-icon [icon]="'delete'" [size]="'small'"></system-button-icon></button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="slds-grid slds-grid--align-spread slds-p-around--medium">
+    <button class="slds-button slds-button--neutral" (click)="addAction()"><system-label label="LBL_ADD"></system-label></button>
+</div>

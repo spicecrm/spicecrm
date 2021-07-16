@@ -1,0 +1,21 @@
+<div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
+    <div class="slds-form-element">
+        <label class="slds-form-element__label"><system-label label="LBL_MAILBOX"></system-label></label>
+        <div class="slds-form-element__control" style="min-width:250px;">
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="selected_mailbox">
+                    <option value="">--</option>
+                    <option *ngFor="let mailbox of mailboxes"
+                            [value]="mailbox.id">{{mailbox.name}}
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="slds-form-element slds-col--bump-left">
+       <object-action-container [actionset]="headeractionset"></object-action-container>
+    </div>
+</div>
+<div system-to-bottom class="slds-p-horizontal--small">
+    <div #viewcontainer></div>
+</div>

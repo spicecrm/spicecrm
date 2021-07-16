@@ -1,0 +1,20 @@
+<div class="slds-p-around--medium slds-theme--shade">
+    <div class="slds-page-header__row">
+        <div class="slds-page-header__col-title">
+            <div class="slds-media">
+                <system-icon [icon]="icon"></system-icon>
+                <div class="slds-media__body">
+                    <div class="slds-page-header__name">
+                        <div class="slds-page-header__name-title">
+                            <h1>
+                                <span class="slds-page-header__title slds-truncate"><system-label [label]="titlelabel"></system-label></span>
+                            </h1>
+                        </div>
+                    </div>
+                    <p class="slds-page-header__name-meta"><ng-content></ng-content></p>
+                </div>
+            </div>
+        </div>
+        <ng-content select="workbench-header-controls"></ng-content>
+    </div>
+</div>
