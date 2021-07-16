@@ -1032,6 +1032,10 @@ export class model implements OnDestroy {
         let changedData: any;
         if (this.isEditing && !this.isNew) {
             changedData = this.getDirtyFields();
+            // workaround: to prevent saving the email address twice
+            if ('email1' in changedData) {
+                changedData.email1 = '';
+            }
             // in any case send back date_modified
             changedData.date_modified = this.data.date_modified;
 
@@ -1709,6 +1713,8 @@ export class model implements OnDestroy {
         if (records) {
             return this.addRelatedRecords(relation_link_name, records);
         }
+        this.field$.next({field: relation_link_name, value: this.getRelatedRecords(relation_link_name)});
+
     }
 
     /**
@@ -1733,6 +1739,9 @@ export class model implements OnDestroy {
             }
             this.data[relation_link_name].beans[record.id] = record;
         }
+
+        this.field$.next({field: relation_link_name, value: this.getRelatedRecords(relation_link_name)});
+
         return true;
     }
 

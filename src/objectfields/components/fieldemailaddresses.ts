@@ -60,14 +60,13 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
         // if we have only one entry clear the input otherwise remove it
         if (this.emailAddresses.length > 1) {
             this.emailAddresses = this.emailAddresses.filter(e => e.id !== emailAddress.id);
+            this.model.removeRelatedRecords('email_addresses', [emailAddress.id]);
         } else {
             emailAddress.email_address = '';
             emailAddress.email_address_caps = '';
         }
 
-        this.model.setField('emailaddresses', this.getUniqueCleanEmailAddresses());
-
-        if (this.model.getField('emailaddresses').length == 0) {
+        if (this.model.getRelatedRecords('email_addresses').length == 0) {
             this.setEmail1Field(undefined);
         }
 
@@ -112,7 +111,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
                 addr.primary_address = '0';
             }
         });
-        this.model.setField('emailaddresses', this.getUniqueCleanEmailAddresses());
+        this.model.addRelatedRecords('email_addresses', this.emailAddresses);
     }
 
     /**
@@ -126,16 +125,12 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
 
         const newEmailAddress = {
             id: this.model.generateGuid(),
-            bean_id: this.model.id,
-            bean_module: this.model.module,
             email_address: '',
-            email_address_id: '',
             primary_address: this.emailAddresses.some(e => e.primary_address == '1') ? '0' : '1',
             hasFocus
         };
 
         this.emailAddresses.push(newEmailAddress);
-        this.model.setField('emailaddresses', this.getUniqueCleanEmailAddresses());
         this.canAdd = false;
     }
 
@@ -151,6 +146,11 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
             })
         );
 
+        this.subscriptions.add(
+          this.model.observeFieldChanges('email_addresses').subscribe(() => {
+             this.emailAddresses = this.model.getRelatedRecords('email_addresses');
+          })
+        );
     }
 
     /**
@@ -183,12 +183,12 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      */
     private initialize() {
 
-        this.emailAddresses = this.model.getField('emailaddresses');
+        this.emailAddresses = this.model.getRelatedRecords('email_addresses');
 
         if (!this.isEditMode()) return;
 
         if (!Array.isArray(this.emailAddresses) || this.emailAddresses.length == 0) {
-            this.model.initializeField('emailaddresses', []);
+            this.model.initializeField('email_addresses', {beans: {}});
             this.emailAddresses = [];
             this.canAdd = true;
             this.addEmailAddress();
@@ -206,10 +206,11 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      */
     private setEmailAddressesField() {
         const emailAddresses = this.getUniqueCleanEmailAddresses();
-        this.model.setField('emailaddresses', emailAddresses);
+        this.model.addRelatedRecords('email_addresses', emailAddresses.unique);
+        this.model.removeRelatedRecords('email_addresses', emailAddresses.deletedIds);
         this.handleFieldInvalid();
         this.setEmail1Field(
-            emailAddresses.find(e => e.primary_address == '1')
+            emailAddresses.unique.find(e => e.primary_address == '1')
         );
         this.setCanAdd();
     }
@@ -236,22 +237,26 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
     }
 
     /**
-     * @return the unique email addresses and filter out the empty once
+     * @return any[] unique email addresses and filter out the empty once
      * @private
      */
-    private getUniqueCleanEmailAddresses(): any[] {
+    private getUniqueCleanEmailAddresses(): {deletedIds, unique} {
 
-        const emailAddresses = [];
+        const unique = [];
+        const deletedIds = this.emailAddresses.filter(emailAddress => !emailAddress.email_address).map(e => e.id);
 
         this.emailAddresses
             .filter(emailAddress => !!emailAddress.email_address)
             .forEach(emailAddress => {
-                if (!emailAddresses.some(e => e.email_address == emailAddress.email_address)) {
+                if (!unique.some(e => e.email_address == emailAddress.email_address)) {
                     delete emailAddress.hasFocus;
-                    emailAddresses.push(emailAddress);
+                    unique.push(emailAddress);
+                } else {
+                    deletedIds.push(emailAddress.id);
                 }
             });
-        return emailAddresses;
+
+        return {deletedIds, unique};
     }
 }
 
