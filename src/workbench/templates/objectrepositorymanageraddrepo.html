@@ -1,0 +1,35 @@
+<div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+    <div class="slds-modal__container">
+        <div class="slds-modal__header slds-theme--shade">
+            <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" (click)="closeDialog()">
+                <system-button-icon [icon]="'close'" [size]="'large'"></system-button-icon>
+            </button>
+            <h2 id="header43" class="slds-text-heading--medium"><system-label label="LBL_ADD_REPOSITORY"></system-label></h2>
+        </div>
+        <div class="slds-modal__content slds-p-around--medium">
+
+            <div class="slds-form-element slds-m-top--small">
+                <label class="slds-form-element__label"><system-label label="LBL_OBJECT"></system-label></label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" placeholder="" [(ngModel)]="objRepo.object" />
+                </div>
+            </div>
+            <div class="slds-form-element slds-m-top--small">
+                <label class="slds-form-element__label" for="text-input-id-1"><system-label label="LBL_COMPONENT"></system-label></label>
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                    <input type="text" id="text-input-id-1" class="slds-input" placeholder="" [(ngModel)]="objRepo.component" />
+                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" title="add item" (click)="copyObject()">
+                        <system-utility-icon [icon]="'redo'" [size]="'xx-small'"
+                                             [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
+                    </button>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="slds-modal__footer">
+            <button class="slds-button slds-button--neutral" (click)="closeDialog()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button class="slds-button slds-button--brand" (click)="add()"><system-label label="LBL_ADD"></system-label></button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,109 @@
+<fieldset *ngIf="action" class="slds-form-element slds-form-element_compound">
+    <legend class="slds-form-element__legend slds-form-element__label slds-m-vertical_small">
+        <system-label label="LBL_COMPONENT"></system-label>
+    </legend>
+    <div class="slds-form-element__control">
+
+
+        <div class="slds-form-element">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_STANDARD_ACTION"></system-label>
+            </label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container slds-m-vertical--xx-small">
+                    <select [disabled]="!view.isEditMode()" #focus class="slds-select " [(ngModel)]="action.action"
+                            (change)="setActionComponent()">
+                        <option [value]=""></option>
+                        <option *ngFor="let a of standardActions" [value]="a.value">{{a.display}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_MODULE"></system-label>
+                </label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select [disabled]="!view.isEditMode() || (action.action != '' && action.action)"
+                                class="slds-select" [(ngModel)]="systemmodule">
+                            <option *ngFor="let module of systemmodules" [value]="module.id">{{module.module}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_COMPONENT"></system-label>
+                </label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select [disabled]="!view.isEditMode() || (action.action != '' && action.action)"
+                                class="slds-select" (change)="setComponent()" [(ngModel)]="localcomponent">
+                            <option>-</option>
+                            <option *ngFor="let component of components"
+                                    [value]="component.component">{{componentName(component)}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <legend class="slds-form-element__legend slds-form-element__label slds-m-vertical_small">
+        <system-label label="LBL_INFORMATION"></system-label>
+    </legend>
+    <div class="slds-form-element__control">
+        <div class="slds-form-element slds-m-bottom--x-small">
+            <label class="slds-form-element__label">ID</label>
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" [ngModel]="action.id" disabled/>
+            </div>
+        </div>
+        <div class="slds-form-element slds-m-vertical--xxx-small">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_PACKAGE"></system-label>
+            </label>
+            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
+                <input [disabled]="!view.isEditMode()" type="text" class="slds-input" placeholder="package"
+                       [(ngModel)]="action.package"/>
+            </div>
+        </div>
+        <div class="slds-form-element slds-m-vertical--xxx-small">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_VERSION"></system-label>
+            </label>
+            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right">
+                <input [disabled]="!view.isEditMode()" type="text" class="slds-input" placeholder="version"
+                       [(ngModel)]="action.version"/>
+            </div>
+        </div>
+    </div>
+    <legend class="slds-form-element__legend slds-form-element__label slds-m-vertical_small">
+        <system-label label="LBL_OPTIONS"></system-label>
+    </legend>
+    <div class="slds-form-element__control">
+        <div class="slds-form-element slds-m-vertical--xx-small">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_LABEL"></system-label>
+            </label>
+            <system-input-label *ngIf="view.isEditMode()" [(ngModel)]="action.actionconfig.label"></system-input-label>
+        </div>
+        <div class="slds-form-element slds-m-vertical--xx-small">
+            <label class="slds-form-element__label">
+                <system-label label="LBL_ADD_CLASS"></system-label>
+            </label>
+            <input type="text" class="slds-input" [disabled]="!view.isEditMode()" [(ngModel)]="action.actionconfig.addclasses"/>
+        </div>
+        <fieldset class="slds-form-element slds-m-vertical--xxx-small">
+            <div class="slds-form-element__control">
+                <label class="slds-checkbox" for="link">
+                    <input [disabled]="!view.isEditMode()" type="checkbox" id="link" [(ngModel)]="action.singlebutton"/>
+                    <span class="slds-checkbox--faux"></span>
+                    <span class="slds-form-element__label"><system-label label="LBL_SINGLEBUTTON"></system-label></span>
+                </label>
+            </div>
+        </fieldset>
+        <workbench-config [component]="action.component" [configValues]="action.actionconfig"></workbench-config>
+    </div>
+</fieldset>

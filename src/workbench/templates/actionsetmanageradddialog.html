@@ -1,0 +1,45 @@
+<div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+    <div class="slds-modal__container">
+        <div class="slds-modal__header slds-theme--shade">
+            <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" (click)="closeDialog()">
+                <system-button-icon [icon]="'close'" [size]="'large'"></system-button-icon>
+            </button>
+            <h2 id="header43" class="slds-text-heading--medium">{{modalTitle}}</h2>
+        </div>
+        <div class="slds-modal__content slds-p-around--medium">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
+                <div class="slds-form-element__control" style="min-width:250px;">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="actionsetModule" (change)="reset()" [disabled]="sysModules.length == 0">
+                            <option value="*">*</option>
+                            <option *ngFor="let sysModule of sysModules" [value]="sysModule.module">{{sysModule.module}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element slds-m-top--small">
+                <label class="slds-form-element__label"><system-label label="LBL_ITEM_NAME"></system-label></label>
+                <div class="slds-form-element__control">
+                    <input type="text" class="slds-input" placeholder="name" [(ngModel)]="actionsetName" />
+                </div>
+            </div>
+            <div class="slds-form-element">
+                <label class="slds-form-element__label"><system-label label="LBL_TYPE"></system-label></label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="actionsetType">
+                            <option value="global" *ngIf="edit_mode == 'all'"><system-label label="LBL_GLOBAL"></system-label></option>
+                            <option value="custom"><system-label label="LBL_CUSTOM"></system-label></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-modal__footer">
+            <button class="slds-button slds-button--neutral" (click)="closeDialog()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button class="slds-button slds-button--brand" [disabled]="fieldsetname == ''" (click)="add()"><system-label label="LBL_ADD"></system-label></button>
+        </div>
+    </div>
+</div>
