@@ -7,7 +7,7 @@ import { backend } from '../../../services/backend.service';
 import { toast } from "../../../services/toast.service";
 import { language } from '../../../services/language.service';
 import { helper } from '../../../services/helper.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { broadcast } from "../../../services/broadcast.service";
 
 /**
@@ -72,6 +72,8 @@ export class questionnaireParticipationService {
     private initByParticipation = false;
     private initByQuestionnaire = false;
 
+    private routeForSave: string;
+
     /**
      * isDirty indicates that one or more question answers has been given/changed and that the information is still not saved to the backend.
      */
@@ -126,24 +128,26 @@ export class questionnaireParticipationService {
 
     constructor( private backend: backend, private toast: toast, private language: language, private helper: helper, private broadcast: broadcast ) { }
 
-    public init_byParent( parentId: string, parentType: string ): void {
+    public init_byParent( parentId: string, parentType: string ): Observable<any> {
         this.initByParent = true;
         this.parentId = parentId;
         this.parentType = parentType;
-        this.loadParticipation_byParent();
+        this.routeForSave = 'module/QuestionAnswers/ofParticipation/byParent/'+this.parentType+'/'+this.parentId;
+        return this.loadParticipation_byParent();
     }
 
-    public init_byParticipation( participationId: string ) {
+    public init_byParticipation( participationId: string ): Observable<any> {
         this.initByParticipation = true;
         this.participationId = participationId;
-        this.loadParticipation_byParticipation();
+        this.routeForSave = 'module/QuestionAnswers/ofParticipation/byParticipation/'+this.participationId;
+        return this.loadParticipation_byParticipation();
     }
 
-    public init_byQuestionnaire( questionnaireId: string ) {
+    public init_byQuestionnaire( questionnaireId: string ): Observable<any> {
         this.initByQuestionnaire = true;
         this.questionnaireId = questionnaireId;
         if ( !this.editMode ) this.editMode = 'preview';
-        this.loadQuestionnaire();
+        return this.loadQuestionnaire();
     }
 
     /**
@@ -202,14 +206,10 @@ export class questionnaireParticipationService {
     public saveSingleAnswerToBackend( questionId: string, backupForNetworkError: string ): void {
         // At the beginning disable the input field of the question. It will stay disabled until server response at the end.
         this.questionsMeta[questionId].tempReadonly = true;
-        let route = 'module/QuestionAnswers/ofParticipation/';
-        // if ( this.participationId ) route += 'byParticipation/'+this.participationId;
-        // else
-        route += 'byParent/'+this.parentType+'/'+this.parentId+'/'+questionId;
-        this.backend.postRequest( route, {}, { answer: this.answers[questionId] } ).subscribe( response => {
+        this.backend.postRequest( this.routeForSave+'/'+questionId, {}, { answer: this.answers[questionId] } ).subscribe( response => {
                 // this.answers[questionId].answer_value = response.answer_value; // Relevant is, what´s in the database/backend.
                 this.questionsMeta[questionId].tempReadonly = false;
-                this.determineNumOfFinishedQuestionsInQuestionset( this.questions[questionId].questionset_id ); // New determination of the number of finished questions.
+                this.determineNumOfFinishedQuestionsInQuestionset( this.questions[questionId].parentQuestionset.id ); // New determination of the number of finished questions.
             },
             error => {
                 this.questionsMeta[questionId].tempReadonly = false; // Enable the input field of the question.
@@ -281,18 +281,16 @@ export class questionnaireParticipationService {
 
     }
 
-    // toDo, to complete
-    public setTimer( text: string, warning: boolean ) {
-        1;
-    }
+    // toDo, to implement, instead of code in supportalquestionnaire.ts
+    // public setTimer( text: string, warning: boolean ) { }
 
     /**
      * Load the questionnaire (with question sets, questions and question options)
      * and do all the other stuff like building arrays, sorting, building of question meta data and initializing the answers object.
      */
-    private loadQuestionnaire(): EventEmitter<any> {
+    private loadQuestionnaire(): Observable<any> {
         this.isLoadedParticipation = true; // Only in case there was no participation to load.
-        let loaded$ = new EventEmitter<any>();
+        let responseSubject = new Subject<any>();
         this.backend.getRequest( 'module/Questionnaires/'+this.questionnaireId+'/render' ).subscribe( ( response: any ) => {
             this.questionnaire = response;
             this.doBasics();
@@ -300,13 +298,11 @@ export class questionnaireParticipationService {
             this.sortData();
             this.buildQuestionMetaData();
             this.initAnswers();
-            for ( let questionset of this.questionsetsArray ) {
-                this.determineNumOfFinishedQuestionsInQuestionset( questionset.id );
-            }
             this.isLoadedQuestionnaire = true;
-            loaded$.emit();
+            responseSubject.next();
+            responseSubject.complete();
         });
-        return loaded$;
+        return responseSubject;
     }
 
     /**
@@ -484,7 +480,8 @@ export class questionnaireParticipationService {
         }
     }
 
-    private loadParticipation_byParent() {
+    private loadParticipation_byParent(): Observable<any> {
+        let responseSubject = new Subject<any>();
         this.backend.getRequest('module/QuestionAnswers/ofParticipation/byParent/'+this.parentType+'/'+this.parentId ).subscribe( response => {
             this.questionnaireId = response.questionnaireId;
             // In case the edit mode is "off" or "preview" there are no answer values to load:
@@ -495,19 +492,26 @@ export class questionnaireParticipationService {
                 this.insertLoadedAnswers( response.answers );
                 this.isCompleted = !!response.isCompleted;
                 this.isLoadedParticipation = true;
+                responseSubject.next();
+                responseSubject.complete();
             });
         });
+        return responseSubject;
     }
 
-    private loadParticipation_byParticipation() {
+    private loadParticipation_byParticipation(): Observable<any> {
+        let responseSubject = new Subject<any>();
         this.backend.getRequest('module/QuestionAnswers/ofParticipation/byParticipation/'+this.participationId ).subscribe( response => {
             this.questionnaireId = response.questionnaireId;
             this.loadQuestionnaire().subscribe( () => {
                 this.insertLoadedAnswers( response.answers );
                 this.isCompleted = !!response.isCompleted;
                 this.isLoadedParticipation = true;
+                responseSubject.next();
+                responseSubject.complete();
             });
         });
+        return responseSubject;
     }
 
     private insertLoadedAnswers( answers: any ): void {
@@ -521,6 +525,9 @@ export class questionnaireParticipationService {
                     this.answers[questionId].options[optionId] = answers[questionId].options[optionId];
                 }
             }
+        }
+        for ( let questionset of this.questionsetsArray ) {
+            this.determineNumOfFinishedQuestionsInQuestionset( questionset.id );
         }
     }
 
@@ -540,73 +547,62 @@ export class questionnaireParticipationService {
         else if ( this.initByQuestionnaire ) this.loadQuestionnaire();
     }
 
-    // todo: check betreffend answer object
-    private determineNumOfFinishedQuestionsInQuestionset( questionsetId: string ): number {
-        return 0;
+    /**
+     * Determines the number of finished questions of a specific question set.
+     * @param questionsetId ID of the question Set.
+     */
+    public determineNumOfFinishedQuestionsInQuestionset( questionsetId: string ): number {
         let numberFinishedQuestions = 0;
         for ( let question of this.questionsArray[questionsetId] ) {
             switch( question.questiontype ) {
                 case 'text':
-                    if ( this.answers[question.id].length && this.answers[question.id].answer_value && this.answers[question.id].answer_value != '' ) {
+                case 'nps':
+                    if ( this.answers[question.id].answer_value && this.answers[question.id].answer_value != '' ) {
                         this.questionsMeta[question.id].finished = true;
                         numberFinishedQuestions++;
                     } else this.questionsMeta[question.id].finished = false;
                     break;
-                case 'nps':
-                    for ( let answer of this.answers[question.id] ) {
-                        if ( answer.value ) {
-                            this.questionsMeta[question.id].finished = true;
-                            numberFinishedQuestions++;
-                            continue;
-                        }
-                    }
                 case 'binary':
                 case 'single':
                 case 'multi':
-                    let numberAnswers = 0;
+                    let numberSelectedOptions = 0;
                     let answeredOK = false;
-                    for ( let answer of this.answers[question.id] ) {
-                        if ( answer.value ) {
-                            numberAnswers++;
+                    for ( let optionId in this.answers[question.id].options ) {
+                        if ( this.answers[question.id].options[optionId] === true ) {
+                            numberSelectedOptions++;
                             if ( question.questiontype !== 'multi'
-                                || ( question.questiontype === 'multi' && !this.questionsMeta[question.id].parameter.minAnswers )
-                                || ( numberAnswers >= this.questionsMeta[question.id].parameter.minAnswers )) {
+                                || ( !this.questionsMeta[question.id].parameter.minAnswers )
+                                || ( numberSelectedOptions >= this.questionsMeta[question.id].parameter.minAnswers )) {
                                 answeredOK = true;
                                 this.questionsMeta[question.id].finished = true;
-                                continue;
+                                break;
                             }
                         }
                     }
                     if ( answeredOK ) numberFinishedQuestions++;
+                    else this.questionsMeta[question.id].finished = false;
                     break;
                 case 'ist':
-                    let unFinished = false;
-                    for ( let answer of this.answers[question.id] ) {
-                        if ( answer.value === false ) {
-                            unFinished = true;
+                    let finished = true;
+                    for ( let optionId in this.answers[question.id].options ) {
+                        if ( this.answers[question.id].options[optionId] === false ) {
+                            finished = false;
                             break;
                         }
                     }
-                    if ( !unFinished ) {
-                        numberFinishedQuestions++;
-                        this.questionsMeta[question.id].finished = true;
-                    }
+                    this.questionsMeta[question.id].finished = finished;
+                    if ( finished ) numberFinishedQuestions++;
                     break;
                 case 'rating':
-                    for( let answer of this.answers[question.id] ) {
-                        if( answer.value ) {
+                case 'ratinggroup':
+                    for ( let optionId in this.answers[question.id].options ) {
+                        if ( this.answers[question.id].options[optionId] === true ) {
                             this.questionsMeta[question.id].finished = true;
                             numberFinishedQuestions++;
-                            continue;
                         }
                     }
                     break;
             }
-
-            if( this.answers[question.id].length && this.answers[question.id].answer_value && this.answers[question.id].answer_value != '' ) {
-                this.questionsMeta[question.id].finished = true;
-                numberFinishedQuestions++;
-            } else this.questionsMeta[question.id].finished = false;
         }
         this.numOfFinishedQuestionsInQuestionset[questionsetId] = numberFinishedQuestions;
         this.percentOfFinishedQuestionsInQuestionset[questionsetId] = numberFinishedQuestions/this.questionsArray[questionsetId].length*100;
@@ -620,12 +616,8 @@ export class questionnaireParticipationService {
      */
     public save( setCompleted = false ): EventEmitter<boolean> {
         this.isSaving = true;
-        let route = 'module/QuestionAnswers/ofParticipation/';
-        // if ( this.participationId ) route += 'byParticipation/'+this.participationId;
-        // else
-        route += 'byParent/'+this.parentType+'/'+this.parentId;
         let finishedSaving$ = new EventEmitter<boolean>();
-        this.backend.postRequest( route, {}, { setCompleted: setCompleted, answers: this.answers } ).subscribe( response => {
+        this.backend.postRequest( this.routeForSave, {}, { setCompleted: setCompleted, answers: this.answers } ).subscribe( response => {
                 this.isSaving = false;
                 this.isDirty = false;
                 this.isCompleted = !!response.isCompleted;
