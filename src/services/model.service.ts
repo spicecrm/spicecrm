@@ -1032,10 +1032,6 @@ export class model implements OnDestroy {
         let changedData: any;
         if (this.isEditing && !this.isNew) {
             changedData = this.getDirtyFields();
-            // workaround: to prevent saving the email address twice
-            if ('email1' in changedData) {
-                changedData.email1 = '';
-            }
             // in any case send back date_modified
             changedData.date_modified = this.data.date_modified;
 
