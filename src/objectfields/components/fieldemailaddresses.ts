@@ -148,7 +148,8 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
 
         this.subscriptions.add(
           this.model.observeFieldChanges('email_addresses').subscribe(() => {
-             this.emailAddresses = this.model.getRelatedRecords('email_addresses');
+             this.emailAddresses = this.model.getRelatedRecords('email_addresses').filter(e => e.primary_address == 1);
+
           })
         );
     }
@@ -183,7 +184,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      */
     private initialize() {
 
-        this.emailAddresses = this.model.getRelatedRecords('email_addresses');
+        this.emailAddresses = this.model.getRelatedRecords('email_addresses').filter(e => e.primary_address == 1);
 
         if (!this.isEditMode()) return;
 
