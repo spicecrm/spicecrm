@@ -8,7 +8,6 @@ import {Router} from '@angular/router';
 import {loginService} from '../../../services/login.service';
 import {configurationService} from '../../../services/configuration.service';
 import {session} from '../../../services/session.service';
-import {cookie} from '../../../services/cookie.service';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 
 import {OutlookConfiguration} from '../services/outlookconfiguration.service';
@@ -53,8 +52,7 @@ export class OutlookLoginPane {
         private loginService: loginService,
         private http: HttpClient,
         private configuration: configurationService,
-        private session: session,
-        private cookie: cookie
+        private session: session
     ) {
         if (sessionStorage['OAuth-Token'] && sessionStorage['OAuth-Token'].length > 0) {
             let headers = new HttpHeaders();
@@ -102,7 +100,7 @@ export class OutlookLoginPane {
         }
 
         // check the last selected language from the Cookie
-        this.lastSelectedLanguage = this.cookie.getValue('spiceuilanguage');
+        this.lastSelectedLanguage = localStorage.getItem('spiceuilanguage');
     }
 
     /**

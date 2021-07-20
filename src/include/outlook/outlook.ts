@@ -56,7 +56,6 @@ import {reminder} from "../../services/reminder.service";
 import {territories} from "../../services/territories.service";
 import {currency} from "../../services/currency.service";
 import {footer} from "../../services/footer.service";
-import {cookie} from "../../services/cookie.service";
 import {modal} from "../../services/modal.service";
 import {layout} from "../../services/layout.service";
 import {loggerService} from "../../services/logger.service";
@@ -121,7 +120,6 @@ declare var Office: any;
         backend,
         broadcast,
         configurationService,
-        cookie,
         currency,
         dockedComposer,
         favorite,
