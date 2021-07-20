@@ -790,13 +790,13 @@ export class model implements OnDestroy {
                 /*
                 * params has to be an json string like this:
                 {
-                    editable: true,
-                    invalid: false,
-                    required: false,
-                    incomplete: false,
-                    disabled: false,
-                    hidden: false,
-                    readonly: false,
+                    "editable": true,
+                    "invalid": false,
+                    "required": false,
+                    "incomplete": false,
+                    "disabled": false,
+                    "hidden": false,
+                    "readonly": false,
                 }
                 */
                 params = (typeof params == "string" ? JSON.parse(params) : params);
