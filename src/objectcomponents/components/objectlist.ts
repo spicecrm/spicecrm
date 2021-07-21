@@ -1,7 +1,15 @@
 /**
  * @module ObjectComponents
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Injector, OnDestroy, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Injector,
+    OnDestroy,
+    OnInit,
+    ViewChild
+} from '@angular/core';
 import {Router} from '@angular/router';
 import {metadata} from '../../services/metadata.service';
 import {language} from '../../services/language.service';
@@ -11,6 +19,7 @@ import {Subscription} from "rxjs";
 import {ListTypeI} from "../../services/interfaces.service";
 import {modal} from "../../services/modal.service";
 import {skip} from "rxjs/operators";
+import {CdkVirtualScrollViewport} from "@angular/cdk/scrolling";
 
 /**
  * renders the modellist
@@ -21,11 +30,19 @@ import {skip} from "rxjs/operators";
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ObjectList implements OnDestroy, OnInit {
-
+    /**
+     * holds a reference to the virtual scroll viewport component
+     * @private
+     */
+    @ViewChild(CdkVirtualScrollViewport) private scrollViewport: CdkVirtualScrollViewport;
     /**
      * the subscription to the modellist
      */
     public subscriptions: Subscription = new Subscription();
+
+    public virtualScrolling: boolean = true;
+
+    public placeholderHeight: number = 0;
 
     /**
      * the componentconfig
@@ -90,9 +107,19 @@ export class ObjectList implements OnDestroy, OnInit {
 
         this.subscriptions.add(
             this.modellist.listDataChanged$.subscribe(() => {
+                this.setTotalContentSize();
                 this.cdRef.detectChanges();
             })
         );
+    }
+
+    /**
+     * set total content size for scroll viewport
+      */
+    public setTotalContentSize() {
+        const rowHeight = 33;
+        const totalHeight = rowHeight * this.modellist.listData.totalcount;
+        this.scrollViewport.setTotalContentSize(totalHeight);
     }
 
     /**
@@ -225,5 +252,13 @@ export class ObjectList implements OnDestroy, OnInit {
         if (this.modellist.isCustomList() && this.modellist.listfields.length == 0 && this.modellist.getFieldDefs()?.length == 0 && this.modellist.checkAccess('edit')) {
             this.modal.openModal('ObjectListViewSettingsSetfieldsModal', true, this.injector);
         }
+    }
+
+    /**
+     * handle viewport scroll to load more entries
+     * @param index
+     */
+    public onViewportScroll(index: number) {
+        //
     }
 }
