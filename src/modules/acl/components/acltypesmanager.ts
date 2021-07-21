@@ -43,6 +43,9 @@ export class ACLTypesManager {
             this.activeType.authtypefields = typedata.authtypefields ? typedata.authtypefields : [];
             this.activeType.authtypeactions = typedata.authtypeactions;
 
+            // sort the actions
+            this.activeType.authtypeactions.sort((a, b)=> a.action.localeCompare(b.action));
+
             // sort the arrays
             this.sortType();
         });
