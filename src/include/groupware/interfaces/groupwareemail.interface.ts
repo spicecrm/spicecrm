@@ -1,7 +1,7 @@
 /**
  * @module ModuleGroupware
  */
-interface GroupwareEmail {
+export interface GroupwareEmail {
     body: string;
     cc: string;
     date: string;

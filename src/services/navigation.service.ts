@@ -101,7 +101,7 @@ export class navigation {
     /**
      * determines the navigatioon paradigm if set to tabbed or simple
      */
-    public navigationparadigm: 'simple' | 'tabbed' | 'subtabbed' = 'simple';
+    public navigationparadigm: 'simple' | 'tabbed' | 'subtabbed' = 'tabbed';
 
     /**
      * determines the navigatioon paradigm if set to tabbed or simple
@@ -360,7 +360,7 @@ export class navigation {
                 // once the laoder completed set the paradigm
                 if (!this.enforcednavigationparadigm && message.messagedata == 'loadUserData') {
                     let navparadigm = this.userpreferences.getPreference('navigation_paradigm');
-                    this.navigationparadigm = navparadigm ? navparadigm : 'simple';
+                    this.navigationparadigm = navparadigm ? navparadigm : 'tabbed';
                     this.session.setSessionData('navigation_paradigm', this.navigationparadigm);
                 }
                 break;
@@ -405,7 +405,7 @@ export class navigation {
                     this.objectTabs = sessiondata.tabs;
 
                     // check if we have a module set in the maintab
-                    if (this.maintab.params.module) this.activeModule = this.maintab.params.module;
+                    if (this.maintab.params?.module) this.activeModule = this.maintab.params.module;
 
                     // check for the activetab
                     this.activeTab$.next(this.activeTab);

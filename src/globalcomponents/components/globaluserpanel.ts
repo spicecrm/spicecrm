@@ -84,7 +84,7 @@ export class GlobaUserPanel {
      * returns the systemname or the tenanat name if the user is logged in a tenant
      */
     get systemName() {
-        return this.session.authData.tenant_name ? this.session.authData.tenant_name : this.config.data.display;
+        return this.session.authData.tenant_name ? this.session.authData.tenant_name : this.config.systemName;
     }
 
     /**

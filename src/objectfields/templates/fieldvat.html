@@ -1,10 +1,8 @@
 <field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
-<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
-    <div class="slds-grid slds-grid--vertical-align-center">
-        <div class="slds-truncate">{{value}}</div>
-        <div class="slds-p-left--small">
-            <system-tooltip class="slds-m-left--x-small" *ngIf="isvalid" [tooltiptext]="vatInfo"></system-tooltip>
-        </div>
+<field-generic-display field-generic-display-notruncate *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
+    <div class="slds-size--1-of-1 slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+        <div class="slds-grow slds-truncate"><span>{{value}}</span></div>
+        <system-tooltip class="slds-m-left--x-small" *ngIf="isvalid" [tooltiptext]="vatInfo"></system-tooltip>
     </div>
 </field-generic-display>
 <div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control slds-grid slds-grid--align-spread"

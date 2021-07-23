@@ -3,7 +3,6 @@
  */
 import {Injectable, EventEmitter} from '@angular/core';
 
-import {cookie} from './cookie.service';
 import {session} from './session.service';
 import {broadcast} from './broadcast.service';
 
@@ -69,7 +68,6 @@ export class configurationService {
     private locationHash: string;
 
     constructor(private http: HttpClient,
-                private cookie: cookie,
                 private session: session,
                 private broadcast: broadcast,
                 private title: Title,
@@ -360,7 +358,17 @@ export class configurationService {
             'color-progressbar_item-completed',
             'brand-primary-transparent',
             'color-background-alt-inverse',
-            'color-border-brand'
+            'color-border-brand',
+            'sds-c-button-brand-color-background',
+            'sds-c-button-neutral-color-background-hover',
+            'sds-c-button-brand-color-border-hover',
+            'sds-c-button-brand-color-background-active',
+            'sds-c-button-brand-color-border-active',
+            'sds-c-button-brand-color-background-hover',
+            'sds-c-input-shadow-focus',
+            'sds-c-textarea-shadow-focus',
+            'sds-c-select-shadow-focus',
+            'sds-c-button-text-color-hover'
         ];
 
         let theme = this.getCapabilityConfig('theme');

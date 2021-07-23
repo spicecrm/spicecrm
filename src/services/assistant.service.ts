@@ -73,6 +73,9 @@ export class assistant {
                 // clear the items
                 this.assitantItems = [];
 
+                // reset the initialized status so we will load again on the next login
+                this.initialized = false;
+
                 // cancel the reminder interval if we have any
                 if (this.reminder) {
                     clearInterval(this.reminder);
@@ -129,8 +132,7 @@ export class assistant {
                         additional_infos: {},
                         bean_name: i.data.summary_text
                     };
-                    this.notification.pushDesktopNotification(n);
-                    this.notification.newNotifications.push(n);
+                    this.notification.displayRealtimeNotification(n, false);
                 }
             }
         }
