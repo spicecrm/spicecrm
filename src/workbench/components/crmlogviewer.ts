@@ -4,172 +4,144 @@
 import { Component, EventEmitter, ViewChild } from '@angular/core';
 import { language } from '../../services/language.service';
 import { backend } from '../../services/backend.service';
+import { modal } from '../../services/modal.service';
+import { toast } from '../../services/toast.service';
+import { userpreferences } from '../../services/userpreferences.service';
+
+declare var moment: any;
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var moment: any;
 
 @Component({
-    templateUrl: './src/workbench/templates/crmlogviewer.html',
-    styles: [
-        'input::placeholder { font-style: italic; color: #666 !important; }'
-    ]
+    templateUrl: './src/workbench/templates/crmlogviewer.html'
 })
 export class CRMLogViewer {
 
-    // Configuration:
-    private levels = [ 'debug', 'info', 'warn', 'deprecated', 'login', 'error', 'fatal', 'security' ];
-    private limit = '5000';
-    private routeBase = 'admin/crmlog';
+    /**
+     * Reference to the log level checkbox group.
+     * @private
+     */
+    @ViewChild('loglevelsCheckboxes') private loglevelsCheckboxes;
 
-    // Various:
-    private filter = { level: 'fatal', processId: '', userId: '', text: '', transactionId: '' };
-    private period = { type: '', start: { year: '', month: '', day: '', hour: '' }, begin: { year: '', month: '', day: '', hour: '' }, duration: '1' };
+    /**
+     * filter
+     * @private
+     */
+    private filter = { loglevels: [], pid: '', user_id: '', text: '', transaction_id: '', end: undefined };
     private filterUserName: string;
+
+    /**
+     * Limit: maximal entries from the backend.
+     * @private
+     */
+    private limit = '250';
 
     private load$ = new EventEmitter();
 
+    /**
+     * The number of entries got from the backend.
+     * @private
+     */
+    private countEntries: number;
+
+    /**
+     * Set the filter field "end" to now.
+     * @private
+     */
+    private setNow() {
+        this.filter.end = new moment();
+    }
+
+    /**
+     * Set the filter field "user".
+     * @param idAndName
+     * @private
+     */
     private set filterUser( idAndName: string ) {
         if (!idAndName) {
-            this.filter.userId = '';
+            this.filter.user_id = '';
             this.filterUserName = undefined;
             return;
         }
         const valueArray = idAndName.split('::');
-        this.filter.userId = valueArray[0];
+        this.filter.user_id = valueArray[0];
         this.filterUserName = valueArray[1];
     }
 
+    /**
+     * Get the value from filter field "user".
+     * @private
+     */
     private get filterUser(): string {
-        if ( !this.filter.userId ) return undefined;
-        return this.filter.userId+'::'+this.filterUserName;
+        if ( !this.filter.user_id ) return undefined;
+        return this.filter.user_id+'::'+this.filterUserName;
     }
 
-    constructor( private lang: language, private backend: backend ) { }
+    constructor( private lang: language, private backend: backend, private modal: modal, private toast: toast, private userpreferences: userpreferences ) { }
 
-    // Are all the inputs correct and ready for the backend request?
+    /**
+     * Are all the inputs correct and ready for the backend request?
+     * @private
+     */
     private canLoad() {
-        if ( this.period.begin.year && !this.period.begin.year.match(/^\d{4}$/) ) return false;
-        if ( this.filter.processId && !this.filter.processId.match(/\d$/) ) return false;
-        if ( this.limit && !this.limit.match(/\d$/) ) return false;
-        if ( this.period.begin.hour && !this.period.begin.day ) return false;
+        if ( this.filter.pid && !this.filter.pid.match(/\d$/) ) return false;
         return true;
     }
 
-    // Load button was pressed.
+    /**
+     * Load button was pressed.
+     */
     private buttonLoad() {
         this.load$.emit();
     }
 
-    // Get the number of days for a specific month/year (28, 29, 30 or 31).
-    private daysInMonth( month: string, year: string ) {
-        return new Date( parseInt( year, 10 ), parseInt( month, 10 ), 0 ).getDate();
-    }
-
-    // Get a simple array of day numbers (for ngIf).
-    private get daylist() {
-        let daysInMonth = ( !this.period.begin.month || !this.period.begin.year ) ? 31 : this.daysInMonth( this.period.begin.month, this.period.begin.year );
-        let list = [];
-        for ( let i=1; i <= daysInMonth; i++ ) list.push( ( i < 10 ? '0':'' ) + i );
-        return list;
-    }
-
-    // Check, if the year input field has a valid value.
-    private checkYear() {
-        return this.period.begin.year.match(/^\d{4}$/);
-    }
-
-    private changedYear() {
-        if ( !this.period.begin.year ) this.period.begin.month = this.period.begin.day = this.period.begin.hour = '';
-        this.setPeriodType();
-    }
-    private changedHour() {
-        if ( this.period.begin.hour ) {
-            this.setYearNow();
-            this.setMonthNow();
-            this.setDayNow();
-        }
-        this.setPeriodType();
-    }
-    private changedDay() {
-        if ( !this.period.begin.day ) this.period.begin.hour = '';
-        else {
-            this.setYearNow();
-            this.setMonthNow();
-        }
-        this.setPeriodType();
-    }
-    private changedMonth() {
-        if ( !this.period.begin.month ) this.period.begin.day = this.period.begin.hour = '';
-        else {
-            if ( this.period.begin.day && parseInt( this.period.begin.day, 10 ) > this.daysInMonth( this.period.begin.month, this.period.begin.year )) this.period.begin.day = '';
-            this.setYearNow();
-        }
-        this.setPeriodType();
-    }
-
-    private setYearNow() {
-        if ( !this.period.begin.year ) this.period.begin.year = (new Date()).getFullYear().toString();
-    }
-    private setMonthNow() {
-        if ( !this.period.begin.month ) {
-            this.period.begin.month = ((new Date()).getMonth()+1).toString();
-            if ( this.period.begin.month.length === 1 ) this.period.begin.month = '0'+this.period.begin.month;
-        }
-    }
-    private setDayNow() {
-        if( !this.period.begin.day ) {
-            this.period.begin.day = (new Date()).getDate().toString();
-            if ( this.period.begin.day.length === 1 ) this.period.begin.day = '0'+this.period.begin.day;
-        }
-    }
-
-    // The values in the list can be clicked to be transfered to the corresponding filter input field.
-    private valueClicked( click: any ) {
-        let items: string[];
-        switch ( click.type ) {
-            case 'date':
-                items = click.value.split('\.');
-                this.period.begin.day = items[0];
-                this.period.begin.month = items[1];
-                this.period.begin.year = items[2];
-                break;
-            case 'time':
-                items = click.value.split(':');
-                this.period.begin.hour = items[0];
-                break;
-            case 'tid': this.filter.transactionId = click.value; break;
-            case 'usr': {
-                this.filter.userId = click.value.uid;
-                this.filterUserName = click.value.uname;
+    /**
+     * The values in the list can be clicked to be transfered to the corresponding filter input field.
+     * @param type Kind of value.
+     * @param value The value.
+     * @private
+     */
+    private valueClicked( type: string, value: any ) {
+        switch ( type ) {
+            case 'date_entered':
+                this.filter.end = new moment.utc( value ).tz( this.userpreferences.toUse.timezone ); break;
+            case 'transaction_id': this.filter.transaction_id = value; break;
+            case 'user': {
+                this.filter.user_id = value.user_id;
+                this.filterUserName = value.user_name;
                 break;
             }
-            case 'lev': this.filter.level = click.value; break;
-            case 'pid': this.filter.processId = click.value.toString(); break;
+            case 'log_level':
+                let i = this.filter.loglevels.findIndex( element => element === value);
+                if ( i === -1 ) this.filter.loglevels.push( value );
+                this.loglevelsCheckboxes.writeValue( this.filter.loglevels );
+                break;
+            case 'pid': this.filter.pid = value.toString(); break;
         }
     }
 
-    private sanitizeDuration() {
-        if ( !this.period.duration.match( /\d+/ )) this.period.duration = '1';
-    }
-
-    private get durationLabel() {
-        let labels = {
-            year: 'LBL_YEARS',
-            month: 'LBL_MONTHS',
-            day: 'LBL_DAYS',
-            hour: 'LBL_HOURS'
-        };
-        return this.period.type ? labels[this.period.type] : '';
-    }
-
-    private setPeriodType() {
-        this.period.type =
-            !this.period.begin.year ?  '' :
-                !this.period.begin.month ? 'year' :
-                    !this.period.begin.day ? 'month' :
-                        !this.period.begin.hour ? 'day' : 'hour';
+    /**
+     * truncates the log
+     * @private
+     */
+    private truncate() {
+        this.modal.prompt('confirm', 'Truncate the API log and delete all entries?', 'Empty the API Log?').subscribe(
+            res => {
+                if (res) {
+                    this.backend.deleteRequest('admin/crmlog').subscribe(
+                        () => {
+                            this.load$.emit();
+                        },
+                        () => {
+                            this.toast.sendToast('Error truncating log', 'error');
+                        }
+                    );
+                }
+            }
+        );
     }
 
 }

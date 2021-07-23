@@ -36,6 +36,21 @@ export class fieldGenericDisplay {
      */
     @Input() public fieldid: string = '';
 
+    /**
+     * internal variable for the truncation setting of the field
+     * @private
+     */
+    private _truncate: boolean = true;
+
+    /**
+     * an attribute to disable truncation on the field
+     *
+     * @param value
+     */
+    @Input('field-generic-display-notruncate') set truncate(value) {
+        this._truncate = false;
+    }
+
     constructor(
         public model: model,
         public view: view,
@@ -52,6 +67,17 @@ export class fieldGenericDisplay {
             return true;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * returns the max with for the ngStyle directive
+     */
+    get fieldMaxWidth() {
+        if (this.editable) {
+            return {
+                'max-width': 'calc(100% - 20px)'
+            };
         }
     }
 
@@ -84,14 +110,6 @@ export class fieldGenericDisplay {
             this.model.goDetail(this.navigationtab?.tabid);
         }
     }
-
-    /*
-    public onClick() {
-        if(this.editable && !this.isEditMode()) {
-            this.setEditMode();
-        }
-    }
-    */
 
 }
 

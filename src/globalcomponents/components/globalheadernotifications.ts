@@ -1,9 +1,10 @@
 /**
  * @module GlobalComponents
  */
-import {Component, ElementRef, Renderer2} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, Renderer2} from '@angular/core';
 import {notification} from "../../services/notification.service";
-import {Subscription} from "rxjs";
+import {userpreferences} from "../../services/userpreferences.service";
+import {Router} from "@angular/router";
 
 /**
  * display notifications on the global header
@@ -19,15 +20,36 @@ export class GlobalHeaderNotifications {
      */
     private isOpen: boolean = false;
     /**
+     * if true the show settings button clicked
+     * @private
+     */
+    private showSettings: boolean = false;
+    /**
      * holds the click listener function to enable remove
      * @private
      */
     private clickListener: () => void;
-    private subscription = new Subscription();
 
-    constructor(private notificationService: notification,
+    constructor(public notificationService: notification,
                 private elementRef: ElementRef,
+                public userPreferences: userpreferences,
+                private cdRef: ChangeDetectorRef,
+                private router: Router,
                 private renderer: Renderer2) {
+    }
+
+    /**
+     * @return boolean true if desktop notification not supported in browser or permission denied
+     */
+    get desktopNotificationsDisabled() {
+        return !('Notification' in window);
+    }
+
+    /**
+     * @return string desktop notification permission
+     */
+    get desktopNotificationsStatus(): 'default' | 'denied' | 'granted' {
+        return Notification.permission;
     }
 
     /**
@@ -51,6 +73,7 @@ export class GlobalHeaderNotifications {
     public toggleOpenPopover() {
         this.isOpen = !this.isOpen;
         if (this.isOpen) {
+            this.showSettings = false;
             this.clickListener = this.renderer.listen('document', 'click', event => {
                 if (this.elementRef.nativeElement.contains(event.target)) return;
                 this.isOpen = false;
@@ -72,12 +95,46 @@ export class GlobalHeaderNotifications {
     }
 
     /**
-     * load more items if the scroll reached to bottom
-     * @param element
+     * toggle show settings value
      */
-    public onScroll(element: HTMLElement) {
-        if (element.scrollTop + element.clientHeight + 50 > element.scrollHeight) {
-            this.notificationService.loadMoreNotifications();
+    public toggleShowSettings() {
+        this.showSettings = !this.showSettings;
+    }
+
+    /**
+     * set setting to user preferences
+     * @param name
+     * @param value
+     */
+    public setSetting(name: string, value: boolean) {
+        this.userPreferences.setPreference(name, value);
+    }
+
+    /**
+     * set display desktop notifications value in the user preferences
+     * @param value
+     * @private
+     */
+    private setDisplayDesktopNotification(value: boolean) {
+
+        if (this.desktopNotificationsStatus === 'default') {
+
+            Notification.requestPermission().then((p: NotificationPermission) => {
+                if (p == 'granted') {
+                    this.setSetting('displayDesktopNotifications', value);
+                }
+                this.cdRef.detectChanges();
+            });
+        } else {
+            this.setSetting('displayDesktopNotifications', value);
         }
+    }
+
+    /**
+     * navigate to notifications list view component
+     */
+    public showAllNotifications() {
+        this.closePopover();
+        this.router.navigate(['notifications']);
     }
 }

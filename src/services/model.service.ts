@@ -791,13 +791,13 @@ export class model implements OnDestroy {
                 /*
                 * params has to be an json string like this:
                 {
-                    editable: true,
-                    invalid: false,
-                    required: false,
-                    incomplete: false,
-                    disabled: false,
-                    hidden: false,
-                    readonly: false,
+                    "editable": true,
+                    "invalid": false,
+                    "required": false,
+                    "incomplete": false,
+                    "disabled": false,
+                    "hidden": false,
+                    "readonly": false,
                 }
                 */
                 params = (typeof params == "string" ? JSON.parse(params) : params);
@@ -1104,6 +1104,7 @@ export class model implements OnDestroy {
                         case 409:
                             this.modal.openModal("ObjectOptimisticLockingModal", false, this.injector).subscribe(lockingModalRef => {
                                 lockingModalRef.instance.conflicts = error.error.error.conflicts;
+                                lockingModalRef.instance.responseSubject = responseSubject;
                             });
                             break;
                         default:
@@ -1134,6 +1135,23 @@ export class model implements OnDestroy {
             }
         );
         return responseSubject.asObservable();
+    }
+
+
+    /**
+     * saves the changes on the model and sends it
+     * Be aware that send functionality is triggered in backend within save logic itself
+     * @param notify if set to true a toast is sent once the send is completed (defaults to false)
+     */
+    public saveAndSend(notify: boolean = false, toastLabel: string = 'LBL_DATA_SENT'): Observable<boolean> {
+        let _notify = notify;
+        let _observable = this.save(false);
+
+        // if notification is on send a toast
+        if (_notify) {
+            this.toast.sendToast(this.language.getLabel(toastLabel) + ".", "success");
+        }
+        return _observable;
     }
 
     /**
@@ -1402,8 +1420,13 @@ export class model implements OnDestroy {
         }
     }
 
-    public getCalculatedValue(copyRule, fromField?) {
-        let params;
+    /**
+     * the the copy rule calculated value
+     * @param copyRule
+     * @param fromField
+     */
+    public getCalculatedValue(copyRule: {fromfield: string, tofield: string, fixedvalue: string, calculatedvalue: string, params: any}, fromField?: string) {
+
         let timeZone = this.session.getSessionData('timezone') || moment.tz.guess(true);
         switch (copyRule.calculatedvalue) {
             case "now":
@@ -1416,26 +1439,18 @@ export class model implements OnDestroy {
                 }
 
                 // see if we should add some units
-                try {
-                    params = JSON.parse(copyRule.params);
-                    if (params.number && params.unit) {
-                        date.add(params.number, params.unit);
-                    }
-                    return date;
-                } catch {
-                    return date;
+                if (copyRule.params?.number && copyRule.params?.unit) {
+                    date.add(copyRule.params.number, copyRule.params.unit);
                 }
-                break;
+
+                return date;
+
             case "addDate":
                 const fromFieldDate = moment.isMoment(fromField) ? new moment(fromField) : new moment.utc().tz(timeZone);
-                try {
-                    params = JSON.parse(copyRule.params);
-                } catch {
-                    return fromFieldDate;
-                }
-                if (!params.number || !params.unit) return fromFieldDate;
 
-                return fromFieldDate.add(params.number, params.unit);
+                if (!copyRule.params?.number || !copyRule.params?.unit) return fromFieldDate;
+
+                return fromFieldDate.add(copyRule.params.number, copyRule.params.unit);
         }
         return "";
     }

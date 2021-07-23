@@ -271,7 +271,7 @@ export class SystemInputDatePicker implements OnInit, OnChanges {
         let j = 0;
         while (j < 6) {
             let i = 0;
-            let week = {days: [], number: fdom.format('w')};
+            let week = {days: [], number: fdom.format('W')};
             while (i < 7) {
                 // push the day only if we are in currentGrid and the date is the same or before the current date
                 // or if we are not i dual mode and the date is after the current date

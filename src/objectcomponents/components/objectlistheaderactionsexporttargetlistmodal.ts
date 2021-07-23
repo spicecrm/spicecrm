@@ -56,7 +56,7 @@ export class ObjectListHeaderActionsExportTargetlistModal {
                 listid: this.modellist.currentList.id,
                 ids: selectedIds
             };
-            this.backend.postRequest('module/ProspectLists/exportFromList', {}, params).subscribe(result => {
+            this.backend.postRequest('module/ProspectLists/exportfromlist', {}, params).subscribe(result => {
                 loadingRef.instance.self.destroy();
                 if (result.status == 'success') {
                     this.router.navigate(['/module/ProspectLists/' + result.id]);
