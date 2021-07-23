@@ -35,6 +35,7 @@ import /*embed*/ {ObjectListHeaderSort} from './components/objectlistheadersort'
 import /*embed*/ {ObjectListHeaderActionMenu} from './components/objectlistheaderactionmenu';
 import /*embed*/ {ObjectListHeaderActionsAssignButton} from './components/objectlistheaderactionsassignbutton';
 import /*embed*/ {ObjectListHeaderActionsAssignModal} from './components/objectlistheaderactionsassignmodal';
+import /*embed*/ {ObjectListHeaderActionsDeleteButton} from './components/objectlistheaderactionsdeletebutton';
 import /*embed*/ {ObjectListHeaderActionsMergeButton} from './components/objectlistheaderactionsmergebutton';
 import /*embed*/ {ObjectListHeaderActionsExportCSVButton} from './components/objectlistheaderactionsexportcsvbutton';
 import /*embed*/ {ObjectListHeaderActionsExportCSVSelectFields} from './components/objectlistheaderactionsexportcsvselectfields';
@@ -65,6 +66,7 @@ import /*embed*/ {ObjectActionRemoveButton} from "./components/objectactionremov
 import /*embed*/ {ObjectActionAuditlogModal} from './components/objectactionauditlogmodal';
 import /*embed*/ {ObjectActionNewButton} from './components/objectactionnewbutton';
 import /*embed*/ {ObjectActionDuplicateButton} from './components/objectactionduplicatebutton';
+import /*embed*/ {ObjectActionSaveSendButton} from './components/objectactionsavesendbutton';
 import /*embed*/ {ObjectActionSaveButton} from './components/objectactionsavebutton';
 import /*embed*/ {ObjectActionSaveRelatedButton} from './components/objectactionsaverelatedbutton';
 import /*embed*/ {ObjectActionNewrelatedButton} from './components/objectactionnewrelatedbutton';
@@ -216,6 +218,7 @@ import /*embed*/ {ObjectChecklists} from "./components/objectchecklists";
         ObjectListHeaderActionMenu,
         ObjectListHeaderActionsAssignButton,
         ObjectListHeaderActionsAssignModal,
+        ObjectListHeaderActionsDeleteButton,
         ObjectListHeaderActionsMergeButton,
         ObjectListHeaderActionsExportCSVButton,
         ObjectFieldFilterPipe,
@@ -250,6 +253,7 @@ import /*embed*/ {ObjectChecklists} from "./components/objectchecklists";
         ObjectListViewSettingsSetfieldsModal,
         ObjectActionEditButton,
         ObjectActionEditRelatedButton,
+        ObjectActionSaveSendButton,
         ObjectActionSaveButton,
         ObjectActionSaveRelatedButton,
         ObjectActionDeleteButton,

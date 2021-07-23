@@ -6,6 +6,7 @@ import {language} from "../../../services/language.service";
 import {model} from "../../../services/model.service";
 import {backend} from "../../../services/backend.service";
 import {QuestionnaireRender} from '../components/questionnairerender';
+import { modelutilities } from '../../../services/modelutilities.service';
 
 @Component({
     selector: 'questionnaire-editor',
@@ -28,7 +29,7 @@ export class QuestionnaireEditor implements OnInit {
 
     @ViewChild(QuestionnaireRender, {static:false}) public questionnaireRender;
 
-    constructor( private lang: language, private model: model, private backend: backend,  ) { } // private questionnaireParticipation: questionnaireParticipationService
+    constructor( private lang: language, private model: model, private backend: backend, private modelutilities: modelutilities ) { } // private questionnaireParticipation: questionnaireParticipationService
 
     public ngOnInit(): void {
         if ( this.model.id ) {
@@ -71,7 +72,12 @@ export class QuestionnaireEditor implements OnInit {
         this.isLoadingQuestionsets = true;
         this.questionsets = [];
         this.backend.getRequest('module/Questionnaires/'+this.model.id+'/related/questionsets', {limit: 999}).subscribe( questionsets => {
-            for (let key of Object.keys( questionsets )) this.questionsets.push( questionsets[key] );
+            for (let key of Object.keys( questionsets )) {
+                for ( let fieldName in questionsets[key] ) {
+                    questionsets[key][fieldName] = this.modelutilities.backend2spice( 'QuestionSets', fieldName, questionsets[key][fieldName] );
+                }
+                this.questionsets.push( questionsets[key] );
+            }
             this.sortQuestionsets();
             this.isLoadingQuestionsets = false;
         });

@@ -64,7 +64,7 @@
             <div><input type="text" class="slds-input" [(ngModel)]="option.name"></div>
         </td>
         <td width="50%">
-            <div><input type="text" class="slds-input" [(ngModel)]="questionparameters.altTexts[option.id]"></div>
+            <div><input type="text" class="slds-input" [(ngModel)]="questionparameters.altTexts[option.id]" (change)="writeQuestionparametersToModel()"></div>
         </td>
         <td style="width:4rem">
             <field-container [system-model-provider]="{ module: 'QuestionOptions', id: option.id, data: option }" [field]="'image_id'" [fieldconfig]="{fieldtype:'mediafileimage'}" [fielddisplayclass]="''"></field-container>

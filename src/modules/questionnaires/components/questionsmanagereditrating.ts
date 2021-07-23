@@ -102,6 +102,7 @@ export class QuestionsManagerEditRating extends QuestionsManagerEditBasicWithOpt
         idsAdded.forEach( ( id: string ) => {
             this.questionparameters.altTexts[id] = '';
         });
+        this.writeQuestionparametersToModel();
         return idsAdded;
     }
 
@@ -111,6 +112,7 @@ export class QuestionsManagerEditRating extends QuestionsManagerEditBasicWithOpt
      */
     public deleteOption( index: number ): void {
         delete this.questionparameters.altTexts[this.options[index].id];
+        this.writeQuestionparametersToModel();
         super.deleteOption( index );
         this.numEntries = this.options.length;
     }

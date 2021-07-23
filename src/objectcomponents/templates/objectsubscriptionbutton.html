@@ -1,4 +1,4 @@
-<button style="text-transform:capitalize" [disabled]="inProcess" class="slds-button slds-button_neutral slds-button_stateful slds-is-selected" [ngClass]="{'slds-is-selected': subscriptionService.subscriptions[model.id], 'slds-not-selected': !subscriptionService.subscriptions[model.id]}" (click)="toggleSubscribe()">
+<button style="text-transform:capitalize" [disabled]="inProcess" class="slds-button slds-button_neutral slds-button_stateful" [ngClass]="{'slds-is-selected': subscriptionService.subscriptions[model.id], 'slds-not-selected': !subscriptionService.subscriptions[model.id]}" (click)="toggleSubscribe()">
   <span class="slds-text-not-selected">
     <system-button-icon class="slds-p-right--xx-small" icon="add"></system-button-icon><system-label label="LBL_FOLLOW"></system-label>
   </span>

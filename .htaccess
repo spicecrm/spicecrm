@@ -1,4 +1,3 @@
-Options -Indexes
 RewriteEngine On
 
 RewriteRule ^.*\.git.* - [R=404]

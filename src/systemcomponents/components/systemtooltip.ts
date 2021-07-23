@@ -11,15 +11,15 @@ export class SystemTooltip {
     @Input() private tooltiptext: string = '';
     private displayHelp: boolean = false;
 
-    private toggleHelp(){
+    private toggleHelp() {
         this.displayHelp = !this.displayHelp;
     }
 
-    private openHelp(){
+    private openHelp() {
         this.displayHelp = true;
     }
 
-    private closeHelp(){
+    private closeHelp() {
         this.displayHelp = false;
     }
 }

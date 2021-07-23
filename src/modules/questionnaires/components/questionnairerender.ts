@@ -25,11 +25,12 @@ export class QuestionnaireRender implements OnInit, OnDestroy, OnChanges {
     @Input() private parentType: string;
     @Input() private participationId: string;
 
-    @Input() private editMode: 'off'|'preview'|'questionnaire'|'questionoption' = 'questionnaire';
+    @Input() private editMode: 'off'|'preview'|'postview'|'questionnaire'|'questionoption' = 'questionnaire';
 
     @Input() private showQuestionnaireTitle = true;
     @Input() private showQuestionnaireTextBefore = true;
     @Input() private showQuestionnaireTextAfter = true;
+    @Input() private showProgress = false;
     @Input() private inModal = true;
 
     @Output() private isDirty$ = new BehaviorSubject( false );
@@ -73,13 +74,13 @@ export class QuestionnaireRender implements OnInit, OnDestroy, OnChanges {
     private questionnaireIsToBeDisplayed(): boolean {
         if ( this.qp.isLoaded ) {
             if ( this.qp.participationId ) return true;
-            if ( this.qp.questionnaireId && this.qp.editMode !== 'off' ) return true;
+            if ( this.qp.questionnaireId && this.qp.editMode !== 'postview') return true; // this.qp.editMode !== 'off' &&
         }
         return false;
     }
 
     public reload(): void {
-       if ( this.qp ) this.qp.reload();
+        if ( this.qp ) this.qp.reload();
     }
 
     public save() {

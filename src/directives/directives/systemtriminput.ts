@@ -40,7 +40,7 @@ export class SystemTrimInputDirective {
 
     }
 
-    private trimValue (el, value) {
+    private trimValue(el, value) {
 
         el.value = value.trim();
 
@@ -60,6 +60,7 @@ export class SystemTrimInputDirective {
 
     }
 
+    /*
     @HostListener('input', ['$event.target', '$event.target.value'])
     private onInput(el: any, value: string): void {
 
@@ -81,5 +82,6 @@ export class SystemTrimInputDirective {
         }
 
     }
+    */
 
 }

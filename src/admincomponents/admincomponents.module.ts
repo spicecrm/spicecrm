@@ -74,6 +74,7 @@ import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryMana
 import /*embed*/ {AdministrationGeneralSettings} from "./components/administrationgeneralsettings";
 import /*embed*/ {AdministrationLanguages} from "./components/administrationlanguages";
 import /*embed*/ {AdministrationDefaultPreferences} from './components/administrationdefaultpreferences';
+import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
 
 
 
@@ -137,7 +138,8 @@ import /*embed*/ {AdministrationDefaultPreferences} from './components/administr
         AdministrationHomeScreenCardItem,
         AdministrationGeneralSettings,
         AdministrationLanguages,
-        AdministrationDefaultPreferences
+        AdministrationDefaultPreferences,
+        UserAccessLogViewer
     ],
     entryComponents: [
         AdministrationMain,

@@ -9,11 +9,10 @@
             </div>
             <div>
                 <textarea *ngIf="qp.editMode === 'preview'" class="slds-scrollable_y slds-textarea"></textarea>
-                <textarea [system-trim-input] class="slds-scrollable_y slds-textarea"
-                      *ngIf="qp.editMode !== 'preview'"
-                      [(ngModel)]="qp.answers[question.id].answer_value"
-                      (change)="onTextChange()"
-                      [attr.disabled]="questionMeta.tempReadonly || qp.editMode === 'off' ? '':null"></textarea>
+                <textarea *ngIf="qp.editMode !== 'preview'" class="slds-scrollable_y slds-textarea"
+                      [(ngModel)]="value" [ngModelOptions]="{updateOn:'blur'}" [ngClass]="{'slds-has-error':isInputInvalid}"
+                      [attr.disabled]="questionMeta.tempReadonly || qp.editMode === 'off' || qp.editMode === 'postview' ? '':null"></textarea>
+                <div *ngIf="isInputInvalid" class="slds-form-element__help slds-text-color_error"><system-label [label]="'LBL_INPUT_INVALID'"></system-label></div>
             </div>
         </div>
 
@@ -21,14 +20,11 @@
             <div *ngFor="let item of forLoopArray(lengthLongestSequence); let j=index" class="slds-p-right_large x-lds-p-vertical_small slds-text-heading_small">
                 {{questionNameSplitted[j]}}
             </div>
-            <div class="slds-text-align_right x-slds-p-vertical_small slds-col--bump-left">
-                <input [system-trim-input] type="text" *ngIf="qp.editMode === 'preview'" size="5" class="slds-input">
-                <input [system-trim-input] type="text" *ngIf="qp.editMode !== 'preview'"
-                       [ngModel]="qp.answers[question.id].answer_value"
-                       (change)="onTextChange()"
-                       [attr.disabled]="questionMeta.tempReadonly || qp.editMode === 'off' ? '':null"
-                       size="5" style="width:auto"
-                       class="slds-input">
+            <div class="slds-text-align_right slds-col--bump-left">
+                <input type="text" *ngIf="qp.editMode === 'preview'" size="5" class="slds-input">
+                <input *ngIf="qp.editMode !== 'preview'" type="text" [(ngModel)]="value" [ngModelOptions]="{updateOn:'blur'}" class="slds-input" [ngClass]="{'slds-has-error':isInputInvalid}"
+                       [attr.disabled]="questionMeta.tempReadonly || qp.editMode === 'off' || qp.editMode === 'postview' ? '':null" size="5" style="width:auto">
+                <div *ngIf="isInputInvalid" class="slds-form-element__help slds-text-color_error"><system-label [label]="'LBL_INPUT_INVALID'"></system-label></div>
             </div>
         </div>
 

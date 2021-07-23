@@ -31,7 +31,6 @@ import /*embed*/ {SalesDocsItemsAddProduct} from './components/salesdocsitemsadd
 import /*embed*/ {SalesDocsItemsAddProductGroup} from './components/salesdocsitemsaddproductgroup';
 import /*embed*/ {SalesDocsItemsAddProductVariant} from "./components/salesdocsitemsaddproductvariant";
 import /*embed*/ {SalesDocsItemsAddText} from "./components/salesdocsitemsaddtext";
-import /*embed*/ {SalesDocsPrintButton} from './components/salesdocsprintbutton';
 import /*embed*/ {SalesDocsItemsDeletedPipe} from './pipes/salesdocsitemsdeletedpipe';
 import /*embed*/ {SalesDocsItemsParentSelector} from './components/salesdocsitemsparentselector';
 import /*embed*/ {SalesdocsNewButton} from "./components/salesdocsnewbutton";
@@ -53,6 +52,9 @@ import /*embed*/ {SalesDocsConvertSelectType} from './components/salesdocsconver
 import /*embed*/ {SalesDocsConvertModalItemHeader} from './components/salesdocsconvertmodalitemheader';
 import /*embed*/ {SalesDocsConvertModalItem} from './components/salesdocsconvertmodalitem';
 import /*embed*/ {SalesDocsConvertModal} from './components/salesdocsconvertmodal';
+import /*embed*/ {SalesDocsFlowButton} from './components/salesdocsflowbutton';
+import /*embed*/ {SalesDocsFlowTableRow} from './components/salesdocsflowtablerow';
+import /*embed*/ {SalesDocsFlowModal} from './components/salesdocsflowmodal';
 
 @NgModule({
     imports: [
@@ -74,7 +76,6 @@ import /*embed*/ {SalesDocsConvertModal} from './components/salesdocsconvertmoda
         SalesDocsItemsAddProductGroup,
         SalesDocsItemsAddProductVariant,
         SalesDocsItemsAddText,
-        SalesDocsPrintButton,
         SalesDocsItemsParentSelector,
         SalesDocsItemsParentPipe,
         fieldSalesdocTypes,
@@ -99,7 +100,10 @@ import /*embed*/ {SalesDocsConvertModal} from './components/salesdocsconvertmoda
         SalesDocsConvertSelectType,
         SalesDocsConvertModalItemHeader,
         SalesDocsConvertModalItem,
-        SalesDocsConvertModal
+        SalesDocsConvertModal,
+        SalesDocsFlowButton,
+        SalesDocsFlowModal,
+        SalesDocsFlowTableRow
     ]
 })
 export class ModuleSalesDocs {

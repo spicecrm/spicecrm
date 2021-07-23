@@ -1,7 +1,7 @@
 /**
  * @module ModuleQuestionnaires
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { questionnaireParticipationService } from '../services/questionnaireparticipation.service';
 import { modal } from '../../../services/modal.service';
 import { language } from '../../../services/language.service';
@@ -16,6 +16,7 @@ export class QuestionnaireFillOutModal implements OnInit {
     @Input() public questionnaireId: string;
     @Input() public parentId: string;
     @Input() public parentType: string;
+    @Input() public saved$: EventEmitter<boolean> = new EventEmitter();
 
     private self: any;
 
@@ -49,7 +50,10 @@ export class QuestionnaireFillOutModal implements OnInit {
         if ( this.qpIsSaving ) return;
         this.subscriptions.add(
             this.qp.save( setCompleted ).subscribe( success => {
-                if ( success ) this.self.destroy();
+                if ( success ) {
+                    this.saved$.emit( setCompleted );
+                    this.self.destroy();
+                }
             })
         );
     }

@@ -8,7 +8,7 @@ import {view} from '../../services/view.service';
 @Component({
     selector: 'object-optimisitclocking-modal-data-field',
     templateUrl: './src/objectcomponents/templates/objectoptimisticlockingmodaldatafield.html',
-    providers: [model, view]
+    providers: [model]
 })
 export class ObjectOptimisticLockingModalDataField implements OnInit {
 

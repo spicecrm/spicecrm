@@ -4,6 +4,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {language} from '../../../services/language.service';
 import {model} from "../../../services/model.service";
+import {ReportsDesignerService} from "../services/reportsdesigner.service";
 
 @Component({
     selector: 'reports-designer-condition-group-expansion',
@@ -18,7 +19,9 @@ export class ReportsDesignerConditionGroupExpansion implements OnInit {
 
     private contextUsed: boolean = false;
 
-    constructor(private language: language, private model: model) {
+    constructor(private language: language,
+                private reportsDesignerService: ReportsDesignerService,
+                private model: model) {
     }
 
     /**

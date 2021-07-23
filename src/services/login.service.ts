@@ -64,6 +64,10 @@ export class loginService {
      * logs into the backend
      */
     public login(): Observable<boolean> {
+
+        // the impersonateion name
+        let impersonationUser: string;
+
         let loginSuccess = new Subject<any>();
 
         let loginUrl: string = this.configurationService.getBackendUrl() + '/authentication/login';
@@ -74,13 +78,12 @@ export class loginService {
         let headers = new HttpHeaders();
 
         if (this.authData.userName && this.authData.password) {
-            /**
-             let asUsernamePos: number = this.authData.userName.indexOf('#as#');
-             if (asUsernamePos > -1) {
-                loginBy = this.authData.userName.slice(0, asUsernamePos);
+
+            let asUsernamePos: number = this.authData.userName.indexOf('#as#');
+            if (asUsernamePos > -1) {
+                impersonationUser = this.authData.userName.slice(0, asUsernamePos);
                 this.authData.userName = this.authData.userName.slice(asUsernamePos + 4);
             }
-             */
 
             headers = headers.set(
                 'Authorization',
@@ -98,8 +101,9 @@ export class loginService {
         } else {
             throw new Error('Cannot Log In');
         }
-
-        this.http.get(loginUrl, {headers})
+        let params: any = {};
+        if ( impersonationUser ) params.impersonationuser = encodeURIComponent( impersonationUser );
+        this.http.get(loginUrl, { headers, params })
             .subscribe(
                 (res: any) => {
                     if (res.result == false) {

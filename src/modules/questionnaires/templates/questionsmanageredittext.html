@@ -21,5 +21,8 @@
         <label for="{{compId}}-answer" class="slds-form-element__label" ><system-label label="LBL_CORRECT_ANSWER"></system-label></label>
         <input id="{{compId}}-answer" [system-trim-input] type="text" class="slds-input" [(ngModel)]="answer.name">
     </div>
-    <system-checkbox [(ngModel)]="sequenced"><system-label label="Fragetext als Sequenz darstellen"></system-label></system-checkbox>
+    <div>
+        <div><system-checkbox [(ngModel)]="sequenced"><system-label label="Fragetext als Sequenz darstellen."></system-label></system-checkbox></div>
+        <div><system-checkbox [(ngModel)]="numeric"><system-label label="Antwort ist numerisch."></system-label></system-checkbox></div>
+    </div>
 </div>
