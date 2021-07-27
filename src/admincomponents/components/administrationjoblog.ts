@@ -33,6 +33,17 @@ declare var moment;
             transition('closed => open', [
                 animate('.5s'),
             ])
+        ]),
+        trigger('displaycard', [
+            transition(':enter', [
+                style({opacity: 0, height: '0px', overflow: 'hidden'}),
+                animate('.5s', style({height: '*', opacity: 1})),
+                style({overflow: 'unset'})
+            ]),
+            transition(':leave', [
+                style({overflow: 'hidden'}),
+                animate('.5s', style({height: '0px', opacity: 0}))
+            ])
         ])
     ]
 })
