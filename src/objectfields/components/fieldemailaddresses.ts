@@ -147,10 +147,11 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
         );
 
         this.subscriptions.add(
-          this.model.observeFieldChanges('email_addresses').subscribe(() => {
-             this.emailAddresses = this.model.getRelatedRecords('email_addresses').filter(e => e.primary_address == 1);
+            this.model.observeFieldChanges('email_addresses').subscribe(() => {
+                const email_addresses = this.model.getRelatedRecords('email_addresses');
+                this.emailAddresses = !this.fieldconfig.singleMode ? email_addresses : email_addresses.filter(e => e.primary_address == 1);
 
-          })
+            })
         );
     }
 
@@ -208,7 +209,9 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
     private setEmailAddressesField() {
         const emailAddresses = this.getUniqueCleanEmailAddresses();
         this.model.addRelatedRecords('email_addresses', emailAddresses.unique);
-        this.model.removeRelatedRecords('email_addresses', emailAddresses.deletedIds);
+        if (!this.model.isNew) {
+            this.model.removeRelatedRecords('email_addresses', emailAddresses.deletedIds);
+        }
         this.handleFieldInvalid();
         this.setEmail1Field(
             emailAddresses.unique.find(e => e.primary_address == '1')
@@ -221,9 +224,12 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * @private
      */
     private handleFieldInvalid() {
-        if (this.emailAddresses.some(e => e.invalid_email == 1)) {
+        if (((this.emailAddresses.length == 1 && !!this.emailAddresses[0].email_address) || this.emailAddresses.length > 1) && this.emailAddresses.some(e => e.invalid_email == 1)) {
             this.setFieldError(this.language.getLabel('LBL_INPUT_INVALID'));
         } else {
+            if (this.emailAddresses.length == 1) {
+                this.emailAddresses[0].invalid_email = 0;
+            }
             this.clearFieldError();
         }
     }
@@ -238,7 +244,8 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
     }
 
     /**
-     * @return any[] unique email addresses and filter out the empty once
+     * return unique email addresses and filter out the empty once
+     * @return any[]
      * @private
      */
     private getUniqueCleanEmailAddresses(): {deletedIds, unique} {
