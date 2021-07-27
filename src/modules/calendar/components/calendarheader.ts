@@ -176,6 +176,7 @@ export class CalendarHeader implements OnDestroy {
      */
     private zoomIn() {
         this.calendar.sheetHourHeight += 10;
+        this.calendar.layoutChange$.next();
     }
 
     /**
@@ -183,6 +184,7 @@ export class CalendarHeader implements OnDestroy {
      */
     private zoomOut() {
         this.calendar.sheetHourHeight -= 10;
+        this.calendar.layoutChange$.next();
     }
 
     /**
@@ -190,6 +192,7 @@ export class CalendarHeader implements OnDestroy {
      */
     private resetZoom() {
         this.calendar.sheetHourHeight = 80;
+        this.calendar.layoutChange$.next();
     }
 
     /**
