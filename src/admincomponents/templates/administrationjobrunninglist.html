@@ -53,14 +53,14 @@
                 </tr>
                 </tbody>
             </table>
-            <div *ngIf="!runningJobs.hasError && !runningJobs.isLoading && runningJobs.list.length == 0" class="slds-align_absolute-center slds-p-around--medium slds-height_full slds-has-divider--top-space slds-size--1-of-1">
-                <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
+            <div *ngIf="!runningJobs.hasError && !runningJobs.isLoading && runningJobs.list.length == 0" class="slds-align_absolute-center slds-height_full slds-has-divider--top-space slds-size--1-of-1">
+                <system-label label="MSG_NO_RECORDS_FOUND" class="slds-p-top--small"></system-label>
             </div>
-            <div *ngIf="!runningJobs.isLoading && runningJobs.hasError" class="slds-align_absolute-center slds-p-around--medium slds-height_full slds-has-divider--top-space slds-size--1-of-1">
-                <system-label label="ERR_LOADING_RECORDS"></system-label>
+            <div *ngIf="!runningJobs.isLoading && runningJobs.hasError" class="slds-align_absolute-center slds-height_full slds-has-divider--top-space slds-size--1-of-1">
+                <system-label label="ERR_LOADING_RECORDS" class="slds-p-top--small"></system-label>
             </div>
-            <div *ngIf="runningJobs.isLoading" class="slds-align_absolute-center slds-p-around--medium slds-height_full slds-has-divider--top-space slds-size--1-of-1">
-                <system-spinner></system-spinner>
+            <div *ngIf="runningJobs.isLoading" class="slds-align_absolute-center slds-p-bottom--small slds-height_full slds-has-divider--top-space slds-size--1-of-1">
+                <system-spinner class="slds-p-top--small"></system-spinner>
             </div>
         </div>
     </div>
