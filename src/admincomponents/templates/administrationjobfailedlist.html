@@ -1,4 +1,4 @@
-<div class="slds-card slds-card_boundary slds-height_full slds-grid slds-grid--vertical">
+<div [ngStyle]="!hasBoxClass ? {'border': 0, 'box-shadow': 'none'} : undefined" class="slds-card slds-card_boundary slds-grid slds-grid--vertical slds-grow slds-height_full" style="min-height: 0">
     <div class="slds-card__header slds-grid slds-grid--vertical-align-center">
         <header class="slds-media slds-media--center slds-has-flexi-truncate">
             <system-icon icon="custom82" sprite="custom"></system-icon>
@@ -17,9 +17,9 @@
             <system-button-icon class="slds-p-horizontal--xxx-small" icon="refresh"></system-button-icon>
         </button>
     </div>
-    <div class="slds-grow" style="min-height: 0;">
-        <div class="slds-card__body slds-size--1-of-1 slds-height_full">
-            <table *ngIf="failedJobs.list.length > 0" class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--fixed-layout" role="grid">
+    <div class="slds-grow slds-grid slds-grid--vertical" style="min-height: 0;">
+        <div class="slds-card__body slds-size--1-of-1 slds-grid slds-grid--vertical slds-grow slds-scrollable--y" style="min-height: 0; flex: initial">
+            <table *ngIf="failedJobs.list.length > 0" class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--fixed-layout slds-table--header-fixed" role="grid">
                 <thead>
                 <tr class="slds-line-height_reset">
                     <th scope="col">

@@ -1,7 +1,7 @@
 /**
  * @module AdminComponentsModule
  */
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {backend} from "../../services/backend.service";
 import {metadata} from "../../services/metadata.service";
 import {language} from "../../services/language.service";
@@ -12,6 +12,10 @@ import {modal} from "../../services/modal.service";
     templateUrl: './src/admincomponents/templates/administrationjobfailedlist.html'
 })
 export class AdministrationJobFailedList implements OnInit {
+    /**
+     * if true apply box border class on the container
+     */
+    @Input() public hasBoxClass = false;
     /**
      * holds the failed jobs
      */
