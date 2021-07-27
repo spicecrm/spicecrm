@@ -29,9 +29,19 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      */
     public canAdd: boolean = false;
     /**
+     * true to display/hide input new email address
+     */
+    public isAdding: boolean = false;
+    /**
      * holds the email addresses locally
      */
     public emailAddresses = [];
+    /**
+     * holds the new input email address data
+     */
+    public inputNewEmailAddress: {id?, primary_address, invalid_email, email_address, hasFocus?, opt_in_status?, isNew?} = {
+        primary_address: '', invalid_email: 0, email_address: '', hasFocus: true
+    };
 
     constructor(public model: model,
                 public view: view,
@@ -55,22 +65,25 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * delete the email address from the array triggered by delete button
      * @param emailAddress
      */
-    public handleOnDelete(emailAddress) {
+    public handleOnDelete(emailAddress: {id?, primary_address, invalid_email, email_address, hasFocus?, opt_in_status?, isNew?}) {
 
-        // if we have only one entry clear the input otherwise remove it
-        if (this.emailAddresses.length > 1) {
-            this.emailAddresses = this.emailAddresses.filter(e => e.id !== emailAddress.id);
+        this.emailAddresses = this.emailAddresses.filter(e => e.id !== emailAddress.id);
+
+        if (!emailAddress.isNew) {
             this.model.removeRelatedRecords('email_addresses', [emailAddress.id]);
         } else {
-            emailAddress.email_address = '';
-            emailAddress.email_address_caps = '';
+            this.model.setRelatedRecords('email_addresses', this.emailAddresses);
         }
 
-        if (this.model.getRelatedRecords('email_addresses').length == 0) {
+        if (this.emailAddresses.length == 0) {
             this.setEmail1Field(undefined);
         }
 
-        this.setCanAdd();
+        if (!!this.fieldconfig.singleMode) {
+            this.canAdd = true;
+            this.startAdding();
+        }
+
         this.handleFieldInvalid();
     }
 
@@ -78,7 +91,7 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * open the email link by mailto in browser
      * @param emailAddress
      */
-    public sendEmail(emailAddress) {
+    public sendEmail(emailAddress: {id?, primary_address, invalid_email, email_address, hasFocus?, opt_in_status?, isNew?}) {
         if (emailAddress.invalid_email == 1) return;
         window.location.assign('mailto:' + emailAddress.email_address);
     }
@@ -95,18 +108,18 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
 
     /**
      * set the primary email address
-     * @param emailaddress
+     * @param emailAddress
      */
-    public setPrimary(emailaddress) {
+    public setPrimary(emailAddress: {id?, primary_address, invalid_email, email_address, hasFocus?, opt_in_status?, isNew?}) {
 
-        if (emailaddress.invalid_email == 1) {
+        if (emailAddress.invalid_email == 1) {
             return;
         }
 
         this.emailAddresses.forEach(addr => {
-            if (addr.id == emailaddress.id) {
+            if (addr.id == emailAddress.id) {
                 addr.primary_address = '1';
-                this.model.setField('email1', emailaddress.email_address);
+                this.setEmail1Field(emailAddress);
             } else {
                 addr.primary_address = '0';
             }
@@ -117,20 +130,12 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
     /**
      * push an empty email address to the array
      * disable adding new one before typing in
-     * @param hasFocus
      */
-    public addEmailAddress(hasFocus?) {
+    public startAdding() {
 
         if (!this.canAdd) return;
 
-        const newEmailAddress = {
-            id: this.model.generateGuid(),
-            email_address: '',
-            primary_address: this.emailAddresses.some(e => e.primary_address == '1') ? '0' : '1',
-            hasFocus
-        };
-
-        this.emailAddresses.push(newEmailAddress);
+        this.isAdding = true;
         this.canAdd = false;
     }
 
@@ -158,10 +163,9 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
     /**
      * set email1 field value
      * @param emailAddress
-     * @param ignoreInvalid
      * @private
      */
-    private setEmail1Field(emailAddress, ignoreInvalid?: boolean) {
+    private setEmail1Field(emailAddress: {id?, primary_address, invalid_email, email_address, hasFocus?, opt_in_status?, isNew?}) {
         if (emailAddress?.invalid_email == 1 || emailAddress?.email_address == this.model.getField('email1')) {
             return;
         }
@@ -185,18 +189,20 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      */
     private initialize() {
 
-        this.emailAddresses = this.model.getRelatedRecords('email_addresses').filter(e => e.primary_address == 1);
+        const email_addresses = this.model.getRelatedRecords('email_addresses');
+        this.emailAddresses = !this.fieldconfig.singleMode ? email_addresses : email_addresses.filter(e => e.primary_address == 1);
 
         if (!this.isEditMode()) return;
 
         if (!Array.isArray(this.emailAddresses) || this.emailAddresses.length == 0) {
-            this.model.initializeField('email_addresses', {beans: {}});
+            this.model.initializeField('email_addresses', {beans: {}, beans_relations_to_delete: {}});
             this.emailAddresses = [];
             this.canAdd = true;
-            this.addEmailAddress();
+            this.startAdding();
+        } else {
+            this.setCanAdd();
         }
 
-        this.setCanAdd();
         this.handleFieldInvalid();
     }
 
@@ -207,11 +213,13 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
      * @private
      */
     private setEmailAddressesField() {
+
+        this.pushNewEmailAddress();
+
         const emailAddresses = this.getUniqueCleanEmailAddresses();
         this.model.addRelatedRecords('email_addresses', emailAddresses.unique);
-        if (!this.model.isNew) {
-            this.model.removeRelatedRecords('email_addresses', emailAddresses.deletedIds);
-        }
+        this.model.removeRelatedRecords('email_addresses', emailAddresses.deletedIds);
+
         this.handleFieldInvalid();
         this.setEmail1Field(
             emailAddresses.unique.find(e => e.primary_address == '1')
@@ -219,6 +227,22 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
         this.setCanAdd();
     }
 
+    /**
+     * push the new input email address to the emailAddresses array
+     */
+    public pushNewEmailAddress() {
+
+        if (!this.isAdding || this.inputNewEmailAddress.invalid_email == 1 || this.emailAddresses.some(e => e.email_address == this.inputNewEmailAddress.email_address)) return;
+
+        if (this.emailAddresses.length == 0) {
+            this.inputNewEmailAddress.primary_address = 1;
+        }
+        this.inputNewEmailAddress.id = this.model.generateGuid();
+        this.inputNewEmailAddress.isNew = true;
+
+        this.emailAddresses.push({...this.inputNewEmailAddress});
+        this.cancelAdding();
+    }
     /**
      * handle setting/clearing the field message for invalid status
      * @private
@@ -259,12 +283,27 @@ export class fieldEmailAddresses extends fieldGeneric implements OnInit {
                 if (!unique.some(e => e.email_address == emailAddress.email_address)) {
                     delete emailAddress.hasFocus;
                     unique.push(emailAddress);
-                } else {
+                } else if (!emailAddress.isNew) {
                     deletedIds.push(emailAddress.id);
                 }
             });
 
         return {deletedIds, unique};
+    }
+
+    /**
+     * clear the email address input data
+     */
+    public cancelAdding() {
+
+        this.inputNewEmailAddress = {
+            id: '', primary_address: '', invalid_email: 0, email_address: '', hasFocus: true
+        };
+
+        if (this.emailAddresses.length > 0) {
+            this.isAdding = false;
+            this.setCanAdd();
+        }
     }
 }
 
