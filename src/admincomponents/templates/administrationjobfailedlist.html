@@ -53,13 +53,13 @@
                 </tr>
                 </tbody>
             </table>
-            <div *ngIf="!failedJobs.hasError && !failedJobs.isLoading && failedJobs.list.length == 0" class="slds-align_absolute-center slds-p-around--medium slds-height_full slds-has-divider--top-space">
+            <div *ngIf="!failedJobs.hasError && !failedJobs.isLoading && failedJobs.list.length == 0" class="slds-align_absolute-center slds-p-around--medium slds-height_full slds-has-divider--top-space slds-size--1-of-1">
                 <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
             </div>
-            <div *ngIf="!failedJobs.isLoading && failedJobs.hasError" class="slds-align_absolute-center slds-p-around--medium slds-height_full slds-has-divider--top-space">
+            <div *ngIf="!failedJobs.isLoading && failedJobs.hasError" class="slds-align_absolute-center slds-p-around--medium slds-height_full slds-has-divider--top-space slds-size--1-of-1">
                 <system-label label="ERR_LOADING_RECORDS"></system-label>
             </div>
-            <div *ngIf="failedJobs.isLoading" class="slds-align_absolute-center slds-p-around--medium slds-height_full slds-has-divider--top-space">
+            <div *ngIf="failedJobs.isLoading" class="slds-align_absolute-center slds-p-around--medium slds-height_full slds-has-divider--top-space slds-size--1-of-1">
                 <system-spinner></system-spinner>
             </div>
         </div>
