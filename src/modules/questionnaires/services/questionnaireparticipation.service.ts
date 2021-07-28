@@ -407,10 +407,10 @@ export class questionnaireParticipationService {
                 } else {
                     // In case of question type "ratinggroup" the options of each question has to be assigned to the predefined options from the question set.
                     // In case of a rating question set: Get the answer options from the field "questiontypeparameter".
-                    if ( question.questiontype === 'ratinggroup' && question.questionparameter.ratinggroup ) {
+                    if ( question.questiontype === 'ratinggroup') {
                         for ( let question of this.questionsArray[questionset.id] ) {
                             let sortedOptions = [];
-                            for ( let entry of question.questionparameter.ratinggroup.entries ) {
+                            for ( let entry of questionset.questiontypeparameter.rating.entries ) {
                                 let isOptionFound = false;
                                 for ( let questionoption of this.questionoptionsArray[question.id] ) {
                                     if ( questionoption.questionset_type_parameter_id === entry.id ) {
@@ -421,7 +421,7 @@ export class questionnaireParticipationService {
                                 }
                                 if( !isOptionFound ) sortedOptions.push( {} );
                             }
-                            this.questionoptions[question.id] = sortedOptions;
+                            this.questionoptionsArray[question.id] = sortedOptions;
                         }
                     }
                 }
