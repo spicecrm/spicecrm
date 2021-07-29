@@ -19,7 +19,7 @@ import {Subscription} from "rxjs";
 import {ListTypeI} from "../../services/interfaces.service";
 import {modal} from "../../services/modal.service";
 import {skip} from "rxjs/operators";
-import {CdkVirtualScrollViewport, ViewportRuler} from "@angular/cdk/scrolling";
+import {CdkVirtualScrollViewport} from "@angular/cdk/scrolling";
 
 /**
  * renders the modellist
@@ -27,43 +27,44 @@ import {CdkVirtualScrollViewport, ViewportRuler} from "@angular/cdk/scrolling";
 @Component({
     selector: 'object-list',
     templateUrl: './src/objectcomponents/templates/objectlist.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+
 })
 export class ObjectList implements OnDestroy, OnInit {
-    /**
-     * holds a reference to the virtual scroll viewport component
-     * @private
-     */
-    @ViewChild(CdkVirtualScrollViewport) private scrollViewport: CdkVirtualScrollViewport;
     /**
      * the subscription to the modellist
      */
     public subscriptions: Subscription = new Subscription();
-
     public virtualScrolling: boolean = true;
     /**
      * true if the scrollbar in the table is visible
      */
     public scrollbarVisible: boolean = false;
-
     /**
      * the componentconfig
      */
     public componentconfig: any = {};
-
     /**
-     * returns the actionset from the config
+     * holds the item height
      */
-    get actionset() {
-        return this.componentconfig.actionset;
-    }
-
+    public itemHeight: number = 33;
     /**
-     * returns if the listservic eis loading
+     * holds the scroll timeout
      */
-    get isloading() {
-        return this.modellist.isLoading;
-    }
+    public scrollTimeout: number;
+    /**
+     * holds the total items indices
+     */
+    public indices: number[];
+    /**
+     * holds the total items indices
+     */
+    public loadedIndices: {[key: number]: number} = {};
+    /**
+     * holds a reference to the virtual scroll viewport component
+     * @private
+     */
+    @ViewChild(CdkVirtualScrollViewport) private scrollViewport: CdkVirtualScrollViewport;
 
     constructor(public router: Router,
                 public cdRef: ChangeDetectorRef,
@@ -76,10 +77,116 @@ export class ObjectList implements OnDestroy, OnInit {
     }
 
     /**
+     * returns the actionset from the config
+     */
+    get actionset() {
+        return this.componentconfig.actionset;
+    }
+
+    /**
+     * returns if the list service is loading
+     */
+    get isloading() {
+        return this.modellist.isLoading;
+    }
+
+    /**
+     * getter if the list config allows inline editing
+     */
+    get inlineedit() {
+        return this.componentconfig.inlineedit;
+    }
+
+    /**
+     * a getter if the view is considered small
+     * to render the view properly
+     */
+    get issmall() {
+        return this.layout.screenwidth == 'small';
+    }
+
+    /**
+     * returns the sortfield from the config
+     */
+    get sortfield() {
+        return this.componentconfig.sortfield;
+    }
+
+    /**
+     * returns the sortdirection from the componentconfig
+     */
+    get sortdirection() {
+        return this.componentconfig.sortdirection ? this.componentconfig.sortdirection : 'ASC';
+    }
+
+    /**
+     * displays rownumbers if set in the config
+     */
+    get rowNumbers() {
+        return this.componentconfig.rownumbers === true;
+    }
+
+    /**
+     * gets if the config has no autoload set
+     */
+    get noAutoLoad() {
+        return this.componentconfig.noautoload === true;
+    }
+
+    /**
+     * returns if the list can load more records
+     */
+    get canLoadMore() {
+        return this.modellist.canLoadMore();
+    }
+
+    /**
      * call to initialize the component
      */
     public ngOnInit() {
         this.initialize();
+    }
+
+    /**
+     * unsubscribe from the model list subscription
+     * reset the use cache value in case other component does not use cache
+     */
+    public ngOnDestroy() {
+        this.subscriptions.unsubscribe();
+        this.modellist.useCache = false;
+    }
+
+    /**
+     * handle viewport scroll to load more entries
+     */
+    public onViewportScroll(index: number) {
+
+        if (index === 0) {
+            return;
+        }
+
+        if (this.scrollTimeout) window.clearTimeout(this.scrollTimeout);
+
+        this.scrollTimeout = window.setTimeout(() => {
+
+            let triggerLoadMore = !(index in this.loadedIndices);
+
+            if (triggerLoadMore) {
+                this.modellist.offset = index;
+                this.modellist.loadlimit = this.modellist.listData.totalcount - index < this.modellist.loadlimit ? this.modellist.listData.totalcount - index : 50;
+                this.modellist.loadMoreList();
+            }
+        }, 500);
+    }
+
+    /**
+     * trackby function to optimize performance onm the for loop
+     *
+     * @param index
+     * @param item
+     */
+    protected trackbyfn(index, item) {
+        return item.id;
     }
 
     /**
@@ -95,7 +202,7 @@ export class ObjectList implements OnDestroy, OnInit {
         this.chooseFields();
 
         // set the limit for the loading
-        this.modellist.loadlimit = 10;
+        this.modellist.loadlimit = 50;
 
         if (!this.modellist.loadFromSession()) {
             this.getListData();
@@ -110,23 +217,29 @@ export class ObjectList implements OnDestroy, OnInit {
         this.subscriptions.add(
             this.modellist.listDataChanged$.subscribe(() => {
 
-                // this.setTotalContentSize();
-                this.scrollbarVisible = this.modellist.listData.list.length > this.scrollViewport.elementRef.nativeElement.getBoundingClientRect().height;
-
+                this.scrollbarVisible = (this.modellist.listData.list.length * this.itemHeight) > this.scrollViewport.elementRef.nativeElement.getBoundingClientRect().height;
+                this.handleLoadedData();
                 this.cdRef.detectChanges();
             })
         );
     }
 
     /**
-     * set total content size for scroll viewport
-      */
-    public setTotalContentSize() {
-        const rowHeight = 33;
-        const totalHeight = rowHeight * this.modellist.listData.totalcount;
-        // this.scrollbarVisible = this.modellist.listData.list.length > this.scrollViewport.elementRef.nativeElement.getBoundingClientRect().height;
+     * handle loaded data
+     */
+    public handleLoadedData() {
 
-        this.scrollViewport.setTotalContentSize(totalHeight);
+        const offset = this.modellist.offset ?? 0;
+
+        if (this.modellist.listData.list.length > 0) {
+            Array(this.modellist.loadlimit).fill(0).forEach((_,i) => {
+                this.loadedIndices[offset + i] = offset + i;
+            });
+        }
+
+        if (this.modellist.listData.totalcount > 0) {
+            this.indices = Array.from({length: this.modellist.listData.totalcount}, (_,i) => i);
+        }
     }
 
     /**
@@ -166,65 +279,6 @@ export class ObjectList implements OnDestroy, OnInit {
     }
 
     /**
-     * getter if the list config allows inline editing
-     */
-    get inlineedit() {
-        return this.componentconfig.inlineedit;
-    }
-
-    /**
-     * a getter if the view is considered small
-     * to render the view properly
-     */
-    get issmall() {
-        return this.layout.screenwidth == 'small';
-    }
-
-    /**
-     * returns the sortfield from the config
-     */
-    get sortfield() {
-        return this.componentconfig.sortfield;
-    }
-
-    /**
-     * returns the sortdirection from the componentconfig
-     */
-    get sortdirection() {
-        return this.componentconfig.sortdirection ? this.componentconfig.sortdirection : 'ASC';
-    }
-
-    /**
-     * unsubscribe from the model list subscription
-     * reset the use cache value in case other component does not use cache
-     */
-    public ngOnDestroy() {
-        this.subscriptions.unsubscribe();
-        this.modellist.useCache = false;
-    }
-
-    /**
-     * displays rownumbers if set in the config
-     */
-    get rowNumbers() {
-        return this.componentconfig.rownumbers === true;
-    }
-
-    /**
-     * gets if the config has no autoload set
-     */
-    get noAutoLoad() {
-        return this.componentconfig.noautoload === true;
-    }
-
-    /**
-     * returns if the list can load more records
-     */
-    get canLoadMore() {
-        return this.modellist.canLoadMore();
-    }
-
-    /**
      * load more items from teh manual pushed button
      *
      * @private
@@ -243,40 +297,12 @@ export class ObjectList implements OnDestroy, OnInit {
     }
 
     /**
-     * trackby function to optimize performance onm the for loop
-     *
-     * @param index
-     * @param item
-     */
-    protected trackbyfn(index, item) {
-        return item.id;
-    }
-
-    /**
      * opens the modal allowing the user to choose and select the display fields when no field defs are defined and no current list fields are defined
      */
     private chooseFields() {
         if (this.modellist.isCustomList() && this.modellist.listfields.length == 0 && this.modellist.getFieldDefs()?.length == 0 && this.modellist.checkAccess('edit')) {
             this.modal.openModal('ObjectListViewSettingsSetfieldsModal', true, this.injector);
         }
-    }
-
-    /**
-     * handle viewport scroll to load more entries
-     * @param index
-     */
-    public onViewportScroll(index: number) {
-        if (index === 0) {
-            return;
-        }
-        const end = this.scrollViewport.getRenderedRange().end;
-        const total = this.scrollViewport.getDataLength();
-
-        if (end === total) {
-            this.modellist.loadMoreList();
-        }
-
-
     }
 
 }
