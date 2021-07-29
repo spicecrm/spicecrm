@@ -22,13 +22,16 @@
 </ng-container>
 
 <ng-template #cdkScrollingContainer>
-    <div class="slds-theme--default slds-is-relative" (system-to-bottom)="onScroll()" style="min-height: 100px">
-        <table class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal slds-is-absolute__top" style="z-index: 1" [ngClass]="{'slds-table--bordered':!issmall}" role="grid">
-            <thead>
-            <tr class="slds-text-title--caps" object-list-header [actionset]="actionset" [showRowNumber]="rowNumbers"></tr>
-            </thead>
-        </table>
-        <cdk-virtual-scroll-viewport (scrolledIndexChange)="onViewportScroll($event)" itemSize="33" class="slds-size--1-of-1 slds-height_full slds-scrollable--y">
+    <div class="slds-theme--default slds-is-relative slds-visible" system-to-bottom style="min-height: 100px">
+        <div class="slds-is-absolute__top slds-grid slds-size--1-of-1" style="z-index: 1">
+            <table class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal" [ngClass]="{'slds-table--bordered':!issmall}" role="grid">
+                <thead>
+                <tr class="slds-text-title--caps" object-list-header [actionset]="actionset" [showRowNumber]="rowNumbers"></tr>
+                </thead>
+            </table>
+            <div *ngIf="scrollbarVisible" class="slds-scrollable--y" style="flex: none; visibility: hidden; overflow-y: scroll"></div>
+        </div>
+        <cdk-virtual-scroll-viewport (scrolledIndexChange)="onViewportScroll($event)" itemSize="33" minBufferPx="100" maxBufferPx="100" class="slds-size--1-of-1 slds-height_full slds-scrollable--y">
             <table class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal" [ngClass]="{'slds-table--bordered':!issmall}" role="grid">
                 <thead>
                     <tr class="slds-text-title--caps" object-list-header [actionset]="actionset" [showRowNumber]="rowNumbers" (click)="$event.preventDefault()" style="user-select: none"></tr>
