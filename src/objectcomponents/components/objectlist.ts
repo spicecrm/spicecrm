@@ -19,7 +19,7 @@ import {Subscription} from "rxjs";
 import {ListTypeI} from "../../services/interfaces.service";
 import {modal} from "../../services/modal.service";
 import {skip} from "rxjs/operators";
-import {CdkVirtualScrollViewport} from "@angular/cdk/scrolling";
+import {CdkVirtualScrollViewport, ViewportRuler} from "@angular/cdk/scrolling";
 
 /**
  * renders the modellist
@@ -41,8 +41,10 @@ export class ObjectList implements OnDestroy, OnInit {
     public subscriptions: Subscription = new Subscription();
 
     public virtualScrolling: boolean = true;
-
-    public placeholderHeight: number = 0;
+    /**
+     * true if the scrollbar in the table is visible
+     */
+    public scrollbarVisible: boolean = false;
 
     /**
      * the componentconfig
@@ -93,7 +95,7 @@ export class ObjectList implements OnDestroy, OnInit {
         this.chooseFields();
 
         // set the limit for the loading
-        this.modellist.loadlimit = 50;
+        this.modellist.loadlimit = 10;
 
         if (!this.modellist.loadFromSession()) {
             this.getListData();
@@ -107,7 +109,10 @@ export class ObjectList implements OnDestroy, OnInit {
 
         this.subscriptions.add(
             this.modellist.listDataChanged$.subscribe(() => {
-                this.setTotalContentSize();
+
+                // this.setTotalContentSize();
+                this.scrollbarVisible = this.modellist.listData.list.length > this.scrollViewport.elementRef.nativeElement.getBoundingClientRect().height;
+
                 this.cdRef.detectChanges();
             })
         );
@@ -119,6 +124,8 @@ export class ObjectList implements OnDestroy, OnInit {
     public setTotalContentSize() {
         const rowHeight = 33;
         const totalHeight = rowHeight * this.modellist.listData.totalcount;
+        // this.scrollbarVisible = this.modellist.listData.list.length > this.scrollViewport.elementRef.nativeElement.getBoundingClientRect().height;
+
         this.scrollViewport.setTotalContentSize(totalHeight);
     }
 
@@ -259,6 +266,17 @@ export class ObjectList implements OnDestroy, OnInit {
      * @param index
      */
     public onViewportScroll(index: number) {
-        //
+        if (index === 0) {
+            return;
+        }
+        const end = this.scrollViewport.getRenderedRange().end;
+        const total = this.scrollViewport.getDataLength();
+
+        if (end === total) {
+            this.modellist.loadMoreList();
+        }
+
+
     }
+
 }
