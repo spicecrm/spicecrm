@@ -14,15 +14,14 @@ import {toast} from "../../services/toast.service";
 @Component({
     templateUrl: './src/workbench/templates/validationrulesmanager.html',
 })
-export class ValidationRulesManager
-{
-    rules: Array<any> = [];
-    private _backup_rules: Array<any> = [];
+export class ValidationRulesManager {
+    public rules: any[] = [];
+    private _backup_rules: any[] = [];
     private _current_module: string;
     private _current_rule: string;
     private _current_rule_data: any = {};
-    logicoperator_options = [];
-    current_tab = 'details';
+    public logicoperator_options = [];
+    public current_tab = 'details';
 
     constructor(
         private backend: backend,
@@ -31,13 +30,11 @@ export class ValidationRulesManager
         private utils: modelutilities,
         private toast: toast,
     ) {
-        //this.current_module = 'Opportunities';
         this.logicoperator_options = this.language.getDisplayOptions('logicoperators_dom', true);
     }
 
     get modules() {
         return this.metadata.getModules().sort();
-        // return this.appdata.modules;
     }
 
     set current_module(val: string) {
@@ -51,6 +48,10 @@ export class ValidationRulesManager
         return this._current_module;
     }
 
+    get current_rule() {
+        return this._current_rule;
+    }
+
     set current_rule(val: string) {
         this._current_rule = val;
         this._current_rule_data = this.getCurrentRuleData();
@@ -60,23 +61,20 @@ export class ValidationRulesManager
         return this._current_rule_data;
     }
 
-    get current_rule() {
-        return this._current_rule;
-    }
-
-    getCurrentRuleData() {
-        if (this.rules)
+    public getCurrentRuleData() {
+        if (this.rules) {
             return this.rules.find((e) => {
-                return e.id == this._current_rule
+                return e.id == this._current_rule;
             });
-        else
+        } else {
             return '';
+        }
     }
 
-    removeCurrentValidationRule() {
+    public removeCurrentValidationRule() {
         this.backend.deleteRequest('configuration/spiceui/core/modelvalidations/' + this.current_rule).subscribe(
             (success) => {
-                //this.broadcast.broadcastMessage('metadata.updatefieldsets', data);
+                // this.broadcast.broadcastMessage('metadata.updatefieldsets', data);
                 this.toast.sendToast('rule removed');
                 this.removeRule(this.current_rule);
                 return true;
@@ -89,14 +87,14 @@ export class ValidationRulesManager
         );
     }
 
-    save() {
+    public save() {
         let data = this.current_rule_data;
         this.backend.postRequest('configuration/spiceui/core/modelvalidations', {}, data).subscribe(
             (success) => {
                 this.current_rule_data.isnewrecord = false;
 
                 let idx = this._backup_rules.findIndex((e) => {
-                    return e.id == this._current_rule
+                    return e.id == this._current_rule;
                 });
                 this._backup_rules[idx] = {...data};
 
@@ -109,18 +107,17 @@ export class ValidationRulesManager
         );
     }
 
-    cancel() {
+    public cancel() {
         if (this.current_rule_data.isnewrecord) {
             // remove it...
             this.removeRule(this.current_rule);
-        }
-        else {
+        } else {
             // reset changes...
             this.resetCurrentRuleData();
         }
     }
 
-    addValidationRule() {
+    public addValidationRule() {
         this.rules.push({
             id: this.utils.generateGuid(),
             module: this.current_module,
@@ -134,7 +131,7 @@ export class ValidationRulesManager
 
     private removeRule(id: string = this.current_rule): boolean {
         let idx = this.rules.findIndex((e) => {
-            return e.id == id
+            return e.id == id;
         });
         this.rules.splice(idx, 1);
         if (this.current_rule == id) {
@@ -145,7 +142,7 @@ export class ValidationRulesManager
 
     private resetCurrentRuleData() {
         let data = this._backup_rules.find((e) => {
-            return e.id == this._current_rule
+            return e.id == this._current_rule;
         });
         this._current_rule_data = {...data};
     }
@@ -162,13 +159,13 @@ export class ValidationRulesManager
 import {Pipe} from '@angular/core';
 import {JsonPipe} from '@angular/common';
 
+// tslint:disable-next-line:max-classes-per-file
 @Pipe({name: 'maybejson'})
 export class MaybeJsonPipe extends JsonPipe {
-    transform(value): string {
+    public transform(value): string {
         if (value instanceof Array || value instanceof Object) {
             return super.transform(value);
-        }
-        else {
+        } else {
             return value;
         }
     }

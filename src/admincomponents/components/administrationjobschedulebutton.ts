@@ -16,10 +16,10 @@ import {broadcast} from "../../services/broadcast.service";
 declare var _;
 
 @Component({
-    selector: 'administration-scheduler-schedule-button',
-    templateUrl: './src/admincomponents/templates/administrationschedulerschedulebutton.html'
+    selector: 'administration-job-schedule-button',
+    templateUrl: './src/admincomponents/templates/administrationjobschedulebutton.html'
 })
-export class AdministrationSchedulerScheduleButton {
+export class AdministrationJobScheduleButton {
 
     constructor(public model: model,
                 public language: language,
@@ -32,18 +32,18 @@ export class AdministrationSchedulerScheduleButton {
 
     public execute() {
         this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {
-            this.backend.postRequest('module/Schedulers/'+ this.model.id +'/schedulejob').subscribe(res => {
+            this.backend.postRequest('module/Jobs/'+ this.model.id +'/schedule').subscribe(res => {
                 modalRef.instance.self.destroy();
                 if (res) {
                     this.toast.sendToast(this.language.getLabel('MSG_SUCCESSFULLY_EXECUTED'), 'success');
                 } else {
                     this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
                 }
-                this.broadcast.broadcastMessage('scheduler.run');
+                this.broadcast.broadcastMessage('job.run');
             }, err => {
                 modalRef.instance.self.destroy();
                 this.toast.sendToast(this.language.getLabel('ERR_FAILED_TO_EXECUTE'), 'error');
-                this.broadcast.broadcastMessage('scheduler.run');
+                this.broadcast.broadcastMessage('job.run');
             });
         });
     }
