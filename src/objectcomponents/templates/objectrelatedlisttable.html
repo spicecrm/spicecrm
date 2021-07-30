@@ -25,7 +25,7 @@
     </ng-container>
     <ng-container *ngIf="isSequenced">
         <tbody class="dragboundary" cdkDropList (cdkDropListDropped)="drop($event)">
-            <tr object-related-list-sequenced-item *ngFor="let relateditem of relatedmodels.items; let i=index; trackBy:getIdOfRow" cdkDrag cdkDragBoundary=".dragboundary" (cdkDragStarted)="dragStarted($event)" (cdkDragEnded)="dragEnded($event)" [module]="module" [listfields]="listfields" [listitem]="relateditem" class="slds-hint-parent"></tr>
+            <tr object-related-list-sequenced-item *ngFor="let relateditem of relatedmodels.items; let i=index; trackBy:getIdOfRow" cdkDrag cdkDragBoundary=".dragboundary" (cdkDragStarted)="dragStarted($event)" (cdkDragEnded)="dragEnded($event)" [module]="module" [listfields]="listfields" [listitem]="relateditem" [listItemActionset]="listitemactionset" class="slds-hint-parent"></tr>
         </tbody>
     </ng-container>
     <tbody system-table-stencils *ngIf="isloading" [columns]="listfields.length" [select]="isSequenced" [tools]="!hideActions"></tbody>
