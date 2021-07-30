@@ -1,0 +1,74 @@
+<div [ngStyle]="!hasBoxClass ? {'border': 0, 'box-shadow': 'none'} : undefined" class="slds-card slds-card_boundary slds-grid slds-grid--vertical slds-grow slds-height_full" style="min-height: 0">
+    <div class="slds-card__header slds-grid slds-grid--vertical-align-center">
+        <header class="slds-media slds-media--center slds-has-flexi-truncate">
+            <system-icon icon="custom82" sprite="custom"></system-icon>
+            <div class="slds-media__body slds-truncate slds-grid slds-grid--vertical-align-center">
+                <h2>
+                    <a href="javascript:void(0);" class="slds-text-link--reset">
+                <span class="slds-text-heading--small">
+                    <system-label label="LBL_FAILED_JOBS"></system-label>
+                    ({{failedJobs.list.length}} <system-label label="LBL_OF"></system-label> {{failedJobs.total}})
+                </span>
+                    </a>
+                </h2>
+            </div>
+        </header>
+        <button (click)="reloadList()" class="slds-button slds-button--icon">
+            <system-button-icon class="slds-p-horizontal--xxx-small" icon="refresh"></system-button-icon>
+        </button>
+    </div>
+    <div class="slds-grow slds-grid slds-grid--vertical" style="min-height: 0;">
+        <div class="slds-card__body slds-size--1-of-1 slds-grid slds-grid--vertical slds-grow slds-scrollable--y" style="min-height: 0; flex: initial">
+            <table *ngIf="failedJobs.list.length > 0" class="slds-table slds-table--bordered slds-table--cell-buffer slds-table--fixed-layout slds-table--header-fixed" role="grid">
+                <thead>
+                <tr class="slds-line-height_reset">
+                    <th scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_LAST_RUN"></system-label></div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_LAST_MESSAGE"></system-label></div>
+                    </th>
+                    <th class="slds-cell-shrink" scope="col"></th>
+                </tr>
+                </thead>
+                <tbody [system-view-provider]="{displayLabels: false, editable: false}">
+                <tr *ngFor="let job of failedJobs.list; trackBy: trackByFn" [system-model-provider]="{module: 'Jobs', id: job.id, data: job}" class="slds-hint-parent">
+                    <td>
+                        <field-container field="name" [fieldconfig]="{link: true}" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
+                    </td>
+                    <td>
+                        <field-container field="last_run_date" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
+                    </td>
+                    <td>
+                        <field-container field="last_run_message" [fieldconfig]="{truncate: true}" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
+                    </td>
+                    <td class="slds-cell-shrink">
+                        <button (click)="openMessageInModal(job.last_run_message, job.resolution)" system-title="LBL_LAST_MESSAGE" class="slds-button slds-button--icon">
+                            <system-button-icon icon="info"></system-button-icon>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div *ngIf="!failedJobs.hasError && !failedJobs.isLoading && failedJobs.list.length == 0" class="slds-align_absolute-center slds-height_full slds-has-divider--top-space slds-size--1-of-1">
+                <system-label label="MSG_NO_RECORDS_FOUND" class="slds-p-top--small"></system-label>
+            </div>
+            <div *ngIf="!failedJobs.isLoading && failedJobs.hasError" class="slds-align_absolute-center slds-height_full slds-has-divider--top-space slds-size--1-of-1">
+                <system-label label="ERR_LOADING_RECORDS" class="slds-p-top--small"></system-label>
+            </div>
+            <div *ngIf="failedJobs.isLoading" class="slds-align_absolute-center slds-p-bottom--small slds-height_full slds-has-divider--top-space slds-size--1-of-1">
+                <system-spinner class="slds-p-top--small"></system-spinner>
+            </div>
+        </div>
+    </div>
+    <footer class="slds-card__footer slds-p-around--xx-small">
+        <div class="slds-grid slds-grid--align-center" style="min-height: 32px">
+            <button [disabled]="failedJobs.isLoading || failedJobs.list.length == failedJobs.total" (click)="loadMore()" class="slds-button">
+                <system-label label="LBL_MORE"></system-label>
+            </button>
+        </div>
+    </footer>
+</div>
