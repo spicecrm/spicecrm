@@ -21,7 +21,7 @@ declare var _;
 declare var moment;
 
 @Component({
-    selector: 'administration-scheduler-jobs-enum',
+    selector: 'administration-scheduler-job-log',
     templateUrl: './src/admincomponents/templates/administrationschedulerjoblog.html',
     providers: [relatedmodels]
 })
