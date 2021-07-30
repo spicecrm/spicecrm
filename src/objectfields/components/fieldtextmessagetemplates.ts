@@ -17,6 +17,15 @@ import {configurationService} from "../../services/configuration.service";
     selector: 'field-textmessage-templates',
     templateUrl: './src/objectfields/templates/fieldtextmessagetemplates.html'
 })
+
+/**
+ * will create a dropdown list containing TextMessageTemplates
+ * and manage action on template selection.
+ * IMPORTANT:
+ * Copy rules may eventually be missing depending on your implementation.
+ * Think of setting them from your module to TextMessages module (parent_type, parent_id, parent_name)
+ * else this.model.getFieldValue('parent_type') will be undefined
+ */
 export class fieldTextMessageTemplates extends fieldGeneric implements OnInit {
 
     private isLoaded: boolean = false;
@@ -29,18 +38,18 @@ export class fieldTextMessageTemplates extends fieldGeneric implements OnInit {
         public metadata: metadata,
         public router: Router,
         private backend: backend,
-        private modal: modal
+        private modal: modal,
+        private configuration: configurationService
     ) {
         super(model, view, language, metadata, router);
     }
 
     get bodyField() {
-        return this.fieldconfig.body ? this.fieldconfig.body : 'body';
+        return this.fieldconfig.body ? this.fieldconfig.body : 'description';
     }
 
     get isDisabled() {
-        // return !this.model.getFieldValue('parent_type') || this.model.getFieldValue('parent_type') == '' || !this.isLoaded ? true : false || this.availableTemplates.length == 0;
-        return !this.isLoaded ? true : false || this.availableTemplates.length == 0;
+        return !this.model.getFieldValue('parent_type') || this.model.getFieldValue('parent_type') == '' || !this.isLoaded ? true : false || this.availableTemplates.length == 0;
     }
 
     private getValue() {
@@ -52,28 +61,38 @@ export class fieldTextMessageTemplates extends fieldGeneric implements OnInit {
     }
 
     public ngOnInit() {
-        let templateFilterParams = {
-            searchfields: JSON.stringify({join: 'AND', conditions:[]})
-        };
-
-        this.backend.getRequest('module/TextMessageTemplates', templateFilterParams).subscribe((data: any) => {
-            this.availableTemplates = data.list;
+        let textMessageTemplates = this.configuration.getData('TextMessageTemplates');
+        if (textMessageTemplates) {
+            this.availableTemplates = textMessageTemplates.filter(et => (et.for_bean == '*' || et.for_bean == this.model.getFieldValue('parent_type')));
             this.isLoaded = true;
-        });
+        } else {
+            let params = {
+                start: 0,
+                limit: 500,
+                listid: 'all'
+            };
+            this.backend.getRequest('module/TextMessageTemplates', params).subscribe(
+                (data: any) => {
+                    // set the templates
+                    this.configuration.setData('TextMessageTemplates', data.list);
 
+                    // set the templates internally
+                    this.availableTemplates = data.list.filter(et => (et.for_bean == '*' || et.for_bean == this.model.getFieldValue('parent_type')));
 
+                    this.isLoaded = true;
+                }
+            );
+        }
     }
 
     public chooseTemplate(event) {
-
         if(this.value != '') {
             this.modal.openModal('SystemLoadingModal', false ).subscribe(modalRef => {
                  this.backend.getRequest('module/TextMessageTemplates/' + this.value + '/parse/' + this.model.getFieldValue('parent_type') + '/' + this.model.getFieldValue('parent_id')).subscribe((data: any) => {
-                    this.model.setField(this.bodyField, data.body_html);
+                    this.model.setField(this.bodyField, data.description);
                     modalRef.instance.self.destroy();
                 });
             });
         }
-
     }
 }

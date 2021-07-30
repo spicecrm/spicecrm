@@ -9,6 +9,8 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import { RouterModule, Routes, Router } from '@angular/router';
 import {DirectivesModule} from "../directives/directives";
 import {SystemComponents} from '../systemcomponents/systemcomponents';
+import {ObjectComponents} from "../objectcomponents/objectcomponents";
+import {ObjectFields} from "../objectfields/objectfields";
 
 import /*embed*/ {administrationconfigurator} from './services/administrationconfigurator.service';
 import /*embed*/ {ftsconfiguration} from './services/ftsconfiguration.service';
@@ -63,10 +65,15 @@ import /*embed*/ {AdministrationDictRepairDbColumns} from "./components/administ
 import /*embed*/ {AdministrationDictRepairDbColumnsModal} from "./components/administrationdictrepairdbcolumnsmodal";
 import /*embed*/ { AdministrationConfigEditor } from './components/administrationconfigeditor';
 
-import /*embed*/ { AdministrationSchedulerJobsEnum } from './components/administrationschedulerjobsenum';
-import /*embed*/ { AdministrationSchedulerJobLog } from './components/administrationschedulerjoblog';
-import /*embed*/ { AdministrationSchedulerRunButton } from './components/administrationschedulerrunbutton';
-import /*embed*/ { AdministrationSchedulerScheduleButton } from './components/administrationschedulerschedulebutton';
+import /*embed*/ { AdministrationJobMethods } from './components/administrationjobmethods';
+import /*embed*/ { AdministrationJobLog } from './components/administrationjoblog';
+import /*embed*/ { AdministrationJobRunButton } from './components/administrationjobrunbutton';
+import /*embed*/ { AdministrationJobScheduleButton } from './components/administrationjobschedulebutton';
+import /*embed*/ { AdministrationJobKillButton } from './components/administrationjobkillbutton';
+import /*embed*/ { AdministrationJobTaskRunButton } from './components/administrationjobtaskrunbutton';
+import /*embed*/ { AdministrationJobRunningList } from './components/administrationjobrunninglist';
+import /*embed*/ { AdministrationJobFailedList } from './components/administrationjobfailedlist';
+import /*embed*/ { AdministrationJobCockpit } from './components/administrationjobcockpit';
 
 import /*embed*/ { AdministrationDictionaryManager, AdministrationDictionaryManagerItem, AdministrationDictionaryManagerItemField } from './components/administrationdictionarymanager';
 import /*embed*/ {AdministrationGeneralSettings} from "./components/administrationgeneralsettings";
@@ -83,7 +90,9 @@ import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
         FormsModule,
         SystemComponents,
         DirectivesModule,
-        DragDropModule
+        DragDropModule,
+        ObjectComponents,
+        ObjectFields
     ],
     declarations: [
         AdministrationAPIInspector,
@@ -122,10 +131,15 @@ import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
         AdministrationDictRepairDbColumns,
         AdministrationDictRepairDbColumnsModal,
         AdministrationConfigEditor,
-        AdministrationSchedulerJobsEnum,
-        AdministrationSchedulerJobLog,
-        AdministrationSchedulerRunButton,
-        AdministrationSchedulerScheduleButton,
+        AdministrationJobMethods,
+        AdministrationJobLog,
+        AdministrationJobRunButton,
+        AdministrationJobScheduleButton,
+        AdministrationJobKillButton,
+        AdministrationJobTaskRunButton,
+        AdministrationJobRunningList,
+        AdministrationJobFailedList,
+        AdministrationJobCockpit,
         AdministrationSystemStats,
         AdministrationSystemVersions,
         AdministrationFtsManagerIndexModal,
@@ -147,7 +161,9 @@ import /*embed*/ {UserAccessLogViewer} from './components/useraccesslogviewer';
         AdministrationDictionaryManager,
         AdministrationDictionaryManagerItem,
         AdministrationDictionaryManagerItemField,
-        AdministrationDefaultPreferences
+        AdministrationDefaultPreferences,
+        AdministrationJobRunningList,
+        AdministrationJobFailedList
     ],
     exports: [],
 

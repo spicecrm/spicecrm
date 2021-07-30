@@ -491,6 +491,7 @@ export class model implements OnDestroy {
         this.backend.get(this.module, this.id, trackAction).subscribe(
             res => {
                 this.data = res;
+                this.emitFieldsChanges(res);
                 if (trackAction != "") {
                     this.recent.trackItem(this.module, this.id, this.data);
                 }
@@ -793,13 +794,13 @@ export class model implements OnDestroy {
                 /*
                 * params has to be an json string like this:
                 {
-                    editable: true,
-                    invalid: false,
-                    required: false,
-                    incomplete: false,
-                    disabled: false,
-                    hidden: false,
-                    readonly: false,
+                    "editable": true,
+                    "invalid": false,
+                    "required": false,
+                    "incomplete": false,
+                    "disabled": false,
+                    "hidden": false,
+                    "readonly": false,
                 }
                 */
                 params = (typeof params == "string" ? JSON.parse(params) : params);
@@ -951,15 +952,19 @@ export class model implements OnDestroy {
         return this.field$.pipe(filter(fieldObj => fieldObj.field == field), map(v => v.value));
     }
     /**
-     * serts an object of fields on a model
+     * sets an object of fields on a model
      *
      * @param fieldData a simple object with the fieldname and the value to be set
      */
     public setFields(fieldData) {
         let changedFields = [];
         for (let fieldName in fieldData) {
+            if (!fieldData.hasOwnProperty(fieldName)) continue;
             let fieldValue = fieldData[fieldName];
             if (_.isString(fieldValue)) fieldValue = fieldValue.trim();
+            if (this.data[fieldName] != fieldValue) {
+                this.field$.next({field: fieldName, value: fieldValue});
+            }
             this.data[fieldName] = fieldValue;
             changedFields.push(fieldName);
         }
@@ -968,6 +973,18 @@ export class model implements OnDestroy {
 
         // run the duplicate check
         this.duplicateCheckOnChange(changedFields);
+    }
+
+    /**
+     * emit fields changes from the data object
+      * @param data
+     * @private
+     */
+    private emitFieldsChanges(data) {
+        for (let fieldName in data) {
+            if (!data.hasOwnProperty(fieldName)) continue;
+            this.field$.next({field: fieldName, value: data[fieldName]});
+        }
     }
 
     /**
