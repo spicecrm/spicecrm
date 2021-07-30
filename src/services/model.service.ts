@@ -372,8 +372,11 @@ export class model implements OnDestroy {
         return this.getFieldValue('summary_text');
     }
 
+    /**
+     * return fields definitions loaded from metadata service
+     */
     get fields(): any[] {
-        if (this.module && (!this._fields || this._fields.length == 0)) {
+        if (this.module && _.isEmpty(this._fields)) {
             this._fields = this.metadata.getModuleFields(this.module);
         }
 
@@ -1726,6 +1729,8 @@ export class model implements OnDestroy {
         if (records) {
             return this.addRelatedRecords(relation_link_name, records);
         }
+        this.field$.next({field: relation_link_name, value: this.getRelatedRecords(relation_link_name)});
+
     }
 
     /**
@@ -1750,6 +1755,9 @@ export class model implements OnDestroy {
             }
             this.data[relation_link_name].beans[record.id] = record;
         }
+
+        this.field$.next({field: relation_link_name, value: this.getRelatedRecords(relation_link_name)});
+
         return true;
     }
 
@@ -1767,6 +1775,10 @@ export class model implements OnDestroy {
 
         if (!this.data[relation_link_name]) {
             this.data[relation_link_name] = {beans: []};
+        }
+
+        if (!this.data[relation_link_name].beans_relations_to_delete) {
+            this.data[relation_link_name].beans_relations_to_delete = {};
         }
 
         for (let record of records) {
