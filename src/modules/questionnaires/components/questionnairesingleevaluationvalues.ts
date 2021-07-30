@@ -25,6 +25,8 @@ export class QuestionnaireSingleEvaluationValues implements OnInit {
 
     private noParticipation: boolean;
 
+    private route = 'module/QuestionnaireEvaluations/';
+
     constructor( private backend: backend, private model: model, private language: language, private broadcast: broadcast ) { }
 
     public ngOnInit(): void {
@@ -33,6 +35,12 @@ export class QuestionnaireSingleEvaluationValues implements OnInit {
             this.noParticipation = true; // In case there is no Service Feedback yet (in creation just now), then there is also no Questionnaire Participation.
             this.isLoading = false;
             return;
+        }
+
+        if ( this.model.module === 'QuestionnaireParticipations') {
+            this.route += 'byParticipation/' + this.model.id + '/generate';
+        } else {
+            this.route += 'byParent/' + this.model.module + '/' + this.model.id + '/generate';
         }
         this.loadValues();
         this.broadcast.message$.subscribe(msg => {
@@ -56,7 +64,7 @@ export class QuestionnaireSingleEvaluationValues implements OnInit {
     }
 
     private loadValues(): void {
-        this.backend.postRequest( 'module/QuestionnaireEvaluations/byParent/ServiceFeedbacks/'+this.model.id+'/generate').subscribe( ( data: any ) => {
+        this.backend.postRequest( this.route ).subscribe( ( data: any ) => {
                 this.isLoading = false;
                 this.source = data.source;
                 this.noParticipation = ( data.source === 'noParticipation' );
