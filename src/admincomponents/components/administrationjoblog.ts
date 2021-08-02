@@ -52,7 +52,7 @@ export class AdministrationJobLog implements OnInit, OnDestroy {
     /**
      * holds the job log entries
      */
-    public jobLogs: Array<{ id, name, job_id, jobtask_id, message, rel_id, rel_module, resolution, executed_on, resolutionClass? }> = [];
+    public jobLogs: Array<{ id, name, schedulerjob_id, schedulerjobtask_id, message, rel_id, rel_module, resolution, executed_on, resolutionClass? }> = [];
     /**
      * ture if we are loading from backend
      * @private

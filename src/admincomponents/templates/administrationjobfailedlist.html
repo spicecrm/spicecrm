@@ -35,7 +35,7 @@
                 </tr>
                 </thead>
                 <tbody [system-view-provider]="{displayLabels: false, editable: false}">
-                <tr *ngFor="let job of failedJobs.list; trackBy: trackByFn" [system-model-provider]="{module: 'Jobs', id: job.id, data: job}" class="slds-hint-parent">
+                <tr *ngFor="let job of failedJobs.list; trackBy: trackByFn" [system-model-provider]="{module: 'SchedulerJobs', id: job.id, data: job}" class="slds-hint-parent">
                     <td>
                         <field-container field="name" [fieldconfig]="{link: true}" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
                     </td>
