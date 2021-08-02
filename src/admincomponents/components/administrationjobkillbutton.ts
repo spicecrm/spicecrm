@@ -33,7 +33,7 @@ export class AdministrationJobKillButton {
      * send kill request to the backend to kill the running process of the job
      */
     public execute() {
-        this.backend.postRequest(`module/Jobs/${this.model.id}/kill`).subscribe(res => {
+        this.backend.postRequest(`module/SchedulerJobs/${this.model.id}/kill`).subscribe(res => {
 
             const label = !res ? 'ERR_FAILED_TO_EXECUTE' : 'MSG_SUCCESSFULLY_EXECUTED';
             const type = !res ? 'error' : 'success';

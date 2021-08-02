@@ -35,7 +35,7 @@ export class AdministrationJobRunButton {
 
         this.modal.openModal('SystemLoadingModal', false).subscribe(modalRef => {
 
-            this.backend.postRequest('module/Jobs/' + this.model.id + '/run').subscribe(res => {
+            this.backend.postRequest('moduleSchedulerJobs/' + this.model.id + '/run').subscribe(res => {
 
                 modalRef.instance.self.destroy();
                 if (res) {

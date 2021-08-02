@@ -47,7 +47,7 @@ export class AdministrationJobFailedList implements OnInit {
         this.failedJobs.total = 0;
         this.failedJobs.hasError = false;
 
-        const config = this.metadata.getComponentConfig('AdministrationJobFailedList', 'Jobs');
+        const config = this.metadata.getComponentConfig('AdministrationJobFailedList', 'SchedulerJobs');
 
         if (!config.moduleFilter) {
             this.failedJobs.hasError = true;
@@ -66,7 +66,7 @@ export class AdministrationJobFailedList implements OnInit {
             sortdirection: 'DESC'
         }];
 
-        this.backend.getList('Jobs', sortArray, params).subscribe(
+        this.backend.getList('SchedulerJobs', sortArray, params).subscribe(
             (res: any) => {
                 this.failedJobs.list = res.list;
                 this.failedJobs.total = res.totalcount;
@@ -88,7 +88,7 @@ export class AdministrationJobFailedList implements OnInit {
             return false;
         }
 
-        const config = this.metadata.getComponentConfig('AdministrationJobFailedList', 'Jobs');
+        const config = this.metadata.getComponentConfig('AdministrationJobFailedList', 'SchedulerJobs');
 
         if (!config.moduleFilter) {
             this.failedJobs.hasError = true;
@@ -107,7 +107,7 @@ export class AdministrationJobFailedList implements OnInit {
             sortdirection: 'DESC'
         }];
 
-        this.backend.getList('Jobs', sortArray, params).subscribe(
+        this.backend.getList('SchedulerJobs', sortArray, params).subscribe(
             (res: any) => {
                 this.failedJobs.list = res.list;
                 this.failedJobs.total = res.totalcount;

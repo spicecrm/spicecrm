@@ -49,7 +49,7 @@ export class AdministrationJobRunningList implements OnInit {
         this.runningJobs.total = 0;
         this.runningJobs.hasError = false;
 
-        const config = this.metadata.getComponentConfig('AdministrationJobRunningList', 'Jobs');
+        const config = this.metadata.getComponentConfig('AdministrationJobRunningList', 'SchedulerJobs');
 
         if (!config.moduleFilter) {
             this.runningJobs.hasError = true;
@@ -68,7 +68,7 @@ export class AdministrationJobRunningList implements OnInit {
             sortdirection: 'DESC'
         }];
 
-        this.backend.getList('Jobs', sortArray, params).subscribe(
+        this.backend.getList('SchedulerJobs', sortArray, params).subscribe(
             (res: any) => {
                 this.runningJobs.list = res.list;
                 this.runningJobs.total = res.totalcount;
@@ -90,7 +90,7 @@ export class AdministrationJobRunningList implements OnInit {
             return false;
         }
 
-        const config = this.metadata.getComponentConfig('AdministrationJobRunningList', 'Jobs');
+        const config = this.metadata.getComponentConfig('AdministrationJobRunningList', 'SchedulerJobs');
 
         if (!config.moduleFilter) {
             this.runningJobs.hasError = true;
@@ -109,7 +109,7 @@ export class AdministrationJobRunningList implements OnInit {
             sortdirection: 'DESC'
         }];
 
-        this.backend.getList('Jobs', sortArray, params).subscribe(
+        this.backend.getList('SchedulerJobs', sortArray, params).subscribe(
             (res: any) => {
                 this.runningJobs.list = res.list;
                 this.runningJobs.total = res.totalcount;
@@ -131,7 +131,7 @@ export class AdministrationJobRunningList implements OnInit {
 
             if (!answer) return;
 
-            this.backend.postRequest(`module/Jobs/${job.id}/kill`).subscribe(res => {
+            this.backend.postRequest(`module/SchedulerJobs/${job.id}/kill`).subscribe(res => {
                 const label = !res ? 'ERR_FAILED_TO_EXECUTE' : 'MSG_SUCCESSFULLY_EXECUTED';
                 const type = !res ? 'error' : 'success';
                 if (!!res) {
