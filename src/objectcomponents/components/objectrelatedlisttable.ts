@@ -99,6 +99,25 @@ export class ObjectRelatedlistTable implements OnInit {
         return this.relatedmodels.relatedModule;
     }
 
+    /**
+     * reads the field defs and returns a style attribute that can be appield to the head if set in the config
+     *
+     * @param column
+     * @private
+     */
+    private getColumnStyle(column) {
+
+        // check that we have a dimension
+        if (column.fieldconfig?.widthdimension && column.fieldconfig?.width) {
+            return {
+                width: column.fieldconfig?.width + column.fieldconfig.widthdimension
+            };
+        }
+
+        return {};
+
+    }
+
     private isSortable(field): boolean {
         if (this.relatedmodels.sortBySequencefield) return false;
         return field.fieldconfig.sortable === true;
