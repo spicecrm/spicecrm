@@ -149,11 +149,11 @@ export class ObjectRelatedlistTable implements OnInit {
         let i = 0;
         for (let item of this.relatedmodels.items) {
             item[this.sequencefield] = i;
-            updateArray.push({id: item.id, sequence_number: i});
+            updateArray.push({id: item.id, [this.sequencefield]: i});
             i++;
         }
 
-        this.backend.postRequest('module/' + this.relatedmodels.relatedModule, {}, updateArray);
+        this.relatedmodels.updateItems(updateArray);
     }
 
     private dragStarted(e) {
