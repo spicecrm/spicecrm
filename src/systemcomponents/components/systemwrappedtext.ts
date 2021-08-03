@@ -25,7 +25,7 @@ export class SystemWrappedText {
     private getHtml(): SafeHtml {
         let text = this.text;
         text = this.escapeHtml( text );
-        text = text.replace(/ *\n+ */g,'</div><div style="margin-top:0.45em">');
+        text = text.replace(/ *\n( *\n)+ */g,'</div><div style="margin-top:0.5em">');
         text = text.replace(/ *\n */g,'<br>');
         return this.sanitizer.bypassSecurityTrustHtml('<div>'+text+'</div>');
     }
