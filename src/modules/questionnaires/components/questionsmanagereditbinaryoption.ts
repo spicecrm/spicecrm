@@ -19,6 +19,8 @@ export class QuestionsManagerEditBinaryOption implements OnInit, OnChanges {
     @Input() public side: string; // l...left, r...right
     @Output() public dataChanged: EventEmitter<any> = new EventEmitter<any>();
 
+    private textIsMultiline = false;
+
     constructor( private language: language, private metadata: metadata, private model: model, private view: view ) {
         this.view.isEditable = true;
         this.view.setEditMode();
@@ -28,6 +30,8 @@ export class QuestionsManagerEditBinaryOption implements OnInit, OnChanges {
         this.model.module = 'QuestionOptions';
         this.model.id = this.option.id;
         this.model.data = this.option;
+        if ( this.option.text?.length < 1 ) this.option.text = this.option.name;
+        this.textIsMultiline = this.option.text && ( this.option.text.length > 80 || this.option.text.indexOf("\n") > -1 );
     }
 
     public ngOnChanges(): void {
