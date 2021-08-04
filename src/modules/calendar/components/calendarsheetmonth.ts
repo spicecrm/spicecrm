@@ -465,7 +465,11 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         );
 
         this.monthGrid.forEach((w, i) => {
-            w.forEach((d, i) => this.daysIndices[d.day] = i);
+            w.forEach((d, i) => {
+                if(!this.daysIndices[d.day]) {
+                    this.daysIndices[d.day] = i;
+                }
+            });
             this.weeksIndices[w[0].date.week()] = i;
         });
     }
