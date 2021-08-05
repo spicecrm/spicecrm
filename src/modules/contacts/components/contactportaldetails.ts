@@ -36,7 +36,7 @@ export class ContactPortalDetails implements OnInit {
     private pwdCheckRegex: RegExp = new RegExp("//");
 
 
-    private aclRoles = [];
+    private aclRoles = []; // empty array means: no acl roles, new acl system is used
     private portalRoles = [];
     private self: any = undefined;
 
@@ -56,13 +56,13 @@ export class ContactPortalDetails implements OnInit {
         // check data from the backend
         this.backend.getRequest('module/Contacts/' + this.model.id + '/portalAccess').subscribe((userdata: any) => {
 
-            this.aclRoles = userdata.aclRoles;
+            if ( userdata.aclRoles ) this.aclRoles = userdata.aclRoles;
             this.portalRoles = userdata.portalRoles;
 
             if ( userdata.user && userdata.user.id ) {
                 this.user.active = userdata.user.status;
                 this.user.id = userdata.user.id;
-                this.user.aclRole = userdata.user.aclRole;
+                if ( userdata.user.aclRole ) this.user.aclRole = userdata.user.aclRole;
                 this.user.portalRole = userdata.user.portalRole;
                 this.user.setDateTimePrefsWithSystemDefaults = false;
             }
@@ -122,7 +122,7 @@ export class ContactPortalDetails implements OnInit {
     get canSave() {
         if ( this.isSaving ) return false;
         if ( this.usernameTesting ) return false;
-        if ( !this.user.name || !this.user.portalRole || !this.user.aclRole ) return false;
+        if ( !this.user.name || !this.user.portalRole || ( !this.user.aclRole && this.aclRoles.length )) return false;
         if ( this.usernameAlreadyExists ) return false;
         if ( this.isNewUser ) {
             if ( !this.user.password || this.pwdError ) return false;
@@ -137,7 +137,7 @@ export class ContactPortalDetails implements OnInit {
             this.isSaving = true;
             let body = {
                 status: this.user.active,
-                aclRole: this.user.aclRole,
+                aclRole: this.aclRoles.length ? this.user.aclRole : undefined,
                 portalRole: this.user.portalRole,
                 username: this.user.name,
                 password: this.user.password,
