@@ -37,7 +37,7 @@ export class WorkflowManagerDetailTaskSystemactionsLine {
         this.model.data = this.modelutilities.backendModel2spice(this.model.module, this.systemaction);
     }
 
-    private removeDecision(){
+    private removeDecision() {
         this.metadata.addComponent('SystemConfirmDialog', this.footer.footercontainer).subscribe(componenRef => {
             componenRef.instance.title = 'Delete Systemaction';
             componenRef.instance.message = 'are you sure you want to delete the system action?';
