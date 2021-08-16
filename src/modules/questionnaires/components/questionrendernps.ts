@@ -1,7 +1,7 @@
 /**
  * @module ModuleQuestionnaires
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { questionnaireParticipationService } from '../services/questionnaireparticipation.service';
 import { QuestionRenderBasic } from './questionrenderbasic';
 
@@ -19,6 +19,8 @@ import { QuestionRenderBasic } from './questionrenderbasic';
     ]
 })
 export class QuestionRenderNPS extends QuestionRenderBasic implements OnInit {
+
+    @Input() private hideFinishedQuestions = false;
 
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {
         super( questionnaireParticipation );

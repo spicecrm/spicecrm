@@ -17,6 +17,8 @@ import { QuestionRenderBasic } from './questionrenderbasic';
 })
 export class QuestionRenderBinarySingleMulti extends QuestionRenderBasic implements OnInit {
 
+    @Input() private hideFinishedQuestions = false;
+
     constructor( public questionnaireParticipation: questionnaireParticipationService ) {
         super( questionnaireParticipation );
     }

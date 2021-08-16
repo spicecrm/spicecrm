@@ -1,6 +1,6 @@
 <ng-container *ngIf="qp.isLoaded">
 
-    <table *ngIf="!qp.hideFinishedQuestions || !allQuestionsOfQuestionsetFinished" class="slds-table slds-table_bordered slds-table_col-bordered slds-no-row-hover slds-border_left slds-border_right slds-border_top">
+    <table *ngIf="!hideFinishedQuestions || !allQuestionsOfQuestionsetFinished" class="slds-table slds-table_bordered slds-table_col-bordered slds-no-row-hover slds-border_left slds-border_right slds-border_top">
         <thead>
             <tr class="slds-text-title_caps" >
                 <th style="background-color:inherit;width:100%"></th>
@@ -15,7 +15,7 @@
         </thead>
         <tbody>
             <ng-container *ngFor="let question of qp.questionsArray[questionsetId]; let i=index">
-                <tr *ngIf="!qp.hideFinishedQuestions || !questionsMeta[question.id].finished">
+                <tr *ngIf="!hideFinishedQuestions || !questionsMeta[question.id].finished">
                     <td>
                         <ng-container *ngIf="question.image_id">
                             <media-file-image [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="qp.imageWidthQuestion"></media-file-image>

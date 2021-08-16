@@ -42,8 +42,6 @@ export class questionnaireParticipationService {
     public timerText: string = null;
     public timerWarning = false;
 
-    public hideFinishedQuestions = false;
-
     // The edit modes:
     // 'off' ... For the customer. To fill out the questionnaire is not / is no longer possible.
     // 'preview' ... For the user to preview and test the questionnaire. Filling out is possible, but the answers will not get saved.
@@ -553,6 +551,7 @@ export class questionnaireParticipationService {
      */
     public determineNumOfFinishedQuestionsInQuestionset( questionsetId: string ): number {
         let numberFinishedQuestions = 0;
+        let finished;
         for ( let question of this.questionsArray[questionsetId] ) {
             switch( question.questiontype ) {
                 case 'text':
@@ -566,24 +565,23 @@ export class questionnaireParticipationService {
                 case 'single':
                 case 'multi':
                     let numberSelectedOptions = 0;
-                    let answeredOK = false;
+                    finished = false;
                     for ( let optionId in this.answers[question.id].options ) {
                         if ( this.answers[question.id].options[optionId] === true ) {
                             numberSelectedOptions++;
                             if ( question.questiontype !== 'multi'
                                 || ( !this.questionsMeta[question.id].parameter.minAnswers )
                                 || ( numberSelectedOptions >= this.questionsMeta[question.id].parameter.minAnswers )) {
-                                answeredOK = true;
-                                this.questionsMeta[question.id].finished = true;
+                                finished = true;
                                 break;
                             }
                         }
                     }
-                    if ( answeredOK ) numberFinishedQuestions++;
-                    else this.questionsMeta[question.id].finished = false;
+                    if ( finished ) numberFinishedQuestions++;
+                    this.questionsMeta[question.id].finished = finished;
                     break;
                 case 'ist':
-                    let finished = true;
+                    finished = true;
                     for ( let optionId in this.answers[question.id].options ) {
                         if ( this.answers[question.id].options[optionId] === false ) {
                             finished = false;
@@ -595,12 +593,15 @@ export class questionnaireParticipationService {
                     break;
                 case 'rating':
                 case 'ratinggroup':
+                    finished = false;
                     for ( let optionId in this.answers[question.id].options ) {
                         if ( this.answers[question.id].options[optionId] === true ) {
-                            this.questionsMeta[question.id].finished = true;
-                            numberFinishedQuestions++;
+                            finished = true;
+                            break;
                         }
                     }
+                    this.questionsMeta[question.id].finished = finished;
+                    if ( finished ) numberFinishedQuestions++;
                     break;
             }
         }

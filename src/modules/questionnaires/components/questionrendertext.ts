@@ -1,7 +1,7 @@
 /**
  * @module ModuleQuestionnaires
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { questionnaireParticipationService } from '../services/questionnaireparticipation.service';
 import { QuestionRenderBasic } from './questionrenderbasic';
 import { userpreferences} from '../../../services/userpreferences.service';
@@ -18,6 +18,7 @@ import { userpreferences} from '../../../services/userpreferences.service';
 } )
 export class QuestionRenderText extends QuestionRenderBasic implements OnInit {
 
+    @Input() private hideFinishedQuestions = false;
     private lengthLongestSequence = 0;
     private questionNameSplitted: any[] = [];
     private isInputInvalid = false;
@@ -125,5 +126,3 @@ export class QuestionRenderText extends QuestionRenderBasic implements OnInit {
     }
 
 }
-
-

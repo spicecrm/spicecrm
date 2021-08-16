@@ -1,6 +1,6 @@
 <ng-container *ngIf="qp.isLoaded">
 
-    <ng-container *ngIf="!qp.hideFinishedQuestions || !questionMeta.finished">
+    <ng-container *ngIf="!hideFinishedQuestions || !questionMeta.finished">
 
         <ng-container [ngSwitch]="question.questiontype">
 
