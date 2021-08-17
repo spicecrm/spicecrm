@@ -8,6 +8,7 @@ import {backend} from "../../../services/backend.service";
 import {language} from "../../../services/language.service";
 import {toast} from '../../../services/toast.service';
 import { configurationService } from '../../../services/configuration.service';
+import { take } from 'rxjs/operators';
 
 @Component({
     selector: "contact-portal-details",
@@ -21,6 +22,7 @@ export class ContactPortalDetails implements OnInit {
         active: false,
         id: '',
         aclRole: '',
+        aclProfile: '',
         portalRole: '',
         password: '',
         name: '',
@@ -37,7 +39,9 @@ export class ContactPortalDetails implements OnInit {
 
 
     private aclRoles = []; // empty array means: no acl roles, new acl system is used
+    private aclProfiles = []; // empty array means: no acl profiles, old acl system is used
     private portalRoles = [];
+    private defaultPortalUserProfile: string;
     private self: any = undefined;
 
     private usernameAlreadyExists = false;
@@ -54,15 +58,20 @@ export class ContactPortalDetails implements OnInit {
         this.getInfo();
 
         // check data from the backend
-        this.backend.getRequest('module/Contacts/' + this.model.id + '/portalAccess').subscribe((userdata: any) => {
+        this.backend.getRequest('module/Contacts/' + this.model.id + '/portalAccess')
+            .pipe(take(1)).subscribe((userdata: any) => {
 
             if ( userdata.aclRoles ) this.aclRoles = userdata.aclRoles;
+            if ( userdata.aclProfiles ) this.aclProfiles = userdata.aclProfiles;
+            if ( userdata.defaultPortalUserProfile ) this.defaultPortalUserProfile = userdata.defaultPortalUserProfile;
+
             this.portalRoles = userdata.portalRoles;
 
             if ( userdata.user && userdata.user.id ) {
                 this.user.active = userdata.user.status;
                 this.user.id = userdata.user.id;
                 if ( userdata.user.aclRole ) this.user.aclRole = userdata.user.aclRole;
+                if ( userdata.user.aclProfile ) this.user.aclProfile = userdata.user.aclProfile;
                 this.user.portalRole = userdata.user.portalRole;
                 this.user.setDateTimePrefsWithSystemDefaults = false;
             }
@@ -88,6 +97,8 @@ export class ContactPortalDetails implements OnInit {
             } else {
                 this.user.name = this.model.data.email1 ? this.model.data.email1 : this.model.data.email_address_private;
                 this.testUsername();
+                if ( this.aclProfiles.length === 1 ) this.user.aclProfile = this.aclProfiles[0].id;
+                else if ( this.defaultPortalUserProfile ) this.user.aclProfile = this.defaultPortalUserProfile;
             }
 
         });
@@ -96,7 +107,8 @@ export class ContactPortalDetails implements OnInit {
     private testUsername() {
         if ( this.user.name ) {
             this.usernameTesting = true;
-            this.backend.getRequest('module/Contacts/'+this.model.id+'/testUsername', { username: this.user.name } ).subscribe( ( data ) => {
+            this.backend.getRequest('module/Contacts/'+this.model.id+'/testUsername', { username: this.user.name } )
+                .pipe(take(1)).subscribe( ( data ) => {
                 if ( !data.error ) {
                     this.usernameAlreadyExists = data.exists;
                     this.loaded = true;
@@ -122,7 +134,7 @@ export class ContactPortalDetails implements OnInit {
     get canSave() {
         if ( this.isSaving ) return false;
         if ( this.usernameTesting ) return false;
-        if ( !this.user.name || !this.user.portalRole || ( !this.user.aclRole && this.aclRoles.length )) return false;
+        if ( !this.user.name || !this.user.portalRole || ( !this.user.aclRole && this.aclRoles.length ) || ( !this.user.aclProfile && this.aclProfiles.length )) return false;
         if ( this.usernameAlreadyExists ) return false;
         if ( this.isNewUser ) {
             if ( !this.user.password || this.pwdError ) return false;
@@ -138,6 +150,7 @@ export class ContactPortalDetails implements OnInit {
             let body = {
                 status: this.user.active,
                 aclRole: this.aclRoles.length ? this.user.aclRole : undefined,
+                aclProfile: this.aclProfiles.length ? this.user.aclProfile : undefined,
                 portalRole: this.user.portalRole,
                 username: this.user.name,
                 password: this.user.password,
@@ -145,7 +158,8 @@ export class ContactPortalDetails implements OnInit {
             };
             this.toast.clearToast( this.lastToast );
             if ( this.isNewUser ) {
-                this.backend.postRequest( "module/Contacts/" + this.model.id + "/portalAccess", {}, body ).subscribe( ( response: any ) => {
+                this.backend.postRequest( "module/Contacts/" + this.model.id + "/portalAccess", {}, body )
+                    .pipe(take(1)).subscribe( ( response: any ) => {
                     if( response.success ) {
                         this.lastToast = this.toast.sendToast( 'Portal user created successfully.', 'success' );
                     }
@@ -155,7 +169,8 @@ export class ContactPortalDetails implements OnInit {
                     this.isSaving = false;
                 } );
             } else {
-                this.backend.putRequest( "module/Contacts/" + this.model.id + "/portalAccess", {}, body ).subscribe( ( response: any ) => {
+                this.backend.putRequest( "module/Contacts/" + this.model.id + "/portalAccess", {}, body )
+                    .pipe(take(1)).subscribe( ( response: any ) => {
                     if( response.success ) {
                         this.lastToast = this.toast.sendToast( 'Portal user edited successfully.', 'success' );
                     }
