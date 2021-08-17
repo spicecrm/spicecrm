@@ -59,7 +59,10 @@ export class ObjectList implements OnDestroy, OnInit {
     /**
      * holds the total items indices
      */
-    public loadedIndices: {[key: number]: number} = {};
+//    public loadedIndices: {[key: number]: number} = {};
+
+    public loadedIndices = [];
+
     /**
      * holds a reference to the virtual scroll viewport component
      * @private
@@ -164,17 +167,37 @@ export class ObjectList implements OnDestroy, OnInit {
         if (index === 0) {
             return;
         }
+        console.log('index: ', index);
 
         if (this.scrollTimeout) window.clearTimeout(this.scrollTimeout);
 
+        // adding 20 to the index when index is reached
+        let loadindexUp = index + 20;
+        let loadindexDown = index - 20;
+
         this.scrollTimeout = window.setTimeout(() => {
 
-            let triggerLoadMore = !(index in this.loadedIndices);
+
+            // loading more as soon as the index+20 is reached when scrolled
+            let triggerLoadMore = !(loadindexUp in this.loadedIndices) && loadindexDown > 0;
+
+            // setting the loading direction - up & down
+            let loadDirectionMore = !(loadindexUp in this.loadedIndices);
 
             if (triggerLoadMore) {
-                this.modellist.offset = index;
-                this.modellist.loadlimit = this.modellist.listData.totalcount - index < this.modellist.loadlimit ? this.modellist.listData.totalcount - index : 50;
+
+                // change offset when index is reached
+                this.modellist.offset = loadindexUp;
+
+                // logic for loadlimit -- loading either 50 items, or when end is reached the rest is loaded
+                this.modellist.loadlimit = this.modellist.listData.totalcount - this.modellist.offset < this.modellist.loadlimit ? this.modellist.listData.totalcount - this.modellist.offset : 50;
+
+                // deleting first 40 items from the array
+                this.loadedIndices.splice(0, 40);
+                // console.log('loaded indices when false: ', this.loadedIndices);
+
                 this.modellist.loadMoreList();
+
             }
         }, 500);
     }
@@ -233,7 +256,7 @@ export class ObjectList implements OnDestroy, OnInit {
 
         if (this.modellist.listData.list.length > 0) {
             Array(this.modellist.loadlimit).fill(0).forEach((_,i) => {
-                this.loadedIndices[offset + i] = offset + i;
+                this.loadedIndices[offset + i] = this.modellist.listData.list[i];
             });
         }
 
