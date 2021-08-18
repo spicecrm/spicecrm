@@ -75,7 +75,7 @@ export class ModuleFilterBuilderFilters {
             id: this.modelutilities.generateGuid(),
             module: this.module,
             filterdefs: null,
-            createdby: this.session.authData.userId,
+            created_by_id: this.session.authData.userId,
             name: 'new filter',
             scope: scope,
             package: '',
