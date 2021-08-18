@@ -64,6 +64,12 @@ export class ObjectList implements OnDestroy, OnInit {
     public loadedIndices = [];
 
     /**
+     * holds page's current position
+     */
+    public currentPosition = window.pageYOffset;
+
+
+    /**
      * holds a reference to the virtual scroll viewport component
      * @private
      */
@@ -164,6 +170,8 @@ export class ObjectList implements OnDestroy, OnInit {
      */
     public onViewportScroll(index: number) {
 
+        // checking the scroll direction in the browser
+
         if (index === 0) {
             return;
         }
@@ -177,14 +185,11 @@ export class ObjectList implements OnDestroy, OnInit {
 
         this.scrollTimeout = window.setTimeout(() => {
 
-
             // loading more as soon as the index+20 is reached when scrolled
             let triggerLoadMore = !(loadindexUp in this.loadedIndices) && loadindexDown > 0;
 
-            // setting the loading direction - up & down
-            let loadDirectionMore = !(loadindexUp in this.loadedIndices);
-
             if (triggerLoadMore) {
+                this.scrollDown();
 
                 // change offset when index is reached
                 this.modellist.offset = loadindexUp;
@@ -198,8 +203,33 @@ export class ObjectList implements OnDestroy, OnInit {
 
                 this.modellist.loadMoreList();
 
+            } else {
+                this.scrollUp();
+                }
             }
-        }, 500);
+        , 500);
+    }
+
+    /**
+     * tracking if the user is scrollig down
+     */
+    public scrollDown() {
+        let scroll = this.scrollViewport.elementRef.nativeElement.scrollTop;
+        if (scroll >= this.currentPosition) {
+            console.log('scrollDown');
+        }
+        this.currentPosition = scroll;
+    }
+
+    /**
+     * tracking if the user is scrolling up
+     */
+    public scrollUp() {
+        let scroll = this.scrollViewport.elementRef.nativeElement.scrollTop;
+        if (scroll <= this.currentPosition) {
+            console.log('scrollUp');
+        }
+        this.currentPosition = scroll;
     }
 
     /**
