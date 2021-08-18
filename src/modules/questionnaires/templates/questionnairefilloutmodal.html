@@ -5,9 +5,9 @@
     </system-modal-header>
 
     <system-modal-content [grow]="true">
-        <questionnaire-render   *ngIf="parentId !== undefined && parentType !== undefined" [parentId]="parentId" [parentType]="parentType" editMode="questionnaire"
-                                (questionnaireParticipation$)="qp = $event" [showQuestionnaireTextBefore]="false" [showQuestionnaireTextAfter]="false"
-                                (isDirty$)="qpIsDirty=$event" (isSaving$)="qpIsSaving=$event" (isLoaded$)="qpIsLoaded=$event" [inModal]="false"></questionnaire-render>
+        <questionnaire-render *ngIf="(parentId !== undefined && parentType !== undefined) || participationId !== undefined"   [parentId]="parentId" [parentType]="parentType" [participationId]="participationId" editMode="questionnaire"
+                              (questionnaireParticipation$)="qp = $event" [showQuestionnaireTextBefore]="false" [showQuestionnaireTextAfter]="false"
+                              (isDirty$)="qpIsDirty=$event" (isSaving$)="qpIsSaving=$event" (isLoaded$)="qpIsLoaded=$event" [inModal]="false"></questionnaire-render>
     </system-modal-content>
 
     <system-modal-footer>

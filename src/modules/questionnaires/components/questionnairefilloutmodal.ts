@@ -16,6 +16,7 @@ export class QuestionnaireFillOutModal implements OnInit {
     @Input() public questionnaireId: string;
     @Input() public parentId: string;
     @Input() public parentType: string;
+    @Input() public participationId: string;
     @Input() public saved$: EventEmitter<boolean> = new EventEmitter();
 
     private self: any;
