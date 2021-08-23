@@ -37,8 +37,8 @@
                     <tr class="slds-text-title--caps" object-list-header [actionset]="actionset" [showRowNumber]="rowNumbers" (click)="$event.preventDefault()" style="user-select: none"></tr>
                 </thead>
                 <tbody>
-                <tr object-list-item *cdkVirtualFor="let listItem of indices; let i = index" [rownumbers]="rowNumbers" [rowNumber]="i + 1" [listItem]="listItem" [inlineedit]="inlineedit" [rowselect]="true" class="slds-hint-paren"></tr>
-                </tbody>
+                    <tr object-list-item *cdkVirtualFor="let listItem of modellist.listData.list; let i = index" [rownumbers]="rowNumbers" [rowNumber]="i + 1" [listItem]="listItem" [inlineedit]="inlineedit" [rowselect]="true" class="slds-hint-paren"></tr>
+               </tbody>
                 <tbody system-table-stencils [columns]="modellist.listfields.length" [select]="true" [rownumbers]="rowNumbers" [tools]="true" [rows]="20" *ngIf="isloading"></tbody>
             </table>
         </cdk-virtual-scroll-viewport>

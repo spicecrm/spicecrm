@@ -53,17 +53,6 @@ export class ObjectList implements OnDestroy, OnInit {
      */
     public scrollTimeout: number;
     /**
-     * holds the total items indices
-     */
-    public indices: number[];
-    /**
-     * holds the total items indices
-     */
-//    public loadedIndices: {[key: number]: number} = {};
-
-    public loadedIndices = [];
-
-    /**
      * holds page's current position
      */
     public currentPosition = window.pageYOffset;
@@ -170,67 +159,37 @@ export class ObjectList implements OnDestroy, OnInit {
      */
     public onViewportScroll(index: number) {
 
-        // checking the scroll direction in the browser
+        // tracking the scrolling direction
+        let scroll = this.scrollViewport.elementRef.nativeElement.scrollTop;
 
         if (index === 0) {
             return;
         }
-        console.log('index: ', index);
 
         if (this.scrollTimeout) window.clearTimeout(this.scrollTimeout);
 
-        // adding 20 to the index when index is reached
-        let loadindexUp = index + 20;
-        let loadindexDown = index - 20;
-
         this.scrollTimeout = window.setTimeout(() => {
 
-            // loading more as soon as the index+20 is reached when scrolled
-            let triggerLoadMore = !(loadindexUp in this.loadedIndices) && loadindexDown > 0;
+                if (this.modellist.listData.list.length <= this.scrollViewport.getRenderedRange().end) {
 
-            if (triggerLoadMore) {
-                this.scrollDown();
+                    if (scroll >= this.currentPosition) {
 
-                // change offset when index is reached
-                this.modellist.offset = loadindexUp;
+                        this.modellist.offset = this.modellist.listData.list.length;
 
-                // logic for loadlimit -- loading either 50 items, or when end is reached the rest is loaded
-                this.modellist.loadlimit = this.modellist.listData.totalcount - this.modellist.offset < this.modellist.loadlimit ? this.modellist.listData.totalcount - this.modellist.offset : 50;
+                        // logic for loadlimit -- loading either 50 items, or when end is hit load the rest
+                        this.modellist.loadlimit = this.modellist.listData.totalcount - this.modellist.offset < this.modellist.loadlimit ? this.modellist.listData.totalcount - this.modellist.offset : 50;
 
-                // deleting first 40 items from the array
-                this.loadedIndices.splice(0, 40);
-                // console.log('loaded indices when false: ', this.loadedIndices);
+                        this.modellist.loadMoreList();
+                    }
 
-                this.modellist.loadMoreList();
+                    // save the new scroll position
+                    this.currentPosition = scroll;
 
-            } else {
-                this.scrollUp();
                 }
             }
-        , 500);
+            , 500);
     }
 
-    /**
-     * tracking if the user is scrollig down
-     */
-    public scrollDown() {
-        let scroll = this.scrollViewport.elementRef.nativeElement.scrollTop;
-        if (scroll >= this.currentPosition) {
-            console.log('scrollDown');
-        }
-        this.currentPosition = scroll;
-    }
-
-    /**
-     * tracking if the user is scrolling up
-     */
-    public scrollUp() {
-        let scroll = this.scrollViewport.elementRef.nativeElement.scrollTop;
-        if (scroll <= this.currentPosition) {
-            console.log('scrollUp');
-        }
-        this.currentPosition = scroll;
-    }
 
     /**
      * trackby function to optimize performance onm the for loop
@@ -271,28 +230,9 @@ export class ObjectList implements OnDestroy, OnInit {
             this.modellist.listDataChanged$.subscribe(() => {
 
                 this.scrollbarVisible = (this.modellist.listData.list.length * this.itemHeight) > this.scrollViewport.elementRef.nativeElement.getBoundingClientRect().height;
-                this.handleLoadedData();
                 this.cdRef.detectChanges();
             })
         );
-    }
-
-    /**
-     * handle loaded data
-     */
-    public handleLoadedData() {
-
-        const offset = this.modellist.offset ?? 0;
-
-        if (this.modellist.listData.list.length > 0) {
-            Array(this.modellist.loadlimit).fill(0).forEach((_,i) => {
-                this.loadedIndices[offset + i] = this.modellist.listData.list[i];
-            });
-        }
-
-        if (this.modellist.listData.totalcount > 0) {
-            this.indices = Array.from({length: this.modellist.listData.totalcount}, (_,i) => i);
-        }
     }
 
     /**
