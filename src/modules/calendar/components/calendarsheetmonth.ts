@@ -65,7 +65,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
      * holds the days indices to quick access the day index by number
      * @private
      */
-    private daysIndices: { [key: number]: number } = {};
+    private daysIndices: { [key: string]: number } = {};
     /**
      * holds the offset height of a grid day
      */
@@ -206,7 +206,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
             Array.from({length: eventDaysCount}, (_, i) => moment(event.start).add(i, 'days'))
                 .forEach(eventDay => {
-                    const day = this.monthGrid[this.weeksIndices[eventDay.week()]][this.daysIndices[eventDay.date()]];
+                    const day = this.monthGrid[this.weeksIndices[eventDay.week()]][this.daysIndices[`${eventDay.month()}${eventDay.date()}`]];
                     day.visibleEventsCount--;
                 });
 
@@ -217,7 +217,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
                 Array.from({length: eventDaysCount}, (_, i) => moment(illusion.start).add(i, 'days'))
                     .forEach(eventDay => {
-                        const day = this.monthGrid[this.weeksIndices[eventDay.week()]][this.daysIndices[eventDay.date()]];
+                        const day = this.monthGrid[this.weeksIndices[eventDay.week()]][this.daysIndices[`${eventDay.month()}${eventDay.date()}`]];
                         day.visibleEventsCount--;
                     });
             });
@@ -373,7 +373,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                     // define the day events
                     Array.from({length: eventDaysCount}, (_, i) => moment(event.start).add(i, 'days'))
                         .forEach(eventDay => {
-                            const day = this.monthGrid[this.weeksIndices[eventDay.week()]][this.daysIndices[eventDay.date()]];
+                            const day = this.monthGrid[this.weeksIndices[eventDay.week()]][this.daysIndices[`${eventDay.month()}${eventDay.date()}`]];
                             if (isNaN(event.sequence)) {
                                 event.sequence = day.events.length;
                             }
@@ -398,7 +398,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
                         });
 
                 } else {
-                    const day = this.monthGrid[this.weeksIndices[event.start.week()]][this.daysIndices[event.start.date()]];
+                    const day = this.monthGrid[this.weeksIndices[event.start.week()]][this.daysIndices[`${event.start.month()}${event.start.date()}`]];
                     event.sequence = day.events.length;
                     day.events.push(event);
                     day.visibleEventsCount++;
@@ -466,8 +466,8 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
 
         this.monthGrid.forEach((w, i) => {
             w.forEach((d, i) => {
-                if(!this.daysIndices[d.day]) {
-                    this.daysIndices[d.day] = i;
+                if(!this.daysIndices[`${d.month}${d.day}`]) {
+                    this.daysIndices[`${d.month}${d.day}`] = i;
                 }
             });
             this.weeksIndices[w[0].date.week()] = i;
@@ -550,7 +550,7 @@ export class CalendarSheetMonth implements OnChanges, AfterViewInit, OnDestroy {
         }
 
         event.style = {
-            left: ((sheetContainer.clientWidth / this.calendar.weekDaysCount) * (this.daysIndices[startDate.date()])) + 'px',
+            left: ((sheetContainer.clientWidth / this.calendar.weekDaysCount) * (this.daysIndices[`${startDate.month()}${startDate.date()}`])) + 'px',
             width: ((sheetContainer.clientWidth / this.calendar.weekDaysCount) * length) + 'px',
             top: (this.offsetHeight + ((sheetContainer.clientHeight / this.monthGrid.length) * weekI) + (this.eventHeight * event.sequence)) + 'px',
             height: this.eventHeight + 'px',
