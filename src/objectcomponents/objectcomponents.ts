@@ -12,6 +12,7 @@ import {RouterModule, Routes, Router, ActivatedRoute} from '@angular/router';
 import {DirectivesModule} from "../directives/directives";
 import {ObjectFields} from '../objectfields/objectfields';
 import {SystemComponents} from '../systemcomponents/systemcomponents';
+import {ScrollingModule} from "@angular/cdk/scrolling";
 
 import /*embed*/ {ChecklistItemI, ChecklistI} from "./interfaces/objectcomponents.interfaces";
 
@@ -202,6 +203,7 @@ import /*embed*/ {ObjectChecklists} from "./components/objectchecklists";
         ObjectFields,
         SystemComponents,
         DirectivesModule,
+        ScrollingModule,
         RouterModule],
     declarations: [
         ObjectListViewContainer,
