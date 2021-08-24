@@ -7,8 +7,8 @@ import { questionnaireParticipationService } from '../services/questionnairepart
 import { language } from '../../../services/language.service';
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 declare var _: any;
 
 @Component( {
@@ -32,6 +32,7 @@ export class QuestionsetRender implements OnInit {
 
     @Input() public questionsetId: string;
     @Input() public showProgress = false;
+    @Input() public hideFinishedQuestions = false;
 
     public questionset: any;
 

@@ -1,6 +1,6 @@
 <ng-container *ngIf="qp.isLoaded">
 
-    <ng-container *ngIf="!qp.hideFinishedQuestions || !questionMeta.finished">
+    <ng-container *ngIf="!hideFinishedQuestions || !questionMeta.finished">
 
         <ng-container [ngSwitch]="question.questiontype">
 
@@ -37,7 +37,7 @@
                                 <div class="slds-grid slds-grid_vertical-align-center">
                                     <div class="slds-p-right_small">
                                         <input type="radio" [checked]="isChecked(qp.questionoptionsArray[question.id][1].id)"
-                                            (click)="qp.clickAnswerOption(qp.questionoptionsArray[question.id][1].id,$event)" [disabled]="isDisabled()">
+                                               (click)="qp.clickAnswerOption(qp.questionoptionsArray[question.id][1].id,$event)" [disabled]="isDisabled()">
                                     </div>
                                     <div style="cursor:default">
                                         <ng-container *ngIf="qp.questionoptionsArray[question.id][1].image_id">
@@ -73,7 +73,7 @@
                             </div>
                             <div class="slds-p-vertical_small">
                                 <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [frameWidth]="questionset.imageWidthOption" [classOuter]="'slds-m-bottom_small'"></media-file-image>
-                                <label *ngIf="!( option.image_id && questionset.showonlyimages === '1' )">{{option.name}}</label>
+                                <label *ngIf="!( option.image_id && questionset.showonlyimages === '1' )"><system-wrapped-text [text]="option.text || option.name"></system-wrapped-text></label>
                             </div>
                         </div>
                     </ng-container>
@@ -85,7 +85,7 @@
                                 <input type="checkbox" [checked]="isChecked(option.id)" (click)="qp.clickAnswerOption(option.id,$event)" [disabled]="isDisabled()">
                                 <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [classOuter]="'slds-m-vertical_small'" [align]="'center'"></media-file-image>
                             </div>
-                            <label *ngIf="!( option.image_id && questionset.showonlyimages === '1' )">{{option.name}}</label>
+                            <label *ngIf="!( option.image_id && questionset.showonlyimages === '1' )"><system-wrapped-text [text]="option.text || option.name"></system-wrapped-text></label>
                         </div>
                     </ng-container>
 
@@ -108,7 +108,7 @@
                             </div>
                             <div class="slds-p-vertical_small">
                                 <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [frameWidth]="questionset.imageWidthOption" [classOuter]="'slds-m-bottom_small'"></media-file-image>
-                                <label *ngIf="!( option.image_id && questionset.showonlyimages === '1' )">{{option.name}}</label>
+                                <label *ngIf="!( option.image_id && questionset.showonlyimages === '1' )"><system-wrapped-text [text]="option.text || option.name"></system-wrapped-text></label>
                             </div>
                         </div>
                     </ng-container>
@@ -120,7 +120,7 @@
                                 <input type="radio" [checked]="isChecked(option.id)" (click)="qp.clickAnswerOption(option.id,$event)" [disabled]="isDisabled()">
                             </div>
                             <media-file-image *ngIf="option.image_id" [media_id]="option.image_id" [variant]="'mw'" [classOuter]="'slds-m-vertical_small'" [align]="'center'"></media-file-image>
-                            <label *ngIf="!( option.image_id && questionset.showonlyimages === '1' )">{{option.name}}</label>
+                            <label *ngIf="!( option.image_id && questionset.showonlyimages === '1' )"><system-wrapped-text [text]="option.text || option.name"></system-wrapped-text></label>
                         </div>
                     </div>
 

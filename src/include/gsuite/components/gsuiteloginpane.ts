@@ -6,7 +6,6 @@ import {Router} from '@angular/router';
 import {loginService} from '../../../services/login.service';
 import {configurationService} from '../../../services/configuration.service';
 import {session} from '../../../services/session.service';
-import {cookie} from '../../../services/cookie.service';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {libloader} from "../../../services/libloader.service";
 import {Md5} from "ts-md5";
@@ -73,8 +72,7 @@ export class GSuiteLoginPane {
         private http: HttpClient,
         private configuration: configurationService,
         private session: session,
-        private libloader: libloader,
-        private cookie: cookie
+        private libloader: libloader
     ) {
         this.configuration.loaded$.subscribe(loaded => {
             if(loaded) this.googleInit();
@@ -119,7 +117,7 @@ export class GSuiteLoginPane {
         }
 
         // check the last selected language from the Cookie
-        this.lastSelectedLanguage = this.cookie.getValue('spiceuilanguage');
+        this.lastSelectedLanguage = localStorage.getItem('spiceuilanguage');
     }
 
     /**

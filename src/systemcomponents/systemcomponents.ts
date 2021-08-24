@@ -129,6 +129,7 @@ import /*embed*/ {SystemUtilityIcon} from "./components/systemutilityicon";
 import /*embed*/ {SystemViewContainer} from "./components/systemviewcontainer";
 import /*embed*/ {SystemIconHelpText} from "./components/systemiconhelptext";
 import /*embed*/ {SystemMultipleSelect} from "./components/systemmultipleselect";
+import /*embed*/ {SystemWrappedText} from './components/systemwrappedtext';
 
 import /*embed*/ {PackageLoader} from "./components/packageloader";
 import /*embed*/ {PackageLoaderPipe} from "./components/packageloaderpipe";
@@ -312,7 +313,8 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemPreferencesPanelItem,
         SystemPreferencesPanelItemDisplay,
         SystemPreferencesPanelItemEdit,
-        SystemInputFile
+        SystemInputFile,
+        SystemWrappedText
     ],
     entryComponents: [
         SystemDynamicRouteContainer,
@@ -442,7 +444,8 @@ import /*embed*/ {SystemPreferencesPanelItemEdit} from "./components/systemprefe
         SystemPreferencesPanelItemDisplay,
         SystemPreferencesPanelItemEdit,
         SystemInputFile,
-        SystemModalHeaderEmpty
+        SystemModalHeaderEmpty,
+        SystemWrappedText
     ]
 })
 export class SystemComponents {}

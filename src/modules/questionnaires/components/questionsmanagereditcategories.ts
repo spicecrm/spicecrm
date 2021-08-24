@@ -32,7 +32,20 @@ export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
      */
     private compId = _.uniqueId();
 
-    constructor( private language: language, private renderer: Renderer2, private elementRef: ElementRef ) { }
+    /**
+     * holds escape key listener
+     * @private
+     */
+    private escKeyListener: any;
+
+    constructor( private language: language, private renderer: Renderer2, private elementRef: ElementRef ) {
+        this.escKeyListener = this.renderer.listen('document', 'keyup', (event: KeyboardEvent) => {
+            if ( this.listIsExpanded && event.key === 'Escape' ) {
+                this.listIsExpanded = false;
+                event.stopImmediatePropagation();
+            }
+        });
+    }
 
     public ngOnChanges(): void {
         if ( this.categorypool.loaded ) this.doSelectedCategories();
@@ -71,10 +84,6 @@ export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
             this.listIsExpanded = false;
             this.clickListener();
         }
-    }
-
-    public ngOnDestroy(): void {
-        if ( this.clickListener ) this.clickListener();
     }
 
     private toggleCategory( i: number ): void {
@@ -127,6 +136,13 @@ export class QuestionsManagerEditCategories implements OnChanges,OnDestroy {
             return false;
         });
         return string;
+    }
+
+    /**
+     * remove Escape key listener
+     */
+    public ngOnDestroy() {
+        if ( this.escKeyListener ) this.escKeyListener();
     }
 
 }
