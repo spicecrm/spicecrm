@@ -2,16 +2,13 @@
  * @module services
  */
 import {Injectable, EventEmitter} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {Subject} from 'rxjs';
-import {CanActivate} from '@angular/router';
 
 import {configurationService} from './configuration.service';
-import {broadcast} from './broadcast.service';
 import {session} from './session.service';
 import {metadata} from './metadata.service';
 import {Observable} from 'rxjs';
-import {cookie} from './cookie.service';
 
 /**
  * @ignore
@@ -47,8 +44,7 @@ export class language {
         private http: HttpClient,
         private configurationService: configurationService,
         private session: session,
-        private metadata: metadata,
-        private cookie: cookie
+        private metadata: metadata
     ) {
     }
 
@@ -63,7 +59,7 @@ export class language {
         }
         this._currentlanguage = language;
 
-        this.cookie.setValue('spiceuilanguage', language);
+        localStorage.setItem('spiceuilanguage', language);
     }
 
     /**
@@ -100,8 +96,8 @@ export class language {
         let retSubject = new Subject();
 
         if (this.currentlanguage == '') {
-            if (this.cookie.getValue('spiceuilanguage')) {
-                this.currentlanguage = this.cookie.getValue('spiceuilanguage');
+            if (localStorage.getItem('spiceuilanguage')) {
+                this.currentlanguage = localStorage.getItem('spiceuilanguage');
             }
         }
 

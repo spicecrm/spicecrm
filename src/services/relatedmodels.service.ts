@@ -518,6 +518,35 @@ export class relatedmodels implements OnDestroy {
     }
 
     /**
+     * update items data
+     *
+     * @param beans the item
+     */
+    public updateItems(beans: any[]): Observable<any> {
+
+        if (!this.isonlyfiltered) {
+
+            const retSubject = new Subject<any>();
+
+            beans = beans.map(item => this.modelutilities.spiceModel2backend(this.relatedModule, item));
+
+            this.backend.putRequest(`module/${this.module}/${this.id}/related/beans/${this._linkName}`, [], {beans}).subscribe(() => {
+                    retSubject.next(true);
+                    retSubject.complete();
+                },
+                error => {
+                    retSubject.error(error);
+                    retSubject.complete();
+                });
+            return retSubject.asObservable();
+        } else {
+
+            this.toast.sendToast(this.language.getLabel('LBL_NOT_POSSIBLE_TO_SET'), 'error');
+            return of(true);
+        }
+    }
+
+    /**
      * removes the relationship for an items
      *
      * @param id the related id
