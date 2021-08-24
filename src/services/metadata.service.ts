@@ -814,11 +814,11 @@ export class metadata {
     /**
      * to read module field defs
      */
-    public getModuleFields(module: string) {
+    public getModuleFields(module: string): any {
         try {
-            return this.fieldDefs[module] ? this.fieldDefs[module] : [];
+            return this.fieldDefs[module] ? this.fieldDefs[module] : {};
         } catch (e) {
-            return [];
+            return {};
         }
     }
 

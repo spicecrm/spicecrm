@@ -60,11 +60,28 @@
 </div>
 <div class="slds-form-element slds-m-vertical--xxx-small">
     <label class="slds-form-element__label"><system-label label="LBL_WIDTH"></system-label> (number of parts, leave blank for 1)</label>
-    <div class="slds-form-element__control">
-        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="configValues.width"/>
+    <div class="slds-grid slds-gutters_xx-small">
+        <div class="slds-col slds-form-element__control slds-size--3-of-4">
+            <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="configValues.width"/>
+        </div>
+        <div class="slds-col slds-form-element__control slds-size--1-of-4">
+            <div class="slds-select_container">
+                <select [disabled]="!view.isEditMode()" class="slds-select" [(ngModel)]="configValues.widthdimension">
+                    <option value="">units</option>
+                    <option value="px">px</option>
+                    <option value="rem">rem</option>
+                    <option value="%">%</option>
+                </select>
+            </div>
+        </div>
     </div>
 </div>
-
+<div class="slds-form-element slds-m-vertical--xxx-small">
+    <label class="slds-form-element__label"><system-label label="LBL_REQUIREDMODELSTATE"></system-label>if this field is conditional to a specific model state</label>
+    <div class="slds-form-element__control">
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="configValues.requiredmodelstate"/>
+    </div>
+</div>
 <div class="slds-form-element slds-m-vertical--xxx-small">
     <label class="slds-form-element__label"><system-label label="LBL_FIELDTYPE"></system-label></label>
     <div class="slds-form-element__control">

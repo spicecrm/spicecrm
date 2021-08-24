@@ -30,13 +30,13 @@
         <div class="slds-form-element slds-m-vertical_medium">
             <label class="slds-form-element__label"><system-label label="LBL_OBJECT"></system-label></label>
             <div class="slds-form-element__control">
-                <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [ngModel]="currentObjRepo.object"/>
+                <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentObjRepo.object"/>
             </div>
         </div>
         <div class="slds-form-element slds-m-vertical_medium">
             <label class="slds-form-element__label"><system-label label="LBL_COMPONENT"></system-label></label>
             <div class="slds-form-element__control">
-                <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [ngModel]="currentObjRepo.component"/>
+                <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentObjRepo.component"/>
             </div>
         </div>
         <label class="slds-checkbox" for="deprecated">
@@ -55,7 +55,7 @@
             <label class="slds-form-element__label"><system-label label="LBL_DESCRIPTION"></system-label></label>
             <div class="slds-form-element__control slds-box slds-scrollable_y" style="background-color: #ecebea; background-color: #ecebea; max-height: 300px;">
                 <!--<div *ngIf="!asiframe" class="slds-size&#45;&#45;1-of-1 html-text" [innerHTML]="currentObjRepo.description"></div>-->
-                <iframe [(srcdoc)]="currentObjRepo.description" width="100%" height="100%" frameborder="0" seamless="true" sandbox></iframe>
+                <iframe [srcdoc]="currentObjRepo.description" (change)="currentObjRepo.description = $event" width="100%" height="100%" frameborder="0" seamless="true" sandbox></iframe>
             </div>
         </div>
         <div class="slds-table_edit_container slds-is-relative">

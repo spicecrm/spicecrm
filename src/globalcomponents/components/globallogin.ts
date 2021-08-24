@@ -8,7 +8,6 @@ import {loginService} from '../../services/login.service';
 import {configurationService} from '../../services/configuration.service';
 import {session} from '../../services/session.service';
 import {broadcast} from '../../services/broadcast.service';
-import {cookie} from '../../services/cookie.service';
 import {toast} from '../../services/toast.service';
 import {language} from '../../services/language.service';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
@@ -95,7 +94,6 @@ export class GlobalLogin {
                 private http: HttpClient,
                 private configuration: configurationService,
                 private session: session,
-                private cookie: cookie,
                 private toast: toast,
                 private language: language,
                 private broadcast: broadcast,
@@ -132,7 +130,7 @@ export class GlobalLogin {
         }
 
         // check the last selected language from the Cookie
-        this.lastSelectedLanguage = this.cookie.getValue('spiceuilanguage');
+        this.lastSelectedLanguage = localStorage.getItem('spiceuilanguage');
 
     }
 
