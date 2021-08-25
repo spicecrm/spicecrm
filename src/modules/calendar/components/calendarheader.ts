@@ -76,28 +76,28 @@ export class CalendarHeader implements OnDestroy {
      * emit date picked to parent
      * @param event
      */
-    private handleDatePicked(event) {
+    public handleDatePicked(event) {
         this.datePicked.emit(event);
     }
 
     /**
      * shift date forward
      */
-    private shiftPlus() {
+    public shiftPlus() {
         this.calendar.shiftPlus();
     }
 
     /**
      * shift date backward
      */
-    private shiftMinus() {
+    public shiftMinus() {
         this.calendar.shiftMinus();
     }
 
     /**
      * @return calendar header
      */
-    private getCalendarHeader() {
+    get calendarHeader() {
         const focDate = new moment(this.calendar.calendarDate);
         switch (this.calendar.sheetType) {
             case 'Week':
@@ -114,19 +114,19 @@ export class CalendarHeader implements OnDestroy {
     }
 
     /**
-     * @return compact calendar header
+     * @return string compact calendar header
      */
-    private getCompactCalendarHeader() {
+    get compactCalendarHeader() {
         const focDate = new moment(this.calendar.calendarDate);
         return focDate.format('MMM, YYYY');
     }
 
     /**
-     * @return week number display
+     * @return string week number display
      */
-    private getWeekNumberDisplay() {
+    get weekNumberDisplay() {
         let focDate = new moment(this.calendar.calendarDate);
-        return `${this.language.getLabel('LBL_WEEK')} ${focDate.format('w')}`;
+        return `${this.language.getLabel('LBL_WEEK')} ${focDate.format('W')}`;
     }
 
     /**
@@ -150,7 +150,7 @@ export class CalendarHeader implements OnDestroy {
     /**
      * toggle show/hide type selector
      */
-    private toggleTypeSelector() {
+    public toggleTypeSelector() {
         this.showTypeSelector = !this.showTypeSelector;
     }
 
@@ -158,7 +158,7 @@ export class CalendarHeader implements OnDestroy {
      * set calendar sheet type
      * @param sheetType
      */
-    private setType(sheetType) {
+    public setType(sheetType) {
         this.calendar.sheetType = sheetType;
         this.calendar.refresh();
         this.showTypeSelector = false;
@@ -167,14 +167,14 @@ export class CalendarHeader implements OnDestroy {
     /**
      * go to today
      */
-    private goToday() {
+    public goToday() {
         this.calendar.calendarDate = new moment();
     }
 
     /**
      * zoom sheet cells in
      */
-    private zoomIn() {
+    public zoomIn() {
         this.calendar.sheetHourHeight += 10;
         this.calendar.layoutChange$.next();
     }
@@ -182,7 +182,7 @@ export class CalendarHeader implements OnDestroy {
     /**
      * zoom sheet cells out
      */
-    private zoomOut() {
+    public zoomOut() {
         this.calendar.sheetHourHeight -= 10;
         this.calendar.layoutChange$.next();
     }
@@ -190,7 +190,7 @@ export class CalendarHeader implements OnDestroy {
     /**
      * reset sheet cells zoom
      */
-    private resetZoom() {
+    public resetZoom() {
         this.calendar.sheetHourHeight = 80;
         this.calendar.layoutChange$.next();
     }
@@ -200,7 +200,7 @@ export class CalendarHeader implements OnDestroy {
      * @param picker
      * @param button
      */
-    private toggleOpenPicker(picker, button) {
+    public toggleOpenPicker(picker, button) {
         this.openPicker = !this.openPicker;
         if (this.openPicker) {
             this.clickListener = this.renderer.listen('document', 'click', (event) => this.onDocumentClick(event, picker, button));
@@ -224,7 +224,7 @@ export class CalendarHeader implements OnDestroy {
      * toggle visible calendar module
      * @param module
      */
-    private toggleVisibleModule(module) {
+    public toggleVisibleModule(module) {
         let found = this.calendar.otherCalendars.some(calendar => {
             if (calendar.name == module) {
                 calendar.visible = !calendar.visible;
@@ -246,7 +246,7 @@ export class CalendarHeader implements OnDestroy {
      * get module icon style
      * @param module
      */
-    private getIconStyle(module) {
+    public getIconStyle(module) {
         return this.calendar.otherCalendars.some(calendar => module == calendar.name && !calendar.visible) ? {'-webkit-filter': 'grayscale(1)','filter': 'grayscale(1)'} : {};
     }
 }
