@@ -1253,7 +1253,16 @@ export class model implements OnDestroy {
     }
 
 
-    public addModel(addReference: string = "", parent: any = null, presets: any = {}, preventGoingToRecord = false) {
+    /**
+     * adds a model
+     *
+     * @param addReference, a reference that is returned .. can be sooner than later be discontinued
+     * @param parent the parent model used for copyrules applications
+     * @param presetsany kind of preset fields
+     * @param preventGoingToRecord
+     * @param componentconfig
+     */
+    public addModel(addReference: string = "", parent: any = null, presets: any = {}, preventGoingToRecord = false, componentconfig?) {
 
         // a response subject to return if the model has been saved
         let retSubject = new Subject<any>();
@@ -1275,6 +1284,12 @@ export class model implements OnDestroy {
                     editModalRef.instance.model.isNew = true;
                     editModalRef.instance.reference = this.reference;
                     editModalRef.instance.preventGoingToRecord = preventGoingToRecord;
+
+                    // if we have passed in a componentconfig use this one
+                    if (componentconfig) {
+                        editModalRef.instance.componentconfig = componentconfig;
+                    }
+
                     // subscribe to the action$ observable and execute the subject
                     editModalRef.instance.action$.subscribe(response => {
 
