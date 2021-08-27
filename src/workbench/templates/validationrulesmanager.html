@@ -1,0 +1,99 @@
+<workbench-header titlelabel="LBL_VALIDATIONRULES_MANAGER"></workbench-header>
+<div class="slds-grid slds-form--inline slds-p-around--small slds-border--bottom">
+    <div class="slds-form-element">
+        <label class="slds-form-element__label">Module</label>
+        <div class="slds-form-element__control" style="min-width:250px;">
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="current_module">
+                    <option></option>
+                    <option *ngFor="let m of modules" [value]="m">{{m}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="current_module" class="slds-form-element">
+        <label class="slds-form-element__label">Rule</label>
+        <div class="slds-form-element__control" style="min-width:250px;">
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="current_rule">
+                    <option></option>
+                    <option *ngFor="let r of rules" [value]="r.id">{{r.name}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="current_module" class="slds-form-element slds-col--bump-left">
+        <div class="slds-button-group" role="group">
+            <button type="button" class="slds-button slds-button--neutral" (click)="addValidationRule()"><system-label label="LBL_ADD"></system-label></button>
+            <button type="button" class="slds-button slds-button--neutral" [disabled]="!current_rule" (click)="removeCurrentValidationRule()"><system-label label="LBL_DELETE"></system-label></button>
+            <button type="button" class="slds-button slds-button--neutral" [disabled]="!current_rule" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button type="button" class="slds-button slds-button--brand" [disabled]="!current_rule" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+        </div>
+    </div>
+</div>
+
+<!-- BODY -->
+
+<div *ngIf="current_rule" class="slds-grid">
+    <div class="slds-tabs_default">
+
+        <!-- TABs -->
+
+        <ul class="slds-tabs_default__nav" role="tablist">
+            <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': current_tab == 'details' || !current_tab}" role="presentation" (click)="current_tab = 'details'">
+                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">Details</a>
+            </li>
+            <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': current_tab == 'conditions'}" role="presentation" (click)="current_tab = 'conditions'">
+                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">Conditions</a>
+            </li>
+            <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': current_tab == 'actions'}" role="presentation" (click)="current_tab = 'actions'">
+                <a class="slds-tabs--default__link" href="javascript:void(0);" role="tab"  aria-selected="false">Actions</a>
+            </li>
+        </ul>
+
+        <!-- TABs CONTENT -->
+
+        <div *ngIf="current_tab == 'details'" id="tab-default-1" class="slds-tabs_default__content" role="tabpanel">
+            <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-top--x-small">
+                <div class="slds-form-element slds-m-vertical--xxx-small">
+                    <label class="slds-form-element__label" >Name:</label>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [(ngModel)]="current_rule_data.name"/>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-m-vertical--xxx-small">
+                    <label class="slds-form-element__label" >OnEvents:</label>
+                    <div class="slds-form-element__control">
+                        <input type="text" class="slds-input" [(ngModel)]="current_rule_data.onevents"/>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-m-vertical--xxx-small">
+                    <label class="slds-form-element__label" >Logic Operator:</label>
+                    <div class="slds-form-element__control">
+                        <select class="slds-select" [(ngModel)]="current_rule_data.logicoperator">
+                            <option *ngFor="let opt of logicoperator_options" value="{{opt.value}}">{{opt.display}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-m-vertical--xxx-small">
+                    <label class="slds-form-element__label" >Priority:</label>
+                    <div class="slds-form-element__control">
+                        <input type="number" min="0" max="99" class="slds-input" [(ngModel)]="current_rule_data.priority"/>
+                    </div>
+                </div>
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label">Active:</label>
+                    <div class="slds-form-element__control">
+                        <system-checkbox [(ngModel)]="current_rule_data.active"></system-checkbox>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="current_tab == 'conditions'" id="tab-default-2" class="slds-tabs_default__content" role="tabpanel">
+            <validationrules-conditions [data]="current_rule_data"></validationrules-conditions>
+        </div>
+        <div *ngIf="current_tab == 'actions'" id="tab-default-3" class="slds-tabs_default__content" role="tabpanel">
+            <validationrules-actions [data]="current_rule_data"></validationrules-actions>
+        </div>
+    </div>
+</div>

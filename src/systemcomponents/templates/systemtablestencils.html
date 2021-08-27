@@ -1,0 +1,8 @@
+<tr *ngFor="let row of rowArray" [ngStyle]="linestyle(row)">
+    <td *ngIf="rownumbers"></td>
+    <td *ngIf="select" class="slds-cell-shrink"></td>
+    <td *ngFor="let col of colArray">
+        <system-stencil></system-stencil>
+    </td>
+    <td *ngIf="tools" class="slds-cell-shrink"></td>
+</tr>

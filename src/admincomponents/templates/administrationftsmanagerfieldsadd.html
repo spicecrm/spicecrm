@@ -1,0 +1,50 @@
+<system-modal size="large">
+    <system-modal-header (close)="close()">Add Field</system-modal-header>
+    <system-modal-content margin="none" [grow]="true">
+        <div class="slds-grid administration-fts-manager-field-add-modal" style="height: 100%">
+            <div class="slds-size--1-of-3 slds-grid--vertical" style="height: 100%;">
+                <div class="slds-scrollable--y slds-border--bottom" style="height: 50%;">
+                    <system-module-tree [module]="ftsconfiguration.module" (itemSelected)="itemSelected($event)"></system-module-tree>
+                </div>
+                <div class="slds-scrollable" style="height: 50%;">
+                    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left" role="none">
+                        <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
+                        <input class="slds-input slds-combobox__input" type="search" [placeholder]="language.getLabel('LBL_SEARCH')" [(ngModel)]="filterKey"/>
+                    </div>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="slds-cell-shrink"></th>
+                                <th scope="col">
+                                    <div class="slds-truncate"><system-label label="LBL_FIELD"></system-label></div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody cdkDropList #dragList="cdkDropList" (cdkDropListExited)="dropExited($event)" (cdkDropListEntered)="dropEntered($event)" cdkDropListSortingDisabled [cdkDropListData]="nodefields" [cdkDropListConnectedTo]="[fieldsDropList]">
+                            <tr cdkDrag [cdkDragData]="nodefield" *ngFor="let nodefield of filteredNodeFields; trackBy: trackByFn" cdkDragBoundary=".administration-fts-manager-field-add-modal" class="slds-hint-parent slds-drag--preview">
+                                <td class="slds-p-around--none slds-cell-shrink">
+                                    <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
+                                </td>
+                                <td data-label="Account Name">
+                                    <div class="slds-truncate">{{nodefield.name}}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate"><system-label [label]="nodefield.label"></system-label></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="slds-size--2-of-3" style="height: 100%">
+                <administration-ftsmanager-fields-list style="display: block; height: 100%" class="slds-scrollable--y" [dragPlaceHolderNode]="dragPlaceHolderNode" [nodePath]="nodePath" [dragList]="dragList"></administration-ftsmanager-fields-list>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--brand" (click)="close()"><system-label label="LBL_OK"></system-label></button>
+    </system-modal-footer>
+</system-modal>

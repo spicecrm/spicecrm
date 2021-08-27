@@ -1,0 +1,13 @@
+<system-modal size="large">
+    <system-modal-header (close)="closeModal()"><system-label label="LBL_QUERY_ANALYZER"></system-label></system-modal-header>
+    <system-modal-content [grow]="true" margin="none">
+        <div class="slds-height_full slds-size--1-of-1 slds-scrollable--y slds-p-horizontal--small" [system-overlay-loading-spinner]="loading" [innerHTML]="queryformatted"></div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <system-checkbox [(ngModel)]="translateTableNames"><system-label label="LBL_TRANSLATE_TABLE_NAMES"></system-label></system-checkbox>
+            <button class="slds-button slds-button--neutral slds-col--bump-left" (click)="copy2clipboard()"><system-label label="LBL_COPY_TO_CLIPBOARD"></system-label></button>
+            <button class="slds-button slds-button--brand" (click)="closeModal()"><system-label label="LBL_CLOSE"></system-label></button>
+        </div>
+    </system-modal-footer>
+</system-modal>

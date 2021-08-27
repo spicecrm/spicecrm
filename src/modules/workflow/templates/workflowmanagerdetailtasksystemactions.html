@@ -1,0 +1,37 @@
+<div class="slds-p-vertical--x-small">
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-border--right slds-border--left">
+        <thead>
+            <tr class="slds-text-title_caps">
+                <th>
+                    <div class="slds-truncate"><system-label label="LBL_FIELD"></system-label></div>
+                </th>
+                <th>
+                    <div class="slds-truncate"><system-label label="LBL_VALUE"></system-label></div>
+                </th>
+                <th>
+                    <div class="slds-truncate"><system-label label="LBL_STATUS"></system-label></div>
+                </th>
+                <th class="slds-cell-shrink"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td *ngIf="model.data.systemactions == 0" colspan="4">
+                    <system-illustration-no-records></system-illustration-no-records>
+                </td>
+            </tr>
+            <tr *ngFor="let systemaction of model.data.systemactions|workflowmanagernotdeletedpipe" workflow-manager-detail-tasksystemactions-line [systemaction]="systemaction" [systemactions]="model.data.systemactions" [module]="module"></tr>
+        </tbody>
+        <tfoot class="slds-border--top slds-theme--shade">
+        <tr>
+            <td align="center" colspan="4">
+                <div class="slds-align--absolute-center slds-p-around--xx-small">
+                    <button class="slds-button slds-button_icon" (click)="addAction()">
+                        <system-button-icon [icon]="'add'"></system-button-icon>
+                    </button>
+                </div>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+</div>

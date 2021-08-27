@@ -1,0 +1,18 @@
+<system-icon [module]="module" [size]="'small'"></system-icon>
+<div class="slds-media__body">
+    <div class="slds-grid slds-grid--align-spread slds-has-flexi-truncate">
+        <h3 class="slds-truncate slds-text-heading--small slds-p-top--xxx-small slds-m-bottom--small" system-model-popover>
+            {{data.summary_text}}
+        </h3>
+        <div class="slds-shrink-none slds-show--medium">
+            <object-action-menu [buttonsize]="'x-small'" [actionset]="actionset"></object-action-menu>
+        </div>
+    </div>
+    <div class="slds-tile__detail" style="margin-left: -2rem;">
+        <spice-path-model></spice-path-model>
+        <div class="slds-text-body--small">
+            <system-componentset *ngIf="componentset" [componentset]="componentset"></system-componentset>
+        </div>
+    </div>
+    <object-action-menu class="slds-hide--medium" [buttonsize]="'x-small'" [actionset]="actionset"></object-action-menu>
+</div>

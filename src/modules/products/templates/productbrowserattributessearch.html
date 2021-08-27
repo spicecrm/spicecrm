@@ -1,0 +1,12 @@
+<div class="slds-box--border slds-m-vertical--x-small">
+    <div class="slds-p-horizontal--x-small slds-p-bottom--x-small">
+        <label class="slds-form-element__label slds-m-bottom--x-small">{{attribute.name}}</label>
+        <system-checkbox-group [(ngModel)]="arrayValue" class="slds-grid slds-wrap">
+            <div *ngFor="let attributeValue of attributeValues" [title]="attributeValue" class="slds-large-size--1-of-3 slds-medium-size--1-of-1 slds-truncate">
+                <system-checkbox-group-checkbox [value]="attributeValue">
+                    <span class="slds-m-left--xx-small">{{attributeValue}}</span>
+                </system-checkbox-group-checkbox>
+            </div>
+        </system-checkbox-group>
+    </div>
+</div>

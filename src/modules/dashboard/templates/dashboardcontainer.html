@@ -1,0 +1,5 @@
+<dashboard-container-body *ngIf="dashboardid.length > 0"></dashboard-container-body>
+<div *ngIf="dashboardid.length == 0" class="slds-align--absolute-center slds-text-heading--small" system-to-bottom>
+    <span><system-label label="MSG_NO_DASHBOARD_SELECTED"></system-label></span>
+    <a class="slds-m-left--xx-small slds-text-link" style="cursor: pointer" (click)="navigate()"><system-label label="LBL_SELECT_DASHBOARD"></system-label></a>
+</div>

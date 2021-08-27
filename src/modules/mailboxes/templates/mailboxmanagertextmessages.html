@@ -1,0 +1,6 @@
+<div #scrollContainer class="slds-scrollable--y slds-border--right slds-height_full" (scroll)="loadmore(scrollContainer)">
+    <mailbox-manager-textmessage *ngFor="let email of mailboxesEmails.emails;trackBy:trackbyfn" [message]="email"></mailbox-manager-textmessage>
+    <div *ngIf="mailboxesEmails.isLoading" class="slds-p-around--medium">
+        <system-spinner></system-spinner>
+    </div>
+</div>

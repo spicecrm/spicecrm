@@ -1,0 +1,27 @@
+<td style="vertical-align:top;padding-top:0.6rem">
+    {{side === 'l' ? language.getLabel('LBL_LEFT'):language.getLabel('LBL_RIGHT')}}
+</td>
+<td>
+    <ng-container *ngIf="textIsMultiline; else notMultiline">
+        <textarea class="slds-textarea" [(ngModel)]="option.text" (change)="change()" rows="5" style="display:block"></textarea>
+    </ng-container>
+    <ng-template #notMultiline>
+        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+            <input type="text" class="slds-input" [(ngModel)]="option.text" (change)="change()">
+            <div class="slds-input__icon-group slds-input__icon-group_right">
+                <button class="slds-input__icon slds-input__icon_right slds-button slds-button_icon" style="position:relative" (click)="textIsMultiline=true">
+                    <system-button-icon icon="textarea"></system-button-icon>
+                </button>
+            </div>
+        </div>
+    </ng-template>
+</td>
+<td width="4rem" style="vertical-align:top">
+    <field-container [field]="'image_id'" [fieldconfig]="{fieldtype:'mediafileimage'}" [fielddisplayclass]="''" (change)="change()"></field-container>
+</td>
+<td style="vertical-align:top">
+    <questions-manager-edit-categories [option]="option" [categorypool]="categorypool"></questions-manager-edit-categories>
+</td>
+<td style="vertical-align:top">
+    <input type="text" class="slds-input slds-text-align_right" style="width:unset" size="4" [(ngModel)]="option.points" (change)="change()">
+</td>

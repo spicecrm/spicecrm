@@ -1,0 +1,44 @@
+<td *ngFor="let field of fields">
+    <div *ngIf="!isEditMode(field);else editfield" class="slds-truncate slds-p-horizontal--small" style="max-width: 200px;" [ngSwitch]="field.type">
+        <span *ngSwitchCase="'json'"><pre class="slds-m-vertical--none">{{getJSON(entry.data[field.name])}}</pre></span>
+        <span *ngSwitchCase="'text'" class="slds-truncate_container_25" style="max-width: 200px;">{{entry.data[field.name]}}</span>
+        <system-checkbox *ngSwitchCase="'bool'" [disabled]="true" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
+        <system-checkbox *ngSwitchCase="'boolean'" [disabled]="true" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
+        <administration-configurator-item-role *ngSwitchCase="'role'" [editmode]="false" [fieldvalue]="entry.data[field.name]"></administration-configurator-item-role>
+        <span *ngSwitchDefault>{{entry.data[field.name]}}</span>
+    </div>
+    <ng-template #editfield>
+        <div class="slds-form-element">
+            <div class="slds-form-element__control" [ngSwitch]="field.type">
+                <textarea *ngSwitchCase="'json'" class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" [(ngModel)]="entry.data[field.name]" ></textarea>
+                <textarea *ngSwitchCase="'text'" class="slds-textarea slds-scrollable--y slds-m-vertical--xx-small" [(ngModel)]="entry.data[field.name]" ></textarea>
+                <system-input-label *ngSwitchCase="'label'" [(ngModel)]="entry.data[field.name]" ></system-input-label>
+                <system-checkbox *ngSwitchCase="'bool'" class="slds-m-horizontal--small" style="display: block" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
+                <system-checkbox *ngSwitchCase="'boolean'" class="slds-m-horizontal--small" style="display: block" [(ngModel)]="entry.data[field.name]"> </system-checkbox>
+                <administration-configurator-item-role *ngSwitchCase="'role'" [editmode]="true" [(fieldvalue)]="entry.data[field.name]"></administration-configurator-item-role>
+                <input *ngSwitchDefault type="text" class="slds-input" [(ngModel)]="entry.data[field.name]"/>
+            </div>
+        </div>
+    </ng-template>
+</td>
+<td>
+    <div *ngIf="!isEditMode()" class="slds-button-group slds-float--right" role="group">
+        <button class="slds-button slds-button--icon-border" (click)="setEditMode()">
+            <system-button-icon [icon]="'edit'" [size]="'small'"></system-button-icon>
+        </button>
+        <button class="slds-button slds-button--icon-border" (click)="copy(entry.id)">
+            <system-button-icon [icon]="'copy'" [size]="'small'"></system-button-icon>
+        </button>
+        <button class="slds-button slds-button--icon-border" (click)="delete()">
+            <system-button-icon [icon]="'delete'" [size]="'small'"></system-button-icon>
+        </button>
+    </div>
+    <div *ngIf="isEditMode()" class="slds-button-group slds-float--right" role="group">
+        <button class="slds-button slds-button--icon-border" (click)="setViewMode()">
+            <system-button-icon [icon]="'close'" [size]="'small'" ></system-button-icon>
+        </button>
+        <button class="slds-button slds-button--icon-border" (click)="save()">
+            <system-button-icon [icon]="'check'" [size]="'small'"></system-button-icon>
+        </button>
+    </div>
+</td>

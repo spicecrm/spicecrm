@@ -1,0 +1,23 @@
+<system-modal>
+    <system-modal-header (close)="close()"><system-label label="LBL_SELECT_VALUES"></system-label></system-modal-header>
+    <system-modal-content>
+        <div *ngFor="let availableValue of availableValues">
+            <!--system-checkbox [checked]="isChecked(availableValue.value)" [label]="availableValue.description"></system-checkbox-->
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <div class="slds-checkbox" (click)="checkValue(availableValue.value, $event)">
+                      <input type="checkbox" [id]="availableValue.value" [checked]="isChecked(availableValue.value)"/>
+                      <label class="slds-checkbox__label" [attr.for]="availableValue.value">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-form-element__label">{{availableValue.description}}</span>
+                      </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

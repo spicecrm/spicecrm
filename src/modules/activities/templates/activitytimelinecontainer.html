@@ -1,0 +1,25 @@
+<div *ngIf="displayaggregates && hasAggregates" class="slds-p-vertical--x-small slds-m-top--x-small">
+    <activity-timeline-aggregates [module]="module" labellength="short"></activity-timeline-aggregates>
+</div>
+<ul *ngIf="hasActivities; else nocontent" [ngClass]="{'slds-hide': loading}" class="slds-timeline slds-p-vertical--small">
+    <li *ngFor="let activity of activities">
+        <activitytimeline-item-container [activity]="activity" [module]="module"></activitytimeline-item-container>
+    </li>
+</ul>
+<ul class="slds-timeline" *ngIf="loading || loadingmore">
+    <li>
+        <activitytimeline-stencil></activitytimeline-stencil>
+    </li>
+    <li style="opacity: 0.6">
+        <activitytimeline-stencil></activitytimeline-stencil>
+    </li>
+    <li style="opacity: 0.3">
+        <activitytimeline-stencil></activitytimeline-stencil>
+    </li>
+</ul>
+<!-- displays if no records are found-->
+<ng-template #nocontent>
+    <div class="slds-p-vertical--medium">
+        <system-illustration-no-records *ngIf="!loading"><system-label label="LBL_NO_ENTRIES"></system-label></system-illustration-no-records>
+    </div>
+</ng-template>

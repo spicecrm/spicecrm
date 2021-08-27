@@ -1,0 +1,6 @@
+<div *ngIf="isAdmin" class="slds-p-vertical--xx-small slds-p-horizontal--small slds-grid slds-grid--vertical-align-center slds-show--large slds-truncate" (click)="goCR()">
+    <system-icon module="SystemDeploymentCRs" size="small" divClass="slds-p-horizontal--none"></system-icon>
+    <div class="slds-p-left--xx-small" *ngIf="activeID">
+        <a href="javascript:void(0);" class="slds-text-link_reset">{{crName}}</a>
+    </div>
+</div>

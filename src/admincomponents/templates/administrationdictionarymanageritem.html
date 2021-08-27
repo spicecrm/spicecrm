@@ -1,0 +1,4 @@
+<td scope="row" *ngFor="let field of dictionary.getFields()">
+    <div administration-dictionarymanager-item-field [field]="field" [id]="item.id" [inputvalue]="item[field]" class="slds-truncate">
+    </div>
+</td>

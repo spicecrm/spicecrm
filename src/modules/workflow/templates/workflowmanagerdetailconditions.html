@@ -1,0 +1,42 @@
+<system-collapsable-tab title="LBL_CONDITION_START" >
+    <div class="slds-p-around--x-small">
+        <h3 class="slds-text-heading--small"><system-label label="LBL_FILTER"></system-label></h3>
+        <div class="slds-expression">
+            <ul>
+                <system-filter-builder [(ngModel)]="conditions" [module]="module"></system-filter-builder>
+            </ul>
+        </div>
+    </div>
+    <div class="slds-p-around--x-small">
+        <h3 class="slds-text-heading--small"><system-label label="LBL_SYSTEM_CONDITION"></system-label></h3>
+        <div>
+            <field-label [fieldname]="'condclass'"></field-label>
+            <field-container [field]="'condclass'"></field-container>
+        </div>
+        <div>
+            <field-label [fieldname]="'condparams'"></field-label>
+            <field-container [field]="'condparams'"></field-container>
+        </div>
+    </div>
+</system-collapsable-tab>
+<system-collapsable-tab title="LBL_CONDITION_END" >
+    <div class="slds-p-around--x-small">
+        <h3 class="slds-text-heading--small"><system-label label="LBL_FILTER"></system-label></h3>
+        <div class="slds-expression">
+            <ul>
+                <system-filter-builder [(ngModel)]="conditions_end" [module]="module"></system-filter-builder>
+            </ul>
+        </div>
+    </div>
+    <div class="slds-p-around--x-small">
+        <h3 class="slds-text-heading--small"><system-label label="LBL_SYSTEM_CONDITION"></system-label></h3>
+        <div>
+            <field-label [fieldname]="'condclass'"></field-label>
+            <field-container [field]="'condclass_end'"></field-container>
+        </div>
+        <div>
+            <field-label [fieldname]="'condparams'"></field-label>
+            <field-container [field]="'condparams_end'"></field-container>
+        </div>
+    </div>
+</system-collapsable-tab>

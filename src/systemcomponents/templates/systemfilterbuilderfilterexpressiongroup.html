@@ -1,0 +1,54 @@
+<li class="slds-expression__group">
+    <fieldset>
+        <div class="slds-grid slds-gutters_direct-xx-small slds-grid--vertical-align-end slds-size--1-of-1">
+            <div class="slds-form-element slds-col slds-grow-none">
+                <label class="slds-form-element__label"><system-label label="LBL_GROUP_OPERATOR"></system-label></label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="filtergroup.logicaloperator">
+                            <option value="and"><system-label label="LBL_AND"></system-label></option>
+                            <option value="or"><system-label label="LBL_OR"></system-label></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element slds-col slds-grow-none">
+                <label class="slds-form-element__label"><system-label label="LBL_GROUP_SCOPE"></system-label></label>
+                <div class="slds-form-element__control">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="filtergroup.groupscope">
+                            <option value="all"><system-label label="LBL_ALL"></system-label></option>
+                            <option value="own"><system-label label="LBL_OWN"></system-label></option>
+                            <option value="not_own"><system-label label="LBL_NOT_OWN"></system-label></option>
+                            <option value="creator"><system-label label="LBL_CREATOR"></system-label></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button *ngIf="candelete" class="slds-button slds-button_icon slds-button_icon-border-filled slds-col--bump-left" (click)="delete()">
+                <system-button-icon icon="delete"></system-button-icon>
+            </button>
+        </div>
+        <ul>
+            <!--li class="slds-expression__row slds-expression__row_group" *ngFor="let expression of expressions"-->
+            <li class="slds-expression__row_group" *ngFor="let expression of expressions">
+                <fieldset *ngIf="!expression.deleted">
+                    <system-filter-builder-expression [module]="module" [filterexpression]="expression" (expressionDeleted)="filterchanged()" ></system-filter-builder-expression>
+                </fieldset>
+            </li>
+            <ng-container *ngFor="let group of groups">
+                <system-filter-builder-expression-group *ngIf="!group.deleted" [module]="module" [filtergroup]="group" [candelete]="true" (expressionChanged)="filterchanged()" ></system-filter-builder-expression-group>
+            </ng-container>
+        </ul>
+        <div class="slds-expression__buttons">
+            <button class="slds-button slds-button_neutral" (click)="addExpression()">
+                <system-button-icon icon="add"></system-button-icon>
+                <system-label label="LBL_ADD_CONDITION"></system-label>
+            </button>
+            <button class="slds-button slds-button_neutral" (click)="addGroup()">
+                <system-button-icon icon="add"></system-button-icon>
+                <system-label label="LBL_ADD_GROUP"></system-label>
+            </button>
+        </div>
+    </fieldset>
+</li>

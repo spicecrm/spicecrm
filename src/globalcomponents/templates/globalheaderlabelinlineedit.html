@@ -1,0 +1,3 @@
+<button *ngIf="session.isAdmin" [class.slds-is-selected]="language.inlineEditEnabled" (click)="toggleEnabled()" system-title="LBL_ENABLE_INLINE_EDIT" class="slds-button slds-button_icon slds-button_icon slds-button_icon-small">
+    <system-button-icon icon="text" [addclasses]="'slds-button--icon-xx-small ' + (!language.inlineEditEnabled ? 'slds-text-color--inverse-weak' : 'slds-text-color_success')"></system-button-icon>
+</button>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Img-card customization</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script type="text/javascript" src="../../codebase/diagram.js"></script>
+	<link rel="stylesheet" href="../../codebase/diagram.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+
+	<link rel="stylesheet" href="../common/dhx_samples.css">
+	<script type="text/javascript" src="../common/data.js"></script>
+
+	<style>
+		.myStyle .dhx_item_shape {
+			fill: #9575CD;
+		}
+
+		.myStyle:hover .dhx_item_shape {
+			fill: #00b7ff;
+		}
+
+		.myStyle:hover .dhx_item_shape {
+			stroke: #00b7ff;
+		}
+
+		.dhx_diagram_item.myStyle .dhx_content_img {
+			border-radius: 0;
+		}
+		.dhx_diagram_item.myStyle .dhx_content_title {
+			fill: #FFF;
+			color: #FFF;
+		}
+		.dhx_diagram_item.myStyle .dhx_content_text {
+			fill: #FFF;
+			color: #FFF;
+		}
+
+		.myStyle .dhx_item_shape {
+			rx: 0;
+			ry: 0;
+			stroke: #9575CD;
+		}
+	</style>
+	<script>
+		(function (i, s, o, g, r, a, m) {
+			i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+				(i[r].q = i[r].q || []).push(arguments)
+			}, i[r].l = 1 * new Date(); a = s.createElement(o),
+				m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+		})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+		ga('create', 'UA-11031269-1', 'auto');
+		ga('send', 'pageview');
+	</script>
+
+	<script src="https://cdn.ravenjs.com/3.10.0/raven.min.js"></script>
+	<script>Raven.config('https://b506cc95e6244203a69070d518196d06@sentry.dhtmlx.ru/7').install()</script>
+</head>
+
+<body>
+	<div id="diagram_container"></div>
+
+	<script>
+		var dataset = [
+			{
+				id: "1",
+				text: "Chairman & CEO",
+				title: "Henry Bennett",
+				img: "../common/img/avatar-1.png"
+			},
+			{
+				id: "2",
+				text: "Manager",
+				title: "Mildred Kim",
+				img: "../common/img/avatar-2.png",
+				css: "myStyle",
+			},
+			{
+				id: "3",
+				text: "Technical Director",
+				title: "Jerry Wagner",
+				img: "../common/img/avatar-3.png"
+			},
+			{
+				id: "1-2",
+				from: "1",
+				to: "2",
+				css: "myConnector",
+				type: "line"
+			},
+			{
+				id: "1-3",
+				from: "1",
+				to: "3",
+				type: "line"
+			}
+		]
+		var diagram = new dhx.Diagram("diagram_container", { type: "org", defaultShapeType: "img-card" });
+		diagram.data.parse(dataset);
+	</script>
+
+</body>
+
+</html>

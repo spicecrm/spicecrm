@@ -1,0 +1,25 @@
+<div class="slds-border--top" style="height: inherit;">
+    <div #attributesheader>
+        <div class="slds-grid slds-p-around--x-small slds-grid--vertical-align-center slds-grid--align-spread slds-border--bottom">
+            <h4 class="slds-text-title_caps slds-text-heading--small slds-p-vertical--small" id="treeheading"><system-label-modulename module="ProductAttributes"></system-label-modulename></h4>
+            <div class="slds-grid slds-grid--vertical-align-center">
+                <input type="text" class="slds-input slds-m-right--xx-small" placeholder="Filter" [(ngModel)]="attributeFilter">
+                <button [disabled]="!hasSearchFilters" class="slds-button slds-button_icon slds-button_icon slds-button_icon-border" (click)="clearFilters()">
+                    <system-button-icon [icon]="'clear'"></system-button-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="slds-p-around--x-small slds-scrollable--y spice-scrollbar" [ngStyle]="attributesStyle">
+        <div *ngIf="loading" class="slds-size--1-of-1 slds-p-around--medium slds-align--absolute-center">
+            <system-spinner></system-spinner>
+        </div>
+        <ng-container *ngFor="let attribute of attributes" [ngSwitch]="attribute.prat_datatype?.toLowerCase()">
+            <product-browser-attribute-di-search *ngSwitchCase="'di'" [attribute]="attribute"></product-browser-attribute-di-search>
+            <product-browser-attribute-s-search *ngSwitchCase="'s'" [attribute]="attribute"></product-browser-attribute-s-search>
+            <product-browser-attribute-n-search *ngSwitchCase="'n'" [attribute]="attribute"></product-browser-attribute-n-search>
+            <product-browser-attribute-f-search *ngSwitchCase="'f'" [attribute]="attribute"></product-browser-attribute-f-search>
+            <product-browser-attribute-vc-search *ngSwitchDefault [attribute]="attribute"></product-browser-attribute-vc-search>
+        </ng-container>
+    </div>
+</div>

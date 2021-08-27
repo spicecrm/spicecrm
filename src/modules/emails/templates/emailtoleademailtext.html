@@ -1,0 +1,17 @@
+<div class="slds-form-element slds-is-relative" style="height: 100%;">
+    <!--div class="slds-form-element__control">
+        <textarea #emailText readonly class="slds-textarea" [(ngModel)]="content" style="height: 50%;"
+                  (contextmenu)="showContextMenu($event)"></textarea>
+    </div-->
+    <div class="slds-box slds-scrollable" style="height: 100%" [innerHTML]="content" (contextmenu)="showContextMenu($event)"></div>
+    <div #contextMenu *ngIf="displayContextMenu" [ngStyle]="contextMenuStyle" class="slds-dropdown slds-dropdown_left slds-is-absolute">
+        <ul class="slds-dropdown__list" role="menu">
+            <li *ngFor="let emailfield of emailfields" class="slds-dropdown__item" role="presentation">
+                <a href="javascript:void(0);" role="menuitem" tabindex="0" (click)="setField(emailfield)">
+                    <span class="slds-truncate" ><system-label-fieldname [module]="emailmodule" [field]="emailfield"></system-label-fieldname></span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+

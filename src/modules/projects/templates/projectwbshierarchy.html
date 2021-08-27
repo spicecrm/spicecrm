@@ -1,0 +1,38 @@
+<article class="slds-card slds-card_boundary slds-m-bottom--medium">
+    <div class="slds-card__header slds-grid">
+        <header class="slds-media slds-media--center slds-has-flexi-truncate">
+            <system-icon [icon]="'hierarchy'" [size]="'small'"></system-icon>
+            <div class="slds-media__body slds-truncate">
+                <h2>
+                    <a href="javascript:void(0);" class="slds-text-link--reset">
+                        <span class="slds-text-heading--small"><system-label label="LBL_PROJECTWBSS"></system-label></span>
+                    </a>
+                </h2>
+            </div>
+        </header>
+        <object-action-container *ngIf="componentconfig.actionset" [actionset]="componentconfig.actionset"></object-action-container>
+    </div>
+    <div class="slds-card__body">
+        <table class="slds-table slds-table--bordered slds-tree slds-table--tree" role="treegrid"
+               aria-owns="tree0-node0 tree0-node1 tree0-node2 tree0-node3" aria-readonly="true">
+            <thead>
+                <tr class="slds-text-title--caps">
+                    <th *ngFor="let field of fieldsetFields" scope="col">
+                        <div class="slds-truncate"><system-label-fieldname module="ProjectWBSs" [field]="field.field"></system-label-fieldname></div>
+                    </th>
+                    <th class="slds-cell-shrink" scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr projectwbs-hierarchy-node class="slds-hint-parent" role="row" aria-expanded="true" *ngFor="let node of projectwbsHierarchy.membersList" [nodedata]="node" [fields]="fieldsetFields">
+            </tbody>
+            <tbody system-table-stencils *ngIf="isLoading()" [columns]="fieldsetFields.length" ></tbody>
+
+        </table>
+    </div>
+    <div class="slds-card__footer slds-grid">
+        <button class="slds-button slds-button_icon" (click)="loadHierarchy()">
+            <system-button-icon icon="refresh"></system-button-icon>
+        </button>
+    </div>
+</article>

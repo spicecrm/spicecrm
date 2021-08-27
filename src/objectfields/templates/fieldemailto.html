@@ -1,0 +1,12 @@
+<div class="slds-form-element">
+    <field-label [fieldname]="'to_addrs_names'"></field-label>
+    <div class="slds-form-element__control">
+        <div class="slds-pill_container" *ngFor="let toAddr of model.data.to_addrs_names">
+            <span class="slds-pill"><a href="javascript:void(0);" class="slds-pill__label">{{toAddr.displayname}}</a>
+                <button class="slds-button slds-button--icon slds-pill__remove">
+                    <system-button-icon [icon]="'close'"></system-button-icon>
+                </button>
+            </span>
+        </div>
+    </div>
+</div>

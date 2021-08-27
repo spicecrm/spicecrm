@@ -1,0 +1,95 @@
+<div style="height:100%">
+    <workbench-header titlelabel="LBL_CRM_LOG_VIEWER" icon="custom:custom62">
+        ({{countEntries}} <system-label label="LBL_RECORDS"></system-label>)
+        <workbench-header-controls>
+            <button class="slds-button slds-button--neutral" (click)="truncate()"><system-label label="LBL_TRUNCATE"></system-label></button><!-- [disabled]="0 && isLoading" -->
+            <button class="slds-button slds-button_brand" (click)="buttonLoad()" [attr.disabled]="!canLoad()?true:null"><system-label label="LBL_LOAD"></system-label></button>
+        </workbench-header-controls>
+    </workbench-header>
+
+    <div class="slds-section slds-is-open slds-m-bottom--medium">
+
+        <div class="slds-section__content slds-m-horizontal_medium slds-m-bottom_medium" style="padding-top:0;margin-bottom:0">
+
+            <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_xxx-small" style="padding-top:0">
+
+                <div class="slds-col slds-size--5-of-12">
+                    <label class="slds-form-element__label"><system-label label="LBL_END"></system-label></label>
+                    <div class="slds-grid slds-grid--vertical-align-center slds-p-right--small">
+                        <system-input-date [(ngModel)]="filter.end" class="slds-grow"></system-input-date>
+                        <system-input-time [(ngModel)]="filter.end" class="slds-grow slds-p-horizontal--xx-small"></system-input-time>
+                        <system-utility-icon system-title="LBL_NOW" icon="clock" size="x-small" (click)="setNow()"></system-utility-icon>
+                    </div>
+                </div>
+
+                <div class="slds-col slds-size--1-of-12 slds-p-right_x-small">
+                    <label class="slds-form-element__label"><system-label label="LBL_ROWS"></system-label></label>
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="limit">
+                            <option>250</option>
+                            <option>500</option>
+                            <option>1000</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="slds-form-element slds-p-right_x-small slds-size--3-of-12">
+                    <label class="slds-form-element__label" for="pid">{{lang.getLabel('LBL_PROCESS_ID')}}</label>
+                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                        <input id="pid" system-trim-input class="slds-input slds-text-align_right" type="text" size="5" [(ngModel)]="filter.pid" />
+                        <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.pid=''">
+                            <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="slds-form-element slds-size--3-of-12">
+                    <label class="slds-form-element__label" for="transaction_id">{{lang.getLabel('LBL_TRANSACTION')}}</label>
+                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                        <input system-trim-input id="transaction_id" class="slds-input slds-text-align_right" type="text" [(ngModel)]="filter.transaction_id" />
+                        <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.transaction_id=''">
+                            <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="slds-grid slds-grid_vertical-align-end slds-m-bottom_xxx-small" style="padding-top:0">
+
+                <div class="slds-p-right_x-small slds-size--3-of-12">
+                    <label class="slds-form-element__label">{{lang.getLabel('LBL_USER')}}</label>
+                    <system-input-relate module="Users" [(ngModel)]="filterUser" nameField="user_name"></system-input-relate>
+                </div>
+
+                <div class="slds-form-element slds-p-right_x-small slds-size--6-of-12">
+                    <system-label label="LBL_LOGFILE_LEVEL"></system-label>
+                    <system-checkbox-group #loglevelsCheckboxes [(ngModel)]="filter.loglevels" class="slds-grid slds-wrap">
+                        <system-checkbox-group-checkbox value="debug" class="slds-size--1-of-6 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_DEBUG"></system-label></system-checkbox-group-checkbox>
+                        <system-checkbox-group-checkbox value="info" class="slds-size--1-of-6 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_INFO"></system-label></system-checkbox-group-checkbox>
+                        <system-checkbox-group-checkbox value="error" class="slds-size--1-of-6 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_ERROR"></system-label></system-checkbox-group-checkbox>
+                        <system-checkbox-group-checkbox value="warn" class="slds-size--1-of-6 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_WARN"></system-label></system-checkbox-group-checkbox>
+                        <system-checkbox-group-checkbox value="security" class="slds-size--1-of-6 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_SECURITY"></system-label></system-checkbox-group-checkbox>
+                        <system-checkbox-group-checkbox value="fatal" class="slds-size--1-of-6 slds-p-vertical--xxx-small"><system-label label="LBL_LOGLEVEL_FATAL"></system-label></system-checkbox-group-checkbox>
+                    </system-checkbox-group>
+                </div>
+
+                <div class="slds-form-element slds-size--3-of-12">
+                    <label class="slds-form-element__label" for="filtertextBackend">Text</label>
+                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                        <input id="filtertextBackend" system-trim-input class="slds-input" type="text" [(ngModel)]="filter.text" />
+                        <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" (click)="filter.text=''">
+                            <system-button-icon icon="clear" addclasses="slds-icon-text-light"></system-button-icon>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <crm-log-viewer-list [load]='load$' [filter]="filter" (countEntries$)="countEntries=$event" (valueClicked)="valueClicked($event.type,$event.value)"></crm-log-viewer-list><!-- [period]="period" -->
+
+</div>

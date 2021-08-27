@@ -1,0 +1,28 @@
+<div>
+    <div class="slds-p-around--xx-small slds-scrollable--x slds-border--bottom">
+      <div *ngIf="!isLoading; else isLoadingContainer">
+          <system-input-radio-button-group [inputOptions]="dashboardsList" [(ngModel)]="activeDashboardId"></system-input-radio-button-group>
+      </div>
+        <ng-template #isLoadingContainer>
+            <div class="slds-grid">
+                <div class="slds-p-right--xx-small">
+                    <system-stencil style="line-height: 1.6rem"></system-stencil>
+                </div>
+                <div class="slds-p-right--xx-small">
+                    <system-stencil style="line-height: 1.6rem"></system-stencil>
+                </div>
+                <div class="slds-p-right--xx-small">
+                    <system-stencil style="line-height: 1.6rem"></system-stencil>
+                </div>
+                <div>
+                    <system-stencil style="line-height: 1.6rem"></system-stencil>
+                </div>
+            </div>
+        </ng-template>
+    </div>
+    <div #activeDashboardContainer></div>
+</div>
+
+
+
+

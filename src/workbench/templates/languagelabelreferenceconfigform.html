@@ -1,0 +1,44 @@
+<div class="slds-p-around--medium">
+    <p>
+        <b>CAUTION!</b> Following processes will be triggered:
+    </p>
+    <ol class="slds-list--ordered slds-p-bottom--large">
+        <li class="slds-list__item">
+            <strong>delete</strong> current records stored<br/>
+            in syslanguagelabels and syslanguagetranslations tables<br/>
+            Custom labels will remain intact.
+        </li>
+        <li class="slds-list__item">load default language labels and translations into tables</li>
+    </ol>
+    <div class="slds-form-element">
+        <label><abbr class="slds-required">*</abbr><system-label label="LBL_LANGUAGES"></system-label>:</label>
+        <!--select class="slds-select" [(ngModel)]="language_names" [disabled]="is_loading_availabilities" multiple>
+            <option *ngFor="let lang of available_languages" [value]="lang.language_code">{{lang.language_name}}</option>
+        </select-->
+        <div class="slds-form-element__control">
+            <system-checkbox-group [(ngModel)]="language_names">
+                <system-checkbox-group-checkbox *ngFor="let lang of available_languages" value="{{lang.language_code}}">{{lang.language_name}}</system-checkbox-group-checkbox>
+            </system-checkbox-group>
+        </div>
+    </div>
+    <div class="slds-form-element">
+        <label><system-label label="LBL_VERSIONS"></system-label>:</label>
+        <!--select class="slds-select" [(ngModel)]="version_names" [disabled]="is_loading_availabilities">
+            <option value="*">*</option>
+            <option *ngFor="let vers of available_versions" [value]="vers.version">{{vers.version}}</option>
+        </select-->
+        <div class="slds-form-element__control">
+            <system-checkbox-group [(ngModel)]="version_names">
+                <system-checkbox-group-checkbox *ngFor="let vers of available_versions" value="{{vers.version}}">{{vers.version}}</system-checkbox-group-checkbox>
+            </system-checkbox-group>
+        </div>
+    </div>
+    <div *ngIf="pull_result" class="slds-form-element">
+        <label><system-label label="LBL_RESULT"></system-label>:</label>
+        <pre>{{pull_result}}</pre>
+    </div>
+    <div class="slds-form-element slds-p-top--small">
+        <system-spinner *ngIf="is_pulling"></system-spinner>
+        <button *ngIf="!is_pulling" class="slds-button slds-button--brand" [disabled]="!language_names" (click)="submit()"><system-label label="LBL_SUBMIT"></system-label></button>
+    </div>
+</div>

@@ -1,0 +1,9 @@
+<div [system-overlay-loading-spinner]="modellist.isLoading" system-to-bottom-noscroll class="slds-grid">
+    <div class="slds-border--right slds-theme_shade" style="min-width: 250px;" system-to-bottom>
+        <scrum-tree role="tree"></scrum-tree>
+    </div>
+    <div class="slds-grow" system-to-bottom>
+        <div class="slds-align_absolute-center" system-to-bottom-noscroll *ngIf="!scrum.selectedObject.id && !modellist.isLoading"><system-illustration-no-data>{{text}}</system-illustration-no-data></div>
+        <scrum-tree-detail [focusid]="scrum.selectedObject.id" [focustype]="scrum.selectedObject.type"></scrum-tree-detail>
+    </div>
+</div>

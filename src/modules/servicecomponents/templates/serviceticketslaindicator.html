@@ -1,0 +1,11 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display>
+    <div *ngIf="hasSLA" class="slds-grid slds-grid--vertical-align-center">
+        <div class="slds-p-vertical--xxx-small">
+            <system-progress-ring [percentage]="percentage" [status]="status"></system-progress-ring>
+        </div>
+        <div class="slds-p-horizontal--xx-small" [ngClass]="{'slds-text-color_error': status == 'expired'}">
+            {{timeLeft}}
+        </div>
+    </div>
+</field-generic-display>

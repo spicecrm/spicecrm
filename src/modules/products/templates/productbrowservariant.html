@@ -1,0 +1,25 @@
+<div class="slds-m-around--x-small slds-box slds-box_x-small slds-theme--shade">
+    <div class="slds-grid">
+        <header class="slds-grid slds-grid--vertical-align-end slds-has-flexi-truncate">
+            <system-icon [module]="'ProductVariants'" size="x-small"></system-icon>
+            <h2 class="slds-truncate" [system-view-provider]="{editable: false, displayLabels: false}">
+                <a *ngIf="!fieldset; else fieldsetContainer" href="javascript:void(0);" class="slds-card__header-link slds-truncate"
+                   [title]="model.data.summary_text" (click)="godetail()">
+                    <span class="slds-text-heading_x-small">{{model.data.summary_text}}</span>
+                </a>
+                <ng-template #fieldsetContainer>
+                    <object-record-fieldset-horizontal-list [fieldset]="fieldset"></object-record-fieldset-horizontal-list>
+                </ng-template>
+            </h2>
+        </header>
+        <div class="slds-no-flex">
+            <button class="slds-button slds-button_icon" (click)="toggleOpen()">
+                <system-button-icon [icon]="buttonIcon"></system-button-icon>
+            </button>
+        </div>
+    </div>
+    <div *ngIf="opened" class="slds-p-top--xx-small" [system-view-provider]="{editable: false, displayLabels: true}">
+        <object-record-fieldset *ngIf="!!detailsFieldset" [fieldset]="detailsFieldset"></object-record-fieldset>
+        <product-variants-attributes-table [attributes]="groupAttributes"></product-variants-attributes-table>
+    </div>
+</div>

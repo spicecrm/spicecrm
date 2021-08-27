@@ -1,0 +1,29 @@
+<div class="slds-box">
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+        <thead>
+        <tr class="slds-text-title_caps">
+            <th scope="col">
+                <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate"><system-label label="LBL_VALUE"></system-label></div>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let element of elements">
+            <td>
+                <div class="slds-truncate">{{element.name}}</div>
+            </td>
+            <td>
+                <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+                    <div class="slds-truncate">{{getValue(element.id)}}</div>
+                    <button *ngIf="!disabled" class="slds-col--bump-left slds-button slds-button--icon slds-m-left--xx-small" (click)="setValue(element.id)">
+                        <system-button-icon [icon]="'edit'"></system-button-icon>
+                    </button>
+                </div>
+            </td>
+         </tr>
+        </tbody>
+    </table>
+</div>

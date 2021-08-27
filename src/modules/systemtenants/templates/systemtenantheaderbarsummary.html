@@ -1,0 +1,6 @@
+<div class="slds-grid slds-grid_vertical-align-center">
+    <span class="slds-m-horizontal_x-small"><system-label label="LBL_SUMMARY"></system-label></span>
+    <system-progress-ring [percentage]="usage.database" backgroundcolor="var(--color-grey-9)"></system-progress-ring>
+    <system-progress-ring [percentage]="usage.database" backgroundcolor="var(--color-grey-9)" status="warning"></system-progress-ring>
+    <system-progress-ring [percentage]="usage.database" backgroundcolor="var(--color-grey-9)" status="expired"></system-progress-ring>
+</div>

@@ -1,0 +1,20 @@
+<div class="slds-p-vertical--x-small">
+    <label class="slds-form-element__label">{{attribute.name}}</label>
+    <div class="slds-grid">
+        <div class="slds-form-element slds-p-right--x-small slds-size--2-of-5">
+            <div class="slds-form-element__control">
+                <input type="number" class="slds-input" [(ngModel)]="fromValue">
+            </div>
+        </div>
+        <div class="slds-form-element slds-p-left--x-small slds-size--2-of-5">
+            <div class="slds-form-element__control">
+                <input type="number" class="slds-input" [(ngModel)]="toValue">
+            </div>
+        </div>
+        <div class="slds-form-element slds-p-left--x-small slds-size--1-of-5">
+            <div class="slds-form-element__control">
+                <input type="text" class="slds-input" disabled [value]="uom">
+            </div>
+        </div>
+    </div>
+</div>

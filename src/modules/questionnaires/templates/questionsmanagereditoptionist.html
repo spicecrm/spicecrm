@@ -1,0 +1,19 @@
+    <td width="50%">
+        <div><input type="text" class="slds-input" [(ngModel)]="option.answer" (change)="change()"></div>
+    </td>
+    <td style="width:4rem">
+        <div><input type="text" class="slds-input" [(ngModel)]="option.description" (change)="change()"></div>
+    </td>
+    <td width="50%">
+        <div><questions-manager-edit-categories [option]="option" [categorypool]="categorypool"></questions-manager-edit-categories></div>
+    </td>
+    <td width="10%">
+        <div><input type="text" class="slds-input" [(ngModel)]="option.points" (change)="change()"></div>
+    </td>
+    <td>
+        <button
+            class="slds-button slds-button_icon slds-button_icon-container slds-button_icon-border-filled" (click)="deleteOption()" title="{{language.getLabel('LBL_DELETE')}}">
+            <system-button-icon [icon]="'delete'"></system-button-icon>
+            <span class="slds-assistive-text"><system-label label="LBL_DELETE"></system-label></span>
+        </button>
+    </td>

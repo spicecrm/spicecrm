@@ -1,0 +1,11 @@
+<div class="slds-card slds-card_boundary slds-p-bottom--medium slds-m-bottom--medium" [ngClass]="{'slds-hide': isHidden}">
+    <div class="slds-card__header slds-grid slds-grid--vertical-align-center">
+        <header class="slds-media slds-media--center slds-has-flexi-truncate">
+            <system-icon module="KReports" [size]="'small'"></system-icon>
+            <div class="slds-media__body slds-truncate slds-grid slds-grid--vertical-align-center">
+                <h2 class="slds-text-heading--small">{{title}}</h2>
+            </div>
+        </header>
+    </div>
+    <reporter-presentation-dashlet [componentconfig]="componentconfig" [parentModule]="model.module" [parentId]="model.id" [displayheader]="false" (dashletTitle)="dashletTitle = $event" (noAccess)="noAccess($event)"></reporter-presentation-dashlet>
+</div>

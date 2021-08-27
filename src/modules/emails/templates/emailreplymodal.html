@@ -1,0 +1,21 @@
+<system-modal size="large">
+    <system-modal-header module="Emails" (close)="close()">
+        <system-label [label]="titlelabel"></system-label>
+        <system-modal-header-right>
+            <button class="slds-button slds-button_icon" (click)="dock()" [title]="language.getLabel('LBL_DOCK')">
+                <system-button-icon icon="dock_panel"></system-button-icon>
+                <span class="slds-assistive-text"><system-label label="LBL_DOCK"></system-label></span>
+            </button>
+        </system-modal-header-right>
+    </system-modal-header>
+    <system-modal-content>
+        <!--object-record-fieldset [fieldset]="fieldset" direction="vertical"></object-record-fieldset>
+        <system-dynamic-component component="SpiceAttachmentsPanel"></system-dynamic-component-->
+        <system-componentset [componentset]="componentconfig.componentset"></system-componentset>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-text-align_right">
+            <object-action-container containerclass="" [actionset]="componentconfig.actionset" (actionemitter)="handleaction($event)" ></object-action-container>
+        </div>
+    </system-modal-footer>
+</system-modal>

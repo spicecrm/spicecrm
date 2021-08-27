@@ -1,0 +1,13 @@
+<div class="slds-tree_container slds-p-around--x-small" style="max-width: 100%" role="application">
+    <ul class="slds-tree" role="tree" aria-labelledby="treeheading" >
+        <li *ngFor="let productgroup of productGroupTree; trackBy: trackByFn" (click)="selectGroup(productgroup)" role="treeitem" [attr.aria-level]="productgroup.level" [class.slds-theme--shade]="isSelected(productgroup.id)">
+            <div class="slds-tree__item">
+                <button [class.slds-hidden]="productgroup.member_count == 0" class="slds-button slds-button_icon slds-button_icon slds-m-right_x-small" (click)="toggle(productgroup, $event)">
+                    <system-button-icon [icon]="'chevronright'"></system-button-icon>
+                </button>
+                <a href="javascript:void(0);" tabindex="-1" class="slds-truncate" [title]="productgroup.summary_text">{{productgroup.summary_text}}</a>
+                <system-spinner *ngIf="isLoading == productgroup.id" size="16" class="slds-col_bump-left slds-m-right--x-small"></system-spinner>
+            </div>
+        </li>
+    </ul>
+</div>

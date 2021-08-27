@@ -1,0 +1,22 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<div *ngIf="!isEditMode()" class="slds-text-body--regular slds-truncate slds-m-vertical--small spice-fieldbody">
+    <system-stencil *ngIf="model.isLoading; else displaycontent"></system-stencil>
+    <ng-template #displaycontent>
+        <span>{{getValue()}}</span>
+        <button *ngIf="view.isEditable" style="float: right" class="slds-button slds-button--icon" (click)="setEditMode()">
+            <system-button-icon [icon]="'edit'"></system-button-icon>
+        </button>
+    </ng-template>
+</div>
+<div *ngIf="isEditMode()" class="slds-form-element">
+    <div class="slds-form-element__control">
+        <div class="slds-radio--button-group">
+          <div *ngFor="let o of getOptions()" class="slds-button slds-radio--button" (click)="setValue(o.value)">
+            <input type="radio" [name]="fieldname" [value]="o.value" [checked]="o.value === value"/>
+            <label class="slds-radio--button__label" >
+                <span class="slds-radio--faux">{{o.display}}</span>
+            </label>
+          </div>
+        </div>
+    </div>
+</div>

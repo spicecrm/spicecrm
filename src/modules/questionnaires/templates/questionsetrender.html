@@ -1,0 +1,115 @@
+<system-spinner *ngIf="!qp.isLoaded"></system-spinner>
+
+<ng-container *ngIf="qp.isLoaded">
+
+    <div class="questionset-render slds-text-heading_small" [ngClass]="{'in-modal':qp.inModal}">
+        <div class="questionset-render-header">
+            <div class="slds-grid slds-grid_vertical-align-center">
+
+                <ng-container *ngIf="qp.editMode === 'preview' || _.isEmpty(questionset.questions); else notPreviewButQuestions">
+                    <h3 class="slds-text-heading_medium">{{questionset.name}}</h3>
+                </ng-container>
+
+                <ng-template #notPreviewButQuestions>
+                    <h3 class="slds-text-heading_medium" [ngClass]="{'slds-size_3-of-5':qp.timerWarning || showProgress}">{{questionset.name}}</h3>
+                    <div *ngIf="qp.timerText || showProgress" class="slds-size_2-of-5">
+                        <div class="slds-grid slds-grid_vertical-align-center">
+                            <div *ngIf="qp.timerText" class="slds-box_border slds-m-left_medium" [class.slds-theme_warning]="qp.timerWarning">
+                                <span class="slds-p-left_xx-small slds-p-right_xx-small">{{qp.timerText}}</span>
+                            </div>
+                            <div *ngIf="showProgress" class="slds-col slds-m-left_medium">
+                                <div class="slds-progress-bar slds-progress-bar_large slds-progress-bar_circular" style="height:1rem">
+                                    <span class="slds-progress-bar__value" [style.width]="percentOfFinishedQuestions+'%'">
+                                        <span class="slds-assistive-text">Progress: {{percentOfFinishedQuestions}}%</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+
+            </div>
+
+            <div *ngIf="questionset.textbefore" class="questionset-render-textbefore">
+                <ng-container *ngIf="qp.inModal">
+                    <div #box class="slds-m-top_medium slds-box slds-theme_shade slds-is-relative" [class.slds-p-bottom_none]="textIsCollapsed" [class.collapsed]="textIsCollapsed">
+                        <div class="questionset-render-text">
+                            <div class="html-text"><div [innerHTML]="questionset.textbefore"></div></div>
+                        </div>
+                        <div *ngIf="textIsCollapsable && textIsCollapsed" class="questionset-render-textbefore-fadeout"><div class="slds-m-bottom_medium slds-m-right_medium slds-text-align_right" style="position:absolute;bottom:0;left:0;right:0"><button class="slds-button slds-button_neutral slds-text-body_regular" (click)="toggleText()"><system-button-icon [icon]="'chevrondown'" [position]="'left'"></system-button-icon>{{language.getLabel('LBL_MORE')}}</button></div></div>
+                    </div>
+                    <div *ngIf="textIsCollapsable && !textIsCollapsed" class="slds-text-align_right" style="margin-top:-0.75rem;margin-right:0.5rem"><button class="slds-button slds-button_neutral slds-text-body_regular" (click)="toggleText()"><system-button-icon [icon]="'chevronup'" [position]="'left'"></system-button-icon>{{language.getLabel('LBL_LESS')}}</button></div>
+                </ng-container>
+                <div *ngIf="!qp.inModal" [innerHTML]="questionset.textbefore" class="slds-m-vertical_medium"></div>
+            </div>
+        </div>
+
+        <div class="questionset-render-questions slds-m-top_medium" [ngClass]="{'slds-p-right_medium':qp.inModal}">
+
+            <div *ngIf="!_.isEmpty(questionset.questions); else noQuestionsTemplate">
+
+                <p *ngIf="hideFinishedQuestions && allQuestionsFinished" class="slds-text-align_center">Alle Fragen sind beantwortet – und ausgeblendet.</p>
+
+                <ng-container *ngIf="questionset.questiontype === 'ratinggroup'">
+                    <questionset-render-rating [questionsetId]="questionset.id" [hideFinishedQuestions]="hideFinishedQuestions"></questionset-render-rating>
+                </ng-container>
+
+                <ng-container *ngIf="questionset.questiontype !== 'ratinggroup'">
+
+                    <ng-container *ngFor="let question of qp.questionsArray[questionsetId];let i = index;last as isLast">
+
+                        <div *ngIf="!hideFinishedQuestions || !qp.questionsMeta[question.id].finished" [ngClass]="{'slds-m-bottom_medium': !isLast}">
+
+                            <ng-container [ngSwitch]="question.questiontype">
+
+                                <div *ngSwitchCase="'rating'">
+                                    <question-render-rating [questionId]="question.id"></question-render-rating>
+                                </div>
+
+                                <div *ngSwitchCase="'text'">
+                                    <question-render-text
+                                            [questionId]="question.id"
+                                            [previousQuestion]="i === 0 ? null:qp.questionsArray[questionsetId][i-1]"
+                                            [followingQuestion]="i+1 >= qp.questionsArray[questionsetId].length ? null:qp.questionsArray[questionsetId][i+1]"
+                                    ></question-render-text>
+                                </div>
+
+                                <div *ngSwitchCase="'ist'">
+                                    <question-render-ist [questionId]="question.id"
+                                                         [previousQuestion]="i === 0 ? null:qp.questionsArray[questionsetId][i-1]"
+                                                         [followingQuestion]="i+1 >= qp.questionsArray[questionsetId].length ? null:qp.questionsArray[questionsetId][i+1]"
+                                    ></question-render-ist>
+                                </div>
+
+                                <div *ngSwitchCase="'nps'">
+                                    <question-render-nps [questionId]="question.id"></question-render-nps>
+                                </div>
+
+                            </ng-container>
+                            <question-render-binary-single-multi
+                                    *ngIf="question.questiontype === 'binary' || question.questiontype === 'single' || question.questiontype === 'multi'"
+                                    [questionId]="question.id"
+                                    [previousQuestion]="i === 0 ? null:qp.questionsArray[questionsetId][i-1]"
+                                    [followingQuestion]="i+1 >= qp.questionsArray[questionsetId].length ? null:qp.questionsArray[questionsetId][i+1]"
+                            ></question-render-binary-single-multi>
+                        </div>
+
+                    </ng-container>
+
+                </ng-container>
+
+            </div>
+
+            <ng-template #noQuestionsTemplate>
+                <p><system-label label="LBL_NO_QUESTIONS_TO_DISPLAY"></system-label></p>
+            </ng-template>
+
+        </div>
+
+        <div class="questionset-render-header">
+            <div *ngIf="questionset.textafter" [innerHTML]="questionset.textafter" class="slds-m-top_medium"></div>
+        </div>
+
+    </div>
+
+</ng-container>

@@ -1,0 +1,142 @@
+<div class="slds-grid slds-grid--vertical" system-to-bottom-noscroll>
+    <div class="slds-border--bottom slds-p-around--x-small">
+    <button (click)="addDrilldown()" class="slds-button slds-button_neutral slds-m-right--small slds-p-horizontal--x-small slds-text-title--caps" style="height: 100%; line-height: 22px">
+        <system-label label="LBL_ADD_DRILLDOWN"></system-label>
+    </button>
+    </div>
+    <div class="slds-grow slds-scrollable--y">
+        <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover">
+            <thead>
+            <tr class="slds-text-title--caps slds-theme--shade">
+                <th scope="col">
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_NAME')">
+                        <system-label label="LBL_NAME"></system-label>
+                    </div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_DISPLAY_NAME')">
+                        <system-label label="LBL_DISPLAY_NAME"></system-label>
+                    </div>
+                </th>
+                <th scope="col" style="padding-left: 5px">
+                    <div class="slds-truncate" [title]="language.getLabel('LBL_LINK_TYPE')">
+                        <system-label label="LBL_LINK_TYPE"></system-label>
+                    </div>
+                </th>
+                <th scope="col" class="slds-cell-shrink"></th>
+                <th scope="col" class="slds-cell-shrink"></th>
+            </tr>
+            </thead>
+            <tbody *ngIf="drilldowns">
+                <ng-container *ngFor="let drilldown of drilldowns; trackBy: trackByFn">
+                    <tr class="slds-border--bottom slds-drag--preview">
+                        <td>
+                            <div class="slds-truncate">
+                                {{drilldown.reportname}}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <input type="text" [(ngModel)]="drilldown.displayname" class="slds-input">
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <select class="slds-select" [(ngModel)]="drilldown.linktype">
+                                            <option value="LINK"><system-label label="LBL_LINK"></system-label></option>
+                                            <option value="POPUP"><system-label label="LBL_POPUP"></system-label></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <button (click)="deleteDrilldown(drilldown.linkid)" [title]="language.getLabel('LBL_DELETE')" class="slds-button slds-button--icon">
+                                <system-button-icon icon="delete"></system-button-icon>
+                            </button>
+                        </td>
+                        <td>
+                            <button (click)="toggleExpandMapping(drilldown)" [title]="language.getLabel('LBL_MAPPING')" class="slds-button slds-button--icon">
+                                <system-button-icon icon="rules"></system-button-icon>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="expandedId == drilldown.linkid" class="slds-theme--shade" style="box-shadow: inset -1px 1px 6px 0 #aaa">
+                        <td colspan="5" style="padding: .5rem;">
+                            <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout slds-no-row-hover slds-theme--shade">
+                                <thead>
+                                    <tr class="slds-text-title--caps">
+                                        <th scope="col">
+                                            <div class="slds-truncate" [title]="language.getLabel('LBL_WHERE_FIELD')">
+                                                <system-label label="LBL_WHERE_FIELD"></system-label>
+                                            </div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate" [title]="language.getLabel('LBL_OPERATOR')">
+                                                <system-label label="LBL_OPERATOR"></system-label>
+                                            </div>
+                                        </th>
+                                        <th scope="col" style="padding-left: 5px">
+                                            <div class="slds-truncate" [title]="language.getLabel('LBL_FIELD')">
+                                                <system-label label="LBL_FIELD"></system-label>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngIf="drilldown.mappingdata?.length > 0">
+                                    <tr *ngFor="let mappingDataItem of drilldown.mappingdata">
+                                        <td>
+                                            <div class="slds-truncate">
+                                                {{mappingDataItem.wherename}}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-form-element">
+                                                <div class="slds-form-element__control">
+                                                    <div class="slds-select_container">
+                                                        <select class="slds-select" [(ngModel)]="mappingDataItem.operator">
+                                                            <option value="equals"><system-label label="LBL_EQUALS"></system-label></option>
+                                                            <option value="notequal"><system-label label="LBL_OP_NOTEQUAL"></system-label></option>
+                                                            <option value="starts"><system-label label="LBL_STARTS"></system-label></option>
+                                                            <option value="greaterequal"><system-label label="LBL_OP_GREATEREQUAL"></system-label></option>
+                                                            <option value="greater"><system-label label="LBL_OP_GREATER"></system-label></option>
+                                                            <option value="lessequal"><system-label label="LBL_OP_LESSEQUAL"></system-label></option>
+                                                            <option value="less"><system-label label="LBL_OP_LESS"></system-label></option>
+                                                            <option value="reference"><system-label label="LBL_REFERENCE"></system-label></option>
+                                                            <option value="ignore"><system-label label="LBL_OP_IGNORE"></system-label></option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-form-element">
+                                                <div class="slds-form-element__control">
+                                                    <div class="slds-select_container">
+                                                        <select class="slds-select" [(ngModel)]="mappingDataItem.mappedid">
+                                                            <option></option>
+                                                            <option *ngFor="let field of listFields; trackBy: trackByFn" [value]="field.fieldid"><system-label [label]="field.name"></system-label></option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody *ngIf="drilldown.mappingdata?.length == 0">
+                                    <tr>
+                                        <td colspan="3">&nbsp;</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+</div>

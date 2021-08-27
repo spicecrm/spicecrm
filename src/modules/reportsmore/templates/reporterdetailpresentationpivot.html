@@ -1,0 +1,35 @@
+<div class="slds-height_full slds-grid slds-grid--vertical" [system-overlay-loading-spinner]="isLoading">
+    <div class="slds-scrollable--y slds-grow slds-grid slds-grid--vertical" style="min-height: 0">
+        <table class="slds-table slds-table_col-bordered slds-table_bordered slds-table--fixed-layout" style="border-top: 0;">
+            <thead *ngIf="totalCountArray.length > 0">
+                <tr class="slds-text-title--caps">
+                    <th scope="col" class="slds-truncate" style="width: 10%" [rowSpan]="presParams.pluginData.columnData.length + 1">
+                        <system-label [label]="pivotNameField"></system-label>
+                    </th>
+                    <th class="slds-p-around--none" style="width: 10%" *ngFor="let column of totalCountArray">
+                    </th>
+                </tr>
+                <tr *ngFor="let row of headerTableSet; let first = first" class="slds-text-title--caps">
+                    <th style="width: 10%" class="slds-text-align--center slds-border--left slds-truncate" *ngFor="let column of row" [colSpan]="column.span">
+                        {{column.value}}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let rowValue of rowValues; trackBy: trackByFn">
+                    <td class=" slds-truncate" scope="row" style="width: 10%">
+                        {{rowValue}}
+                    </td>
+                    <td scope="row" *ngFor="let values of rowValueColumns[rowValue]" style="width: 10%">
+                        <div class="slds-grid slds-grid--align-center slds-truncate">
+                            <reporter-field-container *ngFor="let value of values" [field]="value.field" [value]="value.value"></reporter-field-container>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div *ngIf="!isLoading && totalCountArray.length == 0" class="slds-p-around--medium slds-align--absolute-center slds-grow" style="min-height: 0">
+            <h2 class="slds-text-heading--small"><system-label label="LBL_NO_ENTRIES"></system-label></h2>
+        </div>
+    </div>
+</div>

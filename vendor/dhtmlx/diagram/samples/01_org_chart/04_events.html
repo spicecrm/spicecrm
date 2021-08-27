@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Org Chart Events</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script type="text/javascript" src="../../codebase/diagram.js"></script>
+	<link rel="stylesheet" href="../../codebase/diagram.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+
+	<link rel="stylesheet" href="../common/dhx_samples.css">
+	<script type="text/javascript" src="../common/data.js"></script>
+</head>
+
+<body>
+	<div id="diagram_container" class="dhx_inline_cont" style="width:500px;height:500px;"></div>
+	<div class="dhx_inline_cont">
+		<div>Events</div>
+		<div id="messages" style="border:solid 1px #f2f2f2;padding:20px;margin:10px;">
+		</div>
+	</div>
+
+	<script>
+		var diagram = new dhx.Diagram("diagram_container", { type: "org" });
+		diagram.data.parse(orgChartData);
+
+		var messages = document.querySelector("#messages");
+
+		diagram.events.on("ShapeClick", function (id) {
+			messages.innerHTML = 'An item "' + diagram.data.getItem(id).text + '" has been clicked';
+		});
+		diagram.events.on("ShapeDblClick", function (id) {
+			messages.innerHTML = 'An item "' + diagram.data.getItem(id).text + '" has been double-clicked';
+		});
+	</script>
+
+</body>
+
+</html>

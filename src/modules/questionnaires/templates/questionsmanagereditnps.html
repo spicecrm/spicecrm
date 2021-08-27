@@ -1,0 +1,34 @@
+<div class="slds-grid">
+    <div class="slds-p-right--medium" style="width:100%;">
+        <label for="{{compId}}-questiontext" class="slds-form-element__label"><system-label label="LBL_QUESTION_TEXT"></system-label></label>
+        <input id="{{compId}}-questiontext" type="text" class="slds-input" [(ngModel)]="questiontext" (blur)="questiontextBlurred()">
+    </div>
+    <div style="width:4rem">
+        <label class="slds-form-element__label slds-m-horizontal--none"><system-label label="LBL_IMAGE"></system-label></label><br>
+        <field-container [field]="'image_id'" [fieldconfig]="{fieldtype:'mediafileimage'}" [fielddisplayclass]="''"></field-container>
+    </div>
+</div>
+
+<div class="slds-m-top_xx-small" [ngClass]="{'slds-has-error':nameMissing}">
+    <label for="{{compId}}-name" class="slds-form-element__label" ><abbr class="slds-required" title="required">* </abbr><system-label label="LBL_NAME"></system-label></label>
+    <input id="{{compId}}-name" type="text" class="slds-input" [(ngModel)]="name" (blur)="nameBlurred()" (change)="nameChanged()">
+</div>
+
+<div class="slds-grid slds-grid--align-spread slds-m-top_xx-small">
+    <div class="slds-form-element slds-size--1-of-2 slds-p-right--x-small">
+        <label class="slds-form-element__label" for="questionsmanagereditnps-val-for-0">Text for Value 0</label>
+        <div class="slds-form-element__control">
+            <input type="text" id="questionsmanagereditnps-val-for-0" class="slds-input" [(ngModel)]="textForScore0"/>
+        </div>
+    </div>
+    <div class="slds-form-element slds-size--1-of-2 slds-p-left--x-small">
+        <label class="slds-form-element__label" for="questionsmanagereditnps-val-for-10">Text for Value 10</label>
+        <div class="slds-form-element__control">
+            <input type="text" id="questionsmanagereditnps-val-for-10" class="slds-input" [(ngModel)]="textForScore10"/>
+        </div>
+    </div>
+</div>
+
+<div class="slds-m-top_xx-small">
+    <questions-manager-edit-categories [showLabel]="true" [option]="forCategories" id="questionsmanagereditnps-categories" [categorypool]="categorypool" (change)="categoriesChanged()"></questions-manager-edit-categories>
+</div>

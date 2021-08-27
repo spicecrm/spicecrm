@@ -1,0 +1,7 @@
+<div>
+    <aclterritorries-manager-header displaylabel="LBL_SPICEACLTERRITORIES"></aclterritorries-manager-header>
+</div>
+<div #managercontent class="slds-grid">
+    <aclterritorries-manager-territories class="slds-size--1-of-2 slds-border--right" (territoryselected)="setTerritory($event)" (typeselected)="setType($event)"></aclterritorries-manager-territories>
+    <aclterritorries-manager-territory class="slds-size--1-of-2" [modelid]="activeTerritoryId" [modeldata]="activeTerritoryData" [territorytype]="activeTerritoryType"></aclterritorries-manager-territory>
+</div>

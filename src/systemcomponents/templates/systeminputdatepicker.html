@@ -1,0 +1,65 @@
+<div class="slds-datepicker__filter slds-grid">
+    <div class="slds-datepicker__filter_month slds-grid slds-grid_align-spread slds-grow">
+        <div class="slds-align-middle">
+            <button class="slds-button slds-button_icon slds-button_icon-container" title="Previous Month" (click)="prevMonth()">
+                <system-button-icon [icon]="'left'"></system-button-icon>
+            </button>
+        </div>
+        <h2 aria-atomic="true" aria-live="assertive" class="slds-align-middle">{{currentMonth}}</h2>
+        <div class="slds-align-middle">
+            <button class="slds-button slds-button_icon slds-button_icon-container" title="Next Month" (click)="nextMonth()">
+                <system-button-icon [icon]="'right'"></system-button-icon>
+            </button>
+        </div>
+    </div>
+    <div class="slds-shrink-none">
+        <system-select [selectList]="yearsList" [(selectedItem)]="currentYear" [emitInputValueOnEnterPress]="true"></system-select>
+    </div>
+</div>
+<table aria-labelledby="month" aria-multiselectable="true" class="slds-datepicker__month slds-m-left--x-small" role="grid">
+    <thead>
+        <tr>
+            <th scope="col"></th>
+            <th *ngFor="let weekday of weekdays; let index = index" scope="col">
+                <abbr [title]="weekdayLong(index)">{{weekday}}</abbr>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let week of currentGrid">
+            <td role="gridcell" class="slds-theme--shade">
+                <abbr class="slds-p-horizontal--xx-small" [title]="language.getLabel('LBL_WEEK')+' '+week?.number">
+                    {{week?.number}}
+                </abbr>
+            </td>
+            <td *ngFor="let day of week?.days" role="gridcell" (click)="pickDate(day)" [ngClass]="{'slds-disabled-text': disabled(day), 'slds-is-today': isToday(day), 'slds-is-selected': isCurrent(day)}">
+                <span class="slds-day">{{day.date()}}</span>
+            </td>
+        </tr>
+    </tbody>
+    <tbody *ngIf="dual">
+        <tr>
+            <td [attr.colspan]="weekdays.length +1" class="slds-theme--shade">
+                <div class="slds-grid slds-m-vertical--xx-small">
+                    <h2 class="slds-size--1-of-2">
+                        {{secondMonth}}
+                    </h2>
+                    <div>
+                        {{secondYearDisplay}}
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr *ngFor="let week of secondGrid">
+            <td role="gridcell" class="slds-theme--shade">
+                <abbr class="slds-p-horizontal--xx-small" [title]="language.getLabel('LBL_WEEK')+' '+week?.number">
+                    {{week?.number}}
+                </abbr>
+            </td>
+            <td *ngFor="let day of week?.days" role="gridcell" (click)="pickDate(day)" [ngClass]="{'slds-disabled-text': disabled(day), 'slds-is-today': isToday(day), 'slds-is-selected': isCurrent(day)}">
+                <span class="slds-day">{{day?.date()}}</span>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<button *ngIf="showTodayButton" class="slds-button slds-align_absolute-center slds-text-link" (click)="goToday()"><system-label label="LBL_TODAY"></system-label></button>

@@ -1,0 +1,132 @@
+<system-spinner *ngIf="isLoading" class="slds-m-top--large" style="display:block"></system-spinner>
+
+<div *ngIf="!isLoading" class="slds-m-bottom--medium slds-m-horizontal_x-small">
+
+    <div class="slds-grid slds-grid--align-spread slds-p-horizontal_medium slds-grid--vertical-align-center slds-m-bottom_medium">
+
+        <fieldset class="slds-form-element slds-grid slds-grid--vertical-align-center">
+            <legend class="slds-form-element__legend slds-form-element__label slds-p-top_none"><system-label label="LBL_BASED_ON"></system-label>:</legend>
+            <div class="slds-form-element__control">
+                <div class="slds-radio_button-group">
+                    <span class="slds-button slds-radio_button">
+                        <input type="radio" id="questionnaire-entire-evaluation-radio1" [(ngModel)]="relativeTo" value="questionnaires"/>
+                        <label class="slds-radio_button__label" for="questionnaire-entire-evaluation-radio1">
+                            <span class="slds-radio_faux"><system-label label="LBL_QUESTIONNAIRES"></system-label></span>
+                        </label>
+                    </span>
+                    <span class="slds-button slds-radio_button">
+                        <input type="radio" id="questionnaire-entire-evaluation-radio2" [(ngModel)]="relativeTo" value="questions"/>
+                        <label class="slds-radio_button__label" for="questionnaire-entire-evaluation-radio2">
+                            <span class="slds-radio_faux"><system-label label="LBL_ANSWERED_QUESTIONS"></system-label></span>
+                        </label>
+                    </span>
+                </div>
+            </div>
+        </fieldset>
+
+        <button class="slds-button slds-button_icon" (click)="reload()"><system-utility-icon icon="refresh" size="small"></system-utility-icon></button>
+
+    </div>
+
+    <div *ngIf="questionsets.length; else noQuestionsetsTemplate">
+        <div *ngFor="let questionset of questionsets; last as isLast">
+            <div *ngIf="questionsetIsToShow( questionset )" class="slds-box slds-theme_shade x-slds-m-top--x-small" [ngClass]="{'slds-m-bottom_medium': !isLast}" style="padding:0.5rem">
+                <h3 class="slds-text-heading--medium slds-p-horizontal--xx-small">{{questionset.name}}</h3>
+                <div class="slds-m-top--x-small">
+
+                    <ng-container *ngIf="questions[questionset.id].length; else noQuestionsTemplate">
+                        <div *ngFor="let question of questions[questionset.id]; last as isLast">
+                            <div *ngIf="questionIsToShow( question )" class="slds-box slds-theme_default" style="padding-top:0.5rem" [ngClass]="{'slds-m-bottom_x-small': !isLast}">
+
+                                <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                    <div>
+                                        <h3 class="slds-text-heading_medium">{{question.name}}</h3>
+                                    </div>
+                                    <div class="slds-m-bottom_xx-small" style="min-width:210px">
+                                        <div class="slds-p-bottom_xxx-small slds-text-align_center">
+                                            {{getQuestionParticipationsInPercent( question.id )}} % <system-label label="LBL_ANSWERED"></system-label> ({{countQuestionParticipations( question.id )}}/{{countQuestionnaireParticipations}})
+                                        </div>
+                                        <div class="slds-progress-bar x-slds-theme--error slds-progress-bar--circular slds-progress-bar--small">
+                                            <span class="slds-progress-bar__value x-slds-progress-bar__value_success" [ngStyle]="getQuestionParticipationBarWidth( question.id )">
+                                                <span class="slds-assistive-text">{{countQuestionParticipations( question.id )}}</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <table class="slds-table slds-table_col-bordered slds-table_bordered slds-table_header-hidden slds-m-top_x-small" style="x-border-bottom:0">
+                                    <tbody>
+
+                                        <ng-container *ngIf="question.questiontype === 'single' || question.questiontype === 'multi' || question.questiontype === 'binary'">
+                                            <tr *ngFor="let option of options[question.id];let j=index">
+                                                <td style="width:100%">{{option.name}}</td>
+                                                <td style="min-width:120px">
+                                                    <div class="slds-progress-bar slds-progress-bar--circular slds-progress-bar--large">
+                                                        <span class="slds-progress-bar__value" [ngStyle]="getAnswerBarWidth( question.id, option.id )">
+                                                            <span class="slds-assistive-text">{{getEvaluationValue( question.id, option.id )}}</span>
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td class="slds-text-align--right slds-text-heading_small" style="width:0">
+                                                    {{getEvaluationValue( question.id, option.id )}}
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+
+                                        <ng-container *ngIf="questionset.questiontype === 'ratinggroup' || question.questiontype === 'rating'">
+                                            <tr *ngFor="let option of options[question.id];let j=index">
+                                                <td style="width:100%">{{option.name}}</td>
+                                                <td style="min-width:120px">
+                                                    <div class="slds-progress-bar slds-progress-bar--circular slds-progress-bar--large">
+                                                        <span class="slds-progress-bar__value" [ngStyle]="getAnswerBarWidth( question.id, option.id )">
+                                                            <span class="slds-assistive-text">{{getEvaluationValue( question.id, option.id )}}</span>
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td class="slds-text-align--right slds-text-heading_small" style="width:0">
+                                                    {{getEvaluationValue( question.id, option.id )}}
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+
+                                        <ng-container *ngIf="question.questiontype === 'nps'">
+                                            <tr *ngFor="let option of options[question.id];let j=index">
+                                                <td style="width:100%">{{option.name}}</td>
+                                                <td style="min-width:120px">
+                                                    <div class="slds-progress-bar slds-progress-bar--circular slds-progress-bar--large">
+                                                        <span class="slds-progress-bar__value" [ngStyle]="getAnswerBarWidth( question.id, option.id )">
+                                                            <span class="slds-assistive-text">{{getEvaluationValue( question.id, option.id )}}</span>
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td class="slds-text-align--right slds-text-heading_small" style="width:0">
+                                                    {{getEvaluationValue( question.id, option.id )}}
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+
+                                    </tbody>
+                                </table>
+
+                                <div *ngIf="question.questiontype === 'nps' || (( question.questiontype === 'ratinggroup' || question.questiontype === 'rating' ) && allOptionsNumeric( question.id ))" class="slds-text-align_right slds-text-heading_small x-slds-border--top slds-p-top--xx-small slds-p-right--x-small">
+                                    <b>&Oslash;&nbsp; {{averageOfAnswers( question.id )}}</b>
+                                </div>
+
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <ng-template #noQuestionsTemplate>
+                        <p><system-label label="LBL_NO_QUESTIONS_TO_DISPLAY"></system-label></p>
+                    </ng-template>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #noQuestionsetsTemplate>
+        <p><system-label label="LBL_NO_QUESTIONSETS_TO_DISPLAY"></system-label></p>
+    </ng-template>
+
+</div>

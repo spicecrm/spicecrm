@@ -1,0 +1,48 @@
+<div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+    <div class="slds-modal__container">
+        <div class="slds-modal__header slds-theme--shade">
+            <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" (click)="cancelDialog()">
+                <system-button-icon [icon]="'close'" [size]="'large'"></system-button-icon>
+            </button>
+            <h2 id="header43" class="slds-text-heading--medium"><system-label label="LBL_ADD_COMPONENT"></system-label></h2>
+        </div>
+        <div class="slds-modal__content slds-p-around--medium">
+            <div class="slds-grid">
+                <div class="slds-form-element slds-size--1-of-2 slds-p-right--xx-small">
+                    <label class="slds-form-element__label" ><system-label label="LBL_MODULE"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select  class="slds-select" [(ngModel)]="systemmodule">
+                                <option *ngFor="let module of systemmodules" [value]="module.id">{{module.module}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-size--1-of-2 slds-p-left--xx-small">
+                    <label class="slds-form-element__label" ><system-label label="LBL_COMPONENT"></system-label></label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select  class="slds-select" [(ngModel)]="component" (ngModelChange)="checkDep(component)">
+                                <option>-</option>
+                                <option *ngFor="let component of components" [value]="component.component">{{componentName(component)}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="showDeprecatedWarning" class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
+            <span class="slds-assistive-text">warning</span>
+            <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
+                <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                  <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#warning"></use>
+                </svg>
+              </span>
+            <h2><system-label label="LBL_DEPRECATED_MSG"></system-label></h2>
+        </div>
+        <div class="slds-modal__footer">
+            <button class="slds-button slds-button--neutral" (click)="cancelDialog()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button class="slds-button slds-button--brand" (click)="add()"><system-label label="LBL_ADD"></system-label></button>
+        </div>
+    </div>
+</div>

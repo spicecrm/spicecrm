@@ -1,0 +1,41 @@
+<div class="slds-section slds-is-open" [ngStyle]="!isInitialLoaded?{opacity:0}:undefined">
+
+    <div class="slds-section__content slds-m-bottom_medium slds-grid slds-grid_vertical" style="padding-top:0">
+
+            <div [system-overlay-loading-spinner]="isLoading" class="slds-grid slds-grid_vertical slds-border--top slds-scrollable--y" system-to-bottom>
+                <table class="slds-table slds-table--striped slds-table--bordered slds-table--fixed-layout slds-table--col-bordered slds-table--striped slds-table_header-fixed" [ngStyle]="isLoading?{opacity:0.33}:undefined">
+                    <thead>
+                    <tr>
+                        <th style="width:7.5rem"><system-label class="slds-th__action" label="LBL_DATE"></system-label></th>
+                        <th style="width:3.5rem" class="slds-text-align--right"><span class="slds-th__action">PID</span></th>
+                        <th style="width:17rem" class="slds-text-align--right"><system-label class="slds-th__action" label="LBL_TRANSACTION"></system-label></th>
+                        <th style="width:4.5rem" class="slds-resizable"><system-label class="slds-th__action" label="LBL_USER"></system-label></th>
+                        <th style="width:3rem"><system-label class="slds-th__action" label="LBL_LEVEL"></system-label></th>
+                        <th style="width:100%" class="slds-resizable"><system-label class="slds-th__action" label="LBL_TEXT"></system-label></th>
+                        <th style="width:2.5rem"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let entry of entries;let i=index">
+                        <td><a *ngIf="!valuesNotClickable" (click)="valueClicked$.emit({type:'date_entered',value:entry.date_entered})"><system-display-datetime [date]="entry.date_entered"></system-display-datetime></a><system-display-datetime *ngIf="valuesNotClickable" [date]="entry.date_entered"></system-display-datetime></td>
+                        <td class="slds-text-align--right"><a *ngIf="!valuesNotClickable" (click)="valueClicked$.emit({type:'pid',value:entry.pid})">{{entry.pid}}</a><ng-container *ngIf="valuesNotClickable">{{entry.pid}}</ng-container></td>
+                        <td><a *ngIf="!valuesNotClickable" (click)="valueClicked$.emit({type:'transaction_id',value:entry.transaction_id})">{{entry.transaction_id}}</a><ng-container *ngIf="valuesNotClickable">{{entry.transaction_id}}</ng-container></td>
+                        <td><a *ngIf="!valuesNotClickable" (click)="valueClicked$.emit({type:'user',value:{user_id:entry.user_id,user_name:entry.user_name}})">{{entry.user_name}}</a><ng-container *ngIf="valuesNotClickable">{{entry.user_name}}</ng-container></td>
+                        <td><a *ngIf="!valuesNotClickable" (click)="valueClicked$.emit({type:'log_level',value:entry.log_level})">{{entry.log_level}}</a><ng-container *ngIf="valuesNotClickable">{{entry.log_level}}</ng-container></td>
+                        <td><div class="slds-truncate slds-text-font_monospace">{{entry.description}}</div></td>
+                        <td>
+                            <button class="slds-button slds-button--icon-border slds-button_icon-small" (click)="showEntryInModal(i)">
+                                <system-button-icon [icon]="'expand'" [size]="'medium'"></system-button-icon>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div *ngIf="entries.length == 0" class="slds-height_full slds-align--absolute-center">
+                    <system-illustration-no-records><system-label label="LBL_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
+                </div>
+            </div>
+
+    </div>
+
+</div>

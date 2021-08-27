@@ -1,0 +1,17 @@
+<div class="slds-tabs_default">
+    <ul class="slds-tabs_default__nav" role="tablist">
+        <li class="slds-tabs_default__item " [ngClass]="{'slds-is-active': activeTab=='D'}" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" (click)="activeTab='D'">Details</a></li>
+        <li class="slds-tabs_default__item " [ngClass]="{'slds-is-active': activeTab=='T'}" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" (click)="activeTab='T'">Tasks</a></li>
+        <li class="slds-tabs_default__item " [ngClass]="{'slds-is-active': activeTab=='C'}" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" (click)="activeTab='C'">Conditions</a></li>
+    </ul>
+    <div class="slds-tabs_default__content " [ngClass]="{'slds-show' : activeTab=='D', 'slds-hide': activeTab!='D'}" role="tabpanel">
+        <object-record-fieldset [fieldset]="fieldset" [direction]="'vertical'"></object-record-fieldset>
+    </div>
+    <div class="slds-tabs_default__content" [ngClass]="{'slds-show' : activeTab=='T', 'slds-hide': activeTab!='T'}" role="tabpanel">
+        <workflow-manager-detail-tasks [tasks]="model.data.tasks"></workflow-manager-detail-tasks>
+    </div>
+    <div class="slds-tabs_default__content" [ngClass]="{'slds-show' : activeTab=='C', 'slds-hide': activeTab!='C'}" role="tabpanel">
+        <workflow-manager-detail-conditions></workflow-manager-detail-conditions>
+    </div>
+
+</div>

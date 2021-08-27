@@ -1,0 +1,52 @@
+<td class="slds-p-around--none">
+    <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
+</td>
+<td>
+    <div class="slds-truncate" [title]="displayPath">
+        {{displayPath}}
+    </div>
+</td>
+<td>
+    <div class="slds-form-element">
+        <system-input-label [(ngModel)]="name"></system-input-label>
+    </div>
+</td>
+<td>
+    <div class="slds-form-element">
+        <div class="slds-form-element__control">
+            <div class="slds-select_container">
+                <select class="slds-select" [(ngModel)]="listItem.sqlfunction">
+                    <option></option>
+                    <option value="SUM"><system-label label="LBL_SUM"></system-label></option>
+                    <option value="COUNT"><system-label label="LBL_COUNT"></system-label></option>
+                    <option value="COUNT_DISTINCT"><system-label label="LBL_COUNT_DISTINCT"></system-label></option>
+                    <option value="MAX"><system-label label="LBL_MAXIMUM"></system-label></option>
+                    <option value="MIN"><system-label label="LBL_MINIMUM"></system-label></option>
+                    <option value="AVG"><system-label label="LBL_AVERAGE"></system-label></option>
+                    <option value="GROUP_CONCAT"><system-label label="LBL_GROUP_CONCAT"></system-label></option>
+                    <option value="GROUP_CONASC"><system-label label="LBL_GROUP_CONCAT"></system-label> (ASC)</option>
+                    <option value="GROUP_CONDSC"><system-label label="LBL_GROUP_CONCAT"></system-label> (DESC)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</td>
+<td >
+    <div class="slds-align--absolute-center">
+        <system-checkbox [(ngModel)]="groupBy" [hidelabel]="true"></system-checkbox>
+    </div>
+</td>
+<td>
+    <div *ngIf="requiredEnabled" class="slds-align--absolute-center">
+        <system-checkbox [(ngModel)]="joinType" [hidelabel]="true"></system-checkbox>
+    </div>
+</td>
+<td class="slds-cell-shrink">
+    <button class="slds-button slds-button--icon" (click)="deleteField()">
+        <system-button-icon icon="delete"></system-button-icon>
+    </button>
+    <system-utility-icon [icon]="reportsDesignerService.manipulateExpandedItemId == listItem.fieldid ? 'up' : 'down'" (click)="toggleExpand($event)"
+                         [colorclass]="reportsDesignerService.expertMode ? 'slds-icon-text-default' : 'slds-icon-text-light'"
+                         size="x-small" class="slds-p-horizontal--xx-small slds-p-vertical--xx-small" style="cursor: pointer"></system-utility-icon>
+</td>
+

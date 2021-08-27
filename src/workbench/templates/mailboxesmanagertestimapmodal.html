@@ -1,0 +1,34 @@
+<system-modal>
+    <system-modal-header (close)="close()"></system-modal-header>
+    <system-modal-content>
+        <div *ngIf="isOutbound" class="slds-form-element slds-size--1-of-1">
+            <label class="slds-truncate slds-form-element__label"><system-label label="LBL_TEST_EMAIL"></system-label></label>
+            <input type="text" [(ngModel)]="testemailaddress" class="slds-input"/>
+        </div>
+        <div class="slds-p-vertical--x-small">
+            <div *ngIf="isInbound" class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center slds-p-vertical--xxx-small">
+                <div><system-label label="LBL_IMAP"></system-label></div>
+                <system-utility-icon size="xx-small" [icon]="imapIcon"></system-utility-icon>
+            </div>
+            <div *ngIf="isOutbound" class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center slds-p-vertical--xxx-small">
+                <div><system-label label="LBL_SMTP"></system-label></div>
+                <system-utility-icon size="xx-small" [icon]="smtpIcon"></system-utility-icon>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center">
+            <div *ngIf="testing" class="slds-grid slds-grid--vertical-align-center">
+                <system-spinner size="10"></system-spinner>
+                <span class="slds-p-horizontal--xx-small"><system-label label="LBL_TESTING"></system-label></span>
+            </div>
+            <div *ngIf="!testing && validConnection" class="slds-grid slds-grid--vertical-align-center">
+                <system-utility-icon icon="check" size="x-small"></system-utility-icon>
+                <span class="slds-p-horizontal--xx-small"><system-label label="LBL_OK"></system-label></span>
+            </div>
+            <button class="slds-col--bump-left slds-button slds-button--neutral" (click)="testConnection()"><system-label label="LBL_TEST"></system-label></button>
+            <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button [disabled]="!validConnection" class="slds-button slds-button--brand" (click)="close()"><system-label label="LBL_OK"></system-label></button>
+        </div>
+    </system-modal-footer>
+</system-modal>

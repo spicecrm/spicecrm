@@ -1,0 +1,51 @@
+<div class="slds-form-element slds-m-bottom--x-small">
+    <label class="slds-form-element__label" ><system-label label="LBL_NAME"></system-label></label>
+    <div class="slds-form-element__control">
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentFieldSet.name"/>
+    </div>
+</div>
+<div class="slds-form-element slds-m-bottom--x-small">
+    <label class="slds-form-element__label" >ID of Parent Fieldset</label>
+    <div class="slds-form-element__control">
+        <input type="text" class="slds-input" [ngModel]="fieldset.fieldset" disabled/>
+    </div>
+</div>
+<div class="slds-form-element slds-m-bottom--x-small">
+    <label class="slds-form-element__label" >ID of Parent Fieldset Element</label>
+    <div class="slds-form-element__control">
+        <input type="text" class="slds-input" [ngModel]="fieldset.id" disabled/>
+    </div>
+</div>
+<div class="slds-form-element slds-m-bottom--x-small">
+    <label class="slds-form-element__label" >ID of Fieldset</label>
+    <div class="slds-form-element__control">
+        <input type="text" class="slds-input" [ngModel]="currentFieldSet.fid" disabled/>
+    </div>
+</div>
+<div class="slds-form-element slds-m-vertical--x-small">
+    <label class="slds-form-element__label" ><system-label label="LBL_PACKAGE"></system-label></label>
+    <div class="slds-form-element__control">
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentFieldSet.package"/>
+    </div>
+</div>
+<div class="slds-form-element slds-m-vertical--x-small">
+    <label class="slds-form-element__label"><system-label label="LBL_FORMCLASS"></system-label></label>
+    <div class="slds-form-element__control">
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentFieldSetConfig.formclass"/>
+    </div>
+</div>
+<div class="slds-form-element slds-m-vertical--x-small">
+    <span class="slds-checkbox">
+        <input [disabled]="!view.isEditMode()" name="options" id="cbDirection" value="vertical" type="checkbox" [checked]="currentFieldSetConfig.direction === 'vertical'" (change)="currentFieldSetConfig.direction = currentFieldSetConfig.direction === 'vertical' ? null : 'vertical'" />
+          <label class="slds-checkbox__label" for="cbDirection">
+                <span class="slds-checkbox_faux"></span>
+                <span class="slds-form-element__label"><system-label label="LBL_VERTICAL"></system-label></span>
+          </label>
+    </span>
+</div>
+<div class="slds-form-element slds-m-top--x-small">
+    <label class="slds-form-element__label"><system-label label="LBL_WIDTH"></system-label> (number of parts, leave blank for 1)</label>
+    <div class="slds-form-element__control">
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentFieldSetConfig.width"/>
+    </div>
+</div>

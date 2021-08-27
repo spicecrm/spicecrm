@@ -1,0 +1,38 @@
+<system-collapsable-tab [title]="panelTitle">
+    <div class="slds-grid slds-scrollable--y" style="max-height: 200px">
+        <table class="slds-table slds-table--fixed-layout">
+            <thead>
+            <tr>
+                <th>
+                    <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                </th>
+                <th>
+                    <div class="slds-truncate"><system-label label="LBL_STATUS"></system-label></div>
+                </th>
+                <th class="slds-cell-shrink">
+                    <div *ngIf="canEdit">
+                        <button class="slds-button slds-button--icon-border-filled slds-button--icon-x-small" [title]="language.getLabel('LBL_SELECT')" (click)="openSelectModal()">
+                            <system-button-icon icon="add"></system-button-icon>
+                        </button>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let relateditem of relatedmodels.items; trackBy: trackByFn" (click)="navigateTo(relateditem.id)">
+                <td [title]="relateditem.name">
+                    <div class="slds-text-link slds-truncate" style="cursor: pointer">{{relateditem.name}}</div>
+                </td>
+                <td [title]="relateditem.status">
+                    <div class="slds-text-link slds-truncate" style="cursor: pointer">{{relateditem.status}}</div>
+                </td>
+                <td class="slds-cell-shrink"></td>
+            </tr>
+            </tbody>
+            <tbody system-table-stencils *ngIf="relatedmodels.isloading" columns="3" rows="3"></tbody>
+        </table>
+    </div>
+    <div *ngIf="!relatedmodels.isloading && relatedmodels.items.length == 0" class="slds-align--absolute-center slds-text-body--regular slds-p-around--x-small">
+        <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
+    </div>
+</system-collapsable-tab>

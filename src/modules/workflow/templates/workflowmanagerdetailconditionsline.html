@@ -1,0 +1,18 @@
+<td>
+    <!--field-container [fieldname]="'object_field'" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container-->
+    <workflow-manager-fieldsdropdown [module]="module" [field]="'object_field'"></workflow-manager-fieldsdropdown>
+</td>
+<td>
+    <field-container [fieldname]="'object_operator'" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
+</td>
+<td>
+    <field-container [fieldname]="'object_value'" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
+</td>
+<td>
+    <field-container [fieldname]="'on_change'" [fielddisplayclass]="'slds-truncate slds-p-horizontal--x-small'"></field-container>
+</td>
+<td role="gridcell" class="slds-cell-shrink">
+    <button class="slds-button slds-button_icon" (click)="removeCondition()">
+        <system-button-icon [icon]="'delete'"></system-button-icon>
+    </button>
+</td>

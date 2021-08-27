@@ -1,0 +1,14 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+    {{getUOMLabel()}}
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
+    <!--div class="slds-select_container slds-m-vertical--xx-small">
+        <select class="slds-select" [(ngModel)]="value">
+            <option *ngFor="let uom of uoms" [value]="uom.id"><system-label [label]="uom.label"></system-label>
+            </option>
+        </select>
+    </div-->
+    <system-select-uom [(ngModel)]="value"></system-select-uom>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

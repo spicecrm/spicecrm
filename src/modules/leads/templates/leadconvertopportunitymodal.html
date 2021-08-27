@@ -1,0 +1,10 @@
+<system-modal size="large">
+    <system-modal-header (close)="close()"><system-label label="LBL_CONVERT_TO_OPPORTUNITY"></system-label></system-modal-header>
+    <system-modal-content margin="none">
+        <system-componentset [componentset]="componentSet"></system-componentset>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CLOSE"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="convert()"><system-label label="LBL_CONVERT_LEAD"></system-label></button>
+    </system-modal-footer>
+</system-modal>

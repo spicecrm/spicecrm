@@ -1,0 +1,8 @@
+<div class="slds-form-element slds-m-vertical--xxx-small">
+    <workbench-config-label [option]="option.option" [description]="option.description"></workbench-config-label>
+    <div class="slds-form-element__control">
+        <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="optionValue"/>
+    </div>
+</div>
+
+

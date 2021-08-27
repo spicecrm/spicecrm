@@ -1,0 +1,29 @@
+<div class="slds-grid">
+    <div class="slds-col slds-size_1-of-5">
+        <table *ngIf="values.length" class="slds-table slds-table_bordered slds-table_striped">
+            <thead>
+            <tr class="slds-text-title_caps">
+                <th scope="col" class="">
+                    <div class="slds-truncate"><system-label label="LBL_CATEGORY"></system-label></div>
+                </th>
+                <th scope="col" class="slds-text-align--right">
+                    <div class="slds-truncate">
+                        <ng-container *ngIf="evaluationType !== 'lmi'; else notLMI"><system-label label="LBL_POINTS"></system-label></ng-container>
+                        <ng-template #notLMI>%</ng-template>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let value of valuesForChart" >
+                <td scope="row">
+                    <div class="slds-truncate">{{value[0]}}</div>
+                </td>
+                <td class="slds-text-align--right">
+                    <div class="slds-truncate">{{value[1]}}</div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="slds-size_4-of-5"><div class="slds-m-left--small"><div [id]="divid" [ngStyle]="chartDivStyles"></div></div></div></div>

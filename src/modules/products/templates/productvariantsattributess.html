@@ -1,0 +1,16 @@
+<field-generic-display *ngIf="!isEditMode" [editable]="editable">
+    <system-checkbox-group [ngModel]="valueArray" class="slds-grid slds-wrap">
+        <div *ngFor="let attributeValue of attributeValues; trackBy: trackByFn" [title]="attributeValue" class="slds-large-size--1-of-3 slds-medium-size--1-of-1 slds-truncate">
+            <system-checkbox-group-checkbox [disabled]="true" [value]="attributeValue">
+                <span class="slds-m-left--xx-small">{{attributeValue}}</span>
+            </system-checkbox-group-checkbox>
+        </div>
+    </system-checkbox-group>
+</field-generic-display>
+<system-checkbox-group *ngIf="isEditMode" [ngModel]="valueArray" (ngModelChange)="setValue($event)" class="slds-grid slds-wrap">
+    <div *ngFor="let attributeValue of attributeValues; trackBy: trackByFn" [title]="attributeValue" class="slds-large-size--1-of-3 slds-medium-size--1-of-1 slds-truncate">
+        <system-checkbox-group-checkbox [value]="attributeValue">
+            <span class="slds-m-left--xx-small">{{attributeValue}}</span>
+        </system-checkbox-group-checkbox>
+    </div>
+</system-checkbox-group>

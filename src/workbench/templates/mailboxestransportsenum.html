@@ -1,0 +1,14 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fielddisplayclass" [editable]="isEditable()" [fieldconfig]="fieldconfig" [fieldid]="fieldid">
+    {{getValue()}}
+</field-generic-display>
+<div *ngIf="isEditMode()" class="slds-form-element">
+    <div class="slds-form-element__control" [ngClass]="getFieldClass()">
+        <div class="slds-select_container slds-m-vertical--xx-small">
+            <select #focus class="slds-select " [(ngModel)]="value">
+                <option *ngFor="let o of transportoptions" [value]="o.name"><system-label [label]="o.label"></system-label></option>
+            </select>
+        </div>
+        <field-messages [fieldname]="fieldname"></field-messages>
+    </div>
+</div>

@@ -1,0 +1,41 @@
+<system-modal>
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_REPAIR_DICTIONARY"></system-label>
+    </system-modal-header>
+    <system-modal-content [margin]="'none'">
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer" system-multi-select-checkboxes>
+            <tbody>
+            <tr *ngFor="let query of sql">
+                <td style="white-space: normal">
+                    <div class="slds-grid slds-grid--vertical-align-center slds-p-around--xx-small ">
+                        <system-checkbox  [(ngModel)]="query.selected"></system-checkbox>
+
+                        <div><p>{{query.comment}}</p><p>{{query.statement}}</p></div></div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div *ngIf="dbErrors.length > 0" class="slds-form-element">
+            <system-label label="LBL_LAST_DB_ERROR"></system-label>
+            <div class="slds-form-element__control">
+            <textarea *ngFor="let error of dbErrors" disabled class="slds-textarea" style="min-height: 400px;"
+                      [value]="error"></textarea>
+            </div>
+        </div>
+        <div *ngIf="sql == ''" class="slds-form-element__control">
+            <system-label label="LBL_REPAIR_DATABASE_ALREADY_SYNCED"></system-label>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" [disabled]="sql.length <= 0" (click)="selectAll()">
+            <system-label label="LBL_SELECT_ALL"></system-label>
+        </button>
+        <button *ngIf="!hidden" class="slds-button slds-button--neutral" [disabled]="wholeSQL.length <= 0" (click)="copy2clipboard()">
+            <system-label label="LBL_COPY_TO_CLIPBOARD"></system-label>
+        </button>
+        <button class="slds-button slds-button--brand" [disabled]="sql.length <= 0" (click)="doRepair()">
+            <system-label label="LBL_EXECUTE"></system-label>
+        </button>
+    </system-modal-footer>
+</system-modal>
+

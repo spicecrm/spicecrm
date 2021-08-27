@@ -1,0 +1,16 @@
+<div class="slds-grid">
+    <system-input-module class="slds-p-right--xxx-small slds-size--1-of-3" [(ngModel)]="_module" [displayAsterisk]="true"></system-input-module>
+    <div class="slds-form-element__control slds-p-left--xxx-small slds-size--2-of-3">
+        <div class="slds-select_container">
+            <select  [disabled]="!_module || disabled" class="slds-select" [(ngModel)]="actionset">
+                <option></option>
+                <optgroup [label]="'custom ' + language.getLabel('LBL_ACTIONSET')" *ngIf="(_actionsets|systemmodulecustompipe:_module).length > 0">
+                    <option *ngFor="let sysActionset of _actionsets|systemmodulecustompipe:_module" [value]="sysActionset.id">{{sysActionset.name}}</option>
+                </optgroup>
+                <optgroup [label]="'global '+ language.getLabel('LBL_ACTIONSET')"  *ngIf="(_actionsets|systemmoduleglobalpipe:_module).length > 0">
+                    <option *ngFor="let sysActionset of _actionsets|systemmoduleglobalpipe:_module" [value]="sysActionset.id">{{sysActionset.name}}</option>
+                </optgroup>
+            </select>
+        </div>
+    </div>
+</div>

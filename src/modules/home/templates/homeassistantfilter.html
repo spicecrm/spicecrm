@@ -1,0 +1,26 @@
+<div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-p-horizontal--xxx-small"  [ngClass]="{'slds-is-open': isOpen}">
+    <system-utility-icon icon="filterList" size="xx-small" (click)="toggleOpen($event)" [colorclass]="filterColorClass" [title]="language.getLabel('LBL_FILTER')"></system-utility-icon>
+    <div class="slds-is-absolute slds-dropdown slds-dropdown_right slds-nubbin_top-right" style="right:-15px;top:25px;">
+        <div class="slds-grid">
+            <div class="slds-p-horizontal--small slds-border--right" style="min-width: 120px">
+                <div class="slds-p-vertical--x-small"><system-label label="LBL_TYPE"></system-label></div>
+                <div class="slds-form-element slds-p-vertical--xx-small">
+                    <system-checkbox [disabled]="getChecked('all')" [ngModel]="getChecked('all')" (ngModelChange)="setFilter('all', $event)"><system-label label="LBL_ALL"></system-label></system-checkbox>
+                </div>
+                <div class="slds-form-element slds-p-vertical--xx-small" *ngFor="let activityType of activityTypes">
+                    <system-checkbox [ngModel]="getChecked(activityType)" (ngModelChange)="setFilter(activityType, $event)"><system-label-modulename [module]="activityType"></system-label-modulename></system-checkbox>
+                </div>
+            </div>
+            <div class="slds-p-horizontal--small" style="min-width: 120px">
+                <div class="slds-p-vertical--x-small"><system-label label="LBL_FILTER"></system-label></div>
+                <fieldset class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <system-input-radio name="filters" value="all" [(ngModel)]="assistant.assistantFilters.timefilter"><system-label label="LBL_ALL"></system-label></system-input-radio>
+                        <system-input-radio name="filters" value="overdue" [(ngModel)]="assistant.assistantFilters.timefilter"><system-label label="LBL_OVERDUE"></system-label></system-input-radio>
+                        <system-input-radio name="filters" value="today" [(ngModel)]="assistant.assistantFilters.timefilter"><system-label label="LBL_TODAY"></system-label></system-input-radio>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</div>

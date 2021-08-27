@@ -1,0 +1,6 @@
+<div class="slds-box slds-theme--shade">
+    <questions-manager [showQuestionsetButtons]="true" [categorypool]="categorypool" (questionsetAction)="questionsetAction($event)">
+        <div class="slds-text-body--small">{{lang.getLabel('LBL_QUESTIONSET')}}</div>
+        <div class="slds-text-heading_small"><b>{{model.data.name}}</b></div>
+    </questions-manager>
+</div>

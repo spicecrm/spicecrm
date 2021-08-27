@@ -1,0 +1,98 @@
+<div class="slds-height_full slds-grid slds-grid--vertical">
+    <div class="slds-scrollable--y slds-grow slds-grid slds-grid--vertical" style="min-height: 0" [system-overlay-loading-spinner]="isLoading">
+        <table class="slds-table slds-table_bordered slds-table--fixed-layout slds-table--header-fixed spice-table_footer-fixed">
+            <thead>
+                <tr class="slds-text-title--caps">
+                    <th *ngFor="let field of displayFields; trackBy: trackByFn" [ngClass]="fieldsDisplayClasses[field.fieldid]" scope="col" class="slds-resizable" [style.width.%]="fieldsData[field.fieldid].width" (system-resize)="onresize()" [resizeid]="field.fieldid">
+                        <a *ngIf="!!field.sort && field.sort == 'sortable'; else notsortable" href="javascript:void(0);" class="slds-th__action slds-text-link--reset slds-grid" (click)="toggleSort(field)" [ngClass]="fieldsDisplayClasses[field.fieldid]">
+                            <div class="slds-truncate slds-p-vertical--xx-small">
+                                <system-label [label]="field.name"></system-label>
+                            </div>
+                            <system-utility-icon *ngIf="!!sortData.sortDirection" icon="arrowdown" [style.transform]="sortData.sortDirection == 'desc' ? 'rotate(180deg)' : 'none'" size="x-small"></system-utility-icon>
+                        </a>
+                        <ng-template #notsortable>
+                            <div class="slds-th__action slds-grid">
+                                <div class="slds-truncate">
+                                    <system-label [label]="field.name"></system-label>
+                                </div>
+                                <system-utility-icon *ngIf="!!field.sort && field.sort != '-'" icon="arrowdown" [style.transform]="field.sort == 'desc' ? 'rotate(180deg)' : 'none'" size="x-small"></system-utility-icon>
+                            </div>
+                        </ng-template>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let groupByValue of groupByValues; trackBy: trackByFn">
+                    <tr>
+                        <td [attr.colspan]="displayFields.length" class="slds-theme--shade slds-text-title_bold">
+                            <div class="slds-grid slds-grid--align-spread slds-grid_vertical-align-center">
+                                <div>
+                                    <button class="slds-button slds-button_icon slds-button_icon-x-small slds-m-right_x-small" (click)="groupByValue.expanded = !groupByValue.expanded">
+                                        <system-button-icon icon="chevrondown" [style.transform]="groupByValue.expanded ? 'rotate(180deg)' : 'none'"></system-button-icon>
+                                    </button>
+                                    <label>{{groupByValue.value}}</label>
+                                </div>
+                                <label>
+                                    {{groupByValue.count}}&nbsp;<system-label label="LBL_RECORDS"></system-label>
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    <ng-container *ngIf="groupByValue.expanded">
+                        <tr *ngFor="let record of groupByValue.records; trackBy: trackByFn"  style="vertical-align: top;">
+                            <td scope="row" *ngFor="let field of displayFields; trackBy: trackByFn" [style.width.%]="fieldsData[field.fieldid].width">
+                                <reporter-field-container [field]="field" [record]="record"></reporter-field-container>
+                            </td>
+                        </tr>
+                    </ng-container>
+                    <tr *ngIf="hasSummary && !!groupByValue.totalRecord">
+                        <td scope="row" *ngFor="let field of displayFields; trackBy: trackByFn" [style.width.%]="fieldsData[field.fieldid].width" class="slds-text-title_bold">
+                            <reporter-field-container [field]="field" [record]="groupByValue.totalRecord"></reporter-field-container>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+            <tfoot *ngIf="presData.recordtotal">
+                <tr class="slds-theme--info">
+                    <td scope="row" *ngFor="let field of displayFields; trackBy: trackByFn"  class="slds-text-title_bold slds-theme--info">
+                        <reporter-field-container [field]="field" [record]="presData.recordtotal"></reporter-field-container>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+        <div *ngIf="!isLoading && presData.records?.length == 0" class="slds-p-around--medium slds-align--absolute-center slds-grow" style="min-height: 0">
+            <h2 class="slds-text-heading--small"><system-label label="LBL_NO_ENTRIES"></system-label></h2>
+        </div>
+    </div>
+    <div class="slds-border--top">
+        <div class="slds-p-vertical--x-small slds-grid slds-grid_vertical-align-center slds-grid_align-spread">
+            <div class="slds-grid slds-grid_vertical-align-center slds-p-left--x-small">
+                <label class="slds-form-element__label">
+                    <system-label label="LBL_GROUPDBY"></system-label>
+                </label>
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                            <select class="slds-select" [(ngModel)]="groupById">
+                                <option *ngFor="let reportField of reportFields; trackBy: trackByFn" [value]="reportField.fieldid">
+                                    <system-label [label]="reportField.name"></system-label>
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-p-horizontal--medium slds-grid slds-grid--vertical-align-center">
+                <div class="slds-p-horizontal--xx-small">
+                    {{presData.count}}&nbsp;<system-label label="LBL_RECORDS"></system-label>
+                </div>
+                <button class="slds-button slds-button_icon" (click)="selectFields()" system-title="LBL_CHOOSE_FIELDS">
+                    <system-button-icon icon="settings" ></system-button-icon>
+                </button>
+                <button class="slds-button slds-button_icon" *ngIf="canSave" (click)="saveLayout()" system-title="LBL_SAVE_LAYOUT">
+                    <system-button-icon icon="save" ></system-button-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,9 @@
+<div style="height: 100%; overflow: hidden;">
+    <div class="slds-grid slds-grid--vertical-align-center slds-border--bottom slds-p-around--x-small">
+        <system-icon module="ServiceTickets" size="small"></system-icon>
+        <h2 class="slds-text-heading--medium slds-p-bottom--xx-small"><system-label label="LBL_MY_OPEN_TICKETS"></system-label> ({{totalcount}})</h2>
+    </div>
+    <div #ticketcontainer class="slds-scrollable--y" [ngStyle]="containerStyle">
+        <service-myqueues-tickets-dashlet-item *ngFor="let ticket of tickets" [ticket]="ticket"></service-myqueues-tickets-dashlet-item>
+    </div>
+</div>

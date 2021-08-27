@@ -1,0 +1,23 @@
+<div class=" slds-scrollable--y">
+    <div *ngIf="focusid"
+         class="slds-m-around--x-small slds-p-around--x-small slds-grid slds-grid_vertical-align-center">
+        <div class="slds-form-element__control">
+        <span class="slds-checkbox">
+          <input type="checkbox" id="closetask" [disabled]="isCompleted || !canEdit" [checked]="isCompleted"
+                 (click)="completeTask()">
+          <label class="slds-checkbox__label" for="closetask">
+            <span class="slds-checkbox_faux"></span>
+          </label>
+        </span>
+        </div>
+        <div class="slds-text-heading--small slds-p-left--small">
+            <field-container [field]="'name'" [fielddisplayclass]="'slds-text-heading--small'"></field-container>
+        </div>
+    </div>
+    <div class="slds-m-around--x-small slds-p-around--x-small" [ngClass]="{'slds-theme--default' : focusid}">
+        <div #detailscontent></div>
+    </div>
+    <div *ngIf="!focusid" class="slds-align--absolute-center" style="height:100%">
+        <system-label label="LBL_MAKE_SELECTION"></system-label>
+    </div>
+</div>

@@ -1,0 +1,10 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<field-generic-display *ngIf="!isEditMode()" [fielddisplayclass]="fieldbooldisplayclass" [fieldconfig]="fieldconfig" [editable]="isEditable()">
+    <system-checkbox disabled [(ngModel)]="value"></system-checkbox>
+</field-generic-display>
+<div *ngIf="isEditable() && isEditMode()" class="slds-form-element__control" [ngClass]="getFieldClass()">
+        <div class="slds-p-vertical--x-small">
+            <system-checkbox [(ngModel)]="value"></system-checkbox>
+        </div>
+    <field-messages [fieldname]="fieldname"></field-messages>
+</div>

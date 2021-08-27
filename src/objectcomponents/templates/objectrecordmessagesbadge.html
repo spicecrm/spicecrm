@@ -1,0 +1,33 @@
+<div class="slds-is-relative" *ngIf="messagecount">
+    <span class="slds-badge slds-theme--error slds-m-horizontal--xx-small" (click)="showpopover = !showpopover">{{messagecount}} <system-label label="LBL_ERRORS"></system-label></span>
+    <section *ngIf="showpopover" aria-label="Model Errors" class="slds-popover slds-popover_error slds-nubbin_bottom-left slds-is-absolute"  [ngClass]="nubbinClass" [ngStyle]="popoverStyle" role="dialog">
+        <button class="slds-button slds-button_icon slds-button_icon-small slds-float_right slds-popover__close" title="Close dialog" (click)="showpopover = false;">
+            <system-button-icon icon="close" [inverse]="true"></system-button-icon>
+        </button>
+        <header class="slds-popover__header">
+            <div class="slds-media slds-media_center slds-has-flexi-truncate ">
+                <system-utility-icon icon="error" size="x-small" colorclass="slds-icon-utility-error"></system-utility-icon>
+                <div class="slds-media__body slds-text-align--left slds-p-left--x-small">
+                    <h2 class="slds-truncate slds-text-heading_small" title="Resolve error"><system-label label="LBL_VALIDATION_ERRORS"></system-label></h2>
+                </div>
+            </div>
+        </header>
+        <div class="slds-popover__body slds-p-horizontal--none">
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                <tbody>
+                <tr class="slds-hint-parent" *ngFor="let message of messages">
+                    <td data-label="type">
+                        <div class="slds-truncate"><system-utility-icon [icon]="message.type" size="x-small" ></system-utility-icon></div>
+                    </td>
+                    <td data-label="Field">
+                        <div class="slds-truncate"><system-label-fieldname [module]="model.module" [field]="message.reference"></system-label-fieldname></div>
+                    </td>
+                    <td data-label="Message">
+                        <div class="slds-truncate">{{message.message}}</div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>

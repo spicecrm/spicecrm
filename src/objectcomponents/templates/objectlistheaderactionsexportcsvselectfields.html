@@ -1,0 +1,27 @@
+<system-modal>
+    <system-modal-header (close)="cancel()"><system-label label="LBL_EXPORT"></system-label></system-modal-header>
+    <system-modal-content>
+        <div class="slds-grid slds-p-horizontal--x-small">
+            <div class="slds-form-element slds-m-horizontal--small slds-size--1-of-2">
+                <span class="slds-form-element__label"><system-label label="LBL_AVAILABLE_FIELDS"></system-label></span>
+                <div class="slds-picklist slds-picklist__options slds-size--1-of-1" style="height: 50vh" cdkDropList #listOne="cdkDropList" [cdkDropListData]="availableFields" [cdkDropListConnectedTo]="[listTwo]" (cdkDropListDropped)="onFieldDrop($event)">
+                    <div *ngFor="let field of availableFields" cdkDrag [cdkDragData]="field" class="slds-drag--preview slds-picklist__item" [attr.aria-selected]="isSelected('available', field)" role="option" (click)="selectField('available', field)">
+                        <span class="slds-truncate"><system-label-fieldname [module]="model.module" [field]="field"></system-label-fieldname> ({{field}})</span>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form-element slds-m-horizontal--small slds-size--1-of-2">
+                <span class="slds-form-element__label"><system-label label="LBL_EXPORT_FIELDS"></system-label></span>
+                <div class="slds-picklist slds-picklist__options slds-size--1-of-1 cdk-drag" style="height: 50vh" cdkDropList #listTwo="cdkDropList" [cdkDropListData]="exportFields" [cdkDropListConnectedTo]="[listOne]" (cdkDropListDropped)="onFieldDrop($event)">
+                    <div *ngFor="let field of exportFields" cdkDrag [cdkDragData]="field" class="slds-drag--preview slds-picklist__item" [attr.aria-selected]="isSelected('list', field)" role="option" (click)="selectField('list', field)">
+                        <span class="slds-truncate"><system-label-fieldname [module]="model.module" [field]="field"></system-label-fieldname> ({{field}})</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="export()"><system-label label="LBL_EXPORT"></system-label></button>
+    </system-modal-footer>
+</system-modal>

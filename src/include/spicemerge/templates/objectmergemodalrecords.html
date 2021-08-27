@@ -1,0 +1,8 @@
+<table class="slds-table slds-table--bordered slds-table--cell-buffer">
+    <thead>
+        <tr class="slds-text-title--caps" object-list-header [showRowActionMenu]="false"></tr>
+    </thead>
+    <tbody>
+        <tr [ngClass]="{'slds-theme--success' : isCurrentModel(listItem.id)}" object-list-item *ngFor="let listItem of modellist.listData.list" [displaylinks]="false" [rowselect]="true" [rowselectdisabled]="disableSelect(listItem)" [listItem]="listItem" [showActionMenu]="false" class="slds-hint-parent"></tr>
+    </tbody>
+</table>

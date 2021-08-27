@@ -1,0 +1,36 @@
+<ng-container *ngIf="qp.isLoaded">
+
+    <table *ngIf="!hideFinishedQuestions || !allQuestionsOfQuestionsetFinished" class="slds-table slds-table_bordered slds-table_col-bordered slds-no-row-hover slds-border_left slds-border_right slds-border_top">
+        <thead>
+            <tr class="slds-text-title_caps" >
+                <th style="background-color:inherit;width:100%"></th>
+                <th *ngFor="let entry of questionset.questiontypeparameter.rating.entries" class="slds-text-align_center">
+                    <div *ngIf="ratingValuesHaveAlsoText" class="slds-border_bottom slds-p-bottom_xx-small slds-m-bottom_xx-small">
+                        <ng-container *ngIf="entry.text !== ''; else nbsp">{{entry.text}}</ng-container>
+                        <ng-template #nbsp>&nbsp;</ng-template>
+                    </div>
+                    {{entry.value}}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let question of qp.questionsArray[questionsetId]; let i=index">
+                <tr *ngIf="!hideFinishedQuestions || !questionsMeta[question.id].finished">
+                    <td>
+                        <ng-container *ngIf="question.image_id">
+                            <media-file-image [media_id]="question.image_id" [variant]="'mw'" [frameWidth]="qp.imageWidthQuestion"></media-file-image>
+                        </ng-container>
+                        <div *ngIf="!question.image_id || questionset.showonlyimages !== '1'" class="slds-truncate" style="white-space: normal">{{question.questiontext}}</div>
+                    </td>
+                    <td class="slds-text-align_center question-hover" (click)="onClick(option.id,$event)"
+                        *ngFor="let option of qp.questionoptionsArray[question.id]; let j = index;"><input
+                            type="radio"
+                            [checked]="isChecked(question.id,option.id)" name="{{question.id}}"
+                            (click)="onClick(option.id,$event)"
+                            [disabled]="isDisabled(question.id)"></td><!--title="{{questionset.questiontypeparameter.rating.entries[j].text}}" -->
+                </tr>
+            </ng-container>
+        </tbody>
+    </table>
+
+</ng-container>

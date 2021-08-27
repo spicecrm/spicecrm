@@ -1,0 +1,45 @@
+<div class="slds-form-element__control slds-border--bottom">
+    <div #inputcontainer class="slds-form-element">
+        <div class="slds-form-element__control slds-grid slds-p-around--x-small">
+            <div class="slds-input-has-icon slds-input-has-icon--right slds-grow">
+                <system-utility-icon *ngIf="searchTerm.length == 0" icon="search" [addclasses]="'slds-input__icon'"></system-utility-icon>
+                <button *ngIf="searchTerm.length > 0" class="slds-input__icon slds-input__icon--right slds-button slds-button--icon" (click)="clearSearch()">
+                    <system-button-icon [icon]="'close'"></system-button-icon>
+                </button>
+                <input type="search" class="slds-input" [(ngModel)]="searchTerm" [placeholder]="language.getLabel('MSG_SEARCH_DOCUMENTS')" role="combobox">
+            </div>
+        </div>
+    </div>
+    <div class="slds-p-vertical--none slds-scrollable--y spice-scrollbar-thin" [ngStyle]="resultsMenuStyle">
+        <div *ngIf="searchTerm != ''" class="slds-theme--shade slds-p-vertical--xx-small slds-p-horizontal--small slds-text-body--small slds-border--bottom">
+            {{resultsList.length}} <system-label label="MSG_DOCUMENTS_FOUND"></system-label>
+        </div>
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--fixed-layout">
+            <thead>
+            <tr class="slds-line-height_reset">
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" title="Account Name"><system-label label="LBL_NAME"></system-label></div>
+                </th>
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" title="Account Name"><system-label label="LBL_STATUS"></system-label></div>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let document of resultsList; trackBy: trackByFn" class="slds-hint-parent">
+                <td scope="row">
+                    <div class="slds-truncate" [title]="document.name">
+                        <a style="cursor: pointer" (click)="selectDocument(document)" tabindex="-1">{{document.name}}</a>
+                    </div>
+                </td>
+                <td scope="row">
+                    <div class="slds-truncate" [title]="document.status">
+                        <a style="cursor: pointer" (click)="selectDocument(document)" tabindex="-1">{{document.status}}</a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <system-spinner *ngIf="isLoading"></system-spinner>
+    </div>
+</div>

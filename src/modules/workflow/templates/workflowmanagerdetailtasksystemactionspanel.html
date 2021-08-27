@@ -1,0 +1,16 @@
+<workflow-manager-detail-tasksystemactions [module]="module"></workflow-manager-detail-tasksystemactions>
+<div class="slds-section slds-is-open slds-p-vertical--x-small">
+    <h3 class="slds-section__title slds-m-bottom--small">
+        <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action">
+            <span class="slds-truncate" title="Section Title">System Action</span>
+        </button>
+    </h3>
+    <div>
+        <field-label [fieldname]="'sysclass'" [fieldconfig]="{label: 'LBL_CLASS'}"></field-label>
+        <field-container [field]="'sysclass'"></field-container>
+    </div>
+    <div>
+        <field-label [fieldname]="'sysparams'" [fieldconfig]="{label: 'LBL_PARAMS'}"></field-label>
+        <field-container [field]="'sysparams'"></field-container>
+    </div>
+</div>

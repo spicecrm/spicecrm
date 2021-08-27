@@ -1,0 +1,18 @@
+<ng-container *ngFor="let field of fields; let i = index">
+    <td *ngIf="i === 0" scope="row" class="slds-tree__item">
+        <button class="slds-button slds-button--icon slds-button--icon-x-small slds-m-bottom--x-small" [disabled]="!expandable" (click)="expandNode()">
+            <system-button-icon [icon]="loading ? 'spinner' : (isExpandedNode() ? 'chevronright' : 'chevronup')"></system-button-icon>
+        </button>
+        <div class="slds-truncate">
+            <field-container [field]="field.field" [fieldconfig]="field.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
+        </div>
+    </td>
+    <td *ngIf="i > 0">
+        <div class="slds-truncate">
+            <field-container [field]="field.field" [fieldconfig]="field.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
+        </div>
+    </td>
+</ng-container>
+<td role="gridcell" class="slds-cell-shrink" data-label="Actions">
+    <object-action-menu [buttonsize]="'x-small'"></object-action-menu>
+</td>

@@ -1,0 +1,8 @@
+<td *ngIf="selectable" class="slds-cell-shrink" system-title="LBL_SELECT_ROW">
+    <system-checkbox (ngModelChange)="toggleSelection()" [ngModel]="selected"></system-checkbox>
+</td>
+<td *ngFor="let field of fields" [attr.data-label]="language.getFieldDisplayName(model.module, field.field, field.fieldconfig)">
+    <div class="slds-truncate">
+        <field-container [fieldname]="field.field" [fieldconfig]="field.fieldconfig" [fielddisplayclass]="'slds-truncate'"></field-container>
+    </div>
+</td>

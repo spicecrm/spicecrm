@@ -1,0 +1,8 @@
+<ng-container *ngIf="field.link == 'yes'; else nolink">
+    <div class="slds-text-link_reset" system-model-popover [module]="recordModule" [id]="recordId">
+        <system-dynamic-component [component]="fieldType" [componentattributes]="{record: record, field: field}"></system-dynamic-component>
+    </div>
+</ng-container>
+<ng-template #nolink>
+    <system-dynamic-component [component]="fieldType" [componentattributes]="{record: record, field: field}"></system-dynamic-component>
+</ng-template>

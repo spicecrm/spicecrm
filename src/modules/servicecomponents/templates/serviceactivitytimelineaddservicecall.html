@@ -1,0 +1,18 @@
+<div class="slds-p-around--x-small" [system-overlay-loading-spinner]="model.isSaving">
+    <div class="slds-p-horizontal--xx-small" (click)="onFocus()">
+        <object-record-fieldset [fieldset]="headerFieldSet"></object-record-fieldset>
+    </div>
+    <ng-container *ngIf="isExpanded">
+        <object-record-fieldset [fieldset]="bodyFieldSet" [direction]="'vertical'"></object-record-fieldset>
+        <div class="slds-grid">
+            <button class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label>
+            </button>
+            <div class="slds-col--bump-left">
+                <button class=" slds-button slds-button--brand slds-m-horizontal--xxx-small" (click)="save()">
+                    <system-label label="LBL_SAVE"></system-label>
+                </button>
+            </div>
+            <service-add-ticket-button [servicecall]="this.model" (click)="collapse()"></service-add-ticket-button>
+        </div>
+    </ng-container>
+</div>

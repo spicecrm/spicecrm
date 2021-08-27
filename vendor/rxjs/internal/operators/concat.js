@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var concat_1=require("../observable/concat");function concat(){for(var t=[],c=0;c<arguments.length;c++)t[c]=arguments[c];return function(c){return c.lift.call(concat_1.concat.apply(void 0,[c].concat(t)))}}exports.concat=concat;

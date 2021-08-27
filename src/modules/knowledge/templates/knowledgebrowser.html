@@ -1,0 +1,38 @@
+<div #maincontainer class="slds-grid">
+    <div class="slds-size--1-of-4 slds-border--right">
+        <knowledge-book-selector></knowledge-book-selector>
+        <div class="slds-tabs--default">
+            <ul #tabsheadercontainer class="slds-tabs--default__nav" role="tablist">
+                <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': activeTab == 'tree'}"
+                    role="presentation" (click)="activeTab = 'tree'">
+                    <a class="slds-tabs--default__link" style="cursor: pointer" role="tab" aria-selected="false"><system-label label="LBL_CHAPTERS"></system-label></a>
+                </li>
+                <li class="slds-tabs--default__item slds-text-title--caps" [ngClass]="{'slds-active': activeTab == 'search'}"
+                    role="presentation" (click)="activeTab = 'search'">
+                    <a class="slds-tabs--default__link" style="cursor: pointer" role="tab" aria-selected="false"><system-label label="LBL_SEARCH"></system-label></a>
+                </li>
+            </ul>
+            <div *ngIf="activeTab == 'tree'" class="slds-tabs--default__content slds-show slds-p-vertical--none" role="tabpanel" style="background-color: #fafaf9">
+                <div [ngStyle]="treeContainerStyle" class="slds-scrollable--y spice-scrollbar">
+                    <system-tree
+                            *ngIf="selectedBook && documents.length > 0 && !isLoading"
+                            [sourceList]="documents"
+                            [(selectedItem)]="selectedDoc">
+                    </system-tree>
+                    <div *ngIf="isLoading && selectedBook" class="slds-m-top--small">
+                        <system-spinner></system-spinner>
+                    </div>
+                    <div *ngIf="selectedBook && documents.length == 0 && !isLoading" class="slds-align--absolute-center slds-height_full slds-text-heading--medium">
+                        <span><system-label label="MSG_NO_RECORDS_FOUND"></system-label></span>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="activeTab == 'search'" class="slds-tabs--default__content slds-show slds-p-vertical--none" role="tabpanel" style="background-color: #fafaf9">
+                <knowledge-documents-search></knowledge-documents-search>
+            </div>
+        </div>
+    </div>
+    <div class="slds-size--3-of-4">
+        <knowledge-browser-details [selectedDoc]="selectedDoc"></knowledge-browser-details>
+    </div>
+</div>

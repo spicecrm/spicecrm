@@ -1,0 +1,19 @@
+<div class="slds-p-around--medium slds-border--bottom slds-border--right slds-grid"
+     (click)="spiceimportsservice.activeImportData = {id: item.id, name: item.name}"
+     [ngClass]="{'slds-theme_shade':spiceimportsservice.activeImportData?.id == item.id}"
+     style="cursor: pointer">
+    <div class="slds-icon_container slds-col slds-size--1-of-12" title="{{ item.model }}">
+        <system-icon [module]="item.module" size="medium"></system-icon>
+    </div>
+    <div class="slds-col slds-size--11-of-12">
+        <div class="slds-grid slds-grid--align-spread">
+            <div class="slds-text-title_caps">{{ item.name }}</div>
+            <div class="slds-col--bump-left slds-truncate">{{ item.date_entered | slice:0:16 }}</div>
+        </div>
+        <div class="slds-grid slds-grid--align-spread">
+            <div class="slds-truncate">{{ language.getLabel(item.status) }}</div>
+            <div class="slds-col--bump-left slds-truncate">{{ item.created_by_name }}</div>
+        </div>
+    </div>
+
+</div>

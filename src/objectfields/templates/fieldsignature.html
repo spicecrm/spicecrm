@@ -1,0 +1,32 @@
+<field-label *ngIf="displayLabel" [fieldname]="fieldname" [fieldconfig]="fieldconfig"></field-label>
+<div *ngIf="!isEditMode()">
+    <!-- showing signature (as image) here... (base64 encoded) -->
+    <div [ngStyle]="{width: signature_width+'px'}" class="slds-float_left">
+        <img *ngIf="value" [src]="src">
+        <div style="position: absolute; top: 1px; right: 1px;">
+            <button *ngIf="isEditable()" class="slds-button slds-button--icon" (click)="setEditMode()">
+                <system-button-icon [icon]="'edit'"></system-button-icon>
+            </button>
+        </div>
+    </div>
+</div>
+<!-- the canvas element must be present... otherwise it will make problems! -->
+<div [ngClass]="{'slds-hide': !isEditMode()}">
+    <!-- showing canvas drawing for signature here... !-->
+    <div [ngStyle]="{width: signature_width+'px'}">
+        <div class="slds-float_left">
+            <canvas #canvas [width]="signature_width" [height]="signature_height" style="border: 1px solid;" (mouseup)="convert()" (touchend)="convert()"></canvas>
+            <div style="position: relative; bottom: 3px; right: 3px;">
+                <button class="slds-button slds-button--icon" (click)="undo()" title="undo">
+                    <system-button-icon [icon]="'back'"></system-button-icon>
+                </button>
+                <button class="slds-button slds-button--icon" (click)="clear()" title="clear">
+                    <system-button-icon [icon]="'close'"></system-button-icon>
+                </button>
+            </div>
+        </div>
+        <div *ngIf="display_name_field" class="slds-text-align--center">
+            {{model.data[display_name_field]}}
+        </div>
+    </div>
+</div>

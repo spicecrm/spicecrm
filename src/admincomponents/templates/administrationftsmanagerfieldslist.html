@@ -1,0 +1,40 @@
+<div cdkDropList #dropList="cdkDropList" [cdkDropListData]="ftsconfiguration.moduleFtsFields" [cdkDropListConnectedTo]="[dragList]" (cdkDropListDropped)="rightDrop($event)" class="slds-size--1-of-1 slds-border--left" style="height: 100%">
+    <table class="slds-table slds-table--cell-buffer spice-table_header-fixed slds-table--fixed-layout">
+        <thead>
+        <tr class="slds-text-title--caps slds-theme--shade">
+            <th class="slds-cell-shrink"></th>
+            <th>
+                <div class="slds-truncate"><system-label label="LBL_PATH"></system-label></div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate"><system-label label="LBL_FIELD"></system-label></div>
+            </th>
+            <th scope="col">
+                <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+            </th>
+            <th class="slds-cell-shrink"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr cdkDrag [cdkDragData]="field" *ngFor="let field of ftsconfiguration.moduleFtsFields; let i = index; trackBy: trackByFn" (click)="handleSelection(field.id)" [class.slds-theme--shade]="isSelected(field.id)" cdkDragBoundary="#administration-fts-manager-field-add-drop-table" class="slds-border--bottom slds-drag--preview">
+            <td class="slds-p-around--none">
+                <system-utility-icon class="slds-p-horizontal--x-small" cdkDragHandle style="cursor: move" icon="drag_and_drop" size="x-small"></system-utility-icon>
+            </td>
+            <td>
+                <div class="slds-truncate">{{field.path}}</div>
+            </td>
+            <td data-label="Account Name">
+                <div class="slds-truncate">{{field.fieldname}}</div>
+            </td>
+            <td data-label="Account Name">
+                <div class="slds-truncate"><system-label [label]="field.name"></system-label></div>
+            </td>
+            <td class="slds-cell-shrink">
+                <button class="slds-button slds-button--icon" (click)="deleteField(i)">
+                    <system-button-icon icon="close"></system-button-icon>
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

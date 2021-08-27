@@ -1,0 +1,89 @@
+<div class="slds-scrollable" style="height: 100%;">
+    <div *ngIf="loading; else typesdisplay" class="slds-p-around--medium slds-align--absolute-center">
+        <system-spinner></system-spinner>
+    </div>
+    <ng-template #typesdisplay>
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+            <thead>
+                <tr class="slds-text-title_caps">
+                    <th scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_MODULE"></system-label></div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_TYPE"></system-label></div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_RELATEFROM"></system-label></div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_MULTIPLEOBJECTS"></system-label></div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_MULTIPLEUSERS"></system-label></div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate"><system-label label="LBL_SUPPRESSPANEL"></system-label></div>
+                    </th>
+                    <th scope="col">
+
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let module of modules">
+                    <td>
+                        <div class="slds-truncate"><system-label-modulename [module]="module.module"></system-label-modulename></div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{getTypeName(module.spiceaclterritorytype_id)}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-truncate">{{module.relatefrom}}</div>
+                    </td>
+                    <td>
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <span class="slds-checkbox">
+                                  <input type="checkbox" [id]="module.module+'multipleobjects'" [(ngModel)]="module.multipleobjects" (change)="updateModule(module)"/>
+                                  <label class="slds-checkbox__label" [attr.for]="module.module+'multipleobjects'">
+                                    <span class="slds-checkbox_faux"></span>
+                                  </label>
+                                </span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <span class="slds-checkbox">
+                                  <input type="checkbox" [id]="module.module+'multipleusers'" [(ngModel)]="module.multipleusers" (change)="updateModule(module)" />
+                                  <label class="slds-checkbox__label" [attr.for]="module.module+'multipleusers'">
+                                    <span class="slds-checkbox_faux"></span>
+                                  </label>
+                                </span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <span class="slds-checkbox">
+                                  <input type="checkbox" [id]="module.module+'suppresspanel'" [(ngModel)]="module.suppresspanel" (change)="updateModule(module)" />
+                                  <label class="slds-checkbox__label" [attr.for]="module.module+'suppresspanel'">
+                                    <span class="slds-checkbox_faux"></span>
+                                  </label>
+                                </span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <system-button-icon icon="delete" (click)="deleteModule(module)"></system-button-icon>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="slds-p-around--medium slds-align--absolute-center">
+            <button class="slds-button slds-button--neutral" (click)="addModule()"><system-label label="LBL_ADD"></system-label></button>
+        </div>
+    </ng-template>
+</div>

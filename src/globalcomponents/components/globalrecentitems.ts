@@ -1,0 +1,26 @@
+/**
+ * @module GlobalComponents
+ */
+import { Component} from '@angular/core';
+import {Router} from '@angular/router';
+import {recent} from '../../services/recent.service';
+import {navigationtab} from '../../services/navigationtab.service';
+import {language} from '../../services/language.service';
+
+/**
+ * displays a cotainer with the recent items
+ */
+@Component({
+    selector: 'global-recent-items',
+    templateUrl: './src/globalcomponents/templates/globalrecentitems.html'
+})
+export class GlobalRecentItems {
+    constructor(private language: language, navigationtab: navigationtab, private router: Router, private recent: recent) {
+        // set the navigationtab title
+        navigationtab.setTabInfo({displayname: this.language.getLabel('LBL_RECENTLYVIEWED'), displayicon: 'breadcrumbs'});
+    }
+
+    private goRecent(module, id) {
+        this.router.navigate(['/module/' + module + '/' + id]);
+    }
+}

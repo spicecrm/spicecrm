@@ -1,0 +1,48 @@
+<div class="slds-size--1-of-1 slds-height_full slds-p-around--large">
+    <div *ngIf="servicePlannerService.timelineSelectedItem" class="slds-scrollable--y slds-size--1-of-1 slds-height_full" [system-overlay-loading-spinner]="isLoading">
+        <object-record-fieldset-horizontal-list *ngIf="!!fieldset && !!servicePlannerService.timelineSelectedItem.event; else summaryContainer" [fieldset]="fieldset"></object-record-fieldset-horizontal-list>
+        <ng-template #summaryContainer>
+            <span *ngIf="servicePlannerService.timelineSelectedItem.event" system-model-popover [enablelink]="false" class="slds-text-link--reset">
+                {{servicePlannerService.timelineSelectedItem.event.data?.summary_text}}
+            </span>
+            <span *ngIf="!servicePlannerService.timelineSelectedItem.event" class="slds-text-link--reset">
+                {{servicePlannerService.timelineSelectedItem.record?.name}}
+            </span>
+        </ng-template>
+        <dl *ngIf="directionData" class="slds-list_horizontal slds-wrap slds-text-body_small">
+            <dt class="slds-item_label slds-text-color_weak slds-truncate slds-m-bottom--x-small">
+                <system-label label="LBL_DURATION"></system-label>
+            </dt>
+            <dd class="slds-item_detail slds-m-bottom--x-small">
+                {{directionData.duration?.hours}} h {{directionData.duration?.minutes}} min
+            </dd>
+            <dt class="slds-item_label slds-text-color_weak slds-truncate slds-m-bottom--x-small">
+                <system-label label="LBL_DISTANCE"></system-label>
+            </dt>
+            <dd class="slds-item_detail slds-m-bottom--x-small">
+                {{directionData.distance?.text}}
+            </dd>
+            <dt class="slds-item_label slds-text-color_weak slds-truncate slds-m-bottom--x-small">
+                <system-label label="LBL_DATE_START"></system-label>
+            </dt>
+            <dd class="slds-item_detail slds-m-bottom--x-small">
+                {{calculatedDateStart}}
+            </dd>
+            <dt class="slds-item_label slds-text-color_weak slds-truncate slds-m-bottom--x-small">
+                <system-label label="LBL_ADDRESS"></system-label>
+            </dt>
+            <dd class="slds-item_detail slds-m-bottom--x-small">
+                {{servicePlannerService.timelineSelectedItem?.event?.data?.address_street}} {{servicePlannerService.timelineSelectedItem?.event?.data?.address_postalcode}}
+                {{servicePlannerService.timelineSelectedItem?.event?.data?.address_city}}
+            </dd>
+        </dl>
+    </div>
+    <div class="slds-grid slds-grid--align-end">
+        <button class="slds-button slds-button--neutral" (click)="calculateRoute()" [disabled]="model.isLoading || isLoading || directionData || !servicePlannerService.timelineSelectedItem?.event">
+            <system-label label="LBL_CALCULATE_ROUTE"></system-label>
+        </button>
+        <button class="slds-button slds-button--brand" (click)="plan()" [disabled]="model.isLoading || isLoading">
+            <system-label label="LBL_PLAN"></system-label>
+        </button>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+<div class="slds-docked-composer slds-docked-composer_overflow slds-m-horizontal--x-small">
+    <button class="slds-button slds-button_icon slds-docked-composer_overflow__button" (click)="toggleHiddenComoposers()">
+        <system-button-icon [icon]="'standard_objects'"></system-button-icon>
+        <span class="slds-text-body_small slds-m-left_xx-small">{{hiddenCount}}</span>
+    </button>
+    <div class="slds-dropdown slds-dropdown_left slds-dropdown_bottom slds-dropdown_medium slds-nubbin_bottom-left" *ngIf="showHiddenComposers">
+        <ul class="slds-dropdown__list slds-dropdown_length-with-icon-7" role="menu">
+            <li class="slds-dropdown__item" role="presentation" *ngFor="let overflowComposer of overflowComposers">
+                <a href="javascript:void(0);" role="menuitem" (click)="focusComposer(overflowComposer.id)">
+                    <div class="slds-media slds-media_center slds-no-space">
+                        <div class="slds-media__figure slds-m-right_x-small">
+                          <span class="slds-icon_container">
+                            <system-icon [module]="overflowComposer.module" [size]="'small'"></system-icon>
+                          </span>
+                        </div>
+                        <div class="slds-media__body">
+                            <h2 class="slds-truncate">{{displayLabel(overflowComposer)}}</h2>
+                        </div>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

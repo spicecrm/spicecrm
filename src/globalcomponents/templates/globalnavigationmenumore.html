@@ -1,0 +1,20 @@
+<!--li class="slds-dropdown__item" role="presentation"-->
+<li class="slds-context-bar__dropdown-trigger slds-dropdown-trigger slds-dropdown-trigger--hover" aria-haspopup="true">
+    <a href="javascript:void(0);" class="slds-context-bar__label-action">
+        <span class="slds-truncate"><system-label label="LBL_MORE"></system-label></span>
+    </a>
+    <div class="slds-context-bar__icon-action slds-p-left--none">
+        <button class="slds-button slds-button--icon slds-context-bar__button">
+            <system-button-icon [icon]="'down'"></system-button-icon>
+        </button>
+    </div>
+    <div class="slds-dropdown slds-dropdown--right">
+        <ul class="slds-dropdown__list" role="menu">
+            <li *ngFor="let item of moreMenuItems"class="slds-dropdown__item" role="presentation" (click)="navigateTo(item)">
+                <a href="javascript:void(0);" role="menuitem">
+                    <span class="slds-truncate"><system-label-modulename [module]="item"></system-label-modulename></span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</li>

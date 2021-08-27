@@ -1,0 +1,7 @@
+<div class="slds-select_container slds-m-vertical--xx-small">
+    <select class="slds-select" [disabled]="disabled" [(ngModel)]="uom">
+        <option *ngFor="let uom of uoms" [value]="uom.id">
+            <system-label [label]="uom.label"></system-label>
+        </option>
+    </select>
+</div>

@@ -1,0 +1,4 @@
+<field-generic-display *ngIf="!isEditMode" [editable]="editable">
+    <system-checkbox [(ngModel)]="value" [disabled]="true"></system-checkbox>
+</field-generic-display>
+<system-checkbox *ngIf="isEditMode" [(ngModel)]="value"></system-checkbox>

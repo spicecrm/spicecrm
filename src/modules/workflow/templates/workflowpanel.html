@@ -1,0 +1,10 @@
+<workflow-panel-item *ngFor="let thisworkflow of workflow.workflows|workflowpenworkflowspipe" [workflow]="thisworkflow"></workflow-panel-item>
+<div *ngIf="workflow.activeCount == 0" class="slds-box slds-align--absolute-center slds-p-around--medium slds-m-bottom--medium">
+    <system-illustration-no-records><system-label label="LBL_NO_ACTIVE_WORKFLOWS"></system-label></system-illustration-no-records>
+</div>
+<div *ngIf="(workflow.workflows|workflowcompletedworkflowspipe).length > 0">
+    <div class="slds-p-vertical--x-small slds-text-heading_medium">
+        <h2><system-label label="LBL_COMPLETED_WORKFLOWS"></system-label></h2>
+    </div>
+    <workflow-panel-item *ngFor="let thisworkflow of workflow.workflows|workflowcompletedworkflowspipe" [workflow]="thisworkflow"></workflow-panel-item>
+</div>

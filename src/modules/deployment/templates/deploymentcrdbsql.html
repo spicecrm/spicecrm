@@ -1,0 +1,21 @@
+<section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium">
+    <div class="slds-modal__container">
+        <header class="slds-modal__header">
+            <button class="slds-button slds-modal__close slds-button--icon-inverse" (click)="close()">
+                <system-button-icon [icon]="'close'" [size]="'large'"></system-button-icon>
+            </button>
+            <h2 class="slds-text-heading_medium slds-hyphenate">SQL</h2>
+        </header>
+        <div class="slds-modal__content slds-p-around_medium">
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <textarea class="slds-textarea" style="height: 50vh;" [ngModel]="sql"></textarea>
+                </div>
+            </div>
+        </div>
+        <footer class="slds-modal__footer">
+            <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+            <button class="slds-button slds-button--brand" (click)="copy2clipboard()"><system-label label="LBL_COPY_TO_CLIPBOARD"></system-label></button>
+        </footer>
+    </div>
+</section>

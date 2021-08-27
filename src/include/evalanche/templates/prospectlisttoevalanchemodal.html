@@ -1,0 +1,18 @@
+<system-modal>
+    <system-modal-header (close)="close()">
+        Evalanche
+    </system-modal-header>
+    <system-modal-content>
+        <div *ngIf="!loading">
+        <p>On Spice: {{spice.length}} </p>
+        <p>On Evalanche: {{evalanche.length}}</p>
+        <p>To synchronize: {{difference.length}}</p>
+        </div>
+
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--brand" (click)="close()">{{language.getLabel('LBL_CANCEL')}}</button>
+        <button class="slds-button slds-button--brand" [disabled]="difference.length <= 0" (click)="exportToEvalanche()">{{language.getLabel('LBL_EXPORT')}}</button>
+
+    </system-modal-footer>
+</system-modal>

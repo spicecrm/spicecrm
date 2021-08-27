@@ -1,0 +1,19 @@
+<div class="slds-grid slds-theme--default slds-grow" system-to-bottom>
+    <div [@collapseContainerAnimation]="!isCollapsed || isHovered ? 'open' : 'closed'" (@collapseContainerAnimation.start)="onAnimationStart()" (@collapseContainerAnimation.done)="onAnimationDone()" (mouseleave)="toggleHover(false)" class="slds-split-view_container" style="height: inherit">
+        <div class="slds-split-view__toggle-button slds-grid slds-grid--vertical" style="border-top: 0">
+            <button (click)="toggleCollapseView()" style="min-height: 2.5rem" class="slds-button slds-button_icon slds-button_icon" aria-controls="salesplanningtool-split-view" aria-expanded="true" [title]="language.getLabel('LBL_COLLAPSE')">
+                <system-button-icon [icon]="this.isCollapsed && !this.isHovered ? 'right' : 'left'" size="x-small"></system-button-icon>
+            </button>
+            <div #hoverTriggerContainer class="slds-border--top slds-grow" style="height: 100%"></div>
+        </div>
+        <article [@collapseListAnimation]="!isCollapsed || isHovered ? 'open' : 'closed'" [attr.aria-hidden]="isCollapsed && !isHovered" id="salesplanningtool-split-view" class="slds-split-view slds-grid slds-grid_vertical" style="height: inherit">
+            <sales-planning-tool-tree *ngIf="characteristicsLoaded" style="display: block; height: inherit" (selectNode)="toggleHover(false)"></sales-planning-tool-tree>
+            <div *ngIf="isLoading" class="slds-align_absolute-center slds-m-around--medium">
+                <system-spinner></system-spinner>
+            </div>
+        </article>
+    </div>
+    <div [ngClass]="contentContainerClass" style="height: inherit; margin-left: .8rem">
+        <sales-planning-tool-content [node]="selectedNode" style="display: block; height: inherit"></sales-planning-tool-content>
+    </div>
+</div>

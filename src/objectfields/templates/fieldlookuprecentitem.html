@@ -1,0 +1,25 @@
+<span class="slds-lookup__item-action slds-media slds-media--center" role="option" >
+   <system-icon [module]="model.module" size="small"></system-icon>
+   <div class="slds-media__body" >
+        <div class="slds-lookup__result-text">
+            <span *ngIf="!mainfieldsetfields">{{model.data.summary_text}}</span>
+            <ul *ngIf="mainfieldsetfields" class="slds-list_horizontal slds-has-dividers_right slds-truncate">
+                 <ng-container *ngFor="let fieldsetitem of mainfieldsetfields">
+                      <li *ngIf="model.getField(fieldsetitem.field)" class="slds-item">
+                              <field-container [field]="fieldsetitem.field" [fieldconfig]="fieldsetitem.fieldconfig" fielddisplayclass="slds-truncate"></field-container>
+                      </li>
+                 </ng-container>
+            </ul>
+        </div>
+        <span class="slds-lookup__result-meta slds-text-body--small">
+            <ul class="slds-list_horizontal slds-has-dividers_right slds-truncate">
+              <li class="slds-item"><system-label-modulename [module]="model.module" [singular]="true"></system-label-modulename></li>
+                <ng-container *ngFor="let fieldsetitem of subfieldsetfields">
+                   <li *ngIf="model.getField(fieldsetitem.field)" class="slds-item">
+                       <field-container [field]="fieldsetitem.field" [fieldconfig]="fieldsetitem.fieldconfig" fielddisplayclass="slds-truncate"></field-container>
+                  </li>
+                </ng-container>
+            </ul>
+        </span>
+   </div>
+</span>

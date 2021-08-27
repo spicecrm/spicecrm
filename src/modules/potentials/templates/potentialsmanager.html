@@ -1,0 +1,55 @@
+<div *ngIf="!hidden" class="slds-card slds-card_boundary slds-m-bottom--medium">
+    <object-related-card-header [componentconfig]="componentconfig">
+        <div class="slds-grid">
+            <system-input-companycodes [(ngModel)]="companyCode"></system-input-companycodes>
+            <potentials-manager-new-button class="slds-p-left--x-small" [parent]="model" [companyCode]="companyCode"></potentials-manager-new-button>
+        </div>
+    </object-related-card-header>
+    <div @displaycard *ngIf="isopen">
+        <div class="slds-card__body slds-size--1-of-1">
+            <object-relatedlist-table [listfields]="listfields" [editable]="editable" [editcomponentset]="editcomponentset"></object-relatedlist-table>
+            <div class="slds-p-vertical--x-small">
+                <div class="slds-p-around--medium slds-grid slds-grid--vertical-align-center">
+                    <system-icon module="SalesDocs" size="small"></system-icon>
+                    <h2 class="slds-text-heading--small"><system-label label="LBL_REVENUES"></system-label></h2>
+                </div>
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                    <thead>
+                        <tr class="slds-text-title--caps">
+                            <th class="" scope="col">
+                                <div class="slds-truncate"><system-label label="LBL_PRODUCTGROUP"></system-label></div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate"><system-label label="LBL_REVENUE"></system-label></div>
+                            </th>
+                            <!--th class="" scope="col">
+                                <div class="slds-truncate"><system-label label="LBL_LINEITEMS"></system-label></div>
+                            </th-->
+                            <th class="" scope="col" style="width:9rem">
+                                <div class="slds-truncate slds-assistive-text"></div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let revenue of cc_revenues">
+                            <td>
+                                <div class="slds-truncate">{{revenue.productgroup_name}}</div>
+                            </td>
+                            <td>
+                                <div class="slds-truncate slds-text-align--right">{{parseCurrencyValue(revenue.productgroup_revenue)}}</div>
+                            </td>
+                            <!--td>
+                                <div class="slds-truncate slds-text-align--right">{{revenue.productgroup_itemcount}}</div>
+                            </td-->
+                            <td>
+                                <potentials-manager-add-button [parentModel]="model" [productgroup_id]="revenue.productgroup_id" [productgroup_name]="revenue.productgroup_name"></potentials-manager-add-button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody system-table-stencils *ngIf="cc_revenues_loading" [columns]="2" [select]="false" [tools]="true"></tbody>
+                </table>
+            </div>
+        </div>
+        <!--object-related-card-footer [componentconfig]="componentconfig"></object-related-card-footer-->
+    </div>
+</div>

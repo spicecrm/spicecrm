@@ -1,0 +1,44 @@
+<div class="slds-grid">
+    <div class="slds-p-right--medium" style="width:100%;">
+        <label for="{{compId}}-questiontext" class="slds-form-element__label"><system-label label="LBL_QUESTION_TEXT"></system-label></label>
+        <input id="{{compId}}-questiontext" type="text" class="slds-input" [(ngModel)]="questiontext" (blur)="questiontextBlurred()">
+    </div>
+    <div style="width:4rem">
+        <label class="slds-form-element__label slds-m-horizontal--none"><system-label label="LBL_IMAGE"></system-label></label><br>
+        <field-container [field]="'image_id'" [fieldconfig]="{fieldtype:'mediafileimage'}" [fielddisplayclass]="''" (change)="change()"></field-container>
+    </div>
+</div>
+
+<div class="slds-m-bottom--large slds-p-right--medium" style="width:100%">
+    <label for="{{compId}}-name" class="slds-form-element__label" ><system-label label="LBL_NAME"></system-label></label>
+    <input id="{{compId}}-name" type="text" class="slds-input" [(ngModel)]="name" (blur)="nameBlurred()">
+</div>
+
+<table *ngIf="entries.length" class="slds-table slds-table_bordered">
+    <thead>
+        <tr>
+            <th scope="col">
+                <div class="slds-text-align_right slds-p-right--x-small"><system-label label="LBL_VALUE"></system-label></div>
+            </th>
+            <th scope="col" width="100%">
+                <div><system-label label="LBL_CATEGORIES"></system-label></div>
+            </th>
+            <th scope="col">
+                <div class="slds-text-align_right"><system-label label="LBL_POINTS"></system-label></div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let entry of entries; let i = index;">
+            <td>
+                <div class="slds-text-align_right  slds-p-right--x-small">{{entry.value}}</div>
+            </td>
+            <td>
+                <div><questions-manager-edit-categories [option]="options[i]" [categorypool]="categorypool"></questions-manager-edit-categories></div>
+            </td>
+            <td>
+                <div class="slds-text-align_right"><input type="text" class="slds-input slds-text-align_right" [(ngModel)]="options[i].points" (change)="change()" style="width:unset" size="4"></div>
+            </td>
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,41 @@
+<div #dashletcontainer style="height: 100%; overflow: hidden;">
+    <h2 class="slds-text-heading--small slds-p-bottom--xx-small">My Open Leads ({{myLeadsCount}})</h2>
+    <table #tableheader class="slds-table slds-table_cell-buffer">
+        <thead>
+            <tr class="slds-text-title_caps">
+                <th scope="col" width="30%">
+                    <div class="slds-truncate" title="Opportunity Name">Name</div>
+                </th>
+                <th scope="col" width="20%">
+                    <div class="slds-truncate" title="Account Name">Status</div>
+                </th>
+                <th scope="col" width="30%">
+                    <div class="slds-truncate" title="Close Date">Account</div>
+                </th>
+                <th scope="col" width="20%">
+                    <div class="slds-truncate" title="Stage">Mobile</div>
+                </th>
+            </tr>
+        </thead>
+    </table>
+    <div class="slds-scrollable--y" [ngStyle]="containerstyle">
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+            <tbody>
+                <tr *ngFor="let myLead of myLeads">
+                    <td width="30%">
+                        <div class="slds-truncate">{{myLead.summary_text}}</div>
+                    </td>
+                    <td width="20%">
+                        <div class="slds-truncate">{{myLead.status}}</div>
+                    </td>
+                    <td width="30%">
+                        <div class="slds-truncate">{{myLead.account_name}}</div>
+                    </td>
+                    <td width="20%">
+                        <div class="slds-truncate">{{myLead.phone_mobile}}</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

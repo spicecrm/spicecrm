@@ -1,0 +1,20 @@
+<div #detailscontainer class="slds-grid" [ngStyle]="detailsContainerStyle">
+    <div *ngIf="docId && docId != ''" [ngClass]="containerLeftClass" style="height: 100%">
+        <knowledge-browser-details-container-left [html]="model?.data?.description" [breadcrumbs]="breadcrumbs"></knowledge-browser-details-container-left>
+    </div>
+    <div *ngIf="docId && docId != '' && !inAddModal" class="slds-size--1-of-3 slds-theme--default slds-border--left">
+        <knowledge-browser-details-container-right [selectedDoc]="docId"></knowledge-browser-details-container-right>
+    </div>
+    <div *ngIf="!selectedBook && docId == ''" class="slds-align--absolute-center slds-p-vertical--medium slds-height_full slds-text-heading--medium">
+        <span><system-label label="LBL_MAKE_SELECTION"></system-label></span>
+    </div>
+    <div *ngIf="selectedBook && docId == ''" style="width: 100%">
+        <div class="slds-grid slds-grid--vertical-align-center slds-border--bottom slds-text-title--caps slds-p-around--x-small" style="border-radius: 0; height: 52px">
+            <strong><system-label label="LBL_BOOK_DESCRIPTION"></system-label></strong>
+        </div>
+        <div class="slds-p-around--x-small">
+            <div *ngIf="selectedBook?.html?.length > 0" [innerHTML]="selectedBook?.html"></div>
+            <div *ngIf="selectedBook?.html?.length == 0"><system-label label="LBL_NO_DESCRIPTION_FOUND"></system-label></div>
+        </div>
+    </div>
+</div>

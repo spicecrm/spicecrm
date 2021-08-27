@@ -1,0 +1,84 @@
+<div class="slds-p-around--x-small">
+    <div class="slds-grid">
+        <div class="slds-form-element slds-grid slds-grid--vertical-align-center slds-size--1-of-2 slds-p-horizontal--x-small">
+            <label class="slds-form-element__label slds-text-heading--label">
+                <system-label label="LBL_DIMENSION"></system-label> 1
+            </label>
+            <div class="slds-form-element__control slds-grow">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="properties.dimensions.dimension1">
+                        <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
+                            <system-label [label]="listField.name"></system-label>
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="properties.dims[2] == '1'" class="slds-form-element slds-grid slds-grid--vertical-align-center slds-size--1-of-2 slds-p-horizontal--x-small">
+            <label class="slds-form-element__label slds-text-heading--label">
+                <system-label label="LBL_DATA_SERIES"></system-label>
+            </label>
+            <div class="slds-form-element__control slds-grow">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="properties.dataseries[0].fieldid">
+                        <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
+                            <system-label [label]="listField.name"></system-label>
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid slds-m-top--x-small">
+        <div class="slds-size--1-of-2 slds-p-horizontal--x-small">
+            <div *ngIf="properties.dims == '221' || properties.dims == '220' || properties.dims == '331'" class="slds-form-element slds-grid slds-grid--vertical-align-center">
+                <label class="slds-form-element__label slds-text-heading--label">
+                    <system-label label="LBL_DIMENSION"></system-label> 2
+                </label>
+                <div class="slds-form-element__control slds-grow">
+                    <div class="slds-select_container">
+                        <select class="slds-select" [(ngModel)]="properties.dimensions.dimension2">
+                            <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
+                                <system-label [label]="listField.name"></system-label>
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="properties.dims[2] == '1'" class="slds-form-element slds-grid slds-grid--vertical-align-center slds-size--1-of-2 slds-p-horizontal--x-small">
+            <label class="slds-form-element__label slds-text-heading--label">
+                <system-label label="LBL_FUNCTION"></system-label>
+            </label>
+            <div class="slds-form-element__control slds-grow">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="properties.dataseries[0].chartfunction">
+                        <option value="-">-</option>
+                        <option value="SUM"><system-label label="LBL_SUM"></system-label></option>
+                        <option value="AVG"><system-label label="LBL_AVERAGE"></system-label></option>
+                        <option value="CUMSUM"><system-label label="LBL_SUM_CUMULATED"></system-label></option>
+                        <option value="COUNT"><system-label label="LBL_COUNT"></system-label></option>
+                        <option value="MAX"><system-label label="LBL_MAXIMUM"></system-label></option>
+                        <option value="MIN"><system-label label="LBL_MINIMUM"></system-label></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid slds-m-top--x-small">
+        <div *ngIf="properties.dims == '331'" class="slds-form-element slds-grid slds-grid--vertical-align-center slds-size--1-of-2 slds-p-horizontal--x-small">
+            <label class="slds-form-element__label slds-text-heading--label">
+                <system-label label="LBL_DIMENSION"></system-label> 3
+            </label>
+            <div class="slds-form-element__control slds-grow">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="properties.dimensions.dimension3">
+                        <option *ngFor="let listField of listFields; trackBy: trackByFn" [value]="listField.fieldid">
+                            <system-label [label]="listField.name"></system-label>
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

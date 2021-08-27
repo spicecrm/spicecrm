@@ -1,0 +1,25 @@
+<system-modal size="medium">
+    <system-modal-header [module]="model.module" (close)="promptClose()">
+        {{displayLabel}}
+        <system-modal-header-right>
+            <button class="slds-button slds-button_icon" (click)="minimize()" [title]="language.getLabel('LBL_DOCK')">
+                <system-button-icon icon="dock_panel"></system-button-icon>
+                <span class="slds-assistive-text"><system-label label="LBL_DOCK"></system-label></span>
+            </button>
+        </system-modal-header-right>
+    </system-modal-header>
+    <system-modal-content margin="none">
+        <div #containercontent></div>
+        <system-componentset [componentset]="componentconfig.componentset"></system-componentset>
+    </system-modal-content>
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+            <div>
+                <global-docked-composer-messages-badge></global-docked-composer-messages-badge>
+            </div>
+            <div class="slds-text-align_right">
+                <object-action-container containerclass="" [actionset]="componentconfig.actionset" (actionemitter)="handleaction($event)" ></object-action-container>
+            </div>
+        </div>
+    </system-modal-footer>
+</system-modal>

@@ -1,0 +1,11 @@
+<system-collapsable-tab title="LBL_FAVORITES">
+    <ul class="slds-scrollable--y spice-scrollbar" style="max-height: 200px">
+        <li *ngFor="let favorite of favorites; trackBy: trackByFn" [title]="favorite.item_summary" class="slds-m-around--xx-small">
+            <a style="cursor: pointer" (click)="navigateTo(favorite.item_id)">{{favorite.item_summary}}</a>
+        </li>
+    </ul>
+    <system-spinner *ngIf="favorites.isloading"></system-spinner>
+    <div *ngIf="favorites.length == 0" class="slds-align--absolute-center slds-text-body--regular slds-p-around--x-small">
+        <system-label label="MSG_NO_RECORDS_FOUND"></system-label>
+    </div>
+</system-collapsable-tab>

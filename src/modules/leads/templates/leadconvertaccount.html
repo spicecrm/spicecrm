@@ -1,0 +1,39 @@
+<div>
+    <div class="slds-theme--shade slds-p-around--small slds-border--bottom slds-grid slds-grid--vertical-align-center slds-grid--align-spread">
+        <div class="slds-form--inline">
+            <div class="slds-form-element__control">
+                <span class="slds-checkbox">
+                  <input type="checkbox" name="options" id="createaccount" [(ngModel)]="linktoaccount"/>
+                  <label class="slds-checkbox__label" for="createaccount">
+                    <span class="slds-checkbox--faux"></span>
+                    <span class="slds-form-element__label"><system-label label="LBL_LEADCONVERT_LINKACCOUNT"></system-label></span>
+                  </label>
+                </span>
+            </div>
+        </div>
+        <div *ngIf="selectedAccount && linktoaccount" class="slds-grid slds-grid--vertical-align-center">
+            <div class="slds-m-right--x-small"><system-label label="LBL_ACCOUNT"></system-label></div>
+            <div class="slds-pill">
+              <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container">
+                <system-icon [module]="model.module"></system-icon>
+              </span><a href="javascript:void(0);" class="slds-pill__label">{{selectedAccount.name}}, {{selectedAccount.billing_address_city}}</a>
+              <button class="slds-button slds-button--icon slds-pill__remove" title="Remove">
+                  <system-button-icon [icon]="'clear'" (click)="unlinkAccount()"></system-button-icon>
+              </button>
+            </div>
+        </div>
+    </div>
+    <div [hidden]="!linktoaccount" class="slds-grid slds-gutters_direct-x-small slds-p-horizontal--x-small">
+        <div class="slds-col slds-grow">
+            <div #detailcontainer></div>
+        </div>
+        <div *ngIf="view.isEditable" class="slds-col slds-size--1-of-3 slds-border--left slds-theme--shade" system-to-bottom [system-overlay-loading-spinner]="model.duplicateChecking">
+            <h2 class="slds-text-heading_small slds-p-around--small"><system-label label="LBL_DUPLICATES"></system-label></h2>
+            <lead-convert-item-duplicate class="slds-size--1-of-1" *ngFor="let duplicate of model.duplicates" [system-model-provider]="{module:model.module, data:duplicate}" (itemselected)="selectAccount($event)" ></lead-convert-item-duplicate>
+            <!-- display no recordsillustration if we did not find a record -->
+            <div *ngIf="!model.duplicateChecking && model.duplicates.length == 0" class="slds-height_full slds-align--absolute-center">
+                <system-illustration-no-records><system-label label="LBL_NO_DUPLICATES_FOUND"></system-label></system-illustration-no-records>
+            </div>
+        </div>
+    </div>
+</div>

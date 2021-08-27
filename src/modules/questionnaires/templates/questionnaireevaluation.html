@@ -1,0 +1,6 @@
+<div *ngIf="loading" class="slds-p-around--medium">
+    <system-spinner></system-spinner>
+</div>
+<div #destination></div>
+<div *ngIf="noEvaluationTypeDefined" class="slds-align--absolute-center slds-p-around--medium slds-text-heading_small"><i>Kein Auswertungstyp definiert.</i></div>
+<div *ngIf="noParticipationYet" class="slds-align--absolute-center slds-p-around--medium slds-text-heading_small"><i>Noch keine Teilnahme am Testverfahren.</i></div>

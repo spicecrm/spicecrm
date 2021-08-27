@@ -1,0 +1,26 @@
+<system-modal size="large">
+
+    <system-modal-header (close)="onModalEscX()">
+        <system-label label="LBL_FILL_IN_QUESTIONNAIRE"></system-label>
+    </system-modal-header>
+
+    <system-modal-content [grow]="true">
+        <questionnaire-render *ngIf="(parentId !== undefined && parentType !== undefined) || participationId !== undefined"   [parentId]="parentId" [parentType]="parentType" [participationId]="participationId" editMode="questionnaire"
+                              (questionnaireParticipation$)="qp = $event" [showQuestionnaireTextBefore]="false" [showQuestionnaireTextAfter]="false"
+                              (isDirty$)="qpIsDirty=$event" (isSaving$)="qpIsSaving=$event" (isLoaded$)="qpIsLoaded=$event" [inModal]="false"></questionnaire-render>
+    </system-modal-content>
+
+    <system-modal-footer>
+        <div class="slds-grid slds-grid--align-spread slds-grid--vertical-align-center">
+            <div>
+                <span *ngIf="qpIsLoaded && qp?.isCompleted"><system-label label="MSG_PARTICIPATION_FORMALLY_COMPLETED"></system-label></span>
+            </div>
+            <div>
+                <button [disabled]="!qpIsDirty || qpIsSaving" class="slds-button slds-button_neutral" (click)="saveAndClose(false)"><system-label label="LBL_SAVE"></system-label></button>
+                <button *ngIf="qpIsLoaded && !qp.isCompleted" [disabled]="!qpIsDirty || qpIsSaving" class="slds-button slds-button_brand" (click)="saveAndClose(true)"><system-label label="LBL_SAVE_AND_FINISH"></system-label></button>
+                <button [disabled]="qpIsSaving" class="slds-button slds-button--neutral" (click)="cancel()"><system-label label="LBL_CANCEL"></system-label></button>
+            </div>
+        </div>
+    </system-modal-footer>
+
+</system-modal>

@@ -1,0 +1,22 @@
+<div class="slds-p-around--x-small">
+    <div class="slds-grid slds-grid--vertical-align-center slds-p-bottom--x-small">
+        <system-icon [module]="'Projects'" [size]="'small'"></system-icon>
+        <h2 class="slds-text-heading--medium slds-p-bottom--xx-small"><system-label label="LBL_RECORD_PROJECTACTIVITY"></system-label></h2>
+    </div>
+    <project-activity-dashlet-activity></project-activity-dashlet-activity>
+    <!-- last n entries here... -->
+    <div class="slds-select_container">
+        <table class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked-horizontal slds-table--striped slds-table--header-fixed" [ngClass]="" role="grid">
+            <thead>
+                <tr class="slds-text-title--caps" object-list-header [showSelectColumn]="false"></tr>
+            </thead>
+            <tbody>
+                <tr object-list-item *ngFor="let listItem of modellist.listData.list; trackBy: trackbyfn"  [listItem]="listItem"  [rowselect]="false" class="slds-hint-parent"></tr>
+            </tbody>
+            <tbody system-table-stencils [columns]="modellist.listfields.length" [select]="false" [tools]="false" [rows]="limit" *ngIf="isloading"></tbody>
+        </table>
+        <div *ngIf="!modellist.isLoading && modellist.listData.totalcount == 0" class="slds-align--absolute-center" style="height: calc(100% - 35px)">
+            <system-illustration-no-records><system-label label="MSG_NO_RECORDS_FOUND"></system-label></system-illustration-no-records>
+        </div>
+    </div>
+</div>

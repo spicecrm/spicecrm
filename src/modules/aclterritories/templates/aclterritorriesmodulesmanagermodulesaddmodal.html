@@ -1,0 +1,42 @@
+<system-modal>
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_ADD_MODULE"></system-label>
+    </system-modal-header>
+    <system-modal-content>
+        <div class="slds-form-element">
+            <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="module">
+                        <option *ngFor="let availablemodule of availablemodules" [value]="availablemodule"><system-label-modulename [module]="availablemodule"></system-label-modulename></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="slds-form-element">
+            <label class="slds-form-element__label"><system-label label="LBL_TYPE"></system-label></label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" [disabled]="relatefrom != ''" [(ngModel)]="spiceaclterritorytype_id">
+                        <option *ngFor="let type of types" [value]="type.id">{{type.name}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="module" class="slds-form-element">
+            <label class="slds-form-element__label"><system-label label="LBL_RELATEFROM"></system-label></label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="relatefrom" (change)="setRelated()">
+                        <option value=""></option>
+                        <option *ngFor="let linkedfield of linkedfields" [value]="linkedfield.name">{{linkedfield.display}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

@@ -1,0 +1,10 @@
+<ng-container *ngIf="initialized; else loading">
+    <system-componentset [componentset]="headerComponentset"></system-componentset>
+    <salesdocs-items-container></salesdocs-items-container>
+    <system-componentset [componentset]="footerComponentset"></system-componentset>
+</ng-container>
+<ng-template #loading>
+    <div system-to-bottom class="slds-align--absolute-center">
+        <system-spinner></system-spinner>
+    </div>
+</ng-template>

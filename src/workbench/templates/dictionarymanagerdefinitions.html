@@ -1,0 +1,58 @@
+<div class="slds-p-around--xx-small slds-grid slds-grid--vertical-align-center">
+    <system-utility-icon icon="filterList" size="x-small"></system-utility-icon>
+    <system-input-text placeholder="LBL_SEARCH" class="slds-grow slds-p-horizontal--xx-small" [(ngModel)]="definitionfilterterm"></system-input-text>
+    <div class="slds-select_container">
+        <select class="slds-select" [(ngModel)]="definitionfiltertype">
+            <option value="">-</option>
+            <option value="module">module</option>
+            <option value="metadata">metadata</option>
+            <option value="template">template</option>
+            <option value="template">relationship</option>
+        </select>
+    </div>
+</div>
+<div class="slds-border--top" system-to-bottom>
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table--header-fixed">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th style="width:2.5rem" scope="col"></th>
+                <th class="" scope="col">
+                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_NAME"></system-label></div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_TABLE"></system-label></div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate slds-th__action slds-p-horizontal--x-small"><system-label label="LBL_TYPE"></system-label></div>
+                </th>
+                <th style="width:2rem" scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="slds-hint-parent" [ngClass]="{'slds-is-selected':dictionarymanager.currentDictionaryDefinition == dictionarydefinition.id}"  *ngFor="let dictionarydefinition of dictionarydefinitions; trackBy: trackByFn" (click)="setCurrentDictionaryDefintion(dictionarydefinition.id)">
+                <td>
+                    <system-utility-icon class="slds-p-right--xx-small" size="xx-small" [icon]="dictionarydefinition.scope == 'g' ? 'world' : 'people'"></system-utility-icon>
+                    <dictionary-manager-item-status [(ngModel)]="dictionarydefinition.status"></dictionary-manager-item-status>
+                </td>
+                <td data-label="Domain" >
+                    <div class="slds-truncate">{{dictionarydefinition.name}}</div>
+                </td>
+                <td data-label="Domain" >
+                    <div class="slds-truncate">{{dictionarydefinition.tablename}}</div>
+                </td>
+                <td data-label="Type">
+                    <div class="slds-truncate">{{dictionarydefinition.sysdictionary_type}}</div>
+                </td>
+                <td>
+                    <button class="slds-button slds-button--icon" [disabled]="!dictionarymanager.canChange(dictionarydefinition.scope)" (click)="deleteDictionaryDefinition($event, dictionarydefinition.id)">
+                        <system-button-icon size="xx-small" icon="delete"></system-button-icon>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+    <div *ngIf="dictionarymanager.changescope != 'none'" class="slds-align--absolute-center slds-p-around--small">
+        <system-utility-icon (click)="addDictionaryDefinition($event)" icon="new" size="x-small"></system-utility-icon>
+    </div>
+</div>

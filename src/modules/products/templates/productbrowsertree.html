@@ -1,0 +1,36 @@
+<div class="slds-tree_container" role="application" style="max-width: none; height: inherit;">
+    <div #treeheader>
+        <div class="slds-border--bottom slds-grid slds-p-around--x-small slds-grid--vertical-align-center slds-grid--align-spread">
+            <h4  class="slds-text-title_caps slds-text-heading--small slds-p-vertical--small"><system-label-modulename module="ProductGroups"></system-label-modulename></h4>
+            <system-checkbox [(ngModel)]="productGroupTreeResultsOnly"><system-label label="LBL_RESULTS_ONLY"></system-label></system-checkbox>
+        </div>
+    </div>
+    <div class="slds-scrollable--y spice-scrollbar" [ngStyle]="treeStyle">
+        <ul class="slds-tree" role="tree" aria-labelledby="treeheading" >
+            <li *ngFor="let productgroup of productGroupTree; trackBy: trackByFn" role="treeitem" [attr.aria-level]="productgroup.level" [class.slds-theme--shade]="isSelected(productgroup.id)">
+                <div *ngIf="productgroup.type=='ProductGroup' && displayTreeNode(productgroup)" class="slds-tree__item">
+                    <button class="slds-button slds-button_icon slds-button_icon slds-m-right_x-small" [disabled]="!canExpand(productgroup)" (click)="toggle(productgroup)">
+                        <system-button-icon [icon]="'chevronright'"></system-button-icon>
+                    </button>
+                    <a href="javascript:void(0);" tabindex="-1" class="slds-truncate" (click)="selectGroup(productgroup)" [title]="getLinkTitle(productgroup)">
+                        {{productgroup.summary_text}} ( {{getAggregateCount(productgroup)}} )
+                    </a>
+                </div>
+                <div *ngIf="productgroup.type=='Product' && displayTreeNode(productgroup)" class="slds-tree__item slds grid slds-grid--vertical-align-center" (click)="selectProduct(productgroup)">
+                    <system-icon [module]="'Products'" [size]="'small'"></system-icon>
+                    <a *ngIf="!fieldset; else fieldsetContainer" href="javascript:void(0);" tabindex="-1" class="slds-truncate">
+                        {{productgroup.summary_text}}
+                    </a>
+                    <ng-template #fieldsetContainer>
+                        <div [system-view-provider]="{editable: false, displayLabels: false}" [system-model-provider]="{id: productgroup.id, module: 'Products', data: productgroup}" class="slds-truncate">
+                            <object-record-fieldset-horizontal-list [fieldset]="fieldset"></object-record-fieldset-horizontal-list>
+                        </div>
+                    </ng-template>
+                    <span class="slds-p-horizontal--xx-small">
+                        ( {{getAggregateCount(productgroup)}} )
+                    </span>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,7 @@
+<header class="slds-media slds-media_center slds-m-bottom_small slds-p-right--large">
+    <system-icon [module]="model.module" size="small"></system-icon>
+    <div class="slds-media__body">
+        <system-stencil *ngIf="model.isLoading"></system-stencil>
+        <h2 class="slds-text-heading_small slds-hyphenate"><a href="javascript:void(0);" (click)="model.goDetail()">{{model.data.summary_text}}</a></h2>
+    </div>
+</header>

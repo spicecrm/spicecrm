@@ -1,0 +1,13 @@
+<div class="slds-p-bottom--small slds-grid slds-grid--align-spread slds-p-horizontal--xx-small">
+    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left slds-global-search__form-element" role="none">
+        <input type="text" class="slds-input" [placeholder]="language.getLabel('LBL_SEARCH')" [(ngModel)]="filterKeyword">
+        <system-utility-icon icon="search" addclasses="slds-input__icon slds-input__icon--left"></system-utility-icon>
+    </div>
+    <div class="slds-grid slds-grid--vertical-align-center slds-m-left--small">
+        <product-group-manager-details-attributes-add-button *ngIf="canAdd" (changes)="handleAddEvent($event)"></product-group-manager-details-attributes-add-button>
+    </div>
+</div>
+<div class="slds-border--top slds-p-top--small slds-p-horizontal--xx-small">
+    <system-spinner *ngIf="isLoading"></system-spinner>
+    <product-group-manager-details-attributes-item *ngFor="let attribute of filteredAttributes; trackBy: trackByFn" [attribute]="attribute" class="slds-size--1-of-1"></product-group-manager-details-attributes-item>
+</div>

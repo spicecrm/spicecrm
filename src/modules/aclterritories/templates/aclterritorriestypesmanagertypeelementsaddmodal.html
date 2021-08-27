@@ -1,0 +1,27 @@
+<system-modal>
+    <system-modal-header (close)="close()">
+        <system-label label="LBL_ADD_ELEMENT"></system-label>
+    </system-modal-header>
+    <system-modal-content>
+        <div *ngIf="loading; else elementsDisplay" class="slds-p-around--medium slds-align--absolute-center">
+            <system-spinner></system-spinner>
+        </div>
+        <ng-template #elementsDisplay>
+            <div *ngFor="let element of elements">
+                <div class="slds-form-element__control">
+                <span class="slds-radio">
+                      <input type="radio" [id]="element.id" [value]="element.id" name="elements" [(ngModel)]="selectedElementId"/>
+                      <label class="slds-radio__label" [attr.for]="element.id">
+                        <span class="slds-radio_faux"></span>
+                        <span class="slds-form-element__label">{{element.name}}</span>
+                      </label>
+                    </span>
+                </div>
+            </div>
+        </ng-template>
+    </system-modal-content>
+    <system-modal-footer>
+        <button class="slds-button slds-button--neutral" (click)="close()"><system-label label="LBL_CANCEL"></system-label></button>
+        <button class="slds-button slds-button--brand" [disabled]="!newelementid" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
+    </system-modal-footer>
+</system-modal>

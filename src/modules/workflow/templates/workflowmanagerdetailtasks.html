@@ -1,0 +1,52 @@
+<div class="slds-p-around--x-small">
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-border--right slds-border--left">
+        <thead>
+            <tr class="slds-text-title_caps">
+                <th scope="col">
+                    <div class="slds-truncate"><system-label label="LBL_SEQUENCE"></system-label></div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate"><system-label label="LBL_NAME"></system-label></div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate"><system-label label="LBL_TYPE"></system-label></div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate"><system-label label="LBL_PRIMARY"></system-label></div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate"><system-label label="LBL_CLOSE_W_WORKFLOW"></system-label></div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate"><system-label label="LBL_PREVIOUSTASK"></system-label></div>
+                </th>
+                <th scope="col">
+                    <div class="slds-truncate"><system-label label="LBL_NEXTTASK"></system-label></div>
+                </th>
+                <th class="slds-cell-shrink"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td *ngIf="tasks.length == 0" colspan="8">
+                    <div class="slds-align--absolute-center slds-p-around--small">No Tasks defined</div>
+                </td>
+            </tr>
+            <tr *ngFor="let task of tasks|workflowmanagernotdeletedpipe" workflow-manager-detail-tasks-line [task]="task" [ngClass]="{'slds-is-selected': task.id == selectedTask}" (click)="selectedTask = task.id" [tasks]="tasks"></tr>
+        </tbody>
+        <tfoot class="slds-border--top slds-theme--shade">
+            <tr>
+                <td align="center" colspan="8">
+                    <div class="slds-align--absolute-center slds-p-around--xx-small">
+                        <button class="slds-button slds-button_icon" (click)="addTask()">
+                            <system-button-icon [icon]="'add'"></system-button-icon>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+<div class="slds-p-around--x-small">
+    <workflow-manager-detail-task [tasks]="tasks" [currenttask]="selectedTask" [module]="model.data.workflowdefinition_module"></workflow-manager-detail-task>
+</div>

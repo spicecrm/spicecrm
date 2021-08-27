@@ -1,0 +1,16 @@
+<div class="slds-section" [ngClass]="{'slds-is-open':sectionIsOpen}">
+    <h3 class="slds-section__title">
+        <button class="slds-button slds-section__title-action" (click)="toggleSection()">
+            <system-utility-icon [icon]="'switch'" [size]="'x-small'" [addclasses]="'slds-section__title-action-icon slds-button__icon slds-button__icon_left'"></system-utility-icon>
+            <span class="slds-truncate" title="Section Title"><system-label label="LBL_QUESTIONTYPE"></system-label></span>
+        </button>
+    </h3>
+    <div [ngStyle]="getOpenStyle()" class="slds-p-around--x-small">
+        <div class="slds-form-element">
+            <field-container [field]="'questiontype'" [fielddisplayclass]="'slds-has-divider--bottom slds-p-vertical--x-small spice-fieldminheight'" [fieldconfig]="questiontypeFieldconfig"></field-container><!-- (change)="change()" -->
+        </div>
+        <div *ngIf="model.data.questiontype === 'ratinggroup'" class="slds-box slds-m-top--medium">
+            <questionset-type-parameters-rating></questionset-type-parameters-rating>
+        </div>
+    </div>
+</div>

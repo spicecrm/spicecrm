@@ -1,0 +1,114 @@
+<workbench-header titlelabel="LBL_COMPONENTSETSET_MANAGER"></workbench-header>
+<div class="slds-p-around--small slds-border--bottom">
+    <div class="slds-grid slds-grid--vertical-align-center slds-form--inline">
+        <div class="slds-form-element">
+            <label class="slds-form-element__label"><system-label label="LBL_MODULE"></system-label></label>
+            <div class="slds-form-element__control">
+                <div class="slds-select_container" style="min-width:250px;">
+                    <select class="slds-select" [(ngModel)]="currentModule" (change)="reset()" [disabled]="sysModules.length == 0">
+                        <option value="*">*</option>
+                        <option *ngFor="let sysModule of sysModules" [value]="sysModule.module">{{sysModule.module}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="slds-form-element">
+            <label class="slds-form-element__label">Componentset</label>
+            <div class="slds-form-element__control" style="min-width:250px;">
+                <div class="slds-select_container">
+                    <select class="slds-select" [(ngModel)]="currentComponentSet" (change)="selectComponentSet()" [disabled]="getComponentSets() == 0">
+                        <option></option>
+                        <optgroup label="custom Componentsets" *ngIf="getComponentSets('custom').length > 0">
+                            <option *ngFor="let sysComponentset of getComponentSets('custom')" [value]="sysComponentset.id">
+                                {{sysComponentset.name}}
+                            </option>
+                        </optgroup>
+                        <optgroup label="global Componentsets"  *ngIf="getComponentSets('global').length > 0">
+                            <option *ngFor="let sysComponentset of getComponentSets('global')" [value]="sysComponentset.id">
+                                {{sysComponentset.name}}
+                            </option>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!--div *ngIf="currentComponentSet">
+            <system-utility-icon [icon]="showDetailIcon" [size]="'x-small'" (click)="toggleDetail()"></system-utility-icon>
+        </div-->
+        <div class="slds-button-group slds-col--bump-left">
+            <button [disabled]="!allowBarButtons" type="button" class="slds-button slds-button_icon slds-button_icon-border-filled"
+                    (click)="addComponentset()">
+                <system-utility-icon [icon]="'add'" [size]="'x-small'"></system-utility-icon>
+            </button>
+        </div>
+
+    </div>
+</div>
+<div *ngIf="currentComponentSet" class="slds-theme--default">
+    <div class="slds-p-around--small slds-border--bottom slds-theme--default">
+        <div class="slds-grid slds-grid--vertical-align-end">
+            <div class="slds-form-element slds-p-right--x-small slds-size--1-of-4">
+                <label class="slds-form-element__label"><system-label label="LBL_SCOPE"></system-label></label>
+                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
+                    <system-custom-icon [icon]="componentSetType" size="x-small" addclasses="slds-input__icon slds-input__icon_left"></system-custom-icon>
+                    <input type="text" disabled class="slds-input" [ngModel]="componentSetType"/>
+                </div>
+            </div>
+            <div class="slds-form-element slds-p-right--x-small slds-size--1-of-4">
+                <label class="slds-form-element__label"><system-label label="LBL_NAME"></system-label></label>
+                <div class="slds-form-element__control">
+                    <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentComponentSetName"/>
+                </div>
+            </div>
+            <div class="slds-form-element slds-p-right--x-small slds-size--1-of-4">
+                <label class="slds-form-element__label"><system-label label="LBL_PACKAGE"></system-label></label>
+                <div class="slds-form-element__control">
+                    <input [disabled]="!view.isEditMode()" type="text" class="slds-input" [(ngModel)]="currentComponentSetPackage"/>
+                </div>
+            </div>
+            <div class="slds-form-element slds-p-right--x-small slds-size--1-of-4">
+                <label class="slds-form-element__label"><system-label label="LBL_ID"></system-label></label>
+                <div class="slds-form-element__control">
+                    <input type="text" disabled class="slds-input" [ngModel]="currentComponentSet"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid">
+        <div class="slds-size--2-of-5 slds-p-horizontal--small slds-p-top--x-small slds-border--right">
+            <div class="slds-tree_container" role="application" style="max-width: none;" class="dragboundary" cdkDropList (cdkDropListDropped)="drop($event)">
+                <div *ngFor="let currentComponentSetItem of getComponentSetItems()" class="slds-p-vertical--xx-small slds-grid slds-grid--align-spread slds-grid--vertical-align-center" (click)="selectItem(currentComponentSetItem)" [ngClass]="{'slds-theme--shade' : isSelected(currentComponentSetItem.id)}" cdkDrag cdkDragBoundary=".dragboundary">
+                    <system-utility-icon class="slds-p-right--xx-small" cdkDragHandle [icon]="'rows'" [size]="'x-small'" style="cursor:move"></system-utility-icon>
+                    <a  *ngIf="!componentDeprecated(currentComponentSetItem)" href="javascript:void(0);" role="presentation" class="slds-truncate">
+                        {{currentComponentSetItem.component}} {{getComponentSetItemName(currentComponentSetItem)}}
+                    </a>
+                    <div *ngIf="componentDeprecated(currentComponentSetItem)" class="slds-clearfix">
+                        <a   href="javascript:void(0);" role="presentation" class="slds-truncate">
+                            <system-icon [icon]="'warning'" [sprite]="'utility'" [size]="'x-small'" class="slds-float_left" [addclasses]="'slds-m-vertical--xxx-small slds-m-horizontal--xx-small'"></system-icon>
+                            <del class="slds-float_left">{{currentComponentSetItem.component}} {{getComponentSetItemName(currentComponentSetItem)}}</del>
+                        </a>
+                    </div>
+                    <div class="slds-col--bump-left">
+                        <button [disabled]="!view.isEditMode()" class="slds-button slds-button--icon" title="unlink item" (click)="deleteComponent(currentComponentSetItem)">
+                            <system-button-icon [icon]="'delete'"></system-button-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-p-around--small slds-align--absolute-center slds-border--top slds-m-top--small">
+                <button [disabled]="!view.isEditMode()" class="slds-button slds-button--icon" title="add item" (click)="addComponent()">
+                    <system-button-icon [icon]="'new'"></system-button-icon>
+                </button>
+            </div>
+        </div>
+        <div class="slds-size--3-of-5 slds-p-horizontal--small slds-p-vertical--x-small">
+            <componentsetmanager-componentset-details *ngIf="selectedId" [component]="selectedComponent"></componentsetmanager-componentset-details>
+        </div>
+    </div>
+    <div class="slds-text-align--right slds-p-around--small slds-border--top">
+        <button [disabled]="!view.isEditMode()" type="button" class="slds-button slds-button--brand" (click)="saveChanges()">
+            <system-label label="LBL_SAVE"></system-label>
+        </button>
+    </div>
+</div>

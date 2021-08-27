@@ -1,0 +1,7 @@
+<div>
+    <aclterritorries-manager-header displaylabel="LBL_ELEMENTS"></aclterritorries-manager-header>
+</div>
+<div class="slds-grid" >
+    <aclterritorries-elementmanager-elements class="slds-size--1-of-3 slds-border--right" (selectedElement)="activeElement = $event"></aclterritorries-elementmanager-elements>
+    <aclterritorries-elementmanager-element-values class="slds-size--2-of-3" [activeElement]="activeElement"></aclterritorries-elementmanager-element-values>
+</div>

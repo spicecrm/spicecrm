@@ -1,0 +1,69 @@
+
+.cdk-drop-list-dragging .cdk-drag {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Animate an item that has been dropped. */
+.cdk-drag-animating {
+    transition: transform 300ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.slds-drag--preview.cdk-drag-placeholder,
+.slds-kanban-drag--preview.cdk-drag-placeholder {
+    opacity: 0;
+}
+
+.cdk-drag-preview {
+    opacity: 0;
+}
+
+.slds-drag--preview.cdk-drag-preview {
+    opacity: 1;
+    box-sizing: border-box;
+    border-radius: 4px;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    z-index: 11000 !important;
+}
+
+.slds-kanban-drag--preview.cdk-drag-preview {
+    opacity: 0.8;
+    box-sizing: border-box;
+    border-radius: 4px;
+    z-index: 11000 !important;
+}
+
+.slds-kanban-drag--preview.cdk-drag-preview .slds-tile {
+    transform: rotate(5deg);
+    transform-origin: 0 0;
+    background: #FAFAF9;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    transition: 500ms;
+}
+
+.spice-free-drag-preview.cdk-drag-dragging {
+    opacity: 0.7;
+    z-index: 9999;
+    box-shadow: 4px 4px 5px 0;
+}
+
+.spice-free-drag-preview.cdk-drag-dragging:before {
+    content: ' ';
+    border-top: 2px solid var(--brand-primary);
+    border-left: 2px solid var(--brand-primary);
+    width: 10px;
+    height: 10px;
+    margin: -3px;
+}
+
+.slds-utility-bar__item .cdk-drag-placeholder {
+    display: none;
+}
+
+.slds-utility-bar__item .cdk-drop-list-dragging {
+    background: var(--brand-primary);
+    color: var(--color-white);
+}

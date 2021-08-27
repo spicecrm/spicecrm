@@ -1,0 +1,39 @@
+<div class="slds-timeline__item_expandable slds-p-vertical--none" [ngClass]="{'slds-is-open': isopen}">
+    <div class="slds-media">
+        <div class="slds-media__figure">
+            <button class="slds-button slds-button_icon" (click)="toggleexpand()" [ngClass]="{'slds-hidden': cantexpand}" [disabled]="cantexpand">
+                <system-button-icon icon="switch" addclasses="slds-timeline__details-action-icon"></system-button-icon>
+            </button>
+            <system-icon [module]="model.module" [title]="language.getModuleName(model.module, true)" size="small" divClass="slds-icon_container slds-timeline__icon"></system-icon>
+        </div>
+        <div class="slds-media__body">
+            <div class="slds-grid slds-grid_align-spread slds-timeline__trigger">
+                <div class="slds-grow slds-grid slds-grid_vertical-align-center slds-truncate_container_75 slds-no-space slds-text-title_bold"  [system-view-provider]="{displayLabels: false}">
+                    <h3 class="slds-truncate slds-grid slds-grid--vertical-align-center">
+                        <div *ngIf="displayattachments" class="slds-p-horizontal--xx-small">
+                            <system-dynamic-component *ngIf="displayattachments" component="SpiceAttachmentsCount" ></system-dynamic-component>
+                        </div>
+                        <object-record-fieldset-horizontal-list *ngIf="headerFieldSet; else noheaderfieldset" [fieldset]="headerFieldSet"></object-record-fieldset-horizontal-list>
+                        <ng-template #noheaderfieldset>
+                            <div system-model-popover>{{subject}}</div>
+                        </ng-template>
+                    </h3>
+                </div>
+                <div style="border-radius: 10px; height: 18px;" class="slds-timeline__date slds-p-horizontal--x-small slds-theme--shade" [title]="startdate + ' ' + starttime" [ngClass]="{'slds-theme--error' : isPast, 'slds-theme--warning' : isToday}">
+                    <div class="slds-align--absolute-center">{{activitiyDate}}</div>
+                </div>
+                <div class="slds-timeline__actions slds-timeline__actions_inline">
+                    <object-action-menu class="slds-show--medium" *ngIf="showtoolset" [buttonsize]="'x-small'" [actionset]="actionset"></object-action-menu>
+                </div>
+            </div>
+            <div class="slds-m-horizontal_xx-small" [system-view-provider]="{displayLabels: false}">
+                <object-record-fieldset-horizontal-list *ngIf="subheaderFieldSet" [fieldset]="subheaderFieldSet"></object-record-fieldset-horizontal-list>
+            </div>
+            <article *ngIf="isopen" class="slds-box slds-timeline__item_details slds-theme_shade slds-m-top_x-small slds-m-horizontal_xx-small">
+                <object-record-fieldset [fieldset]="formFieldSet" direction="vertical" fielddisplayclass="slds-truncate" fieldpadding="none"></object-record-fieldset>
+                <system-dynamic-component *ngIf="hasattachments" component="SpiceAttachmentsList"></system-dynamic-component>
+            </article>
+        </div>
+    </div>
+    <object-action-menu class="slds-hide--medium" *ngIf="showtoolset" [buttonsize]="'x-small'" [actionset]="actionset"></object-action-menu>
+</div>

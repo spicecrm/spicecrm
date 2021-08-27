@@ -1,0 +1,3 @@
+<div style="height: 300px; width: 100%;" class="slds-card slds-m-bottom--medium" [ngClass]="{'slds-hide': isHidden}">
+    <reporter-visualization-dashlet [config]="componentconfig" [parentModule]="model.module" [parentId]="model.id" (noAccess)="noAccess($event)" ></reporter-visualization-dashlet>
+</div>
