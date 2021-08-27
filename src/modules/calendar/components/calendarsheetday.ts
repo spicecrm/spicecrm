@@ -115,6 +115,11 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
      * subscribe to resize event to reset the events style
      */
     private subscribeToChanges() {
+        this.subscription.add(
+            this.calendar.layoutChange$.subscribe(() => {
+                this.setEventsStyle();
+            })
+        );
         this.subscription.add(this.calendar.userCalendarChange$.subscribe(calendar => {
             if (calendar.id == 'owner') {
                 this.getOwnerEvents();
@@ -259,7 +264,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
         this.ownerEvents = [];
         this.ownerMultiEvents = [];
 
-        if (!this.calendar.ownerCalendarVisible) return this.cdRef.detectChanges();
+        if (!this.calendar.ownerCalendarVisible) return this.setEventsStyle();
 
         this.calendar.loadEvents(this.startDate, this.endDate)
             .subscribe(events => {
@@ -280,7 +285,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
         this.googleEvents = [];
         this.googleMultiEvents = [];
         if (!this.googleIsVisible || this.calendar.isMobileView) {
-            return;
+            return this.setEventsStyle();
         }
 
         this.calendar.loadGoogleEvents(this.startDate, this.endDate)
@@ -306,7 +311,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
             (!event.data.meeting_user_status_accept || !event.data.meeting_user_status_accept.beans[calendar.id]));
 
         if (this.calendar.isMobileView || !calendar.visible) {
-            return;
+            return this.setEventsStyle();
         }
 
         this.calendar.loadUserEvents(this.startDate, this.endDate, calendar.id)
@@ -333,7 +338,7 @@ export class CalendarSheetDay implements OnChanges, OnInit, OnDestroy {
         this.userEvents = [];
         this.userMultiEvents = [];
         if (this.calendar.isMobileView) {
-            return;
+            return this.setEventsStyle();
         }
 
         this.calendar.loadUsersEvents(this.startDate, this.endDate)

@@ -65,6 +65,10 @@ export class modellist implements OnDestroy {
         list: [],
         totalcount: 0
     };
+    /**
+     * holds the data loading offset
+     */
+    public offset: number = 0;
 
     /**
      * the selected items
@@ -1156,7 +1160,7 @@ export class modellist implements OnDestroy {
         this.backend.getList(this.module, this.sortArray, {
             modulefilter: this.modulefilter,
             filtercontextbeanid: this.filtercontextbeanid,
-            start: this.listData.list.length,
+            start: this.offset,
             limit: this.loadlimit,
             listid: this.currentList.id,
             searchterm: this.searchTerm,

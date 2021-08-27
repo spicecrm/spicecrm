@@ -103,6 +103,7 @@
                         <textarea class="slds-textarea" [(ngModel)]="profile.description"></textarea>
                     </div>
                 </div>
+                <system-checkbox [(ngModel)]="profile.for_portal_users"><system-label label="LBL_FOR_PORTAL_USERS"></system-label></system-checkbox>
                 <div class="slds-p-vertical--x-small slds-align--absolute-center">
                     <button class="slds-button slds-button--brand" (click)="save()"><system-label label="LBL_SAVE"></system-label></button>
                 </div>

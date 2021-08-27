@@ -372,8 +372,11 @@ export class model implements OnDestroy {
         return this.getFieldValue('summary_text');
     }
 
+    /**
+     * return fields definitions loaded from metadata service
+     */
     get fields(): any[] {
-        if (this.module && (!this._fields || this._fields.length == 0)) {
+        if (this.module && _.isEmpty(this._fields)) {
             this._fields = this.metadata.getModuleFields(this.module);
         }
 
@@ -488,6 +491,7 @@ export class model implements OnDestroy {
         this.backend.get(this.module, this.id, trackAction).subscribe(
             res => {
                 this.data = res;
+                this.emitFieldsChanges(res);
                 if (trackAction != "") {
                     this.recent.trackItem(this.module, this.id, this.data);
                 }
@@ -948,15 +952,19 @@ export class model implements OnDestroy {
         return this.field$.pipe(filter(fieldObj => fieldObj.field == field), map(v => v.value));
     }
     /**
-     * serts an object of fields on a model
+     * sets an object of fields on a model
      *
      * @param fieldData a simple object with the fieldname and the value to be set
      */
     public setFields(fieldData) {
         let changedFields = [];
         for (let fieldName in fieldData) {
+            if (!fieldData.hasOwnProperty(fieldName)) continue;
             let fieldValue = fieldData[fieldName];
             if (_.isString(fieldValue)) fieldValue = fieldValue.trim();
+            if (this.data[fieldName] != fieldValue) {
+                this.field$.next({field: fieldName, value: fieldValue});
+            }
             this.data[fieldName] = fieldValue;
             changedFields.push(fieldName);
         }
@@ -965,6 +973,18 @@ export class model implements OnDestroy {
 
         // run the duplicate check
         this.duplicateCheckOnChange(changedFields);
+    }
+
+    /**
+     * emit fields changes from the data object
+      * @param data
+     * @private
+     */
+    private emitFieldsChanges(data) {
+        for (let fieldName in data) {
+            if (!data.hasOwnProperty(fieldName)) continue;
+            this.field$.next({field: fieldName, value: data[fieldName]});
+        }
     }
 
     /**
@@ -1233,7 +1253,16 @@ export class model implements OnDestroy {
     }
 
 
-    public addModel(addReference: string = "", parent: any = null, presets: any = {}, preventGoingToRecord = false) {
+    /**
+     * adds a model
+     *
+     * @param addReference, a reference that is returned .. can be sooner than later be discontinued
+     * @param parent the parent model used for copyrules applications
+     * @param presetsany kind of preset fields
+     * @param preventGoingToRecord
+     * @param componentconfig
+     */
+    public addModel(addReference: string = "", parent: any = null, presets: any = {}, preventGoingToRecord = false, componentconfig?) {
 
         // a response subject to return if the model has been saved
         let retSubject = new Subject<any>();
@@ -1255,6 +1284,12 @@ export class model implements OnDestroy {
                     editModalRef.instance.model.isNew = true;
                     editModalRef.instance.reference = this.reference;
                     editModalRef.instance.preventGoingToRecord = preventGoingToRecord;
+
+                    // if we have passed in a componentconfig use this one
+                    if (componentconfig) {
+                        editModalRef.instance.componentconfig = componentconfig;
+                    }
+
                     // subscribe to the action$ observable and execute the subject
                     editModalRef.instance.action$.subscribe(response => {
 
@@ -1709,6 +1744,8 @@ export class model implements OnDestroy {
         if (records) {
             return this.addRelatedRecords(relation_link_name, records);
         }
+        this.field$.next({field: relation_link_name, value: this.getRelatedRecords(relation_link_name)});
+
     }
 
     /**
@@ -1733,6 +1770,9 @@ export class model implements OnDestroy {
             }
             this.data[relation_link_name].beans[record.id] = record;
         }
+
+        this.field$.next({field: relation_link_name, value: this.getRelatedRecords(relation_link_name)});
+
         return true;
     }
 
@@ -1750,6 +1790,10 @@ export class model implements OnDestroy {
 
         if (!this.data[relation_link_name]) {
             this.data[relation_link_name] = {beans: []};
+        }
+
+        if (!this.data[relation_link_name].beans_relations_to_delete) {
+            this.data[relation_link_name].beans_relations_to_delete = {};
         }
 
         for (let record of records) {
