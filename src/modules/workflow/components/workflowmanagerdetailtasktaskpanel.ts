@@ -1,15 +1,10 @@
 /**
  * @module ModuleWorkflow
  */
-import {
-    Component,
-    Input
-} from '@angular/core';
-import {modelutilities} from '../../../services/modelutilities.service';
+import {Component} from '@angular/core';
 import {model} from '../../../services/model.service';
-import {view} from '../../../services/view.service';
 import {metadata} from '../../../services/metadata.service';
-import {language} from '../../../services/language.service';
+import {WorkflowManagerService} from "../services/workflowmanager.service";
 
 @Component({
     selector: 'workflow-manager-detail-task-taskpanel',
@@ -17,27 +12,19 @@ import {language} from '../../../services/language.service';
 })
 export class WorkflowManagerDetailTaskTaskpanel {
 
-    @Input() tasks : any = {};
-
-    constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
+    constructor(private metadata: metadata, private model: model, private workflowManagerService: WorkflowManagerService) {
 
     }
 
-    get nextTaskDisabled(){
-        if(this.model.data && this.model.data.tasktype == 'decision')
-            return true;
-
-        if(this.model.data && this.model.data.closetask)
-            return true;
-
-        return false;
+    get tasks() {
+        return this.workflowManagerService.tasks;
     }
 
-    get previousTaskDisabled(){
-        if(this.model.data && this.model.data.primarytask)
-            return true;
-
-        return false;
+    get nextTaskDisabled() {
+        return this.model.data && this.model.data.tasktype == 'decision' && this.model.data.closetask;
     }
 
+    get previousTaskDisabled() {
+        return this.model.data && this.model.data.primarytask;
+    }
 }

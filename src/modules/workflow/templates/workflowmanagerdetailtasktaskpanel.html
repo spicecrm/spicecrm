@@ -31,10 +31,10 @@
     </div>
 </div>
 <div class="slds-grid">
-    <div class="slds-size--1-of-2 slds-p-right--xx-small">
-        <field-label [fieldname]="'tasktype'" [fieldconfig]="{label:'LBL_TYPE'}"></field-label>
-        <field-container [field]="'tasktype'"></field-container>
-    </div>
+<!--    <div class="slds-size&#45;&#45;1-of-2 slds-p-right&#45;&#45;xx-small">-->
+<!--        <field-label [fieldname]="'tasktype'" [fieldconfig]="{label:'LBL_TYPE'}"></field-label>-->
+<!--        <field-container [field]="'tasktype'"></field-container>-->
+<!--    </div>-->
     <div class="slds-size--1-of-8 slds-p-left--xx-small">
         <field-label [fieldname]="'primarytask'" [fieldconfig]="{label:'LBL_PRIMARY'}"></field-label>
         <field-container [field]="'primarytask'"></field-container>
@@ -66,4 +66,4 @@
         <workflow-manager-taskdropdown [tasks]="tasks" [field]="'nexttask'" [disabled]="nextTaskDisabled"></workflow-manager-taskdropdown>
     </div>
 </div>
-<workflow-manager-detail-taskdecisions *ngIf="model.data.tasktype == 'decision'" [tasks]="tasks"></workflow-manager-detail-taskdecisions>
+

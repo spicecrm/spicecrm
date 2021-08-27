@@ -12,14 +12,6 @@ import {Pipe} from '@angular/core';
 })
 export class WorkflowManagerNotDeletedPipe {
     public transform(values) {
-        let retvalues = [];
-
-        for (let value of values) {
-            if (value.deleted != 1) {
-                retvalues.push(value);
-            }
-        }
-
-        return retvalues;
+        return !Array.isArray(values) ? [] : values.filter(v => v.deleted != 1);
     }
 }

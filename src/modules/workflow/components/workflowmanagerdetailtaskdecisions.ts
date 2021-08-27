@@ -19,8 +19,6 @@ import {language} from '../../../services/language.service';
 })
 export class WorkflowManagerDetailTaskDecisions {
 
-    @Input() private tasks: any = {};
-
     constructor(private backend: backend, private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities) {
 
     }

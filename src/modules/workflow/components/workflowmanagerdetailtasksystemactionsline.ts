@@ -21,7 +21,6 @@ export class WorkflowManagerDetailTaskSystemactionsLine {
 
     @Input() private systemaction: any = {};
     @Input() private systemactions: any = {};
-    @Input() private module: string = '';
 
     constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities, private footer: footer) {
         this.model.module = 'WorkflowSystemActions';

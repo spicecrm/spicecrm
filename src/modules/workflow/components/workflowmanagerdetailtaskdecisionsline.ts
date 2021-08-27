@@ -11,6 +11,7 @@ import {view} from '../../../services/view.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {footer} from "../../../services/footer.service";
+import {WorkflowManagerService} from "../services/workflowmanager.service";
 
 
 @Component({
@@ -22,15 +23,21 @@ export class WorkflowManagerDetailTaskDecisionsLine {
 
     @Input() private decision: any = {};
     @Input() private decisions: any = {};
-    @Input() private tasks: any[] = [];
 
-    constructor(private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities, private footer: footer) {
+    constructor(private workflowManagerService: WorkflowManagerService, private metadata: metadata, private model: model, private view: view, private language: language, private modelutilities: modelutilities, private footer: footer) {
         this.model.module = 'WorkflowTaskDecisions';
 
         // set the view to edit mode
         this.view.isEditable = true;
         this.view.displayLabels = false;
         this.view.setEditMode();
+    }
+
+    /**
+     * @return any[] array of the workflow tasks
+     */
+    get tasks() {
+        return this.workflowManagerService.tasks;
     }
 
     public ngOnChanges() {

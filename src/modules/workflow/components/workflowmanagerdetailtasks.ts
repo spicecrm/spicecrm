@@ -1,14 +1,12 @@
 /**
  * @module ModuleWorkflow
  */
-import {
-    Component,
-    Input,
-    OnChanges
-} from '@angular/core';
+import {Component, Injector, Input, OnChanges} from '@angular/core';
 import {model} from '../../../services/model.service';
 import {view} from '../../../services/view.service';
-import {language} from '../../../services/language.service';
+import {modal} from "../../../services/modal.service";
+import {WorkflowManagerService} from "../services/workflowmanager.service";
+import {WorkflowTaskType} from "../interfaces/workflow.interfaces";
 
 /**
  * renders the task details view in the workflow manager
@@ -17,34 +15,47 @@ import {language} from '../../../services/language.service';
     selector: 'workflow-manager-detail-tasks',
     templateUrl: './src/modules/workflow/templates/workflowmanagerdetailtasks.html',
 })
-export class WorkflowManagerDetailTasks implements OnChanges {
+export class WorkflowManagerDetailTasks {
 
     /**
-     * the tasks for the selected workflow
+     * holds the selected task
      */
-    @Input() private tasks: any[] = [];
+    public selectedTask: any;
 
-    /**
-     * the curently selectd task
-     */
-    private selectedTask: string = '';
-
-    constructor(private model: model, private view: view, private language: language) {
+    constructor(private modal: modal,
+                private model: model,
+                private view: view,
+                private injector: Injector,
+                private workflowManagerService: WorkflowManagerService) {
     }
 
     /**
-     * in case of input changes (other workflow selected) this selects the first task if the workflow has any tasks
+     * @return the workflow tasks from model data
      */
-    public ngOnChanges() {
+    get tasks() {
+        return this.model.data.tasks;
+    }
+
+    /**
+     * set the workflow data tasks
+     * update the workflow manager service tasks
+     * sort the tasks and set the selected task
+     * @param data
+     */
+    @Input()
+    set tasks(data) {
+        this.model.data.tasks = data;
+        this.workflowManagerService.tasks = data;
+
         this.sortTasksBySequence();
+    }
 
-        // select the first task
-        if (this.tasks.length > 0) {
-            this.selectedTask = this.tasks[0].id;
-        } else {
-            this.selectedTask = '';
-        }
-
+    /**
+     * set the selected task
+     * @param task
+     */
+    public setSelectedTask(task) {
+        this.selectedTask = task;
     }
 
     /**
@@ -52,9 +63,7 @@ export class WorkflowManagerDetailTasks implements OnChanges {
      */
     private sortTasksBySequence() {
         if (this.tasks) {
-            this.tasks.sort((a, b) => {
-                return a.sequence > b.sequence ? 1 : -1;
-            });
+            this.tasks.sort((a, b) => a.sequence > b.sequence ? 1 : -1);
         }
     }
 
@@ -62,19 +71,28 @@ export class WorkflowManagerDetailTasks implements OnChanges {
      * adds a task
      */
     private addTask() {
-        let newGuid = this.model.utils.generateGuid();
-        this.tasks.push({
-            id: newGuid,
-            workflowdefinition_id: this.model.id,
-            deleted: 0,
-            sequence: this.getNextSequence(),
-            name: 'new Task',
-            tasktype: 'task',
-            decisions: [],
-            systemactions: [],
-            primarytask: this.tasks.length == 0 ? true : false
+
+        this.modal.openModal('WorkflowManagerTaskTypesModal', true, this.injector).subscribe(modalRef => {
+            modalRef.instance.response.subscribe((type: WorkflowTaskType) => {
+
+                if (!type) return;
+
+                const newTask = {
+                    id: this.model.generateGuid(),
+                    workflowdefinition_id: this.model.id,
+                    deleted: 0,
+                    sequence: this.getNextSequence(),
+                    name: 'new Task',
+                    tasktype: type.name,
+                    decisions: [],
+                    systemactions: [],
+                    primarytask: this.tasks.length == 0
+                };
+                this.tasks = [...this.tasks, newTask];
+                this.selectedTask = newTask;
+            });
+
         });
-        this.selectedTask = newGuid;
     }
 
     /**
@@ -91,5 +109,4 @@ export class WorkflowManagerDetailTasks implements OnChanges {
 
         return highestSequence + (10 - highestSequence % 10);
     }
-
 }

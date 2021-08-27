@@ -1,22 +1,24 @@
 /**
  * @module ModuleWorkflow
  */
-import {
-    Component,
-    Pipe
-} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {modelutilities} from '../../../services/modelutilities.service';
 import {backend} from '../../../services/backend.service';
 import {metadata} from '../../../services/metadata.service';
 import {language} from '../../../services/language.service';
 import {toast} from "../../../services/toast.service";
-import {Router}   from '@angular/router';
+import {WorkflowManagerService} from "../services/workflowmanager.service";
 
+/**
+ * @ignore
+ */
+declare var _;
 
 @Component({
-    templateUrl: './src/modules/workflow/templates/workflowmanager.html'
+    templateUrl: './src/modules/workflow/templates/workflowmanager.html',
+    providers: [WorkflowManagerService]
 })
-export class WorkflowManager {
+export class WorkflowManager implements OnInit {
     private _current_module: string;
     private _current_workflow: string;
     private _current_workflow_data: any = {};
@@ -24,19 +26,25 @@ export class WorkflowManager {
 
     private workflowdefinitions: any[] = [];
 
-    constructor(private backend: backend, private metadata: metadata, private language: language, private utils: modelutilities, private toast: toast, private router: Router) {}
+    constructor(private backend: backend,
+                private metadata: metadata,
+                private language: language,
+                private utils: modelutilities,
+                private toast: toast,
+                private workflowManagerService: WorkflowManagerService) {}
 
     get modules() {
         return this.metadata.getModules().sort();
-        // return this.appdata.modules;
     }
 
     set current_module(val: string) {
-        if (val != this._current_module) {
-            this._current_module = val;
-            this._current_workflow = null;
-            this.getWorkflows();
-        }
+
+        if (val == this._current_module) return;
+
+        this._current_module = val;
+        this.workflowManagerService.currentModule = val;
+        this._current_workflow = null;
+        this.getWorkflows();
     }
 
     get current_module() {
@@ -54,6 +62,29 @@ export class WorkflowManager {
 
     get current_rule_data() {
         return this._current_workflow_data;
+    }
+
+    /**
+     * call to load the workflow task types
+     */
+    public ngOnInit() {
+        this.loadTypes();
+    }
+
+    /**
+     * load the workflow task types from backend
+     * @private
+     */
+    private loadTypes() {
+
+        const sortArray = [{
+            sortfield: 'name',
+            sortdirection: 'ASC'
+        }];
+
+        this.backend.getList('WorkflowTaskTypes', sortArray, {start: 0, limit: 500}).subscribe((types: any) => {
+            this.workflowManagerService.types = types.list;
+        });
     }
 
     private changeModule() {
@@ -95,6 +126,8 @@ export class WorkflowManager {
 
     private save() {
         let data = this.utils.spiceModel2backend('WorkflowDefinitions', this._current_workflow_data);
+        data.tasks = data.tasks.map(task => this.utils.spiceModel2backend('WorkflowTaskDefinitions', task));
+
         this.backend.postRequest('module/WorkflowDefinitions/' + this.current_module + '/' + this._current_workflow, {}, data).subscribe(
             (success) => {
                 this.toast.sendToast('saved');
@@ -106,7 +139,7 @@ export class WorkflowManager {
     }
 
     private cancel() {
-            this.self.destroy();
+        this._current_workflow = undefined;
     }
 
 
