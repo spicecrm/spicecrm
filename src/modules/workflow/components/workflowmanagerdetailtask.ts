@@ -115,12 +115,15 @@ export class WorkflowManagerDetailTask implements OnChanges, AfterViewInit {
      */
     private setModelData() {
 
-        this.model.initialize();
-
         if (!this.task.type_config) {
             this.task.type_config = {};
         }
         this.model.id = this.task.id;
-        this.model.setFields(this.modelutilities.backendModel2spice(this.model.module, this.task));
+        this.model.data = this.modelutilities.backendModel2spice(this.model.module, this.task);
+        this.model.data.acl = {
+            create: true,
+            edit: true,
+            detail: true
+        };
     }
 }
