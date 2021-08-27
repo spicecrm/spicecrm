@@ -191,6 +191,17 @@ import /*embed*/ {ObjectRecordMessagesBadge} from "./components/objectrecordmess
 import /*embed*/ {ObjectActionDeactivateBeansButton} from "./components/objectactiondeactivatebeansbutton";
 import /*embed*/ {ObjectActionDeactivateBeansModal} from "./components/objectactiondeactivatebeansmodal";
 import /*embed*/ {ObjectChecklists} from "./components/objectchecklists";
+import /*embed*/ {ObjectTimelineItemAudit} from "./components/objecttimelineitemaudit";
+import /*embed*/ {ObjectTimelineItemCreated} from "./components/objecttimelineitemcreated";
+import /*embed*/ {ObjectTimelineFilter} from "./components/objecttimelinefilter";
+import /*embed*/ {ObjectTimelineFullScreen} from "./components/objecttimelinefullscreen";
+import /*embed*/ {ObjecttimelineFullScreenDetail} from "./components/objecttimelinefullscreendetail";
+import /*embed*/ {ObjectTimeline} from "./components/objecttimeline";
+import /*embed*/ {ObjectTimelineItemModule} from "./components/objecttimelineitemmodule";
+import /*embed*/ {ObjectTimelineAuditlogModal} from "./components/objecttimelineauditlogmodal";
+import /*embed*/ {ObjectTimelineAuditDetail} from "./components/objecttimelineauditdetail";
+import /*embed*/ {ObjectTimelineItemLine} from "./components/objecttimelineitemline";
+import /*embed*/ {ObjectTimelineStencil} from "./components/objecttimelinestencil";
 
 /**
  * This module encapsulates various components that are used related to an object or the handling of multiple objects
@@ -350,6 +361,17 @@ import /*embed*/ {ObjectChecklists} from "./components/objectchecklists";
         ObjectKeyValuesPipe,
         ObjectTableRow,
         ObjectTable,
+        ObjectTimeline,
+        ObjectTimelineItemModule,
+        ObjectTimelineItemLine,
+        ObjectTimelineItemAudit,
+        ObjectTimelineItemCreated,
+        ObjectTimelineStencil,
+        ObjectTimelineFilter,
+        ObjectTimelineFullScreen,
+        ObjecttimelineFullScreenDetail,
+        ObjectTimelineAuditlogModal,
+        ObjectTimelineAuditDetail,
         ObjectModelPopover,
         ObjectModelPopoverHeader,
         ObjectModelPopoverField,
