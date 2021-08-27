@@ -1,0 +1,30 @@
+<?php
+/***** SPICE-KREPORTER-HEADER-SPACEHOLDER *****/
+
+$plugins['standard'] = array(
+    'id' => 'standard', 
+    'type' => 'presentation', 
+    'directory' => 'standardview',
+    'extension' => false
+);
+$plugins['googlecharts'] = array(
+    'id' => 'googlecharts', 
+    'type' => 'visualization', 
+    'directory' => 'googlecharts',
+    'extension' => false
+);
+$plugins['kcsvexport'] = array(
+    'id' => 'kcsvexport', 
+    'type' => 'integration', 
+    'directory' => 'kcsvexport',
+    'extension' => false
+);
+$plugins['ktargetlistexport'] = array(
+    'id' => 'ktargetlistexport', 
+    'type' => 'integration', 
+    'directory' => 'ktargetlistexport_basic',
+    'extension' => false
+);
+if(file_exists('modules/KReports/plugins.dictionary.extended'))
+    include('modules/KReports/plugins.dictionary.extended');
+
