@@ -106,7 +106,8 @@ export class ACLProfilesManagerProfile implements OnChanges {
     private save() {
         this.backend.save('SpiceACLProfiles', this.profileid, {
             name: this.profile.name,
-            description: this.profile.description
+            description: this.profile.description,
+            for_portal_users: this.profile.for_portal_users
         });
     }
 
